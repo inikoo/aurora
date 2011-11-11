@@ -1181,7 +1181,8 @@ class Address extends DB_Table {
         $telephone_data['Telecom Raw Number']=$value;
         $telephone_data['Telecom Type']=$type;
 
-        $telephone=new Telecom("find complete create country code ".$this->data['Address Country Code'],$telephone_data);
+        //$telephone=new Telecom("find complete create country code ".$this->data['Address Country Code'],$telephone_data);
+		$telephone=new Telecom('new',$telephone_data);
         $this->associate_telecom($telephone->id,$type);
 
 
@@ -4856,6 +4857,7 @@ class Address extends DB_Table {
             if (!array_key_exists($telecom_key,$telecom_keys)) {
                 $this->create_telecom_bridge($telecom_key,$type);
             }
+			$this->updated_data['telecom_key']=$telecom_key;
         }
 
 
@@ -4989,7 +4991,7 @@ class Address extends DB_Table {
             $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB  left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and   `Subject Type`='Address' and `Subject Key`=%d and `Is Main`='Yes'"
                          ,prepare_mysql($type)
                          ,$this->id );
-             //print $sql;
+			//print $sql;
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
                 $main_telecom_key=$row['Telecom Key'];
@@ -5043,8 +5045,8 @@ $this->update_principal_telecom($telecom_key,'Telephone');
                 $this->data["Address Main $type Key"]=$telecom->id;
                 mysql_query($sql);
 
-                $this->update_parents_principal_telecom_keys($type,array('Contact','Company'));
-                $telecom->update_parents(array('Contact','Company'));
+                $this->update_parents_principal_telecom_keys($type);
+                $telecom->update_parents();
 
             }
 
@@ -5126,7 +5128,7 @@ $this->update_principal_telecom($telecom_key,'Telephone');
                                  ,$telecom_key
                                  ,$parent_object->id
                                 );
-                    //   print "$sql\n";
+                       //print "$sql\n";
                     mysql_query($sql);
 
                 }
@@ -5155,13 +5157,14 @@ $this->update_principal_telecom($telecom_key,'Telephone');
                 $this->msg="No principal telephone\n";
                 return 0;
             } else {
-				
+	
                 $telephone=new Telecom($telephone_key);
 				
                 $telephone->update_number($value,$this->data['Address Country Code']);
 
                 $this->updated=$telephone->updated;
                 $this->new_value=$telephone->display('xhtml');
+				$this->updated_data['telecom_key']=$telephone->id;
                 return $telephone->id;
             }
         }
@@ -5177,6 +5180,7 @@ $this->update_principal_telecom($telecom_key,'Telephone');
                 $fax->update_number($value,$this->data['Address Country Code']);
                 $this->updated=$fax->updated;
                 $this->new_value=$fax->display('xhtml');
+				$this->updated_data['telecom_key']=$fax->id;
                 return $fax->id;
             }
         }

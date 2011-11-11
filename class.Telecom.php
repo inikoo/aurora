@@ -297,7 +297,98 @@ class Telecom extends DB_Table {
         }
 
 
+function prepare_data($raw_data,$options){
 
+            if (!$raw_data) {
+                $this->error=true;
+                $this->msg=_('Error no telecom data');
+                if (preg_match('/exit on errors/',$options))
+                    exit($this->msg);
+                return false;
+            }
+
+
+
+
+            //print "OPTIONS $options\n";
+
+            if (preg_match('/country code [a-z]{3}/i',$options,$match)) {
+                $country_code=preg_replace('/country code /','',$match[0]);
+            } else
+                $country_code='UNK';
+
+
+
+            $raw_number=false;
+            if (isset($raw_data['Telecom Raw Number'])) {
+                $raw_number=$raw_data['Telecom Raw Number'];
+            }
+            if (is_string($raw_data)) {
+                $raw_number=$raw_data;
+                $raw_data=array();
+            }
+
+
+
+            if ($raw_number!='') {
+
+
+                if (strlen($raw_number)<3) {
+
+                    $this->error=true;
+                    $this->msg=_('Error, invalid telecom data');
+                    if (preg_match('/exit on errors/',$options))
+                        exit($this->msg);
+                    return false;
+
+                }
+
+                $tmp=$this->parse_inputed_number($raw_number,$country_code);
+                //print_r($tmp);
+                foreach($tmp as $key=>$value) {
+
+                    $raw_data[$key]=$value;
+                }
+
+            } else {
+                $this->error=true;
+                $this->msg=_('Error, no number data');
+                if (preg_match('/exit on errors/',$options))
+                    exit($this->msg);
+                return false;
+
+            }
+
+            if ($raw_data['Telecom Number']=='') {
+                $this->error=true;
+                $this->msg=_('Error no telecom number data');
+                if (preg_match('/exit on errors/',$options))
+                    exit($this->msg);
+                return false;
+            }
+
+
+
+            $data=$this->base_data();
+            foreach($raw_data as $key=>$value) {
+                if (array_key_exists($key,$data))
+                    $data[$key]=$value;
+            }
+
+            $data=$this->clean_data($data);
+
+
+
+            if ($data['Telecom Number']=='') {
+                $this->msg=_('Wrong telephone number');
+                return false;
+            }
+
+
+            $data['Telecom Plain Number']=Telecom::plain_number($data);
+
+		return $data;
+}
 
         /*
           Function: find
@@ -312,8 +403,7 @@ class Telecom extends DB_Table {
         */
         function find($raw_data,$options) {
 
-
-
+		$_raw_data=$raw_data;
             $find_type='complete';
             if (preg_match('/fuzzy/i',$options)) {
                 $find_type='fuzzy';
@@ -353,86 +443,13 @@ class Telecom extends DB_Table {
                 $auto=true;
             }
 
-            if (!$raw_data) {
-                $this->error=true;
-                $this->msg=_('Error no telecom data');
-                if (preg_match('/exit on errors/',$options))
-                    exit($this->msg);
-                return false;
-            }
-
-
-
-
-
-            //print "OPTIONS $options\n";
-
-            if (preg_match('/country code [a-z]{3}/i',$options,$match)) {
-                $country_code=preg_replace('/country code /','',$match[0]);
-            } else
-                $country_code='UNK';
-
-
-
-            $raw_number=false;
-            if (isset($raw_data['Telecom Raw Number'])) {
-                $raw_number=$raw_data['Telecom Raw Number'];
-            }
-            if (is_string($raw_data)) {
-                $raw_number=$raw_data;
-                $raw_data=array();
-            }
-
-
-
-
-            if ($raw_number!='') {
-
-
-                if (strlen($raw_number)<3) {
-
-                    $this->error=true;
-                    $this->msg=_('Error, invalid telecom data');
-                    if (preg_match('/exit on errors/',$options))
-                        exit($this->msg);
-                    return false;
-
-                }
-
-                $tmp=$this->parse_inputed_number($raw_number,$country_code);
-                //print_r($tmp);
-                foreach($tmp as $key=>$value) {
-
-                    $raw_data[$key]=$value;
-                }
-
-            } else {
-                $this->error=true;
-                $this->msg=_('Error, no telecom data');
-                if (preg_match('/exit on errors/',$options))
-                    exit($this->msg);
-                return false;
-
-            }
-
-            if ($raw_data['Telecom Number']=='') {
-                $this->error=true;
-                $this->msg=_('Error no telecom number data');
-                if (preg_match('/exit on errors/',$options))
-                    exit($this->msg);
-                return false;
-            }
-
-
-
-            $data=$this->base_data();
-            foreach($raw_data as $key=>$value) {
-                if (array_key_exists($key,$data))
-                    $data[$key]=$value;
-            }
-
-            $data=$this->clean_data($data);
-
+			
+			$data=$this->prepare_data($raw_data,$options);
+			
+			if(!$data)
+			return;
+			
+        
 
 
             if ($data['Telecom Number']=='') {
@@ -491,7 +508,7 @@ class Telecom extends DB_Table {
                 $this->find_fast();
                 break;
             case 'complete':
-
+				
                 $this->find_complete($data,$subject_data);
                 break;
             case 'fuzzy':
@@ -527,7 +544,7 @@ class Telecom extends DB_Table {
 
                     }
                     */
-                    $this->create($data,$options);
+                    $this->create($_raw_data,$options);
 
                 }
 
@@ -546,8 +563,10 @@ class Telecom extends DB_Table {
 
 
          */
-        protected function create($data,$optios='') {
-
+        protected function create($raw_data,$options='') {
+			
+		$data=$this->prepare_data($raw_data,$options);
+		
             if (!$data) {
                 $this->new=false;
                 $this->error=true;
@@ -1199,7 +1218,7 @@ class Telecom extends DB_Table {
 
 
         public function update($data,$options='') {
-			
+
             if ($data['Telecom Number']=='') {
                 $this->error=true;
                 $this->msg=_('Wrong telephone number');
@@ -1217,19 +1236,19 @@ class Telecom extends DB_Table {
 
             $base_data=$this->base_data();
             foreach($data as $key=>$value) {
-
-                  // print "** $key,$value <- ".$this->data[$key]."  \n";
+				
+                   //print "** $key,$value <- ".$this->data[$key]."  \n";
                 if ( array_key_exists($key,$this->data) and strcmp($value,$this->data[$key]) and $key!='Telecom Plain Number') {
                            //print "**to change  $key,$value <- ".$this->data[$key]."  \n";
                     $this->update_field_switcher($key,strval($value),$options);
                 }
-
+			
             }
 
             if (!$this->updated)
                 $this->msg.=' '._('Nothing to be updated')."\n";
             else {
-                //	  print_r($this->data);
+                	  //print_r($this->data);
 
                 $new_plain=$this->display('plain');
                 $new_xhtml=$this->display('xhtml');
@@ -1242,6 +1261,7 @@ class Telecom extends DB_Table {
                 }
 
             }
+
 
         }
 
@@ -1268,7 +1288,7 @@ class Telecom extends DB_Table {
 
         function update_field_switcher($field,$value,$options='') {
 
-              print "XXX $field,$value\n";
+              //print "XXX $field,$value\n";
             // sass();
             if ($field=='Telecom Plain Number')
                 $options.=' no history';
@@ -1497,9 +1517,7 @@ class Telecom extends DB_Table {
 
 
             if (($parent=='Contact' or  $parent=='Customer' ) and $type=='Mobile' and $principal_affected) {
-				print "\ntype".$type;
-				print "\naffected".$principal_affected;
-				print "\nparent".$parent;
+
 				
                 $mobiles=$parent_object->get_mobiles();
 				//print_r($mobiles);
@@ -1510,23 +1528,19 @@ class Telecom extends DB_Table {
             }
 			
 			elseif ($type=='Telephone' and $principal_affected){
-				print "\ntype".$type;
-				print "\naffected".$principal_affected;
-				print "\nparent".$parent;
+
 				
 				$telephones=$parent_object->get_telephones();
-				print_r($telephones);
+				//print_r($telephones);
 				foreach($telephones as $telephone) {
                     $parent_object->update_principal_telephone($telephone->id);
                     break;
                 }
 			}
 			elseif ($type=='FAX' and $principal_affected){
-				print "\ntype".$type;
-				print "\naffected".$principal_affected;
-				print "\nparent".$parent;
+
 				$faxes=$parent_object->get_faxes();
-				print_r($faxes);
+				//print_r($faxes);
 				foreach($faxes as $fax) {
                     $parent_object->update_principal_faxes($fax->id);
                     break;
@@ -1565,6 +1579,7 @@ class Telecom extends DB_Table {
             }
             return $keys;
         }
+
 
 
     }

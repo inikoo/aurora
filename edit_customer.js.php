@@ -507,7 +507,8 @@ function validate_customer_telephone(query){
     validate_general('customer','telephone',unescape(query));
     if(query==''){
         validate_scope_data.customer.telephone.validated=true;
-	    validate_scope('customer'); 
+	    validate_scope('customer');
+		if(Dom.get('Customer_Main_Telephone').getAttribute('ovalue'))
 	    Dom.get(validate_scope_data.customer.telephone.name+'_msg').innerHTML='<?php echo _('This operation will remove the telephone')?>';
     }
 }
@@ -517,6 +518,7 @@ function validate_customer_mobile(query){
     if(query==''){
         validate_scope_data.customer.mobile.validated=true;
 	    validate_scope('customer'); 
+		if(Dom.get('Customer_Main_Mobile').getAttribute('ovalue'))
 	    Dom.get(validate_scope_data.customer.mobile.name+'_msg').innerHTML='<?php echo _('This operation will remove the mobile')?>';
     }
 }
@@ -779,6 +781,7 @@ function validate_customer_fax(query){
     if(query==''){
         validate_scope_data.customer.fax.validated=true;
 	    validate_scope('customer'); 
+		if(Dom.get('Customer_Main_FAX').getAttribute('ovalue'))
 	    Dom.get(validate_scope_data.customer.fax.name+'_msg').innerHTML='<?php echo _('This operation will remove the fax')?>';
     }
 }

@@ -15,6 +15,8 @@
 include_once('common.php');
 include_once('class.Customer.php');
 include_once('class.Store.php');
+include_once('duplicate_warning.php');
+
 if (!$user->can_view('customers')) {
     header('Location: index.php');
     exit;
@@ -86,7 +88,8 @@ $css_files=array(
                'container.css',
                'table.css',
                'css/customer.css',
-                 'css/upload.css'
+                 'css/upload.css',
+				'css/edit.css'
            );
 $css_files[]='theme.css.php';
 $js_files=array(
@@ -133,6 +136,8 @@ $smarty->assign('js_files',$js_files);
 
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
+
+$smarty->assign('all_warning',get_all_warnings($customer));
 
 
 list($customer_type, $login_stat)=$customer->is_user_customer($customer_id);
