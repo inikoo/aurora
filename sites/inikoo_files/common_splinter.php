@@ -18,8 +18,8 @@ require_once "class.User.php";
 require_once "class.Site.php";
 require_once "class.LightCustomer.php";
 
-require_once "class.LightProduct.php";
-require_once "class.LightFamily.php";
+require_once "class.Product.php";
+require_once "class.Family.php";
 
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
@@ -323,7 +323,7 @@ function get_sk() {
 function show_product($code) {
 
     global $logged_in, $ecommerce_url, $username, $method,$store_key, $user;
-    $product=new LightProduct($code, $store_key);
+    $product=new Product('code', $code, $store_key);
 
     if (!$product->match)
         return;
@@ -393,7 +393,7 @@ function show_products($code,$options=false) {
         $code_list=explode(',', $code);
 
         foreach($code_list as $code) {
-            $product=new LightProduct($code, $store_key);
+            $product=new Product('code', $code, $store_key);
             if ($product->match) {
                 $data[]=$product->data;
 
@@ -421,7 +421,7 @@ function show_products($code,$options=false) {
         }
         */
 		
-        $product=new LightFamily($family_code, $store_key);
+        $product=new Family('code',$family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
             echo $product->get_product_in_family_with_order_form($data, $header, 'custom', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
@@ -438,7 +438,7 @@ function show_products($code,$options=false) {
 
 
 
-    $product=new LightFamily($code, $store_key);
+    $product=new Family('code', $code, $store_key);
     if (!$product->match)
         return;
 
@@ -447,7 +447,6 @@ function show_products($code,$options=false) {
 
 
     if ($logged_in) {
-		
         echo $product->get_product_list_with_order_form($header, 'custom', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
     } else {
         echo $product->get_product_list_no_price($header, $options);
