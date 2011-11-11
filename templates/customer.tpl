@@ -39,6 +39,17 @@
      
 <div  style="width:520px;float:left;padding-top:0px" >    
      <h1  style="padding-bottom:0px"><span  style="color:SteelBlue">{$id}</span> <span id="customer_name_heading" style="padding:2px 7px;border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')" ><span id="customer_name">{$customer->get('Customer Name')}</span> <img onMouseover="Dom.setStyle('customer_name_heading','border-color','#ccc')"  onMouseout="Dom.setStyle('customer_name_heading','border-color','#fff')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span></h1>
+
+<span id="waning_message" class="edit_td_alert">
+{foreach from=$all_warning item=item key=key}
+
+	{foreach from=$item item=msg key=msg_key}
+	{$msg.$msg_key}
+	{$msg}<br/>
+	{/foreach}
+{/foreach}
+</span>	 
+	 
 <table id="customer_data" border=0 style="width:100%">
     <tr>
         {if $customer->get('Customer Main Address Key')}
