@@ -91,6 +91,7 @@ data['Customer Address Line 2']=Dom.get('register_address_line2').value;
 data['Customer Address Town']=Dom.get('register_address_town').value;
 data['Customer Address Postal Code']=Dom.get('register_address_postcode').value;
 data['Customer Address Country 2 Alpha Code']=Dom.get('register_address_country_2alpha_code').value;
+data['Customer Store Key']=Dom.get('store_key').value;
 data['captcha_code']=Dom.get('captcha_code').value;
 
 

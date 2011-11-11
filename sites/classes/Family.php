@@ -29,13 +29,15 @@ class Family{
 	function get($form_type, $option){
 		global $ecommerce_url_multi, $username, $method;
 
-		$product=new LightFamily($this->code, $this->store_key);
+		//$product=new LightFamily($this->code, $this->store_key);
 		//$product=new LightFamily($this->code, 2);
 		//print_r($product);
-		$header=array('on'=>true);
-		$s = empty($secure) ? '' : $_SERVER["HTTPS"];
+		//$header=array('on'=>true);
+		//$s = empty($secure) ? '' : $_SERVER["HTTPS"];
 		
-		return $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
+		//return $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method);
+		
+		show_products($this->code);
 	}
 	//print $family->get('Full Order Form',$options);
 }

@@ -1,7 +1,7 @@
 <?php 
 //global $found_in['url'];
 global $found_in_label, $found_in_url;
-global $see_also, $header_title, $path, $header_image, $menubar, $customer_profile;
+global $see_also, $header_title, $store_slogan, $path, $header_image, $menubar, $customer_profile;
 
 //print $header_image;
 if($header_image)
@@ -83,7 +83,7 @@ $header=<<<EOD
 </div>
 <div id="menu_bar">$menubar</div>
 
-<div id="header_slogans"><span id="slogan2">Giftware sourced worldwide</span></div>
+<div id="header_slogans"><span id="slogan2">$store_slogan</span></div>
 <div id="div2">Please note this is a <br/> Trade Only Site </div>
 <a href="http://www.ancientwisdom.biz"><span id="aw_link"></span></a>
 $header_table
