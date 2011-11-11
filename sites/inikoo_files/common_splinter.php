@@ -420,7 +420,7 @@ function show_products($code,$options=false) {
                 $price=$val['Product Price'];
         }
         */
-		
+
         $product=new Family('code',$family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
@@ -456,7 +456,7 @@ function show_products($code,$options=false) {
 
 function set_parameters($data=false) {
 
-    global $found_in, $see_also, $footer_description, $header_title,$site, $width, $path, $header_image, $page_code, $customer_profile;
+    global $found_in, $see_also, $footer_description, $header_title, $store_slogan, $site, $width, $path, $header_image, $page_code, $customer_profile;
 	
 	
 	if(isset($data['customer_profile']))
@@ -527,6 +527,11 @@ function set_parameters($data=false) {
         $header_title=$page->data['Page Store Title'];
     }
 
+    if (isset($data['store_slogan'])) {
+        $store_slogan=$data['store_slogan'];
+    } else {
+        $store_slogan=$site->data['Site Slogan'];
+    }
 
     if (isset($data['footer_description']))
         $footer_description=$data['footer_description'];

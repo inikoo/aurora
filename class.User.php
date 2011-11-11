@@ -99,7 +99,9 @@ class User extends DB_Table {
 
 
     }
+	
     function create($data) {
+
         $this->new=false;
         $this->msg=_('Unknown Error(0)');
         $base_data=$this->base_data();
@@ -109,9 +111,11 @@ class User extends DB_Table {
                 $base_data[$key]=_trim($value);
         }
 
-   if ($base_data['User Themes']=='')
-            $base_data['User Themes']=1;
-
+		if ($base_data['User Theme Key']=='')
+			$base_data['User Theme Key']=0;
+			
+		if ($base_data['User Theme Background Key']=='')
+			$base_data['User Theme Background Key']=0;
 
         if ($base_data['User Created']=='')
             $base_data['User Created']=date("Y-m-d H:i:s");
@@ -124,6 +128,7 @@ class User extends DB_Table {
             $this->msg=_('Handle to short');
             return;
         }
+
         $sql="select count(*) as numh  from `User Dimension` where `User Type`=".prepare_mysql($base_data['User Type'])." and `User Handle`=".prepare_mysql($base_data['User Handle']);
         $result = mysql_query($sql) or die('Query failed:x ' . mysql_error());
         if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
