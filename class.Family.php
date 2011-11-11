@@ -291,7 +291,7 @@ class Family extends DB_Table {
         case('code'):
         case('code_store'):
             $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Store Key`=%d ",prepare_mysql($tag),$tag2);
-
+			//print $sql;
             break;
         }
 
