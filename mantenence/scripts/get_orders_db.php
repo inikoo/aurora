@@ -14,6 +14,7 @@ include_once('../../class.TimeSeries.php');
 include_once('../../class.CurrencyExchange.php');
 include_once('../../class.TaxCategory.php');
 include_once('../../class.PartLocation.php');
+include_once('../../class.Deal.php');
 
 include_once('common_read_orders_functions.php');
 
@@ -119,11 +120,11 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
-//$sql="select * from  orders_data.orders where filename  like '%/19394.xls' order by filename";
+//$sql="select * from  orders_data.orders where filename  like '%/137073.xls' order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/122689.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/137117.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -136,6 +137,8 @@ $contador=0;
 //print $sql;
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+    $discounts_with_order_as_term=array();
 
     $customer_key_from_order_data=$row2['customer_id'];
     $customer_key_from_excel_order=0 ;
@@ -288,6 +291,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $date2=$date_index;
         else
             $date2=$date_order;
+
+        if ($header_data['gold']=='Gold Reward') {
+            $_deal=new Deal('code','UK.GR');
+            if ($_deal->id) {
+                $discounts_with_order_as_term[]=$_deal->id;
+            }
+        }
 
         $header_data['Order Main Source Type']='Unknown';
         $header_data['Delivery Note Dispatch Method']='Unknown';
@@ -482,9 +492,25 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_credit_value=0;
         $estimated_w=0;
         //echo "Memory: ".memory_get_usage(true) . "\n";
+
+
+
+
         foreach($transactions as $transaction) {
             // print_r($transaction);
             $transaction['code']=_trim($transaction['code']);
+
+
+            if (preg_match('/Bonus-PARTY2011/i',$transaction['code'])) {
+
+
+                $_deal=new Deal('code','UK.P2011');
+                if ($_deal->id) {
+                    $discounts_with_order_as_term[]=$_deal->id;
+                }
+                continue;
+            }
+
 
             if (preg_match('/credit|refund/i',$transaction['code'])) {
 
@@ -526,10 +552,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 }
 
                 $credits[]=array(
-                               'parent_key'=>$_parent_key
-                                            ,'value'=>$credit_value
-                                                     ,'description'=>$credit_description
-                                                                    ,'parent_date'=>$_parent_order_date
+                               'parent_key'=>$_parent_key,
+                               'value'=>$credit_value,
+                               'description'=>$credit_description,
+                               'parent_date'=>$_parent_order_date
                            );
 
 
@@ -867,11 +893,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $transaction['units']=1;
                 $w=1.75;
                 $supplier_product_cost=;
-            
+
             }
             */
-            
-            
+
+
 
             if (preg_match('/^bag-02$/i',$transaction['code'])  and  $transaction['units']==30 ) {
                 $transaction['order']=$transaction['order']*30/25;
@@ -1180,7 +1206,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-            
+
 
 
             $to_update['parts'][$part->sku]=1;
@@ -1218,8 +1244,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         //echo "Memory: ".memory_get_usage(true) . "\n";
 
+//print_r($header_data)
 
-       
         $data['Order For']='Customer';
 
 
@@ -1495,21 +1521,21 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         case 1://Delivery Note
             print "DN";
             $data['Order Type']='Order';
-            
-            
-            
-            
+
+
+
+
             $order=create_order($data);
 
             if (strtotime('today -1 month')>strtotime($date_order)) {
                 $order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +1 month")));
             }
             if (strtotime('today -6 month')>strtotime($date_order)) {
-                  
-            
+
+
                 $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
-                
-               // print $order->msg;//216249
+
+                // print $order->msg;//216249
             }
 
 
@@ -1575,6 +1601,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $store->update_up_today_sales();
         $store->update_last_period_sales();
         $store->update_interval_sales();
+
 
         print "\n";
         $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;

@@ -2080,11 +2080,11 @@ function list_campaigns_for_edition() {
     $filter_msg='';
     $wheref='';
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and  `Campaign Description` like '".addslashes($f_value)."%'";
+        $wheref.=" and  `Deal Description` like '".addslashes($f_value)."%'";
     elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Campaign Name` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
 
-    $sql="select count(*) as total from `Campaign Dimension`   $where $wheref";
+    $sql="select count(*) as total from `Deal Dimension`   $where $wheref";
     //  print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2096,7 +2096,7 @@ function list_campaigns_for_edition() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total `Campaign Dimension`   $where ";
+        $sql="select count(*) as total `Deal Dimension`   $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2141,14 +2141,14 @@ function list_campaigns_for_edition() {
     $_order=$order;
 
     if ($order=='name')
-        $order='`Campaign Name`';
+        $order='`Deal Name`';
     elseif($order=='description')
-    $order='`Campaign Description`';
+    $order='`Deal Description`';
     else
-        $order='`Campaign Name`';
+        $order='`Deal Name`';
 
 
-    $sql="select *  from `Campaign Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select *  from `Deal Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
 
@@ -2156,16 +2156,16 @@ function list_campaigns_for_edition() {
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-        $sql=sprintf("select * from `Campaign Deal Schema`  where `Campaign Key`=%d  ",$row['Campaign Key']);
+        $sql=sprintf("select * from `Campaign Deal Schema`  where `Deal Key`=%d  ",$row['Deal Key']);
         $res2 = mysql_query($sql);
         $deals='<ul style="padding:10px 20px">';
         while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
-            $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Name']);
+            $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Metadata Name']);
         }
         $deals.='</ul>';
         $adata[]=array(
-                     'name'=>$row['Campaign Name'],
-                     'description'=>$row['Campaign Description'].$deals
+                     'name'=>$row['Deal Name'],
+                     'description'=>$row['Deal Description'].$deals
 
 
                  );
@@ -2273,13 +2273,13 @@ function list_deals_for_edition() {
     $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
     if ($parent=='store')
-        $where=sprintf("where  D.`Store Key`=%d and D.`Deal Trigger`='Order'    ",$parent_id);
+        $where=sprintf("where  D.`Store Key`=%d and D.`Deal Metadata Trigger`='Order'    ",$parent_id);
     elseif($parent=='department')
-    $where=sprintf("where    D.`Deal Trigger`='Department' and  D.`Deal Trigger Key`=%d   ",$parent_id);
+    $where=sprintf("where    D.`Deal Metadata Trigger`='Department' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
     elseif($parent=='family')
-    $where=sprintf("where    D.`Deal Trigger`='Family' and  D.`Deal Trigger Key`=%d   ",$parent_id);
+    $where=sprintf("where    D.`Deal Metadata Trigger`='Family' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
     elseif($parent=='product')
-    $where=sprintf("where    D.`Deal Trigger`='Product' and  D.`Deal Trigger Key`=%d   ",$parent_id);
+    $where=sprintf("where    D.`Deal Metadata Trigger`='Product' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
     else
         $where=sprintf("where true ");;
 
@@ -2289,12 +2289,12 @@ function list_deals_for_edition() {
     $wheref='';
 
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
 
     elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Deal Metadata Name` like '".addslashes($f_value)."%'";
 
-    $sql="select count(*) as total from `Deal Dimension` D   $where $wheref";
+    $sql="select count(*) as total from `Deal Metadata Dimension` D   $where $wheref";
     //  print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2306,7 +2306,7 @@ function list_deals_for_edition() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total `Deal Dimension`  D  $where ";
+        $sql="select count(*) as total `Deal Metadata Dimension`  D  $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2351,22 +2351,22 @@ function list_deals_for_edition() {
     $_order=$order;
 
     if ($order=='name')
-        $order='D.`Deal Name`';
+        $order='D.`Deal Metadata Name`';
     elseif($order=='description')
-    $order='`Deal Terms Description`,`Deal Allowance Description`';
+    $order='`Deal Metadata Terms Description`,`Deal Metadata Allowance Description`';
     else
-        $order='D.`Deal Name`';
+        $order='D.`Deal Metadata Name`';
 
 
-    $sql="select D.`Deal Trigger`,`Deal Key`,D.`Deal Name`,`Campaign Deal Schema Key`,`Campaign Name`,`Campaign Deal Schema Key`  from `Deal Dimension` D left join `Campaign Deal Schema`CDS  on (CDS.`Deal Schema Key`=`Campaign Deal Schema Key`) left join `Campaign Dimension`C  on (CDS.`Campaign Key`=C.`Campaign Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select D.`Deal Metadata Trigger`,`Deal Metadata Key`,D.`Deal Metadata Name`,`Campaign Deal Schema Key`,`Deal Name`,`Campaign Deal Schema Key`  from `Deal Metadata Dimension` D left join `Campaign Deal Schema`CDS  on (CDS.`Deal Schema Key`=`Campaign Deal Schema Key`) left join `Deal Dimension`C  on (CDS.`Deal Key`=C.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
     // print $sql;
     $res = mysql_query($sql);
     $total=mysql_num_rows($res);
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+        // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
-        $deal=new Deal($row['Deal Key']);
+        $deal=new DealMetadata($row['Deal Metadata Key']);
 
         // print_r($deal->terms_input_form());
 
@@ -2379,17 +2379,17 @@ function list_deals_for_edition() {
                                       <span id="deal_allowance_save%d" style="visibility:hidden" class="state_details" onClick="deal_allowance_save(%d)">'._('Save').'</span>
                                       <span id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_allowance_reset(%d)">'._('Reset').'</span></td>'
                                       ,$form_data['Label']
-                                      ,$row['Deal Key']
-                                      ,$row['Deal Key']
+                                      ,$row['Deal Metadata Key']
+                                      ,$row['Deal Metadata Key']
                                       ,($form_data['Lock Value']?'READONLY':'')
                                       ,$form_data['Value Class']
                                       ,$form_data['Value']
                                       ,$form_data['Value']
                                       ,$form_data['Lock Label']
-                                      ,$row['Deal Key']
-                                      ,$row['Deal Key']
-                                      ,$row['Deal Key']
-                                      ,$row['Deal Key']
+                                      ,$row['Deal Metadata Key']
+                                      ,$row['Deal Metadata Key']
+                                      ,$row['Deal Metadata Key']
+                                      ,$row['Deal Metadata Key']
 
 
                                      );
@@ -2426,17 +2426,17 @@ function list_deals_for_edition() {
                 $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
                                     <td style="width:15em"  style="text-align:left"><input id="deal_term%d" onKeyUp="deal_term_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s <span id="deal_term_save%d" style="visibility:hidden" class="state_details" onClick="deal_term_save(%d)">'._('Save').'</span> <span id="deal_term_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_term_reset(%d)">'._('Reset').'</span></td>'
                                     ,$form_data['Label']
-                                    ,$row['Deal Key']
-                                    ,$row['Deal Key']
+                                    ,$row['Deal Metadata Key']
+                                    ,$row['Deal Metadata Key']
                                     ,($form_data['Lock Value']?'READONLY':'')
                                     ,$form_data['Value Class']
                                     ,$form_data['Value']
                                     ,$form_data['Value']
                                     ,$form_data['Lock Label']
-                                    ,$row['Deal Key']
-                                    ,$row['Deal Key']
-                                    ,$row['Deal Key']
-                                    ,$row['Deal Key']
+                                    ,$row['Deal Metadata Key']
+                                    ,$row['Deal Metadata Key']
+                                    ,$row['Deal Metadata Key']
+                                    ,$row['Deal Metadata Key']
                                    );
 
             }
@@ -2448,9 +2448,9 @@ function list_deals_for_edition() {
         $edit='<table style="margin:10px"><tr style="border:none">'.$input_allowance.'</tr><tr style="border:none">'.$input_term.'</tr></table>';
 
 
-        $name=$row['Deal Name'];
+        $name=$row['Deal Metadata Name'];
         if ($row['Campaign Deal Schema Key']) {
-            $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Campaign Name']);
+            $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
         }
         $adata[]=array(
                      'status'=>$deal->get_xhtml_status(),
@@ -2642,7 +2642,7 @@ function list_parts_in_product() {
         $total=mysql_num_rows($res);
         $adata=array();
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-            // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+            // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
 
             $adata[]=array(
@@ -2848,7 +2848,7 @@ function list_products_in_part() {
         $total=mysql_num_rows($res);
         $adata=array();
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-            // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+            // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
             $relation=$row['Parts Per Product'].' &rarr; 1';
             $adata[]=array(
@@ -3054,7 +3054,7 @@ function list_supplier_products_in_part() {
         $total=mysql_num_rows($res);
         $adata=array();
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-            // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+            // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
             if ($row['Supplier Product Part In Use']=='Yes') {
                 $available_state='Available';

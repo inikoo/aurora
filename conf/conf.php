@@ -1252,9 +1252,59 @@ $default_state=array(
                                                    )
                                        ),
 
-                   'campaigns'=>array(
-                                   'view'=>'campaigns',
+                   'store_offers'=>array(
+                                   'view'=>'offers',
                                    'campaigns'=>array(
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'',
+                                                   'f_show'=>false,
+                                                   'elements'=>array()
+                                               ),
+                                                'offers'=>array(
+                                                   'order'=>'code',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'code',
+                                                   'f_value'=>'',
+                                                   'f_show'=>false,
+                                                   'elements'=>array('Order'=>1,'Department'=>0,'Family'=>0,'Product'=>0)
+                                               )
+                                               
+                                            
+                               ),
+                               
+                                 'deal'=>array(
+                                   'view'=>'details',
+                                   'campaigns'=>array(
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'',
+                                                   'f_show'=>false,
+                                                   'elements'=>array()
+                                               ),
+                                                'orders'=>array(
+                                                   'order'=>'date',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'public_id',
+                                                   'f_value'=>'',
+                                                   'f_show'=>false,
+                                                   'elements'=>array()
+                                               ),
+                                                'customers'=>array(
                                                    'order'=>'name',
                                                    'order_dir'=>'',
                                                    'sf'=>0,
@@ -1266,6 +1316,7 @@ $default_state=array(
                                                    'elements'=>array()
                                                )
                                ),
+                               
 
                    'warehouse'=>array(
                                    'id'=>1,
@@ -3091,7 +3142,7 @@ $default_state=array(
                                               'sf'=>0,
                                               'nr'=>15,
                                               'where'=>'where true',
-                                              'f_field'=>'id',
+                                              'f_field'=>'public_id',
                                               'f_value'=>'','f_show'=>false,
                                               'from'=>'',
                                               'to'=>''

@@ -36,14 +36,14 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 
 
-//$sql=sprintf("select * from `Email Campaign Dimension` where `Email Campaign Status` in ('Ready') and `Email Campaign Start Overdue Date`<%s ",prepare_mysql(date('Y-m-d H:i:s')));
-$sql=sprintf("select * from `Email Campaign Dimension` where `Email Campaign Status` ");
+//$sql=sprintf("select * from `Email Deal Dimension` where `Email Campaign Status` in ('Ready') and `Email Campaign Start Overdue Date`<%s ",prepare_mysql(date('Y-m-d H:i:s')));
+$sql=sprintf("select * from `Email Deal Dimension` where `Email Campaign Status` ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-    $email_campaign=new EmailCampaign($row['Email Campaign Key']);
+    $email_campaign=new EmailCampaign($row['Email Deal Key']);
     if (!$email_campaign->id)continue;
     // $email_campaign->update(array('Email Campaign Status'=>'Sending','Email Campaign Start Overdue Date'=>date('Y-m-d H:i:s',strtotime('now +2 hours +00:00'))));
-    $sql=sprintf("select * from `Email Campaign Mailing List`  where `Email Campaign Key`=%d  and `Email Send Key` is null   ",$email_campaign->id);
+    $sql=sprintf("select * from `Email Campaign Mailing List`  where `Email Deal Key`=%d  and `Email Send Key` is null   ",$email_campaign->id);
 
     $res2=mysql_query($sql);
     while ($row2=mysql_fetch_assoc($res2)) {

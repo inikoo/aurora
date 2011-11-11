@@ -1,7 +1,7 @@
 <?php
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
-include_once('../../class.Campaign.php');
+include_once('../../class.Deal.php');
 include_once('../../class.Charge.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
@@ -88,9 +88,9 @@ $count=0;
 $store_key=1;
 $create_cat=false;
 
-$gold_camp=new Campaign('code','UK.GR');
-$vol_camp=new Campaign('code','UK.Vol');
-$bogof_camp=new Campaign('code','UK.BOGOF');
+$gold_camp=new Deal('code','UK.GR');
+$vol_camp=new Deal('code','UK.Vol');
+$bogof_camp=new Deal('code','UK.BOGOF');
 $fam_promo=$fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
 

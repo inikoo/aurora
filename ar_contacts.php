@@ -311,7 +311,7 @@ function list_customer_orders() {
 
     $wheref='';
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
     elseif($f_field=='code' and $f_value!='') {
         switch ($type) {
         case('Family'):
@@ -611,7 +611,7 @@ function list_assets_dispatched_to_customer() {
 
     $wheref='';
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
     elseif($f_field=='code' and $f_value!='') {
         switch ($type) {
         case('Family'):
@@ -866,7 +866,7 @@ function list_assets_in_process_customer() {
 
     $wheref='';
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
     elseif($f_field=='code' and $f_value!='') {
         switch ($type) {
         case('Family'):
@@ -2286,9 +2286,12 @@ function list_customers() {
 
 ///print_r($dataid);//
 
+  
+
 
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                        'state'=>200,
                                       'data'=>$adata,
                                       'rtext'=>$rtext,
                                       'rtext_rpp'=>$rtext_rpp,
@@ -2297,12 +2300,7 @@ function list_customers() {
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
                                       'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-
-                                      'records_perpage'=>$number_results,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                                      
                                      )
                    );
     echo json_encode($response);

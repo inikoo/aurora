@@ -130,7 +130,7 @@ function email_campaigns() {
 
 
     if (($f_field=='name' ) and $f_value!='')
-        $wheref.=" and  `Email Campaign Name ` like '%".addslashes($f_value)."%'";
+        $wheref.=" and  `Email Deal Name ` like '%".addslashes($f_value)."%'";
  
 
 
@@ -139,7 +139,7 @@ function email_campaigns() {
 
 
 
-    $sql="select count(*) as total from `Email Campaign Dimension`  $where $wheref ";
+    $sql="select count(*) as total from `Email Deal Dimension`  $where $wheref ";
 
 
     $result=mysql_query($sql);
@@ -151,7 +151,7 @@ function email_campaigns() {
         $total_records=$total;
     } else {
 
-        $sql="select count(*) as total from `Email Campaign Dimension`  $where  ";
+        $sql="select count(*) as total from `Email Deal Dimension`  $where  ";
       // print $sql;
        $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -196,7 +196,7 @@ function email_campaigns() {
       $order='`Email Campaign Last Updated Date`';
       $order_direction=' desc';
     }
-    $sql="select `Email Campaign Key`,`Email Campaign Name`,`Email Campaign Last Updated Date`,`Store Code` ,`Store Key` from `Email Campaign Dimension` left join `Store Dimension` S on (`Store Key`=`Email Campaign Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select `Email Deal Key`,`Email Deal Name`,`Email Campaign Last Updated Date`,`Store Code` ,`Store Key` from `Email Deal Dimension` left join `Store Dimension` S on (`Store Key`=`Email Campaign Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
     $data=array();
 
@@ -204,7 +204,7 @@ function email_campaigns() {
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
-$name=sprintf('<a href="email_campaign.php?id=%d">%s</a>',$row['Email Campaign Key'],$row['Email Campaign Name']);
+$name=sprintf('<a href="email_campaign.php?id=%d">%s</a>',$row['Email Deal Key'],$row['Email Deal Name']);
 $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
         $data[]=array(
@@ -261,7 +261,7 @@ function is_email_campaign_name($data) {
 
     $store_key=$data['store_key'];
 
-    $sql=sprintf("select `Email Campaign Key`,`Email Campaign Objective`,`Email Campaign Name` from `Email Campaign Dimension` where  `Email Campaign Store Key`=%d and  `Email Campaign Name`=%s  "
+    $sql=sprintf("select `Email Deal Key`,`Email Campaign Objective`,`Email Deal Name` from `Email Deal Dimension` where  `Email Campaign Store Key`=%d and  `Email Deal Name`=%s  "
                  ,$store_key
                  ,prepare_mysql($query)
                 );
@@ -269,8 +269,8 @@ function is_email_campaign_name($data) {
 
     if ($data=mysql_fetch_array($res)) {
         $msg=sprintf('Another Campaign (<a href="email_campaign.php?id=%d">%s</a>) already has this name'
-                     ,$data['Email Campaign Key']
-                     ,$data['Email Campaign Name']
+                     ,$data['Email Deal Key']
+                     ,$data['Email Deal Name']
                     );
         $response= array(
                        'state'=>200,
@@ -294,7 +294,7 @@ function preview_email_campaign($data){
 include_once('class.EmailCampaign.php');
 $email_campaign= new EmailCampaign($data['email_campaign_key']);
   if (!$email_campaign->id) {
-        $response= array('state'=>400,'msg'=>'Invalid Email Campaign Key','key'=>$data['okey']);
+        $response= array('state'=>400,'msg'=>'Invalid Email Deal Key','key'=>$data['okey']);
         echo json_encode($response);
         exit;
     }

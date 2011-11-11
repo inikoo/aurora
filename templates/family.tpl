@@ -3,9 +3,18 @@
 <div style="padding:0 20px">
  <input type="hidden" id="family_key" value="{$family->id}"/>
  {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
+<div class="branch"> 
+  <span   >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
 </div>
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:right">
+        <button  onclick="window.location='edit_family.php?id={$family->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Family{/t}</button>
+    </div>
+    <div class="buttons" style="float:left">
+         {if $modify}<button  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>{/if}
+    </div>
+    <div style="clear:both"></div>
+</div> 
 
 <h1 style="width:600px">{t}Family{/t}: {$family->get('Product Family Name')} ({$family->get('Product Family Code')})</h1>
 </div>

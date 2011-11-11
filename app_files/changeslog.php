@@ -4907,6 +4907,8 @@ ADD `Supplier Product 1 Month Acc Parts Broken` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Month Acc Parts Returned` FLOAT NOT NULL DEFAULT '0',
 ADD `Supplier Product 1 Month Acc Parts Margin` FLOAT NOT NULL DEFAULT '0';
 
+//From Here inikko/aw
+
 ALTER TABLE `Email Send Dimension` ADD `Email Send Creation Date` DATETIME NOT NULL AFTER `Email Key` ;
 ALTER TABLE `Email Send Dimension` CHANGE `Email Send Recipient Type` `Email Send Recipient Type` ENUM( 'Customer', 'Supplier', 'User', 'Other', 'Staff' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
 ALTER TABLE `Email Send Dimension` CHANGE `Email Send Recipient Key` `Email Send Recipient Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
@@ -4925,12 +4927,6 @@ ALTER TABLE `Store Dimension` ADD `Store Active Email Reminders` MEDIUMINT UNSIG
 ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Type` `Email Campaign Type` ENUM( 'Newsletter', 'Marketing', 'Reminder' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Marketing';
 
 ALTER TABLE `Email Campaign Scope Bridge` CHANGE `Email Campaign Scope` `Email Campaign Scope` ENUM( 'Product', 'Family', 'Department', 'Store', 'Campaign', 'Deal', 'Store Page', 'External Link' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
-
-CREATE TABLE `Email Link Dimension` (
-`Email Link Dimension Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ,
-`Email Link URL` VARCHAR( 255 ) NOT NULL ,
-PRIMARY KEY ( `Email Link Dimension Key` )
-) ENGINE = MYISAM;
 
 
 ALTER TABLE `Email Campaign Scope Bridge` CHANGE `Email Campaign Scope Linked` `Email Campaign Scope Link Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,CHANGE `Email Campaign Scope Visited` `Email Campaign Scope Link Clicks` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
@@ -4971,36 +4967,13 @@ PRIMARY KEY ( `Email Campaign Objetive Key` , `Email Link Key` )
 ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Link Clicks` `Email Campaign Objetive Links Clicks` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Email Campaign Objetive Dimension` ADD `Email Campaign Objetive Term` ENUM( 'Order', 'Buy', 'Visit' ) NOT NULL , ADD `Email Campaign Objetive Term Metadata` VARCHAR( 1028 ) NOT NULL ;
 ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Term` `Email Campaign Objetive Term` ENUM( 'Order', 'Buy', 'Visit', 'Use' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
-ALTER TABLE `Email Content Dimension` CHANGE `Email Content Template Key` `Email Content Template Type` ENUM( 'Basic', 'Left Column', 'Right Column', 'Postcard' ) NOT NULL DEFAULT 'Basic'
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Template Key` `Email Content Template Type` ENUM( 'Basic', 'Left Column', 'Right Column', 'Postcard' ) NOT NULL DEFAULT 'Basic';
 
-CREATE TABLE `Email Template Color Scheme Dimension` (
-`Email Template Color Scheme Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`Email Template Color Scheme Name` VARCHAR( 256 ) NOT NULL ,
-`Background Body` VARCHAR( 6 ) NOT NULL ,
-`Background Header` VARCHAR( 6 ) NOT NULL ,
-`Background Container` VARCHAR( 6 ) NOT NULL ,
-`Background Footer` VARCHAR( 6 ) NOT NULL
-) ENGINE = MYISAM ;
 
-ALTER TABLE `Email Template Color Scheme Dimension` ADD `Text Header` VARCHAR( 6 ) NOT NULL DEFAULT '000000',
-ADD `Text Container` VARCHAR( 6 ) NOT NULL DEFAULT '000000',
-ADD `Text Footer` VARCHAR( 6 ) NOT NULL DEFAULT 'FFFFFF',
-ADD `Link Header` VARCHAR( 6 ) NOT NULL DEFAULT 'FFFFFF',
-ADD `Link Container` VARCHAR( 6 ) NOT NULL DEFAULT '000000',
-ADD `Link Footer` VARCHAR( 6 ) NOT NULL DEFAULT 'FFFFFF';
 
-ALTER TABLE `Email Template Color Scheme Dimension` CHANGE `Background Body` `Background Body` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FFFFFF',
-CHANGE `Background Header` `Background Header` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '000000',
-CHANGE `Background Container` `Background Container` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FFFFFF',
-CHANGE `Background Footer` `Background Footer` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '000000';
-ALTER TABLE `Email Template Color Scheme Dimension` ADD `H1` VARCHAR( 6 ) NOT NULL DEFAULT '000000',ADD `H2` VARCHAR( 6 ) NOT NULL DEFAULT '000000';
 ALTER TABLE `Email Content Dimension` ADD `Email Content Color Scheme Key` MEDIUMINT NOT NULL DEFAULT '1' AFTER `Email Content Template Type` ;
 ALTER TABLE `Email Content Dimension` CHANGE `Email Content Header Image Source` `Email Content Header Image Source` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
-ALTER TABLE `Email Template Color Scheme Dimension` ADD `Kbase Key` MEDIUMINT NULL DEFAULT NULL ,ADD `Kbase Modifed` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
-ALTER TABLE `Email Template Color Scheme Dimension` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Template Color Scheme Name` ,ADD INDEX ( `Store Key` ); 
-ALTER TABLE `Email Template Color Scheme Dimension` CHANGE `Text Header` `Text Header` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FFFFFF';
 ALTER TABLE `Email Content Paragraph Dimension` ADD `Paragraph Original Type` ENUM( 'Main', 'Side' ) NOT NULL DEFAULT 'Main' AFTER `Paragraph Type` ;
-ALTER TABLE `Email Template Color Scheme Dimension` ADD `Header Slim Image Source` VARCHAR( 256 ) NOT NULL AFTER `Header Image Source` ;
 
 ALTER TABLE `Email Content Dimension` ADD `Email Content Color Scheme Historic Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Email Content Color Scheme Key` ;
 ALTER TABLE `Email Template Header Image Dimension` CHANGE `Email Template Header Image Name` `Email Template Header Image Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
@@ -5019,33 +4992,112 @@ CREATE TABLE `Email Template Postcard Dimension` (
 ) ENGINE = MYISAM ;
 
 
-ALTER TABLE `Email Template Color Scheme Dimension` ADD `Postcard Image Source` VARCHAR( 256 ) NOT NULL AFTER `Header Slim Image Source` ;
-ALTER TABLE `Email Content Dimension` ADD `Email Content Template Postcard Key` MEDIUMINT UNSIGNED NOT NULL 
+ALTER TABLE `Email Content Dimension` ADD `Email Content Template Postcard Key` MEDIUMINT UNSIGNED NOT NULL ;
 ALTER TABLE `Email Campaign Dimension` DROP `Email Campaign Objective` ;
 ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Content Type` `Email Campaign Content Type` ENUM( 'HTML', 'Multi HTML', 'Plain', 'HTML Template', 'Multi Plain', 'Multi HTML Template', 'Multi Mixed', 'Unknown' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Attachment Bridge` CHANGE `Attachment Key` `Attachment Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
 ALTER TABLE `Attachment Bridge` CHANGE `Subject Key` `Subject Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
-ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes'
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 ALTER TABLE `User Dimension` CHANGE `User Themes` `User Theme Key` SMALLINT UNSIGNED NULL DEFAULT NULL ,CHANGE `User Theme Background Status` `User Theme Background Key` SMALLINT UNSIGNED NULL DEFAULT NULL ;
-ALTER TABLE `Theme Dimension` CHANGE `Theme Css` `Theme CSS` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
-ALTER TABLE `Theme Dimension` CHANGE `Theme CSS` `Theme CSS` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
-ALTER TABLE `Theme Dimension` CHANGE `Theme CSS` `Theme CSS Buttons` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
-ALTER TABLE `Theme Dimension` ADD `Theme CSS Header` TEXT NOT NULL ,ADD `Theme CSS Tables` TEXT NOT NULL ;
 
-CREATE TABLE `Theme Background Dimension` (
-`Theme Background Key` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`Theme Background Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`Header CSS` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`Background CSS` TEXT NOT NULL ,
-`Footer CSS` TEXT NOT NULL
-) ENGINE = MYISAM ;
 
-ALTER TABLE `Theme Dimension` ADD `Theme CSS Top Navigation` TEXT NOT NULL ;
-CREATE TABLE `dw`.`Theme Background Bridge` (
-`Theme Key` MEDIUMINT NOT NULL ,
-`Theme Background Key` MEDIUMINT NOT NULL ,
-PRIMARY KEY ( `Theme Key` , `Theme Background Key` )
+
+RENAME TABLE `Deal Dimension` TO `Deal Metadata Dimension` ;
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Key` `Deal Metadata Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+
+ALTER TABLE `Deal Metadata Dimension` 
+CHANGE `Deal Metadata Key` `Deal Metadata Key` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+CHANGE `Deal Status` `Deal Metadata Status` ENUM('Suspended','Active','Finish','Waiting') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Active', 
+CHANGE `Deal Name` `Deal Metadata Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, 
+CHANGE `Store Key` `Store Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Deal Trigger` `Deal Metadata Trigger` ENUM('Family','Product','Order') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, 
+CHANGE `Deal Trigger Key` `Deal Metadata Trigger Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL, 
+CHANGE `Campaign Deal Schema Key` `Campaign Deal Schema Key` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0';
+
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Terms Type` `Deal Metadata Terms Type` ENUM( 'Order Total Net Amount AND Order Number', 'Order Items Net Amount AND Shipping Country', 'Order Interval', 'Product Quantity Ordered', 'Family Quantity Ordered', 'Total Amount', 'Order Number', 'Total Amount AND Shipping Country', 'Total Amount AND Order Number' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Terms Description` `Deal Metadata Terms Description` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Deal Terms Lock` `Deal Metadata Terms Lock` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No',
+CHANGE `Deal Terms Metadata` `Deal Metadata Terms` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Deal Allowance Type` `Deal Metadata Allowance Type` ENUM( 'Percentage Off', 'Get Free', 'Get Same Free' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Deal Allowance Target` `Deal Metadata Allowance Target` ENUM( 'Product', 'Order', 'Shipping', 'Charge', 'Family', 'Department' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Allowance Target Key` `Deal Metadata Allowance Target Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ,
+CHANGE `Deal Allowance Description` `Deal Metadata Allowance Description` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Deal Allowance Metadata` `Deal Metadata Allowance` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Deal Allowance Lock` `Deal Metadata Allowance Lock` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No',
+CHANGE `Deal Replace` `Deal Metadata Replace Type` ENUM( 'same target', 'same tigger', 'same target and tigger', 'deal', 'none' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'none';
+
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Replace Metadata` `Deal Metadata Replace` VARCHAR( 4096 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Deal Begin Date` `Deal Metadata Begin Date` DATETIME NULL DEFAULT NULL ,
+CHANGE `Deal Expiration Date` `Deal Metadata Expiration Date` DATETIME NULL DEFAULT NULL ;
+RENAME TABLE `Campaign Dimension` TO `Deal Dimension` ;
+
+ALTER TABLE `Deal Dimension` 
+CHANGE `Campaign Key` `Deal Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ,
+CHANGE `Campaign Code` `Deal Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Campaign Name` `Deal Name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Campaign Description` `Deal Description` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+
+ALTER TABLE `Deal Dimension` CHANGE `Campaign Deal Terms Type` `Deal Terms Type` ENUM( 'Order Total Net Amount AND Order Number', 'Order Items Net Amount AND Shipping Country', 'Order Interval', 'Product Quantity Ordered', 'Family Quantity Ordered', 'Total Amount', 'Order Number', 'Total Amount AND Shipping Country', 'Total Amount AND Order Number' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+ALTER TABLE `Deal Dimension` 
+CHANGE `Campaign Deal Terms Description` `Deal Terms Description` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Campaign Deal Terms Lock` `Deal Terms Lock` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No',
+CHANGE `Campaign Deal Terms Metadata` `Deal Terms Metadata` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Campaign Begin Date` `Deal Begin Date` DATETIME NULL DEFAULT NULL ,
+CHANGE `Campaign Expiration Date` `Deal Expiration Date` DATETIME NULL DEFAULT NULL ;
+update `User Dimension` set `User Theme Key`=1,`User Theme Background Key`=1;
+ALTER TABLE `Deal Metadata Dimension` ADD `Deal Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Deal Metadata Key` ,ADD INDEX ( `Deal Key` ) ;
+ALTER TABLE `Deal Dimension` ADD `Deal Terms Object` ENUM( 'Order', 'Department', 'Family', 'Product' ) NOT NULL AFTER `Deal Description` ,ADD INDEX ( `Deal Terms Object` ) ;
+
+// RUN fix_deals.php
+
+ALTER TABLE `Deal Dimension` ADD `Deal Number Elegible Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',ADD `Deal Number Used Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Dimension` ADD `Deal Number Elegible Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',ADD `Deal Number Used Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Dimension` CHANGE `Deal Number Elegible Orders` `Deal Total Acc Elegible Orders` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
+CHANGE `Deal Number Used Orders` `Deal Total Acc Used Orders` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
+CHANGE `Deal Number Elegible Customers` `Deal Total Acc Elegible Customers` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
+CHANGE `Deal Number Used Customers` `Deal Total Acc Used Customers` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Total Acc Used` MEDIUMINT NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Dimension` CHANGE `Deal Total Acc Used Customers` `Deal Total Acc Customers` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Metadata Total Acc Used` `Deal Metadata Total Acc Used Orders` MEDIUMINT( 9 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Total Acc Used Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Metadata Total Acc Used Orders` `Deal Metadata Total Acc Used Orders` MEDIUMINT( 9 ) UNSIGNED NOT NULL DEFAULT '0';
+
+CREATE TABLE `Order Deal Bridge` (
+`Order Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Deal Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Elegible` ENUM( 'Yes', 'No' ) NOT NULL ,
+`Used` ENUM( 'Yes', 'No' ) NOT NULL
 ) ENGINE = MYISAM ;
+ALTER TABLE `Order Deal Bridge` ADD INDEX ( `Order Key` ) ;
+ALTER TABLE `Order Deal Bridge` ADD INDEX ( `Deal Key` ) ;
+ALTER TABLE `Order Deal Bridge` ADD INDEX ( `Elegible` ); 
+ALTER TABLE `Order Deal Bridge` ADD INDEX ( `Used` ) ;
+ALTER TABLE `Order Deal Bridge` CHANGE `Elegible` `Applied` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Deal Dimension` CHANGE `Deal Total Acc Elegible Orders` `Deal Total Acc Applied Orders` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
+CHANGE `Deal Total Acc Elegible Customers` `Deal Total Acc Applied Customers` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Dimension` CHANGE `Deal Terms Type` `Deal Terms Type` ENUM( 'Order Total Net Amount AND Order Number', 'Order Items Net Amount AND Shipping Country', 'Order Interval', 'Product Quantity Ordered', 'Family Quantity Ordered', 'Total Amount', 'Order Number', 'Total Amount AND Shipping Country', 'Total Amount AND Order Number', 'Voucher' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Metadata Allowance Type` `Deal Metadata Allowance Type` ENUM( 'Percentage Off', 'Get Free', 'Get Same Free', 'Credit' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Metadata Terms Type` `Deal Metadata Terms Type` ENUM( 'Order Total Net Amount AND Order Number', 'Order Items Net Amount AND Shipping Country', 'Order Interval', 'Product Quantity Ordered', 'Family Quantity Ordered', 'Total Amount', 'Order Number', 'Total Amount AND Shipping Country', 'Total Amount AND Order Number', 'Voucher' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Order No Product Transaction Fact` CHANGE `Transaction Type` `Transaction Type` ENUM( 'Credit', 'Unknown', 'Refund', 'Shipping', 'Charges', 'Adjust', 'Other', 'Deal' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Order Transaction Deal Bridge` CHANGE `Deal Key` `Deal Metadata Key` MEDIUMINT( 9 ) NOT NULL ;
+ALTER TABLE `Order Transaction Fact`  DROP `Deal Key`;
+ALTER TABLE `dw`.`Order Deal Bridge` ADD PRIMARY KEY ( `Order Key` , `Deal Key` ) ;
+
+CREATE TABLE `dw`.`Dashboard Dimension` (
+`Dashboard Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`User key` MEDIUMINT UNSIGNED NOT NULL ,
+`Dashbord Type` ENUM( '1 Block', '2 Blocks', '3 Blocks' ) NOT NULL ,
+`Dashbord URL` TEXT NOT NULL ,
+`Dashbord Metadata` TEXT NOT NULL
+) ENGINE = MYISAM ;
+ALTER TABLE `Dashboard Dimension` ADD `Dashboard Order` SMALLINT UNSIGNED NOT NULL AFTER `User key` ;
+ALTER TABLE `Dashboard Dimension` CHANGE `Dashbord Type` `Dashbord Type` ENUM( '1 Block', '2 Blocks', '3 Blocks', '1.5 Block' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Dashboard Dimension` CHANGE `Dashbord Type` `Dashbord Class` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Dashboard Dimension` CHANGE `Dashbord Class` `Dashboard Class` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Dashboard Dimension` ADD INDEX ( `User key` ) ;
+ALTER TABLE `Dashboard Dimension` CHANGE `Dashbord URL` `Dashboard URL` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , CHANGE `Dashbord Metadata` `Dashboard Metadata` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
 */
 

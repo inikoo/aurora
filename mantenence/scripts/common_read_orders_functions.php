@@ -273,6 +273,8 @@ function delete_old_data() {
         $sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Order' and `Direct Object Key`=%d",$row_test['Order Key']);
         mysql_query($sql);
 
+   $sql=sprintf("delete from `Order Deal Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
+        mysql_query($sql);
 
 
         $sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
@@ -508,7 +510,7 @@ function get_data($header_data) {
 }
 
 function create_order($data) {
-    global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data,$data_dn_transactions;
+    global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data,$data_dn_transactions,$discounts_with_order_as_term;
 
 
     $order_data=array(
@@ -546,9 +548,14 @@ function create_order($data) {
 
 
 
+
+
     foreach($data_dn_transactions as $ddt_key=>$transaction) {
-//print_r($transaction);
+
         if ($transaction['Order Quantity']>0) {
+
+        
+
             $product=new Product('id',$transaction['Product Key']);
 
             $quantity=$transaction['Order Quantity'];
@@ -628,6 +635,12 @@ function create_order($data) {
 
     }
 
+   foreach($discounts_with_order_as_term as $_deal_key){
+      $sql=sprintf("insert into `Order Deal Bridge` values(%d,%d,'Yes','No') ON DUPLICATE KEY UPDATE `Used`='No'",$order->id,$_deal_key);
+     mysql_query($sql);
+   
+   }
+ $order->update_order_discounts();
     $order->update_discounts();
     $order->update_item_totals_from_order_transactions();
 
@@ -637,16 +650,16 @@ function create_order($data) {
 
     $order->update_no_normal_totals();
     $order->update_totals_from_order_transactions();
-
-
+    
+    
     foreach($discounts_map as $otf_key=>$discount) {
         $order->update_transaction_discount_amount($otf_key,$discount);
     }
-
-
-
-
-
+    
+    
+$order->update_deal_bridge_from_assets_deals();    
+    $order->update_deals_usage();
+    
     $order->categorize();
     $order->update_shipping_amount($shipping_net);
     $charges_data=array(array(
@@ -656,6 +669,8 @@ function create_order($data) {
                             'Charge Description'=>'Charge'
                         ));
     $order->update_charges_amount($charges_data);
+
+
 
 
     if (count($data_dn_transactions)>0) {
@@ -677,7 +692,7 @@ function send_order($data,$data_dn_transactions) {
     
     if(!isset($dn)){
     
-    print "Exit no transactions in this invoice\n";
+    print "Error no transactions in this invoice\n";
     return;
     }
 

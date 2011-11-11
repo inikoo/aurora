@@ -5,11 +5,31 @@
 
 <div style="padding:0 20px;height:50px">
 
-<div  style="clear:left;"> 
-  <span  class="branch">{t}Dashboard{/t}</span>
+<div  class="branch" style="clear:left;"> 
+  <span >{t}Dashboard{/t}</span>
+</div>
+
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:right">
+       
+        <button  onclick="window.location='store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configure Dashboard{/t}</button>
+      
+    </div>
+    <div class="buttons" style="float:left">
+    </div>
+    <div style="clear:both"></div>
 </div>
 
 
+<div class="dashboard_blocks" style="margin-top:20px">
+	{foreach from=$blocks key=key item=block}
+	    <div class="{$block.class}">
+	    <iframe  id="block_{$block.key}" src="{$block.src}&block_key={$block.key}" width="100%" frameborder=0  >
+            <p>Your browser does not support iframes.</p>
+        </iframe> 
+	    </div>
+	{/foreach}
+</div>
 
 {*}
 <div  class="general_options" style="margin:5px 20px 0 0">
@@ -35,10 +55,11 @@ Please use the Search in customers/orders pages.
       </div>
     </div>
   </div>
-{/*}
+{*}
 </div>
 
-	<div id="wrapper">
+{*}
+	<div id="wrapper" stylw="display:none">
 	<input type="hidden" value='{$store_keys}' id="store_keys"/>
 		<div id="wid_menu" >
 			<img style="position:relative;top:3px;display:none" src="art/icons/previous.png" alt="" id="previous"/>
@@ -71,14 +92,7 @@ Please use the Search in customers/orders pages.
 			</div>
 		</div>
 	</div>
-	{literal}
-	<script type="text/javascript" charset="utf-8">
-	
-	
-	
-	
-	</script>
-{/literal}
+{*}
 
 </div>
 {include file='footer.tpl'}

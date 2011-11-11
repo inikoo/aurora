@@ -72,7 +72,7 @@ if($did)
 {
 	$tt = explode('_',$did);
 
-  $query = "delete from `Email Campaign Dimension` where `Folder ID` = '".$did."'";
+  $query = "delete from `Email Deal Dimension` where `Folder ID` = '".$did."'";
   mysql_query($query);
   $queryToDelete = "DELETE FROM `Mail Folder` WHERE `Mail Folder Key` = '".$tt[1]."'";
   mysql_query($queryToDelete);
@@ -82,7 +82,7 @@ if($did)
 	{
 		foreach ($_POST['chkbox'] as $arr)
 		{
-		$query = "update `Email Campaign Dimension` set `Flag` = '1', `Folder ID` = '".$_POST['select_folder']."' where `Email Campaign Key` = '".$arr."'";
+		$query = "update `Email Deal Dimension` set `Flag` = '1', `Folder ID` = '".$_POST['select_folder']."' where `Email Deal Key` = '".$arr."'";
 		mysql_query($query);
 			
 		}
@@ -116,11 +116,11 @@ if($request)
 }
 if(isset($_REQUEST['fid']) && $_REQUEST['fid'] != '')
 {
- $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content`,`Flag`,`Folder ID` from `Email Campaign Dimension` where `Flag` = '1' and `Folder ID` = '".$_REQUEST['fid']."'");	
+ $sql = sprintf("select `Email Deal Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content`,`Flag`,`Folder ID` from `Email Deal Dimension` where `Flag` = '1' and `Folder ID` = '".$_REQUEST['fid']."'");	
 }
 else
 {
- $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content`,`Flag`,`Folder ID` from `Email Campaign Dimension` where `Flag` = '0'");
+ $sql = sprintf("select `Email Deal Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content`,`Flag`,`Folder ID` from `Email Deal Dimension` where `Flag` = '0'");
 }
  
   $res = mysql_query($sql);
@@ -129,7 +129,7 @@ else
 
 	$smarty->assign('status','Email Campaign Status');
 	$smarty->assign('email','Email Campaign Maximum Emails');
-	$smarty->assign('key','Email Campaign Key');
+	$smarty->assign('key','Email Deal Key');
 	$smarty->assign('content','Email Campaign Content');
 	if(mysql_num_rows($res) > 0)
 	{

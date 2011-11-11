@@ -39,7 +39,7 @@ store_key=Dom.get('store_id').value;
 validate_scope_data=
 {
     'email_campaign':{
-	'name':{'dbname':'Email Campaign Name',
+	'name':{'dbname':'Email Deal Name',
 	        'changed':false,
 	        'validated':false,
 	        'required':true,
