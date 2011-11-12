@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-12 15:54+0100\n"
-"PO-Revision-Date: 2011-11-12 16:46+0100\n"
+"POT-Creation-Date: 2011-11-12 16:49+0100\n"
+"PO-Revision-Date: 2011-11-12 17:00+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -215,9 +215,8 @@ msgstr "Regale"
 
 #: warehouse_areas.js.php:17
 #: warehouse_parts.php:29
-#, fuzzy
 msgid "Locations"
-msgstr "Pfad"
+msgstr "Standorte"
 
 #: warehouse_areas.js.php:19
 #: product.js.php:229
@@ -603,9 +602,8 @@ msgstr "Bestellungen"
 
 #: new_orders_list.php:72
 #: new_orders_list.php:80
-#, fuzzy
 msgid "Address"
-msgstr "Privatadresse"
+msgstr "Adresse"
 
 #: new_orders_list.php:88
 msgid "Newsletter"
@@ -2514,9 +2512,8 @@ msgstr "Home"
 #: edit_part_category.php:101
 #: edit_company_departments.php:27
 #: edit_positions.php:27
-#, fuzzy
 msgid "Exit Edit"
-msgstr "Bearbeiten"
+msgstr "Bearbeitung beenden"
 
 #: edit_part_category.php:83
 #, fuzzy
@@ -2533,7 +2530,7 @@ msgstr ""
 
 #: staff.js.php:24
 msgid "Details"
-msgstr ""
+msgstr "Übersicht"
 
 #: staff.js.php:94
 #, fuzzy
@@ -3032,12 +3029,11 @@ msgstr "Pfad"
 
 #: location.php:159
 msgid "note"
-msgstr ""
+msgstr "Anmerkung"
 
 #: location.php:159
-#, fuzzy
 msgid "Note"
-msgstr "Keines"
+msgstr "Anmerkung"
 
 #: location.php:160
 #, fuzzy
@@ -3247,7 +3243,7 @@ msgstr "%s: Sprache »%s« ist bereits in Datenbank »%s« installiert\n"
 
 #: class.User.php:178
 msgid "User added susesfully"
-msgstr ""
+msgstr "An"
 
 #: class.User.php:187
 #, fuzzy
@@ -4743,9 +4739,8 @@ msgstr "Faxmodus:"
 #: smarty.php:422
 #: smarty.php:941
 #: smarty.php:15206
-#, fuzzy
 msgid "History/Notes"
-msgstr "Notizdokumentation"
+msgstr "Anmerkungen"
 
 #: smarty.php:260
 #: smarty.php:266
@@ -5066,9 +5061,8 @@ msgstr "Kontakte"
 
 #: smarty.php:419
 #: smarty.php:824
-#, fuzzy
 msgid "Contact Overview"
-msgstr "Haushaltsprodukte"
+msgstr "Übersicht Kontakte"
 
 #: smarty.php:443
 msgid "Name Search"
@@ -5078,25 +5072,21 @@ msgstr ""
 #: smarty.php:8621
 #: smarty.php:9152
 #: smarty.php:9779
-#, fuzzy
 msgid "Company Info"
-msgstr "Firma"
+msgstr "Unternehmensinfo"
 
 #: smarty.php:467
 #: smarty.php:8777
-#, fuzzy
 msgid "New Contact"
 msgstr "Neuer Kontakt"
 
 #: smarty.php:470
-#, fuzzy
 msgid "New contact"
 msgstr "Neuer Kontakt"
 
 #: smarty.php:473
-#, fuzzy
 msgid "Addresses"
-msgstr "Privatadresse"
+msgstr "Adressen"
 
 #: smarty.php:476
 #: smarty.php:2795
@@ -5106,16 +5096,14 @@ msgstr "Privatadresse"
 #: smarty.php:3401
 #: smarty.php:3944
 #: smarty.php:3962
-#, fuzzy
 msgid "Telephones"
-msgstr "Telefon"
+msgstr "Telefonnummern"
 
 #: smarty.php:479
 #: smarty.php:956
 #: smarty.php:3587
-#, fuzzy
 msgid "Emails"
-msgstr "E-Mail"
+msgstr "E-Mail-Adressen"
 
 #: smarty.php:482
 #, fuzzy
@@ -5129,9 +5117,8 @@ msgstr ""
 #: smarty.php:488
 #: smarty.php:641
 #: smarty.php:3707
-#, fuzzy
 msgid "Person"
-msgstr "Person: %1"
+msgstr "Person"
 
 #: smarty.php:491
 msgid "Business"
@@ -5140,19 +5127,16 @@ msgstr ""
 #: smarty.php:494
 #: smarty.php:503
 #: smarty.php:3383
-#, fuzzy
 msgid "Add Address"
-msgstr "Privatadresse"
+msgstr "Adresse hinzufügen"
 
 #: smarty.php:497
-#, fuzzy
 msgid "Add Telephone"
-msgstr "Telefon"
+msgstr "Telefonnr. hinzufügen"
 
 #: smarty.php:500
-#, fuzzy
 msgid "Add Email"
-msgstr "E-Mail"
+msgstr "E-Mail hinzufügen"
 
 #: smarty.php:506
 msgid "Add Web Site"
@@ -5167,9 +5151,8 @@ msgid "Prefix"
 msgstr ""
 
 #: smarty.php:515
-#, fuzzy
 msgid "First Name"
-msgstr "Namen bearbeiten"
+msgstr "Vorname"
 
 #: smarty.php:518
 #, fuzzy
@@ -14336,9 +14319,8 @@ msgid "No Paid"
 msgstr ""
 
 #: ar_top_customer.php:459
-#, fuzzy
 msgid "showing all records"
-msgstr "Anzeigen des Desktops: %s\n"
+msgstr "Alle Ergebnisse anzeigen"
 
 #: part.js.php:6
 msgid "Stock Keeping Units"
@@ -19553,33 +19535,16 @@ msgstr ""
 msgid "Error: Store code could not be updated"
 msgstr ""
 
-#: class.Store.php:533
-#, fuzzy
-msgid "Error: Another store with the same name"
-msgstr "Fehler: Eine andere Abteilung hat denselben Namen"
-
-#: class.Store.php:543
-msgid "Store name updated"
-msgstr ""
-
-#: class.Store.php:550
-msgid "Store Name Changed"
-msgstr ""
-
-#: class.Store.php:559
-msgid "Error: Store name could not be updated"
-msgstr ""
-
-#: class.Store.php:604
+#: class.Store.php:558
 #, fuzzy
 msgid "Store Added"
 msgstr "Privatadresse"
 
-#: class.Store.php:617
+#: class.Store.php:571
 msgid "Store Created"
 msgstr ""
 
-#: class.Store.php:625
+#: class.Store.php:579
 #, fuzzy
 msgid " Error can not create store"
 msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
@@ -19841,6 +19806,10 @@ msgstr "Haushaltsprodukte"
 #: warehouse_stock_history.js.php:209
 msgid "Syncronizing product"
 msgstr "Produkt synchronisieren"
+
+#, fuzzy
+#~ msgid "Error: Another store with the same name"
+#~ msgstr "Fehler: Eine andere Abteilung hat denselben Namen"
 
 #, fuzzy
 #~ msgid "Error, no telecom data"
