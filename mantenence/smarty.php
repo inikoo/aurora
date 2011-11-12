@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <?php/* ../templates//add_people.tpl */
 gettext("Email Campaigns");
 
@@ -18584,3 +18585,6 @@ gettext("Region");
 gettext("Countries");
 
 ?>
+=======
+<?php?>
+>>>>>>> Stashed changes
