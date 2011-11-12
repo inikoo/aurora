@@ -12,7 +12,7 @@
 <div class="buttons" style="float:right">
 
 
-<button  id="new_customer"><img src="art/icons/add.png" alt=""> {t}Customer{/t}</button>
+<button  id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button>
 
 <button  onclick="window.location='edit_customers.php?store={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button>
 <button  onclick="window.location='customer_store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>

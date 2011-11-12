@@ -19,6 +19,8 @@
         <button  onclick="window.location='store_deals.php?store={$store->id}'" ><img src="art/icons/money.png" alt=""> {t}Offers{/t}</button>
         <button  onclick="window.location='products_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
         <button  onclick="window.location='product_categories.php?id=0&store={$store->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button>
+        <button  onclick="window.location='sites.php?store={$store->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Websites{/t}</button>
+
     </div>
     <div style="clear:both"></div>
 </div>
