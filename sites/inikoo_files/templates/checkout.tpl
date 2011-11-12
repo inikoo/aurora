@@ -28,9 +28,9 @@
 <td>
 <div id="bank_transfer" style="display:">
 <table>
-<tr><td>Account Number: xxxxxxx</td></tr>
-<tr><td>Sort Code: xxxxxxx</td></tr>
-<tr><td>Branch Name & Address: xxxxxxx</td></tr>
+<tr><td>{t}Account Number{/t}: xxxxxxx</td></tr>
+<tr><td>{t}Sort Code{/t}: xxxxxxx</td></tr>
+<tr><td>{t}Branch Name & Address{/t}: xxxxxxx</td></tr>
 </table>
 </div>
 </td>
@@ -41,44 +41,44 @@
 <td>
 <!-- your regular form follows -->
 <table width=518 border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
-<h1>Paypal Credit Card Payment</h1>
+<h1>{t}Paypal Credit Card Payment{/t}</h1>
   <tr bgcolor="#E5E5E5">
-    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;Billing Information (required)</strong></td>
+    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;{t}Billing Information{/tt} ({t}required{/t})</strong></td>
   </tr>
   <tr>
-    <td height="22" width="180" align="right" valign="middle">First Name:</td>
+    <td height="22" width="180" align="right" valign="middle">{t}First Name{/t}:</td>
     <td colspan="2" align="left"><input name="firstName" id="firstName" type="text" size="50"></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">Last Name:</td>
+    <td height="22" align="right" valign="middle">{t}Last Name{/t}:</td>
     <td colspan="2" align="left"><input name="lastName" id="lastName" type="text" size="50"></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">Company (optional):</td>
+    <td height="22" align="right" valign="middle">{t}Company (optional){/t}:</td>
     <td colspan="2" align="left"><input name="company" id="company" type="text" size="50"></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">Street Address:</td>
+    <td height="22" align="right" valign="middle">{t}Street Address{/t}:</td>
     <td colspan="2" align="left"><input name="address1" id="address1" type="text" value="" size="50"></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">Street Address (2):</td>
+    <td height="22" align="right" valign="middle">{t}Street Address{t} (2):</td>
     <td colspan="2" align="left"><input name="address2" id="address2" type="text" value="" size="50"></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">City:</td>
+    <td height="22" align="right" valign="middle">{t}City{/t}:</td>
     <td colspan="2" align="left"><input name="city" id="city" type="text" value="" size="50"></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">State/Province:</td>
+    <td height="22" align="right" valign="middle">{t}State/Province{/t}:</td>
     <td colspan="2" align="left"><input name="state" id="state" type="text" value="" size="50"></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">Zip/Postal Code:</td>
+    <td height="22" align="right" valign="middle">{t}Zip/Postal Code{/t}:</td>
     <td colspan="2" align="left"><input name="zip" id="zip" type="text" value="" size="50"></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">Country:</td>
+    <td height="22" align="right" valign="middle">{t}Country{/t}:</td>
     <td colspan="2" align="left"><input name="country" id="country" type="text" value="" size="50"></td>
   </tr>
   <tr>
@@ -89,10 +89,10 @@
     <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
   </tr>
   <tr bgcolor="#E5E5E5">
-    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;Credit Card (required)</strong></td>
+    <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;{t}Credit Card{t} ({t}required{/t})</strong></td>
   </tr>
   <tr>
-    <td height="22" align="right" valign="middle">Credit Card Number:</td>
+    <td height="22" align="right" valign="middle">{t}Credit Card Number{/t}:</td>
     <td colspan="2" align="left"><input name="CCNo" id="CCNo" type="text" value="" size="19" maxlength="40"></td>
   </tr>
   <tr>

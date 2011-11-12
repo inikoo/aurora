@@ -6,19 +6,12 @@
 </div>
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
-
-
-<div class="buttons left" style="float:left">
-
-<button style="margin-left:0px"  onclick="window.location='{if $customer_list_id}customers_list.php?id={$customer_list_id}{else}customers.php?store={$store->id}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
-</div>
-
-
-<div class="buttons" style="float:right">
-
-</div>
-
-<div style="clear:both"></div>
+    <div class="buttons left" style="float:left">
+        <button style="margin-left:0px"  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+    </div>
+    <div style="clear:both"></div>
 </div>
 
 
