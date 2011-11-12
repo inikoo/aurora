@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-12 15:54+0100\n"
-"PO-Revision-Date: 2011-11-12 16:39+0100\n"
+"PO-Revision-Date: 2011-11-12 16:46+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -2787,7 +2787,7 @@ msgstr ""
 
 #: customer.php:275
 msgid "Lists"
-msgstr ""
+msgstr "Listen"
 
 #: customer.php:276
 #, fuzzy
@@ -6211,16 +6211,14 @@ msgid "Repeat Password"
 msgstr "Passwort"
 
 #: smarty.php:1553
-#, fuzzy
 msgid "Edit Customers"
-msgstr "Kunden"
+msgstr "Kunden bearbeiten"
 
 #: smarty.php:1556
 #: smarty.php:15341
 #: smarty.php:18227
-#, fuzzy
 msgid "Configuration"
-msgstr "entfernt einen Index"
+msgstr "Konfiguration"
 
 #: smarty.php:1559
 #: smarty.php:1745
@@ -6229,19 +6227,16 @@ msgstr "entfernt einen Index"
 #: smarty.php:17648
 #: smarty.php:18077
 #: smarty.php:18233
-#, fuzzy
 msgid "Statistics"
-msgstr "Vatikan"
+msgstr "Statistiken"
 
 #: smarty.php:1574
-#, fuzzy
 msgid "Live Contacts"
-msgstr "Kontakte"
+msgstr "Aktive Kontakte"
 
 #: smarty.php:1577
-#, fuzzy
 msgid "Potential Customers"
-msgstr "Schlüssel-Kunde"
+msgstr "Potentielle Kunden"
 
 #: smarty.php:1595
 #: smarty.php:1730
@@ -6255,20 +6250,17 @@ msgid "Contacts with Orders"
 msgstr "Kontakte mit Bestellungen"
 
 #: smarty.php:1628
-#, fuzzy
 msgid "Manually"
-msgstr "E-Mail"
+msgstr "Manuell"
 
 #: smarty.php:1631
 #: smarty.php:14966
-#, fuzzy
 msgid "Import from file"
-msgstr "Umschalten auf Dock-Modus"
+msgstr "aus einer Datei importieren"
 
 #: smarty.php:1649
-#, fuzzy
 msgid "Edit Customers in List"
-msgstr "Kunden"
+msgstr "Kunden in der Liste bearbeiten"
 
 #: smarty.php:1703
 #: smarty.php:2075
