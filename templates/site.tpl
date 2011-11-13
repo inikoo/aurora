@@ -4,8 +4,22 @@
 <input type="hidden" id="site_key" value="{$site->id}"/>
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
+<div class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
+</div>
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_site.php?id={$site->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Site{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='store.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>
+        {if $store->get('Store Websites')>1}
+        <button  onclick="window.location='sites.php?store={$store->id}'" ><img src="art/icons/world.png" alt=""> {t}Websites{/t}</button>
+        {/if}
+    </div>
+    <div style="clear:both"></div>
 </div>
 
 
@@ -15,7 +29,7 @@
 
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
     <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
     <li> <span class="item {if $block_view=='hits'}selected{/if}"   id="hits">  <span> {t}Hits{/t}</span></span></li>

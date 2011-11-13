@@ -32,7 +32,7 @@ $css_files=array(
                'container.css',
                'button.css',
                'table.css',
-               'css/dropdown.css'
+               'css/edit.css'
 
            );
 $css_files[]='theme.css.php';

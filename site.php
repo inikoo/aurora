@@ -37,8 +37,8 @@ if (!($user->can_view('stores')    ) ) {
 
 
 $site=new Site($site_id);
-if(!$site->id){
- header('Location: index.php');
+if (!$site->id) {
+    header('Location: index.php');
     exit;
 }
 
@@ -59,29 +59,19 @@ $smarty->assign('modify',$modify);
 
 
 
-
-$general_options_list=array();
-
-//if ($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'edit_site.php?id='.$site->id,'label'=>_('Edit Site'));
-
-
-$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-
-              	 $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
                'common.css',
                'container.css',
                'button.css',
                'table.css',
-               'css/dropdown.css'
+               'theme.css.php'
            );
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -96,7 +86,7 @@ $js_files=array(
               'js/php.default.min.js',
               'js/common.js',
               'js/table_common.js',
-	      'js/edit_common.js',
+              'js/edit_common.js',
               'js/csv_common.js',
               'js/dropdown.js'
           );

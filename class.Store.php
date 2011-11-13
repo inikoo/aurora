@@ -468,18 +468,69 @@ class Store extends DB_Table {
         }
     }
 
- 
- function update_name($value){
- 
- }
- 
- 
- 
- 
-      function update_field_switcher($field,$value,$options='') {
-      
-      
-     
+
+    function update_name($value) {
+        if (_trim($value)==$this->data['Store Name']) {
+            $this->updated=true;
+            $this->new_value=$value;
+            return;
+
+        }
+
+        if ($value=='') {
+            $this->msg=_('Error: Wrong name (empty)');
+            return;
+        }
+
+        if (!(strtolower($value)==strtolower($this->data['Store Name']) and $value!=$this->data['Store Name'])) {
+
+            $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_ci"
+                         ,prepare_mysql($value)
+                        );
+
+            $res=mysql_query($sql);
+            $row=mysql_fetch_array($res);
+            if ($row['num']>0) {
+                $this->msg=_("Error: Another store with the same name");
+                return;
+            }
+        }
+        $old_value=$this->get('Store Name');
+        $sql=sprintf("update `Store Dimension` set `Store Name`=%s where `Store Key`=%d "
+                     ,prepare_mysql($value)
+                     ,$this->id
+                    );
+        if (mysql_query($sql)) {
+            $this->msg=_('Store name updated');
+            $this->updated=true;
+            $this->new_value=$value;
+            $this->data['Store Name']=$value;
+
+            $this->add_history(array(
+                                   'Indirect Object'=>'Store Name',
+                                   'History Abstract'=>_('Store Name Changed').' ('.$this->get('Store Name').')',
+                                   'History Details'=>_('Store')." ("._('Code').":".$this->get('Store Code').") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Store Name')
+                               ));
+
+
+
+
+
+        } else {
+            $this->msg=_("Error: Store name could not be updated");
+
+            $this->updated=false;
+
+        }
+    }
+
+
+
+
+    function update_field_switcher($field,$value,$options='') {
+
+
+
 
         switch ($field) {
         case('code'):
@@ -512,9 +563,9 @@ class Store extends DB_Table {
             $this->update_field('Short Marketing Description',$value);
             break;
         case('name'):
- $this->update_name($value);
+            $this->update_name($value);
             break;
- default:
+        default:
             $base_data=$this->base_data();
             if (array_key_exists($field,$base_data)) {
                 if ($value!=$this->data[$field]) {
@@ -567,9 +618,9 @@ class Store extends DB_Table {
 
 
             $this->add_history(array(
-                                   'Action'=>'created'
-                                            ,'History Abstract'=>_('Store Created')
-                                                                ,'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
+                                   'Action'=>'created',
+                                   'History Abstract'=>_('Store Created'),
+                                   'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
                                ));
 
             return;
@@ -1312,10 +1363,10 @@ class Store extends DB_Table {
 
 
     function update_number_sites() {
+        $current_sites=$this->get_number_sites();
+        if ($this->data['Store Websites']!=$current_sites) {
 
-        if ($this->data['Store Websites']!=$this->get_number_sites()) {
-            $this->data['Store Websites']=$this->get_number_sites();
-           // $this->update()
+            $this->update_field_switcher('Store Websites',$current_sites);
         }
 
     }

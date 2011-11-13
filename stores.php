@@ -19,11 +19,11 @@ include_once('class.HQ.php');
 if (!$user->can_view('stores'))
     exit();
 
-$avileable_stores_list=$user->stores;
-$avileable_stores=count($avileable_stores_list);
-if ($avileable_stores==1) {
-    header('Location: store.php?id='.$avileable_stores_list[0]);
-
+$available_stores_list=$user->stores;
+$available_stores=count($available_stores_list);
+if ($available_stores==1) {
+    header('Location: store.php?id='.$available_stores_list[0]);
+    exit;
 }
 
 $view_sales=$user->can_view('product sales');
@@ -45,22 +45,6 @@ $corporation=new HQ();
 $smarty->assign('corporation',$corporation);
 
 $number_of_stores=count($user->stores);
-$general_options_list=array();
-if ($modify) {
-    if ($number_of_stores>1)
-        $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Edit Stores'));
-    elseif($number_of_stores==1)
-    $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Edit Store'));
-
-    $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Add Store'));
-}
-//$smarty->assign('general_options_list',$general_options_list);
-
-
-if (isset($_REQUEST['edit'])){
- header('Location: edit_stores.php');
- exit;
-}
 
 
 

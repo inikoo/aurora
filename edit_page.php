@@ -59,9 +59,6 @@ $smarty->assign('page',$page);
 
 
 
-$general_options_list=array();
-
-$general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'page.php?id='.$page->id,'label'=>_('Webpage').' &#8617;');
 
 if (isset($_REQUEST['referral']) and isset($_REQUEST['referral_key'])) {
     $valid_referrals=array('family','department','store');
@@ -82,13 +79,12 @@ if (isset($_REQUEST['referral']) and isset($_REQUEST['referral_key'])) {
         }
     }
 
+$referral_data=array('url'=>$_REQUEST['referral'].'.php?id='.$_REQUEST['referral_key'],'label'=>$referral_label);
+$smarty->assign('referral_data',$referral_data);
 
-
-    $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>$_REQUEST['referral'].'.php?id='.$_REQUEST['referral_key'],'label'=>$referral_label.' &#8617;');
 
 }
 
-$smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
@@ -110,33 +106,19 @@ $smarty->assign('block_view',$_SESSION['state']['page']['editing']);
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'container/assets/skins/sam/container.css',
-               $yui_path.'editor/assets/skins/sam/editor.css',
-
-
                $yui_path.'assets/skins/sam/autocomplete.css',
-
-               //	  'text_editor.css',
-               'common.css',
-               'button.css',
-               'table.css',
-               'css/edit.css'
-           );
-
-
-$css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
                'common.css',
                'container.css',
                'button.css',
                'table.css',
                'css/edit.css',
                'css/upload_files.css',
+               'theme.css.php'
+
            );
+
+
+
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-12 16:49+0100\n"
-"PO-Revision-Date: 2011-11-13 13:29+0100\n"
+"PO-Revision-Date: 2011-11-12 17:00+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -15,6 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /home/inikoo/borrar\n"
 "X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: customers_lists.js.php:43
 #, fuzzy
@@ -880,7 +881,7 @@ msgstr "Status"
 
 #: edit_position.js.php:36
 msgid "Invalid Position Name"
-msgstr "Ungültiger Standortname"
+msgstr ""
 
 #: edit_position.js.php:39
 #, fuzzy
@@ -889,7 +890,7 @@ msgstr "Quelltext"
 
 #: edit_position.js.php:42
 msgid "Invalid Position Description"
-msgstr "Ungültige Standortbeschreibung"
+msgstr ""
 
 #: edit_position.js.php:116
 #, fuzzy
@@ -1813,7 +1814,7 @@ msgstr "Kunde"
 
 #: export_csv.php:1453
 msgid "SKU"
-msgstr "SKU"
+msgstr ""
 
 #: export_csv.php:1455
 #, fuzzy
@@ -2305,7 +2306,7 @@ msgstr "Quelltext"
 
 #: edit_family.js.php:1177
 msgid "Invalid Special Characteristic"
-msgstr "Ungültiges Sondermerkmal"
+msgstr ""
 
 #: edit_family.js.php:1181
 #, fuzzy
@@ -12873,31 +12874,31 @@ msgstr "Name=DN-Attribut-Ordnung"
 
 #: smarty.php:14708
 msgid "Monday"
-msgstr "Montag"
+msgstr ""
 
 #: smarty.php:14711
 msgid "Tuesday"
-msgstr "Dienstag"
+msgstr ""
 
 #: smarty.php:14714
 msgid "Wednesday"
-msgstr "Mittwoch"
+msgstr ""
 
 #: smarty.php:14717
 msgid "Thursday"
-msgstr "Donnerstag"
+msgstr ""
 
 #: smarty.php:14720
 msgid "Friday"
-msgstr "Freitag"
+msgstr ""
 
 #: smarty.php:14723
 msgid "Saturday"
-msgstr "Samstag"
+msgstr ""
 
 #: smarty.php:14726
 msgid "Sunday"
-msgstr "Sonntag"
+msgstr ""
 
 #: smarty.php:14741
 #, fuzzy
@@ -18882,6 +18883,8 @@ msgstr ""
 #: ar_assets.php:10160
 msgid "month"
 msgid_plural "months"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_assets.php:10285
 #: ar_assets.php:10385
@@ -18913,7 +18916,7 @@ msgstr ""
 
 #: plot.inc.php:133
 msgid "6 months"
-msgstr "6 Monate"
+msgstr ""
 
 #: plot.inc.php:134
 #, fuzzy

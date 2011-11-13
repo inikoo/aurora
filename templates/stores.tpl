@@ -24,7 +24,7 @@
 
 <div class="buttons" style="float:left">
 
-<button  onclick="window.location='stores_stats.php?store={$store->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+<button  onclick="window.location='stores_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
 
 
 
@@ -68,30 +68,30 @@
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
     <div class="clusters">
     <div class="buttons small left cluster" >
-    <button class="option {if $view=='general'}selected{/if}" id="general" >{t}Summary{/t}</button>
-	    <button class="option {if $view=='stock'}selected{/if}"  id="stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</button>
-	    <button class="option {if $view=='sales'}selected{/if}" id="sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</button>
+        <button class="table_option {if $view=='general'}selected{/if}" id="general" >{t}Summary{/t}</button>
+	    <button class="table_option {if $view=='stock'}selected{/if}"  id="stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</button>
+	    <button class="table_option {if $view=='sales'}selected{/if}" id="sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</button>
 	<div style="clear:both"></div>
 </div>
     <div  id="stores_period_options"  class="buttons small left cluster" style="{if $view!='sales' };display:none{/if}">  
       
-  	  <button class="option {if $period=='all'}selected{/if}" period="all"  id="period_all" >{t}All{/t}</button>
-	  <button class="option {if $period=='three_year'}selected{/if}"  period="three_year"  id="period_three_year"  >{t}3Y{/t}</button>
-	  <button class="option {if $period=='year'}selected{/if}"  period="year"  id="period_year"  >{t}1Yr{/t}</button>
-	  <button class="option {if $period=='yeartoday'}selected{/if}"  period="yeartoday"  id="period_yeartoday"  >{t}YTD{/t}</button>	
-	  <button class="option {if $period=='six_month'}selected{/if}"  period="six_month"  id="period_six_month"  >{t}6M{/t}</button>
-	  <button class="option {if $period=='quarter'}selected{/if}"  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</button>
-	  <button class="option {if $period=='month'}selected{/if}"  period="month"  id="period_month"  >{t}1M{/t}</button>
-	  <button class="option {if $period=='ten_day'}selected{/if}"  period="ten_day"  id="period_ten_day"  >{t}10D{/t}</button>
-	  <button class="option {if $period=='week'}selected{/if}" period="week"  id="period_week"  >{t}1W{/t}</button>
+  	  <button class="table_option {if $period=='all'}selected{/if}" period="all"  id="period_all" >{t}All{/t}</button>
+	  <button class="table_option {if $period=='three_year'}selected{/if}"  period="three_year"  id="period_three_year"  >{t}3Y{/t}</button>
+	  <button class="table_option {if $period=='year'}selected{/if}"  period="year"  id="period_year"  >{t}1Yr{/t}</button>
+	  <button class="table_option {if $period=='yeartoday'}selected{/if}"  period="yeartoday"  id="period_yeartoday"  >{t}YTD{/t}</button>	
+	  <button class="table_option {if $period=='six_month'}selected{/if}"  period="six_month"  id="period_six_month"  >{t}6M{/t}</button>
+	  <button class="table_option {if $period=='quarter'}selected{/if}"  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</button>
+	  <button class="table_option {if $period=='month'}selected{/if}"  period="month"  id="period_month"  >{t}1M{/t}</button>
+	  <button class="table_option {if $period=='ten_day'}selected{/if}"  period="ten_day"  id="period_ten_day"  >{t}10D{/t}</button>
+	  <button class="table_option {if $period=='week'}selected{/if}" period="week"  id="period_week"  >{t}1W{/t}</button>
 	<div style="clear:both"></div>
       </div>
-    <div  id="stores_avg_options"  class="buttons small left cluster" style="{if $view!='sales' };display:none{/if}">  
+    <div  id="stores_avg_options"  class="buttons small left cluster" style="display:{if $view!='sales' }none{else}block{/if};">  
 
 
-	  <button class="option {if $avg=='totals'}selected{/if}" avg="totals"  id="avg_totals" >{t}Totals{/t}</button>
-	  <button class="option {if $avg=='month'}selected{/if}"  avg="month"  id="avg_month"  >{t}M AVG{/t}</button>
-	  <button class="option {if $avg=='week'}selected{/if}"  avg="week"  id="avg_week"  >{t}W AVG{/t}</button>
+	  <button class="table_option {if $avg=='totals'}selected{/if}" avg="totals"  id="avg_totals" >{t}Totals{/t}</button>
+	  <button class="table_option {if $avg=='month'}selected{/if}"  avg="month"  id="avg_month"  >{t}M AVG{/t}</button>
+	  <button class="table_option {if $avg=='week'}selected{/if}"  avg="week"  id="avg_week"  >{t}W AVG{/t}</button>
 	<div style="clear:both"></div>
 	    </div>
    <div style="clear:both"></div>
@@ -112,35 +112,40 @@
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
   
-  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="department_view_options options" >
-	<tr>
-	    <td class="option {if $department_view=='general'}selected{/if}" id="department_general" >{t}Summary{/t}</td>
-	    <td class="option {if $department_view=='stock'}selected{/if}"  id="department_stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</td>
-	    <td class="option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</td>
-	</tr>
- </table>
+    <div class="clusters">
+    <div class="buttons small left cluster" >
+       <button class="table_option{if $department_view=='general'}selected{/if}" id="department_general" >{t}Summary{/t}</button>
+	    <button class="table_option {if $department_view=='stock'}selected{/if}"  id="department_stock" {if !$view_stock}style="display:none"{/if} >{t}Stock{/t}</button>
+	    <button class="table_option {if $department_view=='sales'}selected{/if}" id="department_sales" {if !$view_sales}style="display:none"{/if} >{t}Sales{/t}</button>
 
-    <table id="department_period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $department_view!='sales' };display:none{/if}"  class="options_mini" >
-	  <tr>
+    </div>
+    <div  id="department_period_options"  class="buttons small left cluster"  style="display:{if $view!='sales' }none{else}block{/if};">
+      <button class="table_option {if $department_period=='all'}selected{/if}" period="all"  id="department_period_all" >{t}All{/t}</button>
+	  <button class="table_option {if $department_period=='three_year'}selected{/if}"  period="three_year"  id="department_period_three_year"  >{t}3Y{/t}</button>
+	  <button class="table_option {if $department_period=='year'}selected{/if}"  period="year"  id="department_period_year"  >{t}1Yr{/t}</button>
+	  <button class="table_option {if $department_period=='yeartoday'}selected{/if}"  period="yeartoday"  id="department_period_yeartoday"  >{t}YTD{/t}</button>	
+	  <button class="table_option {if $department_period=='six_month'}selected{/if}"  period="six_month"  id="department_period_six_month"  >{t}6M{/t}</button>
+	  <button class="table_option {if $department_period=='quarter'}selected{/if}"  period="quarter"  id="department_period_quarter"  >{t}1Qtr{/t}</button>
+	  <button class="table_option {if $department_period=='month'}selected{/if}"  period="month"  id="department_period_month"  >{t}1M{/t}</button>
+	  <button class="table_option {if $department_period=='ten_day'}selected{/if}"  period="ten_day"  id="department_period_ten_day"  >{t}10D{/t}</button>
+	  <button class="table_option {if $department_period=='week'}selected{/if}" period="week"  id="department_period_week"  >{t}1W{/t}</button>
+	
 
-	  <td class="option {if $department_period=='all'}selected{/if}" period="all"  id="department_period_all" >{t}All{/t}</td>
-	  <td class="option {if $department_period=='three_year'}selected{/if}"  period="three_year"  id="department_period_three_year"  >{t}3Y{/t}</td>
-	  <td class="option {if $department_period=='year'}selected{/if}"  period="year"  id="department_period_year"  >{t}1Yr{/t}</td>
-	  <td class="option {if $department_period=='yeartoday'}selected{/if}"  period="yeartoday"  id="department_period_yeartoday"  >{t}YTD{/t}</td>	
-	  <td class="option {if $department_period=='six_month'}selected{/if}"  period="six_month"  id="department_period_six_month"  >{t}6M{/t}</td>
-	  <td class="option {if $department_period=='quarter'}selected{/if}"  period="quarter"  id="department_period_quarter"  >{t}1Qtr{/t}</td>
-	  <td class="option {if $department_period=='month'}selected{/if}"  period="month"  id="department_period_month"  >{t}1M{/t}</td>
-	  <td class="option {if $department_period=='ten_day'}selected{/if}"  period="ten_day"  id="department_period_ten_day"  >{t}10D{/t}</td>
-	  <td class="option {if $department_period=='week'}selected{/if}" period="week"  id="department_period_week"  >{t}1W{/t}</td>
-	  </tr>
-      </table>
-	<table  id="department_avg_options" style="float:left;margin:0 0 0 25px ;padding:0 {if $department_view!='sales'};display:none{/if}"  class="options_mini" >
-	  <tr>
-	    <td class="option {if $department_avg=='totals'}selected{/if}" avg="totals"  id="department_avg_totals" >{t}Totals{/t}</td>
-	    <td class="option {if $department_avg=='month'}selected{/if}"  avg="month"  id="department_avg_month"  >{t}M AVG{/t}</td>
-	    <td class="option {if $department_avg=='week'}selected{/if}"  avg="week"  id="department_avg_week"  >{t}W AVG{/t}</td>
-	  </tr>
-       </table>
+    </div>
+    <div  id="department_avg_options"   class="buttons small left cluster"  style="display:{if $view!='sales' }none{else}block{/if};">
+        <button class="table_option {if $department_avg=='totals'}selected{/if}" avg="totals"  id="department_avg_totals" >{t}Totals{/t}</button>
+	    <button class="table_option {if $department_avg=='month'}selected{/if}"  avg="month"  id="department_avg_month"  >{t}M AVG{/t}</button>
+	    <button class="table_option {if $department_avg=='week'}selected{/if}"  avg="week"  id="department_avg_week"  >{t}W AVG{/t}</button>
+
+    </div>
+    
+    
+    </div>
+  
+  
+  
+  
+  
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name0 filter_value=$filter_value1  }
 <div  id="table1"   class="data_table_container dtable btable with_total"> </div>
 </div>

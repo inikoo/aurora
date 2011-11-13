@@ -9,7 +9,7 @@
         <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
     </div>
     <div class="buttons" style="float:right">
-        <button  onclick="window.location='edit_customer_category.php?store_id={$store->id}&id=0'" ><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>
+        <button  onclick="window.location='edit_customer_categories.php?store_id={$store->id}&id=0'" ><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>
         <button id="new_category" ><img src="art/icons/add.png" alt=""> {t}Main Category{/t}</button>
     </div>
     <div style="clear:both"></div>

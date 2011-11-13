@@ -5100,7 +5100,8 @@ ALTER TABLE `Dashboard Dimension` ADD INDEX ( `User key` ) ;
 ALTER TABLE `Dashboard Dimension` CHANGE `Dashbord URL` `Dashboard URL` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , CHANGE `Dashbord Metadata` `Dashboard Metadata` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
 ALTER TABLE `Charge Dimension` ADD `Charge Active` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Charge Terms Metadata` ,ADD INDEX ( `Charge Active` ) ;
-
+ALTER TABLE `Store Dimension` ADD `Store Websites` SMALLINT UNSIGNED NOT NULL DEFAULT '0';
+// right.sql
 */
 
 ?>
