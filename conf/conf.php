@@ -3403,6 +3403,7 @@ $default_state=array(
                                 'block_view'=>'stores',
                                 'edit'=>'stores',
                                 'orders_view'=>'orders',
+                                'stats_view'=>'sales',
                                 'stores'=>array(
                                              'percentages'=>false,
                                              'view'=>'general',
@@ -3572,9 +3573,6 @@ $default_state=array(
                                               'to'=>'',
                                               'elements'=>''
                                           ),
-
-
-
                                 'orders'=>array(
                                              'percentages'=>false,
                                              'view'=>'general',

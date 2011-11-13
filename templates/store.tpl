@@ -11,7 +11,7 @@
     <div class="buttons" style="float:right">
         {if $modify}
         <button  onclick="window.location='edit_store.php?id={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Store{/t}</button>
-        <button  onclick="window.location='store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
+        <button  onclick="window.location='store_configuration.php?id={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
         {/if}
     </div>
     <div class="buttons" style="float:left">
@@ -19,8 +19,9 @@
         <button  onclick="window.location='store_deals.php?store={$store->id}'" ><img src="art/icons/money.png" alt=""> {t}Offers{/t}</button>
         <button  onclick="window.location='products_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
         <button  onclick="window.location='product_categories.php?id=0&store={$store->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button>
-        <button  onclick="window.location='sites.php?store={$store->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Websites{/t}</button>
-
+        {if $store->get('Store Websites')}
+        <button  onclick="window.location='sites.php?store={$store->id}'" ><img src="art/icons/world.png" alt=""> {if $store->get('Store Websites')>1}{t}Websites{/t}{else}{t}Website{/t}{/if}</button>
+        {/if}
     </div>
     <div style="clear:both"></div>
 </div>

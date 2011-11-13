@@ -23,11 +23,10 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-
 
 
 var change_view=function(e){
-	
+	alert(this)
 	var table=tables['table0'];
-	var tipo=this.id;
-	//	alert(table.view+' '+tipo)
-	if(table.view!=tipo){
+
+
 	    table.hideColumn('active');
 	    table.hideColumn('families');
 	    table.hideColumn('departments');
@@ -75,15 +74,16 @@ var change_view=function(e){
 		table.showColumn('outofstock');
 	    }
 
-	      Dom.removeClass(Dom.getElementsByClassName('option','td' , this.parentNode),'selected')
+
+	      Dom.removeClass(Dom.getElementsByClassName('table_option','button' , this.parentNode),'selected')
     Dom.addClass(this,"selected");	
 
 	
 	//Dom.get(table.view).className="";
 	//Dom.get(tipo).className="selected";
 	//table.view=tipo
-	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-stores-view&value=' + escape(tipo),{} );
-	}
+	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-stores_view&value=' + escape(tipo),{} );
+	
   }
 
 

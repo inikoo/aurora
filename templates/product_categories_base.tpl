@@ -1,7 +1,19 @@
 {include file='header.tpl'}
 <div id="bd" >
   {include file='assets_navigation.tpl'} 
-
+<div class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {t}Categories{/t}</span>
+</div>
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+        <button  onclick="window.location='edit_product_category.php?store_id={$store->id}&id=0'" ><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>
+        <button id="new_category" ><img src="art/icons/add.png" alt=""> {t}Main Category{/t}</button>
+    </div>
+    <div style="clear:both"></div>
+</div>
  <div style="clear:left;">
   <h1>{t}Product Categories Home{/t}</h1>
 </div>
