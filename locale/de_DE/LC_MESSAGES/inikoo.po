@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-12 16:49+0100\n"
-"PO-Revision-Date: 2011-11-12 17:00+0100\n"
+"PO-Revision-Date: 2011-11-13 14:18+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /home/inikoo/borrar\n"
-"X-Poedit-SearchPath-0: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
 
 #: customers_lists.js.php:43
 #, fuzzy
@@ -3752,15 +3752,15 @@ msgstr "%1: ungültige E-Mail-Adresse"
 
 #: customers.js.php:10
 msgid "Growth"
-msgstr ""
+msgstr "Wachstum"
 
 #: customers.js.php:12
 msgid "Month"
-msgstr ""
+msgstr "Monat"
 
 #: customers.js.php:12
 msgid "Year"
-msgstr ""
+msgstr "Jahr"
 
 #: customers.js.php:12
 msgid "Week"
@@ -3794,7 +3794,7 @@ msgstr ""
 #: email_campaign_in_process.js.php:638
 #: email_campaign_in_process.js.php:713
 msgid "Image"
-msgstr ""
+msgstr "Bild"
 
 #: email_campaign_in_process.js.php:1268
 #: email_campaign_in_process.js.php:1270
@@ -3809,7 +3809,7 @@ msgstr "Honduras"
 
 #: email_campaign_in_process.js.php:1640
 msgid "seconds"
-msgstr ""
+msgstr "Sekunden"
 
 #: ar_search.php:256
 #: ar_search.php:308
@@ -4711,12 +4711,12 @@ msgstr "falsche ID"
 #: smarty.php:227
 #: smarty.php:395
 msgid "Attach File"
-msgstr ""
+msgstr "Datei hinzufügen"
 
 #: smarty.php:230
 #: smarty.php:398
 msgid "Call"
-msgstr ""
+msgstr "Anrufen"
 
 #: smarty.php:239
 #: smarty.php:407
