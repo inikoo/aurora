@@ -7,7 +7,7 @@
 </div>
 
 
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+<div class="top_page_menu">
 
 <div class="buttons" style="float:right">
 

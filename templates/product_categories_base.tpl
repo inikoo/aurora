@@ -4,7 +4,7 @@
 <div class="branch"> 
   <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {t}Categories{/t}</span>
 </div>
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+<div class="top_page_menu">
     <div class="buttons" style="float:left">
         <button  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>
     </div>

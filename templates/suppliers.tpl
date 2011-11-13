@@ -7,7 +7,7 @@
 <div  class="branch"> 
   <span>{t}Suppliers{/t}</span>
 </div>
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+<div class="top_page_menu">
     <div class="buttons" style="float:right">
         {if $modify}
                        <button  onclick="window.location='edit_warehouse.php?id={$warehouse->id}'" ><img src="art/icons/add.png" alt=""> {t}Add Supplier{/t}</button>

@@ -5,7 +5,7 @@
 <div class="branch"> 
   <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span>
 </div>
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+<div class="top_page_menu">
     <div class="buttons" style="float:right">
         {if $modify}
         <button  onclick="window.location='part_configuration.php'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>

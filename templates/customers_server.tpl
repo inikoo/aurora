@@ -2,10 +2,20 @@
 <div id="bd" >
  
 {include file='contacts_navigation.tpl'}
-<div  style="clear:left;"> 
-  <span class="branch">{t}Customers{/t}</span>
+<div class="branch"> 
+  <span >{t}Customers{/t}</span>
 </div>
-  
+<div class="top_page_menu">
+<div class="buttons" style="float:right">
+<button  onclick="window.location='edit_stores.php'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button>
+<button  onclick="window.location='new_store.php'" ><img src="art/icons/add.png" alt=""> {t}Store{/t}</button>
+</div>
+<div class="buttons" style="float:left">
+<button  onclick="window.location='customers_server_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+</div>
+<div style="clear:both"></div>
+</div>
+</div>  
   <div style="clear:left;">
     <h1>{t}Customer Corporate Overview{/t}</h1>
   </div>

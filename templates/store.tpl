@@ -7,7 +7,7 @@
   <span   >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
 </div>
 
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+<div class="top_page_menu">
     <div class="buttons" style="float:right">
         {if $modify}
         <button  onclick="window.location='edit_store.php?id={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Store{/t}</button>
@@ -320,7 +320,7 @@
 
     <span   class="clean_table_title" >{t}Departments{/t} <img class="export_data_link" id="export_csv0"  label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
 
-   <div class="table_top_bar" ></div>
+   <div class="table_top_bar"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
 
 

@@ -4,7 +4,7 @@
 <div class="branch"> 
   <span>{t}Stores{/t}</span>
 </div>
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+<div class="top_page_menu">
     <div class="buttons left" style="float:left">
         <button style="margin-left:0px"  onclick="window.location='stores.php'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
     </div>
