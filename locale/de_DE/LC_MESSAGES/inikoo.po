@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-12 16:49+0100\n"
-"PO-Revision-Date: 2011-11-13 14:18+0100\n"
+"PO-Revision-Date: 2011-11-13 22:32+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -18,9 +18,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: customers_lists.js.php:43
-#, fuzzy
 msgid "List Name"
-msgstr "Namen bearbeiten"
+msgstr "Listenname"
 
 #: customers_lists.js.php:44
 #, fuzzy
@@ -51,7 +50,6 @@ msgstr "Seite"
 #: ar_import_csv.php:159
 #: ar_import_csv.php:832
 #: supplier_dn_in_process.js.php:314
-#, fuzzy
 msgid "of"
 msgstr "von"
 
@@ -66,9 +64,8 @@ msgid "Sub-operation not found"
 msgstr "Das Programm \"mkisofs\" ist nicht auffindbar."
 
 #: porder.php:95
-#, fuzzy
 msgid "Purchase Order"
-msgstr "Abspielreihenfolge"
+msgstr "Kaufauftrag"
 
 #: porder.php:102
 #, fuzzy
@@ -87,28 +84,24 @@ msgid "code"
 msgstr "Code"
 
 #: porder.php:150
-#, fuzzy
 msgid "Internet"
-msgstr "Italien"
+msgstr "Internet"
 
 #: porder.php:151
 #: new_orders_list.php:70
 #: new_orders_list.php:78
-#, fuzzy
 msgid "Telephone"
 msgstr "Telefon"
 
 #: porder.php:152
 #: new_orders_list.php:71
 #: new_orders_list.php:79
-#, fuzzy
 msgid "Fax"
 msgstr "Fax"
 
 #: porder.php:153
-#, fuzzy
 msgid "In Person"
-msgstr "Person: %1"
+msgstr "Persönlich"
 
 #: porder.php:154
 #: new_orders_list.php:69
@@ -117,12 +110,10 @@ msgid "Email"
 msgstr "E-Mail"
 
 #: porder.php:155
-#, fuzzy
 msgid "Post"
-msgstr "Postleitzahl"
+msgstr "Post"
 
 #: porder.php:156
-#, fuzzy
 msgid "Other"
 msgstr "Sonstige"
 
@@ -449,12 +440,10 @@ msgid "French"
 msgstr "Französisch"
 
 #: locale.php:8
-#, fuzzy
 msgid "Czech"
 msgstr "Tschechisch"
 
 #: locale.php:9
-#, fuzzy
 msgid "Slovak"
 msgstr "Slowakisch"
 
@@ -463,9 +452,8 @@ msgid "Chinese"
 msgstr "Chinesisch"
 
 #: locale.php:11
-#, fuzzy
 msgid "Polish"
-msgstr "Englisch"
+msgstr "Polisch"
 
 #: locale.php:13
 #: locale.php:23
@@ -575,9 +563,8 @@ msgid "DN U"
 msgstr ""
 
 #: supplier_dn_in_process.js.php:278
-#, fuzzy
 msgid "Net Cost"
-msgstr "Kosten"
+msgstr "Nettokosten"
 
 #: supplier_dn_in_process.js.php:279
 msgid "Qty [U]"
@@ -611,9 +598,8 @@ msgid "Newsletter"
 msgstr "Newsletter"
 
 #: new_orders_list.php:89
-#, fuzzy
 msgid "Marketing Email"
-msgstr "Martinique"
+msgstr "Marketing-E-Mail"
 
 #: new_orders_list.php:90
 #, fuzzy
@@ -629,9 +615,8 @@ msgid "World Region Code"
 msgstr "Weltbereichskode"
 
 #: new_orders_list.php:105
-#, fuzzy
 msgid "Region Code"
-msgstr "Réunion"
+msgstr "Regionscode"
 
 #: new_orders_list.php:106
 msgid "wregion_name"
@@ -643,24 +628,21 @@ msgid "World Region Name"
 msgstr "Name des Teils der Welt"
 
 #: new_orders_list.php:106
-#, fuzzy
 msgid "Region Name"
-msgstr "Réunion"
+msgstr "Regionsname"
 
 #: new_orders_list.php:117
 #: new_orders_list.php:131
 #: new_orders_list.php:143
-#, fuzzy
 msgid "Country Code"
-msgstr "Quelltext"
+msgstr "Ländercode"
 
 #: new_orders_list.php:118
 #: new_orders_list.php:156
 #: new_orders_list.php:166
 #: new_orders_list.php:176
-#, fuzzy
 msgid "name"
-msgstr "Suriname"
+msgstr "Name"
 
 #: new_orders_list.php:118
 #: new_orders_list.php:132
@@ -675,15 +657,13 @@ msgid "wregion"
 msgstr "Réunion"
 
 #: new_orders_list.php:120
-#, fuzzy
 msgid "Region"
-msgstr "Réunion"
+msgstr "Region"
 
 #: new_orders_list.php:130
 #: new_orders_list.php:142
-#, fuzzy
 msgid "Postal Code"
-msgstr "Quelltext"
+msgstr "PLZ"
 
 #: new_orders_list.php:131
 #: new_orders_list.php:143
@@ -711,9 +691,8 @@ msgid "Warehouse Operations"
 msgstr "Operation"
 
 #: new_orders_list.php:189
-#, fuzzy
 msgid "Delivery Notes"
-msgstr "Notizdokumentation"
+msgstr "Versandanzeigen"
 
 #: new_orders_list.php:192
 msgid "Invoices"
@@ -767,14 +746,12 @@ msgid "Location"
 msgstr "Pfad"
 
 #: deal.js.php:177
-#, fuzzy
 msgid "Duration"
-msgstr "Pfad"
+msgstr "Dauer"
 
 #: deal.js.php:178
-#, fuzzy
 msgid "Used"
-msgstr "Benutzer"
+msgstr "Benutzt"
 
 #: new_parts_list.js.php:183
 #, fuzzy
@@ -782,14 +759,12 @@ msgid "supplied_by"
 msgstr "Lieferanten"
 
 #: new_parts_list.js.php:184
-#, fuzzy
 msgid "stock"
 msgstr "Bestand"
 
 #: new_parts_list.js.php:186
-#, fuzzy
 msgid "Sold"
-msgstr "Polen"
+msgstr "Verkauft"
 
 #: new_parts_list.js.php:187
 #, fuzzy
@@ -802,12 +777,10 @@ msgid "stock_value"
 msgstr "Standardwert"
 
 #: new_parts_list.js.php:189
-#, fuzzy
 msgid "Margin"
-msgstr "Martinique"
+msgstr "Gewinnspanne"
 
 #: new_parts_list.js.php:190
-#, fuzzy
 msgid "Available"
 msgstr "Verfügbar"
 
@@ -835,9 +808,8 @@ msgstr ""
 
 #: new_parts_list.js.php:279
 #: new_parts_list.js.php:379
-#, fuzzy
 msgid "Population"
-msgstr "Produkt"
+msgstr "Bevölkerung"
 
 #: new_parts_list.js.php:280
 #: new_parts_list.js.php:380
@@ -871,9 +843,8 @@ msgid "Location List"
 msgstr "Pfad"
 
 #: email_campaign.js.php:21
-#, fuzzy
 msgid "Contact"
-msgstr "Kontakte"
+msgstr "Kontakt"
 
 #: email_campaign.js.php:23
 msgid "Status"
@@ -898,12 +869,10 @@ msgid "Key"
 msgstr "Kenia"
 
 #: edit_position.js.php:181
-#, fuzzy
 msgid "Author"
-msgstr "Österreich"
+msgstr "Autor"
 
 #: edit_position.js.php:182
-#, fuzzy
 msgid "Type"
 msgstr "Typ"
 
@@ -931,9 +900,8 @@ msgid "Order Static List"
 msgstr "Kundenliste"
 
 #: import_csv_verify.php:50
-#, fuzzy
 msgid "Add"
-msgstr "Anpassen"
+msgstr "Hinzufügen"
 
 #: import_csv_verify.php:51
 msgid "Pick a Map"
@@ -954,9 +922,8 @@ msgid "Products"
 msgstr "Produkte"
 
 #: product.php:221
-#, fuzzy
 msgid "Edit Product"
-msgstr "Produkt"
+msgstr "Produkt bearbeiten"
 
 #: product.php:229
 msgid "This product is out of stock"
@@ -1016,50 +983,42 @@ msgid "starting"
 msgstr "Löschvorgang wird gestartet ..."
 
 #: splinter_orders_in_process.js.php:21
-#, fuzzy
 msgid "Order"
-msgstr "Ordnung"
+msgstr "Reihenfolge"
 
 #: splinter_orders_in_process.js.php:27
-#, fuzzy
 msgid "Value"
-msgstr "Standardwert"
+msgstr "Wert"
 
 #: new_customers_list.js.php:415
 #: customer_categories.js.php:106
-#, fuzzy
 msgid "Since"
-msgstr " seit %1"
+msgstr " Seit"
 
 #: new_customers_list.js.php:416
 #: customer_categories.js.php:107
 #: export_csv.php:1394
-#, fuzzy
 msgid "Last Order"
-msgstr "Abspielreihenfolge"
+msgstr "Letzte Bestellung"
 
 #: new_customers_list.js.php:419
 #: customer_categories.js.php:110
 #: export_csv.php:1579
-#, fuzzy
 msgid "Contact Name"
-msgstr "Kontakte"
+msgstr "Kontaktname"
 
 #: new_customers_list.js.php:422
 #: customer_categories.js.php:113
-#, fuzzy
 msgid "Contact Address"
-msgstr "Kontakte"
+msgstr "Kontaktadresse"
 
 #: new_customers_list.js.php:423
 #: customer_categories.js.php:114
-#, fuzzy
 msgid "Billing Address"
-msgstr "Lieferadresse"
+msgstr "Rechnungsadresse"
 
 #: new_customers_list.js.php:424
 #: customer_categories.js.php:115
-#, fuzzy
 msgid "Delivery Address"
 msgstr "Lieferadresse"
 
@@ -1071,9 +1030,8 @@ msgstr "Zahlungen"
 #: new_customers_list.js.php:426
 #: customer_categories.js.php:117
 #: export_csv.php:957
-#, fuzzy
 msgid "Refunds"
-msgstr "liefert"
+msgstr "Rückerstattungen"
 
 #: new_customers_list.js.php:427
 #: customer_categories.js.php:118
@@ -1088,9 +1046,8 @@ msgstr "ausstehend"
 
 #: new_customers_list.js.php:429
 #: customer_categories.js.php:120
-#, fuzzy
 msgid "Profit"
-msgstr "Produkt"
+msgstr "Gewinn"
 
 #: new_customers_list.js.php:430
 #: customer_categories.js.php:121
@@ -1115,14 +1072,12 @@ msgid "Rank Profits"
 msgstr ""
 
 #: new_customers_list.js.php:530
-#, fuzzy
 msgid "World Region"
-msgstr "Réunion"
+msgstr "Weltregion"
 
 #: new_customers_list.js.php:531
-#, fuzzy
 msgid "Countries"
-msgstr "Quelltext"
+msgstr "Länder"
 
 #: new_customers_list.js.php:672
 #: new_customers_list.js.php:741
@@ -1130,19 +1085,16 @@ msgid "Times Used"
 msgstr "Male verwendet"
 
 #: new_customers_list.js.php:738
-#, fuzzy
 msgid "City Name"
-msgstr "Namen bearbeiten"
+msgstr "Stadtname"
 
 #: products_lists.php:80
-#, fuzzy
 msgid "Products Lists"
-msgstr "Haushaltsprodukte"
+msgstr "Produktlisten"
 
 #: products_lists.php:86
-#, fuzzy
 msgid "New List"
-msgstr "Bestellungen"
+msgstr "Neue Liste"
 
 #: products_lists.php:88
 msgid "Categories"
@@ -1169,16 +1121,14 @@ msgstr "Unterfirmen"
 #: export_csv.php:90
 #: export_csv.php:94
 #: export_csv.php:102
-#, fuzzy
 msgid "families"
-msgstr "Ausgewählte Schriftartenfamilien:"
+msgstr "Familien"
 
 #: export_csv.php:107
 #: export_csv.php:111
 #: export_csv.php:168
-#, fuzzy
 msgid "products"
-msgstr "Produkt"
+msgstr "Produkte"
 
 #: export_csv.php:115
 #: export_csv.php:119
@@ -1187,9 +1137,8 @@ msgstr "Personal"
 
 #: export_csv.php:123
 #: export_csv.php:127
-#, fuzzy
 msgid "warehouses"
-msgstr "Zuordnung der Be&nutzernamen:"
+msgstr "Lager"
 
 #: export_csv.php:131
 #: export_csv.php:135
@@ -1211,9 +1160,8 @@ msgstr "Beschreibung"
 
 #: export_csv.php:155
 #: export_csv.php:159
-#, fuzzy
 msgid "departments"
-msgstr "Abteilung"
+msgstr "Abteilungen"
 
 #: export_csv.php:174
 #: export_csv.php:179
@@ -1233,9 +1181,8 @@ msgstr "Notizdokumentation"
 
 #: export_csv.php:202
 #: export_csv.php:206
-#, fuzzy
 msgid "orders"
-msgstr "Ordnung"
+msgstr "Bestellungen"
 
 #: export_csv.php:224
 #: export_csv.php:228
@@ -1814,7 +1761,7 @@ msgstr "Kunde"
 
 #: export_csv.php:1453
 msgid "SKU"
-msgstr ""
+msgstr "SKU"
 
 #: export_csv.php:1455
 #, fuzzy
@@ -2306,7 +2253,7 @@ msgstr "Quelltext"
 
 #: edit_family.js.php:1177
 msgid "Invalid Special Characteristic"
-msgstr ""
+msgstr "Ungültiges Sondermerkmal"
 
 #: edit_family.js.php:1181
 #, fuzzy
@@ -2331,31 +2278,29 @@ msgstr "Quelltext"
 
 #: edit_family.js.php:1202
 msgid "Invalid Family Special Characteristic"
-msgstr ""
+msgstr "Ungültiges Familiensondermerkmal"
 
 #: contact.php:166
 #: contact.php:167
-#, fuzzy
 msgid "Notes"
-msgstr "Keines"
+msgstr "Anmerkungen"
 
 #: contact.php:168
 msgid "Up to (days)"
-msgstr ""
+msgstr "Bis zu (Tage)"
 
 #: contact.php:169
 msgid "Older than (days)"
-msgstr ""
+msgstr "Älter als (Tage)"
 
 #: supplier_user.php:48
-#, fuzzy
 msgid "Forgot Password"
-msgstr "Passwort"
+msgstr "Passwort vergessen"
 
 #: supplier_user.php:50
 #: dashboard_bak.php.php:115
 msgid "Search"
-msgstr ""
+msgstr "Suchen"
 
 #: supplier_user.php:59
 #, fuzzy
@@ -2371,9 +2316,8 @@ msgid "Amount"
 msgstr ""
 
 #: supplier_product.js.php:103
-#, fuzzy
 msgid "In"
-msgstr "Name=Rechnung"
+msgstr "In"
 
 #: supplier_product.js.php:104
 msgid "Lost"
@@ -2395,35 +2339,31 @@ msgstr ""
 #: ar_porders.php:430
 #: ar_porders.php:670
 #: ar_porders.php:906
-#, fuzzy
 msgid "order"
 msgid_plural "orders"
-msgstr[0] "Ordnung"
-msgstr[1] "Ordnung"
+msgstr[0] "Bestellung"
+msgstr[1] "Bestellungen"
 
 #: ar_porders.php:181
 #: ar_porders.php:437
 #: ar_porders.php:677
 #: ar_porders.php:913
-#, fuzzy
 msgid "Showing all orders"
-msgstr "Anzeigen des Desktops: %s\n"
+msgstr "Alle Bestellungen anzeigen"
 
 #: ar_porders.php:190
 #: ar_porders.php:446
 #: ar_porders.php:686
 #: ar_porders.php:922
-#, fuzzy
 msgid "There isn't any order with number"
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Bestellung mit der Nummer"
 
 #: ar_porders.php:192
 #: ar_porders.php:448
 #: ar_porders.php:688
 #: ar_porders.php:924
-#, fuzzy
 msgid "orders starting with"
-msgstr "Löschvorgang wird gestartet ..."
+msgstr "Bestellungen, die beginnen mit"
 
 #: ar_porders.php:196
 #: ar_porders.php:452
@@ -2467,7 +2407,6 @@ msgstr "Schlüssel-Kunde"
 #: ar_porders.php:464
 #: ar_porders.php:704
 #: ar_porders.php:940
-#, fuzzy
 msgid "days"
 msgstr "Tage"
 
@@ -2491,19 +2430,16 @@ msgid "Display Board"
 msgstr ""
 
 #: dashboard_bak.php.php:78
-#, fuzzy
 msgid "Pending orders"
-msgstr "Andorra"
+msgstr "Ausstehende Bestellungen"
 
 #: dashboard_bak.php.php:87
-#, fuzzy
 msgid "Top Products"
-msgstr "Haushaltsprodukte"
+msgstr "Top-Produkte"
 
 #: dashboard_bak.php.php:94
-#, fuzzy
 msgid "Top Customers"
-msgstr "Kunden"
+msgstr "Top-Kunden"
 
 #: dashboard_bak.php.php:119
 msgid "Dashboard"
@@ -2539,14 +2475,12 @@ msgid "Staff Key"
 msgstr "Personalliste"
 
 #: staff.js.php:95
-#, fuzzy
 msgid "Day"
-msgstr "Tage"
+msgstr "Tag"
 
 #: staff.js.php:96
-#, fuzzy
 msgid "Start Time"
-msgstr "Bestand"
+msgstr "Startzeit"
 
 #: staff.js.php:97
 msgid "Finish Time"
@@ -19730,7 +19664,7 @@ msgstr ""
 
 #: class.Address.php:1649
 msgid "Somewhere in"
-msgstr ""
+msgstr "Irgendwo in"
 
 #: class.Address.php:4814
 msgid "address associated with"
