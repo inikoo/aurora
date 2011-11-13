@@ -2831,6 +2831,8 @@ $default_state=array(
                                                    'mode'=>'all',
                                                    'avg'=>'totals',
                                                    'restrictions'=>'',
+                                                    'elements'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
+
                                                    'csv_export'=>array(
                                                                     'code'=>true,
                                                                     'name'=>true,

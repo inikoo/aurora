@@ -1,6 +1,9 @@
 
    function  change_product_view(e,data){	
 	tipo=this.id;
+	
+	
+	
 	if(tipo=='product_general')tipo='general';
     else if(tipo=='product_sales')tipo='sales';
     else if(tipo=='product_stock')tipo='stock';

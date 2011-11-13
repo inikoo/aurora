@@ -1039,7 +1039,7 @@ function list_products_for_edition() {
         else
             $margin=_('ND');
         global $myconf;
-        $in_common_currency=$myconf['currency_code'];
+        $in_common_currency=$corporate_currency;
         $in_common_currency_price='';
         if ($row['Product Currency']!= $in_common_currency) {
             if (!isset($exchange[$row['Product Currency']])) {
@@ -1058,7 +1058,7 @@ function list_products_for_edition() {
             else
                 $margin=_('ND');
             global $myconf;
-            $in_common_currency=$myconf['currency_code'];
+            $in_common_currency=$corporate_currency;
             $in_common_currency_price='';
             if ($row['Product Currency']!= $in_common_currency) {
                 if (!isset($exchange[$row['Product Currency']])) {
@@ -1090,7 +1090,7 @@ function list_products_for_edition() {
             else
                 $margin=_('ND');
             global $myconf;
-            $in_common_currency=$myconf['currency_code'];
+            $in_common_currency=$corporate_currency;
             $in_common_currency_price='';
             if ($row['Product Currency']!= $in_common_currency) {
                 if (!isset($exchange[$row['Product Currency']])) {

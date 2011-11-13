@@ -877,7 +877,7 @@ class product extends DB_Table {
                        'Product Web Configuration'=>'Offline',
                        'product store key'=>1,
                        'product locale'=>$myconf['lang'].'_'.$myconf['country'],
-                       'product currency'=>$myconf['currency_code'],
+                       'product currency'=>$corporate_currency,
 
                        'product code file as'=>'',
                        'product code'=>'',

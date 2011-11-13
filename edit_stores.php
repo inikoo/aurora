@@ -112,7 +112,7 @@ get_header_info($user,$smarty);
 global $myconf;
 $stores=array();
 $sql=sprintf("select count(distinct `Store Currency Code` ) as distint_currencies, sum(IF(`Store Currency Code`=%s,1,0)) as default_currency    from `Store Dimension` "
-             ,prepare_mysql($myconf['currency_code']));
+             ,prepare_mysql($corporate_currency));
 
 $res=mysql_query($sql);
 if ($row=mysql_fetch_array($res)) {

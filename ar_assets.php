@@ -280,7 +280,7 @@ function list_departments() {
 //     $conf_table='store';
 //       $conf=$_SESSION['state']['store']['table'];
 //       $conf2=$_SESSION['state']['store'];
-    global $user;
+    global $user,$corporate_currency;
 
     if (isset( $_REQUEST['store']) and  is_numeric( $_REQUEST['store']))
         $store_id=$_REQUEST['store'];
@@ -1127,7 +1127,7 @@ function list_departments() {
     $adata=array();
 //  print "$sql";
     global $myconf;
-    $currency_code=$myconf['currency_code'];
+    $currency_code=$corporate_currency;
     $sum_active=0;
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $currency_code=$row['Product Department Currency Code'];
@@ -2495,7 +2495,7 @@ function list_products() {
 
         $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
         //$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
-        $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Product Store Key']);
+        $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
 
         if ($percentages) {
             if ($period=='all') {
@@ -3086,7 +3086,7 @@ function list_products() {
                      'store'=>$store,
                      'code'=>$code,
                      'name'=>$row['Product XHTML Short Description'],
-                     'smallname'=>'<span style="font-size:70%;">'.$row['Product XHTML Short Description'].'</span>',
+                     'smallname'=>'<span >'.$row['Product XHTML Short Description'].'</span>',
                      'formated_record_type'=>$record_type,
                      'record_type'=>$row['Product Record Type'],
                      'stock_state'=>$stock_state,
@@ -4527,7 +4527,7 @@ function list_families() {
     $wheref='';
     if ($f_field=='code' and $f_value!='')
         $wheref.=" and `Product Family Code`  like '".addslashes($f_value)."%'";
-    if ($f_field=='description' and $f_value!='')
+    if ($f_field=='name' and $f_value!='')
         $wheref.=" and `Product Family Name`  like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from `Product Family Dimension`      $where $wheref";
@@ -4561,8 +4561,8 @@ function list_families() {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family with code like")." <b>".$f_value."*</b> ";
             break;
-        case('description'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family with this description").": <b>".$f_value."*</b> ";
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any family with this name").": <b>".$f_value."*</b> ";
             break;
         }
     }
@@ -4571,8 +4571,8 @@ function list_families() {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('families with code like')." <b>".$f_value."*</b>";
             break;
-        case('description'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('families with this description')." <b>".$f_value."*</b>";
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('families with this name')." <b>".$f_value."*</b>";
             break;
         }
     }
@@ -5305,7 +5305,8 @@ function list_families() {
 }
 
 function list_stores() {
-    global $user;
+    global $user,$corporate_currency;
+    
     $conf=$_SESSION['state']['stores']['stores'];
 
     if (isset( $_REQUEST['sf']))
@@ -5501,7 +5502,7 @@ function list_stores() {
         elseif($period=='week')
         $order='`Store 1 Week Acc Invoiced Amount`';
         elseif($period=='yeartoday')
-        $order='`Store YearToDay Acc Invoiced Amount`';
+        $order='`Store Year To Day Acc Invoiced Amount`';
         elseif($period=='three_year')
         $order='`Store 3 Year Acc Invoiced Amount`';
         elseif($period=='six_month')
@@ -5563,7 +5564,7 @@ function list_stores() {
             }
             mysql_free_result($result);
         } else {
-            $sql=sprintf("select sum(if(`Store Total Profit`<0,`Store Total Profit`,0)) as total_profit_minus,sum(if(`Store Total Profit`>=0,`Store Total Profit`,0)) as total_profit_plus,sum(`Store Total Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
+            $sql=sprintf("select sum(if(`Store Total Profit`<0,`Store Total Profit`,0)) as total_profit_minus,sum(if(`Store Total Profit`>=0,`Store Total Profit`,0)) as total_profit_plus,sum(`Store Total Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($corporate_currency));
             //print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -5605,7 +5606,7 @@ function list_stores() {
             }
             mysql_free_result($result);
         } else {
-            $sql=sprintf("select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
+            $sql=sprintf("select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($corporate_currency));
             //print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -5682,7 +5683,7 @@ function list_stores() {
     elseif($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select sum(if(`Store YearToDay Acc Profit`<0,`Store YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Store YearToDay Acc Profit`>=0,`Store YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store YearToDay Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
+        $sql="select sum(if(`Store Year To Day Acc Profit`<0,`Store Year To Day Acc Profit`,0)) as total_profit_minus,sum(if(`Store Year To Day Acc Profit`>=0,`Store Year To Day Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store Year To Day Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -6056,38 +6057,38 @@ function list_stores() {
                 if ($avg=="totals")
                     $factor=1;
                 elseif($avg=="month") {
-                    if ($row["Store YearToDay Acc Days On Sale"]>0)
-                        $factor=30.4368499/$row["Store YearToDay Acc Days On Sale"];
+                    if ($row["Store Year To Day Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store Year To Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
                 elseif($avg=="month") {
-                    if ($row["Store YearToDay Acc Days On Sale"]>0)
-                        $factor=30.4368499/$row["Store YearToDay Acc Days On Sale"];
+                    if ($row["Store Year To Day Acc Days On Sale"]>0)
+                        $factor=30.4368499/$row["Store Year To Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
                 elseif($avg=="week") {
-                    if ($row["Store YearToDay Acc Days On Sale"]>0)
-                        $factor=7/$row["Store YearToDay Acc Days On Sale"];
+                    if ($row["Store Year To Day Acc Days On Sale"]>0)
+                        $factor=7/$row["Store Year To Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
                 elseif($avg=="month_eff") {
-                    if ($row["Store YearToDay Acc Days Available"]>0)
-                        $factor=30.4368499/$row["Store YearToDay Acc Days Available"];
+                    if ($row["Store Year To Day Acc Days Available"]>0)
+                        $factor=30.4368499/$row["Store Year To Day Acc Days Available"];
                     else
                         $factor=0;
                 }
                 elseif($avg=="week_eff") {
-                    if ($row["Store YearToDay Acc Days Available"]>0)
-                        $factor=7/$row["Store YearToDay Acc Days Available"];
+                    if ($row["Store Year To Day Acc Days Available"]>0)
+                        $factor=7/$row["Store Year To Day Acc Days Available"];
                     else
                         $factor=0;
                 }
 
-                $tsall=($row["Store".$DC_tag." YearToDay Acc Invoiced Amount"]*$factor);
-                $tprofit=($row["Store".$DC_tag." YearToDay Acc Profit"]*$factor);
+                $tsall=($row["Store".$DC_tag." Year To Day Acc Invoiced Amount"]*$factor);
+                $tprofit=($row["Store".$DC_tag." Year To Day Acc Profit"]*$factor);
             }
             elseif($period=="three_year") {
                 if ($avg=="totals")
@@ -6224,7 +6225,7 @@ function list_stores() {
         if (!$percentages) {
             if ($show_default_currency) {
                 $class='';
-                if ($myconf['currency_code']!=$row['Store Currency Code'])
+                if ($corporate_currency!=$row['Store Currency Code'])
                     $class='currency_exchanged';
 
 
@@ -9300,7 +9301,7 @@ function list_product_categories() {
         if (!$percentages) {
             if ($show_default_currency) {
                 $class='';
-                if ($myconf['currency_code']!=$row['Product Category Currency Code'])
+                if ($corporate_currency!=$row['Product Category Currency Code'])
                     $class='currency_exchanged';
 
 
