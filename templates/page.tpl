@@ -9,7 +9,7 @@
 <div  class="branch"> 
   <span  >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; {t}Webpage{/t}: {$page->get('Page Code')}</span>
 </div>
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+<div class="top_page_menu">
     <div class="buttons" style="float:right">
         <button  onclick="window.location='edit_page.php?id={$page->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>
     </div>

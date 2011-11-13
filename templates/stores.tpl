@@ -9,34 +9,16 @@
   <span >{t}Stores{/t}</span>
 </div>
 
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
-
+<div class="top_page_menu">
 <div class="buttons" style="float:right">
-
-
-
 <button  onclick="window.location='edit_stores.php'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button>
-<button  onclick="window.location='new_store.php'" ><img src="art/icons/add.png" alt=""> {t}Store{/t}</button>
-
-
-
+<button  onclick="window.location='new_store.php'" ><img src="art/icons/add.png" alt=""> {t}Add Store{/t}</button>
 </div>
-
 <div class="buttons" style="float:left">
-
 <button  onclick="window.location='stores_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
-
-
-
 </div>
-
-
-
-
 <div style="clear:both"></div>
 </div>
-
-
 </div>
 
 

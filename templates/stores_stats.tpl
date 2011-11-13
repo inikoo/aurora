@@ -5,7 +5,7 @@
 <div class="branch"> 
   <span><a href="stores.php">{t}Stores{/t}</a> &rarr; {t}Statistics{/t}</span>
 </div>
- <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+ <div class="top_page_menu">
     <div class="buttons" style="float:left">
         <button  onclick="window.location='stores.php'" ><img src="art/icons/house.png" alt=""> {t}Stores{/t}</button>
     </div>
