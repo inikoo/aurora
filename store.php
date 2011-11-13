@@ -59,7 +59,17 @@ $smarty->assign('modify',$modify);
 
 $stores_order=$_SESSION['state']['stores']['stores']['order'];
 $stores_period=$_SESSION['state']['stores']['stores']['period'];
-$stores_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+$stores_period_title=array(
+                         'year'=>_('Last Year'),
+                         'quarter'=>_('Last Quarter'),
+                         'month'=>_('Last Month'),
+                         'week'=>_('Last Week'),
+                         'six_month'=>_('Last Six Months'),
+                         'three_year'=>_('Last Three Years'),
+                         'yeartoday'=>_('Year To Day'),
+                         'ten_day'=>_('Last Ten Days'),
+                         'all'=>_('All')
+                     );
 
 $smarty->assign('stores_period',$stores_period);
 $smarty->assign('stores_period_title',$stores_period_title[$stores_period]);
@@ -141,12 +151,14 @@ $smarty->assign('department_avg',$_SESSION['state']['store']['departments']['avg
 $smarty->assign('department_period',$_SESSION['state']['store']['departments']['period']);
 
 
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['store']['departments']['f_field']:'code');
+
+$tipo_filter=$_SESSION['state']['store']['departments']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',($q==''?$_SESSION['state']['store']['departments']['f_value']:addslashes($q)));
+$smarty->assign('filter_value0',$_SESSION['state']['store']['departments']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Store starting with  <i>x</i>','label'=>'Code')
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Department code starting with  <i>x</i>'),'label'=>_('Code')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Department name containing <i>x</i>'),'label'=>_('Name'))
+
              );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('departments',$store->data['Store Departments']);
@@ -164,7 +176,9 @@ $tipo_filter=($q==''?$_SESSION['state']['store']['families']['f_field']:'code');
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',($q==''?$_SESSION['state']['store']['families']['f_value']:addslashes($q)));
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code')
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Family code starting with  <i>x</i>'),'label'=>_('Code')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Family name containing <i>x</i>'),'label'=>_('Name'))
+
              );
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('families',$store->data['Store Families']);
@@ -182,7 +196,9 @@ $tipo_filter=($q==''?$_SESSION['state']['store']['products']['f_field']:'code');
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',($q==''?$_SESSION['state']['store']['products']['f_value']:addslashes($q)));
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code')
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
+
              );
 $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('products',$store->data['Store For Public Sale Products']);

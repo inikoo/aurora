@@ -139,23 +139,7 @@
 		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
 		    {/if}
 		  </table>
-		  <table  class="show_info_product">
-		    
-
-
-<tr>
-		      <td>{t}Categories{/t}:</td>
-		      <td>{$categories}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Material{/t}:</td>
-		      <td>{$materials}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Ingredients{/t}:</td>
-		      <td>{$ingredients}</td>
-		    </tr>
-		  </table>
+		  
 		
               </div>
 	    </div>
@@ -183,7 +167,24 @@
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 <div style="padding:0 20px">    
-<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+<div style="width:300px">
+<table  class="show_info_product">
+            <tr>
+		      <td>{t}Categories{/t}:</td>
+		      <td>{$categories}</td>
+		    </tr>
+		    <tr>
+		      <td>{t}Material{/t}:</td>
+		      <td>{$materials}</td>
+		    </tr>
+		    <tr>
+		      <td>{t}Ingredients{/t}:</td>
+		      <td>{$ingredients}</td>
+		    </tr>
+		  </table>
+</div>
+</div>
 <div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
  <table    class="show_info_product" style="width:250px">

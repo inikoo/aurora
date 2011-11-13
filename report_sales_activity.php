@@ -164,7 +164,7 @@ foreach($store_data as $key=>$val){
    $store_data[$key]['per_customers']=percentage($val['_customers'],$total['customers']);
   
    
-  if($val['currency_code']!=$myconf['currency_code'])
+  if($val['currency_code']!=$corporate_currency)
     $store_data[$key]['per_eq_net']='<span class="mix_currency">'.percentage($val['_eq_net'],$total['net']).'</span>';
   else
     $store_data[$key]['per_eq_net']=percentage($val['_eq_net'],$total['net']);
@@ -176,7 +176,7 @@ foreach($store_data as $key=>$val){
      $store_data[$key]['sub_per_invoices']=percentage($val['_invoices'],$total['invoices']);
      $store_data[$key]['sub_per_customers']=percentage($val['_customers'],$total['customers']);
 
-     if($val['currency_code']!=$myconf['currency_code']){
+     if($val['currency_code']!=$corporate_currency){
        $store_data[$key]['sub_per_eq_net']='<span class="mix_currency">'.percentage($val['_eq_net'],$total['net']).'</span>';
 
      }else{
@@ -241,7 +241,7 @@ function report_data($int){
   $result=mysql_query($sql);
   $mixed_currencies=false;
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    if($row['Store Currency Code']!=$myconf['currency_code'])
+    if($row['Store Currency Code']!=$corporate_currency)
       $mixed_currencies=true;
     $store_data[$row['Store Key']]=array(
 					 'store'=>sprintf('<a href="report_sales.php?store_key=%d%s">%s</a>',$row['Store Key'],$link,$row['Store Name'])

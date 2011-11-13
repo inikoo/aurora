@@ -360,7 +360,6 @@ function list_pages() {
     $order='`Supplier Main Location`';
     elseif($order=='email')
     $order='`Supplier Main XHTML Email`';
-
     elseif($order=='sales') {
 
         switch ($period) {
@@ -405,7 +404,6 @@ function list_pages() {
 
 
     }
-
     elseif($order=='pending_pos') {
         $order='`Supplier Open Purchase Orders`';
 
@@ -490,7 +488,6 @@ function list_pages() {
             break;
         }
     }
-
     elseif($order=='profit_after_storing') {
 
         switch ($period) {
@@ -531,7 +528,6 @@ function list_pages() {
             break;
         }
     }
-
     elseif($order=='profit') {
 
         switch ($period) {
@@ -572,6 +568,9 @@ function list_pages() {
             break;
         }
     }
+    else{
+       $order='`Page Code`';
+    }
     //print $order;
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
@@ -583,6 +582,7 @@ function list_pages() {
 
     $result=mysql_query($sql);
     $data=array();
+   // print $sql;
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
         $code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";

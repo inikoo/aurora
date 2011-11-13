@@ -1763,8 +1763,8 @@ class Invoice extends DB_Table {
                 $this->data['Invoice Currency']=$store->data['Store Currency Code'];
             }
 
-            if ($myconf['currency_code']!=$this->data['Invoice Currency']) {
-                //print $myconf['currency_code'].' -> '.$this->data['Invoice Currency']."\n";
+            if ($corporate_currency!=$this->data['Invoice Currency']) {
+                //print $corporate_currency.' -> '.$this->data['Invoice Currency']."\n";
                 if (isset($invoice_data['Invoice Currency Exchange'])) {
                     $this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exchange'];
                 } else {

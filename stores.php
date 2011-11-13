@@ -49,7 +49,7 @@ $number_of_stores=count($user->stores);
 
 
 $css_files=array(
-             $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
@@ -80,8 +80,8 @@ $js_files=array(
 
           );
 
-    $js_files[]='js/search.js';
-    $js_files[]='stores.js.php';
+$js_files[]='js/search.js';
+$js_files[]='stores.js.php';
 
 
 
@@ -113,7 +113,7 @@ get_header_info($user,$smarty);
 global $myconf;
 $stores=array();
 $sql=sprintf("select count(distinct `Store Currency Code` ) as distint_currencies, sum(IF(`Store Currency Code`=%s,1,0)) as default_currency    from `Store Dimension` "
-             ,prepare_mysql($myconf['currency_code']));
+             ,prepare_mysql($corporate_currency));
 
 $res=mysql_query($sql);
 if ($row=mysql_fetch_array($res)) {
@@ -128,20 +128,24 @@ $mode_options=array(
               );
 
 
+
 $display_mode='value';
-$display_mode_label=_('Values');
-if ($_SESSION['state']['product_categories']['percentages']) {
+$display_mode_label=_('Sales in store currencies');
+if ($_SESSION['state']['stores']['stores']['percentages']) {
     $display_mode='percentages';
     $display_mode_label=_('Percentages');
+} else if ($_SESSION['state']['stores']['stores']['show_default_currency']) {
+    $display_mode='value_default_d2d';
+    $display_mode_label=_("Sales in")." ".$corporate_currency." ("._('d2d').")";
 }
 
 if ($distinct_currencies>1) {
-    $mode_options[]=array('mode'=>'value_default_d2d','label'=>_("Values in")." ".$myconf['currency_code']." ("._('d2d').")");
+    $mode_options[]=array('mode'=>'value_default_d2d','label'=>_("Sales in")." ".$corporate_currency." ("._('d2d').")");
 
-    if ($_SESSION['state']['stores']['stores']['show_default_currency']) {
-        $display_mode='value_default_d2d';
-        $display_mode_label=_("Values in")." ".$myconf['currency_code']." ("._('d2d').")";
-    }
+
+} else {
+
+    $display_mode_label=_('Sales Amount');
 }
 
 
@@ -153,14 +157,13 @@ $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
 
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['stores']['stores']['f_field']:'code');
-//$smarty->assign('filter_show0',$_SESSION['state']['stores']['stores']['f_show']);
+
+$tipo_filter=$_SESSION['state']['stores']['stores']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['stores']['f_value']:addslashes($q)));
+$smarty->assign('filter_value0',$_SESSION['state']['stores']['stores']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>_('Store Code'),'label'=>_('Code')),
-                 'name'=>array('db_key'=>'name','menu_label'=>_('Store Name'),'label'=>_('Name')),
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Store code starting with  <i>x</i>'),'label'=>_('Code')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Store name containing <i>x</i>'),'label'=>_('Name'))
              );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
@@ -174,12 +177,14 @@ $smarty->assign('department_view',$_SESSION['state']['stores']['departments']['v
 $smarty->assign('department_show_percentages',$_SESSION['state']['stores']['departments']['percentages']);
 $smarty->assign('department_avg',$_SESSION['state']['stores']['departments']['avg']);
 $smarty->assign('department_period',$_SESSION['state']['stores']['departments']['period']);
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['stores']['departments']['f_field']:'code');
+
+$tipo_filter=$_SESSION['state']['stores']['departments']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',($q==''?$_SESSION['state']['stores']['departments']['f_value']:addslashes($q)));
+$smarty->assign('filter_value1',$_SESSION['state']['stores']['departments']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Department starting with  <i>x</i>','label'=>'Code')
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Department code starting with  <i>x</i>'),'label'=>_('Code')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Department name containing <i>x</i>'),'label'=>_('Name'))
+
              );
 $smarty->assign('filter_menu1',$filter_menu);
 //$smarty->assign('departments',$store->data['Store Departments']);
@@ -191,12 +196,13 @@ $smarty->assign('family_view',$_SESSION['state']['stores']['families']['view']);
 $smarty->assign('family_show_percentages',$_SESSION['state']['stores']['families']['percentages']);
 $smarty->assign('family_avg',$_SESSION['state']['stores']['families']['avg']);
 $smarty->assign('family_period',$_SESSION['state']['stores']['families']['period']);
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['stores']['families']['f_field']:'code');
-$smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',($q==''?$_SESSION['state']['stores']['families']['f_value']:addslashes($q)));
+
+$tipo_filter=$_SESSION['state']['stores']['families']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['stores']['families']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code')
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Family code starting with  <i>x</i>'),'label'=>_('Code')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Family name containing <i>x</i>'),'label'=>_('Name'))
              );
 $smarty->assign('filter_menu2',$filter_menu);
 //$smarty->assign('families',$store->data['Store Families']);
@@ -208,12 +214,14 @@ $smarty->assign('product_view',$_SESSION['state']['stores']['products']['view'])
 $smarty->assign('product_show_percentages',$_SESSION['state']['stores']['products']['percentages']);
 $smarty->assign('product_avg',$_SESSION['state']['stores']['products']['avg']);
 $smarty->assign('product_period',$_SESSION['state']['stores']['products']['period']);
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['stores']['products']['f_field']:'code');
-$smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',($q==''?$_SESSION['state']['stores']['products']['f_value']:addslashes($q)));
+
+$tipo_filter=$_SESSION['state']['stores']['products']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['stores']['products']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code')
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
+
              );
 $smarty->assign('filter_menu3',$filter_menu);
 //$smarty->assign('products',$store->data['Store For Public Sale Products']);
@@ -222,24 +230,24 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
 
-   
 
-    $csv_export_options=array(
-                            'description'=>array(
-                                              'title'=>_('Description'),
-                                              'rows'=>
+
+$csv_export_options=array(
+                        'description'=>array(
+                                          'title'=>_('Description'),
+                                          'rows'=>
+                                                 array(
                                                      array(
-                                                         array(
-                                                             'description'=>array('label'=>_('Description'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['description']),
-                                                             'stock'=>array('label'=>_('Stock'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['stock']),
-                                                             'sales'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales']),
-                                                            
-                                                     
-                                                         )
+                                                         'description'=>array('label'=>_('Description'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['description']),
+                                                         'stock'=>array('label'=>_('Stock'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['stock']),
+                                                         'sales'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['stores']['csv_export']['sales']),
+
+
                                                      )
-                                          )
-  
-                        );
+                                                 )
+                                      )
+
+                    );
 $smarty->assign('export_csv_table_cols',7);
 $smarty->assign('csv_export_options',$csv_export_options);
 

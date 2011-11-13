@@ -5084,7 +5084,7 @@ function list_customer_categories() {
                if (!$percentages) {
                    if ($show_default_currency) {
                        $class='';
-                       if ($myconf['currency_code']!=$row['Product Category Currency Code'])
+                       if ($corporate_currency!=$row['Product Category Currency Code'])
                            $class='currency_exchanged';
 
 
