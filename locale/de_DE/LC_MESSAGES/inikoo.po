@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-12 16:49+0100\n"
-"PO-Revision-Date: 2011-11-13 22:32+0100\n"
+"PO-Revision-Date: 2011-11-13 23:19+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -2560,24 +2560,20 @@ msgid "Code/Name"
 msgstr "Name des Kunden  "
 
 #: department.js.php:79
-#, fuzzy
 msgid "To do"
-msgstr "Togo"
+msgstr "Zu erledigen"
 
 #: department.js.php:83
-#, fuzzy
 msgid "Stk Value"
-msgstr "Standardwert"
+msgstr "Bestandswert"
 
 #: department.js.php:84
-#, fuzzy
 msgid "Out of Stk "
-msgstr "Kartenstapel"
+msgstr "Nicht vorrätig"
 
 #: department.js.php:85
-#, fuzzy
 msgid "Stk Error"
-msgstr "Fehler"
+msgstr "Bestandsfehler"
 
 #: edit_positions.php:74
 #, fuzzy
@@ -2585,19 +2581,16 @@ msgid "Company Positions"
 msgstr "Beschreibung"
 
 #: porder_cancelled.js.php:21
-#, fuzzy
 msgid "Unit"
-msgstr "Einheiten"
+msgstr "Einheit"
 
 #: new_offer.php:77
-#, fuzzy
 msgid "New Offer"
-msgstr "Benutzer:"
+msgstr "Neues Angebot"
 
 #: warehouses_parts.js.php:85
-#, fuzzy
 msgid "Supplied By"
-msgstr "Lieferanten"
+msgstr "Geliefert von"
 
 #: warehouses_parts.js.php:87
 msgid "S Until"
@@ -2647,19 +2640,16 @@ msgid "per unit"
 msgstr "pro Artikel"
 
 #: edit_product.js.php:84
-#, fuzzy
 msgid "Price up"
-msgstr "Abspielreihenfolge"
+msgstr "Preis angestiegen"
 
 #: edit_product.js.php:86
-#, fuzzy
 msgid "Price down"
-msgstr "Preis: %1"
+msgstr "Preis gefallen"
 
 #: edit_product.js.php:399
-#, fuzzy
 msgid "Part"
-msgstr "Haushaltsprodukte"
+msgstr "Teil"
 
 #: edit_product.js.php:411
 msgid "Remove"
@@ -2680,25 +2670,21 @@ msgid "Notes For Pickers"
 msgstr ""
 
 #: edit_product.js.php:462
-#, fuzzy
 msgid "Invalid number"
 msgstr "Ungültige Zahl"
 
 #: edit_product.js.php:466
-#, fuzzy
 msgid "Invalid Customer Name"
-msgstr "Name des Kunden  "
+msgstr "Ungültiger Kundennname"
 
 #: edit_product.js.php:468
-#, fuzzy
 msgid "Invalid Description"
-msgstr "Beschreibung"
+msgstr "Ungültige Beschreibung"
 
 #: edit_product.js.php:476
 #: edit_product.js.php:477
-#, fuzzy
 msgid "Invalid Weight"
-msgstr "Gewicht"
+msgstr "Ungültiges Gewicht"
 
 #: edit_product.js.php:483
 #, fuzzy
@@ -2722,30 +2708,26 @@ msgid "Lists"
 msgstr "Listen"
 
 #: customer.php:276
-#, fuzzy
 msgid "Advanced Search"
-msgstr "Nummer der Bestellung"
+msgstr "Erweiterte Suche"
 
 #: customer.php:277
 msgid "Stats"
 msgstr ""
 
 #: customer.php:281
-#, fuzzy
 msgid "Add Other Customer"
-msgstr "Schlüssel-Kunde"
+msgstr "Weiteren Kunden hinzufügen"
 
 #: customer.php:282
-#, fuzzy
 msgid "Edit Customer"
-msgstr "Kunde"
+msgstr "Kunden bearbeiten"
 
 #: customer.php:294
 msgid "Customers List"
 msgstr "Kundenliste"
 
 #: customer.php:310
-#, fuzzy
 msgid "week"
 msgstr "Woche"
 
@@ -2785,14 +2767,12 @@ msgid "Products marked as out of stock"
 msgstr ""
 
 #: report_outofstock.php:107
-#, fuzzy
 msgid "Product Code"
-msgstr "Quelltext"
+msgstr "Produktkode"
 
 #: report_outofstock.php:108
-#, fuzzy
 msgid "Family Code"
-msgstr "Quelltext"
+msgstr "Familienkode"
 
 #: report_outofstock.php:109
 #, fuzzy
@@ -2807,9 +2787,8 @@ msgstr[1] ""
 
 #: ar_edit_warehouse.php:620
 #: ar_edit_warehouse.php:1401
-#, fuzzy
 msgid "Showing all"
-msgstr "Anzeigen des Desktops: %s\n"
+msgstr "Alle anzeigen"
 
 #: ar_edit_warehouse.php:716
 msgid "Location added to Warehouse Area"
@@ -2846,14 +2825,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ar_edit_warehouse.php:1466
-#, fuzzy
 msgid "Delete"
-msgstr "Entf"
+msgstr "Löschen"
 
 #: class.DealMetadata.php:315
-#, fuzzy
 msgid "Discount"
-msgstr "Konten"
+msgstr "Rabatt"
 
 #: class.DealMetadata.php:375
 #: class.DealMetadata.php:379
