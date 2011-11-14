@@ -16,8 +16,7 @@
 <div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
 <table id="{$search_scope}_search_results_table"></table>
 </div>
-
-
+{if $general_options_list}
 <div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}500px{/if};float:right;margin-bottom:10px" class="right_box">
   <div class="general_options">
     {foreach from=$general_options_list item=options }
@@ -29,3 +28,4 @@
     {/foreach}
   </div>
 </div>
+{/if}

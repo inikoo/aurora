@@ -18,7 +18,7 @@ case('preview_email_campaign'):
                          ));
     preview_email_campaign($data);
     break;
-    
+
 case('is_email_campaign_name'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
@@ -27,20 +27,37 @@ case('is_email_campaign_name'):
     is_email_campaign_name($data);
     break;
 case('email_campaigns'):
-  
+
     email_campaigns();
 
 
     break;
- default:
+default:
     $response=array('state'=>404,'msg'=>_('Operation not found'));
-    echo json_encode($response);   
+    echo json_encode($response);
 }
 
 
 function email_campaigns() {
- global $user;
-    $conf=$_SESSION['state']['marketing']['email_campaigns'];
+    global $user;
+
+
+    switch ($_REQUEST['parent']) {
+    case 'store':
+        $parent='store';
+        $parent_key=$_REQUEST['parent_key'];
+        $conf=$_SESSION['state']['marketing']['email_campaigns'];
+        break;
+    case 'none':
+        $parent='none';
+        $conf=$_SESSION['state']['marketing_server']['email_campaigns'];
+        break;
+    default:
+        exit;
+        break;
+    }
+
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -72,11 +89,6 @@ function email_campaigns() {
         $where=$conf['where'];
 
 
-    if (isset( $_REQUEST['store_id'])    ) {
-        $store=$_REQUEST['store_id'];
-        $_SESSION['state']['marketing']['store']=$store;
-    } else
-        $store=$_SESSION['state']['marketing']['store'];
 
 
     if (isset( $_REQUEST['tableid']))
@@ -84,26 +96,32 @@ function email_campaigns() {
     else
         $tableid=0;
 
-    
+
 
     $filter_msg='';
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     $_order=$order;
     $_dir=$order_direction;
 
-   
-  
-    //$_SESSION['state']['marketing']['email_campaigns']['view']=$product_view;
-    //$_SESSION['state']['marketing']['email_campaigns']['percentage']=$product_percentage;
-    //$_SESSION['state']['marketing']['email_campaigns']['period']=$product_period;
-    $_SESSION['state']['marketing']['email_campaigns']['order']=$order;
-    $_SESSION['state']['marketing']['email_campaigns']['order_dir']=$order_dir;
-    $_SESSION['state']['marketing']['email_campaigns']['nr']=$number_results;
-    $_SESSION['state']['marketing']['email_campaigns']['sf']=$start_from;
-    $_SESSION['state']['marketing']['email_campaigns']['where']=$where;
-    $_SESSION['state']['marketing']['email_campaigns']['f_field']=$f_field;
-    $_SESSION['state']['marketing']['email_campaigns']['f_value']=$f_value;
 
+    if ($parent=='store') {
+        $_SESSION['state']['marketing']['email_campaigns']['order']=$order;
+        $_SESSION['state']['marketing']['email_campaigns']['order_dir']=$order_dir;
+        $_SESSION['state']['marketing']['email_campaigns']['nr']=$number_results;
+        $_SESSION['state']['marketing']['email_campaigns']['sf']=$start_from;
+        $_SESSION['state']['marketing']['email_campaigns']['where']=$where;
+        $_SESSION['state']['marketing']['email_campaigns']['f_field']=$f_field;
+        $_SESSION['state']['marketing']['email_campaigns']['f_value']=$f_value;
+    } else {
+        $_SESSION['state']['marketing_server']['email_campaigns']['order']=$order;
+        $_SESSION['state']['marketing_server']['email_campaigns']['order_dir']=$order_dir;
+        $_SESSION['state']['marketing_server']['email_campaigns']['nr']=$number_results;
+        $_SESSION['state']['marketing_server']['email_campaigns']['sf']=$start_from;
+        $_SESSION['state']['marketing_server']['email_campaigns']['where']=$where;
+        $_SESSION['state']['marketing_server']['email_campaigns']['f_field']=$f_field;
+        $_SESSION['state']['marketing_server']['email_campaigns']['f_value']=$f_value;
+
+    }
 
 
 
@@ -114,14 +132,29 @@ function email_campaigns() {
     //if($parent=='none')
     //$where.='';
     //else
-   
-    $store_keys=join(',',$user->stores);
-    if(!$store_keys){
-            $where=$where.' and false';
 
-    }else{
-    $where=$where.' and `Email Campaign Store Key` in ('.$store_keys.')   ';
+
+    switch ($parent) {
+    case 'store':
+        if (in_array($parent_key,$user->stores))
+            $where=sprintf("where `Email Campaign Store Key`=%d ",$parent_key);
+        else
+            $where=' where false';
+        break;
+    case 'none':
+
+        $store_keys=join(',',$user->stores);
+        if (!$store_keys) {
+            $where=' where false';
+
+        } else {
+            $where='where `Email Campaign Store Key` in ('.$store_keys.')   ';
+        }
+
+        break;
     }
+
+
 
 
     $wheref='';
@@ -130,8 +163,7 @@ function email_campaigns() {
 
 
     if (($f_field=='name' ) and $f_value!='')
-        $wheref.=" and  `Email Deal Name ` like '%".addslashes($f_value)."%'";
- 
+        $wheref.=" and  `Email Campaign Name ` like '%".addslashes($f_value)."%'";
 
 
 
@@ -139,7 +171,8 @@ function email_campaigns() {
 
 
 
-    $sql="select count(*) as total from `Email Deal Dimension`  $where $wheref ";
+
+    $sql="select count(*) as total from `Email Campaign Dimension`  $where $wheref ";
 
 
     $result=mysql_query($sql);
@@ -151,9 +184,9 @@ function email_campaigns() {
         $total_records=$total;
     } else {
 
-        $sql="select count(*) as total from `Email Deal Dimension`  $where  ";
-      // print $sql;
-       $result=mysql_query($sql);
+        $sql="select count(*) as total from `Email Campaign Dimension`  $where  ";
+        // print $sql;
+        $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $total_records=$row['total'];
             $filtered=$row['total']-$total;
@@ -163,16 +196,16 @@ function email_campaigns() {
 
 
 
- $rtext=$total_records." ".ngettext('email campaign','email campaigns',$total_records);
-    if($total_records>$number_results)
-      $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    $rtext=$total_records." ".ngettext('email campaign','email campaigns',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     elseif($total_records>0)
-      $rtext_rpp='('._("Showing all").')';
+    $rtext_rpp='('._("Showing all").')';
     else
         $rtext_rpp='';
 
 
-  
+
     $filter_msg='';
 
     switch ($f_field) {
@@ -182,21 +215,23 @@ function email_campaigns() {
         elseif($filtered>0)
         $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('campaigns with name')." <b>".$f_value."*</b>)";
         break;
-    
+
 
     }
-    
+
     //print "$order --\n";
-    
-    if ($order=='date'){
-      $order='`Email Campaign Last Updated Date`';
-  } elseif ($order=='store'){
-      $order='`Store Code`';
-  }else{
-      $order='`Email Campaign Last Updated Date`';
-      $order_direction=' desc';
+
+    if ($order=='date') {
+        $order='`Email Campaign Last Updated Date`';
     }
-    $sql="select `Email Deal Key`,`Email Deal Name`,`Email Campaign Last Updated Date`,`Store Code` ,`Store Key` from `Email Deal Dimension` left join `Store Dimension` S on (`Store Key`=`Email Campaign Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    elseif ($order=='store') {
+        $order='`Store Code`';
+    }
+    else {
+        $order='`Email Campaign Last Updated Date`';
+        $order_direction=' desc';
+    }
+    $sql="select `Email Campaign Key`,`Email Campaign Name`,`Email Campaign Last Updated Date`,`Store Code` ,`Store Key` from `Email Campaign Dimension` left join `Store Dimension` S on (`Store Key`=`Email Campaign Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
     $data=array();
 
@@ -204,17 +239,17 @@ function email_campaigns() {
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
-$name=sprintf('<a href="email_campaign.php?id=%d">%s</a>',$row['Email Deal Key'],$row['Email Deal Name']);
-$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+        $name=sprintf('<a href="email_campaign.php?id=%d">%s</a>',$row['Email Campaign Key'],$row['Email Campaign Name']);
+        $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
         $data[]=array(
-		   
-		      'name'=>$name,
-		      'store'=>$store,
-		      'date'=>strftime("%a %e %b %y %H:%M", strtotime($row['Email Campaign Last Updated Date']." +00:00")),
-            
-		      
-		      );
+
+                    'name'=>$name,
+                    'store'=>$store,
+                    'date'=>strftime("%a %e %b %y %H:%M", strtotime($row['Email Campaign Last Updated Date']." +00:00")),
+
+
+                );
     }
 
 
@@ -226,7 +261,7 @@ $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Store Key'],$row['Store 
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
                                       'rtext'=>$rtext,
-				      'rtext_rpp'=>$rtext_rpp,
+                                      'rtext_rpp'=>$rtext_rpp,
                                       'total_records'=>$total,
                                       'records_offset'=>$start_from,
                                       'records_returned'=>$start_from+$total,
@@ -261,7 +296,7 @@ function is_email_campaign_name($data) {
 
     $store_key=$data['store_key'];
 
-    $sql=sprintf("select `Email Deal Key`,`Email Campaign Objective`,`Email Deal Name` from `Email Deal Dimension` where  `Email Campaign Store Key`=%d and  `Email Deal Name`=%s  "
+    $sql=sprintf("select `Email Campaign Key`,`Email Campaign Objective`,`Email Campaign Name` from `Email Campaign Dimension` where  `Email Campaign Store Key`=%d and  `Email Campaign Name`=%s  "
                  ,$store_key
                  ,prepare_mysql($query)
                 );
@@ -269,8 +304,8 @@ function is_email_campaign_name($data) {
 
     if ($data=mysql_fetch_array($res)) {
         $msg=sprintf('Another Campaign (<a href="email_campaign.php?id=%d">%s</a>) already has this name'
-                     ,$data['Email Deal Key']
-                     ,$data['Email Deal Name']
+                     ,$data['Email Campaign Key']
+                     ,$data['Email Campaign Name']
                     );
         $response= array(
                        'state'=>200,
@@ -290,48 +325,48 @@ function is_email_campaign_name($data) {
 
 }
 
-function preview_email_campaign($data){
-include_once('class.EmailCampaign.php');
-$email_campaign= new EmailCampaign($data['email_campaign_key']);
-  if (!$email_campaign->id) {
-        $response= array('state'=>400,'msg'=>'Invalid Email Deal Key','key'=>$data['okey']);
+function preview_email_campaign($data) {
+    include_once('class.EmailCampaign.php');
+    $email_campaign= new EmailCampaign($data['email_campaign_key']);
+    if (!$email_campaign->id) {
+        $response= array('state'=>400,'msg'=>'Invalid Email Campaign Key','key'=>$data['okey']);
         echo json_encode($response);
         exit;
     }
     $index=$data['index'];
-        if($index>$email_campaign->data['Number of Emails'])
+    if ($index>$email_campaign->data['Number of Emails'])
         $index=1;
     elseif($index<1)
-        $index=$email_campaign->data['Number of Emails'];
+    $index=$email_campaign->data['Number of Emails'];
     $email_mailing_list_key=$email_campaign->get_email_mailing_list_key_from_index($index);
-    
-    if(!$email_mailing_list_key){
-     $response= array('state'=>400,'msg'=>'Invalid Email List Index','key'=>$data['okey']);
+
+    if (!$email_mailing_list_key) {
+        $response= array('state'=>400,'msg'=>'Invalid Email List Index','key'=>$data['okey']);
         echo json_encode($response);
         exit;
-    
-    }
-    $message_data=$email_campaign->get_message_data($email_mailing_list_key);     
 
-    
-    if($message_data['type']=='Plain'){
-            $body=$message_data['plain'];
-    }else{
-     $body=$message_data['html'];
     }
-    
-       $response= array('state'=>200,
-       'plain'=>$message_data['plain'],
-        'html'=>$message_data['html'],
-       'html_src'=>'email_template.php?email_campaign_key='.$email_campaign->id.'&email_mailing_list_key='.$email_mailing_list_key,
-       'subject'=>$message_data['subject'],
-       'index'=>$index,
-       'formated_index'=>number($index),
-       'to'=>$message_data['to'],
-       'type'=>$message_data['type']
-       );
-        echo json_encode($response);
-     
+    $message_data=$email_campaign->get_message_data($email_mailing_list_key);
+
+
+    if ($message_data['type']=='Plain') {
+        $body=$message_data['plain'];
+    } else {
+        $body=$message_data['html'];
+    }
+
+    $response= array('state'=>200,
+                     'plain'=>$message_data['plain'],
+                     'html'=>$message_data['html'],
+                     'html_src'=>'email_template.php?email_campaign_key='.$email_campaign->id.'&email_mailing_list_key='.$email_mailing_list_key,
+                     'subject'=>$message_data['subject'],
+                     'index'=>$index,
+                     'formated_index'=>number($index),
+                     'to'=>$message_data['to'],
+                     'type'=>$message_data['type']
+                    );
+    echo json_encode($response);
+
 
 
 }

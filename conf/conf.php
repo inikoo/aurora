@@ -284,20 +284,7 @@ $default_state=array(
                                               )
                            ),
 
-                   'marketing'=>array(
 
-                                   'table'=>array(
-                                               'order'=>'date',
-                                               'order_dir'=>'desc',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'subject',
-                                               'f_value'=>'','f_show'=>false,
-                                               'from'=>'',
-                                               'to'=>''
-                                           )
-                               ),
                    'reports'=>array(
                                  'view'=>'sales',
 
@@ -2683,13 +2670,69 @@ $default_state=array(
                                    'email_campaigns'=>array(
                                                          'where'=>'where true',
                                                          'f_field'=>'name',
-                                                         'f_value'=>'','f_show'=>false,
+                                                         'f_value'=>'',
+                                                         'f_show'=>false,
                                                          'order'=>'date',
                                                          'order_dir'=>'desc',
                                                          'sf'=>0,
                                                          'nr'=>25,
                                                          'view'=>'general'
-                                                     )
+                                                     ),
+                                     'postal_campaigns'=>array(
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'',
+                                                         'f_show'=>false,
+                                                         'order'=>'date',
+                                                         'order_dir'=>'desc',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'view'=>'general'
+                                                     ),
+                                      'media_campaigns'=>array(
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'',
+                                                         'f_show'=>false,
+                                                         'order'=>'date',
+                                                         'order_dir'=>'desc',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'view'=>'general'
+                                                     ),
+                                        'newsletters'=>array(
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'',
+                                                         'f_show'=>false,
+                                                         'order'=>'date',
+                                                         'order_dir'=>'desc',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'view'=>'general'
+                                                     ),                   
+                                   'campaigns'=>array(
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'',
+                                                         'f_show'=>false,
+                                                         'order'=>'date',
+                                                         'order_dir'=>'desc',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'view'=>'general'
+                                                     ),
+                                  'reminders'=>array(
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'',
+                                                         'f_show'=>false,
+                                                         'order'=>'date',
+                                                         'order_dir'=>'desc',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'view'=>'general'
+                                                     )                            
                                ),
 
 

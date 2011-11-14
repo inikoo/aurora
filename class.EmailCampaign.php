@@ -21,7 +21,7 @@ class EmailCampaign extends DB_Table {
     function EmailCampaign($arg1=false,$arg2=false,$arg3=false) {
         $this->table_name='Email Campaign';
         $this->ignore_fields=array(
-                                 'Email Deal Key',
+                                 'Email Campaign Key',
                                  'Email Campaign Maximum Emails',
                                  'Email Campaign Last Updated Date',
                                  'Email Campaign Creation Date',
@@ -52,11 +52,11 @@ class EmailCampaign extends DB_Table {
     function get_data($tipo,$tag) {
 
 
-        $sql=sprintf("select * from `Email Deal Dimension` where  `Email Deal Key`=%d",$tag);
+        $sql=sprintf("select * from `Email Campaign Dimension` where  `Email Campaign Key`=%d",$tag);
 
         $result =mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->id=$this->data['Email Deal Key'];
+            $this->id=$this->data['Email Campaign Key'];
             $this->content_data=$this->get_contents_array();
             $this->content_keys=$this->get_content_data_keys();
 
@@ -129,14 +129,14 @@ class EmailCampaign extends DB_Table {
         $this->found_key=false;
 
 
-        $sql=sprintf("select `Email Deal Key` from `Email Deal Dimension` where `Email Campaign Store Key`=%d and `Email Deal Name`=%s",
+        $sql=sprintf("select `Email Campaign Key` from `Email Campaign Dimension` where `Email Campaign Store Key`=%d and `Email Campaign Name`=%s",
                      $raw_data['Email Campaign Store Key'],
-                     prepare_mysql($raw_data['Email Deal Name'])
+                     prepare_mysql($raw_data['Email Campaign Name'])
                     );
         // print $sql;
         $result =mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->found_key=$row['Email Deal Key'];
+            $this->found_key=$row['Email Campaign Key'];
             $this->found=true;
 
         }
@@ -160,19 +160,27 @@ class EmailCampaign extends DB_Table {
     function create($raw_data) {
 
         $data=$this->base_data();
-
+        $content_data=array('Email Content Type'=>'HTML Template');
 
         foreach($raw_data as $key=>$value) {
             if (array_key_exists($key,$data))
-
-
-
                 if (is_array($value))
                     $data[$key]=serialize($value);
                 else
                     $data[$key]=_trim($value);
+        }
+
+        foreach($raw_data as $key=>$value) {
+            if (array_key_exists($key,$content_data))
+                    $content_data[$key]=_trim($value);
+        }
 
 
+
+        if($data['Email Campaign Name']==''){
+            $this->error;
+            $this->msg='no name';
+            return;
         }
 
         $data['Email Campaign Creation Date']=date("Y-m-d H:i:s");
@@ -191,7 +199,7 @@ class EmailCampaign extends DB_Table {
         }
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
-        $sql=sprintf("insert into `Email Deal Dimension` %s %s",$keys,$values);
+        $sql=sprintf("insert into `Email Campaign Dimension` %s %s",$keys,$values);
 
 
         if (mysql_query($sql)) {
@@ -199,7 +207,16 @@ class EmailCampaign extends DB_Table {
             $this->get_data('id',$this->id);
             $this->new=true;
 
-            $sql=sprintf("insert into `Email Content Dimension` (`Email Content Subject`,`Email Content Text`,`Email Content HTML`) values ('','','')");
+
+
+
+            $sql=sprintf("insert into `Email Content Dimension` (`Email Content Type`,`Email Content Subject`,`Email Content Text`,`Email Content HTML`) values (%s,'','','')",
+            prepare_mysql($content_data['Email Content Type'])
+            
+            );
+            
+            print $sql;
+            
             mysql_query($sql);
             $email_content_key=mysql_insert_id();
 
@@ -256,7 +273,7 @@ class EmailCampaign extends DB_Table {
 
         } else {
             $this->error=true;
-            $this->msg="Can not insert Email Deal Dimension";
+            $this->msg="Can not insert Email Campaign Dimension";
             // exit("$sql\n");
         }
 
@@ -267,7 +284,7 @@ class EmailCampaign extends DB_Table {
 
     function add_objetive($scope_data) {
 
-        $scope_data['Email Deal Key']=$this->id;
+        $scope_data['Email Campaign Key']=$this->id;
 
         switch ($scope_data['Email Campaign Objetive Parent']) {
         case 'Department':
@@ -322,7 +339,7 @@ class EmailCampaign extends DB_Table {
         if ($scope_data['Email Campaign Objetive Parent']!='External Link') {
 
 
-            $sql=sprintf("select `Email Campaign Objetive Key` from `Email Campaign Objetive Dimension` where `Email Deal Key`=%d  and `Email Campaign Objetive Parent`=%s  and  `Email Campaign Objetive Parent Key`=%d ",
+            $sql=sprintf("select `Email Campaign Objetive Key` from `Email Campaign Objetive Dimension` where `Email Campaign Key`=%d  and `Email Campaign Objetive Parent`=%s  and  `Email Campaign Objetive Parent Key`=%d ",
                          $this->id,
                          prepare_mysql($scope_data['Email Campaign Objetive Parent']),
                          $parent_key
@@ -336,14 +353,14 @@ class EmailCampaign extends DB_Table {
         }
         if ($found) {
             if ($scope_data['Email Campaign Objetive Type']=='Link') {
-                $sql=sprintf("update `Email Campaign Objetive Dimension` set `Email Campaign Objetive Type`='Link'  where `Email Deal Key`=%d ",
+                $sql=sprintf("update `Email Campaign Objetive Dimension` set `Email Campaign Objetive Type`='Link'  where `Email Campaign Key`=%d ",
                              $found
                             );
 
             }
 
         } else {
-            $sql=sprintf("insert into `Email Campaign Objetive Dimension` (`Email Deal Key`,`Email Campaign Objetive Type`,`Email Campaign Objetive Parent`,`Email Campaign Objetive Parent Key`,`Email Campaign Objetive Name`,`Email Campaign Objetive Links`,`Email Campaign Objetive Links Clicks`,`Email Campaign Objetive Term`,`Email Campaign Objetive Term Metadata`)  values (%d,%s,%s,%d,%s,0,0,%s,%s)  ",
+            $sql=sprintf("insert into `Email Campaign Objetive Dimension` (`Email Campaign Key`,`Email Campaign Objetive Type`,`Email Campaign Objetive Parent`,`Email Campaign Objetive Parent Key`,`Email Campaign Objetive Name`,`Email Campaign Objetive Links`,`Email Campaign Objetive Links Clicks`,`Email Campaign Objetive Term`,`Email Campaign Objetive Term Metadata`)  values (%d,%s,%s,%d,%s,0,0,%s,%s)  ",
                          $this->id,
                          prepare_mysql($scope_data['Email Campaign Objetive Type']),
                          prepare_mysql($scope_data['Email Campaign Objetive Parent']),
@@ -370,7 +387,7 @@ class EmailCampaign extends DB_Table {
     function delete_email_address($email_address_key) {
 
 
-        $sql=sprintf("delete from  `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Deal Key`=%d",
+        $sql=sprintf("delete from  `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Campaign Key`=%d",
                      $email_address_key,
                      $this->id
                     );
@@ -396,7 +413,7 @@ class EmailCampaign extends DB_Table {
             return;
         }
 
-        $sql=sprintf("select `Email Campaign Mailing List Key` from `Email Campaign Mailing List` where `Email Deal Key`=%d and `Email Address`=%s ",
+        $sql=sprintf("select `Email Campaign Mailing List Key` from `Email Campaign Mailing List` where `Email Campaign Key`=%d and `Email Address`=%s ",
                      $this->id,
                      prepare_mysql($data['Email Address'])
                     );
@@ -567,11 +584,11 @@ class EmailCampaign extends DB_Table {
     function delete() {
         if ($this->data['Email Campaign Status']=='Creating') {
             $content_keys=$this->get_content_data_keys();
-            $sql=sprintf("delete from `Email Campaign Content Bridge` where `Email Deal Key`=%d",$this->id);
+            $sql=sprintf("delete from `Email Campaign Content Bridge` where `Email Campaign Key`=%d",$this->id);
             mysql_query($sql);
-            $sql=sprintf("delete from `Email Deal Dimension` where `Email Deal Key`=%d",$this->id);
+            $sql=sprintf("delete from `Email Campaign Dimension` where `Email Campaign Key`=%d",$this->id);
             mysql_query($sql);
-            $sql=sprintf("delete from `Email Campaign Mailing List` where `Email Deal Key`=%d",$this->id);
+            $sql=sprintf("delete from `Email Campaign Mailing List` where `Email Campaign Key`=%d",$this->id);
             mysql_query($sql);
             $sql=sprintf("delete from `Email Content Dimension` where `Email Content Key` in (%s)",join(',',$content_keys));
             mysql_query($sql);
@@ -604,7 +621,7 @@ class EmailCampaign extends DB_Table {
 
     }
     function get_content_data_keys() {
-        $sql=sprintf("select `Email Content Key` from `Email Campaign Content Bridge` where `Email Deal Key`=%d"
+        $sql=sprintf("select `Email Content Key` from `Email Campaign Content Bridge` where `Email Campaign Key`=%d"
                      ,$this->id
                     );
         $content_keys=array();
@@ -633,7 +650,7 @@ class EmailCampaign extends DB_Table {
     function get_content_type() {
 
         $types=array();
-        $sql=sprintf("select `Email Content Type` from  `Email Content Dimension` C  left join `Email Campaign Content Bridge` B on (B.`Email Content Key`=C.`Email Content Key`) where `Email Deal Key`=%d ",$this->id);
+        $sql=sprintf("select `Email Content Type` from  `Email Content Dimension` C  left join `Email Campaign Content Bridge` B on (B.`Email Content Key`=C.`Email Content Key`) where `Email Campaign Key`=%d ",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
             $types[$row['Email Content Type']]=$row['Email Content Type'];
@@ -656,9 +673,10 @@ class EmailCampaign extends DB_Table {
     }
     function get_contents_array() {
         $email_contents_array=array();
-        $sql=sprintf("select `Email Content Template Postcard Key`,`Email Content Color Scheme Key`,`Email Content Template Type`,`Email Content Type`,`Email Content Subject`,`Email Content Type`,C.`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Template Header Image Key`,`Email Content Metadata` from  `Email Content Dimension`   C  left join `Email Campaign Content Bridge` B on (B.`Email Content Key`=C.`Email Content Key`) where `Email Deal Key`=%d ",$this->id);
+        $sql=sprintf("select `Email Content Template Postcard Key`,`Email Content Color Scheme Key`,`Email Content Template Type`,`Email Content Type`,`Email Content Subject`,`Email Content Type`,C.`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Header Image Key`,`Email Content Metadata` from  `Email Content Dimension`   C  left join `Email Campaign Content Bridge` B on (B.`Email Content Key`=C.`Email Content Key`) where `Email Campaign Key`=%d ",$this->id);
         $res=mysql_query($sql);
-        while ($row=mysql_fetch_assoc($res)) {
+    // print $sql;
+     while ($row=mysql_fetch_assoc($res)) {
 
 
             $sql2=sprintf("select * from `Email Content Paragraph Dimension` where `Email Content Key`=%d order by `Paragraph Order`",$row['Email Content Key']);
@@ -688,8 +706,8 @@ class EmailCampaign extends DB_Table {
             }
 
             $header_image_key=0;
-            if ($row['Email Content Template Header Image Key']) {
-                $sql=sprintf("select `Image Key` from `Email Template Header Image Dimension` where `Email Template Header Image Key`=%d ",$row['Email Content Template Header Image Key']);
+            if ($row['Email Content Header Image Key']) {
+                $sql=sprintf("select `Image Key` from `Email Template Header Image Dimension` where `Email Template Header Image Key`=%d ",$row['Email Content Header Image Key']);
                 $res2=mysql_query($sql);
                 if ($row2=mysql_fetch_assoc($res2)) {
                     $header_image_key=$row2['Image Key'];
@@ -745,7 +763,7 @@ class EmailCampaign extends DB_Table {
     }
     function get_first_mailing_list_key() {
 
-        $sql=sprintf("select `Email Campaign Mailing List Key` from `Email Campaign Mailing List` where  `Email Deal Key`=%d limit 1",
+        $sql=sprintf("select `Email Campaign Mailing List Key` from `Email Campaign Mailing List` where  `Email Campaign Key`=%d limit 1",
 
                      $this->id
                     );
@@ -764,7 +782,7 @@ class EmailCampaign extends DB_Table {
         if (!$email_mailing_list_key)
             $email_mailing_list_key=$this->get_first_mailing_list_key();
 
-        $sql=sprintf("select `Email Address` from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Deal Key`=%d",
+        $sql=sprintf("select `Email Address` from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Campaign Key`=%d",
                      $email_mailing_list_key,
                      $this->id
                     );
@@ -780,7 +798,7 @@ class EmailCampaign extends DB_Table {
 
 
 
-        $sql=sprintf("select `Email Campaign Mailing List Key` from `Email Campaign Mailing List` where `Email Deal Key`=%d limit %d, 1 ",
+        $sql=sprintf("select `Email Campaign Mailing List Key` from `Email Campaign Mailing List` where `Email Campaign Key`=%d limit %d, 1 ",
 
                      $this->id,
                      ($index-1)
@@ -826,7 +844,7 @@ class EmailCampaign extends DB_Table {
             $email_mailing_list_key=$this->get_first_mailing_list_key();
         include_once('class.LightCustomer.php');
 
-        $sql=sprintf("select * from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Deal Key`=%d",
+        $sql=sprintf("select * from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d and `Email Campaign Key`=%d",
                      $email_mailing_list_key,
                      $this->id
                     );
@@ -959,7 +977,7 @@ class EmailCampaign extends DB_Table {
 
         $email_content_key=$this->assign_email_content_key();
 
-        $sql=sprintf("insert into `Email Campaign Mailing List` (`Email Deal Key`,`Email Key`,`Email Address`,`Email Contact Name`,`Customer Key`,`Email Content Key`)
+        $sql=sprintf("insert into `Email Campaign Mailing List` (`Email Campaign Key`,`Email Key`,`Email Address`,`Email Contact Name`,`Customer Key`,`Email Content Key`)
                      values (%d,%s,%s,%s,%s,%d)",
                      $this->id,
                      prepare_mysql($data['Email Key']),
@@ -1174,7 +1192,7 @@ class EmailCampaign extends DB_Table {
 
 //print_r($links);
 
-        $sql=sprintf("delete from `Email Campaign Objetive Dimension` where `Email Campaign Objetive Type`='Link' and `Email Deal Key`=%d ",
+        $sql=sprintf("delete from `Email Campaign Objetive Dimension` where `Email Campaign Objetive Type`='Link' and `Email Campaign Key`=%d ",
                      $this->id
                     );
         mysql_query($sql);
@@ -1291,12 +1309,12 @@ class EmailCampaign extends DB_Table {
 
     function update_number_emails() {
         $this->data['Number of Emails']=0;
-        $sql=sprintf("select count(*) as number from `Email Campaign Mailing List` where `Email Deal Key`=%d",$this->id);
+        $sql=sprintf("select count(*) as number from `Email Campaign Mailing List` where `Email Campaign Key`=%d",$this->id);
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
             $this->data['Number of Emails']=$row['number'];
         }
-        $sql=sprintf("update `Email Deal Dimension` set `Number of Emails`=%d where `Email Deal Key`=%d",
+        $sql=sprintf("update `Email Campaign Dimension` set `Number of Emails`=%d where `Email Campaign Key`=%d",
                      $this->data['Number of Emails'],
                      $this->id);
         mysql_query($sql);
@@ -1309,7 +1327,7 @@ class EmailCampaign extends DB_Table {
         if ($row=mysql_fetch_assoc($res)) {
             $this->data['Number of Read Emails']=$row['number'];
         }
-        $sql=sprintf("update `Email Deal Dimension` set `Number of Read Emails`=%d where `Email Deal Key`=%d",
+        $sql=sprintf("update `Email Campaign Dimension` set `Number of Read Emails`=%d where `Email Campaign Key`=%d",
                      $this->data['Number of Read Emails'],
                      $this->id);
         mysql_query($sql);
@@ -1318,7 +1336,7 @@ class EmailCampaign extends DB_Table {
 
     function update_recipients_preview() {
         $this->data['Email Campaign Recipients Preview']='';
-        $sql=sprintf("select `Email Address` from `Email Campaign Mailing List` where `Email Deal Key`=%d",$this->id);
+        $sql=sprintf("select `Email Address` from `Email Campaign Mailing List` where `Email Campaign Key`=%d",$this->id);
         $res=mysql_query($sql);
         $num_previews_emails=0;
         while ($row=mysql_fetch_assoc($res)) {
@@ -1336,7 +1354,7 @@ class EmailCampaign extends DB_Table {
         }
 
         $this->data['Email Campaign Recipients Preview']=preg_replace('/^\,\s*/','',$this->data['Email Campaign Recipients Preview']);
-        $sql=sprintf("update `Email Deal Dimension` set `Email Campaign Recipients Preview`=%s where `Email Deal Key`=%d",
+        $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Recipients Preview`=%s where `Email Campaign Key`=%d",
                      prepare_mysql($this->data['Email Campaign Recipients Preview']),
                      $this->id);
         mysql_query($sql);
@@ -1367,7 +1385,7 @@ class EmailCampaign extends DB_Table {
 
     function update_content($email_content_key,$key,$value) {
 
-        $valid_keys=array('Email Content Type','Email Content Template Type','Email Content Color Scheme Key','Email Content Template Header Image Key','Email Content Template Postcard Key');
+        $valid_keys=array('Email Content Type','Email Content Template Type','Email Content Color Scheme Key','Email Content Header Image Key','Email Content Template Postcard Key');
         if (in_array($key,$valid_keys)) {
 
             $sql=sprintf("select `%s` as old_value from  `Email Content Dimension`  where `Email Content Key`=%d ",
@@ -1428,7 +1446,7 @@ class EmailCampaign extends DB_Table {
                 elseif($key=='Email Content Type') {
 
                     $this->data['Email Campaign Content Type']=$this->get_content_type();
-                    $sql=sprintf("update `Email Deal Dimension` set `Email Campaign Content Type`=%s where `Email Deal Key`=%d",
+                    $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Content Type`=%s where `Email Campaign Key`=%d",
                                  prepare_mysql($this->data['Email Campaign Content Type']),
                                  $this->id
                                 );
@@ -1592,7 +1610,7 @@ require_once('html2text.php');
 
         $this->data['Email Campaign Status']='Ready';
         $this->data['Email Campaign Start Overdue Date']=date("Y-m-d H:i:s",strtotime(sprintf('now +%d seconds ',$lag_seconds)));
-        $sql=sprintf("update `Email Deal Dimension` set `Email Campaign Status`='Ready'  , `Email Campaign Start Overdue Date`=%s ",
+        $sql=sprintf("update `Email Campaign Dimension` set `Email Campaign Status`='Ready'  , `Email Campaign Start Overdue Date`=%s ",
                      prepare_mysql($this->data['Email Campaign Start Overdue Date'])
 
                     );

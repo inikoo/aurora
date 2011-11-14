@@ -1276,7 +1276,7 @@ class Store extends DB_Table {
 
 
     function update_email_campaign_data() {
-        $sql=sprintf("select count(*) as email_campaign from `Email Deal Dimension` where `Email Campaign Store Key`=%d  ",$this->id);
+        $sql=sprintf("select count(*) as email_campaign from `Email Campaign Dimension` where `Email Campaign Store Key`=%d  ",$this->id);
 
         $res=mysql_query($sql);
         $sites=array();

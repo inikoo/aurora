@@ -257,8 +257,8 @@ case('create_add_email_address_manually'):
     break;
 case('create_email_campaign'):
     $data=prepare_values($_REQUEST,array(
-                             'parent_key'=>array('type'=>'key'),
-                             'values'=>array('type'=>'json array'),
+                          
+                             'values'=>array('type'=>'json array')
 
                          ));
     create_email_campaign($data);
@@ -350,7 +350,7 @@ function delete_email_campaign_objetive($data) {
 function delete_email_campaign_recipient($data) {
     $mailing_list_key=$data['id'];
 
-    $sql=sprintf("select `Email Deal Key` from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d",
+    $sql=sprintf("select `Email Campaign Key` from `Email Campaign Mailing List` where `Email Campaign Mailing List Key`=%d",
                  $mailing_list_key
                 );
     $res=mysql_query($sql);
@@ -358,7 +358,7 @@ function delete_email_campaign_recipient($data) {
 
     if ($row=mysql_fetch_assoc($res)) {
 
-        $email_campaign=new EmailCampaign($row['Email Deal Key']);
+        $email_campaign=new EmailCampaign($row['Email Campaign Key']);
         $email_campaign->delete_email_address($mailing_list_key);
 
         if ($email_campaign->updated) {
@@ -417,13 +417,29 @@ function add_email_address_manually($data) {
 function create_email_campaign($data) {
 
 
-    $email_campaign_data=array(
-                             'Email Campaign Store Key'=>$data['parent_key'],
-                             'Email Deal Name'=>$data['values']['Email Deal Name'],
-                             'Email Campaign Objective'=>$data['values']['Email Campaign Objective']
 
+
+    $email_campaign_data=array(
+                             'Email Campaign Store Key'=>$data['values']['store_key'],
+                             'Email Campaign Name'=>$data['values']['email_campaign_name'],
+                            'Email Content Type'=>$data['values']['email_campaign_content_type'],
+                             'Email Campaign Type'=>$data['values']['email_campaign_type'],
+                            
                          );
 //print_r($email_campaign_data);
+
+
+if($email_campaign_data['Email Campaign Name']==''){
+      $response= array(
+                       'state'=>400,
+                       'action'=>'error',
+                       'msg'=>_('Please give us the email campaign name')
+
+                   );
+                    echo json_encode($response);
+                    return;
+}
+
     $email_campaign=new EmailCampaign('find',$email_campaign_data,'create');
     if ($email_campaign->new) {
 
@@ -458,7 +474,7 @@ function edit_email_campaign($data) {
 
     $email_campaign=new EmailCampaign($data['email_campaign_key']);
     if (!$email_campaign->id) {
-        $response= array('state'=>400,'msg'=>'Invalid Email Deal Key','key'=>$data['okey']);
+        $response= array('state'=>400,'msg'=>'Invalid Email Campaign Key','key'=>$data['okey']);
         echo json_encode($response);
         exit;
     }
@@ -754,7 +770,7 @@ function mailing_list() {
     $_SESSION['state']['email_campaign']['mailing_list']['f_value']=$f_value;
 
 
-    $where=sprintf(" where  `Email Deal Key`=%d",$email_campaign_key);
+    $where=sprintf(" where  `Email Campaign Key`=%d",$email_campaign_key);
 
 
 
@@ -928,7 +944,7 @@ function email_campaign_objetives() {
     $_SESSION['state']['email_campaign']['objetives']['f_value']=$f_value;
 
 
-    $where=sprintf(" where  `Email Deal Key`=%d",$email_campaign_key);
+    $where=sprintf(" where  `Email Campaign Key`=%d",$email_campaign_key);
 
 
 

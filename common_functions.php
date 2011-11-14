@@ -942,7 +942,7 @@ function customers_awhere($awhere) {
 
     */
 
-    $date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Invoice Date`','only_dates');
+    $date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Order Date`','only_dates');
     if ($date_interval_when_ordered['mysql']) {
         $use_otf=true;
     }
