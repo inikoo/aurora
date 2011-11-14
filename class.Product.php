@@ -178,6 +178,8 @@ class product extends DB_Table {
                 $this->code=$this->data['Product Code'];
 				$this->id=$this->data['Product ID'];
             }
+			else
+				$this->match=false;
 //print_r($this->data);
             return;
 
