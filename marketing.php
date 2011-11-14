@@ -17,6 +17,20 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Order.php');
 
+if(!$user->can_view('marketing')){
+  header('Location: index.php');
+    exit;
+}
+
+if($user->can_edit('marketing')){
+$modify=true;
+}else{
+$modify=false;
+}
+$smarty->assign('modify',$modify);
+
+
+
 
 if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
     $store_id=$_REQUEST['store'];
@@ -48,14 +62,7 @@ $smarty->assign('search_label',_('Search'));
 
 
 
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
 
-$general_options_list[]=array('tipo'=>'url','url'=>'new_email_campaign.php','label'=>_('Create Email Campaign'));
-$general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=>_('Create Newsletter'));
-$smarty->assign('general_options_list',$general_options_list);
-
-$view_orders=$user->can_view('Orders');
 
 
 $css_files=array(

@@ -28,7 +28,7 @@ if(isset($_REQUEST['createCampaign'])){
 		$_SESSION['campaign_content'] = $campaign_content;
 	}
 	else{
-	$sql = "insert into `Email Deal Dimension` (`Email Deal Name`, `Email Campaign Objective`, `Email Campaign Maximum Emails`,
+	$sql = "insert into `Email Campaign Dimension` (`Email Campaign Name`, `Email Campaign Objective`, `Email Campaign Maximum Emails`,
 	`Email Campaign Content`,`Email Campaign Engine`,`Email Campaign Status`,`Campaign Creation Date`)values('".$campaign_name."', '".$campaign_obj."', '".
 	$campaign_mail."', '".$campaign_content."','Internal','Creating',NOW())";
 	$res = mysql_query($sql);
@@ -45,7 +45,7 @@ if(isset($_REQUEST['createCampaign'])){
 	{  	$fetchMailKey = "select `Customer Main Email Key`,`Customer Key` from `Customer Dimension` where `Customer Key` = '".$row['Customer Key']."'";
 		$stringResult = mysql_query($fetchMailKey);
 		$insert = mysql_fetch_assoc($stringResult);
-		$insert_mail_key = "insert into `Email Campaign Mailing List` (`Customer Key`, `Email Deal Key`, `Email Key `)values('".$row['Customer Key']."',
+		$insert_mail_key = "insert into `Email Campaign Mailing List` (`Customer Key`, `Email Campaign Key`, `Email Key `)values('".$row['Customer Key']."',
 		'".$campaign_id."', '".$insert['Customer Main Email Key']."')";
 		$r = mysql_query($insert_mail_key);
 	}*/
@@ -53,7 +53,7 @@ if(isset($_REQUEST['createCampaign'])){
 
 
 	//insert list key
-	$listQuery = "insert into `Email Campaign Mailing List` (`Customer Key`, `Email Deal Key`)values('".$customer_list_key."', '".$campaign_id."')";
+	$listQuery = "insert into `Email Campaign Mailing List` (`Customer Key`, `Email Campaign Key`)values('".$customer_list_key."', '".$campaign_id."')";
 	$result = mysql_query($listQuery);
 		if(mysql_affected_rows()==1){
 			$_SESSION['disp_msg']= '<h4 style=color:green;>Your data has been saved successfully</h4>';

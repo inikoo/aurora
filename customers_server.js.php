@@ -10,15 +10,8 @@ var Dom   = YAHOO.util.Dom;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-
-
-	     //START OF THE TABLE=========================================================================================================================
-
 		var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
-
-
-
 	    var CustomersColumnDefs = [
 				       {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Store Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}

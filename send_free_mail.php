@@ -24,18 +24,18 @@ if($mail_list != '')
 	foreach($mail_list as $key=>$mail)
 	{	
 		
-		$sql = "select * from `Email Deal Dimension` where `Email Deal Key` = '".$mail."'";
+		$sql = "select * from `Email Campaign Dimension` where `Email Campaign Key` = '".$mail."'";
 		$query = mysql_query($sql);
 		$row = mysql_fetch_assoc($query);
 		
-		$name = $row['Email Deal Name'];
+		$name = $row['Email Campaign Name'];
 	
 		$objective = $row['Email Campaign Objective'];
 
 		$content = $row['Email Campaign Content'];		
 
 		//pick up the customer mail to send
-		$runSql = "select `Customer Key` from `Email Campaign Mailing List` where `Email Deal Key` = '".$mail."'";
+		$runSql = "select `Customer Key` from `Email Campaign Mailing List` where `Email Campaign Key` = '".$mail."'";
 		$runQuery = mysql_query($runSql);
 		$fetchRow = mysql_fetch_assoc($runQuery);
 

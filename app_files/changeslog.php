@@ -5102,6 +5102,8 @@ ALTER TABLE `Dashboard Dimension` CHANGE `Dashbord URL` `Dashboard URL` TEXT CHA
 ALTER TABLE `Charge Dimension` ADD `Charge Active` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Charge Terms Metadata` ,ADD INDEX ( `Charge Active` ) ;
 ALTER TABLE `Store Dimension` ADD `Store Websites` SMALLINT UNSIGNED NOT NULL DEFAULT '0';
 // right.sql
+ALTER TABLE `Email Template Color Scheme Dimension` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Template Color Scheme Name` ,ADD INDEX ( `Store Key` ) ;
+
 */
 
 ?>
