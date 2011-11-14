@@ -136,7 +136,7 @@ $tm=new TimeSeries(array('y','store ('.$row['Store Key'].') sales'));
     $tm->forecast();
 
 
-if($myconf['currency_code']!=$store->data['Store Currency Code']){
+if($corporate_currency!=$store->data['Store Currency Code']){
 
   $tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales (DC)'));
   $tm->get_values();

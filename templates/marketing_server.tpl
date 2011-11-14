@@ -2,19 +2,25 @@
 <div id="bd" >
  
 {include file='contacts_navigation.tpl'}
-<div> 
-  <span class="branch">{t}Marketing{/t}</span>
+<div class="branch"> 
+  <span>{t}Marketing{/t}</span>
 </div>
+<div class="top_page_menu">
+<div class="buttons" style="float:right">
+</div>
+<div class="buttons" style="float:left">
+<button  onclick="window.location='marketing_server_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+</div>
+<div style="clear:both"></div>
+</div>
+
   
-  <div style="clear:left;">
-    <h1>{t}Marketing Corporate Overview{/t}</h1>
-  </div>
+  
+  
 
 
 
-
-
-<div class="data_table" style="clear:both">
+<div class="data_table" style="clear:both;margin-top:15px">
     <span class="clean_table_title">{t}Store Marketing Sections{/t}</span>
 
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>

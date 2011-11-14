@@ -1,7 +1,7 @@
 <?php
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
-include_once('../../class.Campaign.php');
+include_once('../../class.Deal.php');
 include_once('../../class.Charge.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
@@ -68,9 +68,9 @@ $editor=array(
 $store=new Store(1);
 
 
-$gold_camp=new Campaign('code','Oro');
-$vol_camp=new Campaign('code','Mayo');
-$bogof_camp=new Campaign('code','Bogof');
+$gold_camp=new Deal('code','Oro');
+$vol_camp=new Deal('code','Mayo');
+$bogof_camp=new Deal('code','Bogof');
 $fam_promo=$fam_promo=new Family('code','Promo_ES',$store_key);
 $fam_promo_key=$fam_promo->id;
 
@@ -252,30 +252,30 @@ $cols[5]=$match[0];
      
 	
 	$deals[]=array(
-		       'Deal Name'=>'Club Oro'
-		       ,'Deal Trigger'=>'Order'
+		       'Deal Metadata Name'=>'Club Oro'
+		       ,'Deal Metadata Trigger'=>'Order'
 		       ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
-		       ,'Deal Terms Type'=>'Order Interval'
-		       ,'Deal Terms Description'=>'last order within 1 calendar month'
-		       ,'Deal Allowance Description'=>$allowance
-		       ,'Deal Allowance Type'=>'Percentage Off'
-		       ,'Deal Allowance Target'=>'Product'
-		       ,'Deal Allowance Target Key'=>''
-		       ,'Deal Begin Date'=>''
-		       ,'Deal Expiration Date'=>''
+		       ,'Deal Metadata Terms Type'=>'Order Interval'
+		       ,'Deal Metadata Terms Description'=>'last order within 1 calendar month'
+		       ,'Deal Metadata Allowance Description'=>$allowance
+		       ,'Deal Metadata Allowance Type'=>'Percentage Off'
+		       ,'Deal Metadata Allowance Target'=>'Product'
+		       ,'Deal Metadata Allowance Target Key'=>''
+		       ,'Deal Metadata Begin Date'=>''
+		       ,'Deal Metadata Expiration Date'=>''
 		       );
       $deals[]=array(
-		     'Deal Name'=>'Mayoreo en Familia'
-		     ,'Deal Trigger'=>'Family'
+		     'Deal Metadata Name'=>'Mayoreo en Familia'
+		     ,'Deal Metadata Trigger'=>'Family'
 		     
-		     ,'Deal Terms Type'=>'Family Quantity Ordered'
-		     ,'Deal Terms Description'=>'order '.$terms
-		     ,'Deal Allowance Description'=>$allowance
-		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Target'=>'Product'
-		     ,'Deal Allowance Target Key'=>''
-		     ,'Deal Begin Date'=>''
-		     ,'Deal Expiration Date'=>''
+		     ,'Deal Metadata Terms Type'=>'Family Quantity Ordered'
+		     ,'Deal Metadata Terms Description'=>'order '.$terms
+		     ,'Deal Metadata Allowance Description'=>$allowance
+		     ,'Deal Metadata Allowance Type'=>'Percentage Off'
+		     ,'Deal Metadata Allowance Target'=>'Product'
+		     ,'Deal Metadata Allowance Target Key'=>''
+		     ,'Deal Metadata Begin Date'=>''
+		     ,'Deal Metadata Expiration Date'=>''
 		     );	
 
   
@@ -289,17 +289,17 @@ $cols[5]=$match[0];
       $get=_trim(preg_replace('/[^\d]/','',$match[0]));
 
       $deals[]=array(
-		     'Deal Name'=>'Oferta n x m'
-		     ,'Deal Trigger'=>'Product'
+		     'Deal Metadata Name'=>'Oferta n x m'
+		     ,'Deal Metadata Trigger'=>'Product'
 		     ,'Deal Description'=>'buy '.$buy.' get '.$get.' free'
-		     ,'Deal Terms Type'=>'Product Quantity Ordered'
-		     ,'Deal Terms Description'=>'foreach '.$buy
-		     ,'Deal Allowance Description'=>$get.' free'
-		     ,'Deal Allowance Type'=>'Get Free'
-		     ,'Deal Allowance Target'=>'Product'
-		     ,'Deal Allowance Target Key'=>''
-		     ,'Deal Begin Date'=>''
-		     ,'Deal Expiration Date'=>''
+		     ,'Deal Metadata Terms Type'=>'Product Quantity Ordered'
+		     ,'Deal Metadata Terms Description'=>'foreach '.$buy
+		     ,'Deal Metadata Allowance Description'=>$get.' free'
+		     ,'Deal Metadata Allowance Type'=>'Get Free'
+		     ,'Deal Metadata Allowance Target'=>'Product'
+		     ,'Deal Metadata Allowance Target Key'=>''
+		     ,'Deal Metadata Begin Date'=>''
+		     ,'Deal Metadata Expiration Date'=>''
 		     );	
 
 
@@ -506,17 +506,17 @@ $description='Rose Garden (Red)';
 
       $deal_data['Store Key']=$store_key;
 
-      if(preg_match('/Mayoreo en Familia/i',$deal_data['Deal Name'])){
-	//$deal_data['Deal Campaign Key']=$volume_cam_id;
-	//$deal_data['Deal Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Name']);
+      if(preg_match('/Mayoreo en Familia/i',$deal_data['Deal Metadata Name'])){
+	//$deal_data['Deal Deal Key']=$volume_cam_id;
+	//$deal_data['Deal Metadata Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Metadata Name']);
 	//$deal_data['Deal Description']=preg_replace('/same family/',$family->data['Product Family Name'].' outers',$deal_data['Deal Description']);
    
 	$data=array(
-		    'Deal Allowance Target Key'=>$family->id,
-		    'Deal Trigger Key'=>$family->id,
+		    'Deal Metadata Allowance Target Key'=>$family->id,
+		    'Deal Metadata Trigger Key'=>$family->id,
 
-		    'Deal Allowance Description'=>$deal_data['Deal Allowance Description'],
-		    'Deal Terms Description'=>$deal_data['Deal Terms Description']
+		    'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description'],
+		    'Deal Metadata Terms Description'=>$deal_data['Deal Metadata Terms Description']
 		    
 		    );
 	//print_r($data);
@@ -526,13 +526,13 @@ $description='Rose Garden (Red)';
       }
 
 
-      if(preg_match('/Oro/i',$deal_data['Deal Name'])){
-	//$deal_data['Deal Campaign Key']=$gold_reward_cam_id;
-	//$deal_data['Deal Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Name'];
+      if(preg_match('/Oro/i',$deal_data['Deal Metadata Name'])){
+	//$deal_data['Deal Deal Key']=$gold_reward_cam_id;
+	//$deal_data['Deal Metadata Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Metadata Name'];
 	$data=array(
-		    'Deal Trigger Key'=>$family->id,
-		    'Deal Allowance Target Key'=>$family->id,
-		    'Deal Allowance Description'=>$deal_data['Deal Allowance Description']
+		    'Deal Metadata Trigger Key'=>$family->id,
+		    'Deal Metadata Allowance Target Key'=>$family->id,
+		    'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
 		    );
 
 	//	print_r($gold_camp);exit;
@@ -540,11 +540,11 @@ $description='Rose Garden (Red)';
 
       }
 
-      if(preg_match('/bogof/i',$deal_data['Deal Name'])){
+      if(preg_match('/bogof/i',$deal_data['Deal Metadata Name'])){
 		$data=array(
-			    'Deal Trigger Key'=>$family->id,
-			    'Deal Allowance Target Key'=>$family->id,
-			    'Deal Allowance Description'=>$deal_data['Deal Allowance Description']
+			    'Deal Metadata Trigger Key'=>$family->id,
+			    'Deal Metadata Allowance Target Key'=>$family->id,
+			    'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
 		    );
 
 	$bogof_camp->create_deal('[Product Family Code] BOGOF',$data);

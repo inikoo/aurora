@@ -123,7 +123,7 @@ if($modify){
 $general_options_list[]=array('tipo'=>'url','url'=>'suppliers_lists.php','label'=>_('Lists'));
 $general_options_list[]=array('tipo'=>'url','url'=>'supplier_categories.php','label'=>_('Categories'));
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->assign('search_label',_('Search'));

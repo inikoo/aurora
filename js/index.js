@@ -2,7 +2,37 @@ var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
 
+function changeHeight(iframe){
+        try
+        {
+        
+         
+          var innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document;
+          
+        
+          if (innerDoc.body.offsetHeight) //ns6 syntax
+          {
+         // alert(innerDoc.body.offsetHeight)
 
+            Dom.setStyle(iframe,'height',innerDoc.body.offsetHeight + 32  +'px');
+
+             //iframe.height = innerDoc.body.offsetHeight + 32  +'px'; //Extra height FireFox
+          }
+          else if (iframe.Document && iframe.Document.body.scrollHeight) //ie5+ syntax
+          {
+                  Dom.setStyle(iframe,'height',iframe.Document.body.scrollHeight + 32  +'px');
+
+          }else{
+         alert("x")
+          Dom.setStyle(iframe,'height','700px');
+            
+          }
+        }
+        catch(err)
+        {
+          alert(err.message);
+        }
+      }
 
 
 function sliders(){

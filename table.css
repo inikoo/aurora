@@ -197,3 +197,5 @@ div.wider{height:1.8em}
 .deal_info{font-size:75%;color:red}
 .quick_add{cursor:pointer;font-weight:800;margin-left:3px;padding:0 3px}
 .quick_add:hover{background:#B2D2FF;}
+
+.export_data_link{margin-left:5px;cursor:pointer;vertical-align:text-bottom;}

@@ -267,11 +267,16 @@ if ($user->can_view('warehouses')) {
 
 
     if (count($user->warehouses)==1)
-        $nav_menu[] = array(_('Inventory'), 'inventory.php','warehouses');
-
-
+        $nav_menu[] = array(_('Inventory'), 'warehouse_parts.php','parts');
     else
-        $nav_menu[] = array(_('Inventory'), 'warehouses.php','warehouses');
+        $nav_menu[] = array(_('Inventory'), 'warehouses.php','parts');
+
+ if (count($user->warehouses)==1)
+        $nav_menu[] = array(_('Locations'), 'warehouse.php','locations');
+    else
+        $nav_menu[] = array(_('Locations'), 'warehouses.php','locations');
+
+
 }
 if ($user->can_view('marketing')) {
 

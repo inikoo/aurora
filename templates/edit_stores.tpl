@@ -1,8 +1,16 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
+<div class="branch"> 
+  <span>{t}Stores{/t}</span>
+</div>
+<div class="top_page_menu">
+    <div class="buttons left" style="float:left">
+        <button style="margin-left:0px"  onclick="window.location='stores.php'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+    </div>
+    <div style="clear:both"></div>
 </div>
 
 

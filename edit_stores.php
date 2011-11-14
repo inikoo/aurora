@@ -31,8 +31,8 @@ $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('stores');
 $modify=$user->can_edit('stores');
-if(!$modify){
- header('Location: stores.php');
+if (!$modify) {
+    header('Location: stores.php');
     exit;
 }
 
@@ -48,10 +48,6 @@ $smarty->assign('modify',$modify);
 $corporation=new HQ();
 $smarty->assign('corporation',$corporation);
 
-$number_of_stores=count($user->stores);
- $general_options_list[]=array('tipo'=>'url','url'=>'stores.php','label'=>_('Exit Edit'));
-
-$smarty->assign('general_options_list',$general_options_list);
 
 
 
@@ -59,16 +55,16 @@ $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               'common.css',
                'container.css',
                'button.css',
-           
-               'css/edit.css'
+               'table.css',
+               'css/edit.css',
 
+               'theme.css.php'
            );
 
-$css_files[]='theme.css.php';
 
 
 
@@ -93,10 +89,10 @@ $js_files=array(
           );
 
 
-    $smarty->assign('edit',$_SESSION['state']['stores']['edit']);
-   
-    $js_files[]='country_select.js.php';
-    $js_files[]='edit_stores.js.php';
+$smarty->assign('edit',$_SESSION['state']['stores']['edit']);
+
+$js_files[]='country_select.js.php';
+$js_files[]='edit_stores.js.php';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -116,7 +112,7 @@ get_header_info($user,$smarty);
 global $myconf;
 $stores=array();
 $sql=sprintf("select count(distinct `Store Currency Code` ) as distint_currencies, sum(IF(`Store Currency Code`=%s,1,0)) as default_currency    from `Store Dimension` "
-             ,prepare_mysql($myconf['currency_code']));
+             ,prepare_mysql($corporate_currency));
 
 $res=mysql_query($sql);
 if ($row=mysql_fetch_array($res)) {
@@ -154,7 +150,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('mode_options_menu',$mode_options);
 
 
-    $smarty->display('edit_stores.tpl');
+$smarty->display('edit_stores.tpl');
 
 
 

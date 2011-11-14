@@ -232,20 +232,22 @@ function invoice_categories_sales_overview() {
              );
 
 
-
+$rtext_rpp='';
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                   'state'=>200,
                                       'data'=>$adata,
                                       'rtext'=>$rtext,
-
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_key'=>'store',
+                                      'sort_dir'=>'desc',
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total-1,
+                                      'total_records'=>$total,
                                       'records_offset'=>$start_from,
 
                                       'records_perpage'=>$total,
-                                      'records_order'=>'store',
-                                      'records_order_dir'=>'',
+                                     
                                       'filtered'=>$filtered
                                      )
                    );
@@ -443,21 +445,24 @@ function store_sales_overview() {
                  'invoices_share'=>''
              );
 
-
+$rtext_rpp='';
 
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                  'state'=>200,
                                       'data'=>$adata,
                                       'rtext'=>$rtext,
-
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
                                       'total_records'=>$total,
                                       'records_offset'=>$start_from,
 
-                                      'records_perpage'=>$total,
-                                      'records_order'=>'store',
-                                      'records_order_dir'=>'',
+                                      'records_perpage'=>$number_results,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
                                       'filtered'=>$filtered
                                      )
                    );

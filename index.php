@@ -50,7 +50,7 @@ $search_options_list=array();
 //$search_options_list[]=array('tipo'=>'url','url'=>'search_customers.php','label'=>_('Search Customers'));
 //$search_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Products'));
 
-$smarty->assign('search_options_list',$search_options_list);
+//$smarty->assign('search_options_list',$search_options_list);
 
 
 
@@ -124,6 +124,22 @@ $js_files=array(
 
 
 */
+
+
+
+
+
+$blocks=array();
+$sql=sprintf("select * from `Dashboard Dimension` where `User Key`=%d order by `Dashboard Order`",
+$user->id
+);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+    $blocks[]=array('key'=>$row['Dashboard Key'],'src'=>$row['Dashboard URL'],'class'=>$row['Dashboard Class'],'metadata'=>$row['Dashboard Metadata']);
+}
+$smarty->assign('blocks',$blocks);
+
+//print_r($blocks);
 
 
 $splinters_data=array(
@@ -200,27 +216,28 @@ foreach($splinters as $splinter_name=>$splinter) {
     include_once($splinter['php']);
 }
 
+
 $valid_sales=true;
-$sql = "select * from `Invoice Dimension`";
-$result = mysql_query($sql);
-if (!$row=mysql_fetch_array($result))
-    $valid_sales=false;
+//$sql = "select count(*) from `Invoice Dimension`";
+//$result = mysql_query($sql);
+//if (!$row=mysql_fetch_array($result))
+//    $valid_sales=false;
 
 $smarty->assign('valid_sales',$valid_sales);
 
 $valid_customers=true;
-$sql = "select * from `Product Dimension`";
-$result = mysql_query($sql);
-if (!$row=mysql_fetch_array($result))
-    $valid_customers=false;
+//$sql = "select * from `Product Dimension`";
+//$result = mysql_query($sql);
+//if (!$row=mysql_fetch_array($result))
+//    $valid_customers=false;
 
 $smarty->assign('valid_customers',$valid_customers);
 
 $valid_products=true;
-$sql = "select * from `Customer Dimension`";
-$result = mysql_query($sql);
-if (!$row=mysql_fetch_array($result))
-    $valid_products=false;
+//$sql = "select * from `Customer Dimension`";
+//$result = mysql_query($sql);
+//if (!$row=mysql_fetch_array($result))
+//    $valid_products=false;
 
 $smarty->assign('valid_products',$valid_products);
 //print_r($_SESSION['state']['orders']['invoices']);
@@ -228,6 +245,7 @@ $smarty->assign('valid_products',$valid_products);
 //print_r($_SESSION['state']['home']['splinters']);
 $smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);
 $smarty->assign('display_block',$_SESSION['state']['home']['display']);
+
 
 $smarty->assign('search_scope','all');
 

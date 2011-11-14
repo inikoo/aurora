@@ -81,10 +81,6 @@ class Country {
     }
 
 
-
-
-
-
     function get_data($key,$id) {
 
         if ($key=='find') {

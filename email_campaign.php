@@ -67,7 +67,8 @@ $css_files=array(
                'common.css',
                'button.css',
                'container.css',
-               'table.css','css/users.css'
+               'table.css',
+                'theme.css.php'
            );
 $js_files=array(
 

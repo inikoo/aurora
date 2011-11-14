@@ -101,6 +101,7 @@ if ($modify) {
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customers.php','label'=>_('Edit'));
     $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_customer','label'=>_('Add'));
 }
+$smarty->assign('modify',$modify);
 
 
 //$smarty->assign('general_options_list',$general_options_list);

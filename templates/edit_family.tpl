@@ -2,13 +2,20 @@
 <div id="bd" >
 <div>
 {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
+<div  class="branch"> 
+  <span  >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
 </div>
-
+<div class="top_page_menu">
+    <div class="buttons left" style="float:left">
+        <button style="margin-left:0px"  onclick="window.location='family.php?id={$family->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+    </div>
+    <div style="clear:both"></div>
+</div> 
 
 <div style="clear:left;margin:0 0px">
-    <h1><span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
+    <h1>{t}Family{/t}; <span class="id" id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></h1>
 </div>
 </div>
 
@@ -27,18 +34,22 @@
     <div  id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}"  >
       
     
-      <div class="general_options" style="float:right">
+
+
+    <table style="clear:both;width:800px" class="edit" border=0>
+    
+       <tr class="title"><td >{t}Family Details{/t} </td>
+       <td colspan=2>
+       <div class="buttons">
 	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_family" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_family" class="state_details">{t}Reset{/t}</span>
+<button  style="visibility:hidden"  id="save_edit_family" class="positive">{t}Save{/t}</button>
+	<button style="visibility:hidden" id="reset_edit_family" class="negative">{t}Reset{/t}</button>
 	
       </div>
-
-
-
-    <table style="clear:both;width:800px" class="edit">
+      </td>
+      </tr>
     
-    <tr>
+    <tr style="display:none">
 <td></td>
 <td style="text-align:right;color:#777;font-size:90%">
 <div id="delete_family_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none">
@@ -55,10 +66,7 @@
 
 </td>
 <td>
- <div class="general_options" style="float:right">
-	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family" class="state_details">{t}Save{/t}</span>
-	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_family" class="state_details">{t}Reset{/t}</span>
-      </div>
+
 </td>
 </tr>
 
@@ -126,9 +134,10 @@
 	    </td>
 	     <td id="special_char_msg" class="edit_td_alert" style="width:300px"></td>
 	  </tr>
-      <tr style="height:80px"><td class="label">{t}Description{/t}:</td><td>
+      <tr style="height:110px"><td class="label">{t}Description{/t}:</td><td>
 	      <div   >
 		<textarea   
+		style="height:100px"
 		   id="description" 
 		   name="description" 
 		   rows="5"

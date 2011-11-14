@@ -1,8 +1,13 @@
+var Dom   = YAHOO.util.Dom;
+var Event = YAHOO.util.Event;
 sales_tables= new Object();
  var period_ids=['mtd','ytd','wtd','1w','10d','1m','1q','1y','3y','last_m','last_w','yesterday','today'];
+
+  
+
 function sales_init(){
 
-        var tableid=Dom.get('sales_index').value;
+        var tableid=0;
 	    var tableDivEL="table"+tableid;
 	    var ProductsColumnDefs = [
 				       {key:"store", label:Dom.get('label_Store').value, width:150,sortable:false,className:"aleft"}
@@ -28,13 +33,14 @@ function sales_init(){
 	    sales_tables.dataSourcetopprod.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+		     rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -63,30 +69,60 @@ function sales_init(){
 								   
 								 );
 	    
+	 
+	    
 	    sales_tables.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    sales_tables.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    sales_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		    
+
+		    sales_tables.table1.subscribe('renderEvent',function() { 
+		  
+		   if(Dom.get('block_key').value){
+		    region=Dom.getRegion('block_table');
+		    var elmHeight = region.bottom - region.top;
+		 // alert( parent.window.document.getElementById("block_1"))
+		  
+		    parent.window.document.getElementById("block_"+Dom.get('block_key').value).height = elmHeight+10 ;
+		    }
+		    })
 		 
 	   
 
 	    sales_tables.table1.filter={key:'',value:''};
 	    
 	     ids=['currency_corporate','currency_stores'];
- YAHOO.util.Event.addListener(ids, "click",change_currency);
- YAHOO.util.Event.addListener(period_ids, "click",change_period);
+ Event.addListener(ids, "click",change_currency);
+ Event.addListener(period_ids, "click",change_period);
 
 
  ids=['type_stores','type_invoice_categories'];
- YAHOO.util.Event.addListener(ids, "click",change_type);
+ Event.addListener(ids, "click",change_type);
+
+
+ Event.addListener('configuration', "click",open_configuration);
+
+ Event.addListener('done', "click",close_configuration);
+
 
     
 }
 
 
+function open_configuration(){
 
-YAHOO.util.Event.onDOMReady(sales_init);
+ Dom.setStyle('block_options','display','')
+ Dom.setStyle('title','display','none')
+
+}
+
+function close_configuration(){
+ Dom.setStyle('block_options','display','none')
+ Dom.setStyle('title','display','')
+}
+
+
+Event.onDOMReady(sales_init);
 
 
 function change_currency(){
