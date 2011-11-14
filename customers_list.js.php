@@ -41,7 +41,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					 ];
 	store_id=Dom.get('store_id').value;
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&type=list&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers&type=list&sf=0&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>");
 	  
 
 //alert("ar_contacts.php?tipo=customers&type=list&store_id="+Dom.get('store_id').value+"&where=&list_key=<?php echo $static_list_id;?>")

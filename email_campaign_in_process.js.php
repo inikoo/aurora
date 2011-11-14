@@ -210,12 +210,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",  rtext:"resultset.rtext",
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		fields: ["name","customer_list_key","creation_date","customers","customer_list_type","add_to_email_campaign_action"]};
@@ -278,14 +280,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource5.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		      rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -354,14 +356,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource6.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		     rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -425,14 +427,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource7.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		   rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -495,14 +497,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource8.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		     rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -576,14 +578,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource10.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		      rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" 
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -649,14 +651,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource11.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		     rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" 
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -724,14 +726,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource12.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" 
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -965,7 +967,7 @@ dialog_send_email_campaign.show();
 function delete_email_campaign(){
 var email_campaign_key=Dom.get('email_campaign_key').value;
 
-var request='ar_edit_marketing.php?tipo=delete_email_campaign&email_campaign_key='+email_campaign_key+'&email_content_key='+email_content_key;
+var request='ar_edit_marketing.php?tipo=delete_email_campaign&email_campaign_key='+email_campaign_key;
 //alert(request);
  YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {

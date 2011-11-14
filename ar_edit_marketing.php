@@ -257,8 +257,8 @@ case('create_add_email_address_manually'):
     break;
 case('create_email_campaign'):
     $data=prepare_values($_REQUEST,array(
-                             'parent_key'=>array('type'=>'key'),
-                             'values'=>array('type'=>'json array'),
+                          
+                             'values'=>array('type'=>'json array')
 
                          ));
     create_email_campaign($data);
@@ -417,13 +417,29 @@ function add_email_address_manually($data) {
 function create_email_campaign($data) {
 
 
-    $email_campaign_data=array(
-                             'Email Campaign Store Key'=>$data['parent_key'],
-                             'Email Campaign Name'=>$data['values']['Email Campaign Name'],
-                             'Email Campaign Objective'=>$data['values']['Email Campaign Objective']
 
+
+    $email_campaign_data=array(
+                             'Email Campaign Store Key'=>$data['values']['store_key'],
+                             'Email Campaign Name'=>$data['values']['email_campaign_name'],
+                            'Email Content Type'=>$data['values']['email_campaign_content_type'],
+                             'Email Campaign Type'=>$data['values']['email_campaign_type'],
+                            
                          );
 //print_r($email_campaign_data);
+
+
+if($email_campaign_data['Email Campaign Name']==''){
+      $response= array(
+                       'state'=>400,
+                       'action'=>'error',
+                       'msg'=>_('Please give us the email campaign name')
+
+                   );
+                    echo json_encode($response);
+                    return;
+}
+
     $email_campaign=new EmailCampaign('find',$email_campaign_data,'create');
     if ($email_campaign->new) {
 

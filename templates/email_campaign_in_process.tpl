@@ -13,21 +13,7 @@
 </div>
 
 
-
-<div style="clear:left;margin:0 0px">
-<h1>{t}Email Campaign{/t}: <span id="h1_email_campaign_name">{$email_campaign->get('Email Campaign Name')}</span></h1>
-
-
-<div class="margin-bottom:10px" >
-<div  style="padding:10px;float:left" id="edit_email_campaign_msg">
-<span style="display:none" id="invalid_email_campaign_name">{t}Invalid Campaign Name{/t}</span>
-<span style="display:none" id="invalid_email_campaign_objetive">{t}Invalid Campaign Objetive{/t}</span>
-<span style="display:none" id="invalid_email_campaign_recipients">{t}Please add recipients{/t}</span>
-<span style="display:none" id="invalid_email_campaign_scope">{t}Invalid Scope Syntax{/t}</span>
-<span style="display:none" id="invalid_email_campaign_subjects">{t}Please add email subject{/t}</span>
-<span style="display:none" id="invalid_email_campaign_contents">{t}Email content is empty{/t}</span>
-</div>
-</div>
+<div class="top_page_menu">
 
 <div class="buttons" style="width:100%">
 	<button   class="{if !$email_campaign->ready_to_send()}disabled{/if} positive"  id="send_email_campaign">{t}Send{/t}</button>
@@ -36,9 +22,23 @@
 
 
 
-	<div style="clear:both"></div>
+	
+</div>
+<div style="clear:both"></div>
 </div>
 
+<h1>{t}Email Campaign{/t}: <span id="h1_email_campaign_name">{$email_campaign->get('Email Campaign Name')}</span></h1>
+
+<div class="margin-bottom:0px" >
+<div  style="display:none;padding:10px;float:left" id="edit_email_campaign_msg">
+<span style="display:none" id="invalid_email_campaign_name">{t}Invalid Campaign Name{/t}</span>
+<span style="display:none" id="invalid_email_campaign_objetive">{t}Invalid Campaign Objetive{/t}</span>
+<span style="display:none" id="invalid_email_campaign_recipients">{t}Please add recipients{/t}</span>
+<span style="display:none" id="invalid_email_campaign_scope">{t}Invalid Scope Syntax{/t}</span>
+<span style="display:none" id="invalid_email_campaign_subjects">{t}Please add email subject{/t}</span>
+<span style="display:none" id="invalid_email_campaign_contents">{t}Email content is empty{/t}</span>
+</div>
+</div>
 
 
 
@@ -431,7 +431,7 @@
 
 <tbody id="html_email_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='HTML'}display:none{/if}">
 
-
+<tr>
 <td colspan=2  ><h2>{t}HTML Email{/t}</h2></td>
 <td>
 <div class="buttons" id="change_template_buttons" style="padding-top:2px">
@@ -619,7 +619,6 @@
 <button  id="select_text_email" class="{if $email_campaign->get('Email Campaign Content Type')=='Plain'}selected{/if}" ><img src="art/icons/script.png" alt=""/> {t}Text Email{/t}</button>
 <button  id="select_html_from_template_email" class="{if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}selected{/if}" ><img src="art/icons/layout.png" alt=""/> {t}Template Email{/t}{if $email_campaign->get('Email Campaign Content Type')=='HTML Template'}<img class="selected" src="art/icons/accept.png"/>{/if}</button>
 <button  id="select_html_email" class="{if $email_campaign->get('Email Campaign Content Type')=='HTML'}selected{/if}" ><img src="art/icons/html.png" alt=""/> {t}HTML Email{/t}</button>
-
 </div>
 
 </td>

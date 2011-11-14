@@ -1,12 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" > 
 {include file='contacts_navigation.tpl'}
-
-
+ <div> 
+  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a  href="customer_categories.php?store_id={$store->id}&id=0">{t}Categories{/t}</a> &rarr;  {$category->get_smarty_tree('customer_categories.php')}</span>
+</div>
 {if $category}
-<div class="branch"> 
- <span ><a  href="edit_customer_category.php?store_id={$store->id}&id=0">{t}Customer Categories{/t}</a> &rarr; {$category->get_smarty_tree('edit_customer_category.php')}
- </div> 
     <h1 style="clear:both">{t}Editing Category{/t}: <span id="cat_title">{$category->get('Category Label')}</span></h1>
 {else}
 <h1 style="clear:both">{t}Editing Main Categories{/t}</h1>

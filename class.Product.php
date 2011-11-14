@@ -11,7 +11,7 @@
   Version 2.0
 */
 include_once('class.DB_Table.php');
-include_once('class.Deal.php');
+include_once('class.DealMetadata.php');
 include_once('class.SupplierProduct.php');
 include_once('class.Part.php');
 include_once('class.Store.php');
@@ -879,7 +879,7 @@ class product extends DB_Table {
                        'Product Web Configuration'=>'Offline',
                        'product store key'=>1,
                        'product locale'=>$myconf['lang'].'_'.$myconf['country'],
-                       'product currency'=>$myconf['currency_code'],
+                       'product currency'=>$corporate_currency,
 
                        'product code file as'=>'',
                        'product code'=>'',
@@ -1224,7 +1224,7 @@ class product extends DB_Table {
                     $deal_data['deal trigger key']=$this->id;
                 if ($deal_data['deal allowance target']=='Product')
                     $deal_data['deal allowance target key']=$this->id;
-                $deal=new Deal('create',$deal_data);
+                $deal=new DealMetadataMetadataMetadataMetadata('create',$deal_data);
 
             }
         }

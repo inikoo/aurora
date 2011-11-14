@@ -208,11 +208,11 @@ if ($modify) {
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_part.php?id='.$part->id,'label'=>_('Edit Part'));
 
 }
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->assign('part',$part);
-$smarty->assign('parent','warehouses');
+$smarty->assign('parent','parts');
 $smarty->assign('title',$part->get('SKU'));
 
 $smarty->assign('key_filter_number',$regex['key_filter_number']);

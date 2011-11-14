@@ -93,6 +93,8 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     if(oResponse.meta.rtext_rpp != undefined){
 
 	YAHOO.util.Dom.get('rtext_rpp'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext_rpp;
+    }else{
+    alert("error no rtext_rpp return properly table"+oResponse.meta.tableid)
     }
 
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg
@@ -139,12 +141,12 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
 
 function myrenderEvent(){
-//alert("y")
+
 
 ostate=this.getState();
 paginator=ostate.pagination
-if(paginator.totalRecords<=paginator.rowsPerPage){
 
+if(paginator.totalRecords<=paginator.rowsPerPage){
 Dom.setStyle('paginator'+this.table_id,'display','none')
 }
 }
@@ -328,7 +330,7 @@ function change_period(e,data){
 
 
     tipo=this.id;
-    Dom.removeClass(Dom.getElementsByClassName('option','td' , data.subject+'_period_options'),'selected')
+    Dom.removeClass(Dom.getElementsByClassName('table_option','button' , data.subject+'_period_options'),'selected')
     Dom.addClass(tipo,"selected");	
     
     var table=tables['table'+data.table_id];
@@ -340,7 +342,7 @@ function change_period(e,data){
 
 function change_avg(e,data){
     tipo=this.id;
-  Dom.removeClass(Dom.getElementsByClassName('option','td' , data.subject+'_avg_options'),'selected')
+  Dom.removeClass(Dom.getElementsByClassName('table_option','button' , data.subject+'_avg_options'),'selected')
     Dom.addClass(tipo,"selected");	
     var table=tables['table'+data.table_id];
     var datasource=tables['dataSource'+data.table_id];

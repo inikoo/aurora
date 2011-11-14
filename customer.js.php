@@ -645,7 +645,6 @@ Event.addListener(window, "load", function() {
 		metaFields: {
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",

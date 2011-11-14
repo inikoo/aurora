@@ -37,7 +37,7 @@ $store=new Store($store_id);
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
 
-$smarty->assign('block_view',$_SESSION['state']['campaigns']['view']);
+$smarty->assign('block_view',$_SESSION['state']['store_offers']['view']);
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -50,9 +50,11 @@ $css_files=array(
                'container.css',
                'table.css',
                'css/marketing_menu.css',
-               'css/marketing_campaigns.css'
+               'css/marketing_campaigns.css',
+               'theme.css.php'
+               
            );
-$css_files[]='theme.css.php';
+
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
@@ -66,13 +68,13 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/search.js',
-              'campaigns.js.php',
+              'store_deals.js.php',
           
           );
 
 
 $smarty->assign('parent','products');
-$smarty->assign('title', _('Campaigns'));
+$smarty->assign('title', _('Store Offers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -88,5 +90,14 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$smarty->display('campaigns.tpl');
+$elements_number=array('Order'=>0,'Department'=>0,'Family'=>0,'Product'=>0);
+$sql=sprintf("select count(*) as num,`Deal Terms Object` from  `Deal Dimension` where `Store Key`=%d group by `Deal Terms Object`",$store->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[$row['Deal Terms Object']]=$row['num'];
+}
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['store_offers']['offers']['elements']);
+
+$smarty->display('store_deals.tpl');
 ?>

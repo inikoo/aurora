@@ -47,10 +47,6 @@ $store=new Store($product->data['Product Store Key']);
 $smarty->assign('product',$product);
 $smarty->assign('store',$store);
 
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'product.php?edit=0','label'=>_('Exit Edit'));
-$smarty->assign('general_options_list',$general_options_list);
-
 
 
 $product->load_images_slidesshow();

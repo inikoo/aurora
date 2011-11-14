@@ -489,7 +489,7 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false) 
 
  Parameter:
  amount - *string* String to be parsed
- currency - *string* Currency  [£|¥|€|(3 Letter Currency Code)|false=$myconf['currency_code'] ]
+ currency - *string* Currency  [£|¥|€|(3 Letter Currency Code)|false=$corporate_currency ]
 
 
  Return:
@@ -513,7 +513,7 @@ function parse_money($amount,$currency=false) {
     $locale_info = localeconv();
 
     if (!$currency)
-        $currency=$myconf['currency_code'];
+        $currency=$corporate_currency;
     else
         $currency=$currency;
     if (preg_match('/$|£|¥|€|zł/i',$amount,$match)) {
@@ -942,7 +942,7 @@ function customers_awhere($awhere) {
 
     */
 
-    $date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Invoice Date`','only_dates');
+    $date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Order Date`','only_dates');
     if ($date_interval_when_ordered['mysql']) {
         $use_otf=true;
     }

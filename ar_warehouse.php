@@ -170,6 +170,12 @@ function list_locations() {
 
 
 
+    $rtext=$total_records." ".ngettext('location','locations',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp='('._("Showing all").')';
+
 
 
 
@@ -191,9 +197,7 @@ function list_locations() {
         $filter_msg='';
 
 
-    $rtext=$total_records." ".ngettext('location','locations',$total_records);
-    if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+
     $_order=$order;
     $_dir=$order_direction;
 
@@ -250,21 +254,16 @@ function list_locations() {
                 );
     }
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                    'state'=>200,
                                       'data'=>$data,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                                      'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
@@ -430,21 +429,16 @@ function list_shelfs() {
                 );
     }
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
+                                array(
+                                         'state'=>200,
+                                      'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                                      'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
@@ -626,17 +620,16 @@ function list_warehouse_areas() {
 
 
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                    'state'=>200,
                                       'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results,
+                                      'total_records'=>$total
                                      )
                    );
     echo json_encode($response);

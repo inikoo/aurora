@@ -160,19 +160,27 @@ class EmailCampaign extends DB_Table {
     function create($raw_data) {
 
         $data=$this->base_data();
-
+        $content_data=array('Email Content Type'=>'HTML Template');
 
         foreach($raw_data as $key=>$value) {
             if (array_key_exists($key,$data))
-
-
-
                 if (is_array($value))
                     $data[$key]=serialize($value);
                 else
                     $data[$key]=_trim($value);
+        }
+
+        foreach($raw_data as $key=>$value) {
+            if (array_key_exists($key,$content_data))
+                    $content_data[$key]=_trim($value);
+        }
 
 
+
+        if($data['Email Campaign Name']==''){
+            $this->error;
+            $this->msg='no name';
+            return;
         }
 
         $data['Email Campaign Creation Date']=date("Y-m-d H:i:s");
@@ -199,7 +207,16 @@ class EmailCampaign extends DB_Table {
             $this->get_data('id',$this->id);
             $this->new=true;
 
-            $sql=sprintf("insert into `Email Content Dimension` (`Email Content Subject`,`Email Content Text`,`Email Content HTML`) values ('','','')");
+
+
+
+            $sql=sprintf("insert into `Email Content Dimension` (`Email Content Type`,`Email Content Subject`,`Email Content Text`,`Email Content HTML`) values (%s,'','','')",
+            prepare_mysql($content_data['Email Content Type'])
+            
+            );
+            
+            print $sql;
+            
             mysql_query($sql);
             $email_content_key=mysql_insert_id();
 
@@ -299,9 +316,9 @@ class EmailCampaign extends DB_Table {
             $term_metadata='0;;432000';
             break;
         case 'Deal':
-            $parent=new Deal($scope_data['Email Campaign Objetive Parent Key']);
+            $parent=new DealMetadataMetadataMetadata($scope_data['Email Campaign Objetive Parent Key']);
             $parent_key=$parent->pid;
-            $parent_name=$parent->data['Deal Name'];
+            $parent_name=$parent->data['Deal Metadata Name'];
             $term='Use';
             $term_metadata='432000';
             break;
@@ -656,9 +673,10 @@ class EmailCampaign extends DB_Table {
     }
     function get_contents_array() {
         $email_contents_array=array();
-        $sql=sprintf("select `Email Content Template Postcard Key`,`Email Content Color Scheme Key`,`Email Content Template Type`,`Email Content Type`,`Email Content Subject`,`Email Content Type`,C.`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Template Header Image Key`,`Email Content Metadata` from  `Email Content Dimension`   C  left join `Email Campaign Content Bridge` B on (B.`Email Content Key`=C.`Email Content Key`) where `Email Campaign Key`=%d ",$this->id);
+        $sql=sprintf("select `Email Content Template Postcard Key`,`Email Content Color Scheme Key`,`Email Content Template Type`,`Email Content Type`,`Email Content Subject`,`Email Content Type`,C.`Email Content Key`,`Email Content Text`,`Email Content HTML`,`Email Content Header Image Key`,`Email Content Metadata` from  `Email Content Dimension`   C  left join `Email Campaign Content Bridge` B on (B.`Email Content Key`=C.`Email Content Key`) where `Email Campaign Key`=%d ",$this->id);
         $res=mysql_query($sql);
-        while ($row=mysql_fetch_assoc($res)) {
+    // print $sql;
+     while ($row=mysql_fetch_assoc($res)) {
 
 
             $sql2=sprintf("select * from `Email Content Paragraph Dimension` where `Email Content Key`=%d order by `Paragraph Order`",$row['Email Content Key']);
@@ -688,8 +706,8 @@ class EmailCampaign extends DB_Table {
             }
 
             $header_image_key=0;
-            if ($row['Email Content Template Header Image Key']) {
-                $sql=sprintf("select `Image Key` from `Email Template Header Image Dimension` where `Email Template Header Image Key`=%d ",$row['Email Content Template Header Image Key']);
+            if ($row['Email Content Header Image Key']) {
+                $sql=sprintf("select `Image Key` from `Email Template Header Image Dimension` where `Email Template Header Image Key`=%d ",$row['Email Content Header Image Key']);
                 $res2=mysql_query($sql);
                 if ($row2=mysql_fetch_assoc($res2)) {
                     $header_image_key=$row2['Image Key'];
@@ -1367,7 +1385,7 @@ class EmailCampaign extends DB_Table {
 
     function update_content($email_content_key,$key,$value) {
 
-        $valid_keys=array('Email Content Type','Email Content Template Type','Email Content Color Scheme Key','Email Content Template Header Image Key','Email Content Template Postcard Key');
+        $valid_keys=array('Email Content Type','Email Content Template Type','Email Content Color Scheme Key','Email Content Header Image Key','Email Content Template Postcard Key');
         if (in_array($key,$valid_keys)) {
 
             $sql=sprintf("select `%s` as old_value from  `Email Content Dimension`  where `Email Content Key`=%d ",

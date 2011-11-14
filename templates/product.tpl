@@ -4,9 +4,20 @@
 <div style="padding:0 20px">
 
 {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; {$product->get('Product Code')}</span>
+<div  class="branch"> 
+  <span  >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; {$product->get('Product Code')}</span>
 </div>
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        <button  onclick="window.location='edit_product.php?id={$product->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Product{/t}</button>
+    </div>
+    <div class="buttons" style="float:left">
+         {if $modify}<button  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>{/if}
+    </div>
+    <div style="clear:both"></div>
+</div> 
+
+
     <h1><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </h1>
     {if $product->get('Product Record Type')=='Historic'}<h2>{t}Historic Product{/t}</h2>{/if}
 
@@ -128,23 +139,7 @@
 		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
 		    {/if}
 		  </table>
-		  <table  class="show_info_product">
-		    
-
-
-<tr>
-		      <td>{t}Categories{/t}:</td>
-		      <td>{$categories}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Material{/t}:</td>
-		      <td>{$materials}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Ingredients{/t}:</td>
-		      <td>{$ingredients}</td>
-		    </tr>
-		  </table>
+		  
 		
               </div>
 	    </div>
@@ -172,7 +167,24 @@
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 <div style="padding:0 20px">    
-<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+<div style="width:300px">
+<table  class="show_info_product">
+            <tr>
+		      <td>{t}Categories{/t}:</td>
+		      <td>{$categories}</td>
+		    </tr>
+		    <tr>
+		      <td>{t}Material{/t}:</td>
+		      <td>{$materials}</td>
+		    </tr>
+		    <tr>
+		      <td>{t}Ingredients{/t}:</td>
+		      <td>{$ingredients}</td>
+		    </tr>
+		  </table>
+</div>
+</div>
 <div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
  <table    class="show_info_product" style="width:250px">
@@ -299,7 +311,6 @@
 
  
 </div>
-
 <div id="block_timeline" style="{if $block_view!='timeline'}display:none;{/if}clear:both;margin:10px 0 40px 0">
     
     
@@ -317,7 +328,6 @@
 
 
 </div>
-
 <div id="block_web_site" style="{if $block_view!='web_site'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
 <h2 style="clear:both">{t}Web Site Details{/t}</h2>
@@ -333,15 +343,16 @@
 </div>
 
 </div>
-
-<div  id="block_orders" class="data_table"  style="{if $block_view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+<div id="block_orders" class="data_table"  style="{if $block_view!='orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
  {if $view_orders} 
     <span id="table_title" class="clean_table_title">{t}Orders with this Product{/t}</span>
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
     <div  id="table0"   class="data_table_container dtable btable "> </div>
    {/if}
  </div>
- <div  id="block_customers" class="data_table"  style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+<div id="block_customers" class="data_table"  style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
    
      
       <table    class="show_info_product" style="width:250px">
@@ -387,7 +398,8 @@
      
      
      
-   <span id="table_title" class="clean_table_title">{t}Customer who order this Product{/t}</span>
+   <span id="table_title" class="clean_table_title">{t}Customers who order this Product{/t}</span>
+     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
   <div  id="table1"   class="data_table_container dtable btable "> </div>
  
