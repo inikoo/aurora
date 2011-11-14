@@ -1,6 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
 <input type="hidden" id="site_key" value="{$site->id}"/>
+<input type="hidden" id="store_key" value="{$store_key}"/>
+
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
   <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
@@ -38,7 +40,7 @@
       
       
       
-      <div class="todo" style="font-size:80%;width:50%">
+      <div class="todo" style="font-size:80%;width:50%; display:none">
 
 
       <h1>TO DO (KAKTUS-323)</h1>
@@ -54,11 +56,20 @@ Edit Form for Site Properties
 DB updates should be done in class.Site.php. <br/> Should use Ajax (see edit_store.php or edit_customer.php)
 </p>
       </div>
-      
-    
+	  
+<table>
+<tr><td>
+  Select Checkout Method:
+  </td></tr>
+  <tr><td>
+<input id="site_checkout_method" value="inikoo" type="hidden"   />
+<div class="buttons" id="site_checkout_method_buttons" style="float:left">
+<button  id="ecommerce" class="site_checkout_method " ><img src="art/icons/layout.png" alt=""/> {t}Ecommerce{/t}</button>
+<button  id="inikoo"  class="site_checkout_method selected"><img src="art/icons/script.png" alt=""/> {t}Inikoo{/t}</button>
+</div>
      
-	
-	
+</td></tr>	
+</table>	
      
       </div>
     <div  class="edit_block" style="{if $block_view!='layout'}display:none{/if}"  id="d_layout">

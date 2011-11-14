@@ -33,6 +33,19 @@ case('add_see_also_page'):
 
 
     break;
+case('edit_checkout_method'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'store_key'=>array('type'=>'key'),
+							 'site_checkout_method'=>array('type'=>'string'),
+
+                         ));
+
+    edit_checkout_method($data);
+
+
+    break;
+
 case('delete_see_also_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -571,4 +584,27 @@ function delete_see_also_page($data) {
     $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
     echo json_encode($response);
 
+}
+
+function edit_checkout_method($data){
+//print_r($data);
+	$site = new Site($data['site_key']);
+	if(!$site){
+		$response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
+		echo json_encode($response);
+
+		exit;
+	}
+print_r($site);	
+	switch($data['site_checkout_method']){
+		case 'inikoo':
+		case 'Inikoo':
+			$method='Inikoo';
+			break;
+		default:
+			$method='Ecommerce';
+	}
+print $method;
+	$response=$site->update(array('Site Checkout Method'=>$method));
+	echo json_encode($response);
 }
