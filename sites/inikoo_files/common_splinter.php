@@ -332,7 +332,7 @@ function show_product($code) {
     $data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method, 'user'=>$user);
 
     if ($logged_in) {
-        print $product->get_full_order_form('custom', $data);
+        print $product->get_full_order_form('ecommerce', $data);
 
     } else {
 
@@ -424,7 +424,7 @@ function show_products($code,$options=false) {
         $product=new Family('code',$family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
-            echo $product->get_product_in_family_with_order_form($data, $header, 'custom', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
+            echo $product->get_product_in_family_with_order_form($data, $header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
             return;
         } else {
             $options=array();
@@ -447,7 +447,7 @@ function show_products($code,$options=false) {
 
 
     if ($logged_in) {
-        echo $product->get_product_list_with_order_form($header, 'custom', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
+        echo $product->get_product_list_with_order_form($header, 'ecommerce', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
     } else {
         echo $product->get_product_list_no_price($header, $options);
         return;
