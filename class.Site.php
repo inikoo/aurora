@@ -227,13 +227,14 @@ class Site extends DB_Table {
 
     function update_field_switcher($field,$value,$options='') {
 
-
+print "$field $value";
         switch ($field) {
 
         default:
             $base_data=$this->base_data();
+			
             if (array_key_exists($field,$base_data)) {
-
+				
                 if ($value!=$this->data[$field]) {
 
                     $this->update_field($field,$value,$options);

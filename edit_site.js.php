@@ -216,7 +216,42 @@ init_search('products_store');
     var ids = ["general","layout","style","sections","pages"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
+   
+Event.addListener(["ecommerce","inikoo"], "click", change_checkout_method);
+   
+   
 }
+
+function change_checkout_method(){
+types=Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
+Dom.removeClass(types,'selected');
+
+Dom.get('site_checkout_method').value=this.id;
+alert(Dom.get('site_checkout_method').value);
+
+site_id=Dom.get('site_key').value;
+store_key=Dom.get('store_key').value;
+var request='ar_edit_sites.php?tipo=edit_checkout_method&site_key=' + site_id +'&store_key='+store_key + '&site_checkout_method='+Dom.get('site_checkout_method').value
+	            alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.addClass(this,'selected');
+
+            }
+			else{
+
+			}
+   			}
+    });
+
+
+}
+
 
 YAHOO.util.Event.onDOMReady(init);
 
