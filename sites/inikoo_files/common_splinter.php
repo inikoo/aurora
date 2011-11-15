@@ -32,7 +32,7 @@ putenv('LC_ALL=es_ES');
 setlocale(LC_ALL, 'es_ES');
 
 // Specify location of translation tables
-bindtextdomain("inikoo", "./locale");
+//print_r(bindtextdomain("inikoo", "./locale"));
 
 
 
@@ -500,7 +500,7 @@ function set_parameters($data=false) {
         $path="../";
 	elseif($data['type']=='index')
 		$path="../sites/";
-
+bindtextdomain("inikoo", $path."locale");
 		
     if (!isset($data['family']))
         $family_code='';
