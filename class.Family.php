@@ -2706,7 +2706,7 @@ class Family extends DB_Table {
             $this->user_id=$username;
             $this->method=$method;
             break;
-		case 'custom':
+		case 'inikoo':
 			$this->method='sc';
 			$this->user=$user;
 			break;
@@ -3489,7 +3489,7 @@ class Family extends DB_Table {
             $this->user_id=$username;
             $this->method=$method;
             break;
-		case 'custom':
+		case 'inikoo':
 			$this->method='sc';
 			$this->user=$user;
 			break;
