@@ -776,6 +776,7 @@ printf("function validate_customer_%s(query){\nvalidate_general('customer','cust
 }
 
 ?>
+
 function validate_customer_fax(query){
     validate_general('customer','fax',unescape(query));
     if(query==''){
@@ -795,15 +796,15 @@ function validate_customer_main_contact_name(query){
 function save_edit_billing_data(){
     save_edit_general_bulk('billing_data');
 }
+
 function reset_edit_billing_data(){
     reset_edit_general('billing_data')
 }
 
-
-
 function save_edit_customer(){
     save_edit_general_bulk('customer');
 }
+
 function reset_edit_customer(){
     reset_edit_general('customer')
 }
