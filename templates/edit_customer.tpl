@@ -214,9 +214,11 @@
  <tr>
  <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
  <td>
+
    <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
    <button class="{if $customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button>
    <button class="{if $customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button>
+
    </div>
  </td>
  </tr>

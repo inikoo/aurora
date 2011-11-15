@@ -9,15 +9,25 @@ var Dom   = YAHOO.util.Dom;
 
 var id=<?php echo$_SESSION['state']['site']['id']?>;
 
-var validate_scope_data={
-
-};
+var validate_scope_data=
+{
+    'site':{
+	'slogan':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_Slogan','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Slogan')?>'}]}
+	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+	,'url':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+	,'ftp':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_FTP','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Credentials')?>'}]}
+	//,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
+	//,'email':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query=','changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+	//,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':regex_valid_tel,'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
+	//,'mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
+	//,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_FAX','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
+}};
 
 var validate_scope_metadata={
-    
-  
-};
+'site':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+//,'billing_data':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'customer_key','key':<?php echo $_SESSION['state']['customer']['id']?>}
 
+};
 
 
 
@@ -216,7 +226,164 @@ init_search('products_store');
     var ids = ["general","layout","style","sections","pages"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
+	   
+	Event.addListener(["ecommerce","inikoo"], "click", change_checkout_method);
+	Event.addListener(["sidebar","mainpage"], "click", change_registration_method);
+   
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_slogan);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Slogan","Site_Slogan_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_name);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Name","Site_Name_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+	
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_url);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_URL","Site_URL_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+	
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP","Site_FTP_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+	
+	YAHOO.util.Event.addListener('save_edit_site', "click", save_edit_site);
+    YAHOO.util.Event.addListener('reset_edit_site', "click", reset_edit_site);
 }
+
+function save_edit_site(){
+
+    save_edit_general_bulk('site');
+}
+
+function reset_edit_site(){
+    reset_edit_general('site')
+}
+
+
+function validate_site_ftp(query){
+  original_query= query;
+query=query.replace(/[^A-Z0-9]/i, "");
+ //alert(query)
+ validate_general('site','ftp',unescape(query));
+
+ if(original_query==''){
+    
+     validate_scope_data.site.ftp.validated=true;
+     validate_scope('site'); 
+ }
+
+}
+
+function validate_site_url(query){
+  original_query= query;
+query=query.replace(/[^A-Z0-9]/i, "");
+ //alert(query)
+ validate_general('site','url',unescape(query));
+
+ if(original_query==''){
+    
+     validate_scope_data.site.url.validated=true;
+     validate_scope('site'); 
+ }
+
+}
+
+function validate_site_name(query){
+  original_query= query;
+query=query.replace(/[^A-Z0-9]/i, "");
+ //alert(query)
+ validate_general('site','name',unescape(query));
+
+ if(original_query==''){
+    
+     validate_scope_data.site.name.validated=true;
+     validate_scope('site'); 
+ }
+
+}
+
+function validate_site_slogan(query){
+  original_query= query;
+query=query.replace(/[^A-Z0-9]/i, "");
+ //alert(query)
+ validate_general('site','slogan',unescape(query));
+
+ if(original_query==''){
+    
+     validate_scope_data.site.slogan.validated=true;
+     validate_scope('site'); 
+ }
+
+}
+
+function change_registration_method(){
+types=Dom.getElementsByClassName('site_registration_method', 'button', 'site_registration_method_buttons')
+Dom.removeClass(types,'selected');
+
+Dom.get('site_registration_method').value=this.id;
+//alert(Dom.get('site_checkout_method').value);
+
+
+site_id=Dom.get('site_key').value;
+store_key=Dom.get('store_key').value;
+var request='ar_edit_sites.php?tipo=edit_registration_method&site_key=' + site_id +'&store_key='+store_key + '&site_registration_method='+Dom.get('site_registration_method').value
+	            //alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.addClass(r.new_value,'selected');
+
+            }
+			else{
+				Dom.addClass(Dom.get('site_registration_method').value,'selected');
+			}
+   			}
+    });
+}
+
+function change_checkout_method(){
+types=Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
+Dom.removeClass(types,'selected');
+
+Dom.get('site_checkout_method').value=this.id;
+//alert(Dom.get('site_checkout_method').value);
+
+
+site_id=Dom.get('site_key').value;
+store_key=Dom.get('store_key').value;
+var request='ar_edit_sites.php?tipo=edit_checkout_method&site_key=' + site_id +'&store_key='+store_key + '&site_checkout_method='+Dom.get('site_checkout_method').value
+	            //alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.addClass(r.new_value,'selected');
+
+            }
+			else{
+				Dom.addClass(Dom.get('site_checkout_method').value,'selected');
+			}
+   			}
+    });
+
+
+}
+
 
 YAHOO.util.Event.onDOMReady(init);
 

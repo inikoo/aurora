@@ -1,6 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
 <input type="hidden" id="site_key" value="{$site->id}"/>
+<input type="hidden" id="store_key" value="{$store_key}"/>
+
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
   <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
@@ -38,7 +40,7 @@
       
       
       
-      <div class="todo" style="font-size:80%;width:50%">
+      <div class="todo" style="font-size:80%;width:50%; display:none">
 
 
       <h1>TO DO (KAKTUS-323)</h1>
@@ -54,13 +56,92 @@ Edit Form for Site Properties
 DB updates should be done in class.Site.php. <br/> Should use Ajax (see edit_store.php or edit_customer.php)
 </p>
       </div>
-      
-    
-     
-	
-	
-     
+	  
+<table>
+<tr >
+<td></td>
+<td colspan="3" style="float:right">
+ <div class="general_options" style="float:right">
+	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_site" class="state_details">{t}Save{/t}</span>
+	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_site" class="state_details">{t}Reset{/t}</span>
       </div>
+</td>
+</tr>
+<tr><td class="label">{t}Select Checkout Method: {/t}
+  </td><td>
+<input id="site_checkout_method" value="inikoo" type="hidden"   />
+<div class="buttons" id="site_checkout_method_buttons" style="float:left">
+<button  id="ecommerce" class="site_checkout_method {if $site->get('Site Checkout Method')=='Ecommerce'}selected{/if}" ><img src="art/icons/cart.png" alt=""/> {t}Ecommerce{/t}</button>
+<button  id="inikoo"  class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt=""/> {t}Inikoo{/t}</button>
+</div>
+     
+</td></tr>	
+
+
+
+
+<tr><td class="label">{t}Select Registration Method: {/t}</td><td>
+<input id="site_registration_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="site_registration_method_buttons" style="float:left">
+<button  id="sidebar" class="site_registration_method {if $site->get('Site Registration Method')=='SideBar'}selected{/if}" ><img src="art/icons/layout.png" alt=""/> {t}SideBar{/t}</button>
+<button  id="mainpage"  class="site_registration_method {if $site->get('Site Registration Method')=='MainPage'}selected{/if}"><img src="art/icons/layout.png" alt=""/> {t}MainPage{/t}</button>
+</div>
+     
+</td></tr>	
+
+
+<tr>
+<td  class="label">{t}Site Slogan: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Slogan" value="{$site->get('Site Slogan')}" ovalue="{$site->get('Site Slogan')}" valid="0">
+       <div id="Site_Slogan_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_Slogan_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td  class="label">{t}Site Name: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Name" value="{$site->get('Site Name')}" ovalue="{$site->get('Site Name')}" valid="0">
+       <div id="Site_Name_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_Name_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td  class="label">{t}Site URL: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_URL" value="{$site->get('Site URL')}" ovalue="{$site->get('Site URL')}" valid="0">
+       <div id="Site_URL_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_URL_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td  class="label">{t}Site FTP Credentials: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_FTP" value="{$site->get('Site FTP Credentials')}" ovalue="{$site->get('Site FTP Credentials')}" valid="0">
+       <div id="Site_FTP_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_FTP_msg" class="edit_td_alert"></td>
+</tr>
+
+</table>	
+     
+	 
+	 </div>
     <div  class="edit_block" style="{if $block_view!='layout'}display:none{/if}"  id="d_layout">
       
       

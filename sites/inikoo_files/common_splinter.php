@@ -28,6 +28,14 @@ $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 
+putenv('LC_ALL=es_ES');
+setlocale(LC_ALL, 'es_ES');
+
+// Specify location of translation tables
+//print_r(bindtextdomain("inikoo", "./locale"));
+
+
+
 global $version, $version_flag;
 $version = ieversion();
 
@@ -103,6 +111,15 @@ if (!$site->id) {
 
     exit ("Site data not found");
 }
+
+$checkout_method=$site->data['Site Checkout Method'];
+
+global $registration_method;
+
+if($site->data['Site Registration Method']=='SideBar')
+	$registration_method=true;
+else
+	$registration_method=0;
 
 $secret_key=$site->data['Site Secret Key'];
 
@@ -322,7 +339,7 @@ function get_sk() {
 
 function show_product($code) {
 
-    global $logged_in, $ecommerce_url, $username, $method,$store_key, $user;
+    global $logged_in, $ecommerce_url, $username, $method,$store_key, $user, $checkout_method;
     $product=new Product('code', $code, $store_key);
 
     if (!$product->match)
@@ -332,7 +349,7 @@ function show_product($code) {
     $data=array('ecommerce_url'=>$ecommerce_url,'username'=>$username,'method'=>$method, 'user'=>$user);
 
     if ($logged_in) {
-        print $product->get_full_order_form('custom', $data);
+        print $product->get_full_order_form(strtolower($checkout_method), $data);
 
     } else {
 
@@ -345,7 +362,7 @@ function show_product($code) {
 
 
 function show_products($code,$options=false) {
-    global $logged_in,$ecommerce_url_multi, $username, $method,$store_key, $user, $path;
+    global $logged_in,$ecommerce_url_multi, $username, $method,$store_key, $user, $path, $checkout_method;
 
 	if(isset($options['rrp'])){
 		switch($options['rrp']){
@@ -424,7 +441,7 @@ function show_products($code,$options=false) {
         $product=new Family('code',$family_code, $store_key);
         if ($logged_in) {
             //echo show_products_in_family('ecommerce', $data, $conf, $options);
-            echo $product->get_product_in_family_with_order_form($data, $header, 'custom', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
+            echo $product->get_product_in_family_with_order_form($data, $header, strtolower($checkout_method), $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
             return;
         } else {
             $options=array();
@@ -447,7 +464,7 @@ function show_products($code,$options=false) {
 
 
     if ($logged_in) {
-        echo $product->get_product_list_with_order_form($header, 'custom', $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
+        echo $product->get_product_list_with_order_form($header, strtolower($checkout_method), $s, $_SERVER["SERVER_PORT"], $_SERVER["SERVER_PROTOCOL"], $_SERVER['REQUEST_URI'], $_SERVER['SERVER_NAME'], $ecommerce_url_multi, $username, $method, $options, $user, $path);
     } else {
         echo $product->get_product_list_no_price($header, $options);
         return;
@@ -483,7 +500,7 @@ function set_parameters($data=false) {
         $path="../";
 	elseif($data['type']=='index')
 		$path="../sites/";
-
+bindtextdomain("inikoo", $path."locale");
 		
     if (!isset($data['family']))
         $family_code='';
