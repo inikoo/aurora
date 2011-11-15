@@ -220,8 +220,8 @@ Your password has been changed.
 
 
 
-<tr><td  class="label">Email: </td><td><input id="login_handle"></td></tr>
-<tr><td  class="label">Password: </td><td><input type="password"  id="login_password"></td></tr>
+<tr><td  class="label"><?php echo _('Email')?>: </td><td><input id="login_handle"></td></tr>
+<tr><td  class="label"><?php echo _('Password')?>: </td><td><input type="password"  id="login_password"></td></tr>
 <tr><td  class="label">Remember Me: </td><td style="text-align:left;"><input style="width:20px;border:none" type="checkbox" name="remember_me" id="remember_me" value="0"/></td></tr>
 <tr class="button space" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Invalid username or password!</span>  <button id="submit_login">Log In</button> <button id="hide_login_dialog">Close</button> </td></tr>
 <tr class="link space"><td colspan=2>Don't know your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>

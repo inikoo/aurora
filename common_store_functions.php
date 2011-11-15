@@ -141,7 +141,7 @@ function formated_price($data) {
         if ($data=='from')
             return 'Price from '.$str;
         else if ($label=='price')
-            return 'Price: '.$str;
+            return _('Price').': '.$str;
         else if ($label=='')
             return $str;
         else
