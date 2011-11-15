@@ -33,6 +33,16 @@ case('add_see_also_page'):
 
 
     break;
+case('edit_site'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+
+                         ));
+
+    edit_site($data);
+    break;
 case('edit_checkout_method'):
     $data=prepare_values($_REQUEST,array(
                              'site_key'=>array('type'=>'key'),
@@ -46,6 +56,18 @@ case('edit_checkout_method'):
 
     break;
 
+case('edit_registration_method'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'store_key'=>array('type'=>'key'),
+							 'site_registration_method'=>array('type'=>'string'),
+
+                         ));
+
+    edit_registration_method($data);
+
+
+    break;
 case('delete_see_also_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -595,7 +617,7 @@ function edit_checkout_method($data){
 
 		exit;
 	}
-print_r($site);	
+//print_r($site);	
 	switch($data['site_checkout_method']){
 		case 'inikoo':
 		case 'Inikoo':
@@ -604,7 +626,105 @@ print_r($site);
 		default:
 			$method='Ecommerce';
 	}
-print $method;
+//print $method;
 	$response=$site->update(array('Site Checkout Method'=>$method));
+	if($site->updated){
+		$response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
+	}
 	echo json_encode($response);
+}
+
+function edit_registration_method($data){
+	$site = new Site($data['site_key']);
+	if(!$site){
+		$response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
+		echo json_encode($response);
+
+		exit;
+	}
+//print_r($site);	
+	switch($data['site_registration_method']){
+		case 'sidebar':
+		case 'Sidebar':
+			$method='SideBar';
+			break;
+		default:
+			$method='MainPage';
+	}
+//print $method;
+	$response=$site->update(array('Site Registration Method'=>$method));
+	if($site->updated){
+		$response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
+	}
+	echo json_encode($response);
+}
+
+function edit_site($data) {
+    $site=new Site($data['site_key']);
+    if (!$site->id) {
+        $response= array('state'=>400,'msg'=>'Site not found','key'=>$data['key']);
+        echo json_encode($response);
+
+        exit;
+    }
+    $values=array();
+    foreach($data['values'] as $value_key=>$value_data) {
+        if ($value_data['value']=='') {
+            $values[$value_key]=$value_data;
+            unset($data['values'][$value_key]);
+        }
+    }
+
+    foreach($data['values'] as $value_key=>$value_data) {
+
+        $values[$value_key]=$value_data;
+
+    }
+
+//print_r($values);
+
+    $responses=array();
+    foreach($values as $key=>$values_data) {
+		//print_r($values_data);
+        $responses[]=edit_site_field($site->id,$key,$values_data);
+    }
+
+    echo json_encode($responses);
+
+
+}
+
+function edit_site_field($site_key,$key,$value_data) {
+
+    //print $value_data;
+	//print "$customer_key,$key,$value_data ***";
+    $site=new site($site_key);
+
+    global $editor;
+    $site->editor=$editor;
+
+    $key_dic=array(
+                 'slogan'=>'Site Slogan'
+				 ,'name'=>'Site Name'
+				 ,'url'=>'Site URL'
+             );
+
+    if (array_key_exists($key,$key_dic))
+        $key=$key_dic[$key];
+
+    $the_new_value=_trim($value_data['value']);
+	//print "$key: $the_new_value";
+
+    $site->update(array($key=>$the_new_value));
+    
+	if($site->updated){
+		$response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'newvalue'=>strtolower($site->new_value),'key'=>$value_data['okey']);
+	}
+	else
+		$response= array('state'=>400,'msg'=>$site->msg,'key'=>$value_data['okey']);
+
+
+	//$response=array();
+    return $response;
+
 }
