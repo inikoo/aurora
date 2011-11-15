@@ -183,7 +183,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->assign('view',$_SESSION['state']['customers']['view']);
+$smarty->assign('block_view',$_SESSION['state']['customers']['block_view']);
 
 
 // $smarty->assign('export_text',$export_text);

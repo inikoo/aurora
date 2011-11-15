@@ -5104,6 +5104,24 @@ ALTER TABLE `Store Dimension` ADD `Store Websites` SMALLINT UNSIGNED NOT NULL DE
 // right.sql
 ALTER TABLE `Email Template Color Scheme Dimension` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Template Color Scheme Name` ,ADD INDEX ( `Store Key` ) ;
 
+CREATE TABLE `Site Header Image Dimension` (
+  `Site Header Image Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Site Header Image Name` varchar(256) CHARACTER SET utf8 NOT NULL,
+  `Store Key` mediumint(8) unsigned NOT NULL,
+  `Image Key` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`Site Header Image Key`),
+  KEY `Store Key` (`Store Key`),
+  KEY `Image Key` (`Image Key`)
+) ENGINE=MyISAM ;
+ALTER TABLE `List Dimension` ADD `List Number Items` MEDIUMINT NOT NULL DEFAULT '0';
+ALTER TABLE `List Dimension` ADD `List Number Items B` MEDIUMINT NOT NULL DEFAULT '0';
+
+ALTER TABLE `Site Dimension` ADD `Site Slogan` VARCHAR( 256 ) NOT NULL AFTER `Site URL` ,
+ADD `Site Logo Image Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Site Slogan` ,
+ADD `Site Checkout Method` ENUM( 'Mals', 'Inikoo' ) NOT NULL DEFAULT 'Inikoo' AFTER `Site Logo Image Key` ,
+ADD `Site Registration Method` ENUM( 'SideBar', 'MainPage' ) NOT NULL AFTER `Site Checkout Method` ,
+ADD `Site FTP Credentials` VARCHAR( 1028 ) NOT NULL AFTER `Site Registration Method` 
+
 */
 
 ?>

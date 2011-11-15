@@ -8,8 +8,8 @@
 <input type="hidden" id="email_campaign_key" value="{$email_campaign->get('Email Campaign Key')}">
 
 
-<div> 
-  <span class="branch">{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$store->id}&block_view=email">{$store->get('Store Code')} {t}Marketing{/t} ({t}Email Campaigns{/t})</a> &rarr; {$email_campaign->get('Email Campaign Name')}</span>
+<div class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$store->id}&block_view=email">{$store->get('Store Code')} {t}Marketing{/t} ({t}Email Campaigns{/t})</a> &rarr; {$email_campaign->get('Email Campaign Name')}</span>
 </div>
 
 
@@ -62,12 +62,11 @@
 <td><h2>{t}Mailing List{/t}</h2></td>
 <td  colspan=2  >
     <div class="buttons" >
+    	    <button   id="add_email_address_from_customer_list" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Import from Customer List{/t}</button>
 
 		<button id="add_email_address_manually" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Individual Email Address{/t}</button>
-				<button id="add_email_address_manually" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Import from File{/t}</button>
-
-	    <button   id="add_email_address_from_customer_list" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Import from Customer List{/t}</button>
-	        		<a id="add_email_address_manually" href="email_campaign_mailing_list.php?id={$email_campaign->id}">{t}Edit Mailing List{/t}</a>
+		<button id="import_email_address" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Import from File{/t}</button>
+	     <a id="add_email_address_manually" href="email_campaign_mailing_list.php?id={$email_campaign->id}">{t}Edit Mailing List{/t}</a>
 
 	    </div>
     <div id="recipients_preview_msg" style="visibility:hidden;position:relative;left:-10px;padding:5px 0 0 0;border:1px solid #ccc;font-size:80%">
@@ -511,9 +510,6 @@
     </tr>
 </table>
 </div>
-
-
-
 <div id="dialog_edit_objective" style="padding:20px 10px 5px 10px;width:320px">
 <input type="hidden" id="objetive_key" value=""/>
 <input type="hidden" id="objetive_term" value=""/>
@@ -571,9 +567,6 @@
 
 
 </div>
-
-
-
 <div id="dialog_upload_postcard" style="padding:20px 10px 10px 10px;width:320px">
 
  <table>
@@ -596,8 +589,6 @@
 
 
 </div>
-
-
 <div id="dialog_change_email_type" style="padding:20px 10px 10px 10px;width:420px">
 
  <table  border=0 style="margin:auto">
@@ -626,7 +617,6 @@
 
     </table>
 </div>
-
 <div id="dialog_upload_header_image" style="padding:20px 10px 10px 10px;width:320px">
 
  <table>
@@ -644,8 +634,6 @@
   </td></tr>
     </table>
 </div>
-
-
 <div id="dialog_send_email_campaign"  style="padding:20px 10px 10px 10px;width:280px">
     <table style="padding:10px;margin:10px" border=0 >
         <tbody id="dialog_send_email_campaign_choose_when1">
@@ -679,17 +667,18 @@
         </tbody>
     </table>
 </div>
-
-
 <div id="dialog_add_email_address_from_list">
 
-<div class="splinter_cell" style="padding:30px 15px 10px 0;border:none">
+<div class="splinter_cell" style="width:600px;padding:5px 15px 10px 0;border:none">
 
-<div id="the_table" class="data_table" >
- <span class="clean_table_title">Customer Lists</span>
- <div class="home_splinter_options" style="position:relative;top:-5px">
- <a class="state_details" href="new_customers_list.php?store={$email_campaign->get('Email Campaign Store Key')}&gbt=ecip&gbtk={$email_campaign->id}" style="float:right;margin-left:5px">{t}Create List{/t}</a>
- </div>
+<div class="buttons">
+ <button  onclick="window.location='new_customers_list.php?store={$email_campaign->get('Email Campaign Store Key')}&gbt=ecip&gbtk={$email_campaign->id}'" ><img src="art/icons/add.png" alt=""> {t}Create List{/t}</button>
+</div>
+
+
+<div  class="data_table" style="clear:both" >
+ <span class="clean_table_title">{t}Customer Lists{/t}</span>
+
   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name filter_value=$filter_value no_filter=1}
    <div  id="table0"   class="data_table_container dtable btable "> </div>
  </div>
@@ -697,9 +686,7 @@
 
  </div>
  </div>
- 
- 
- <div id="dialog_preview_text_email" style="padding:10px 20px">
+<div id="dialog_preview_text_email" style="padding:10px 20px">
 <input type="hidden" value="1" id="preview_index">
 <input type="hidden" value="{$email_campaign->get('Number of Emails')}" id="preview_number_of_views">
 
@@ -721,7 +708,6 @@
 
 
  </div>
-
 <div id="dialog_department_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >
@@ -731,8 +717,7 @@
         </div>
     </div>
  </div>
- 
- <div id="dialog_family_list">
+<div id="dialog_family_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Family List{/t}</span>
@@ -741,8 +726,7 @@
         </div>
     </div>
  </div>
- 
- <div id="dialog_product_list">
+<div id="dialog_product_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Product List{/t}</span>
@@ -751,8 +735,7 @@
         </div>
     </div>
  </div>
- 
- <div id="dialog_offer_list">
+<div id="dialog_offer_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Offer List{/t}</span>
@@ -761,8 +744,7 @@
         </div>
     </div>
  </div>
- 
-  <div id="dialog_edit_color" style="padding-right:10px;width:360px;height:230px">
+<div id="dialog_edit_color" style="padding-right:10px;width:360px;height:230px">
  <input type="hidden" id="color_edit_element" value=""/>
 
   <div style="position:relative;top:200px" class="buttons">
