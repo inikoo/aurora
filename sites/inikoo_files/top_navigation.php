@@ -1,5 +1,5 @@
 <?php
-global $width, $path, $order_exist, $order_key;
+global $width, $path, $order_exist, $order_key, $disable_redirect, $auto_load, $registration_method;
 include_once('class.Order.php');
 if($path=="../../"){
 	$path_id=2;
@@ -11,7 +11,12 @@ if($path=="../../"){
 	$path_id=3;
 	  $path_menu='../sites/forms/';
 }		
+if(!$disable_redirect)
+	$disable_redirect=0;
+if(!$auto_load)
+	$auto_load=0;
 	
+
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/top_navigation.css.php?width=<?php echo $width?>" />
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/ui.css.php?width=<?php echo $width?>" />
@@ -52,10 +57,10 @@ else
 <input type="hidden" value="<?php echo $order_key ?>" id="order_key">
 <input type="hidden" value="<?php echo $customer->id?>" id="customer_key">
 
-<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path_id ?>"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path_id ?>&disable_redirect=<?php echo $disable_redirect ?>"></script>
 
 <?php }else{?>
-<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_logout.js.php?path=<?php echo $path_id ?>"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_logout.js.php?path=<?php echo $path_id ?>&disable_redirect=<?php echo $disable_redirect ?>&auto_load=<?php echo $auto_load ?>&registration_method=<?php echo $registration_method ?>"></script>
 <?php }?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
@@ -119,7 +124,7 @@ else
 
 
 <?php 
-if(true){
+if($registration_method){
 
 
 ?>

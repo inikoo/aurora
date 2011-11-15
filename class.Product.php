@@ -6388,7 +6388,7 @@ $this->update_main_type();
             $this->user_id=$data['username'];
             $this->method=$data['method'];
             break;
-		case 'custom':
+		case 'inikoo':
 			$this->method='sc';
 			$this->user=$data['user'];
 			break;

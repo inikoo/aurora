@@ -10,6 +10,15 @@ elseif($_REQUEST['path']=='3')
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 var path='<?php echo $_path ?>';
+var registration_method=true;
+
+var registration_method='<?php echo $_REQUEST['registration_method'] ?>';
+if(registration_method==0)registration_method=false;
+var disable_redirect='<?php echo $_REQUEST['disable_redirect'] ?>';
+if(disable_redirect==0)disable_redirect=false;
+var auto_load='<?php echo $_REQUEST['auto_load'] ?>';
+if(auto_load==0)auto_load=false;
+
 var data={ 
     "Customer Type":''
     ,"Customer Name":''
@@ -375,11 +384,19 @@ function login(){
 }
 
 function show_login_dialog(){
-Dom.setStyle(['show_login_dialog','show_register_dialog','dialog_register','dialog_forgot_password','dialog_register_part_2','tr_link_register_from_login2'],'display','none');
-Dom.setStyle(['dialog_login'],'display','block');
-Dom.setStyle(['tr_link_register_from_login'],'display','');
-Dom.get('login_handle').focus();
+	//alert(disable_redirect + ": "+ registration_method)
+	if(!registration_method && !disable_redirect){
+		//alert('in');
+		window.location=path+'inikoo_files/inikoo_registration.php?dialog_box=1';
+	}
+	//alert('out');
+	
+	Dom.setStyle(['show_login_dialog','show_register_dialog','dialog_register','dialog_forgot_password','dialog_register_part_2','tr_link_register_from_login2'],'display','none');
+	Dom.setStyle(['dialog_login'],'display','block');
+	Dom.setStyle(['tr_link_register_from_login'],'display','');
+	Dom.get('login_handle').focus();
 }
+
 function hide_login_dialog(){
 Dom.setStyle(['show_login_dialog','show_register_dialog'],'display','');
 Dom.setStyle(['dialog_login'],'display','none');
@@ -391,6 +408,11 @@ Dom.removeClass(['login_handle','login_password'],'error')
 }
 
 function show_register_dialog(){
+	if(!registration_method && !disable_redirect){
+		//alert('in');
+		window.location=path+'inikoo_files/inikoo_registration.php?dialog_box=2';
+	}
+
 Dom.setStyle(['show_login_dialog','show_register_dialog','dialog_login','dialog_forgot_password','dialog_register_part_2'],'display','none');
 Dom.setStyle('dialog_register','display','block');
 Dom.get('register_email').focus();
@@ -679,8 +701,11 @@ var submit_register_form_on_enter=function(e){
 };
 
 function init(){
-
-
+if(auto_load==1)
+	show_login_dialog()
+if(auto_load==2)
+	show_register_dialog()
+	
 //     var epwd=AESEncryptCtr('a','a',256);
    
 //    alert('a ->'+epwd+'<-')

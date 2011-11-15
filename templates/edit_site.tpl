@@ -126,6 +126,17 @@ DB updates should be done in class.Site.php. <br/> Should use Ajax (see edit_sto
 <td id="Site_URL_msg" class="edit_td_alert"></td>
 </tr>
 
+<tr>
+<td  class="label">{t}Site FTP Credentials: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_FTP" value="{$site->get('Site FTP Credentials')}" ovalue="{$site->get('Site FTP Credentials')}" valid="0">
+       <div id="Site_FTP_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_FTP_msg" class="edit_td_alert"></td>
+</tr>
 
 </table>	
      

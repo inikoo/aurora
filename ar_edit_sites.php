@@ -631,6 +631,9 @@ function edit_checkout_method($data){
 	if($site->updated){
 		$response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
 	}
+	else
+		$response= array('state'=>400,'msg'=>$site->msg);
+		
 	echo json_encode($response);
 }
 
@@ -656,6 +659,9 @@ function edit_registration_method($data){
 	if($site->updated){
 		$response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
 	}
+	else
+		$response= array('state'=>400,'msg'=>$site->msg);
+		
 	echo json_encode($response);
 }
 
@@ -707,6 +713,7 @@ function edit_site_field($site_key,$key,$value_data) {
                  'slogan'=>'Site Slogan'
 				 ,'name'=>'Site Name'
 				 ,'url'=>'Site URL'
+				 ,'ftp'=>'Site FTP Credentials'
              );
 
     if (array_key_exists($key,$key_dic))
