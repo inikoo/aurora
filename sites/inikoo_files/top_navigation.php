@@ -1,4 +1,6 @@
 <?php
+
+
 global $width, $path, $order_exist, $order_key, $disable_redirect, $auto_load, $registration_method;
 include_once('class.Order.php');
 if($path=="../../"){
@@ -89,9 +91,13 @@ else
 
 
 
-<?php }else{ ?>
-<button id="show_register_dialog">Register</button>
-<button id="show_login_dialog">Log In</button>
+<?php }else{ 
+
+
+?>
+
+<button id="show_register_dialog"><?php echo _('Register')?></button>
+<button id="show_login_dialog"><?php echo _('Log In')?></button>
 <img src="<?php echo $path ?>inikoo_files/art/gear.png" class="gear">
 
 <?php   } ?>
