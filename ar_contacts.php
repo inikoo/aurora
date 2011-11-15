@@ -5559,7 +5559,7 @@ function list_customers_lists() {
                      'name'=>$cusomer_list_name,
                      'key'=>$data['List key'],
                      'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
-                     'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
+                     'add_to_email_campaign_action'=>'<div class="buttons small"><button class="positive" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add Emails').'</button></div>',
                      'delete'=>'<img src="art/icons/cross.png"/>'
 
 

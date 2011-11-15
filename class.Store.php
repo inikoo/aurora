@@ -1387,6 +1387,7 @@ class Store extends DB_Table {
     }
 
 
+  
     function get_email_credential_key($type) {
 
         $sql=sprintf("select C.`Email Credentials Key` from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
@@ -1408,4 +1409,5 @@ class Store extends DB_Table {
 
 
 }
+
 ?>

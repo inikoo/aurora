@@ -1,12 +1,10 @@
 {include file='header.tpl'}
-<div id="bd" >
+<div id="bd" style="padding:0px">
+ <div style="padding:0 20px">
 {include file='contacts_navigation.tpl'}
-
 <div class="branch"> 
   <span   >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Customers{/t}</span>
 </div>
-
-
 <div class="top_page_menu">
 
 <div class="buttons" style="float:right">
@@ -33,11 +31,7 @@
 <div style="clear:both"></div>
 </div>
 
-<div id="no_details_title"  style="margin-bottom:10px;">
-    <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
-</div>
-<div style="margin-bottom:10px;margin-top:10px;background:red">
-
+<h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
 
 <div style="width:400px;float:left">
 <p style="padding:2px 10px;border-top:1px solid black;border-bottom:1px solid black">
@@ -46,46 +40,55 @@
 </div>
 
 <div style="float:left;font-size:80%;text-align:center">
+
 <div style="margin-left:20px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
-{t}Total Contacts{/t}<div style="font-size:120%;font-weight:800">{$store->get('Contacts')}</div>
+{t}Total Contacts{/t}
+<div style="font-size:120%;font-weight:800">{$store->get('Contacts')}</div>
 <div style="margin-top:2px;color:#555">
 {t}Live Contacts{/t}<div style="font-size:120%"><span style="font-weight:800">{$store->get('Active Contacts')}</span> <span>({$store->get('Percentage Active Contacts')})</span></div>
 </div>
+
+
+
+
 </div>
 <div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px"><a href="new_customers_list.php?store={$store->get('Store Key')}&potential=1&auto=1">{t}Potential Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Potential Customers')}</div></a></div>
-
 <div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px"><a href="new_customers_list.php?store={$store->get('Store Key')}&active=1&auto=1">{t}Active Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Active Contacts With Orders')}</div></a></div>
 <div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px"><a href="new_customers_list.php?store={$store->get('Store Key')}&lost=1&auto=1">{t}Lost Customers{/t}<div style="font-size:120%;font-weight:800">{$store->get('Lost Contacts With Orders')}</div></a></div>
 
 </div>
 
 
-  </div>
+</div>
 
 
-<div style="clear:both"></div>
+<div style="padding:0px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $block_view=='contacts_with_orders'}selected{/if}"  id="contacts_with_orders">  <span> {t}Contacts with Orders{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='all_contacts'}selected{/if}"  id="all_contacts">  <span> {t}All Contacts{/t}</span></span></li>
+
+  </ul>
+
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+</div>
 
 
+<div style="padding:0 20px">
 
 
-    <div id="the_table" class="data_table" style="clear:both;margin-top:10px">
+  <div style="padding:15px 0 30px 0"> 
       <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
       
    <div  style="font-size:90%">
-	
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='all_contacts'}selected{/if}"  id="all_contacts"   >{t}All Contacts{/t} ({$store->get('Contacts')})</span>
              <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='active_contacts'}selected{/if}"  id="active_contacts"   >{t}Active Contacts{/t} ({$store->get('Active Contacts')})</span>
-			 
-                  <span style="float:right;margin-left:20px;display:none" class="table_type  state_details {if $type=='contacts_with_orders'}selected{/if}"  id="contacts_with_orders"   >{t}Contacts with Orders{/t} ({$store->get('Contacts With Orders')})</span>
-
-   {*
-
-        <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='lost_contacts'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Lost Contacts{/t} ({$store->get('Lost Contacts')})</span>
-
-*}
-	
-
+	        <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='lost_contacts'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Lost Contacts{/t} ({$store->get('Lost Contacts')})</span>
      </div>
+      <div  style="font-size:90%">
+             <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='active_contacts'}selected{/if}"  id="active_contacts"   >{t}Active Contacts{/t} ({$store->get('Active Contacts With Orders')})</span>
+	        <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='lost_contacts'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Lost Contacts{/t} ({$store->get('Lost Contacts With Orders')})</span>
+     </div>
+     
+     
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
@@ -98,13 +101,12 @@
       </table>
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
  <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
- </div>
-
-  
+ 
 </div>
+  
 
 
-  </div>
+
 </div>
 </div> 
 <div id="filtermenu0" class="yuimenu">

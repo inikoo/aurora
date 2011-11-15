@@ -26,10 +26,11 @@ class SendEmail extends DB_Table {
         //$this->recipient_key=$data['recipient_key'];
         //$this->recipient_type=$data['recipient_type'];
 
-
+  
 
         $this->method=$data['method'];
-
+ 
+ 
 
         switch ($this->method) {
         case 'smtp':
@@ -64,8 +65,7 @@ class SendEmail extends DB_Table {
             $this->message='';
             $this->additional_headers='';
             $this->additional_parameters='';
-
-
+ 
 
             switch ($data['type']) {
             case 'Plain':
@@ -263,6 +263,11 @@ class SendEmail extends DB_Table {
                 break;
             case 'HTML':
             case 'html':
+            case 'HTML Template':
+            
+            
+         
+            
                 $this->type='HTML';
 
                 /*
@@ -411,8 +416,12 @@ class SendEmail extends DB_Table {
                         $html_msg='';
 
 
+
                     $this->html_message=$html_msg.$this->get_track_code();
                     $this->message_object->CreateQuotedPrintableHTMLPart($this->html_message,"",$this->html_part);
+
+
+//print  $this->html_message;
 
                     /*
                      *  It is strongly recommended that when you send HTML messages,
@@ -522,6 +531,7 @@ class SendEmail extends DB_Table {
 
             case 'html':
             case 'HTML':
+            case 'HTML Template':
                 $this->type='HTML';
 
 
@@ -556,6 +566,9 @@ class SendEmail extends DB_Table {
 
                          );
         $email_send=new EmailSend();
+
+
+
         $email_send->create($email_send_data);
         $this->send_key=$email_send->id;
 
@@ -577,7 +590,7 @@ class SendEmail extends DB_Table {
 
         $send_result=$this->smtp($data);
 
-
+        print_r($send_result);
         if ($send_result['state']==200) {
             $sql=sprintf("update `Email Send Dimension` set `Email Send Date`=%s where `Email Send Key`=%d",
                          prepare_mysql(date('Y-m-d H:i:s',strtotime('now +0:00'))),
@@ -711,9 +724,9 @@ class SendEmail extends DB_Table {
                 $html_msg=$data['html'];
             } else
                 $html_msg=null;
-				
-				
-			if (isset($data['bcc']) && $data['bcc']) {
+
+
+            if (isset($data['bcc']) && $data['bcc']) {
                 $bcc=$data['bcc'];
             } else
                 $bcc=null;

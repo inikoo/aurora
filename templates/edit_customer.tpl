@@ -1,8 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='contacts_navigation.tpl'}
- <div> 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span>
+ <div class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span>
 </div>
  
 <input type="hidden" value="{$customer->id}" id="customer_key"/>
@@ -10,30 +10,25 @@
 <input type="hidden" value="{$store_id}" id="store_key"/>
 
 
-<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
-
-<div class="buttons" {if !$parent_list}style="display:none"{/if} >
-
-    <h1 style="float:left;padding-top:0px"><span style="color:SteelBlue">{$id}</span> <span id="title_name">{$customer->get('Customer Name')}</span></h1>
-
-<button title="{$next.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Next{/t}</button>
-<button style="margin-left:20px" title="{$prev.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" >{t}Prev{/t}</button>
+<div class="top_page_menu">
+    <img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'"  src="art/previous_button.png" alt="<"  style="margin-right:0px;float:left;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};position:relative;top:2px" />
+    <div class="buttons" style="float:left">
+<button style="margin-left:10px" title="{$next.name}" onclick="window.location='customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+    </div>
+    <img onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{t}Next Customer{/t} {$next.name}"  onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'"   src="art/next_button.png" alt=">"  style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none;{/if}position:relative;top:2px"/ >
+  
+    <div style="clear:both"></div>
 </div>
 
 
-<div class="buttons" style="float:right">
-<button style="margin-left:20px" title="{$next.name}" onclick="window.location='customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
-</div>
 
-<div style="clear:both"></div>
-</div>
-
+    <h1 style="float:left;padding-bottom:10px"><span style="color:SteelBlue">{$id}</span> <span id="title_name">{$customer->get('Customer Name')}</span></h1>
 
 
 
 <div style="padding:10px;background-color:#FAF8CC;width:300px;{if $recent_merges==''}display:none{/if}">{$recent_merges}</div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both">
+<ul class="tabs" id="chooser_ul" style="clear:both;">
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Customer Details{/t}</span></span></li>
  {if $customer_type=='Company'}
     <li> <span class="item {if $edit=='company'}selected{/if}" style="display:none"  id="company">  <span> {t}Company Details{/t}</span></span></li>
@@ -121,7 +116,12 @@
    </div>
    
    </td>
-   <td style="width:300px"><a id="go_merge" href="" class="state_details" style="display:none">{t}Go{/t}</a><span id="merge_msg" class="error" style="display:none"></span></td>
+   <td style="width:300px">
+   <div class="buttons">
+   <button id="go_merge"  class="positive" style="display:none">{t}Go{/t}</button>
+   </div>
+   <span id="merge_msg" class="error" style="display:none"></span>
+   </td>
    </tr>
    </table>
    
@@ -214,16 +214,18 @@
  <tr>
  <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Customer Send Newsletter')=='Yes'}selected{/if}" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Newsletter')=='No'}selected{/if}" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</span>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
+   <button class="{if $customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button>
+   <button class="{if $customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button>
    </div>
  </td>
  </tr>
   <tr>
  <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Customer Send Email Marketing')=='Yes'}selected{/if}" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Email Marketing')=='No'}selected{/if}" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</span>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
+   <button class="{if $customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button>
+   <button class="{if $customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button>
    </div>
  </td>
  </tr>
@@ -234,8 +236,9 @@
   <tr>
  <td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if}" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Customer Send Postal Marketing')=='No'}selected{/if}" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</span><br/><br/>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
+   <button class="{if $customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> 
+   <button class="{if $customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button>
    </div>
  </td>
  </tr>
