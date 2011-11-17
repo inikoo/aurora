@@ -220,7 +220,7 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
-$sql=sprintf("select `HQ Country 2 Alpha Code`,`HQ Country Code`,`HQ Currency`,`Currency Symbol` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
+$sql=sprintf("select `Inikoo Public URL`,`HQ Country 2 Alpha Code`,`HQ Country Code`,`HQ Currency`,`Currency Symbol` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
 //print $sql;
 
 $res=mysql_query($sql);
@@ -230,7 +230,7 @@ if ($row=mysql_fetch_array($res)) {
     $corporate_symbol=$row['Currency Symbol'];
     $corporate_country_code=$row['HQ Country Code'];
     $corporate_country_2alpha_code=$row['HQ Country 2 Alpha Code'];
-
+$inikoo_public_url=$row['Inikoo Public URL'];
 }
 
 //print_r($row);

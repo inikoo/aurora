@@ -294,7 +294,15 @@ class Store extends DB_Table {
             break;
         case('Percentage Active Contacts'):
             return percentage($this->data['Store Active Contacts'],$this->data['Store Contacts']);
+        case('Percentage Total With Orders'):
+            return percentage($this->data['Store Contacts With Orders'],$this->data['Store Contacts']);
+        
+        
+            
         }
+        
+        
+        
         if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
 
             $amount='Store '.$key;

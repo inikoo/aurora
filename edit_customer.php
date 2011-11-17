@@ -558,6 +558,20 @@ $result=mysql_query($sql);
 if($row=mysql_fetch_array($result))
 	$smarty->assign('user_main_id',$row['User Key']);	
 
+
+$delete_button_tooltip='';
+if($customer->get('Customer With Orders')=='Yes'){
+$delete_button_tooltip=_('Can not be deleted because customer has placed orders').'.';
+}else if( $customer->number_of_user_logins()>0){
+$delete_button_tooltip=_('Can not be deleted because contact had logged in').'.';
+
+}
+$smarty->assign('delete_button_tooltip',$delete_button_tooltip);	
+
+
+
+
+
 $smarty->display('edit_customer.tpl');
 exit();
 
