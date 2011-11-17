@@ -129,9 +129,10 @@
    
    
 <div  class="edit_block" style="{if $edit!="billing"}display:none{/if};min-height:260px"  id="d_billing">
-     	  <div class="buttons" style="float:right">
-		  <button style="margin-right:10px;visibility:hidden" id="reset_edit_billing_data" class="state_details">{t}Reset{/t}</button>
-	        <button  style="margin-right:10px;visibility:hidden"  id="save_edit_billing_data" class="state_details">{t}Save{/t}</button>
+     	  <div class="buttons" >
+     	  	        <button  style="margin-right:10px;visibility:hidden"  id="save_edit_billing_data" class="positive">{t}Save{/t}</button>
+
+		  <button style="margin-right:10px;visibility:hidden" id="reset_edit_billing_data" class="negative">{t}Reset{/t}</button>
 	       
       </div>
 
@@ -252,16 +253,18 @@
  <tr>
  <td class="label" style="width:200px">{t}Add Customer To Send Post{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Send Post Status')=='To Send'}selected{/if}" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_To Send">{t}Yes{/t}</span> <span class="{if $customer->get('Send Post Status')=='Cancelled'}selected{/if}" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_Cancelled">{t}No{/t}</span>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
+   <button class="{if $customer->get('Send Post Status')=='To Send'}selected{/if} positive" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_To Send">{t}Yes{/t}</button>
+   <button class="{if $customer->get('Send Post Status')=='Cancelled'}selected{/if} negative" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_Cancelled">{t}No{/t}</button>
    </div>
  </td>
  </tr>
 <tr>
  <td class="label" style="width:200px">{t}Post Type{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $customer->get('Post Type')=='Letter'}selected{/if}" onclick="save_comunications_send_post('Post Type','Letter')" id="Post Type_Letter">{t}Letter{/t}</span> <span class="{if $customer->get('Post Type')=='Catalogue'}selected{/if}" onclick="save_comunications_send_post('Post Type','Catalogue')" id="Post Type_Catalogue">{t}Catalogue{/t}</span>
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons">
+   <button class="{if $customer->get('Post Type')=='Letter'}selected{/if} positive" onclick="save_comunications_send_post('Post Type','Letter')" id="Post Type_Letter">{t}Letter{/t}</button>
+   <button class="{if $customer->get('Post Type')=='Catalogue'}selected{/if} negative" onclick="save_comunications_send_post('Post Type','Catalogue')" id="Post Type_Catalogue">{t}Catalogue{/t}</button>
    </div>
  </td>
  </tr>
@@ -321,52 +324,29 @@
   
       
 
-   <table class="edit" border=0 style="clear:both;margin-bottom:40px;width:100%">
+<table class="edit" border=0 style="clear:both;margin-bottom:40px;width:100%">
 <tr>
-<td></td>
-<td style="text-align:right;color:#777;font-size:90%">
-<div id="delete_customer_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none">
-<h2>{t}Delete Customer{/t}</h2>
-<p>
-{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t}
-</p>
-<p id="delete_customer_msg"></p>
-<span id="cancel_delete_customer"  style="cursor:pointer;display:none;font-weight:800" >{t}No i dont want to delete it{/t}</span>
-<span id="save_delete_customer"  style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
-<p id="deleting" style="display:none;">{t}Deleting customer, wait please{/t}</p>
+<td style="width:150px"></td>
+<td style="width:300px">
+
+<div class="buttons">
+<button id="delete_customer" class="negative {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}disabled{/if}" {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}style="text-decoration: line-through;"{/if}>{t}Delete Customer{/t}</button>
+
+<button id="convert_to_person"  {if $customer_type!='Company'}style="display:none"{/if}>{t}Convert to Person{/t}</button>
 </div>
-<span id="delete_customer" class="state_details" style="{if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}display:none{/if}">{t}Delete Customer{/t}</span>
-<span>{if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}{t}You can't delete the customer.{/t}{/if}</span>
-<span>{if $customer->get('Customer With Orders')=='Yes'} customer has placed {$customer->get('Customer Orders')} orders{/if}</span>
-<span>{if $customer->get('Customer With Orders')=='Yes' && $customer->number_of_user_logins()>0} and {/if}</span>
-<span>{if $customer->number_of_user_logins()>0}customer has logged in to the sites {$customer->number_of_user_logins()} time(s){/if}</span>
 
 </td>
 <td>
- <div class="general_options" style="float:right">
-	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_customer" class="state_details">{t}Save{/t}</span>
-	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_customer" class="state_details">{t}Reset{/t}</span>
+ <div class="buttons">
+	        <button  style="visibility:hidden"  id="save_edit_customer" class="positive">{t}Save{/t}</button>
+	        <button style="visibility:hidden" id="reset_edit_customer" class="negative">{t}Reset{/t}</button>
       </div>
 </td>
 </tr>
 
-<tr>
-<td style="width:150px"></td>
-<td style="text-align:right;color:#777;font-size:90%;width:300px">
-<div  id="convert_to_person_info" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none;margin-bottom:5px">
-<p>
-{t}This operation will delete the company{/t}
-</p>
-<div style="color:#999">
-<span id="cancel_convert_to_person" class="state_details" style="display:none" >{t}Cancel{/t}</span>
-<span id="save_convert_to_person" class="state_details" style="display:none;margin-left:10px;color:#777">{t}Do it!{/t}</span>
-</div>
-</div>
-<span id="convert_to_person" class="state_details" style="{if $customer_type!='Company'}display:none{/if}">{t}Convert to Person{/t}</span>
-</td>
+<tr style="height:10px">
+<td colspan=3></td>
 </tr>
-
-
 <tr>
 <td></td>
 <td style="text-align:right;color:#777;font-size:90%">
@@ -840,7 +820,7 @@ Change Password
 <td colspan=2><span style="display:none" id="change_password_error_no_password_">Write new password</span><span style="display:none" id="change_password_error_password_not_march_">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short_">Password is too short</span><span>
 </span><button id="submit_change_password_" user={$email.user_key}>Change Password</button> 
 </td></tr>
-<tr id="tr_change_password_wait_"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
+<tr id="tr_change_password_wait_"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
 
 
 
@@ -849,5 +829,32 @@ Change Password
 </div>
 
 
+<div id="dialog_delete_customer"  style="padding:20px 10px 10px 10px;">
+<h2>{t}Delete Customer{/t}</h2>
+<p>
+{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t}
+</p>
+<p id="delete_customer_msg"></p>
+<span id="cancel_delete_customer"  style="cursor:pointer;display:none;font-weight:800" >{t}No i dont want to delete it{/t}</span>
+<span id="save_delete_customer"  style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
+<p id="deleting" style="display:none;">{t}Deleting customer, wait please{/t}</p>
+</div>
+
+<div  id="dialog_convert_to_person" style="padding:20px 10px 10px 10px;">
+<p>
+{t}Set contact from company to person{/t}
+</p>
+<p>
+{t}This operation will delete the company{/t}
+</p>
+
+<input type="hidden" value="{$delete_button_tooltip}" id="delete_button_tooltip">
+<div class="buttons">
+<button id="save_convert_to_person" class="negative" >{t}Do it!{/t}</button>
+<button id="cancel_convert_to_person" class="positive"  >{t}Cancel{/t}</button>
+</div>
+
+<div style="clear:both"></div>
+</div>
 
 {include file='footer.tpl'}

@@ -68,7 +68,7 @@ $color_scheme_key=$_REQUEST['color_scheme_key'];
 }else{
 $color_scheme_key=false;
 }
-$html_data=array('smarty'=>$smarty,'css_files'=>$css_files,'js_files'=>$js_files,'edit'=>$edit);
+$html_data=array('smarty'=>$smarty,'css_files'=>$css_files,'js_files'=>$js_files,'output_type'=>($edit?'edit':''),'inikoo_public_url'=>'');
 $output=$email_campaign->get_templete_html($html_data,$email_mailing_list_key,$email_content_key,$color_scheme_key);
 
 print $output;

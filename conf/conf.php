@@ -1628,7 +1628,7 @@ $default_state=array(
 
                                    'block_view'=>'all_contacts',
                                                 'stats_view'=>'population',
-                                   'type'=>'active_contacts',
+                                   
 
                                    'correlations'=>array(
                                                       'order'=>'correlation',
@@ -1646,8 +1646,8 @@ $default_state=array(
                                                'nr'=>25,
                                                'view'=>'general',
                                                'elements'=>array(
-                                                              'all_contacts'=>array('active'=>true,'lost'=>true),
-                                                              'with_orders'=>array('active'=>true,'lost'=>true)
+                                                              'all_contacts'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+                                                              'contacts_with_orders'=>array('Active'=>true,'Losing'=>true,'Lost'=>true)
                                                           ),
 
                                                'where'=>'',

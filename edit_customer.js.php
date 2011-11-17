@@ -1533,6 +1533,7 @@ dialog_set_password_.show();
 function init(){
 
 
+tt1 = new YAHOO.widget.Tooltip("tt1", { context:"delete_customer",'text':Dom.get('delete_button_tooltip').value }); 
 
 
   init_search('customers_store');

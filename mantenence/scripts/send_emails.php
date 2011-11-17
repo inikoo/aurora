@@ -5,6 +5,7 @@
 chdir('../../');
 
 include_once('app_files/db/dns.php');
+include_once('class.Image.php');
 
 include_once('class.Store.php');
 include_once('class.EmailCampaign.php');
@@ -46,7 +47,14 @@ require_once 'conf/conf.php';
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 
+$sql=sprintf("select `Inikoo Public URL`,`HQ Country 2 Alpha Code`,`HQ Country Code`,`HQ Currency`,`Currency Symbol` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
+//print $sql;
 
+$res=mysql_query($sql);
+
+if ($row=mysql_fetch_array($res)) {
+$inikoo_public_url=$row['Inikoo Public URL'];
+}
 
 
 //$sql=sprintf("select * from `Email Campaign Dimension` where `Email Campaign Status` in ('Ready') and `Email Campaign Start Overdue Date`<%s ",prepare_mysql(date('Y-m-d H:i:s')));
@@ -72,7 +80,7 @@ print "x3\n";
         continue;
     }
 
-
+$email_campaign->consolidate();
 
     // $email_campaign->update(array('Email Campaign Status'=>'Sending','Email Campaign Start Overdue Date'=>date('Y-m-d H:i:s',strtotime('now +2 hours +00:00'))));
     $sql=sprintf("select * from `Email Campaign Mailing List`  where `Email Campaign Key`=%d  and `Email Send Key` is null   ",$email_campaign->id);
@@ -81,7 +89,7 @@ print "x3\n";
     while ($row2=mysql_fetch_assoc($res2)) {
         $email_mailing_list_key=$row2['Email Campaign Mailing List Key'];
         
-        $message_data=$email_campaign->get_message_data($email_mailing_list_key,$smarty);
+        $message_data=$email_campaign->get_message_data($email_mailing_list_key,$smarty,$inikoo_public_url);
 
         if ($message_data['ok']) {
             $message_data['method']='smtp';
@@ -100,7 +108,7 @@ print "x3\n";
 
             $send_email->track=true;
 
-
+//print_r($message_data);
             $send_result=$send_email->send($message_data);
 
         }

@@ -273,7 +273,7 @@
       <span   style="display:none;float:right;margin-left:20px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>     
       <span   style="display:none;float:right;margin-left:80px" class="state_details" state="{$show_only}"  id="show_only"    >{$show_only_label}</span>   
 
-
+ </div>
 
 <div class="clusters">
         <div class="buttons small left cluster" >
@@ -313,7 +313,7 @@
           <div style="clear:both"></div>
     </div>
       
-    </div>
+   
    
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
