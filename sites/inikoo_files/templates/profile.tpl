@@ -32,11 +32,10 @@
        
 
      
-<div  id="main_frame" style="width:490px;float:left" >    
+<div  id="main_frame" style="width:490px;" >    
 
 
-
-<table id="customer_data" border=1 style="width:100%;">
+<table id="customer_data" border=0 style="width:100%;float:left">
     <tr>
         {if $customer->get('Customer Main Address Key')}<td valign="top">{$customer->get('Customer Main XHTML Address')}</td>{/if}
         <td  valign="top">
@@ -122,7 +121,7 @@
 </table>
 
 
-<div id="banner" style="height:72px;width:392px; border: 1px solid black;" >
+<div id="banner" style="height:72px;width:392px; border: 1px solid black;float:right" >
 Banner Text
 </div>
   

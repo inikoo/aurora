@@ -22,7 +22,14 @@
     <h2 class="client" style="text-align:left">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span></h2> 
 
 
-sdfsdfsdf
+<h2 class="client">{t}Orders{/t}</h2>
+
+ {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+       <div  id="table2"   class="data_table_container dtable btable "> </div>
+
+
+
+
 
 </div>
 

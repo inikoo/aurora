@@ -205,6 +205,10 @@ case('plot_order_interval'):
 
     echo json_encode($response);
     break;
+case('site_user_view_orders'):
+
+    list_customer_orders();
+    break;	
 case('customer_orders'):
     if (!$user->can_view('orders'))
         exit();
