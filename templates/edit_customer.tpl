@@ -199,8 +199,9 @@
        
        
    </div>
-   
+ <div style="clear:both">  
  {include file='edit_billing_information_splinter.tpl'}   
+</div>
 </div>   
    
    
@@ -333,6 +334,8 @@
 <button id="delete_customer" class="negative {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}disabled{/if}" {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}style="text-decoration: line-through;"{/if}>{t}Delete Customer{/t}</button>
 
 <button id="convert_to_person"  {if $customer_type!='Company'}style="display:none"{/if}>{t}Convert to Person{/t}</button>
+<button id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</button>
+
 </div>
 
 </td>
@@ -347,39 +350,15 @@
 <tr style="height:10px">
 <td colspan=3></td>
 </tr>
-<tr>
-<td></td>
-<td style="text-align:right;color:#777;font-size:90%">
-<span id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</span>
-<span id="cancel_convert_to_company" class="state_details" style="display:none" >{t}Cancel{/t}</span>
-<span id="save_convert_to_company" class="disabled state_details" style="display:none;margin-left:10px;;color:#777;">{t}Save Conversion to Company{/t}</span>
-</td>
-</tr>
-   
-  <tr id="New_Company_Name_tr"  style="display:none" class="first">
-  <td   class="label">{t}Company Name{/t}:</td>
-   <td  style="text-align:left;">
-     <div  >
-       <input style="text-align:left;width:100%" id="New_Company_Name" value="" ovalue="" valid="0">
-       <div id="New_Company_Name_Container"  ></div>
-     </div>
-   </td>
-   <td id="New_Company_Name_msg"  class="edit_td_alert"></td>
- </tr> 
- 
- 
- 
-   
- <tr style="display:none"><td class="label">{t}Type{/t}:</td>
-	       <td > 
-		 <div class="options" style="margin:5px 0" id="shelf_type_type_container">
-		   <input type="hidden" value="{$shelf_default_type}" ovalue="{$shelf_default_type}" id="shelf_type_type"  >
-		  <span class="radio{if $customer_type=='Company'} selected{/if}"  id="radio_shelf_type_{$customer_type}" radio_value="{$customer_type}">{t}Company{/t}</span> 
-		    <span class="radio{if $customer_type=='Person'} selected{/if}"  id="radio_shelf_type_{$customer_type}" radio_value="{$customer_type}">{t}Person{/t}</span> 
 
-		 </div>
-</td>
-</tr>
+
+
+
+
+
+ 
+ 
+   
 
 
 		 
@@ -413,7 +392,7 @@
    <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
  </tr>
 
- <tr ><td  class="label">{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+ <tr ><td  class="label">{if $customer->get('Customer Main Plain Email') == $login_stat.UserHandle}{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">
@@ -421,7 +400,8 @@
      </div>
    </td>
    <td>
-   <span id="display_add_other_email" class="state_details" style="font-size:80%;color:#777;">{t}Add other Email{/t}</span>
+   
+   <span id="display_add_other_email" class="state_details" style="font-size:80%;color:#777;{if $customer->get('Customer Main Plain Email')==''}display:none{/if}">{t}Add other Email{/t}</span>
    <span id="Customer_Main_Email_msg" class="edit_td_alert">{$main_email_warning}</span>
    </td>
  </tr>
@@ -762,14 +742,20 @@
   <table style="padding:20px;margin:20px 10px 10px 5px" >
  <tr><td>{t}Comment{/t}:</td></tr>
     <tr><td colspan=2>
-	<input  id="comment" value=""  /> 
+	<input  id="comment" value="" ovalue="" /> 
       </td>
     <tr>
-    <tr class="buttons" style="font-size:100%;">
-  <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button"    style="visibility:hidden;" >{t}Cancel{/t}</span></td>
-  <td style="text-align:center;width:50%">
-    <span  style="display:block;margin-top:5px" onclick="save_comment()" id="comment_save"  class="unselectable_text button"   >{t}Save{/t}</span></td></tr>
+    <tr>
+    <td>
+    <div class="buttons">
+        <button  onclick="save_comment()" id="comment_save"  class="positive"   >{t}Save{/t}</button>
+    <button  class="cancel"  onclick="cancel_comment()"  >{t}Cancel{/t}</button>
+</td>
+    </div>
+    </td>
+    </tr>
+    
+    
 </table>
 </div>
 
@@ -780,9 +766,9 @@ Change Password
 <table border=0 id="change_password_form" >
 
 
-<tr style="display:none;width:120px"><td class="label" >Current Password: </td><td><input type="password" id="current_password_password1"></td></tr>
-<tr><td style="width:120px" class="label">New Password: </td><td><input type="password" id="change_password_password1"></td></tr>
-<tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2"></td></tr>
+<tr style="display:none;width:120px"><td class="label" >{t}Current Password{/t}: </td><td><input type="password" id="current_password_password1"></td></tr>
+<tr><td style="width:120px" class="label">{t}New Password{/t}: </td><td><input type="password" id="change_password_password1"></td></tr>
+<tr><td style="width:120px" class="label">{t}Confirm Password{/t}: </td><td><input type="password" id="change_password_password2"></td></tr>
 <input id="epwcp1" value="{$main_email.epwcp1}" type="hidden"/>
 <input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
 <input id="user_key" value="{$main_email.user_key}" type="hidden"/>
@@ -790,10 +776,10 @@ Change Password
 
 
 <tr  id="tr_change_password_buttons"  class="button space" >
-<td colspan=2><span style="display:none" id="change_password_error_no_password">Write new password</span><span style="display:none" id="change_password_error_password_not_march">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short">Password is too short</span><span>
-</span><button id="submit_change_password">Change Password</button> 
+<td colspan=2><span style="display:none" id="change_password_error_no_password">{t}Write new password{/t}</span><span style="display:none" id="change_password_error_password_not_march">{t}Passwords don't match{/t}</span><span style="display:none" id="change_password_error_password_too_short">{t}Password is too short{/t}</span><span>
+</span><button id="submit_change_password">{t}Change Password{/t}</button> 
 </td></tr>
-<tr id="tr_change_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
+<tr id="tr_change_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">{t}Submitting changes{/t}</span></td></tr>
 
 
 
@@ -803,24 +789,24 @@ Change Password
  
 
 <div id="dialog_set_password_">
-Change Password
+{t}Change Password{/t}
 
 <table border=0 id="change_password_form_" >
 
 
-<tr style="display:none;width:120px"><td class="label" >Current Password: </td><td><input type="password" id="current_password_password1_"></td></tr>
-<tr><td style="width:120px" class="label">New Password: </td><td><input type="password" id="change_password_password1_"></td></tr>
-<tr><td style="width:120px" class="label">Confirm pwd: </td><td><input type="password" id="change_password_password2_"></td></tr>
+<tr style="display:none;width:120px"><td class="label" >{t}Current Password{/t}: </td><td><input type="password" id="current_password_password1_"></td></tr>
+<tr><td style="width:120px" class="label">{t}New Password{/t}: </td><td><input type="password" id="change_password_password1_"></td></tr>
+<tr><td style="width:120px" class="label">{t}Confirm Password{/t}: </td><td><input type="password" id="change_password_password2_"></td></tr>
 
 <input id="user_key_in_change_password_form" value="" type="hidden"/>
 
 
 
 <tr  id="tr_change_password_buttons_"  class="button space" >
-<td colspan=2><span style="display:none" id="change_password_error_no_password_">Write new password</span><span style="display:none" id="change_password_error_password_not_march_">Passwords don't match</span><span style="display:none" id="change_password_error_password_too_short_">Password is too short</span><span>
-</span><button id="submit_change_password_" user={$email.user_key}>Change Password</button> 
+<td colspan=2><span style="display:none" id="change_password_error_no_password_">{t}Write new password{/t}</span><span style="display:none" id="change_password_error_password_not_march_">{t}Passwords don't match{/t}</span><span style="display:none" id="change_password_error_password_too_short_">{t}Password is too short{/t}</span><span>
+</span><button id="submit_change_password_" user={$email.user_key}>{t}Change Password{/t}</button> 
 </td></tr>
-<tr id="tr_change_password_wait_"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="art/wait.gif"> <span style="position:relative;top:-5px">Submitting changes</span></td></tr>
+<tr id="tr_change_password_wait_"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="art/wait.gif"> <span style="position:relative;top:-5px">{t}Submitting changes{/t}</span></td></tr>
 
 
 
@@ -830,31 +816,84 @@ Change Password
 
 
 <div id="dialog_delete_customer"  style="padding:20px 10px 10px 10px;">
-<h2>{t}Delete Customer{/t}</h2>
+
+<h2 style="padding-top:0px">{t}Delete Customer{/t}</h2>
 <p>
 {t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t}
 </p>
-<p id="delete_customer_msg"></p>
-<span id="cancel_delete_customer"  style="cursor:pointer;display:none;font-weight:800" >{t}No i dont want to delete it{/t}</span>
-<span id="save_delete_customer"  style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
-<p id="deleting" style="display:none;">{t}Deleting customer, wait please{/t}</p>
+
+
+<div style="display:none" id="deleting">
+<img src="art/loading.gif" alt=""> {t}Deleting customer, wait please{/t}
 </div>
+
+<div  id="delete_customer_buttons" class="buttons">
+<button id="save_delete_customer"  class="positive">{t}Yes, delete it!{/t}</button>
+
+<button id="cancel_delete_customer"  class="negative" >{t}No i dont want to delete it{/t}</button>
+</div>
+
+
+</div>
+
+
+
+
+
 
 <div  id="dialog_convert_to_person" style="padding:20px 10px 10px 10px;">
 <p>
-{t}Set contact from company to person{/t}
-</p>
-<p>
-{t}This operation will delete the company{/t}
+{t}Setting the contact as a person will delete the company name{/t}
 </p>
 
 <input type="hidden" value="{$delete_button_tooltip}" id="delete_button_tooltip">
 <div class="buttons">
-<button id="save_convert_to_person" class="negative" >{t}Do it!{/t}</button>
+<button id="save_convert_to_person" class="negative" >{t}Convert to Person{/t}</button>
 <button id="cancel_convert_to_person" class="positive"  >{t}Cancel{/t}</button>
 </div>
 
 <div style="clear:both"></div>
 </div>
+
+
+<div  id="dialog_convert_to_company" style="padding:20px 10px 10px 10px;width:400px">
+<table class="edit" style="width:400px" border=0>
+<tr  class="first">
+  <td    style="width:100px" class="label">{t}Company Name{/t}:</td>
+   <td  style="text-align:left;width:200px">
+     <div  >
+       <input style="text-align:left;width:100%" id="New_Company_Name" value="" ovalue="" valid="0">
+       <div id="New_Company_Name_Container"  ></div>
+     </div>
+   </td>
+
+ </tr> 
+
+<tr>
+<tr style="height:10px"><td colspan=2></td></tr>
+<td colspan=2>
+<span style="float:left"  id="New_Company_Name_msg" style="text-align:left;width:50px" class="edit_td_alert" ></span>
+
+<div id="convert_to_person_buttons" class="buttons">
+<button id="save_convert_to_company" >{t}Convert to Company{/t}</button>
+<button id="cancel_convert_to_company" class="negative"  >{t}Cancel{/t}</button>
+</div>
+<div style="">
+<span id="convert_to_company_processing" style="display:none;float:right"><img src="art/loading.gif"/> {t}Processing your request{/t}</span>
+</div>
+</td>
+</tr>
+</table>
+
+</div>
+
+
+ 
+
+
+
+
+
+
 
 {include file='footer.tpl'}

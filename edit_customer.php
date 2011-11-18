@@ -568,7 +568,8 @@ $delete_button_tooltip=_('Can not be deleted because contact had logged in').'.'
 }
 $smarty->assign('delete_button_tooltip',$delete_button_tooltip);	
 
-
+$smarty->assign('parent','customers');
+$smarty->assign('title',_('Edit Customer').': '.$customer->get('customer name'));
 
 
 

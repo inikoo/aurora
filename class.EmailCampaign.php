@@ -203,11 +203,25 @@ class EmailCampaign extends DB_Table {
 
 
         if (mysql_query($sql)) {
+        
+           
+        
             $this->id=mysql_insert_id();
             $this->get_data('id',$this->id);
             $this->new=true;
 
-
+ $store=new Store($this->data['Email Campaign Store Key']);
+switch ($this->data['Email Campaign Type']) {
+    case 'Marketing':
+       $store->update_email_campaign_data();
+        break;
+  case 'Newsletter':
+        update_newsletter_data()
+        break;
+   case 'Reminder':
+        update_newsletter_data()
+        break;
+}
 
 
             $sql=sprintf("insert into `Email Content Dimension` (`Email Content Type`,`Email Content Subject`,`Email Content Text`,`Email Content HTML`) values (%s,'','','')",
