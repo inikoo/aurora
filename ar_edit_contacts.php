@@ -221,13 +221,40 @@ case('new_contact'):
 
     break;
 case('new_address'):
-    new_address();
+    $data=prepare_values($_REQUEST,array(
+                             'value'=>array('type'=>'json array'),
+                             'subject'=>array('type'=>'string'),
+                             'subject_key'=>array('type'=>'key'),
+
+                         ));
+    $data['address_type']='Delivery';
+    new_address($data);
     break;
 case('new_Delivery_address'):
 case('new_delivery_address'):
-case('new_Billing_address'):
 
-    new_address();
+    $data=prepare_values($_REQUEST,array(
+                             'value'=>array('type'=>'json array'),
+                             'subject'=>array('type'=>'string'),
+                             'subject_key'=>array('type'=>'key')
+
+                         ));
+
+
+    $data['address_type']='Delivery';
+    new_address($data);
+    break;
+
+case('new_Billing_address'):
+    $data=prepare_values($_REQUEST,array(
+                             'value'=>array('type'=>'json array'),
+                             'subject'=>array('type'=>'string'),
+                             'subject_key'=>array('type'=>'key')
+
+
+                         ));
+    $data['address_type']='Billing';
+    new_address($data);
     break;
 
 case('edit_address_type'):
@@ -263,7 +290,7 @@ case('edit_customer_field'):
     $response=edit_customer_field($data['customer_key'],$data['key'],array('value'=>$data['newvalue'],'okey'=>$data['key']));
     echo json_encode($response);
     break;
-	
+
 case('edit_billing_quick'):
 case('edit_billing_data'):
 
@@ -288,7 +315,7 @@ case('edit_customer'):
     edit_customer($data);
     break;
 case 'site_edit_customer':
-	//xxc
+    //xxc
     break;
 case('edit_customer_send_post'):
     edit_customer_send_post();
@@ -1090,45 +1117,20 @@ function edit_telecom($data) {
 
 
 }
-function new_address() {
+function new_address($_data) {
     global $editor;
     $warning='';
 
 
 
-
-    if ( !isset($_REQUEST['value']) ) {
-        $response=array('state'=>400,'msg'=>'Error no value');
-        echo json_encode($response);
-        return;
-    }
-
-    $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
-    $tmp=preg_replace('/\\\\\"/','"',$tmp);
-
-    $raw_data=json_decode($tmp, true);
-
-    if (!is_array($raw_data)) {
-        $response=array('state'=>400,'msg'=>'Wrong value');
-        echo json_encode($response);
-        return;
-    }
+    $raw_data=$_data['value'];
 
 
-    if ( !isset($_REQUEST['subject'])
-            or !is_numeric($_REQUEST['subject_key'])
-            or $_REQUEST['subject_key']<=0
-            or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
 
-       ) {
-        $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
-        echo json_encode($response);
-        return;
-    }
 
-    $subject=$_REQUEST['subject'];
-    $subject_key=$_REQUEST['subject_key'];
-
+    $subject=$_data['subject'];
+    $subject_key=$_data['subject_key'];
+    $address_type=$_data['address_type'];
     switch ($subject) {
     case('Company'):
         $subject_object=new Company($subject_key);
@@ -1186,10 +1188,35 @@ function new_address() {
     if ($address->found) {
         $address_parents=  $address->get_parent_keys($subject);
         if (array_key_exists($subject_key,$address_parents)) {
+
+            if ($address_type=='Delivery') {
+
+                $address_keys=$subject_object->get_delivery_address_keys();
+                if (array_key_exists($address->id,$address_keys)) {
+                    $response=array('state'=>200,'action'=>'nochange','msg'=>'address in delivery address');
+                    echo json_encode($response);
+                    return;
+
+                }
+                
+             /*   
+                $address_keys=$subject_object->get_billing_address_keys();
+                if (array_key_exists($address->id,$address_keys)) {
+                 $subject_object->associate_billing_address($address->id);
+                
+                    $response=array('state'=>200,'action'=>'create','msg'=>'address in billing address');
+                    echo json_encode($response);
+                    return;
+
+                }
+               */ 
+                
+            }else{
+
             $response=array('state'=>200,'action'=>'nochange','msg'=>_('Address already in company'));
             echo json_encode($response);
             return;
-
+}
         } else {
             $warning=_('Warning, address found also associated with')." ";
             switch ($subject) {
@@ -1240,7 +1267,8 @@ function new_address() {
 
     if ($subject=='Customer') {
 
-        if (preg_match('/billing/i',$_REQUEST['tipo'])) {
+    
+  if ($address_type=='Billing') {
 
             $subject_object->associate_billing_address($address->id);
 //            $subject_object->update_principal_billing_address($address->id);
@@ -1951,7 +1979,7 @@ function address_response($address_key,$subject,$subject_object,$warning='') {
                           );
     $is_main='No';
     $is_main_delivery='No';
-     $is_main_billing='No';
+    $is_main_billing='No';
     $address_comment='';
 
     if ($subject_object->get_main_address_key()==$address->id) {
@@ -1978,10 +2006,10 @@ function address_response($address_key,$subject,$subject_object,$warning='') {
 
         }
 
-   if ($subject_object->data['Customer Billing Address Key']==$address->id) {
-   $is_main_billing='Yes';
+        if ($subject_object->data['Customer Billing Address Key']==$address->id) {
+            $is_main_billing='Yes';
 
-}
+        }
 
         if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
             $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
@@ -2255,7 +2283,7 @@ function delete_address() {
 
 
         $address_main_delivery=$subject_object->delivery_address_xhtml();
-$billing_address=$subject_object->billing_address_xhtml();
+        $billing_address=$subject_object->billing_address_xhtml();
         if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
             $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
@@ -2268,15 +2296,15 @@ $billing_address=$subject_object->billing_address_xhtml();
         }
 
 
-/*
-        if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
-            $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
+        /*
+                if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
+                    $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
-        } else {
+                } else {
 
-            $billing_address=$subject_object->billing_address_xhtml();
-        }
-*/
+                    $billing_address=$subject_object->billing_address_xhtml();
+                }
+        */
 
     }
 
@@ -2284,13 +2312,13 @@ $billing_address=$subject_object->billing_address_xhtml();
 
 
     $response=array(
-    'state'=>200,
-    'action'=>'deleted',
-    'key'=>'','main_address_data'=>$main_address_data,
-    'xhtml_main_address'=>$main_address->display('xhtml'),
-    'xhtml_delivery_address'=>$address_main_delivery,
-    'xhtml_delivery_address_bis'=>$address_comment,
-    'xhtml_billing_address'=>$billing_address);
+                  'state'=>200,
+                  'action'=>'deleted',
+                  'key'=>'','main_address_data'=>$main_address_data,
+                  'xhtml_main_address'=>$main_address->display('xhtml'),
+                  'xhtml_delivery_address'=>$address_main_delivery,
+                  'xhtml_delivery_address_bis'=>$address_comment,
+                  'xhtml_billing_address'=>$billing_address);
 
 
 
@@ -2760,10 +2788,10 @@ function edit_customer($data) {
     foreach($values as $key=>$values_data) {
         $responses[]=edit_customer_field($customer->id,$key,$values_data);
     }
-	
-	if($data['submit'])
-		return $responses;
-	
+
+    if ($data['submit'])
+        return $responses;
+
     echo json_encode($responses);
 
 
@@ -2772,7 +2800,7 @@ function edit_customer($data) {
 function edit_customer_field($customer_key,$key,$value_data) {
 
     //print $value_data;
-	//print "$customer_key,$key,$value_data ***";
+    //print "$customer_key,$key,$value_data ***";
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;
@@ -2985,7 +3013,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
         $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey'], 'warning_msg'=>$customer->warning_messages);
     }
-	
+
     return $response;
 
 }
