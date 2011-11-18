@@ -279,7 +279,6 @@ case('edit_billing_data'):
 
 case('edit_customer_quick'):
 case('edit_customer'):
-
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
@@ -287,6 +286,9 @@ case('edit_customer'):
                          ));
 
     edit_customer($data);
+    break;
+case 'site_edit_customer':
+	//xxc
     break;
 case('edit_customer_send_post'):
     edit_customer_send_post();
@@ -2719,6 +2721,7 @@ function customer_edit_note($data) {
 }
 
 function edit_customer($data) {
+
     $customer=new customer($data['customer_key']);
     if (!$customer->id) {
         $response= array('state'=>400,'msg'=>'Customer not found','key'=>$data['key']);
@@ -2745,7 +2748,10 @@ function edit_customer($data) {
     foreach($values as $key=>$values_data) {
         $responses[]=edit_customer_field($customer->id,$key,$values_data);
     }
-
+	
+	if($data['submit'])
+		return $responses;
+	
     echo json_encode($responses);
 
 

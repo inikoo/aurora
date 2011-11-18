@@ -28,8 +28,8 @@ $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 
-putenv('LC_ALL=es_ES');
-setlocale(LC_ALL, 'es_ES');
+//putenv('LC_ALL=es_ES');
+//setlocale(LC_ALL, 'es_ES');
 
 // Specify location of translation tables
 //print_r(bindtextdomain("inikoo", "./locale"));

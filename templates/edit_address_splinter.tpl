@@ -157,7 +157,7 @@
 	        
 	        style="cursor:pointer;display:none">&oplus;</span> 
             {t}Country{/t}:</td>
-        <td  >
+        <td>
         <div id="{$address_identifier}myAutoComplete" >
 	        <input id="{$address_identifier}address_country" style="text-align:left;width:100%" type="text"/>
 	        <div id="{$address_identifier}address_country_container" ></div>
