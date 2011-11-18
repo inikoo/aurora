@@ -947,10 +947,10 @@ gettext("Keep Date");
 gettext("Update Date");
 
 /* ../templates/customer.tpl */
-gettext("Canddcel");
+gettext("Save");
 
 /* ../templates/customer.tpl */
-gettext("Save");
+gettext("Cancel");
 
 /* ../templates/customer.tpl */
 gettext("Export Data (using last map)");
@@ -2759,16 +2759,10 @@ gettext("Number of Outers");
 gettext("Order");
 
 /* ../templates/edit_billing_information_splinter.tpl */
+gettext("Add Billing Address");
+
+/* ../templates/edit_billing_information_splinter.tpl */
 gettext("Billing Address Library");
-
-/* ../templates/edit_billing_information_splinter.tpl */
-gettext("Cancel");
-
-/* ../templates/edit_billing_information_splinter.tpl */
-gettext("Save");
-
-/* ../templates/edit_billing_information_splinter.tpl */
-gettext("Add New billing Address");
 
 /* ../templates/edit_billing_information_splinter.tpl */
 gettext("Contacts");
@@ -2816,22 +2810,13 @@ gettext("Set as Main");
 gettext("Contact");
 
 /* ../templates/edit_billing_information_splinter.tpl */
-gettext("Billing");
-
-/* ../templates/edit_billing_information_splinter.tpl */
 gettext("Remove");
 
 /* ../templates/edit_billing_information_splinter.tpl */
 gettext("Edit");
 
 /* ../templates/edit_billing_information_splinter.tpl */
-gettext("Current billing Address");
-
-/* ../templates/edit_billing_information_splinter.tpl */
-gettext("Cancel");
-
-/* ../templates/edit_billing_information_splinter.tpl */
-gettext("Save");
+gettext("Current Billing Address");
 
 /* ../templates/edit_campaign.tpl */
 gettext("Marketing");
@@ -3647,31 +3632,13 @@ gettext("Delete Customer");
 gettext("Convert to Person");
 
 /* ../templates/edit_customer.tpl */
+gettext("Convert to Company");
+
+/* ../templates/edit_customer.tpl */
 gettext("Save");
 
 /* ../templates/edit_customer.tpl */
 gettext("Reset");
-
-/* ../templates/edit_customer.tpl */
-gettext("Convert to Company");
-
-/* ../templates/edit_customer.tpl */
-gettext("Cancel");
-
-/* ../templates/edit_customer.tpl */
-gettext("Save Conversion to Company");
-
-/* ../templates/edit_customer.tpl */
-gettext("Company Name");
-
-/* ../templates/edit_customer.tpl */
-gettext("Type");
-
-/* ../templates/edit_customer.tpl */
-gettext("Company");
-
-/* ../templates/edit_customer.tpl */
-gettext("Person");
 
 /* ../templates/edit_customer.tpl */
 gettext("Company Name");
@@ -3782,10 +3749,61 @@ gettext("Save");
 gettext("Comment");
 
 /* ../templates/edit_customer.tpl */
+gettext("Save");
+
+/* ../templates/edit_customer.tpl */
 gettext("Cancel");
 
 /* ../templates/edit_customer.tpl */
-gettext("Save");
+gettext("Current Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("New Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Confirm Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Write new password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Passwords don't match");
+
+/* ../templates/edit_customer.tpl */
+gettext("Password is too short");
+
+/* ../templates/edit_customer.tpl */
+gettext("Change Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Submitting changes");
+
+/* ../templates/edit_customer.tpl */
+gettext("Change Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Current Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("New Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Confirm Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Write new password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Passwords don't match");
+
+/* ../templates/edit_customer.tpl */
+gettext("Password is too short");
+
+/* ../templates/edit_customer.tpl */
+gettext("Change Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Submitting changes");
 
 /* ../templates/edit_customer.tpl */
 gettext("Delete Customer");
@@ -3797,25 +3815,34 @@ gettext("This operation cannot be undone");
 gettext("Would you like to proceed?");
 
 /* ../templates/edit_customer.tpl */
-gettext("No i dont want to delete it");
+gettext("Deleting customer, wait please");
 
 /* ../templates/edit_customer.tpl */
 gettext("Yes, delete it!");
 
 /* ../templates/edit_customer.tpl */
-gettext("Deleting customer, wait please");
+gettext("No i dont want to delete it");
 
 /* ../templates/edit_customer.tpl */
-gettext("Set contact from company to person");
+gettext("Setting the contact as a person will delete the company name");
 
 /* ../templates/edit_customer.tpl */
-gettext("This operation will delete the company");
-
-/* ../templates/edit_customer.tpl */
-gettext("Do it!");
+gettext("Convert to Person");
 
 /* ../templates/edit_customer.tpl */
 gettext("Cancel");
+
+/* ../templates/edit_customer.tpl */
+gettext("Company Name");
+
+/* ../templates/edit_customer.tpl */
+gettext("Convert to Company");
+
+/* ../templates/edit_customer.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_customer.tpl */
+gettext("Processing your request");
 
 /* ../templates/edit_customer_category.tpl */
 gettext("Customers");
@@ -3914,16 +3941,10 @@ gettext("Rows per Page");
 gettext("Order");
 
 /* ../templates/edit_delivery_address_splinter.tpl */
+gettext("Add Delivery Address");
+
+/* ../templates/edit_delivery_address_splinter.tpl */
 gettext("Delivery Address Library");
-
-/* ../templates/edit_delivery_address_splinter.tpl */
-gettext("Cancel");
-
-/* ../templates/edit_delivery_address_splinter.tpl */
-gettext("Save");
-
-/* ../templates/edit_delivery_address_splinter.tpl */
-gettext("Add New Delivery Address");
 
 /* ../templates/edit_delivery_address_splinter.tpl */
 gettext("Contacts");
@@ -3981,12 +4002,6 @@ gettext("Edit");
 
 /* ../templates/edit_delivery_address_splinter.tpl */
 gettext("Current Delivery Address");
-
-/* ../templates/edit_delivery_address_splinter.tpl */
-gettext("Cancel");
-
-/* ../templates/edit_delivery_address_splinter.tpl */
-gettext("Save");
 
 /* ../templates/edit_department.tpl */
 gettext("Stores");
@@ -11960,13 +11975,22 @@ gettext("Orders Per Store");
 gettext("Export (CSV)");
 
 /* ../templates/orders_server.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/orders_server.tpl */
 gettext("Invoices Per Store");
 
 /* ../templates/orders_server.tpl */
 gettext("Export (CSV)");
 
 /* ../templates/orders_server.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/orders_server.tpl */
 gettext("Delivery Notes Per Store");
+
+/* ../templates/orders_server.tpl */
+gettext("Export (CSV)");
 
 /* ../templates/orders_server.tpl */
 gettext("Export (CSV)");
