@@ -551,7 +551,7 @@ if($row=mysql_fetch_array($res)){
 }
 //print_r($show_case);
 $smarty->assign('show_case',$show_case);	
-print_r($customer);
+//print_r($customer);
 $sql=sprintf("select `User Key` from `User Dimension` where `User Parent Key`=%d", $customer->id);
 //print $sql;
 $result=mysql_query($sql);

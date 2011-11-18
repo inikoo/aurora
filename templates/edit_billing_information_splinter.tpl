@@ -91,7 +91,7 @@
      <div style="width:260px">
        <div style="border-bottom:1px solid #777;padding-bottom:5px">
          <div style="height:25px;display:table-cell; vertical-align:bottom;">
-        <span >{t}Current billing Address{/t}:</span>
+        <span >{t}Current Billing Address{/t}:</span>
        </div>
        </div>
     

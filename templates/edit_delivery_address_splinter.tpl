@@ -6,19 +6,6 @@
 
 
 
-     <div style="width:540px;float:right;text-align:right">
-     <div style="border-bottom:1px solid #777">
-       {t}Delivery Address Library{/t}
-       <span class="state_details" style="float:right;display:none" address_key="" id="delivery_cancel_edit_address">{t}Cancel{/t}</span>
-       <span class="state_details" style="float:right;display:none" address_key="" id="delivery_save_edit_address">{t}Save{/t}</span>
-       </div>
-       <div style="margin-top:5px">
-       <span id="add_new_delivery_address" class="state_details">{t}Add New Delivery Address{/t}</span>
-       </div>
-       <table id="new_delivery_address_table" border=0 style="width:540px;display:none">
-       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='delivery_' address_type='Shop' show_tel=true show_contact=true  address_function='Shipping'  hide_type=true hide_description=true show_form=false  show_components=false }
-     </table>
-
 
     <div style="width:540px;float:right;text-align:left">
      <div style="border-bottom:1px solid #777;padding-bottom:5px">
@@ -107,9 +94,13 @@
       
       </div>
 
-     <div style="width:260px">
-       <div style="border-bottom:1px solid #777">
-       {t}Current Delivery Address{/t}:
+   
+ 
+    <div style="width:260px">
+       <div style="border-bottom:1px solid #777;padding-bottom:5px">
+         <div style="height:25px;display:table-cell; vertical-align:bottom;">
+        <span >{t}Current Delivery Address{/t}:</span>
+       </div>
        </div>
     
    <div id="delivery_current_address" style="font-size:120%;margin-top:15px">
@@ -117,6 +108,8 @@
  {$customer->display_delivery_address('xhtml')}
      </div>
  </div>
+ 
+ 
 <div style="clear:both"></div>
   
    
