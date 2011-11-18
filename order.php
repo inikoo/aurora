@@ -14,18 +14,18 @@ if (!$user->can_view('orders')) {
 $modify=$user->can_edit('orders');
 
 
-  
+
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-                'common.css',
+               'common.css',
                'container.css',
                'button.css',
                'table.css',
-                'theme.css.php'
+               'theme.css.php'
            );
 
 
@@ -124,7 +124,7 @@ if (isset($_REQUEST['pick_aid'])) {
     switch ($order->get('Order Current Dispatch State')) {
 
     case('In Process'):
-  case('Ready to Pick'):
+    case('Ready to Pick'):
         $js_files[]='js/edit_common.js';
 
 
@@ -142,7 +142,6 @@ if (isset($_REQUEST['pick_aid'])) {
 
 
         $_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
-
 
         if ($order->data['Order Number Items']) {
             $products_display_type='ordered_products';
@@ -182,7 +181,7 @@ if (isset($_REQUEST['pick_aid'])) {
         $smarty->assign('search_label',_('Products'));
         $smarty->assign('search_scope','products');
 
- $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+        $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
         break;
     case('Dispatched'):
@@ -229,7 +228,7 @@ if (isset($_REQUEST['pick_aid'])) {
         break;
     }
 }
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);

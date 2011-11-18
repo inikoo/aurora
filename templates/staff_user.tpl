@@ -3,8 +3,8 @@
 
 <div style="padding:0 20px">
 {include file='users_navigation.tpl'}
-<div > 
-  <span   class="branch"><a  href="users.php">{t}Users{/t}</a> &rarr; <a  href="users_staff.php">{t}Staff Users{/t}</a> &rarr; {$user_class->get('User Alias')}</span>
+<div  class="branch"> 
+<span><a  href="users.php">{t}Users{/t}</a> &rarr; <a  href="users_staff.php">{t}Staff Users{/t}</a> &rarr; {$user_class->get('User Alias')}</span>
 </div>
 
 <input id="user_key" value="{$user_class->id}" type="hidden"/>
