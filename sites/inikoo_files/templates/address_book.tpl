@@ -95,7 +95,13 @@
 </div>
 </form>
 
-<form action="" method="POST" style="float:left">
+<form action="update_details.php" method="POST" style="float:left">
+<input type="hidden" value="site_edit_customer" name="tipo">
+<input type="hidden" value="delete_address" name="submit" id="submit">
+<input type="hidden" value="{$address->id}" name="value" id="value">
+<input type="hidden" value="billing" name="key" id="key">
+<input type="hidden" value="Customer" name="subject" id="subject">
+<input type="hidden" value="{$customer->get('Customer Key')}" name="subject_key" id="subject_key">
 <input type="hidden" value="" name="" id="">
 <div class="buttons" style="float:left">
 <button class="negative" type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Remove{/t}</button>
@@ -137,8 +143,13 @@
 </div>
 </form>
 
-<form action="" method="POST" style="float:left">
-<input type="hidden" value="" name="" id="">
+<form action="update_details.php" method="POST" style="float:left">
+<input type="hidden" value="site_edit_customer" name="tipo">
+<input type="hidden" value="delete_address" name="submit" id="submit">
+<input type="hidden" value="{$address->id}" name="value" id="value">
+<input type="hidden" value="Delivery" name="key" id="key">
+<input type="hidden" value="Customer" name="subject" id="subject">
+<input type="hidden" value="{$customer->get('Customer Key')}" name="subject_key" id="subject_key">
 <div class="buttons" style="float:left">
 <button class="negative" type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Remove{/t}</button>
 </div>
