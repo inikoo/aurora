@@ -1903,7 +1903,6 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	
 
 //	 YAHOO.util.Event.addListener('billing_reset_address_button', "click",reset_billing_address);
-	YAHOO.util.Event.addListener('delivery_reset_address_button', "click",hide_new_delivery_address,'delivery_');
 	//YAHOO.util.Event.addListener('billing_reset_address_button', "click",hide_billing_address_form,'billing_');
 
     YAHOO.util.Event.addListener('set_contact_address_as_billing', "click", set_contact_address_as_billing);

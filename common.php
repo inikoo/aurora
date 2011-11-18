@@ -179,9 +179,14 @@ foreach($_GET as $key => $value) {
     if ($key!='_locale')$args.=$key.'='.$value.'&';
 }
 $lang_menu=array();
-foreach($avialable_locales as $row ) {
 
-    $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_locale='.$row['Locale'],$row['Flag'],$_lang[$row['Language Code']]);
+
+$sql=sprintf("select * from `Language Dimension`");
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res) ) {
+$_locale=$row['Language Code'].'_'.$row['Country 2 Alpha Code'].'.UTF-8';
+    $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_locale='.$_locale,strtolower($row['Country 2 Alpha Code']),$row['Language Original Name']);
 }
 
 $smarty->assign('lang_menu',$lang_menu);

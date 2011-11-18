@@ -11,7 +11,7 @@
   <div class="bd">
     <ul class="first-of-type">
       {foreach from=$lang_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" href="{$menu[0]}"><img src="art/flags/{$menu[1]}.gif"/ > {$menu[2]}</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" href="{$menu[0]}"><img style="position:relative;top:-3.5px" src="art/flags/{$menu[1]}.gif"/ > {$menu[2]}</a></li>
       {/foreach}
     </ul>
   </div>
