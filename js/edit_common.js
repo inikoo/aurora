@@ -447,13 +447,16 @@ function is_valid_scope(branch){
 
 
 function validate_scope_edit(branch) {
+
+
 //alert('validate scope edit')
   var errors=false;
   var changed=false;
 
     for (items in validate_scope_data[branch]) {
     
-    //   alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
+       //alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
+
         if (validate_scope_data[branch][items].validated==false   ||    (validate_scope_data[branch][items].required &&  Dom.get(validate_scope_data[branch][items].name).value=='' )  )
             errors=true;
         if (validate_scope_data[branch][items].changed==true)
