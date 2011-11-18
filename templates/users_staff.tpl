@@ -3,8 +3,8 @@
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
 {include file='users_navigation.tpl'}
-<div > 
-  <span   class="branch"><a  href="users.php">{t}Users{/t}</a> &rarr; {t}Staff Users{/t} </span>
+<div  class="branch"> 
+<span><a  href="users.php">{t}Users{/t}</a> &rarr; {t}Staff Users{/t} </span>
 </div>
 <h1>Staff Users</h1>
 </div>

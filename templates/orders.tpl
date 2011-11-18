@@ -2,14 +2,30 @@
 <div id="bd" style="padding:0px" >
 <div style="padding:0 20px">
 {include file='orders_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Orders{/t}</span>
+<div  class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Orders{/t}</span>
 </div>
- 
-  <h1>Orders {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
+ <div class="top_page_menu">
+
+
+
+
+<div class="buttons" style="float:left">
+
+<button  onclick="window.location='customers_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
+<button  onclick="window.location='warehouse_orders.php'" ><img src="art/icons/paste_plain.png" alt=""> {t}Warehouse Operations{/t}</button>
+
+
 
 </div>
- <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+
+
+<div style="clear:both"></div>
+</div>
+  <h1>{t}Orders{/t} {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
+
+</div>
+ <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='invoices'}selected{/if}"  id="invoices">  <span> {t}Invoices{/t}</span></span></li>
     <li> <span class="item {if $block_view=='dn'}selected{/if}"  id="dn">  <span> {t}Delivery Notes{/t}</span></span></li>
