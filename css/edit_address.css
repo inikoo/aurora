@@ -3,4 +3,4 @@
 .address_display,.contact_container{padding:10px;text-align:left;border:1px solid #ccc;}
 .address_buttons,.contact_container{text-align:right;margin-top:4px}
 .address_display{min-height:80px}
-.address_container{float:left;width:200px;margin:10px}
+.address_container{float:left;width:200px;margin:5px 10px 0px 10px;min-height:150px}

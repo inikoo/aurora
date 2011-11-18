@@ -454,15 +454,15 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
     var request='ar_edit_contacts.php?tipo=upload_attachment_to_customer';
    var uploadHandler = {
       upload: function(o) {
-	   alert(o.responseText)
+	   //alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
-	      table_id=11
-                var table=tables['table'+table_id];
+	      table_id=0
+            var table=tables['table'+table_id];
                 var datasource=tables['dataSource'+table_id];
-                datasource.sendRequest('',table.onDataReturnInitializeTable, table);  
-                close_upload_header_image()
+        datasource.sendRequest('',table.onDataReturnInitializeTable, table);  
+               close_dialog('attach');
                 
 	    }else
 		alert(r.msg);

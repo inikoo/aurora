@@ -19,7 +19,7 @@ function hide_new_delivery_address(){
     Dom.setStyle('new_delivery_address_table','display','none')
 }
 
-function post_create_address_function(r){
+function post_create_delivery_address_function(r){
     hide_new_delivery_address();
 }
 

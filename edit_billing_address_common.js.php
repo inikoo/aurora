@@ -2,13 +2,14 @@
 
 
 function display_new_billing_address(){
-    Dom.setStyle('add_new_billing_address','display','none')
-    Dom.setStyle('new_billing_address_table','display','')
+
+   Dom.setStyle('add_new_billing_address','display','none')
+   Dom.setStyle('dialog_new_billing_address','display','')
 }
 
 function display_edit_billing_address(address_id){
     edit_address(address_id,'billing_')
-    Dom.setStyle('new_billing_address_table','display','')
+     Dom.setStyle('dialog_new_billing_address','display','')
     Dom.setStyle('billing_tr_address_type','display','none')
     Dom.setStyle('billing_tr_address_function','display','none')
 }
@@ -19,7 +20,7 @@ function hide_new_billing_address(){
     Dom.setStyle('new_billing_address_table','display','none')
 }
 
-function post_create_address_function(r){
+function post_create_billing_address_function(r){
     hide_new_billing_address();
 }
 
@@ -27,7 +28,8 @@ function post_create_address_function(r){
 function init(){
 
     YAHOO.util.Event.addListener('add_new_billing_address', "click",display_new_billing_address );
-    var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+ 
+   var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
 	var Countries_AC = new YAHOO.widget.AutoComplete("billing_address_country", "billing_address_country_container", Countries_DS);
 	Countries_AC.forceSelection = true; 
@@ -41,6 +43,8 @@ function init(){
     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'billing_');
     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'billing_');
 	//YAHOO.util.Event.addListener('billing_save_address_button', "click",save_address,{prefix:'billing_',subject:'Customer',subject_key:customer_id,type:'Billing'});
-	YAHOO.util.Event.addListener('billing_reset_address_button', "click",hide_new_billing_address,'billing_');
+	YAHOO.util.Event.addListener('billing_reset_address_button', "click",hide_new_billing_address);
+YAHOO.util.Event.addListener('billing_reset_address_button', "click",hide_edit_billing_address);
+
 }
 YAHOO.util.Event.onDOMReady(init);

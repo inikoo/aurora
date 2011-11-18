@@ -45,7 +45,7 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 }
 
 $store=new Store($store_id);
-
+ $store->update_email_campaign_data();
 if ($store->id) {
     $_SESSION['state']['marketing']['store']=$store_id;
 } else {

@@ -109,7 +109,7 @@
   
   
  <div style="clear:both"> 
-      <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+      <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
      
      <div id="table_type_contacts_with_orders" class="table_type"  style="{if $block_view!='contacts_with_orders'}display:none;{/if}font-size:90%" >
         <div     id="transaction_chooser" >
