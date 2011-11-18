@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-12 16:49+0100\n"
-"PO-Revision-Date: 2011-11-13 23:19+0100\n"
+"PO-Revision-Date: 2011-11-15 23:29+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "Language: \n"
@@ -147,9 +147,8 @@ msgid "Staff associated with position"
 msgstr "Sind Sie sicher, dass Sie diese Funktion entfernen möchten?"
 
 #: class.CompanyPosition.php:284
-#, fuzzy
 msgid "Company Staff"
-msgstr "Faxmodus:"
+msgstr "Unternehmenspersonal"
 
 #: class.CompanyPosition.php:284
 #, fuzzy
@@ -254,7 +253,6 @@ msgstr "Zahl"
 
 #: product.js.php:84
 #: product.js.php:158
-#, fuzzy
 msgid "Customer"
 msgstr "Kunde"
 
@@ -263,14 +261,12 @@ msgid "Date"
 msgstr "Datum"
 
 #: product.js.php:86
-#, fuzzy
 msgid "Dispatched"
-msgstr "Vorlauf zu: %1/%2 (%3%)"
+msgstr "Versandt"
 
 #: product.js.php:87
-#, fuzzy
 msgid "No Send"
-msgstr "Verkauf"
+msgstr "Nicht versandt"
 
 #: product.js.php:159
 #: new_orders_list.php:56
@@ -461,9 +457,8 @@ msgid "Discontinued"
 msgstr "aus dem Sortiment genommen"
 
 #: locale.php:14
-#, fuzzy
 msgid "Normal"
-msgstr "Norwegen"
+msgstr "Normal"
 
 #: locale.php:15
 #, fuzzy
@@ -852,7 +847,7 @@ msgstr "Status"
 
 #: edit_position.js.php:36
 msgid "Invalid Position Name"
-msgstr ""
+msgstr "Ungültiger Standortname"
 
 #: edit_position.js.php:39
 #, fuzzy
@@ -861,7 +856,7 @@ msgstr "Quelltext"
 
 #: edit_position.js.php:42
 msgid "Invalid Position Description"
-msgstr ""
+msgstr "Ungültige Standortbeschreibung"
 
 #: edit_position.js.php:116
 #, fuzzy
@@ -2309,11 +2304,11 @@ msgstr "Lieferanten"
 
 #: supplier_product.js.php:38
 msgid "PO State"
-msgstr ""
+msgstr "Kaufauftragsphase"
 
 #: supplier_product.js.php:40
 msgid "Amount"
-msgstr ""
+msgstr "Menge"
 
 #: supplier_product.js.php:103
 msgid "In"
@@ -2321,7 +2316,7 @@ msgstr "In"
 
 #: supplier_product.js.php:104
 msgid "Lost"
-msgstr ""
+msgstr "verloren"
 
 #: supplier.js.php:40
 msgid "W Until OO"
@@ -2333,7 +2328,7 @@ msgstr ""
 
 #: new_campaign.php:85
 msgid "Create Campaign"
-msgstr ""
+msgstr "Werbekampagne erstellen"
 
 #: ar_porders.php:174
 #: ar_porders.php:430
@@ -2378,7 +2373,7 @@ msgstr "Schlüssel-Kunde"
 #: ar_porders.php:694
 #: ar_porders.php:930
 msgid "orders with min value of"
-msgstr ""
+msgstr "Bestellungen mit einem Mindestwert von"
 
 #: ar_porders.php:202
 #: ar_porders.php:458
@@ -2393,7 +2388,7 @@ msgstr "Schlüssel-Kunde"
 #: ar_porders.php:700
 #: ar_porders.php:936
 msgid "orders with max value of"
-msgstr ""
+msgstr "Bestellungen mit einem Höchstbestellwert von"
 
 #: ar_porders.php:208
 #: ar_porders.php:464
@@ -2415,7 +2410,7 @@ msgstr "Tage"
 #: ar_porders.php:706
 #: ar_porders.php:942
 msgid "last"
-msgstr ""
+msgstr "letzte/r/s"
 
 #: ar_porders.php:210
 #: ar_porders.php:466
@@ -2463,7 +2458,7 @@ msgstr ""
 
 #: staff.js.php:23
 msgid "Time"
-msgstr ""
+msgstr "Zeit"
 
 #: staff.js.php:24
 msgid "Details"
@@ -2484,7 +2479,7 @@ msgstr "Startzeit"
 
 #: staff.js.php:97
 msgid "Finish Time"
-msgstr ""
+msgstr "Arbeit beendet"
 
 #: staff.js.php:98
 msgid "Total Breaks Time"
@@ -2501,27 +2496,27 @@ msgstr "Abteilung"
 
 #: class.Invoice.php:1257
 msgid "Credit Card"
-msgstr ""
+msgstr "Kreditkarte"
 
 #: class.Invoice.php:1260
 #: class.Invoice.php:1304
 msgid "Cash"
-msgstr ""
+msgstr "Barzahlung"
 
 #: class.Invoice.php:1263
 #: class.Invoice.php:1307
 msgid "Paypal"
-msgstr ""
+msgstr "Paypal"
 
 #: class.Invoice.php:1266
 #: class.Invoice.php:1310
 msgid "Check"
-msgstr ""
+msgstr "Scheck"
 
 #: class.Invoice.php:1269
 #: class.Invoice.php:1313
 msgid "Bank Transfer"
-msgstr ""
+msgstr "Banküberweisung"
 
 #: class.Invoice.php:1301
 msgid "Paid in full"
@@ -2534,7 +2529,7 @@ msgstr "Martinique"
 
 #: marketing_server.js.php:26
 msgid "Newsletters"
-msgstr ""
+msgstr "Newsletters"
 
 #: marketing_server.js.php:27
 #, fuzzy
@@ -2653,7 +2648,7 @@ msgstr "Teil"
 
 #: edit_product.js.php:411
 msgid "Remove"
-msgstr ""
+msgstr "Entfernen"
 
 #: edit_product.js.php:411
 #, fuzzy
@@ -2667,7 +2662,7 @@ msgstr "Name=Völlig neues Produkt"
 
 #: edit_product.js.php:428
 msgid "Notes For Pickers"
-msgstr ""
+msgstr "Anmerkungen für Kommissionierer"
 
 #: edit_product.js.php:462
 msgid "Invalid number"
@@ -2850,7 +2845,7 @@ msgstr "Keine ausstehenden Bestellungen"
 
 #: class.DealMetadata.php:383
 msgid "Shipping Destination"
-msgstr ""
+msgstr "Lieferort"
 
 #: class.DealMetadata.php:482
 #, fuzzy
@@ -12785,31 +12780,31 @@ msgstr "Name=DN-Attribut-Ordnung"
 
 #: smarty.php:14708
 msgid "Monday"
-msgstr ""
+msgstr "Montag"
 
 #: smarty.php:14711
 msgid "Tuesday"
-msgstr ""
+msgstr "Dienstag"
 
 #: smarty.php:14714
 msgid "Wednesday"
-msgstr ""
+msgstr "Mittwoch"
 
 #: smarty.php:14717
 msgid "Thursday"
-msgstr ""
+msgstr "Donnerstag"
 
 #: smarty.php:14720
 msgid "Friday"
-msgstr ""
+msgstr "Freitag"
 
 #: smarty.php:14723
 msgid "Saturday"
-msgstr ""
+msgstr "Samstag"
 
 #: smarty.php:14726
 msgid "Sunday"
-msgstr ""
+msgstr "Sonntag"
 
 #: smarty.php:14741
 #, fuzzy
@@ -12845,11 +12840,11 @@ msgstr "Bericht wird gedruckt ..."
 
 #: smarty.php:14801
 msgid "Limit"
-msgstr ""
+msgstr "Limit"
 
 #: smarty.php:14819
 msgid "Results"
-msgstr ""
+msgstr "Ergebnisse"
 
 #: smarty.php:14822
 msgid "Search Customers"
@@ -12857,7 +12852,7 @@ msgstr "nach Kunden suchen"
 
 #: smarty.php:14825
 msgid "No Results Found"
-msgstr ""
+msgstr "Keine Ergebnisse"
 
 #: smarty.php:14957
 #, fuzzy
@@ -12906,7 +12901,7 @@ msgstr "&Wochentag"
 
 #: smarty.php:15140
 msgid "Done"
-msgstr ""
+msgstr "Fertig"
 
 #: smarty.php:15170
 #, fuzzy
@@ -12932,11 +12927,11 @@ msgstr "G_PRODUCT(Wert;Wert;...)"
 #: smarty.php:15287
 #: smarty.php:16697
 msgid "Quantity"
-msgstr ""
+msgstr "Menge"
 
 #: smarty.php:15299
 msgid "Quantity Lost"
-msgstr ""
+msgstr "Verlorene Menge"
 
 #: smarty.php:15302
 #, fuzzy
@@ -12945,7 +12940,7 @@ msgstr "Fax"
 
 #: smarty.php:15305
 msgid "Why?"
-msgstr ""
+msgstr "Warum?"
 
 #: smarty.php:15308
 #, fuzzy
@@ -13131,17 +13126,17 @@ msgstr "Unsicherer Schlüssel"
 #: smarty.php:16445
 #: smarty.php:17216
 msgid "Consolidated"
-msgstr ""
+msgstr "Konsolidiert"
 
 #: smarty.php:16448
 #: smarty.php:17219
 msgid "Consolidate"
-msgstr ""
+msgstr "Konsolidieren"
 
 #: smarty.php:16451
 #: smarty.php:17222
 msgid "Consolidated by"
-msgstr ""
+msgstr "Konsolidiert von"
 
 #: smarty.php:16469
 #: smarty.php:17240
@@ -18361,7 +18356,7 @@ msgstr ""
 #: report_sales.php:208
 #: report_sales.php:217
 msgid "but"
-msgstr ""
+msgstr "aber"
 
 #: report_sales.php:210
 #: report_sales.php:219
@@ -18376,7 +18371,7 @@ msgstr "Verkauf"
 
 #: report_sales.php:222
 msgid " more "
-msgstr ""
+msgstr "mehr"
 
 #: ar_marketing.php:166
 msgid "email campaign"
@@ -18532,7 +18527,7 @@ msgstr ""
 #: class.Email.php:181
 #: class.Email.php:305
 msgid "No email provided"
-msgstr ""
+msgstr "Keine E-Mail-Adresse vorhanden"
 
 #: class.Email.php:185
 #, fuzzy
@@ -18572,7 +18567,7 @@ msgstr ""
 
 #: class.Email.php:501
 msgid "Email address changed"
-msgstr ""
+msgstr "E-Mail-Adresse geändert"
 
 #: class.Email.php:568
 #, fuzzy
@@ -18794,8 +18789,8 @@ msgstr ""
 #: ar_assets.php:10160
 msgid "month"
 msgid_plural "months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Monat"
+msgstr[1] "Monate"
 
 #: ar_assets.php:10285
 #: ar_assets.php:10385
@@ -18805,16 +18800,16 @@ msgstr "CLOSE name"
 
 #: plot.inc.php:119
 msgid "1 month"
-msgstr ""
+msgstr "1 Monat"
 
 #: plot.inc.php:122
 msgid "5 years"
-msgstr ""
+msgstr "5 Jahre"
 
 #: plot.inc.php:125
 #: plot.inc.php:149
 msgid "3 years"
-msgstr ""
+msgstr "3 Jahre"
 
 #: plot.inc.php:128
 msgid "1½ years"
@@ -18823,11 +18818,11 @@ msgstr ""
 #: plot.inc.php:129
 #: plot.inc.php:132
 msgid "1 year"
-msgstr ""
+msgstr "1 Jahr"
 
 #: plot.inc.php:133
 msgid "6 months"
-msgstr ""
+msgstr "6 Monate"
 
 #: plot.inc.php:134
 #, fuzzy
@@ -18846,15 +18841,15 @@ msgstr "Abspielreihenfolge"
 
 #: plot.inc.php:157
 msgid "3 months"
-msgstr ""
+msgstr "3 Monate"
 
 #: plot.inc.php:158
 msgid "12 months"
-msgstr ""
+msgstr "12 Monate"
 
 #: plot.inc.php:159
 msgid "24 months"
-msgstr ""
+msgstr "24 Monate"
 
 #: plot.inc.php:164
 #, fuzzy
@@ -19165,15 +19160,15 @@ msgstr ""
 
 #: plot_data.csv.php:277
 msgid "Contacts with more than 50 orders"
-msgstr ""
+msgstr "Kontakte mit mehr als 50 Bestellungen"
 
 #: plot_data.csv.php:278
 msgid "Contacts with 21-50 orders"
-msgstr ""
+msgstr "Kontakte mit 21-50 Bestelllungen"
 
 #: plot_data.csv.php:279
 msgid "Contacts with 11-20 orders"
-msgstr ""
+msgstr "Kontakte mit 11-20 Bestellungen"
 
 #: plot_data.csv.php:280
 #, fuzzy
@@ -19232,19 +19227,19 @@ msgstr "Kontakte"
 
 #: plot_data.csv.php:344
 msgid "Contacts missing address & email"
-msgstr ""
+msgstr "Kontakte ohne Adresse & E-Mail"
 
 #: plot_data.csv.php:345
 msgid "Contacts missing address & telephone"
-msgstr ""
+msgstr "Kontakte ohne Adresse & Telefon"
 
 #: plot_data.csv.php:346
 msgid "Contacts missing email & telephone"
-msgstr ""
+msgstr "Kontakte ohne E-Mail-Adresse & Telefon"
 
 #: plot_data.csv.php:347
 msgid "Contacts missing address, email & telephone"
-msgstr ""
+msgstr "Kontakte ohne Adresse, Telefonnummer & E-Mail-Adresse"
 
 #: plot_data.csv.php:440
 #: plot_data.csv.php:485

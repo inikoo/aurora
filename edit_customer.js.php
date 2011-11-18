@@ -73,6 +73,9 @@ var dialog_other_field_label;
 var dialog_comment;
 var dialog_set_password_main;
 var dialog_set_password_;
+var dialog_convert_to_person;
+var  dialog_delete_customer;
+var dialog_convert_to_company;
 //  	,'tax_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Tax_Number','validation':[{'regexp':"<?php echo $tax_number_regex?>",'invalid_msg':'<?php echo _('Invalid Tax Number')?>'}]}
 
 var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";
@@ -964,7 +967,7 @@ save_address(e,options);
 
         Dom.setStyle(['billing_address','show_edit_billing_address'],'display','')
 
-    Dom.setStyle(['set_contact_address_as_billing','new_billing_address_table'],'display','none')
+    Dom.setStyle(['set_contact_address_as_billing'],'display','none')
 }
 
 
@@ -987,7 +990,9 @@ function save_convert_to_company(){
 if(Dom.hasClass('save_convert_to_company','disabled')){
 return;
 }
-
+	Dom.setStyle('convert_to_company_processing','display','');
+			Dom.setStyle('convert_to_person_buttons','display','none');
+			
 var request='ar_edit_contacts.php?tipo=convert_customer_to_company&company_name=' + encodeURIComponent(Dom.get('New_Company_Name').value) +'&customer_key=' + customer_id
 	           
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -995,8 +1000,12 @@ var request='ar_edit_contacts.php?tipo=convert_customer_to_company&company_name=
 	           // alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
+		
         location.href='edit_customer.php?id='+customer_id;
                                   }else{
+                                  	Dom.setStyle('convert_to_company_processing','display','none');
+			Dom.setStyle('convert_to_person_buttons','display','');
+			
                                   Dom.get('New_Company_Name_msg').innerHTML=r.msg
                                   }
    			}
@@ -1005,14 +1014,17 @@ var request='ar_edit_contacts.php?tipo=convert_customer_to_company&company_name=
 
 }
 function cancel_convert_to_company(){
-Dom.setStyle(['New_Company_Name_tr','save_convert_to_company','cancel_convert_to_company'],'display','none');
-Dom.setStyle('convert_to_company','display','');
-Dom.get('New_Company_Name').value='';
+dialog_convert_to_company.hide();
+
+
+Dom.get("New_Company_Name_msg").innerHTML="";
+Dom.get('""New_Company_Name').value='';
 }
-function convert_to_company(){
-Dom.setStyle(['New_Company_Name_tr','save_convert_to_company','cancel_convert_to_company'],'display','');
-Dom.setStyle('convert_to_company','display','none');
+function show_convert_to_company(){
+
 Dom.get('New_Company_Name').focus();
+dialog_convert_to_company.show();
+
 }
 
 
@@ -1039,13 +1051,10 @@ var request='ar_edit_contacts.php?tipo=convert_customer_to_person&customer_key='
 
 }
 function cancel_convert_to_person(){
-Dom.setStyle(['convert_to_person_info','save_convert_to_person','cancel_convert_to_person'],'display','none');
-Dom.setStyle('convert_to_person','display','');
+dialog_convert_to_person.hide();
+
 }
-function convert_to_person(){
-Dom.setStyle(['convert_to_person_info','save_convert_to_person','cancel_convert_to_person'],'display','');
-Dom.setStyle('convert_to_person','display','none');
-}
+
 
 
 
@@ -1063,38 +1072,6 @@ function validate_new_company_name(query){
     
 }
 
-function delete_customer(){
-Dom.setStyle(['save_delete_customer','cancel_delete_customer','delete_customer_warning'],'display','');
-Dom.setStyle('delete_customer','display','none');
-}
-function cancel_delete_customer(){
-Dom.setStyle(['save_delete_customer','cancel_delete_customer','delete_customer_warning'],'display','none');
-Dom.setStyle('delete_customer','display','');
-}
-
-function save_delete_customer(){
-
-
-var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer_id
-	           
-	           Dom.setStyle('deleting','display','');
-	           	           Dom.setStyle(['save_delete_customer','cancel_delete_customer'],'display','none');
-
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	            success:function(o){
-	           //alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-        location.href='customer.php?id='+customer_id;
-                                  }else{
-                                   Dom.setStyle('deleting','display','none');
-                                  Dom.get('delete_customer_msg').innerHTML=r.msg
-                                  }
-   			}
-    });
-
-
-}
 
 
 function merge(query){
@@ -1124,49 +1101,66 @@ var request='ar_contacts.php?tipo=can_merge_customer&customer_key='+Dom.get('cus
 
 }
 
+
+
+
+
 function post_change_main_delivery_address(){}
 
 
 
 function display_new_billing_address(){
-    Dom.setStyle(['show_new_billing_address','billing_address'],'display','none')
-    Dom.setStyle('new_billing_address_table','display','')
+    Dom.setStyle(['add_new_billing_address','billing_address_showcase'],'display','none')
+    Dom.setStyle('dialog_new_billing_address','display','')
+      Dom.get('billing_address_country').focus();
 }
 
-/*
-function display_edit_billing_address(){
-address_id=Dom.get('show_edit_billing_address').getAttribute('address_key');
-    edit_address(address_id,'billing_')
-    Dom.setStyle(['new_billing_address_table','set_contact_address_as_billing'],'display','')
-    Dom.setStyle(['show_edit_billing_address','billing_address','billing_tr_address_type','billing_tr_address_function'],'display','none')
-}
-*/
-function hide_billing_address_form(){
-address_prefix='billing_';
- if (Dom.get(address_prefix+'address_key').value==0) {
-hide_new_billing_address()
-}else{
-hide_edit_billing_address()
+function post_create_billing_address_function(r){
+
+
+    Dom.setStyle(['add_new_billing_address','billing_address_showcase'],'display','')
+    Dom.setStyle('dialog_new_billing_address','display','none')
 }
 
+
+function display_edit_billing_address(address_id){
+
+   edit_address(address_id,'billing_')
+   Dom.setStyle(['add_new_billing_address','billing_address_showcase'],'display','none')
+    Dom.setStyle('dialog_new_billing_address','display','')
+      Dom.get('billing_address_country').focus();
+      
+    
+      
 }
+
+function post_edit_billing_address(){
+
+  Dom.setStyle(['add_new_billing_address','billing_address_showcase'],'display','')
+    Dom.setStyle('dialog_new_billing_address','display','none')
+    }
+   
 
 function hide_edit_billing_address(){
-    reset_address(false,'billing_')
-    
-    Dom.setStyle(['billing_address','show_edit_billing_address'],'display','')
 
-    Dom.setStyle(['new_billing_address_table','set_contact_address_as_billing'],'display','none')
+var address_id=this.getAttribute('address_key');
+   reset_address(address_id,'billing_')
+  
+   Dom.setStyle(['add_new_billing_address','billing_address_showcase'],'display','')
+    Dom.setStyle('dialog_new_billing_address','display','none')
 }
+
+
 
 
 
 function hide_new_billing_address(){
     reset_address(false,'billing_')
     
-    Dom.setStyle(['billing_address','show_new_billing_address'],'display','')
+     Dom.setStyle(['billing_address','show_edit_billing_address'],'display','')
 
-    Dom.setStyle('new_billing_address_table','display','none')
+    Dom.setStyle(['set_contact_address_as_billing'],'display','none')
+
 }
 
 function set_contact_address_as_billing(){
@@ -1179,7 +1173,7 @@ var request='ar_edit_contacts.php?tipo=set_contact_address_as_billing&customer_k
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
        Dom.get('billing_address').innerHTML=r.xhtml_billing_address;
-            Dom.setStyle(['new_billing_address_table','set_contact_address_as_billing','show_edit_billing_address'],'display','none')
+            Dom.setStyle(['set_contact_address_as_billing','show_edit_billing_address'],'display','none')
             Dom.setStyle(['show_new_billing_address','billing_address'],'display','')
             Dom.get('show_edit_billing_address').setAttribute('address_key',0)
 reset_address(false,'billing_')
@@ -1211,12 +1205,18 @@ function change_comment(o,type,key){
 
 
     Dom.get('comment').value=Dom.get('comment_email').value;
+        Dom.get('comment').setAttribute('ovalue',Dom.get('comment_email').value);
+
  }else if(type=='telephone'){
     Dom.get('comment').value=Dom.get('comment_telephone').value;
+    Dom.get('comment').setAttribute('ovalue',Dom.get('comment_telephone').value);
+    
  }else if(type=='mobile'){
     Dom.get('comment').value=Dom.get('comment_mobile').value;
+    Dom.get('comment').setAttribute('ovalue',Dom.get('comment_mobile').value);
  }else if(type=='fax'){
     Dom.get('comment').value=Dom.get('comment_fax').value;
+    Dom.get('comment').setAttribute('ovalue',Dom.get('comment_fax').value);
  }
 
   dialog_comment.show();
@@ -1290,6 +1290,13 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 	    });        
 }
 
+
+function cancel_comment(){
+
+Dom.get("comment").value=Dom.get("comment").getAttribute("ovalue");
+dialog_comment.hide()
+}
+
 function save_comment(){
 
 //alert(Dom.get('comment_scope').value);return;
@@ -1322,6 +1329,7 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
  if(r.scope=='email'){
 Dom.get('comment_email').value=r.newvalue;
+
                 }else if(r.scope=='telephone'){
 Dom.get('comment_telephone').value=r.newvalue;
                 }else if(r.scope=='mobile'){
@@ -1530,14 +1538,76 @@ dialog_set_password_.show();
 
 }
 
+
+function cancel_delete_customer(){
+dialog_delete_customer.hide();
+}
+
+function save_delete_customer(){
+
+
+var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer_id
+	           
+	           Dom.setStyle('deleting','display','');
+	           	           Dom.setStyle('delete_customer_buttons','display','none');
+
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	           //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+        location.href='customer.php?id='+customer_id;
+                                  }else{
+                                  
+                                       Dom.setStyle('deleting','display','none');
+	           	           Dom.setStyle('delete_customer_buttons','display','');
+                                  
+                                  
+                                  Dom.get('delete_customer_msg').innerHTML=r.msg
+                                  }
+   			}
+    });
+
+
+}
+
+
+
 function init(){
 
 
+if(Dom.hasClass('delete_customer','disabled'))
+tt1 = new YAHOO.widget.Tooltip("tt1", { context:"delete_customer",'text':Dom.get('delete_button_tooltip').value }); 
 
 
   init_search('customers_store');
 
 
+dialog_delete_customer = new YAHOO.widget.Dialog("dialog_delete_customer", {context:["delete_customer","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_delete_customer.render();
+  Event.addListener("delete_customer", "click", dialog_delete_customer.show,dialog_delete_customer, true);
+   YAHOO.util.Event.addListener('cancel_delete_customer', "click", cancel_delete_customer);
+        YAHOO.util.Event.addListener('save_delete_customer', "click", save_delete_customer);
+
+dialog_convert_to_person = new YAHOO.widget.Dialog("dialog_convert_to_person", {context:["convert_to_person","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_convert_to_person.render();
+
+
+
+ 
+     Event.addListener("convert_to_person", "click", dialog_convert_to_person.show, dialog_convert_to_person, true);
+        YAHOO.util.Event.addListener('cancel_convert_to_person', "click", cancel_convert_to_person);
+    YAHOO.util.Event.addListener('save_convert_to_person', "click", save_convert_to_person);
+    
+     
+
+dialog_convert_to_company = new YAHOO.widget.Dialog("dialog_convert_to_company", {context:["convert_to_company","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_convert_to_company.render();
+   YAHOO.util.Event.addListener('convert_to_company', "click", show_convert_to_company);
+
+   YAHOO.util.Event.addListener('cancel_convert_to_company', "click", cancel_convert_to_company);
+    YAHOO.util.Event.addListener('save_convert_to_company', "click", save_convert_to_company);
+ 
  
 dialog_other_field_label = new YAHOO.widget.Dialog("dialog_other_field_label", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_other_field_label.render();
@@ -1609,17 +1679,11 @@ Dom.addClass('Post Type'+'_'+send_post_type,'selected');
     YAHOO.util.Event.addListener('reset_edit_billing_data', "click", reset_edit_billing_data);
   
     
-        YAHOO.util.Event.addListener('delete_customer', "click", delete_customer);
-        YAHOO.util.Event.addListener('cancel_delete_customer', "click", cancel_delete_customer);
-        YAHOO.util.Event.addListener('save_delete_customer', "click", save_delete_customer);
+     
 
-    YAHOO.util.Event.addListener('convert_to_company', "click", convert_to_company);
-    YAHOO.util.Event.addListener('cancel_convert_to_company', "click", cancel_convert_to_company);
-    YAHOO.util.Event.addListener('save_convert_to_company', "click", save_convert_to_company);
+ 
 
- YAHOO.util.Event.addListener('convert_to_person', "click", convert_to_person);
-    YAHOO.util.Event.addListener('cancel_convert_to_person', "click", cancel_convert_to_person);
-    YAHOO.util.Event.addListener('save_convert_to_person', "click", save_convert_to_person);
+ 
 
 
   var new_company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_new_company_name);
@@ -1842,7 +1906,7 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 
 //	 YAHOO.util.Event.addListener('billing_reset_address_button', "click",reset_billing_address);
 	YAHOO.util.Event.addListener('delivery_reset_address_button', "click",hide_new_delivery_address,'delivery_');
-	YAHOO.util.Event.addListener('billing_reset_address_button', "click",hide_billing_address_form,'billing_');
+	//YAHOO.util.Event.addListener('billing_reset_address_button', "click",hide_billing_address_form,'billing_');
 
     YAHOO.util.Event.addListener('set_contact_address_as_billing', "click", set_contact_address_as_billing);
 

@@ -19,39 +19,6 @@ gettext("here");
 /* ../templates/assets_navigation.tpl */
 gettext("Search");
 
-/* ../templates/basic_template.tpl */
-gettext("Marketing");
-
-/* ../templates/basic_template.tpl */
-gettext("Emarketing");
-
-/* ../templates/basic_template.tpl */
-gettext("eNewsletters");
-
-/* ../templates/basic_template.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/basic_template.tpl */
-gettext("Site Campaigns");
-
-/* ../templates/basic_template.tpl */
-gettext("Internet Campaigns");
-
-/* ../templates/basic_template.tpl */
-gettext("Other Media Campaigns");
-
-/* ../templates/basic_template.tpl */
-gettext("Basic Template Preview");
-
-/* ../templates/basic_template.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/basic_template.tpl */
-gettext("Rows per Page");
-
-/* ../templates/basic_template.tpl */
-gettext("Filter options");
-
 /* ../templates/calendar_splinter.bk.tpl */
 gettext("Other Dates");
 
@@ -1547,7 +1514,7 @@ gettext("Customers");
 gettext("Customers");
 
 /* ../templates/customers.tpl */
-gettext("Customer");
+gettext("Add Customer");
 
 /* ../templates/customers.tpl */
 gettext("Edit Customers");
@@ -1568,13 +1535,28 @@ gettext("Categories");
 gettext("Customers");
 
 /* ../templates/customers.tpl */
+gettext("Contacts with Orders");
+
+/* ../templates/customers.tpl */
+gettext("All Contacts");
+
+/* ../templates/customers.tpl */
 gettext("Total Contacts");
 
 /* ../templates/customers.tpl */
-gettext("Live Contacts");
+gettext("Total with orders");
+
+/* ../templates/customers.tpl */
+gettext("Active Customers");
+
+/* ../templates/customers.tpl */
+gettext("Lost Customers");
 
 /* ../templates/customers.tpl */
 gettext("Potential Customers");
+
+/* ../templates/customers.tpl */
+gettext("Total Contacts");
 
 /* ../templates/customers.tpl */
 gettext("Active Customers");
@@ -1592,16 +1574,22 @@ gettext("Export (CSV)");
 gettext("Export (CSV)");
 
 /* ../templates/customers.tpl */
-gettext("All Contacts");
+gettext("Lost");
 
 /* ../templates/customers.tpl */
-gettext("Active Contacts");
+gettext("Losing");
 
 /* ../templates/customers.tpl */
-gettext("Contacts with Orders");
+gettext("Active");
 
 /* ../templates/customers.tpl */
-gettext("Lost Contacts");
+gettext("Lost");
+
+/* ../templates/customers.tpl */
+gettext("Losing");
+
+/* ../templates/customers.tpl */
+gettext("Active");
 
 /* ../templates/customers.tpl */
 gettext("General");
@@ -1712,7 +1700,13 @@ gettext("Rows per Page");
 gettext("Customers");
 
 /* ../templates/customers_server.tpl */
-gettext("Customer Corporate Overview");
+gettext("Statistics");
+
+/* ../templates/customers_server.tpl */
+gettext("Contacts with Orders");
+
+/* ../templates/customers_server.tpl */
+gettext("All Contacts");
 
 /* ../templates/customers_server.tpl */
 gettext("Customers per Store");
@@ -1722,12 +1716,6 @@ gettext("Export (CSV)");
 
 /* ../templates/customers_server.tpl */
 gettext("Export (CSV)");
-
-/* ../templates/customers_server.tpl */
-gettext("Contacts with Orders");
-
-/* ../templates/customers_server.tpl */
-gettext("All Contacts");
 
 /* ../templates/customers_server.tpl */
 gettext("Filter options");
@@ -1791,39 +1779,6 @@ gettext("Contacts");
 
 /* ../templates/customers_stats.tpl */
 gettext("New Contacts (1 month)");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Marketing");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Emarketing");
-
-/* ../templates/customise_template_create.tpl */
-gettext("eNewsletters");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Site Campaigns");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Internet Campaigns");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Other Media Campaigns");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Customise Template");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Rows per Page");
-
-/* ../templates/customise_template_create.tpl */
-gettext("Filter options");
 
 /* ../templates/dashboard_customers_contacts.tpl */
 gettext("All times");
@@ -1917,6 +1872,9 @@ gettext("Edit Department");
 
 /* ../templates/department.tpl */
 gettext("Store");
+
+/* ../templates/department.tpl */
+gettext("Department");
 
 /* ../templates/department.tpl */
 gettext("Details");
@@ -2078,7 +2036,7 @@ gettext("List");
 gettext("Thumbnails");
 
 /* ../templates/department.tpl */
-gettext("General");
+gettext("Overview");
 
 /* ../templates/department.tpl */
 gettext("Stock");
@@ -2090,13 +2048,25 @@ gettext("Sales");
 gettext("All");
 
 /* ../templates/department.tpl */
+gettext("3Y");
+
+/* ../templates/department.tpl */
 gettext("1Yr");
+
+/* ../templates/department.tpl */
+gettext("YTD");
+
+/* ../templates/department.tpl */
+gettext("6M");
 
 /* ../templates/department.tpl */
 gettext("1Qtr");
 
 /* ../templates/department.tpl */
 gettext("1M");
+
+/* ../templates/department.tpl */
+gettext("10D");
 
 /* ../templates/department.tpl */
 gettext("1W");
@@ -2114,10 +2084,25 @@ gettext("W AVG");
 gettext("Products");
 
 /* ../templates/department.tpl */
-gettext("Export (CSV)");
+gettext("Export (CSV/XML)");
 
 /* ../templates/department.tpl */
-gettext("Export (XML)");
+gettext("Export (CSV/XML)");
+
+/* ../templates/department.tpl */
+gettext("Historic");
+
+/* ../templates/department.tpl */
+gettext("Discontinued");
+
+/* ../templates/department.tpl */
+gettext("Private Sale");
+
+/* ../templates/department.tpl */
+gettext("Not for Sale");
+
+/* ../templates/department.tpl */
+gettext("Public Sale");
 
 /* ../templates/department.tpl */
 gettext("Normal Mode");
@@ -2132,7 +2117,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/department.tpl */
-gettext("General");
+gettext("Overview");
 
 /* ../templates/department.tpl */
 gettext("Stock");
@@ -2150,13 +2135,25 @@ gettext("Groups");
 gettext("All");
 
 /* ../templates/department.tpl */
+gettext("3Y");
+
+/* ../templates/department.tpl */
 gettext("1Yr");
+
+/* ../templates/department.tpl */
+gettext("YTD");
+
+/* ../templates/department.tpl */
+gettext("6M");
 
 /* ../templates/department.tpl */
 gettext("1Qtr");
 
 /* ../templates/department.tpl */
 gettext("1M");
+
+/* ../templates/department.tpl */
+gettext("10D");
 
 /* ../templates/department.tpl */
 gettext("1W");
@@ -3500,13 +3497,13 @@ gettext("Customers");
 gettext("Customers");
 
 /* ../templates/edit_customer.tpl */
-gettext("Next");
-
-/* ../templates/edit_customer.tpl */
-gettext("Prev");
+gettext("Previous Customer");
 
 /* ../templates/edit_customer.tpl */
 gettext("Exit Edit");
+
+/* ../templates/edit_customer.tpl */
+gettext("Next Customer");
 
 /* ../templates/edit_customer.tpl */
 gettext("Customer Details");
@@ -3557,10 +3554,10 @@ gettext("Merge with: (Customer ID)");
 gettext("Go");
 
 /* ../templates/edit_customer.tpl */
-gettext("Reset");
+gettext("Save");
 
 /* ../templates/edit_customer.tpl */
-gettext("Save");
+gettext("Reset");
 
 /* ../templates/edit_customer.tpl */
 gettext("Billing Information");
@@ -3647,43 +3644,13 @@ gettext("Unknown");
 gettext("Delete Customer");
 
 /* ../templates/edit_customer.tpl */
-gettext("This operation cannot be undone");
-
-/* ../templates/edit_customer.tpl */
-gettext("Would you like to proceed?");
-
-/* ../templates/edit_customer.tpl */
-gettext("No i dont want to delete it");
-
-/* ../templates/edit_customer.tpl */
-gettext("Yes, delete it!");
-
-/* ../templates/edit_customer.tpl */
-gettext("Deleting customer, wait please");
-
-/* ../templates/edit_customer.tpl */
-gettext("Delete Customer");
-
-/* ../templates/edit_customer.tpl */
-gettext("You can't delete the customer.");
+gettext("Convert to Person");
 
 /* ../templates/edit_customer.tpl */
 gettext("Save");
 
 /* ../templates/edit_customer.tpl */
 gettext("Reset");
-
-/* ../templates/edit_customer.tpl */
-gettext("This operation will delete the company");
-
-/* ../templates/edit_customer.tpl */
-gettext("Cancel");
-
-/* ../templates/edit_customer.tpl */
-gettext("Do it!");
-
-/* ../templates/edit_customer.tpl */
-gettext("Convert to Person");
 
 /* ../templates/edit_customer.tpl */
 gettext("Convert to Company");
@@ -3820,8 +3787,44 @@ gettext("Cancel");
 /* ../templates/edit_customer.tpl */
 gettext("Save");
 
+/* ../templates/edit_customer.tpl */
+gettext("Delete Customer");
+
+/* ../templates/edit_customer.tpl */
+gettext("This operation cannot be undone");
+
+/* ../templates/edit_customer.tpl */
+gettext("Would you like to proceed?");
+
+/* ../templates/edit_customer.tpl */
+gettext("No i dont want to delete it");
+
+/* ../templates/edit_customer.tpl */
+gettext("Yes, delete it!");
+
+/* ../templates/edit_customer.tpl */
+gettext("Deleting customer, wait please");
+
+/* ../templates/edit_customer.tpl */
+gettext("Set contact from company to person");
+
+/* ../templates/edit_customer.tpl */
+gettext("This operation will delete the company");
+
+/* ../templates/edit_customer.tpl */
+gettext("Do it!");
+
+/* ../templates/edit_customer.tpl */
+gettext("Cancel");
+
 /* ../templates/edit_customer_category.tpl */
-gettext("Customer Categories");
+gettext("Customers");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Customers");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Categories");
 
 /* ../templates/edit_customer_category.tpl */
 gettext("Editing Category");
@@ -4994,6 +4997,9 @@ gettext("Stores");
 gettext("Webpage");
 
 /* ../templates/edit_page.tpl */
+gettext("Exit Edit");
+
+/* ../templates/edit_page.tpl */
 gettext("Page Properties");
 
 /* ../templates/edit_page.tpl */
@@ -5507,6 +5513,9 @@ gettext("Rows per Page");
 gettext("Stores");
 
 /* ../templates/edit_product.tpl */
+gettext("Exit Edit");
+
+/* ../templates/edit_product.tpl */
 gettext("Parts");
 
 /* ../templates/edit_product.tpl */
@@ -5717,6 +5726,9 @@ gettext("Stores");
 gettext("Website");
 
 /* ../templates/edit_site.tpl */
+gettext("Exit Edit");
+
+/* ../templates/edit_site.tpl */
 gettext("Editing Site");
 
 /* ../templates/edit_site.tpl */
@@ -5733,6 +5745,42 @@ gettext("Sections");
 
 /* ../templates/edit_site.tpl */
 gettext("Pages");
+
+/* ../templates/edit_site.tpl */
+gettext("Save");
+
+/* ../templates/edit_site.tpl */
+gettext("Reset");
+
+/* ../templates/edit_site.tpl */
+gettext("Select Checkout Method: ");
+
+/* ../templates/edit_site.tpl */
+gettext("Ecommerce");
+
+/* ../templates/edit_site.tpl */
+gettext("Inikoo");
+
+/* ../templates/edit_site.tpl */
+gettext("Select Registration Method: ");
+
+/* ../templates/edit_site.tpl */
+gettext("SideBar");
+
+/* ../templates/edit_site.tpl */
+gettext("MainPage");
+
+/* ../templates/edit_site.tpl */
+gettext("Site Slogan: ");
+
+/* ../templates/edit_site.tpl */
+gettext("Site Name: ");
+
+/* ../templates/edit_site.tpl */
+gettext("Site URL: ");
+
+/* ../templates/edit_site.tpl */
+gettext("Site FTP Credentials: ");
 
 /* ../templates/edit_site.tpl */
 gettext("Create Page");
@@ -5976,6 +6024,9 @@ gettext("Name");
 
 /* ../templates/edit_stores.tpl */
 gettext("Stores");
+
+/* ../templates/edit_stores.tpl */
+gettext("Exit Edit");
 
 /* ../templates/edit_stores.tpl */
 gettext("Editing Stores");
@@ -6674,6 +6725,15 @@ gettext("Marketing");
 gettext("Email Campaigns");
 
 /* ../templates/email_campaign_in_process.tpl */
+gettext("Send");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Preview");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Delete");
+
+/* ../templates/email_campaign_in_process.tpl */
 gettext("Email Campaign");
 
 /* ../templates/email_campaign_in_process.tpl */
@@ -6695,16 +6755,13 @@ gettext("Please add email subject");
 gettext("Email content is empty");
 
 /* ../templates/email_campaign_in_process.tpl */
-gettext("Send");
-
-/* ../templates/email_campaign_in_process.tpl */
-gettext("Preview");
-
-/* ../templates/email_campaign_in_process.tpl */
-gettext("Delete");
-
-/* ../templates/email_campaign_in_process.tpl */
 gettext("Mailing List");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Add");
+
+/* ../templates/email_campaign_in_process.tpl */
+gettext("Import from Customer List");
 
 /* ../templates/email_campaign_in_process.tpl */
 gettext("Add");
@@ -6717,12 +6774,6 @@ gettext("Add");
 
 /* ../templates/email_campaign_in_process.tpl */
 gettext("Import from File");
-
-/* ../templates/email_campaign_in_process.tpl */
-gettext("Add");
-
-/* ../templates/email_campaign_in_process.tpl */
-gettext("Import from Customer List");
 
 /* ../templates/email_campaign_in_process.tpl */
 gettext("Edit Mailing List");
@@ -7097,6 +7148,9 @@ gettext("Cancel");
 gettext("Create List");
 
 /* ../templates/email_campaign_in_process.tpl */
+gettext("Customer Lists");
+
+/* ../templates/email_campaign_in_process.tpl */
 gettext("Previous");
 
 /* ../templates/email_campaign_in_process.tpl */
@@ -7139,6 +7193,27 @@ gettext("Email Campaigns");
 gettext("Mailing List");
 
 /* ../templates/email_campaign_mailing_list.tpl */
+gettext("Return to Email Campaign");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Add");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Individual Email Address");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Add");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Import from File");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Add");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Import from Customer List");
+
+/* ../templates/email_campaign_mailing_list.tpl */
 gettext("Mailing List");
 
 /* ../templates/email_campaign_mailing_list.tpl */
@@ -7146,6 +7221,27 @@ gettext("Filter options");
 
 /* ../templates/email_campaign_mailing_list.tpl */
 gettext("Rows per Page");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Fill the form properly");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Email Address");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Contact Name");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Add");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Cancel");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Customer Lists");
+
+/* ../templates/email_campaign_mailing_list.tpl */
+gettext("Create List");
 
 /* ../templates/email_left_column.tpl */
 gettext("Move paragraph here");
@@ -7433,16 +7529,10 @@ gettext("Pages");
 gettext("Products");
 
 /* ../templates/family.tpl */
-gettext("Export (CSV)");
+gettext("Export (CSV/XML)");
 
 /* ../templates/family.tpl */
-gettext("Export (CSV)");
-
-/* ../templates/family.tpl */
-gettext("Export (XML)");
-
-/* ../templates/family.tpl */
-gettext("Export (XML)");
+gettext("Export (CSV/XML)");
 
 /* ../templates/family.tpl */
 gettext("Historic");
@@ -7478,7 +7568,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/family.tpl */
-gettext("General");
+gettext("Overview");
 
 /* ../templates/family.tpl */
 gettext("Stock");
@@ -7496,13 +7586,25 @@ gettext("Groups");
 gettext("All");
 
 /* ../templates/family.tpl */
+gettext("3Y");
+
+/* ../templates/family.tpl */
 gettext("1Yr");
+
+/* ../templates/family.tpl */
+gettext("YTD");
+
+/* ../templates/family.tpl */
+gettext("6M");
 
 /* ../templates/family.tpl */
 gettext("1Qtr");
 
 /* ../templates/family.tpl */
 gettext("1M");
+
+/* ../templates/family.tpl */
+gettext("10D");
 
 /* ../templates/family.tpl */
 gettext("1W");
@@ -7548,42 +7650,6 @@ gettext("Forbidden");
 
 /* ../templates/forbidden.tpl */
 gettext("You don't have the rights to see this page, plese contact your site administrator");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Marketing");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Emarketing");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("eNewsletters");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Site Campaigns");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Internet Campaigns");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Other Media Campaigns");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Free Template");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Rows per Page");
-
-/* ../templates/free_campaign_template_create.tpl */
-gettext("Filter options");
-
-/* ../templates/free_template_preview.tpl */
-gettext("Free Template Preview");
 
 /* ../templates/ftp_upload.tpl */
 gettext("File Transfer Via FTP");
@@ -8171,6 +8237,27 @@ gettext("Marketing");
 gettext("Marketing");
 
 /* ../templates/marketing.tpl */
+gettext("Remainder");
+
+/* ../templates/marketing.tpl */
+gettext("Media");
+
+/* ../templates/marketing.tpl */
+gettext("Post");
+
+/* ../templates/marketing.tpl */
+gettext("Mailshot");
+
+/* ../templates/marketing.tpl */
+gettext("Newsletter");
+
+/* ../templates/marketing.tpl */
+gettext("Campaign");
+
+/* ../templates/marketing.tpl */
+gettext("Statistics");
+
+/* ../templates/marketing.tpl */
 gettext("Marketing");
 
 /* ../templates/marketing.tpl */
@@ -8183,7 +8270,7 @@ gettext("Campaigns");
 gettext("eNewsletters");
 
 /* ../templates/marketing.tpl */
-gettext("Marketing Email");
+gettext("Mailshots");
 
 /* ../templates/marketing.tpl */
 gettext("Marketing Post");
@@ -8195,9 +8282,6 @@ gettext("Marketing Media");
 gettext("Remainders");
 
 /* ../templates/marketing.tpl */
-gettext("Follow-up's Emails");
-
-/* ../templates/marketing.tpl */
 gettext("Marketing Metrics");
 
 /* ../templates/marketing.tpl */
@@ -8205,6 +8289,30 @@ gettext("New Email Campaign");
 
 /* ../templates/marketing.tpl */
 gettext("Email Campaigns");
+
+/* ../templates/marketing.tpl */
+gettext("Follow-up's Emails");
+
+/* ../templates/marketing.tpl */
+gettext("Type of email");
+
+/* ../templates/marketing.tpl */
+gettext("Text Email");
+
+/* ../templates/marketing.tpl */
+gettext("Template Email");
+
+/* ../templates/marketing.tpl */
+gettext("HTML Email");
+
+/* ../templates/marketing.tpl */
+gettext("Name");
+
+/* ../templates/marketing.tpl */
+gettext("Save");
+
+/* ../templates/marketing.tpl */
+gettext("Cancel");
 
 /* ../templates/marketing.tpl */
 gettext("Rows per Page");
@@ -8243,7 +8351,7 @@ gettext("Search");
 gettext("Marketing");
 
 /* ../templates/marketing_server.tpl */
-gettext("Marketing Corporate Overview");
+gettext("Statistics");
 
 /* ../templates/marketing_server.tpl */
 gettext("Store Marketing Sections");
@@ -10846,72 +10954,6 @@ gettext("Warehouse Areas");
 /* ../templates/newsletter.tpl */
 gettext("Marketing");
 
-/* ../templates/newsletter_template1.tpl */
-gettext("Marketing");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Emarketing");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("eNewsletters");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Site Campaigns");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Internet Campaigns");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Other Media Campaigns");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Newsletter1 Template Preview");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Rows per Page");
-
-/* ../templates/newsletter_template1.tpl */
-gettext("Filter options");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Marketing");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Emarketing");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("eNewsletters");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Site Campaigns");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Internet Campaigns");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Other Media Campaigns");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Newsletter Template 2 Preview");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Rows per Page");
-
-/* ../templates/newsletter_template2.tpl */
-gettext("Filter options");
-
 /* ../templates/not_found.tpl */
 gettext("Forbidden");
 
@@ -11958,6 +12000,12 @@ gettext("Stores");
 
 /* ../templates/page.tpl */
 gettext("Webpage");
+
+/* ../templates/page.tpl */
+gettext("Edit Page");
+
+/* ../templates/page.tpl */
+gettext("Site");
 
 /* ../templates/page.tpl */
 gettext("Overview");
@@ -13288,39 +13336,6 @@ gettext("Filter options");
 /* ../templates/positions.tpl */
 gettext("Rows per Page");
 
-/* ../templates/postcard_template.tpl */
-gettext("Marketing");
-
-/* ../templates/postcard_template.tpl */
-gettext("Emarketing");
-
-/* ../templates/postcard_template.tpl */
-gettext("eNewsletters");
-
-/* ../templates/postcard_template.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/postcard_template.tpl */
-gettext("Site Campaigns");
-
-/* ../templates/postcard_template.tpl */
-gettext("Internet Campaigns");
-
-/* ../templates/postcard_template.tpl */
-gettext("Other Media Campaigns");
-
-/* ../templates/postcard_template.tpl */
-gettext("Postcard Template Preview");
-
-/* ../templates/postcard_template.tpl */
-gettext("Email Campaigns");
-
-/* ../templates/postcard_template.tpl */
-gettext("Rows per Page");
-
-/* ../templates/postcard_template.tpl */
-gettext("Filter options");
-
 /* ../templates/preferences.tpl */
 gettext("System Preferences");
 
@@ -13406,15 +13421,6 @@ gettext("Kg");
 gettext("Outer Dimensions");
 
 /* ../templates/product.tpl */
-gettext("Categories");
-
-/* ../templates/product.tpl */
-gettext("Material");
-
-/* ../templates/product.tpl */
-gettext("Ingredients");
-
-/* ../templates/product.tpl */
 gettext("Details");
 
 /* ../templates/product.tpl */
@@ -13431,6 +13437,15 @@ gettext("History");
 
 /* ../templates/product.tpl */
 gettext("Web Site");
+
+/* ../templates/product.tpl */
+gettext("Categories");
+
+/* ../templates/product.tpl */
+gettext("Material");
+
+/* ../templates/product.tpl */
+gettext("Ingredients");
 
 /* ../templates/product.tpl */
 gettext("Invoices");
@@ -13551,6 +13566,21 @@ gettext("Rows per Page");
 
 /* ../templates/product.tpl */
 gettext("Filter options");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Stores");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Categories");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Store");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Edit Categories");
+
+/* ../templates/product_categories_base.tpl */
+gettext("Main Category");
 
 /* ../templates/product_categories_base.tpl */
 gettext("Product Categories Home");
@@ -14987,6 +15017,15 @@ gettext("Stores");
 gettext("Website");
 
 /* ../templates/site.tpl */
+gettext("Edit Site");
+
+/* ../templates/site.tpl */
+gettext("Store");
+
+/* ../templates/site.tpl */
+gettext("Websites");
+
+/* ../templates/site.tpl */
 gettext("Overview");
 
 /* ../templates/site.tpl */
@@ -15035,6 +15074,63 @@ gettext("Thumbnails");
 gettext("Rows per Page");
 
 /* ../templates/site.tpl */
+gettext("Filter options");
+
+/* ../templates/sites.tpl */
+gettext("Stores");
+
+/* ../templates/sites.tpl */
+gettext("Website");
+
+/* ../templates/sites.tpl */
+gettext("Overview");
+
+/* ../templates/sites.tpl */
+gettext("Pages");
+
+/* ../templates/sites.tpl */
+gettext("Hits");
+
+/* ../templates/sites.tpl */
+gettext("Visitors");
+
+/* ../templates/sites.tpl */
+gettext("Name");
+
+/* ../templates/sites.tpl */
+gettext("Home Page");
+
+/* ../templates/sites.tpl */
+gettext("Number Pages");
+
+/* ../templates/sites.tpl */
+gettext("Total Hits");
+
+/* ../templates/sites.tpl */
+gettext("Unique Visitors");
+
+/* ../templates/sites.tpl */
+gettext("Last 24h Hits");
+
+/* ../templates/sites.tpl */
+gettext("Last 24h Visitors");
+
+/* ../templates/sites.tpl */
+gettext("Current Visitors");
+
+/* ../templates/sites.tpl */
+gettext("Pages");
+
+/* ../templates/sites.tpl */
+gettext("List");
+
+/* ../templates/sites.tpl */
+gettext("Thumbnails");
+
+/* ../templates/sites.tpl */
+gettext("Rows per Page");
+
+/* ../templates/sites.tpl */
 gettext("Filter options");
 
 /* ../templates/splinter_contacts_customers.tpl */
@@ -15353,6 +15449,12 @@ gettext("Lists");
 gettext("Categories");
 
 /* ../templates/store.tpl */
+gettext("Websites");
+
+/* ../templates/store.tpl */
+gettext("Website");
+
+/* ../templates/store.tpl */
 gettext("Overview");
 
 /* ../templates/store.tpl */
@@ -15527,12 +15629,15 @@ gettext("List");
 gettext("Thumbnails");
 
 /* ../templates/store.tpl */
-gettext("Export (CSV)");
-
-/* ../templates/store.tpl */
 gettext("Departments");
 
 /* ../templates/store.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/store.tpl */
 gettext("Normal Mode");
 
 /* ../templates/store.tpl */
@@ -15545,7 +15650,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/store.tpl */
-gettext("Summary");
+gettext("Overview");
 
 /* ../templates/store.tpl */
 gettext("Stock");
@@ -15557,13 +15662,25 @@ gettext("Sales");
 gettext("All");
 
 /* ../templates/store.tpl */
+gettext("3Y");
+
+/* ../templates/store.tpl */
 gettext("1Yr");
+
+/* ../templates/store.tpl */
+gettext("YTD");
+
+/* ../templates/store.tpl */
+gettext("6M");
 
 /* ../templates/store.tpl */
 gettext("1Qtr");
 
 /* ../templates/store.tpl */
 gettext("1M");
+
+/* ../templates/store.tpl */
+gettext("10D");
 
 /* ../templates/store.tpl */
 gettext("1W");
@@ -15614,7 +15731,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/store.tpl */
-gettext("Summary");
+gettext("Overview");
 
 /* ../templates/store.tpl */
 gettext("Stock");
@@ -15626,13 +15743,25 @@ gettext("Sales");
 gettext("All");
 
 /* ../templates/store.tpl */
+gettext("3Y");
+
+/* ../templates/store.tpl */
 gettext("1Yr");
+
+/* ../templates/store.tpl */
+gettext("YTD");
+
+/* ../templates/store.tpl */
+gettext("6M");
 
 /* ../templates/store.tpl */
 gettext("1Qtr");
 
 /* ../templates/store.tpl */
 gettext("1M");
+
+/* ../templates/store.tpl */
+gettext("10D");
 
 /* ../templates/store.tpl */
 gettext("1W");
@@ -15650,16 +15779,10 @@ gettext("W AVG");
 gettext("Products");
 
 /* ../templates/store.tpl */
-gettext("Export (CSV)");
+gettext("Export (CSV/XML)");
 
 /* ../templates/store.tpl */
-gettext("Export (CSV)");
-
-/* ../templates/store.tpl */
-gettext("Export (XML)");
-
-/* ../templates/store.tpl */
-gettext("Export (XML)");
+gettext("Export (CSV/XML)");
 
 /* ../templates/store.tpl */
 gettext("Historic");
@@ -15689,7 +15812,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/store.tpl */
-gettext("General");
+gettext("Overview");
 
 /* ../templates/store.tpl */
 gettext("Stock");
@@ -15707,13 +15830,25 @@ gettext("Groups");
 gettext("All");
 
 /* ../templates/store.tpl */
+gettext("3Y");
+
+/* ../templates/store.tpl */
 gettext("1Yr");
+
+/* ../templates/store.tpl */
+gettext("YTD");
+
+/* ../templates/store.tpl */
+gettext("6M");
 
 /* ../templates/store.tpl */
 gettext("1Qtr");
 
 /* ../templates/store.tpl */
 gettext("1M");
+
+/* ../templates/store.tpl */
+gettext("10D");
 
 /* ../templates/store.tpl */
 gettext("1W");
@@ -15732,9 +15867,6 @@ gettext("M EAVG");
 
 /* ../templates/store.tpl */
 gettext("W EAVG");
-
-/* ../templates/store.tpl */
-gettext("Product Category Page");
 
 /* ../templates/store.tpl */
 gettext("Pages");
@@ -15800,7 +15932,7 @@ gettext("Stores");
 gettext("Edit Stores");
 
 /* ../templates/stores.tpl */
-gettext("Store");
+gettext("Add Store");
 
 /* ../templates/stores.tpl */
 gettext("Statistics");
@@ -15878,12 +16010,15 @@ gettext("M AVG");
 gettext("W AVG");
 
 /* ../templates/stores.tpl */
-gettext("Export (CSV)");
-
-/* ../templates/stores.tpl */
 gettext("Departments");
 
 /* ../templates/stores.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/stores.tpl */
+gettext("Export (CSV)");
+
+/* ../templates/stores.tpl */
 gettext("Normal Mode");
 
 /* ../templates/stores.tpl */
@@ -15896,7 +16031,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/stores.tpl */
-gettext("Summary");
+gettext("Overview");
 
 /* ../templates/stores.tpl */
 gettext("Stock");
@@ -15977,7 +16112,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/stores.tpl */
-gettext("Summary");
+gettext("Overview");
 
 /* ../templates/stores.tpl */
 gettext("Stock");
@@ -16025,16 +16160,10 @@ gettext("W AVG");
 gettext("Products");
 
 /* ../templates/stores.tpl */
-gettext("Export (CSV)");
+gettext("Export (CSV/XML)");
 
 /* ../templates/stores.tpl */
-gettext("Export (CSV)");
-
-/* ../templates/stores.tpl */
-gettext("Export (XML)");
-
-/* ../templates/stores.tpl */
-gettext("Export (XML)");
+gettext("Export (CSV/XML)");
 
 /* ../templates/stores.tpl */
 gettext("Normal Mode");
@@ -16049,7 +16178,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/stores.tpl */
-gettext("Summary");
+gettext("Overview");
 
 /* ../templates/stores.tpl */
 gettext("Stock");
@@ -16140,6 +16269,33 @@ gettext("Filter options");
 
 /* ../templates/stores.tpl */
 gettext("Display Mode Options");
+
+/* ../templates/stores_stats.tpl */
+gettext("Stores");
+
+/* ../templates/stores_stats.tpl */
+gettext("Statistics");
+
+/* ../templates/stores_stats.tpl */
+gettext("Stores");
+
+/* ../templates/stores_stats.tpl */
+gettext("Stores Statistics");
+
+/* ../templates/stores_stats.tpl */
+gettext("Sales");
+
+/* ../templates/stores_stats.tpl */
+gettext("Grown");
+
+/* ../templates/stores_stats.tpl */
+gettext("Customers");
+
+/* ../templates/stores_stats.tpl */
+gettext("Orders");
+
+/* ../templates/stores_stats.tpl */
+gettext("Customers Correlation (Possible Duplicates)");
 
 /* ../templates/supplier.tpl */
 gettext("Suppliers");

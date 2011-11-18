@@ -51,7 +51,7 @@ $modify=$user->can_edit('customers');
 
 if (preg_match('/es_es/i',  $lc_messages_locale)) {
 
-    $overview_text=sprintf("Tenemos %s contactos de los cuales %s son contactos activos. La semana pasada adquirimos %s nuevos clientes. Ellos representan un %s de todos los contactos activos."
+    $overview_all_contacts_text=sprintf("Tenemos %s contactos de los cuales %s son contactos activos. La semana pasada adquirimos %s nuevos clientes. Ellos representan un %s de todos los contactos activos."
                            ,$store->get('Contacts')
                            ,$store->get('Active Contacts')
                            ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
@@ -60,9 +60,9 @@ if (preg_match('/es_es/i',  $lc_messages_locale)) {
 } else {
     $s='';
     if ($store->data['Store Total Users'])
-        $s=sprintf("%d (%s) customer are registered in the website.", $store->data['Store Total Users'] ,percentage($store->data['Store Total Users'],$store->get('Active Contacts')));
+        $s=sprintf("%d (%s) customer are registered in the website.", $store->data['Store Total Users'] ,percentage($store->data['Store Total Users'],$store->data['Store Active Contacts']));
 
-    $overview_text=sprintf("We have had %s  contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base. %s",
+    $overview_all_contacts_text=sprintf("We have had %s contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base. %s",
                            $store->get('Contacts')
                            ,$store->get('Active Contacts')
                            ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
@@ -71,11 +71,37 @@ if (preg_match('/es_es/i',  $lc_messages_locale)) {
                            ,ngettext('customer','customers',$store->data['Store New Contacts'])
                            ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
                            ,$s
-                          )
-                   ;
+                          );
+}
+$smarty->assign('overview_all_contacts_text',$overview_all_contacts_text);
+
+
+if (preg_match('/es_es/i',  $lc_messages_locale)) {
+
+    $overview_contacts_with_orders_text=sprintf("Tenemos %s contactos de los cuales %s son contactos activos. La semana pasada adquirimos %s nuevos clientes. Ellos representan un %s de todos los contactos activos."
+                           ,$store->get('Contacts')
+                           ,$store->get('Active Contacts')
+                           ,percentage($store->data['Store Active Contacts'],$store->data['Store Contacts'])
+                           ,percentage($store->data['Store New Contacts'],$store->data['Store Active Contacts'])
+                          );
+} else {
+    $s='';
+//    if ($store->data['Store Total Users'])
+  //      $s=sprintf("%d (%s) customer are registered in the website.", $store->data['Store Total Users'] ,percentage($store->data['Store Total Users'],$store->data['Store Active Contacts']));
+
+    $overview_contacts_with_orders_text=sprintf("We have had %s contacts with orders so far, %s of them active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base. %s",
+                           $store->get('Contacts With Orders')
+                           ,$store->get('Active Contacts With Orders')
+                           ,percentage($store->data['Store Active Contacts With Orders'],$store->data['Store Contacts With Orders'])
+
+                           ,$store->get('New Contacts With Orders')
+                           ,ngettext('customer','customers',$store->data['Store New Contacts With Orders'])
+                           ,percentage($store->data['Store New Contacts With Orders'],$store->data['Store Active Contacts With Orders'])
+                           ,$s
+                          );
 }
 
-$smarty->assign('overview_text',$overview_text);
+$smarty->assign('overview_contacts_with_orders_text',$overview_contacts_with_orders_text);
 
 
 
@@ -158,7 +184,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$smarty->assign('type',$_SESSION['state']['customers']['type']);
+$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
 //print_r($_SESSION['state']['customers']['table']);
 $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
@@ -183,7 +209,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->assign('view',$_SESSION['state']['customers']['view']);
+$smarty->assign('block_view',$_SESSION['state']['customers']['block_view']);
 
 
 // $smarty->assign('export_text',$export_text);
@@ -279,6 +305,27 @@ $smarty->assign('export_csv_table_cols',2);
 $smarty->assign('csv_export_options',$csv_export_options);
 //print_r($_SESSION['state']['customers']);
 $smarty->assign('options_box_width','600px');
+
+
+
+
+$elements_number_all_contacts=array('Active'=>0,'Losing'=>0,'Lost'=>0);
+$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d group by `Customer Type by Activity`",$store->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number_all_contacts[$row['Customer Type by Activity']]=$row['num'];
+}
+$smarty->assign('elements_number_all_contacts',$elements_number_all_contacts);
+$smarty->assign('elements_all_contacts',$_SESSION['state']['customers']['table']['elements']['all_contacts']);
+
+$elements_number_contacts_with_orders=array('Active'=>0,'Losing'=>0,'Lost'=>0);
+$sql=sprintf("select count(*) as num,`Customer Type by Activity` from  `Customer Dimension` where `Customer Store Key`=%d and `Customer With Orders`='Yes' group by `Customer Type by Activity`",$store->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number_contacts_with_orders[$row['Customer Type by Activity']]=$row['num'];
+}
+$smarty->assign('elements_number_contacts_with_orders',$elements_number_contacts_with_orders);
+$smarty->assign('elements_contacts_with_orders',$_SESSION['state']['customers']['table']['elements']['contacts_with_orders']);
 
 $smarty->display('customers.tpl');
 ?>
