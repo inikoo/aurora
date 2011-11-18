@@ -620,7 +620,7 @@ $files=array();
             exit;
 
         } else {
-            print_r($result);
+            //print_r($result);
             $response=array('state'=>200,'result'=>'error '.join(' ',$result));
             echo json_encode($response);
             exit;

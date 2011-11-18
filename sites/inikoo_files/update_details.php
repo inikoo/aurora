@@ -6,7 +6,10 @@ include_once('ar_edit_contacts.php');
 
 if($_REQUEST['submit'] == 'contact_details')
 	update_contact_details();
-elseif($_REQUEST['submit'] == 'set_address_main')
+elseif($_REQUEST['submit'] == 'set_address_main'){
+	update_main_address($_REQUEST);
+	header( "Location: address_book.php" ) ;
+}
 	
 else
 	print 'other';

@@ -25,18 +25,7 @@ if (!$user->can_view('customers')) {
 }
 */
 
-//$modify=$user->can_edit('contacts');
-$_SESSION['state']['customer']['table']['nr']=10;
-$_SESSION['state']['customer']['table']['order']='date';
-$_SESSION['state']['customer']['table']['order_dir']='desc';
-$_SESSION['state']['customer']['assets']['nr']=25;
-$_SESSION['state']['customer']['assets']['order']='subject';
-$_SESSION['state']['customer']['assets']['order_dir']='';
-$_SESSION['state']['customer']['orders']['nr']=25;
-$_SESSION['state']['customer']['orders']['order']='last_update';
-$_SESSION['state']['customer']['orders']['order_dir']='desc';
-$_SESSION['state']['customer']['orders']['f_field']='public_id';
-$_SESSION['state']['customer']['orders']['f_value']='';
+
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
   
@@ -63,6 +52,7 @@ exit;
 $_SESSION['state']['customer']['id']=$customer_id;
 $_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
 $_SESSION['state']['customer']['view']='details';
+
 
 if (isset($_REQUEST['view']) and preg_match('/^(history|products|orders|details)$/',$_REQUEST['view']) ) {
 
@@ -115,7 +105,7 @@ $js_files=array(
              
              
                'upload_common.js.php',
-                'profile.js.php?customer_key='.$customer->id,
+                'orders.js.php?customer_key='.$customer->id.'&customer_type='.$customer->get('Customer Type')
           );
           
           
@@ -155,107 +145,6 @@ $smarty->assign('search_label','');
  $store=new Store($customer->data['Customer Store Key']);
 $smarty->assign('store', $store);
 
-if (isset($_REQUEST['p'])) {
-
-    if ($_REQUEST['p']=='cs') {
-		$_SESSION['state']['customers']['table']['order']='date';
-        $order=$_SESSION['state']['customers']['table']['order'];
-        $order_label=$order;
-        if ($order=='name') {
-            $order='`Customer File As`';
-            $order_label=_('Name');
-        }
-        elseif($order=='id') {
-            $order='`Customer Key`';
-            $order_label=_('ID');
-        }
-        elseif($order=='location')
-        $order='`Customer Main Location`';
-        elseif($order=='orders') {
-            $order='`Customer Orders`';
-            $order_label='# '._('Orders');
-        }
-        elseif($order=='email')
-        $order='`Customer Main Plain Email`';
-        elseif($order=='telephone')
-        $order='`Customer Main Plain Telephone`';
-        elseif($order=='last_order')
-        $order='`Customer Last Order Date`';
-        elseif($order=='contact_name')
-        $order='`Customer Main Contact Name`';
-        elseif($order=='address')
-        $order='`Customer Main Location`';
-        elseif($order=='town')
-        $order='`Customer Main Town`';
-        elseif($order=='postcode')
-        $order='`Customer Main Postal Code`';
-        elseif($order=='region')
-        $order='`Customer Main Country First Division`';
-        elseif($order=='country')
-        $order='`Customer Main Country`';
-        //  elseif($order=='ship_address')
-        //  $order='`customer main ship to header`';
-        elseif($order=='ship_town')
-        $order='`Customer Main Delivery Address Town`';
-        elseif($order=='ship_postcode')
-        $order='`Customer Main Delivery Address Postal Code`';
-        elseif($order=='ship_region')
-        $order='`Customer Main Delivery Address Country Region`';
-        elseif($order=='ship_country')
-        $order='`Customer Main Delivery Address Country`';
-        elseif($order=='net_balance')
-        $order='`Customer Net Balance`';
-        elseif($order=='balance')
-        $order='`Customer Outstanding Net Balance`';
-        elseif($order=='total_profit')
-        $order='`Customer Profit`';
-        elseif($order=='total_payments')
-        $order='`Customer Net Payments`';
-        elseif($order=='top_profits')
-        $order='`Customer Profits Top Percentage`';
-        elseif($order=='top_balance')
-        $order='`Customer Balance Top Percentage`';
-        elseif($order=='top_orders')
-        $order='``Customer Orders Top Percentage`';
-        elseif($order=='top_invoices')
-        $order='``Customer Invoices Top Percentage`';
-        elseif($order=='total_refunds')
-        $order='`Customer Total Refunds`';
-
-        elseif($order=='activity')
-        $order='`Customer Type by Activity`';
-        else
-            $order='`Customer File As`';
-
-        $_order=preg_replace('/`/','',$order);
-        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key` in (%s)  and %s < %s  order by %s desc  limit 1",join(',',$user->stores),$order,prepare_mysql($customer->get($_order)),$order);
-
-        $result=mysql_query($sql);
-        if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
-            $prev=array('id'=>0,'name'=>'');
-        mysql_free_result($result);
-
-        $smarty->assign('prev',$prev);
-        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key` in (%s) and  %s>%s  order by %s   ",join(',',$user->stores),$order,prepare_mysql($customer->get($_order)),$order);
-
-        $result=mysql_query($sql);
-        if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
-            $next=array('id'=>0,'name'=>'');
-        mysql_free_result($result);
-        $smarty->assign('parent_info',"p=cs&");
-
-        $smarty->assign('prev',$prev);
-        $smarty->assign('next',$next);
-       
-        $smarty->assign('parent_url','customers.php?store='.$store->id);
-        $parent_title=$store->data['Store Code'].' '._('Customers').' ('.$order_label.')';
-        $smarty->assign('parent_title',$parent_title);
-
-    }
-
-
-
-}
 
 
 $smarty->assign('store_id',$customer->data['Customer Store Key']);
@@ -310,6 +199,8 @@ $filter_menu=array(
                  'upto'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
                  'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)'))
              );
+			 
+			 
 $_SESSION['state']['customer']['table']['f_field'] = 'notes';
 $tipo_filter=$_SESSION['state']['customer']['table']['f_field'];
 $_SESSION['state']['customer']['table']['f_value']='';
@@ -326,14 +217,11 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $filter_menu=array(
                  'code'=>array('db_key'=>'code','menu_label'=>'Code like','label'=>_('Code')),
              );
-$_SESSION['state']['customer']['assets']['f_field']='code';
-$tipo_filter=$_SESSION['state']['customer']['assets']['f_field'];
-$_SESSION['state']['customer']['assets']['f_value']='';
-$filter_value=$_SESSION['state']['customer']['assets']['f_value'];
+$_SESSION['state']['customer']['orders']['order']='last_update';
+$_SESSION['state']['customer']['orders']['order_dir']='desc';
+$_SESSION['state']['customer']['orders']['f_field']='public_id';
+$_SESSION['state']['customer']['orders']['f_value']='';
 
-$smarty->assign('filter_value1',$filter_value);
-$smarty->assign('filter_menu1',$filter_menu);
-$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
