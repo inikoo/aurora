@@ -603,20 +603,19 @@ Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    
-		    var myRowFormatter = function(elTr, oRecord) {
-		   
-    if (oRecord.getData('type') =='Orders') {
-        Dom.addClass(elTr, 'customer_history_orders');
-    }else if (oRecord.getData('type') =='Notes') {
-        Dom.addClass(elTr, 'customer_history_notes');
-    }else if (oRecord.getData('type') =='Changes') {
-        Dom.addClass(elTr, 'customer_history_changes');
-    }
-    return true;
-}; 
+		    var myRowFormatter = function(elTr, oRecord) {		   
+				if (oRecord.getData('type') =='Orders') {
+					Dom.addClass(elTr, 'customer_history_orders');
+				}else if (oRecord.getData('type') =='Notes') {
+					Dom.addClass(elTr, 'customer_history_notes');
+				}else if (oRecord.getData('type') =='Changes') {
+					Dom.addClass(elTr, 'customer_history_changes');
+				}
+				return true;
+			}; 
 		    
 		    
-  this.prepare_note = function(elLiner, oRecord, oColumn, oData) {
+		this.prepare_note = function(elLiner, oRecord, oColumn, oData) {
           
             if(oRecord.getData("strikethrough")=="Yes") { 
             Dom.setStyle(elLiner,'text-decoration','line-through');

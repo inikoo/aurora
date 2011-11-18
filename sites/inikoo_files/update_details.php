@@ -10,6 +10,10 @@ elseif($_REQUEST['submit'] == 'set_address_main'){
 	update_main_address($_REQUEST);
 	header( "Location: address_book.php" ) ;
 }
+elseif($_REQUEST['submit'] == 'delete_address'){
+	delete_address();
+	header( "Location: address_book.php" ) ;
+}
 	
 else
 	print 'other';
