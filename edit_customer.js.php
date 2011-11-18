@@ -1150,10 +1150,6 @@ var address_id=this.getAttribute('address_key');
     Dom.setStyle('dialog_new_billing_address','display','none')
 }
 
-
-
-
-
 function hide_new_billing_address(){
     reset_address(false,'billing_')
     
@@ -1162,6 +1158,8 @@ function hide_new_billing_address(){
     Dom.setStyle(['set_contact_address_as_billing'],'display','none')
 
 }
+
+
 
 function set_contact_address_as_billing(){
 

@@ -515,7 +515,7 @@ Dom.addClass(o,'selected');
 }
 
 function init(){
-Event.addListener('clean_table_filter_show100', "click",show_filter,100);
+
   init_search('customers_store');
     
 	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_customer);
