@@ -500,7 +500,8 @@ function edit_email_campaign($data) {
                        'action'=>'changed',
                        'email_campaign_key'=>$email_campaign->id,
                        'key'=>$data['okey'],
-                       'newvalue'=>$email_campaign->new_value
+                       'newvalue'=>$email_campaign->new_value,
+                       'ready_to_send'=>$email_campaign->ready_to_send()
                    );
     }
     elseif($email_campaign->error) {
@@ -508,7 +509,8 @@ function edit_email_campaign($data) {
                        'state'=>400,
 
                        'msg'=>$email_campaign->msg,
-                       'key'=>$data['okey']
+                       'key'=>$data['okey'],
+                       'ready_to_send'=>$email_campaign->ready_to_send()
 
                    );
     }
@@ -519,7 +521,8 @@ function edit_email_campaign($data) {
                        'action'=>'nochange',
                        'email_campaign_key'=>$email_campaign->id,
                        'msg'=>$email_campaign->msg,
-                       'key'=>$data['okey']
+                       'key'=>$data['okey'],
+                       'ready_to_send'=>$email_campaign->ready_to_send()
 
                    );
     }

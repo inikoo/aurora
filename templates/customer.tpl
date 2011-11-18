@@ -1,7 +1,7 @@
 {include file='header.tpl'}
-
 <div id="bd" style="padding:0px">
 <div style="padding:0px 20px;">
+
 {include file='contacts_navigation.tpl'}
 
 <div  class="branch"> 
@@ -459,23 +459,34 @@
 
 
   <table style="padding:10px;margin:10px" >
-  <tr id="edit_note_date" class="options_list" prefix="note_date_" value="keep_date">
- 
-  <td class="selected" id="note_date_keep_date" onclick="radio_changed(this)" name="keep_date" >{t}Keep Date{/t}
-  </td>
-   <td  id="note_date_update_date" onclick="radio_changed(this)" name="update_date" >{t}Update Date{/t}
-  </td>
-  </tr>
+
+<tr>
+
+<td colspan=2>
+<div  id="edit_note_date" class="buttons left" prefix="note_date_" value="keep_date">
+<button class="selected"  id="note_date_keep_date" onclick="radio_changed(this)" name="keep_date">{t}Keep Date{/t}</button>
+<button  id="note_date_update_date" onclick="radio_changed(this)" name="update_date">{t}Update Date{/t}</button>
+</div>
+</td>
+</tr>
+
+
   
     <tr><td colspan=2>
 	<textarea style="width:200px;height:100px" id="edit_note_input" onkeyup="change(event,this,'edit_note')"></textarea>
       </td>
     <tr>
-    <tr class="buttons" style="font-size:100%">
-  <td style="text-align:center;width:50%">
-    <span  class="unselectable_text button" onClick="close_dialog('edit_note')" >{t}Canddcel{/t}</span></td>
-  <td style="text-align:center;width:50%">
-    <span  onclick="save('edit_note')" id="edit_note_save"  class="unselectable_text button"      >{t}Save{/t}</span></td></tr>
+    <tr >
+    
+    <td colspan=2>
+<div  class="buttons">
+<button class="positive"  onclick="save('edit_note')" id="edit_note_save">{t}Save{/t}</button>
+<button  class="negative"  onClick="close_dialog('edit_note')"  >{t}Cancel{/t}</button>
+</div>
+</td>
+
+
+      </tr>
 </table>
 </div>
 
@@ -1044,7 +1055,7 @@
 
 
 
-<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;">
+<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;padding-bottom:50px">
 
 <table border=0 style="margin:10px; width:100%">
 {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}

@@ -101,7 +101,7 @@
       }
 
 
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-view&value='+escape(tipo),{});
+      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-table-view&value='+escape(tipo),{});
   }
   
   

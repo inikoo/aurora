@@ -290,7 +290,7 @@ $general_options_list=array();
 
 $smarty->assign('number_orders',$customer->get('Customer Orders'));
 $smarty->assign('parent','customers');
-$smarty->assign('title','Customer: '.$customer->get('customer name'));
+$smarty->assign('title',_('Customer').': '.$customer->get('customer name'));
 $customer_home=_("Customers List");
 
 $total_orders=$customer->get('Customer Orders');

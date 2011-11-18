@@ -186,7 +186,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	  this.table9.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table9.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	        this.table9.subscribe("cellClickEvent", onCellClick);      	    
-     
+      this.table9.table_id=tableid;
+     this.table9.subscribe("renderEvent", myrenderEvent);
 
 
 	    this.table9.doBeforePaginatorChange = mydoBeforePaginatorChange;
@@ -200,11 +201,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
                                      ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					//,{key:"no_of_customer", label:"<?php echo _('No. Of Customer')?>",  width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"customer_list_type", label:"<?php echo _('List Type')?>",  width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   ,{key:"add_to_email_campaign_action", label:"", width:50,sortable:false,className:"right"}
+						,{key:"emails_valid_to_send", label:"<?php echo _('Emails')?>", width:50,sortable:false,className:"right"}
+
+			,{key:"add_to_email_campaign_action", label:"", width:100,sortable:false,className:"right"}
                   //                     ,{key:"customer_list_key", label:"<?php echo _('Create Campaign')?>", width:155,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers_lists&store_id="+Dom.get('store_id').value);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=customers_lists&sf=0&store_id="+Dom.get('store_id').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -220,7 +223,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"
 		},
 		
-		fields: ["name","customer_list_key","creation_date","customers","customer_list_type","add_to_email_campaign_action"]};
+		fields: ["name","customer_list_key","creation_date","customers","customer_list_type","add_to_email_campaign_action","emails_valid_to_send"]};
 		
 
 	  this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -254,7 +257,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+ this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 	    
 	   // this.table0.subscribe("dataReturnEvent", data_returned);  
 
@@ -474,7 +478,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
        this.table7.subscribe("rowMouseoutEvent", this.table7.onEventUnhighlightRow);
       this.table7.subscribe("rowClickEvent", select_product);
      
-
+ this.table7.table_id=tableid;
+     this.table7.subscribe("renderEvent", myrenderEvent);
 
 	    this.table7.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table7.filter={key:'code',value:''};
@@ -544,7 +549,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
        this.table8.subscribe("rowMouseoutEvent", this.table8.onEventUnhighlightRow);
       this.table8.subscribe("rowClickEvent", select_offer);
      
-
+ this.table8.table_id=tableid;
+     this.table8.subscribe("renderEvent", myrenderEvent);
 
 	    this.table8.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table8.filter={key:'code',value:''};
@@ -623,7 +629,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table10.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	        this.table10.subscribe("cellClickEvent", onCellClick);      	    
      
-
+ this.table10.table_id=tableid;
+     this.table10.subscribe("renderEvent", myrenderEvent);
 
 	    this.table10.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table10.filter={key:'name',value:''};
@@ -697,7 +704,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	        this.table11.subscribe("cellClickEvent", onCellClick);      	    
      
 
-
+ this.table11.table_id=tableid;
+     this.table11.subscribe("renderEvent", myrenderEvent);
 	    this.table11.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table11.filter={key:'name',value:''};
 
@@ -771,6 +779,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table12.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	        this.table12.subscribe("cellClickEvent", onCellClick);      	    
      
+ this.table12.table_id=tableid;
+     this.table12.subscribe("renderEvent", myrenderEvent);
 
 
 	    this.table12.doBeforePaginatorChange = mydoBeforePaginatorChange;
@@ -815,9 +825,7 @@ function validate_add_email_address_manually(query){
 }
 
 function save_add_email_address_manually(){
-
 save_new_general('add_email_address_manually');
-
 }
 
 function post_new_create_actions(branch,r){
@@ -1088,6 +1096,9 @@ switch ( branch ) {
 			case 'name':
 				Dom.get('h1_email_campaign_name').innerHTML=newvalue;
 				break;
+			case('subject'):
+			    
+			    break;
 			case 'content_html_text':
 				table_id=9
                 var table=tables['table'+table_id];
@@ -1096,6 +1107,14 @@ switch ( branch ) {
 				break;
 			
 		};
+		
+		if(r.ready_to_send){
+		    Dom.removeClass(['preview_email_campaign','send_email_campaign'],'disabled');
+		    
+		}else{
+		Dom.addClass(['preview_email_campaign','send_email_campaign'],'disabled');
+		}
+		
 		break;
 	
 	
@@ -1306,22 +1325,17 @@ validate_scope_metadata={
 
 };
 
-
- 
-
     dialog_add_email_address = new YAHOO.widget.Dialog("dialog_add_email_address", {context:["add_email_address_manually","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_add_email_address.render();
     Event.addListener("add_email_address_manually", "click", dialog_add_email_address.show,dialog_add_email_address , true);
 
-  dialog_add_email_address_from_list = new YAHOO.widget.Dialog("dialog_add_email_address_from_list", {context:["add_email_address_from_customer_list","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+  dialog_add_email_address_from_list = new YAHOO.widget.Dialog("dialog_add_email_address_from_list", {context:["add_email_address_from_customer_list","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_add_email_address_from_list.render();
     Event.addListener("add_email_address_from_customer_list", "click", dialog_add_email_address_from_list.show,dialog_add_email_address_from_list , true);
 
   dialog_preview_text_email = new YAHOO.widget.Dialog("dialog_preview_text_email", {context:["preview_email_campaign","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_preview_text_email.render();
     Event.addListener("preview_email_campaign", "click", preview_email_campaign);
-
-
 
   
    dialog_send_email_campaign = new YAHOO.widget.Dialog("dialog_send_email_campaign", {context:["send_email_campaign","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});

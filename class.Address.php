@@ -1510,7 +1510,7 @@ class Address extends DB_Table {
             $separator="<br/>";
         default:
             $address=$this->get_formated_address($separator);
-            $address.='<a class="ninja" href="region.php?country='.$this->data['Address Country Code'].'" >'.$this->data['Address Country Name'].'</a>';
+            $address.=$this->data['Address Country Name'];
             return _trim($address);
 
         }
