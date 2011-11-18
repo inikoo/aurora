@@ -9,8 +9,8 @@
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr;  <a href="customers_list.php?id={$customer_list_id}">{$customer_list_name}</a>  &rarr; {t}Editing Customers{/t}</span>
 </div>
 {else}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a>  &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Editing{/t}</span>
+<div  class="branch"> 
+<span>{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a>  &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Editing{/t}</span>
 </div>
 {/if}
 

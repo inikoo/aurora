@@ -861,15 +861,10 @@ class product extends DB_Table {
     }
 
 
-    /*
-      Function: get_base_data
-      Obtiene los diferentes valores de los atributos del producto
-    */
-    // JFA
 
 
     function get_base_data() {
-        global $myconf;
+        global $myconf,$corporate_currency;
         $base_data=array(
                        'product sales type'=>'Public Sale',
                        'product type'=>'Normal',

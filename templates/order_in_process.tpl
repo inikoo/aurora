@@ -7,9 +7,24 @@
   <input type="hidden" value="{$order->get('Order Current Dispatch State')}" id="dispatch_state"  />
 
  <input type="hidden" value="{$products_display_type}" id="products_display_type"  />
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span>
+<div  class="branch"> 
+<span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span>
 </div>
+ 
+ <div class="top_page_menu" style="border:none">
+ 
+  <div class="buttons">
+  
+        <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import from Mals-e{/t}</button>
+        <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="done">{t}Send to Warehouse{/t}</button>
+         <button {if $order->get('Order Current Dispatch State')=='In Process'}style="display:none"{/if} id="modify_order">{t}Modify Order{/t}</button>
+
+     <button id="cancel" class="negative">{t}Cancel Order{/t}</button>
+   
+</div>
+<div style="clear:both"></div>
+</div>
+ 
  
  <div style="clear:both"></div>
  
@@ -104,15 +119,7 @@
 
     
 
- <table class="quick_button" style="clear:both;margin-top:4px;">
-    <tr>
-        <td {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import from Mals-e{/t}</td>
-        <td {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="done">{t}Send to Warehouse{/t}</td>
-         <td {if $order->get('Order Current Dispatch State')=='In Process'}style="display:none"{/if} id="modify_order">{t}Modify Order{/t}</td>
 
- <td id="cancel" style="padding-left:10px">{t}Cancel Order{/t}</td>
-    </tr>
-</table>
 
        
 
