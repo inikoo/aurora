@@ -234,7 +234,7 @@ success:function(o) {
 
 
 
-<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact{/t}</span>
+
 
 
                 Dom.get(address_prefix+'address_showcase').appendChild(new_address_container);
