@@ -3478,6 +3478,24 @@ class Customer extends DB_Table {
 
     }
 
+    function get_is_billing_address($address_key){
+        $is_billing_address=false;
+        
+      $sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing')  and `Subject Type`='Customer' and `Subject Key`=%d  and `Address Key`=%d  ",
+      $this->id,
+      $address_key
+      
+      );
+      
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+          $is_billing_address=true;
+        }
+      return $is_billing_address;
+    }
+
 
     function get_delivery_address_objects() {
 

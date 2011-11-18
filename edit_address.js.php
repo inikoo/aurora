@@ -219,15 +219,22 @@ success:function(o) {
                 display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
                 display_element[0].id = address_prefix+'address_buttons'+r.address_key;
 
-                display_element=Dom.getElementsByClassName('small_button_edit' ,'span', display_element[0] );
+                display_element=Dom.getElementsByClassName('small_button_edit' ,'button', display_element[0] );
 
                 display_element[0].id = address_prefix+'set_main'+r.address_key;
                 display_element[1].id = address_prefix+'delete_address_button'+r.address_key;
                 display_element[2].id = address_prefix+'edit_address_button'+r.address_key;
 
+
+
                 display_element[0].setAttribute('onClick',"change_main_address("+r.address_key+",{type:'Delivery',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
+                
                 display_element[1].setAttribute('onCLick',"delete_address("+r.address_key+",{type:'Delivery',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
                 display_element[2].setAttribute('onCLick',"display_edit_delivery_address("+r.address_key+",'"+address_prefix+"')");
+
+
+
+<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact{/t}</span>
 
 
                 Dom.get(address_prefix+'address_showcase').appendChild(new_address_container);
@@ -316,8 +323,14 @@ success:function(o) {
 
                 //new_address_container.parent.appendChild(new_address_container);
                 // save_address_elements++;
-            } else if (r.action=='nochange') {
+            } 
+            else if (r.action=='nochange') {
+              if(address_prefix=='delivery_'){
+               post_create_delivery_address_function(r);   
                 alert(r.msg);
+              }
+            
+              
             } else if (r.action=='error') {
                 alert(r.msg);
             }
@@ -381,7 +394,7 @@ hide_new_billing_address();
 //alert(request);
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            alert(o.responseText)
+          //  alert(o.responseText)
                 var r =  YAHOO.lang.JSON.parse(o.responseText);
                 if(r.state==200){
                 if (r.action=='updated') {
@@ -412,7 +425,7 @@ success:function(o) {
 
                  
                                 if (r.is_main_billing=='Yes') {
-                                alert("caca");
+                              //  alert("caca");
                         Dom.get('billing_current_address').innerHTML=r.xhtml_address;
                        post_change_main_billing_address();
                     }
@@ -511,6 +524,12 @@ if(address_prefix=='billing_'){
                             Dom.setStyle('billing_address_tel_label'+r.key,'visibility','visible');
                         }
                          Dom.get('billing_address_display'+r.key).innerHTML=r.xhtml_address;
+                         
+                         if( Dom.get('delivery_address_display'+r.key) !=undefined){
+                            Dom.get('delivery_address_display'+r.key).innerHTML=r.xhtml_address;
+                         }
+                         
+                         
                     }
                     
                     
@@ -751,21 +770,26 @@ function reset_address(e,prefix) {
 var delete_address=function (address_key,options) {
     var request='ar_edit_contacts.php?tipo=delete_address&value=' +address_key+'&key='+options.type+'&subject='+options.Subject+'&subject_key='+options.subject_key;
 
-
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-//            alert(o.responseText);
+//           alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='deleted') {
 
-                Dom.get(options.prefix+'address_container'+address_key).style.display='none';
 
+                
+                Dom.setStyle(options.prefix+'address_container'+address_key,'display','none');
+                if(options.prefix=='billing_'){
+                    if( Dom.get('delivery_address_container'+address_key)!=undefined){
+                         Dom.setStyle('delivery_address_container'+address_key,'display','none')
+                    }
+                
+                }
 
                 if (Dom.get('delivery_current_address')!= undefined)
                     Dom.get('delivery_current_address').innerHTML=r.xhtml_delivery_address;
-               // if (Dom.get('delivery_current_address_bis')!= undefined)
-               //     Dom.get('delivery_current_address_bis').innerHTML=r.xhtml_delivery_address_bis;
-  if (Dom.get('billing_current_address')!= undefined)
+            
+                if (Dom.get('billing_current_address')!= undefined)
                     Dom.get('billing_current_address').innerHTML=r.xhtml_billing_address;
 
 
