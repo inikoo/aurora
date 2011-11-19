@@ -1100,6 +1100,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 //print_r($part_list);
                 $product_part_key=$product->find_product_part_list($part_list);
                 if (!$product_part_key) {
+                print_r($product);
                     exit("Error can not find product part list (get_orders_db)\n");
                 }
 

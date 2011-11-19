@@ -2,8 +2,8 @@
 <div id="bd" >
 <input value="{$email_campaign->id}" id="email_campaign_key" type="hidden"  />
 {include file='marketing_navigation.tpl'}
-<div> 
-  <span class="branch">{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$store->id}&block_view=email">{$store->get('Store Code')} {t}Marketing{/t} ({t}Email Campaigns{/t})</a> &rarr; {$email_campaign->get('Email Campaign Name')}</span>
+<div class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$store->id}&block_view=email">{$store->get('Store Code')} {t}Marketing{/t} ({t}Email Campaigns{/t})</a> &rarr; {$email_campaign->get('Email Campaign Name')}</span>
 </div>
 
 <div style="clear:both;border:1px solid #ccc;padding:5px 10px">
