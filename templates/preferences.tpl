@@ -2,8 +2,8 @@
 <div id="bd" >
 {include file='users_navigation.tpl'}
 <input id="user_key" value="{$user->id}" type="hidden"  />
-<div> 
-  <span class="branch">Preferences</span>
+<div class="branch"> 
+  <span>Preferences</span>
 </div>
 
 

@@ -1,8 +1,5 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0px">
-	<script src="js/index_tools.js" type="text/javascript"></script>
-	<script src="js/index_sliding_tabs.js" type="text/javascript"></script>
-
 <div style="padding:0 20px;height:50px">
 
 <div  class="branch" style="clear:left;"> 
@@ -12,7 +9,7 @@
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
     <div class="buttons" style="float:right">
        
-        <button  onclick="window.location='store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configure Dashboard{/t}</button>
+        <button  onclick="window.location='dashboard_configuration.php'" ><img src="art/icons/cog.png" alt=""> {t}Configure Dashboard{/t}</button>
       
     </div>
     <div class="buttons" style="float:left">

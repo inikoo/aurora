@@ -1,8 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='users_navigation.tpl'}
-<div> 
-  <span class="branch">{t}Users{/t}</span>
+<div class="branch"> 
+  <span>{t}Users{/t}</span>
 </div>
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
