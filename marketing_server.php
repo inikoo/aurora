@@ -98,7 +98,7 @@ $smarty->assign('options_box_width','200px');
 
 
 //$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
-//$smarty->assign('view',$_SESSION['state']['customers']['view']);
+//$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
 
 
 

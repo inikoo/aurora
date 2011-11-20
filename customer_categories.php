@@ -8,9 +8,9 @@ include_once('assets_header_functions.php');
 
 
 
-if(!$user->can_view('stores')  ){
-  header('Location: index.php');
-   exit;
+if (!$user->can_view('stores')  ) {
+    header('Location: index.php');
+    exit;
 }
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
@@ -31,7 +31,7 @@ $smarty->assign('search_scope','customers');
 
 
 $css_files=array(
-    $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
                'common.css',
@@ -39,108 +39,98 @@ $css_files=array(
                'button.css',
                'table.css',
                'theme.css.php'
-		
-		
-		 );
-		 
+           );
+
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/common.js',
-		'js/table_common.js',
-		'js/search.js',
-		'js/edit_category_common.js',
-		'common_customers.js.php',
-	
-		'js/dropdown.js',
-		
-		);
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable-min.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              'js/common.js',
+              'js/table_common.js',
+              'js/search.js',
+              'js/edit_category_common.js',
+              'common_customers.js.php',
+              'external_libs/ammap/ammap/swfobject.js'
+          );
 
 
 $smarty->assign('options_box_width','200px');
 
-if(isset($_REQUEST['id'])){
-$category_key=$_REQUEST['id'];
-}else{
-$category_key=$_SESSION['state']['customer_categories']['category_key'];
+if (isset($_REQUEST['id'])) {
+    $category_key=$_REQUEST['id'];
+} else {
+    $category_key=$_SESSION['state']['customer_categories']['category_key'];
 }
 
-if(!$category_key){
+if (!$category_key) {
 
-if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
-    $store_id=$_REQUEST['store_id'];
+    if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
+        $store_id=$_REQUEST['store_id'];
+
+    } else {
+        $store_id=$_SESSION['state']['store']['id'];
+    }
+
+    $store=new Store($store_id);
+
+
+    $js_files[]='customer_categories_base.js.php';
+    $tpl_file='customer_categories_base.tpl';
 
 } else {
-    $store_id=$_SESSION['state']['store']['id'];
-}
 
-$store=new Store($store_id);
+    $category=new Category($category_key);
+    if (!$category->id) {
+        header('Location: customer_categories.php?id=0&error=cat_not_found');
+        exit;
 
+    }
 
-//  $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+    $store_id=$category->data['Category Store Key'];
+    if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
+        $store_id=$_REQUEST['store_id'];
 
+    } else {
+        $store_id=$_SESSION['state']['store']['id'];
+    }
 
-if($modify){
+    $store=new Store($store_id);
 
-     $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_category','label'=>_('Add Main Category'));
-  $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
+    $category_key=  $category->id;
 
-}
+    $general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
-$js_files[]='customer_categories_base.js.php';
-$tpl_file='customer_categories_base.tpl';
+    if ($modify) {
+        $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
+        $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer_category.php?&id='.$category->id,'label'=>_('Edit Category'));
 
-}else{
+    }
 
-
-
-$category=new Category($category_key);
-if(!$category->id){
-header('Location: customer_categories.php?id=0&error=cat_not_found');
-   exit;
-
-}
-
-$store_id=$category->data['Category Store Key'];
-if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
-    $store_id=$_REQUEST['store_id'];
-
-} else {
-    $store_id=$_SESSION['state']['store']['id'];
-}
-
-$store=new Store($store_id);
-
- $category_key=  $category->id;         
-
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-
-if($modify){
-   $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
-  $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer_category.php?&id='.$category->id,'label'=>_('Edit Category'));
-
-}
+    $block_view=$_SESSION['state']['customer_categories']['block_view'];
 
 
+    if ($category->data['Category Children Deep']==0) {
+        $block_view='subjects';
+    }
+    $smarty->assign('block_view',$block_view);
+    $smarty->assign('category',$category);
+
+    if ($category->data['Category Deep']>1) {
+        $parent_category=new Category($category->data['Category Parent Key']);
+        $smarty->assign('parent_category',$parent_category);
+    }
 
 
-$smarty->assign('category',$category);
-
-$js_files[]='customer_categories.js.php';
-$tpl_file='customer_category.tpl';
+    $js_files[]='customer_categories.js.php';
+    $tpl_file='customer_category.tpl';
 
 //print_r($category->data);
 
@@ -152,9 +142,9 @@ $_SESSION['state']['customer_categories']['category_key']=$category_key;
 
 $store=new Store($store_id);
 
-if(!$store->id){
+if (!$store->id) {
 
-exit("Error wrong store");
+    exit("Error wrong store");
 }
 
 $_SESSION['state']['store']['id']=$store->id;

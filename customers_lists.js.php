@@ -54,12 +54,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",  rtext:"resultset.rtext",
+            rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"		
 		},
 		
 		fields: ["name","key","creation_date","customers","customer_list_type","delete"]};
@@ -102,7 +104,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	        this.table0.subscribe("cellClickEvent", onCellClick);      
 	   // this.table0.subscribe("dataReturnEvent", data_returned);  
 
-
+  this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
+	   
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['list']['f_value']?>'};
 
 	

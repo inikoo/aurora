@@ -21,7 +21,7 @@ if (!$modify) {
 }
 
 get_header_info($user,$smarty);
-
+$general_options_list=array();
 
 $view=$_SESSION['state']['categories']['edit'];
 $css_files=array(
@@ -49,9 +49,9 @@ $js_files=array(
               $yui_path.'menu/menu-min.js',
               'js/common.js',
               'js/table_common.js',
-              'js/search.js',
+              'search.js',
               'js/edit_common.js',
-           
+              'js/dropdown.js',
               'js/edit_category_common.js'
           );
 $smarty->assign('css_files',$css_files);
@@ -71,29 +71,26 @@ $_SESSION['state']['customer_categories']['category_key']=$category_key;
 
 
 
+    $category_key=0;
+    $view='subcategory';
+    $_SESSION['state']['categories']['edit']=$view;
+
+
+if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
+    $store_id=$_REQUEST['store_id'];
+
+} else {
+    $store_id=$_SESSION['state']['store']['id'];
+}
 
 
 
-    $category=new Category($category_key);
-    if (!$category->id) {
-        header('Location: customer_categories.php?id=0&error=cat_not_found');
-        exit;
+    $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store_id.'&id=0','label'=>_('Exit Edit'));
+    $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Category'));
 
-    }
-    $category_key=$category->id;
 
 
  
-
-
-    $smarty->assign('category',$category);
-
-
-    $tpl_file='customer_category.tpl';
-$store_id=$category->data['Category Store Key'];
-
-
-
 
 $store=new Store($store_id);
 
@@ -110,15 +107,12 @@ $_SESSION['state']['categories']['subject_key']=false;
 $_SESSION['state']['categories']['store_key']=$store->id;
 
 
-$js_files[]='edit_customer_category.js.php?key='.$category_key;
+$js_files[]='edit_customer_categories.js.php';
 $smarty->assign('js_files',$js_files);
-$smarty->assign('category_key',$category_key);
-
 
 $smarty->assign('edit',$view);
 $_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store',$store);
-$smarty->assign('store_id',$store->id);
 $smarty->assign('subject','Customer');
-$smarty->display('edit_customer_category.tpl');
+$smarty->display('edit_customer_categories.tpl');
 ?>

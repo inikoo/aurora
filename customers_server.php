@@ -97,7 +97,7 @@ $smarty->assign('options_box_width','200px');
 
 
 $smarty->assign('type',$_SESSION['state']['stores']['customers']['type']);
-//$smarty->assign('view',$_SESSION['state']['customers']['view']);
+//$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
 
 
 $csv_export_options0=array(

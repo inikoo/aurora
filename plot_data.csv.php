@@ -14,30 +14,42 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('category'):
+    $data=prepare_values($_REQUEST,array(
+                             'category_key'=>array('type'=>'key'),
+                         ));
+    category_assigned_pie($data);
+    break;
+case('category_subjects'):
+    $data=prepare_values($_REQUEST,array(
+                             'category_key'=>array('type'=>'key'),
+                         ));
+    category_subjects_pie($data);
+    break;    
 case('customer_business_type_pie'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
                          ));
-customer_business_type_pie($data);
-break;
+    customer_business_type_pie($data);
+    break;
 case('customer_business_type_assigned_pie'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
                          ));
-customer_business_type_assigned_pie($data);
-break;
+    customer_business_type_assigned_pie($data);
+    break;
 case('customer_referral_pie'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
                          ));
-customer_referral_pie($data);
-break;
+    customer_referral_pie($data);
+    break;
 case('customer_referral_assigned_pie'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
                          ));
-customer_referral_assigned_pie($data);
-break;
+    customer_referral_assigned_pie($data);
+    break;
 case('top_families'):
 
     $data=prepare_values($_REQUEST,array(
@@ -63,17 +75,17 @@ case('number_of_customers'):
 case('store_departments_pie'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
-                             
+
                          ));
-  
-    
+
+
     store_departments_pie($data);
     break;
- case('store_families_pie'):
+case('store_families_pie'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
                          ));
-                  
+
     store_families_pie($data);
     break;
 case('store_product_pie'):
@@ -81,10 +93,10 @@ case('store_product_pie'):
                              'store_key'=>array('type'=>'key'),
                          ));
     store_product_pie($data);
-    break;    
-    
-    
-    
+    break;
+
+
+
 case('customers_orders_pie'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
@@ -136,7 +148,7 @@ case('family_sales'):
                          ));
     family_sales($data);
     break;
- case('product_id_sales'):
+case('product_id_sales'):
     $data=prepare_values($_REQUEST,array(
                              'product_id'=>array('type'=>'string'),
                              'from'=>array('type'=>'date','optional'=>true),
@@ -144,8 +156,8 @@ case('family_sales'):
                              'use_corporate'=>array('type'=>'number')
                          ));
     product_id_sales($data);
-    break;   
-    
+    break;
+
 case('stacked_store_sales'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'string'),
@@ -153,7 +165,7 @@ case('stacked_store_sales'):
                              'to'=>array('type'=>'date','optional'=>true),
                          ));
     stacked_store_sales($data);
-    break;    
+    break;
 case('part_location_stock_history'):
     $data=prepare_values($_REQUEST,array(
                              'part_sku'=>array('type'=>'key'),
@@ -180,7 +192,7 @@ case('top_regions_sales'):
 
 case('top_countries_sales_by_continent'):
     $data=prepare_values($_REQUEST,array(
-		             'continent_id'=>array('type'=>'string'),	
+                             'continent_id'=>array('type'=>'string'),
                              'from'=>array('type'=>'date','optional'=>true),
                              'to'=>array('type'=>'date','optional'=>true)
                          ));
@@ -189,7 +201,7 @@ case('top_countries_sales_by_continent'):
 
 case('top_regions_sales_by_continent'):
     $data=prepare_values($_REQUEST,array(
-		             'continent_id'=>array('type'=>'string'),	
+                             'continent_id'=>array('type'=>'string'),
                              'from'=>array('type'=>'date','optional'=>true),
                              'to'=>array('type'=>'date','optional'=>true)
                          ));
@@ -199,7 +211,7 @@ case('top_regions_sales_by_continent'):
 
 case('top_countries_sales_in_region'):
     $data=prepare_values($_REQUEST,array(
-		             'region_id'=>array('type'=>'string'),	
+                             'region_id'=>array('type'=>'string'),
                              'from'=>array('type'=>'date','optional'=>true),
                              'to'=>array('type'=>'date','optional'=>true)
                          ));
@@ -212,8 +224,8 @@ case('region_sales'):
                              'from'=>array('type'=>'date','optional'=>true),
                              'to'=>array('type'=>'date','optional'=>true),
                              'use_corporate'=>array('type'=>'number'),
-			     'region_code'=>array('type'=>'string'),
-			     'region_level'=>array('type'=>'string')
+                             'region_code'=>array('type'=>'string'),
+                             'region_level'=>array('type'=>'string')
                          ));
     region_sales($data);
     break;
@@ -221,29 +233,29 @@ case('region_sales'):
 
 function part_location_stock_history($data) {
 
-if($data['location_key']){
+    if ($data['location_key']) {
 
-    $sql=sprintf("select `Date`,`Quantity Open`,`Quantity High`,`Quantity Low`,`Quantity On Hand`, (`Quantity Sold`+`Quantity In`+`Quantity Lost`) as `Volume` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
-                 $data['part_sku'],
-                 $data['location_key']
-                );
-    $res=mysql_query($sql);
+        $sql=sprintf("select `Date`,`Quantity Open`,`Quantity High`,`Quantity Low`,`Quantity On Hand`, (`Quantity Sold`+`Quantity In`+`Quantity Lost`) as `Volume` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
+                     $data['part_sku'],
+                     $data['location_key']
+                    );
+        $res=mysql_query($sql);
 
-    while ($row=mysql_fetch_assoc($res)) {
-        printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Quantity Open'],$row['Quantity High'],$row['Quantity Low'],$row['Quantity On Hand'],$row['Volume']);
+        while ($row=mysql_fetch_assoc($res)) {
+            printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Quantity Open'],$row['Quantity High'],$row['Quantity Low'],$row['Quantity On Hand'],$row['Volume']);
+        }
+    } else {// stock in all locatins
+        $sql=sprintf("select `Date`,sum(`Quantity Open`) as open ,max(`Quantity High`) as high,min(`Quantity Low`) as low,sum(`Quantity On Hand`) as close, sum(`Quantity Sold`+`Quantity In`+`Quantity Lost`) as `Volume` from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
+                     $data['part_sku']
+
+                    );
+        $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['Volume']);
+        }
+
     }
-}else{// stock in all locatins
- $sql=sprintf("select `Date`,sum(`Quantity Open`) as open ,max(`Quantity High`) as high,min(`Quantity Low`) as low,sum(`Quantity On Hand`) as close, sum(`Quantity Sold`+`Quantity In`+`Quantity Lost`) as `Volume` from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
-                 $data['part_sku']
-              
-                );
-    $res=mysql_query($sql);
-
-    while ($row=mysql_fetch_assoc($res)) {
-        printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['Volume']);
-    }
-
-}
 
 }
 function number_of_contacts($data) {
@@ -357,7 +369,7 @@ function customers_data_completeness_pie($data) {
 
 
     $sql=sprintf("select  count(*) as total,
-                     sum(if(!ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as ok ,
+                 sum(if(!ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as ok ,
 
                  sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as e ,
                  sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Address Incomplete`='No'  ,1,0)) as t ,
@@ -539,13 +551,13 @@ function store_sales($data) {
     }
 
     $corporate_currency='';
-    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange`';
+    if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange`';
     $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount` %s) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`  in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
                  $corporate_currency,
                  $dates,
                  join(',',$stores_keys)
                 );
-   // print $sql;
+    // print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $graph_data[$row['date']]['vol']=$row['invoices'];
@@ -616,13 +628,13 @@ function department_sales($data) {
     }
 
     $corporate_currency='';
-    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+    if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
     $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Depament Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
                  $corporate_currency,
                  $dates,
                  join(',',$departments_keys)
                 );
-   //print $sql;
+    //print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $graph_data[$row['date']]['vol']=$row['invoices'];
@@ -693,13 +705,13 @@ function family_sales($data) {
     }
 
     $corporate_currency='';
-    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+    if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
     $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Family Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
                  $corporate_currency,
                  $dates,
                  join(',',$familys_keys)
                 );
-   //print $sql;
+    //print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $graph_data[$row['date']]['vol']=$row['invoices'];
@@ -770,13 +782,13 @@ function product_id_sales($data) {
     }
 
     $corporate_currency='';
-    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
+    if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
     $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product ID` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
                  $corporate_currency,
                  $dates,
                  join(',',$product_ids)
                 );
-   //print $sql;
+    //print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $graph_data[$row['date']]['vol']=$row['invoices'];
@@ -798,7 +810,7 @@ function stacked_store_sales($data) {
 
 
     $graph_data=array();
-    
+
     global $user;
     $tmp=preg_split('/\,/', $data['store_key']);
     $store_keys=array();
@@ -808,16 +820,16 @@ function stacked_store_sales($data) {
             $store_keys[]=$store_key;
         }
     }
-    
 
-   
+
+
     $number_stores=count($store_keys);
     $tmp=array();
     for ($i=0; $i<$number_stores; $i++) {
- $tmp['value'.$i]=0;
+        $tmp['value'.$i]=0;
         $tmp['vol'.$i]=0;
     }
-   
+
     if (array_key_exists('to',$data)) {
         $dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
     } else {
@@ -834,7 +846,7 @@ function stacked_store_sales($data) {
 
                 );
 
-print $sql;
+    print $sql;
 
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
@@ -864,9 +876,9 @@ print $sql;
         //print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
-           
+
             $graph_data[$row['date']]['value'.$i]=sprintf("%.2f",$row['net']);
-             $graph_data[$row['date']]['vol'.$i]=$row['invoices'];
+            $graph_data[$row['date']]['vol'.$i]=$row['invoices'];
         }
         $i++;
     }
@@ -961,7 +973,7 @@ function top_families($data) {
     //print $sql;
     while ($row=mysql_fetch_assoc($res)) {
         $descripton='';//$row['Product Family Name'];
-                $descripton=$row['Product Family Store Code'].' '.$row['Product Family Code'];
+        $descripton=$row['Product Family Store Code'].' '.$row['Product Family Code'];
 
         $code=$row['Product Family Code'];
         printf("%s;%.2f;;;family.php?id=%d;%s\n",$code,$row['sales'],$row['Product Family Key'],$descripton);
@@ -978,9 +990,9 @@ function top_families($data) {
 function store_departments_pie($data) {
     $number_slices=9;
     $others=0;
-    
-  
-    
+
+
+
     $sql=sprintf("select count(distinct OTF.`Product Department Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join `Product Department Dimension` D on (D.`Product Department Key`=OTF.`Product Department Key`)  where OTF.`Store Key`=%d",
                  $data['store_key']
                 );
@@ -1027,9 +1039,9 @@ function store_departments_pie($data) {
 function store_families_pie($data) {
     $number_slices=14;
     $others=0;
-    
-  
-    
+
+
+
     $sql=sprintf("select count(distinct OTF.`Product Family Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join `Product Family Dimension` D on (D.`Product Family Key`=OTF.`Product Family Key`)  where OTF.`Store Key`=%d",
                  $data['store_key']
                 );
@@ -1086,15 +1098,15 @@ function customer_referral_assigned_pie($data) {
 
 function customer_referral_pie($data) {
 
-$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+    $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
 
-    $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d order by `Category Number Subjects` desc",$row['Category Key']);
-    $res2=mysql_query($sql);
-    while ($row2=mysql_fetch_assoc($res2)) {
-        printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
-    }
+        $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d order by `Category Number Subjects` desc",$row['Category Key']);
+        $res2=mysql_query($sql);
+        while ($row2=mysql_fetch_assoc($res2)) {
+            printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
+        }
     }
 }
 
@@ -1108,17 +1120,93 @@ function customer_business_type_assigned_pie($data) {
 }
 
 
-function customer_business_type_pie($data) {
-
-$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+function category_assigned_pie($data) {
+    $sql=sprintf("select `Category Subject`,`Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where  `Category Key`=%d ",$data['category_key']);
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
 
-    $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d order by `Category Number Subjects` desc ",$row['Category Key']);
-    $res2=mysql_query($sql);
-    while ($row2=mysql_fetch_assoc($res2)) {
-        printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
+        switch ($row['Category Subject']) {
+        case 'Customer':
+            $link='customer_categories.php';
+            break;
+        case 'Product':
+            $link='product_categories.php';
+            break;
+        case 'Supplier':
+            $link='supplier_categories.php';
+            break;
+        case 'Family':
+            $link='family_categories.php';
+            break;
+        case 'Invoice':
+            $link='invoice_categories.php';
+            break;
+        case 'Part':
+            $link='part_categories.php';
+            break;
+        default:
+            $link='';
+                  break;
+        }
+
+        printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
+        printf("%s;%d;true;B0DE09;$link?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
     }
+}
+
+
+
+
+function customer_business_type_pie($data) {
+
+    $sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+        $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d order by `Category Number Subjects` desc ",$row['Category Key']);
+        $res2=mysql_query($sql);
+        while ($row2=mysql_fetch_assoc($res2)) {
+            printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
+        }
+    }
+}
+
+
+function category_subjects_pie($data) {
+
+    $sql=sprintf("select `Category Subject`,`Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Key`=%d",$data['category_key']);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+    
+     switch ($row['Category Subject']) {
+        case 'Customer':
+            $link='customer_categories.php';
+            break;
+        case 'Product':
+            $link='product_categories.php';
+            break;
+        case 'Supplier':
+            $link='supplier_categories.php';
+            break;
+        case 'Family':
+            $link='family_categories.php';
+            break;
+        case 'Invoice':
+            $link='invoice_categories.php';
+            break;
+        case 'Part':
+            $link='part_categories.php';
+            break;
+        default:
+            $link='';
+                  break;
+        }
+
+        $sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where  `Category Parent Key`=%d order by `Category Number Subjects` desc ",$row['Category Key']);
+        $res2=mysql_query($sql);
+        while ($row2=mysql_fetch_assoc($res2)) {
+            printf("%s;%d;;;$link?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
+        }
     }
 }
 
@@ -1129,7 +1217,7 @@ function top_countries_sales_pie($data) {
     $number_slices=5;
     $others=0;
 
-     if (array_key_exists('to',$data)) {
+    if (array_key_exists('to',$data)) {
         $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
     } else {
         $dates=sprintf(" `Date`<=NOW()  ");
@@ -1140,12 +1228,12 @@ function top_countries_sales_pie($data) {
         $dates.=sprintf("and  `Date`>= ( select min(DATE(`Invoice Date`))   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$store_keys));
     }
 
- 
 
 
-$sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE %s   group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
-$dates
-);
+
+    $sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE %s   group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
+                   $dates
+                  );
 
 
 //print $sql;
@@ -1157,21 +1245,21 @@ $dates
             $descripton=$row['Country Name'];
             printf("%s;%.2f;;;department.php?id=%d;%s\n",$row['Country Name'],$row['net'],$row['net'],$descripton);
             $sum_slices+=$row['net'];
-            
+
 
         }
     }
 
-$sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension`  WHERE %s",
-$dates
-);
+    $sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension`  WHERE %s",
+                 $dates
+                );
 //print $sql;
-    
+
     $res=mysql_query($sql);
     $row=mysql_fetch_assoc($res);
     $total_net = $row['net'];
-       printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
-   
+    printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
+
 
 }
 
@@ -1180,7 +1268,7 @@ function top_regions_sales_pie($data) {
     $number_slices=5;
     $others=0;
 
-     if (array_key_exists('to',$data)) {
+    if (array_key_exists('to',$data)) {
         $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
     } else {
         $dates=sprintf(" `Date`<=NOW()  ");
@@ -1191,39 +1279,39 @@ function top_regions_sales_pie($data) {
         $dates.=sprintf("and  `Date`>= ( select min(DATE(`Invoice Date`))   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$store_keys));
     }
 
- 
 
-$sql = sprintf("SELECT `World Region` as region, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s group by region ORDER BY net  DESC LIMIT 5",
-$dates
-);
+
+    $sql = sprintf("SELECT `World Region` as region, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s group by region ORDER BY net  DESC LIMIT 5",
+                   $dates
+                  );
 
 
 //print $sql;
     $sum_slices=0;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
-        
 
-	if ($row['net']>0) {
+
+        if ($row['net']>0) {
             // printf("%s;%.2f\n",$row['Product Main Department Code'],$row['amount']);
             $descripton=$row['region'];
             printf("%s;%.2f;;;department.php?id=%d;%s\n",$row['region'],$row['net'],$row['net'],$descripton);
             $sum_slices+=$row['net'];
-            
+
 
         }
     }
 
-$sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension`  WHERE %s",
-$dates
-);
+    $sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension`  WHERE %s",
+                 $dates
+                );
 //print $sql;
-    
+
     $res=mysql_query($sql);
     $row=mysql_fetch_assoc($res);
     $total_net = $row['net'];
-       printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
-   
+    printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
+
 
 }
 
@@ -1232,7 +1320,7 @@ function top_countries_sales_by_continent_pie($data) {
     $number_slices=5;
     $others=0;
 
-     if (array_key_exists('to',$data)) {
+    if (array_key_exists('to',$data)) {
         $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
     } else {
         $dates=sprintf(" `Date`<=NOW()  ");
@@ -1245,12 +1333,12 @@ function top_countries_sales_by_continent_pie($data) {
     if (array_key_exists('continent_id',$data)) {
         $dates.=sprintf("and `Continent Code`=%s  ",prepare_mysql($data['continent_id']));
     }
- 
 
 
-$sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE %s   group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
-$dates
-);
+
+    $sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE %s   group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
+                   $dates
+                  );
 
 
 //print $sql;
@@ -1262,21 +1350,21 @@ $dates
             $descripton=$row['Country Name'];
             printf("%s;%.2f;;;department.php?id=%d;%s\n",$row['Country Name'],$row['net'],$row['net'],$descripton);
             $sum_slices+=$row['net'];
-            
+
 
         }
     }
 
-$sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE %s",
-$dates
-);
+    $sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`)  WHERE %s",
+                 $dates
+                );
 //print $sql;
-    
+
     $res=mysql_query($sql);
     $row=mysql_fetch_assoc($res);
     $total_net = $row['net'];
-       printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
-   
+    printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
+
 
 }
 
@@ -1285,7 +1373,7 @@ function top_regions_sales_by_continent_pie($data) {
     $number_slices=5;
     $others=0;
 
-     if (array_key_exists('to',$data)) {
+    if (array_key_exists('to',$data)) {
         $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
     } else {
         $dates=sprintf(" `Date`<=NOW()  ");
@@ -1298,39 +1386,39 @@ function top_regions_sales_by_continent_pie($data) {
     if (array_key_exists('continent_id',$data)) {
         $dates.=sprintf("and `Continent Code`=%s  ",prepare_mysql($data['continent_id']));
     }
- 
 
-$sql = sprintf("SELECT `World Region` as region, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s group by region ORDER BY net  DESC LIMIT 5",
-$dates
-);
+
+    $sql = sprintf("SELECT `World Region` as region, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s group by region ORDER BY net  DESC LIMIT 5",
+                   $dates
+                  );
 
 
 //print $sql;
     $sum_slices=0;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
-        
 
-	if ($row['net']>0) {
+
+        if ($row['net']>0) {
             // printf("%s;%.2f\n",$row['Product Main Department Code'],$row['amount']);
             $descripton=$row['region'];
             printf("%s;%.2f;;;department.php?id=%d;%s\n",$row['region'],$row['net'],$row['net'],$descripton);
             $sum_slices+=$row['net'];
-            
+
 
         }
     }
 
-$sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s",
-$dates
-);
+    $sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s",
+                 $dates
+                );
 //print $sql;
-    
+
     $res=mysql_query($sql);
     $row=mysql_fetch_assoc($res);
     $total_net = $row['net'];
-       printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
-   
+    printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
+
 
 }
 
@@ -1339,7 +1427,7 @@ function top_countries_sales_in_region_pie($data) {
     $number_slices=5;
     $others=0;
 
-     if (array_key_exists('to',$data)) {
+    if (array_key_exists('to',$data)) {
         $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
     } else {
         $dates=sprintf(" `Date`<=NOW()  ");
@@ -1352,39 +1440,39 @@ function top_countries_sales_in_region_pie($data) {
     if (array_key_exists('region_id',$data)) {
         $dates.=sprintf("and `World Region Code`=%s  ",prepare_mysql($data['region_id']));
     }
- 
 
-$sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
-$dates
-);
+
+    $sql = sprintf("SELECT `Country Name`, `Invoice Billing Country 2 Alpha Code`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s group by `Invoice Billing Country 2 Alpha Code` ORDER BY net  DESC LIMIT 5",
+                   $dates
+                  );
 
 
 //print $sql;
     $sum_slices=0;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
-        
 
-	if ($row['net']>0) {
+
+        if ($row['net']>0) {
             // printf("%s;%.2f\n",$row['Product Main Department Code'],$row['amount']);
             $descripton=$row['Country Name'];
             printf("%s;%.2f;;;department.php?id=%d;%s\n",$row['Country Name'],$row['net'],$row['net'],$descripton);
             $sum_slices+=$row['net'];
-            
+
 
         }
     }
 
-$sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s",
-$dates
-);
+    $sql=sprintf("SELECT sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net  FROM dw.`Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) WHERE %s",
+                 $dates
+                );
 //print $sql;
-    
+
     $res=mysql_query($sql);
     $row=mysql_fetch_assoc($res);
     $total_net = $row['net'];
-       printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
-   
+    printf("%s;%.2f;true\n",_('Others'),$total_net-$sum_slices);
+
 
 }
 
@@ -1457,25 +1545,25 @@ function region_sales($data) {
         $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
     }
 
-    switch($data['region_level']){
-        case 'Region':
-	     $where_region .= sprintf("`World Region Code`=%s",prepare_mysql($data['region_code']));
-	break;
-	case 'Country':
-	     $where_region .= sprintf("`Country Code`= %s", prepare_mysql($data['region_code']));
-	break;
+    switch ($data['region_level']) {
+    case 'Region':
+        $where_region .= sprintf("`World Region Code`=%s",prepare_mysql($data['region_code']));
+        break;
+    case 'Country':
+        $where_region .= sprintf("`Country Code`= %s", prepare_mysql($data['region_code']));
+        break;
     }
 
     $corporate_currency='';
-    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange`';
+    if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange`';
     $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount` %s) as net, count(*) as invoices  from `Invoice Dimension` left join kbase.`Country Dimension` C on (C.`Country 2 Alpha Code`=`Invoice Dimension`.`Invoice Billing Country 2 Alpha Code`) where %s and  %s and `Invoice Store Key`  in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
                  $corporate_currency,
-		 $where_region,
+                 $where_region,
                  $dates,
                  join(',',$stores_keys)
                 );
-   
-   //print $sql;
+
+    //print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $graph_data[$row['date']]['vol']=$row['invoices'];

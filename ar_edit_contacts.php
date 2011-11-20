@@ -3198,9 +3198,16 @@ function list_customers() {
     }
     mysql_free_result($res);
 
-    $rtext=$total_records." ".ngettext('customer','customers',$total_records);
+
+
+  $rtext=$total_records." ".ngettext('customer','customers',$total_records);
     if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._("Showing All").')';
+
+
+
 
     if ($total==0 and $filtered>0) {
         switch ($f_field) {
@@ -3333,20 +3340,16 @@ function list_customers() {
 
 
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'rtext'=>$rtext,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-
-                                      'records_perpage'=>$number_results,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                                array(
+                                   'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
