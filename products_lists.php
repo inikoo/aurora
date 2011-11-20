@@ -51,9 +51,7 @@ $css_files=array(
                'common.css',
                'button.css',
                'container.css',
-               'table.css',
-               'css/marketing_menu.css',
-               'css/marketing_campaigns.css'
+               'table.css'
            );
 $css_files[]='theme.css.php';
 $js_files=array(
@@ -70,7 +68,7 @@ $js_files=array(
               'js/edit_common.js',
               'js/search.js',
               'products_lists.js.php',
-              'js/list_function.js',
+           
               
               'js/menu.js'
           );
