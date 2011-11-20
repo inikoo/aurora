@@ -51,10 +51,7 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/search.js',
-              'customers_lists.js.php',
-              'js/list_function.js',
-              'customer_list_marketing.js.php',
-              'js/menu.js'
+              'customers_lists.js.php'
           );
 
 

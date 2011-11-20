@@ -791,7 +791,7 @@ class Order extends DB_Table {
 
         $family = array ();
         foreach ( $data as $item ) {
-            $nodeal [$item ['product_id']] = _ ( 'No deal Available|' );
+            $nodeal [$item ['product_id']] = _ ( 'No deal Available' );
             if (! isset ( $family [$item ['family_id']] ))
                 $family [$item ['family_id']] = 1;
             else
@@ -817,7 +817,7 @@ class Order extends DB_Table {
                             if ($family [$item ['family_id']] >= $metadata [0]) {
                                 $deal [$item ['product_id']] [] = array ('description' => $row ['deal description'], 'awollance' => $row ['deal allowance type'], 'discount_amount' => $metadata [1] * $item ['amount'], 'target' => $row ['deal allowance target'], 'trigger' => $row ['deal trigger'], 'terms' => $row ['deal terms type'], 'add' => 0, 'use' => 1 );
                             } else
-                                $nodeal [$item ['product_id']] .= '; ' . _ ( 'Not enought products ordered.' ) . " " . $family [$item ['family_id']] . "/" . $metadata [0];
+                                $nodeal [$item ['product_id']] .= '; ' . _ ( 'Not enought products ordered' ) . ". " . $family [$item ['family_id']] . "/" . $metadata [0];
                         } //_______________________________________________________________|
                         // Product selft trigger -------------------------------------------------
                         elseif ($row ['deal trigger'] == 'Product' and $row ['deal trigger key'] == $item ['product_id']) {
@@ -849,9 +849,9 @@ class Order extends DB_Table {
                             $deal [$item ['product_id']] [] = array ('description' => $row ['deal description'], 'discount_amount' => $metadata [1] * $item ['amount'] );
                         } else {
                             if ($customer->get ( 'customer orders' ) == 0)
-                                $nodeal [$item ['product_id']] .= '; ' . _ ( "No prevous orders" );
+                                $nodeal [$item ['product_id']] .= '; ' . _ ( "No previous orders" );
                             else
-                                $nodeal [$item ['product_id']] .= '; ' . _ ( "Last order not with in" ) . ' ' . $metadata [0];
+                                $nodeal [$item ['product_id']] .= '; ' . _ ( "Last order not within" ) . ' ' . $metadata [0];
                         }
 
                     } //end Depending ordwer interval;

@@ -451,7 +451,7 @@ class Store extends DB_Table {
                      ,$this->id
                     );
         if (mysql_query($sql)) {
-            $this->msg=_('Store code updated');
+            $this->msg=_('Store Code Updated');
             $this->updated=true;
             $this->new_value=$a1;
             $this->data['Store Code']=$a1;

@@ -103,7 +103,7 @@ class User extends DB_Table {
     function create($data) {
 
         $this->new=false;
-        $this->msg=_('Unknown Error(0)');
+        $this->msg=_('Unknown Error').' (0)';
         $base_data=$this->base_data();
 
         foreach($data as $key=>$value) {
@@ -150,7 +150,7 @@ class User extends DB_Table {
 
             $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
             if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-                $this->msg=_('The staff member  with id ')." ".$data['User Parent Key']." "._("is already in the database as")." ".$row['User Handle'];
+                $this->msg=_('The staff member with id ')." ".$data['User Parent Key']." "._("is already in the database as")." ".$row['User Handle'];
                 return;
             }
 
@@ -184,7 +184,7 @@ class User extends DB_Table {
             return;
         } else {
             $this->error=true;
-            $this->msg= _('Unknown error(2)');
+            $this->msg= _('Unknown error').' (2)';
             return;
         }
 

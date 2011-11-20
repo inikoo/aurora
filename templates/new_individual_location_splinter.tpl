@@ -35,7 +35,7 @@
 	 </tr>
 	
 	<tr id="tr_location_width"><td class="label">{t}Width{/t} {t}(cm){/t}:</td><td><input id="location_width" value="" ovalue="" type="text"/></td></tr>
-	<tr id="tr_location_deepth"><td class="label">{t}Deepth{/t} {t}(cm){/t}:</td><td><input  id="location_deepth" value=""  ovalue="" type="text"/></td></tr>
+	<tr id="tr_location_Depth"><td class="label">{t}Depth{/t} {t}(cm){/t}:</td><td><input  id="location_Depth" value=""  ovalue="" type="text"/></td></tr>
 	<tr id="tr_location_heigth"><td class="label">{t}Heigth{/t} {t}(cm){/t}:</td><td><input id="location_heigth" value=""  ovalue="" type="text"/></td></tr>
 	<tr id="tr_location_radius"  style="display:none"><td class="label">{t}Radius{/t} {t}(cm){/t}:</td><td><input id="location_radius" value=""  ovalue="" type="text"/></td></tr>
 	<tr><td class="label">{t}Max Weight{/t} {t}(Kg){/t}:</td><td><input id="location_max_weight" value="" ovalue=""  type="text"/></td></tr>

@@ -95,7 +95,7 @@ $smarty->assign('customer',$customer);
 
 
 $smarty->assign('parent','orders');
-$smarty->assign('title',_('dn').' '.$dn->get('Delivery Note Public ID') );
+$smarty->assign('title',_('Delivery Note').' '.$dn->get('Delivery Note Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->display($template);
