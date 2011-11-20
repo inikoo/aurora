@@ -14,7 +14,7 @@ var description_errors= new Object();
 var scope='category';
 var scope_edit_ar_file='ar_edit_categories.php';
 var scope_key_name='category_key';
-var scope_key='<?php $_REQUEST['key']?>';
+var scope_key=0;
 
 var parent='category';
 var parent_key_name='id';
@@ -35,7 +35,7 @@ var validate_scope_data={
 };
 
 
-var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_categories.php','key_name':'category_key','key':<?php echo $_REQUEST['key']?>}};
+var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_categories.php','key_name':'category_key','key':0}};
 				
 
 /*function validate_id(query){
@@ -137,15 +137,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-		},
+		    totalRecords: "resultset.total_records"		},
 		
 		fields: [
 			 'id','name','delete','delete_type','go'
@@ -176,7 +175,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-        this.table0.table_id=tableid;
+       this.table0.table_id=tableid;
         this.table0.subscribe("renderEvent", myrenderEvent);
 
 
@@ -208,15 +207,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+            rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-		},
+		    totalRecords: "resultset.total_records"		
+		    },
 		
 		
 		fields: [
@@ -252,7 +251,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-        this.table1.table_id=tableid;
+       this.table1.table_id=tableid;
         this.table1.subscribe("renderEvent", myrenderEvent);
 
 		    

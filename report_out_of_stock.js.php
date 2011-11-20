@@ -81,7 +81,7 @@ var CustomersColumnDefs = [
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.view='<?php echo$_SESSION['state']['customers']['view']?>';
+	    this.table0.view='<?php echo$_SESSION['state']['customers']['table']['view']?>';
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['report_part_out_of_stock']['transactions']['f_field']?>',value:'<?php echo$_SESSION['state']['report_part_out_of_stock']['transactions']['f_value']?>'};
 	  //  YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 	
@@ -147,7 +147,7 @@ var CustomersColumnDefs1 = [
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.view='<?php echo$_SESSION['state']['customers']['view']?>';
+	    this.table1.view='<?php echo$_SESSION['state']['customers']['table']['view']?>';
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['report_part_out_of_stock']['parts']['f_field']?>',value:'<?php echo$_SESSION['state']['report_part_out_of_stock']['parts']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 	

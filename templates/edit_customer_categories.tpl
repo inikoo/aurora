@@ -2,12 +2,12 @@
 <div id="bd" > 
 {include file='contacts_navigation.tpl'}
  <div class="branch"> 
-  <span>{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a  href="customer_categories.php?store_id={$store->id}&id=0">{t}Categories{/t}</a> &rarr;  <a href="customer_categories.php?id={$category->id}" >{$category->get_smarty_tree('customer_categories.php')}</a>  &rarr;  {t}Editing Category{/t}</span>
+  <span>{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a  href="customer_categories.php?store_id={$store->id}&id=0">{t}Categories{/t}</a> &rarr;  {t}Edit Categories{/t}</span>
 </div>
 <div class="top_page_menu">
     <img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'"  src="art/previous_button.png" alt="<"  style="margin-right:0px;float:left;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};position:relative;top:2px" />
     <div class="buttons" style="float:left">
-        <button style="margin-left:10px" onclick="window.location='customer_categories.php?id={$category->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+        <button style="margin-left:10px" onclick="window.location='customer_categories.php?store_id={$store->id}&id=0{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
     </div>
       <div class="buttons" >
         <button id="new_category" ><img src="art/icons/add.png" alt=""/> {t}Add Subcategory{/t}</button>
@@ -17,40 +17,17 @@
 </div>
 
 
-<h1 style="clear:both">{t}Editing Category{/t}: <span id="cat_title">{$category->get('Category Label')}</span></h1>
+<h1 style="clear:both">{t}Editing Main Categories{/t}</h1>
 
 
  
    <ul class="tabs" id="chooser_ul" style="clear:both">
-         <li> <span class="item {if $edit=='description'}selected{/if}" {if !$category}style="display:none"{/if} id="description">  <span> {t}Description{/t}</span></span></li>
          <li> <span class="item {if $edit=='subcategory'}selected{/if}"  id="subcategory">  <span> {t}Subcategories{/t}</span></span></li>
     </ul>
   
   <div class="tabbed_container"> 
  
 
-
- <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
- 
-  <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_category" onClick="save_edit_general('category')" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_category" onClick="reset_edit_general('category')" class="state_details">{t}Reset{/t}</span>
-   </div>
-      
-      
-      
-      <div id="new_category_messages" class="messages_block"></div>
-	  <table class="edit"> 
-	<tr class="first"><td  class="label">{t}Category Name{/t}:</td>
-	  <td  style="text-align:left">
-	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Category_Name" value="{$category->get('Category Label')}" ovalue="{$category->get('Category Label')}">
-	      <div id="Category_Name_Container"  ></div>
-	    </div>
-	  </td>
-	  	 <td id="Category_Name_msg" class="edit_td_alert"></td>
-	</tr></table>
-</div>
 
 
 
@@ -61,7 +38,11 @@
 <div   class="data_table" sxtyle="margin:25px 20px">
 	  <span class="clean_table_title">{t}Subcategories{/t}</span>
 	 
-	  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+	  <div  class="clean_table_caption"  style="clear:both;">
+	    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+	    <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
+	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+	  </div>
 	  <div  id="table0"   class="data_table_container dtable btable "> </div>
 	</div>
      
@@ -83,10 +64,6 @@
 
 </div>
 
-
-  
-  
-  
   
   <div id="filtermenu0" class="yuimenu">
     <div class="bd">

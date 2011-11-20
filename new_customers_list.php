@@ -159,7 +159,7 @@ $smarty->assign('allow_options',$allow_options);
 $smarty->assign('business_type',true);
 
 
-$smarty->assign('view',$_SESSION['state']['customers']['view']);
+$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 

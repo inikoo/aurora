@@ -2,8 +2,8 @@
 <div id="bd" >
 
 {include file='contacts_navigation.tpl'}
-<div> 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Lists{/t}</span>
+<div class="branch"> 
+  <span   >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Lists{/t}</span>
 </div>
 
 
@@ -15,7 +15,7 @@
 
 
 <div class="buttons">
-<button  onclick="window.location='new_customers_list.php?store={$store->id}'" ><img src="art/icons/add.png" alt=""> {t}List{/t}</button>
+<button  onclick="window.location='new_customers_list.php?store={$store->id}'" ><img src="art/icons/add.png" alt=""> {t}New List{/t}</button>
 </div>
 
 

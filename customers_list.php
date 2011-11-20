@@ -32,7 +32,7 @@ $smarty->assign('store_id',$store->id);
 
 $customer_list_name=$customer_list_data['List Name'];
 $smarty->assign('customer_list_name',$customer_list_name);
-$smarty->assign('customer_list_id',$customer_list_data['List Key']);
+$smarty->assign('customer_list_key',$customer_list_data['List Key']);
 
 
 
@@ -80,7 +80,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','customers');
 //$smarty->assign('sub_parent','areas');
-$smarty->assign('view',$_SESSION['state']['customers']['view']);
+$smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
 
 $smarty->assign('title', _('Customer Static List'));
 $smarty->assign('search_label',_('Customers'));

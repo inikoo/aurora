@@ -671,6 +671,7 @@ $default_state=array(
                                              'mode'=>'all',
                                              'avg'=>'totals',
                                              'view'=>'general',
+                                              'block_view'=>'subcategories',
                                              'from'=>'',
                                              'to'=>'',
                                              'exchange_type'=>'day2day',

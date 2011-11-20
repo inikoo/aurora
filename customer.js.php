@@ -687,7 +687,8 @@ Event.addListener(window, "load", function() {
 	        this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	        this.table0.subscribe("cellClickEvent", onCellClick);            
-
+this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 
 
 	    //   Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
@@ -769,7 +770,8 @@ Event.addListener(window, "load", function() {
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		    this.table1.filter={key:'<?php echo$_SESSION['state']['customer']['assets']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['assets']['f_value']?>'};
 
-	   
+	   this.table1.table_id=tableid;
+     this.table1.subscribe("renderEvent", myrenderEvent);
 
 
 
@@ -838,7 +840,8 @@ Event.addListener(window, "load", function() {
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		    this.table2.filter={key:'<?php echo$_SESSION['state']['customer']['orders']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['orders']['f_value']?>'};
-
+this.table2.table_id=tableid;
+     this.table2.subscribe("renderEvent", myrenderEvent);
 	   
 
 	   
@@ -908,7 +911,8 @@ Event.addListener(window, "load", function() {
 
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
-	   
+	   this.table3.table_id=tableid;
+     this.table3.subscribe("renderEvent", myrenderEvent);
 	   
 	
 // -------------------------------------orders end ----------------------------------
