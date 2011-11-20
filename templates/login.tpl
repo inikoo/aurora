@@ -49,19 +49,17 @@
 
 <div id="bd">
 
-<h1>{t}Sign in{/t}</h1>
-
- 
-
+<h1>{t}Inikoo{/t}</h1>
 <div  style="float:right;border:1px solid #ccc;padding:0px 20px 10px 20px ;width:240px;margin-top:0px;margin-right:30px" >
-<h2 style="margin-top:10px">{t}Staff Sign in{/t}</h2>
+<h2 style="margin-top:10px">{t}Staff Login{/t}</h2>
 <div id="mensage">
 </div>
-<form name="loginform" id="loginform" method="post"   autocomplete="off" action="index.php">
+
+<table style="width:100%;margin-top:20px">
+<form name="loginform" id="loginform" method="post"   autocomplete="off" action="authorization.php">
   <input type="hidden" name="_lang" value="{$lang_id}" />
 			<input type="hidden" id="ep" name="ep" value="{$st}" />
 			<input type="hidden" id="user_type" name="user_type" value="staff" />
-<table style="width:100%;margin-top:20px">
             <tr>
                 <td>{t}User{/t}:</td>
                 <td  ><input style="width:100%" type="text"  class="text"  id="_login_" name="_login_" maxlength="80"  value="" /></td>
@@ -69,8 +67,10 @@
              <tr  >
                 <td>{t}Password{/t}:</td>
                 <td><input  style="width:100%" t type="password"  class="password" id="_passwd_"  name="_passwd_" maxlength="80" value="" /></td>
-</form>
+
             </tr>
+            </form>
+            <tr>
                 <td colspan="2">
                     <div  class="buttons" style="margin-top:10px">
                         <button class="positive" id="login_button">{t}Log in{/t}</button>
@@ -82,6 +82,11 @@
 
 
 </div>
+ <div style=";width:600px;min-height:500px">
+ <img style="position:relative;left:300px" src="art/bg/login1.jpg">
+ </div>
+
+
 </div>
 <div id="footer">
 

@@ -120,7 +120,8 @@ if ($is_already_logged_in) {
     }
     $user=new User($_SESSION['user_key']);
 
-} else {
+} 
+else {
 
 //   echo "<script>alert(\"Session Expired! You are signed out due to Inactivity!. Please login again!\")</script>";
 
