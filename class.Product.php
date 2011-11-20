@@ -3921,7 +3921,7 @@ class product extends DB_Table {
             }
 
             if ($this->get('RRP Margin')!='')
-                $customer_margin=_('CM').' '.$this->get('RRP Margin');
+                $customer_margin=_('RRP Margin').' '.$this->get('RRP Margin');
             else
                 $customer_margin=_('Not for resale');
 

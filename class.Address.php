@@ -1422,7 +1422,7 @@ class Address extends DB_Table {
         case('mini'):
             $street=$this->display('street');
             if (strlen($street)<2)
-                $street=_($this->data['Address Internal']." ".$this->data['Address Building']);
+                $street=_trim($this->data['Address Internal']." ".$this->data['Address Building']);
 
             $max_characters=26;
             if (strlen($street)>$max_characters)

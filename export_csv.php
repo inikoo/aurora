@@ -574,7 +574,7 @@ $fields_to_export=$_SESSION['state']['staff']['table']['csv_export'];
 
 
 $fields=array(
-'id'=>array('title'=>_('Td'),'db_name'=>'Staff Key'),
+'id'=>array('title'=>_('Id'),'db_name'=>'Staff Key'),
 'name'=>array('title'=>_('Name'),'db_name'=>'Staff Name'),
 'alias'=>array('title'=>_('Alias'),'db_name'=>'Staff Alias'),
 'position'=>array('title'=>_('Position'),'db_name'=>'Company Position Title'),
