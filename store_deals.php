@@ -49,8 +49,6 @@ $css_files=array(
                'button.css',
                'container.css',
                'table.css',
-               'css/marketing_menu.css',
-               'css/marketing_campaigns.css',
                'theme.css.php'
                
            );

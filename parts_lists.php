@@ -35,9 +35,7 @@ $css_files=array(
                'common.css',
                'button.css',
                'container.css',
-               'table.css',
-               'css/marketing_menu.css',
-               'css/marketing_campaigns.css'
+               'table.css'
            );
 $css_files[]='theme.css.php';
 $js_files=array(

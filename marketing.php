@@ -74,9 +74,6 @@ $css_files=array(
                'container.css',
                'button.css',
                'table.css',
-               'css/marketing_campaigns.css',
-               'css/marketing_menu.css',
-               'css/marketing_campaigns.css',
                'theme.css.php'
            );
 
