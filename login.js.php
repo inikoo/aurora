@@ -38,8 +38,8 @@ function init() {
     YAHOO.util.Event.addListener('_passwd_', "keydown", submit_form_on_enter);
 
 
-    document.getElementById("_passwd_").value='';
-
+    
+Dom.get("_passwd_").value='';
 
     YAHOO.util.Dom.get("_login_").focus();
       YAHOO.util.Event.addListener('login_button', "click", onmySubmit);

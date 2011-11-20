@@ -1512,7 +1512,7 @@ function list_orders_with_product($can_see_customers=false) {
     elseif($mode=='key')
     $where=$where.sprintf(" and `Product Key`=%d ",$tag);
 
- $wheref='';
+    $wheref='';
 
     if (($f_field=='customer_name')  and $f_value!='') {
         $wheref="  and  `Order Customer Name` like '%".addslashes($f_value)."%'";
@@ -1698,9 +1698,9 @@ function list_orders_with_deal($can_see_customers=false) {
     $conf=$_SESSION['state']['deal']['orders'];
 
 
-$deal_key=$_REQUEST['deal_key'];
+    $deal_key=$_REQUEST['deal_key'];
 
- 
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -1746,23 +1746,23 @@ $deal_key=$_REQUEST['deal_key'];
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-  $_SESSION['state']['deal']['orders']['order']=$order;
+    $_SESSION['state']['deal']['orders']['order']=$order;
     $_SESSION['state']['deal']['orders']['order_dir']=$order_direction;
-  $_SESSION['state']['deal']['orders']['nr']=$number_results;
-  $_SESSION['state']['deal']['orders']['sf']=$start_from;
-  $_SESSION['state']['deal']['orders']['where']=$where;
-  $_SESSION['state']['deal']['orders']['f_field']=$f_field;
-  $_SESSION['state']['deal']['orders']['f_value']=$f_value;
+    $_SESSION['state']['deal']['orders']['nr']=$number_results;
+    $_SESSION['state']['deal']['orders']['sf']=$start_from;
+    $_SESSION['state']['deal']['orders']['where']=$where;
+    $_SESSION['state']['deal']['orders']['f_field']=$f_field;
+    $_SESSION['state']['deal']['orders']['f_value']=$f_value;
 
-  
-  $_order=$order;
+
+    $_order=$order;
     $_dir=$order_direction;
     $filter_msg='';
 
-$where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$deal_key);
- 
+    $where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$deal_key);
 
- $wheref='';
+
+    $wheref='';
 
     if (($f_field=='customer_name')  and $f_value!='') {
         $wheref="  and  `Order Customer Name` like '%".addslashes($f_value)."%'";
@@ -1794,7 +1794,7 @@ $where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$deal_key);
 
 
     $sql="select count(DISTINCT B.`Order Key`) as total from `Order Deal Bridge` B left join  `Order Dimension` O on (O.`Order Key`=B.`Order Key`)    $where $wheref";
-   // print $sql;
+    // print $sql;
     $res = mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -1867,11 +1867,10 @@ $where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$deal_key);
 
 
 
-if($order=='order') {
+    if ($order=='order') {
         $order='`Order Public ID`';
 
-    }
-    else {
+    } else {
         $order='`Order Date`';
 
     }
@@ -1881,7 +1880,7 @@ if($order=='order') {
                  ,$where
                  ,$wheref
                 );
-  //  print $sql;
+    //  print $sql;
 
     $res=mysql_query($sql);
     $data=array();
@@ -1898,7 +1897,7 @@ if($order=='order') {
                     'order'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
                     'customer_name'=>$customer,
                     'date'=> strftime("%e %b %y", strtotime($row['Order Date'])),
-                  
+
 
                 );
     }
@@ -3109,10 +3108,10 @@ function post_transactions() {
     echo json_encode($response);
 }
 function transactions_cancelled() {
-    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-        $order_id=$_REQUEST['id'];
+    if (isset( $_REQUEST['order_key']) and is_numeric( $_REQUEST['order_key']))
+        $order_id=$_REQUEST['order_key'];
     else
-        $order_id=$_SESSION['state']['order']['id'];
+       return;
 
 
 
@@ -3124,7 +3123,7 @@ function transactions_cancelled() {
     $total_picks=0;
 
     $data=array();
-    $sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where   ";
+    $sql="select * from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)  $where   ";
 
     //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
 
@@ -3140,13 +3139,13 @@ function transactions_cancelled() {
         $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
         $data[]=array(
 
-                    'code'=>$code
-                           ,'description'=>$row['Product XHTML Short Description']
-                                          ,'tariff_code'=>$row['Product Tariff Code']
-                                                         ,'quantity'=>number($row['Order Quantity'])
-                                                                     ,'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code'])
-                                                                              ,'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
-                                                                                          ,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
+                    'code'=>$code,
+                    'description'=>$row['Product XHTML Short Description'],
+                    'tariff_code'=>$row['Product Tariff Code'],
+                    'quantity'=>number($row['Order Quantity']),
+                    'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code']),
+                    'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code']),
+                    'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
                 );
     }
 
