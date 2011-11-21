@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 16:39+0100\n"
-"PO-Revision-Date: 2011-11-21 22:44+0100\n"
+"PO-Revision-Date: 2011-11-21 23:08+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -559,14 +559,12 @@ msgid "There isn't any family with this name"
 msgstr "Es gibt keine Familie mit dem Namen"
 
 #: ar_assets.php:4572
-#, fuzzy
 msgid "families with code like"
-msgstr "Quelltext"
+msgstr "Familien mit dem Kode"
 
 #: ar_assets.php:4575
-#, fuzzy
 msgid "families with this name"
-msgstr "CLOSE name"
+msgstr "Familien mit diesem Namen"
 
 #: ar_assets.php:5439
 #: ar_assets.php:7188
@@ -586,9 +584,8 @@ msgstr[1] "Unternehmen"
 #: ar_assets.php:7841
 #: ar_assets.php:8146
 #: ar_assets.php:8465
-#, fuzzy
 msgid "There isn't any store with code like "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt kein Unternehmen mit dem Kode"
 
 #: ar_assets.php:5451
 #: ar_assets.php:7203
@@ -596,9 +593,8 @@ msgstr "Schlüssel-Kunde"
 #: ar_assets.php:7844
 #: ar_assets.php:8149
 #: ar_assets.php:8468
-#, fuzzy
 msgid "There isn't any store with name like "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt kein Unternehmen mit dem Namen"
 
 #: ar_assets.php:5458
 #: ar_assets.php:7210
@@ -606,9 +602,8 @@ msgstr "Schlüssel-Kunde"
 #: ar_assets.php:7851
 #: ar_assets.php:8156
 #: ar_assets.php:8475
-#, fuzzy
 msgid "stores with code like"
-msgstr "Quelltext"
+msgstr "Unternehmen mit dem Kode"
 
 #: ar_assets.php:5461
 #: ar_assets.php:7213
@@ -616,36 +611,31 @@ msgstr "Quelltext"
 #: ar_assets.php:7854
 #: ar_assets.php:8159
 #: ar_assets.php:8478
-#, fuzzy
 msgid "stores with name like"
-msgstr "CLOSE name"
+msgstr "Unternehmen mit dem Namen"
 
 #: ar_assets.php:6462
 #: ar_edit_assets.php:1957
 #: ar_edit_assets.php:2021
-#, fuzzy
 msgid "charge"
 msgid_plural "charges"
-msgstr[0] "%1% geladen"
-msgstr[1] "%1% geladen"
+msgstr[0] "Charge"
+msgstr[1] "Chargen"
 
 #: ar_assets.php:6471
 #: ar_edit_assets.php:1966
-#, fuzzy
 msgid "There isn't any charge with this name "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Charge mit diesem Namen"
 
 #: ar_assets.php:6474
 #: ar_edit_assets.php:1969
-#, fuzzy
 msgid "There isn't any charge with description like "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Charge mit der Beschreibung"
 
 #: ar_assets.php:6481
 #: ar_edit_assets.php:1976
-#, fuzzy
 msgid "charges with name like"
-msgstr "CLOSE name"
+msgstr "Chargen mit dem Namen"
 
 #: ar_assets.php:6484
 #: ar_edit_assets.php:1979
@@ -661,21 +651,18 @@ msgstr[1] "Kampagnen"
 
 #: ar_assets.php:6658
 #: ar_edit_assets.php:2262
-#, fuzzy
 msgid "There isn't any campaign with this name "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Kampagne mit diesem Namen"
 
 #: ar_assets.php:6661
 #: ar_edit_assets.php:2265
-#, fuzzy
 msgid "There isn't any campaign with description like "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Kampagne mit der Beschreibung"
 
 #: ar_assets.php:6668
 #: ar_edit_assets.php:2272
-#, fuzzy
 msgid "campaigns with name like"
-msgstr "CLOSE name"
+msgstr "Kampagnen mit dem Namen"
 
 #: ar_assets.php:6671
 #: ar_edit_assets.php:2275
@@ -683,9 +670,8 @@ msgid "campaigns with description like"
 msgstr "Kampagnen mit der Beschreibung"
 
 #: ar_assets.php:6709
-#, fuzzy
 msgid "Permanent"
-msgstr "Deutsch"
+msgstr "Permanent"
 
 #: ar_assets.php:6942
 #: ar_edit_assets.php:2463
@@ -700,9 +686,8 @@ msgstr[1] "Angebote"
 #: ar_contacts.php:925
 #: ar_edit_assets.php:2472
 #: ar_edit_assets.php:2746
-#, fuzzy
 msgid "There isn't any deal with this name "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt kein Angebot mit diesem Namen"
 
 #: ar_assets.php:6960
 #: ar_contacts.php:373
@@ -795,18 +780,16 @@ msgstr[1] "Monate"
 
 #: ar_assets.php:10164
 #: ar_edit_orders.php:1396
-#, fuzzy
 msgid "days"
 msgid_plural "days"
 msgstr[0] "Tage"
 msgstr[1] "Tage"
 
 #: ar_assets.php:10167
-#, fuzzy
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "Woche"
-msgstr[1] "Woche"
+msgstr[1] "Wochen"
 
 #: ar_assets.php:10181
 #, fuzzy
@@ -1145,22 +1128,19 @@ msgstr "T&ext"
 
 #: ar_contacts.php:443
 #: ar_contacts.php:457
-#, fuzzy
 msgid "Tax"
-msgstr "Fax"
+msgstr "Steuer"
 
 #: ar_contacts.php:459
-#, fuzzy
 msgid "Errors"
 msgstr "Fehler"
 
 #: ar_contacts.php:1164
 #: ar_contacts.php:1682
-#, fuzzy
 msgid "contact"
 msgid_plural "companies"
 msgstr[0] "Kontakt"
-msgstr[1] "Monaco"
+msgstr[1] "Unternehmen"
 
 #: ar_contacts.php:1173
 #: ar_contacts.php:1691
@@ -1231,7 +1211,6 @@ msgstr "Quelltext"
 
 #: ar_contacts.php:2140
 #: ar_edit_contacts.php:3207
-#, fuzzy
 msgid "Showing All"
 msgstr "Alle anzeigen"
 
@@ -1242,9 +1221,8 @@ msgstr "Person"
 
 #: ar_contacts.php:2304
 #: ar_contacts.php:2613
-#, fuzzy
 msgid "Company"
-msgstr "Firma"
+msgstr "Unternehmen"
 
 #: ar_contacts.php:2308
 #: ar_contacts.php:2617
@@ -1273,7 +1251,6 @@ msgstr "verloren"
 
 #: ar_contacts.php:2337
 #: ar_edit_assets.php:2098
-#, fuzzy
 msgid "Active"
 msgstr "Aktiv"
 
