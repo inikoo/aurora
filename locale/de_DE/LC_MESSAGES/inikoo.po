@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 16:39+0100\n"
-"PO-Revision-Date: 2011-11-20 16:40+0100\n"
-"Last-Translator: Raul Perusquia <raul@inikoo.com>\n"
+"PO-Revision-Date: 2011-11-21 22:06+0100\n"
+"Last-Translator: Martina\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,7 +37,7 @@ msgstr "Nicht zulässige Anfrage"
 
 #: ar_assets.php:89
 msgid "You have entered unexisting family"
-msgstr ""
+msgstr "Sie haben eine nicht existente Familie eingegeben"
 
 #: ar_assets.php:94
 #, fuzzy
@@ -329,7 +329,7 @@ msgstr "Quelltext"
 
 #: ar_assets.php:466
 msgid "department with this description"
-msgstr ""
+msgstr "Abteilung mit dieser Beschreibung"
 
 #: ar_assets.php:1140
 #: ar_edit_assets.php:1122
@@ -488,18 +488,18 @@ msgstr "Verkauf"
 #: ar_assets.php:3051
 #: ar_assets.php:3056
 msgid "forced"
-msgstr ""
+msgstr "Erzwungen"
 
 #: ar_assets.php:3047
 msgid "Online"
-msgstr ""
+msgstr "Online"
 
 #: ar_assets.php:3052
 #: ar_edit_assets.php:1170
 #: ar_edit_orders.php:887
 #: ar_edit_orders.php:1215
 msgid "Offline"
-msgstr ""
+msgstr "Offline"
 
 #: ar_assets.php:3057
 #: ar_edit_assets.php:1162
@@ -539,7 +539,7 @@ msgstr "Schlüssel-Kunde"
 
 #: ar_assets.php:3450
 msgid "There isn't any part with description like "
-msgstr ""
+msgstr "Es gibt kein Element mit der Beschreibung"
 
 #: ar_assets.php:3459
 #, fuzzy
@@ -548,15 +548,15 @@ msgstr "Liste der Typumwandlungen"
 
 #: ar_assets.php:3463
 msgid "parts used in"
-msgstr ""
+msgstr "Elemente verwendet in"
 
 #: ar_assets.php:3466
 msgid "parts supplied by"
-msgstr ""
+msgstr "Elemente geliefert von"
 
 #: ar_assets.php:3469
 msgid "parts with description like"
-msgstr ""
+msgstr "Elemente mit Beschreibung"
 
 #: ar_assets.php:4231
 #: ar_assets.php:8742
@@ -606,8 +606,8 @@ msgstr "CLOSE name"
 #: ar_edit_assets.php:1541
 msgid "store"
 msgid_plural "stores"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Unternehmen"
+msgstr[1] "Unternehmen"
 
 #: ar_assets.php:5448
 #: ar_assets.php:7200
@@ -685,8 +685,8 @@ msgstr ""
 #: ar_edit_assets.php:2253
 msgid "campaign"
 msgid_plural "campaigns"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kampagne"
+msgstr[1] "Kampagnen"
 
 #: ar_assets.php:6658
 #: ar_edit_assets.php:2262
@@ -709,7 +709,7 @@ msgstr "CLOSE name"
 #: ar_assets.php:6671
 #: ar_edit_assets.php:2275
 msgid "campaigns with description like"
-msgstr ""
+msgstr "Kampagnen mit der Beschreibung"
 
 #: ar_assets.php:6709
 #, fuzzy
@@ -720,8 +720,8 @@ msgstr "Deutsch"
 #: ar_edit_assets.php:2463
 msgid "deal"
 msgid_plural "deals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Angebot"
+msgstr[1] "Angebote"
 
 #: ar_assets.php:6957
 #: ar_contacts.php:370
@@ -867,8 +867,8 @@ msgstr "CLOSE name"
 #: ar_contacts.php:5599
 msgid "List"
 msgid_plural "Lists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Liste"
+msgstr[1] "Listen"
 
 #: ar_assets.php:10546
 #: ar_assets.php:10736
@@ -1135,7 +1135,7 @@ msgstr "Anzeigen des Desktops: %s\n"
 
 #: ar_campaign_list.php:137
 msgid "There is no staff with name"
-msgstr ""
+msgstr "Es gibt kein Personal mit Namen"
 
 #: ar_campaign_list.php:139
 msgid "staff with name"
@@ -1246,7 +1246,7 @@ msgstr "Schlüssel-Kunde"
 
 #: ar_contacts.php:1459
 msgid "Show All"
-msgstr ""
+msgstr "Alle zeigen"
 
 #: ar_contacts.php:1701
 #, fuzzy
@@ -1318,7 +1318,7 @@ msgstr ""
 #: ar_contacts.php:3373
 #: ar_contacts.php:3543
 msgid "Warning"
-msgstr ""
+msgstr "Warnung"
 
 #: ar_contacts.php:2788
 #: ar_contacts.php:3097
@@ -13451,7 +13451,7 @@ msgstr "Nummer der Bestellung"
 #: smarty.php:8765
 #: smarty.php:13742
 msgid "Gender"
-msgstr ""
+msgstr "Geschlecht"
 
 #: smarty.php:2864
 #: smarty.php:3134
@@ -13461,7 +13461,7 @@ msgstr ""
 #: smarty.php:8768
 #: smarty.php:13745
 msgid "Male"
-msgstr ""
+msgstr "Männlich"
 
 #: smarty.php:2867
 #: smarty.php:3137
@@ -13471,7 +13471,7 @@ msgstr ""
 #: smarty.php:8771
 #: smarty.php:13748
 msgid "Female"
-msgstr ""
+msgstr "Weiblich"
 
 #: smarty.php:2873
 #: smarty.php:3143
@@ -13800,7 +13800,7 @@ msgstr "Namen bearbeiten"
 #: smarty.php:8207
 #: smarty.php:8819
 msgid "Send Newsletter"
-msgstr ""
+msgstr "Newsletter senden"
 
 #: smarty.php:3494
 #: smarty.php:8216
@@ -13838,7 +13838,7 @@ msgstr ""
 #: smarty.php:3533
 #: smarty.php:4640
 msgid "Catalogue"
-msgstr ""
+msgstr "Katalog"
 
 #: smarty.php:3542
 #: smarty.php:3722
@@ -13915,7 +13915,7 @@ msgstr "E-Mail"
 
 #: smarty.php:3617
 msgid "Preferred contact number"
-msgstr ""
+msgstr "Bevorzugte Kontakttelefonnummer"
 
 #: smarty.php:3662
 #, fuzzy
@@ -13955,7 +13955,7 @@ msgstr "Leider stimmen die Passwörter nicht überein"
 #: smarty.php:3686
 #: smarty.php:3713
 msgid "Password is too short"
-msgstr ""
+msgstr "Passwort ist zu kurz"
 
 #: smarty.php:3689
 #: smarty.php:3695
@@ -13973,7 +13973,7 @@ msgstr "Wort hinzufügen zu"
 #: smarty.php:3728
 #: smarty.php:4136
 msgid "Would you like to proceed?"
-msgstr ""
+msgstr "Möchten Sie fortfahren?"
 
 #: smarty.php:3731
 #, fuzzy
@@ -13983,7 +13983,7 @@ msgstr "Schlüssel-Kunde"
 #: smarty.php:3734
 #: smarty.php:4142
 msgid "Yes, delete it!"
-msgstr ""
+msgstr "Ja, bitte löschen!"
 
 #: smarty.php:3737
 #: smarty.php:4139
@@ -13998,7 +13998,7 @@ msgstr "Skript nicht gefunden"
 
 #: smarty.php:3758
 msgid "Processing your request"
-msgstr ""
+msgstr "Ihre Anfrage wird bearbeitet"
 
 #: smarty.php:3785
 #: smarty.php:4829
@@ -14201,7 +14201,7 @@ msgstr "Beschreibung"
 #: smarty.php:5252
 #: smarty.php:5348
 msgid "Deals"
-msgstr ""
+msgstr "Angebote"
 
 #: smarty.php:4199
 #: smarty.php:5531
@@ -14238,7 +14238,7 @@ msgstr "Standard-&Längeneinheit:"
 
 #: smarty.php:4235
 msgid "Retail Price"
-msgstr ""
+msgstr "UVP"
 
 #: smarty.php:4277
 #, fuzzy
@@ -14311,7 +14311,7 @@ msgstr "Pfad"
 
 #: smarty.php:4367
 msgid "Shape"
-msgstr ""
+msgstr "Form"
 
 #: smarty.php:4370
 #, fuzzy
@@ -14351,7 +14351,7 @@ msgstr "Pfad"
 #: smarty.php:4397
 #: smarty.php:10883
 msgid "Webpage"
-msgstr ""
+msgstr "Webseite"
 
 #: smarty.php:4406
 msgid "HTML Setup"
@@ -14415,11 +14415,11 @@ msgstr "Produkt"
 
 #: smarty.php:4511
 msgid "Found In"
-msgstr ""
+msgstr "Gefunden in"
 
 #: smarty.php:4520
 msgid "See Also"
-msgstr ""
+msgstr "Siehe auch"
 
 #: smarty.php:4541
 #, fuzzy
@@ -14443,7 +14443,7 @@ msgstr "Alle Elemente anzeigen"
 
 #: smarty.php:4553
 msgid "No Configurable Fields"
-msgstr ""
+msgstr "Nicht konfigurierbare Felder"
 
 #: smarty.php:4562
 #, fuzzy
