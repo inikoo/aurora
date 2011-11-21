@@ -159,14 +159,14 @@ var active=function(el, oRecord, oColumn, oData){
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+			    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -201,11 +201,12 @@ var active=function(el, oRecord, oColumn, oData){
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
-
+this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
-	    //
+	  
 	
 
 	    
@@ -268,7 +269,8 @@ metaFields: {
 	    // this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    // this.table1.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
-
+this.table1.table_id=tableid;
+     this.table1.subscribe("renderEvent", myrenderEvent);
 
 /* --------------------------------------------------------------------------------------------------------------------------------- */
 	    var tableid=2; // Change if you have more the 1 table
@@ -340,7 +342,8 @@ metaFields: {
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
-
+this.table2.table_id=tableid;
+     this.table2.subscribe("renderEvent", myrenderEvent);
 
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['users']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['login_history']['f_value']?>'};
@@ -353,9 +356,23 @@ metaFields: {
 
 
 
+function change_block(  ) {
+ var ids=['users','groups','login_history'];
+block_ids=['block_users','block_groups','block_login_history'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=users-staff-block_view&value='+this.id ,{});
+}
 
  function init(){
  init_search('users');
+ 
+ var ids=['users','groups','login_history'];
+YAHOO.util.Event.addListener(ids, "click",change_block);
+ 
+ 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);

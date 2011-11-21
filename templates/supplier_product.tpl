@@ -5,8 +5,8 @@
 
 <div style="padding:0 20px">
  {include file='suppliers_navigation.tpl'}
-  <div > 
-  <span  class="branch"><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$supplier_product->get('Supplier Product Code')}</span>
+  <div  class="branch"> 
+  <span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$supplier_product->get('Supplier Product Code')}</span>
   </div>
   <h1><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </h1>
   

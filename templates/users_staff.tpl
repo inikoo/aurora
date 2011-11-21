@@ -6,10 +6,25 @@
 <div  class="branch"> 
 <span><a  href="users.php">{t}Users{/t}</a> &rarr; {t}Staff Users{/t} </span>
 </div>
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_users_staff.php'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Users{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='users.php'" ><img src="art/icons/house.png" alt=""> {t}Users Home{/t}</button>
+        </div>
+    <div style="clear:both"></div>
+</div>
+
+
 <h1>Staff Users</h1>
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+
+
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='users'}selected{/if}"  id="users">  <span> {t}Users List{/t}</span></span></li>
     <li> <span class="item {if $block_view=='categories'}groups{/if}"   id="groups">  <span> {t}Groups{/t}</span></span></li>
     <li> <span class="item {if $block_view=='login_history'}selected{/if}"  id="login_history">  <span> {t}Login History{/t}</span></span></li>
@@ -37,11 +52,8 @@
     
     <div class="data_table" style="margin-top:25px;width:600px">
       <span class="clean_table_title">{t}Groups{/t}</span>
-      <div  class="clean_table_caption"  style="clear:both;">
-	<div style="float:left;"><div class="clean_table_info">{$table_info} <span class="filter_msg"  id="filter_msg1"></span></div></div>
-	<div class="clean_table_filter" style="display:none"><div class="clean_table_info">{$filter_name}: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container1'></div></div></div>
-	<div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-      </div>
+
+  {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
       <div  id="table1"   class="data_table_container dtable btable "> </div>
     </div>
     

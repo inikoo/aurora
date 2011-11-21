@@ -5141,6 +5141,9 @@ ALTER TABLE `HQ Dimension` ADD `Inikoo Public URL` VARCHAR( 256 ) NOT NULL ;
 
 ALTER TABLE `Email Template Header Image Dimension` ADD UNIQUE (`Store Key` ,`Image Key`);
 ALTER TABLE `Email Content Dimension` CHANGE `Email Content Header Image Key` `Email Template Header Image Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+
+ALTER TABLE `User Dimension` ADD `User Staff Type` ENUM( 'Active Working', 'Active Not Working', 'Inactive Working', 'Inactive Not Working' ) NOT NULL AFTER `User Type` ,ADD INDEX ( `User Staff Type` ) ;
+ALTER TABLE `User Dimension` CHANGE `User Staff Type` `User Staff Type` ENUM( 'Active Working', 'Active Not Working', 'Inactive Working', 'Inactive Not Working' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 */
 
 ?>

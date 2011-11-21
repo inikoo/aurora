@@ -2,8 +2,8 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0px 20px;">
  {include file='suppliers_navigation.tpl'}
-<div> 
-  <span   class="branch"><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span>
+<div  class="branch"> 
+  <span  ><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span>
 </div>
  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
   <h1>{$supplier->get('Supplier Name')} <span style="color:SteelBlue">({$supplier->get('Supplier Code')})</span></h1>

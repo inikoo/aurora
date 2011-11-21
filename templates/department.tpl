@@ -2,6 +2,8 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
+ <input type="hidden" id="department_key" value="{$department->id}"/>
+
 <div  class="branch"> 
   <span  >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
 </div>
@@ -27,6 +29,8 @@
     <li> <span class="item {if $block_view=='families'}selected{/if}"  id="families">  <span> {t}Families{/t}</span></span></li>
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span>  {t}Products{/t}</span></span></li>
     <li> <span class="item {if $block_view=='deals'}selected{/if}"  id="deals">  <span> {t}Offers{/t}</span></span></li>
+    	<li> <span class="item {if $block_view=='web'}selected{/if}"  id="web">  <span> {t}Web Pages{/t}</span></span></li>
+
 
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
@@ -341,6 +345,21 @@
 </div>
 
 <div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+
+<div id="block_web" style="{if $block_view!='web'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+ 
+	 <span   class="clean_table_title" >{t}Pages{/t}</span> 
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+    
+   
+ {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1  }
+<div  id="table4"   class="data_table_container dtable btable"  style="font-size:85%"> </div>
+
+
+	
+	
+</div>
+
 
 </div>
 </div> 

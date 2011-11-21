@@ -37,21 +37,21 @@
 	      	    <img src="art/inikoo_logo_small.png" style="position:absolute;margin-left:20px;margin-top:2px;height:34px"/>
 
 	    <div class="buttons menu" style="background:#245e86 url('art/themes/cobalt.jpg') bottom left repeat-x;color:#fff;">
-	    	    	            <button onClick="window.location='index.php'" class="header ">Staff Login</button>
-
-	    	            <button onClick="window.location='index.php?log_as=supplier'" class="header selected">Suppliers Login</button>
-	            	      
-
-	            	            <div style="clear:both"></div>
+	    	    	    <button id="staff_login" class="header {if $login_type=='staff'}selected{/if}">Staff Login</button>
+	    	            <button id="supplier_login" class="header  {if $login_type=='supplier'}selected{/if}">Suppliers Login</button>
+            <div style="clear:both"></div>
 	    </div>
 	     	
       </div> 
 
-<div id="bd">
+<div id="bd" style="padding-top:30px">
 
-<h1>{t}Inikoo{/t}</h1>
+
+
 <div  style="float:right;border:1px solid #ccc;padding:0px 20px 10px 20px ;width:240px;margin-top:0px;margin-right:30px" >
-<h2 style="margin-top:10px">{t}Staff Login{/t}</h2>
+<h2  id="login_title_staff" style="margin-top:10px;{if $login_type!='staff'}display:none{/if}">{t}Staff Login{/t}</h2>
+<h2 id="login_title_suppliers" style="margin-top:10px;{if $login_type!='supplier'}display:none{/if}">{t}Suppliers Login{/t}</h2>
+
 <div id="mensage">
 </div>
 
@@ -59,14 +59,14 @@
 <form name="loginform" id="loginform" method="post"   autocomplete="off" action="authorization.php">
   <input type="hidden" name="_lang" value="{$lang_id}" />
 			<input type="hidden" id="ep" name="ep" value="{$st}" />
-			<input type="hidden" id="user_type" name="user_type" value="staff" />
+			<input type="hidden" id="user_type" name="user_type" value="{$login_type}" />
             <tr>
                 <td>{t}User{/t}:</td>
                 <td  ><input style="width:100%" type="text"  class="text"  id="_login_" name="_login_" maxlength="80"  value="" /></td>
             </tr>
              <tr  >
                 <td>{t}Password{/t}:</td>
-                <td><input  style="width:100%" t type="password"  class="password" id="_passwd_"  name="_passwd_" maxlength="80" value="" /></td>
+                <td><input  style="width:100%"  type="password"  class="password" id="_passwd_"  name="_passwd_" maxlength="80" value="" /></td>
 
             </tr>
             </form>

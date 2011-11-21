@@ -20,8 +20,8 @@ var current_store_period='<?php echo$_SESSION['state']['store']['departments']['
 
 
 function change_block(){
-ids=['details','families','products','categories','deals'];
-block_ids=['block_details','block_families','block_products','block_categories','block_deals'];
+ids=['details','families','products','categories','deals','web'];
+block_ids=['block_details','block_families','block_products','block_categories','block_deals','block_web'];
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
@@ -185,7 +185,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['department']['families']['view']?>';
 
-		
+		this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
+
 
 
 	    var tableid=1;
@@ -294,6 +296,80 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['department']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['products']['f_value']?>'};
+this.table1.table_id=tableid;
+     this.table1.subscribe("renderEvent", myrenderEvent);
+
+
+ var tableid=4; 
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"type", label:"<?php echo _('Type')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				    ,{key:"title", label:"<?php echo _('Title')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"url", label:"<?php echo _('URL')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+						    
+				    
+				    
+				     ];
+
+	    this.dataSource4 = new YAHOO.util.DataSource("ar_sites.php?tipo=pages&sf=0&parent=department&tableid=4&parent_key="+Dom.get('department_key').value);
+	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource4.connXhrMode = "queueRequests";
+	    this.dataSource4.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id','title','code','url','type'
+						 ]};
+	    
+	    this.table4 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource4, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['department']['pages']['nr']?>,containers : 'paginator4', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['department']['pages']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['department']['pages']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+   this.table4.table_id=tableid;
+     this.table4.subscribe("renderEvent", myrenderEvent);
+
+
+	    
+	    this.table4.filter={key:'<?php echo$_SESSION['state']['department']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['pages']['f_value']?>'};
+		
+
+
+
 
 
 
@@ -399,7 +475,7 @@ Event.addListener(['elements_family_discontinued','elements_family_discontinuing
 
 
 
- Event.addListener(['details','families','products','categories','deals'], "click",change_block);
+ Event.addListener(['details','families','products','categories','deals','web'], "click",change_block);
 
   YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'families_in_department');
  YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'families_in_department'});

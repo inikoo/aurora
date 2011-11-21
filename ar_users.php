@@ -568,17 +568,17 @@ function list_customer_user_login_history() {
         $where=$_REQUEST['where'];
     else
         $where=$conf['where'];
-        
-       //print $_REQUEST['user_key'];
-     if (isset( $_REQUEST['user_key'])){
-        $id=$_REQUEST['user_key'];
-            $_SESSION['state']['staff_user']['user_key']=$id;
 
-    }else{
-      $id=$_SESSION['state']['staff_user']['user_key'];
+    //print $_REQUEST['user_key'];
+    if (isset( $_REQUEST['user_key'])) {
+        $id=$_REQUEST['user_key'];
+        $_SESSION['state']['staff_user']['user_key']=$id;
+
+    } else {
+        $id=$_SESSION['state']['staff_user']['user_key'];
     }
-        
-	
+
+
 //print $_REQUEST['tableid'];
 //print $_REQUEST['user_key'];
     if (isset( $_REQUEST['tableid']))
@@ -613,11 +613,11 @@ function list_customer_user_login_history() {
     $where=sprintf('where true ');
     $where.=" and `User Type`='Customer'";
 
-	if(isset($_REQUEST['customer_user']))
-		$where.=" and UL.`User Key`=".$id;
-	else
-		$where.=" and U.`User Parent Key`=".$id;
-	
+    if (isset($_REQUEST['customer_user']))
+        $where.=" and UL.`User Key`=".$id;
+    else
+        $where.=" and U.`User Parent Key`=".$id;
+
     $filter_msg='';
     $wheref='';
     if ($f_field=='user' and $f_value!='')
@@ -713,7 +713,7 @@ function list_customer_user_login_history() {
     echo json_encode($response);
 }
 
-function list_supplier_user_login_history(){
+function list_supplier_user_login_history() {
     $conf=$_SESSION['state']['staff_user']['login_history'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -744,17 +744,17 @@ function list_supplier_user_login_history(){
         $where=$_REQUEST['where'];
     else
         $where=$conf['where'];
-        
-       //print $_REQUEST['user_key'];
-     if (isset( $_REQUEST['user_key'])){
-        $id=$_REQUEST['user_key'];
-            $_SESSION['state']['staff_user']['user_key']=$id;
 
-    }else{
-      $id=$_SESSION['state']['staff_user']['user_key'];
+    //print $_REQUEST['user_key'];
+    if (isset( $_REQUEST['user_key'])) {
+        $id=$_REQUEST['user_key'];
+        $_SESSION['state']['staff_user']['user_key']=$id;
+
+    } else {
+        $id=$_SESSION['state']['staff_user']['user_key'];
     }
-        
-	
+
+
 //print $_REQUEST['tableid'];
 //print $_REQUEST['user_key'];
     if (isset( $_REQUEST['tableid']))
@@ -789,10 +789,10 @@ function list_supplier_user_login_history(){
     $where=sprintf('where true ');
     $where.=" and `User Type`='Supplier'";
 
-  
+
     $where.=" and UL.`User Key`=".$id;
 
-	
+
     $filter_msg='';
     $wheref='';
     if ($f_field=='user' and $f_value!='')
@@ -846,7 +846,7 @@ function list_supplier_user_login_history(){
     $res=mysql_query($sql);
 
     while ($row=mysql_fetch_array($res)) {
-	
+
         if ($row['Logout Date']=="") {
             $adata[]=array(
                          'user'=>$row['User Handle'],
@@ -920,17 +920,17 @@ function list_staff_user_login_history() {
         $where=$_REQUEST['where'];
     else
         $where=$conf['where'];
-        
-       //print $_REQUEST['user_key'];
-     if (isset( $_REQUEST['user_key'])){
-        $id=$_REQUEST['user_key'];
-            $_SESSION['state']['staff_user']['user_key']=$id;
 
-    }else{
-      $id=$_SESSION['state']['staff_user']['user_key'];
+    //print $_REQUEST['user_key'];
+    if (isset( $_REQUEST['user_key'])) {
+        $id=$_REQUEST['user_key'];
+        $_SESSION['state']['staff_user']['user_key']=$id;
+
+    } else {
+        $id=$_SESSION['state']['staff_user']['user_key'];
     }
-        
-	
+
+
 //print $_REQUEST['tableid'];
 //print $_REQUEST['user_key'];
     if (isset( $_REQUEST['tableid']))
@@ -965,10 +965,10 @@ function list_staff_user_login_history() {
     $where=sprintf('where true ');
     $where.=" and `User Type`='Staff'";
 
-  
+
     $where.=" and UL.`User Key`=".$id;
 
-	
+
     $filter_msg='';
     $wheref='';
     if ($f_field=='user' and $f_value!='')
@@ -1112,6 +1112,46 @@ function list_groups() {
 
     $filtered=0;
 
+
+
+$where='';
+$wheref='';
+
+    $sql="select count(*) as total from `User Group Dimension`     ";
+
+    
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        $total=$row['total'];
+    }
+    if ($wheref!='') {
+        $sql="select count(*) as total_without_filters from `User Group Dimension`  $where $wheref   ";
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
+        }
+
+    } else {
+        $filtered=0;
+        $filter_total=0;
+        $total_records=$total;
+    }
+    mysql_free_result($res);
+
+
+    $rtext=$total_records." ".ngettext('work group','work groups',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._("Showing All").')';
+
+
+
+
     $data=array();
     $_order=$order;
     if ($order=='name') {
@@ -1120,14 +1160,12 @@ function list_groups() {
         $_order='`User Group Name`';
 
     $sql="select *,(select GROUP_CONCAT(`User Alias`) from `User Dimension` U left join `User Group User Bridge` UGUB on (U.`User Key`=UGUB.`User Key`)
-         where UGUB.`User Group Key`=UG.`User Group Key` ) as Users from `User Group Dimension` UG  order by $_order $order_direction limit $start_from,$number_results       ";
+         where UGUB.`User Group Key`=UG.`User Group Key` ) as Users from `User Group Dimension` UG  $where order by $_order $order_direction limit $start_from,$number_results       ";
 //print $sql;
     $res=mysql_query($sql);
-    $total=mysql_num_rows($res);
-    if ($total<$number_results)
-        $rtext=$total.' '.ngettext('work group','work groups',$total);
-    else
-        $rtext='';
+
+        
+        
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $data[]=array(
@@ -1138,21 +1176,16 @@ function list_groups() {
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$data,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'records_text'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
-
+                                array(
+                               'state'=>200,
+                                    'data'=>$data,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
 
@@ -1251,10 +1284,19 @@ function list_staff_users() {
     }
 
     mysql_free_result($res);
-    $rtext=$total_records." ".ngettext('record','records',$total_records);
-    if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    
+  
     $filter_msg='';
+
+
+
+ $rtext=$total_records." ".ngettext('user','users',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
 
     switch ($f_field) {
     case('name'):
@@ -1316,12 +1358,12 @@ function list_staff_users() {
                      'alias'=>$alias,
                      'name'=>$data['Staff Name'],
                      'password'=>$password,
-                    'logins'=>number($data['User Login Count']),
-                    'last_login'=>($data ['User Last Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Login']." +00:00" ) )),
-                 'fail_logins'=>number($data['User Failed Login Count']),
-                    'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Failed Login']." +00:00" ) )),
+                     'logins'=>number($data['User Login Count']),
+                     'last_login'=>($data ['User Last Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Login']." +00:00" ) )),
+                     'fail_logins'=>number($data['User Failed Login Count']),
+                     'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Failed Login']." +00:00" ) )),
 
-           'groups'=>$groups,
+                     'groups'=>$groups,
                      'stores'=>$stores,
                      'warehouses'=>$warehouses,
                      'isactive'=>$is_active
@@ -1329,20 +1371,16 @@ function list_staff_users() {
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'rtext'=>$rtext,
-                                      'records_order'=>$_order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                                 array(
+                               'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
@@ -1412,7 +1450,7 @@ function list_supplier_users() {
 
     $where.=" and `User Key` IS NOT NULL and `User Active`='Yes' and `User Type`='Supplier' ";
 
-	
+
     // $where.=" and `User Key` IS NOT NULL and `User Type`='Supplier' ";     //will use this $where when will insert any supplier info in 'user dimension'
 
     $sql="select count(*) as total from `Supplier Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Supplier Key`) $where $wheref";
@@ -1486,7 +1524,7 @@ function list_supplier_users() {
 
         //$groups=preg_split('/,/',$data['Groups']);
         //$stores=preg_split('/,/',$data['Stores']);
-       // $warehouses=preg_split('/,/',$data['Warehouses']);
+        // $warehouses=preg_split('/,/',$data['Warehouses']);
 
         //   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
         //  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
@@ -1507,35 +1545,31 @@ function list_supplier_users() {
                      'alias'=>$alias,
                      'name'=>$data['User Handle'],
                      'password'=>$password,
-                    'logins'=>number($data['User Login Count']),
-                    'last_login'=>($data ['User Last Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Login']." +00:00" ) )),
-                 'fail_logins'=>number($data['User Failed Login Count']),
-                    'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Failed Login']." +00:00" ) ))
+                     'logins'=>number($data['User Login Count']),
+                     'last_login'=>($data ['User Last Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Login']." +00:00" ) )),
+                     'fail_logins'=>number($data['User Failed Login Count']),
+                     'fail_last_login'=>($data ['User Last Failed Login']==''?'':strftime ( "%e %b %Y %H:%M %Z", strtotime ( $data ['User Last Failed Login']." +00:00" ) ))
 
-           //'groups'=>$groups,
-                   //  'stores'=>$stores,
-                   //  'warehouses'=>$warehouses,
-                   //  'isactive'=>$is_active
+                                       //'groups'=>$groups,
+                                       //  'stores'=>$stores,
+                                       //  'warehouses'=>$warehouses,
+                                       //  'isactive'=>$is_active
                  );
 
 
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'rtext'=>$rtext,
-                                      'records_order'=>$_order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                                array(
+                               'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
@@ -1602,7 +1636,7 @@ function list_customer_users() {
         $wheref.=sprintf(" and  $f_field=%d ",$f_value);
 
     $where.=" and `User Key` IS NOT NULL  ";
-	$where.=sprintf(" and `User Type`='Customer' and `User Site Key`=%d", $_REQUEST['store_key']);
+    $where.=sprintf(" and `User Type`='Customer' and `User Site Key`=%d", $_REQUEST['store_key']);
     $sql="select count(*) as total from `Customer Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Customer Key`) $where $wheref";
 
 
@@ -1666,7 +1700,7 @@ function list_customer_users() {
 
     $sql="select *   from `Customer Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Customer Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-	//print $sql;
+    //print $sql;
 //print($sql);
 
     $adata=array();
@@ -1697,7 +1731,7 @@ function list_customer_users() {
                      'alias'=>$data['User Handle'],
                      'name'=>$customer,
                      'login'=>$data['User Last Login'],
-					 'count'=>$data['User Login Count'],
+                     'count'=>$data['User Login Count'],
                      'isactive'=>$is_active
                  );
 
@@ -1705,28 +1739,24 @@ function list_customer_users() {
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'rtext'=>$rtext,
-                                      'records_order'=>$_order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                                 array(
+                               'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
 }
 
-function forgot_password(){
-	$user = new User(43);
-	$user->forgot_password();
+function forgot_password() {
+    $user = new User(43);
+    $user->forgot_password();
 }
 
 ?>
