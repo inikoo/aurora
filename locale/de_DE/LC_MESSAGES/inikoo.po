@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 16:39+0100\n"
-"PO-Revision-Date: 2011-11-21 22:06+0100\n"
+"PO-Revision-Date: 2011-11-21 22:44+0100\n"
 "Last-Translator: Martina\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -40,9 +40,8 @@ msgid "You have entered unexisting family"
 msgstr "Sie haben eine nicht existente Familie eingegeben"
 
 #: ar_assets.php:94
-#, fuzzy
 msgid "Family found"
-msgstr "Quelltext"
+msgstr "Familie gefunden"
 
 #: ar_assets.php:243
 #: ar_campaign_list.php:33
@@ -58,7 +57,6 @@ msgstr "Skript nicht gefunden"
 #: ar_edit_orders.php:885
 #: ar_edit_orders.php:931
 #: ar_edit_orders.php:1213
-#, fuzzy
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -77,11 +75,10 @@ msgstr "Verkauft"
 
 #: ar_assets.php:441
 #: ar_edit_assets.php:1720
-#, fuzzy
 msgid "department"
 msgid_plural "departments"
 msgstr[0] "Abteilung"
-msgstr[1] "Abteilung"
+msgstr[1] "Abteilungen"
 
 #: ar_assets.php:443
 #: ar_assets.php:2146
@@ -189,14 +186,12 @@ msgid "Showing all"
 msgstr "Alle anzeigen"
 
 #: ar_assets.php:453
-#, fuzzy
 msgid "There isn't any department with code like"
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Abteilung mit dem Kode"
 
 #: ar_assets.php:456
-#, fuzzy
 msgid "There isn't any department with this description"
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Abteilung mit dieser Beschreibung"
 
 #: ar_assets.php:463
 #: ar_assets.php:466
@@ -318,14 +313,12 @@ msgstr "Schlüssel-Kunde"
 #: ar_edit_orders.php:1385
 #: ar_edit_orders.php:1391
 #: ar_edit_orders.php:1398
-#, fuzzy
 msgid "Showing"
-msgstr "Anzeigen des Desktops: %s\n"
+msgstr "Zeigt"
 
 #: ar_assets.php:463
-#, fuzzy
 msgid "department with code like"
-msgstr "Quelltext"
+msgstr "Abteilung mit Kode"
 
 #: ar_assets.php:466
 msgid "department with this description"
@@ -335,26 +328,23 @@ msgstr "Abteilung mit dieser Beschreibung"
 #: ar_edit_assets.php:1122
 #: ar_edit_assets.php:1405
 #: ar_edit_assets.php:1754
-#, fuzzy
 msgid "Public Sale"
-msgstr "Verkauf"
+msgstr "Öffentlicher Verkauf"
 
 #: ar_assets.php:1143
 #: ar_edit_assets.php:1125
 #: ar_edit_assets.php:1184
 #: ar_edit_assets.php:1408
 #: ar_edit_assets.php:1757
-#, fuzzy
 msgid "Private Sale"
-msgstr "Gesamttotal"
+msgstr "Privater Verkauf"
 
 #: ar_assets.php:1146
 #: ar_assets.php:3028
 #: ar_edit_assets.php:1411
 #: ar_edit_assets.php:1760
-#, fuzzy
 msgid "Not for Sale"
-msgstr "Nordkorea"
+msgstr "Nicht zu Verkaufen"
 
 #: ar_assets.php:1753
 #: ar_assets.php:3133
@@ -365,9 +355,8 @@ msgstr "Nordkorea"
 #: ar_assets.php:7987
 #: ar_assets.php:8289
 #: ar_assets.php:8626
-#, fuzzy
 msgid "Total"
-msgstr "Gesamt"
+msgstr "Gesamtanzahl"
 
 #: ar_assets.php:2144
 #: ar_edit_assets.php:999
@@ -375,11 +364,10 @@ msgstr "Gesamt"
 #: ar_edit_assets.php:3146
 #: ar_edit_orders.php:792
 #: ar_edit_orders.php:1122
-#, fuzzy
 msgid "product"
 msgid_plural "products"
 msgstr[0] "Produkt"
-msgstr[1] "Produkt"
+msgstr[1] "Produkte"
 
 #: ar_assets.php:2148
 #: ar_assets.php:3436
@@ -391,37 +379,32 @@ msgstr[1] "Produkt"
 #: ar_edit_contacts.php:3491
 #: ar_edit_orders.php:796
 #: ar_edit_orders.php:1126
-#, fuzzy
 msgid "(Showing all)"
-msgstr "Anzeigen des Desktops: %s\n"
+msgstr "(Alle Ergebnisse angezeigt)"
 
 #: ar_assets.php:2153
 #: ar_edit_orders.php:801
 #: ar_edit_orders.php:1131
-#, fuzzy
 msgid "There isn't any product with code like "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt kein Produkt mit dem Kode"
 
 #: ar_assets.php:2156
 #: ar_edit_orders.php:804
 #: ar_edit_orders.php:1134
-#, fuzzy
 msgid "There isn't any product with name like "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt kein Produkt mit dem Namen"
 
 #: ar_assets.php:2163
 #: ar_edit_orders.php:811
 #: ar_edit_orders.php:1141
-#, fuzzy
 msgid "products with code like"
-msgstr "Quelltext"
+msgstr "Produkte mit dem Kode"
 
 #: ar_assets.php:2166
 #: ar_edit_orders.php:814
 #: ar_edit_orders.php:1144
-#, fuzzy
 msgid "products with name like"
-msgstr "Umschalten auf Dock-Modus"
+msgstr "Produkte mit dem Namen"
 
 #: ar_assets.php:2605
 #: ar_assets.php:2606
@@ -469,9 +452,8 @@ msgid "Historic"
 msgstr "historisch"
 
 #: ar_assets.php:3025
-#, fuzzy
 msgid "Private"
-msgstr "Gesamttotal"
+msgstr "Privat"
 
 #: ar_assets.php:3030
 #: ar_assets.php:3060
@@ -480,9 +462,8 @@ msgid "Discontinued"
 msgstr "aus dem Sortiment genommen"
 
 #: ar_assets.php:3033
-#, fuzzy
 msgid "For Sale"
-msgstr "Verkauf"
+msgstr "Zum Verkauf"
 
 #: ar_assets.php:3045
 #: ar_assets.php:3051
@@ -507,44 +488,38 @@ msgstr "Offline"
 #: ar_edit_orders.php:1207
 #: ar_edit_orders.php:1767
 #: ar_edit_orders.php:1981
-#, fuzzy
 msgid "Out of Stock"
-msgstr "Kartenstapel"
+msgstr "Nicht vorrätig"
 
 #: ar_assets.php:3432
 #: ar_edit_assets.php:2737
 #: ar_edit_assets.php:2814
 #: ar_edit_assets.php:3021
 #: ar_edit_assets.php:3235
-#, fuzzy
 msgid "part"
 msgid_plural "parts"
-msgstr[0] "Aktualisieren"
-msgstr[1] "Aktualisieren"
+msgstr[0] "Element"
+msgstr[1] "Elemente"
 
 #: ar_assets.php:3440
-#, fuzzy
 msgid "There isn't any part with "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt kein Element mit"
 
 #: ar_assets.php:3444
-#, fuzzy
 msgid "There isn't any part used in "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt kein Element, das verwendet wird in"
 
 #: ar_assets.php:3447
-#, fuzzy
 msgid "There isn't any part supplied by "
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt kein Element, das geliefert wird von"
 
 #: ar_assets.php:3450
 msgid "There isn't any part with description like "
 msgstr "Es gibt kein Element mit der Beschreibung"
 
 #: ar_assets.php:3459
-#, fuzzy
 msgid "parts with"
-msgstr "Liste der Typumwandlungen"
+msgstr "Elemente mit"
 
 #: ar_assets.php:3463
 msgid "parts used in"
@@ -560,9 +535,8 @@ msgstr "Elemente mit Beschreibung"
 
 #: ar_assets.php:4231
 #: ar_assets.php:8742
-#, fuzzy
 msgid "products with the same code"
-msgstr "Quelltext"
+msgstr "Produkte mit demselben Kode"
 
 #: ar_assets.php:4288
 #: ar_assets.php:4289
@@ -571,21 +545,18 @@ msgid "SKU"
 msgstr "SKU"
 
 #: ar_assets.php:4551
-#, fuzzy
 msgid "family"
 msgid_plural "families"
 msgstr[0] "Familie"
-msgstr[1] "Familie"
+msgstr[1] "Familien"
 
 #: ar_assets.php:4562
-#, fuzzy
 msgid "There isn't any family with code like"
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Familie mit dem Kode"
 
 #: ar_assets.php:4565
-#, fuzzy
 msgid "There isn't any family with this name"
-msgstr "Schlüssel-Kunde"
+msgstr "Es gibt keine Familie mit dem Namen"
 
 #: ar_assets.php:4572
 #, fuzzy
@@ -14456,7 +14427,7 @@ msgstr ""
 
 #: smarty.php:4574
 msgid "Configurable Fields"
-msgstr ""
+msgstr "Konfigurierbare Felder"
 
 #: smarty.php:4580
 #: smarty.php:4589
@@ -14472,7 +14443,7 @@ msgstr "Vorlauf zu: %1/%2 (%3%)"
 
 #: smarty.php:4613
 msgid "Where Found Us"
-msgstr ""
+msgstr "Wo haben Sie uns gefunden?"
 
 #: smarty.php:4631
 #, fuzzy
@@ -14581,7 +14552,7 @@ msgstr "Neues Datum wählen"
 
 #: smarty.php:4790
 msgid "will be replaced with"
-msgstr ""
+msgstr "wird ersetzt mit"
 
 #: smarty.php:4820
 #: smarty.php:11513
@@ -14642,7 +14613,7 @@ msgstr "Beispiele"
 
 #: smarty.php:4949
 msgid "Shortcut"
-msgstr ""
+msgstr "Shortcut"
 
 #: smarty.php:4952
 #, fuzzy
@@ -14718,7 +14689,7 @@ msgstr "Bearbeiten"
 #: smarty.php:5138
 #: smarty.php:9767
 msgid "Layout"
-msgstr ""
+msgstr "Layout"
 
 #: smarty.php:5144
 #, fuzzy
