@@ -11,6 +11,53 @@
  
  Version 2.0
 */
+include_once('app_files/db/dns.php');
+
+include_once('external_libs/Smarty/Smarty.class.php');
+    $smarty = new Smarty();
+
+
+            $smarty->template_dir = 'templates';
+            $smarty->compile_dir = 'server_files/smarty/templates_c';
+            $smarty->cache_dir = 'server_files/smarty/cache';
+            $smarty->config_dir = 'server_files/smarty/configs';
+
+
+
+error_reporting(E_ALL);
+
+date_default_timezone_set('UTC');
+
+
+$con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
+
+if (!$con) {
+    print "Error can not connect with database server\n";
+    exit;
+}
+//$dns_db='dw_avant';
+$db=@mysql_select_db($dns_db, $con);
+if (!$db) {
+    print "Error can not access the database\n";
+    exit;
+}
+
+
+$sql = sprintf("select * from `User Dimension` where `User Type`='Administrator'  ");
+$result = mysql_query($sql);
+if(!$row=mysql_fetch_array($result)){
+  header('Location: first_time.php');
+        exit;
+}
+
+
+require_once 'common_functions.php';
+mysql_query("SET time_zone ='+0:00'");
+mysql_query("SET NAMES 'utf8'");
+require_once 'conf/conf.php';
+setlocale(LC_MONETARY, 'en_GB.UTF-8');
+
+
 require_once 'common_detect_agent.php';
 include_once('app_files/key.php');
 include_once('aes.php');
@@ -71,42 +118,16 @@ if (function_exists('bindtextdomain')){
 	bind_textdomain_codeset('inikoo', $myconf['encoding']);
 	textdomain('inikoo');
 }
-$smarty->assign('theme', $myconf['theme']);
-$smarty->assign('title', _('Authentication'));
-$smarty->assign('welcome', _('Welcome'));
-$smarty->assign('user', _('User'));
-$smarty->assign('password', _('Password'));
-$smarty->assign('log_in', _('Log in'));
 
 
-/* other_langs=array(); */
-/* $sql="select kbase.`Language Key` as id,`Language Original Name` as original_name, `Language Code` as code    from `Language Dimension`"; */
-
-/*  $result=mysql_query($sql); */
-/*        while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
-
-/*   if($row['code']==$current_lang){ */
-/*     $smarty->assign('lang_id', $row['id']); */
-/*     $smarty->assign('lang_code', $row['code']); */
-/*   }else */
-/*     $other_langs[$row['id']]=$row['original_name']; */
-/* } */
-
-/* mysql_free_result($result); */
-
-
-/* $smarty->assign('other_langs', $other_langs); */
-//Check for superuser
-$sql = sprintf("select * from `User Dimension`");
-$result = mysql_query($sql);
-
-
-if(!$row=mysql_fetch_array($result)){
-	$template="config.tpl ";
-}
+if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
+    $log_as="supplier";
 else
-	$template="login.tpl";
-$smarty->display($template);
+    $log_as="staff";
+
+$smarty->assign('login_type',$log_as);
+
+$smarty->display("login.tpl");
 
 exit();
 

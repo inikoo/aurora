@@ -1063,6 +1063,20 @@ function get_number_stores(){
 
 	}
 
+function update_staff_type(){
+
+    if($this->data['User Type']!='Staff'){
+        $this->data['User Staff Type']='';
+    
+    }else{
+    
+        $staff=new Staff($this->data['User Parent Key']);
+        
+    
+    
+    }
+
+}
 
 }
 

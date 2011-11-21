@@ -199,7 +199,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		
 
- var tableid=4; // Change if you have more the 1 table
+ var tableid=4; 
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
