@@ -8,13 +8,13 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		
-		 'button.css',
-		 'container.css'
+      'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
 		 );
 
-$css_files[]='theme.css.php';
 
 $js_files=array(
 
@@ -30,7 +30,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'report_sales_activity.js.php',
-		 'js/dropdown.js'
+		
 		);
 
 
@@ -230,7 +230,7 @@ $smarty->display('report_sales_activity.tpl');
 
 
 function report_data($int){
-  global $myconf;
+  global $corporate_currency;
 
 
 

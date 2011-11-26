@@ -22,9 +22,13 @@ else
 	$auto_load=false;
 
 
-include_once('top_navigation.php');
-include_once('footer.php');
-$smarty->assign('footer',$footer_);
+//include_once('top_navigation.php');
+//include_once('footer.php');
+
+
+
+
+//$smarty->assign('footer',$footer_);
 if($path=="../../"){
 	$path_id=2;
     $path_menu='../';
@@ -76,6 +80,8 @@ $js_files=array(
           
           
           
+          
+          
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -105,5 +111,5 @@ $smarty->assign('epwcp1',md5($user->id.'insecure_key'.$rnd));
 }
 
 
-$smarty->display('inikoo_registration.tpl');
+$smarty->display('registration.tpl');
 ?>

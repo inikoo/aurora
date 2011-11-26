@@ -449,7 +449,7 @@ function is_valid_scope(branch){
 function validate_scope_edit(branch) {
 
 
-//alert('validate scope edit')
+
   var errors=false;
   var changed=false;
 
@@ -752,7 +752,7 @@ function post_item_updated_actions(branch,r) {
 }
 
 function save_edit_general(branch) {
-  //alert('xx');
+
   operation='edit';
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
@@ -775,12 +775,12 @@ function save_edit_general(branch) {
                 item_name=items;
             }
 
-            var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&okey='+items+'&key=' + item_name+ '&newvalue=' +
-                        encodeURIComponent(item_input.value) +  '&oldvalue=' +
-                        encodeURIComponent(item_input.getAttribute('ovalue')) +
-                        '&'+branch_key_name+'='+branch_key;
-	   
-	   
+
+	   var xx_value=item_input.value;
+	  // xx_value='xx';
+	   postData = 'tipo='+operation+'_'+branch+'&okey='+items+'&key=' + item_name+ '&newvalue=' +encodeURIComponent(xx_value)+'&'+branch_key_name+'='+branch_key;
+                        
+                        
 	   if(validate_scope_metadata[branch]['dynamic_second_key']!= undefined){
 	     second_key=validate_scope_metadata[branch]['dynamic_second_key'];
 	    second_name_name='second_key';
@@ -788,21 +788,28 @@ function save_edit_general(branch) {
 	         second_name_name=validate_scope_metadata[branch]['second_key_name']
 	     }
 	    
-	        request=request+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
+	        postData=postData+'&'+second_name_name+'='+Dom.get(validate_scope_metadata[branch]['dynamic_second_key']).value;
 	   }
 	   
-//alert(request)
-            YAHOO.util.Connect.asyncRequest('POST',request , {
+	   
+	 //  alert(item_input.value.length);
+	   
+//alert(item_input.value)
+            YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
+            {
             success:function(o) {
-//			alert(o.responseText);
+		//alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
+               
+                    
                         validate_scope_data[branch][r.key].changed=false;
                         validate_scope_data[branch][r.key].validated=true;
                         Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue',r.newvalue);
                         Dom.get(validate_scope_data[branch][r.key].name).value=r.newvalue;
-                       
+                       //  alert(validate_scope_data[branch][r.key].name+'_msg')
                         Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML='<img src="art/icons/accept.png"/>';
+                      
                         post_item_updated_actions(branch,r);
 
 
@@ -815,7 +822,8 @@ function save_edit_general(branch) {
                     validate_scope_edit(branch)
                 }
 
-            });
+            },postData
+            );
         }
     }
 

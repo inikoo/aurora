@@ -2,7 +2,7 @@
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var select_page_operation=false;
-
+var dialog_upload_page_content;
 function save_see_also_type(value){
 
 
@@ -260,6 +260,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 function change_block(){
   var ids = ['properties','page_header','page_footer','content','style','media','setup']; 
 block_ids=['d_properties','d_page_header','d_page_footer','d_content','d_style','d_media','d_setup'];
+
+
+if(this.id=='content'){
+Dom.setStyle('tabbed_container','margin','0px 0px')
+}else{
+Dom.setStyle('tabbed_container','margin','0px 20px')
+
+}
+
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('d_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -273,7 +282,15 @@ function save_edit_page_header(){save_edit_general('page_header');}
 function reset_edit_page_html_head(){ reset_edit_general('page_html_head');}
 function save_edit_page_html_head(){save_edit_general('page_html_head');}
 function reset_edit_page_content(){ reset_edit_general('page_content');}
-function save_edit_page_content(){save_edit_general('page_content');}
+function save_edit_page_content(){
+
+
+EmailHTMLEditor.saveHTML();
+
+
+
+save_edit_general('page_content');
+}
 function reset_edit_page_properties(){ reset_edit_general('page_properties');}
 function save_edit_page_properties(){save_edit_general('page_properties');}
 
@@ -288,8 +305,72 @@ function validate_page_properties_page_code(query){validate_general('page_proper
 function validate_page_html_head_title(query){validate_general('page_html_head','title',unescape(query));}
 function validate_page_html_head_keywords(query){validate_general('page_html_head','keywords',unescape(query));}
 
+function html_editor_changed(){
+    validate_scope_data['page_content']['source']['changed']=true;
+  
+    
+    validate_scope('page_content');
+}
+
+function show_dialog_upload_page_content(){
+dialog_upload_page_content.show()
+
+}
+function close_upload_page_content(){
+dialog_upload_page_content.hide();
+}
+
+
+function upload_page_content(e){
+    YAHOO.util.Connect.setForm('upload_page_content_form', true,true);
+    var request='ar_upload_page_content.php?tipo=upload_page_content';
+   var uploadHandler = {
+      upload: function(o) {
+	   alert(o.responseText)
+	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	   
+	    if(r.state==200){
+	     
+         window.location.reload()
+                
+	    }else
+		alert(r.msg);
+	    
+	    
+
+	}
+    };
+
+    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+
+
+
+  };
+  
+  
+  function post_item_updated_actions(branch,r){
+  
+  //alert(branch)
+  
+  }
+
+function show_page_preview(){
+     window.location = "page_preview.php?id="+Dom.get('page_key').value;
+}
 
 function init(){
+
+
+
+
+  Event.addListener('show_page_preview', "click", show_page_preview);
+
+
+  Event.addListener('show_upload_page_content', "click", show_dialog_upload_page_content);
+Event.addListener("cancel_upload_page_content", "click", close_upload_page_content);
+  Event.addListener('upload_page_content', "click", upload_page_content);
+ dialog_upload_page_content = new YAHOO.widget.Dialog("dialog_upload_page_content", {context:["show_upload_page_content","tl","bl"] ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_upload_page_content.render();
 
 
   init_search('products_store');
@@ -348,7 +429,7 @@ function init(){
     }
 ,'page_content':{
 	
-	'presentation_template_data':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_content_presentation_template_data','ar':false}
+	'source':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'html_editor','dbname':'Page Store Source','ar':false}
 	
     }
 
@@ -441,6 +522,95 @@ dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", {context:["add_ot
     
     YAHOO.util.Event.addListener('clean_table_filter_show7', "click",show_filter,7);
  YAHOO.util.Event.addListener('clean_table_filter_hide7', "click",hide_filter,7);
+
+
+    
+       var myConfig = {
+        height: '2000px',
+        width: '972px',
+        animate: true,
+        dompath: true,
+        focusAtStart: true,
+         autoHeight: true
+    };
+    
+    var state = 'off';
+    
+
+    
+        EmailHTMLEditor = new YAHOO.widget.Editor('html_editor', myConfig);
+   
+   
+   EmailHTMLEditor.on('toolbarLoaded', function() {
+    
+        var codeConfig = {
+            type: 'push', label: 'Edit HTML Code', value: 'editcode'
+        };
+        this.toolbar.addButtonToGroup(codeConfig, 'insertitem');
+        
+        this.toolbar.on('editcodeClick', function() {
+        
+
+        
+            var ta = this.get('element'),iframe = this.get('iframe').get('element');
+
+            if (state == 'on') {
+                state = 'off';
+                this.toolbar.set('disabled', false);
+                          this.setEditorHTML(ta.value);
+                if (!this.browser.ie) {
+                    this._setDesignMode('on');
+                }
+
+                Dom.removeClass(iframe, 'editor-hidden');
+                Dom.addClass(ta, 'editor-hidden');
+                this.show();
+                this._focusWindow();
+            } else {
+                state = 'on';
+                
+                this.cleanHTML();
+               
+                Dom.addClass(iframe, 'editor-hidden');
+                Dom.removeClass(ta, 'editor-hidden');
+                this.toolbar.set('disabled', true);
+                this.toolbar.getButtonByValue('editcode').set('disabled', false);
+                this.toolbar.selectButton('editcode');
+                this.dompath.innerHTML = 'Editing HTML Code';
+                this.hide();
+            
+            }
+            return false;
+        }, this, true);
+
+        this.on('cleanHTML', function(ev) {
+            this.get('element').value = ev.html;
+        }, this, true);
+        
+        
+        
+        this.on('editorKeyUp', html_editor_changed, this, true);
+                this.on('editorDoubleClick', html_editor_changed, this, true);
+                this.on('editorMouseDown', html_editor_changed, this, true);
+                this.on('buttonClick', html_editor_changed, this, true);
+
+        this.on('afterRender', function() {
+            var wrapper = this.get('editor_wrapper');
+            wrapper.appendChild(this.get('element'));
+            this.setStyle('width', '100%');
+            this.setStyle('height', '100%');
+            this.setStyle('visibility', '');
+            this.setStyle('top', '');
+            this.setStyle('left', '');
+            this.setStyle('position', '');
+
+            this.addClass('editor-hidden');
+        }, this, true);
+    }, EmailHTMLEditor, true);
+        yuiImgUploader(EmailHTMLEditor, 'html_editor', 'ar_upload_file_from_editor.php','image');
+
+    
+    EmailHTMLEditor.render();
 
 
 }

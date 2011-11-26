@@ -751,6 +751,10 @@ class Site extends DB_Table {
 
 
     }
+    
+    function   update_headers($new_header_key=false){
+    
+    }
 
 }
 ?>

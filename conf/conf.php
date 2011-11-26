@@ -671,7 +671,7 @@ $default_state=array(
                                              'mode'=>'all',
                                              'avg'=>'totals',
                                              'view'=>'general',
-                                              'block_view'=>'subcategories',
+                                             'block_view'=>'subcategories',
                                              'from'=>'',
                                              'to'=>'',
                                              'exchange_type'=>'day2day',
@@ -1628,8 +1628,8 @@ $default_state=array(
                                    'store'=>false,
 
                                    'block_view'=>'all_contacts',
-                                                'stats_view'=>'population',
-                                   
+                                   'stats_view'=>'population',
+
 
                                    'correlations'=>array(
                                                       'order'=>'correlation',
@@ -1697,14 +1697,14 @@ $default_state=array(
                                                          'f_field'=>'',
                                                          'f_value'=>'',
                                                          'view'=>'general'
-                                                     )
-                                                     ,'list'=>array(
+                                                     ),
+                                                     'list'=>array(
                                                                  'order'=>'name',
                                                                  'order_dir'=>'',
                                                                  'sf'=>0,
                                                                  'nr'=>25,
                                                                  'where'=>'',
-                                                                 'f_field'=>'',
+                                                                 'f_field'=>'name',
                                                                  'f_value'=>'',
                                                                  'view'=>'general'
                                                              )
@@ -2287,7 +2287,21 @@ $default_state=array(
                    'page'=>array(
                               'id'=>0,
                               'view'=>'details',
-                              'editing'=>'properties'
+                              'editing'=>'properties',
+                              'history'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'abstract',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'date',
+                                            'order_dir'=>'desc',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
+                                        )
+
+
                           ),
                    'store'=>array(
                                'block_view'=>'departments',
@@ -2590,14 +2604,37 @@ $default_state=array(
                                                'nr'=>50,
                                                'view'=>'page_properties',
                                                'elements'=>array(
-                                                              'Product Description'=>1,
-                                                              'Family Catalogue'=>1,
-                                                              'Product Catalogue'=>1,
+                                                              'ProductDescription'=>1,
+                                                              'FamilyCatalogue'=>1,
+                                                              'DepartmentCatalogue'=>1,
                                                               'Other'=>1,
 
                                                           )
                                            ),
 
+                              'edit_headers'=>array(
+                                               'f_field'=>'name',
+                                               'f_value'=>'',
+                                               'f_show'=>false,
+                                               'order'=>'name',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>50,
+                                               'view'=>'overview'
+                                              
+                                           ),
+                        
+                              'edit_footers'=>array(
+                                               'f_field'=>'name',
+                                               'f_value'=>'',
+                                               'f_show'=>false,
+                                               'order'=>'name',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>50,
+                                               'view'=>'overview'
+                                              
+                                           ),
                               'pages'=>array(
                                           'where'=>'where true',
                                           'f_field'=>'code',
@@ -2613,10 +2650,11 @@ $default_state=array(
                                           'percentage'=>0,
                                           'mode'=>'all',
                                           'avg'=>'totals',
+                                          'type'=>'list',
                                           'elements'=>array(
-                                                         'Product Description'=>1,
-                                                         'Family Catalogue'=>1,
-                                                         'Product Catalogue'=>1,
+                                                         'ProductDescription'=>1,
+                                                         'FamilyCatalogue'=>1,
+                                                         'DepartmentCatalogue'=>1,
                                                          'Other'=>1,
 
                                                      )

@@ -59,18 +59,18 @@ switch ($tipo) {
 case 'sales_overview':
     $js_files[]='js/splinter_sales.js';
     $template='splinter_sales.tpl';
-    
+
     switch ($_SESSION['state']['home']['splinters']['sales']['period']) {
-        case 'ytd':
-             $table_title=_('Overview Sales:  Year-to-Date');   
-            break;
-        default:
-            $table_title=_('Sales').' '.$_SESSION['state']['home']['splinters']['sales']['period'];
-            break;
-        
-    
+    case 'ytd':
+        $table_title=_('Overview Sales:  Year-to-Date');
+        break;
+    default:
+        $table_title=_('Sales').' '.$_SESSION['state']['home']['splinters']['sales']['period'];
+        break;
+
+
     }
-$smarty->assign('table_title',$table_title);
+    $smarty->assign('table_title',$table_title);
     break;
 default:
     exit;

@@ -14,12 +14,12 @@
     {foreach from=$js_files item=i }
     <script type="text/javascript" src="{$i}"></script>
     {/foreach}
-    {if $script}<script type="text/javascript">{$script}</script>{/if}
+
         
   </head>
 
   <body  class=" yui-skin-sam inikoo">
-    <div id="{$page_layout}" class="{$box_layout}">
+    <div id="doc4" >
     
       <div id="hd" >
       <div class="top_navigation">

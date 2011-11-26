@@ -103,13 +103,14 @@ else
 	
 $current_lang=$myconf['lang'];
 if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
-  $sql="select kbase.`Language Code` as code ,`Country 2 Alpha Code`  as country_code  from `Language Dimension` where `Language Key`=".$_REQUEST['_lang'];
+  $sql="select `Language Key`,kbase.`Language Code` as code ,`Country 2 Alpha Code`  as country_code  from `Language Dimension` where `Language Key`=".$_REQUEST['_lang'];
   
   $result=mysql_query($sql);
   if($sql_data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
     setlocale(LC_MESSAGES, $sql_data['code'].'_'.strtoupper($sql_data['country_code']).($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
     $current_lang=$sql_data['code'];
+  $lang_id=$sql_data['Language Key'];
   }
  }
 
@@ -126,6 +127,9 @@ else
     $log_as="staff";
 
 $smarty->assign('login_type',$log_as);
+$smarty->assign('lang_id',0);
+$smarty->assign('lang_code',$current_lang);
+
 
 $smarty->display("login.tpl");
 

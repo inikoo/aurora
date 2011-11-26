@@ -519,7 +519,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("dataReturnEvent", data_returned);  
 
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['list']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo $_SESSION['state']['customers']['table']['f_value']?>'};
 
 	var tableid=1;
 	

@@ -145,10 +145,10 @@ mysql_free_result($res);
 
 $smarty->assign('stores',$stores);
 
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['store']['history']['f_field']:'code');
+
+$tipo_filter=$_SESSION['state']['store']['history']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['store']['history']['f_value']:addslashes($q)));
+$smarty->assign('filter_value',$_SESSION['state']['store']['history']['f_value']);
 $filter_menu=array(
                  'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
                  'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
