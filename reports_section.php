@@ -21,16 +21,16 @@ $report_category=$_REQUEST['category'];
 
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 
-		 'container.css'
-
-		 );
-
-$css_files[]='theme.css.php';
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
+           );
 
 
 $js_files=array(
@@ -63,10 +63,10 @@ $plot_title=array(
 
 
 
-$sql=sprintf("select `Page Parent Category`,`Page Short Title`,`Page URL`,`Image URL` from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`) left join `Image Dimension` IM on (IM.`Image Key`=`Page Thumbnail Image Key`) where `Page Type`='Internal' and `Page Section`='Reports' and `Page Parent Category`=%s",
+$sql=sprintf("select `Page Parent Category`,`Page Short Title`,`Page URL`,`Image Key` from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`) left join `Image Dimension` IM on (IM.`Image Key`=`Page Thumbnail Image Key`) where `Page Type`='Internal' and `Page Section`='Reports' and `Page Parent Category`=%s",
 prepare_mysql($report_category)
 );
-//print $sql;
+
 $res=mysql_query($sql);
 $current_category='';
 $report_index=array();
@@ -88,7 +88,7 @@ while($row=mysql_fetch_array($res)){
   }
   $title=$row['Page Short Title'];
   
-  $report_index[$row['Page Parent Category']]['reports'][$title]=array('title'=>$title,'url'=>$row['Page URL'],'snapshot'=>$row['Image URL']);
+  $report_index[$row['Page Parent Category']]['reports'][$title]=array('title'=>$title,'url'=>$row['Page URL'],'snapshot'=>'image.php?id='.$row['Image Key']);
     
 
 }
