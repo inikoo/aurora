@@ -4972,7 +4972,7 @@ ALTER TABLE `Email Content Dimension` CHANGE `Email Content Template Key` `Email
 
 
 ALTER TABLE `Email Content Dimension` ADD `Email Content Color Scheme Key` MEDIUMINT NOT NULL DEFAULT '1' AFTER `Email Content Template Type` ;
-ALTER TABLE `Email Content Dimension` CHANGE `Email Content Header Image Source` `Email Content Header Image Source` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+ALTER TABLE `Email Content Dimension` CHANGE `Email Content Header Image Source` `Email Content Header Image Source` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Email Content Paragraph Dimension` ADD `Paragraph Original Type` ENUM( 'Main', 'Side' ) NOT NULL DEFAULT 'Main' AFTER `Paragraph Type` ;
 
 ALTER TABLE `Email Content Dimension` ADD `Email Content Color Scheme Historic Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Email Content Color Scheme Key` ;
@@ -5102,7 +5102,7 @@ ALTER TABLE `Dashboard Dimension` CHANGE `Dashbord URL` `Dashboard URL` TEXT CHA
 ALTER TABLE `Charge Dimension` ADD `Charge Active` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Charge Terms Metadata` ,ADD INDEX ( `Charge Active` ) ;
 ALTER TABLE `Store Dimension` ADD `Store Websites` SMALLINT UNSIGNED NOT NULL DEFAULT '0';
 // right.sql
-ALTER TABLE `Email Template Color Scheme Dimension` ADD `Store Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Email Template Color Scheme Name` ,ADD INDEX ( `Store Key` ) ;
+// themes.sql
 
 CREATE TABLE `Site Header Image Dimension` (
   `Site Header Image Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
