@@ -71,7 +71,7 @@ $smarty->template_dir = 'templates';
 $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
-
+$smarty->error_reporting = E_ERROR;
 
 if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
     $log_as="supplier";
@@ -201,8 +201,6 @@ if ($row=mysql_fetch_array($res)) {
 //print_r($row);
 //exit;
 
-
-//Config Menu
 
 
 $nav_menu=array();

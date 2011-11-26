@@ -2099,7 +2099,7 @@ VALUES
 (2, 'green', 'green_common.css.php', 'green_table.css', 'green_index.css', 'green_marketing_campaigns.css', 'green_dropdown.css');
 INSERT INTO `Theme Dimension` (`Theme Key`, `Theme Name`, `Theme Common Css`, `Theme Table Css`, `Theme Index Css`, `Theme Dropdown Css`, `Theme Campaign Css`) VALUES
 (3, 'magento', 'magento_common.css.php', 'magento_table.css', 'magento_index.css', 'magento_marketing_campaigns.css', 'magento_dropdown.css');
-ALTER TABLE `dw`.`Customer Dimension` ADD INDEX ( `Customer Send Newsletter` ) ;
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Send Newsletter` ) ;
 
 
 
@@ -5083,9 +5083,9 @@ ALTER TABLE `Deal Metadata Dimension` CHANGE `Deal Metadata Terms Type` `Deal Me
 ALTER TABLE `Order No Product Transaction Fact` CHANGE `Transaction Type` `Transaction Type` ENUM( 'Credit', 'Unknown', 'Refund', 'Shipping', 'Charges', 'Adjust', 'Other', 'Deal' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Order Transaction Deal Bridge` CHANGE `Deal Key` `Deal Metadata Key` MEDIUMINT( 9 ) NOT NULL ;
 ALTER TABLE `Order Transaction Fact`  DROP `Deal Key`;
-ALTER TABLE `dw`.`Order Deal Bridge` ADD PRIMARY KEY ( `Order Key` , `Deal Key` ) ;
+ALTER TABLE `Order Deal Bridge` ADD PRIMARY KEY ( `Order Key` , `Deal Key` ) ;
 
-CREATE TABLE `dw`.`Dashboard Dimension` (
+CREATE TABLE `Dashboard Dimension` (
 `Dashboard Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `User key` MEDIUMINT UNSIGNED NOT NULL ,
 `Dashbord Type` ENUM( '1 Block', '2 Blocks', '3 Blocks' ) NOT NULL ,
@@ -5144,6 +5144,76 @@ ALTER TABLE `Email Content Dimension` CHANGE `Email Content Header Image Key` `E
 
 ALTER TABLE `User Dimension` ADD `User Staff Type` ENUM( 'Active Working', 'Active Not Working', 'Inactive Working', 'Inactive Not Working' ) NOT NULL AFTER `User Type` ,ADD INDEX ( `User Staff Type` ) ;
 ALTER TABLE `User Dimension` CHANGE `User Staff Type` `User Staff Type` ENUM( 'Active Working', 'Active Not Working', 'Inactive Working', 'Inactive Not Working' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Source` `Page Store Source` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Store Email Template Header', 'Store Email Postcard', 'Email Image', 'Page' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store CSS` LONGTEXT NULL DEFAULT NULL AFTER `Page Store Source` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Header Source` LONGTEXT NULL DEFAULT NULL AFTER `Page Store Source` ,ADD `Page Store Footer Source` LONGTEXT NULL DEFAULT NULL AFTER `Page Store Header Source` ;
+
+CREATE TABLE `Page Header Dimension` (
+`Page Header Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Site Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Template` LONGTEXT NOT NULL
+) ENGINE = MYISAM ;
+
+CREATE TABLE `Page Footer Dimension` (
+`Page Footer Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Site Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Template` LONGTEXT NOT NULL
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Page Header Dimension` ADD `Page Header Name` VARCHAR( 256 ) NOT NULL AFTER `Page Header Key` ;
+ALTER TABLE `Page Header Dimension` ADD `CSS` LONGTEXT NOT NULL ;
+ALTER TABLE `Page Header Dimension` ADD `Javascript` LONGTEXT NOT NULL ;
+ALTER TABLE `Page Footer Dimension` ADD `Page Footer Name` VARCHAR( 256 ) NOT NULL AFTER `Page Footer Key` ;
+ALTER TABLE `Page Footer Dimension` ADD `CSS` LONGTEXT NOT NULL ;
+ALTER TABLE `Page Footer Dimension` ADD `Javascript` LONGTEXT NOT NULL ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Javascript` LONGTEXT NULL DEFAULT NULL AFTER `Page Store CSS` ;
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Header Source` `Page Header Key` MEDIUMINT NULL DEFAULT NULL ,
+CHANGE `Page Store Footer Source` `Page Footer Key` MEDIUMINT NULL DEFAULT NULL ;
+ALTER TABLE `Site Dimension` ADD `Site Contact Address` VARCHAR( 1024 ) NOT NULL AFTER `Site URL` ,ADD `Site Contact Telephone` VARCHAR( 256 ) NOT NULL AFTER `Site Contact Address` ;
+
+
+CREATE TABLE `Page Store External File Dimension` (
+`Page Store External File Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Page Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Page Store External File Type` ENUM( 'Javascript', 'CSS' ) NOT NULL ,
+`Page Store External File Content` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+) ENGINE = MYISAM ;
+ALTER TABLE `Page Store External File Dimension` DROP `Page Key` ;
+
+
+CREATE TABLE `Page Store External File Bridge` (
+`Page Store External File Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Page Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Page Store External File Key` , `Page Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Page Store External File Dimension` ADD `Page Store External File Name` VARCHAR( 256 ) NOT NULL AFTER `Page Store External File Key` ;
+
+CREATE TABLE `Page Header External File Bridge` (
+`Page Store External File Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Page Header Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Page Store External File Key`, `Page Header Key` )
+) ENGINE = MYISAM ;
+
+CREATE TABLE `Page Footer External File Bridge` (
+`Page Store External File Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Page Footer Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Page Store External File Key`,`Page Footer Key` )
+) ENGINE = MYISAM ;
+
+CREATE TABLE `Site External File Bridge` (
+`Page Store External File Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Site Key` MEDIUMINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Page Store External File Key`,`Site Key` )
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Site External File Bridge` ADD `External File Type` ENUM( 'Javascript', 'CSS' ) NOT NULL ;
+ALTER TABLE `Page Footer External File Bridge` ADD `External File Type` ENUM( 'Javascript', 'CSS' ) NOT NULL ;
+ALTER TABLE `Page Header External File Bridge` ADD `External File Type` ENUM( 'Javascript', 'CSS' ) NOT NULL ;
+ALTER TABLE `Page Store External File Bridge` ADD `External File Type` ENUM( 'Javascript', 'CSS' ) NOT NULL ;
+ALTER TABLE `Page Header Dimension` ADD `Default Site` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Template` ,ADD INDEX ( `Default Site` ) ;
+
 */
 
 ?>

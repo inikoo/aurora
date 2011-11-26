@@ -3,9 +3,14 @@ var Event = YAHOO.util.Event;
 sales_tables= new Object();
  var period_ids=['mtd','ytd','wtd','1w','10d','1m','1q','1y','3y','last_m','last_w','yesterday','today'];
 
-  
+  function set_title(period){
+  Dom.get('period_title').innerHTML=Dom.get('period_title_'+period).value;
+
+  }
 
 function sales_init(){
+
+set_title(Dom.get('period').value)
 
         var tableid=0;
 	    var tableDivEL="table"+tableid;
@@ -160,6 +165,9 @@ Dom.removeClass(period_ids,'selected');
 Dom.addClass(this,'selected');
 
 period=this.id;
+
+set_title(period)
+
 var table=sales_tables.table1;
     var datasource=sales_tables.dataSourcetopprod;
     var request='&period=' + period;

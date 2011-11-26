@@ -185,7 +185,7 @@ $smarty->assign('js_files',$js_files);
 
 
 $smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
-//print_r($_SESSION['state']['customers']['table']);
+
 $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);

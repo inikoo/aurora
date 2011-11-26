@@ -1,0 +1,25 @@
+ .yui-skin-sam .yui-toolbar-container .yui-toolbar-editcode span.yui-toolbar-icon {
+        background-image: url( '../art/icons/page_white_code.png' );
+        background-position: 0 1px;
+        left: 5px;
+    }
+    .yui-skin-sam .yui-toolbar-container .yui-button-editcode-selected span.yui-toolbar-icon {
+        background-image: url( '../art/icons/page_white_code.png' );
+        background-position: 0 1px;
+        left: 5px;
+    }
+    .editor-hidden {
+        visibility: hidden;
+        top: -9999px;
+        left: -9999px;
+        position: absolute;
+    }
+    #html_editor {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .yui-toolbar-group-insertitem {
+    *width: auto;
+}

@@ -61,23 +61,26 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-  
-  $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
-//$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-$general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'new_customers_list.php?store='.$store_id,'label'=>_('New List'));
 
-  
-  
-//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
 
+$tipo_filter=$_SESSION['state']['customers']['list']['f_field'];
+$smarty->assign('filter_name0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['customers']['list']['f_value']);
+$filter_menu=array(
+       'name'=>array('db_key'=>'name','menu_label'=>_('List name like <i>x</i>'),'label'=>_('Name'))
+             );
+             
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+
 $smarty->assign('options_box_width','600px');
 
 $smarty->display('customers_lists.tpl');

@@ -1,8 +1,9 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
-<div id="bd" >
+<div id="bd" style="padding:0">
 <input type="hidden" id="site_key" value="{$site->id}"/>
 <input type="hidden" id="page_key" value="{$page->id}"/>
+<div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
   <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; {t}Webpage{/t}: {$page->get('Page Code')}</span>
@@ -10,7 +11,7 @@
 <div class="top_page_menu">
     <div class="buttons left" style="float:left">
         <button style="margin-left:0px"  onclick="window.location='page.php?id={$page->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
- {if $referral_data}
+ {if isset($referral_data)}
          <button   onclick="{$referral_data.url}'" ><img src="art/icons/door_out.png" alt=""/> {$referral_data.label}</button>
 
  {/if}
@@ -37,10 +38,13 @@
     <li> <span class="item {if $block_view=='content'}selected{/if}" id="content"  ><span>  {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
     <li> <span class="item {if $block_view=='style'}selected{/if}" id="style"  ><span> {t}Style{/t}</span></span></li>
     <li> <span class="item {if $block_view=='media'}selected{/if}" id="media"  ><span> {t}Media{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
 
 	</ul>
   
-     <div class="tabbed_container" > 
+ </div> 
+
+     <div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;margin:0px {if $block_view=='content'}0px{else}20px{/if}" > 
  
       
       
@@ -183,7 +187,9 @@
     </div>
 
     <div class="edit_block" {if $block_view!="page_header"}style="display:none"{/if}   id="d_page_header">
-   
+
+
+
     <table class="edit" border=0  id="header_edit_table" style="width:100%">
         <tr ><td colspan="3">
          <div class="general_options" style="float:right">
@@ -289,7 +295,7 @@
 
     <div class="edit_block" {if $block_view!="page_footer"}style="display:none"{/if}   id="d_page_footer">
     </div>
-    <div class="edit_block" {if $block_view!="content"}style="display:none"{/if}   id="d_content">
+    <div class="edit_block" style="{if $block_view!="content"}display:none;{/if}padding:0px 0px;margin:0px"   id="d_content">
     
     
     {if $page->get('Page Code')=='register'}
@@ -357,25 +363,34 @@
 	     </td>
 	     </tr>
 	     </table>
-	    {else}
+	{else}
     
-    
-     <table class="edit"  id="content_edit_table" >
-	     <tr class="title"><td colspan="2"><span style="font-weight:100" >[<span class="state_details selected">{t}Page Content{/t}</span>|Content Source]</span>
-	     <div style="width:50%;float:right;text-align:right;font-weight:100">
-	     <span class="state_details">Download</span>
-	     <span class="state_details">Upload</span>
-	     <span class="state_details">Edit</span>
+   
+     <table class="edit"  id="content_edit_table" style="width:810px;padding:0px;margin:0;position:relative;left:-2px">
+	     <tr class="title"><td colspan="2">
+	  
+	    <div class="buttons left">
+	     <button id="download_page_content">{t}Download{/t}</button>
+	     <button id="show_upload_page_content">{t}Import{/t}</button>
+	     <button id="show_page_preview">{t}Preview{/t}</button>
+
+         </div>   
+           <div style="float:right" id="html_editor_msg"></div>
+  <div class="buttons">
+	     <button class="positive" style="visibility:hidden" id="save_edit_page_content" >{t}Save{/t}</button>
+	     <button class="negative" style="visibility:hidden" id="reset_edit_page_content">{t}Reset{/t}</button>
 
          </div>   
 
-
 	     </td></tr>
-	     <tr><td colspan=2>
-		<div>{$page->get('Product Presentation Template Data')}</div>
+	     <tr><td colspan=2 style="padding:5px 0">
+		  <form onsubmit="return false;">
+		<textarea id="html_editor" >{$page->get('Page Store Source')}</textarea>
+		</form>
       </td></tr>
       
       </table>
+      
     {/if}
     </div>
     <div class="edit_block" {if $block_view!="style"}style="display:none"{/if}   id="d_style">
@@ -390,19 +405,15 @@
 
 
 
-<div id="the_table0" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
+<div id="the_table0" class="data_table" style="margin:20px 20px 40px 20px; clear:both;padding-top:10px">
   <span class="clean_table_title">{t}Change log{/t}</span>
-  <div  id="clean_table_caption0" class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div id="clean_table_filter0" class="clean_table_filter" style="display:none">
-      <div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-  </div>
+      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+
   <div  id="table0"   class="data_table_container dtable btable "> </div>
 </div>
 
 
-
+<div style="clear:both"></div>
 </div>
 
 
@@ -441,6 +452,25 @@
 	  </div>
     </div>
 </div>
+
+
+<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px">
+
+ <table style="margin:0 auto">
+  <form enctype="multipart/form-data" method="post" id="upload_page_content_form">
+<input type="hidden" name="page_key" value="{$page->id}" />
+ <tr><td>{t}File{/t}:</td><td><input id="upload_page_content_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
+
+  </form>
+ <tr><td colspan=2>
+  <div class="buttons">
+<button class="positive"  id="upload_page_content"  >{t}Upload{/t}</button>
+<button  id="cancel_upload_page_content" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
 
 {include file='footer.tpl'}
  <div id="dialog_page_list">

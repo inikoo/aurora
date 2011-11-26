@@ -166,7 +166,7 @@
    </tr>
 
 
-{if $hq_country=='ES'}
+{if $hq_country=='ES' and isset($cat2_id)}
 <tr>
 <td>RE:</td>
 <td>
@@ -213,7 +213,7 @@
  <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
  <td>
 
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
+   <div   class="buttons" >
    <button class="{if $customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button>
    <button class="{if $customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button>
 
@@ -223,7 +223,7 @@
   <tr>
  <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
+   <div class="buttons" >
    <button class="{if $customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button>
    <button class="{if $customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button>
    </div>
@@ -236,7 +236,7 @@
   <tr>
  <td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
+   <div  class="buttons" >
    <button class="{if $customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> 
    <button class="{if $customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button>
    </div>
@@ -250,7 +250,7 @@
  <tr>
  <td class="label" style="width:200px">{t}Add Customer To Send Post{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons" >
+   <div    class="buttons" >
    <button class="{if $customer->get('Send Post Status')=='To Send'}selected{/if} positive" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_To Send">{t}Yes{/t}</button>
    <button class="{if $customer->get('Send Post Status')=='Cancelled'}selected{/if} negative" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_Cancelled">{t}No{/t}</button>
    </div>
@@ -259,7 +259,7 @@
 <tr>
  <td class="label" style="width:200px">{t}Post Type{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="buttons">
+   <div  class="buttons">
    <button class="{if $customer->get('Post Type')=='Letter'}selected{/if} positive" onclick="save_comunications_send_post('Post Type','Letter')" id="Post Type_Letter">{t}Letter{/t}</button>
    <button class="{if $customer->get('Post Type')=='Catalogue'}selected{/if} negative" onclick="save_comunications_send_post('Post Type','Catalogue')" id="Post Type_Catalogue">{t}Catalogue{/t}</button>
    </div>
@@ -388,7 +388,7 @@
    <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
  </tr>
 
- <tr ><td  class="label">{if $customer->get('Customer Main Plain Email') == $login_stat.UserHandle}{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+ <tr ><td  class="label">{if   $customer->get('Customer Main Plain Email') == $login_stat.UserHandle}{/if}<img   id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onClick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
    <td  style="text-align:left">
      <div   >
        <input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0">

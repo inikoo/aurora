@@ -272,8 +272,6 @@ $smarty->assign('filter_value0',$_SESSION['state']['family']['products']['f_valu
 $filter_menu=array(
         'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
        'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
-
-
              );
              
 $smarty->assign('filter_menu0',$filter_menu);

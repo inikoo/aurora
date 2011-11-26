@@ -76,19 +76,19 @@ $smarty->assign('search_scope','customers');
 
 
 
-//$tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
-//$smarty->assign('filter',$tipo_filter);
-//$smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);
+$tipo_filter=$_SESSION['state']['stores']['customers']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['stores']['customers']['f_value']);
 
-//$filter_menu=array(
-//	   'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>'Customer Name','label'=>'Name'),
-//		   'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>'Customer Postcode','label'=>'Postcode'),
-//		   'min'=>array('db_key'=>_('min'),'menu_label'=>'Mininum Number of Orders','label'=>'Min No Orders'),
-//		   'max'=>array('db_key'=>_('min'),'menu_label'=>'Maximum Number of Orders','label'=>'Max No Orders'),
+$filter_menu=array(
+	   'code'=>array('menu_label'=>_('Store Code'),'db_key'=>'Store Code','label'=>'Code'),
+		   'name'=>array('menu_label'=>_('Store Name'),'db_key'=>'Store Name','label'=>'Name'),
+	
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
-//		   );
-//$smarty->assign('filter_menu0',$filter_menu);
-//$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
@@ -188,6 +188,9 @@ $csv_export_options0=array(
                      );
 $smarty->assign('export_csv_table_cols0',7);
 $smarty->assign('csv_export_options0',$csv_export_options0);
+
+$smarty->assign('store_id',false);
+
 $smarty->display('customers_server.tpl');
 
 ?>

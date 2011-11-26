@@ -22,6 +22,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('page_headers'):
+list_headers_for_edition();
+break;
+case('page_footers'):
+list_footers_for_edition();
+break;
 case('add_see_also_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -47,7 +54,7 @@ case('edit_checkout_method'):
     $data=prepare_values($_REQUEST,array(
                              'site_key'=>array('type'=>'key'),
                              'store_key'=>array('type'=>'key'),
-							 'site_checkout_method'=>array('type'=>'string'),
+                             'site_checkout_method'=>array('type'=>'string'),
 
                          ));
 
@@ -60,7 +67,7 @@ case('edit_registration_method'):
     $data=prepare_values($_REQUEST,array(
                              'site_key'=>array('type'=>'key'),
                              'store_key'=>array('type'=>'key'),
-							 'site_registration_method'=>array('type'=>'string'),
+                             'site_registration_method'=>array('type'=>'string'),
 
                          ));
 
@@ -138,9 +145,12 @@ case('edit_page_properties'):
     require_once 'class.Family.php';
 
 
+//print_r($_REQUEST);
+
     $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'string'),
                              'key'=>array('type'=>'string'),
+                             'okey'=>array('type'=>'string'),
                              'id'=>array('type'=>'key')
                          ));
 
@@ -162,8 +172,8 @@ case('edit_family_page_properties'):
 
     edit_page($data);
     break;
-    
-    case('edit_store_page_html_head'):
+
+case('edit_store_page_html_head'):
 case('edit_store_page_header'):
 case('edit_store_page_content'):
 case('edit_store_page_properties'):
@@ -178,7 +188,7 @@ case('edit_store_page_properties'):
 
     edit_page($data);
     break;
-    
+
 case('edit_department_page_html_head'):
 case('edit_department_page_header'):
 case('edit_department_page_content'):
@@ -225,7 +235,7 @@ function  edit_page($data) {
 
 
     if ($page->updated) {
-        $response= array('state'=>200,'newvalue'=>$page->new_value,'key'=>$data['key']);
+        $response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$page->new_value);
 
     } else {
         $response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key']);
@@ -354,7 +364,7 @@ function list_pages_for_edition() {
     else
         $order_dir=$conf['order_dir'];
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
- 
+
 
 
     if (isset( $_REQUEST['f_field']))
@@ -402,11 +412,11 @@ function list_pages_for_edition() {
 
     $filter_msg='';
     $wheref='';
-    if ($f_field=='description' and $f_value!='')
-        $wheref.=" and  CONCAT(`Charge Description`,' ',`Charge Terms Description`) like '".addslashes($f_value)."%'";
-    elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Charge Name` like '".addslashes($f_value)."%'";
 
+    if ($f_field=='code'  and $f_value!='')
+        $wheref.=" and `Page Code` like '".addslashes($f_value)."%'";
+    elseif ($f_field=='title' and $f_value!='')
+    $wheref.=" and  `Page Store Title` like '".addslashes($f_value)."%'";
 
 
 
@@ -425,8 +435,8 @@ function list_pages_for_edition() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   $where ";
-
+        $sql="select count(*) as total from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   $where ";
+//print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -443,28 +453,24 @@ function list_pages_for_edition() {
     else
         $rtext_rpp=' ('._('Showing all').')';
 
-    if ($total==0 and $filtered>0) {
-        switch ($f_field) {
-        case('name'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any charge with this name ")." <b>".$f_value."*</b> ";
-            break;
-        case('description'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any charge with description like ")." <b>".$f_value."*</b> ";
-            break;
-        }
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with code")." <b>$f_value</b>* ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with code')." <b>$f_value</b>*)";
+        break;
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with name")." <b>$f_value</b>* ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with name')." <b>$f_value</b>*)";
+        break;
+
     }
-    elseif($filtered>0) {
-        switch ($f_field) {
-        case('name'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with name like')." <b>".$f_value."*</b>";
-            break;
-        case('description'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with description like')." <b>".$f_value."*</b>";
-            break;
-        }
-    }
-    else
-        $filter_msg='';
 
     $_dir=$order_direction;
     $_order=$order;
@@ -477,7 +483,7 @@ function list_pages_for_edition() {
 
 
     $adata=array();
-    $sql="select *  from `Page Dimension`  P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select *  from `Page Dimension`  P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
 
@@ -535,6 +541,9 @@ function list_pages_for_edition() {
                    );
     echo json_encode($response);
 }
+
+
+
 
 function  delete_page_store($data) {
 
@@ -608,61 +617,59 @@ function delete_see_also_page($data) {
 
 }
 
-function edit_checkout_method($data){
+function edit_checkout_method($data) {
 //print_r($data);
-	$site = new Site($data['site_key']);
-	if(!$site){
-		$response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
-		echo json_encode($response);
+    $site = new Site($data['site_key']);
+    if (!$site) {
+        $response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
+        echo json_encode($response);
 
-		exit;
-	}
-//print_r($site);	
-	switch($data['site_checkout_method']){
-		case 'inikoo':
-		case 'Inikoo':
-			$method='Inikoo';
-			break;
-		default:
-			$method='Ecommerce';
-	}
+        exit;
+    }
+//print_r($site);
+    switch ($data['site_checkout_method']) {
+    case 'inikoo':
+    case 'Inikoo':
+        $method='Inikoo';
+        break;
+    default:
+        $method='Ecommerce';
+    }
 //print $method;
-	$response=$site->update(array('Site Checkout Method'=>$method));
-	if($site->updated){
-		$response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
-	}
-	else
-		$response= array('state'=>400,'msg'=>$site->msg);
-		
-	echo json_encode($response);
+    $response=$site->update(array('Site Checkout Method'=>$method));
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    echo json_encode($response);
 }
 
-function edit_registration_method($data){
-	$site = new Site($data['site_key']);
-	if(!$site){
-		$response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
-		echo json_encode($response);
+function edit_registration_method($data) {
+    $site = new Site($data['site_key']);
+    if (!$site) {
+        $response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
+        echo json_encode($response);
 
-		exit;
-	}
-//print_r($site);	
-	switch($data['site_registration_method']){
-		case 'sidebar':
-		case 'Sidebar':
-			$method='SideBar';
-			break;
-		default:
-			$method='MainPage';
-	}
+        exit;
+    }
+//print_r($site);
+    switch ($data['site_registration_method']) {
+    case 'sidebar':
+    case 'Sidebar':
+        $method='SideBar';
+        break;
+    default:
+        $method='MainPage';
+    }
 //print $method;
-	$response=$site->update(array('Site Registration Method'=>$method));
-	if($site->updated){
-		$response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
-	}
-	else
-		$response= array('state'=>400,'msg'=>$site->msg);
-		
-	echo json_encode($response);
+    $response=$site->update(array('Site Registration Method'=>$method));
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    echo json_encode($response);
 }
 
 function edit_site($data) {
@@ -691,7 +698,7 @@ function edit_site($data) {
 
     $responses=array();
     foreach($values as $key=>$values_data) {
-		//print_r($values_data);
+        //print_r($values_data);
         $responses[]=edit_site_field($site->id,$key,$values_data);
     }
 
@@ -703,7 +710,7 @@ function edit_site($data) {
 function edit_site_field($site_key,$key,$value_data) {
 
     //print $value_data;
-	//print "$customer_key,$key,$value_data ***";
+    //print "$customer_key,$key,$value_data ***";
     $site=new site($site_key);
 
     global $editor;
@@ -711,27 +718,220 @@ function edit_site_field($site_key,$key,$value_data) {
 
     $key_dic=array(
                  'slogan'=>'Site Slogan'
-				 ,'name'=>'Site Name'
-				 ,'url'=>'Site URL'
-				 ,'ftp'=>'Site FTP Credentials'
+                          ,'name'=>'Site Name'
+                                  ,'url'=>'Site URL'
+                                         ,'ftp'=>'Site FTP Credentials'
              );
 
     if (array_key_exists($key,$key_dic))
         $key=$key_dic[$key];
 
     $the_new_value=_trim($value_data['value']);
-	//print "$key: $the_new_value";
+    //print "$key: $the_new_value";
 
     $site->update(array($key=>$the_new_value));
-    
-	if($site->updated){
-		$response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'newvalue'=>strtolower($site->new_value),'key'=>$value_data['okey']);
-	}
-	else
-		$response= array('state'=>400,'msg'=>$site->msg,'key'=>$value_data['okey']);
+
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'newvalue'=>strtolower($site->new_value),'key'=>$value_data['okey']);
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg,'key'=>$value_data['okey']);
 
 
-	//$response=array();
+    //$response=array();
     return $response;
 
 }
+
+
+function list_headers_for_edition() {
+    if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','department','family','product')) ) {
+        $parent=$_REQUEST['parent'];
+
+    } else {
+        return;
+    }
+
+    if (isset( $_REQUEST['parent_key'])) {
+        $parent_key=$_REQUEST['parent_key'];
+
+    } else {
+        return;
+    }
+
+
+    $conf=$_SESSION['state'][$parent]['edit_headers'];
+
+
+
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+
+    } else
+        $number_results=$conf['nr'];
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+    $_SESSION['state'][$parent]['edit_headers']['order']=$order;
+    $_SESSION['state'][$parent]['edit_headers']['order_dir']=$order_direction;
+    $_SESSION['state'][$parent]['edit_headers']['nr']=$number_results;
+    $_SESSION['state'][$parent]['edit_headers']['sf']=$start_from;
+    $_SESSION['state'][$parent]['edit_headers']['f_field']=$f_field;
+    $_SESSION['state'][$parent]['edit_headers']['f_value']=$f_value;
+//    $_SESSION['state'][$parent]['edit_headers']['parent_key']=$parent_key;
+//    $_SESSION['state'][$parent]['edit_headers']['parent']=$parent;
+
+
+
+    switch ($parent) {
+    case 'site':
+        $table='  `Page Header Dimension`  ';
+        $where=sprintf(' where `Site Key`=%d',$parent_key);
+        break;
+    default:
+
+        break;
+    }
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+    if ($f_field=='name'  and $f_value!='')
+        $wheref.=" and `Page Header Name` like '".addslashes($f_value)."%'";
+//    elseif ($f_field=='title' and $f_value!='')
+//    $wheref.=" and  `Page Store Title` like '".addslashes($f_value)."%'";
+
+
+
+    $sql="select count(*) as total from $table  $where $wheref";
+//print $sql;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from $table  $where  ";
+//print $sql;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('header','headers',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any header with name")." <b>$f_value</b>* ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('headers with name')." <b>$f_value</b>*)";
+        break;
+
+    }
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+
+    if ($order=='name')
+        $order='`Page Header Name`';
+    else
+        $order='`Page Header Name`';
+
+
+    $adata=array();
+    $sql="select *  from $table $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+
+    $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        $adata[]=array(
+                     'id'=>$row['Page Header Key'],
+                     'name'=>$row['Page Header Name'],
+                   'go'=>sprintf("<a href='edit_page_header.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
+
+                     'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
+
+                 );
+    }
+    mysql_free_result($res);
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+
+
+?>

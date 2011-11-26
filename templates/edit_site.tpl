@@ -27,14 +27,36 @@
     <li> <span class="item {if $block_view=='layout'}selected{/if}"  id="layout">  <span> {t}Layout{/t}</span></span></li>
     <li> <span class="item {if $block_view=='style'}selected{/if}"  id="style">  <span> {t}Style{/t}</span></span></li>
     <li> <span class="item {if $block_view=='sections'}selected{/if}"  id="sections">  <span> {t}Sections{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
+      <li> <span class="item {if $block_view=='headers'}selected{/if}"  id="headers">  <span> {t}Headers{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='footers'}selected{/if}"  id="footers">  <span> {t}Footers{/t}</span></span></li>
 
+    <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
+  
   </ul>
   
   <div class="tabbed_container" > 
    
-    
-    
+     <div  class="edit_block" style="{if $block_view!='headers'}display:none{/if}"  id="d_headers">
+     
+     <div class='buttons'>
+        <button id="new_header"><img src="art/icons/add.png" alt=""> {t}New Header{/t}</button>
+                <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button>
+
+     </div>
+     <div style="clear:both">
+       <span class="clean_table_title">{t}Headers{/t}</span>
+     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+  <div  id="table2"   class="data_table_container dtable btable "> </div>
+   </div>
+   </div>
+        <div  class="edit_block" style="{if $block_view!='footers'}display:none{/if}"  id="d_footers">
+     
+     
+       <span class="clean_table_title">{t}Footer{/t}</span>
+     {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
+  <div  id="table3"   class="data_table_container dtable btable "> </div>
+     
+     </div>
     <div  class="edit_block" style="{if $block_view!='general'}display:none{/if}"  id="d_general">
       
       
@@ -272,7 +294,7 @@ link to edit_site_section.php?id=
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
       {foreach from=$paginator_menu1 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},1)"> {$menu}</a></li>
       {/foreach}
     </ul>
   </div>
@@ -287,5 +309,46 @@ link to edit_site_section.php?id=
     </ul>
   </div>
 </div>
+
+<div id="rppmenu6" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu6 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},6)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu6" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu6 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',6)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="dialog_upload_header" style="padding:30px 10px 10px 10px;width:320px">
+
+ <table style="margin:0 auto">
+  <form enctype="multipart/form-data" method="post" id="upload_header_form">
+<input type="hidden" name="parent_key" value="{$site->id}" />
+<input type="hidden" name="parent" value="site" />
+
+ <tr><td>{t}File{/t}:</td><td><input id="upload_header_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
+
+  </form>
+ <tr><td colspan=2>
+  <div class="buttons">
+<button class="positive"  id="upload_header"  >{t}Upload{/t}</button>
+<button  id="cancel_upload_header" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
 
 {include file='footer.tpl'}

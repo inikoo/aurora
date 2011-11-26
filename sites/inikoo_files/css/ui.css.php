@@ -1,17 +1,20 @@
 <?php
-global $width;
+ header("Content-type: text/css"); 
+
+$width=1000;
+if(isset($_REQUEST['width']))
 $width=$_REQUEST['width'];
 if($width==1000){
-	$header_art="header1000d.png";
-	$footer_art="footer1000.png";
+	$header_art="../art/header1000d.png";
+	$footer_art="../art/footer1000.png";
 	$header_table_width=1000;
 	$header_table_found_in=130;
 	$header_table_search=505;
 	$header_table_see_also=365;
 }
 else{
-	$header_art="header1.jpg";
-	$footer_art="footerbackground.png";
+	$header_art="../art/header1.jpg";
+	$footer_art="../art/footerbackground.png";
 	$header_table_width=875;
 	$header_table_found_in=130;
 	$header_table_search=380;
@@ -29,7 +32,7 @@ table {border-collapse: collapse;}
 
 
 #header{
-	background-image:url('../art/<?php echo $header_art?>'); 
+	background-image:url('<?php echo $header_art?>'); 
 	background-repeat:no-repeat; 
 	background-position:center bottom; 
 	color:black; 
@@ -38,14 +41,14 @@ table {border-collapse: collapse;}
     
 	width: 100%
 }
-h1 {position:relative;top:5px;padding:0;margin:0px 0 0 180px;xfont-family: Delicious, sans-serif;font-size:35px;color:#111;text-shadow: 1px 2px 1px  #444}
+h1 {position:relative;top:5px;padding:0;margin:0px 0 0 180px;font-family: Arial, sans-serif;font-size:35px;color:#111;text-shadow: 1px 2px 1px  #444}
 
 @font-face {
 	font-family: weathered;
 	src: url('weathered.TTF');}
 @font-face {
 	font-family: weathered;
-	font-weight: 1000;
+	font-weight: 800;
 	src: url('weathered.TTF');
 }
 
@@ -54,7 +57,7 @@ h1 {position:relative;top:5px;padding:0;margin:0px 0 0 180px;xfont-family: Delic
 	src: url('ABOS.TTF');}
 @font-face {
 	font-family: Delicious;
-	font-weight: 1000;
+	font-weight: 800;
 	src: url('ABOS.TTF');
 }
 
@@ -131,21 +134,9 @@ table.footer_table{
 }
 
 
-table.zheader_table{
-	xwidth:100%;
-
-	
-}
 
 
 
-
- .zheader_table span{
- 
- margin-left:15px;
- width:600px;
- ;padding-left:10px;
- }
 
 
 
@@ -212,8 +203,8 @@ table.header_table{
 
 
 span.see_also{margin-right:10px}
-.header_table  a{color:700000}
-.header_table  a:hover{color:770707}
-.header_table  a:visited{color:700070}
+.header_table  a{color:#700000}
+.header_table  a:hover{color:#770707}
+.header_table  a:visited{color:#700070}
 .rrp{color:	#900020}
 .price{color:#236E4B;text-align:right}

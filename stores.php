@@ -263,6 +263,7 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('elements_family_number',$elements_number);
 //print_r($_SESSION['state']['store']['families']);
 $smarty->assign('elements_family',$_SESSION['state']['stores']['families']['elements']);
+$smarty->assign('store_key',false);
 
 $smarty->display('stores.tpl');
 

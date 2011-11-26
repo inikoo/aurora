@@ -1217,9 +1217,10 @@ function get_preview( index ) {
 }
 
 function html_editor_changed(){
-
-validate_scope_data['email_content_html']['content_html']['changed']=true;
-validate_scope('email_content_html');
+    
+    validate_scope_data['email_content_html']['content_html']['changed']=true;
+    validate_scope('email_content_html');
+    
 }
 
 
@@ -1478,9 +1479,9 @@ validate_scope_metadata={
         
         
         this.on('editorKeyUp', html_editor_changed, this, true);
-                this.on('editorDoubleClick', html_editor_changed, this, true);
-                this.on('editorMouseDown', html_editor_changed, this, true);
-                this.on('buttonClick', html_editor_changed, this, true);
+        this.on('editorDoubleClick', html_editor_changed, this, true);
+          this.on('editorMouseDown', html_editor_changed, this, true);
+          this.on('buttonClick', html_editor_changed, this, true);
 
         this.on('afterRender', function() {
             var wrapper = this.get('editor_wrapper');
@@ -1681,7 +1682,6 @@ dialog_change_email_type.hide();
 
 function close_upload_header_image(){
 dialog_upload_header_image.hide();
-
 }
 
 

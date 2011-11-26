@@ -60,7 +60,7 @@ $smarty->assign('search_scope','customers');
 
 
 
-
+$_SESSION['state']['customers']['table']['f_value']='';
 $_SESSION['state']['customers']['list']['where']='';
 $smarty->assign('parent','customers');
 $smarty->assign('title', _('Customers Lists'));
@@ -68,10 +68,10 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $have_options=array(
-                  'email'=>array('name'=>_('Email')),
-                  'tel'=>array('name'=>_('Telephone')),
-                  'fax'=>array('name'=>_('Fax')),
-                  'address'=>array('name'=>_('Address')),
+                  'email'=>array('name'=>_('Email') ,'selected'=>false ),
+                  'tel'=>array('name'=>_('Telephone'),'selected'=>false ),
+                  'fax'=>array('name'=>_('Fax'),'selected'=>false ),
+                  'address'=>array('name'=>_('Address'),'selected'=>false )
               );
 			  
 
@@ -84,16 +84,16 @@ $customer_stat=array();
 if(isset($_REQUEST['active']) && $_REQUEST['active']==1)
 	  $customer_stat['active']=array('name'=>_('Active'),'selected'=>true);
 else
-	  $customer_stat['active']=array('name'=>_('Active'));
+	  $customer_stat['active']=array('name'=>_('Active'),'selected'=>false);
 
 
-$customer_stat['losing']=array('name'=>_('Losing Activity'));
+$customer_stat['losing']=array('name'=>_('Losing Activity'),'selected'=>false);
 
 	  
 if(isset($_REQUEST['lost']) && $_REQUEST['lost']==1)  
 		$customer_stat['lost']=array('name'=>_('Lost'),'selected'=>true);
 else
-		$customer_stat['lost']=array('name'=>_('Lost'));
+		$customer_stat['lost']=array('name'=>_('Lost'),'selected'=>false);
 
 
 
@@ -131,26 +131,26 @@ $smarty->assign('auto',$auto);
 
 
 $dont_have_options=array(
-                       'email'=>array('name'=>_('Email')),
-                       'tel'=>array('name'=>_('Telephone')),
-                       'fax'=>array('name'=>_('Fax')),
-                       'address'=>array('name'=>_('Address')),
+                       'email'=>array('name'=>_('Email'),'selected'=>false ),
+                       'tel'=>array('name'=>_('Telephone'),'selected'=>false ),
+                       'fax'=>array('name'=>_('Fax'),'selected'=>false ),
+                       'address'=>array('name'=>_('Address'),'selected'=>false )
                    );
 $smarty->assign('dont_have_options',$dont_have_options);
 
 $condition=array(
-                       'less'=>array('name'=>_('Less than')),
-                       'equal'=>array('name'=>_('Equal')),
-                       'more'=>array('name'=>_('More than')),
-					   'between'=>array('name'=>_('Between'))
+                       'less'=>array('name'=>_('Less than'),'selected'=>false ),
+                       'equal'=>array('name'=>_('Equal'),'selected'=>false ),
+                       'more'=>array('name'=>_('More than'),'selected'=>false ),
+					   'between'=>array('name'=>_('Between'),'selected'=>false ),
                    );
 $smarty->assign('condition',$condition);
 
 $allow_options=array(
                       
-                       'newsletter'=>array('name'=>_('Newsletter')),
-                       'marketing_email'=>array('name'=>_('Marketing Email')),
-                       'marketing_post'=>array('name'=>_('Marketing Post')),
+                       'newsletter'=>array('name'=>_('Newsletter'),'selected'=>false ),
+                       'marketing_email'=>array('name'=>_('Marketing Email'),'selected'=>false ),
+                       'marketing_post'=>array('name'=>_('Marketing Post'),'selected'=>false ),
                         'all'=>array('name'=>'No restrictions','selected'=>true), 
                    );
 $smarty->assign('allow_options',$allow_options);
@@ -158,10 +158,35 @@ $smarty->assign('allow_options',$allow_options);
 
 $smarty->assign('business_type',true);
 
-
+$currency=$store->data['Store Currency Code'];
+$currency_symbol=currency_symbol($currency);
 $smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
+
+$tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);
+
+$filter_menu=array(
+                 'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
+                 'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+                 'country'=>array('db_key'=>_('country'),'menu_label'=>_('Customer Country'),'label'=>_('Country')),
+
+                 'min'=>array('db_key'=>_('min'),'menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
+                 'max'=>array('db_key'=>_('min'),'menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
+                 'last_more'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
+                 'last_less'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
+                 'maxvalue'=>array('db_key'=>_('maxvalue'),'menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
+                 'minvalue'=>array('db_key'=>_('minvalue'),'menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
+             );
+
+
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+
 
 $tipo_filter1='wregion_code';
 $filter_menu1=array(
@@ -261,5 +286,5 @@ $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customers_
 $smarty->assign('options_box_width','550px');
 
 
-$smarty->display('new_customers_lists.tpl');
+$smarty->display('new_customers_list.tpl');
 ?>
