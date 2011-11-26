@@ -8,6 +8,29 @@ sales_tables= new Object();
 
   }
 
+
+function getDocHeight() {
+    var D = document;
+    return Math.max(
+        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+        Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+    );
+}
+
+
+function myrenderEvent(){
+//alert(   YAHOO.util.Dom.getViewportHeight())
+
+//alert(Dom)
+
+parent.Dom.setStyle('block_'+Dom.get('block_key').value,'height',getDocHeight()+'px')
+
+
+}
+
+
+
 function sales_init(){
 
 set_title(Dom.get('period').value)
@@ -79,7 +102,8 @@ set_title(Dom.get('period').value)
 	    sales_tables.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    sales_tables.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    sales_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+      sales_tables.table1.subscribe("renderEvent", myrenderEvent);
+		    
 
 		    sales_tables.table1.subscribe('renderEvent',function() { 
 		  

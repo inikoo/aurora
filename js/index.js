@@ -15,6 +15,7 @@ function changeHeight(iframe){
          // alert(innerDoc.body.offsetHeight)
 
             Dom.setStyle(iframe,'height',innerDoc.body.offsetHeight + 32  +'px');
+         
 
              //iframe.height = innerDoc.body.offsetHeight + 32  +'px'; //Extra height FireFox
           }
