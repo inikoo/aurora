@@ -2,12 +2,19 @@
 <div id="bd" >
  {include file='assets_navigation.tpl'}
 <input id="department_key" value="{$department->id}" type="hidden" />
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
+<div class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
 </div>
- 
+<div class="top_page_menu">
+    <div class="buttons left" style="float:left">
+        <button style="margin-left:0px"  onclick="window.location='department.php?id={$department->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+    </div>
+    <div style="clear:both"></div>
+</div> 
 <div style="clear:left;margin:0 0px">
-    <h1><span id="title_name">{$department->get('Product Department Name')}</span> (<span id="title_code">{$department->get('Product Department Code')}</span>)</h1>
+    <h1>{t}Department{/t} <span class="id" id="title_name">{$department->get('Product Department Name')}</span> <span class="id" id="title_code">({$department->get('Product Department Code')})</span></h1>
 </div>
    
  
@@ -30,10 +37,10 @@
    <div  id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}"  >
       
     
-      <div class="general_options" style="text-align:right;xfloat:right">
+      <div class="buttons">
 	
-	<span  style="margin-right:10px;visibility:hidden"  onClick="save_edit_general('department')" id="save_edit_department" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden"  onClick="reset_edit_general('department')" id="reset_edit_department" class="state_details">{t}Reset{/t}</span>
+	<button  style="visibility:hidden"  onClick="save_edit_general('department')" id="save_edit_department" class="positive">{t}Save{/t}</button>
+	<button style="visibility:hidden"  onClick="reset_edit_general('department')" id="reset_edit_department" class="negative">{t}Reset{/t}</button>
 	
       </div>
 

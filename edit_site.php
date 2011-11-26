@@ -62,10 +62,6 @@ $smarty->assign('create',$create);
 
 get_header_info($user,$smarty);
 
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'site.php?id='.$site_id,'label'=>_('Exit Edit'));
-
-$smarty->assign('general_options_list',$general_options_list);
 
 
 
@@ -73,15 +69,13 @@ $smarty->assign('general_options_list',$general_options_list);
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-
-               //	 $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
                'common.css',
                'container.css',
                'button.css',
                'table.css',
-               'css/dropdown.css'
+               'theme.css.php'
            );
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -143,10 +137,10 @@ $smarty->assign('title', $site->data['Site Name']);
 
 
 
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['site']['history']['f_field']:'code');
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['site']['history']['f_value']:addslashes($q)));
+
+$tipo_filter=$_SESSION['state']['site']['history']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['site']['history']['f_value']);
 $filter_menu=array(
                  'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
                  'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
@@ -158,6 +152,60 @@ $filter_menu=array(
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['site']['edit_headers']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['site']['edit_headers']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>'Headers with name *<i>x</i>*','label'=>_('Name'))
+
+             );
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['site']['edit_footers']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['site']['edit_footers']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>'Footers with name *<i>x</i>*','label'=>_('Name'))
+
+             );
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['site']['edit_pages']['f_field'];
+$smarty->assign('filter6',$tipo_filter);
+$smarty->assign('filter_value6',$_SESSION['state']['site']['edit_pages']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
+                 'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
+
+             );
+$smarty->assign('filter_menu6',$filter_menu);
+$smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu6',$paginator_menu);
+$elements_number=array('FamilyCatalogue'=>0,'DepartmentCatalogue'=>0,'ProductDescription'=>0,'Other'=>0);
+$sql=sprintf("select count(*) as num,`Page Store Section` from  `Page Store Dimension` where `Page Site Key`=%d group by `Page Store Section`",$site->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+$_key=preg_replace('/ /','',$row['Page Store Section']);
+
+   if(in_array($_key,array('FamilyCatalogue','DepartmentCatalogue','ProductDescription')))
+   $elements_number[$_key]=$row['num'];
+   else{
+    $elements_number['Other']=+$row['num'];
+   }
+}
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['site']['edit_pages']['elements']);
+
+
 
 $smarty->display('edit_site.tpl');
 

@@ -1,40 +1,45 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
+<div  class="branch"> 
+  <span  >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span>
 </div>
+
+<div class="top_page_menu">
+    <div class="buttons left" style="float:left">
+        <button style="margin-left:0px"  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+    </div>
+    <div style="clear:both"></div>
+</div>
+
+
 <div style="clear:left;margin:0 0px">
-    <h1>{t}Editing Store{/t}: <span id="title_name">{$store->get('Store Name')}</span> (<span id="title_code">{$store->get('Store Code')}</span>)</h1>
+    <h1>{t}Editing Store{/t}: <span class="id" id="title_name">{$store->get('Store Name')}</span> <span class="id" id="title_code">({$store->get('Store Code')})</span></h1>
 </div>
   <div id="msg_div"></div>
 
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
-    <li> <span class="item {if $edit=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Campaings{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $edit=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Deal Templates{/t}</span></span></li>
     <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Deals{/t}</span></span></li>
-
     <li> <span class="item {if $edit=='charges'}selected{/if}"  id="charges">  <span> {t}Charges{/t}</span></span></li>
     <li> <span class="item {if $edit=='shipping'}selected{/if}"  id="shipping">  <span> {t}Shipping{/t}</span></span></li>
-    
-      <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Images{/t}</span></span></li>
+    <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Images{/t}</span></span></li>
     <li> <span class="item {if $edit=='departments'}selected{/if}" id="departments"  ><span> {t}Departments{/t}</span></span></li>
-      <li> <span class="item {if $edit=='website'}selected{/if} " id="website" ><span class="todo">{t}Web Sites{/t}</span></span></li>
-    <li style="display:none" > <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
-     <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Customer Contact{/t}</span></span></li>
+    <li > <span class="item {if $edit=='website'}selected{/if} " id="website" ><span class="todo">{t}Web Sites{/t}</span></span></li>
+    <li> <span class="item {if $edit=='communications'}selected{/if}"  id="communications">  <span> {t}Customer Contact{/t}</span></span></li>
 
  
  </ul>
   
   <div class="tabbed_container" > 
+
     <div id="info_name" style="margin-left:20px;float:left;width:260px;display:none">
    
     </div>
-    
-    
-   
-    
-     <div  class="edit_block" style="{if $edit!='website'}display:none{/if}"  id="d_website">
+     <div  class="edit_block" style="min-height:200px;{if $edit!='website'}display:none{/if}"  id="d_website">
       
 
       <div class="general_options" style="float:right">
@@ -64,7 +69,7 @@
 
     
    </div>   
-    <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
+    <div  class="edit_block" style="min-height:200px;{if $edit!="description"}display:none{/if}"  id="d_description">
       
      
 	
@@ -73,14 +78,14 @@
      
 	
 	
-      <table style="margin:0;clear:both;width:870px" class="edit" border=0 >
+      <table style="margin:0;clear:both;width:870px" class="edit"  >
       
       <tr class="title"><td >{t}Store Details{/t} </td>
-       <td>
-       <div class="general_options" style="float:right">
+       <td colspan=2>
+       <div class="buttons">
 	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_store" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_store" class="state_details">{t}Reset{/t}</span>
+	<button class="positive"  style="margin-right:10px;visibility:hidden"  id="save_edit_store" >{t}Save{/t}</button>
+	<button class="negative" style="margin-right:10px;visibility:hidden" id="reset_edit_store" >{t}Reset{/t}</button>
 	
       </div>
       </td>
@@ -208,7 +213,7 @@
 	
 
       </div>
-      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
+      <div  class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
 	
 	
 	
@@ -235,9 +240,17 @@
 	
 	
       </div>
-       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
+       <div  class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
 	
+   <div class="buttons">
+	   	   <button  id="add_deal"><img src="art/icons/add.png" alt=""> {t}Add Deal{/t}</button>
+	   	   <button  id="edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Deal Templates{/t}</button>
 
+
+	      <button  style="display:none" class="positive" id="save_new_deal">{t}Save New Template{/t}</button>
+	      <button  style="display:none" class="negative" id="cancel_add_deal">{t}Cancel{/t}</button>
+	  </div>
+	
 
 	 <div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
 	   <div id="new_deal_messages" class="messages_block"></div>
@@ -245,60 +258,69 @@
 
 
 	   <table class="edit" >
-	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
+	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td>
+	     </tr>
 	     <tr><td>{t}Deal Description{/t}:</td><td><input   id="new_deal_description" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
 	     </tr>
 	  </table>
 	 </div>
 	 
-	 <div   class="data_table" sxtyle="margin:25px 10px;">
-	   <span class="clean_table_title">{t}Deals{/t}</span>
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="add_deal">Add Deal</td>
-	      <td  style="display:none" id="save_new_deal">Save New Deal</td>
-	      <td  style="display:none" id="cancel_add_deal">Cancel</td>
-	    </tr>
-	  </table>
-	  <div  class="clean_table_caption"  style="clear:both;">
-	    <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
-	    <div class="clean_table_filter" style="display:none" id="clean_table_filter4"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value0}" size=10/><div id='f_container4'></div></div></div>
-	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
-	  </div>
+	
+	 
+	 <div   class="data_table" style="clear:both">
+	  
+	  
+	  
+	  
+	  <span class="clean_table_title">{t}Deals{/t}</span>
+	   
+	          <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+
+	   
+	
+	   	  
+{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4  }
+
 	  <div  id="table4"   class="data_table_container dtable btable "> </div>
+
+
 	 </div>
       </div>
-       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="campaigns"}display:none{/if}"  id="d_campaigns">
+       <div  class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!="campaigns"}display:none{/if}"  id="d_campaigns">
+       
+         <div class="buttons">
+	   <button  id="add_campaign"><img src="art/icons/add.png" alt=""> {t}Add Template{/t}</button>
+	   	   	   <button  id="close_edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Store Deals{/t}</button>
+
+	      <button  style="display:none" class="positive" id="save_new_campaign">{t}Save New Template{/t}</button>
+	      <button  style="display:none" class="negative" id="cancel_add_campaign">{t}Cancel{/t}</button>
+	  </div>
+       
 	 <div  class="new_item_dialog"  id="new_campaign_dialog" style="display:none">
 	   <div id="new_campaign_messages" class="messages_block"></div>
 	   <table class="edit" >
-	     <tr><td>{t}Campaign Name{/t}:</td><td><input  id="new_campaign_name" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
-	     <tr><td>{t}Campaign Description{/t}:</td><td><input   id="new_campaign_description" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
+	     <tr><td>{t}Template Name{/t}:</td><td><input  id="new_campaign_name" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)"  changed=0 type='text' class='text' MAXLENGTH="16" value="" /></td></tr>
+	     <tr><td>{t}Template Description{/t}:</td><td><input   id="new_campaign_description" onKeyUp="new_campaign_changed(this)"    onMouseUp="new_campaign_changed(this)"  onChange="new_campaign_changed(this)" changed=0 type='text'  MAXLENGTH="255"  class='text' value="" /></td>
 	     </tr>
 	  </table>
 	 </div>
 	 
-	 <div   class="data_table" sxtyle="margin:25px 10px;">
-	   <span class="clean_table_title">{t}Campaigns{/t}</span>
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="add_campaign">Add Campaign</td>
-	      <td  style="display:none" id="save_new_campaign">Save New Campaign</td>
-	      <td  style="display:none" id="cancel_add_campaign">Cancel</td>
-	    </tr>
-	  </table>
-	  <div  class="clean_table_caption"  style="clear:both;">
-	    <div style="float:left;"><div id="table_info3" class="clean_table_info"><span id="rtext3"></span> <span class="rtext_rpp" id="rtext_rpp3"></span> <span class="filter_msg"  id="filter_msg3"></span></div></div>
-	    <div class="clean_table_filter" style="display:none" id="clean_table_filter3"><div class="clean_table_info"><span id="filter_name3">{$filter_name3}</span>: <input style="border-bottom:none" id='f_input3' value="{$filter_value0}" size=10/><div id='f_container3'></div></div></div>
-	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator3"></span></div></div>
-	  </div>
+	 <div   class="data_table" style="clear:both">
+	   <span class="clean_table_title">{t}Deal Templates{/t}</span>
+	   	          <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+
+	
+	  
+	
+	{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
+
 	  <div  id="table3"   class="data_table_container dtable btable "> </div>
 	 </div>
     
 
 
       </div>
-      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="charges"}display:none{/if}"  id="d_charges">
+      <div  class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!="charges"}display:none{/if}"  id="d_charges">
 	<div  class="new_item_dialog"  id="new_charge_dialog" style="display:none">
 	  <div id="new_charge_messages" class="messages_block"></div>
 	  <table class="edit" >
@@ -309,39 +331,36 @@
 	</div>
 	
 	<div   class="data_table" sxtyle="margin:25px 10px;">
-	  <span class="clean_table_title">{t}Charges{/t}</span>
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="add_charge">Add Charge</td>
-	      <td  style="display:none" id="save_new_charge">Save New Charge</td>
-	      <td  style="display:none" id="cancel_add_charge">Cancel</td>
-	    </tr>
-	  </table>
-	  <div  class="clean_table_caption"  style="clear:both;">
-	    <div style="float:left;"><div id="table_info2" class="clean_table_info"><span id="rtext2"></span> <span class="rtext_rpp" id="rtext_rpp2"></span> <span class="filter_msg"  id="filter_msg2"></span></div></div>
-	    <div class="clean_table_filter" style="display:none" id="clean_table_filter2"><div class="clean_table_info"><span id="filter_name2">{$filter_name2}</span>: <input style="border-bottom:none" id='f_input2' value="{$filter_value0}" size=10/><div id='f_container2'></div></div></div>
-	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator2"></span></div></div>
+	<div class="buttons">
+	   <button  id="add_charge"><img src="art/icons/add.png" alt="">  Add Charge</button>
 	  </div>
-	  <div  id="table2"   class="data_table_container dtable btable "> </div>
+	  
+	  
+	  <div style="clear:both">
+	  <span class="clean_table_title">{t}Charges{/t}</span>
+	  
+	  
+	{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+    <div  id="table2"   class="data_table_container dtable btable" style="font-size:85%"> </div>
+	  </div>
+	  
+	  
 	</div>
+
+
+
+
+
+
       </div>
-      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="shipping"}display:none{/if}"  id="d_shipping">
+
+
+
+
+      <div  class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!="shipping"}display:none{/if}"  id="d_shipping">
       </div>
-       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
-      
-      <div  class="data_table" style="clear:both">
-      <span class="clean_table_title">{t}Store Pages{/t}</span>
-      {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5  }
- <div  id="table5"   class="data_table_container dtable btable "> </div>
- </div>
- 
- 
- 
- 
- 
- 
-      </div>
-      <div  class="edit_block" style="{if $edit!="departments"}display:none{/if}"  id="d_departments">
+
+      <div  class="edit_block" style="min-height:200px;{if $edit!="departments"}display:none{/if}"  id="d_departments">
        <div class="general_options" style="float:right">
 	<span   style="margin-right:10px"  id="add_department" class="state_details" >Create Department</span>
 	<span  style="margin-right:10px;display:none"  id="save_new_department" class="state_details">{t}Save{/t}</span>
@@ -369,7 +388,7 @@
 	</div>
      
       </div>
-      <div  class="edit_block" style="{if $edit!="communications"}display:none{/if}"  id="d_communications">
+      <div  class="edit_block" style="min-height:200px;{if $edit!="communications"}display:none{/if}"  id="d_communications">
       	 <div class="general_options" style="float:right">
 	
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_communications" class="state_details">{t}Save{/t}</span>
@@ -425,5 +444,16 @@
     </ul>
   </div>
 </div>
+
+<div id="dialog_edit_campaign" style="20px 10px 10px 10px">
+<table class="edit">
+<tr>
+<td class="label">{t}Name{/t}</td>
+</tr>
+
+</table>
+
+</div>
+
 
 {include file='footer.tpl'}

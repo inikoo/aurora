@@ -294,7 +294,15 @@ class Store extends DB_Table {
             break;
         case('Percentage Active Contacts'):
             return percentage($this->data['Store Active Contacts'],$this->data['Store Contacts']);
+        case('Percentage Total With Orders'):
+            return percentage($this->data['Store Contacts With Orders'],$this->data['Store Contacts']);
+        
+        
+            
         }
+        
+        
+        
         if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
 
             $amount='Store '.$key;
@@ -357,12 +365,25 @@ class Store extends DB_Table {
     }
 
 
-    /*
-      Method: load
-      Obtiene registros de las tablas Product Dimension, Product Family Dimension, Product Department Dimension, y actualiza datos de Store Dimension, de acuerdo a la categoria indicada.
-    */
-    // JFA
 
+
+    function get_products_for_sale() {
+        $products_for_sale=0;
+        $sql=sprintf("select count(*) as number from `Product Dimension` where `Product Store Key`=%d and `Product Record Type`='Normal'     and `Product Main Type` in ('Private','Sale')",
+                     $this->id
+                    );
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $products_for_sale=$row['number'];
+        }
+        return $products_for_sale;
+    }
+
+    function get_formated_products_for_sale() {
+
+        return number($this->get_products_for_sale());
+    }
 
     function load($tipo,$args=false) {
         switch ($tipo) {
@@ -388,16 +409,16 @@ class Store extends DB_Table {
 
 
             break;
-      
+
         }
 
     }
 
 
-function update_children_data(){
- $this->update_product_data();
-            $this->update_families();
-}
+    function update_children_data() {
+        $this->update_product_data();
+        $this->update_families();
+    }
 
     function update_code($a1) {
 
@@ -430,7 +451,7 @@ function update_children_data(){
                      ,$this->id
                     );
         if (mysql_query($sql)) {
-            $this->msg=_('Store code updated');
+            $this->msg=_('Store Code Updated');
             $this->updated=true;
             $this->new_value=$a1;
             $this->data['Store Code']=$a1;
@@ -455,112 +476,117 @@ function update_children_data(){
         }
     }
 
-    /*
-      Function: update
-      Funcion que permite actualizar el nombre o el codigo en la tabla store dimension, cuidando que no se duplique el valor del codigo o el nombre en dicha tabla
-    */
 
-    function update($key,$a1=false,$a2=false) {
-        $this->updated=false;
-        $this->msg='Nothing to change';
+    function update_name($value) {
+        if (_trim($value)==$this->data['Store Name']) {
+            $this->updated=true;
+            $this->new_value=$value;
+            return;
 
-        switch ($key) {
+        }
+
+        if ($value=='') {
+            $this->msg=_('Error: Wrong name (empty)');
+            return;
+        }
+
+        if (!(strtolower($value)==strtolower($this->data['Store Name']) and $value!=$this->data['Store Name'])) {
+
+            $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_ci"
+                         ,prepare_mysql($value)
+                        );
+
+            $res=mysql_query($sql);
+            $row=mysql_fetch_array($res);
+            if ($row['num']>0) {
+                $this->msg=_("Error: Another store with the same name");
+                return;
+            }
+        }
+        $old_value=$this->get('Store Name');
+        $sql=sprintf("update `Store Dimension` set `Store Name`=%s where `Store Key`=%d "
+                     ,prepare_mysql($value)
+                     ,$this->id
+                    );
+        if (mysql_query($sql)) {
+            $this->msg=_('Store name updated');
+            $this->updated=true;
+            $this->new_value=$value;
+            $this->data['Store Name']=$value;
+
+            $this->add_history(array(
+                                   'Indirect Object'=>'Store Name',
+                                   'History Abstract'=>_('Store Name Changed').' ('.$this->get('Store Name').')',
+                                   'History Details'=>_('Store')." ("._('Code').":".$this->get('Store Code').") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Store Name')
+                               ));
+
+
+
+
+
+        } else {
+            $this->msg=_("Error: Store name could not be updated");
+
+            $this->updated=false;
+
+        }
+    }
+
+
+
+
+    function update_field_switcher($field,$value,$options='') {
+
+
+
+
+        switch ($field) {
         case('code'):
-            $this->update_code($a1);
+            $this->update_code($value);
             break;
 
         case('slogan'):
-            $this->update_field('Store Slogan',$a1);
+            $this->update_field('Store Slogan',$value);
             break;
         case('url'):
-            $this->update_field('Store URL',$a1);
+            $this->update_field('Store URL',$value);
             break;
 
         case('contact'):
-            $this->update_field('Store Contact',$a1);
+            $this->update_field('Store Contact',$value);
             break;
         case('email'):
-            $this->update_field('Store Email',$a1);
+            $this->update_field('Store Email',$value);
             break;
         case('telephone'):
-            $this->update_field('Store Telephone',$a1);
+            $this->update_field('Store Telephone',$value);
             break;
         case('fax'):
-            $this->update_field('Store Fax',$a1);
+            $this->update_field('Store Fax',$value);
             break;
         case('address'):
-            $this->update_field('Store Address',$a1);
+            $this->update_field('Store Address',$value);
             break;
         case('marketing_description'):
-            $this->update_field('Short Marketing Description',$a1);
+            $this->update_field('Short Marketing Description',$value);
             break;
         case('name'):
-
-            if (_trim($a1)==$this->data['Store Name']) {
-                $this->updated=true;
-                $this->new_value=$a1;
-                return;
-
-            }
-
-            if ($a1=='') {
-                $this->msg=_('Error: Wrong name (empty)');
-                return;
-            }
-
-            if (!(strtolower($a1)==strtolower($this->data['Store Name']) and $a1!=$this->data['Store Name'])) {
-
-                $sql=sprintf("select count(*) as num from `Store Dimension` where `Store Name`=%s COLLATE utf8_general_ci"
-                             ,prepare_mysql($a1)
-                            );
-
-                $res=mysql_query($sql);
-                $row=mysql_fetch_array($res);
-                if ($row['num']>0) {
-                    $this->msg=_("Error: Another store with the same name");
-                    return;
+            $this->update_name($value);
+            break;
+        default:
+            $base_data=$this->base_data();
+            if (array_key_exists($field,$base_data)) {
+                if ($value!=$this->data[$field]) {
+                    $this->update_field($field,$value,$options);
                 }
             }
-            $old_value=$this->get('Store Name');
-            $sql=sprintf("update `Store Dimension` set `Store Name`=%s where `Store Key`=%d "
-                         ,prepare_mysql($a1)
-                         ,$this->id
-                        );
-            if (mysql_query($sql)) {
-                $this->msg=_('Store name updated');
-                $this->updated=true;
-                $this->new_value=$a1;
-                $this->data['Store Name']=$a1;
-
-                $this->add_history(array(
-                                       'Indirect Object'=>'Store Name'
-                                                         ,'History Abstract'=>_('Store Name Changed').' ('.$this->get('Store Name').')'
-                                                                             ,'History Details'=>_('Store')." ("._('Code').":".$this->get('Store Code').") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Store Name')
-                                   ));
-
-
-
-
-
-            } else {
-                $this->msg=_("Error: Store name could not be updated");
-
-                $this->updated=false;
-
-            }
-            break;
-
 
         }
 
 
     }
 
-    /*
-      Function: create
-      Funcion que permite grabar el nombre y codigo en la tabla store dimension, evitando duplicar el valor de codigo y el nombre en dicha tabla
-    */
-    // JFA
+
     function create($data) {
 
 
@@ -600,9 +626,9 @@ function update_children_data(){
 
 
             $this->add_history(array(
-                                   'Action'=>'created'
-                                            ,'History Abstract'=>_('Store Created')
-                                                                ,'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
+                                   'Action'=>'created',
+                                   'History Abstract'=>_('Store Created'),
+                                   'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
                                ));
 
             return;
@@ -948,7 +974,7 @@ function update_children_data(){
 
 
         case 'Last Month':
-		case 'last_m':
+        case 'last_m':
             $db_interval='Last Month';
             $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
             $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
@@ -959,7 +985,7 @@ function update_children_data(){
             break;
 
         case 'Last Week':
-		case 'last_w':
+        case 'last_w':
             $db_interval='Last Week';
 
 
@@ -980,7 +1006,7 @@ function update_children_data(){
             break;
 
         case 'Yesterday':
-		case 'yesterday':
+        case 'yesterday':
             $db_interval='Yesterday';
             $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
             $to_date=date('Y-m-d 00:00:00',strtotime('today'));
@@ -1019,7 +1045,7 @@ function update_children_data(){
 
             break;
         case 'Today':
-		case 'today':
+        case 'today':
             $db_interval='Today';
             $from_date=date('Y-m-d 00:00:00');
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1043,14 +1069,14 @@ function update_children_data(){
             //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
             break;
         case '3 Year':
-		case '3y':
+        case '3y':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
             $from_date_1yb=false;
             $to_1yb=false;
             break;
         case '1 Year':
-		case '1y':		
+        case '1y':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1063,28 +1089,28 @@ function update_children_data(){
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Quarter':
-		case '1q':
+        case '1q':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Month':
-		case '1m':
+        case '1m':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '10 Day':
-		case '10d':
+        case '10d':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
             $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
             break;
         case '1 Week':
-		case '1w':
+        case '1w':
             $db_interval=$interval;
             $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
             $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
@@ -1210,16 +1236,16 @@ function update_children_data(){
 // print "$sql\n";
             mysql_query($sql);
         }
-		
-		return array(substr($from_date, -19,-9), date("Y-m-d"));
+
+        return array(substr($from_date, -19,-9), date("Y-m-d"));
 
     }
 
-	function get_from_date($period){
-		return $this->update_sales_from_invoices($period);
-		
-	}
-	
+    function get_from_date($period) {
+        return $this->update_sales_from_invoices($period);
+
+    }
+
     function update_customer_activity_interval() {
 
 
@@ -1273,6 +1299,16 @@ function update_children_data(){
 
     }
 
+    function update_newsletter_data() {
+
+    }
+
+    function update_email_reminder_data() {
+
+    }
+
+
+
     function create_site($data) {
 
 
@@ -1311,7 +1347,7 @@ function update_children_data(){
                      prepare_mysql($type),
                      $this->id
                     );
-                    
+
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
             $credentials[$row['Email Credentials Key ']]=$row;
@@ -1323,49 +1359,63 @@ function update_children_data(){
     }
 
 
-function get_number_sites(){
-$number_sites=0;
-    $sql=sprintf("select count(*) as number_sites from `Site Dimension` where `Site Store Key`=%d ",$this->id);
-     $res=mysql_query($sql);
+    function get_number_sites() {
+        $number_sites=0;
+        $sql=sprintf("select count(*) as number_sites from `Site Dimension` where `Site Store Key`=%d ",$this->id);
+        $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
-        $number_sites=$row['number_sites'];
+            $number_sites=$row['number_sites'];
         }
-return $number_sites;
-}
-
-function get_formated_email_credentials($type){
-
-    $credentials=$this->get_email_credentials_data($type);
-   
-    $formated_credentials='';
-    foreach($credentials as $credential){
-        $formated_credentials.=','.$credential['Email Address'];
+        return $number_sites;
     }
-    
-    $formated_credentials=preg_replace('/^,/','',$formated_credentials);
-    return $formated_credentials;
-    
-
-}
 
 
-function get_email_credential_key($type){
+    function update_number_sites() {
+        $current_sites=$this->get_number_sites();
+        if ($this->data['Store Websites']!=$current_sites) {
 
- $sql=sprintf("select C.`Email Credentials Key` from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
+            $this->update_field_switcher('Store Websites',$current_sites);
+        }
+
+    }
+
+    function get_formated_email_credentials($type) {
+
+        $credentials=$this->get_email_credentials_data($type);
+
+        $formated_credentials='';
+        foreach($credentials as $credential) {
+            $formated_credentials.=','.$credential['Email Address'];
+        }
+
+        $formated_credentials=preg_replace('/^,/','',$formated_credentials);
+        return $formated_credentials;
+
+
+    }
+
+
+  
+    function get_email_credential_key($type) {
+
+        $sql=sprintf("select C.`Email Credentials Key` from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
                      prepare_mysql($type),
                      $this->id
                     );
-                
+
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
             return $row['Email Credentials Key'];
-        }else{
-        
+        } else {
+
             return false;
         }
 
 
-}
+    }
 
 
+
 }
+
+?>

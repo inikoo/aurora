@@ -46,99 +46,6 @@ var Address_Meta_Keys=["type","function"];
 
 
 
-YAHOO.util.Event.addListener(window, "load", function() {
-    tables = new function() {
-
-
-
-
-
-  var tableid=100; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-
- this.remove_links = function(elLiner, oRecord, oColumn, oData) {
-  elLiner.innerHTML = oData;
-         //   if(oRecord.getData("field3") > 100) {
-       elLiner.innerHTML=  oData.replace(/<.*?>/g, '')
-
-        };
-        
-        // Add the custom formatter to the shortcuts
-        YAHOO.widget.DataTable.Formatter.remove_links = this.remove_links;
-
-	   
-	    var ColumnDefs = [
-                    {key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                   ,{key:"code",formatter:"remove_links", label:"<?php echo _('Code')?>",width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			       ,{key:"name", formatter:"remove_links",label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			];
-			       
-	    this.dataSource100 = new YAHOO.util.DataSource("ar_regions.php?tipo=country_list&tableid="+tableid+"&nr=20&sf=0");
-	    this.dataSource100.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource100.connXhrMode = "queueRequests";
-	    	    this.dataSource100.table_id=tableid;
-
-	    this.dataSource100.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
-		},
-		
-		
-		fields: [
-			 "name","flag",'code','population','gnp','wregion','code3a','code2a','plain_name','postal_regex','postcode_help'
-			 ]};
-
-
-	    this.table100 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource100
-								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['world']['countries']['nr']?>,containers : 'paginator100', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{PreviousPageLink}<strong id='paginator_info100'>{CurrentPageReport}</strong>{NextPageLink}"
-									  })
-								     
-								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['world']['countries']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['world']['countries']['order_dir']?>"
-								     },
-								     dynamicData : true
-
-								  }
-								   
-								 );
-	    
-	    this.table100.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table100.doBeforeSortColumn = mydoBeforeSortColumn;
-	    //this.table100.subscribe("cellClickEvent", this.table100.onEventShowCellEditor);
-this.table100.prefix='';
- this.table100.subscribe("rowMouseoverEvent", this.table100.onEventHighlightRow);
-       this.table100.subscribe("rowMouseoutEvent", this.table100.onEventUnhighlightRow);
-      this.table100.subscribe("rowClickEvent", select_country_from_list);
-     
-
-
-	    this.table100.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table100.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
-	    //
-
-};
-
-    });
-
 
 
 function cancel_edit_address(prefix) {
@@ -159,6 +66,7 @@ function cancel_edit_address(prefix) {
 function change_main_address(address_key,options) {
 
     var request='ar_edit_contacts.php?tipo=set_main_address&value=' +address_key+'&key='+options.type+'&subject='+options.Subject+'&subject_key='+options.subject_key;
+	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
             // alert(o.responseText);
@@ -166,18 +74,24 @@ success:function(o) {
             if (r.state==200) {
                 if (r.action=='changed') {
                     Dom.get(options.prefix+'current_address').innerHTML=r.new_main_address;
-                    buttons=Dom.getElementsByClassName(options.prefix+'set_main', 'span',options.prefix+'address_showcase' );
-                    for ( var i=buttons.length-1; i>=0; --i ) {
+                    buttons=Dom.getElementsByClassName(options.prefix+'set_main', 'button',options.prefix+'address_showcase' );
+           
+              for ( var i=buttons.length-1; i>=0; --i ) {
+                 
                         Dom.removeClass(buttons[i], 'hide');
                     }
                     Dom.addClass(options.prefix+'set_main'+address_key, 'hide');
 
                     if (options.type=='Delivery' && options.Subject=='Customer') {
-                        if(Dom.get(options.prefix+'current_address_bis')!=undefined)
-                        Dom.get(options.prefix+'current_address_bis').innerHTML=r.new_main_address_bis;
+                       // if(Dom.get(options.prefix+'current_address_bis')!=undefined)
+                       // Dom.get(options.prefix+'current_address_bis').innerHTML=r.new_main_address_bis;
                         post_change_main_delivery_address();
                     }
 
+                    if (options.type=='Billing' && options.Subject=='Customer') {
+           
+                        post_change_main_billing_address();
+                    }
 
 
 
@@ -192,7 +106,8 @@ success:function(o) {
 
 
 }
-//function post_change_main_delivery_address(){}
+function post_change_main_delivery_address(){}
+function post_change_main_billing_address(){}
 
 
 
@@ -252,11 +167,11 @@ var create_address=function(options) {
 
 
     var request='ar_edit_contacts.php?tipo=new_'+options.type+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key;
-  
+//alert(request)  
   
   YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-         //   	alert(o.responseText);
+          //  alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='created') {
 
@@ -304,15 +219,22 @@ success:function(o) {
                 display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
                 display_element[0].id = address_prefix+'address_buttons'+r.address_key;
 
-                display_element=Dom.getElementsByClassName('small_button_edit' ,'span', display_element[0] );
+                display_element=Dom.getElementsByClassName('small_button_edit' ,'button', display_element[0] );
 
                 display_element[0].id = address_prefix+'set_main'+r.address_key;
                 display_element[1].id = address_prefix+'delete_address_button'+r.address_key;
                 display_element[2].id = address_prefix+'edit_address_button'+r.address_key;
 
+
+
                 display_element[0].setAttribute('onClick',"change_main_address("+r.address_key+",{type:'Delivery',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
+                
                 display_element[1].setAttribute('onCLick',"delete_address("+r.address_key+",{type:'Delivery',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
                 display_element[2].setAttribute('onCLick',"display_edit_delivery_address("+r.address_key+",'"+address_prefix+"')");
+
+
+
+
 
 
                 Dom.get(address_prefix+'address_showcase').appendChild(new_address_container);
@@ -330,21 +252,85 @@ success:function(o) {
               Dom.setStyle(address_prefix+'address_tel_label'+r.address_key,'visibility','visible');
               Dom.get(address_prefix+'address_tel'+r.address_key).innerHTML=r.updated_data.telephone;
               }
-              
-              }else if(address_prefix=='billing_'){
+               post_create_delivery_address_function(r);   
+              }
+              else if(address_prefix=='billing_'){
+
+                var new_address_container = Dom.get(address_prefix+'address_container0').cloneNode(true);
+                new_address_container.id = address_prefix+'address_container'+r.address_key;
+                Dom.setStyle(new_address_container, 'display', '');
+                
+                
+                
+                
+                  display_element=Dom.getElementsByClassName(address_prefix+'address_tel_label' ,'span',  new_address_container);
+                display_element[0].id = address_prefix+'address_tel_label'+r.address_key;
+                display_element=Dom.getElementsByClassName(address_prefix+'address_tel' ,'span',  new_address_container);
+                Dom.setAttribute(display_element[0],'id',address_prefix+'address_tel'+r.address_key);
+                
+             
+           
+                                
+                      
+                display_element=Dom.getElementsByClassName('address_display' ,'div',  new_address_container);
+                
+                
+                
+                display_element[0].innerHTML=r.xhtml_address;
+                display_element[0].id = address_prefix+'address_display'+r.address_key;
+                display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
+                display_element[0].id = address_prefix+'address_buttons'+r.address_key;
+
+                display_element=Dom.getElementsByClassName('small_button_edit' ,'button', display_element[0] );
+
+                display_element[0].id = address_prefix+'set_main'+r.address_key;
+                display_element[1].id = address_prefix+'delete_address_button'+r.address_key;
+                display_element[2].id = address_prefix+'edit_address_button'+r.address_key;
+
+                display_element[0].setAttribute('onClick',"change_main_address("+r.address_key+",{type:'billing',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
+                display_element[1].setAttribute('onCLick',"delete_address("+r.address_key+",{type:'billing',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
+                display_element[2].setAttribute('onCLick',"display_edit_billing_address("+r.address_key+",'"+address_prefix+"')");
+
+				//alert(address_prefix+'address_showcase');
+                Dom.get(address_prefix+'address_showcase').appendChild(new_address_container);
+
+
+
+                if (Dom.get(address_prefix+"reset_address_button").getAttribute('close_if_reset')=='Yes') {
+                    Dom.get(address_prefix+'address_form').style.display='none';
+                    Dom.get(address_prefix+"reset_address_button").style.visibility='visible';
+
+                }
+
+     
+              if(r.updated_data.telephone!=''){
+              Dom.setStyle(address_prefix+'address_tel_label'+r.address_key,'visibility','visible');
+              Dom.get(address_prefix+'address_tel'+r.address_key).innerHTML=r.updated_data.telephone;
+              }
+             post_create_billing_address_function(r);     
+              }
+            
+              else if(address_prefix=='xbilling_'){
               
               Dom.get('billing_address').innerHTML=r.xhtml_address;
               Dom.get('show_edit_billing_address').setAttribute('address_key',r.address_key)
-              }
+            post_create_billing_address_function(r);   
+           }
              
-                 post_create_address_function(r);   
+                
 
 
 
                 //new_address_container.parent.appendChild(new_address_container);
                 // save_address_elements++;
-            } else if (r.action=='nochange') {
+            } 
+            else if (r.action=='nochange') {
+              if(address_prefix=='delivery_'){
+               post_create_delivery_address_function(r);   
                 alert(r.msg);
+              }
+            
+              
             } else if (r.action=='error') {
                 alert(r.msg);
             }
@@ -358,9 +344,7 @@ success:function(o) {
 
 
 
-var save_address=function(e,options) {
-
-//alert('xx');
+function  save_address(e,options) {
     var address_prefix='';
     if (options.prefix!= undefined) {
         address_prefix=options.prefix;
@@ -372,7 +356,6 @@ var save_address=function(e,options) {
 //alert(Dom.get(address_prefix+'address_key').value)
 
     if (Dom.get(address_prefix+'address_key').value==0) {
-   
          create_address(options);
         
     
@@ -405,15 +388,19 @@ var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+
 if(address_prefix=='delivery_'){
 hide_new_delivery_address();
 }
-
+if(address_prefix=='billing_'){
+hide_new_billing_address();
+}
 //alert(request);
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-           //  alert(o.responseText)
+          //  alert(o.responseText)
                 var r =  YAHOO.lang.JSON.parse(o.responseText);
                 if(r.state==200){
                 if (r.action=='updated') {
-               
+					branch='address';
+					post_item_updated_actions(branch,r)
+			  //Dom.setStyle('dialog_quick_edit_Customer_Main_Address','display','none')
               
                // window.location.reload( false );
 
@@ -434,13 +421,15 @@ success:function(o) {
                     if (r.is_main_delivery=='Yes') {
                         Dom.get('delivery_current_address').innerHTML=r.xhtml_address;
                        post_change_main_delivery_address();
-                       
-
-
                     }
 
                  
-                
+                                if (r.is_main_billing=='Yes') {
+                              //  alert("caca");
+                        Dom.get('billing_current_address').innerHTML=r.xhtml_address;
+                       post_change_main_billing_address();
+                    }
+
 
 
                     if (Dom.get('delivery_current_address_bis')!= undefined) {
@@ -450,26 +439,25 @@ success:function(o) {
                         Dom.get('billing_address').innerHTML=r.xhtml_billing_address;
                     }
 
+
+                  
+                    
+                    
+if(address_prefix=='delivery_'){
                     if (Dom.get('delivery_address_display'+r.key)!= undefined) {
-                    Dom.get('delivery_address_tel'+r.key).innerHTML=r.updated_data.telephone;
-                    if(r.updated_data.telephone==''){
-                        Dom.setStyle('delivery_address_tel_label'+r.key,'visibility','hidden');
-                    }else{
-                         Dom.setStyle('delivery_address_tel_label'+r.key,'visibility','visible');
+                        Dom.get('delivery_address_tel'+r.key).innerHTML=r.updated_data.telephone;
+                        if(r.updated_data.telephone==''){
+                            Dom.setStyle('delivery_address_tel_label'+r.key,'visibility','hidden');
+                        }else{
+                            Dom.setStyle('delivery_address_tel_label'+r.key,'visibility','visible');
+                        }
+                         Dom.get('delivery_address_display'+r.key).innerHTML=r.xhtml_address;
                     }
                     
-                           
                     
-                    
-                        Dom.get('delivery_address_display'+r.key).innerHTML=r.xhtml_address;
-                    }
                     if (r.deleted_address>0 && Dom.get('delivery_address_container'+r.key)!=undefined) {
-
                         Dom.get('delivery_address_container'+r.key).style.display='none';
-
-
                         Dom.get('delivery_address_container'+r.key).parentNode.removeChild(Dom.get('delivery_address_container'+r.key));
-
                     }
 
 
@@ -497,7 +485,7 @@ success:function(o) {
                         display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
                         display_element[0].id = 'delivery_address_buttons'+r.key;
 
-                        display_element2=Dom.getElementsByClassName('small_button_edit' ,'span', display_element[0] );
+                        display_element2=Dom.getElementsByClassName('small_button_edit' ,'button', display_element[0] );
 
                         display_element2[0].id = 'delivery_set_main'+r.key;
                         display_element2[1].id = 'delivery_delete_address_button'+r.key;
@@ -521,7 +509,88 @@ success:function(o) {
                             
                                           
                     }
+}
 
+
+if(address_prefix=='billing_'){
+
+
+
+                    if (Dom.get('billing_address_display'+r.key)!= undefined) {
+                        Dom.get('billing_address_tel'+r.key).innerHTML=r.updated_data.telephone;
+                        if(r.updated_data.telephone==''){
+                            Dom.setStyle('billing_address_tel_label'+r.key,'visibility','hidden');
+                        }else{
+                            Dom.setStyle('billing_address_tel_label'+r.key,'visibility','visible');
+                        }
+                         Dom.get('billing_address_display'+r.key).innerHTML=r.xhtml_address;
+                         
+                         if( Dom.get('delivery_address_display'+r.key) !=undefined){
+                            Dom.get('delivery_address_display'+r.key).innerHTML=r.xhtml_address;
+                         }
+                         
+                         
+                    }
+                    
+                    
+                    if (r.deleted_address>0 && Dom.get('billing_address_container'+r.key)!=undefined) {
+                        Dom.get('billing_address_container'+r.key).style.display='none';
+                        Dom.get('billing_address_container'+r.key).parentNode.removeChild(Dom.get('billing_address_container'+r.key));
+                    }
+
+
+
+                    if (r.created_address>0  && Dom.get('billing_address_container0')!=undefined) {
+
+
+                        var new_address_data=new Object;
+                        for (i in r.updated_data) {
+                            var address_item_value=r.updated_data[i];
+                            if (address_item_value==null)address_item_value='';
+                            new_address_data[i]=address_item_value;
+                        }
+
+                        Address_Data[r.key]=new Object;
+                        Address_Data[r.key]=new_address_data;
+                        cancel_edit_address(address_prefix);
+
+                        var new_address_container = Dom.get('billing_address_container0').cloneNode(true);
+                        new_address_container.id = 'billing_address_container'+r.key;
+                        Dom.setStyle(new_address_container, 'display', '');
+                        display_element=Dom.getElementsByClassName('address_display' ,'div',  new_address_container);
+                        display_element[0].innerHTML=r.xhtml_address;
+                        display_element[0].id = 'billing_address_display'+r.key;
+                        display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
+                        display_element[0].id = 'billing_address_buttons'+r.key;
+
+                        display_element2=Dom.getElementsByClassName('small_button_edit' ,'button', display_element[0] );
+
+                        display_element2[0].id = 'billing_set_main'+r.key;
+                        display_element2[1].id = 'billing_delete_address_button'+r.key;
+                        display_element2[2].id = 'billing_edit_address_button'+r.key;
+
+                        display_element2[0].setAttribute('onClick',"change_main_address("+r.key+",{type:'Delivery',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
+                        display_element2[1].setAttribute('onCLick',"delete_address("+r.key+",{type:'Delivery',prefix:'"+address_prefix+"',Subject:'"+options.subject+"',subject_key:"+options.subject_key+"})");
+                        display_element2[2].setAttribute('onCLick',"edit_address("+r.key+",'"+address_prefix+"')");
+                        display_element2[1].style.display='none';
+                        display_element2[2].style.display='none';
+
+                        billing= document.createElement('span');
+
+
+
+                        Dom.get('billing_address_showcase').appendChild(new_address_container);
+                        billing.innerHTML='<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > <?php echo _('Billing')?></span>'
+                                          display_element[0].appendChild(billing);
+                        
+                       
+                            
+                                          
+                    }
+                    
+                    
+                     post_edit_billing_address();
+}
 
 
 
@@ -540,7 +609,7 @@ success:function(o) {
                     
                 }
     
-    post_edit_address();
+                 post_edit_address();
     }
                 else{
                   //  alert(r.msg);
@@ -565,7 +634,7 @@ success:function(o) {
         var json_value = YAHOO.lang.JSON.stringify(address_type_values);
         var request='ar_edit_contacts.php?tipo=edit_'+escape(options.tipo)+ '_type&value=' + json_value+'&id='+address_key+'&subject='+Subject+'&subject_key='+Subject_Key;
 
-        alert(request);
+   //     alert(request);
         //return;
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
@@ -594,6 +663,8 @@ success:function(o) {
 
 
 };
+
+function post_edit_billing_address(){}
 
 function post_edit_address(){
 
@@ -699,20 +770,29 @@ function reset_address(e,prefix) {
 var delete_address=function (address_key,options) {
     var request='ar_edit_contacts.php?tipo=delete_address&value=' +address_key+'&key='+options.type+'&subject='+options.Subject+'&subject_key='+options.subject_key;
 
-
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-//            alert(o.responseText);
+//           alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='deleted') {
 
-                Dom.get(options.prefix+'address_container'+address_key).style.display='none';
 
+                
+                Dom.setStyle(options.prefix+'address_container'+address_key,'display','none');
+                if(options.prefix=='billing_'){
+                    if( Dom.get('delivery_address_container'+address_key)!=undefined){
+                         Dom.setStyle('delivery_address_container'+address_key,'display','none')
+                    }
+                
+                }
 
                 if (Dom.get('delivery_current_address')!= undefined)
                     Dom.get('delivery_current_address').innerHTML=r.xhtml_delivery_address;
-                if (Dom.get('delivery_current_address_bis')!= undefined)
-                    Dom.get('delivery_current_address_bis').innerHTML=r.xhtml_delivery_address_bis;
+            
+                if (Dom.get('billing_current_address')!= undefined)
+                    Dom.get('billing_current_address').innerHTML=r.xhtml_billing_address;
+
+
 
             } else if (r.action=='error') {
                 alert(r.msg);
@@ -1082,8 +1162,10 @@ var onCountrySelected = function(sType, aArgs) {
         this.prefix='';
 
       myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
-      
+  //    alert("xx"+myAC.getInputEl().id)
 change_country(this.prefix,oData)
+
+
 
 };
 function select_default_country(prefix,code){
@@ -1133,23 +1215,25 @@ var data={
 function change_country(prefix,oData){
 
 // alert(prefix)
+Dom.setStyle(prefix+'address_components','display','')
+    Dom.setStyle(prefix+'default_country_selector','display','none');
+    Dom.setStyle(prefix+'show_country_subregions','display','')
   Dom.get(prefix+"address_country_code").value = oData.code;
     Dom.get(prefix+"address_country_2acode").value = oData.code2a;
-    //alert("xaxa1")
+  
+
+
     postal_regex=new RegExp(oData.postal_regex,"i");
     postcode_help=oData.postcode_help;
     update_address_labels(oData.code,prefix);
-    
-    Dom.setStyle(prefix+'address_components','display','')
- //   Dom.setStyle(prefix+'country_options','display','none')
-//    Dom.setStyle(prefix+'show_country_options','display','')
- Dom.setStyle(prefix+'default_country_selector','display','none');
+//alert(Dom.get(prefix+'address_street'))
  
-     Dom.setStyle(prefix+'show_country_subregions','display','')
+ 
 
- Dom.get(prefix+'address_street').focus()
- 
  on_address_item_change(false,prefix)
+ 
+Dom.get(prefix+'address_street').focus()
+  Dom.get(prefix+"address_country").value = oData.name+ " (" + oData.code + ") ";
  
 }
 
@@ -1194,6 +1278,9 @@ var countries_highlightMatch = function(full, snippet, matchindex) {
 
 
 function show_countries_list(o,prefix){
+Event.addListener('clean_table_filter_show100', "click",show_filter,100);
+
+//alert(tables.table100.prefix);return;
 tables.table100.prefix=prefix
   var y=(Dom.getY(o))-160
     var x=(Dom.getX(o))-25

@@ -5,7 +5,17 @@
 <div> 
   <span   class="branch">{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Statistics{/t}</span>
 </div>
-<h2 style="clear:left">{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
+ <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
+ 
+    <div style="clear:both"></div>
+</div>
+
+
+
+<h2 style="clear:left">{t}Customers Statistics{/t} <span class="id">{$store->get('Store Code')}</span></h2>
 
 
 </div>
@@ -15,12 +25,9 @@
     <li> <span class="item {if $view=='customers'}selected{/if}"  id="customers">  <span> {t}Customers{/t}</span></span></li>
     <li> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $view=='data'}selected{/if}" id="data"  ><span>  {t}Data Integrity{/t}</span></span></li>
-    <li> <span class="item {if $view=='referral'}selected{/if}" id="referral"  ><span>  {t}Referral{/t}</span></span></li>
-    <li> <span class="item {if $view=='type_business'}selected{/if}" id="type_business"  ><span>  {t}Type Business{/t}</span></span></li>
-    <li> <span class="item {if $view=='geo'}selected{/if}"  id="geo">  <span> {t}Geographic Distribution{/t}</span></span></li>
+  <li> <span class="item {if $view=='geo'}selected{/if}"  id="geo">  <span> {t}Geographic Distribution{/t}</span></span></li>
     <li> <span class="item {if $view=='correlations'}selected{/if}"  id="correlations">  <span> {t}Correlations{/t}</span></span></li>
 </ul>
-
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 <div id="block_correlations" style="{if $view!='correlations'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
@@ -39,81 +46,7 @@
 </div>
 
 
-<div id="block_referral" style="{if $view!='referral'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-	<div style="float:left" id="plot_referral_1">
-		<strong>You need to upgrade your Flash Player</strong>
-	</div>
 
-	<script type="text/javascript">
-		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "350", "300", "1", "#FFFFFF");
-		so.addVariable("path", "external_libs/ampie/ampie/");
-		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
-		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_referral_assigned_pie&store_key={$store->id}")); 
-		so.addVariable("loading_settings", "LOADING SETTINGS"); 
-			
-		// you can set custom "loading settings" text here
-		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
-
-		so.write("plot_referral_1");
-		// ]]>
-	</script>
-
-<div style="float:left" id="plot_referral_2">
-		<strong>You need to upgrade your Flash Player</strong>
-	</div>
-
-	<script type="text/javascript">
-		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "550", "8", "#FFFFFF");
-		so.addVariable("path", "external_libs/ampie/ampie/");
-		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
-		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_referral_pie&store_key={$store->id}")); 
-		so.addVariable("loading_settings", "LOADING SETTINGS");
-		so.addVariable("loading_settings", "LOADING SETTINGS");  // you can set custom "loading settings" text here
-		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
-
-		so.write("plot_referral_2");
-		// ]]>
-	</script>
-
-</div>
-<div id="block_type_business" style="{if $view!='type_business'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-	<div style="float:left" id="plot_business_type_1">
-		<strong>You need to upgrade your Flash Player</strong>
-	</div>
-
-	<script type="text/javascript">
-		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "350", "300", "1", "#FFFFFF");
-		so.addVariable("path", "external_libs/ampie/ampie/");
-		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
-		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_business_type_assigned_pie&store_key={$store->id}")); 
-		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
-		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
-
-		so.write("plot_business_type_1");
-		// ]]>
-	</script>
-
-<div style="float:left" id="plot_business_type_2">
-		<strong>You need to upgrade your Flash Player</strong>
-	</div>
-
-	<script type="text/javascript">
-		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "550", "8", "#FFFFFF");
-		so.addVariable("path", "external_libs/ampie/ampie/");
-		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
-		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_business_type_pie&store_key={$store->id}")); 
-		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
-		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
-
-		so.write("plot_business_type_2");
-		// ]]>
-	</script>
-
-</div>
 <div id="block_customers" style="{if $view!='customers'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
 <div style="width:25em;float:left;margin-left:20px">

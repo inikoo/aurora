@@ -1,7 +1,7 @@
 <?php
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
-include_once('../../class.Campaign.php');
+include_once('../../class.Deal.php');
 include_once('../../class.Charge.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');

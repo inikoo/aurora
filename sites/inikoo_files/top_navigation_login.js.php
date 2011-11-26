@@ -1,4 +1,4 @@
-<?php global $path;
+<?php global $path, $order_exist, $order_key;
 if($_REQUEST['path']==1)
 	$_path="../";
 elseif($_REQUEST['path']==2)
@@ -10,6 +10,8 @@ var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 var path='<?php echo $_path ?>';
 var dir_pos='<?php echo $_REQUEST["path"]?>';
+var order_exist='<?php echo $order_exist ?>';
+var order_key='<?php echo $order_key ?>';
 
 function change_password(){
 
@@ -113,6 +115,34 @@ function show_user_profile(){
 
 }
 
+
+function track_order(){
+	
+	var customer_key=Dom.get('customer_key').value;
+	//var store_key=Dom.get('store_key').value;
+	//var site_key=Dom.get('site_key').value;
+
+
+//global $order_exist, $order_key;
+order_exist=Dom.get('order_exist').value;
+order_key=Dom.get('order_key').value;
+
+if(order_key==0){
+
+     //var request=path+'inikoo_files/order.php?new=1&customer_key='+customer_key; 
+	 alert('No ItemsOrdered'); return;
+
+}
+else{
+
+	var request=path+'inikoo_files/order.php?id='+order_key;
+
+}
+alert(request);
+	window.location =request;
+
+}
+
 function show_actions_dialog(){
 hide_dialogs()
 Dom.setStyle('dialog_actions','display','block')
@@ -199,6 +229,7 @@ Event.addListener("logout", "click",logout);
 Event.addListener("hide_actions_dialog", "click",hide_actions_dialog);
 Event.addListener("show_change_password_dialog", "click",show_change_password_dialog);
 Event.addListener("show_user_profile", "click",show_user_profile);
+Event.addListener("track_order", "click",track_order);
 Event.addListener("show_actions_dialog", "click",show_actions_dialog);
 
 

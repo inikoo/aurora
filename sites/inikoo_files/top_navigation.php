@@ -1,6 +1,8 @@
 <?php
-global $width, $path;
 
+
+global $width, $path, $order_exist, $order_key, $disable_redirect, $auto_load, $registration_method;
+include_once('class.Order.php');
 if($path=="../../"){
 	$path_id=2;
     $path_menu='../';
@@ -11,7 +13,12 @@ if($path=="../../"){
 	$path_id=3;
 	  $path_menu='../sites/forms/';
 }		
+if(!$disable_redirect)
+	$disable_redirect=0;
+if(!$auto_load)
+	$auto_load=0;
 	
+
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/top_navigation.css.php?width=<?php echo $width?>" />
 <link rel="stylesheet" type="text/css" href="<?php echo $path ?>inikoo_files/css/ui.css.php?width=<?php echo $width?>" />
@@ -22,24 +29,40 @@ if($path=="../../"){
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/external_libs/yui/2.9/build/element/element-min.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/common.js"></script>
 
+
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/sha256.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/aes.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/login.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/basket.js"></script>
 <script type="text/javascript" src="<?php echo $path ?>inikoo_files/js/top_navigation.js"></script>
-
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/update_customer_cart.js.php?path=<?php echo $path_id ?>"></script>
 <?php 
 //print_r($_COOKIE);
 
 
 //echo "SID: ".SID."<br>session_id(): ".session_id()."<br>COOKIE: ".$_COOKIE["PHPSESSID"];exit;
-if($logged_in){?>
+if($logged_in){
+
+global $width, $path, $order_exist, $order_key;
+$sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $user->get('User Parent Key'));
+$result=mysql_query($sql);
+if($row=mysql_fetch_array($result)){
+	$order_exist=true;
+	$order_key=$row['Order Key'];
+}
+else
+	$order_key=0;
+
+
+?>
+<input type="hidden" value="" id="order_exist">
+<input type="hidden" value="<?php echo $order_key ?>" id="order_key">
 <input type="hidden" value="<?php echo $customer->id?>" id="customer_key">
 
-<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path_id ?>"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_login.js.php?path=<?php echo $path_id ?>&disable_redirect=<?php echo $disable_redirect ?>"></script>
 
 <?php }else{?>
-<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_logout.js.php?path=<?php echo $path_id ?>"></script>
+<script type="text/javascript" src="<?php echo $path ?>inikoo_files/top_navigation_logout.js.php?path=<?php echo $path_id ?>&disable_redirect=<?php echo $disable_redirect ?>&auto_load=<?php echo $auto_load ?>&registration_method=<?php echo $registration_method ?>"></script>
 <?php }?>
 
 <input type="hidden" value="<?php echo $store_key?>" id="store_key">
@@ -68,9 +91,13 @@ if($logged_in){?>
 
 
 
-<?php }else{ ?>
-<button id="show_register_dialog">Register</button>
-<button id="show_login_dialog">Log In</button>
+<?php }else{ 
+
+
+?>
+
+<button id="show_register_dialog"><?php echo _('Register')?></button>
+<button id="show_login_dialog"><?php echo _('Log In')?></button>
 <img src="<?php echo $path ?>inikoo_files/art/gear.png" class="gear">
 
 <?php   } ?>
@@ -80,6 +107,7 @@ if($logged_in){?>
 <?php if($logged_in){?>
 <div id="dialog_actions"    class="dialog logged"  >
 <table border=0 style="margin-top:20px;">
+<tr><td><span id="track_order" class="link">Track Order</span></td></tr>
 <tr><td><span id="show_user_profile" class="link">User Profile</span></td></tr>
 <tr><td><span id="show_change_password_dialog" class="link">Change Password</span></td></tr>
 <tr class="button space"><td><button id="hide_actions_dialog" >Close</button></td></tr>
@@ -87,6 +115,56 @@ if($logged_in){?>
 
 </div>
 
+
+
+
+
+
+
+
+<?php }else{
+
+?>
+
+
+
+
+<?php 
+if($registration_method){
+
+
+?>
+
+<div id="dialog_forgot_password"    class="dialog" >
+<h2>Forgotten password</h2>
+<table>
+<tbody id="forgot_password_form">
+<tr><td  class="label" style="text-align:right;width:120px">Email: </td><td><input id="forgot_password_handle"></td></tr>
+
+
+<tr >
+<td class="label" style="text-align:left;width:120px">
+<img id="captcha2"  src="<?php echo $path ?>inikoo_files/art/x.png" alt="CAPTCHA Image" />
+<i><a style="color:#fff" href="#" onclick="document.getElementById('captcha2').src = '<?php echo $path ?>inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Change&nbsp;Image</a></i>
+</td>
+<td style="vertical-align:top">
+<span style="font-size:10px">input the letters shown on the left</span><br/>
+<input type="text" id="captcha_code2" name="captcha_code"  style="width:50%" />
+</td>
+</tr>
+
+</tbody>
+<tr class="button space">
+
+<td id="forgot_password_buttons" colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
+</tr>
+<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
+<tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has been send to you with instructions on how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
+<tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
+<tr id="tr_forgot_password_not_found" style="display:none" class="button" style=""><td colspan=2>Sorry, that email is not in our records. <br><br><span class="link"   id="link_register_from_forgot_password" >Register here</span> <button style="margin-bottom:10px" id="hide_forgot_password_dialog4">Close</button></td></tr>
+
+</table>
+</div>
 
 
 <div id="dialog_change_password"    class="dialog logged" style="<?php if( $authentication_type=='masterkey') print "display:block";?>"  >
@@ -134,10 +212,6 @@ Your password has been changed.
 
 
 
-<?php }else{
-
-?>
-
 <div id="dialog_login"    class="dialog"   >
 <input type="hidden" value="<?php echo $St?>" id="ep">
 <h2>Login</h2>
@@ -146,8 +220,8 @@ Your password has been changed.
 
 
 
-<tr><td  class="label">Email: </td><td><input id="login_handle"></td></tr>
-<tr><td  class="label">Password: </td><td><input type="password"  id="login_password"></td></tr>
+<tr><td  class="label"><?php echo _('Email')?>: </td><td><input id="login_handle"></td></tr>
+<tr><td  class="label"><?php echo _('Password')?>: </td><td><input type="password"  id="login_password"></td></tr>
 <tr><td  class="label">Remember Me: </td><td style="text-align:left;"><input style="width:20px;border:none" type="checkbox" name="remember_me" id="remember_me" value="0"/></td></tr>
 <tr class="button space" style=""><td colspan="2"><span id="invalid_credentials" style="display:none">Invalid username or password!</span>  <button id="submit_login">Log In</button> <button id="hide_login_dialog">Close</button> </td></tr>
 <tr class="link space"><td colspan=2>Don't know your password? <span class="link"   id="link_forgot_password_from_login" >Click Here</span></td></tr>
@@ -156,6 +230,9 @@ Your password has been changed.
 
 </table>
 </div>
+
+
+
 <div id="dialog_email_in_db"    class="dialog"    style="xdisplay:block">
 <h2>Email already in our Database</h2>
 
@@ -190,6 +267,8 @@ Your password has been changed.
 
 </table>
 </div>
+
+
 <div id="dialog_register"    class="dialog"    style="z-index:20000; position:relative;">
 <h2>Registration</h2>
 <table>
@@ -590,6 +669,9 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 </table>
 </div>
+<?php
+}
+?>
 
 
 
@@ -599,36 +681,6 @@ print '<tr><td class="label">'.$cat->get('Category Label').':</td><td><select id
 
 
 
-<div id="dialog_forgot_password"    class="dialog" >
-<h2>Forgotten password</h2>
-<table>
-<tbody id="forgot_password_form">
-<tr><td  class="label" style="text-align:right;width:120px">Email: </td><td><input id="forgot_password_handle"></td></tr>
-
-
-<tr >
-<td class="label" style="text-align:left;width:120px">
-<img id="captcha2"  src="<?php echo $path ?>inikoo_files/art/x.png" alt="CAPTCHA Image" />
-<i><a style="color:#fff" href="#" onclick="document.getElementById('captcha2').src = '<?php echo $path ?>inikoo_files/securimage_show.php?height=40&' + Math.random(); return false">Change&nbsp;Image</a></i>
-</td>
-<td style="vertical-align:top">
-<span style="font-size:10px">input the letters shown on the left</span><br/>
-<input type="text" id="captcha_code2" name="captcha_code"  style="width:50%" />
-</td>
-</tr>
-
-</tbody>
-<tr class="button space">
-
-<td id="forgot_password_buttons" colspan=2><button id="submit_forgot_password">Continue</button> <button id="hide_forgot_password_dialog">Close</button></td>
-</tr>
-<tr id="tr_forgot_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="<?php echo $path ?>inikoo_files/art/wait.gif"> <span style="position:relative;top:-5px">processing request</span></td></tr>
-<tr id="tr_forgot_password_send" style="display:none" class="button" style=""><td colspan=2>An email has been send to you with instructions on how to access your account <br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog2">Close</button></td></tr>
-<tr id="tr_forgot_password_error" style="display:none" class="button" style=""><td colspan=2>Sorry, an automatic password reset could not be done, try later or call us.<br><br><button style="margin-bottom:10px" id="hide_forgot_password_dialog3">Close</button></td></tr>
-<tr id="tr_forgot_password_not_found" style="display:none" class="button" style=""><td colspan=2>Sorry, that email is not in our records. <br><br><span class="link"   id="link_register_from_forgot_password" >Register here</span> <button style="margin-bottom:10px" id="hide_forgot_password_dialog4">Close</button></td></tr>
-
-</table>
-</div>
 <?php 
 
 }

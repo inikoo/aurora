@@ -18,19 +18,25 @@ if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)
    exit;
 }
 $modify=$user->can_edit('warehouses');
+$smarty->assign('modify',$modify);
+
+
 $smarty->assign('view_parts',$user->can_view('parts'));
 get_header_info($user,$smarty);
 
-$general_options_list=array();
-if($modify or true)
 
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php?id='.$warehouse_id,'label'=>_('Parts'));
+
+
+//$general_options_list=array();
+//if($modify or true)
+
+ // $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse'));
+ // $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_parts.php?id='.$warehouse_id,'label'=>_('Parts'));
 
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 
@@ -39,19 +45,16 @@ $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('view',$_SESSION['state']['warehouse']['view']);
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		  $yui_path.'assets/skins/sam/autocomplete.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 
-		 'button.css',
-		 'container.css'
-		 );
-
-include_once('Theme.php');
-
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
+           );
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
@@ -73,7 +76,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','warehouses');
+$smarty->assign('parent','locations');
 $smarty->assign('title', _('Warehouse'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

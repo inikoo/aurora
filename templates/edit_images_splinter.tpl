@@ -18,7 +18,6 @@
       </div>
       <span class="caption" id="caption{$image.id}" >{$image.caption}</span> 
 	  <textarea class="edit_caption" style="display:none" onkeyup="caption_changed(this)" id="edit_caption{$image.id}" image_id="{$image.id}" ovalue="{$image.caption}">{$image.caption}</textarea>
-	
       
     </div>
     {/foreach}

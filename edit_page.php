@@ -59,9 +59,6 @@ $smarty->assign('page',$page);
 
 
 
-$general_options_list=array();
-
-$general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'page.php?id='.$page->id,'label'=>_('Webpage').' &#8617;');
 
 if (isset($_REQUEST['referral']) and isset($_REQUEST['referral_key'])) {
     $valid_referrals=array('family','department','store');
@@ -76,19 +73,23 @@ if (isset($_REQUEST['referral']) and isset($_REQUEST['referral_key'])) {
         case 'store':
             $referral_label=_('Store');
             break;
+        case 'site':
+            $referral_label=_('Site');
+            break;
         default:
             $referral_label='';
             break;
         }
+        
+    $referral_data=array('url'=>$_REQUEST['referral'].'.php?id='.$_REQUEST['referral_key'],'label'=>$referral_label);
+    $smarty->assign('referral_data',$referral_data);     
     }
 
+   
 
-
-    $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>$_REQUEST['referral'].'.php?id='.$_REQUEST['referral_key'],'label'=>$referral_label.' &#8617;');
 
 }
 
-$smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
@@ -110,33 +111,23 @@ $smarty->assign('block_view',$_SESSION['state']['page']['editing']);
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'container/assets/skins/sam/container.css',
-               $yui_path.'editor/assets/skins/sam/editor.css',
 
-
+               $yui_path.'assets/skins/sam/editor.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-
-               //	  'text_editor.css',
-               'common.css',
-               'button.css',
-               'table.css',
-               'css/edit.css'
-           );
-
-
-$css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+               $yui_path.'assets/skins/sam/colorpicker.css',
                'common.css',
                'container.css',
                'button.css',
                'table.css',
                'css/edit.css',
                'css/upload_files.css',
+               'css/edit_page.css',
+               'theme.css.php'
+
            );
+
+
+
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
@@ -146,18 +137,38 @@ $js_files=array(
               $yui_path.'autocomplete/autocomplete-min.js',
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
+
               $yui_path.'editor/editor-min.js',
+              $yui_path.'slider/slider-min.js',
+              $yui_path.'colorpicker/colorpicker-min.js',
               'js/php.default.min.js',
               'js/common.js',
               'js/search.js',
               'js/table_common.js',
               'js/edit_common.js',
+              'js/editor_image_uploader.js',
               'edit_page.js.php?page_id='.$page_key,
 
           );
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
+$tipo_filter=$_SESSION['state']['page']['history']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['page']['history']['f_value']);
+$filter_menu=array(
+                 'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+                 'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+                 'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+                 'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
+                 'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
+             );
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
 
 
 $smarty->assign('parent','products');

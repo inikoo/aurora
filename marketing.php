@@ -17,6 +17,20 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Order.php');
 
+if(!$user->can_view('marketing')){
+  header('Location: index.php');
+    exit;
+}
+
+if($user->can_edit('marketing')){
+$modify=true;
+}else{
+$modify=false;
+}
+$smarty->assign('modify',$modify);
+
+
+
 
 if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
     $store_id=$_REQUEST['store'];
@@ -31,7 +45,7 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 }
 
 $store=new Store($store_id);
-
+ $store->update_email_campaign_data();
 if ($store->id) {
     $_SESSION['state']['marketing']['store']=$store_id;
 } else {
@@ -48,33 +62,20 @@ $smarty->assign('search_label',_('Search'));
 
 
 
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
 
-$general_options_list[]=array('tipo'=>'url','url'=>'new_email_campaign.php','label'=>_('Create Email Campaign'));
-$general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=>_('Create Newsletter'));
-$smarty->assign('general_options_list',$general_options_list);
-
-$view_orders=$user->can_view('Orders');
 
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'calendar/assets/skins/sam/calendar.css',
-               $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
-
-               'button.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
                'container.css',
-               'css/marketing_campaigns.css',
-
-               'css/marketing_menu.css',
-               'css/marketing_campaigns.css'
+               'button.css',
+               'table.css',
+               'theme.css.php'
            );
-
-include_once('Theme.php');
-
 
 
 $js_files=array(

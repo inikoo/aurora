@@ -2,6 +2,8 @@
 include_once('class.Category.php');
 
 include_once('common.php');
+include_once('class.Store.php');
+
 include_once('assets_header_functions.php');
 
 
@@ -25,6 +27,8 @@ $general_options_list=array();
 $smarty->assign('view',$_SESSION['state']['product_categories']['view']);
 
 
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
 
 
 $css_files=array(
@@ -37,7 +41,7 @@ $css_files=array(
 		 'table.css',
 		 'css/dropdown.css'
 		 );
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
@@ -77,8 +81,8 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
 
 if($modify){
 
-     $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Main Category'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
+ //    $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Main Category'));
+ // $general_options_list[]=array('tipo'=>'url','url'=>'edit_product_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
 
 }
 $tpl_file='product_categories_base.tpl';

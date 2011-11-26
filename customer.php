@@ -15,13 +15,15 @@
 include_once('common.php');
 include_once('class.Customer.php');
 include_once('class.Store.php');
+include_once('duplicate_warning.php');
+
 if (!$user->can_view('customers')) {
     header('Location: index.php');
     exit;
 }
 
 $modify=$user->can_edit('contacts');
-
+$smarty->assign('modify',$modify);
 
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
   
@@ -32,9 +34,11 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
+//print $customer->get('Customer Type');
+$smarty->assign('customer_type',$customer->get('Customer Type'));
+//print_r($customer);
 
-
-
+$smarty->assign('other_email_count',count($customer->get_other_emails_data()));
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){
 header('Location: customers.php?msg=forbidden');
 exit;
@@ -84,9 +88,10 @@ $css_files=array(
                'container.css',
                'table.css',
                'css/customer.css',
-                 'css/upload.css'
+                 'css/upload.css',
+				'css/edit.css'
            );
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
@@ -100,15 +105,25 @@ $js_files=array(
               $yui_path.'calendar/calendar-min.js',
               $yui_path.'uploader/uploader-min.js',
               
-              'external_libs/ampie/ampie/swfobject.js',
-              'js/common.js',
-              'js/table_common.js',
-              'js/search.js',
-              'js/edit_common.js',
-             
-             
-               'upload_common.js.php',
-                'customer.js.php?customer_key='.$customer->id,
+			'external_libs/ampie/ampie/swfobject.js',
+			'js/common.js',
+			'js/table_common.js',
+			'js/search.js',
+			'js/edit_common.js',
+			'edit_address.js.php',
+			'edit_delivery_address_common.js.php',
+			'upload_common.js.php',
+			'customer.js.php?customer_key='.$customer->id.'&customer_type='.$customer->get('Customer Type'),
+			'js/validate_telecom.js',
+			'js/aes.js',
+			'js/sha256.js',
+			//printf('edit_company.js.php?id=%d&scope=Customer&scope_key=%d',$company->id,$customer->id),
+			//printf('edit_contact.js.php?id=%d&scope=Customer&scope_key=%d',$contact->id,$customer->id),
+			'address_data.js.php?tipo=customer&id='.$customer->id,
+			'edit_contact_from_parent.js.php',
+			'edit_contact_telecom.js.php',
+			'edit_contact_name.js.php',
+			'edit_contact_email.js.php'
           );
           
           
@@ -121,6 +136,8 @@ $smarty->assign('js_files',$js_files);
 
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
+
+$smarty->assign('all_warning',get_all_warnings($customer));
 
 
 list($customer_type, $login_stat)=$customer->is_user_customer($customer_id);
@@ -148,7 +165,7 @@ $smarty->assign('search_scope','customers');
 $smarty->assign('store', $store);
 
 if (isset($_REQUEST['p'])) {
-
+  $smarty->assign('parent_list',$_REQUEST['p']);
     if ($_REQUEST['p']=='cs') {
 
         $order=$_SESSION['state']['customers']['table']['order'];
@@ -265,14 +282,15 @@ if ($modify) {
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer.php?id='.$customer->id,'label'=>_('Edit Customer'));
 
 }
-$smarty->assign('general_options_list',$general_options_list);
+$general_options_list=array();
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 
 
 $smarty->assign('number_orders',$customer->get('Customer Orders'));
 $smarty->assign('parent','customers');
-$smarty->assign('title','Customer: '.$customer->get('customer name'));
+$smarty->assign('title',_('Customer').': '.$customer->get('customer name'));
 $customer_home=_("Customers List");
 
 $total_orders=$customer->get('Customer Orders');

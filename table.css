@@ -98,10 +98,11 @@ th.yui-dt-resizeable .yui-dt-liner{position:relative;}
 .inikoo .yui-dt-list tr.yui-dt-odd{background-color:#FFF;}
 .inikoo .yui-dt-list tr.yui-dt-even td.yui-dt-asc,.inikoo .yui-dt-list tr.yui-dt-even td.yui-dt-desc{background-color:#EDF5FF;}
 .inikoo .yui-dt-list tr.yui-dt-odd td.yui-dt-asc,.inikoo .yui-dt-list tr.yui-dt-odd td.yui-dt-desc{background-color:#EDF5FF;}
-.inikoo th.yui-dt-highlighted,.inikoo th.yui-dt-highlighted a{background-color:#B2D2FF;}
-.inikoo tr.yui-dt-highlighted,.inikoo tr.yui-dt-highlighted td.yui-dt-asc,.inikoo tr.yui-dt-highlighted td.yui-dt-desc,.inikoo tr.yui-dt-even td.yui-dt-highlighted,.inikoo tr.yui-dt-odd td.yui-dt-highlighted{cursor:pointer;background-color:#B2D2FF;}
-.inikoo .yui-dt-list th.yui-dt-highlighted,.inikoo .yui-dt-list th.yui-dt-highlighted a{background-color:#B2D2FF;}
-.inikoo .yui-dt-list tr.yui-dt-highlighted,.inikoo .yui-dt-list tr.yui-dt-highlighted td.yui-dt-asc,.inikoo .yui-dt-list tr.yui-dt-highlighted td.yui-dt-desc,.inikoo .yui-dt-list tr.yui-dt-even td.yui-dt-highlighted,.inikoo .yui-dt-list tr.yui-dt-odd td.yui-dt-highlighted{cursor:pointer;background-color:#B2D2FF;}
+
+.inikoo tr.yui-dt-highlighted,.inikoo tr.yui-dt-highlighted td.yui-dt-asc,.inikoo tr.yui-dt-highlighted td.yui-dt-desc,.inikoo tr.yui-dt-even td.yui-dt-highlighted,.inikoo tr.yui-dt-odd td.yui-dt-highlighted{cursor:pointer}
+.inikoo .yui-dt-list tr.yui-dt-highlighted,.inikoo .yui-dt-list tr.yui-dt-highlighted td.yui-dt-asc,.inikoo .yui-dt-list tr.yui-dt-highlighted td.yui-dt-desc,.inikoo .yui-dt-list tr.yui-dt-even td.yui-dt-highlighted,.inikoo .yui-dt-list tr.yui-dt-odd td.yui-dt-highlighted{cursor:pointer;}
+
+
 .inikoo th.yui-dt-selected,.inikoo th.yui-dt-selected a{background-color:#446CD7;}.inikoo tr.yui-dt-selected td,.inikoo tr.yui-dt-selected td.yui-dt-asc,.inikoo tr.yui-dt-selected td.yui-dt-desc{background-color:#426FD9;color:#FFF;}.inikoo tr.yui-dt-even td.yui-dt-selected,.inikoo tr.yui-dt-odd td.yui-dt-selected{background-color:#446CD7;color:#FFF;}
 .inikoo .yui-dt-list th.yui-dt-selected,.inikoo .yui-dt-list th.yui-dt-selected a{background-color:#446CD7;}
 .inikoo .yui-dt-list tr.yui-dt-selected td,.inikoo .yui-dt-list tr.yui-dt-selected td.yui-dt-asc,.inikoo .yui-dt-list tr.yui-dt-selected td.yui-dt-desc{background-color:#426FD9;color:#FFF;}
@@ -196,3 +197,5 @@ div.wider{height:1.8em}
 .deal_info{font-size:75%;color:red}
 .quick_add{cursor:pointer;font-weight:800;margin-left:3px;padding:0 3px}
 .quick_add:hover{background:#B2D2FF;}
+
+.export_data_link{margin-left:5px;cursor:pointer;vertical-align:text-bottom;}

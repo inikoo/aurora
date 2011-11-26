@@ -21,20 +21,18 @@ if(!$user->can_view('users'))
 	exit();
 }
 
-
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-              
-               'button.css',
+               'common.css',
                'container.css',
-               'css/users.css'
+               'button.css',
+               'table.css',
+               'css/users.css',
+               'theme.css.php'
            );
-
-include_once('Theme.php');
-
 $js_files=array(
 
               $yui_path.'utilities/utilities.js',
@@ -135,7 +133,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'users_customer.php','label'=
 $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'change_style.php','label'=>_('Manage Themes'));
 
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->display('users.tpl');

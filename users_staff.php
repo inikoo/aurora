@@ -16,22 +16,17 @@ if(!$user->can_view('users'))
   exit();
   
   
- 
-
-		 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'assets/skins/sam/autocomplete.css',
-		 
-		 'container.css',
-		 'button.css'		 
-		 );		 
-	
-include_once('Theme.php');
-  
-	 
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
+           );
 		 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -53,22 +48,14 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('options_box_width','200px');
 
-$general_options_list=array();
-if($user->can_edit('users')){
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_users_staff.php','label'=>_('Edit Users'));
-  
-}
-$smarty->assign('general_options_list',$general_options_list);
+$modify=$user->can_edit('users');
+$smarty->assign('modify',$modify);
+
 
 
 
 $smarty->assign('search_label',_('Users'));
 $smarty->assign('search_scope','users');
-
-
-
-
-
 
 $sql="select (select count(*) from `User Group Dimension`) as number_groups ,( select count(*) from `User Dimension`) as number_users ";
 $result = mysql_query($sql);
@@ -101,36 +88,9 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
  mysql_free_result($res);
 $smarty->assign('newuser_groups',$newuser_groups);
 
-/* //create user list */
-/* $sql=sprintf("select `Staff ID` as id,`Staff Alias` as alias,(select count(*) from liveuser_users where tipo=1 and id_in_table=`Staff Dimension`.`Staff Key`) as is_user from `Staff Dimension` where `Staff Currently Working`='Yes' and `Staff Most Recent`='Yes' order by `Staff Alias`"); */
-/* $result=mysql_query($sql); */
-/* $num_cols=5; */
-/* $staff=array(); */
-/* print $sql; */
-/* while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
-/*   $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'is_user'=>$row['is_user']); */
-/*  } */
-/* foreach($staff as $key=>$_staff){ */
-/*   $staff[$key]['mod']=fmod($key,$num_cols); */
-/* } */
-/* $smarty->assign('staff',$staff); */
-/* $smarty->assign('staff_cols',$num_cols); */
 
 
 
-/* $sql=sprintf("select `Supplier Key` as id,`Supplier Code` as alias,(select count(*) from liveuser_users where tipo=2 and id_in_table=`Supplier Dimension`.`Supplier Key`) as is_user from `Supplier Dimension`  order by `Supplier Code`"); */
-/* $result=mysql_query($sql); */
-/* $num_cols=4; */
-/* $supplier=array(); */
-/* while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
-/*   $supplier[]=array('alias'=>$row['alias'],'id'=>$row['id'],'is_user'=>$row['is_user']); */
-/*  } */
-/*  mysql_free_result($result); */
-/* foreach($supplier as $key=>$_supplier){ */
-/*   $supplier[$key]['mod']=fmod($key,$num_cols); */
-/* } */
-/* $smarty->assign('suppliers',$supplier); */
-/* $smarty->assign('supplier_cols',$num_cols); */
 
 $block_view=$_SESSION['state']['users']['staff']['block_view'];
 $smarty->assign('block_view',$block_view);

@@ -910,7 +910,7 @@ function product_list() {
 
 
     $adata=array();
-    $sql="select  `Product Name`,`Product Code` from `Product Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+    $sql="select  `Product Name`,`Product Code`,`Product ID` from `Product Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
     $res=mysql_query($sql);
@@ -918,7 +918,7 @@ function product_list() {
     while ($row=mysql_fetch_array($res)) {
 
         $adata[]=array(
-
+                        'pid'=>$row['Product ID'],
                      'name'=>$row['Product Name'] ,
                      'code'=>$row['Product Code'],
 
@@ -1505,10 +1505,10 @@ function deal_list() {
 
 
     if($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Deal Metadata Name` like '".addslashes($f_value)."%'";
 
 
-    $sql="select count(DISTINCT `Deal Name`) as total from `Deal Dimension` $where $wheref  ";
+    $sql="select count(DISTINCT `Deal Metadata Name`) as total from `Deal Metadata Dimension` $where $wheref  ";
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1519,7 +1519,7 @@ function deal_list() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(DISTINCT `Deal Name`) as total from `Deal Dimension`  $where   ";
+        $sql="select count(DISTINCT `Deal Metadata Name`) as total from `Deal Metadata Dimension`  $where   ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -1559,16 +1559,16 @@ function deal_list() {
 
 
     if ($order=='name')
-        $order='`Deal Name`';
+        $order='`Deal Metadata Name`';
     else
-        $order='`Deal Name`';
+        $order='`Deal Metadata Name`';
 
 
 
 
 
     $adata=array();
-    $sql="select  `Deal Key`,`Deal Name` from `Deal Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+    $sql="select  `Deal Metadata Key`,`Deal Metadata Name` from `Deal Metadata Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
 
     $res=mysql_query($sql);
@@ -1577,9 +1577,10 @@ function deal_list() {
 
         $adata[]=array(
 
-                     'name'=>$row['Deal Name'],
+                     'name'=>$row['Deal Metadata Name'],
                      'description'=>'',
-                     'id'=>$row['Deal Key']
+                     'id'=>$row['Deal Metadata Key'],
+                     'key'=>$row['Deal Metadata Key']
                    //  'code'=>$row['Product Department Code'],
 
 

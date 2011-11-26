@@ -80,14 +80,6 @@ $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
 
-$general_options_list=array();
-
-
-$general_options_list[]=array('tipo'=>'url','url'=>'family.php','label'=>_('Exit Edit'));
-
-
-$smarty->assign('general_options_list',$general_options_list);
-
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -98,8 +90,9 @@ $css_files=array(
                'container.css',
                'button.css',
                'table.css',
-                'css/edit.css',
-                'css/upload_files.css',
+               'css/edit.css',
+               'css/upload_files.css',
+               'theme.css.php'
            );
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -117,20 +110,14 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/csv_common.js',
-              'js/pages_common.js'
+              'js/pages_common.js',
+              'js/edit_common.js',
+              'country_select.js.php',
+              'js/upload_image.js',
+              'edit_family.js.php?id='.$family->id.'&store_key='.$store->id
           );
 
 
-
-
-
-$js_files[]='js/edit_common.js';
-$js_files[]='country_select.js.php';
-$js_files[]='js/upload_image.js';
-
-// $js_files[]='upload_files.js.php';
-
-$js_files[]='edit_family.js.php?id='.$family->id.'&store_key='.$store->id;
 $smarty->assign('yui_path',$yui_path);
 
 

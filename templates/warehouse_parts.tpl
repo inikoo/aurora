@@ -2,19 +2,35 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
-<div> 
-  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; {t}Parts{/t}</span>
+<div class="branch"> 
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span>
+</div>
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='part_configuration.php'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+            <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/arrow_switch.png" alt=""> {t}Movements{/t}</button>
+
+        <button  onclick="window.location='parts_stats.php?warehouse={$warehouse->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+        <button  onclick="window.location='parts_lists.php?warehouse={$warehouse->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
+        <button  onclick="window.location='parts_categories.php?id=0&warehouse={$warehouse->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button>
+
+ </div>
+    <div style="clear:both"></div>
 </div>
  <div style="clear:left;margin:0 0px">
-    <h1>{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</h1>
+    <h1><span class="id">{$warehouse->get('Warehouse Name')}</span> {t}Warehouse Inventory{/t} <span style="font-style:italic">({t}Parts{/t})</span> </h1>
   </div>
 
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $view=='parts'}selected{/if}"  id="parts">  <span> {t}Parts{/t}</span></span></li>
-    <li> <span class="item {if $view=='movements'}selected{/if}"  id="movements">  <span> {t}Movements{/t}</span></span></li>
-    <li> <span class="item {if $view=='stats'}selected{/if}"  id="stats">  <span> {t}Stats{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $view=='movements'}selected{/if}"  id="movements">  <span> {t}Movements{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $view=='stats'}selected{/if}"  id="stats">  <span> {t}Stats{/t}</span></span></li>
 </ul>
 
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>

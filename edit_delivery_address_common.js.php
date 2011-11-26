@@ -2,24 +2,28 @@
 
 
 function display_new_delivery_address(){
-    Dom.setStyle('add_new_delivery_address','display','none')
-    Dom.setStyle('new_delivery_address_table','display','')
+    Dom.setStyle(['add_new_delivery_address','delivery_address_showcase'],'display','none')
+    Dom.setStyle('dialog_new_delivery_address','display','')
+      Dom.get('delivery_address_country').focus();
+
 }
 
 function display_edit_delivery_address(address_id){
-    edit_address(address_id,'delivery_')
-    Dom.setStyle('new_delivery_address_table','display','')
-    Dom.setStyle('delivery_tr_address_type','display','none')
-    Dom.setStyle('delivery_tr_address_function','display','none')
+   edit_address(address_id,'delivery_')
+   Dom.setStyle(['add_new_delivery_address','delivery_address_showcase'],'display','none')
+    Dom.setStyle('dialog_new_delivery_address','display','')
+      Dom.get('delivery_address_country').focus();
 }
 
 function hide_new_delivery_address(){
-    reset_address(false,'delivery_')
-    Dom.setStyle('add_new_delivery_address','display','')
-    Dom.setStyle('new_delivery_address_table','display','none')
+
+
+  reset_address(false,'delivery_')    
+      Dom.setStyle(['add_new_delivery_address','delivery_address_showcase'],'display','')
+    Dom.setStyle('dialog_new_delivery_address','display','none')
 }
 
-function post_create_address_function(r){
+function post_create_delivery_address_function(r){
     hide_new_delivery_address();
 }
 

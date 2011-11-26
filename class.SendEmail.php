@@ -6,6 +6,7 @@ require_once("external_libs/mail/smtp_message.php");
 require_once("external_libs/mail/smtp.php");
 /* Uncomment when using SASL authentication mechanisms */
 require("external_libs/mail/sasl.php");
+require_once("class.EmailSend.php");
 
 
 class SendEmail extends DB_Table {
@@ -25,10 +26,11 @@ class SendEmail extends DB_Table {
         //$this->recipient_key=$data['recipient_key'];
         //$this->recipient_type=$data['recipient_type'];
 
-
+  
 
         $this->method=$data['method'];
-
+ 
+ 
 
         switch ($this->method) {
         case 'smtp':
@@ -63,8 +65,7 @@ class SendEmail extends DB_Table {
             $this->message='';
             $this->additional_headers='';
             $this->additional_parameters='';
-
-
+ 
 
             switch ($data['type']) {
             case 'Plain':
@@ -262,6 +263,11 @@ class SendEmail extends DB_Table {
                 break;
             case 'HTML':
             case 'html':
+            case 'HTML Template':
+            
+            
+         
+            
                 $this->type='HTML';
 
                 /*
@@ -410,8 +416,12 @@ class SendEmail extends DB_Table {
                         $html_msg='';
 
 
+
                     $this->html_message=$html_msg.$this->get_track_code();
                     $this->message_object->CreateQuotedPrintableHTMLPart($this->html_message,"",$this->html_part);
+
+
+//print  $this->html_message;
 
                     /*
                      *  It is strongly recommended that when you send HTML messages,
@@ -469,7 +479,7 @@ class SendEmail extends DB_Table {
                     foreach($image_attachment as $single_image)
                     $this->message_object->AddFilePart($single_image);
 
-                    return array('state'=>200,'msg'=>"ok");
+
                 } else {
 
                     $this->error=true;
@@ -521,6 +531,7 @@ class SendEmail extends DB_Table {
 
             case 'html':
             case 'HTML':
+            case 'HTML Template':
                 $this->type='HTML';
 
 
@@ -537,52 +548,67 @@ class SendEmail extends DB_Table {
     }
 
 
- 
+
 
     function send($data) {
 
 
 
-        $sql=sprintf("insert into `Email Send Dimension` (`Email Send Type`,`Email Send Type Key`, `Email Send Recipient Type`, `Email Send Recipient Key`, `Email Key`, `Email Send Creation Date`)
-                     values (%s, %s, %s, %s, %s, %s)",
-                     prepare_mysql($data['email_matter']),
-                     prepare_mysql($data['email_matter_key']),
-                     prepare_mysql($data['recipient_type']),
-                     prepare_mysql($data['recipient_key']),
-                     prepare_mysql($data['email_key']),
-                     prepare_mysql(date('Y-m-d H:i:s',strtotime('now +0:00')))
-                    );
 
-        mysql_query($sql);
+        $email_send_data=array(
+                             'Email Send Type'=>$data['email_matter'],
+                             'Email Send Type Key'=>$data['email_matter_key'],
+                             'Email Send Type Parent Key'=>$data['email_matter_parent_key'],
+                             'Email Send Recipient Type'=>$data['recipient_type'],
+                             'Email Send Recipient Key'=>$data['recipient_key'],
+                             'Email Key'=>$data['email_key'],
+                             'Email Send Creation Date'=>date('Y-m-d H:i:s',strtotime('now +0:00'))
+
+                         );
+        $email_send=new EmailSend();
 
 
 
-        $this->send_key=mysql_insert_id();
+        $email_send->create($email_send_data);
+        $this->send_key=$email_send->id;
+
 
         switch ($data['email_matter']) {
-            case 'Marketing':
-                $sql=sprintf("update `Email Campaign Mailing List`  set `Email Send Key`=%d where `Email Campaign Mailing List Key`=%d ",
-                $this->send_key,
-                $data['email_matter_key']
-                );  
-               // mysql_query($sql);
-                break;
-            default:
-              
-                break;
+        case 'Marketing':
+            $sql=sprintf("update `Email Campaign Mailing List`  set `Email Send Key`=%d where `Email Campaign Mailing List Key`=%d ",
+                         $this->send_key,
+                         $data['email_matter_key']
+                        );
+            // mysql_query($sql);
+            break;
+        default:
+
+            break;
         }
 
 
 
         $send_result=$this->smtp($data);
-        print "---\n";
-        print_r($send_result);
-        print "===\n";
+
+        //print_r($send_result);
         if ($send_result['state']==200) {
             $sql=sprintf("update `Email Send Dimension` set `Email Send Date`=%s where `Email Send Key`=%d",
                          prepare_mysql(date('Y-m-d H:i:s',strtotime('now +0:00'))),
                          $this->send_key);
             mysql_query($sql);
+
+            switch ($data['email_matter']) {
+            case 'Marketing':
+                $email_campaign=new EmailCampaign($email_send->data['Email Send Type Parent Key']);
+                $email_campaign->update_send_emails();
+                break;
+            default:
+
+                break;
+            }
+
+
+
 
         }
 
@@ -699,6 +725,12 @@ class SendEmail extends DB_Table {
             } else
                 $html_msg=null;
 
+
+            if (isset($data['bcc']) && $data['bcc']) {
+                $bcc=$data['bcc'];
+            } else
+                $bcc=null;
+
             $sql=sprintf("insert into `Email Queue Dimension` (`To`, `Type`, `Subject`, `Plain`, `HTML`, `Email Credentials Key`, `BCC`) values (%s, %s, %s, %s, %s, %d, %s)	"
                          ,prepare_mysql($data['to'])
                          ,prepare_mysql($data['type'])
@@ -706,7 +738,7 @@ class SendEmail extends DB_Table {
                          ,prepare_mysql($data['plain'])
                          ,prepare_mysql($html_msg)
                          ,$data['email_credentials_key']
-                         ,prepare_mysql($data['bcc'])
+                         ,prepare_mysql($bcc)
                         );
 
             //print $sql;
@@ -775,9 +807,9 @@ class SendEmail extends DB_Table {
             $public_path=$row['Public Path'];
         }
 
+        $public_path='http://localhost/dw/';
 
-
-        $code=sprintf('<br/><img src="%s/track.php?sendkey=%s">', $public_path, $this->send_key);
+        $code=sprintf('<img src="%s/track.php?s=%s" />', $public_path, $this->send_key);
 
         return $code;
     }
@@ -788,7 +820,7 @@ class SendEmail extends DB_Table {
             return;
         }
 
-        $link='<a href="localhost/unsubscribe.php?key=$customer_id&type=$type"';
+        $link='<a href="localhost/unsubscribe.php?s=$customer_id&type=$type"';
         return $link;
     }
 

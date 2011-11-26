@@ -11,7 +11,7 @@
   Version 2.0
 */
 include_once('class.DB_Table.php');
-include_once('class.Deal.php');
+include_once('class.DealMetadata.php');
 include_once('class.SupplierProduct.php');
 include_once('class.Part.php');
 include_once('class.Store.php');
@@ -65,7 +65,12 @@ class product extends DB_Table {
 
     private $historic_keys=array();
     private $historic_keys_with_same_code=array();
-
+    var $id=false;
+    var $locale;
+    var $url;
+    var $user_id;
+    var $method;
+    var $match=true;
     /*
       Constructor: Product
       Initializes the object.
@@ -166,12 +171,16 @@ class product extends DB_Table {
         }
         elseif($tipo=='code') {
             $this->mode='code';
-            $sql=sprintf("select `Product Code` from `Product Same Code Dimension` where `Product Code`=%s  ",prepare_mysql($tag));
+            $sql=sprintf("select * from `Product Dimension` where `Product Code`=%s  and `Product Store Key`=%d and `Product Record Type`='Normal'",prepare_mysql($tag), $extra);
+			//print $sql;
             $result=mysql_query($sql);
             if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
                 $this->code=$this->data['Product Code'];
+				$this->id=$this->data['Product ID'];
             }
-
+			else
+				$this->match=false;
+//print_r($this->data);
             return;
 
         }
@@ -852,15 +861,10 @@ class product extends DB_Table {
     }
 
 
-    /*
-      Function: get_base_data
-      Obtiene los diferentes valores de los atributos del producto
-    */
-    // JFA
 
 
     function get_base_data() {
-        global $myconf;
+        global $myconf,$corporate_currency;
         $base_data=array(
                        'product sales type'=>'Public Sale',
                        'product type'=>'Normal',
@@ -870,7 +874,7 @@ class product extends DB_Table {
                        'Product Web Configuration'=>'Offline',
                        'product store key'=>1,
                        'product locale'=>$myconf['lang'].'_'.$myconf['country'],
-                       'product currency'=>$myconf['currency_code'],
+                       'product currency'=>$corporate_currency,
 
                        'product code file as'=>'',
                        'product code'=>'',
@@ -1215,7 +1219,7 @@ class product extends DB_Table {
                     $deal_data['deal trigger key']=$this->id;
                 if ($deal_data['deal allowance target']=='Product')
                     $deal_data['deal allowance target key']=$this->id;
-                $deal=new Deal('create',$deal_data);
+                $deal=new DealMetadataMetadataMetadataMetadata('create',$deal_data);
 
             }
         }
@@ -1728,7 +1732,7 @@ class product extends DB_Table {
 
     /*
       Method: load
-      Carga y actualiza datos de la tabla Product Dimension, extrae informaci√≥n de Product Part List,Supplier Product Dimension,Part Dimension
+      Carga y actualiza datos de la tabla Product Dimension, extrae informaciv=n de Product Part List,Supplier Product Dimension,Part Dimension
     */
 
     function load($key) {
@@ -2381,7 +2385,7 @@ class product extends DB_Table {
     // JFA
 
     function removeaccents($string) {
-        return strtr($string,"√©","e");
+        return strtr($string,"v©","e");
     }
 
 
@@ -3917,7 +3921,7 @@ class product extends DB_Table {
             }
 
             if ($this->get('RRP Margin')!='')
-                $customer_margin=_('CM').' '.$this->get('RRP Margin');
+                $customer_margin=_('RRP Margin').' '.$this->get('RRP Margin');
             else
                 $customer_margin=_('Not for resale');
 
@@ -5746,74 +5750,12 @@ $this->update_main_type();
         return $parts;
     }
 
-    function get_full_order_form() {
 
+    function get_order_list_form($data=false) {
+
+        $data=$this->data;
         if ($this->locale=='de_DE') {
-            $out_of_stock='nicht vorr√§tig';
-            $discontinued='ausgelaufen';
-        }
-        if ($this->locale=='de_DE') {
-            $out_of_stock='nicht vorr√§tig';
-            $discontinued='ausgelaufen';
-        }
-        elseif($this->locale=='es_ES') {
-            $out_of_stock='Fuera de Stock';
-            $discontinued='Fuera de Stock';
-        }
-
-        elseif($this->locale=='fr_FR') {
-            $out_of_stock='Rupture de stock';
-            $discontinued='Rupture de stock';
-        }
-        else {
-            $out_of_stock='Out of Stock';
-            $discontinued='Discontinued';
-        }
-
-        if ($this->data['Product Web Configuration']=='Online Force Out of Stock') {
-            $_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
-        } else {
-            global $site_checkout_address_indv,$site_checkout_id,$site_url;
-            $_form=sprintf('<form action="%s" method="post">
-                           <input type="hidden" name="userid" value="%s">
-                           <input type="hidden" name="product" value="%s %sx %s">
-                           <input type="hidden" name="return" value="%s">
-                           <input type="hidden" name="price" value="%.2f">
-                           <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-                           <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>',
-                           addslashes($site_checkout_address_indv)
-                           ,addslashes($site_checkout_id)
-                           ,addslashes($this->data['Product Code'])
-                           ,addslashes($this->data['Product Units Per Case'])
-                           ,clean_accents(addslashes($this->data['Product Name']))
-                           ,$site_url.$_SERVER['PHP_SELF']
-                           ,$this->data['Product Price']
-                           ,$this->get('Order Msg')
-                          );
-        }
-
-
-        $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>%s</div>'
-                      ,$this->data['Product Code']
-                      ,$this->data['Product Units Per Case']
-                      ,$this->data['Product Name']
-                      ,$this->get_formated_price($this->locale)
-                      ,$this->get_formated_rrp($this->locale)
-                      ,$_form
-
-
-                     );
-
-
-        return $form;
-
-
-    }
-
-    function get_order_list_form($data) {
-
-        if ($this->locale=='de_DE') {
-            $out_of_stock='nicht vorr√§tig';
+            $out_of_stock='nicht vorrv§tig';
             $discontinued='ausgelaufen';
         }
         elseif($this->locale=='fr_FR') {
@@ -5833,14 +5775,14 @@ $this->update_main_type();
             $discontinued='Discontinued';
         }
 
-        $counter=$data['counter'];
-        $options=$data['options'];
-        $currency=$data['currency'];
+        $counter=1;//$data['counter'];
+        $options='';//$data['options'];
+        $currency='';//$data['currency'];
         $rrp='';
         if (isset($options['show individual rrp']) and $options['show individual rrp'] )
             $rrp=" <span class='rrp_in_list'>(".$this->get_formated_rrp($this->locale).')</span>';
 
-//mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8");
+        //mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8");
 
 
 
@@ -5853,7 +5795,8 @@ $this->update_main_type();
                           ,$out_of_stock
                          );
         } else {
-            $form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
+            $form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="dis
+                          price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
                           //,money_locale($this->data['Product Price'],$this->locale,$currency)
                           ,$this->data['Product Code'].' '.money_locale($this->data['Product Price'],$this->locale,$currency).''
                           ,$counter
@@ -5876,7 +5819,6 @@ $this->update_main_type();
 
 
     }
-
     function update_part_list_item($product_part_list_key,$data) {
 
         $sql=sprintf("select `Parts Per Product`,`Product Part List Note` from `Product Part List` where `Product ID`=%d and `Product Part List Key`=%d",$this->pid,$product_part_list_key);
@@ -6353,7 +6295,250 @@ $this->update_main_type();
 
 
     }
+    function get_info() {
 
+        if ($this->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+        }
+        if ($this->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+        }
+        elseif($this->locale=='es_ES') {
+            $out_of_stock='Fuera de Stock';
+            $discontinued='Fuera de Stock';
+        }
+
+        elseif($this->locale=='fr_FR') {
+            $out_of_stock='Rupture de stock';
+            $discontinued='Rupture de stock';
+        }
+        else {
+            $out_of_stock='Out of Stock';
+            $discontinued='Discontinued';
+            $offline='Not for Sale';
+        }
+
+
+        $flag=false;
+        if ($this->data['Product Web State']=='Out of Stock') {
+            $_form='<br/><span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
+            $flag=true;
+        }
+        elseif($this->data['Product Web State']=='Offline') {
+        
+            $_form='<br/><span style="color:red;font-weight:800">'.$offline.'</span>';
+            $flag=true;
+        }
+        elseif($this->data['Product Web State']=='Discontinued') {
+            $_form='<br/><span style="color:red;font-weight:800">'.$discontinued.'</span>';
+            $flag=true;
+        }
+        else {
+
+
+
+            $_form=sprintf('<input type="hidden" name="product" value="%s %sx %s">'
+                           ,addslashes($this->data['Product Code'])
+                           ,addslashes($this->data['Product Units Per Case'])
+                           ,clean_accents(addslashes($this->data['Product Name']))
+                          );
+        }
+
+
+        $login_path="";
+        $register_path="";
+        if (!$flag) {
+            $message=sprintf('<br/><span style="color:green;font-style: italic; ">In stock, please <a style="color:green;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:green;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
+            //$this->count++;
+        } else
+            $message='';
+
+    
+
+        $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span>%s%s</div>'
+                      ,$this->data['Product Code']
+                      ,$this->data['Product Units Per Case']
+                      ,$this->data['Product Name']
+                      ,$message
+                  
+                      ,$_form
+
+
+                     );
+
+        //print $form;exit;
+        return $form;
+
+
+    }
+
+
+    function get_full_order_form($type='ecommerce',$data=false) {
+        switch ($type) {
+        case 'ecommerce':
+
+            $this->url=$data['ecommerce_url'];
+            $this->user_id=$data['username'];
+            $this->method=$data['method'];
+            break;
+		case 'inikoo':
+			$this->method='sc';
+			$this->user=$data['user'];
+			break;
+        default:
+            break;
+        }
+        //$this->locale=$row['Product Locale'];
+        if ($this->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+            $offline='Not for Sale';
+        }
+        if ($this->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+            $offline='Not for Sale';
+        }
+        elseif($this->locale=='es_ES') {
+            $out_of_stock='Fuera de Stock';
+            $discontinued='Fuera de Stock';
+            $offline='Not for Sale';
+        }
+
+        elseif($this->locale=='fr_FR') {
+            $out_of_stock='Rupture de stock';
+            $discontinued='Rupture de stock';
+            $offline='Not for Sale';
+        }
+        else {
+            $out_of_stock='Out of Stock';
+            $discontinued='Discontinued';
+            $offline='Not for Sale';
+        }
+
+        if ($this->data['Product Web State']=='Out of Stock') {
+            $_form='<br/><span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
+        }
+        elseif($this->data['Product Web State']=='Offline') {
+            $_form='<br/><span style="color:red;font-weight:800">'.$offline.'</span>';
+        }
+        elseif($this->data['Product Web State']=='Discontinued') {
+            $_form='<br/><span style="color:red;font-weight:800">'.$discontinued.'</span>';
+        }
+
+
+        else {
+            //global $site_checkout_address_indv,$site_checkout_id,$site_url;
+
+            if ($this->method=='reload') {
+
+                $_form=sprintf('<form action="%s" method="post" style="margin-top:2px">
+                               <input type="hidden" name="userid" value="%s">
+                               <input type="hidden" name="product" value="%s %sx %s">
+                               <input type="hidden" name="return" value="%s">
+                               <input type="hidden" name="discountpr" value="1,%.2f">
+                               <input class="order" type="text" size="1" class="qty" name="qty" value="1">
+                               <input type="hidden" name="nnocart">
+                               <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>'
+                               ,$this->url
+                               ,addslashes($this->user_id)
+                               ,addslashes($this->data['Product Code'])
+                               ,addslashes($this->data['Product Units Per Case'])
+                               ,clean_accents(addslashes($this->data['Product Name']))
+                               //,$site_url.$_SERVER['PHP_SELF']
+                               ,ecommerceURL()
+                               ,$this->data['Product Price']
+                               ,$this->get('Order Msg')
+                              );
+            }
+			else if ($this->method=='sc') {
+				$order_exist=false;
+				//print $this->user->get('User Parent Key');
+				$sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
+				$result=mysql_query($sql);
+				if($row=mysql_fetch_array($result))
+					$order_exist=true;
+				
+				$order_key=$row['Order Key'];
+				$sql=sprintf("select * from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d", $row['Order Key'], $this->id);
+				//print $sql;
+				$result=mysql_query($sql);
+				if($row=mysql_fetch_array($result))
+					$old_qty=$row['Order Quantity'];
+				else
+					$old_qty=0;
+				//print ($this->data['Product Current Key']);
+				
+                $_form=sprintf('<input type="hidden" id="order_id%d" value="%d">
+                               <input type="hidden" id="pid%d" value="%d">
+							   <input type="hidden" id="old_qty%d" value="%d">
+							   <input class="order" type="text" size="1" class="qty" id="qty%d" value="%s">
+                               <button class="button" onClick="order_single_product(%d)" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" >Submit</button>
+							   <span id="loading%d"></span>'
+							  ,$this->id
+							  ,$order_key
+							  ,$this->id
+							  ,$this->id
+							  ,$this->id
+							  ,$old_qty
+							  ,$this->id
+							  ,($old_qty>0?$old_qty:'')
+							  ,$this->id
+							  ,"Submit"
+							  ,$this->id
+                              );
+            }
+			else {
+                $_form=sprintf('<input type="hidden" name="action" value="%s">
+                               <input type="hidden" name="userid" value="%s">
+                               <input type="hidden" name="product" value="%s %sx %s">
+                               <input type="hidden" name="return" value="%s">
+                               <input type="hidden" name="discountpr" value="1,%.2f">
+                               <input class="order" type="text" size="1" class="qty" name="qty" value="1">
+                               <input type="hidden" name="nnocart">
+
+                               <button id="SC" style="margin-left:10px">%s</button>'
+                               ,$this->url
+                               ,addslashes($this->user_id)
+                               ,addslashes($this->data['Product Code'])
+                               ,addslashes($this->data['Product Units Per Case'])
+                               ,clean_accents(addslashes($this->data['Product Name']))
+                               //,$site_url.$_SERVER['PHP_SELF']
+                               ,slfURL()
+                               ,$this->data['Product Price']
+                               ,$this->get('Order Msg')
+                              );
+            }
+        }
+
+        $_SESSION['logged_in']=1;
+
+        if ($this->data['Product RRP']>0)
+            $_rrp=sprintf("<span class=\"rrp\">%s</span>",$this->get_formated_rrp($this->locale));
+        else
+            $_rrp='';
+
+
+        $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/>%s<br/>%s</div>'
+                      ,$this->data['Product Code']
+                      ,$this->data['Product Units Per Case']
+                      ,$this->data['Product Name']
+                      ,$this->get_formated_price($this->locale)
+                      ,$_rrp
+                      ,(isset($_SESSION['logged_in'])?$_form:'')
+
+
+                     );
+
+        //print $form;exit;
+        return $form;
+
+
+    }
+
+		
 
 }
 

@@ -16,18 +16,22 @@ if(!$user->can_view('users'))
   exit();
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 //$yui_path.'datatable/assets/skins/sam/datatable.css',
-		 //$yui_path.'container/assets/skins/sam/container.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'build/assets/skins/sam/skin.css',
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+                 'css/edit.css',
+               'theme.css.php'
 		
-		 'css/edit.css'
+		
 		 );
 
 
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 
 
 $js_files=array(
@@ -57,13 +61,9 @@ $smarty->assign('js_files',$js_files);
 //$_SESSION['state']['users']['staff']['type']='Staff';
 $smarty->assign('display',$_SESSION['state']['users']['staff']['display']);
 
+$smarty->assign('search_label',_('Users'));
+$smarty->assign('search_scope','users');
 
-$general_options_list=array();
-if($user->can_edit('users')){
-  $general_options_list[]=array('tipo'=>'url','url'=>'users_staff.php','label'=>_('Exit Edit'));
-  
-}
-$smarty->assign('general_options_list',$general_options_list);
 
 $sql="select (select count(*) from `User Group Dimension`) as number_groups ,( select count(*) from `User Dimension`) as number_users ";
 $result = mysql_query($sql);

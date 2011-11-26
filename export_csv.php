@@ -574,7 +574,7 @@ $fields_to_export=$_SESSION['state']['staff']['table']['csv_export'];
 
 
 $fields=array(
-'id'=>array('title'=>_('Td'),'db_name'=>'Staff Key'),
+'id'=>array('title'=>_('Id'),'db_name'=>'Staff Key'),
 'name'=>array('title'=>_('Name'),'db_name'=>'Staff Name'),
 'alias'=>array('title'=>_('Alias'),'db_name'=>'Staff Alias'),
 'position'=>array('title'=>_('Position'),'db_name'=>'Company Position Title'),
@@ -1520,13 +1520,13 @@ $fields_to_export=$_SESSION['state']['deals']['table']['csv_export'];
 
 
 $fields=array(
-'name'=>array('title'=>_('Name'),'db_name'=>'Deal Name'),
-'trigger'=>array('title'=>_('Trigger'),'db_name'=>'Deal Trigger'),
-'target'=>array('title'=>_('Target'),'db_name'=>'Deal Allowance Target'),
-'status'=>array('title'=>_('Status'),'db_name'=>'Deal Status'),
-'terms_description'=>array('title'=>_('Terms Description'),'db_name'=>'Deal Terms Description'),
-'allowance_description'=>array('title'=>_('Allowance Description'),'db_name'=>'Deal Allowance Description'),
-'terms_type'=>array('title'=>_('Terms Type'),'db_name'=>'Deal Terms Type'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Deal Metadata Name'),
+'trigger'=>array('title'=>_('Trigger'),'db_name'=>'Deal Metadata Trigger'),
+'target'=>array('title'=>_('Target'),'db_name'=>'Deal Metadata Allowance Target'),
+'status'=>array('title'=>_('Status'),'db_name'=>'Deal Metadata Status'),
+'terms_description'=>array('title'=>_('Terms Description'),'db_name'=>'Deal Metadata Terms Description'),
+'allowance_description'=>array('title'=>_('Allowance Description'),'db_name'=>'Deal Metadata Allowance Description'),
+'terms_type'=>array('title'=>_('Terms Type'),'db_name'=>'Deal Metadata Terms Type'),
 
 );
 
@@ -1544,7 +1544,7 @@ foreach($fields as $key=>$options){
 $_data[]=$options['title'];
 }
 $data[]=$_data;
-$sql="select * from `Deal Dimension` where true $wheref";
+$sql="select * from `Deal Metadata Dimension` where true $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){

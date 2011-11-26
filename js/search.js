@@ -129,11 +129,12 @@ function init_search(type) {
     y= Dom.getY(subject+'_clean_search');
     Dom.setX(subject+"_search_results", x-500);
 
-//alert(subject+"_search_results xx")
+
 
     Dom.setY(subject+"_search_results", y+17);
 
-    Dom.get(subject+"_search_results").style.display='none';
+
+    Dom.setStyle(subject+"_search_results",'display','none');
 
 
 

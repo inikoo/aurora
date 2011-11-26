@@ -1,9 +1,39 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='users_navigation.tpl'}
-<div> 
-  <span class="branch">{t}Users{/t}</span>
+<div class="branch"> 
+  <span>{t}Users{/t}</span>
 </div>
+
+<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+
+<div class="buttons" style="float:right">
+
+
+
+<button  onclick="window.location='preferences.php'" ><img src="art/icons/cog.png" alt=""> {t}Preferences{/t}</button>
+
+
+
+
+</div>
+
+
+<div class="buttons" style="float:left">
+
+<button  onclick="window.location='users_customer.php'" ><img src="art/icons/page_world.png" alt=""> {t}Website Users{/t}</button>
+<button  onclick="window.location='users_supplier.php'" ><img src="art/icons/lorry.png" alt=""> {t}Supplier Users{/t}</button>
+<button  onclick="window.location='users_staff.php'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Inikoo Users{/t}</button>
+
+
+
+</div>
+
+
+<div style="clear:both"></div>
+</div>
+
+
 
 	<div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
     <h1>{t}Users Handing{/t}</h1>

@@ -1,9 +1,19 @@
 {include file='header.tpl'}
 <div id="bd" >
 <input type="hidden" id="site_key" value="{$site->id}"/>
+<input type="hidden" id="store_key" value="{$store_key}"/>
+
 {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
+<div class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
+</div>
+<div class="top_page_menu">
+    <div class="buttons left" style="float:left">
+        <button style="margin-left:0px"  onclick="window.location='site.php?id={$site->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+    </div>
+    <div style="clear:both"></div>
 </div>
 
 
@@ -17,20 +27,42 @@
     <li> <span class="item {if $block_view=='layout'}selected{/if}"  id="layout">  <span> {t}Layout{/t}</span></span></li>
     <li> <span class="item {if $block_view=='style'}selected{/if}"  id="style">  <span> {t}Style{/t}</span></span></li>
     <li> <span class="item {if $block_view=='sections'}selected{/if}"  id="sections">  <span> {t}Sections{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
+      <li> <span class="item {if $block_view=='headers'}selected{/if}"  id="headers">  <span> {t}Headers{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='footers'}selected{/if}"  id="footers">  <span> {t}Footers{/t}</span></span></li>
 
+    <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
+  
   </ul>
   
   <div class="tabbed_container" > 
    
-    
-    
+     <div  class="edit_block" style="{if $block_view!='headers'}display:none{/if}"  id="d_headers">
+     
+     <div class='buttons'>
+        <button id="new_header"><img src="art/icons/add.png" alt=""> {t}New Header{/t}</button>
+                <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button>
+
+     </div>
+     <div style="clear:both">
+       <span class="clean_table_title">{t}Headers{/t}</span>
+     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+  <div  id="table2"   class="data_table_container dtable btable "> </div>
+   </div>
+   </div>
+        <div  class="edit_block" style="{if $block_view!='footers'}display:none{/if}"  id="d_footers">
+     
+     
+       <span class="clean_table_title">{t}Footer{/t}</span>
+     {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
+  <div  id="table3"   class="data_table_container dtable btable "> </div>
+     
+     </div>
     <div  class="edit_block" style="{if $block_view!='general'}display:none{/if}"  id="d_general">
       
       
       
       
-      <div class="todo" style="font-size:80%;width:50%">
+      <div class="todo" style="font-size:80%;width:50%; display:none">
 
 
       <h1>TO DO (KAKTUS-323)</h1>
@@ -46,13 +78,92 @@ Edit Form for Site Properties
 DB updates should be done in class.Site.php. <br/> Should use Ajax (see edit_store.php or edit_customer.php)
 </p>
       </div>
-      
-    
-     
-	
-	
-     
+	  
+<table>
+<tr >
+<td></td>
+<td colspan="3" style="float:right">
+ <div class="general_options" style="float:right">
+	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_site" class="state_details">{t}Save{/t}</span>
+	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_site" class="state_details">{t}Reset{/t}</span>
       </div>
+</td>
+</tr>
+<tr><td class="label">{t}Select Checkout Method: {/t}
+  </td><td>
+<input id="site_checkout_method" value="inikoo" type="hidden"   />
+<div class="buttons" id="site_checkout_method_buttons" style="float:left">
+<button  id="ecommerce" class="site_checkout_method {if $site->get('Site Checkout Method')=='Ecommerce'}selected{/if}" ><img src="art/icons/cart.png" alt=""/> {t}Ecommerce{/t}</button>
+<button  id="inikoo"  class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt=""/> {t}Inikoo{/t}</button>
+</div>
+     
+</td></tr>	
+
+
+
+
+<tr><td class="label">{t}Select Registration Method: {/t}</td><td>
+<input id="site_registration_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="site_registration_method_buttons" style="float:left">
+<button  id="sidebar" class="site_registration_method {if $site->get('Site Registration Method')=='SideBar'}selected{/if}" ><img src="art/icons/layout.png" alt=""/> {t}SideBar{/t}</button>
+<button  id="mainpage"  class="site_registration_method {if $site->get('Site Registration Method')=='MainPage'}selected{/if}"><img src="art/icons/layout.png" alt=""/> {t}MainPage{/t}</button>
+</div>
+     
+</td></tr>	
+
+
+<tr>
+<td  class="label">{t}Site Slogan: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Slogan" value="{$site->get('Site Slogan')}" ovalue="{$site->get('Site Slogan')}" valid="0">
+       <div id="Site_Slogan_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_Slogan_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td  class="label">{t}Site Name: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Name" value="{$site->get('Site Name')}" ovalue="{$site->get('Site Name')}" valid="0">
+       <div id="Site_Name_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_Name_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td  class="label">{t}Site URL: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_URL" value="{$site->get('Site URL')}" ovalue="{$site->get('Site URL')}" valid="0">
+       <div id="Site_URL_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_URL_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td  class="label">{t}Site FTP Credentials: {/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_FTP" value="{$site->get('Site FTP Credentials')}" ovalue="{$site->get('Site FTP Credentials')}" valid="0">
+       <div id="Site_FTP_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_FTP_msg" class="edit_td_alert"></td>
+</tr>
+
+</table>	
+     
+	 
+	 </div>
     <div  class="edit_block" style="{if $block_view!='layout'}display:none{/if}"  id="d_layout">
       
       
@@ -183,7 +294,7 @@ link to edit_site_section.php?id=
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
       {foreach from=$paginator_menu1 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},1)"> {$menu}</a></li>
       {/foreach}
     </ul>
   </div>
@@ -198,5 +309,46 @@ link to edit_site_section.php?id=
     </ul>
   </div>
 </div>
+
+<div id="rppmenu6" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu6 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},6)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu6" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu6 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',6)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="dialog_upload_header" style="padding:30px 10px 10px 10px;width:320px">
+
+ <table style="margin:0 auto">
+  <form enctype="multipart/form-data" method="post" id="upload_header_form">
+<input type="hidden" name="parent_key" value="{$site->id}" />
+<input type="hidden" name="parent" value="site" />
+
+ <tr><td>{t}File{/t}:</td><td><input id="upload_header_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
+
+  </form>
+ <tr><td colspan=2>
+  <div class="buttons">
+<button class="positive"  id="upload_header"  >{t}Upload{/t}</button>
+<button  id="cancel_upload_header" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
 
 {include file='footer.tpl'}

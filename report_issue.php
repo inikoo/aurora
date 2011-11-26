@@ -2,7 +2,6 @@
 include_once('common.php');
 
 
-
 if(isset($_REQUEST['t']) and $_REQUEST['t']=='feature'){
 $type='feature';
 
@@ -32,7 +31,7 @@ $css_files=array(
 );
 
 
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 
 
 

@@ -13,7 +13,7 @@ $css_files=array(
 		 'container.css'
 		 );
 
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 
 $js_files=array(
 
@@ -70,15 +70,9 @@ $smarty->assign('search_scope','part');
 
 $q='';
 
-$sql="select count(*) as total_parts   from `Part Dimension` ";
-$result=mysql_query($sql);
-if(!$parts=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  
-  exit("Internal Error\n");
- }
   
 
-$smarty->assign('parent','products');
+$smarty->assign('parent','parts');
 $smarty->assign('title', _('Parts Index'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

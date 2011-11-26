@@ -26,6 +26,7 @@ class Customer extends DB_Table {
     var $ship_to=array();
     var $fuzzy=false;
     var $tax_number_read=false;
+	var $warning_messages=array();
     function __construct($arg1=false,$arg2=false) {
 
         $this->table_name='Customer';
@@ -92,6 +93,20 @@ class Customer extends DB_Table {
 		$result=mysql_query($sql);
 		if($row=mysql_fetch_array($result, MYSQL_ASSOC))
 			return array(true, $row);
+	}
+	
+	function number_of_user_logins(){
+		list($is_user, $row)=$this->is_user_customer($this->id);
+		if($is_user){
+			$sql=sprintf("select * from `User Log Dimension` where `User Key`=%d", $row['User Key']);
+			$result=mysql_query($sql);
+			if($num=mysql_num_rows($result))
+				return $num;
+			else 
+				return 0;
+		}
+		else
+			return 0;
 	}
 	
     function prepare_force_create($data) {
@@ -1133,9 +1148,10 @@ class Customer extends DB_Table {
 
 
     function update_field_switcher($field,$value,$options='') {
+	
 
-     
         
+		
         if (is_string($value))
             $value=_trim($value);
 
@@ -1177,6 +1193,7 @@ class Customer extends DB_Table {
             break;
         case('Customer Main Plain Telephone'):
         case('Customer Main Plain FAX'):
+		
             if ($field=='Customer Main Plain Telephone')
                 $type='Telephone';
             else
@@ -1186,21 +1203,22 @@ class Customer extends DB_Table {
             $telephone_data['editor']=$this->editor;
             $telephone_data['Telecom Raw Number']=$value;
             $telephone_data['Telecom Type']=$type;
-            $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-
-            if ($proposed_telephone->id) {
-                $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
+            $telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
+			//$telephone=new Telecom('new',$telephone_data);
+            if ($telephone->id) {
+                $customers_with_this_telephone=$telephone->get_customer_keys();
 
                 if (in_array($this->id,$customers_with_this_telephone)) {
                     $this->msg=_('The customer already has this number');
-                    $this->error=true;
+                    //$this->error=true;
 
-                    return;
+                    //return;
+					$this->warning_messages[]=$this->msg;
                 }
             }
 
 
-
+			
 
 
             if ($this->data['Customer Type']=='Person') {
@@ -1213,10 +1231,15 @@ class Customer extends DB_Table {
             }
 
 
-
+			
             $subject->editor=$this->editor;
 
             $subject->update(array($subject_type.' Main Plain '.$type=>$value));
+			//$address= new Address ($this->data['Customer Main Address Key']);
+			//$address->update_parents_principal_telecom_keys($type,array('Customer'));
+			
+			//$telecom= new Telecom($this->data['Customer Main '.$type.' Key']);
+			//$telecom->update_parents();
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
             $this->new_value=$subject->new_value;
@@ -1231,18 +1254,20 @@ class Customer extends DB_Table {
             $telephone_data['Telecom Raw Number']=$value;
             $telephone_data['Telecom Type']=$type;
             $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-
+			//$proposed_telephone=new Telecom('new',$telephone_data);
             if ($proposed_telephone->id) {
                 $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
 
                 if (in_array($this->id,$customers_with_this_telephone)) {
                     $this->msg=_('The customer already has this number');
-                    $this->error=true;
+                    //$this->error=true;
 
-                    return;
+                    //return;
+					$this->warning_messages[]=$this->msg;
                 }
             }
             $contact=new Contact($this->data['Customer Main Contact Key']);
+			//$contact=new Contact($this->data['Customer Main Mobile Key']);
             $contact->editor=$this->editor;
             $contact->update(array('Contact Main Plain Mobile'=>$value));
             $this->updated=$contact->updated;
@@ -1619,16 +1644,17 @@ class Customer extends DB_Table {
         $telephone_data['Telecom Raw Number']=$value;
         $telephone_data['Telecom Type']=$type;
         $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-
+		//$proposed_telephone=new Telecom('new',$telephone_data);
 
         if ($proposed_telephone->id) {
             $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
 
             if (in_array($this->id,$customers_with_this_telephone)) {
                 $this->msg=_('The customer already has this number');
-                $this->error=true;
+                //$this->error=true;
 
-                return;
+               // return;
+			   $this->warning_messages[]=$this->msg;
             }
             unset($customers_with_this_telephone[$this->id]);
 
@@ -1644,9 +1670,9 @@ class Customer extends DB_Table {
                     else
                         $this->msg=_('Fax could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
 
-                    $this->error=true;
+                    //$this->error=true;
 
-                    return;
+                   // return;
                 }
 
             }
@@ -1690,7 +1716,7 @@ class Customer extends DB_Table {
         if ($type=='Telephone')
             $this->new_telephone_key=$telecom_key;
         elseif ($type=='Mobile')
-        $this->new_mobile_key=$telecom_key;
+			$this->new_mobile_key=$telecom_key;
         else
             $this->new_fax_key=$telecom_key;
 
@@ -2129,7 +2155,7 @@ class Customer extends DB_Table {
                     )
                ) {
 
-                print $this->data['Customer First Contacted Date']." ->  ".$row['date']."\n";
+                //print $this->data['Customer First Contacted Date']." ->  ".$row['date']."\n";
 
                 $sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%s  where `Customer Key`=%d"
                              ,prepare_mysql($row['date'])
@@ -3452,6 +3478,24 @@ class Customer extends DB_Table {
 
     }
 
+    function get_is_billing_address($address_key){
+        $is_billing_address=false;
+        
+      $sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing')  and `Subject Type`='Customer' and `Subject Key`=%d  and `Address Key`=%d  ",
+      $this->id,
+      $address_key
+      
+      );
+      
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+          $is_billing_address=true;
+        }
+      return $is_billing_address;
+    }
+
 
     function get_delivery_address_objects() {
 
@@ -3467,7 +3511,21 @@ class Customer extends DB_Table {
         return $address_keys;
 
     }
+	
+    function get_billing_address_objects() {
 
+
+        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing')  and `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $address_keys=array();
+        $result=mysql_query($sql);
+
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $address_keys[$row['Address Key']]= new Address($row['Address Key']);
+        }
+        return $address_keys;
+
+    }
 
 
 
@@ -3660,7 +3718,6 @@ class Customer extends DB_Table {
                                                     'email'=>$row['Email'],
                                                     'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
                                                     'label'=>$row['Email Description']
-
                                                 );
         }
         return $email_keys;
@@ -4293,13 +4350,7 @@ class Customer extends DB_Table {
 
 
     function get_ship_to($date=false) {
-        /*
-        if($date){
-        $this->get_ship_to_historic($date);
-        return;
-        }
-        */
-
+      
         if (!$date) {
             $date=date("Y-m-d H:i:s");
         }
@@ -4407,6 +4458,21 @@ class Customer extends DB_Table {
 
     }
 
+    function display_billing_address($tipo='xhtml') {
+        switch ($tipo) {
+
+        case 'xhtml':
+            $address=new address($this->data['Customer Billing Address Key']);
+            return $address->display('xhtml');
+            break;
+        default:
+            $address=new address($this->data['Customer Billing Address Key']);
+            return $address->get($tipo);
+            break;
+        }
+
+    }
+	
     function display_contact_address($tipo='xhtml') {
         switch ($tipo) {
         case 'label':
@@ -4502,7 +4568,7 @@ class Customer extends DB_Table {
         date_default_timezone_set('GMT') ;
 
 
-        switch ($_SESSION ['lang']) {
+        switch ($_SESSION ['text_locale_code'].'_'.$_SESSION ['text_locale_country_code']) {
         default :
             $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
             if ($order->data['Order Original Data MIME Type']='application/inikoo') {
@@ -4929,7 +4995,48 @@ class Customer extends DB_Table {
         return $mobiles;
 
     }
+	
+	function get_telephones(){
+		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Telephone'    and `Subject Type`='Customer' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+        $mobiles=array();
+        $result=mysql_query($sql);
+		//print $sql;
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $mobile= new Telecom($row['Telecom Key']);
+            $mobile->set_scope('Contact',$this->id);
+            $mobiles[]= $mobile;
+            $mobile->data['Mobile Is Main']=$row['Is Main'];
 
+        }
+        //$this->number_mobiles=count($mobiles);
+        return $mobiles;
+	}
+	
+    function get_work_telephones($company_key=false) {
+        $telephones=array();
+        $in_company='';
+        if ($company_key)
+            $in_company=sprintf(" and `Auxiliary Key`=%s",$company_key);
+        $sql=sprintf('select * from `Telecom Bridge` TB  left join `Telecom Dimension` T on T.`Telecom Key`=TB.`Telecom Key`  where `Subject Key`=%d and `Telecom Type`="Work Telephone"  and `Subject Type`="Contact" %s order by `Is Main` desc ',$this->id,$in_company);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $tel=new Telecom('id',$row['Telecom Key']);
+
+            $telephones[]=array(
+                              'id'=>$row['Telecom Key']
+                                   ,'type'=>$row['Telecom Type']
+                                           ,'country_code'=>$row['Telecom Country Telephone Code']
+                                                           ,'national_access_code'=>$row['Telecom National Access Code']
+                                                                                   ,'area_code'=>$row['Telecom Area Code']
+                                                                                                ,'number'=>$row['Telecom Number']
+                                                                                                          ,'extension'=>$row['Telecom Extension']
+                                                                                                                       ,'formated_number'=>$tel->display('formated')
+
+                          );
+        }
+        return $telephones;
+    }
+	
     function remove_principal_email() {
         $this->remove_email($this->data['Customer Main Email Key']);
     }
@@ -5086,7 +5193,7 @@ class Customer extends DB_Table {
     }
 
     function delete($note='',$customer_id_prefix='') {
-
+$this->deleted=false;
         $deleted_company_keys=array();
 
         $address_to_delete=array();
@@ -5461,5 +5568,266 @@ class Customer extends DB_Table {
 		
 	}
 
+	function get_order_key(){
+		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Key` DESC", $this->id);
+		//print $sql;
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result)){
+			return $row['Order Key'];
+		}
+		else
+			return -1;
+	}
+
+	function get_faxes(){
+		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Fax'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+        $telephones=array();
+        $result=mysql_query($sql);
+		//print $sql;
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $telephone= new Telecom($row['Telecom Key']);
+            $telephone->set_scope('Contact',$this->id);
+            $telephones[]= $telephone;
+            $telephone->data['Mobile Is Main']=$row['Is Main'];
+
+        }
+        //$this->number_mobiles=count($mobiles);
+        return $telephones;
+	}
+	
+    function update_principal_faxes($fax_key) {
+
+
+        $main_fax_key=$this->get_principal_fax_key();
+
+        if ($main_fax_key!=$fax_key) {
+            $fax=new Telecom($fax_key);
+            $fax->editor=$this->editor;
+            $sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and `Telecom Key`=%d and `Telecom Type`='Fax'  "
+                         ,$this->id
+                         ,$main_fax_key
+                        );
+            mysql_query($sql);
+
+            $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact'  and  `Subject Key`=%d  and `Telecom Key`=%d"
+                         ,$this->id
+                         ,$fax->id
+                        );
+            mysql_query($sql);
+
+
+            $sql=sprintf("update `Contact Dimension` set  `Contact Main Fax Key`=%d where `Contact Key`=%d",$fax->id,$this->id);
+            $this->data['Contact Main Fax Key']=$fax->id;
+            mysql_query($sql);
+            $this->updated=true;
+            $this->new_value=$fax->display('xhtml');
+
+            $this->update_parents_principal_fax_keys();
+            $fax->new=$this->new;
+            $fax->update_parents();
+
+
+        }
+
+    }	
+	
+	function get_principal_telephone_key() {
+
+        $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Telephone'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
+                     ,$this->id );
+
+        //print "$sql\n";
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_telephone_key=$row['Telecom Key'];
+        } else {
+            $main_telephone_key=0;
+        }
+
+        return $main_telephone_key;
+    }
+
+	function get_principal_fax_key() {
+
+        $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Fax'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
+                     ,$this->id );
+
+        //print "$sql\n";
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_fax_key=$row['Telecom Key'];
+        } else {
+            $main_fax_key=0;
+        }
+
+        return $main_fax_key;
+    }
+	
+    function update_parents_principal_telephone_keys() {
+        $telephone_key=$this->data['Contact Main Telephone Key'];
+        if (!$telephone_key)
+            return;
+        //$parents=array('Company','Customer','Supplier');
+        $parents=array('Customer');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+            //   print "$sql\n";
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+
+                if ($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                /*
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+                elseif($parent=='Company') {
+                    $parent_object=new Company($row['Parent Key']);
+                    $parent_label=_('Company');
+                }
+                */
+                $parent_telecoms=$parent_object->get_telecom_keys();
+
+                if (!array_key_exists($telephone_key,$parent_telecoms)) {
+                    $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`,`Subject Type`, `Subject Key`,`Is Main`,`Is Active`) values (%d,'$parent',%d,'No','Yes')  "
+                                 ,$telephone_key
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+                }
+                //print "$sql\n";
+
+                $old_principal_mobile_key=$parent_object->data[$parent.' Main Telephone Key'];
+                if ($old_principal_mobile_key!=$telephone_key) {
+
+                    $sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d and `Telecom Type`='Telephone'  ",
+                                 $parent_object->id
+
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d",
+                                 $parent_object->id
+                                 ,$telephone_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `$parent Dimension` set `$parent Main Telephone Key`=%d where `$parent Key`=%d"
+                                 ,$telephone_key
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+//print "$sql\n";
+
+
+
+                }
+            }
+        }
+    }
+
+    function update_parents_principal_fax_keys() {
+        $fax_key=$this->data['Contact Main Fax Key'];
+        if (!$fax_key)
+            return;
+        //$parents=array('Company','Customer','Supplier');
+        $parents=array('Customer');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+            //   print "$sql\n";
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+
+                if ($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                /*
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+                elseif($parent=='Company') {
+                    $parent_object=new Company($row['Parent Key']);
+                    $parent_label=_('Company');
+                }
+                */
+                $parent_telecoms=$parent_object->get_telecom_keys();
+
+                if (!array_key_exists($fax_key,$parent_telecoms)) {
+                    $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`,`Subject Type`, `Subject Key`,`Is Main`,`Is Active`) values (%d,'$parent',%d,'No','Yes')  "
+                                 ,$fax_key
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+                }
+                //print "$sql\n";
+
+                $old_principal_mobile_key=$parent_object->data[$parent.' Main FAX Key'];
+                if ($old_principal_mobile_key!=$fax_key) {
+
+                    $sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d and `Telecom Type`='Fax'  ",
+                                 $parent_object->id
+
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Telecom Key`=%d",
+                                 $parent_object->id
+                                 ,$fax_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `$parent Dimension` set `$parent Main FAX Key`=%d where `$parent Key`=%d"
+                                 ,$fax_key
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+//print "$sql\n";
+
+
+
+                }
+            }
+        }
+    }
+	function update_principal_telephone($telephone_key) {
+
+
+        $main_telephone_key=$this->get_principal_telephone_key();
+
+        if ($main_telephone_key!=$telephone_key) {
+            $telephone=new Telecom($telephone_key);
+            $telephone->editor=$this->editor;
+            $sql=sprintf("update `Telecom Bridge`  B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`)  set `Is Main`='No' where `Subject Type`='Contact'   and `Subject Key`=%d  and `Telecom Key`=%d and `Telecom Type`='Telephone'  "
+                         ,$this->id
+                         ,$main_telephone_key
+                        );
+            mysql_query($sql);
+
+            $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact'  and  `Subject Key`=%d  and `Telecom Key`=%d"
+                         ,$this->id
+                         ,$telephone->id
+                        );
+            mysql_query($sql);
+
+
+            $sql=sprintf("update `Contact Dimension` set  `Contact Main Telephone Key`=%d where `Contact Key`=%d",$telephone->id,$this->id);
+            $this->data['Contact Main Telephone Key']=$telephone->id;
+            mysql_query($sql);
+            $this->updated=true;
+            $this->new_value=$telephone->display('xhtml');
+
+            $this->update_parents_principal_telephone_keys();
+            $telephone->new=$this->new;
+            $telephone->update_parents();
+
+
+        }
+
+    }
 }
 ?>

@@ -246,7 +246,7 @@ $default_state=array(
                             'id'=>''),
                    'order'=>array(
                                'id'=>'',
-                               
+
                                'store_key'=>0,
 
                                'products'=>array(
@@ -284,20 +284,7 @@ $default_state=array(
                                               )
                            ),
 
-                   'marketing'=>array(
 
-                                   'table'=>array(
-                                               'order'=>'date',
-                                               'order_dir'=>'desc',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'subject',
-                                               'f_value'=>'','f_show'=>false,
-                                               'from'=>'',
-                                               'to'=>''
-                                           )
-                               ),
                    'reports'=>array(
                                  'view'=>'sales',
 
@@ -684,6 +671,7 @@ $default_state=array(
                                              'mode'=>'all',
                                              'avg'=>'totals',
                                              'view'=>'general',
+                                             'block_view'=>'subcategories',
                                              'from'=>'',
                                              'to'=>'',
                                              'exchange_type'=>'day2day',
@@ -1252,6 +1240,70 @@ $default_state=array(
                                                    )
                                        ),
 
+                   'store_offers'=>array(
+                                      'view'=>'offers',
+                                      'campaigns'=>array(
+                                                      'order'=>'name',
+                                                      'order_dir'=>'',
+                                                      'sf'=>0,
+                                                      'nr'=>25,
+                                                      'where'=>'where true',
+                                                      'f_field'=>'name',
+                                                      'f_value'=>'',
+                                                      'f_show'=>false,
+                                                      'elements'=>array()
+                                                  ),
+                                      'offers'=>array(
+                                                   'order'=>'code',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'code',
+                                                   'f_value'=>'',
+                                                   'f_show'=>false,
+                                                   'elements'=>array('Order'=>1,'Department'=>0,'Family'=>0,'Product'=>0)
+                                               )
+
+
+                                  ),
+
+                   'deal'=>array(
+                              'view'=>'details',
+                              'campaigns'=>array(
+                                              'order'=>'name',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>25,
+                                              'where'=>'where true',
+                                              'f_field'=>'name',
+                                              'f_value'=>'',
+                                              'f_show'=>false,
+                                              'elements'=>array()
+                                          ),
+                              'orders'=>array(
+                                           'order'=>'date',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                           'where'=>'where true',
+                                           'f_field'=>'public_id',
+                                           'f_value'=>'',
+                                           'f_show'=>false,
+                                           'elements'=>array()
+                                       ),
+                              'customers'=>array(
+                                              'order'=>'name',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>25,
+                                              'where'=>'where true',
+                                              'f_field'=>'name',
+                                              'f_value'=>'',
+                                              'f_show'=>false,
+                                              'elements'=>array()
+                                          )
+                          ),
 
 
                    'warehouse'=>array(
@@ -1573,11 +1625,11 @@ $default_state=array(
                             ),
 
                    'customers'=>array(
-                                   'store'=>'3',
-                                   'view'=>'general',
+                                   'store'=>false,
 
+                                   'block_view'=>'all_contacts',
                                    'stats_view'=>'population',
-                                   'type'=>'active_contacts',
+
 
                                    'correlations'=>array(
                                                       'order'=>'correlation',
@@ -1593,7 +1645,11 @@ $default_state=array(
                                                'order_dir'=>'desc',
                                                'sf'=>0,
                                                'nr'=>25,
-
+                                               'view'=>'general',
+                                               'elements'=>array(
+                                                              'all_contacts'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+                                                              'contacts_with_orders'=>array('Active'=>true,'Losing'=>true,'Lost'=>true)
+                                                          ),
 
                                                'where'=>'',
                                                'f_field'=>'customer name',
@@ -1606,27 +1662,32 @@ $default_state=array(
                                                                 'last_orders'=>true,
                                                                 'orders'=>true,
                                                                 'status'=>true
-                                                                         /* 'surplus'=>false,
-                                                                          'ok'=>false,
-                                                                          'low'=>false,
-                                                                          'critical'=>false,
-                                                                          'gone'=>false,
-                                                                          'unknown'=>false,
-                                                                          'sales_all'=>false,
-                                                                          'sales_1y'=>false,
-                                                                          'sales_1q'=>false,
-                                                                          'sales_1m'=>false,
-                                                                          'sales_1w'=>false,
-                                                                          'profit_all'=>false,
-                                                                          'profit_1y'=>false,
-                                                                          'profit_1q'=>false,
-                                                                          'profit_1m'=>false,
-                                                                          'profit_1w'=>false */
-
-
                                                             )
-
                                            ),
+
+                                   'edit_table'=>array(
+                                                    'order'=>'name',
+                                                    'order_dir'=>'desc',
+                                                    'sf'=>0,
+                                                    'nr'=>25,
+
+
+                                                    'where'=>'',
+                                                    'f_field'=>'customer name',
+                                                    'f_value'=>'',
+
+                                                    'csv_export'=>array(
+                                                                     'id'=>true,
+                                                                     'name'=>true,
+                                                                     'location'=>true,
+                                                                     'last_orders'=>true,
+                                                                     'orders'=>true,
+                                                                     'status'=>true
+                                                                 )
+                                                ),
+
+
+
                                    'advanced_search'=>array(
                                                          'order'=>'name',
                                                          'order_dir'=>'',
@@ -1636,14 +1697,14 @@ $default_state=array(
                                                          'f_field'=>'',
                                                          'f_value'=>'',
                                                          'view'=>'general'
-                                                     )
-                                                     ,'list'=>array(
+                                                     ),
+                                                     'list'=>array(
                                                                  'order'=>'name',
                                                                  'order_dir'=>'',
                                                                  'sf'=>0,
                                                                  'nr'=>25,
                                                                  'where'=>'',
-                                                                 'f_field'=>'',
+                                                                 'f_field'=>'name',
                                                                  'f_value'=>'',
                                                                  'view'=>'general'
                                                              )
@@ -2226,7 +2287,21 @@ $default_state=array(
                    'page'=>array(
                               'id'=>0,
                               'view'=>'details',
-                              'editing'=>'properties'
+                              'editing'=>'properties',
+                              'history'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'abstract',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'date',
+                                            'order_dir'=>'desc',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
+                                        )
+
+
                           ),
                    'store'=>array(
                                'block_view'=>'departments',
@@ -2501,7 +2576,9 @@ $default_state=array(
 
 
 
-
+                   'preferences'=>array(
+                                     'view'=>'color'
+                                 ),
 
                    'site'=>array(
 
@@ -2527,14 +2604,37 @@ $default_state=array(
                                                'nr'=>50,
                                                'view'=>'page_properties',
                                                'elements'=>array(
-                                                              'Product Description'=>1,
-                                                              'Family Catalogue'=>1,
-                                                              'Product Catalogue'=>1,
+                                                              'ProductDescription'=>1,
+                                                              'FamilyCatalogue'=>1,
+                                                              'DepartmentCatalogue'=>1,
                                                               'Other'=>1,
 
                                                           )
                                            ),
 
+                              'edit_headers'=>array(
+                                               'f_field'=>'name',
+                                               'f_value'=>'',
+                                               'f_show'=>false,
+                                               'order'=>'name',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>50,
+                                               'view'=>'overview'
+                                              
+                                           ),
+                        
+                              'edit_footers'=>array(
+                                               'f_field'=>'name',
+                                               'f_value'=>'',
+                                               'f_show'=>false,
+                                               'order'=>'name',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>50,
+                                               'view'=>'overview'
+                                              
+                                           ),
                               'pages'=>array(
                                           'where'=>'where true',
                                           'f_field'=>'code',
@@ -2550,10 +2650,11 @@ $default_state=array(
                                           'percentage'=>0,
                                           'mode'=>'all',
                                           'avg'=>'totals',
+                                          'type'=>'list',
                                           'elements'=>array(
-                                                         'Product Description'=>1,
-                                                         'Family Catalogue'=>1,
-                                                         'Product Catalogue'=>1,
+                                                         'ProductDescription'=>1,
+                                                         'FamilyCatalogue'=>1,
+                                                         'DepartmentCatalogue'=>1,
                                                          'Other'=>1,
 
                                                      )
@@ -2591,8 +2692,17 @@ $default_state=array(
                                                            'sf'=>0,
                                                            'nr'=>25,
                                                            'view'=>'general'
-                                                       )
-
+                                                       ),
+                                        'objetives'=>array(
+                                                        'f_field'=>'email',
+                                                        'f_value'=>'',
+                                                        'f_show'=>false,
+                                                        'order'=>'name',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>25,
+                                                        'view'=>'general'
+                                                    )
 
                                     ),
 
@@ -2603,13 +2713,69 @@ $default_state=array(
                                    'email_campaigns'=>array(
                                                          'where'=>'where true',
                                                          'f_field'=>'name',
-                                                         'f_value'=>'','f_show'=>false,
+                                                         'f_value'=>'',
+                                                         'f_show'=>false,
                                                          'order'=>'date',
                                                          'order_dir'=>'desc',
                                                          'sf'=>0,
                                                          'nr'=>25,
                                                          'view'=>'general'
-                                                     )
+                                                     ),
+                                   'postal_campaigns'=>array(
+                                                          'where'=>'where true',
+                                                          'f_field'=>'name',
+                                                          'f_value'=>'',
+                                                          'f_show'=>false,
+                                                          'order'=>'date',
+                                                          'order_dir'=>'desc',
+                                                          'sf'=>0,
+                                                          'nr'=>25,
+                                                          'view'=>'general'
+                                                      ),
+                                   'media_campaigns'=>array(
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'',
+                                                         'f_show'=>false,
+                                                         'order'=>'date',
+                                                         'order_dir'=>'desc',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'view'=>'general'
+                                                     ),
+                                   'newsletters'=>array(
+                                                     'where'=>'where true',
+                                                     'f_field'=>'name',
+                                                     'f_value'=>'',
+                                                     'f_show'=>false,
+                                                     'order'=>'date',
+                                                     'order_dir'=>'desc',
+                                                     'sf'=>0,
+                                                     'nr'=>25,
+                                                     'view'=>'general'
+                                                 ),
+                                   'campaigns'=>array(
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'',
+                                                   'f_show'=>false,
+                                                   'order'=>'date',
+                                                   'order_dir'=>'desc',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'view'=>'general'
+                                               ),
+                                   'reminders'=>array(
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'',
+                                                   'f_show'=>false,
+                                                   'order'=>'date',
+                                                   'order_dir'=>'desc',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'view'=>'general'
+                                               )
                                ),
 
 
@@ -2751,6 +2917,8 @@ $default_state=array(
                                                    'mode'=>'all',
                                                    'avg'=>'totals',
                                                    'restrictions'=>'',
+                                                   'elements'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
+
                                                    'csv_export'=>array(
                                                                     'code'=>true,
                                                                     'name'=>true,
@@ -3062,7 +3230,7 @@ $default_state=array(
                                               'sf'=>0,
                                               'nr'=>15,
                                               'where'=>'where true',
-                                              'f_field'=>'id',
+                                              'f_field'=>'public_id',
                                               'f_value'=>'','f_show'=>false,
                                               'from'=>'',
                                               'to'=>''
@@ -3323,6 +3491,7 @@ $default_state=array(
                                 'block_view'=>'stores',
                                 'edit'=>'stores',
                                 'orders_view'=>'orders',
+                                'stats_view'=>'sales',
                                 'stores'=>array(
                                              'percentages'=>false,
                                              'view'=>'general',
@@ -3492,9 +3661,6 @@ $default_state=array(
                                               'to'=>'',
                                               'elements'=>''
                                           ),
-
-
-
                                 'orders'=>array(
                                              'percentages'=>false,
                                              'view'=>'general',

@@ -32,7 +32,7 @@ $css_files=array(
                 'css/calendar.css'
            );
 
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -216,7 +216,7 @@ case 'country':
 
     $smarty->assign('country_code',$tag);
 
-    $smarty->assign('customer_view',$_SESSION['state']['customers']['view']);
+    $smarty->assign('customer_view',$_SESSION['state']['customers']['table']['view']);
     $_SESSION['state']['country']['code']=$tag;
     $smarty->assign('country',$country);
     $smarty->assign('view',$view);

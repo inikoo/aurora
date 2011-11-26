@@ -99,9 +99,11 @@ class User extends DB_Table {
 
 
     }
+	
     function create($data) {
+
         $this->new=false;
-        $this->msg=_('Unknown Error(0)');
+        $this->msg=_('Unknown Error').' (0)';
         $base_data=$this->base_data();
 
         foreach($data as $key=>$value) {
@@ -109,9 +111,11 @@ class User extends DB_Table {
                 $base_data[$key]=_trim($value);
         }
 
-   if ($base_data['User Themes']=='')
-            $base_data['User Themes']=1;
-
+		if ($base_data['User Theme Key']=='')
+			$base_data['User Theme Key']=0;
+			
+		if ($base_data['User Theme Background Key']=='')
+			$base_data['User Theme Background Key']=0;
 
         if ($base_data['User Created']=='')
             $base_data['User Created']=date("Y-m-d H:i:s");
@@ -124,6 +128,7 @@ class User extends DB_Table {
             $this->msg=_('Handle to short');
             return;
         }
+
         $sql="select count(*) as numh  from `User Dimension` where `User Type`=".prepare_mysql($base_data['User Type'])." and `User Handle`=".prepare_mysql($base_data['User Handle']);
         $result = mysql_query($sql) or die('Query failed:x ' . mysql_error());
         if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -145,7 +150,7 @@ class User extends DB_Table {
 
             $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
             if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-                $this->msg=_('The staff member  with id ')." ".$data['User Parent Key']." "._("is already in the database as")." ".$row['User Handle'];
+                $this->msg=_('The staff member with id ')." ".$data['User Parent Key']." "._("is already in the database as")." ".$row['User Handle'];
                 return;
             }
 
@@ -179,7 +184,7 @@ class User extends DB_Table {
             return;
         } else {
             $this->error=true;
-            $this->msg= _('Unknown error(2)');
+            $this->msg= _('Unknown error').' (2)';
             return;
         }
 
@@ -390,6 +395,12 @@ class User extends DB_Table {
         case('User Alias'):
             $this->update_field('User Alias',$data['value']);
             break;
+          case('User Theme Key'):
+        case('User Theme Background Key'):
+
+            $this->update_field($tipo,$data['value']);
+            break;   
+            
         }
 
 
@@ -1052,6 +1063,20 @@ function get_number_stores(){
 
 	}
 
+function update_staff_type(){
+
+    if($this->data['User Type']!='Staff'){
+        $this->data['User Staff Type']='';
+    
+    }else{
+    
+        $staff=new Staff($this->data['User Parent Key']);
+        
+    
+    
+    }
+
+}
 
 }
 

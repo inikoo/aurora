@@ -67,14 +67,16 @@ $smarty->assign('parts_period_title',$parts_period_title[$parts_period]);
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-               $yui_path.'container/assets/skins/sam/container.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
                'button.css',
-                'css/part_locations.css'
+               'table.css',
+               'css/part_locations.css',
+               'theme.css.php'
            );
 
-include_once('Theme.php');
 
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -127,42 +129,41 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
 
 $subject_id=$part->id;
 
-if(!$part->id){
-header('Location: warehouse.php?msg=part_not_found');
-exit;
+if (!$part->id) {
+    header('Location: warehouse.php?msg=part_not_found');
+    exit;
 
 }
 
 
 $warehouse_keys=$part->get_warehouse_keys();
-foreach($warehouse_keys as $warehouse_key){
-    if(in_array($warehouse_key,$user->warehouses)){
+foreach($warehouse_keys as $warehouse_key) {
+    if (in_array($warehouse_key,$user->warehouses)) {
         $warehouse=new Warehouse($warehouse_key);
         break;
     }
     header('Location: index.php?forbidden');
-exit;
+    exit;
 }
 
 
 
-//show case 		
+//show case
 $custom_field=Array();
 $sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Part'");
 $res = mysql_query($sql);
-while($row=mysql_fetch_array($res))
-{
-	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
+while ($row=mysql_fetch_array($res)) {
+    $custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
 }
 
 $show_case=Array();
 $sql=sprintf("select * from `Part Custom Field Dimension` where `Part SKU`=%d", $part->id);
 $res=mysql_query($sql);
-if($row=mysql_fetch_array($res)){
+if ($row=mysql_fetch_array($res)) {
 
-	foreach($custom_field as $key=>$value){
-		$show_case[$value]=$row[$key];
-	}
+    foreach($custom_field as $key=>$value) {
+        $show_case[$value]=$row[$key];
+    }
 }
 
 
@@ -170,25 +171,24 @@ if($row=mysql_fetch_array($res)){
 $custom_field=Array();
 $sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Part'");
 $res = mysql_query($sql);
-while($row=mysql_fetch_array($res))
-{
-	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
+while ($row=mysql_fetch_array($res)) {
+    $custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
 }
 
 $part_custom_fields=Array();
 $sql=sprintf("select * from `Part Custom Field Dimension` where `Part SKU`=%d", $part->id);
 $res=mysql_query($sql);
-if($row=mysql_fetch_array($res)){
+if ($row=mysql_fetch_array($res)) {
 
-	foreach($custom_field as $key=>$value){
-		$part_custom_fields[$value]=$row[$key];
-	}
+    foreach($custom_field as $key=>$value) {
+        $part_custom_fields[$value]=$row[$key];
+    }
 }
 
 
-$smarty->assign('show_case',$show_case);	
-$smarty->assign('part_custom_fields',$part_custom_fields);	
-$smarty->assign('number_part_custom_fields',count($part_custom_fields));	
+$smarty->assign('show_case',$show_case);
+$smarty->assign('part_custom_fields',$part_custom_fields);
+$smarty->assign('number_part_custom_fields',count($part_custom_fields));
 
 
 
@@ -208,11 +208,11 @@ if ($modify) {
     $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_part.php?id='.$part->id,'label'=>_('Edit Part'));
 
 }
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->assign('part',$part);
-$smarty->assign('parent','warehouses');
+$smarty->assign('parent','parts');
 $smarty->assign('title',$part->get('SKU'));
 
 $smarty->assign('key_filter_number',$regex['key_filter_number']);

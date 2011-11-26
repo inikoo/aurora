@@ -71,13 +71,13 @@ function list_customer_history() {
 
     $conf=$_SESSION['state']['customer']['table'];
 
-    if (isset( $_REQUEST['customer_key'])){
+    if (isset( $_REQUEST['customer_key'])) {
         $customer_id=$_REQUEST['customer_key'];
         $_SESSION['state']['customer']['id']=$customer_id;
-    }else
+    } else
         $customer_id=$_SESSION['state']['customer']['id'];
 
-    if(!$customer_id)return;
+    if (!$customer_id)return;
 
 
     if (isset( $_REQUEST['sf']))
@@ -140,10 +140,10 @@ function list_customer_history() {
     if (isset( $_REQUEST['elements_notes'])) {
         $elements['Notes']=$_REQUEST['elements_notes'];
     }
-     if (isset( $_REQUEST['elements_attachments'])) {
+    if (isset( $_REQUEST['elements_attachments'])) {
         $elements['Attachments']=$_REQUEST['elements_attachments'];
     }
-   if (isset( $_REQUEST['elements_emails'])) {
+    if (isset( $_REQUEST['elements_emails'])) {
         $elements['Emails']=$_REQUEST['elements_emails'];
     }
     if (isset( $_REQUEST['tableid']))
@@ -334,12 +334,12 @@ function list_customer_history() {
                     'note'=>$note,
                     'handle'=>$author,
                     'delete'=>($row['Type']=='Notes'?($row['Deletable']=='Yes'?'<img alt="'._('delete').'" src="art/icons/cross.png" />':($row['Strikethrough']=='Yes'?'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />':'<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />')):''),
-                    'edit'=>(($row['Deletable']=='Yes' or $row['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />':''),
-                    'can_delete'=>($row['Deletable']=='Yes'?1:0),
-                    'delete_type'=>_('delete'),
-                    'type'=>$row['Type'],
-                    'strikethrough'=>$row['Strikethrough']
-                );
+                            'edit'=>(($row['Deletable']=='Yes' or $row['Type']=='Orders')?'<img style="cursor:pointer" alt="'._('edit').'" src="art/icons/edit.gif" />':''),
+                            'can_delete'=>($row['Deletable']=='Yes'?1:0),
+                            'delete_type'=>_('delete'),
+                            'type'=>$row['Type'],
+                            'strikethrough'=>$row['Strikethrough']
+                        );
     }
     mysql_free_result($result);
     $response=array('resultset'=>
@@ -621,9 +621,9 @@ function list_history($asset_type) {
     elseif($asset_type=='family') {
         $asset='Family';
     }
-elseif($asset_type=='part') {
+    elseif($asset_type=='part') {
         $asset='Part';
-       //  $id_key='sku';
+        //  $id_key='sku';
     }
     elseif($asset_type=='company_area') {
         $asset='Company Area';
@@ -647,7 +647,9 @@ elseif($asset_type=='part') {
     elseif($asset_type=='company') {
         $asset='Company';
     }
-
+   elseif($asset_type=='site') {
+        $asset='Site';
+    }
 
     elseif($asset_type=='company_department') {
         $asset='Company Department';
@@ -685,6 +687,8 @@ elseif($asset_type=='part') {
 
 
     $conf=$_SESSION['state'][$asset_type]['history'];
+
+
 
 
     $asset_id=$_SESSION['state'][$asset_type][$id_key];

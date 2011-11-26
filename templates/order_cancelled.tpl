@@ -1,8 +1,11 @@
 {include file='header.tpl'}
-<div id="bd" >
+<div id="bd" style="background-image:url('art/stamp.cancel.en.png');background-repeat:no-repeat;background-position:300px 50px">
+<input type="hidden" id="order_key" value="{$order->id}"/>
+<div  class="branch"> 
+<span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$customer->get_formated_id()} ({t}Cancelled{/t})</span>
+</div>
 
      <div style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
-<img style="position:absolute;top:20px;left:220px;z-index:4" src="art/stamp.cancel.en.png"/>
 
        <div style="border:0px solid #ddd;width:400px;float:left"> 
          <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
@@ -64,14 +67,14 @@
 
 
 <h2>{t}Items{/t}</h2>
-      <div  id="table0" class="dtable btable" style="margin-bottom:0"></div>
+      <div  id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 
 	    
     </div>
 {if $items_out_of_stock}
 <div style="clear:both;margin:30px 0" >
 <h2>{t}Items Out of Stock{/t}</h2>
-<div  id="table1" class="dtable btable" style="margin-bottom:0"></div>
+<div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 </div>
 {/if}
   </div>

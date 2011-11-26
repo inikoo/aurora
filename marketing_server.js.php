@@ -22,8 +22,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var CustomersColumnDefs = [
 				       {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,<?php echo($_SESSION['state']['stores']['marketing']['view']=='general'?'':'hidden:true,')?>className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Store Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"ecampaigns", label:"<?php echo _('Email Campaigns')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				    ,{key:"ecampaigns", label:"<?php echo _('Marketing Emails')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
 				    ,{key:"newsletters", label:"<?php echo _('Newsletters')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				    ,{key:"active_reminders", label:"<?php echo _('Active Reminders')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				    ,{key:"active_campaigns", label:"<?php echo _('Active Campaigns')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
 
 				    //  ,{key:"contacts", label:"<?php echo _('Contacts')?>",<?php echo($_SESSION['state']['stores']['marketing']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
 				     //  ,{key:"new_contacts", label:"<?php echo _('New Contacts')?>",<?php echo($_SESSION['state']['stores']['marketing']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
@@ -39,18 +41,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+            rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
-		},
+		    totalRecords: "resultset.total_records"		},
 		
 		
 		fields: [
-			 'code','name','ecampaigns','newsletters'
+			 'code','name','ecampaigns','newsletters','active_reminders'
 			 ]};
 	    //__You shouls not change anything from here
 

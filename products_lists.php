@@ -1,4 +1,16 @@
 <?php
+/*
+ File: store.php 
+
+ UI store page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2011, Inikoo 
+ 
+ Version 2.0
+*/
 include_once('common.php');
 include_once('class.Store.php');
 if (!$user->can_view('stores') or count($user->stores)==0 ) {
@@ -39,11 +51,9 @@ $css_files=array(
                'common.css',
                'button.css',
                'container.css',
-               'table.css',
-               'css/marketing_menu.css',
-               'css/marketing_campaigns.css'
+               'table.css'
            );
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
@@ -58,7 +68,7 @@ $js_files=array(
               'js/edit_common.js',
               'js/search.js',
               'products_lists.js.php',
-              'js/list_function.js',
+           
               
               'js/menu.js'
           );
@@ -76,7 +86,7 @@ $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'new_products
      $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php','label'=>_('Categories'));
  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?id='.$store->id,'label'=>_('Store'));
   
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 

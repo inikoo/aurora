@@ -275,7 +275,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
             //$date2=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
-            print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date_inv\n  ".strtotime($date_order).' > '.strtotime($date_inv)."\n";
+            print "Error (Invoice date) $filename\n ";
+            continue;
             $date_inv=date("Y-m-d H:i:s",strtotime($date_order.' +1 hour'));
 
             // print "new date: ".$date2."\n";
@@ -447,14 +448,14 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         if (strtotime($date_order)>strtotime('now')   ) {
 
-            print "ERROR (Fecha en el futuro) $filename  $date_order   \n ";
+            print "ERROR (Date in future) $filename  $date_order   \n ";
 
             continue;
         }
 
         if (strtotime($date_order)<strtotime($myconf['data_from'])  ) {
 
-            print "ERROR (Fecha sospechosamente muy  antigua) $filename $date_order \n";
+            print "ERROR (Order Date) $filename $date_order \n";
 
             continue;
         }
