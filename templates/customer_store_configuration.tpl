@@ -9,7 +9,7 @@
 </div>
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-    <li> <span class="item {if $view=='new_custom_fields'}selected{/if}"  id="new_custom_fields">  <span> {t}Adding New custom Fields{/t}</span></span></li>
+    <li> <span class="item {if $view=='new_custom_fields'}selected{/if}"  id="new_custom_fields">  <span> {t}Adding New Custom Fields{/t}</span></span></li>
     <li> <span class="item {if $view=='custom_form'}selected{/if}"  id="custom_form">  <span> {t}Custom Form{/t}</span></span></li>
 	<li> <span class="item {if $view=='email_config'}selected{/if}"  id="email_config">  <span> {t}Email Configuration{/t}</span></span></li>
 </ul>
@@ -20,7 +20,7 @@
 
   <div id="block_new_custom_fields"  style="{if $view!='new_custom_fields'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
   
-<h3>Adding new custom field</h3>
+<h3>{t}Adding new custom field{/t}</h3>
 	<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
 	  <div class="general_options">
 		{foreach from=$general_options_list item=options }
@@ -162,11 +162,11 @@
 
 		<div id="block_custom_form"  style="{if $view!='custom_form'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
-		<h3>Adding new custom field</h3>
+		<h3>{t}Adding new custom field{/t}</h3>
 		<div  style="float:left;width:1500px;" >
 			<table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
 			<tr>
-			<td>Source Code: </td>
+			<td>{t}Source Code{/t}: </td>
 			<td>
 
 			<div style="font-family:courier ;  color: black"> 
@@ -217,7 +217,7 @@
 </tr>
     
     <tr class="label first">
-    <td colspan=2>Default Contact Email</td>
+    <td colspan=2>{t}Default Contact Email{/t}</td>
     </tr>
     
   	<tr class="top">
@@ -308,7 +308,7 @@
 </tr>
     
     <tr class="label first">
-    <td colspan=2>Default Contact Email</td>
+    <td colspan=2>{t}Default Contact Email{/t}</td>
     </tr>
     
   	<tr class="top">

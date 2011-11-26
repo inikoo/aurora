@@ -5,7 +5,7 @@ include_once('common.php');
 ?>
  var Dom   = YAHOO.util.Dom;
  var Event  =YAHOO.util.Event;
-
+var tables;
 function change_block(){
 ids=['details','pages','hits','visitors'];
 block_ids=['block_details','block_pages','block_hits','block_visitors'];
@@ -16,9 +16,50 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-view&value='+this.id ,{});
 }
 
+ 
+
+function change_elements(){
+
+ids=['elements_other','elements_department_catalogue','elements_family_catalogue','elements_product_description'];
 
 
+if(Dom.hasClass(this,'selected')){
 
+var number_selected_elements=0;
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+number_selected_elements++;
+}
+}
+
+if(number_selected_elements>1){
+Dom.removeClass(this,'selected')
+
+}
+
+}else{
+Dom.addClass(this,'selected')
+
+}
+
+table_id=0;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+var request='';
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+request=request+'&'+ids[i]+'=1'
+}else{
+request=request+'&'+ids[i]+'=0'
+
+}
+}
+  
+ // alert(request)
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+
+}
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -101,6 +142,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
   init_search('products_store');
  Event.addListener(['details','pages','hits','visitors'], "click",change_block);
+
+ids=['elements_other','elements_department_catalogue','elements_family_catalogue','elements_product_description'];
+ Event.addListener(ids, "click",change_elements);
+
 
 
   YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);

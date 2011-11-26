@@ -496,13 +496,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+		  	rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    rtext:"resultset.rtext",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		

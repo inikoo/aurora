@@ -19,7 +19,7 @@ type:
 
     json_value = YAHOO.lang.JSON.stringify(value);
     var request='ar_send_email.php?tipo=report_issue&values=' + json_value;
-// alert(request)
+ //alert(request)
  Dom.setStyle(['send','cancel'],'display','none');
     Dom.setStyle(['sending'],'display','');
 
@@ -38,6 +38,10 @@ success:function(o) {
 
             } else {
                 Dom.get('message_error').innerHTML=r.msg;
+				    Dom.setStyle(['sending'],'display','none');
+					Dom.get('send_from').style.display='none';
+					Dom.setStyle(['send','cancel'],'display','');
+					Dom.get('issue_send').style.display='';
             }
         }
 

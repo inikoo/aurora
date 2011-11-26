@@ -88,7 +88,7 @@
     </td>
   </tr>
     <tr id="{$address_identifier}tr_address_postal_code">
-    <td    id="{$address_identifier}label_address_postal_code"     class="label" >{t}Postal Code{/t}:<img  id="{$address_identifier}address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" />
+    <td    id="{$address_identifier}label_address_postal_code"     class="label" ><img  id="{$address_identifier}address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Postal Code{/t}:
     </td>
     <td  style="text-align:left">
     <div >
@@ -109,7 +109,7 @@
 	</tr>
     <tr id="{$address_identifier}tr_address_country_d4" style="display:none">
 	  <td class="label" ><span id="label_address_country_d4">{t}4rd Division{/t}</span>:</td><td  style="text-align:left">
-	    <div  >
+	    <div>
 	      <input id="address_country_d4_code" value="" type="hidden"/>
 	      <input style="text-align:left;width:100%" id="address_country_d4" value="" ovalue="" />
 	      <div id="address_country_d4_container"  ></div>
@@ -157,7 +157,7 @@
 	        
 	        style="cursor:pointer;display:none">&oplus;</span> 
             {t}Country{/t}:</td>
-        <td  >
+        <td>
         <div id="{$address_identifier}myAutoComplete" >
 	        <input id="{$address_identifier}address_country" style="text-align:left;width:100%" type="text"/>
 	        <div id="{$address_identifier}address_country_container" ></div>
@@ -179,7 +179,13 @@
        
     </tr>  
 <tr {if $hide_buttons==true}style="display:none"{/if}>
-  <td colspan=2 style="text-align:right"><button close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}visibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button><button address_key="" style="visibility:hidden;margin-left:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button></td>
+  <td colspan=2 >
+  <div class="buttons" style="margin-top:10px">
+    <button address_key="" class="positive" style="visibility:hidden;margin-right:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button>
+
+  <button  class="negative" close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}visibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button>
+  </div>
+  </td>
   </tr>
   
 

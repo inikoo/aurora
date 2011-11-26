@@ -138,7 +138,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",rtext:"resultset.rtext",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
@@ -164,7 +166,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['categories']['table']['order']?>",
+							    key: "<?php echo$_SESSION['state']['categories']['table']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['categories']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
@@ -174,6 +176,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table0.table_id=tableid;
+        this.table0.subscribe("renderEvent", myrenderEvent);
 
 
 	  
@@ -186,7 +190,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 		
- var tableid='_history'; // Change if you have more the 1 table
+ var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
@@ -198,19 +202,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource_history = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=customer_categories&tableid=_history");
-	   this.dataSource_history.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource_history.connXhrMode = "queueRequests";
-	    this.dataSource_history.responseSchema = {
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=customer_categories&tableid=1");
+	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    rtext:"resultset.rtext",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -220,8 +225,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,'author','date','tipo','abstract','details'
 			 ]};
 	    
-	    this.table_history = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-						     this.dataSource_history
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource1
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
@@ -235,7 +240,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['categories']['history']['order']?>",
+							    key: "<?php echo$_SESSION['state']['categories']['history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['categories']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -244,13 +249,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     
 						     );
 	    
-	    this.table_history.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table_history.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table_history.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table1.table_id=tableid;
+        this.table1.subscribe("renderEvent", myrenderEvent);
 
 		    
 		    
-	    this.table_history.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
 
 
 	};
@@ -282,7 +289,7 @@ function cancel_add_subcategory(){
   }
 
 function init(){
-
+init_search('customers_store');
     var ids = ["description","subcategory"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 

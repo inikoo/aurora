@@ -1,11 +1,5 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0px">
-	<script src="js/index_tools.js" type="text/javascript"></script>
-	<script src="js/index_sliding_tabs.js" type="text/javascript"></script>
-
-
-
-
  <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:20px ">
    
     <input size="45" class="text" id="all_search" value="{$query}" state="" name="search"/> <span id="submit_search" class="button" >{t}Search{/t}</span>

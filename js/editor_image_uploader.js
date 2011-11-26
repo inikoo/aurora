@@ -23,15 +23,17 @@ Example Failure:
 function yuiImgUploader(rte, editor_name, upload_url, upload_image_name) {
    // customize the editor img button 
 
-
    rte.addListener('toolbarLoaded',function() {
        rte.toolbar.addListener ( 'insertimageClick', function(o) {
            try {
+           
+           
                var imgPanel=new YAHOO.util.Element(editor_name + '-panel');
                imgPanel.on ( 'contentReady', function() {
                    try {
+                   
+                   
                        var Dom=YAHOO.util.Dom;
-
                        if (! Dom.get(editor_name + '_insertimage_upload'))
                        {
                            var label=document.createElement('label');
@@ -40,7 +42,6 @@ function yuiImgUploader(rte, editor_name, upload_url, upload_image_name) {
 				  editor_name + '_insertimage_upload" name="'+upload_image_name+
 			         '" size="10" style="width: 300px" />'+
 			         '</label>';
-
                            var img_elem=Dom.get(editor_name + '_insertimage_url');
                            Dom.getAncestorByTagName(img_elem, 'form').encoding = 'multipart/form-data';
 
@@ -53,29 +54,36 @@ function yuiImgUploader(rte, editor_name, upload_url, upload_image_name) {
                                YAHOO.util.Connect.setForm ( img_elem.form, true, true );
                                
                               
+                              
                                var c=YAHOO.util.Connect.asyncRequest(
                                'POST', upload_url, {
                                    upload:function(r){
                                        try {
                                            // strip pre tags if they got added somehow
-                                          // alert("xxx xxx "+r.responseText)
                                            
                                            resp=r.responseText.replace( /<pre>/i, '').replace ( /<\/pre>/i, '');
                                            var o=eval('('+resp+')');
                                            if (o.status=='UPLOADED') {
-                                               Dom.get(editor_name + '_insertimage_upload').value='';
-                                               Dom.get(editor_name + '_insertimage_url').value=o.image_url;
-                                               // tell the image panel the url changed
+                                          
+                                        
+                                          Dom.get(editor_name + '_insertimage_upload').value='';
+                                             Dom.get(editor_name + '_insertimage_url').value=o.image_url;
+                                            
+                                           //    alert(o.image_url)
+                                             // tell the image panel the url changed
                                                // hack instead of fireEvent('blur')
                                                // which for some reason isn't working
                                                Dom.get(editor_name + '_insertimage_url').focus();
                                                Dom.get(editor_name + '_insertimage_upload').focus();
-                                           } else {
+                                       
+                                                
+                                         
+                                         } else {
                                                alert ( "Upload Failed: "+o.status );
                                            }
 
                                        } catch ( eee ) {
-                                           alert('aa '+ eee.message);
+                                           alert('error '+ eee.message);
                                        }
                                    }
                                }

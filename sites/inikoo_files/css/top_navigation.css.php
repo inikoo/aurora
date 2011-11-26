@@ -13,16 +13,27 @@ width:<?php echo $width ?>px;vertical-align:bottom;position:absolute;z-index:100
 .soft_link:hover{text-decoration:underline}
 
 .dialog {display:none;background:black;color:white;padding:0px 20px 20px 20px;position:relative;top:-22px;float:right;z-index:50000;}
+.dialog_inikoo {display:none;background:white;color:black;padding:0px 20px 20px 20px;position:relative;top:0px;z-index:50000;}
+
 .dialog table {font-size:12px;color:white;margin:0px 0px 0px 30px}
+.dialog_inikoo table {font-size:12px;color:black;margin:0px 0px 0px 30px}
 
 .dialog tr.space td{padding-top:15px}
 
 .dialog tr.button td,.dialog tr.link td{text-align:right;}
+.dialog_inikoo tr.button td,.dialog tr.link td{text-align:right;}
+
 .dialog h2 {font-size:15px;weight:800;xmargin:10px 10px 5px 30px}
+.dialog_inikoo h2 {font-size:15px;weight:800;xmargin:10px 10px 5px 30px}
 
 .dialog table .title td{border-bottom:1px solid #ddd;height:30px;vertical-align:bottom;font-style:italic}
 .dialog p{width: 300px;}
 .dialog .label {width:60px;text-align:right;padding-right:10px}
+
+.dialog_inikoo table .title td{border-bottom:1px solid #ddd;height:30px;vertical-align:bottom;font-style:italic}
+.dialog_inikoo p{width: 300px;}
+.dialog_inikoo .label {width:60px;text-align:right;padding-right:10px}
+
 
 #dialog_register_part_2 .label {width:120px;}
 
@@ -34,6 +45,8 @@ span.link2:hover{text-decoration:underline}
 
 .dialog input {width:200px;border: 1px solid #ccc}
 .dialog input.error {background-color: #F5EEA2;}
+.dialog_inikoo input {width:200px;border: 1px solid #ccc}
+.dialog_inikoo input.error {background-color: #F5EEA2;}
 #top_navigator button, .dialog button{cursor:pointer}
 #top_navigator button{margin:0}
 

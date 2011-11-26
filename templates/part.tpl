@@ -2,14 +2,24 @@
 <div id="bd" class="{if $part->get('Part Available')=='No' or $part->get('Part Status')=='Not In Use' }discontinued{/if}" style="padding:0;">
 <div style="padding: 0 20px;">
 {include file='locations_navigation.tpl'}
-<div> 
-  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_parts.php?id={$warehouse->id}">{t}Parts{/t}</a> &rarr; {$part->get_sku()}</span>
+<div class="branch"> 
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?id={$warehouse->id}">{t}Parts{/t}</a> &rarr; {$part->get_sku()}</span>
+</div>
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_part.php?id={$part->sku}'" ><img src="art/icons/cog.png" alt=""> {t}Edit Part{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+            <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/house.png" alt=""> {t}Inventory{/t}</button>
+
+ </div>
+    <div style="clear:both"></div>
 </div>
 
 <div style="clear:left">
-  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part{/t} <span class="id">{$part->get_sku()}</span></span></h1>
-    <h2 style="padding:0">{$part->get('Part XHTML Description')}</h2>
-
+  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part XHTML Description')}</h1>
   <h3 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h3>
 </div>
 

@@ -2,14 +2,14 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
  {include file='orders_navigation.tpl'}
-<div  style="clear:left;"> 
-  <span class="branch">{t}Orders{/t}</span>
+<div class="branch"> 
+  <span >{t}Orders{/t}</span>
 </div>
  
     <h1>{t}Orders Corporate Overview{/t}</h1>
 </div> 
  
- <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+ <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='invoices'}selected{/if}"  id="invoices">  <span> {t}Invoices{/t}</span></span></li>
     <li> <span class="item {if $block_view=='dn'}selected{/if}"  id="dn">  <span> {t}Delivery Notes{/t}</span></span></li>
@@ -21,19 +21,13 @@
  
 
   <div id="block_orders"   style="padding-top:20px;clear:both;{if $block_view!='orders'}display:none{/if}">
-
-
-    <span class="clean_table_title">{t}Orders Per Store{/t}</span>
-<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="orders_per_store" >{t}Export (CSV){/t}</span>
-
-
+    <span class="clean_table_title">{t}Orders Per Store{/t} <img id="export_csv0"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  no_filter=1} 
     <div  id="table0"   class="data_table_container dtable btable with_total "> </div>
   </div>
   <div  id="block_invoices"  style="padding-top:20px;clear:both;{if $block_view!='invoices'}display:none{/if}">
-    <span class="clean_table_title">{t}Invoices Per Store{/t}</span>
-<span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices_per_store" >{t}Export (CSV){/t}</span>
+    <span class="clean_table_title">{t}Invoices Per Store{/t} <img id="export_csv1" class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
 
 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
@@ -41,15 +35,17 @@
     <div  id="table1"   class="data_table_container dtable btable with_total "> </div>
   </div>  
   <div  id="block_dn"  style="padding-top:20px;clear:both;{if $block_view!='dn'}display:none{/if}">
-    <span class="clean_table_title">{t}Delivery Notes Per Store{/t}</span>
-<span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="delivery_notes_per_store" >{t}Export (CSV){/t}</span>
+    <span class="clean_table_title">{t}Delivery Notes Per Store{/t} <img id="export_csv2"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:0px"></div>
-    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr><td  {if $dn_view=='dn_state'}class="selected"{/if} id="dn_state" >{t}Dispatch State{/t}</td>
-    <td  {if $dn_view=='dn_type'}class="selected"{/if} id="dn_type" >{t}Type of Order{/t}</td>
-    </tr>
-	</table>
+    <div class="clusters">
+    <div class="buttons small left cluster" >
+	<button  {if $dn_view=='dn_state'}class="selected"{/if} id="dn_state" >{t}Dispatch State{/t}</button>
+    <button  {if $dn_view=='dn_type'}class="selected"{/if} id="dn_type" >{t}Type of Order{/t}</button>
+   </div>
+      <div style="clear:both"></div>
+	</div>
+    
     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  no_filter=1} 
     <div  id="table2"   class="data_table_container dtable btable with_total "> </div>
   </div>   

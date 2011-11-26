@@ -102,7 +102,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table0.view='<?php echo$_SESSION['state']['customers']['view']?>';
+	    this.table0.view='<?php echo$_SESSION['state']['customers']['table']['view']?>';
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
 

@@ -41,7 +41,10 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 }
 
 
-
+if(isset($_REQUEST['warning_msg']))
+	$smarty->assign('warning_msg',$_REQUEST['warning_msg']);
+else
+	$smarty->assign('warning_msg','');
 //$modify=$user->can_edit('contacts');
 
 $_SESSION['state']['world']['countries']['nr']=20;
@@ -88,6 +91,8 @@ if (!$modify) {
 }
 */
 
+
+
 $store=new Store($customer->data['Customer Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
@@ -109,7 +114,7 @@ $css_files=array(
                'container.css',
                'table.css'
            );
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
@@ -133,7 +138,7 @@ $js_files=array(
 			  'js/sha256.js',
 			  //'js/prototype.js'
          
-              // 'customer.js.php?id='.$customer->id
+               //'client.js.php'
           );
 //$smarty->assign('css_files',$css_files);
 //$smarty->assign('js_files',$js_files);

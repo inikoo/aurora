@@ -3,9 +3,7 @@ include_once('common.php');
 
 
 
-if(isset($_POST['submit']))
-
-{
+if(isset($_POST['submit'])){
 		$uploadedfile= $_FILES['uploadedfile']['name'];
 		$ext = substr($uploadedfile, strrpos($uploadedfile, '.') + 1);
 		if ($ext=='csv')

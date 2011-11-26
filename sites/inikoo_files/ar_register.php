@@ -380,11 +380,11 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 
         } else {
 		
-		//print $send_key;exit;
+			//print $send_key;exit;
 		
 		
-        $email_credential_key=$store->get_email_credential_key('Site Registration');
-		//print $email_credential_key;exit;
+			$email_credential_key=$store->get_email_credential_key('Site Registration');
+			//print $email_credential_key;exit;
 
             $welcome_email_subject="Thank you for your registration with ".$site->data['Site Name'];
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
@@ -394,35 +394,64 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 			//$welcome_email_html=sprintf("Test Email with image <br/> <img src='%s/track.php?sendkey=%s'>", $track_path, $send_key);
 			//print $welcome_email_html;exit;
 			
-			
-		$data=array('email_type'=>'Registration',
-				  'recipient_type'=>'User',
-				  'recipient_key'=>$user->id);
-		$send_email=new SendEmail($data);
-		
-
-//print_r($data);exit;
-		if($send_email_flag){
-			$welcome_email_html=$send_email->track_sent_email($welcome_email_html);
-
-		
-			$data=array(
-					
-					  'subject'=>$welcome_email_subject,
-					  'plain'=>$welcome_email_plain,
-					  'email_credentials_key'=>$email_credential_key,
-					  'to'=>$handle,
-					  'html'=>$welcome_email_html,
-					  'email_type'=>'Registration',
+			/*
+			$data=array('email_type'=>'Registration',
 					  'recipient_type'=>'User',
-					  'recipient_key'=>$user->id
-				  );
-        //$send_email=new SendEmail();
-        $send_email->smtp('HTML', $data);
-        $result=$send_email->send();
-		}
+					  'recipient_key'=>$user->id);
+			$send_email=new SendEmail($data);
+		
 
+			//print_r($data);exit;
+			if($send_email_flag){
+				//$welcome_email_html=$send_email->track_sent_email($welcome_email_html);
 
+			
+				$data=array(
+						
+						  'subject'=>$welcome_email_subject,
+						  'plain'=>$welcome_email_plain,
+						  'email_credentials_key'=>$email_credential_key,
+						  'to'=>$handle,
+						  'html'=>$welcome_email_html,
+						  'email_type'=>'Registration',
+						  'recipient_type'=>'User',
+						  'recipient_key'=>$user->id
+					  );
+			//$send_email=new SendEmail();
+			$send_email->smtp('HTML', $data);
+			$result=$send_email->send();
+			}
+*/
+				$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+				
+		   
+				$message_data['method']='smtp';
+				$message_data['type']='html';
+				$message_data['to']=$handle;
+				$message_data['subject']=$welcome_email_subject;
+				$message_data['html']=$welcome_email_html;
+				$message_data['email_credentials_key']=1;
+				$message_data['email_matter']='Registration';
+				$message_data['email_matter_key']=$email_mailing_list_key;
+				$message_data['email_matter_parent_key']=$email_mailing_list_key;
+				$message_data['recipient_type']='User';
+				$message_data['recipient_key']=0;
+				$message_data['email_key']=0;
+				$message_data['plain']=$welcome_email_plain;
+				if(isset($message_data['plain']) && $message_data['plain']){
+					$message_data['plain']=$message_data['plain'];
+				}
+				else
+					$message_data['plain']=null;
+
+			 //print_r($message_data);
+			$send_email=new SendEmail();
+
+			$send_email->track=true;
+
+			if($send_email_flag){
+				$send_result=$send_email->send($message_data);	
+			}
             return array($user->id,$user->msg);
         }
     } else {
@@ -522,8 +551,36 @@ $formated_url=preg_replace('/^http\:\\/\\//','',$url);
                       If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
                       <br><br>
                       Thank you";
-					  
-		
+		$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+				
+		   
+				$message_data['method']='smtp';
+				$message_data['type']='html';
+				$message_data['to']=$login_handle;
+				$message_data['subject']='Reset your password';
+				$message_data['html']=$html_message;
+				$message_data['email_credentials_key']=1;
+				$message_data['email_matter']='Password Reminder';
+				$message_data['email_matter_key']=$email_mailing_list_key;
+				$message_data['email_matter_parent_key']=$email_mailing_list_key;
+				$message_data['recipient_type']='User';
+				$message_data['recipient_key']=0;
+				$message_data['email_key']=0;
+				$message_data['plain']=$plain_message;
+				if(isset($message_data['plain']) && $message_data['plain']){
+					$message_data['plain']=$message_data['plain'];
+				}
+				else
+					$message_data['plain']=null;
+
+			 //print_r($message_data);
+			$send_email=new SendEmail();
+
+			$send_email->track=true;
+
+
+			$result=$send_email->send($message_data);	
+/*		
 		$data=array('email_type'=>'Password Reminder',
 				  'recipient_type'=>'User',
 				  'recipient_key'=>$user->id);
@@ -556,14 +613,14 @@ $files=array();
         $result=$send_email->send();
 
 		//print_r($result);
-		
+*/		
         if ($result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             echo json_encode($response);
             exit;
 
         } else {
-            print_r($result);
+            //print_r($result);
             $response=array('state'=>200,'result'=>'error '.join(' ',$result));
             echo json_encode($response);
             exit;

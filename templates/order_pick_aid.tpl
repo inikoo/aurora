@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div> 
-  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')}</span>
+<div class="branch"> 
+  <span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')}</span>
 </div>
 
 <input value="{$delivery_note->id}" id="dn_key" type="hidden"/>

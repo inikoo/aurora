@@ -73,6 +73,8 @@ class Page extends DB_Table {
         else {
             $sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d",$tag);
         }
+
+
         $result =mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->id=$this->data['Page Key'];
@@ -84,8 +86,6 @@ class Page extends DB_Table {
                 if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)) {
                     foreach($row as $key=>$value) {
                         $this->data[$key]=$value;
-
-
                     }
 
                     if ($this->data['Page Store Logo Data']!='')
@@ -577,7 +577,43 @@ class Page extends DB_Table {
 
     }
 
+    function get_header_template() {
+        $template='';
+        $sql=sprintf("select `Template` from `Page Header Dimension` where `Page Header Key`=%d",$this->data['Page Header Key']);
+        $result = mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $template= $row['Template'];
+        }
+        return $template;
+    }
 
+    function get_footer_template() {
+        $template='';
+        $sql=sprintf("select `Template` from `Page Footer Dimension` where `Page Footer Key`=%d",$this->data['Page Footer Key']);
+        $result = mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $template= $row['Template'];
+        }
+        return $template;
+    }
+
+
+    function get_css() {
+        $css='';
+
+
+        $sql=sprintf("select `CSS` from `Page Header Dimension` where `Page Header Key`=%d",$this->data['Page Header Key']);
+        $result = mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $css.=$row['CSS'];
+        }
+
+        $css.=$this->data['Page Store CSS'];
+        return  $css;
+    }
+    function get_javascript() {
+        return $this->data['Page Store Javascript'];
+    }
     function update_presentation_template_data($value,$options) {
 
 
@@ -600,7 +636,7 @@ class Page extends DB_Table {
         switch ($field) {
         case('Page Store See Also Type'):
             $this->update_field('Page Store See Also Type',$value,$options);
-            if($value=='Auto'){
+            if ($value=='Auto') {
                 $this->update_see_also();
             }
             break;
@@ -611,7 +647,7 @@ class Page extends DB_Table {
         case('url'):
             $this->update_field('Page URL',$value,$options);
             break;
-         case('page_title'):   
+        case('page_title'):
         case('title'):
             $this->update_field('Page Title',$value,$options);
             break;
@@ -620,7 +656,7 @@ class Page extends DB_Table {
             $this->update_field('Page Short Title',$value,$options);
             break;
         case('keywords'):
-         case('page_keywords'):
+        case('page_keywords'):
             $this->update_field('Page Keywords',$value,$options);
             break;
         case('store_title'):
@@ -634,6 +670,10 @@ class Page extends DB_Table {
             break;
         case('resume'):
             $this->update_field('Page Store Resume',$value,$options);
+            break;
+        case('Page Store Source'):
+        case('Page Store CSS'):
+            $this->update_field($field,$value,$options);
             break;
         case('presentation_template_data'):
             $this->update_presentation_template_data($value,$options);
@@ -722,11 +762,11 @@ class Page extends DB_Table {
                 and $save_history
             ) {
                 $history_data=array(
-                                  'indirect_object'=>$field
-                                                    ,'old_value'=>$old_value
-                                                                 ,'new_value'=>$value
+                    'indirect_object'=>$field
+                    ,'old_value'=>$old_value
+                                 ,'new_value'=>$value
 
-                              );
+                );
 
 
 
@@ -1039,19 +1079,19 @@ class Page extends DB_Table {
         case 'Family Catalogue':
             $formated_store_section=_('Family Catalogue').' <a href="family.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
             break;
-              case 'Department Catalogue':
+        case 'Department Catalogue':
             $formated_store_section=_('Department Catalogue').' <a href="department.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
             break;
-              case 'Store Catalogue':
+        case 'Store Catalogue':
             $formated_store_section=_('Store Catalogue').' <a href="store.php?id='.$this->data['Page Parent Key'].'">'.$this->data['Page Parent Code'].'</a>';
             break;
-              case 'Registration':
+        case 'Registration':
             $formated_store_section=_('Registration');
             break;
-              case 'Client Section':
+        case 'Client Section':
             $formated_store_section=_('Client Section');
             break;
-                 case 'Check Out':
+        case 'Check Out':
             $formated_store_section=_('Check Out');
             break;
         default:
@@ -1059,8 +1099,211 @@ class Page extends DB_Table {
             break;
         }
 
-return $formated_store_section;
+        return $formated_store_section;
     }
 
+    function display_product_form_list() {
+        if (!$this->data['Page Type']=='Store' or !$this->data['Page Store Section']=='Family Catalogue' ) {
+            return '';
+        }
+
+        $family=new Family($this->data['Page Parent Key']);
+        return $this->get_family_product_list_no_price($family);
+
+    }
+
+    function get_family_product_list_no_price($family,$header_options=false, $options=false) {
+
+        if (isset($options['order_by']))
+            if (strtolower($options['order_by']) == 'price')
+                $order_by='`Product RRP`';
+        elseif(strtolower($options['order_by']) == 'code')
+        $order_by='`Product Code File As`';
+        elseif(strtolower($options['order_by']) == 'name')
+        $order_by='`Product Name`';
+        else
+            $order_by='`Product Code File As`';
+        else
+            $order_by='`Product Code File As`';
+
+        if (isset($options['limit']))
+            $limit='limit '.$options['limit'];
+        else
+            $limit='';
+
+        if (isset($options['range'])) {
+            list($range1, $range2)=explode(":", strtoupper($options['range']));
+            $range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
+
+        } else
+            $range_where="";//"  true";
+        $show_unit=true;
+        if (isset($options['unit'])) {
+            //print 'ok';
+            $show_unit=$options['unit'];
+        }
+        $print_header=true;
+        $print_rrp=false;
+        $print_register=true;
+
+        $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $family->id);
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $number_records=$row['num'];
+        } else {
+            // NO PRODUCTS XXX
+            return;
+        }
+
+        if ($family->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+            $register='In order to see prices register';
+
+        }
+        if ($family->locale=='de_DE') {
+            $out_of_stock='nicht vorrv§tig';
+            $discontinued='ausgelaufen';
+            $register='In order to see prices register';
+
+        }
+        elseif($family->locale=='es_ES') {
+            $out_of_stock='Fuera de Stock';
+            $discontinued='Fuera de Stock';
+            $register='In order to see prices register';
+
+        }
+        elseif($family->locale=='fr_FR') {
+            $out_of_stock='Rupture de stock';
+            $discontinued='Rupture de stock';
+            $register='In order to see prices register';
+
+        }
+        else {
+            $out_of_stock='Out of Stock';
+            $discontinued='Discontinued';
+            $register=sprintf('<br/><span style="color:red;font-style: italic; ">Please <a style="color:red;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:red;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
+        }
+        $form=sprintf('<table class="product_list" >' );
+
+        if ($print_header) {
+
+            $rrp_label='';
+
+            if ($print_rrp) {
+
+                if ($number_records==1) {
+
+                } elseif ($number_records>2) {
+
+                    $sql=sprintf("select min(`Product RRP`/`Product Units Per Case`) min, max(`Product RRP`/`Product Units Per Case`) as max ,avg(`Product RRP`/`Product Units Per Case`)  as avg from `Product Dimension` where `Product Family Key`=%d and `Product Web State` in ('For Sale','Out of Stock') ", $family->id);
+                    $res=mysql_query($sql);
+                    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+                        $rrp=$row['min'];
+
+
+                        $rrp= $family->get_formated_rrp(array(
+                                                            'Product RRP'=>$rrp,
+                                                            'Product Units Per Case'=>1,
+                                                            'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
+
+                        if ($row['rrp_avg']<=0) {
+                            $rrp_label='';
+                            $print_rrp=false;
+                        }
+                        elseif ($row['avg']==$row['min'])
+                        $rrp_label='<br/>RRP: '.$rrp;
+                        else
+                            $rrp_label='<br/>RRP from '.$rrp;
+
+
+
+                    } else {
+                        return;
+                    }
+
+                }
+
+            }
+
+
+            $form.='<tr class="list_info" ><td colspan="4"><p>'.$family->data['Product Family Name'].$rrp_label.'</p></td><td>';
+            if ($print_register and $number_records>10)
+                $form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
+
+
+        }
+
+        //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' order by %s %s", $family->id, $order_by, $limit);
+        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $family->id, $range_where, $order_by, $limit);
+        //print $sql;
+        $result=mysql_query($sql);
+        $counter=0;
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+            if ($print_rrp) {
+
+                $rrp= $family->get_formated_rrp(array(
+                                                    'Product RRP'=>$row['Product RRP'],
+                                                    'Product Units Per Case'=>$row['Product Units Per Case'],
+                                                    'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
+
+            } else {
+                $rrp='';
+            }
+            if ($row['Product Web State']=='Out of Stock') {
+                $class_state='out_of_stock';
+                $state='('.$out_of_stock.')';
+
+            }
+            elseif ($row['Product Web State']=='Discontinued') {
+                $class_state='discontinued';
+                $state='('.$discontinued.')';
+
+            }
+            else {
+
+                $class_state='';
+                $state='';
+
+
+            }
+
+
+            if ($counter==0)
+                $tr_class='class="top"';
+            else
+                $tr_class='';
+            $form.=sprintf('<tr %s ><td class="code">%s</td><td class="description">%s   <span class="%s">%s</span></td><td class="rrp">%s</td></tr>',
+                           $tr_class,
+                           $row['Product Code'],
+                           $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
+                           $class_state,
+                           $state,
+                           $rrp
+
+                          );
+
+
+            $counter++;
+        }
+
+        if ($print_register)
+            $form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
+        $form.=sprintf('</table>');
+        return $form;
+    }
+
+
+
 }
+
+
+
+
+
+
 ?>

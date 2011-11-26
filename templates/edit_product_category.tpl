@@ -3,6 +3,7 @@
 {include file='assets_navigation.tpl'}
 
 
+
 {if $category}
 <div class="branch"> 
  <span ><a  href="edit_product_category.php?store_id={$store->id}&id=0">{t}Product Categories{/t}</a> &rarr; {$category->get_smarty_tree('edit_product_category.php')}

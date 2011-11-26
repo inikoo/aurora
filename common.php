@@ -9,11 +9,15 @@ if (DEBUG) {
 require_once 'app_files/db/dns.php';
 
 require_once 'common_functions.php';
+
+require_once 'common_detect_agent.php';
+
 require_once "class.Session.php";
 require_once "aes.php";
 
 require_once "class.Auth.php";
 require_once "class.User.php";
+
 $external_DB_link=false;
 
 if (isset($connect_to_external) and isset($external_dns_user)) {
@@ -67,10 +71,13 @@ $smarty->template_dir = 'templates';
 $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
+$smarty->error_reporting = E_ERROR;
 
-$log_as="staff";
 if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
     $log_as="supplier";
+else
+    $log_as="staff";
+
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 // print array_pop(explode('/', $_SERVER['PHP_SELF']));
 if ($logout) {
@@ -82,80 +89,37 @@ if ($logout) {
     session_regenerate_id();
     session_destroy();
     unset($_SESSION);
-    if ($log_as=="supplier") {
-        include_once 'login_supplier.php';
-        exit;
-    } else {
-        include_once 'login.php';
-        exit;
-    }
+    header('Location: login.php?log_as='.$log_as);
+    exit;
 }
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
+if (!$is_already_logged_in) {
+    $target = $_SERVER['PHP_SELF'];
+    if (!preg_match('/(js|js\.php)$/',$target)) {
 
-if ($is_already_logged_in) {
-    if ($_SESSION['logged_in_page']!=0) {
-
-
-        $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
-        mysql_query($sql);
-
-        session_regenerate_id();
-        session_destroy();
-        unset($_SESSION);
-
-        if ($log_as=="supplier") {
-            include_once 'login_supplier.php';
-            exit;
-        } else {
-            include_once 'login.php';
-            exit;
-        }
-
+        header('Location: login.php?log_as='.$log_as);
+        exit;
     }
-    $user=new User($_SESSION['user_key']);
-
-} else {
-
-//   echo "<script>alert(\"Session Expired! You are signed out due to Inactivity!. Please login again!\")</script>";
-
-    include_once('app_files/key.php');
-    $auth=new Auth(IKEY,SKEY);
-    $handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
-    $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
-    $user_type = (array_key_exists('user_type', $_REQUEST)) ? $_REQUEST['user_type'] : false;
-
-
-    if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
-        $auth->authenticate_from_masterkey($_REQUEST['mk']);
-    }
-    elseif($handle) {
-
-        $auth->authenticate($handle,$sk,$user_type,0);
-    }
-
-    if ($auth->is_authenticated()) {
-        $_SESSION['logged_in']=true;
-        $_SESSION['logged_in_page']=0;
-        $_SESSION['user_key']=$auth->get_user_key();
-        $user=new User($_SESSION['user_key']);
-        $_SESSION['text_locale']=$user->data['User Preferred Locale'];
-    } else {
-        $target = $_SERVER['PHP_SELF'];
-        if (!preg_match('/js$/',$target))
-            //  include_once 'login.php';
-
-
-            if ($log_as=="supplier") {
-                include_once 'login_supplier.php';
-                exit;
-            } else {
-                include_once 'login.php';
-                exit;
-            }
-    }
+    exit;
 }
+
+if ($_SESSION['logged_in_page']!=0) {
+
+
+    $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+    mysql_query($sql);
+
+    session_regenerate_id();
+    session_destroy();
+    unset($_SESSION);
+
+    header('Location: login.php?log_as='.$log_as);
+    exit;
+
+}
+$user=new User($_SESSION['user_key']);
 
 $_client_locale='en_GB.UTF-8';
 include_once('set_locales.php');
@@ -175,9 +139,14 @@ foreach($_GET as $key => $value) {
     if ($key!='_locale')$args.=$key.'='.$value.'&';
 }
 $lang_menu=array();
-foreach($avialable_locales as $row ) {
 
-    $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_locale='.$row['Locale'],$row['Flag'],$_lang[$row['Language Code']]);
+
+$sql=sprintf("select * from `Language Dimension`");
+$res=mysql_query($sql);
+
+while ($row=mysql_fetch_assoc($res) ) {
+    $_locale=$row['Language Code'].'_'.$row['Country 2 Alpha Code'].'.UTF-8';
+    $lang_menu[]=array($_SERVER['PHP_SELF'].$args.'_locale='.$_locale,strtolower($row['Country 2 Alpha Code']),$row['Language Original Name']);
 }
 
 $smarty->assign('lang_menu',$lang_menu);
@@ -216,7 +185,7 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
-$sql=sprintf("select `HQ Country 2 Alpha Code`,`HQ Country Code`,`HQ Currency`,`Currency Symbol` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
+$sql=sprintf("select `Inikoo Public URL`,`HQ Country 2 Alpha Code`,`HQ Country Code`,`HQ Currency`,`Currency Symbol` from  `HQ Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`HQ Currency`) ");
 //print $sql;
 
 $res=mysql_query($sql);
@@ -226,14 +195,12 @@ if ($row=mysql_fetch_array($res)) {
     $corporate_symbol=$row['Currency Symbol'];
     $corporate_country_code=$row['HQ Country Code'];
     $corporate_country_2alpha_code=$row['HQ Country 2 Alpha Code'];
-
+    $inikoo_public_url=$row['Inikoo Public URL'];
 }
 
 //print_r($row);
 //exit;
 
-
-//Config Menu
 
 
 $nav_menu=array();
@@ -263,11 +230,16 @@ if ($user->can_view('warehouses')) {
 
 
     if (count($user->warehouses)==1)
-        $nav_menu[] = array(_('Inventory'), 'inventory.php','warehouses');
-
-
+        $nav_menu[] = array(_('Inventory'), 'warehouse_parts.php','parts');
     else
-        $nav_menu[] = array(_('Inventory'), 'warehouses.php','warehouses');
+        $nav_menu[] = array(_('Inventory'), 'warehouses.php','parts');
+
+    if (count($user->warehouses)==1)
+        $nav_menu[] = array(_('Locations'), 'warehouse.php','locations');
+    else
+        $nav_menu[] = array(_('Locations'), 'warehouses.php','locations');
+
+
 }
 if ($user->can_view('marketing')) {
 
@@ -283,7 +255,7 @@ if ($user->can_view('stores')) {
     if (count($user->stores)==1) {
         $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
     } else
-        $nav_menu[] = array(_('Stores'), 'stores.php','products');
+        $nav_menu[] = array(_('Products'), 'stores.php','products');
 }
 
 if ($user->can_view('orders')) {

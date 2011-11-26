@@ -3665,7 +3665,7 @@ function list_stores() {
             }
             mysql_free_result($result);
         } else {
-            $sql=sprintf("select sum(if(`Store Total Profit`<0,`Store Total Profit`,0)) as total_profit_minus,sum(if(`Store Total Profit`>=0,`Store Total Profit`,0)) as total_profit_plus,sum(`Store Total Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
+            $sql=sprintf("select sum(if(`Store Total Profit`<0,`Store Total Profit`,0)) as total_profit_minus,sum(if(`Store Total Profit`>=0,`Store Total Profit`,0)) as total_profit_plus,sum(`Store Total Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($corporate_currency));
             //print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3707,7 +3707,7 @@ function list_stores() {
             }
             mysql_free_result($result);
         } else {
-            $sql=sprintf("select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
+            $sql=sprintf("select sum(if(`Store 1 Year Acc Profit`<0,`Store 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Year Acc Profit`>=0,`Store 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Store 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Store Dimension`  S   %s %s and `Store Currency Code`!= %s ",$where,$wheref,prepare_mysql($corporate_currency));
             //print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -4329,7 +4329,7 @@ function list_stores() {
         if (!$percentages) {
             if ($show_default_currency) {
                 $class='';
-                if ($myconf['currency_code']!=$row['Store Currency Code'])
+                if ($corporate_currency!=$row['Store Currency Code'])
                     $class='currency_exchanged';
 
 

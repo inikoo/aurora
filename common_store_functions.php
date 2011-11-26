@@ -14,16 +14,16 @@ function formated_rrp($data,$options=false) {
 	
     $rrp=money_locale($data['Product RRP']/$data['Product Units Per Case'],$locale,$data['Product Currency']);
     if ($locale=="de_DE") {
-        return ($prefix?'UVP: ':'')."$rrp ".($show_units?_("pro Stück"):'');
+        return ($prefix?'UVP: ':'')."$rrp ".($show_units?"pro Stück":'');
     }
     elseif ($locale=="pl_PL") {
-        return ($prefix?'SCD: ':'')."$rrp ".($show_units?_("za sztukę"):'');
+        return ($prefix?'SCD: ':'')."$rrp ".($show_units?"za sztukę":'');
     }
     elseif ($locale=="es_ES") {
-        return ($prefix?'PVP: ':'')."$rrp ".($show_units?_(" und"):'');
+        return ($prefix?'PVP: ':'')."$rrp ".($show_units?" und":'');
     }
     elseif($locale=="fr_FR") {
-        return ($prefix?'PVC: ':'')."$rrp  ".($show_units?_("/unité PVC"):'');
+        return ($prefix?'PVC: ':'')."$rrp  ".($show_units?"/unité PVC":'');
     }
     else
         return ($prefix?_("RRP").': ':'')."$rrp ".($show_units?_("each"):'');
@@ -141,7 +141,7 @@ function formated_price($data) {
         if ($data=='from')
             return 'Price from '.$str;
         else if ($label=='price')
-            return 'Price: '.$str;
+            return _('Price').': '.$str;
         else if ($label=='')
             return $str;
         else

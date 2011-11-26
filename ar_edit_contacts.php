@@ -11,6 +11,7 @@ include_once('class.CompanyDepartment.php');
 include_once('class.Staff.php');
 include_once('class.CustomField.php');
 require_once 'class.SendEmail.php';
+require_once 'common_detect_agent.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -21,19 +22,39 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('delete_all_customers_in_list'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'list_key'=>array('type'=>'key'),
+                             'store_key'=>array('type'=>'key'),
+                         ));
+
+    delete_all_customers_in_list($data);
+    break;
+case('delete_all_customers_in_store'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+
+    delete_all_customers_in_store($data);
+    break;
+case('upload_attachment_to_customer'):
+    upload_attachment_to_customer();
+    break;
 
 case('strikethrough_customer_history'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
                          ));
     strikethrough_customer_history($data);
-break;
+    break;
 case('unstrikethrough_customer_history'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
                          ));
     unstrikethrough_customer_history($data);
-break;
+    break;
 
 case('add_attachment'):
     $data=prepare_values($_REQUEST,array(
@@ -71,13 +92,15 @@ case('set_contact_address_as_billing'):
 
 
     break;
-	
+
 case('forgot_password'):
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
-							 'store_key'=>array('type'=>'key'),
-							 'email'=>array('type'=>'string'),
-							 'url'=>array('type'=>'string')
+                             'store_key'=>array('type'=>'key'),
+                             'email'=>array('type'=>'string'),
+                             'url'=>array('type'=>'string'),
+                             'site_key'=>array('type'=>'key')
+
                          ));
     forgot_password($data);
 
@@ -198,13 +221,40 @@ case('new_contact'):
 
     break;
 case('new_address'):
-    new_address();
+    $data=prepare_values($_REQUEST,array(
+                             'value'=>array('type'=>'json array'),
+                             'subject'=>array('type'=>'string'),
+                             'subject_key'=>array('type'=>'key'),
+
+                         ));
+    $data['address_type']='Delivery';
+    new_address($data);
     break;
 case('new_Delivery_address'):
 case('new_delivery_address'):
-case('new_Billing_address'):
 
-    new_address();
+    $data=prepare_values($_REQUEST,array(
+                             'value'=>array('type'=>'json array'),
+                             'subject'=>array('type'=>'string'),
+                             'subject_key'=>array('type'=>'key')
+
+                         ));
+
+
+    $data['address_type']='Delivery';
+    new_address($data);
+    break;
+
+case('new_Billing_address'):
+    $data=prepare_values($_REQUEST,array(
+                             'value'=>array('type'=>'json array'),
+                             'subject'=>array('type'=>'string'),
+                             'subject_key'=>array('type'=>'key')
+
+
+                         ));
+    $data['address_type']='Billing';
+    new_address($data);
     break;
 
 case('edit_address_type'):
@@ -228,8 +278,33 @@ case('edit_delivery_address'):
 case('edit_company'):
     edit_company();
     break;
+case('edit_customer_field'):
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                             'newvalue'=>array('type'=>'string'),
+
+                             'key'=>array('type'=>'string')
+
+                         ));
+
+    $response=edit_customer_field($data['customer_key'],$data['key'],array('value'=>$data['newvalue'],'okey'=>$data['key']));
+    echo json_encode($response);
+    break;
+
+case('edit_billing_quick'):
 case('edit_billing_data'):
 
+
+    $data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+
+                         ));
+
+    edit_customer($data);
+    break;
+
+case('edit_customer_quick'):
 case('edit_customer'):
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
@@ -238,6 +313,9 @@ case('edit_customer'):
                          ));
 
     edit_customer($data);
+    break;
+case 'site_edit_customer':
+    //xxc
     break;
 case('edit_customer_send_post'):
     edit_customer_send_post();
@@ -850,13 +928,13 @@ function edit_address_main_telephone($number,$address_key) {
 
     $address=new Address($address_key);
     if (!$address->id) {
-       return -2;
+        return -2;
         //$response=array('state'=>400,'msg'=>"Address not found $address_key");
         //echo json_encode($response);
         //exit;
-        
-        
-        
+
+
+
     }
     $telecom_key=$address->get_principal_telecom_key('Telephone');
 
@@ -872,11 +950,11 @@ function edit_address_main_telephone($number,$address_key) {
     $telephone_data['Telecom Type']='Telephone';
     $proposed_telephone=new Telecom("find complete country code ".$address->data['Address Country Code'],$telephone_data);
     if ($proposed_telephone->found) {
-        
+
         return -1;
-       // $response=array('state'=>400,'msg'=>'Telephone found in another address');
-       // echo json_encode($response);
-       // exit;
+        // $response=array('state'=>400,'msg'=>'Telephone found in another address');
+        // echo json_encode($response);
+        // exit;
     }
     if (!$telecom_key) {
         $telephone=new Telecom("find complete create country code ".$address->data['Address Country Code'],$telephone_data);
@@ -1039,45 +1117,20 @@ function edit_telecom($data) {
 
 
 }
-function new_address() {
+function new_address($_data) {
     global $editor;
     $warning='';
 
 
 
-
-    if ( !isset($_REQUEST['value']) ) {
-        $response=array('state'=>400,'msg'=>'Error no value');
-        echo json_encode($response);
-        return;
-    }
-
-    $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
-    $tmp=preg_replace('/\\\\\"/','"',$tmp);
-
-    $raw_data=json_decode($tmp, true);
-
-    if (!is_array($raw_data)) {
-        $response=array('state'=>400,'msg'=>'Wrong value');
-        echo json_encode($response);
-        return;
-    }
+    $raw_data=$_data['value'];
 
 
-    if ( !isset($_REQUEST['subject'])
-            or !is_numeric($_REQUEST['subject_key'])
-            or $_REQUEST['subject_key']<=0
-            or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
 
-       ) {
-        $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
-        echo json_encode($response);
-        return;
-    }
 
-    $subject=$_REQUEST['subject'];
-    $subject_key=$_REQUEST['subject_key'];
-
+    $subject=$_data['subject'];
+    $subject_key=$_data['subject_key'];
+    $address_type=$_data['address_type'];
     switch ($subject) {
     case('Company'):
         $subject_object=new Company($subject_key);
@@ -1135,10 +1188,35 @@ function new_address() {
     if ($address->found) {
         $address_parents=  $address->get_parent_keys($subject);
         if (array_key_exists($subject_key,$address_parents)) {
+
+            if ($address_type=='Delivery') {
+
+                $address_keys=$subject_object->get_delivery_address_keys();
+                if (array_key_exists($address->id,$address_keys)) {
+                    $response=array('state'=>200,'action'=>'nochange','msg'=>'address in delivery address');
+                    echo json_encode($response);
+                    return;
+
+                }
+                
+             /*   
+                $address_keys=$subject_object->get_billing_address_keys();
+                if (array_key_exists($address->id,$address_keys)) {
+                 $subject_object->associate_billing_address($address->id);
+                
+                    $response=array('state'=>200,'action'=>'create','msg'=>'address in billing address');
+                    echo json_encode($response);
+                    return;
+
+                }
+               */ 
+                
+            }else{
+
             $response=array('state'=>200,'action'=>'nochange','msg'=>_('Address already in company'));
             echo json_encode($response);
             return;
-
+}
         } else {
             $warning=_('Warning, address found also associated with')." ";
             switch ($subject) {
@@ -1189,10 +1267,11 @@ function new_address() {
 
     if ($subject=='Customer') {
 
-        if (preg_match('/billing/i',$_REQUEST['tipo'])) {
+    
+  if ($address_type=='Billing') {
 
             $subject_object->associate_billing_address($address->id);
-            $subject_object->update_principal_billing_address($address->id);
+//            $subject_object->update_principal_billing_address($address->id);
         } else {
             $subject_object->associate_delivery_address($address->id);
         }
@@ -1333,6 +1412,45 @@ function update_main_address() {
             return;
 
         }
+        elseif ($type=='billing') {
+            $subject_object->update_principal_billing_address($address_key);
+            if ($subject_object->error) {
+                $response=array('state'=>400,'msg'=>$subject_object->msg);
+
+            }
+            elseif($subject_object->updated) {
+
+                if ( ($subject_object->get('Customer Billing Address Link')=='Contact') or ( $subject_object->get('Customer Billing Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
+                    $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
+
+                }
+                elseif($subject_object->get('Customer Billing Address Link')=='Billing') {
+                    $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
+                }
+                else {
+                    $address_comment=$subject_object->billing_address_xhtml();
+                }
+
+                $response=array(
+                              'state'=>200
+                                      ,'action'=>'changed'
+                                                ,'new_main_address'=>$subject_object->display_billing_address('xhtml')
+                                                                    ,'new_main_address_bis'=>$address_comment
+
+                                                                                            ,'new_main_delivery_address_key'=>$subject_object->data['Customer Main Delivery Address Key']
+
+                          );
+
+            }
+            else {
+                $response=array('state'=>200,'action'=>'no_change','msg'=>_('Nothing to change'));
+
+
+            }
+            echo json_encode($response);
+            return;
+
+        }
 
     }
 
@@ -1449,7 +1567,7 @@ function set_contact_address_as_billing() {
 }
 
 
-function edit_billing_address($raw_data) {
+function edit_billing_address_old_to_delete($raw_data) {
     global $editor;
     $warning='';
 
@@ -1601,10 +1719,10 @@ function edit_address($data) {
     $subject=$data['subject'];
     $subject_key=$data['subject_key'];
     $raw_data=$data['value'];
-    if ($subject=='Customer' and $_REQUEST['key']=='Billing') {
-        edit_billing_address($raw_data);
-        exit;
-    }
+//    if ($subject=='Customer' and $_REQUEST['key']=='Billing') {
+//        edit_billing_address($raw_data);
+//        exit;
+//    }
 
     $subject_key=$_REQUEST['subject_key'];
     switch ($subject) {
@@ -1861,6 +1979,7 @@ function address_response($address_key,$subject,$subject_object,$warning='') {
                           );
     $is_main='No';
     $is_main_delivery='No';
+    $is_main_billing='No';
     $address_comment='';
 
     if ($subject_object->get_main_address_key()==$address->id) {
@@ -1887,6 +2006,10 @@ function address_response($address_key,$subject,$subject_object,$warning='') {
 
         }
 
+        if ($subject_object->data['Customer Billing Address Key']==$address->id) {
+            $is_main_billing='Yes';
+
+        }
 
         if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
             $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
@@ -1898,7 +2021,7 @@ function address_response($address_key,$subject,$subject_object,$warning='') {
 
 
     }
-    $response=array('state'=>200,'action'=>'updated','warning'=>$warning,'is_main'=>$is_main,'is_main_delivery'=>$is_main_delivery,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
+    $response=array('state'=>200,'action'=>'updated','warning'=>$warning,'is_main'=>$is_main,'is_main_delivery'=>$is_main_delivery,'is_main_billing'=>$is_main_billing,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
     if ($subject=='Customer') {
         $response['xhtml_delivery_address_bis']=$address_comment;
         $response['xhtml_billing_address']=$billing_address;
@@ -2001,7 +2124,7 @@ function strikethrough_customer_history($data) {
     $history_key=$data['key'];
     $sql=sprintf("update `Customer History Bridge` set  `Strikethrough`='Yes'   where `History Key`=%d ",$history_key);
     mysql_query($sql);
-  //  print $sql;
+    //  print $sql;
     $response=array('state'=>200,'strikethrough'=>'Yes','delete'=>'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />');
     echo json_encode($response);
 }
@@ -2160,7 +2283,7 @@ function delete_address() {
 
 
         $address_main_delivery=$subject_object->delivery_address_xhtml();
-
+        $billing_address=$subject_object->billing_address_xhtml();
         if ( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ) {
             $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
@@ -2173,22 +2296,29 @@ function delete_address() {
         }
 
 
+        /*
+                if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
+                    $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
-        if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
-            $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
+                } else {
 
-        } else {
-
-            $billing_address=$subject_object->billing_address_xhtml();
-        }
-
+                    $billing_address=$subject_object->billing_address_xhtml();
+                }
+        */
 
     }
 
 
 
 
-    $response=array('state'=>200,'action'=>'deleted','key'=>'','main_address_data'=>$main_address_data,'xhtml_main_address'=>$main_address->display('xhtml'),'xhtml_delivery_address'=>$address_main_delivery,'xhtml_delivery_address_bis'=>$address_comment,'xhtml_billing_address'=>$billing_address);
+    $response=array(
+                  'state'=>200,
+                  'action'=>'deleted',
+                  'key'=>'','main_address_data'=>$main_address_data,
+                  'xhtml_main_address'=>$main_address->display('xhtml'),
+                  'xhtml_delivery_address'=>$address_main_delivery,
+                  'xhtml_delivery_address_bis'=>$address_comment,
+                  'xhtml_billing_address'=>$billing_address);
 
 
 
@@ -2653,12 +2783,14 @@ function edit_customer($data) {
 
     }
 
-
-
+//print_r($values);
     $responses=array();
     foreach($values as $key=>$values_data) {
         $responses[]=edit_customer_field($customer->id,$key,$values_data);
     }
+
+    if ($data['submit'])
+        return $responses;
 
     echo json_encode($responses);
 
@@ -2667,8 +2799,8 @@ function edit_customer($data) {
 
 function edit_customer_field($customer_key,$key,$value_data) {
 
-
-//print "$customer_key,$key,$value_data ***";
+    //print $value_data;
+    //print "$customer_key,$key,$value_data ***";
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;
@@ -2733,6 +2865,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
     $the_new_value=_trim($value_data['value']);
 
+
+
     if (preg_match('/^email\d+$/i',$key)) {
         $email_id=preg_replace('/^email/','',$key);
         $customer->update_other_email($email_id,$the_new_value);
@@ -2741,31 +2875,36 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_email_deleted=true;
         }
 
-    }elseif (preg_match('/^email_label\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^email_label\d+$/i',$key)) {
         $email_id=preg_replace('/^email_label/','',$key);
         $customer->update_other_email_label($email_id,$the_new_value);
         $other_label=true;
         $other_label_scope='email';
         $other_label_scope_key=$email_id;
-    }elseif (preg_match('/^telephone_label\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^telephone_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^telephone_label/','',$key);
         $customer->update_other_telecom_label('Telephone',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='telephone';
         $other_label_scope_key=$telecom_id;
-    }elseif (preg_match('/^mobile_label\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^mobile_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^mobile_label/','',$key);
         $customer->update_other_telecom_label('Mobile',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='mobile';
         $other_label_scope_key=$telecom_id;
-    }elseif (preg_match('/^fax_label\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^fax_label\d+$/i',$key)) {
         $telecom_id=preg_replace('/^fax_label/','',$key);
         $customer->update_other_telecom_label('FAX',$telecom_id,$the_new_value);
         $other_label=true;
         $other_label_scope='fax';
         $other_label_scope_key=$telecom_id;
-    }elseif (preg_match('/^telephone\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^telephone\d+$/i',$key)) {
         $telephone_id=preg_replace('/^telephone/','',$key);
         $customer->update_other_telephone($telephone_id,$the_new_value);
 
@@ -2773,7 +2912,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_telephone_deleted=true;
         }
 
-    }elseif (preg_match('/^fax\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^fax\d+$/i',$key)) {
         $fax_id=preg_replace('/^fax/','',$key);
         $customer->update_other_fax($fax_id,$the_new_value);
 
@@ -2781,7 +2921,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $other_fax_deleted=true;
         }
 
-    }elseif (preg_match('/^mobile\d+$/i',$key)) {
+    }
+    elseif (preg_match('/^mobile\d+$/i',$key)) {
 
 
         $mobile_id=preg_replace('/^mobile/','',$key);
@@ -2792,18 +2933,28 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
         }
 
-    }elseif ($key=='Customer Fiscal Name') {
+    }
+    elseif ($key=='Customer Fiscal Name') {
         $customer->update_fiscal_name($the_new_value );
-    }elseif ($key=='Customer Tax Number') {
+    }
+    elseif ($key=='Customer Tax Number') {
         $customer->update_tax_number($the_new_value);
-    }elseif ($key=='Customer Registration Number') {
+    }
+    elseif ($key=='Customer Registration Number') {
         $customer->update_registration_number($the_new_value);
-    }elseif (preg_match('/^custom_field_customer/i',$key)) {
+    }
+    elseif (preg_match('/^custom_field_customer/i',$key)) {
         $custom_id=preg_replace('/^custom_field_/','',$key);
-		//print $key;
+        //print $key;
         $customer->update_custom_fields($key, $the_new_value);
-		
-    }else {
+
+    }
+    else {
+        //  print "$customer_key,$key,$value_data ***";
+
+
+        //    print "$key  $the_new_value";
+
         $customer->update(array($key=>$the_new_value));
     }
 
@@ -2820,50 +2971,50 @@ function edit_customer_field($customer_key,$key,$value_data) {
     elseif($key=='Add Other Mobile') {
         $other_mobile_added=true;
     }
-    
 
 
 
 
 
-if ($customer->updated) {
 
-    if ($other_email_deleted) {
-        $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'email_key'=>$email_id);
-    }
-    elseif ($other_mobile_deleted) {
-        $response= array('state'=>200,'action'=>'other_mobile_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'mobile_key'=>$mobile_id);
-    }
-    elseif ($other_fax_deleted) {
-        $response= array('state'=>200,'action'=>'other_fax_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'fax_key'=>$fax_id);
-    }
-    elseif ($other_telephone_deleted) {
-        $response= array('state'=>200,'action'=>'other_telephone_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'telephone_key'=>$telephone_id);
-    }
-    elseif($other_email_added) {
-        $response= array('state'=>200,'action'=>'other_email_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'new_email_key'=>$customer->new_email_key);
-    }
-    elseif($other_telephone_added) {
-        $response= array('state'=>200,'action'=>'other_telephone_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-    }
-    elseif($other_fax_added) {
-        $response= array('state'=>200,'action'=>'other_fax_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-    }
-    elseif($other_mobile_added) {
-        $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-    }
-    elseif($other_label) {
-        $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope);
-    }
-    else {
+    if (!$customer->error ) {
 
-        $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey']);
-    }
-} else {
+        if ($other_email_deleted) {
+            $response= array('state'=>200,'action'=>'other_email_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'email_key'=>$email_id,'warning_msg'=>$customer->warning_messages);
+        }
+        elseif ($other_mobile_deleted) {
+            $response= array('state'=>200,'action'=>'other_mobile_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'mobile_key'=>$mobile_id,'warning_msg'=>$customer->warning_messages);
+        }
+        elseif ($other_fax_deleted) {
+            $response= array('state'=>200,'action'=>'other_fax_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'fax_key'=>$fax_id,'warning_msg'=>$customer->warning_messages);
+        }
+        elseif ($other_telephone_deleted) {
+            $response= array('state'=>200,'action'=>'other_telephone_deleted','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'telephone_key'=>$telephone_id,'warning_msg'=>$customer->warning_messages);
+        }
+        elseif($other_email_added) {
+            $response= array('state'=>200,'action'=>'other_email_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'new_email_key'=>$customer->new_email_key,'warning_msg'=>$customer->warning_messages);
+        }
+        elseif($other_telephone_added) {
+            $response= array('state'=>200,'action'=>'other_telephone_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'warning_msg'=>$customer->warning_messages);
+        }
+        elseif($other_fax_added) {
+            $response= array('state'=>200,'action'=>'other_fax_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'warning_msg'=>$customer->warning_messages);
+        }
+        elseif($other_mobile_added) {
+            $response= array('state'=>200,'action'=>'other_mobile_added','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'warning_msg'=>$customer->warning_messages);
+        }
+        elseif($other_label) {
+            $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope,'warning_msg'=>$customer->warning_messages);
+        }
+        else {
+            $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'warning_msg'=>$customer->warning_messages,'warning_msg'=>$customer->warning_messages);
+        }
+    } else {
 
-    $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey']);
-}
-return $response;
+        $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$value_data['okey'], 'warning_msg'=>$customer->warning_messages);
+    }
+
+    return $response;
 
 }
 // --------------------------------------------------------------------------------------------------------------
@@ -2901,7 +3052,7 @@ function list_customers() {
 
     global $myconf;
 
-    $conf=$_SESSION['state']['customers']['table'];
+    $conf=$_SESSION['state']['customers']['edit_table'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -2946,36 +3097,68 @@ function list_customers() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    //$_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-    $_SESSION['state']['customers']['table']['order']=$order;
-    $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
-    $_SESSION['state']['customers']['table']['nr']=$number_results;
-    $_SESSION['state']['customers']['table']['sf']=$start_from;
-    $_SESSION['state']['customers']['table']['where']=$where;
-    $_SESSION['state']['customers']['table']['f_field']=$f_field;
-    $_SESSION['state']['customers']['table']['f_value']=$f_value;
+    //$_SESSION['state']['customers']['edit_table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state']['customers']['edit_table']['order']=$order;
+    $_SESSION['state']['customers']['edit_table']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['edit_table']['nr']=$number_results;
+    $_SESSION['state']['customers']['edit_table']['sf']=$start_from;
+    $_SESSION['state']['customers']['edit_table']['where']=$where;
+    $_SESSION['state']['customers']['edit_table']['f_field']=$f_field;
+    $_SESSION['state']['customers']['edit_table']['f_value']=$f_value;
 
 
     $filter_msg='';
     $wheref='';
-    $where='where true ';
+    $where='where true';
+    $table='`Customer Dimension` C ';
+    $where_type='';
+
+    if (isset($_REQUEST['list_key'])) {
+
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+
+        $res=mysql_query($sql);
+        if ($customer_list_data=mysql_fetch_assoc($res)) {
+            $awhere=false;
+            if ($customer_list_data['List Type']=='Static') {
+                $table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
+                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+
+            } else {// Dynamic by DEFAULT
+
+
+
+                $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+                $tmp=preg_replace('/\\\\\"/','"',$tmp);
+                $tmp=preg_replace('/\'/',"\'",$tmp);
+
+                $raw_data=json_decode($tmp, true);
+
+                $raw_data['store_key']=$store;
+                list($where,$table)=customers_awhere($raw_data);
+
+
+
+
+            }
+
+        } else {
+            exit("error");
+        }
+    } else {
+        $where_type='';
+    }
+
 
     if (is_numeric($store)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);
     }
-
-
-
-
 
     if (($f_field=='customer name'     )  and $f_value!='') {
         $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
     }
     elseif(($f_field=='postcode'     )  and $f_value!='') {
         $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
-
-
-
     }
     else if ($f_field=='id'  )
         $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
@@ -2993,19 +3176,14 @@ function list_customers() {
         $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
 
 
-
-
-
-
-    $sql="select count(*) as total from `Customer Dimension`  $where $wheref";
+    $sql="select count(*) as total from $table   $where $wheref $where_type";
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total_without_filters from `Customer Dimension`  $where ";
+        $sql="select count(*) as total_without_filters from $table   $where $wheref $where_type";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -3020,9 +3198,16 @@ function list_customers() {
     }
     mysql_free_result($res);
 
-    $rtext=$total_records." ".ngettext('identified customers','identified customers',$total_records);
+
+
+  $rtext=$total_records." ".ngettext('customer','customers',$total_records);
     if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._("Showing All").')';
+
+
+
 
     if ($total==0 and $filtered>0) {
         switch ($f_field) {
@@ -3118,7 +3303,7 @@ function list_customers() {
     elseif($order=='activity')
     $order='`Customer Type by Activity`';
 
-    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from $table   $where $wheref $where_type  order by $order $order_direction limit $start_from,$number_results";
 
     $adata=array();
 
@@ -3127,19 +3312,12 @@ function list_customers() {
     $result=mysql_query($sql);
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-
-
-
-
         $adata[]=array(
 
                      'customer_key'=>$data['Customer Key'],
                      'name'=>$data['Customer Name'],
-
-
                      'email'=>$data['Customer Main Plain Email'],
                      'telephone'=>$data['Customer Main XHTML Telephone'],
-
                      'contact_name'=>$data['Customer Main Contact Name'],
                      'address'=>$data['Customer Main Location'],
                      'town'=>$data['Customer Main Town'],
@@ -3162,20 +3340,16 @@ function list_customers() {
 
 
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'rtext'=>$rtext,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-
-                                      'records_perpage'=>$number_results,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                                array(
+                                   'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
@@ -3610,115 +3784,7 @@ function delete_contact($data) {
 
 }
 
-function new_delivery_address() {
-    global $editor;
 
-    if ( !isset($_REQUEST['value']) ) {
-        $response=array('state'=>400,'msg'=>'Error no value');
-        echo json_encode($response);
-        return;
-    }
-
-    $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
-    $tmp=preg_replace('/\\\\\"/','"',$tmp);
-
-    $raw_data=json_decode($tmp, true);
-
-    if (!is_array($raw_data)) {
-        $response=array('state'=>400,'msg'=>'Wrong value');
-        echo json_encode($response);
-        return;
-    }
-
-
-    if ( !isset($_REQUEST['subject'])
-            or !is_numeric($_REQUEST['subject_key'])
-            or $_REQUEST['subject_key']<=0
-            or !preg_match('/^customer$/i',$_REQUEST['subject'])
-
-       ) {
-        $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
-        echo json_encode($response);
-        return;
-    }
-
-    $customer=$_REQUEST['subject'];
-    $customer_key=$_REQUEST['subject_key'];
-    $customer=new Customer($customer_key);
-
-
-    $translator=array(
-                    'country_code'=>'Address Country Code',
-                    'country_d1'=>'Address Country First Division',
-                    'country_d2'=>'Address Country Second Division',
-                    'town'=>'Address Town',
-                    'town_d1'=>'Address Town First Division',
-                    'town_d2'=>'Address Town Second Division',
-                    'postal_code'=>'Address Postal Code',
-                    'street'=>'Street Data',
-                    'internal'=>'Address Internal',
-                    'building'=>'Address Building',
-                    'type'=>'Address Type',
-                    'function'=>'Address Function',
-                    'description'=>'Address Description'
-
-                );
-
-
-    $data=array('editor'=>$editor);
-    foreach($raw_data as $key=>$value) {
-        if (array_key_exists($key, $translator)) {
-            $data[$translator[$key]]=$value;
-        }
-    }
-
-    $ship_to= new Ship_To('find create',$data);
-    $data_ship_to=array(
-                      'Ship To Key'=>$ship_to->id,
-                      'Current Ship To Is Other Key'=>$customer->data['Customer Last Ship To Key'],
-                      'Date'=>$editor['Date']
-                  );
-    $customer->update_ship_to($data_ship_to);
-
-    if ($ship_to->new ) {
-
-
-        $updated_address_data=array(
-                                  'country'=>$ship_to->data['Ship To Country Name'],
-                                  'country_code'=>$ship_to->data['Ship To Country Code'],
-                                  'country_d1'=> $ship_to->data['Ship To Line 4'],
-                                  'country_d2'=> '',
-                                  'town'=> $ship_to->data['Ship To Town'],
-                                  'postal_code'=> $ship_to->data['Ship To Postal Code'],
-                                  'town_d1'=> '',
-                                  'town_d2'=> '',
-                                  'fuzzy'=> '',
-                                  'street'=> $ship_to->data['Ship To Line 1'],
-                                  'building'=>  $ship_to->data['Ship To Line 2'],
-                                  'internal'=> $ship_to->data['Ship To Line 3'],
-                                  'type'=>'',
-                                  'function'=>'',
-                                  'description'=>''
-                              );
-
-        $response=array(
-                      'state'=>200,
-                      'action'=>'created',
-                      'msg'=>$customer->msg_updated,
-                      'updated_data'=>$updated_address_data,
-                      'xhtml_address'=>$ship_to->display('xhtml'),
-                      'address_key'=>$ship_to->id
-                  );
-        echo json_encode($response);
-        return;
-
-    } else {
-        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Address already in company'));
-        echo json_encode($response);
-        return;
-    }
-
-}
 
 
 function edit_corporation($data) {
@@ -3963,42 +4029,41 @@ function create_custom_field($data) {
 
 }
 
-function create_email_field($data){
-	$info=$data['values'];
-	//print_r($info);
-	$sql=sprintf("select * from `Email Credentials` where `Store Key`=%d and `Email Address`='%s'", $data['parent_key'], $info['Email Address']);
-	//print $sql;
-	$result=mysql_query($sql);
-	if(mysql_fetch_array($result)){
-		$response=array(
-		  'state'=>450,
-		  'msg'=>'Email Exist'
+function create_email_field($data) {
+    $info=$data['values'];
+    //print_r($info);
+    $sql=sprintf("select * from `Email Credentials` where `Store Key`=%d and `Email Address`='%s'", $data['parent_key'], $info['Email Address']);
+    //print $sql;
+    $result=mysql_query($sql);
+    if (mysql_fetch_array($result)) {
+        $response=array(
+                      'state'=>450,
+                      'msg'=>'Email Exist'
 
-		);
-	}
-	else{
-		$sql=sprintf("insert into `Email Credentials` (`Store Key`,`Store Scope`,`Email Address`,`Password`,`Incoming Mail Server`,`Outgoing Mail Sever`) values (%d, '%s', '%s', '%s', '%s', '%s')"
-		,$data['parent_key']
-		,$data['parent']
-		,$info['Email Address']
-		,$info['Password']
-		,$info['Incoming Mail Server']
-		,$info['Outgoing Mail Server']
-		);
-		
-		if(mysql_query($sql)){
-		    $response=array(
-                  'state'=>200,
-                  'msg'=>'Email Added'
-              );
-    
-			
-		}
-		//print $sql;
-		
-	}
-	echo json_encode($response);
-	
+                  );
+    } else {
+        $sql=sprintf("insert into `Email Credentials` (`Store Key`,`Store Scope`,`Email Address`,`Password`,`Incoming Mail Server`,`Outgoing Mail Sever`) values (%d, '%s', '%s', '%s', '%s', '%s')"
+                     ,$data['parent_key']
+                     ,$data['parent']
+                     ,$info['Email Address']
+                     ,$info['Password']
+                     ,$info['Incoming Mail Server']
+                     ,$info['Outgoing Mail Server']
+                    );
+
+        if (mysql_query($sql)) {
+            $response=array(
+                          'state'=>200,
+                          'msg'=>'Email Added'
+                      );
+
+
+        }
+        //print $sql;
+
+    }
+    echo json_encode($response);
+
 }
 
 
@@ -4015,7 +4080,7 @@ function add_attachment_to_customer_history($data) {
     $customer=new Customer($data['scope_key']);
     $customer->editor=$editor;
     $msg=
-    $updated=false;
+        $updated=false;
     foreach($data['files_data'] as $file_data) {
         $_data=array(
                    'Filename'=>$file_data['filename_with_path'],
@@ -4026,7 +4091,7 @@ function add_attachment_to_customer_history($data) {
         $customer->add_attachment($_data);
         if ($customer->updated) {
             $updated=$customer->updated;
-        }else{
+        } else {
             $msg=$customer->msg;
         }
 
@@ -4044,33 +4109,40 @@ function add_attachment_to_customer_history($data) {
     echo json_encode($response);
 }
 
-function forgot_password($data){
-	//print_r($data);exit;
-	global $secret_key,$public_url;
-	$key=$data['customer_key'];
-	$store_key=$data['store_key'];
-	$url=$data['url'];
-	$login_handle=$data['email'];
-	
-	
-	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle` = '%s'", $login_handle);
-	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result)){
-		$user_key=$row['User Key'];
-	}
-	
-	//print $user_key;
-	if ($user_key) {
+function forgot_password($data) {
+    //print_r($data);exit;
+    global $secret_key,$public_url;
+    $key=$data['customer_key'];
+    $store_key=$data['store_key'];
+    //$url=$data['url'];
+    $login_handle=$data['email'];
+
+    $sql=sprintf("select `Site URL` from `Site Dimension` where `Site Key`=%d and `Site Store Key`=%d", $data['site_key'], $data['store_key']);
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result))
+        $url=$row['Site URL'];
+    else
+        $url='';
+
+
+    $sql=sprintf("select `User Key` from `User Dimension` where `User Handle` = '%s'", $login_handle);
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result)) {
+        $user_key=$row['User Key'];
+    }
+
+    //print $user_key;
+    if ($user_key) {
 
 
         $user=new User($user_key);
         $customer=new Customer($user->data['User Parent Key']);
 
-		$store=new Store($store_key);
+        $store=new Store($store_key);
 
         $email_credential_key=$store->get_email_credential_key('Site Registration');
 
-		//print $email_credential_key=1;
+        //print $email_credential_key=1;
 //print_r($store);
         $signature_name='';
         $signature_company='';
@@ -4109,52 +4181,84 @@ function forgot_password($data){
                       <br><br>
                       Thank you";
 
-$files=array();	
-
-		$data=array('email_type'=>'Password Reminder',
-				  'recipient_type'=>'User',
-				  'recipient_key'=>$user->id);
-				  
-		$send_email=new SendEmail($data);
-		
-		$html_message=$send_email->track_sent_email($html_message);
-		
-		$access_key='AKIAJGTHT6POHWCQQNRQ';
-		$secret_key='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';
-
+        $files=array();
         $to=$login_handle;
-        $data=array(
-				  'type'=>'HTML',
-                  'subject'=>'Reset your password',
-                  'plain'=>$plain_message,
-                  'email_credentials_key'=>$email_credential_key,
-                  'to'=>$to,
-                  'html'=>$html_message,
-				  'attachement'=>$files,
-				  'access_key'=>$access_key,
-				  'secret_key'=>$secret_key
-              );
-		if(isset($data['plain']) && $data['plain']){
-			$data['plain']=$data['plain'];
-		}
-		else
-			$data['plain']=null;
-			
-        //$send_email=new SendEmail();
-		//$send_email->set_method('amazon');
-        $send_email->smtp('html', $data);
-        $result=$send_email->send();
+        $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+        //$message_data=$email_campaign->get_message_data($email_mailing_list_key);
 
-		//print_r($result);
-		
-        if ($result['msg']=='ok') {
+        $message_data['method']='smtp';
+        $message_data['type']='html';
+        $message_data['to']=$to;
+        $message_data['subject']='Reset your password';
+        $message_data['html']=$html_message;
+        $message_data['email_credentials_key']=1;
+        $message_data['email_matter']='Password Reminder';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['recipient_type']='User';
+        $message_data['recipient_key']=0;
+        $message_data['email_key']=0;
+        $message_data['plain']=$plain_message;
+        if (isset($message_data['plain']) && $message_data['plain']) {
+            $message_data['plain']=$message_data['plain'];
+        } else
+            $message_data['plain']=null;
+
+        //print_r($message_data);
+        $send_email=new SendEmail();
+
+        $send_email->track=true;
+
+
+        $send_result=$send_email->send($message_data);
+        //print_r($send_result);
+
+
+
+        /*
+        		$data=array('email_type'=>'Password Reminder',
+        				  'recipient_type'=>'User',
+        				  'recipient_key'=>$user->id);
+
+        		$send_email=new SendEmail($data);
+
+        		$html_message=$send_email->track_sent_email($html_message);
+
+        		$access_key='AKIAJGTHT6POHWCQQNRQ';
+        		$secret_key='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';
+
+                $to=$login_handle;
+                $data=array(
+        				  'type'=>'HTML',
+                          'subject'=>'Reset your password',
+                          'plain'=>$plain_message,
+                          'email_credentials_key'=>$email_credential_key,
+                          'to'=>$to,
+                          'html'=>$html_message,
+        				  'attachement'=>$files,
+        				  'access_key'=>$access_key,
+        				  'secret_key'=>$secret_key
+                      );
+        		if(isset($data['plain']) && $data['plain']){
+        			$data['plain']=$data['plain'];
+        		}
+        		else
+        			$data['plain']=null;
+
+                //$send_email=new SendEmail();
+        		//$send_email->set_method('amazon');
+                $send_email->smtp('html', $data);
+                $result=$send_email->send();
+
+        		//print_r($result);
+        */
+        if ($send_result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             echo json_encode($response);
             exit;
 
         } else {
-            print_r($result);
-            $response=array('state'=>200,'result'=>'error '.join(' ',$result));
+            //print_r($send_result);
+            $response=array('state'=>200,'result'=>'error '.join(' ',$send_result));
             echo json_encode($response);
             exit;
         }
@@ -4165,5 +4269,163 @@ $files=array();
         echo json_encode($response);
         exit;
     }
+
+
 }
+
+
+function upload_attachment_to_customer() {
+    global $editor;
+    if (isset($_FILES['attach']['tmp_name'])) {
+
+
+        //print_r($_FILES['attach']);
+        //print_r($_REQUEST);
+        // return;
+        $file_data=$_FILES['attach'];
+        $caption=$_REQUEST['caption'];
+        $customer_key=$_REQUEST['attach_customer_key'];
+
+        $customer=new Customer($customer_key);
+        $customer->editor=$editor;
+
+        $updated=false;
+
+        $_data=array(
+                   'Filename'=>$file_data['tmp_name'],
+                   'Attachment Caption'=>$caption,
+                   'Attachment MIME Type'=>$file_data['type'],
+                   'Attachment File Original Name'=>$file_data['name']
+               );
+        $customer->add_attachment($_data);
+        if ($customer->updated) {
+            $updated=$customer->updated;
+        } else {
+            $msg=$customer->msg;
+        }
+
+
+
+
+    }
+
+
+    if ($updated) {
+        $response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
+
+    } else {
+        $response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
+    }
+
+    echo json_encode($response);
+
+}
+
+
+function delete_all_customers_in_list($data) {
+
+    global $editor,$myconf;
+    $list_key=$data['list_key'];
+    $store_key=$data['store_key'];
+
+    $wheref='';
+    $where='where true';
+    $table='`Customer Dimension` C ';
+    $where_type='';
+
+
+    $conf=$_SESSION['state']['customers']['edit_table'];
+
+    $f_field=$conf['f_field'];
+
+    $f_value=$conf['f_value'];
+
+    $deleted_customers=0;
+    $total_customers=0;
+
+    $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$list_key);
+
+    $res=mysql_query($sql);
+    if ($customer_list_data=mysql_fetch_assoc($res)) {
+        $awhere=false;
+        if ($customer_list_data['List Type']=='Static') {
+            $table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
+            $where_type=sprintf(' and `List Key`=%d ',$list_key);
+        } else {
+            $tmp=preg_replace('/\\\"/','"',$customer_list_data['List Metadata']);
+            $tmp=preg_replace('/\\\\\"/','"',$tmp);
+            $tmp=preg_replace('/\'/',"\'",$tmp);
+            $raw_data=json_decode($tmp, true);
+            $raw_data['store_key']=$store;
+            list($where,$table)=customers_awhere($raw_data);
+        }
+
+
+        if (is_numeric($store_key)) {
+            $where.=sprintf(' and `Customer Store Key`=%d ',$store_key);
+        }
+
+        if (($f_field=='customer name'     )  and $f_value!='') {
+            $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+        }
+        elseif(($f_field=='postcode'     )  and $f_value!='') {
+            $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+        }
+        else if ($f_field=='id'  )
+            $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+        else if ($f_field=='maxdesde' and is_numeric($f_value) )
+            $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+        else if ($f_field=='mindesde' and is_numeric($f_value) )
+            $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+        else if ($f_field=='max' and is_numeric($f_value) )
+            $wheref.=" and  `Customer Orders`<=".$f_value."    ";
+        else if ($f_field=='min' and is_numeric($f_value) )
+            $wheref.=" and  `Customer Orders`>=".$f_value."    ";
+        else if ($f_field=='maxvalue' and is_numeric($f_value) )
+            $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+        else if ($f_field=='minvalue' and is_numeric($f_value) )
+            $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+
+
+        $sql="select C.`Customer Key` from $table   $where $wheref $where_type";
+        $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            $customer=new Customer($row['Customer Key']);
+            $customer->editor=$editor;
+            if ($customer->id) {
+                $customer->delete('',$myconf['customer_id_prefix']);
+
+                $total_customers++;
+                if ($customer->deleted) {
+                    $deleted_customers++;
+                }
+            }
+        }
+        $response= array('state'=>200,'number_deleted'=>$deleted_customers,'number_customers'=>$total_customers);
+        echo json_encode($response);
+        return;
+
+
+    } else {
+        $response= array('state'=>400,'msg'=>'List not found');
+        echo json_encode($response);
+        return;
+
+    }
+
+}
+
+
+
+
+
+
+
+function delete_all_customers_in_store() {
+
+
+}
+
+
 ?>

@@ -8,13 +8,13 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		
-		 'button.css',
-		 'container.css'
+      'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
 		 );
 
-include_once('Theme.php');
 
 $js_files=array(
 
@@ -30,7 +30,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'report_sales_activity.js.php',
-		 'js/dropdown.js'
+		
 		);
 
 
@@ -164,7 +164,7 @@ foreach($store_data as $key=>$val){
    $store_data[$key]['per_customers']=percentage($val['_customers'],$total['customers']);
   
    
-  if($val['currency_code']!=$myconf['currency_code'])
+  if($val['currency_code']!=$corporate_currency)
     $store_data[$key]['per_eq_net']='<span class="mix_currency">'.percentage($val['_eq_net'],$total['net']).'</span>';
   else
     $store_data[$key]['per_eq_net']=percentage($val['_eq_net'],$total['net']);
@@ -176,7 +176,7 @@ foreach($store_data as $key=>$val){
      $store_data[$key]['sub_per_invoices']=percentage($val['_invoices'],$total['invoices']);
      $store_data[$key]['sub_per_customers']=percentage($val['_customers'],$total['customers']);
 
-     if($val['currency_code']!=$myconf['currency_code']){
+     if($val['currency_code']!=$corporate_currency){
        $store_data[$key]['sub_per_eq_net']='<span class="mix_currency">'.percentage($val['_eq_net'],$total['net']).'</span>';
 
      }else{
@@ -230,7 +230,7 @@ $smarty->display('report_sales_activity.tpl');
 
 
 function report_data($int){
-  global $myconf;
+  global $corporate_currency;
 
 
 
@@ -241,7 +241,7 @@ function report_data($int){
   $result=mysql_query($sql);
   $mixed_currencies=false;
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    if($row['Store Currency Code']!=$myconf['currency_code'])
+    if($row['Store Currency Code']!=$corporate_currency)
       $mixed_currencies=true;
     $store_data[$row['Store Key']]=array(
 					 'store'=>sprintf('<a href="report_sales.php?store_key=%d%s">%s</a>',$row['Store Key'],$link,$row['Store Name'])

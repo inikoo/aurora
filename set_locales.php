@@ -77,6 +77,8 @@ bindtextdomain("inikoo", "./locale");
 textdomain("inikoo");
 
 
+//print_r($_SESSION);
+
 $regex['thousand_sep']=str_replace('.','\.','/'.$default_locale_data['thosusand_sep'].'/g');
 $regex['number']=str_replace('.','\.','/^\d*'.$default_locale_data['decimal_point'].'?\d*$/i');
 $regex['strict_number']=str_replace('.','\.','/^(\d{1,3}'.$default_locale_data['thosusand_sep'].')*\d{1,3}('.$default_locale_data['decimal_point'].'\d+)?$/i');

@@ -2,7 +2,7 @@
 require_once 'common.php';
 require_once 'ar_edit_common.php';
 require_once 'class.Order.php';
-
+require_once 'class.User.php';
 
 
 
@@ -16,7 +16,14 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('import_transactions_mals_e'):
+    $data=prepare_values($_REQUEST,array(
+                             'order_key'=>array('type'=>'dn_key'),
+                             'values'=>array('type'=>'json array')
 
+                         ));
+    import_transactions_mals_e($data);
+    break;
 case('set_picking_aid_sheet_pending_as_picked'):
     $data=prepare_values($_REQUEST,array(
                              'dn_key'=>array('type'=>'dn_key'),
@@ -69,7 +76,12 @@ case('new_list'):
     new_orders_list($data);
     break;
 
-
+case('cc_payment'):
+    $data=prepare_values($_REQUEST,array(
+                             'json_values'=>array('type'=>'json array'),
+                         ));
+    cc_payment($data);
+    break;
 
 case('new__invoice_list'):
     if (!$user->can_view('orders'))
@@ -205,6 +217,9 @@ case('send_to_warehouse'):
 case('edit_new_order'):
     edit_new_order();
     break;
+case('is_order_exist'):
+	is_order_exist();
+	break;
 case('edit_new_post_order'):
     $data=prepare_values($_REQUEST,array(
                              'order_key'=>array('type'=>'key'),
@@ -224,8 +239,25 @@ case('edit_new_order_shipping_type'):
     edit_new_order_shipping_type();
     break;
 case('set_order_shipping'):
-    set_order_shipping();
+    $data=prepare_values($_REQUEST,array(
+                             'order_key'=>array('type'=>'key'),
+                             'value'=>array('type'=>'string')
+                         ));
+
+    set_order_shipping($data);
     break;
+
+case('use_calculated_shipping'):
+    $data=prepare_values($_REQUEST,array(
+                             'order_key'=>array('type'=>'key'),
+                         ));
+
+    use_calculated_shipping($data);
+    break;
+case('update_order'):
+						 
+	update_order();
+	break;
 default:
     $response=array('state'=>404,'resp'=>_('Operation not found'));
     echo json_encode($response);
@@ -260,7 +292,7 @@ function cancel_order() {
 
 
 function send_to_warehouse($order_key) {
-
+    include_once('class.PartLocation.php');
     $order=new Order($order_key);
 
 
@@ -308,11 +340,53 @@ function edit_new_order_shipping_type() {
 
 }
 
-function set_order_shipping() {
 
-    $order_key=$_REQUEST['order_key'];
+function use_calculated_shipping($data) {
+    $order_key=$data['order_key'];
 
-    $value=$_REQUEST['value'];
+
+
+    $order=new Order($order_key);
+    if ($order->id) {
+
+        $order->use_calculated_shipping();
+
+
+
+
+        $updated_data=array(
+                          'order_items_gross'=>$order->get('Items Gross Amount'),
+                          'order_items_discount'=>$order->get('Items Discount Amount'),
+                          'order_items_net'=>$order->get('Items Net Amount'),
+                          'order_net'=>$order->get('Total Net Amount'),
+                          'order_tax'=>$order->get('Total Tax Amount'),
+                          'order_charges'=>$order->get('Charges Net Amount'),
+                          'order_credits'=>$order->get('Net Credited Amount'),
+                          'order_shipping'=>$order->get('Shipping Net Amount'),
+                          'order_total'=>$order->get('Total Amount')
+
+                      );
+        $response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'order_shipping_method'=>$order->data['Order Shipping Method'],'data'=>$updated_data,'shipping'=>money($order->new_value),'shipping_amount'=>$order->data['Order Shipping Net Amount']);
+
+
+
+
+
+
+    } else {
+        $response=array('state'=>400,'msg'=>$order->msg);
+
+    }
+    echo json_encode($response);
+
+
+}
+
+function set_order_shipping($data) {
+
+    $order_key=$data['order_key'];
+
+    $value=$data['value'];
 
     $order=new Order($order_key);
     if ($order->id) {
@@ -332,7 +406,7 @@ function set_order_shipping() {
                               'order_total'=>$order->get('Total Amount')
 
                           );
-            $response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping'=>money($order->new_value));
+            $response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping_amount'=>$order->data['Order Shipping Net Amount'],'shipping'=>money($order->new_value),'order_shipping_method'=>$order->data['Order Shipping Method']);
 
 
 
@@ -350,6 +424,65 @@ function set_order_shipping() {
     }
     echo json_encode($response);
 
+}
+
+function is_order_exist(){
+	$order_key=$_REQUEST['id'];
+
+    $product_pid=$_REQUEST['pid'];
+    $quantity=$_REQUEST['newvalue'];
+	$user_key=$_REQUEST['user_key'];
+	$user=new User($user_key);
+	
+	if($order_key==0){
+		$sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $user->get('User Parent Key'));
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_array($result)){
+			$order_exist=true;
+			$order_key=$row['Order Key'];
+		}
+		else{
+			//$order_exist=false;
+			date_default_timezone_set('UTC');
+
+			$customer_=new Customer($user->get('User Parent Key'));
+			if (!$customer_->id)
+				$customer_=new Customer('create anonymous');
+
+			$editor=array(
+						'Author Name'=>$user->data['User Alias'],
+						'Author Alias'=>$user->data['User Alias'],
+						'Author Type'=>$user->data['User Type'],
+						'Author Key'=>$user->data['User Parent Key'],
+						'User Key'=>$user->id
+					);
+
+			$order_data=array(
+
+							'Customer Key'=>$customer_->id,
+							'Order Original Data MIME Type'=>'application/inikoo',
+							'Order Type'=>'Order',
+							'editor'=>$editor
+
+						);
+
+			$order=new Order('new',$order_data);
+			$order_key=$order->id;
+			$order_exist=true;
+		//exit;
+			if ($order->error)
+				exit('error');
+
+
+			//$ship_to=$customer_->get_ship_to();
+
+			//$order-> update_ship_to($ship_to->id);
+		}
+		$_REQUEST['id']=$order_key;
+		
+	}
+	
+	edit_new_order();
 }
 
 function edit_new_order() {
@@ -370,37 +503,30 @@ function edit_new_order() {
         //$estimated_weight=$quantity*$product->data['Product Gross Weight'];
 
         $data=array(
-                  //'Estimated Weight'=>$estimated_weight,
                   'date'=>date('Y-m-d H:i:s'),
                   'Product Key'=>$product->data['Product Current Key'],
-               
-                  //'gross_amount'=>$gross,
-                  //'discount_amount'=>0,
                   'Metadata'=>'',
                   'qty'=>$quantity,
-                  //'units_per_case'=>$product->data['Product Units Per Case'],
                   'Current Dispatching State'=>'In Process',
-                  'Current Payment State'=>'Waiting Payment',
-
+                  'Current Payment State'=>'Waiting Payment'
               );
 
         $disconted_products=$order->get_discounted_products();
         $order->skip_update_after_individual_transaction=false;
-   //     print_r($data);
-        
         $transaction_data=$order->add_order_transaction($data);
         $new_disconted_products=$order->get_discounted_products();
         foreach($new_disconted_products as $key=>$value) {
             $disconted_products[$key]=$value;
         }
-        //print_r($disconted_products);
 
         $adata=array();
 
         if (count($disconted_products)>0) {
 
             $product_keys=join(',',$disconted_products);
-            $sql=sprintf("select (select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",$order->id,$product_keys);
+            $sql=sprintf("select (select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF   left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",
+                         $order->id,
+                         $product_keys);
 
 
             //print $sql;
@@ -422,10 +548,6 @@ function edit_new_order() {
         }
 
 
-
-
-
-
         $updated_data=array(
                           'order_items_gross'=>$order->get('Items Gross Amount'),
                           'order_items_discount'=>$order->get('Items Discount Amount'),
@@ -436,15 +558,19 @@ function edit_new_order() {
                           'order_credits'=>$order->get('Net Credited Amount'),
                           'order_shipping'=>$order->get('Shipping Net Amount'),
                           'order_total'=>$order->get('Total Amount'),
-
+                          'ordered_products_number'=>$order->get('Number Items'),
                       );
-
+$_SESSION['basket']['total']=$updated_data['order_total'];
+$_SESSION['basket']['items']=$updated_data['ordered_products_number'];
 //print_r($updated_data);
+//print "total: ".$_SESSION['basket']['total'];
+//print " qty: ".$_SESSION['basket']['items'];
 
         $response= array(
                        'state'=>200,
                        'quantity'=>$transaction_data['qty'],
-                       'key'=>$_REQUEST['key'],
+                       'description'=>$product->data['Product XHTML Short Description'],
+                       'key'=>$_REQUEST['id'],
                        'data'=>$updated_data,
                        'to_charge'=>$transaction_data['to_charge'],
                        'discount_data'=>$adata,
@@ -452,7 +578,7 @@ function edit_new_order() {
                        'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
                    );
     } else
-        $response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
+        $response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
     echo json_encode($response);
 
 }
@@ -541,19 +667,11 @@ function transactions_to_process() {
         $store_key=$_SESSION['state']['order']['store_key'];
 
 
-    $conf=$_SESSION['state']['products']['table'];
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (!is_numeric($start_from))
-        $start_from=0;
+    $conf=$_SESSION['state']['order']['products'];
 
-    if (isset( $_REQUEST['nr'])) {
-        $number_results=$_REQUEST['nr'];
 
-    }      else
-        $number_results=$conf['nr'];
+//print_r($conf);
+
 
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
@@ -585,59 +703,58 @@ function transactions_to_process() {
         $tableid=0;
 
 
-    if (isset( $_REQUEST['family_code']))
-        $family_code=$_REQUEST['family_code'];
+    if (isset( $_REQUEST['display']))
+        $display=$_REQUEST['display'];
     else
-        $family_code=$conf['family_code'];
+        $display=$conf['display'];
 
 
-    if (isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_all'])  ) {
 
-        if ($_REQUEST['show_all']=='yes')
-            $show_all=true;
-        else
-            $show_all=false;
-        $_SESSION['state']['order']['show_all']=$show_all;
+
+    if (isset( $_REQUEST['sf'])) {
+        $start_from=$_REQUEST['sf'];
+        $_SESSION['state']['order'][$display]['sf']=$start_from;
+
     } else
-        $show_all=$_SESSION['state']['order']['show_all'];
+        $start_from=$_SESSION['state']['order'][$display]['sf'];
 
 
-    $_SESSION['state']['products']['table']['family_code']=$family_code;
-    $_SESSION['state']['products']['table']['order']=$order;
-    $_SESSION['state']['products']['table']['order_dir']=$order_direction;
-    $_SESSION['state']['products']['table']['nr']=$number_results;
-    $_SESSION['state']['products']['table']['sf']=$start_from;
-    $_SESSION['state']['products']['table']['f_field']=$f_field;
-    $_SESSION['state']['products']['table']['f_value']=$f_value;
 
-
-    if (!$show_all) {
-        $start_from=0;
-        $number_results=1000;
-
-    }
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+        $_SESSION['state']['order'][$display]['nr']=$number_results;
+    }      else
+        $number_results=$_SESSION['state']['order'][$display]['nr'];
 
 
 
 
 
-    if (!$show_all) {
+    $_SESSION['state']['order']['products']['order']=$order;
+    $_SESSION['state']['order']['products']['order_dir']=$order_direction;
 
-        $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
-        $where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-        $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`';
-    } else {
+    $_SESSION['state']['order']['products']['f_field']=$f_field;
+    $_SESSION['state']['order']['products']['f_value']=$f_value;
+    $_SESSION['state']['order']['products']['display']=$display;
+
+
+
+    $store=new Store($store_key);
+
+
+
+    if ($display=='all_products') {
         $table=' `Product Dimension` P ';
         $where=sprintf('where `Product Store Key`=%d  and `Product Record Type`="Normal"    and `Product Main Type` in ("Private","Sale") ',$store_key);
-        $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info` ',$order_id,$order_id,$order_id,$order_id);
-
-
+        $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,"" as `Current Dispatching State` ',$order_id,$order_id,$order_id,$order_id);
+    } else if ($display=='ordered_products') {
+        $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
+        $where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
+        $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+    } else {
+        exit();
     }
 
-    if ($family_code!='') {
-
-        $where.=sprintf(" and `Product Family Code`=%s ",prepare_mysql($family_code));
-    }
 
 
 
@@ -653,7 +770,7 @@ function transactions_to_process() {
     $sql="select count(*) as total from $table   $where $wheref   ";
 
     // print_r($conf);exit;
- //  print $sql;
+//  print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -785,12 +902,68 @@ function transactions_to_process() {
             $deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
         }
 
+switch ($row['Current Dispatching State']) {
+    case 'In Process by Customer':
+        $dispatching_status=_('In Process by Customer');
+        break;
+   case 'Submitted by Customer':
+        $dispatching_status=_('Submitted by Customer');
+        break;
+     case 'In Process':
+        $dispatching_status=_('In Process');
+        break;      
+      case 'Ready to Pick':
+        $dispatching_status=_('Ready to Pick');
+        break;
+           case 'Picking':
+        $dispatching_status=_('Picking');
+        break;
+           case 'Ready to Pack':
+        $dispatching_status=_('Ready to Pack');
+        break;
+           case 'Ready to Ship':
+        $dispatching_status=_('Ready to Ship');
+        break;
+           case 'Dispatched':
+        $dispatching_status=_('Dispatched');
+        break;
+      case 'Unknown':
+        $dispatching_status=_('Unknown');
+        break;
+   case 'Packing':
+        $dispatching_status=_('Packing');
+        break;
+        
+     case 'Cancelled':
+        $dispatching_status=_('Cancelled');
+        break;      
+      case 'No Picked Due Out of Stock':
+        $dispatching_status=_('No Picked Due Out of Stock');
+        break;
+           case 'No Picked Due No Authorised':
+        $dispatching_status=_('No Picked Due No Authorised');
+        break;
+           case 'No Picked Due Not Found':
+        $dispatching_status=_('No Picked Due Not Found');
+        break;
+           case 'No Picked Due Other':
+        $dispatching_status=_('No Picked Due Other');
+        break;
+           case 'Suspended':
+        $dispatching_status=_('Suspended');
+        break;
+   default:
+        $dispatching_status=$row['Current Dispatching State'];
+        break;
+}
+
+
         $code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
         $adata[]=array(
                      'pid'=>$row['Product ID'],
                      'code'=>$code,
                      'description'=>$row['Product XHTML Short Description'].$deal_info,
-                     'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case']).' '._('ea'),
+                     'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea'),
                      'family'=>$row['Product Family Name'],
                      'dept'=>$row['Product Main Department Name'],
                      'expcode'=>$row['Product Tariff Code'],
@@ -807,8 +980,9 @@ function transactions_to_process() {
                      'add'=>'+',
                      'remove'=>'-',
                      //'change'=>'<span onClick="quick_change("+",'.$row['Product ID'].')" class="quick_add">+</span> <span class="quick_add" onClick="quick_change("-",'.$row['Product ID'].')" >-</span>',
-                     'to_charge'=>'<span onClick="change_discount(this)">'.money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']).'</span>'
-
+                     'to_charge'=>'<span onClick="change_discount(this)">'.money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']).'</span>',
+                     'dispatching_status'=>$dispatching_status
+                        
                  );
 
 
@@ -2245,4 +2419,190 @@ function delete_dn_list($data) {
 
 
 }
+
+function import_transactions_mals_e($_data) {
+    $transactions_raw_data=$_data['values']['data'];
+    $lines = preg_split ( '/\n/', $transactions_raw_data );
+
+    $products_data = array ();
+
+
+    foreach ( $lines as $line ) {
+
+        $line = _trim ( $line );
+
+
+        if (preg_match('/^.+ \: \d+ \: (\d|\.)+/',$line)) {
+            $line_components=preg_split('/\:/',$line);
+            if (count($line_components)==3) {
+                if (preg_match('/^[a-z0-9\-\&\/]+\s/i',$line_components[0],$match)) {
+
+                    $product_code=_trim($match[0]);
+                    $quantity=(float)  $line_components[1];
+                    if (array_key_exists($product_code,$products_data))
+                        $products_data[$product_code]=$quantity+$products_data[$product_code];
+                    else
+                        $products_data[$product_code]=$quantity;
+                }
+            }
+        }
+
+    }
+
+   
+
+
+
+    $order_key=$_data['order_key'];
+    $order=new Order($order_key);
+
+
+    foreach($products_data as $product_code=>$quantity) {
+
+
+
+        if (is_numeric($quantity) and $quantity>=0) {
+
+            $product=new Product('code_store',$product_code,$order->data['Order Store Key']);
+            $product->data['Product Code'];
+            
+            if ($product->id and ($product->data['Product Record Type']=='Normal'  ) ) {
+
+                $data=array(
+                          'date'=>date('Y-m-d H:i:s'),
+                          'Product Key'=>$product->data['Product Current Key'],
+                          'Metadata'=>'',
+                          'qty'=>$quantity,
+                          'Current Dispatching State'=>'In Process',
+                          'Current Payment State'=>'Waiting Payment'
+                      );
+
+
+                $order->skip_update_after_individual_transaction=true;
+                $order->add_order_transaction($data);
+
+            }
+        }
+    }
+
+    $order->update_discounts();
+    $order->update_item_totals_from_order_transactions();
+
+    $order->update_shipping();
+    $order->update_charges();
+    $order->update_item_totals_from_order_transactions();
+
+    $order->update_no_normal_totals();
+    $order->update_totals_from_order_transactions();
+    $order->update_number_items();
+
+
+
+    $updated_data=array(
+                      'order_items_gross'=>$order->get('Items Gross Amount'),
+                      'order_items_discount'=>$order->get('Items Discount Amount'),
+                      'order_items_net'=>$order->get('Items Net Amount'),
+                      'order_net'=>$order->get('Total Net Amount'),
+                      'order_tax'=>$order->get('Total Tax Amount'),
+                      'order_charges'=>$order->get('Charges Net Amount'),
+                      'order_credits'=>$order->get('Net Credited Amount'),
+                      'order_shipping'=>$order->get('Shipping Net Amount'),
+                      'order_total'=>$order->get('Total Amount'),
+                      'ordered_products_number'=>$order->get('Number Items'),
+                  );
+
+    $response= array(
+                   'state'=>200,
+                   'data'=>$updated_data,
+               );
+
+ echo json_encode($response);
+
+
+
+}
+
+function update_order(){
+	$order_key=$_REQUEST['order_key'];
+	
+	if($order_key==0){
+		$response= array(
+						   'state'=>200
+					   );
+
+		echo json_encode($response);
+		exit;
+	}
+	$order=new Order($order_key);
+        $updated_data=array(
+
+                          'order_total'=>$order->get('Total Amount'),
+                          'ordered_products_number'=>$order->get('Number Items'),
+                      );
+$_SESSION['basket']['total']=$updated_data['order_total'];
+$_SESSION['basket']['items']=$updated_data['ordered_products_number'];
+//print_r($updated_data);
+//print "total: ".$_SESSION['basket']['total'];
+//print " qty: ".$_SESSION['basket']['items'];
+
+        $response= array(
+                       'state'=>200,
+                       'data'=>$updated_data
+
+                   );
+
+    echo json_encode($response);
+}
+
+function cc_payment($data){
+	$data=$data['json_values'];
+	require_once 'paypal/DoDirectPayment.php';
+	
+	
+	//print $data['firstName'];exit;
+	//print_r($data);	exit;
+	// Set request-specific fields.
+	$paymentType = urlencode('Authorization');				// or 'Sale'
+	$firstName = urlencode($data['firstName']);
+	$lastName = urlencode($data['lastName']);
+	$creditCardType = urlencode($data['CCType']);
+	$creditCardNumber = urlencode($data['CCNo']);
+	$expDateMonth = $data['CCExpiresMonth'];
+	// Month must be padded with leading zero
+	$padDateMonth = urlencode(str_pad($expDateMonth, 2, '0', STR_PAD_LEFT));
+
+	$expDateYear = urlencode($data['CCExpiresYear']);
+	$cvv2Number = urlencode($data['CVV2']);
+	$address1 = urlencode($data['address1']);
+	$address2 = urlencode($data['address2']);
+	$city = urlencode($data['city']);
+	$state = urlencode($data['state']);
+	$zip = urlencode($data['zip']);
+	$country = urlencode($data['country']);				// US or other valid country code
+	$amount = urlencode('10');
+	$currencyID = urlencode('GBP');							// or other currency ('GBP', 'EUR', 'JPY', 'CAD', 'AUD')
+
+	// Add request-specific fields to the request string.
+	$nvpStr =	"&PAYMENTACTION=$paymentType&AMT=$amount&CREDITCARDTYPE=$creditCardType&ACCT=$creditCardNumber".
+				"&EXPDATE=$padDateMonth$expDateYear&CVV2=$cvv2Number&FIRSTNAME=$firstName&LASTNAME=$lastName".
+				"&STREET=$address1&CITY=$city&STATE=$state&ZIP=$zip&COUNTRYCODE=$country&CURRENCYCODE=$currencyID";
+
+	// Execute the API operation; see the PPHttpPost function above.
+	$httpParsedResponseAr = PPHttpPost('DoDirectPayment', $nvpStr);
+
+	
+	if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
+//		exit('Direct Payment Completed Successfully: '.print_r($httpParsedResponseAr, true));
+		$httpParsedResponseAr['state']=200;
+	} else  {
+		//exit('DoDirectPayment failed: ' . print_r($httpParsedResponseAr, true));
+		$httpParsedResponseAr['state']=400;
+	}
+	
+	$response=$httpParsedResponseAr;
+	
+	echo json_encode($response);
+}
+
+
 ?>

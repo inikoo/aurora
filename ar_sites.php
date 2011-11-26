@@ -195,15 +195,15 @@ function list_pages() {
     $elements=$conf['elements'];
 
 
-    if (isset( $_REQUEST['elements_products'])) {
-        $elements['Product Description']=$_REQUEST['elements_products'];
+    if (isset( $_REQUEST['elements_product_description'])) {
+        $elements['ProductDescription']=$_REQUEST['elements_product_description'];
 
     }
-    if (isset( $_REQUEST['elements_families'])) {
-        $elements['Family Catalogue']=$_REQUEST['elements_families'];
+    if (isset( $_REQUEST['elements_family_catalogue'])) {
+        $elements['FamilyCatalogue']=$_REQUEST['elements_family_catalogue'];
     }
-    if (isset( $_REQUEST['elements_departments'])) {
-        $elements['Department Catalogue']=$_REQUEST['elements_departments'];
+    if (isset( $_REQUEST['elements_department_catalogue'])) {
+        $elements['DepartmentCatalogue']=$_REQUEST['elements_department_catalogue'];
     }
 
 
@@ -267,8 +267,12 @@ function list_pages() {
                 $_key="'Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'";
                 $_elements.=','.$_key;
 
-            } else {
-                $_elements.=','.prepare_mysql($_key);
+            } elseif($_key=='ProductDescription') {
+                $_elements.=",'Product Description'";
+            } elseif($_key=='FamilyCatalogue') {
+                $_elements.=",'Family Catalogue'";
+            } elseif($_key=='DepartmentCatalogue') {
+                $_elements.=",'Department Catalogue'";
             }
         }
     }
@@ -276,6 +280,9 @@ function list_pages() {
     if ($_elements=='') {
         $where.=' and false' ;
     } else {
+    
+    
+    
         $where.=' and `Page Store Section` in ('.$_elements.')' ;
     }
 
@@ -325,28 +332,17 @@ function list_pages() {
     switch ($f_field) {
     case('code'):
         if ($total==0 and $filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with code")." <b>$f_value</b>* ";
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with code")." <b>$f_value</b>* ";
         elseif($filtered>0)
-        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('suppliers with code')." <b>$f_value</b>*)";
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with code')." <b>$f_value</b>*)";
         break;
     case('name'):
         if ($total==0 and $filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with name")." <b>$f_value</b>* ";
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with name")." <b>$f_value</b>* ";
         elseif($filtered>0)
-        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('suppliers with name')." <b>$f_value</b>*)";
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with name')." <b>$f_value</b>*)";
         break;
-    case('low'):
-        if ($total==0 and $filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with more than ")." <b>".number($f_value)."</b> "._('low stock products');
-        elseif($filtered>0)
-        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('low stock products').")";
-        break;
-    case('outofstock'):
-        if ($total==0 and $filtered>0)
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with more than ")." <b>".number($f_value)."</b> "._('out of stock products');
-        elseif($filtered>0)
-        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('out of stock products').")";
-        break;
+
     }
 
 
@@ -360,7 +356,6 @@ function list_pages() {
     $order='`Supplier Main Location`';
     elseif($order=='email')
     $order='`Supplier Main XHTML Email`';
-
     elseif($order=='sales') {
 
         switch ($period) {
@@ -405,7 +400,6 @@ function list_pages() {
 
 
     }
-
     elseif($order=='pending_pos') {
         $order='`Supplier Open Purchase Orders`';
 
@@ -490,7 +484,6 @@ function list_pages() {
             break;
         }
     }
-
     elseif($order=='profit_after_storing') {
 
         switch ($period) {
@@ -531,7 +524,6 @@ function list_pages() {
             break;
         }
     }
-
     elseif($order=='profit') {
 
         switch ($period) {
@@ -572,6 +564,9 @@ function list_pages() {
             break;
         }
     }
+    else{
+       $order='`Page Code`';
+    }
     //print $order;
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
@@ -583,6 +578,7 @@ function list_pages() {
 
     $result=mysql_query($sql);
     $data=array();
+   // print $sql;
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
         $code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";

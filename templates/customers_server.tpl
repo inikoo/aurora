@@ -1,47 +1,45 @@
 {include file='header.tpl'}
-<div id="bd" >
- 
+<div id="bd" style="padding:0px">
+ <div style="padding:0 20px">
 {include file='contacts_navigation.tpl'}
-<div  style="clear:left;"> 
-  <span class="branch">{t}Customers{/t}</span>
+<div class="branch"> 
+  <span >{t}Customers{/t}</span>
 </div>
-  
-  <div style="clear:left;">
-    <h1>{t}Customer Corporate Overview{/t}</h1>
-  </div>
+<div class="top_page_menu">
+<div class="buttons" style="float:right">
+</div>
+<div class="buttons" style="float:left">
+<button  onclick="window.location='customers_server_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+</div>
+<div style="clear:both"></div>
+</div>
+</div>
 
 
+<div style="padding:0px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $type=='contacts_with_orders'}selected{/if}"  id="contacts_with_orders">  <span> {t}Contacts with Orders{/t}</span></span></li>
+    <li> <span class="item {if $type=='all_contacts'}selected{/if}"  id="all_contacts">  <span> {t}All Contacts{/t}</span></span></li>
+
+  </ul>
+
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+</div>
 
 
+<div style="padding:0 20px">
 
-<div class="data_table" style="clear:both">
+<div id="block_contacts_with_orders" style="clear:both;margin:10px 0 40px 0">
+
     <span class="clean_table_title">{t}Customers per Store{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 
-  <div  style="font-size:90%">
-            <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='contacts_with_orders'}selected{/if}"  id="contacts_with_orders"   >{t}Contacts with Orders{/t}</span>
-          <span style="float:right;margin-left:20px" class="table_type  state_details {if $type=='all_contacts'}selected{/if}"  id="all_contacts"   >{t}All Contacts{/t}</span>
-
-
-	
-
-     </div>
-
- <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+<div class="table_top_bar" style="margin-bottom:10px"></div>
  
- 
- <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
-
-
-
-<table style="float:left;margin:0 0 0 0px ;padding:0;margin-bottom:10px"  class="options" >
-	
-      </table>
-
-
-
        
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  no_filter=1} 
 <div  id="table0"   class="data_table_container dtable btable with_total"> </div>		
+
+</div>
 </div>
 </div> 
 

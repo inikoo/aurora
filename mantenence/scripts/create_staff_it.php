@@ -14,7 +14,7 @@ include_once('../../class.CompanyPosition.php');
 include_once('../../class.TaxCategory.php');
 include_once('../../class.Charge.php');
 include_once('../../class.Staff.php');
-include_once('../../class.Campaign.php');
+include_once('../../class.Deal.php');
 include_once('../../class.Shipping.php');
 
 error_reporting(E_ALL);

@@ -24,6 +24,9 @@ $avialable_locales=array(
 			       'Flag'=>'de',
 			       'Language Code'=>'de'
 			       )
-
+ ,array('Locale'=>'de_DE.UTF-8',
+			       'Flag'=>'sk',
+			       'Language Code'=>'sk'
+			       )
 			 );	
 ?>

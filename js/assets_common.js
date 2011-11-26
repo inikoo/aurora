@@ -1,6 +1,9 @@
 
    function  change_product_view(e,data){	
 	tipo=this.id;
+	
+	
+	
 	if(tipo=='product_general')tipo='general';
     else if(tipo=='product_sales')tipo='sales';
     else if(tipo=='product_stock')tipo='stock';
@@ -68,7 +71,7 @@
 
 
 
-    Dom.removeClass(Dom.getElementsByClassName('option','td' , this.parentNode),'selected')
+    Dom.removeClass(Dom.getElementsByClassName('table_option','button' , this.parentNode),'selected')
     Dom.addClass(this,"selected");	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+data.parent+'-products-view&value=' + escape(tipo) ,{});
 	
@@ -128,7 +131,7 @@ function  change_family_view(e,data){
 	    }
 	   
 
-    Dom.removeClass(Dom.getElementsByClassName('option','td' , this.parentNode),'selected')
+    Dom.removeClass(Dom.getElementsByClassName('table_option','button' , this.parentNode),'selected')
     Dom.addClass(this,"selected");	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+data.parent+'-families-view&value=' + escape(tipo) ,{});
   
@@ -226,7 +229,7 @@ function change_department_view(e,data){
 	    table.showColumn('outofstock');
 	}
 
-   Dom.removeClass(Dom.getElementsByClassName('option','td' , this.parentNode),'selected')
+   Dom.removeClass(Dom.getElementsByClassName('table_option','button' , this.parentNode),'selected')
     Dom.addClass(this,"selected");	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+data.parent+'-departments-view&value=' + escape(tipo) ,{success:function(o) {}});
   

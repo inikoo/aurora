@@ -10,15 +10,8 @@ var Dom   = YAHOO.util.Dom;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-
-
-	     //START OF THE TABLE=========================================================================================================================
-
 		var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
-
-
-
 	    var CustomersColumnDefs = [
 				       {key:"code", label:"<?php echo _('Code')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Store Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -47,11 +40,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -95,7 +89,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 		    
 		    
 	    this.table0.view='<?php echo$_SESSION['state']['stores']['customers']['view']?>';

@@ -88,7 +88,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					];
 		      
 		      
-		      this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=withproduct&tableid="+tableid);
+		      this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=withproduct&product_pid="+Dom.get('product_pid').value+"&tableid="+tableid);
+		     // alert("ar_orders.php?tipo=withproduct&product_pid="+Dom.get('product_pid').value+"&tableid="+tableid)
+		      
 		      this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource0.connXhrMode = "queueRequests";
 		      this.dataSource0.responseSchema = {
@@ -145,7 +147,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		      
-		    
+		    	    this.table0.filter={key:'<?php echo$_SESSION['state']['product']['orders']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['orders']['f_value']?>'};
+
 		      
 		   
 		      var tableid=1;
@@ -162,19 +165,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    
 		      
 		      this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=customers_who_order_product&product_pid="+Dom.get('product_pid').value+"&tableid="+tableid);
-		 this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	//alert("ar_assets.php?tipo=customers_who_order_product&product_pid="+Dom.get('product_pid').value+"&tableid="+tableid)
+	this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource1.connXhrMode = "queueRequests";
 		      this.dataSource1.responseSchema = {
 			  resultsList: "resultset.data", 
 			  metaFields: {
-			       rtext:"resultset.rtext",
+			   rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"			
+		    totalRecords: "resultset.total_records"
 			   
 			  },
 			  
@@ -210,7 +214,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		  
+		  		    	    this.table1.filter={key:'<?php echo$_SESSION['state']['product']['customers']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['customers']['f_value']?>'};
+
 
  var tableid=3;
 		      var tableDivEL="table"+tableid;
@@ -234,14 +239,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			  resultsList: "resultset.data", 
 			  metaFields: {
 			  
-			      rtext:"resultset.rtext",
+			   rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"			
+		    totalRecords: "resultset.total_records"
 			  
 			  },
 			  
@@ -301,6 +306,21 @@ var manual_check=function(){
 
 function init(){
  init_search('products_store');
+
+
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+   oACDS.table_id=0;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+
+
+ var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+   oACDS1.table_id=1;
+ var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ oAutoComp1.minQueryLength = 0; 
+
 
     Event.addListener(['details','customers','orders','timeline','sales', 'web_site'], "click",change_block);
 

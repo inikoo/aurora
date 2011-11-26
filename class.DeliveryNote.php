@@ -943,20 +943,20 @@ class DeliveryNote extends DB_Table {
                 $locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
 
 
-                 if($row['Supplier Metadata']!=''){
-                    $supplier_metadata=unserialize($row['Supplier Metadata']); 
-                    if(!is_array($supplier_metadata))
-                         $supplier_metadata=array();
-                 }else{
+                if ($row['Supplier Metadata']!='') {
+                    $supplier_metadata=unserialize($row['Supplier Metadata']);
+                    if (!is_array($supplier_metadata))
+                        $supplier_metadata=array();
+                } else {
                     $supplier_metadata=array();
-                 
-                 }
+
+                }
 
 
                 if ( array_key_exists($part->sku,$supplier_metadata)  and $supplier_metadata[$part->sku] ) {
                     $supplier_product_pid=$supplier_metadata[$part->sku];
-               //    print "$supplier_product_pid\n";
-                    
+                    //    print "$supplier_product_pid\n";
+
                 } else {
 
                     $supplier_products=$part->get_supplier_products($date);
@@ -1636,12 +1636,18 @@ class DeliveryNote extends DB_Table {
                 $state='Packer Assigned';
             else if ($this->data['Delivery Note State']=='Picked' or  $this->data['Delivery Note State']=='Picking' or $this->data['Delivery Note State']=='Ready to be Picked')
                 $state='Picked';
+            else{
+               $this->error=true;
+                $this->msg="unknown error in update_picking_percentage\n";
+                //print  $this->msg;
+                return;
+            }
 
         } else {
             if ($this->data['Delivery Note State']=='Picking')
                 $state='Picking';
-            elseif ($this->data['Delivery Note State']=='Packing')
-            $state='Piking & Packing';
+            else if ($this->data['Delivery Note State']=='Packing')
+                $state='Piking & Packing';
             else if ($this->data['Delivery Note State']=='Packer Assigned')
                 $state='Picking & Packer Assigned';
             else if ($this->data['Delivery Note State']=='Picked')
@@ -1783,7 +1789,10 @@ class DeliveryNote extends DB_Table {
             if ($this->data['Delivery Note State']=='Packing' or $this->data['Delivery Note State']=='Picked' ) {
                 $state='Packed';
             } else {
-                exit($this->data['Delivery Note State']." <-- error in update_packing_percentage\n");
+               $this->error=true;
+                $this->msg="unknown error in update_packing_percentage\n";
+                //print  $this->msg;
+                return;
             }
 
         } else {

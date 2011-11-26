@@ -489,7 +489,7 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false) 
 
  Parameter:
  amount - *string* String to be parsed
- currency - *string* Currency  [£|¥|€|(3 Letter Currency Code)|false=$myconf['currency_code'] ]
+ currency - *string* Currency  [£|¥|€|(3 Letter Currency Code)|false=$corporate_currency ]
 
 
  Return:
@@ -513,7 +513,7 @@ function parse_money($amount,$currency=false) {
     $locale_info = localeconv();
 
     if (!$currency)
-        $currency=$myconf['currency_code'];
+        $currency=$corporate_currency;
     else
         $currency=$currency;
     if (preg_match('/$|£|¥|€|zł/i',$amount,$match)) {
@@ -725,124 +725,7 @@ function ft_dates($from,$to,$output='phpdate',$mysql_date='date') {
 
 }
 
-function ip() {
-    global $REMOTE_ADDR;
-    global $HTTP_X_FORWARDED_FOR, $HTTP_X_FORWARDED, $HTTP_FORWARDED_FOR, $HTTP_FORWARDED;
-    global $HTTP_VIA, $HTTP_X_COMING_FROM, $HTTP_COMING_FROM;
-    // Get some server/environment variables values
-    if (empty($REMOTE_ADDR)) {
-        if (!empty($_SERVER) && isset($_SERVER['REMOTE_ADDR'])) {
-            $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
-        } else if (!empty($_ENV) && isset($_ENV['REMOTE_ADDR'])) {
-            $REMOTE_ADDR = $_ENV['REMOTE_ADDR'];
-        } else if (@getenv('REMOTE_ADDR')) {
-            $REMOTE_ADDR = getenv('REMOTE_ADDR');
-        }
-    } // end if
-    if (empty($HTTP_X_FORWARDED_FOR)) {
-        if (!empty($_SERVER) && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $HTTP_X_FORWARDED_FOR = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else if (!empty($_ENV) && isset($_ENV['HTTP_X_FORWARDED_FOR'])) {
-            $HTTP_X_FORWARDED_FOR = $_ENV['HTTP_X_FORWARDED_FOR'];
-        } else if (@getenv('HTTP_X_FORWARDED_FOR')) {
-            $HTTP_X_FORWARDED_FOR = getenv('HTTP_X_FORWARDED_FOR');
-        }
-    } // end if
-    if (empty($HTTP_X_FORWARDED)) {
-        if (!empty($_SERVER) && isset($_SERVER['HTTP_X_FORWARDED'])) {
-            $HTTP_X_FORWARDED = $_SERVER['HTTP_X_FORWARDED'];
-        } else if (!empty($_ENV) && isset($_ENV['HTTP_X_FORWARDED'])) {
-            $HTTP_X_FORWARDED = $_ENV['HTTP_X_FORWARDED'];
-        } else if (@getenv('HTTP_X_FORWARDED')) {
-            $HTTP_X_FORWARDED = getenv('HTTP_X_FORWARDED');
-        }
-    } // end if
-    if (empty($HTTP_FORWARDED_FOR)) {
-        if (!empty($_SERVER) && isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-            $HTTP_FORWARDED_FOR = $_SERVER['HTTP_FORWARDED_FOR'];
-        } else if (!empty($_ENV) && isset($_ENV['HTTP_FORWARDED_FOR'])) {
-            $HTTP_FORWARDED_FOR = $_ENV['HTTP_FORWARDED_FOR'];
-        } else if (@getenv('HTTP_FORWARDED_FOR')) {
-            $HTTP_FORWARDED_FOR = getenv('HTTP_FORWARDED_FOR');
-        }
-    } // end if
-    if (empty($HTTP_FORWARDED)) {
-        if (!empty($_SERVER) && isset($_SERVER['HTTP_FORWARDED'])) {
-            $HTTP_FORWARDED = $_SERVER['HTTP_FORWARDED'];
-        } else if (!empty($_ENV) && isset($_ENV['HTTP_FORWARDED'])) {
-            $HTTP_FORWARDED = $_ENV['HTTP_FORWARDED'];
-        } else if (@getenv('HTTP_FORWARDED')) {
-            $HTTP_FORWARDED = getenv('HTTP_FORWARDED');
-        }
-    } // end if
-    if (empty($HTTP_VIA)) {
-        if (!empty($_SERVER) && isset($_SERVER['HTTP_VIA'])) {
-            $HTTP_VIA = $_SERVER['HTTP_VIA'];
-        } else if (!empty($_ENV) && isset($_ENV['HTTP_VIA'])) {
-            $HTTP_VIA = $_ENV['HTTP_VIA'];
-        } else if (@getenv('HTTP_VIA')) {
-            $HTTP_VIA = getenv('HTTP_VIA');
-        }
-    } // end if
-    if (empty($HTTP_X_COMING_FROM)) {
-        if (!empty($_SERVER) && isset($_SERVER['HTTP_X_COMING_FROM'])) {
-            $HTTP_X_COMING_FROM = $_SERVER['HTTP_X_COMING_FROM'];
-        } else if (!empty($_ENV) && isset($_ENV['HTTP_X_COMING_FROM'])) {
-            $HTTP_X_COMING_FROM = $_ENV['HTTP_X_COMING_FROM'];
-        } else if (@getenv('HTTP_X_COMING_FROM')) {
-            $HTTP_X_COMING_FROM = getenv('HTTP_X_COMING_FROM');
-        }
-    } // end if
-    if (empty($HTTP_COMING_FROM)) {
-        if (!empty($_SERVER) && isset($_SERVER['HTTP_COMING_FROM'])) {
-            $HTTP_COMING_FROM = $_SERVER['HTTP_COMING_FROM'];
-        } else if (!empty($_ENV) && isset($_ENV['HTTP_COMING_FROM'])) {
-            $HTTP_COMING_FROM = $_ENV['HTTP_COMING_FROM'];
-        } else if (@getenv('HTTP_COMING_FROM')) {
-            $HTTP_COMING_FROM = getenv('HTTP_COMING_FROM');
-        }
-    } // end if
 
-    // Gets the default ip sent by the user
-    if (!empty($REMOTE_ADDR)) {
-        $direct_ip = $REMOTE_ADDR;
-    }
-
-    // Gets the proxy ip sent by the user
-    $proxy_ip	 = '';
-    if (!empty($HTTP_X_FORWARDED_FOR)) {
-        $proxy_ip = $HTTP_X_FORWARDED_FOR;
-    } else if (!empty($HTTP_X_FORWARDED)) {
-        $proxy_ip = $HTTP_X_FORWARDED;
-    } else if (!empty($HTTP_FORWARDED_FOR)) {
-        $proxy_ip = $HTTP_FORWARDED_FOR;
-    } else if (!empty($HTTP_FORWARDED)) {
-        $proxy_ip = $HTTP_FORWARDED;
-    } else if (!empty($HTTP_VIA)) {
-        $proxy_ip = $HTTP_VIA;
-    } else if (!empty($HTTP_X_COMING_FROM)) {
-        $proxy_ip = $HTTP_X_COMING_FROM;
-    } else if (!empty($HTTP_COMING_FROM)) {
-        $proxy_ip = $HTTP_COMING_FROM;
-    } // end if... else if...
-
-    // Returns the true IP if it has been found, else FALSE
-    if (empty($proxy_ip)) {
-        // True IP without proxy
-
-        return $direct_ip;
-    } else {
-        $is_ip = preg_match('|^([0-9]{1,3}\.){3,3}[0-9]{1,3}|', $proxy_ip, $regs);
-        if ($is_ip && (count($regs) > 0)) {
-            // True IP behind a proxy
-            return $regs[0];
-        } else {
-            // Can't define IP: there is a proxy but we don't have
-            // information about the true IP
-            return FALSE;
-        }
-    } // end if... else...
-}
 
 
 
@@ -977,7 +860,9 @@ function customers_awhere($awhere) {
                     'sales_upper'=>'',
                     'sales_option'=>array(),
                     'store_key'=>false,
-                    'order_option'=>array()
+                    'order_option'=>array(),
+                    'order_time_units_since_last_order_qty'=>false,
+                    'order_time_units_since_last_order_units'=>false
                 );
 
     //  $awhere=json_decode($awhere,TRUE);
@@ -1057,7 +942,7 @@ function customers_awhere($awhere) {
 
     */
 
-    $date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Invoice Date`','only_dates');
+    $date_interval_when_ordered=prepare_mysql_dates($where_data['ordered_from'],$where_data['ordered_to'],'`Order Date`','only_dates');
     if ($date_interval_when_ordered['mysql']) {
         $use_otf=true;
     }
@@ -1189,6 +1074,23 @@ function customers_awhere($awhere) {
         $where.="and ($customers_which_where)";
     }
 
+//print_r($where_data);
+if($where_data['order_time_units_since_last_order_qty']>0){
+
+switch ($where_data['order_time_units_since_last_order_units']) {
+    case 'days':
+       $where.=sprintf(' and Date(`Customer Last Order Date`)=DATE(DATE_SUB(NOW(), INTERVAL %d day)) ',$where_data['order_time_units_since_last_order_qty']);
+        break;
+    default:
+    
+        break;
+}
+
+}
+    
+
+
+
     $invoice_option_where='';
     foreach($where_data['invoice_option'] as $invoice_option) {
         switch ($invoice_option) {
@@ -1231,7 +1133,17 @@ function customers_awhere($awhere) {
             break;
         }
     }
+    
+    
+    
+
+    
     $order_option_where=preg_replace('/^\s*and/','',$order_option_where);
+
+
+
+
+
 
     if ($order_option_where!='') {
         $where.="and ($order_option_where)";
@@ -1257,6 +1169,10 @@ function customers_awhere($awhere) {
         }
     }
     $sales_option_where=preg_replace('/^\s*and/','',$sales_option_where);
+
+
+
+
 
     if ($sales_option_where!='') {
         $where.="and ($sales_option_where)";

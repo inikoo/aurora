@@ -1,6 +1,18 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='users_navigation.tpl'}
+<div  class="branch"> 
+<span><a  href="users.php">{t}Users{/t}</a> &rarr; <a href="users_staff.php">{t}Staff Users{/t}</a> &rarr; {t}Editing Staff Users{/t}</span>
+</div>
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+      
+    </div>
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='users_staff.php'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
+        </div>
+    <div style="clear:both"></div>
+</div>
 
     
     <div class="data_table" >

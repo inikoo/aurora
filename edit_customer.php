@@ -15,6 +15,7 @@
 include_once('common.php');
 include_once('class.Customer.php');
 include_once('class.Category.php');
+include_once('duplicate_warning.php');
 
 if (!$user->can_view('customers')) {
     header('Location: index.php');
@@ -44,7 +45,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
-//print_r($customer);
+
 
 if(!in_array($customer->data['Customer Store Key'],$user->stores)){
 header('Location: customers.php?msg=forbidden');
@@ -73,7 +74,9 @@ $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
-
+$number_of_sites=$store->get_active_sites_keys();
+$no_sites=count($number_of_sites[$customer->data['Customer Store Key']]);
+$smarty->assign('no_of_sites',$no_sites);
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -89,7 +92,7 @@ $css_files=array(
                'container.css',
                'table.css'
            );
-include_once('Theme.php');
+$css_files[]='theme.css.php';
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
@@ -107,6 +110,7 @@ $js_files=array(
             
                    'edit_address.js.php',
               'edit_delivery_address_common.js.php',
+			  'edit_billing_address_common.js.php',
               'js/edit_common.js',
               'js/validate_telecom.js',
 			  'js/aes.js',
@@ -190,7 +194,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'
 $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Customer').' &#8617;');
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('other_email_login_handle',$customer->get_other_email_login_handle());
 list($site_customer, $login_stat)=$customer->is_user_customer($customer_id);
 
@@ -252,7 +256,110 @@ $smarty->assign('scope','customer');
 $smarty->assign('scope_key',$customer->id);
 
 
+if (isset($_REQUEST['p'])) {
 
+        $smarty->assign('parent_list',$_REQUEST['p']);
+
+
+    if ($_REQUEST['p']=='cs') {
+
+        $order=$_SESSION['state']['customers']['table']['order'];
+        $order_label=$order;
+        if ($order=='name') {
+            $order='`Customer File As`';
+            $order_label=_('Name');
+        }
+        elseif($order=='id') {
+            $order='`Customer Key`';
+            $order_label=_('ID');
+        }
+        elseif($order=='location')
+        $order='`Customer Main Location`';
+        elseif($order=='orders') {
+            $order='`Customer Orders`';
+            $order_label='# '._('Orders');
+        }
+        elseif($order=='email')
+        $order='`Customer Main Plain Email`';
+        elseif($order=='telephone')
+        $order='`Customer Main Plain Telephone`';
+        elseif($order=='last_order')
+        $order='`Customer Last Order Date`';
+        elseif($order=='contact_name')
+        $order='`Customer Main Contact Name`';
+        elseif($order=='address')
+        $order='`Customer Main Location`';
+        elseif($order=='town')
+        $order='`Customer Main Town`';
+        elseif($order=='postcode')
+        $order='`Customer Main Postal Code`';
+        elseif($order=='region')
+        $order='`Customer Main Country First Division`';
+        elseif($order=='country')
+        $order='`Customer Main Country`';
+        //  elseif($order=='ship_address')
+        //  $order='`customer main ship to header`';
+        elseif($order=='ship_town')
+        $order='`Customer Main Delivery Address Town`';
+        elseif($order=='ship_postcode')
+        $order='`Customer Main Delivery Address Postal Code`';
+        elseif($order=='ship_region')
+        $order='`Customer Main Delivery Address Country Region`';
+        elseif($order=='ship_country')
+        $order='`Customer Main Delivery Address Country`';
+        elseif($order=='net_balance')
+        $order='`Customer Net Balance`';
+        elseif($order=='balance')
+        $order='`Customer Outstanding Net Balance`';
+        elseif($order=='total_profit')
+        $order='`Customer Profit`';
+        elseif($order=='total_payments')
+        $order='`Customer Net Payments`';
+        elseif($order=='top_profits')
+        $order='`Customer Profits Top Percentage`';
+        elseif($order=='top_balance')
+        $order='`Customer Balance Top Percentage`';
+        elseif($order=='top_orders')
+        $order='``Customer Orders Top Percentage`';
+        elseif($order=='top_invoices')
+        $order='``Customer Invoices Top Percentage`';
+        elseif($order=='total_refunds')
+        $order='`Customer Total Refunds`';
+
+        elseif($order=='activity')
+        $order='`Customer Type by Activity`';
+        else
+            $order='`Customer File As`';
+
+        $_order=preg_replace('/`/','',$order);
+        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key` in (%s)  and %s < %s  order by %s desc  limit 1",join(',',$user->stores),$order,prepare_mysql($customer->get($_order)),$order);
+
+        $result=mysql_query($sql);
+        if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
+            $prev=array('id'=>0,'name'=>'');
+        mysql_free_result($result);
+
+        $smarty->assign('prev',$prev);
+        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key` in (%s) and  %s>%s  order by %s   ",join(',',$user->stores),$order,prepare_mysql($customer->get($_order)),$order);
+
+        $result=mysql_query($sql);
+        if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
+            $next=array('id'=>0,'name'=>'');
+        mysql_free_result($result);
+        $smarty->assign('parent_info',"p=cs&");
+
+        $smarty->assign('prev',$prev);
+        $smarty->assign('next',$next);
+       
+        $smarty->assign('parent_url','customers.php?store='.$store->id);
+        $parent_title=$store->data['Store Code'].' '._('Customers').' ('.$order_label.')';
+        $smarty->assign('parent_title',$parent_title);
+
+    }
+
+
+
+}
 
 $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code`  where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
 $result=mysql_query($sql);
@@ -333,9 +440,10 @@ $smarty->assign('main_email_warnings',$main_email_warnings);
 $smarty->assign('main_email_warning',$main_email_warning);
 
 
-
+/*
 $main_telephone_warning=false;
 $main_telephone_warnings='';
+$main_telephone_warning_data=array();
 if ($customer->data['Customer Main Telephone Key']) {
     $main_telephone= new Telecom($customer->data['Customer Main Telephone Key']);
     $main_telephone_parents=$main_telephone->get_parent_keys();
@@ -343,18 +451,53 @@ if ($customer->data['Customer Main Telephone Key']) {
 
         if (($_value['Subject Type']=='Customer' and $_value['Subject Key']!=$customer->id)or $_value['Subject Type']=='Supplier') {
         $main_telephone_warning=true;
-        
-        }
+		
+		switch($_value['Subject Type']){
+		case 'Customer':
+			$subject=new Customer($_value['Subject Key']);
+			$_store=new Store($subject->data['Customer Store Key']);
+			  $main_telephone_warning.=sprintf(", %s (%s) <a href=\"customer.php?id=%d\">%s</a> %s",_('Customer'),$store->data['Store Code'],$subject->id, $subject->get_formated_id(),$subject->data['Customer Name']);
+			
+			$subject_type=_('Customer').' '.$_store->data['Store Code'].'';
+		break;
+		case 'Supplier':
+			$subject=new Supplier($_value['Subject Key']);
+			
+			$main_telephone_warning.=sprintf(", %s <a href=\"supplier.php?id=%d\">%s</a>",_('Supplier'),$subject->id,$subject->data['Customer Name']);
+			  
+			$subject_type=_('Supplier');
+		break;
+		}
+		
+     
+		}
     }
 }
-if($main_telephone_warning){
-$main_telephone_warning='<img style="cursor:pointer" title="Other Customers/Supplier has this telephone" src="art/icons/error.png" alt="warning"/>';
-}
-$smarty->assign('main_telephone_warnings',$main_telephone_warnings);
+*/
+$main_telephone_warning=check_duplicates($customer);
 $smarty->assign('main_telephone_warning',$main_telephone_warning);
+$smarty->assign('main_telephone_warning_key',$customer->get('Customer Main Telephone Key'));
 
+$main_mobile_warning=check_duplicates($customer, 'Mobile');
+$smarty->assign('main_mobile_warning',$main_mobile_warning);
+$smarty->assign('main_mobile_warning_key',$customer->get('Customer Main Mobile Key'));
+
+$main_fax_warning=check_duplicates($customer, 'FAX');
+$smarty->assign('main_fax_warning',$main_fax_warning);
+$smarty->assign('main_fax_warning_key',$customer->get('Customer Main FAX Key'));
+
+$other_telephone_warning=check_duplicates($customer, 'other_telephone');
+$smarty->assign('other_telephone_warning',$other_telephone_warning);
+
+$other_mobile_warning=check_duplicates($customer, 'other_mobile');
+$smarty->assign('other_mobile_warning',$other_mobile_warning);
+
+$other_fax_warning=check_duplicates($customer, 'other_fax');
+$smarty->assign('other_fax_warning',$other_fax_warning);
 //$smarty->assign('delivery_addresses',$delivery_addresses);
 $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
+
+
 
 $correlation_msg='';
  $msg='';
@@ -408,12 +551,27 @@ if($row=mysql_fetch_array($res)){
 }
 //print_r($show_case);
 $smarty->assign('show_case',$show_case);	
-
+//print_r($customer);
 $sql=sprintf("select `User Key` from `User Dimension` where `User Parent Key`=%d", $customer->id);
 //print $sql;
 $result=mysql_query($sql);
 if($row=mysql_fetch_array($result))
 	$smarty->assign('user_main_id',$row['User Key']);	
+
+
+$delete_button_tooltip='';
+if($customer->get('Customer With Orders')=='Yes'){
+$delete_button_tooltip=_('Can not be deleted because customer has placed orders').'.';
+}else if( $customer->number_of_user_logins()>0){
+$delete_button_tooltip=_('Can not be deleted because contact had logged in').'.';
+
+}
+$smarty->assign('delete_button_tooltip',$delete_button_tooltip);	
+
+$smarty->assign('parent','customers');
+$smarty->assign('title',_('Edit Customer').': '.$customer->get('customer name'));
+
+
 
 $smarty->display('edit_customer.tpl');
 exit();

@@ -4,8 +4,22 @@
 <input type="hidden" id="site_key" value="{$site->id}"/>
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
-<div > 
-  <span   class="branch">{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
+<div class="branch"> 
+  <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
+</div>
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_site.php?id={$site->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Site{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='store.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>
+        {if $store->get('Store Websites')>1}
+        <button  onclick="window.location='sites.php?store={$store->id}'" ><img src="art/icons/world.png" alt=""> {t}Websites{/t}</button>
+        {/if}
+    </div>
+    <div style="clear:both"></div>
 </div>
 
 
@@ -15,7 +29,7 @@
 
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
     <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
     <li> <span class="item {if $block_view=='hits'}selected{/if}"   id="hits">  <span> {t}Hits{/t}</span></span></li>
@@ -90,14 +104,24 @@
 </div>
 <div id="block_pages" style="{if $block_view!='pages'}display:none;{/if}clear:both;margin:20px 0 40px 0">
    <span   class="clean_table_title" >{t}Pages{/t}</span>
- <div id="table_type">
-     <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
-     <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
-     </div>
-   
-    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+ 
+          <div  style="font-size:90%"   id="transaction_chooser" >
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Other}selected{/if} label_page_type"  id="elements_other"   >{t}Other{/t} (<span id="elements_other_number">{$elements_number.Other}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.DepartmentCatalogue}selected{/if} label_page_type"  id="elements_department_catalogue"   >{t}Department Catalogues{/t} (<span id="elements_department_catalogue_number">{$elements_number.DepartmentCatalogue}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.FamilyCatalogue}selected{/if} label_page_type"  id="elements_family_catalogue"    >{t}Family Catalogues{/t} (<span id="elements_family_catalogue_number">{$elements_number.FamilyCatalogue}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ProductDescription}selected{/if} label_page_type"  id="elements_product_description"  >{t}Product Description{/t} (<span id="elements_product_description_number">{$elements_number.ProductDescription}</span>)</span>
+
+
+         </div>
     
-   
+<div class="table_top_bar"></div>
+  
+    <div class="buttons small" style="float:right;margin-bottom:5px;margin-top:3px">
+     <button id="table_type_list" class="table_type  {if $table_type=='list'}selected{/if}">{t}List{/t}</button>
+     <button id="table_type_thumbnail"  class="{if $table_type=='thumbnails'}selected{/if}"      >{t}Thumbnails{/t}</button>
+<div style="clear:both"></div>
+     </div>
+
  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0  }
 <div  id="table0"   class="data_table_container dtable btable" style="font-size:85%"> </div>
 

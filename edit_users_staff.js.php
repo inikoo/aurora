@@ -296,14 +296,14 @@ var edit_active=function (callback, newValue) {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -340,7 +340,8 @@ var edit_active=function (callback, newValue) {
 	    this.table0.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
  this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", this.table0.onEventUnhighlightCell);
-
+this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
 	    //
@@ -628,7 +629,8 @@ function change_view(){
 
   function init(){
 
-
+ init_search('users');
+ 
       var ids=['active','inactive_ex','inactive_current'];
 YAHOO.util.Event.addListener(ids, "click",change_view);
 

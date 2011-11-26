@@ -1,7 +1,9 @@
+var Dom   = YAHOO.util.Dom;
+var Event = YAHOO.util.Event;
 
     var onmySubmit =function(){
     
-    
+
     
 	var input_login=document.getElementById("_login_");
 	var input_pwd=document.getElementById("_passwd_");
@@ -33,18 +35,42 @@ var submit_form_on_enter=function(e){
 	 }
 };
 
+
+function show_staff_login(){
+Dom.setStyle('login_title_staff','display','')
+Dom.setStyle('login_title_suppliers','display','none')
+Dom.get('user_type').value='staff';
+Dom.get('_login_').value='';
+Dom.get('_passwd_').value='';
+
+
+}
+
+function show_supplier_login(){
+Dom.setStyle('login_title_staff','display','none')
+Dom.setStyle('login_title_suppliers','display','')
+Dom.get('user_type').value='supplier';
+Dom.get('_login_').value='';
+Dom.get('_passwd_').value='';
+}
+
 function init() {
 
-    YAHOO.util.Event.addListener('_passwd_', "keydown", submit_form_on_enter);
+ Event.addListener('staff_login', "click", show_staff_login);
+ Event.addListener('supplier_login', "click", show_supplier_login);
 
 
-    document.getElementById("_passwd_").value='';
+    Event.addListener('_passwd_', "keydown", submit_form_on_enter);
 
 
-    YAHOO.util.Dom.get("_login_").focus();
-  
-    var oPushButton1 = new YAHOO.widget.Button("login_go"); 
-    oPushButton1.on("click", onmySubmit); 
+    
+//Dom.get("_passwd_").value='';
+
+    Dom.get("_login_").focus();
+    Event.addListener('login_button', "click", onmySubmit);
+
+  //  var oPushButton1 = new YAHOO.widget.Button("login_button"); 
+  //  oPushButton1.on("click", onmySubmit); 
     
 
 

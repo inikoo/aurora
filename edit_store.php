@@ -1,14 +1,14 @@
 <?php
 /*
- File: store.php 
+ File: store.php
 
  UI store page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2010, Inikoo 
- 
+
+ Copyright (c) 2010, Inikoo
+
  Version 2.0
 */
 include_once('common.php');
@@ -17,21 +17,21 @@ include_once('assets_header_functions.php');
 
 $page='store';
 $smarty->assign('page',$page);
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $store_id=$_REQUEST['id'];
+if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
+    $store_id=$_REQUEST['id'];
 
-}else{
-  $store_id=$_SESSION['state'][$page]['id'];
+} else {
+    $store_id=$_SESSION['state'][$page]['id'];
 }
 
 
-if(!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
-  header('Location: index.php');
-   exit;
+if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+    header('Location: index.php');
+    exit;
 }
-if(!$user->can_edit('stores') ){
-  header('Location: store.php?error=cannot_edit');
-   exit;
+if (!$user->can_edit('stores') ) {
+    header('Location: store.php?error=cannot_edit');
+    exit;
 }
 
 
@@ -60,79 +60,51 @@ get_header_info($user,$smarty);
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'store.php?id='.$store_id,'label'=>_('Exit Edit'));
 
-$smarty->assign('general_options_list',$general_options_list);
+//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
+
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
                'common.css',
                'container.css',
                'button.css',
                'table.css',
-                'css/edit.css',
-                'css/upload_files.css',
+               'css/edit.css',
+               'css/upload_files.css',
+               'theme.css.php'
            );
+
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
               $yui_path.'paginator/paginator-min.js',
-              $yui_path.'uploader/uploader.js',
+              $yui_path.'dragdrop/dragdrop-min.js',
               $yui_path.'datasource/datasource-min.js',
               $yui_path.'autocomplete/autocomplete-min.js',
-              $yui_path.'datatable/datatable-debug.js',
+              $yui_path.'datatable/datatable.js',
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
               'js/php.default.min.js',
               'js/common.js',
-              'js/search.js',
               'js/table_common.js',
+              'js/search.js',
+
+              'js/pages_common.js',
               'js/edit_common.js',
-              'js/csv_common.js',
-              'js/pages_common.js'
+              'country_select.js.php',
+              'edit_store.js.php'
           );
-$css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		                $yui_path.'assets/skins/sam/autocomplete.css',
- 'common.css',
-               'container.css',
-               'button.css',
-               'table.css',
-                'css/edit.css',
-                'css/upload_files.css',
-		 );
-include_once('Theme.php');
-$js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'dragdrop/dragdrop-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/php.default.min.js',
-		'js/common.js',
-		'js/table_common.js',
-		'js/search.js',
-		
-		'js/pages_common.js',
-		'js/edit_common.js',
-		'country_select.js.php',
-		'edit_store.js.php'
-		);
 
 
 
-  $smarty->assign('edit',$_SESSION['state'][$page]['edit']);
- 
- 
+$smarty->assign('edit',$_SESSION['state'][$page]['edit']);
+
+
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -157,12 +129,12 @@ $stores=array();
 $sql=sprintf("select * from `Store Dimension` CD order by `Store Key`");
 
 $res=mysql_query($sql);
- $first=true;
-while($row=mysql_fetch_array($res)){
+$first=true;
+while ($row=mysql_fetch_array($res)) {
     $stores[$row['Store Key']]=array('code'=>$row['Store Code'],'selected'=>0);
-    if($first){
-      $stores[$row['Store Key']]['selected']=1;
-      $first=FALSE;
+    if ($first) {
+        $stores[$row['Store Key']]['selected']=1;
+        $first=FALSE;
     }
 }
 mysql_free_result($res);
@@ -171,26 +143,26 @@ mysql_free_result($res);
 
 
 
- $smarty->assign('stores',$stores);
- 
- $q='';
-$tipo_filter=($q==''?$_SESSION['state']['store']['history']['f_field']:'code');
+$smarty->assign('stores',$stores);
+
+
+$tipo_filter=$_SESSION['state']['store']['history']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['store']['history']['f_value']:addslashes($q)));
+$smarty->assign('filter_value',$_SESSION['state']['store']['history']['f_value']);
 $filter_menu=array(
-		   'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
-		   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
-		   'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
-		   'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
-		   'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
-            
-		   );
+                 'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+                 'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+                 'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+                 'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
+                 'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
+
+             );
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
- 
- 
- $number_of_sites=0;
+
+
+$number_of_sites=0;
 $site_key=0;
 
 
@@ -207,7 +179,7 @@ if ($row=mysql_fetch_assoc($res)) {
 
 $smarty->assign('number_of_sites',$number_of_sites);
 $smarty->assign('site_key',$site_key);
- 
+
 $smarty->display('edit_store.tpl');
 
 ?>

@@ -26,7 +26,14 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
-
+case('edit_charge'):
+  $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key'),
+                         ));
+edit_charge($data);
+break;
 
 case('edit_part_custom_field'):
 case('edit_part_unit'):
@@ -390,6 +397,34 @@ function delete_department() {
 
 
 }
+
+function edit_charge($data) {
+include_once('class.Charge.php');
+  global $editor;
+    $charge=new Charge($data['id']);
+  
+  
+  
+  
+    $charge->editor=$editor;
+    $translator=array(
+    'name'=>'Charge Name',
+    'description'=>'Charge Description',
+    'charge'=>'Charge Metadata',
+    );
+    $key=$translator[$data['key']];
+    
+    $charge->update(array($key=>$data['newvalue']));
+
+    if ($charge->updated) {
+        $response= array('state'=>200,'newvalue'=>$charge->new_value,'key'=>$data['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$charge->msg,'key'=>$data['key']);
+    }
+    echo json_encode($response);
+}
+
 function edit_store() {
     $store=new Store($_REQUEST['id']);
     global $editor;
@@ -633,26 +668,26 @@ function edit_deal() {
 function upload_image($subject='product') {
 
 
-if (isset($_FILES['testFile']['tmp_name'])) {
- 
+    if (isset($_FILES['testFile']['tmp_name'])) {
+
         include_once('class.Image.php');
-     //   $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
-       // $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
-        
-     //   print_r($_FILES);
-        
-     
-              
-          $image_data=array(
-                    'file'=>$_FILES['testFile']['tmp_name'],
-                    'source_path'=>'',
-                    'name'=>$_FILES['testFile']['name'],
-                    'caption'=>''
-                );     
-              
-       // print_r($image_data);      
-              
-              
+        //   $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
+        // $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
+
+        //   print_r($_FILES);
+
+
+
+        $image_data=array(
+                        'file'=>$_FILES['testFile']['tmp_name'],
+                        'source_path'=>'',
+                        'name'=>$_FILES['testFile']['name'],
+                        'caption'=>''
+                    );
+
+        // print_r($image_data);
+
+
         $image=new Image('find',$image_data,'create');
         if (!$image->error) {
             $subject=$_REQUEST['subject'];
@@ -679,8 +714,7 @@ if (isset($_FILES['testFile']['tmp_name'])) {
             echo json_encode($response);
             return;
         }
-    } 
-    else {
+    } else {
         $response= array('state'=>400,'msg'=>'no image');
         echo json_encode($response);
         return;
@@ -1005,7 +1039,7 @@ function list_products_for_edition() {
         else
             $margin=_('ND');
         global $myconf;
-        $in_common_currency=$myconf['currency_code'];
+        $in_common_currency=$corporate_currency;
         $in_common_currency_price='';
         if ($row['Product Currency']!= $in_common_currency) {
             if (!isset($exchange[$row['Product Currency']])) {
@@ -1024,7 +1058,7 @@ function list_products_for_edition() {
             else
                 $margin=_('ND');
             global $myconf;
-            $in_common_currency=$myconf['currency_code'];
+            $in_common_currency=$corporate_currency;
             $in_common_currency_price='';
             if ($row['Product Currency']!= $in_common_currency) {
                 if (!isset($exchange[$row['Product Currency']])) {
@@ -1056,7 +1090,7 @@ function list_products_for_edition() {
             else
                 $margin=_('ND');
             global $myconf;
-            $in_common_currency=$myconf['currency_code'];
+            $in_common_currency=$corporate_currency;
             $in_common_currency_price='';
             if ($row['Product Currency']!= $in_common_currency) {
                 if (!isset($exchange[$row['Product Currency']])) {
@@ -1969,11 +2003,119 @@ function list_charges_for_edition() {
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
+
+
+        $input_charge=sprintf('
+        
+        						<tr style="border:none">
+        						<td >%s</td>
+								</tr>
+								<tr style="border:none">
+                              <td><input id="charge%d" onKeyUp="charge_changed(%d)" %s class="%s" style="width:50px" value="%s" ovalue="%s" /> %s</td>
+                              <td>
+                              <div class="buttons small">
+                              <span id="charge_saving" style="float:right;display:none"><img style="height:12px"src="art/loading.gif"/>'._('Saving').'</span>
+                              <button id="charge_save%d" style="visibility:hidden" class="positive" onClick="charge_save(%d)">'._('Save').'</button>
+                              <button id="charge_reset%d" style="visibility:hidden" style="margin-left:10px "class="negative"  onClick="charge_reset(%d)">'._('Reset').'</button>
+                              </td>'
+                              ,_('charge').":"
+                              ,$row['Charge Key']
+                              ,$row['Charge Key']
+                              ,''
+                              ,'input'
+                              ,$row['Charge Metadata']
+                              ,$row['Charge Metadata']
+                              ,''
+                              ,$row['Charge Key']
+                              ,$row['Charge Key']
+                              ,$row['Charge Key']
+                              ,$row['Charge Key']
+
+
+                             );
+
+
+
+        switch ($row['Charge Terms Type']) {
+        case 'Order Items Gross Amount':
+            $terms_components=preg_split('/;/',$row['Charge Terms Metadata']);
+            $operator=$terms_components[0];
+
+            $charge_term_amount=$terms_components[1];
+
+ switch ($operator) {
+                    case('<'):
+                       $terms_label=_('when items gross amount is less than').':';
+                        break;
+                    case('>'):
+                         $terms_label=_('when items gross amount is more than').':';
+                        break;
+                    case('<='):
+                        $terms_label=_('when items gross amount is less or equal than').':';
+                        break;
+                    case('>='):
+                      $terms_label=_('when items gross amount is more or equal than').':';
+                        break;
+                    }
+
+
+     
+            break;
+        default:
+            $terms_label=_('when').' '.$row['Charge Terms Type'];
+            break;
+        }
+
+
+        $input_term=sprintf('<tr style="border:none"> <td colspan=3 >%s</td></tr>
+                            <tr style="border:none">
+
+                            <td><input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:50px" value="%s" ovalue="%s" /> %s</td>
+                            <td colspan="2">
+                            <div class="buttons small">
+                            <button id="deal_allowance_save%d" style="visibility:hidden" class="positive" onClick="deal_allowance_save(%d)">'._('Save').'</button>
+                            <button id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="negative"  onClick="deal_allowance_reset(%d)">'._('Reset').'</button>
+                            </td></tr>'
+                            ,$terms_label
+                            ,$row['Charge Key']
+                            ,$row['Charge Key']
+                            ,''
+                            ,'input'
+                            ,$charge_term_amount
+                            ,$charge_term_amount
+                            ,''
+                            ,$row['Charge Key']
+                            ,$row['Charge Key']
+                            ,$row['Charge Key']
+                            ,$row['Charge Key']
+
+
+                           );
+
+
+if($row['Charge Active']=='Yes'){
+$activity_editor="<div class='buttons'>
+<button class='selected positive'>"._('Active')."</button>
+<button class='negative'>"._('Suspend')."</button>
+</div>";
+
+}else{
+$activity_editor="<div class='buttons'>
+<button class=' positive'>"._('Activate')."</button>
+<button class='selected negative'>"._('Suspended')."</button>
+</div>";
+
+}
+
+
+
+        $editor='<table border=0 style="margin:0px">'.$input_charge.$input_term.'</table>';
         $adata[]=array(
+        		'id'=>	$row['Charge Key'],	
                      'name'=>$row['Charge Name'],
                      'description'=>$row['Charge Description'].' '.$row['Charge Terms Description'],
-
-
+                     'active'=>$activity_editor,
+                     'editor'=>$editor
                  );
     }
     mysql_free_result($res);
@@ -2080,11 +2222,11 @@ function list_campaigns_for_edition() {
     $filter_msg='';
     $wheref='';
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and  `Campaign Description` like '".addslashes($f_value)."%'";
+        $wheref.=" and  `Deal Description` like '".addslashes($f_value)."%'";
     elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Campaign Name` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
 
-    $sql="select count(*) as total from `Campaign Dimension`   $where $wheref";
+    $sql="select count(*) as total from `Deal Dimension`   $where $wheref";
     //  print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2096,7 +2238,7 @@ function list_campaigns_for_edition() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total `Campaign Dimension`   $where ";
+        $sql="select count(*) as total `Deal Dimension`   $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2141,14 +2283,14 @@ function list_campaigns_for_edition() {
     $_order=$order;
 
     if ($order=='name')
-        $order='`Campaign Name`';
+        $order='`Deal Name`';
     elseif($order=='description')
-    $order='`Campaign Description`';
+    $order='`Deal Description`';
     else
-        $order='`Campaign Name`';
+        $order='`Deal Name`';
 
 
-    $sql="select *  from `Campaign Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select *  from `Deal Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
 
@@ -2156,16 +2298,16 @@ function list_campaigns_for_edition() {
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-        $sql=sprintf("select * from `Campaign Deal Schema`  where `Campaign Key`=%d  ",$row['Campaign Key']);
+        $sql=sprintf("select * from `Campaign Deal Schema`  where `Deal Key`=%d  ",$row['Deal Key']);
         $res2 = mysql_query($sql);
         $deals='<ul style="padding:10px 20px">';
         while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
-            $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Name']);
+            $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Metadata Name']);
         }
         $deals.='</ul>';
         $adata[]=array(
-                     'name'=>$row['Campaign Name'],
-                     'description'=>$row['Campaign Description'].$deals
+                     'name'=>$row['Deal Name'],
+                     'description'=>$row['Deal Description'].$deals
 
 
                  );
@@ -2273,13 +2415,13 @@ function list_deals_for_edition() {
     $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
     if ($parent=='store')
-        $where=sprintf("where  D.`Store Key`=%d and D.`Deal Trigger`='Order'    ",$parent_id);
+        $where=sprintf("where  D.`Store Key`=%d and D.`Deal Metadata Trigger`='Order'    ",$parent_id);
     elseif($parent=='department')
-    $where=sprintf("where    D.`Deal Trigger`='Department' and  D.`Deal Trigger Key`=%d   ",$parent_id);
+    $where=sprintf("where    D.`Deal Metadata Trigger`='Department' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
     elseif($parent=='family')
-    $where=sprintf("where    D.`Deal Trigger`='Family' and  D.`Deal Trigger Key`=%d   ",$parent_id);
+    $where=sprintf("where    D.`Deal Metadata Trigger`='Family' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
     elseif($parent=='product')
-    $where=sprintf("where    D.`Deal Trigger`='Product' and  D.`Deal Trigger Key`=%d   ",$parent_id);
+    $where=sprintf("where    D.`Deal Metadata Trigger`='Product' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
     else
         $where=sprintf("where true ");;
 
@@ -2289,12 +2431,12 @@ function list_deals_for_edition() {
     $wheref='';
 
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
 
     elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Deal Metadata Name` like '".addslashes($f_value)."%'";
 
-    $sql="select count(*) as total from `Deal Dimension` D   $where $wheref";
+    $sql="select count(*) as total from `Deal Metadata Dimension` D   $where $wheref";
     //  print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2306,7 +2448,7 @@ function list_deals_for_edition() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total `Deal Dimension`  D  $where ";
+        $sql="select count(*) as total `Deal Metadata Dimension`  D  $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2351,22 +2493,22 @@ function list_deals_for_edition() {
     $_order=$order;
 
     if ($order=='name')
-        $order='D.`Deal Name`';
+        $order='D.`Deal Metadata Name`';
     elseif($order=='description')
-    $order='`Deal Terms Description`,`Deal Allowance Description`';
+    $order='`Deal Metadata Terms Description`,`Deal Metadata Allowance Description`';
     else
-        $order='D.`Deal Name`';
+        $order='D.`Deal Metadata Name`';
 
 
-    $sql="select D.`Deal Trigger`,`Deal Key`,D.`Deal Name`,`Campaign Deal Schema Key`,`Campaign Name`,`Campaign Deal Schema Key`  from `Deal Dimension` D left join `Campaign Deal Schema`CDS  on (CDS.`Deal Schema Key`=`Campaign Deal Schema Key`) left join `Campaign Dimension`C  on (CDS.`Campaign Key`=C.`Campaign Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select D.`Deal Metadata Trigger`,`Deal Metadata Key`,D.`Deal Metadata Name`,`Campaign Deal Schema Key`,`Deal Name`,`Campaign Deal Schema Key`  from `Deal Metadata Dimension` D left join `Campaign Deal Schema`CDS  on (CDS.`Deal Schema Key`=`Campaign Deal Schema Key`) left join `Deal Dimension`C  on (CDS.`Deal Key`=C.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
     // print $sql;
     $res = mysql_query($sql);
     $total=mysql_num_rows($res);
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+        // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
-        $deal=new Deal($row['Deal Key']);
+        $deal=new DealMetadata($row['Deal Metadata Key']);
 
         // print_r($deal->terms_input_form());
 
@@ -2379,17 +2521,17 @@ function list_deals_for_edition() {
                                       <span id="deal_allowance_save%d" style="visibility:hidden" class="state_details" onClick="deal_allowance_save(%d)">'._('Save').'</span>
                                       <span id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_allowance_reset(%d)">'._('Reset').'</span></td>'
                                       ,$form_data['Label']
-                                      ,$row['Deal Key']
-                                      ,$row['Deal Key']
+                                      ,$row['Deal Metadata Key']
+                                      ,$row['Deal Metadata Key']
                                       ,($form_data['Lock Value']?'READONLY':'')
                                       ,$form_data['Value Class']
                                       ,$form_data['Value']
                                       ,$form_data['Value']
                                       ,$form_data['Lock Label']
-                                      ,$row['Deal Key']
-                                      ,$row['Deal Key']
-                                      ,$row['Deal Key']
-                                      ,$row['Deal Key']
+                                      ,$row['Deal Metadata Key']
+                                      ,$row['Deal Metadata Key']
+                                      ,$row['Deal Metadata Key']
+                                      ,$row['Deal Metadata Key']
 
 
                                      );
@@ -2426,17 +2568,17 @@ function list_deals_for_edition() {
                 $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
                                     <td style="width:15em"  style="text-align:left"><input id="deal_term%d" onKeyUp="deal_term_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s <span id="deal_term_save%d" style="visibility:hidden" class="state_details" onClick="deal_term_save(%d)">'._('Save').'</span> <span id="deal_term_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_term_reset(%d)">'._('Reset').'</span></td>'
                                     ,$form_data['Label']
-                                    ,$row['Deal Key']
-                                    ,$row['Deal Key']
+                                    ,$row['Deal Metadata Key']
+                                    ,$row['Deal Metadata Key']
                                     ,($form_data['Lock Value']?'READONLY':'')
                                     ,$form_data['Value Class']
                                     ,$form_data['Value']
                                     ,$form_data['Value']
                                     ,$form_data['Lock Label']
-                                    ,$row['Deal Key']
-                                    ,$row['Deal Key']
-                                    ,$row['Deal Key']
-                                    ,$row['Deal Key']
+                                    ,$row['Deal Metadata Key']
+                                    ,$row['Deal Metadata Key']
+                                    ,$row['Deal Metadata Key']
+                                    ,$row['Deal Metadata Key']
                                    );
 
             }
@@ -2448,9 +2590,9 @@ function list_deals_for_edition() {
         $edit='<table style="margin:10px"><tr style="border:none">'.$input_allowance.'</tr><tr style="border:none">'.$input_term.'</tr></table>';
 
 
-        $name=$row['Deal Name'];
+        $name=$row['Deal Metadata Name'];
         if ($row['Campaign Deal Schema Key']) {
-            $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Campaign Name']);
+            $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
         }
         $adata[]=array(
                      'status'=>$deal->get_xhtml_status(),
@@ -2642,7 +2784,7 @@ function list_parts_in_product() {
         $total=mysql_num_rows($res);
         $adata=array();
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-            // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+            // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
 
             $adata[]=array(
@@ -2848,7 +2990,7 @@ function list_products_in_part() {
         $total=mysql_num_rows($res);
         $adata=array();
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-            // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+            // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
             $relation=$row['Parts Per Product'].' &rarr; 1';
             $adata[]=array(
@@ -3054,7 +3196,7 @@ function list_supplier_products_in_part() {
         $total=mysql_num_rows($res);
         $adata=array();
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
-            // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+            // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
             if ($row['Supplier Product Part In Use']=='Yes') {
                 $available_state='Available';

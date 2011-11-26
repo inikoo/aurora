@@ -23,20 +23,20 @@ switch ($tipo) {
 case('can_merge_customer'):
 
 
-$data=prepare_values($_REQUEST,array(
-                            'customer_to_merge_id'=>array('type'=>'string'),
-                                     'customer_key'=>array('type'=>'key')));
-can_merge_customer($data);
-break;
+    $data=prepare_values($_REQUEST,array(
+                             'customer_to_merge_id'=>array('type'=>'string'),
+                             'customer_key'=>array('type'=>'key')));
+    can_merge_customer($data);
+    break;
 
 case('email_in_other_customer'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'query'=>array('type'=>'string'),
-                            'store_key'=>array('type'=>'key'),
-                                     'customer_key'=>array('type'=>'key')
+                             'store_key'=>array('type'=>'key'),
+                             'customer_key'=>array('type'=>'key')
                          ));
-  email_in_other_customer($data) ;                      
-break;
+    email_in_other_customer($data) ;
+    break;
 case('customers_correlation'):
 
     list_customers_correlations();
@@ -145,10 +145,10 @@ case('customers'):
     list_customers();
     break;
 
-	
 
 
-	
+
+
 case('customers_send_post'):
     if (!$user->can_view('customers'))
         exit();
@@ -205,6 +205,10 @@ case('plot_order_interval'):
 
     echo json_encode($response);
     break;
+case('site_user_view_orders'):
+
+    list_customer_orders();
+    break;
 case('customer_orders'):
     if (!$user->can_view('orders'))
         exit();
@@ -225,17 +229,17 @@ default:
 }
 function list_customer_orders() {
     $conf=$_SESSION['state']['customer']['orders'];
-    
-    
-       if (isset( $_REQUEST['customer_key'])){
+
+
+    if (isset( $_REQUEST['customer_key'])) {
         $customer_id=$_REQUEST['customer_key'];
         $_SESSION['state']['customer']['id']=$customer_id;
-    }else
+    } else
         $customer_id=$_SESSION['state']['customer']['id'];
 
-    
-    
- 
+
+
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -311,7 +315,7 @@ function list_customer_orders() {
 
     $wheref='';
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
     elseif($f_field=='code' and $f_value!='') {
         switch ($type) {
         case('Family'):
@@ -504,18 +508,18 @@ function list_customer_orders() {
 
 function list_assets_dispatched_to_customer() {
     $conf=$_SESSION['state']['customer']['assets'];
-    
-    
-    
-    
-          if (isset( $_REQUEST['customer_key'])){
+
+
+
+
+    if (isset( $_REQUEST['customer_key'])) {
         $customer_id=$_REQUEST['customer_key'];
         $_SESSION['state']['customer']['id']=$customer_id;
-    }else
+    } else
         $customer_id=$_SESSION['state']['customer']['id'];
-    
-    
-    
+
+
+
 
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -611,7 +615,7 @@ function list_assets_dispatched_to_customer() {
 
     $wheref='';
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
     elseif($f_field=='code' and $f_value!='') {
         switch ($type) {
         case('Family'):
@@ -866,7 +870,7 @@ function list_assets_in_process_customer() {
 
     $wheref='';
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+        $wheref.=" and ( `Deal Metadata Terms Description` like '".addslashes($f_value)."%' or `Deal Metadata Allowance Description` like '".addslashes($f_value)."%'  )   ";
     elseif($f_field=='code' and $f_value!='') {
         switch ($type) {
         case('Family'):
@@ -1802,6 +1806,27 @@ function list_customers() {
 
     global $myconf,$user;
 
+
+
+
+    if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else {
+
+        return;
+    }
+    if (isset( $_REQUEST['parent_key']))
+        $parent_key=$_REQUEST['parent_key'];
+    else {
+
+        return;
+    }
+
+
+
+
+
+
     $conf=$_SESSION['state']['customers']['table'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -1815,11 +1840,6 @@ function list_customers() {
         $order=$_REQUEST['o'];
     else
         $order=$conf['order'];
-
-    if (isset( $_REQUEST['type']))
-        $type=$_REQUEST['type'];
-    else
-        $type=$_SESSION['state']['customers']['type'];
 
 
     if (isset( $_REQUEST['od']))
@@ -1856,9 +1876,53 @@ function list_customers() {
         $store=$_SESSION['state']['customers']['store'];
 
 
+    if (isset( $_REQUEST['block_view'])) {
+        $block_view=$_REQUEST['block_view'];
+        $_SESSION['state']['customers']['block_view']=$block_view;
+    } else
+        $block_view=$_SESSION['state']['customers']['block_view'];
+
+
+
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
+    else
+        $elements=$conf['elements'][$block_view];
+
+
+
+
+
+    if (isset( $_REQUEST['elements_all_contacts_active'])) {
+        $elements['Active']=$_REQUEST['elements_all_contacts_active'];
+    }
+    if (isset( $_REQUEST['elements_contacts_with_orders_active'])) {
+        $elements['Active']=$_REQUEST['elements_contacts_with_orders_active'];
+    }
+
+    if (isset( $_REQUEST['elements_all_contacts_lost'])) {
+        $elements['Lost']=$_REQUEST['elements_all_contacts_lost'];
+    }
+    if (isset( $_REQUEST['elements_contacts_with_orders_lost'])) {
+        $elements['Lost']=$_REQUEST['elements_contacts_with_orders_lost'];
+    }
+
+    if (isset( $_REQUEST['elements_all_contacts_losing'])) {
+        $elements['Losing']=$_REQUEST['elements_all_contacts_losing'];
+    }
+    if (isset( $_REQUEST['elements_contacts_with_orders_losing'])) {
+        $elements['Losing']=$_REQUEST['elements_contacts_with_orders_losing'];
+    }
+
+
+
+
+
+
+
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-
+    $_SESSION['state']['customers']['table']['elements'][$block_view]=$elements;
     $_SESSION['state']['customers']['table']['order']=$order;
     $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
     $_SESSION['state']['customers']['table']['nr']=$number_results;
@@ -1870,7 +1934,7 @@ function list_customers() {
     $where='where true';
     $table='`Customer Dimension` C ';
     $where_type='';
-
+    $currency='';
     if ($awhere) {
 
 
@@ -1880,37 +1944,25 @@ function list_customers() {
         $tmp=preg_replace('/\'/',"\'",$tmp);
 
         $raw_data=json_decode($tmp, true);
-        $raw_data['store_key']=$store;
-//print_r( $raw_data);
+        $raw_data['store_key']=$parent_key;
+
         list($where,$table)=customers_awhere($raw_data);
 
 
     }
-    elseif ($type=='all_contacts') {
-        $where_type='';
-        $_SESSION['state']['customers']['type']=$type;
+    elseif ($parent=='list') {
 
-    }
-    elseif ($type=='contacts_with_orders') {
-        $where_type=sprintf(' and `Customer With Orders`="Yes" ');
-        $_SESSION['state']['customers']['type']=$type;
 
-    }
-    elseif($type=='active_contacts') {
-        $where_type=sprintf(' and `Customer Active`="Yes" ');
-        $_SESSION['state']['customers']['type']=$type;
-    }
-    elseif($type=='list') {
-        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
 
         $res=mysql_query($sql);
         if ($customer_list_data=mysql_fetch_assoc($res)) {
             $awhere=false;
             if ($customer_list_data['List Type']=='Static') {
                 $table='`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
-                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+                $where_type=sprintf(' and `List Key`=%d ',$parent_key);
 
-            } else {// Dynamic by DEFAULT
+            } else {
 
 
 
@@ -1920,7 +1972,7 @@ function list_customers() {
 
                 $raw_data=json_decode($tmp, true);
 
-                $raw_data['store_key']=$store;
+                $raw_data['store_key']=$customer_list_data['List Store Key'];
                 list($where,$table)=customers_awhere($raw_data);
 
 
@@ -1929,12 +1981,76 @@ function list_customers() {
             }
 
         } else {
-            exit("error");
+            return;
         }
+
+
+
     }
-    else {
+    elseif ($parent=='category') {
+
+$category=new Category($parent_key);
+
+if(!in_array($category->data['Category Store Key'],$user->stores)){
+return;
+}
+
+$where=sprintf(" where `Subject`='Customer' and  `Category Key`=%d",$parent_key);
+$table=' `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`Customer Key`) ';
         $where_type='';
+     }
+    else {
+
+        $where_type='';
+        if ($block_view=='contacts_with_orders') {
+
+            $where_type=' and `Customer With Orders`="Yes" ';
+        }
+
+        $_elements='';
+
+        foreach($elements as $_key=>$_value) {
+            if ($_value)
+                $_elements.=','.prepare_mysql($_key);
+        }
+        $_elements=preg_replace('/^\,/','',$_elements);
+        if ($_elements=='') {
+            $where.=' and false' ;
+        } else {
+            $where.=' and `Customer Type by Activity` in ('.$_elements.')' ;
+        }
+        if ($parent=='store') {
+            $where_stores=sprintf(' and  `Customer Store Key`=%d ',$parent_key);
+            $store=new Store($parent_key);
+            $currency=$store->data['Store Currency Code'];
+
+        } else {
+
+            if (count($user->stores)==0)
+                $where_stores=sprintf(' and  false');
+            else
+                $where_stores=sprintf(' and `Customer Store Key` in (%s)  ',join(',',$user->stores));
+
+        }
+        $where.=$where_stores;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //print $table;exit;
@@ -1949,27 +2065,10 @@ function list_customers() {
     $filter_msg='';
     $wheref='';
 
-    $currency='';
-
-     $where_stores=sprintf(' and  false');
-
-    if (is_numeric($store) and in_array($store,$user->stores)) {
-        $where_stores=sprintf(' and  `Customer Store Key`=%d ',$store);
-        $store=new Store($store);
-        $currency=$store->data['Store Currency Code'];
-    } else {
-     
-        $currency='';
-}
 
 
-    if(isset( $_REQUEST['all_stores']) and  $_REQUEST['all_stores']  ){
-    	$where_stores=sprintf('and `Customer Store Key` in (%s)  ',join(',',$user->stores));      			       
-    }
 
-    $where.=$where_stores;
-
-    //  print $f_field;
+//  print $f_field;
 
 
     if (($f_field=='customer name'     )  and $f_value!='') {
@@ -2011,7 +2110,7 @@ function list_customers() {
 
 
     $sql="select count(Distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
-      //   print $sql;
+    
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2038,12 +2137,12 @@ function list_customers() {
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=_("Showing all customers");
+        $rtext_rpp=' ('._("Showing All").')';
 
 
 
-    //if($total_records>$number_results)
-    // $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+//if($total_records>$number_results)
+// $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 
     if ($total==0 and $filtered>0) {
         switch ($f_field) {
@@ -2114,7 +2213,7 @@ function list_customers() {
 
     $_order=$order;
     $_dir=$order_direction;
-    // if($order=='location'){
+// if($order=='location'){
 //      if($order_direction=='desc')
 //        $order='country_code desc ,town desc';
 //      else
@@ -2130,71 +2229,71 @@ function list_customers() {
     if ($order=='name')
         $order='`Customer File As`';
     elseif($order=='id')
-		$order='C.`Customer Key`';
+    $order='C.`Customer Key`';
     elseif($order=='location')
-		$order='`Customer Main Location`';
+    $order='`Customer Main Location`';
     elseif($order=='orders')
-		$order='`Customer Orders`';
+    $order='`Customer Orders`';
     elseif($order=='email')
-		$order='`Customer Main Plain Email`';
+    $order='`Customer Main Plain Email`';
     elseif($order=='telephone')
-		$order='`Customer Main Plain Telephone`';
+    $order='`Customer Main Plain Telephone`';
     elseif($order=='last_order')
-		$order='`Customer Last Order Date`';
+    $order='`Customer Last Order Date`';
     elseif($order=='contact_name')
-		$order='`Customer Main Contact Name`';
+    $order='`Customer Main Contact Name`';
     elseif($order=='address')
-		$order='`Customer Main Location`';
+    $order='`Customer Main Location`';
     elseif($order=='town')
-		$order='`Customer Main Town`';
+    $order='`Customer Main Town`';
     elseif($order=='postcode')
-		$order='`Customer Main Postal Code`';
+    $order='`Customer Main Postal Code`';
     elseif($order=='region')
-		$order='`Customer Main Country First Division`';
-	elseif($order=='country')
-		$order='`Customer Main Country`';
-    //  elseif($order=='ship_address')
-    //  $order='`customer main ship to header`';
+    $order='`Customer Main Country First Division`';
+    elseif($order=='country')
+    $order='`Customer Main Country`';
+//  elseif($order=='ship_address')
+//  $order='`customer main ship to header`';
     elseif($order=='ship_town')
-		$order='`Customer Main Delivery Address Town`';
+    $order='`Customer Main Delivery Address Town`';
     elseif($order=='ship_postcode')
-		$order='`Customer Main Delivery Address Postal Code`';
+    $order='`Customer Main Delivery Address Postal Code`';
     elseif($order=='ship_region')
-		$order='`Customer Main Delivery Address Country Region`';
+    $order='`Customer Main Delivery Address Country Region`';
     elseif($order=='ship_country')
-		$order='`Customer Main Delivery Address Country`';
+    $order='`Customer Main Delivery Address Country`';
     elseif($order=='net_balance')
-		$order='`Customer Net Balance`';
+    $order='`Customer Net Balance`';
     elseif($order=='balance')
-		$order='`Customer Outstanding Net Balance`';
+    $order='`Customer Outstanding Net Balance`';
     elseif($order=='total_profit')
-		$order='`Customer Profit`';
+    $order='`Customer Profit`';
     elseif($order=='total_payments')
-		$order='`Customer Net Payments`';
+    $order='`Customer Net Payments`';
     elseif($order=='top_profits')
-		$order='`Customer Profits Top Percentage`';
+    $order='`Customer Profits Top Percentage`';
     elseif($order=='top_balance')
-		$order='`Customer Balance Top Percentage`';
-	elseif($order=='top_orders')
-		$order='``Customer Orders Top Percentage`';
+    $order='`Customer Balance Top Percentage`';
+    elseif($order=='top_orders')
+    $order='``Customer Orders Top Percentage`';
     elseif($order=='top_invoices')
-		$order='``Customer Invoices Top Percentage`';
+    $order='``Customer Invoices Top Percentage`';
     elseif($order=='total_refunds')
-		$order='`Customer Total Refunds`';
+    $order='`Customer Total Refunds`';
     elseif($order=='contact_since')
-		$order='`Customer First Contacted Date`';
+    $order='`Customer First Contacted Date`';
     elseif($order=='activity')
-		$order='`Customer Type by Activity`';
+    $order='`Customer Type by Activity`';
     else
         $order='`Customer File As`';
     $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
-    //print $sql;
+//print $sql;
     $adata=array();
 
 
 
     $result=mysql_query($sql);
-     //print $sql;exit;
+//print $sql;exit;
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
@@ -2287,23 +2386,21 @@ function list_customers() {
 ///print_r($dataid);//
 
 
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
 
-                                      'records_perpage'=>$number_results,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
-                                     )
+
+    $response=array('resultset'=>
+                                array(
+                                    'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
+
+                                )
                    );
     echo json_encode($response);
 }
@@ -2734,10 +2831,10 @@ function show_posible_customer_matches($the_data) {
     $found_key=0;
 
     if ($found_email) {
-        if($in_other_store)
-           $action='found_email_other_store';
+        if ($in_other_store)
+            $action='found_email_other_store';
         else
-        $action='found_email';
+            $action='found_email';
         $found_key=$scope_found_key;
     }
     elseif ($subject->found) {
@@ -3508,9 +3605,9 @@ function find_contact($the_data) {
 }
 
 
-function email_in_other_customer($data){
-$email=_trim($data['query']);
- $sql=sprintf('select `Customer Name`,`Customer Key` from `Email Dimension` E left join  `Email Bridge` B on (E.`Email Key`=B.`Email Key`) left join  `Customer Dimension` on (`Subject Key`=`Customer Key`)  where `Email`=%s  and `Subject Type`="Customer" and `Subject Key`!=%d and `Customer Store Key`=%d ',
+function email_in_other_customer($data) {
+    $email=_trim($data['query']);
+    $sql=sprintf('select `Customer Name`,`Customer Key` from `Email Dimension` E left join  `Email Bridge` B on (E.`Email Key`=B.`Email Key`) left join  `Customer Dimension` on (`Subject Key`=`Customer Key`)  where `Email`=%s  and `Subject Type`="Customer" and `Subject Key`!=%d and `Customer Store Key`=%d ',
                  prepare_mysql($email),
                  $data['customer_key'],
                  $data['store_key']
@@ -3521,18 +3618,18 @@ $email=_trim($data['query']);
     if ($num_rows==0) {
         $response=array('state'=>200,'found'=>0,'msg'=>'');
         echo json_encode($response);
-    }
-    else {
-    $customers='';
-    
-    while($row=mysql_fetch_assoc($result)){ $customers.=sprintf(', <a href="customer.php?id=%d">%s (%d)</a>',$row['Customer Key'],$row['Customer Name'],$row['Customer Key']);
-    }
-    $customers=preg_replace('/^, /','',$customers);
-    
-    
-    
-    $response=array('state'=>200,'found'=>1,'msg'=>_('Email found in another').' '.ngettext('customer','customers',$num_rows).'. '.$customers);
-  echo json_encode($response);
+    } else {
+        $customers='';
+
+        while ($row=mysql_fetch_assoc($result)) {
+            $customers.=sprintf(', <a href="customer.php?id=%d">%s (%d)</a>',$row['Customer Key'],$row['Customer Name'],$row['Customer Key']);
+        }
+        $customers=preg_replace('/^, /','',$customers);
+
+
+
+        $response=array('state'=>200,'found'=>1,'msg'=>_('Email found in another').' '.ngettext('customer','customers',$num_rows).'. '.$customers);
+        echo json_encode($response);
     }
 }
 
@@ -3542,7 +3639,7 @@ function used_email() {
     $sql=sprintf('select `Subject`,`Subject Key` from `Email Dimension` E left join `Email Bridge` EB on (E.`Email Key`=EB.`Email Key`) where `Email`=%s  '
                  ,prepare_mysql($email)
                 );
-            
+
     $result=mysql_query($sql);
     $num_rows = mysql_num_rows($result);
     if ($num_rows==0) {
@@ -5086,7 +5183,7 @@ function list_customer_categories() {
                if (!$percentages) {
                    if ($show_default_currency) {
                        $class='';
-                       if ($myconf['currency_code']!=$row['Product Category Currency Code'])
+                       if ($corporate_currency!=$row['Product Category Currency Code'])
                            $class='currency_exchanged';
 
 
@@ -5266,10 +5363,10 @@ function marketing_post_lists() {
     $_SESSION['state']['customers']['list']['where']=$awhere;
     $_SESSION['state']['customers']['list']['f_field']=$f_field;
     $_SESSION['state']['customers']['list']['f_value']=$f_value;
-    
-    
-     $where=' true';
-    
+
+
+    $where=' true';
+
 
 
 
@@ -5281,7 +5378,7 @@ function marketing_post_lists() {
     $wheref='';
 
     $sql="select count(distinct `Marketing Post Sent Fact Key`) as total from `Marketing Post Sent Fact` where $where  ";
-	//print $sql;
+    //print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -5289,7 +5386,7 @@ function marketing_post_lists() {
     }
     if ($wheref!='') {
         $sql="select count(*) as total_without_filters from `Marketing Post Sent Fact` where $where $wheref ";
-		//print $sql;
+        //print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -5337,22 +5434,22 @@ function marketing_post_lists() {
 
     $sql="select * from `Marketing Post Sent Fact` where $where  order by $order $order_direction limit $start_from,$number_results";
 
-   
-   $adata=array();
+
+    $adata=array();
 
 
 
     $result=mysql_query($sql);
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-		$customer=new Customer($data['Customer Key']);
-		//print_r($customer);exit;
-		
-		$sql=sprintf("select `Marketing Post Name` from `Marketing Post Dimension` where `Marketing Post Key`=%d", $data['Marketing Post Key']);
-		$result1=mysql_query($sql);
-		if($row=mysql_fetch_array($result1)){
-			$post_name=$row['Marketing Post Name'];
-		}
+        $customer=new Customer($data['Customer Key']);
+        //print_r($customer);exit;
+
+        $sql=sprintf("select `Marketing Post Name` from `Marketing Post Dimension` where `Marketing Post Key`=%d", $data['Marketing Post Key']);
+        $result1=mysql_query($sql);
+        if ($row=mysql_fetch_array($result1)) {
+            $post_name=$row['Marketing Post Name'];
+        }
 
 
         $cusomer_name=" <a href='customers.php?id=".$customer->id."'>".$customer->get("Customer Main Contact Name").'</a>';
@@ -5364,11 +5461,11 @@ function marketing_post_lists() {
                      'requested_date'=>$data['Requested Date'],
                      'name'=>$cusomer_name,
                      //'type'=>$data['List key'],
-					 'post_name'=>$post_name,
-					 'key'=>$data['Marketing Post Sent Fact Key']
-                     //'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
-                    // 'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
-                    // 'delete'=>'<img src="art/icons/cross.png"/>'
+                     'post_name'=>$post_name,
+                     'key'=>$data['Marketing Post Sent Fact Key']
+                           //'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
+                           // 'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
+                           // 'delete'=>'<img src="art/icons/cross.png"/>'
 
 
                  );
@@ -5462,10 +5559,10 @@ function list_customers_lists() {
     $_SESSION['state']['customers']['list']['where']=$awhere;
     $_SESSION['state']['customers']['list']['f_field']=$f_field;
     $_SESSION['state']['customers']['list']['f_value']=$f_value;
-    
-    
-     $where=' where `List Scope`="Customer"';
-    
+
+
+    $where=' where `List Scope`="Customer"';
+
 
 
 
@@ -5530,9 +5627,9 @@ function list_customers_lists() {
 
 
     $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
-   
-   
-   $adata=array();
+
+
+    $adata=array();
 
 
 
@@ -5561,7 +5658,7 @@ function list_customers_lists() {
                      'name'=>$cusomer_list_name,
                      'key'=>$data['List key'],
                      'creation_date'=>strftime("%a %e %b %y %H:%M", strtotime($data['List Creation Date']." +00:00")),
-                     'add_to_email_campaign_action'=>'<span class="state_details" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add List').'</span>',
+                     'add_to_email_campaign_action'=>'<div class="buttons small"><button class="positive" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add Emails').'</button></div>',
                      'delete'=>'<img src="art/icons/cross.png"/>'
 
 
@@ -5845,11 +5942,11 @@ function list_customers_correlations() {
     if ($order=='name_a')
         $order='`Customer A Name`';
     elseif ($order=='name_b')
-        $order='`Customer B Name`';
+    $order='`Customer B Name`';
     elseif ($order=='id_a')
-        $order='`Customer A Key`';
+    $order='`Customer A Key`';
     elseif ($order=='id_b')
-        $order='`Customer B Key`';
+    $order='`Customer B Key`';
 
     else
         $order='`Correlation`';
@@ -5885,12 +5982,12 @@ function list_customers_correlations() {
                      'name_b'=>$name_b,
                      'correlation'=>$data['Correlation'],
                      'action'=>sprintf('<a href="customer_split_view.php?id_a=%d&id_b=%d&p=cs&score=%f&name_a=%s&name_b=%s"><img src="art/icons/application_tile_horizontal.png" alt="split_view"></a>',
-                     $data['Customer A Key'],
-                     $data['Customer B Key'],
-                     $data['Correlation'],
-                     urlencode($data['Customer A Name']),
-                     urlencode($data['Customer B Name'])
-                     )   
+                                       $data['Customer A Key'],
+                                       $data['Customer B Key'],
+                                       $data['Correlation'],
+                                       urlencode($data['Customer A Name']),
+                                       urlencode($data['Customer B Name'])
+                                      )
 
                  );
 
@@ -5918,67 +6015,67 @@ function list_customers_correlations() {
 
 
 
-function can_merge_customer($data){
-global $user;
-$customer_to_merge_id=_trim($data['customer_to_merge_id']);
+function can_merge_customer($data) {
+    global $user;
+    $customer_to_merge_id=_trim($data['customer_to_merge_id']);
 
-if($customer_to_merge_id==''){
- $response=array('state'=>200,
-                    'action'=>'empty',
-                    'msg'=>''
-                    );
-                    echo json_encode($response);
-                    exit;
-}
+    if ($customer_to_merge_id=='') {
+        $response=array('state'=>200,
+                        'action'=>'empty',
+                        'msg'=>''
+                       );
+        echo json_encode($response);
+        exit;
+    }
 
-if(!is_numeric($customer_to_merge_id)){
- $response=array('state'=>200,
-                    'action'=>'error',
-                    'msg'=>_('Invalid Customer ID')
-                    
-                    );
-                    echo json_encode($response);
-                    exit;
-}
+    if (!is_numeric($customer_to_merge_id)) {
+        $response=array('state'=>200,
+                        'action'=>'error',
+                        'msg'=>_('Invalid Customer ID')
 
-$customer_a=new Customer($data['customer_key']);
-if(!$customer_a->id){
- $response=array('state'=>400,'action'=>'error','msg'=>"Customer don't exists");
-                    echo json_encode($response);
-                    exit;
-}
+                       );
+        echo json_encode($response);
+        exit;
+    }
 
-if(!in_array($customer_a->data['Customer Store Key'],$user->stores)){
- $response=array('state'=>400,'action'=>'error','msg'=>_('Forbidden operation'));
-                    echo json_encode($response);
-                    exit;
-}
+    $customer_a=new Customer($data['customer_key']);
+    if (!$customer_a->id) {
+        $response=array('state'=>400,'action'=>'error','msg'=>"Customer don't exists");
+        echo json_encode($response);
+        exit;
+    }
 
-
-
-$customer_b=new Customer($customer_to_merge_id);
-if(!$customer_b->id){
- $response=array('state'=>200,'action'=>'error','msg'=>"Customer don't exists");
-                    echo json_encode($response);
-                    exit;
-}
-
-if($customer_a->id==$customer_b->id){
-$response=array('state'=>200,'action'=>'error','msg'=>"Same customer ID");
-                    echo json_encode($response);
-                    exit;
-}
-
-if($customer_a->data['Customer Store Key']!=$customer_b->data['Customer Store Key']){
-$response=array('state'=>200,'action'=>'error','msg'=>"Customer bellows to another store");
-                    echo json_encode($response);
-                    exit;
-}
+    if (!in_array($customer_a->data['Customer Store Key'],$user->stores)) {
+        $response=array('state'=>400,'action'=>'error','msg'=>_('Forbidden operation'));
+        echo json_encode($response);
+        exit;
+    }
 
 
-$response=array('state'=>200,'action'=>'ok','msg'=>'','id'=>$customer_b->id);
-                    echo json_encode($response);
-                    exit;
+
+    $customer_b=new Customer($customer_to_merge_id);
+    if (!$customer_b->id) {
+        $response=array('state'=>200,'action'=>'error','msg'=>"Customer don't exists");
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($customer_a->id==$customer_b->id) {
+        $response=array('state'=>200,'action'=>'error','msg'=>"Same customer ID");
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($customer_a->data['Customer Store Key']!=$customer_b->data['Customer Store Key']) {
+        $response=array('state'=>200,'action'=>'error','msg'=>"Customer bellows to another store");
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $response=array('state'=>200,'action'=>'ok','msg'=>'','id'=>$customer_b->id);
+    echo json_encode($response);
+    exit;
 
 
 }

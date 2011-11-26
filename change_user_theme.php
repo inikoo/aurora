@@ -28,7 +28,7 @@ $css_files=array(
 		 );
 
 //for changing the theme by the user
- include_once('Theme.php');
+ $css_files[]='theme.css.php';
 
 
 $js_files=array(

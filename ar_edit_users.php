@@ -12,6 +12,7 @@
 
  Version 2.0
 */
+require_once 'common_detect_agent.php';
 require_once 'common.php';
 require_once 'class.User.php';
 require_once 'class.Staff.php';
@@ -404,22 +405,16 @@ function list_users() {
     mysql_free_result($res);
 
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$total,
-                                      'records_perpage'=>$number_results,
-                                      'records_text'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp
+                                array(
+                               'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
 
@@ -630,9 +625,12 @@ $_SESSION['state']['users']['staff']['order']=$order;
     }
 
     mysql_free_result($res);
-    $rtext=$total_records." ".ngettext('record','records',$total_records);
+   $rtext=$total_records." ".ngettext('user','users',$total_records);
     if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
     $filter_msg='';
 
     switch ($f_field) {
@@ -703,20 +701,16 @@ $password='';
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'rtext'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                             array(
+                               'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
@@ -903,20 +897,16 @@ $password='';
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'rtext'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                             array(
+                               'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
@@ -1103,20 +1093,16 @@ $password='';
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'rtext'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
+                             array(
+                               'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
                                      )
                    );
     echo json_encode($response);
@@ -1175,6 +1161,37 @@ function create_user($data){
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
 
+			$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
+   
+        $message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$handle;
+		$message_data['subject']=$welcome_email_subject;
+		$message_data['html']=$welcome_email_html;
+        $message_data['email_credentials_key']=1;
+        $message_data['email_matter']='Registration';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+		$message_data['email_matter_parent_key']=$email_mailing_list_key;
+        $message_data['recipient_type']='User';
+        $message_data['recipient_key']=0;
+        $message_data['email_key']=0;
+		$message_data['plain']=$welcome_email_plain;
+		if(isset($message_data['plain']) && $message_data['plain']){
+			$message_data['plain']=$message_data['plain'];
+		}
+		else
+			$message_data['plain']=null;
+
+	 //print_r($message_data);
+	$send_email=new SendEmail();
+
+	$send_email->track=true;
+
+
+	$send_result=$send_email->send($message_data);	
+	print_r($send_result);exit;		
+/*
 			$data=array('email_type'=>'Registration',
 				  'recipient_type'=>'User',
 				  'recipient_key'=>$user->id);
@@ -1196,10 +1213,12 @@ function create_user($data){
 			$send_email->smtp('HTML', $data);
 			$result=$send_email->send();
 			}
-
+*/
 			$_val=array('customer_key'=>$customer_key,
 				'store_key'=>$site_key,
 				'url'=>$url,
+				'site_key'=>$site->id,
+				'store_key'=>$store->id,
 				'email'=>$handle
 				);
 			$response=forgot_password($_val);
@@ -1225,6 +1244,7 @@ function forgot_password($data){
 	global $secret_key,$public_url;
 	$key=$data['customer_key'];
 	$store_key=$data['store_key'];
+	$site_key=$data['site_key'];
 	$url=$data['url'];
 	$login_handle=$data['email'];
 	
@@ -1285,13 +1305,15 @@ function forgot_password($data){
                       Thank you";
 
 $files=array();	
+
+/*
 		$data=array('email_type'=>'Password Reminder',
 				  'recipient_type'=>'User',
 				  'recipient_key'=>$user_key);
 				  
 		$send_email=new SendEmail($data);
 		
-		$html_message=$send_email->track_sent_email($html_message);
+		//$html_message=$send_email->track_sent_email($html_message);
 		
         $to=$login_handle;
         $data=array(
@@ -1312,15 +1334,44 @@ $files=array();
         //$send_email=new SendEmail();
         $send_email->smtp('plain', $data);
         $result=$send_email->send();
+*/
 
+			$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
+   
+        $message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$login_handle;
+		$message_data['subject']='Reset your password';
+		$message_data['html']=$html_message;
+        $message_data['email_credentials_key']=$email_credential_key;
+        $message_data['email_matter']='Forgot Password';
+        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['recipient_type']='User';
+        $message_data['recipient_key']=0;
+        $message_data['email_key']=0;
+		$message_data['plain']=$plain_message;
+		if(isset($message_data['plain']) && $message_data['plain']){
+			$message_data['plain']=$message_data['plain'];
+		}
+		else
+			$message_data['plain']=null;
+
+	 //print_r($message_data);
+	$send_email=new SendEmail();
+
+	$send_email->track=true;
+
+
+	$send_result=$send_email->send($message_data);	
 		//print_r($result);
 		
-        if ($result['msg']=='ok') {
+        if ($send_result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             return $response;
 
         } else {
-            print_r($result);
+            print_r($send_result);
             $response=array('state'=>200,'result'=>'error '.join(' ',$result));
             return $response;
         }
