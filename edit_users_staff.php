@@ -141,5 +141,16 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
+$elements_number=array('ActiveWorking'=>0,'ActiveNotWorking'=>0,'InactiveWorking'=>0,'InactiveNotWorking'=>0);
+$sql=sprintf("select count(*) as num,`User Staff Type` from  `User Dimension` where `User Type`='Staff' group by `User Staff Type`");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[str_replace(' ','',$row['User Staff Type'])]=$row['num'];
+}
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['users']['staff']['elements']);
+
+
+
 $smarty->display('edit_users_staff.tpl');
 ?>

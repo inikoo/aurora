@@ -44,9 +44,11 @@
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Stores{/t} <img class="export_data_link" id="export_csv0"  label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
 <div class="table_top_bar" ></div>
+ 
  <div class="buttons small clusters">
- <button   id="change_display_mode" >{$display_mode_label}</button>
+ <button  class="selected" id="change_stores_display_mode" >{$display_stores_mode_label}</button>
  </div>
+ 
  <div class="clusters">
     <div class="buttons small left cluster" >
         <button class="table_option {if $view=='general'}selected{/if}" id="general" >{t}Summary{/t}</button>
@@ -355,12 +357,12 @@ DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Typ
 </div>
 
 
-<div id="change_display_menu" class="yuimenu">
+<div id="change_stores_display_menu" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Display Mode Options{/t}:</li>
       {foreach from=$mode_options_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_display_mode('{$menu.mode}','{$menu.label}',0)"> {$menu.label}</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_display_mode('stores','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</a></li>
       {/foreach}
     </ul>
   </div>

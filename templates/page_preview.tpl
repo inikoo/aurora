@@ -27,7 +27,7 @@
                 </div>
                 <div id="ft" style="z-index:2">
                     {*}{include  file="footer.tpl" }{*}
-                    {include  file="string:{$page->get_footer_template()}" }
+                    {*}{include  file="string:{$page->get_footer_template()}" }{*}
                 </div>
             </div>
     </body>

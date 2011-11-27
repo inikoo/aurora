@@ -5120,7 +5120,7 @@ ALTER TABLE `Site Dimension` ADD `Site Slogan` VARCHAR( 256 ) NOT NULL AFTER `Si
 ADD `Site Logo Image Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Site Slogan` ,
 ADD `Site Checkout Method` ENUM( 'Mals', 'Inikoo' ) NOT NULL DEFAULT 'Inikoo' AFTER `Site Logo Image Key` ,
 ADD `Site Registration Method` ENUM( 'SideBar', 'MainPage' ) NOT NULL AFTER `Site Checkout Method` ,
-ADD `Site FTP Credentials` VARCHAR( 1028 ) NOT NULL AFTER `Site Registration Method` 
+ADD `Site FTP Credentials` VARCHAR( 1028 ) NOT NULL AFTER `Site Registration Method` ;
 CREATE TABLE `Email Template Historic Color Scheme Dimension` (
   `Email Template Historic Color Scheme Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Background Body` varchar(6) NOT NULL DEFAULT 'FFFFFF',
@@ -5213,6 +5213,8 @@ ALTER TABLE `Page Footer External File Bridge` ADD `External File Type` ENUM( 'J
 ALTER TABLE `Page Header External File Bridge` ADD `External File Type` ENUM( 'Javascript', 'CSS' ) NOT NULL ;
 ALTER TABLE `Page Store External File Bridge` ADD `External File Type` ENUM( 'Javascript', 'CSS' ) NOT NULL ;
 ALTER TABLE `Page Header Dimension` ADD `Default Site` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Template` ,ADD INDEX ( `Default Site` ) ;
+
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Store Email Template Header', 'Store Email Postcard', 'Email Image', 'Page', 'Page Header', 'Page Footer', 'Site' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
 */
 

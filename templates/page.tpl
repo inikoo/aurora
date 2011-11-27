@@ -11,10 +11,13 @@
 </div>
 <div class="top_page_menu">
     <div class="buttons" style="float:right">
-        <button  onclick="window.location='edit_page.php?id={$page->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>
+         {if $modify}<button  onclick="window.location='edit_page.php?id={$page->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if}
+         <button  onclick="window.location='page_preview.php?id={$page->id}&referal='" ><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button>
     </div>
+    
+    
     <div class="buttons" style="float:left">
-         {if $modify}<button  onclick="window.location='site.php?id={$site->id}'" ><img src="art/icons/house.png" alt=""> {t}Site{/t}</button>{/if}
+        <button  onclick="window.location='site.php?id={$site->id}'" ><img src="art/icons/house.png" alt=""> {t}Site{/t}</button>
     </div>
     <div style="clear:both"></div>
 </div> 
@@ -26,7 +29,7 @@
 
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
 
     <li> <span class="item {if $block_view=='hits'}selected{/if}"   id="hits">  <span> {t}Hits{/t}</span></span></li>

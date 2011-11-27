@@ -48,7 +48,7 @@ case('orders_in_process'):
 function invoice_categories_sales_overview() {
 
 
-    global $myconf,$output_type,$user,$corporate_symbol;
+    global $myconf,$output_type,$user,$corporate_currency_symbol;
 
     $conf=$_SESSION['state']['home']['splinters']['sales'];
     $start_from=0;
@@ -200,8 +200,8 @@ function invoice_categories_sales_overview() {
                      'sales'=>money($row['sales'],$row['currency']),
                      'sales_1yb'=>money($row['sales_1yb'],$row['currency']),
                      'sales_delta'=>delta($row['sales'],$row['sales_1yb']),
-                     'dc_sales'=>money($row['dc_sales'],$corporate_symbol),
-                     'dc_sales_1yb_'=>money($row['dc_sales_1yb'],$corporate_symbol),
+                     'dc_sales'=>money($row['dc_sales'],$corporate_currency_symbol),
+                     'dc_sales_1yb_'=>money($row['dc_sales_1yb'],$corporate_currency_symbol),
                      'dc_sales_delta'=>delta($row['dc_sales'],$row['dc_sales_1yb']),
                      'dc_sales_share'=>$row['dc_sales']
 
@@ -226,7 +226,7 @@ function invoice_categories_sales_overview() {
                  'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
                  'sales'=>'',
                  'sales_delta'=>'',
-                 'dc_sales'=>money($sum_dc_sales,$corporate_symbol),
+                 'dc_sales'=>money($sum_dc_sales,$corporate_currency_symbol),
                  'dc_sales_delta'=>delta($sum_dc_sales,$sum_dc_sales_1yb),
                  'invoices_share'=>''
              );
@@ -263,7 +263,7 @@ $rtext_rpp='';
 function store_sales_overview() {
 
 
-    global $myconf,$output_type,$user,$corporate_symbol;
+    global $myconf,$output_type,$user,$corporate_currency_symbol;
 
     $conf=$_SESSION['state']['home']['splinters']['sales'];
     $start_from=0;
@@ -414,8 +414,8 @@ function store_sales_overview() {
                      'sales'=>money($row['sales'],$row['currency']),
                      'sales_1yb'=>money($row['sales_1yb'],$row['currency']),
                      'sales_delta'=>delta($row['sales'],$row['sales_1yb']),
-                     'dc_sales'=>money($row['dc_sales'],$corporate_symbol),
-                     'dc_sales_1yb_'=>money($row['dc_sales_1yb'],$corporate_symbol),
+                     'dc_sales'=>money($row['dc_sales'],$corporate_currency_symbol),
+                     'dc_sales_1yb_'=>money($row['dc_sales_1yb'],$corporate_currency_symbol),
                      'dc_sales_delta'=>delta($row['dc_sales'],$row['dc_sales_1yb']),
                      'dc_sales_share'=>$row['dc_sales']
 
@@ -440,7 +440,7 @@ function store_sales_overview() {
                  'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
                  'sales'=>'',
                  'sales_delta'=>'',
-                 'dc_sales'=>money($sum_dc_sales,$corporate_symbol),
+                 'dc_sales'=>money($sum_dc_sales,$corporate_currency_symbol),
                  'dc_sales_delta'=>delta($sum_dc_sales,$sum_dc_sales_1yb),
                  'invoices_share'=>''
              );

@@ -458,7 +458,9 @@
 
  <table style="margin:0 auto">
   <form enctype="multipart/form-data" method="post" id="upload_page_content_form">
-<input type="hidden" name="page_key" value="{$page->id}" />
+<input type="hidden" name="parent_key" value="{$page->id}" />
+<input type="hidden" name="parent" value="page" />
+
  <tr><td>{t}File{/t}:</td><td><input id="upload_page_content_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
 
   </form>
