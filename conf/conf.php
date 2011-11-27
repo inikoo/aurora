@@ -2240,7 +2240,10 @@ $default_state=array(
                                            'where'=>'where true',
                                            'f_field'=>'alias',
                                            'f_value'=>'',
-                                           'view'=>'login_history'
+                                           'view'=>'login_history',
+                                           'elements'=>array('ActiveWorking'=>1,'ActiveNotWorking'=>1,'InactiveWorking'=>0,'InactiveNotWorking'=>0)
+                                          
+
                                        ),
                                'supplier'=>array(
                                               'display'=>'all',

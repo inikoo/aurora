@@ -35,9 +35,9 @@
 
 
 
-	<div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
+	
     <h1>{t}Users Handing{/t}</h1>
-</div>
+
 
 <div class="top_row">
 
@@ -60,7 +60,7 @@
     <td style="text-align:center">{$root->get('Failed Login Count')}</td>
     <td >{$root->get('Last Failed Login')}</td>
  </tr>
-{if $warehouse_user}
+{if isset($warehouse_user)}
 <tr>
 <td colspan="5"><h2>{t}Warehouse Account{/t}</h2></td>
 </tr>

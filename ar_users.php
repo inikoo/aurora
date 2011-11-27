@@ -46,9 +46,7 @@ case('supplier_users'):
 case('customer_users'):
     list_customer_users();
     break;
-case('users'):
-    list_users();
-    break;
+
 case('login_history'):
     list_login_history();
     break;
@@ -65,168 +63,11 @@ default:
 
 }
 
-function list_users() {
-    $conf=$_SESSION['state']['users']['staff'];
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['where']))
-        $where=$_REQUEST['where'];
-    else
-        $where=$conf['where'];
-
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-
-    if (isset( $_REQUEST['type']))
-        $type=$_REQUEST['type'];
-    else
-        $type=$conf['type'];
-
-
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_order=$order;
-    $_dir=$order_direction;
-    $filter_msg='';
-
-
-    $_SESSION['state']['users']['staff']=array(
-                                             'type'=>$type
-                                                    ,'order'=>$order
-                                                             ,'order_dir'=>$order_direction
-                                                                          ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-
-
-    $where=sprintf('where `User Type`=%s',prepare_mysql($type));
-
-
-    $filter_msg='';
-    $wheref='';
-    if ($f_field=='handle' and $f_value!='')
-        $wheref.=" and  `User Handle` like '".addslashes($f_value)."%'";
-    elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `User Alias` like '%".addslashes($f_value)."%'";
-
-    $sql="select count(*) as total from `User Dimension`  $where $wheref   ";
-
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
-    mysql_free_result($res);
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total from `Product Dimension`  $where   ";
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
-        }
-        mysql_free_result($res);
-    }
-
-
-    $rtext=$total_records." ".ngettext('user','users',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=_('(Showing all)');
-
-
-    $translations=array('handle'=>'`User Handle`');
-    if (array_key_exists($order,$translations))
-        $order=$translations[$order];
 
 
 
 
-    $adata=array();
-    $sql="Select *,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` and `Scope`='Store'  ) as Stores,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses  from `User Dimension` U  $where $wheref   order by $order $order_direction limit $start_from,$number_results;";
-    //print $sql;
-    $res=mysql_query($sql);
 
-    while ($row=mysql_fetch_array($res)) {
-
-
-
-        $groups=preg_split('/,/',$row['Groups']);
-        $stores=preg_split('/,/',$row['Stores']);
-        $warehouses=preg_split('/,/',$row['Warehouses']);
-
-        $locale=$row['User Preferred Locale'];
-        preg_match('/^[a-z]{2}/',$locale,$match);
-        $lang=$match[0];
-        $adata[]=array(
-                     'handle'=>$row['User Handle'],
-                     'tipo'=>$row['User Type'],
-                     'id'=>$row['User Key'],
-                     'name'=>$row['User Alias'],
-                     'email'=>$row['User Email'],
-                     'lang'=>$lang,
-                     'groups'=>$groups,
-                     'stores'=>$stores,
-                     'warehouses'=>$warehouses,
-                     'password'=>'<img style="cursor:pointer" user_name="'.$row['User Alias'].'" user_id="'.$row['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>',
-                     'passwordmail'=>($row['User Email']!=''?'<img src="art/icons/key_go.png"/>':''),
-                     //'isactive'=>($row['User Active']=='Yes'?'<img src="art/icons/status_online.png" alt="'._('active').'" Title="'._('Active').'"  />':'<img src="art/icons/status_offline.png" Title="'._('Inactive').'"  alt="'._('inactive').'/>'),
-                     'isactive'=>$row['User Active'],
-
-                     'delete'=>'<img src="art/icons/status_busy.png"/>'
-                 );
-
-    }
-    mysql_free_result($res);
-
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$total,
-                                      'records_perpage'=>$number_results,
-                                      'records_text'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp
-                                     )
-                   );
-
-    echo json_encode($response);
-}
 function list_login_history() {
     $conf=$_SESSION['state']['users']['login_history'];
     if (isset( $_REQUEST['sf']))
@@ -1114,12 +955,12 @@ function list_groups() {
 
 
 
-$where='';
-$wheref='';
+    $where='';
+    $wheref='';
 
     $sql="select count(*) as total from `User Group Dimension`     ";
 
-    
+
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1164,8 +1005,8 @@ $wheref='';
 //print $sql;
     $res=mysql_query($sql);
 
-        
-        
+
+
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $data[]=array(
@@ -1177,7 +1018,7 @@ $wheref='';
     mysql_free_result($res);
     $response=array('resultset'=>
                                 array(
-                               'state'=>200,
+                                    'state'=>200,
                                     'data'=>$data,
                                     'rtext'=>$rtext,
                                     'rtext_rpp'=>$rtext_rpp,
@@ -1186,7 +1027,7 @@ $wheref='';
                                     'tableid'=>$tableid,
                                     'filter_msg'=>$filter_msg,
                                     'total_records'=>$total
-                                     )
+                                )
                    );
 
     echo json_encode($response);
@@ -1222,12 +1063,6 @@ function list_staff_users() {
         $f_value=$_REQUEST['f_value'];
     else
         $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['where']))
-        $where=$_REQUEST['where'];
-    else
-        $where=$conf['where'];
-
-
 
 
 
@@ -1236,6 +1071,33 @@ function list_staff_users() {
         $tableid=$_REQUEST['tableid'];
     else
         $tableid=0;
+
+
+
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
+    else
+        $elements=$conf['elements'];
+
+
+
+    if (isset( $_REQUEST['elements_InactiveNotWorking'])) {
+        $elements['InactiveNotWorking']=$_REQUEST['elements_InactiveNotWorking'];
+    }
+    if (isset( $_REQUEST['elements_InactiveWorking'])) {
+        $elements['InactiveWorking']=$_REQUEST['elements_InactiveWorking'];
+    }
+    if (isset( $_REQUEST['elements_ActiveNotWorking'])) {
+        $elements['ActiveNotWorking']=$_REQUEST['elements_ActiveNotWorking'];
+    }
+    if (isset( $_REQUEST['elements_ActiveWorking'])) {
+        $elements['ActiveWorking']=$_REQUEST['elements_ActiveWorking'];
+    }
+
+
+
+
+
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     $_order=$order;
@@ -1248,9 +1110,38 @@ function list_staff_users() {
     $_SESSION['state']['users']['staff']['order_dir']=$order_direction;
     $_SESSION['state']['users']['staff']['nr']=$number_results;
     $_SESSION['state']['users']['staff']['sf']=$start_from;
-    $_SESSION['state']['users']['staff']['where']=$where;
     $_SESSION['state']['users']['staff']['f_field']=$f_field;
     $_SESSION['state']['users']['staff']['f_value']=$f_value;
+
+    $_SESSION['state']['users']['staff']['elements']=$elements;
+
+
+  //  $where=" where `User Key` IS NOT NULL  ";
+$where=" where  true";
+    $_elements='';
+    foreach($elements as $_key=>$_value) {
+        if ($_value) {
+            if ($_key=='InactiveNotWorking') {
+                $_elements.=",'Inactive No tWorking'";
+            }
+            elseif($_key=='InactiveWorking') {
+                $_elements.=",'Inactive Working'";
+            }
+            elseif($_key=='ActiveNotWorking') {
+                $_elements.=",'Active Not Working'";
+            }
+              elseif($_key=='ActiveWorking') {
+                $_elements.=",'Active Working'";
+            }
+        }
+    }
+    $_elements=preg_replace('/^\,/','',$_elements);
+    if ($_elements=='') {
+        $where.=' and false' ;
+    } else {
+        $where.=' and `User Staff Type` in ('.$_elements.')' ;
+    }
+
 
 
 
@@ -1260,7 +1151,7 @@ function list_staff_users() {
     else if ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
         $wheref.=sprintf(" and  $f_field=%d ",$f_value);
 
-    $where.=" and `User Key` IS NOT NULL  ";
+
 
 
     $sql="select count(*) as total from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where $wheref";
@@ -1284,13 +1175,13 @@ function list_staff_users() {
     }
 
     mysql_free_result($res);
-    
-  
+
+
     $filter_msg='';
 
 
 
- $rtext=$total_records." ".ngettext('user','users',$total_records);
+    $rtext=$total_records." ".ngettext('user','users',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
@@ -1371,8 +1262,8 @@ function list_staff_users() {
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                 array(
-                               'state'=>200,
+                                array(
+                                    'state'=>200,
                                     'data'=>$adata,
                                     'rtext'=>$rtext,
                                     'rtext_rpp'=>$rtext_rpp,
@@ -1381,7 +1272,7 @@ function list_staff_users() {
                                     'tableid'=>$tableid,
                                     'filter_msg'=>$filter_msg,
                                     'total_records'=>$total
-                                     )
+                                )
                    );
     echo json_encode($response);
 }
@@ -1561,7 +1452,7 @@ function list_supplier_users() {
     mysql_free_result($res);
     $response=array('resultset'=>
                                 array(
-                               'state'=>200,
+                                    'state'=>200,
                                     'data'=>$adata,
                                     'rtext'=>$rtext,
                                     'rtext_rpp'=>$rtext_rpp,
@@ -1570,7 +1461,7 @@ function list_supplier_users() {
                                     'tableid'=>$tableid,
                                     'filter_msg'=>$filter_msg,
                                     'total_records'=>$total
-                                     )
+                                )
                    );
     echo json_encode($response);
 }
@@ -1739,8 +1630,8 @@ function list_customer_users() {
     }
     mysql_free_result($res);
     $response=array('resultset'=>
-                                 array(
-                               'state'=>200,
+                                array(
+                                    'state'=>200,
                                     'data'=>$adata,
                                     'rtext'=>$rtext,
                                     'rtext_rpp'=>$rtext_rpp,
@@ -1749,7 +1640,7 @@ function list_customer_users() {
                                     'tableid'=>$tableid,
                                     'filter_msg'=>$filter_msg,
                                     'total_records'=>$total
-                                     )
+                                )
                    );
     echo json_encode($response);
 }

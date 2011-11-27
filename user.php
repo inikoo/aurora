@@ -49,6 +49,10 @@ $js_files=array(
           );
 
 
+$smarty->assign('search_label',_('Users'));
+$smarty->assign('search_scope','users');
+
+
 $smarty->assign('parent','users');
 
 
@@ -64,6 +68,10 @@ case 'Staff':
     $title=_('Staff User');
     $tpl='staff_user.tpl';
     $js_files[]='staff_user.js.php';
+    
+    
+            $smarty->assign('block_view',$_SESSION['state']['staff_user']['block_view']);
+
     if (isset($_SESSION['user_key'])) {
         $sql="select `User Key`,`User Alias` from `User Dimension` where `User Key`='".$_SESSION['user_key']."'";
         $result=mysql_query($sql);

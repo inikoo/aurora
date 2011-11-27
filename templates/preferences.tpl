@@ -1,6 +1,5 @@
 {include file='header.tpl'}
 <div id="bd" >
-{include file='users_navigation.tpl'}
 <input id="user_key" value="{$user->id}" type="hidden"  />
 <div class="branch"> 
   <span>Preferences</span>

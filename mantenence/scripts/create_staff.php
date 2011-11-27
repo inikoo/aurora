@@ -53,7 +53,7 @@ $staff=array(
 
 
 	     'CUS'=>array(
-			  array('Create User'=>true,'Staff Area Key'=>$office_area_key,'Staff Department Key'=>$department_key,'Staff Name'=>'Mauro Demicheli','Staff Alias'=>'mauro','Staff Currently Working'=>'Yes')
+			  array('Create User'=>true,'Staff Area Key'=>$office_area_key,'Staff Department Key'=>$department_key,'Staff Name'=>'Callum Wise','Staff Alias'=>'callum','Staff Currently Working'=>'Yes')
 			  
 			  
 			  
