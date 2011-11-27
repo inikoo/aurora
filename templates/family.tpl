@@ -1,4 +1,5 @@
 {include file='header.tpl'}
+ 
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
  <input type="hidden" id="family_key" value="{$family->id}"/>
@@ -181,14 +182,26 @@
 <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
  <div id="photo_container" style="margin-top:0px;float:left">
-	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
+	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;text-align:center;margin:0 10px 0 0px">
 	     
-	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-		<img src="{ if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
+	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:160px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
+		        <img 
+		           src="{if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"   
+		            style="vertical-align:middle;display:block;" 
+		            width="{$img_width}px" 
+		            valign="center" 
+		            border=1  
+		            id="image"   
+		            alt="{t}Image{/t}"
+		            />
 	      </div>
 	    </div>
-	    
-	    { if $num_images>1}
+	   
+	 
+	   
+	   
+
+	    {if $num_images>1}
 	    <div style="width:160px;margin:auto;padding-top:5px"  >
 	      {foreach from=$images item=image  name=foo}
 	      {if $image.is_principal==0}
@@ -197,7 +210,7 @@
 	      {/foreach}
 	    </div>
 	    {/if}
-	    
+	  
 	    
 	  </div>
 <h2 style="margin:20px 0 0 0 ;padding:0">Family Information</h2>

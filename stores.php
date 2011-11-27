@@ -149,8 +149,8 @@ if ($distinct_currencies>1) {
 }
 
 
-$smarty->assign('display_mode',$display_mode);
-$smarty->assign('display_mode_label',$display_mode_label);
+$smarty->assign('display_stores_mode',$display_mode);
+$smarty->assign('display_stores_mode_label',$display_mode_label);
 
 
 $smarty->assign('search_label',_('Products'));

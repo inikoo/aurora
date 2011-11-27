@@ -192,7 +192,7 @@ $res=mysql_query($sql);
 
 if ($row=mysql_fetch_array($res)) {
     $corporate_currency=$row['HQ Currency'];
-    $corporate_symbol=$row['Currency Symbol'];
+    $corporate_currency_symbol=$row['Currency Symbol'];
     $corporate_country_code=$row['HQ Country Code'];
     $corporate_country_2alpha_code=$row['HQ Country 2 Alpha Code'];
     $inikoo_public_url=$row['Inikoo Public URL'];

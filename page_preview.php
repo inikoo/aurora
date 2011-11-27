@@ -24,8 +24,12 @@ $store=new Store($page->data['Page Store Key']);
 
 
 $css_files=array(
-
+        $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
            );
+           
+           
+           
+           
 //include_once('Theme.php');
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -36,7 +40,46 @@ $js_files=array(
 			
           );
           
-          
+   $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    if ($row['External File Type']=='CSS')
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+    else
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    if ($row['External File Type']=='CSS')
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+    else
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    if ($row['External File Type']=='CSS')
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+    else
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+/*
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Footer External File Bridge` where `Page Footer Key`=%d",$page->data['Page Footer Key']);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    if ($row['External File Type']=='CSS')
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+    else
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+*/
+       
  
           
           

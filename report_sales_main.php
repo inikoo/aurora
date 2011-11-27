@@ -89,7 +89,7 @@ $am_safe_store_keys=preg_replace('/,/','|',$store_keys);
 
 
 $smarty->assign('store_currencies',$store_currencies);
-$smarty->assign('corporate_symbol',$corporate_symbol);
+$smarty->assign('corporate_currency_symbol',$corporate_currency_symbol);
 
 $store_key=$store_keys;
 

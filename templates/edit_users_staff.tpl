@@ -15,26 +15,30 @@
 </div>
 
     
-    <div class="data_table" >
+      <ul class="tabs" id="chooser_ul" style="clear:both">
+    <li> <span class="item selected"  id="users">  <span> {t}Users{/t}</span></span></li>
+  
+  </ul>
+  
+  <div class="tabbed_container" > 
+
+    
+    
+  
       <span class="clean_table_title">{t}Staff Users{/t}</span>
-      
-      
-     
-       <table  style="float:left;margin:0 0 0 0px ;margin-left:0;padding:0;clear:left"  class="options_mini" >
-     <tr  id="orders_show_only"   style="margin-left:0;padding:0"  >
-       <td  style="margin-left:20px;xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
-       <td   {if $display=='active'}class="selected"{/if}  id="active"  >{t}Active (Employees){/t}</td>
-       <td   {if $dispply=='inactive_current'}class="selected"{/if}  id="inactive_current"  >{t}Inactive (Employees){/t}</td>
-       <td   {if $display=='inactive_ex'}class="selected"{/if}  id="inactive_ex"  >{t}Inactive (Ex-employees){/t}</td>
-     </tr>
-    </table>
-      
-      
+            <div  style="font-size:90%"   id="transaction_chooser" >
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.InactiveNotWorking}selected{/if} label_page_type"  id="elements_InactiveNotWorking"   >{t}Inactive Not Working{/t} (<span id="elements_InactiveNotWorking_number">{$elements_number.InactiveNotWorking}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.InactiveWorking}selected{/if} label_page_type"  id="elements_InactiveWorking"   >{t}Inactive Working{/t} (<span id="elements_InactiveWorking_number">{$elements_number.InactiveWorking}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ActiveNotWorking}selected{/if} label_page_type"  id="elements_ActiveNotWorking"   >{t}Active Not Working{/t} (<span id="elements_ActiveNotWorking_number">{$elements_number.ActiveNotWorking}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ActiveWorking}selected{/if} label_page_type"  id="elements_ActiveWorking"   >{t}Active Working{/t} (<span id="elements_ActiveWorking_number">{$elements_number.ActiveWorking}</span>)</span>
+            </div>      
+                   <div class="table_top_bar" style="margin-bottom:15px"></div>
+
       {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
       <div  id="table0"   class="data_table_container dtable btable "> </div>
-    </div>
- 
+    
+ </div>
     
  
 </div> 

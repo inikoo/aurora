@@ -260,6 +260,8 @@ function list_pages() {
 
     $group='';
 
+if($parent=='site'){
+
     $_elements='';
     foreach($elements as $_key=>$_value) {
         if ($_value) {
@@ -279,13 +281,12 @@ function list_pages() {
     $_elements=preg_replace('/^\,/','',$_elements);
     if ($_elements=='') {
         $where.=' and false' ;
-    } else {
-    
-    
-    
+    } else {    
         $where.=' and `Page Store Section` in ('.$_elements.')' ;
     }
 
+
+}
 
 
 

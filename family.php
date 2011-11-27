@@ -281,6 +281,17 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
+$tipo_filter=$_SESSION['state']['family']['pages']['f_field'];
+$smarty->assign('filter4',$tipo_filter);
+$smarty->assign('filter_value4',$_SESSION['state']['family']['pages']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
+                 'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
+
+             );
+$smarty->assign('filter_menu4',$filter_menu);
+$smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
 
 
 $table_title=_('List');

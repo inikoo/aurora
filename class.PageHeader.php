@@ -11,11 +11,11 @@
 */
 include_once('class.DB_Table.php');
 include_once('class.Page.php');
-class Page extends DB_Table {
+class PageHeader extends DB_Table {
 
     var $new=false;
 
-    function Page($arg1=false,$arg2=false) {
+    function PageHeader($arg1=false,$arg2=false) {
         $this->table_name='Page Header';
         $this->ignore_fields=array('Page Header Key');
 
@@ -73,12 +73,6 @@ class Page extends DB_Table {
         }
 
 
-
-
-
-
-
-
         $create='';
         $update='';
         if (preg_match('/create/i',$options)) {
@@ -118,9 +112,20 @@ class Page extends DB_Table {
         $this->new=false;
         if (!isset($raw_data['Page Header Name']) or  $raw_data['Page Header Name']=='') {
 
-            $raw_data['Page Header Name']=uniqid());
-            $temporal_name=true;
+            $raw_data['Page Header Name']=uniqid();
+            $temporal_name='header';
 
+        }
+        
+         $sql=sprintf("select `Page Header Name` from `Page Header Dimension`  where `Page Header Name`=%s and `Site Key`=%d",
+                     prepare_mysql($raw_data['Page Header Name']),
+                     $raw_data['Site Key']
+
+                    );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+           $raw_data['Page Header Name']=uniqid();
+            $temporal_name=$row['Page Header Name'];
         }
 
 
@@ -152,7 +157,10 @@ class Page extends DB_Table {
             $this->id=mysql_insert_id();
 
             if ($temporal_name) {
-                $sql=sprintf("update `Page Header Dimension` set `Page Header Name`=%s where `Page Header Key`=%d",$this->id);
+                $sql=sprintf("update `Page Header Dimension` set `Page Header Name`=%s where `Page Header Key`=%d",
+                prepare_mysql($temporal_name.$this->id),
+                $this->id
+                );
                 mysql_query($sql);
 
             }
@@ -252,50 +260,7 @@ class Page extends DB_Table {
 
 
         switch ($field) {
-        case('Page Store See Also Type'):
-            $this->update_field('Page Store See Also Type',$value,$options);
-            if ($value=='Auto') {
-                $this->update_see_also();
-            }
-            break;
-        case('code'):
-        case('page_code'):
-            $this->update_field('Page Code',$value,$options);
-            break;
-        case('url'):
-            $this->update_field('Page URL',$value,$options);
-            break;
-        case('page_title'):
-        case('title'):
-            $this->update_field('Page Title',$value,$options);
-            break;
-
-        case('link_title'):
-            $this->update_field('Page Short Title',$value,$options);
-            break;
-        case('keywords'):
-        case('page_keywords'):
-            $this->update_field('Page Header Keywords',$value,$options);
-            break;
-        case('store_title'):
-            $this->update_field('Page Store Title',$value,$options);
-            break;
-        case('subtitle'):
-            $this->update_field('Page Store Subtitle',$value,$options);
-            break;
-        case('slogan'):
-            $this->update_field('Page Store Slogan',$value,$options);
-            break;
-        case('resume'):
-            $this->update_field('Page Store Resume',$value,$options);
-            break;
-        case('Page Store Source'):
-        case('Page Store CSS'):
-            $this->update_field($field,$value,$options);
-            break;
-        case('presentation_template_data'):
-            $this->update_presentation_template_data($value,$options);
-            break;
+    
         default:
             $base_data=$this->base_data();
             if (array_key_exists($field,$base_data)) {
@@ -314,87 +279,7 @@ class Page extends DB_Table {
 
 
 
-    function update_field($field,$value,$options='') {
 
-
-
-
-        if (is_array($value))
-            return;
-        $value=_trim($value);
-
-        //print "** Update Field $field $value\n";
-
-        $old_value=_('Unknown');
-
-        $key_field=$this->table_name." Key";
-
-        $table_name=$this->table_name;
-
-        if ($this->type=='Store') {
-            $extra_data=$this->store_base_data();
-            if (array_key_exists($field,$extra_data))
-                $table_name='Page Store';
-        }
-
-
-        $sql="select `".$field."` as value from  `".$table_name." Dimension`  where `$key_field`=".$this->id;
-        //print "$sql\n";
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-            $old_value=$row['value'];
-        }
-
-
-
-
-
-        $sql="update `".$table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `$key_field`=".$this->id;
-        // print $sql;
-
-
-        mysql_query($sql);
-        $affected=mysql_affected_rows();
-        if ($affected==-1) {
-            $this->msg.=' '._('Record can not be updated')."\n";
-            $this->error_updated=true;
-            $this->error=true;
-
-            return;
-        }
-        elseif($affected==0) {
-            //$this->msg.=' '._('Same value as the old record');
-
-        } else {
-            $this->data[$field]=$value;
-            $this->msg.=" $field "._('Record updated').", \n";
-            $this->msg_updated.=" $field "._('Record updated').", \n";
-            $this->updated=true;
-            $this->new_value=$value;
-
-            $save_history=true;
-            if (preg_match('/no( |\_)history|nohistory/i',$options))
-                $save_history=false;
-            if (
-                !$this->new
-                and $save_history
-            ) {
-                $history_data=array(
-                                  'indirect_object'=>$field
-                                                    ,'old_value'=>$old_value
-                                                                 ,'new_value'=>$value
-
-                              );
-
-
-
-                $this->add_history($history_data);
-
-            }
-
-        }
-
-    }
 
     function get_data_for_smarty($data) {
 

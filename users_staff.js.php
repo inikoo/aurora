@@ -366,7 +366,56 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=users-staff-block_view&value='+this.id ,{});
 }
 
+
+function change_elements(){
+
+ids=['elements_InactiveNotWorking','elements_InactiveWorking','elements_ActiveNotWorking','elements_ActiveWorking'];
+
+
+if(Dom.hasClass(this,'selected')){
+
+var number_selected_elements=0;
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+number_selected_elements++;
+}
+}
+
+if(number_selected_elements>1){
+Dom.removeClass(this,'selected')
+
+}
+
+}else{
+Dom.addClass(this,'selected')
+
+}
+
+table_id=0;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+var request='';
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+request=request+'&'+ids[i]+'=1'
+}else{
+request=request+'&'+ids[i]+'=0'
+
+}
+}
+  
+ // alert(request)
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+
+}
+
  function init(){
+ 
+ 
+ Event.addListener(['elements_InactiveNotWorking','elements_InactiveWorking','elements_ActiveNotWorking','elements_ActiveWorking'], "click",change_elements);
+
+ 
  init_search('users');
  
  var ids=['users','groups','login_history'];

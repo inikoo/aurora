@@ -4501,9 +4501,6 @@ function list_families() {
 
 
     $_elements='';
-
-
-
     foreach($elements as $_key=>$_value) {
         if ($_value)
             $_elements.=','.prepare_mysql($_key);
