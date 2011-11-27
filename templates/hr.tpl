@@ -24,7 +24,7 @@
  
  
 <div id="block_staff" class="data_table" style="{if $block_view!='staff'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}300px{/if};float:right;margin-bottom:0px" class="right_box">
+<div style="clear:both;margin-top:0px;margin-right:0px;width:300px;float:right;margin-bottom:0px" class="right_box">
   <div class="general_options">
     {foreach from=$staff_options_list item=options }
     {if $options.tipo=="url"}

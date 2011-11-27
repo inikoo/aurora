@@ -269,7 +269,7 @@ prepare_mysql($to)
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
-$top_countries[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_symbol));
+$top_countries[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_currency_symbol));
 }
 
 
@@ -286,7 +286,7 @@ prepare_mysql($to)
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
-$top_regions[]=array('region'=>$row['region'],'sales'=>money($row['net'],$corporate_symbol));
+$top_regions[]=array('region'=>$row['region'],'sales'=>money($row['net'],$corporate_currency_symbol));
 }
 
 $smarty->assign('top_regions',$top_regions);
@@ -302,7 +302,7 @@ prepare_mysql($tag)
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
-$top_countries_in_continent[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_symbol));
+$top_countries_in_continent[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_currency_symbol));
 }
 
 	$smarty->assign('top_countries_in_continent',$top_countries_in_continent);
@@ -318,7 +318,7 @@ prepare_mysql($tag)
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
-$top_regions_in_continent[]=array('region'=>$row['region'],'sales'=>money($row['net'],$corporate_symbol));
+$top_regions_in_continent[]=array('region'=>$row['region'],'sales'=>money($row['net'],$corporate_currency_symbol));
 }
 
 
@@ -335,7 +335,7 @@ prepare_mysql($tag)
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
-$top_countries_in_region[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_symbol));
+$top_countries_in_region[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_currency_symbol));
 }
 
 	$smarty->assign('top_countries_in_region',$top_countries_in_region);
@@ -352,7 +352,7 @@ prepare_mysql($tag)
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
-$top_countries_in_region[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_symbol));
+$top_countries_in_region[]=array('country'=>$row['Country Name'],'sales'=>money($row['net'],$corporate_currency_symbol));
 }
 
 	$smarty->assign('top_countries_in_region',$top_countries_in_region);

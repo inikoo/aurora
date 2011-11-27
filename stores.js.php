@@ -430,7 +430,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
-function change_display_mode(name,label){
+function change_display_mode(parent,name,label){
     if(name=='percentage'){
 	var request='&percentages=1';
     }if(name=='value'){
@@ -439,7 +439,7 @@ function change_display_mode(name,label){
 	var request='&percentages=0&show_default_currency=1';
     }
 
-    Dom.get('change_display_mode').innerHTML=label;
+    Dom.get('change_'+parent+'_display_mode').innerHTML=label;
     var table=tables['table0'];
     var datasource=tables.dataSource0;
     
@@ -617,10 +617,10 @@ YAHOO.util.Event.onContentReady("filtermenu3", function () {
     
     
 
-YAHOO.util.Event.onContentReady("change_display_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("change_display_menu", { context:["change_display_mode","tr", "br"]  });
+YAHOO.util.Event.onContentReady("change_stores_display_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("change_stores_display_menu", { context:["change_stores_display_mode","tr", "br"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("change_display_mode", "click", oMenu.show, null, oMenu);
+	 YAHOO.util.Event.addListener("change_stores_display_mode", "click", oMenu.show, null, oMenu);
   
     });

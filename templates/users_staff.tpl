@@ -36,15 +36,17 @@
 
  <div id="block_users" style="{if $block_view!='users'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 
-   
-  
-      <span class="clean_table_title">{t}Users List{/t}</span>
-      <div  class="clean_table_caption"  style="clear:both;">
-	<div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	<div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-	<div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-      </div>
-      <div  id="table0"   class="data_table_container dtable btable" style="font-size:90%"> </div>
+       <span class="clean_table_title">{t}Users List{/t}</span>
+               <div  style="font-size:90%"   id="transaction_chooser" >
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.InactiveNotWorking}selected{/if} label_page_type"  id="elements_InactiveNotWorking"   >{t}Inactive Not Working{/t} (<span id="elements_InactiveNotWorking_number">{$elements_number.InactiveNotWorking}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.InactiveWorking}selected{/if} label_page_type"  id="elements_InactiveWorking"   >{t}Inactive Working{/t} (<span id="elements_InactiveWorking_number">{$elements_number.InactiveWorking}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ActiveNotWorking}selected{/if} label_page_type"  id="elements_ActiveNotWorking"   >{t}Active Not Working{/t} (<span id="elements_ActiveNotWorking_number">{$elements_number.ActiveNotWorking}</span>)</span>
+            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ActiveWorking}selected{/if} label_page_type"  id="elements_ActiveWorking"   >{t}Active Working{/t} (<span id="elements_ActiveWorking_number">{$elements_number.ActiveWorking}</span>)</span>
+            </div>
+
+       <div class="table_top_bar" style="margin-bottom:15px"></div>
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+    <div  id="table0"   class="data_table_container dtable btable" style="font-size:90%"> </div>
    
    </div>
    
@@ -52,6 +54,7 @@
     
     <div class="data_table" style="margin-top:25px;width:600px">
       <span class="clean_table_title">{t}Groups{/t}</span>
+        <div class="table_top_bar" style="margin-bottom:15px"></div>
 
   {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
       <div  id="table1"   class="data_table_container dtable btable "> </div>
@@ -63,6 +66,8 @@
 
        <div class="data_table" style="margin-top:25px">
       <span class="clean_table_title">{t}Staff User Login History{/t}</span>
+            <div class="table_top_bar" style="margin-bottom:15px"></div>
+
          {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
       <div  id="table2"   class="data_table_container dtable btable "> </div>
     </div>    

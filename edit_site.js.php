@@ -301,6 +301,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function show_dialog_upload_header(){
+
 dialog_upload_header.show()
 
 }
