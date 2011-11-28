@@ -22,7 +22,7 @@
       <div style="width:400px;float:right" class="buttons small">
         <button id="show_logout_view">{t}Show as logged out{/t}</button>
         <button id="show_logoin_view">{t}Show as logged in{/t}</button>
-               {if isset($referral)}<button onclick=""}Go Back{/t}</button>{/if}
+               {if isset($referral)}<button onclick="window.location='{$referral}'">{t}Go Back{/t}</button>{/if}
 
         <div style="clear:both"></div>
         </div>
