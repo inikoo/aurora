@@ -7,6 +7,7 @@ include_once('../../class.Department.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.PartLocation.php');
+include_once('../../class.Deal.php');
 
 include_once('../../class.Supplier.php');
 include_once('../../class.Order.php');
