@@ -11,6 +11,7 @@ include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 include_once('../../class.TaxCategory.php');
+include_once('../../class.Deal.php');
 
 include_once('common_read_orders_functions.php');
 
