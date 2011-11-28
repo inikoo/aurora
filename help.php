@@ -31,10 +31,10 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
-              'external_libs/ampie/ampie/swfobject.js',
+              //'external_libs/ampie/ampie/swfobject.js',
 
               //      'js/index_tools.js',
-              'js/index.js',
+           //   'js/index.js',
 
               //    'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
           );
