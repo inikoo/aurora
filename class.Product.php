@@ -229,14 +229,14 @@ class product extends DB_Table {
         if (preg_match('/update/i',$options)) {
             $update='update';
         }
-        print_r($raw_data);
+//print_r($raw_data);
         $data=$this->get_base_data();
         foreach($raw_data as $_key=>$value) {
         $key=strtolower($_key);
             if (array_key_exists($key,$data))
                 $data[$key]=_trim($value);
         }
-print_r($data);
+//print_r($data);
 
         if ($data['product code']=='' or $data['product price']=='') {
             $this->error=true;
@@ -1037,10 +1037,16 @@ print_r($data);
     function create_product_id($data) {
 
         $base_data=$this->get_base_data();
-        foreach($data as $key=>$value) {
-            if (isset($base_data[strtolower($key)]))
-                $base_data[strtolower($key)]=_trim($value);
+  
+
+  foreach($data as $_key=>$value) {
+        $key=strtolower($_key);
+            if (array_key_exists($key,$base_data))
+                $base_data[$key]=_trim($value);
         }
+
+
+
 
         $base_data['product code file as']=$this->normalize_code($base_data['product code']);
 
