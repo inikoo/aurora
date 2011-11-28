@@ -21,17 +21,19 @@ $smarty->assign('metadata',$metadata);
 //$smarty->assign('email',$email);
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+              $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               
+               'common.css',
+               'container.css',
                'button.css',
-               'container.css'
+               'table.css',
+               'theme.css.php'
 );
 
 
-$css_files[]='theme.css.php';
+
 
 
 
