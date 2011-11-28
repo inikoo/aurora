@@ -125,7 +125,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-  $discounts_with_order_as_term=array();
+        $discounts_with_order_as_term=array();
 
         //           echo "                                                          Memory: ".memory_get_usage(true) . "\n";
         $customer_key_from_order_data=$row2['customer_id'];
@@ -920,38 +920,38 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $code=_trim($transaction['code']);
 
             $product_data=array(
-                              'Product Store Key'=>$store_key
-                                                  ,'Product Main Department Key'=>$dept_key
-                                                                                 ,'product sales type'=>'Not for Sale'
-                                                                                                       ,'product type'=>'Normal'
-                                                                                                                       ,'product record type'=>'Normal'
-                                                                                                                                              ,'Product Web Configuration'=>'Offline'
+                              'Product Store Key'=>$store_key,
+                              'Product Main Department Key'=>$dept_key,
+                              'Product Sales Type'=>'Not for Sale',
+                              'Product Type'=>'Normal',
+                              'Product Record Type'=>'Normal',
+                              'Product Web Configuration'=>'Offline',
 
-                                                                                                                                                                           ,'Product Family Key'=>$fam_key
-                                                                                                                                                                                                 ,'Product Locale'=>'fr_FR'
-                                                                                                                                                                                                                   ,'Product Currency'=>$__currency_code
-                                                                                                                                                                                                                                       ,'product code'=>$code
-                                                                                                                                                                                                                                                       ,'product name'=>$description
-                                                                                                                                                                                                                                                                       ,'product unit type'=>$unit_type
-                                                                                                                                                                                                                                                                                            ,'product units per case'=>$transaction['units']
-                                                                                                                                                                                                                                                                                                                      ,'product net weight'=>$w
-                                                                                                                                                                                                                                                                                                                                            ,'product gross weight'=>$w
-                                                                                                                                                                                                                                                                                                                                                                    ,'part gross weight'=>$w
-                                                                                                                                                                                                                                                                                                                                                                                         ,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
-                                                                                                                                                                                                                                                                                                                                                                                                        ,'product price'=>sprintf("%.2f",$transaction['price'])
-                                                                                                                                                                                                                                                                                                                                                                                                                         ,'supplier code'=>_trim($transaction['supplier_code'])
-                                                                                                                                                                                                                                                                                                                                                                                                                                          ,'supplier name'=>_trim($transaction['supplier_code'])
-                                                                                                                                                                                                                                                                                                                                                                                                                                                           ,'supplier product cost'=>$supplier_product_cost
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,'supplier product code'=>$sup_prod_code
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ,'supplier product name'=>$description
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ,'auto_add'=>true
+                              'Product Family Key'=>$fam_key,
+                              'Product Locale'=>'fr_FR',
+                              'Product Currency'=>$__currency_code,
+                              'Product code'=>$code,
+                              'Product name'=>$description,
+                              'Product unit type'=>$unit_type,
+                              'Product units per case'=>$transaction['units'],
+                              'Product net weight'=>$w,
+                              'Product gross weight'=>$w,
+                              'part gross weight'=>$w,
+                              'Product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units']),
+                              'product price'=>sprintf("%.2f",$transaction['price']),
+                              'supplier code'=>_trim($transaction['supplier_code']),
+                              'supplier name'=>_trim($transaction['supplier_code']),
+                              'supplier product cost'=>$supplier_product_cost,
+                              'supplier product code'=>$sup_prod_code,
+                              'supplier product name'=>$description,
+                              'auto_add'=>true,
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ,'product valid from'=>$date_order
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ,'product valid to'=>$date2
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ,'editor'=>array('Date'=>$date_order)
+                              'product valid from'=>$date_order,
+                              'product valid to'=>$date2,
+                              'editor'=>array('Date'=>$date_order)
                           );
 
-            // print_r( $product_data);
+             print_r( $product_data);
 
             $product=new Product('find',$product_data,'create');
             if (!$product->id) {
@@ -1101,7 +1101,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 //print_r($part_list);
                 $product_part_key=$product->find_product_part_list($part_list);
                 if (!$product_part_key) {
-                print_r($product);
+                    print_r($product);
                     exit("Error can not find product part list (get_orders_db)\n");
                 }
 
