@@ -205,10 +205,7 @@ class product extends DB_Table {
         }
     }
 
-    /*
-      Function: find
-      Busca el producto
-    */
+  
     function find($raw_data,$options) {
 
         if (isset($raw_data['editor'])) {
@@ -303,10 +300,10 @@ class product extends DB_Table {
 
         }
 
-        //   print "Found in key ".$this->found_in_key."\n";
-        // print "Found in id ".$this->found_in_id."\n";
-        /// print "Found in store ".$this->found_in_store."\n";
-        // print "Found in code ".$this->found_in_code."\n";
+          print "Found in key ".$this->found_in_key."\n";
+        print "Found in id ".$this->found_in_id."\n";
+         print "Found in store ".$this->found_in_store."\n";
+         print "Found in code ".$this->found_in_code."\n";
 
 
         if ($create) {
@@ -1036,11 +1033,7 @@ class product extends DB_Table {
 
 
     function create_product_id($data) {
-print "xxx";
 
-
-
-print_r($data);
         $base_data=$this->get_base_data();
         foreach($data as $key=>$value) {
             if (isset($base_data[strtolower($key)]))
