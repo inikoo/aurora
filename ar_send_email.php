@@ -40,7 +40,7 @@ function report_issue($data) {
 	
 	require("app_files/keys/bugs_key.php");
 	$to=$conection_data['email'];
-	$to='migara@inikoo.com';
+	
 	$files=array();
 /*
 	global $message_object;
@@ -131,7 +131,8 @@ function report_issue($data) {
 		$message_data['html']=$data['values']['description']."\n\n".$data['values']['metadata'];
         $message_data['email_credentials_key']=1;
         $message_data['email_matter']='Issue Reporting';
-        $message_data['email_matter_key']=$email_mailing_list_key;
+        $message_data['email_matter_parent_key']=0;
+        $message_data['email_matter_key']=0;
         $message_data['recipient_type']='Other';
         $message_data['recipient_key']=0;
         $message_data['email_key']=0;
