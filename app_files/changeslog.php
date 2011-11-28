@@ -5216,6 +5216,9 @@ ALTER TABLE `Page Header Dimension` ADD `Default Site` ENUM( 'Yes', 'No' ) NOT N
 
 ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Store Email Template Header', 'Store Email Postcard', 'Email Image', 'Page', 'Page Header', 'Page Footer', 'Site' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
+//----
+
+RENAME TABLE `Dashboard Dimension` TO `Dashboard User Bridge` ;
 */
 
 ?>
