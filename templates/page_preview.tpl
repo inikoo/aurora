@@ -16,6 +16,20 @@
     </head>
     <body class="yui-skin-sam inikoo" >
         <div id="doc4" >
+        <div id="preview_hd" style="background:#245e86 url('art/themes/cobalt.jpg') bottom left repeat-x;color:#fff;;padding:3px 20px;height:22px">
+              <span style="margin-right:20px;font-weight:800">{t}Page Preview{/t}</span> {$page->get('Page Short Title')} <span>{$page->get('Page URL')}</span>
+
+      <div style="width:400px;float:right" class="buttons small">
+        <button id="show_logout_view">{t}Show as logged out{/t}</button>
+        <button id="show_logoin_view">{t}Show as logged in{/t}</button>
+               {if isset($referral)}<button onclick=""}Go Back{/t}</button>{/if}
+
+        <div style="clear:both"></div>
+        </div>
+        
+    
+        </div>
+        
             <div id="hd" style="padding:0;margin:0;z-index:3">
                 {*}{include  file="header.tpl" }{*}     
                 {include  file="string:{$page->get_header_template()}" }             
