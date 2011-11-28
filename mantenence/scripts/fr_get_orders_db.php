@@ -124,7 +124,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
+  $discounts_with_order_as_term=array();
 
         //           echo "                                                          Memory: ".memory_get_usage(true) . "\n";
         $customer_key_from_order_data=$row2['customer_id'];
