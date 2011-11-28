@@ -113,6 +113,7 @@ $contador=0;
 $res=mysql_query($sql);
 
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
+  $discounts_with_order_as_term=array();
     $customer_key_from_order_data=$row2['customer_id'];
     $customer_key_from_excel_order=0 ;
 
