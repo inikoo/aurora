@@ -553,7 +553,7 @@ class SendEmail extends DB_Table {
     function send($data) {
 
 
-
+//print_r($data);
 
         $email_send_data=array(
                              'Email Send Type'=>$data['email_matter'],
