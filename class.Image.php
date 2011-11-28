@@ -45,7 +45,7 @@ class Image  {
 
     function Image($a1,$a2=false,$a3=false) {
 
-      
+
         $this->tmp_path='app_files/pics/tmp/';
         $this->name='';
         $this->original_name='';
@@ -144,7 +144,7 @@ class Image  {
 
 
 
-   
+
         $create='';
         $update='';
         if (preg_match('/create/i',$options)) {
@@ -198,7 +198,7 @@ class Image  {
             return;
         }
 
-   
+
 
         //$news_imgfile = fread(fopen($filename, "r"), filesize($filename));
         $image_blob=$this->getImageData($this->im);
@@ -325,6 +325,8 @@ class Image  {
         }
         elseif($this->format=='png') {
             $this->im = imagecreatefrompng($srcImage);
+            imagealphablending($this->im, true);
+            imagesavealpha($this->im, true);
         }
         elseif($this->format=='gif') {
             $this->im = imagecreatefromgif($srcImage);
@@ -461,7 +463,7 @@ class Image  {
             return;
         }
 
-   
+
 
 
         $image_blob=$this->getImageData($this->resized_im);
@@ -530,19 +532,13 @@ class Image  {
         while ($row=mysql_fetch_array($res)) {
             $this->subjects[]=array('Subject Type'=>$row['Subject Type'],'Subject Key'=>$row['Subject Key'],'Is Principal'=>$row['Is Principal']);
         }
-
-
     }
 
 
     function delete($force=false) {
-
         $this->load_subjects();
         $num_subjects=count($this->subjects);
-
         if ($num_subjects==0 or $force) {
-
-
             $sql=sprintf("delete from `Image Dimension` where `Image Key`=%d",$this->id);
             // print $sql;
             mysql_query($sql);
@@ -550,16 +546,10 @@ class Image  {
             mysql_query($sql);
             $this->deleted=true;
         }
-
-
-
-
-
     }
 
 
     function get_url() {
-
         return "image.php?id=".$this->id;
     }
 

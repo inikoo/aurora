@@ -19,7 +19,7 @@ type:
 
     json_value = YAHOO.lang.JSON.stringify(value);
     var request='ar_send_email.php?tipo=report_issue&values=' + json_value;
- alert(request)
+// alert(request)
  Dom.setStyle(['send','cancel'],'display','none');
     Dom.setStyle(['sending'],'display','');
 
