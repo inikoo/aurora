@@ -48,7 +48,13 @@
 <tr>
 <tr>
 <td colspan=2 style="text-align:right">
-<span style="display:none" id="sending">{t}Sending{/t}</span><button id="cancel" onClick="window.history.back()" return_url="{$return_url}" >{t}Cancel{/t}</button><button id="send" style="margin-left:10px">{t}Send{/t}</button>
+
+<span style="display:none" id="sending"><img src="art/loading.gif"/> {t}Sending{/t}</span>
+<div class="buttons">
+<button id="send" class="positive">{t}Send{/t}</button>
+<button id="cancel"  class="negative" onClick="window.history.back()" return_url="{$return_url}" >{t}Cancel{/t}</button>
+
+</div>
 </td>
 </tr>
 </table>
@@ -63,7 +69,11 @@
 <table class="edit">
 <tr>
 <td>
-<td  colspan=2 style="text-align:right"><button id="close" onClick="window.history.back()" return_url="{$return_url}">{t}Close{/t}</button><button id="another" onClick="window.location.reload()" style="margin-left:10px">{if $type=='bug'}{t}Report another problem{/t}{else}{t}Request other feature{/t}{/if}</button>
+<td  colspan=2 style="text-align:right">
+<div class="buttons">
+<button id="close" onClick="window.history.back()" return_url="{$return_url}">{t}Close{/t}</button>
+<button id="another" onClick="window.location.reload()" style="margin-left:10px">{if $type=='bug'}{t}Report another problem{/t}{else}{t}Request other feature{/t}{/if}</button>
+</div>
 </td>
 <tr>
 </table>
