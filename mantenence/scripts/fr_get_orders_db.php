@@ -951,7 +951,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                               'editor'=>array('Date'=>$date_order)
                           );
 
-             print_r( $product_data);
+       //      print_r( $product_data);
 
             $product=new Product('find',$product_data,'create');
             if (!$product->id) {
