@@ -231,9 +231,10 @@ class product extends DB_Table {
         }
         print_r($raw_data);
         $data=$this->get_base_data();
-        foreach($raw_data as $key=>$value) {
-            if (isset($data[strtolower($key)]))
-                $data[strtolower($key)]=_trim($value);
+        foreach($raw_data as $_key=>$value) {
+        $key=strtolower($_key);
+            if (array_key_exists($key),$data)
+                $data[$key]=_trim($value);
         }
 print_r($data);
 
