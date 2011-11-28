@@ -207,12 +207,12 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    alert(ar_file+'?'+request);//return;
+   // alert(ar_file+'?'+request);//return;
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-                   alert(o.responseText);
+              //     alert(o.responseText);
 
             var r = YAHOO.lang.JSON.parse(o.responseText)
 
@@ -294,7 +294,7 @@ if(delete_type== undefined)
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
                 success: function (o) {
-                    alert(o.responseText);
+                  //  alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 
@@ -870,7 +870,7 @@ function save_edit_general_bulk(branch) {
 var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
 
 
-alert(request);//return;
+//alert(request);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
   //alert(o.responseText);
