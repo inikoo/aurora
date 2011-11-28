@@ -6,7 +6,7 @@ include_once('../../class.Department.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
-include_once('../../class.Part.php');
+include_once('../../class.Page.php');
 include_once('../../class.Store.php');
 error_reporting(E_ALL);
 
@@ -39,16 +39,14 @@ global $myconf;
 
 
 
-$sql="select * from `Store Dimension`";
+$sql="select * from `Page Store Dimension` where `Page Key`=2025";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
-    $store=new Store($row['Store Key']);
-    $store->update_up_today_sales();
-    $store->update_customer_activity_interval();
-    $store->update_interval_sales();
-    $store->update_last_period_sales();
+    $page=new Page($row['Page Key']);
+    
+    
 
 }
 
@@ -57,18 +55,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-mysql_free_result($result);
-$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Invoice' ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-
-    $category=new Category($row['Category Key']);
-    $category->update_invoice_category_up_today_sales();
-    $category->update_invoice_category_last_period_sales();
-    $category->update_invoice_category_interval_sales();
-
-}
 
 
 ?>
