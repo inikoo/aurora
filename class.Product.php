@@ -871,7 +871,7 @@ class product extends DB_Table {
                        'product record type'=>'Normal',
                        'product availability type'=>'Normal',
                        'product stage'=>'In Process',
-                       'Product Web Configuration'=>'Offline',
+                       'Product web configuration'=>'Offline',
                        'product store key'=>1,
                        'product locale'=>$myconf['lang'].'_'.$myconf['country'],
                        'product currency'=>$corporate_currency,
@@ -904,7 +904,7 @@ class product extends DB_Table {
                        'product availability state'=>'Unknown',
                        'product valid from'=>date("Y-m-d H:i:s"),
                        'product valid to'=>date("Y-m-d H:i:s"),
-                       'Product Current Key'=>'',
+                       'Product current key'=>'',
 
                    );
 
