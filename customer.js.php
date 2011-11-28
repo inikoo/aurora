@@ -1717,7 +1717,7 @@ Event.addListener('clean_table_filter_show0', "click",show_filter,0);
 	//-------------------------------------------------------------
 
 
-dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_note.render();
 
 dialog_edit_note = new YAHOO.widget.Dialog("dialog_edit_note", {visible : false,close:true,underlay: "none",draggable:false});
@@ -1732,7 +1732,7 @@ dialog_sticky_note.render();
 
 
 
-dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_attach.render();
 
 dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
