@@ -229,13 +229,13 @@ class product extends DB_Table {
         if (preg_match('/update/i',$options)) {
             $update='update';
         }
+        print_r($raw_data);
         $data=$this->get_base_data();
         foreach($raw_data as $key=>$value) {
             if (isset($data[strtolower($key)]))
                 $data[strtolower($key)]=_trim($value);
         }
-
-
+print_r($data);
 
         if ($data['product code']=='' or $data['product price']=='') {
             $this->error=true;
@@ -341,8 +341,8 @@ class product extends DB_Table {
 
             }
             elseif($this->found_in_code) {
-                print "Creatinf new id (NEW CODE in store)\n";
-                print_r($data);
+                //print "Creatinf new id (NEW CODE in store)\n";
+                
                 $this->create_key($data);
                 $this->create_product_id($data);
 
