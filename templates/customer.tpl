@@ -430,10 +430,7 @@
   </td>
   </tr>
   
- 
- 
-  
-    <tr><td >
+     <tr><td >
 	<textarea style="width:200px;height:100px" id="note_input" onkeyup="change(event,this,'note')"></textarea>
       </td>
     </tr>
@@ -441,12 +438,9 @@
 	<tr >
 	<td>
 	<div class="buttons">
-		<button  onclick="save('note')" id="note_save"  class="positive disabled"   >{t}Save{/t}</button>
-
-	<button  onClick="close_dialog('note')"  class="negative">{t}Cancel{/t}</button>
-
+		<button  onclick="save('note')" id="note_save"  class="positive disabled">{t}Save{/t}</button>
+	    <button  onClick="close_dialog('note')"  class="negative">{t}Cancel{/t}</button>
 	</div>
-	
 		</td>
 	</tr>
 </table>

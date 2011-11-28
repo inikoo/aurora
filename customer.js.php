@@ -7,7 +7,6 @@ include_once('class.Customer.php');
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_note;
-var dialog_new_sticky_note;
 var dialog_sticky_note;
 var dialog_export;
 var dialog_attach;
@@ -394,7 +393,7 @@ function save(tipo){
 
 	break;
 	 case('sticky_note'):
-	  case('new_sticky_note'):
+	  
 
   //  var value=my_encodeURIComponent(Dom.get(tipo+"_input").value);
 
@@ -423,13 +422,13 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
             if(r.newvalue==''){
                 Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
-                Dom.setStyle('new_sticky_note_tr','display','');
+
 
             }else{
                            
 
              Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','');
-                Dom.setStyle('new_sticky_note_tr','display','none');
+              
             }
 
             var table=tables['table0'];
@@ -500,14 +499,7 @@ function change(e,o,tipo){
 	}else
 	    disable_save(tipo);
 	break;
-    case('new_sticky_note'):
-        if(o.value!=''){
-	    enable_save(tipo);
-	    }else{
-	    disable_save(tipo);
-	    }
-	    
-    break;
+ 
     }
 };
 
@@ -517,20 +509,16 @@ function enable_save(tipo){
     case('note'):
     Dom.removeClass(tipo+'_save','disabled')
 	break;
-	 case('new_sticky_note'):
-	Dom.removeClass(tipo+'_save','disabled')
-	break;
+	
     }
 };
 
 function disable_save(tipo){
     switch(tipo){
     case('note'):
-	Dom.get(tipo+'_save').style.visibility='hidden';
+    Dom.addClass(tipo+'_save','disabled')
 	break;
-	case('new_sticky_note'):
-	Dom.get(tipo+'_save').style.visibility='hidden';
-	break;
+	
     }
 };
 
@@ -569,15 +557,7 @@ break;
 	dialog_sticky_note.hide();
 	 Dom.get('sticky_note_input').value=Dom.get('sticky_note_content').innerHTML;
 	break;
-case('new_sticky_note'):
-	 Dom.get('sticky_note_input').value=Dom.get('sticky_note_content').innerHTML;
 
-	Dom.get(tipo+"_input").value='';
-		Dom.addClass(tipo+'_save','disabled');
-
-	dialog_new_sticky_note.hide();
-
-	break;
   
     
  case('export'):
@@ -1661,8 +1641,23 @@ function show_sticky_note(){
     Dom.setXY('dialog_sticky_note', pos);
 
 dialog_sticky_note.show()
+Dom.get('sticky_note_input').focus();
+
+
 
 }
+
+
+
+
+function show_dialog_note(){
+dialog_note.show();
+
+
+Dom.get('note_input').focus();
+}
+
+
 
 function init(){
 
@@ -1758,7 +1753,7 @@ dialog_make_order.render();
 dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 Event.addListener(["sticky_note","sticky_note_bis"], "click", show_sticky_note);
 
-Event.addListener("note", "click", dialog_note.show,dialog_note , true);
+Event.addListener("note", "click", show_dialog_note);
 Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
 Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
@@ -1772,12 +1767,12 @@ dialog_export.render();
  
 
                 Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
-                Dom.setStyle('new_sticky_note_tr','display','');
+                
 
             }else{
 
              Dom.setStyle('sticky_note_div','display','');
-                Dom.setStyle('new_sticky_note_tr','display','none');
+               
             }
 
 			
