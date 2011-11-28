@@ -904,7 +904,7 @@ class product extends DB_Table {
                        'product availability state'=>'Unknown',
                        'product valid from'=>date("Y-m-d H:i:s"),
                        'product valid to'=>date("Y-m-d H:i:s"),
-                       'Product current key'=>'',
+                       'product current key'=>'',
 
                    );
 
