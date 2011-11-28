@@ -1647,6 +1647,23 @@ function validate_customer_mobile_other_comment(query,id){
 	//alert(validate_scope_data.customer_quick['mobile'+id].changed)
 }
 
+
+function show_sticky_note(){
+
+ //var pos = Dom.getXY('top_page_menu');
+   region1 = Dom.getRegion('top_page_menu'); 
+    region2 = Dom.getRegion('dialog_sticky_note'); 
+
+ var pos =[region1.right-region2.width-20,region1.bottom]
+ //pos[0]=pos[500]
+//pos[1]=pos[500]
+
+    Dom.setXY('dialog_sticky_note', pos);
+
+dialog_sticky_note.show()
+
+}
+
 function init(){
 
 list_of_dialogs=["dialog_quick_edit_Customer_Name", 
@@ -1724,10 +1741,9 @@ dialog_edit_note = new YAHOO.widget.Dialog("dialog_edit_note", {visible : false,
 dialog_edit_note.render();
 
 
-dialog_new_sticky_note = new YAHOO.widget.Dialog("dialog_new_sticky_note", {context:["new_sticky_note","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_new_sticky_note.render();
 
-dialog_sticky_note = new YAHOO.widget.Dialog("dialog_sticky_note", {context:["sticky_note","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+
+dialog_sticky_note = new YAHOO.widget.Dialog("dialog_sticky_note", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_sticky_note.render();
 
 
@@ -1740,8 +1756,7 @@ dialog_make_order.render();
 
 
 dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-Event.addListener("new_sticky_note", "click", dialog_new_sticky_note.show,dialog_new_sticky_note , true);
-Event.addListener(["sticky_note",'sticky_note_bis'], "click", dialog_sticky_note.show,dialog_sticky_note , true);
+Event.addListener(["sticky_note","sticky_note_bis"], "click", show_sticky_note);
 
 Event.addListener("note", "click", dialog_note.show,dialog_note , true);
 Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);

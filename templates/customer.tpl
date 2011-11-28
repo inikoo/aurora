@@ -9,7 +9,7 @@
 </div>
 
 
-<div class="top_page_menu">
+<div id="top_page_menu" class="top_page_menu">
     <img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'"  src="art/previous_button.png" alt="<"  style="margin-right:10px;float:left;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};position:relative;top:2px" />
     <div class="buttons" style="float:left">
         <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
@@ -17,7 +17,7 @@
     <img onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{t}Next Customer{/t} {$next.name}"  onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'"   src="art/next_button.png" alt=">"  style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none;{/if}position:relative;top:2px"/ >
     <div class="buttons" style="float:right">
         <button  onclick="window.location='edit_customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>
-        <button {if $customer->get('Sticky Note')}style="display:none"{/if} id="new_sticky_note" ><img src="art/icons/note.png" alt=""> {t}Note{/t}</button>
+        <button id="sticky_note" ><img src="art/icons/note.png" alt=""> {t}Note{/t}</button>
 
         <button id="note" ><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button>
         <button id="attach" ><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button>
@@ -209,7 +209,7 @@
 </div>
 
 <div id="sticky_note_div" class="sticky_note" style="margin-top:3px;width:370px">
-<img id="sticky_note" style="float:right;cursor:pointer"src="art/icons/edit.gif">
+<img id="sticky_note_bis" style="float:right;cursor:pointer"src="art/icons/edit.gif">
 <div  id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 </div>
 
@@ -504,34 +504,15 @@
 
 
 
-<div id="dialog_new_sticky_note" style="padding:20px 20px 0px 20px">
-  <div id="new_sticky_note_msg"></div>
-  <table >
- 
-    <tr>
-    <td>
-	<textarea style="width:200px;height:100px" id="new_sticky_note_input" onkeyup="change(event,this,'new_sticky_note')"></textarea>
-    </td>
-    <tr>
-    <td>
-    <div class="buttons">
-        <button  onclick="save('new_sticky_note')" id="new_sticky_note_save"  class="positive disabled"     >{t}Save{/t}</button>
 
-     <button class="negative" onClick="close_dialog('new_sticky_note')" >{t}Cancel{/t}</button>
-    </div>
-    </td>
-    </tr>
-   
-</table>
-</div>
 
-<div id="dialog_sticky_note" style="padding:20px 20px 0px 20px">
+<div id="dialog_sticky_note" style="padding:20px 20px 0px 20px;width:340px">
   <div id="sticky_note_msg"></div>
   <table>
  
     <tr><td>
     
-	<textarea style="width:260px;height:125px" id="sticky_note_input"  onkeyup="change(event,this,'sticky_note')">{$customer->get('Customer Sticky Note')}</textarea>
+	<textarea style="width:330px;height:125px" id="sticky_note_input"  onkeyup="change(event,this,'sticky_note')">{$customer->get('Customer Sticky Note')}</textarea>
       </td>
     <tr>
     <td>
