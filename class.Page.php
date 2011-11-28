@@ -60,8 +60,6 @@ class Page extends DB_Table {
                          prepare_mysql($tag2),
                          $tag
                         );
-
-
         }
         elseif($tipo=='site_code') {
             $sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`=%s and PS.`Page Site Key`=%d ",
@@ -131,13 +129,6 @@ class Page extends DB_Table {
             }
         }
 
-
-
-
-
-
-
-
         $create='';
         $update='';
         if (preg_match('/create/i',$options)) {
@@ -191,10 +182,6 @@ class Page extends DB_Table {
                 $data[$key]=_trim($value);
 
         }
-
-
-
-
 
         $keys='(';
         $values='values(';
@@ -270,12 +257,6 @@ class Page extends DB_Table {
             $this->update_valid_url();
             $this->update_working_url();
 
-
-
-
-
-
-
             if ($this->data['Page Type']=='Internal') {
                 $this->create_internal($raw_data);
             }
@@ -332,7 +313,6 @@ class Page extends DB_Table {
             $data['New Showcase']='Yes';
         }
         $data['Page Store Showcases']=serialize($data['Page Store Showcases']);
-// print "-------\n";
 
         if (!is_array($data['Page Store Product Layouts'])) {
             $data['Page Store Product Layouts']=array();
@@ -827,10 +807,8 @@ class Page extends DB_Table {
         $data['content_style']=$content_style;
         $data['showcases']=$showcases;
         $data['resume']=$this->data['Page Store Resume'];
-
         $data['slogan']=$this->data['Page Store Slogan'];
         $data['subtitle']=$this->data['Page Store Subtitle'];
-
         $data['title']=$this->data['Page Title'];
         return $data;
     }
@@ -922,9 +900,7 @@ class Page extends DB_Table {
         mysql_query($sql);
         $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
         mysql_query($sql);
-
         $this->deleted=true;
-
     }
 
 
