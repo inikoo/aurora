@@ -300,10 +300,10 @@ class product extends DB_Table {
 
         }
 
-          print "Found in key ".$this->found_in_key."\n";
-        print "Found in id ".$this->found_in_id."\n";
-         print "Found in store ".$this->found_in_store."\n";
-         print "Found in code ".$this->found_in_code."\n";
+         // print "Found in key ".$this->found_in_key."\n";
+        //print "Found in id ".$this->found_in_id."\n";
+        // print "Found in store ".$this->found_in_store."\n";
+        // print "Found in code ".$this->found_in_code."\n";
 
 
         if ($create) {
@@ -341,7 +341,8 @@ class product extends DB_Table {
 
             }
             elseif($this->found_in_code) {
-                //print "Creatinf new id (NEW CODE in store)\n";
+                print "Creatinf new id (NEW CODE in store)\n";
+                print_r($data);
                 $this->create_key($data);
                 $this->create_product_id($data);
 
