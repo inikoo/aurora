@@ -1036,7 +1036,11 @@ class product extends DB_Table {
 
 
     function create_product_id($data) {
+print "xxx";
 
+
+
+print_r($data);
         $base_data=$this->get_base_data();
         foreach($data as $key=>$value) {
             if (isset($base_data[strtolower($key)]))
@@ -1070,7 +1074,7 @@ class product extends DB_Table {
 
 
 
-        $base_data['Product Current Key']=$this->id;
+        $base_data['product current key']=$this->id;
 
 
         $keys='(';
