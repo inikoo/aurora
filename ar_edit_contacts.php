@@ -2789,7 +2789,7 @@ function edit_customer($data) {
         $responses[]=edit_customer_field($customer->id,$key,$values_data);
     }
 
-    if ($data['submit'])
+    if (isset($data['submit']))
         return $responses;
 
     echo json_encode($responses);

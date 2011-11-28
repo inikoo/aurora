@@ -873,7 +873,7 @@ var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&values='+ jsonifi
 //alert(request);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-  //alert(o.responseText);
+ // alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
