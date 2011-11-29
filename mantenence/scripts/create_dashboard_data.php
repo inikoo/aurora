@@ -43,7 +43,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
-
+//new dashboard widget showing last updates in twitter available to all users
 $sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`) values (%d,1,'block_3','dashboard_block.php?tipo=sales_overview')",$row['User Key']);
 print "$sql\n";
 mysql_query($sql);
