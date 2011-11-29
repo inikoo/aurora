@@ -1033,54 +1033,54 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function get_awhere(){
-  dont_have=Dom.getElementsByClassName('selected', 'span', 'dont_have_options');
+  dont_have=Dom.getElementsByClassName('selected', 'button', 'dont_have_options');
     dont_have_array= new Array();
     for(x in dont_have){
         dont_have_array[x]=dont_have[x].getAttribute('cat');
     }
-have=Dom.getElementsByClassName('selected', 'span', 'have_options');
+have=Dom.getElementsByClassName('selected', 'button', 'have_options');
     have_array= new Array();
     for(x in have){
         have_array[x]=have[x].getAttribute('cat');
     }
 
-allow=Dom.getElementsByClassName('selected', 'span', 'allow_options');
+allow=Dom.getElementsByClassName('selected', 'button', 'allow_options');
     allow_array= new Array();
     for(x in allow){
         allow_array[x]=allow[x].getAttribute('cat');
     }
 
-dont_allow=Dom.getElementsByClassName('selected', 'span', 'dont_allow_options');
+dont_allow=Dom.getElementsByClassName('selected', 'button', 'dont_allow_options');
     dont_allow_array= new Array();
     for(x in dont_allow){
         dont_allow_array[x]=dont_allow[x].getAttribute('cat');
     }
 /*
-not_customers_which=Dom.getElementsByClassName('selected', 'span', 'not_customers_which_options');
+not_customers_which=Dom.getElementsByClassName('selected', 'button', 'not_customers_which_options');
     not_customers_which_array= new Array();
     for(x in not_customers_which){
         not_customers_which_array[x]=not_customers_which[x].getAttribute('cat');
     }
 	*/
-	customers_which=Dom.getElementsByClassName('selected', 'span', 'customers_which_options');
+	customers_which=Dom.getElementsByClassName('selected', 'button', 'customers_which_options');
     customers_which_array= new Array();
     for(x in customers_which){
         customers_which_array[x]=customers_which[x].getAttribute('cat');
     }
 	
-	invoice_option=Dom.getElementsByClassName('selected', 'span', 'invoice_condition_option');
+	invoice_option=Dom.getElementsByClassName('selected', 'button', 'invoice_condition_option');
     invoice_condition_option_array= new Array();
     for(x in invoice_option){
         invoice_condition_option_array[x]=invoice_option[x].getAttribute('cat');
     }
 	
-	order_option=Dom.getElementsByClassName('selected', 'span', 'order_condition_option');
+	order_option=Dom.getElementsByClassName('selected', 'button', 'order_condition_option');
     order_condition_option_array= new Array();
     for(x in order_option){
         order_condition_option_array[x]=order_option[x].getAttribute('cat');
     }
 	
-	sales_option=Dom.getElementsByClassName('selected', 'span', 'sales_option');
+	sales_option=Dom.getElementsByClassName('selected', 'button', 'sales_option');
     sales_option_array= new Array();
     for(x in sales_option){
         sales_option_array[x]=sales_option[x].getAttribute('cat');
