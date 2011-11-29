@@ -87,7 +87,12 @@ else
 	  $customer_stat['active']=array('name'=>_('Active'),'selected'=>false);
 
 
-$customer_stat['losing']=array('name'=>_('Losing Activity'),'selected'=>false);
+if(isset($_REQUEST['losing']) && $_REQUEST['losing']==1)  
+		$customer_stat['losing']=array('name'=>_('Losing'),'selected'=>true);
+else
+		$customer_stat['losing']=array('name'=>_('Losing'),'selected'=>false);
+
+
 
 	  
 if(isset($_REQUEST['lost']) && $_REQUEST['lost']==1)  

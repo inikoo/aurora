@@ -253,33 +253,21 @@
 	{t}Search in progress{/t} <img style="margin-left:20px;position:relative;top:5px "src="art/progressbar.gif"/>
     </div>
 <div id="the_table" class="data_table" style="margin-top:20px;clear:both;{if $auto==0}display:none{/if}" >
-    <span class="clean_table_title">Customers List</span>
- <div id="table_type">
-         <a  style="float:right"  class="table_type state_details"  href="customers_lists_csv.php" >{t}Export (CSV){/t}</a>
-
-     </div>
-
-
-  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-
-      <div id="short_menu" class="nodetails" style="clear:both;width:100%;margin-bottom:0px">
+    <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
  
-  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr>
-	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
-	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
-	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
-	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
-
-	</tr>
-      </table>
+    <div class="table_top_bar"></div>
  
- 
-      
-    </div>
-
-
+ <div class="clusters">
+  <div  class="buttons small left cluster" >
+	
+	  <button class="table_option {if $view=='general'}selected{/if}" id="general" >{t}General{/t}</button>
+	  <button class="table_option {if $view=='contact'}selected{/if}"  id="contact"  >{t}Contact{/t}</button>
+	  <button class="table_option {if $view=='address'}selected{/if}"  id="address"  >{t}Address{/t}</button>
+	  <button class="table_option {if $view=='balance'}selected{/if}"  id="balance"  >{t}Balance{/t}</button>
+	  <button class="table_option {if $view=='rank'}selected{/if}"  id="rank"  >{t}Ranking{/t}</button>
+      </div>
+      <div style="clear:both"></div>
+      </div>
 
  
  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true }
