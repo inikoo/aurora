@@ -182,7 +182,7 @@ function option_changed(key,option_key){
 }
 
 function insert_data(){
-window.location.href='insert_csv.php';
+window.location.href='insert_csv.php?subject='+Dom.get('scope').value+'&subject_key='+Dom.get('scope_key').value;
 }
 
 function new_map(){
@@ -459,7 +459,7 @@ function init(){
 //alert(Dom('scope').value);
 //scope_key=Dom('scope_key').value;
 
- init_search('customers_store');
+ init_search(Dom.get('search_type').value);
 Event.addListener('new_map', "click",new_map);
 Event.addListener('browse_maps', "click",browse_maps);
 Event.addListener('save_map', "click",save_map);

@@ -148,25 +148,27 @@ function get_record_data($data) {
     $ignore_record = array_key_exists($index,$records_ignored_by_user);
     $raw = $csv->getrawArray();
 
-	//print_r($raw);
-	
+    //print_r($raw);
+
     $options=$_SESSION['state']['import']['todo']=$number_of_records+1;
 
 
     $result="<table class='recordList' border=0  >
             <tr>
-            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Assigned Field')."</th>
-            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Record').' '.($index+1).' '._('of').' '.($number_of_records+1).' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>'."
-            <th style='width:100px'>";
-    $result.="<span style='cursor:pointer;".($index > 0?'':'visibility:hidden')."' class='subtext' id='prev' onclick='get_record_data(".($index-1).")'>"._('Previous')."</span>";
+            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Field')."</th>
+            <th class='list-column-left' style='text-align: left; width: 200px;'>"._('Record').' '.($index+1).' '._('of').' '.($number_of_records+1).' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>';
+    $result.="<th style='width:150px'><div class='buttons'>";
+    $result.=sprintf('<button style="cursor:pointer;%s" onclick="ignore_record(%d)" id="ignore" class="subtext">%s</button>',(!$ignore_record?'':'display:none'),$index,_('Ignore Record'));
+    $result.=sprintf('<button style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</button>',($ignore_record?'':'display:none'),$index,_('Read Record'));
+    $result.='</div></th>';
 
-    $result.="<span class='subtext' style=".($index > 0?'':'visibility:hidden')."> | </span>";
-    $result.="<span  style='cursor:pointer;".($index < $number_of_records?'':'visibility:hidden')."'  class='subtext' id='next' onclick='get_record_data(".($index+1).")'>"._('Next')."</span>";
-    $result.="</th><th style='width:100px'>";
-    $result.=sprintf('<span style="cursor:pointer;%s" onclick="ignore_record(%d)" id="ignore" class="subtext">%s</span>',(!$ignore_record?'':'display:none'),$index,_('Ignore Record'));
-    $result.=sprintf('<span style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</span>',($ignore_record?'':'display:none'),$index,_('Read Record'));
-    $result.='</th></tr>';
 
+    $result.="<th style='width:150px'><div class='buttons'>";
+    $result.="<button  style='cursor:pointer;".($index < $number_of_records?'':'visibility:hidden')."'   id='next' onclick='get_record_data(".($index+1).")'>"._('Next')."</button>";
+    $result.="<button style='".($index > 0?'':'visibility:hidden')."'  id='prev' onclick='get_record_data(".($index-1).")'>"._('Previous')."</button>";
+    $result.="</div></th>";
+
+    $result.='</tr>';
     $i=0;
     foreach($headers as $key=>$value) {
 
@@ -235,45 +237,44 @@ function insert_customers_from_csv() {
     $map = $_SESSION['state']['import']['map'];
 //   $options = $_SESSION['state']['import']['options'];
     require_once 'csvparser.php';
-	$data_to_import=array();
-	if($_SESSION['state']['import']['type']){
-		$sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
-		//print $sql;
+    $data_to_import=array();
+    if ($_SESSION['state']['import']['type']) {
+        $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+        //print $sql;
 
-		$result=mysql_query($sql);
+        $result=mysql_query($sql);
 
-		$row = mysql_fetch_array($result);
-		//$record_id=$row[1];	
-		//print $record_id;exit;
-		$headers = explode('#', $row[0]);
-		$number_of_records = mysql_num_rows($result);
-		
-		$raw=array();
-		
-		$result=mysql_query($sql);
-		while($row=mysql_fetch_array($result)){
-			$data = explode('#', $row[0]);
-			foreach($data as $key=>$value)
-				$temp[$key]=preg_replace('/"/', '', $value);
-				
-			$raw[]=$temp;
-			unset($temp);
-		}
-		
-	}
-	else{
-		$csv = new CSV_PARSER;
-		
-		if (isset($_SESSION['state']['import']['file_path'])) {
-			$csv->load($_SESSION['state']['import']['file_path']);
-		}
-		$headers = $csv->getHeaders();
-		$number_of_records = $csv->countRows();
+        $row = mysql_fetch_array($result);
+        //$record_id=$row[1];
+        //print $record_id;exit;
+        $headers = explode('#', $row[0]);
+        $number_of_records = mysql_num_rows($result);
 
-		
+        $raw=array();
 
-		$raw = $csv->getrawArray();
-	}
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result)) {
+            $data = explode('#', $row[0]);
+            foreach($data as $key=>$value)
+            $temp[$key]=preg_replace('/"/', '', $value);
+
+            $raw[]=$temp;
+            unset($temp);
+        }
+
+    } else {
+        $csv = new CSV_PARSER;
+
+        if (isset($_SESSION['state']['import']['file_path'])) {
+            $csv->load($_SESSION['state']['import']['file_path']);
+        }
+        $headers = $csv->getHeaders();
+        $number_of_records = $csv->countRows();
+
+
+
+        $raw = $csv->getrawArray();
+    }
 
 
     foreach($raw as $record_key=>$record_data) {
@@ -311,14 +312,14 @@ function insert_customers_from_csv() {
 
     foreach($data_to_import as $_customer_data) {
 
-	
-		$sql=sprintf("select `External Record Key` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
-		//print $sql;
 
-		$result=mysql_query($sql);
+        $sql=sprintf("select `External Record Key` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+        //print $sql;
 
-		$row = mysql_fetch_array($result);
-		$record_id=$row[0];	
+        $result=mysql_query($sql);
+
+        $row = mysql_fetch_array($result);
+        $record_id=$row[0];
 
         $customer_data=array(
                            'Customer Company Name'=>'',
@@ -355,15 +356,14 @@ function insert_customers_from_csv() {
                     'Error Records'=>( (float) $imported_records->data['Error Records']+1),
                 ));
 
-			
-			if($_SESSION['state']['import']['type']){
-				$_record_data=$raw[0];
-			}
-			else{
-				$_record_data=$csv->getRow($_customer_data['csv_key']-1);
-			}
+
+            if ($_SESSION['state']['import']['type']) {
+                $_record_data=$raw[0];
+            } else {
+                $_record_data=$csv->getRow($_customer_data['csv_key']-1);
+            }
             //$_record_data=$csv->getRow($_customer_data['csv_key']-1);
-			
+
             $_record_data[]='No Company/Contact name';
 
 
@@ -423,10 +423,10 @@ function insert_customers_from_csv() {
         if (!$customer->found) {
 
 
-           // print_r($customer_data);
+            // print_r($customer_data);
 
             $response=add_customer($customer_data) ;
-             //  print_r($response);
+            //  print_r($response);
 
 
             if ($response['state']==200 and $response['action']=='created') {
@@ -453,13 +453,13 @@ function insert_customers_from_csv() {
                         'Imported Records'=>( (float) $imported_records->data['Imported Records']+1),
                     ));
 
-				//Update Read Status
-				
-				$sql=sprintf("update `External Records` set `Read Status`='Yes' where `External Record Key`=%d", $record_id);
-				//print $sql;
-				mysql_query($sql);
-				
-				
+                //Update Read Status
+
+                $sql=sprintf("update `External Records` set `Read Status`='Yes' where `External Record Key`=%d", $record_id);
+                //print $sql;
+                mysql_query($sql);
+
+
             } else {
 
                 $imported_records->update(
@@ -487,20 +487,19 @@ function insert_customers_from_csv() {
                     'Error Records'=>( (float) $imported_records->data['Error Records']+1),
                 ));
 
-			if($_SESSION['state']['import']['type']){
-				$_record_data=$raw[0];
-			}
-			else{
-				$_record_data=$csv->getRow($_customer_data['csv_key']-1);
-			}
-			//print_r( $_record_data);exit;
+            if ($_SESSION['state']['import']['type']) {
+                $_record_data=$raw[0];
+            } else {
+                $_record_data=$csv->getRow($_customer_data['csv_key']-1);
+            }
+            //print_r( $_record_data);exit;
             $_record_data[]='Already in DB';;
 
             $cvs_line=array_to_CSV($_record_data);
             $imported_records->append_not_imported_log($cvs_line);
 
-    //print_r($imported_records);
-    
+            //print_r($imported_records);
+
 
         }
         unset($customer);
@@ -788,39 +787,39 @@ function get_external_data($data) {
     //require_once 'csvparser.php';
     //$csv = new CSV_PARSER;
 
-   // if (isset($_SESSION['state']['import']['file_path'])) {
+    // if (isset($_SESSION['state']['import']['file_path'])) {
     //    $csv->load($_SESSION['state']['import']['file_path']);
     //}
 
     //extracting the HEADERS
-	$sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
-	//print $sql;
+    $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+    //print $sql;
 
-	$result=mysql_query($sql);
+    $result=mysql_query($sql);
 
-	$row = mysql_fetch_array($result);
+    $row = mysql_fetch_array($result);
 
 
-	$headers = explode('#', $row[0]);
-	
+    $headers = explode('#', $row[0]);
+
     //$headers = $csv->getHeaders();
-	//print_r($_SESSION['state']['import']['options_labels']);
+    //print_r($_SESSION['state']['import']['options_labels']);
     $number_of_records = mysql_num_rows($result);
     $ignore_record = array_key_exists($index,$records_ignored_by_user);
-    
-	$raw=array();
-	
-	$result=mysql_query($sql);
-	while($row=mysql_fetch_array($result)){
-		$data = explode('#', $row[0]);
-		foreach($data as $key=>$value)
-			$temp[$key]=preg_replace('/"/', '', $value);
-			
-		$raw[]=$temp;
-		unset($temp);
-	}
-	
-	//print_r($raw);
+
+    $raw=array();
+
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result)) {
+        $data = explode('#', $row[0]);
+        foreach($data as $key=>$value)
+        $temp[$key]=preg_replace('/"/', '', $value);
+
+        $raw[]=$temp;
+        unset($temp);
+    }
+
+    //print_r($raw);
 
 
     $options=$_SESSION['state']['import']['todo']=$number_of_records;
@@ -828,7 +827,7 @@ function get_external_data($data) {
 
     $result="<table class='recordList' border=0  >
             <tr>
-            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Assigned Field')."</th>
+            <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Field')."</th>
             <th class='list-column-left' style='text-align: left; width: 300px;'>"._('Record').' '.($index+1).' '._('of').' '.($number_of_records).' <span id="ignore_record_label" style="color:red;'.($ignore_record?'':'display:none').'">('._('Ignored').')</th>'."
             <th style='width:100px'>";
     $result.="<span style='cursor:pointer;".($index > 0?'':'visibility:hidden')."' class='subtext' id='prev' onclick='get_record_data(".($index-1).")'>"._('Previous')."</span>";
@@ -840,11 +839,11 @@ function get_external_data($data) {
     $result.=sprintf('<span style="cursor:pointer;%s" onclick="read_record(%d)" id="unignore" class="subtext">%s</span>',($ignore_record?'':'display:none'),$index,_('Read Record'));
     $result.='</th></tr>';
 
-	$i=0;
+    $i=0;
     foreach($headers as $key=>$value) {
 
         $select='<select id="select'.$i.'" onChange="option_changed(this.options[this.selectedIndex].value,this.selectedIndex)">';
-$i++;
+        $i++;
         foreach($_SESSION['state']['import']['options_labels'] as $option_key=>$option_label) {
 
             $selected='';
@@ -863,8 +862,8 @@ $i++;
 
     $result.='</table>';
 
-	//print $result;
-	
+    //print $result;
+
     $response=array('state'=>200,'result'=>$result);
     echo json_encode($response);
     exit;
