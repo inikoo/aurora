@@ -1,6 +1,8 @@
 ﻿{include file='header.tpl'}
 <div id="bd" >
  
+ 
+ 
  {*}
 <h3>Upload from External site</h3>
 <div class="left3Quarters">
