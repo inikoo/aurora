@@ -44,13 +44,39 @@ $js_files=array(
 		'js/php.default.min.js',
 		'js/common.js',
 		'js/table_common.js',
-		'js/dropdown.js',
+		'js/search.js',
 		'js/insert_csv.js'
         	);
         	
         	
-        	
+  if (!isset($_REQUEST['subject'])) {
+    exit("to do a page where the user can choose the correct options");
+}
+if (!isset($_REQUEST['subject_key'])) {
+    if ($_REQUEST['subject']!='staff' && $_REQUEST['subject']!='positions' && $_REQUEST['subject']!='areas' && $_REQUEST['subject']!='departments')
+        exit("to do a page where the user can choose the correct options");
+}
+$scope=$_REQUEST['subject'];
+$scope_key=$_REQUEST['subject_key'];
 
+switch ($scope) {
+case 'customers_store':
+    include_once('class.Store.php');
+    $store=new Store($scope_key);
+    $smarty->assign('store',$store);
+    $smarty->assign('store_id',$store->id);
+    $smarty->assign('search_label',_('Customers'));
+    $smarty->assign('search_scope','customers');
+
+    $smarty->assign('search_type','customers_store');
+
+    break;
+default:
+    return;
+    break;
+}      	
+$smarty->assign('scope',$scope);
+$smarty->assign('scope_key',$scope_key);
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);

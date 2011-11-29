@@ -67,7 +67,7 @@ padding: 10px 10px 5px;
 
 .fileupload {padding-bottom: 3px; padding-right: 10px; float: left; border:none;}
 
-.input{
+#call_table .input{
     border:10px solid $ffffff;
    
 }
@@ -87,7 +87,7 @@ padding: 10px 10px 5px;
     padding: 5px 5px 0px 4px;
     white-space: nowrap;
 }
-th, td {
+.framedsection th, .framedsectiontd {
     padding: 0px;
     font-size:11px;
 }

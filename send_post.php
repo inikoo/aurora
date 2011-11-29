@@ -59,7 +59,7 @@ $js_files=array(
               'js/csv_common.js',
               'common_customers.js.php',
               'send_post.js.php','js/check_uncheck.js',
-              'js/import_csv.js'
+              
           );
 
 
