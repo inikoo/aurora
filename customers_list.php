@@ -6,7 +6,7 @@ if (!$user->can_view('customers') ) {
     header('Location: index.php');
     exit;
 }
-//$modify=$user->can_edit('staff');
+$modify=$user->can_edit('customers');
 $general_options_list=array();
 if (isset($_REQUEST['id']))
     $id=$_REQUEST['id'];
@@ -33,6 +33,7 @@ $smarty->assign('store_id',$store->id);
 $customer_list_name=$customer_list_data['List Name'];
 $smarty->assign('customer_list_name',$customer_list_name);
 $smarty->assign('customer_list_key',$customer_list_data['List Key']);
+$smarty->assign('modify',$modify);
 
 
 
