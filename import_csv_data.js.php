@@ -459,7 +459,7 @@ function init(){
 //alert(Dom('scope').value);
 //scope_key=Dom('scope_key').value;
 
-
+ init_search('customers_store');
 Event.addListener('new_map', "click",new_map);
 Event.addListener('browse_maps', "click",browse_maps);
 Event.addListener('save_map', "click",save_map);
