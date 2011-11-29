@@ -35,19 +35,22 @@ require_once '../../conf/conf.php';
 //exit;
 
  
+$sql="delete from `Dashboard User Bridge` ";
+mysql_query($sql);
 
-
-$sql="select * from `User Dimension`  where `User Type`='Staff'  ";
+$sql="select * from `User Dimension`  where `User Type`='Staff' or  `User Type`='Administrator'  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
-$sql=sprintf("insert into  `Dashboard Dimension` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`) values (%d,1,'block_3','dashboard_block.php?tipo=sales_overview')",$row['User Key']);
+$sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`) values (%d,1,'block_3','dashboard_block.php?tipo=sales_overview')",$row['User Key']);
 print "$sql\n";
 mysql_query($sql);
 
-
+$sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`) values (%d,2,'block_1','splinter_twitter.php?')",$row['User Key']);
+print "$sql\n";
+mysql_query($sql);
 	
 }
 ?>

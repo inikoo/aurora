@@ -22,7 +22,7 @@
 
 <div class="dashboard_blocks" style="margin-top:20px">
 	{foreach from=$blocks key=key item=block}
-	    <div class="{$block.class}">
+	    <div class="{$block.class}" style="margin-bottom:30px">
 	    <iframe  onLoad="changeHeight(this);"  id="block_{$block.key}" src="{$block.src}&block_key={$block.key}" width="100%"  frameborder=0  scrolling="no">
             <p>Your browser does not support iframes.</p>
         </iframe> 
