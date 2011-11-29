@@ -5219,6 +5219,9 @@ ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product',
 //----
 
 RENAME TABLE `Dashboard Dimension` TO `Dashboard User Bridge` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Product Metadata` LONGTEXT NOT NULL DEFAULT '';
+ALTER TABLE `Page Store Dimension` ADD `Page List Metadata` LONGTEXT NOT NULL DEFAULT '';
+ALTER TABLE `Page Store Dimension` ADD `Page Locale` CHAR( 5 ) NOT NULL DEFAULT 'en_GB' AFTER `Page Store Order Template` ;
 */
 
 ?>

@@ -16,8 +16,8 @@ require_once 'ar_edit_common.php';
 //upload_page_content_from_file('app_files/tmp/page_content_1322053322_4ecceeca8d41c/jbb/index.php',469);
 //exit;
 
-upload_header_from_file('app_files/tmp/page_content_1322354660_4ed187e4c1d0c/header_aw/header.html',array('parent'=>'site','parent_key'=>1,'original_filename'=>'xx'));
-exit;
+//upload_header_from_file('app_files/tmp/page_content_1322354660_4ed187e4c1d0c/header_aw/header.html',array('parent'=>'site','parent_key'=>1,'original_filename'=>'xx'));
+//exit;
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
@@ -38,9 +38,10 @@ case('upload_header'):
 case('upload_page_content'):
     $data=prepare_values($_REQUEST,array(
                              'parent_key'=>array('type'=>'key'),
-
+ 'parent'=>array('type'=>'string')
                          ));
     $data['tipo']=$tipo;
+  
     process_upload_files($data);
     break;
 
@@ -84,8 +85,7 @@ function upload_page_header($data) {
 function process_upload_files($data) {
 
 
-
-    if (isset($_FILES['file']['tmp_name'])) {
+    if (isset($_FILES['file']['tmp_name']) and $_FILES['file']['tmp_name']) {
 
         $file_name=$_FILES['file']['tmp_name'];
 
@@ -100,7 +100,9 @@ function process_upload_files($data) {
 
 
     } else {
-        $response= array('state'=>400,'msg'=>'no file');
+    $poidsMax = ini_get('upload_max_filesize');
+    $msg=_("Your feet is too big, maximum allowed size here is")." $poidsMax"; 
+        $response= array('state'=>400,'msg'=>$msg);
         echo json_encode($response);
         return;
     }
@@ -417,7 +419,7 @@ function upload_header_from_file($file,$data) {
     foreach($styles as $_key=>$style) {
         $style=upload_content_images($style,dirname($file),array('subject'=>'Page Header','subject_key'=>$page_header->id));
 
-        $name='style_'.$parent->id.'_'.$_key;
+        $name='style_header'.$parent->id.'_'.$_key;
         $sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'CSS',%s) ",
                      prepare_mysql($name),
                      prepare_mysql($style)
@@ -437,7 +439,7 @@ function upload_header_from_file($file,$data) {
     foreach($scripts as $_key=>$script) {
 
 
-        $name='script_'.$parent->id.'_'.$_key;
+        $name='script_header'.$parent->id.'_'.$_key;
         $sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'Javascript',%s) ",
                      prepare_mysql($name),
                      prepare_mysql($script)
@@ -462,7 +464,7 @@ function upload_header_from_file($file,$data) {
 function upload_page_content_from_file($file,$data) {
     global $editor;
 
-    $page_key=$data['page_key'];
+    $page_key=$data['parent_key'];
 
     $page=new Page($page_key);
     $page->editor=$editor;
@@ -479,10 +481,34 @@ function upload_page_content_from_file($file,$data) {
     $dom->preserveWhiteSpace = false;
 
     $styles=get_head_styles($dom,$html);
-    $page->update_field_switcher('Page Store CSS',$style);
-    $content=clean_content($php_free_html);
-    $content=upload_content_images($content,dirname($file),$data);
-    $page->update_field_switcher('Page Store Source',$content);
+    
+    foreach($styles as $_key=>$style) {
+        $style=upload_content_images($style,dirname($file),array('subject'=>'Page','subject_key'=>$page->id));
+
+        $name='style_page'.$page->id.'_'.$_key;
+        $sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'CSS',%s) ",
+                     prepare_mysql($name),
+                     prepare_mysql($style)
+
+                    );
+        mysql_query($sql);
+        $external_file_id=mysql_insert_id();
+         $sql=sprintf("insert into `Page Store External File Bridge` values (%d,%d,%s) ",
+                    $external_file_id,
+                    $page->id,
+                    prepare_mysql('CSS')
+                   );
+         mysql_query($sql);
+    }
+    
+    
+    
+    $html=clean_content($html);
+    
+            $html=upload_content_images($html,dirname($file),array('subject'=>'Page','subject_key'=>$page->id));
+
+    
+    $page->update_field_switcher('Page Store Source',$html);
     $response= array('state'=>200);
     return $response;
 

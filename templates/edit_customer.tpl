@@ -114,7 +114,7 @@
    </td>
    <td style="width:300px">
    <div class="buttons">
-   <button id="go_merge"  class="positive" style="display:none">{t}Go{/t}</button>
+   <a id="go_merge"  class="positive" style="display:none" href="">{t}Go{/t}</a>
    </div>
    <span id="merge_msg" class="error" style="display:none"></span>
    </td>
