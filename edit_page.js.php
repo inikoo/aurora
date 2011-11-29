@@ -355,7 +355,7 @@ function upload_page_content(e){
   }
 
 function show_page_preview(){
-     window.location = "page_preview.php?id="+Dom.get('page_key').value+'&referral='+escape('edit_page.php?id='+Dom.get('page_key').value);
+     window.location = "page_preview.php?id="+Dom.get('page_key').value+'&referral='+escape('edit_page.php?id='+Dom.get('page_key').value)+'&logged=1';
 }
 
 function init(){
