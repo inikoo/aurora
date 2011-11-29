@@ -1,6 +1,7 @@
 ﻿{include file='header.tpl'}
 <div id="bd" >
  
+ {*}
 <h3>Upload from External site</h3>
 <div class="left3Quarters">
 
@@ -20,6 +21,7 @@ You have {$records} Records to verify.
                     
 </form>  
 </div>
+{/*}
 
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
     <h1>Import Contacts From CSV File</h1>
