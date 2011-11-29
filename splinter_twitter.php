@@ -1,6 +1,6 @@
 <?php
-$xx
-?>
+print <<<END
+
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml">
@@ -44,3 +44,7 @@ new TWTR.Widget({
 </div>
 </body>
 </html>
+
+END;
+
+?>
