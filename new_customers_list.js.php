@@ -42,7 +42,7 @@ function save_search_list(){
 	Dom.setStyle('saving_the_list','display','')
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		  // alert(o.responseText);
+		 //  alert(o.responseText);
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
@@ -159,6 +159,28 @@ if(    Dom.hasClass(o,'selected')){
  function checkbox_changed_customers_which(o){
 	cat=Dom.get(o).getAttribute('cat');
 
+	if(Dom.hasClass(o,'selected')){
+			Dom.removeClass(o,'selected');
+			if(cat=='lost'){
+
+hide_lost_customer();
+}
+			
+		}else{
+			Dom.addClass(o,'selected');
+			
+			if(cat=='lost'){
+
+show_lost_customer();
+}
+			
+//			Dom.removeClass(other_parent+cat,'selected');
+		}
+
+
+
+
+/*
 	if(cat=='lost'){
 		show_lost_customer();
 		if(Dom.hasClass(o,'selected')){
@@ -185,6 +207,13 @@ if(    Dom.hasClass(o,'selected')){
 			Dom.removeClass(other_parent+cat,'selected');
 		}
 	}
+
+
+*/
+
+
+
+
 }
  
 function hide_invoice(){
@@ -1095,7 +1124,10 @@ if(!order_time_units_since_last_order_qty>0){
   
 }
 
+var store_key=Dom.get('store_id').value;
+
     var data={ 
+    store_key:store_key,
     dont_have:dont_have_array,
     have:have_array,
     allow:allow_array,

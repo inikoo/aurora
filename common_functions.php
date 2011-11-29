@@ -859,7 +859,7 @@ function customers_awhere($awhere) {
                     'sales_lower'=>'',
                     'sales_upper'=>'',
                     'sales_option'=>array(),
-                    'store_key'=>false,
+                    'store_key'=>0,
                     'order_option'=>array(),
                     'order_time_units_since_last_order_qty'=>false,
                     'order_time_units_since_last_order_units'=>false
@@ -873,7 +873,9 @@ function customers_awhere($awhere) {
     }
 
 
-    $where='where true';
+
+
+    $where=sprintf('where  `Customer Store Key`=%d ',$where_data['store_key']);
     $table='`Customer Dimension` C ';
 
 //print_r($where_data);
@@ -974,7 +976,7 @@ function customers_awhere($awhere) {
 
 
 
-    $where='where (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].$date_interval_lost_customer['mysql'].") $where_categories $where_geo_constraints";
+    $where.=' and (  '.$where_product_ordered1.$date_interval_when_ordered['mysql'].$date_interval_when_customer_created['mysql'].$date_interval_lost_customer['mysql'].") $where_categories $where_geo_constraints";
 
     foreach($where_data['dont_have'] as $dont_have) {
         switch ($dont_have) {
