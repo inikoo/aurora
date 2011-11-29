@@ -1090,6 +1090,7 @@ var request='ar_contacts.php?tipo=can_merge_customer&customer_key='+Dom.get('cus
 
 			if(r.state==200){
                     if(r.action=='ok'){
+                    
                     Dom.setStyle(['merge_msg'],'display','none');
                     Dom.get('go_merge').href='customer_split_view.php?p=a_edit&id_a='+Dom.get('customer_key').value+'&id_b='+r.id;
                     Dom.setStyle(['go_merge'],'display','');
