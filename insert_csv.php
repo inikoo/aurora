@@ -15,17 +15,20 @@
 error_reporting(E_ALL|E_STRICT|E_NOTICE);*/
 include_once('common.php');
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'assets/skins/sam/autocomplete.css',
-		 // $yui_path.'assets/skins/sam/autocomplete.css',
-		 'common.css',
-		 'container.css',
-		 'button.css',
-		 'table.css',
-		 'css/dropdown.css',
-	//	 'css/import_data.css'
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'editor/assets/skins/sam/editor.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+
+               
+               'common.css',
+               'button.css',
+               'container.css',
+               'table.css',
+               'theme.css.php'
+               
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
