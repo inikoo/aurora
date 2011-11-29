@@ -52,7 +52,7 @@ success:function(o) {
 }
 
 function init(){
-
+ init_search(Dom.get('search_type').value);
 //alert('sdfsd');
 read_results();
 insert_data();

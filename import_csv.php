@@ -26,9 +26,9 @@ $css_files=array(
 		 'button.css',
 		 'table.css',
 		 'css/dropdown.css',
-		 'css/import_data.css'
+	//	 'css/import_data.css',
+		 'theme.css.php'
 		 );
-$css_files[]='theme.css.php';
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
@@ -43,7 +43,8 @@ $js_files=array(
 		'js/php.default.min.js',
 		'js/common.js',
 		'js/table_common.js',
-		'js/dropdown.js',
+		'js/search.js',
+		'js/import_csv.js'
         	);
 
 if(!isset($_REQUEST['subject'])){
@@ -63,11 +64,17 @@ if(!isset($_REQUEST['subject_key'])){
 	$scope_args=$_REQUEST['subject_key'];
 }
 
-/*
+$scope=$_REQUEST['subject'];
+$scope_key=$_REQUEST['subject_key'];
 switch($scope){
 case('customers_store'):
-//$scope_args=$_SESSION['state']['customers']['store'];
-$scope_args=$_REQUEST['subject_key'];
+    include_once('class.Store.php');
+    $store=new Store($scope_key);
+    $smarty->assign('store',$store);
+    $smarty->assign('store_id',$store->id);
+    $smarty->assign('search_label',_('Customers'));
+    $smarty->assign('search_scope','customers');
+  $smarty->assign('search_type','customers_store');
 break;
 
 case('supplier_products'):
@@ -94,7 +101,7 @@ break;
 default:
 $scope_args='';
 }
-*/
+
 	
 if(isset($_REQUEST['error']))
 {
@@ -104,6 +111,10 @@ else
 {
 	$showerror = '';
 }
+
+$smarty->assign('scope',$scope);
+
+$smarty->assign('scope_key',$scope_key);
 
 $sql=sprintf("select COUNT(*) from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $scope_args, $scope);
 //print $sql;

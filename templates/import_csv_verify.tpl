@@ -7,7 +7,7 @@
 
 <div  class="branch"> 
 
-  <span  >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span>
+  <span  >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Import Customers{/t} (2/3)</span>
 </div>
 
 
@@ -18,14 +18,20 @@
         <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
     </div>
     <div class="buttons" style="float:right">
-                 <button  id="new_map"><img src="art/icons/x.png" alt=""> {t}Add Field Map{/t}</button>
 
-             <button  id="browse_maps"><img src="art/icons/add.png" alt=""> {t}Pick a Map{/t}</button>
+
+    <button class="positive" id="insert_data"   ><img src="art/icons/database_add.png" alt=""> {t}Insert data{/t}</button>	
+                 <button  id="browse_maps"><img src="art/icons/text_list_bullets.png" alt=""> {t}Pick a Field Map{/t}</button>
+                 <button  id="new_map"><img src="art/icons/disk.png" alt=""> {t}Save this Field Map{/t}</button>
+
+
+
     </div>
     <div style="clear:both"></div>
 </div>
 {/if}
 
+<input type="hidden" id="search_type" value="{$search_type}">
 <input type="hidden" id="scope" value="{$scope}">
 <input type="hidden" id="scope_key" value="{$scope_key}">
 <div id="no_details_title" style="clear:left;">
@@ -36,9 +42,7 @@
     <div class="framedsection">
         <div id="call_table"></div>
     </div>
-    <div class="buttons">
-    <button class="button" id="insert_data" >{t}Insert data{/t}</button>	
-</div>
+   
 </div>
 </div>
 
@@ -53,11 +57,14 @@
 	<input  id="map_name" />
       </td>
     <tr>
-    <tr class="buttons" style="font-size:100%;display:block;margin-top:10px">
-  <td style="text-align:center;width:50%">
-   
-  <td style="text-align:center;width:50%">
-    <span   id="save_map"  class="unselectable_text button"   >{t}Save{/t}</span></td></tr>
+    <tr >
+  <td colspan=2>
+   <div class="buttons">
+       <button   id="save_map"  class="positive"   >{t}Save{/t}</button>
+
+   </div>
+ </td>
+ </tr>
 </table>
 </div>
 
