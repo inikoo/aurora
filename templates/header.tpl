@@ -25,7 +25,7 @@
       <div class="top_navigation">
   	            <div id="top_navigation_timezone"  class='timezone'>{$timezone}</div>
   	            <div id="top_navigation_right_block" >
-  	                <span id="top_navigation_message" ></span>
+  	                <span id="top_navigation_message">Update: Merging customers from edit customer page now works.</span>
   	                <a id="top_navigation_help" href="help.php?page={$page_name}" style="margin-left:20px;margin-right:15px">{t}Help{/t}</a>
   	                <span id="language_flag"><img src="art/flags/{$lang_country_code}.gif" alt="{$lang_country_code}"  /></span>
                     <span>{t}Hello{/t} {$user->get('User Alias')}</span>
@@ -44,17 +44,6 @@
 	            {/foreach}
 	            <div style="clear:both"></div>
 	    </div>
-	    {*}
-	    	        <h1 style="clear:both;padding-top:0;position:relative;top:-2px">{$my_name}<span style="font-size:70%;color:#f7fd98">@</span><span style="position:relative;bottom:3px;font-size:60%;color:#d7e12a">inikoo</span></h1>
 
-	        <div id="navsite" style="clear:right">
-        	  <ul>
-	            {foreach from=$nav_menu item=menu }
-	            <li {if $menu[2]==$parent} class="selected"{/if}><a href="{$menu[1]}">{$menu[0]}</a></li>
-	            {/foreach}
-	          </ul>
-        	</div>
-        	
-       {*} 	
       </div> 
       
