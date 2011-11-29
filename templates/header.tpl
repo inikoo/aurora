@@ -22,7 +22,7 @@
       <div class="top_navigation">
   	            <div id="top_navigation_timezone"  class='timezone'>{$timezone}</div>
   	            <div id="top_navigation_right_block" >
-  	                <span id="top_navigation_message">You can follow updates and announcements in Twitter @inikoo_devel</span>
+  	                <span id="top_navigation_message"></span>
   	                <a id="top_navigation_help" href="help.php?page={$page_name}" style="margin-left:20px;margin-right:15px">{t}Help{/t}</a>
   	                <span id="language_flag"><img src="art/flags/{$lang_country_code}.gif" alt="{$lang_country_code}"  /></span>
                     <span>{t}Hello{/t} {$user->get('User Alias')}</span>
