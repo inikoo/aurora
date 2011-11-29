@@ -24,7 +24,7 @@ function changeHeight(iframe){
                   Dom.setStyle(iframe,'height',iframe.Document.body.scrollHeight + 32  +'px');
 
           }else{
-         alert("x")
+        // alert("x")
           Dom.setStyle(iframe,'height','700px');
             
           }
