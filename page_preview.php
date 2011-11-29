@@ -11,9 +11,9 @@ include_once('class.Page.php');
 include_once('class.Site.php');
 
 if (!isset($_REQUEST['id'])  or  !is_numeric($_REQUEST['id']) ) {
-     header('Location: index.php');
+    header('Location: index.php');
     exit;
-} 
+}
 
 
 $page_key=$_REQUEST['id'];
@@ -24,40 +24,40 @@ $store=new Store($page->data['Page Store Key']);
 
 $_logged=true;
 if (isset($_REQUEST['logged'])   ) {
-   $_logged=$_REQUEST['logged'];
-} 
+    $_logged=$_REQUEST['logged'];
+}
 
-if($_logged)
+if ($_logged)
     $logged=1;
 else
-       $logged=0;
-    $smarty->assign('logged',$logged);
+    $logged=0;
+$smarty->assign('logged',$logged);
 
 $page->logged=$logged;
 
 if (isset($_REQUEST['referral'])   ) {
     $smarty->assign('referral',urldecode($_REQUEST['referral']));
-} 
+}
 
 $css_files=array(
-        $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-             'button.css',
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               'button.css',
            );
-           
-           
-           
-           
+
+
+
+
 //include_once('Theme.php');
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',
               $yui_path.'paginator/paginator-min.js',
-           
-			'js/page_preview.js'
-			
+
+              'js/page_preview.js'
+
           );
-          
-   $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
+
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     if ($row['External File Type']=='CSS')
@@ -96,10 +96,10 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 */
-       
- 
-          
-          
+
+
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

@@ -1302,13 +1302,13 @@ return $products;
 
         $print_price=true;
 
-        switch ($site) {
-        case 'ecommerce':
+        switch ($site->data['Site Checkout Method']) {
+        case 'Mals':
             $this->url=$ecommerce_url;
             $this->user_id=$username;
             $this->method=$method;
             break;
-        case 'inikoo':
+        case 'Inikoo':
             $this->method='sc';
             $this->user=$user;
             break;
@@ -1316,39 +1316,15 @@ return $products;
             break;
         }
 
-        $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-            $number_records=$row['num'];
-        } else {
-            // NO PRODUCTS
-            return;
-        }
+    
+            $number_records=count($products);
+        } 
 
 
 
-        if ($this->locale=='de_DE') {
-            $out_of_stock='nicht vorrv§tig';
-            $discontinued='ausgelaufen';
-        }
-        if ($this->locale=='de_DE') {
-            $out_of_stock='nicht vorrv§tig';
-            $discontinued='ausgelaufen';
-        }
-        elseif($this->locale=='es_ES') {
-            $out_of_stock='Fuera de Stock';
-            $discontinued='Fuera de Stock';
-        }
 
-        elseif($this->locale=='fr_FR') {
-            $out_of_stock='Rupture de stock';
-            $discontinued='Rupture de stock';
-        }
-        else {
-            $out_of_stock='Out of Stock';
-            $discontinued='Discontinued';
-        }
-
+  $out_of_stock=_('Out of Stock');
+            $discontinued=_('Discontinued');
 
 
         $form=sprintf('<table class="product_list form" >' );
