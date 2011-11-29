@@ -2110,7 +2110,7 @@ $table=' `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`
 
 
     $sql="select count(Distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
-    
+  //  print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
