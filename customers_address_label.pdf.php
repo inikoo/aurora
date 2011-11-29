@@ -146,7 +146,7 @@ if ($type=='list') {
                     $label_data['CELL_WIDTH'],
                     $label_data['CELL_HEIGHT'],
                     $customer->display_contact_address('label'),
-                    1,
+                    0,
                     'C',
 
                     0,
