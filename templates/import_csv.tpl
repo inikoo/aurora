@@ -19,10 +19,7 @@
         <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
     </div>
     <div class="buttons" style="float:right">
-                 <button  id="new_map"><img src="art/icons/x.png" alt=""> {t}Add Field Map{/t}</button>
-
-             <button  id="browse_maps"><img src="art/icons/add.png" alt=""> {t}Pick a Map{/t}</button>
-    </div>
+        </div>
     <div style="clear:both"></div>
 </div>
 {/if}
