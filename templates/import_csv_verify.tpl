@@ -1,7 +1,31 @@
 ﻿{include file='header.tpl'}
 
 <div id="bd">
+{if $scope=='customers_store'}
+
 {include file='contacts_navigation.tpl'}
+
+<div  class="branch"> 
+
+  <span  >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span>
+</div>
+
+
+
+<div id="top_page_menu" class="top_page_menu">
+
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+                 <button  id="new_map"><img src="art/icons/x.png" alt=""> {t}Add Field Map{/t}</button>
+
+             <button  id="browse_maps"><img src="art/icons/add.png" alt=""> {t}Pick a Map{/t}</button>
+    </div>
+    <div style="clear:both"></div>
+</div>
+{/if}
+
 <input type="hidden" id="scope" value="{$scope}">
 <input type="hidden" id="scope_key" value="{$scope_key}">
 <div id="no_details_title" style="clear:left;">
@@ -12,7 +36,9 @@
     <div class="framedsection">
         <div id="call_table"></div>
     </div>
-    <span class="button" id="insert_data" style="margin-right:20px">{t}Insert data{/t}</span>	
+    <div class="buttons">
+    <button class="button" id="insert_data" >{t}Insert data{/t}</button>	
+</div>
 </div>
 </div>
 

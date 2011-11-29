@@ -14,17 +14,20 @@ include_once('common.php');
 include_once('common_import.php');
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'assets/skins/sam/autocomplete.css',
-               // $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
                'common.css',
                'container.css',
                'button.css',
                'table.css',
-               'css/dropdown.css',
-               'css/import_data.css'
+			    'css/import_data.css',
+			   'theme.css.php'
+             
+            
+            
+           
            );
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -39,10 +42,17 @@ $js_files=array(
               $yui_path.'uploader/uploader-debug.js',
               'js/php.default.min.js',
               'js/common.js',
+              	'js/search.js',
               'js/table_common.js',
               'import_csv_data.js.php',
-              'js/dropdown.js'
+           
           );
+
+
+
+
+
+
 
 $_SESSION['state']['import']['type']=0;
 $_SESSION['state']['import']['records_ignored_by_user']=array();
@@ -61,6 +71,22 @@ if (!isset($_REQUEST['subject_key'])) {
 }
 $scope=$_REQUEST['subject'];
 $scope_key=$_REQUEST['subject_key'];
+
+switch ($scope) {
+    case 'customers_store':
+    include_once('class.Store.php');
+        $store=new Store($scope_key);
+        $smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
+
+        
+        break;
+    default:
+       return;
+        break;
+}
 
 
 if (isset($_POST['submit'])) {
