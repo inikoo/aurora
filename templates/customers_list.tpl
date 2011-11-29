@@ -10,8 +10,9 @@
         <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
     </div>
   <div class="buttons">
-      <button onclick="window.location='edit_customers.php?list_key={$customer_list_key}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers in List{/t}</button>
-     
+      {if $modify}<button onclick="window.location='edit_customers.php?list_key={$customer_list_key}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers in List{/t}</button>{/if}
+           <button onclick="window.location='customers_address_label.pdf.php?label=l7159&scope=list&id={$customer_list_key}'" ><img src="art/icons/printer.png" alt=""/> {t}Print{/t}</button>
+
       </div>
     <div style="clear:both"></div>
 </div>
