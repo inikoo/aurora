@@ -41,7 +41,7 @@ max_bottom=region.bottom;
  
 //}
    
-altura=  max_bottom-content_region.top
+altura=  max_bottom-content_region.top+20
 //alert(altura)
 Dom.setStyle('content','height',altura+'px')
 
