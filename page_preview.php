@@ -22,11 +22,21 @@ $page=new Page($page_key);
 $site=new Site($page->data['Page Site Key']);
 $store=new Store($page->data['Page Store Key']);
 
+$_logged=true;
+if (isset($_REQUEST['logged'])   ) {
+   $_logged=$_REQUEST['logged'];
+} 
+
+if($_logged)
+    $logged=1;
+else
+       $logged=0;
+    $smarty->assign('logged',$logged);
+
+$page->logged=$logged;
 
 if (isset($_REQUEST['referral'])   ) {
     $smarty->assign('referral',urldecode($_REQUEST['referral']));
-
-  
 } 
 
 $css_files=array(

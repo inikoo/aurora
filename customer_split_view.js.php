@@ -102,7 +102,7 @@ function init(){
 
   init_search('customers_store');
 
-dialog_merge = new YAHOO.widget.Dialog("dialog_merge", {context:["open_merge_dialog","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_merge = new YAHOO.widget.Dialog("dialog_merge", {context:["open_merge_dialog","tr","br"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_merge.render();
 
 
