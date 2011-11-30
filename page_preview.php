@@ -22,18 +22,23 @@ $page=new Page($page_key);
 $site=new Site($page->data['Page Site Key']);
 $store=new Store($page->data['Page Store Key']);
 
-$_logged=true;
+$_logged=1;
 if (isset($_REQUEST['logged'])   ) {
     $_logged=$_REQUEST['logged'];
 }
 
-if ($_logged)
-    $logged=1;
-else
+if ($_logged){
+ 
+ $logged=1;
+ 
+}else{
     $logged=0;
+}
 $smarty->assign('logged',$logged);
 
+$page->user=$user;
 $page->logged=$logged;
+$page->currency=$store->data['Store Currency Code'];
 
 if (isset($_REQUEST['referral'])   ) {
     $smarty->assign('referral',urldecode($_REQUEST['referral']));

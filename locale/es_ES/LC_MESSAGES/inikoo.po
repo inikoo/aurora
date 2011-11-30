@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 16:42+0100\n"
-"PO-Revision-Date: 2011-11-20 16:53+0100\n"
+"PO-Revision-Date: 2011-11-30 08:26+0100\n"
 "Last-Translator: Raul Perusquia <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -912,11 +912,10 @@ msgstr "un país desconocido"
 #: ar_contacts.php:5913
 #: ar_contacts.php:5916
 #: ar_edit_contacts.php:3203
-#, fuzzy
 msgid "customer"
 msgid_plural "customers"
 msgstr[0] "cliente"
-msgstr[1] "cliente"
+msgstr[1] "clientes"
 
 #: ar_assets.php:11119
 #: ar_assets.php:11359
