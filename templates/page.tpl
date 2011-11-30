@@ -12,7 +12,7 @@
 <div class="top_page_menu">
     <div class="buttons" style="float:right">
          {if $modify}<button  onclick="window.location='edit_page.php?id={$page->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if}
-         <button  onclick="window.location='page_preview.php?id={$page->id}&referal='" ><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button>
+         <button  onclick="window.location='page_preview.php?id={$page->id}&logged=1&referral={"page.php?id={$page->id}"|escape:'html'}'" ><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button>
     </div>
     
     
