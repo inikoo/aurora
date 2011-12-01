@@ -8,7 +8,7 @@
   <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
 </div>
 <div class="top_page_menu">
-    <div class="buttons left" style="float:left">
+    <div class="buttons" >
         <button style="margin-left:0px"  onclick="window.location='site.php?id={$site->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
     </div>
     <div class="buttons" style="float:right">
@@ -62,47 +62,69 @@
       
       
       
-      <div class="todo" style="font-size:80%;width:50%; display:none">
-
-
-      <h1>TO DO (KAKTUS-323)</h1>
-
-<h2>General Site Properties Edit Form</h2>
-<h3>Objective</h3>
-<p>
-Edit Form for Site Properties
-(Code,Name,URL,FTP configuration,etc)
-</p>
-<h3>Notes</h3>
-<p>
-DB updates should be done in class.Site.php. <br/> Should use Ajax (see edit_store.php or edit_customer.php)
-</p>
-      </div>
+   
 	  
-<table>
+<table class="edit" border=0 style="width:100%">
 <tr >
 <td></td>
-<td colspan="3" style="float:right">
- <div class="general_options" style="float:right">
-	        <span  style="margin-right:10px;visibility:hidden"  id="save_edit_site" class="state_details">{t}Save{/t}</span>
-	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_site" class="state_details">{t}Reset{/t}</span>
+<td colspan=2>
+
+ <div class="buttons">
+	        <button  style="visibility:hidden"  id="save_edit_site" class="positive">{t}Save{/t}</button>
+	        <button style="visibility:hidden" id="reset_edit_site" class="negative">{t}Reset{/t}</button>
       </div>
 </td>
 </tr>
-<tr><td class="label">{t}Select Checkout Method: {/t}
+<tr class="top"><td class="label">{t}Select Checkout Method{/t}:
   </td><td>
 <input id="site_checkout_method" value="inikoo" type="hidden"   />
 <div class="buttons" id="site_checkout_method_buttons" style="float:left">
-<button  id="ecommerce" class="site_checkout_method {if $site->get('Site Checkout Method')=='Ecommerce'}selected{/if}" ><img src="art/icons/cart.png" alt=""/> {t}Ecommerce{/t}</button>
-<button  id="inikoo"  class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt=""/> {t}Inikoo{/t}</button>
+<button  id="Mals" class="site_checkout_method {if $site->get('Site Checkout Method')=='Mals'}selected{/if}" ><img src="art/icons/cart.png" alt=""/> {t}E-Mals Commerce{/t}</button>
+<button  id="Inikoo"  class="site_checkout_method {if $site->get('Site Checkout Method')=='Inikoo'}selected{/if}"><img src="art/icons/cart.png" alt=""/> {t}Inikoo{/t}</button>
 </div>
      
-</td></tr>	
+</td>
+<td style="width:300px"></td>
+</tr>	
+<tbody id="mals_tbody" {if $site->get('Site Checkout Method')!='Mals'}style="display:none"{/if}>
+<tr>
+<td class="label">{t}E-Mals Commerce ID{/t}:</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Mals_ID" value="{$site->get_mals_data('id')}" ovalue="{$site->get_mals_data('id')}" valid="0">
+       <div id="Site_Mals_ID_Container"  ></div>
+     </div>
 
+</td>
+<td id="Site_Mals_ID_msg" class="edit_td_alert"></td>
+</tr>
 
+<tr>
+<td class="label">{t}E-Mals Commerce URL{/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Mals_URL" value="{$site->get_mals_data('url')}" ovalue="{$site->get_mals_data('url')}" valid="0">
+       <div id="Site_Mals_URL_Container"  ></div>
+     </div>
 
+</td>
+<td id="Site_Mals_URL_msg" class="edit_td_alert"></td>
+</tr>
+<tr>
+<td class="label">{t}E-Mals Commerce URL (Multi){/t}</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Mals_URL_Multi" value="{$site->get_mals_data('url_multi')}" ovalue="{$site->get_mals_data('url_multi')}" valid="0">
+       <div id="Site_Mals_URL_Multi_Container"  ></div>
+     </div>
 
-<tr><td class="label">{t}Select Registration Method: {/t}</td><td>
+</td>
+<td id="Site_Mals_URL_Multi_msg" class="edit_td_alert"></td>
+</tr>
+
+</tbody>
+
+<tr><td class="label">{t}Select Registration Method{/t}:</td><td>
 <input id="site_registration_method" value="sidebar" type="hidden"   />
 <div class="buttons" id="site_registration_method_buttons" style="float:left">
 <button  id="sidebar" class="site_registration_method {if $site->get('Site Registration Method')=='SideBar'}selected{/if}" ><img src="art/icons/layout.png" alt=""/> {t}SideBar{/t}</button>
@@ -111,33 +133,8 @@ DB updates should be done in class.Site.php. <br/> Should use Ajax (see edit_sto
      
 </td></tr>	
 
-
 <tr>
-<td  class="label">{t}Site Slogan: {/t}</td>
-<td  style="text-align:left">
-     <div>
-       <input style="text-align:left;width:100%" id="Site_Slogan" value="{$site->get('Site Slogan')}" ovalue="{$site->get('Site Slogan')}" valid="0">
-       <div id="Site_Slogan_Container"  ></div>
-     </div>
-
-</td>
-<td id="Site_Slogan_msg" class="edit_td_alert"></td>
-</tr>
-
-<tr>
-<td  class="label">{t}Site Name: {/t}</td>
-<td  style="text-align:left">
-     <div>
-       <input style="text-align:left;width:100%" id="Site_Name" value="{$site->get('Site Name')}" ovalue="{$site->get('Site Name')}" valid="0">
-       <div id="Site_Name_Container"  ></div>
-     </div>
-
-</td>
-<td id="Site_Name_msg" class="edit_td_alert"></td>
-</tr>
-
-<tr>
-<td  class="label">{t}Site URL: {/t}</td>
+<td  class="label">{t}Site URL{/t}:</td>
 <td  style="text-align:left">
      <div>
        <input style="text-align:left;width:100%" id="Site_URL" value="{$site->get('Site URL')}" ovalue="{$site->get('Site URL')}" valid="0">
@@ -149,6 +146,54 @@ DB updates should be done in class.Site.php. <br/> Should use Ajax (see edit_sto
 </tr>
 
 <tr>
+<td  class="label">{t}Site Name{/t}:</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Name" value="{$site->get('Site Name')}" ovalue="{$site->get('Site Name')}" valid="0">
+       <div id="Site_Name_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_Name_msg" class="edit_td_alert"></td>
+</tr>
+
+
+<tr>
+<td  class="label">{t}Site Slogan{/t}:</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_Slogan" value="{$site->get('Site Slogan')}" ovalue="{$site->get('Site Slogan')}" valid="0">
+       <div id="Site_Slogan_Container"  ></div>
+     </div>
+
+</td>
+<td id="Site_Slogan_msg" class="edit_td_alert"></td>
+</tr>
+
+
+  <tr><td class="label">{t}Site Telephone{/t}:</td><td>
+	 <div>
+	   <input  style="width:100%" id="telephone" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="{$site->get('Site Contact Telephone')}" ovalue="{$site->get('Site Contact Telephone')}" />
+	   <div id="telephone_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="telephone_msg" class="edit_td_alert" ></td>
+	  </tr>
+	  
+	 <tr><td class="label">{t}Site Address{/t}:</td>
+	<td>
+	  <div style="height:120px">
+	   <textarea style="width:100%" id="address"  changed=0   value="{$site->get('Site Address')}"  ovalue="{$site->get('Site Contact Address')}"   rows="6" cols="42">{$site->get('Site Contact Address')}</textarea>
+	   <div id="address_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="address_msg" class="edit_td_alert" ></td>
+	 </tr>
+	  
+	  
+
+<tr style="display:none">
 <td  class="label">{t}Site FTP Credentials: {/t}</td>
 <td  style="text-align:left">
      <div>

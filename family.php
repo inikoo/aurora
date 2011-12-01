@@ -123,12 +123,11 @@ $css_files=array(
                'container.css',
                'button.css',
                'table.css',
-               'css/dropdown.css',
-			   'css/edit.css'
+			   'css/edit.css',
+			   'theme.css.php'
            );
 		   
 
-$css_files[]='theme.css.php';
 $js_files=array(
               $yui_path.'utilities/utilities.js',
               $yui_path.'json/json-min.js',

@@ -25,7 +25,7 @@
 
 <input type="hidden" value={$store->id} id="store_id">
 <span style="display:none" id="invalid_email_campaign_name">{t}Invalid Campaign Name{/t}</span>
-<span style="display:none" id="invalid_email_campaign_objetive">{t}Invalid Campaign Objetive{/t}</span>
+<span style="display:none" id="invalid_email_campaign_objective">{t}Invalid Campaign Objective{/t}</span>
 
 <tr ><td style=";width:12em" class="label" >{t}Campaign Name{/t}:</td>
    <td  style="text-align:left;width:18em;">
@@ -37,14 +37,14 @@
    <td id="email_campaign_name_msg" class="edit_td_alert"></td>
  </tr>
 
-<tr ><td style=";width:12em" class="label" >{t}Campaign Objetive{/t}:</td>
+<tr ><td style=";width:12em" class="label" >{t}Campaign Objective{/t}:</td>
    <td  style="text-align:left;width:18em;">
      <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="email_campaign_objetive" value="" ovalue="" >
-       <div id="email_campaign_objetive_Container"  ></div>
+       <input style="text-align:left;width:18em" id="email_campaign_objective" value="" ovalue="" >
+       <div id="email_campaign_objective_Container"  ></div>
      </div>
    </td>
-   <td id="email_campaign_objetive_msg" class="edit_td_alert"></td>
+   <td id="email_campaign_objective_msg" class="edit_td_alert"></td>
  </tr>
 
 

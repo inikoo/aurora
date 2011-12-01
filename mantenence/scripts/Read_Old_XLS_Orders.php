@@ -72,6 +72,10 @@ $orders_array_full_path = glob("/mnt/*/Orders/*.xls");
 
 //$orders_array_full_path=array_reverse($orders_array_full_path);
 
+foreach($orders_array_full_path as $key=>$order){
+    if(preg_match('/openshare/i',$order))
+        unset($orders_array_full_path[$key]);
+}
 
 if(count($orders_array_full_path)==0){
    print "->End.(ROA UK) ".date("r")."\n";

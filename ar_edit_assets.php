@@ -769,7 +769,7 @@ function edit_product_multi() {
 
 function list_products_for_edition() {
 
-
+global $corporate_currency;
 
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
@@ -996,6 +996,7 @@ function list_products_for_edition() {
 
     }
 
+
     $rtext=$total_records." ".ngettext('product','products',$total_records);
 
     if ($total_records>$number_results)
@@ -1017,7 +1018,7 @@ function list_products_for_edition() {
         $order='`Product Code`';
 
     $sql="select *  from `Product Dimension` P  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-
+//print $sql;
     $res = mysql_query($sql);
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -3265,8 +3266,8 @@ function add_part_new_product($sku) {
             $_SESSION['state']['new_product']['parts']=array();
         $tmp=$_SESSION['state']['new_product']['parts'];
         if (array_key_exists($part->sku,$tmp)) {
-            $_SESSION['state']['new_product']['parts'][$part->sku]['picks']=$_SESSION['state']['new_product']['parts'][$part->sku]['picks']+1;
-            $msg=_('Part already selected, incesiong oick number');
+            //$_SESSION['state']['new_product']['parts'][$part->sku]['picks']=$_SESSION['state']['new_product']['parts'][$part->sku]['picks']+1;
+            $msg=_('Part already selected');
         } else {
             $_SESSION['state']['new_product']['parts'][$part->sku]=array(
                         'part_sku'=>$part->sku

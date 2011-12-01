@@ -55,7 +55,7 @@ $js_files=array(
 
 
 $blocks=array();
-$sql=sprintf("select * from `Dashboard Dimension` where `User Key`=%d order by `Dashboard Order`",
+$sql=sprintf("select * from `Dashboard User Bridge` where `User Key`=%d order by `Dashboard Order`",
 $user->id
 );
 $res=mysql_query($sql);

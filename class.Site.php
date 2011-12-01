@@ -64,10 +64,24 @@ class Site extends DB_Table {
                 $this->data['Site Footer Data']=unserialize($this->data['Site Footer Data']);
             if ($this->data['Site Layout Data']!='')
                 $this->data['Site Layout Data']=unserialize($this->data['Site Layout Data']);
+            if ($this->data['Site Checkout Mals Metadata']!='')
+                $this->data['Site Checkout Mals Metadata']=unserialize($this->data['Site Checkout Mals Metadata']);
+            else {
+                $this->data['Site Checkout Mals Metadata']=array('id'=>'','url'=>'','url_multi'=>'');
+            }
+
+
+
 
         }
 
 
+    }
+
+
+
+    function get_mals_data($item) {
+        return $this->data['Site Checkout Mals Metadata'][$item];
     }
 
     function find($raw_data,$options) {
@@ -220,22 +234,41 @@ class Site extends DB_Table {
 
 
 
+    function update_mals_data($field,$value) {
+        $this->data['Site Checkout Mals Metadata'][$field]=$value;
 
+        $sql=sprintf("update `Site Dimension` set `Site Checkout Mals Metadata`=%s where `Site Key`=%d",
+                     prepare_mysql(serialize($this->data['Site Checkout Mals Metadata'])),
+                     $this->id
+                    );
+        mysql_query($sql);
+        $this->updated=true;
+        $this->new_value=$value;
+    }
 
 
 
 
     function update_field_switcher($field,$value,$options='') {
 
-
         switch ($field) {
+        case 'mals_id':
+            $this->update_mals_data('id',$value);
+            break;
+        case 'mals_url':
+            $this->update_mals_data('url',$value);
+            break;
+        case 'mals_url_multi':
+            $this->update_mals_data('url_multi',$value);
+            break;
 
         default:
             $base_data=$this->base_data();
-			
+
             if (array_key_exists($field,$base_data)) {
-				
+ 
                 if ($value!=$this->data[$field]) {
+              
                     $this->update_field($field,$value,$options);
                 }
             }
@@ -446,7 +479,7 @@ class Site extends DB_Table {
 
 
 
-             if (!isset($data['Page Code']) or !$data['Page Code']) {
+        if (!isset($data['Page Code']) or !$data['Page Code']) {
             $data['Page Code']=$this->get_unique_department_page_code($department);
         }
 
@@ -485,7 +518,7 @@ class Site extends DB_Table {
         $page_data['Page Parent Key']=$department->id;
 
         $page=new Page('find',$page_data,'create');
-             $this->new_page=$page->new;
+        $this->new_page=$page->new;
         $this->msg=$page->msg;
         $this->error=$page->error;
 //print_r($page);
@@ -692,8 +725,8 @@ class Site extends DB_Table {
 
     function get_unique_family_page_code($family) {
 
-         if (!$this->is_page_store_code($family->data['Product Family Code']))
-                return $family->data['Product Family Code'];
+        if (!$this->is_page_store_code($family->data['Product Family Code']))
+            return $family->data['Product Family Code'];
 
         for ($i = 2; $i <= 200; $i++) {
 
@@ -711,10 +744,10 @@ class Site extends DB_Table {
     }
 
 
- function get_unique_department_page_code($department) {
+    function get_unique_department_page_code($department) {
 
-   if (!$this->is_page_store_code($department->data['Product Department Code']))
-                return $department->data['Product Department Code'];
+        if (!$this->is_page_store_code($department->data['Product Department Code']))
+            return $department->data['Product Department Code'];
 
         for ($i = 2; $i <= 200; $i++) {
 
@@ -751,9 +784,9 @@ class Site extends DB_Table {
 
 
     }
-    
-    function   update_headers($new_header_key=false){
-    
+
+    function   update_headers($new_header_key=false) {
+
     }
 
 }
