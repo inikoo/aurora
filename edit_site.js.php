@@ -12,15 +12,18 @@ var id=<?php echo$_SESSION['state']['site']['id']?>;
 var validate_scope_data=
 {
     'site':{
-	'slogan':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_Slogan','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Slogan')?>'}]}
+	'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Slogan','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Slogan')?>'}]}
 	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
 	,'url':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-	,'ftp':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_FTP','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Credentials')?>'}]}
-	//,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
-	//,'email':{'ar':'find','ar_request':'ar_contacts.php?tipo=email_in_other_customer&customer_key='+customer_id+'&store_key='+store_id+'&query=','changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
-	//,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':regex_valid_tel,'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
-	//,'mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
-	//,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_FAX','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
+	,'ftp':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_FTP','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Credentials')?>'}]}
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Contact Telephone','name':'telephone','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'address','dbname':'Site Contact Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+
+
+	,'mals_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+	,'mals_url_multi':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL_Multi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+	,'mals_id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_ID','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid ID')?>'}]}
+
 }};
 
 var validate_scope_metadata={
@@ -335,9 +338,6 @@ function upload_header(e){
 
 
   };
-  
-
-
 function init(){
 init_search('products_store');
 
@@ -358,7 +358,7 @@ Event.addListener("cancel_upload_header", "click", close_upload_header);
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
 	   
-	Event.addListener(["ecommerce","inikoo"], "click", change_checkout_method);
+	Event.addListener(["Mals","Inikoo"], "click", change_checkout_method);
 	Event.addListener(["sidebar","mainpage"], "click", change_registration_method);
    
     var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_slogan);
@@ -384,6 +384,37 @@ Event.addListener("cancel_upload_header", "click", close_upload_header);
     var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP","Site_FTP_Container", site_slogan_oACDS);
     customer_Registration_Number_oAutoComp.minQueryLength = 0; 
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+    
+       var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_id);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_ID","Site_Mals_ID_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+    
+       var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_url);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL","Site_Mals_URL_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+    
+       var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_url_multi);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_URL_Multi","Site_Mals_URL_Multi_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+	
+	   var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_address);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("address","address_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+    
+       var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_telephone);
+    site_slogan_oACDS.queryMatchContains = true;
+    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("telephone","telephone_Container", site_slogan_oACDS);
+    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+	
 	
 	YAHOO.util.Event.addListener('save_edit_site', "click", save_edit_site);
     YAHOO.util.Event.addListener('reset_edit_site', "click", reset_edit_site);
@@ -417,7 +448,6 @@ function save_edit_site(){
 function reset_edit_site(){
     reset_edit_general('site')
 }
-
 
 function validate_site_ftp(query){
   original_query= query;
@@ -459,6 +489,24 @@ query=query.replace(/[^A-Z0-9]/i, "");
      validate_scope('site'); 
  }
 
+}
+
+function validate_site_mals_id(query){
+ validate_general('site','mals_id',unescape(query));
+}
+function validate_site_mals_url(query){
+ validate_general('site','mals_url',unescape(query));
+}
+function validate_site_mals_url_multi(query){
+ validate_general('site','mals_url_multi',unescape(query));
+}
+
+function validate_site_address(query){
+ validate_general('site','address',unescape(query));
+}
+
+function validate_site_telephone(query){
+ validate_general('site','telephone',unescape(query));
 }
 
 function validate_site_slogan(query){
@@ -520,10 +568,32 @@ var request='ar_edit_sites.php?tipo=edit_checkout_method&site_key=' + site_id +'
 
 	            success:function(o){
 					
-	            //alert(o.responseText);	
+	        
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
 				Dom.addClass(r.new_value,'selected');
+				
+				if(r.new_value=='Mals'){
+				Dom.setStyle('mals_tbody','display','');
+				
+				}else{
+				
+				Dom.setStyle('mals_tbody','display','none');
+				
+				Dom.get('Site_Mals_ID').value=Dom.get('Site_Mals_ID').getAttribute('ovalue');
+				Dom.get('Site_Mals_URL').value=Dom.get('Site_Mals_URL').getAttribute('ovalue');
+				Dom.get('Site_Mals_URL_Multi').value=Dom.get('Site_Mals_URL_Multi').getAttribute('ovalue');
+validate_scope_data.site.mals_id.validated=true;
+validate_scope_data.site.mals_id.changed=false;
+validate_scope_data.site.mals_url.validated=true;
+validate_scope_data.site.mals_url.changed=false;
+validate_scope_data.site.mals_url_multi.validated=true;
+validate_scope_data.site.mals_url_multi.changed=false;
+								validate_scope('site')
+
+
+				}
+				
 
             }
 			else{

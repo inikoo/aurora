@@ -240,7 +240,7 @@ abstract class DB_Table {
                 $save_history=false;
 
             if (
-                preg_match('/part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
+                preg_match('/site|page|part|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
                 and !$this->new
                 and $save_history
             ) {
@@ -445,7 +445,7 @@ abstract class DB_Table {
                      ,prepare_mysql($data['Metadata'])
                     );
 
-        //   print $sql;
+      //     print $sql;
         // print_r($raw_data);
         //dsdfdffd();
         mysql_query($sql);

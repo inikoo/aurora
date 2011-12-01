@@ -16,16 +16,16 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
-case('update_objetive'):
+case('update_objective'):
 
  $data=prepare_values($_REQUEST,array(
-                             'objetive_key'=>array('type'=>'key'),
-                             'objetive_term'=>array('type'=>'string'),
-                             'objetive_time_limit_in_seconds'=>array('type'=>'numeric'),
+                             'objective_key'=>array('type'=>'key'),
+                             'objective_term'=>array('type'=>'string'),
+                             'objective_time_limit_in_seconds'=>array('type'=>'numeric'),
                              
                          ));
 
-    update_objetive($data);
+    update_objective($data);
     break;
 
 case('upload_postcard'):
@@ -114,12 +114,12 @@ case('edit_email_content'):
     edit_email_content($data);
 
     break;
-case('delete_email_campaign_objetive'):
+case('delete_email_campaign_objective'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
 
                          ));
-    delete_email_campaign_objetive($data);
+    delete_email_campaign_objective($data);
     break;
 
     break;
@@ -134,8 +134,8 @@ case('add_email_campaign_objective'):
     break;
 
 
-case('email_campaign_objetives'):
-    email_campaign_objetives();
+case('email_campaign_objectives'):
+    email_campaign_objectives();
     break;
 case('delete_email_campaign_recipient'):
     $data=prepare_values($_REQUEST,array(
@@ -334,9 +334,9 @@ function delete_email_campaign($data) {
 }
 
 
-function delete_email_campaign_objetive($data) {
+function delete_email_campaign_objective($data) {
 
-    $sql=sprintf('delete from `Email Campaign Objetive Dimension` where `Email Campaign Objetive Key`=%d  ',
+    $sql=sprintf('delete from `Email Campaign Objective Dimension` where `Email Campaign Objective Key`=%d  ',
                  $data['id']);
 
     mysql_query($sql);
@@ -884,8 +884,8 @@ function set_email_campaign_as_ready($data) {
 
 
 
-function email_campaign_objetives() {
-    $conf=$_SESSION['state']['email_campaign']['objetives'];
+function email_campaign_objectives() {
+    $conf=$_SESSION['state']['email_campaign']['objectives'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -939,12 +939,12 @@ function email_campaign_objetives() {
 
 
 
-    $_SESSION['state']['email_campaign']['objetives']['order']=$order;
-    $_SESSION['state']['email_campaign']['objetives']['order_dir']=$order_dir;
-    $_SESSION['state']['email_campaign']['objetives']['nr']=$number_results;
-    $_SESSION['state']['email_campaign']['objetives']['sf']=$start_from;
-    $_SESSION['state']['email_campaign']['objetives']['f_field']=$f_field;
-    $_SESSION['state']['email_campaign']['objetives']['f_value']=$f_value;
+    $_SESSION['state']['email_campaign']['objectives']['order']=$order;
+    $_SESSION['state']['email_campaign']['objectives']['order_dir']=$order_dir;
+    $_SESSION['state']['email_campaign']['objectives']['nr']=$number_results;
+    $_SESSION['state']['email_campaign']['objectives']['sf']=$start_from;
+    $_SESSION['state']['email_campaign']['objectives']['f_field']=$f_field;
+    $_SESSION['state']['email_campaign']['objectives']['f_value']=$f_value;
 
 
     $where=sprintf(" where  `Email Campaign Key`=%d",$email_campaign_key);
@@ -956,7 +956,7 @@ function email_campaign_objetives() {
     if ($f_field=='name' and $f_value!='')
         $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
 
-    $sql="select count(*) as total from `Email Campaign Objetive Dimension`     $where $wheref";
+    $sql="select count(*) as total from `Email Campaign Objective Dimension`     $where $wheref";
 
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -967,7 +967,7 @@ function email_campaign_objetives() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total  from `Email Campaign Objetive Dimension`    $where ";
+        $sql="select count(*) as total  from `Email Campaign Objective Dimension`    $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -977,7 +977,7 @@ function email_campaign_objetives() {
         mysql_free_result($result);
     }
 
-    $rtext=sprintf(ngettext("%d objetive", "%d objetives", $total_records), $total_records);
+    $rtext=sprintf(ngettext("%d objective", "%d objectives", $total_records), $total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
@@ -988,15 +988,15 @@ function email_campaign_objetives() {
 
 
 
-    $order='`Email Campaign Objetive Name`';
+    $order='`Email Campaign Objective Name`';
 
-    $sql="select *  from `Email Campaign Objetive Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select *  from `Email Campaign Objective Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 //print $sql;
     $res = mysql_query($sql);
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-        switch ($row['Email Campaign Objetive Type']) {
+        switch ($row['Email Campaign Objective Type']) {
         case 'Context':
             $type='<img src="art/icons/text_dropcaps.png"   style="height:14px" title="'.('Context').'"   alt="'.('Context').'"  />';
             $delete="<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />";
@@ -1012,7 +1012,7 @@ function email_campaign_objetives() {
             break;
         }
 
-        switch ($row['Email Campaign Objetive Parent']) {
+        switch ($row['Email Campaign Objective Parent']) {
         case 'Department':
             $parent=_('Department');
             $valid_terms=array('Order','Buy');
@@ -1045,7 +1045,7 @@ function email_campaign_objetives() {
             $valid_terms=array('Visit');
             break;
         default:
-            $parent=$row['Email Campaign Objetive Parent'];
+            $parent=$row['Email Campaign Objective Parent'];
             $valid_terms=array('Use');
             break;
         }
@@ -1054,55 +1054,55 @@ function email_campaign_objetives() {
 
 
 
-        switch ($row['Email Campaign Objetive Term']) {
+        switch ($row['Email Campaign Objective Term']) {
         case 'Order':
 
-            $metadata=preg_split('/;/',$row['Email Campaign Objetive Term Metadata']);
+            $metadata=preg_split('/;/',$row['Email Campaign Objective Term Metadata']);
             $formated_time=seconds_to_string($metadata[2]);
             $time=$metadata[2];
-            $objetive=_('Order').' ('.$formated_time.')';
+            $objective=_('Order').' ('.$formated_time.')';
 
             break;
         case 'Buy':
 
-            $metadata=preg_split('/;/',$row['Email Campaign Objetive Term Metadata']);
+            $metadata=preg_split('/;/',$row['Email Campaign Objective Term Metadata']);
             $formated_time=seconds_to_string($metadata[2]);
             $time=$metadata[2];
-            $objetive=_('Buy').' ('.$formated_time.')';
+            $objective=_('Buy').' ('.$formated_time.')';
 
             break;
         case 'Use':
 
-            $metadata=preg_split('/;/',$row['Email Campaign Objetive Term Metadata']);
+            $metadata=preg_split('/;/',$row['Email Campaign Objective Term Metadata']);
             $formated_time=seconds_to_string($metadata[0]);
             $time=$metadata[0];
-            $objetive=_('Use').' ('.$formated_time.')';
+            $objective=_('Use').' ('.$formated_time.')';
 
             break;
 
         case 'Visit':
 
-            $metadata=preg_split('/;/',$row['Email Campaign Objetive Term Metadata']);
+            $metadata=preg_split('/;/',$row['Email Campaign Objective Term Metadata']);
             $formated_time=seconds_to_string($metadata[0]);
             $time=$metadata[0];
-            $objetive=_('Visit').' ('.$formated_time.')';
+            $objective=_('Visit').' ('.$formated_time.')';
 
             break;
 
         default:
-            $objetive='';
+            $objective='';
             $formated_time='';
         }
 
 
         $adata[]=array(
-                     'id'=>$row['Email Campaign Objetive Key'],
+                     'id'=>$row['Email Campaign Objective Key'],
 
-                     'name'=>$row['Email Campaign Objetive Name'],
-                     'objetive'=>$objetive,
-                     'term'=>$row['Email Campaign Objetive Term'],
+                     'name'=>$row['Email Campaign Objective Name'],
+                     'objective'=>$objective,
+                     'term'=>$row['Email Campaign Objective Term'],
                      'valid_terms'=>$valid_terms,
-                     'metadata'=>preg_split('/;/',$row['Email Campaign Objetive Term Metadata']),
+                     'metadata'=>preg_split('/;/',$row['Email Campaign Objective Term Metadata']),
                      'temporal_formated_metadata'=>$formated_time,
                       'temporal_metadata'=>$time,
                      'parent'=>$parent,
@@ -1145,15 +1145,15 @@ function add_email_campaign_objective($data) {
 
     $email_campaign=new EmailCampaign($data['email_campaign_key']);
 
-    $objetive_data=array(
-                       'Email Campaign Objetive Parent'=>$data['parent'],
-                       'Email Campaign Objetive Parent Key'=>$data['parent_key'],
-                       'Email Campaign Objetive Type'=>'Context'
+    $objective_data=array(
+                       'Email Campaign Objective Parent'=>$data['parent'],
+                       'Email Campaign Objective Parent Key'=>$data['parent_key'],
+                       'Email Campaign Objective Type'=>'Context'
 
 
                    );
 
-    $email_campaign->add_objetive($objetive_data);
+    $email_campaign->add_objective($objective_data);
 
     $response= array(
                    'state'=>200,
@@ -1416,7 +1416,7 @@ function delete_color_scheme($data) {
 
 
 function color_schemes() {
-    // $conf=$_SESSION['state']['email_campaign']['objetives'];
+    // $conf=$_SESSION['state']['email_campaign']['objectives'];
 
     $conf=array('sf'=>0,'nr'=>50,'order'=>'name','order_dir'=>'','f_field'=>'name','f_value'=>'');
 
@@ -1488,12 +1488,12 @@ function color_schemes() {
 
 
 
-    //$_SESSION['state']['email_campaign']['objetives']['order']=$order;
-    //$_SESSION['state']['email_campaign']['objetives']['order_dir']=$order_dir;
-    //$_SESSION['state']['email_campaign']['objetives']['nr']=$number_results;
-    //$_SESSION['state']['email_campaign']['objetives']['sf']=$start_from;
-    //$_SESSION['state']['email_campaign']['objetives']['f_field']=$f_field;
-    //$_SESSION['state']['email_campaign']['objetives']['f_value']=$f_value;
+    //$_SESSION['state']['email_campaign']['objectives']['order']=$order;
+    //$_SESSION['state']['email_campaign']['objectives']['order_dir']=$order_dir;
+    //$_SESSION['state']['email_campaign']['objectives']['nr']=$number_results;
+    //$_SESSION['state']['email_campaign']['objectives']['sf']=$start_from;
+    //$_SESSION['state']['email_campaign']['objectives']['f_field']=$f_field;
+    //$_SESSION['state']['email_campaign']['objectives']['f_value']=$f_value;
 
 
     $where=sprintf(" where  `Store Key`=%d",$store_key);
@@ -1651,7 +1651,7 @@ function color_schemes() {
 }
 
 function email_template_header_images() {
-    // $conf=$_SESSION['state']['email_campaign']['objetives'];
+    // $conf=$_SESSION['state']['email_campaign']['objectives'];
 
     $conf=array('sf'=>0,'nr'=>50,'order'=>'name','order_dir'=>'','f_field'=>'name','f_value'=>'');
 
@@ -1723,12 +1723,12 @@ function email_template_header_images() {
 
 
 
-    //$_SESSION['state']['email_campaign']['objetives']['order']=$order;
-    //$_SESSION['state']['email_campaign']['objetives']['order_dir']=$order_dir;
-    //$_SESSION['state']['email_campaign']['objetives']['nr']=$number_results;
-    //$_SESSION['state']['email_campaign']['objetives']['sf']=$start_from;
-    //$_SESSION['state']['email_campaign']['objetives']['f_field']=$f_field;
-    //$_SESSION['state']['email_campaign']['objetives']['f_value']=$f_value;
+    //$_SESSION['state']['email_campaign']['objectives']['order']=$order;
+    //$_SESSION['state']['email_campaign']['objectives']['order_dir']=$order_dir;
+    //$_SESSION['state']['email_campaign']['objectives']['nr']=$number_results;
+    //$_SESSION['state']['email_campaign']['objectives']['sf']=$start_from;
+    //$_SESSION['state']['email_campaign']['objectives']['f_field']=$f_field;
+    //$_SESSION['state']['email_campaign']['objectives']['f_value']=$f_value;
 
 
     $where=sprintf(" where  `Store Key`=%d",$store_key);
@@ -1851,7 +1851,7 @@ function email_template_header_images() {
 
 
 function email_template_postcards() {
-    // $conf=$_SESSION['state']['email_campaign']['objetives'];
+    // $conf=$_SESSION['state']['email_campaign']['objectives'];
 
     $conf=array('sf'=>0,'nr'=>50,'order'=>'name','order_dir'=>'','f_field'=>'name','f_value'=>'');
 
@@ -1923,12 +1923,12 @@ function email_template_postcards() {
 
 
 
-    //$_SESSION['state']['email_campaign']['objetives']['order']=$order;
-    //$_SESSION['state']['email_campaign']['objetives']['order_dir']=$order_dir;
-    //$_SESSION['state']['email_campaign']['objetives']['nr']=$number_results;
-    //$_SESSION['state']['email_campaign']['objetives']['sf']=$start_from;
-    //$_SESSION['state']['email_campaign']['objetives']['f_field']=$f_field;
-    //$_SESSION['state']['email_campaign']['objetives']['f_value']=$f_value;
+    //$_SESSION['state']['email_campaign']['objectives']['order']=$order;
+    //$_SESSION['state']['email_campaign']['objectives']['order_dir']=$order_dir;
+    //$_SESSION['state']['email_campaign']['objectives']['nr']=$number_results;
+    //$_SESSION['state']['email_campaign']['objectives']['sf']=$start_from;
+    //$_SESSION['state']['email_campaign']['objectives']['f_field']=$f_field;
+    //$_SESSION['state']['email_campaign']['objectives']['f_value']=$f_value;
 
 
     $where=sprintf(" where  `Store Key`=%d",$store_key);
@@ -2315,7 +2315,7 @@ function delete_template_header_image($data) {
 
 }
 
-function update_objetive($data){
+function update_objective($data){
 
 
 

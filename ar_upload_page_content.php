@@ -33,7 +33,7 @@ case('upload_header'):
 
                          ));
     $data['tipo']=$tipo;
-    process_upload_files($data);
+    process_uploaded_files($data);
     break;
 case('upload_page_content'):
     $data=prepare_values($_REQUEST,array(
@@ -42,7 +42,7 @@ case('upload_page_content'):
                          ));
     $data['tipo']=$tipo;
   
-    process_upload_files($data);
+    process_uploaded_files($data);
     break;
 
 
@@ -82,14 +82,13 @@ function upload_page_header($data) {
     }
 }
 
-function process_upload_files($data) {
-
-
+function process_uploaded_files($data) {
+//print_r($_FILES);
     if (isset($_FILES['file']['tmp_name']) and $_FILES['file']['tmp_name']) {
 
         $file_name=$_FILES['file']['tmp_name'];
 
-        if ($_FILES['file']['type']=='application/zip') {
+        if (preg_match('/^application.*zip.*/',$_FILES['file']['type'])){
 
             upload_from_zip($data);
             return;
@@ -676,14 +675,12 @@ function extract_products_info($html) {
     $regexp = "<\?php\s*show_products\(.+\).*\?>";
     if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
         foreach($matches as $match) {
-
-//print_r($match);
-
-
-
         }
     }
 
-    $html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/",'{$page->display_product_form_list()}',$html);
+
+    $html=preg_replace("/<\?php\s*show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
+
+    $html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/",'{$page->display_list()}',$html);
     return $html;
 }

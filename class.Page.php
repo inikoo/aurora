@@ -275,9 +275,6 @@ class Page extends DB_Table {
 
     }
 
-
-
-
     function create_store_page($raw_data) {
 //print_r($raw_data);
 
@@ -363,8 +360,6 @@ class Page extends DB_Table {
 
     }
 
-
-
     function update_working_url() {
         $old_value=$this->data['Page Working URL'];
         $this->data['Page Working URL']=$this->get_url_state($this->data['Page URL']);
@@ -391,8 +386,6 @@ class Page extends DB_Table {
 
     }
 
-
-
     function get($key) {
 
 
@@ -408,11 +401,6 @@ class Page extends DB_Table {
         return false;
     }
 
-
-
-
-
-
     function display($tipo='link') {
 
         switch ($tipo) {
@@ -426,7 +414,6 @@ class Page extends DB_Table {
 
 
     }
-
 
     function get_url_state($url) {
         $state='Unknown';
@@ -443,10 +430,6 @@ class Page extends DB_Table {
 
     }
 
-    /*
-      Function: base_data
-      Initialize data  array with the default field values
-     */
     function internal_base_data() {
         $data=array();
         $result = mysql_query("SHOW COLUMNS FROM `Page Internal Dimension`");
@@ -462,10 +445,7 @@ class Page extends DB_Table {
         }
         return $data;
     }
-    /*
-        Function: base_data
-        Initialize data  array with the default field values
-       */
+ 
     function store_base_data() {
         $data=array();
         $result = mysql_query("SHOW COLUMNS FROM `Page Store Dimension`");
@@ -513,7 +493,6 @@ class Page extends DB_Table {
         }
 
     }
-
 
     function update_show_layout($layout,$value) {
         switch ($layout) {
@@ -1078,7 +1057,117 @@ class Page extends DB_Table {
         return $formated_store_section;
     }
 
-    function display_product_form_list() {
+    function display_button($tag) {
+        $html='';
+        include_once('class.Product.php');
+        $product=new Product('code_store',$tag,$this->data['Page Store Key']);
+
+        if ($product->id) {
+
+            if ($this->logged) {
+
+                switch ($this->site->data['Site Checkout Method']) {
+                case 'Mals':
+
+                    $html.=$this->display_button_emals_commerce($product);
+                    break;
+                case 'Inikoo':
+                    $html.=$this->display_button_inikoo($product);
+
+                    break;
+                default:
+                    break;
+                }
+            } else {
+                $html=$this->display_button_logged_out($product);
+            }
+        }
+        return $html;
+    }
+
+    function display_button_emals_commerce($product) {
+
+     
+        if ($product->data['Product Web State']=='Out of Stock') {
+            $message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
+        }
+        elseif($product->data['Product Web State']=='Offline') {
+            $message='<br/><span style="color:red;font-weight:800">'._('Not for Sale').'</span>';
+        }
+        elseif($product->data['Product Web State']=='Discontinued') {
+            $message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
+        }
+        else {
+            $message=sprintf("<div class='order_but' style='text-align:left'>
+                             <form action='%s' method='post'>
+                             <input type='hidden' name='userid' value='%s'>
+                             <input type='hidden' name='product' value='%s %sx %s'>
+                             <input type='hidden' name='return' value='%s'>
+                             <input type='hidden' name='price' value='%s'>
+                             <input type='text' size='2' class='qty' name='qty' value=''>
+                             <input type='Submit' value='%s'></form></div>",
+                             $this->site->get_mals_data('url'),
+                             $this->site->get_mals_data('id'),
+                             $product->data['Product Code'],
+                             $product->data['Product Units Per Case'],
+                             $product->data['Product Name'],
+                             $this->data['Page URL'],
+                             $product->data['Product Price'],
+                             _('Order')
+
+
+                            );
+        }
+
+        $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form">
+                      <span class="code">%s</span><br/>
+                      <span class="name">%sx %s</span>%s
+                      </div>',
+                      $product->data['Product Code'],
+                      $product->data['Product Units Per Case'],
+                      $product->data['Product Name'],
+                      $message
+                     );
+
+
+        return $form;
+
+
+    }
+    function display_button_inikoo($product) {
+
+
+    }
+    function display_button_logged_out($product) {
+
+        if ($product->data['Product Web State']=='Out of Stock') {
+            $message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
+        }
+        elseif($product->data['Product Web State']=='Offline') {
+            $message='<br/><span style="color:red;font-weight:800">'._('Not for Sale').'</span>';
+        }
+        elseif($product->data['Product Web State']=='Discontinued') {
+            $message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
+        }
+        else {
+            $message=sprintf('<br/><span style="color:green;font-style:italic;">In stock, please <a style="color:green;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:green;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
+        }
+
+        $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form">
+                      <span class="code">%s</span><br/>
+                      <span class="name">%sx %s</span>%s
+                      </div>',
+                      $product->data['Product Code'],
+                      $product->data['Product Units Per Case'],
+                      $product->data['Product Name'],
+                      $message
+                     );
+
+
+        return $form;
+    }
+
+    function display_list() {
 
 
 
@@ -1088,6 +1177,7 @@ class Page extends DB_Table {
         }
 
         $products=$this->get_products_from_family($this->data['Page Parent Key']);
+        $this->print_rrp=false;
 
         if (count($products)==0)
             return;
@@ -1096,10 +1186,10 @@ class Page extends DB_Table {
 
         if ($this->logged) {
 
-            return $this->get_product_list_login($products);
+            return $this->display_list_logged_in($products);
         } else {
 
-            return $this->get_product_list_logout($products);
+            return $this->display_list_logged_out($products);
 
         }
 
@@ -1107,7 +1197,6 @@ class Page extends DB_Table {
 
 
     }
-
 
     function get_products_from_family($family_key) {
 
@@ -1173,7 +1262,30 @@ class Page extends DB_Table {
         return $products;
     }
 
-    function get_product_list_logout($products) {
+    function get_list_header($products) {
+
+        $html='';
+
+        switch ($this->data['Page Store Section']) {
+        case 'Family Catalogue':
+            $family=new Family($this->data['Page Parent Key']);
+            $html=sprintf('<tr class="list_info"><td>%s</td><td></td><td  colspan="4" style="padding:0">%s</td></tr>',$family->data['Product Family Code'],$family->data['Product Family Name']);
+
+            break;
+        default:
+
+            break;
+        }
+
+        $html.=sprintf('<tr class="list_info price"><td style="padding-top:0;padding-bottom:0;text-align:left" colspan="6">%s</td></tr></tr>',$this->get_list_price_header_auto($products));
+        $html.=sprintf('<tr class="list_info rrp"><td style="padding-top:0;padding-bottom:0;" colspan="6">%s</td></tr></tr>',$this->get_list_rrp_header_auto($products));
+
+
+        return $html;
+
+    }
+
+    function display_list_logged_out($products) {
 
         $options=unserialize($this->data['Page List Metadata']);
 
@@ -1300,13 +1412,7 @@ class Page extends DB_Table {
         return $form;
     }
 
-    function get_product_list_login($products) {
-
-        $site=new Site($this->data['Page Site Key']);
-
-
-
-
+    function display_list_logged_in($products) {
 
         $print_rrp=true;
         $number_records=count($products);
@@ -1314,147 +1420,35 @@ class Page extends DB_Table {
         $discontinued=_('Discontinued');
 
 
-        $form=sprintf('<table border=0  style="font-size:100%%" class="product_list form" >' );
+        $form=sprintf('<table border=0 style="font-size:100%%" class="product_list form" >' );
         $rrp_label='';
         $price_label='';
 
-        $form.='<tr class="list_info" ><td colspan="4"><p>'.$price_label.$rrp_label.'</p></td></tr>';
+//        $form.='<tr class="list_info" ><td colspan="4"><p>'.$price_label.$rrp_label.'</p></td></tr>';
 
+        $form.=$this->get_list_header($products);
 
-
-        switch ($site->data['Site Checkout Method']) {
+        switch ($this->$site->data['Site Checkout Method']) {
         case 'Mals':
-            $this->url=$ecommerce_url;
-            $this->user_id=$username;
-            $this->method=$method;
+
+            $form.=$this->get_list_emals_commerce($products);
             break;
         case 'Inikoo':
-            $form.=$this->get_products_orders_inikoo($products);
+            $form.=$this->get_list_inikoo($products);
 
             break;
         default:
             break;
         }
 
-/*
-        if ($this->method=='xreload') {
-            $form.=sprintf('
-                           <form action="%s" method="post">
-                           <input type="hidden" name="userid" value="%s">
-                           <input type="hidden" name="nnocart"> '
-                           ,$ecommerce_url
-                           ,addslashes($username)
 
-                          );
-            $counter=1;
-            //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
-            $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
-            //print $sql;
-            $result=mysql_query($sql);
-            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-
-
-                if ($print_rrp) {
-
-                    $rrp= $this->get_formated_rrp(array(
-                                                      'Product RRP'=>$row['Product RRP'],
-                                                      'Product Units Per Case'=>$row['Product Units Per Case'],
-                                                      'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
-
-                } else {
-                    $rrp='';
-                }
-
-
-
-
-
-                if ($row['Product Web State']=='Out of Stock') {
-                    $class_state='out_of_stock';
-
-                    $state=' <span class="out_of_stock">('.$out_of_stock.')</span>';
-
-                }
-                elseif ($row['Product Web State']=='Discontinued') {
-                    $class_state='discontinued';
-                    $state=' <span class="discontinued">('.$discontinued.')</span>';
-
-                }
-                else {
-
-                    $class_state='';
-                    $state='';
-
-
-                }
-
-                $price= $this->get_formated_price(array(
-                                                      'Product Price'=>$row['Product Price'],
-                                                      'Product Units Per Case'=>1,
-                                                      'Product Unit Type'=>'',
-                                                      'Label'=>(''),
-                                                      'price per unit text'=>''
-
-                                                  ));
-
-
-
-
-                if ($counter==0)
-                    $tr_class='class="top"';
-                else
-                    $tr_class='';
-                $form.=sprintf('<tr %s >
-                               <input type="hidden"  name="discountpr%s"     value="1,%.2f"  >
-                               <input type="hidden"  name="product%s"  value="%s %s" >
-                               <td class="code">%s</td><td class="price">%s</td>
-                               <td class="input"><input name="qty%s"  id="qty%s"  type="text" value="" class="%s"  %s ></td>
-                               <td class="description">%s %s</td><td class="rrp">%s</td>
-                               </tr>'."\n",
-                               $tr_class,
-                               $counter,$row['Product Price'],
-                               $counter,$row['Product Code'],$row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
-
-                               $row['Product Code'],
-                               $price,
-                               $counter,
-                               $counter,
-                               $class_state,
-                               ($class_state!=''?' readonly="readonly" ':''),
-                               $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
-                               $state,
-                               $rrp
-
-                              );
-
-
-
-
-
-                $counter++;
-            }
-
-            if ($counter==1) {
-                $form.='</td><tr><td>Product is Discontinued</td></tr>';
-            } else {
-                $form.=sprintf('<tr class="space"><td colspan="4">
-                               <input type="hidden" name="return" value="%s">
-                               <input class="button" name="Submit" type="submit"  value="Order">
-                               <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
-                               '
-                               ,ecommerceURL($secure, $_port, $_protocol, $url, $server));
-            }
-        }
-
-*/
         $form.='</table>';
         return $form;
     }
 
 
-    function get_products_orders_inikoo($products,$print_rrp=false) {
-$form='';
+    function get_list_inikoo($products) {
+        $form='';
         $counter=0;
 
         $order_key=0;
@@ -1471,7 +1465,7 @@ $form='';
 
         foreach($products as $product) {
 
-            if ($print_rrp) {
+            if ($this->print_rrp) {
 
                 $rrp= $this->get_formated_rrp(array(
                                                   'Product RRP'=>$product['Product RRP'],
@@ -1513,69 +1507,73 @@ $form='';
 
 
             if ($product['Product Web State']=='Out of Stock') {
-        //        $class_state='out_of_stock';
+                //        $class_state='out_of_stock';
 
-          //      $state=' <span class="out_of_stock">('._('Out of Stock').')</span>';
+                //      $state=' <span class="out_of_stock">('._('Out of Stock').')</span>';
 
-  $order_button=sprintf('<td colspan=3 style="padding:0;text-align:right;color:red;font-style:italic">%s</td>',_('Sold Out'));
+                $order_button=sprintf('<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:80%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>',_('Sold Out'));
 
 
             }
             elseif ($product['Product Web State']=='Discontinued') {
-            //    $class_state='discontinued';
-              //  $state=' <span class="discontinued">('._('Discontinued').')</span>';
-              $order_button=sprintf('<td colspan=3>%s</td>',_('Sold Out'));
+                //    $class_state='discontinued';
+                //  $state=' <span class="discontinued">('._('Discontinued').')</span>';
+                $order_button=sprintf('<td colspan=3>%s</td>',_('Sold Out'));
             }
             else {
-               // $class_state='';
-               // $state='';
-               
-               $order_button=sprintf(' <td><span id="loading%d"></span></td><td class="input"><input style="height:20px" id="qty%s"  type="text" value="%s"  ></td>
-                           <td style="padding:0"><button style="border:1px solid #ccc;border-left:none;height:22px"><img style="pointer:cursor;position:relative;bottom:2px"src="art/icons/basket_add.png" onClick="order_single_product(%d)"/></button></td>',
-                               $product['Product ID'],
-                             $product['Product ID'],
-                             ($old_qty>0?$old_qty:''),
-                        
-                          
-                         
-                           $product['Product ID']
-                     
-                           
-                           );
-               
-               
+                // $class_state='';
+                // $state='';
+
+                $order_button=sprintf('
+                                      <td ><span id="loading%d"></span></td>
+                                      <td style="padding:0" class="input"><input style="height:20px" id="qty%s"  type="text" value="%s"  ></td>
+                                      <td style="padding:0"><button style="border:1px solid #ccc;border-left:none;height:22px"><img style="pointer:cursor;position:relative;bottom:2px"src="art/icons/basket_add.png" onClick="order_single_product(%d)"/></button></td>',
+                                      $product['Product ID'],
+                                      $product['Product ID'],
+                                      ($old_qty>0?$old_qty:''),
+
+
+
+                                      $product['Product ID']
+
+
+                                     );
+
+
             }
 
 
 
 
             $form.=sprintf('<tr %s >
+                           <td class="code">%s</td>
                            %s
                            <input type="hidden" id="order_id%d" value="%d">
                            <input type="hidden" id="pid%d" value="%d">
                            <input type="hidden" id="old_qty%d" value="%d">
-                           <td class="code">%s</td>
+
                            <td class="price">%s</td>
-                           
-                           
-                           
+
+
+
                            <td class="description">%s <span class="rrp">%s</span></td>
-                           
-                          
+
+
                            </tr>'."\n",
                            $tr_class,
-                             $order_button,
+                           $product['Product Code'],
+                           $order_button,
                            $product['Product ID'],$order_key,
                            $product['Product ID'],$product['Product ID'],
                            $product['Product ID'],$old_qty,
-                           $product['Product Code'],
+
                            $price,
 
-                             
-                           
-                           
+
+
+
                            $product['Product Units Per Case'].'x '.$product['Product Special Characteristic'], $rrp
-                         
+
                           );
 
 
@@ -1586,16 +1584,138 @@ $form='';
         }
 
 
-return $form;
+        return $form;
 
 
 
     }
 
+    function get_list_emals_commerce($products) {
+
+ 
+        $form=sprintf('
+                      <form action="%s" method="post">
+                      <input type="hidden" name="userid" value="%s">
+                      <input type="hidden" name="nnocart"> '
+                      ,$this->site->update_mals_data('url_multi')
+                      ,$this->site->update_mals_data('url_multi')
+
+                     );
+        $counter=1;
+        foreach($products as $product) {
+
+
+            if ($this->print_rrp) {
+
+                $rrp= $this->get_formated_rrp(array(
+                                                  'Product RRP'=>$product['Product RRP'],
+                                                  'Product Units Per Case'=>$product['Product Units Per Case'],
+                                                  'Product Unit Type'=>$product['Product Unit Type']), array('show_unit'=>$show_unit));
+
+            } else {
+                $rrp='';
+            }
+
+
+
+
+
+
+            $price= $this->get_formated_price(array(
+                                                  'Product Price'=>$product['Product Price'],
+                                                  'Product Units Per Case'=>1,
+                                                  'Product Unit Type'=>'',
+                                                  'Label'=>(''),
+                                                  'price per unit text'=>''
+
+                                              ));
+
+
+
+
+
+
+            if ($product['Product Web State']=='Out of Stock') {
+                $class_state='out_of_stock';
+
+                $input=' <span class="out_of_stock" style="font-size:60%">'._('Out of Stock').'</span>';
+
+
+
+            }
+            elseif ($product['Product Web State']=='Discontinued') {
+                $class_state='discontinued';
+                $input=' <span class="discontinued">('._('Discontinued').')</span>';
+
+            }
+            else {
+
+                $input=sprintf('<input name="qty%s"  id="qty%s"  type="text" value=""  >',
+                               $counter,
+                               $counter
+                              );
+
+
+            }
+
+
+
+            if ($counter==1)
+                $tr_class='class="top"';
+            else
+                $tr_class='';
+                
+
+            $form.=sprintf('<tr %s >
+                           <input type="hidden" name="price%s" value="%.2f"  >
+                           <input type="hidden" name="product%s"  value="%s %s" >
+                           <td class="code">%s</td>
+                           <td class="price">%s</td>
+                           <td class="input">
+                           %s
+                           </td>
+                           <td class="description">%s</td><td class="rrp">%s</td>
+                           </tr>'."\n",
+                           $tr_class,
+
+                           $counter,$product['Product Price'],
+                           $counter,$product['Product Code'],$product['Product Units Per Case'].'x '.$product['Product Special Characteristic'],
+
+                           $product['Product Code'],
+                           $price,
+
+                           $input,
+
+
+
+                           $product['Product Units Per Case'].'x '.$product['Product Special Characteristic'],
+
+                           $rrp
+
+                          );
+
+
+
+
+
+            $counter++;
+        }
+        
+          
+        $form.=sprintf('<tr class="space"><td colspan="4">
+                       <input type="hidden" name="return" value="%s">
+                       <input class="button" name="Submit" type="submit"  value="Order">
+                       <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
+                       '
+                       ,$page->data['Page URL']);
+        return $form;
+    }
+
+
     function get_list_price_header_auto($products) {
         $price_label='';
-        $min_price=0;
-        $max_price=0;
+        $min_price=999999999999;
+        $max_price=-99999999999;
         $number_products_with_price=0;
         foreach($products as $product) {
 
@@ -1607,17 +1727,13 @@ return $form;
                     $max_price=$product['Product Price'];
             }
 
+
+
         }
+
 
         if ($number_products_with_price) {
 
-            $price= $this->get_formated_price(array(
-                                                  'Product Price'=>$price,
-                                                  'Product Units Per Case'=>1,
-                                                  'Product Unit Type'=>'',
-                                                  'Label'=>($row['price_avg']==$row['price_min']?'price':'from')
-
-                                              ));
 
 
 
@@ -1626,7 +1742,7 @@ return $form;
                             'Product Price'=>$min_price,
                             'Product Units Per Case'=>1,
                             'Product Unit Type'=>'',
-                            'Label'=>($min_price==$max_price?_('Price'):_('Price from'))
+                            'Label'=>($min_price==$max_price?_('Price'):_('Price from')).':'
                         )
                     );
 
@@ -1643,8 +1759,8 @@ return $form;
 
     function get_list_rrp_header_auto($products) {
         $rrp_label='';
-        $min_rrp=0;
-        $max_rrp=0;
+        $min_rrp=999999999999;
+        $max_rrp=-99999999999;
         $number_products_with_rrp=0;
         foreach($products as $product) {
 
@@ -1656,18 +1772,22 @@ return $form;
                     $max_rrp=$product['Product RRP'];
             }
 
+
         }
 
         if ($number_products_with_rrp) {
-            $rrp= $this->get_formated_rrp(array(
-                                              'Product RRP'=>$min_rrp,
-                                              'Product Units Per Case'=>1,
-                                              'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
+            $rrp= $this->get_formated_price(array(
+                                                'Product Price'=>$min_rrp,
+                                                'Product Units Per Case'=>1,
+                                                'Product Unit Type'=>'',
+                                                'Label'=>($min_price==$max_price?_('RRP'):_('RRP from')).':'
+                                            )
+                                           );
 
             if ($min_rrp==$max_rrp) {
-                $rrp_label='<span class="rrp">RRP: '.$rrp.'</span>';
+                $rrp_label='<span class="rrp">'.$rrp.'</span>';
             } else {
-                $rrp_label='<span class="rrp">RRP from '.$rrp.'</span>';
+                $rrp_label='<span class="rrp">'.$rrp.'</span>';
             }
 
         }
@@ -1682,7 +1802,10 @@ return $form;
                   'Product Units Per Case'=>$data['Product Units Per Case'],
                   'Product Currency'=>$this->currency,
                   'Product Unit Type'=>$data['Product Unit Type'],
+                  'Label'=>$data['Label'],
                   'locale'=>$this->data['Page Locale']);
+        if (isset($data['price per unit text']))
+            $_data['price per unit text']=$data['price per unit text'];
 
         return formated_rrp($data,$options);
     }

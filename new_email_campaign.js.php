@@ -31,8 +31,8 @@ location.href='email_campaign.php?id='+response.email_campaign_key;
 function validate_email_campaign_name(query){
  validate_general('email_campaign','name',unescape(query));
 }
-function validate_email_campaign_objetive(query){
- validate_general('email_campaign','objetive',unescape(query));
+function validate_email_campaign_objective(query){
+ validate_general('email_campaign','objective',unescape(query));
 }
 function init(){
 store_key=Dom.get('store_id').value;
@@ -50,8 +50,8 @@ validate_scope_data=
 	        'ar':'find','ar_request':'ar_marketing.php?tipo=is_email_campaign_name&store_key='+store_key+'&query=',
 	        'validation':[{'regexp':"[a-z\\d]+",
 	        'invalid_msg':Dom.get('invalid_email_campaign_name')}]}
-	,'objetive':{'dbname':'Email Campaign Objective','changed':false,'validated':false,'required':false,'group':1,'type':'item','name':'email_campaign_objetive','validation':[{'regexp':"[a-z\\d]+",
-	'invalid_msg':Dom.get('invalid_email_campaign_objetive')}]}
+	,'objective':{'dbname':'Email Campaign Objective','changed':false,'validated':false,'required':false,'group':1,'type':'item','name':'email_campaign_objective','validation':[{'regexp':"[a-z\\d]+",
+	'invalid_msg':Dom.get('invalid_email_campaign_objective')}]}
 	
   }
   
@@ -66,9 +66,9 @@ validate_scope_metadata={
     customer_name_oAutoComp.minQueryLength = 0; 
     customer_name_oAutoComp.queryDelay = 0.1;
     
-    var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_objetive);
+    var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_campaign_objective);
     customer_name_oACDS.queryMatchContains = true;
-    var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("email_campaign_objetive","email_campaign_objetive_Container", customer_name_oACDS);
+    var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("email_campaign_objective","email_campaign_objective_Container", customer_name_oACDS);
     customer_name_oAutoComp.minQueryLength = 0; 
     customer_name_oAutoComp.queryDelay = 0.1;
     

@@ -6,7 +6,7 @@
   <span   >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; {$product->get('Product Code')}</span>
 </div>
 <div class="top_page_menu">
-    <div class="buttons left" style="float:left">
+    <div class="buttons" >
         <button style="margin-left:0px"  onclick="window.location='product.php?id={$product->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
   </div>
     <div class="buttons" style="float:right">

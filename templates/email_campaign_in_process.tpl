@@ -32,7 +32,7 @@
 <div class="margin-bottom:0px" >
 <div  style="display:none;padding:10px;float:left" id="edit_email_campaign_msg">
 <span style="display:none" id="invalid_email_campaign_name">{t}Invalid Campaign Name{/t}</span>
-<span style="display:none" id="invalid_email_campaign_objetive">{t}Invalid Campaign Objetive{/t}</span>
+<span style="display:none" id="invalid_email_campaign_objective">{t}Invalid Campaign Objective{/t}</span>
 <span style="display:none" id="invalid_email_campaign_recipients">{t}Please add recipients{/t}</span>
 <span style="display:none" id="invalid_email_campaign_scope">{t}Invalid Scope Syntax{/t}</span>
 <span style="display:none" id="invalid_email_campaign_subjects">{t}Please add email subject{/t}</span>
@@ -117,9 +117,9 @@
 <tr class="last" style="height:10px"><td colspan=3></td></tr>
 
 
-<tr id="add_objetive_tr" >
+<tr id="add_objective_tr" >
 <td   >
-<h2>{t}Objetives{/t}:</h2>
+<h2>{t}Objectives{/t}:</h2>
 </td>
 <td colspan=2>
 
@@ -511,23 +511,23 @@
 </table>
 </div>
 <div id="dialog_edit_objective" style="padding:20px 10px 5px 10px;width:320px">
-<input type="hidden" id="objetive_key" value=""/>
-<input type="hidden" id="objetive_term" value=""/>
-<input type="hidden" id="objetive_time_limit_in_seconds" value=""/>
+<input type="hidden" id="objective_key" value=""/>
+<input type="hidden" id="objective_term" value=""/>
+<input type="hidden" id="objective_time_limit_in_seconds" value=""/>
 
  <table>
 <tbody>
 <tr><td>
-{t}Objetive term{/t}:
+{t}Objective term{/t}:
 </td>
 </tr>
 
 <tr><td>
-<div class="buttons left" id="objetive_terms">
-<button class="objetive_term" id="objetive_term_Order">{t}Order{/t}</button>
-<button class="objetive_term" id="objetive_term_Buy">{t}Buy{/t}</button>
-<button class="objetive_term" id="objetive_term_Visit">{t}Visit{/t}</button>
-<button class="objetive_term" id="objetive_term_Use">{t}Use{/t}</button>
+<div class="buttons left" id="objective_terms">
+<button class="objective_term" id="objective_term_Order">{t}Order{/t}</button>
+<button class="objective_term" id="objective_term_Buy">{t}Buy{/t}</button>
+<button class="objective_term" id="objective_term_Visit">{t}Visit{/t}</button>
+<button class="objective_term" id="objective_term_Use">{t}Use{/t}</button>
 
 </div>
 </td></tr>
@@ -536,17 +536,17 @@
 </td>
 </tr>
 <tr><td>
-<input id="objetive_time_limit" value="" style="width:100%" />
+<input id="objective_time_limit" value="" style="width:100%" />
 </td>
 </tr>
-<tr id="objetive_time_wrong_interval_tr" style="display:none" >
+<tr id="objective_time_wrong_interval_tr" style="display:none" >
 <td style="color:#d12f19;font-size:80%;font-style:italic">
 {t}Invalid interval, try 5 days or 1 week{/t}
 </td>
 </tr>
-<tr id="objetive_time_parsed_interval_tr" style="visibility:hidden">
+<tr id="objective_time_parsed_interval_tr" style="visibility:hidden">
 <td  style="color:#666;font-size:80%;font-style:italic">
-<span id="objetive_time_parsed_interval"></span>
+<span id="objective_time_parsed_interval"></span>
 </td>
 </tr>
 
@@ -555,8 +555,8 @@
 
  <tr><td colspan=2>
   <div class="buttons" style="margin-top:0px">
-<button class="positive"  id="save_edit_objetive"  >{t}Save{/t}</button>
-<button  id="close_edit_objetive" class="negative" >{t}Cancel{/t}</button><br/>
+<button class="positive"  id="save_edit_objective"  >{t}Save{/t}</button>
+<button  id="close_edit_objective" class="negative" >{t}Cancel{/t}</button><br/>
 
 </div>
   </td></tr>
