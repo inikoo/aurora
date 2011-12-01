@@ -296,41 +296,41 @@ switch ($this->data['Email Campaign Type']) {
 
 
 
-    function add_objetive($scope_data) {
+    function add_objective($scope_data) {
 
         $scope_data['Email Campaign Key']=$this->id;
 
-        switch ($scope_data['Email Campaign Objetive Parent']) {
+        switch ($scope_data['Email Campaign Objective Parent']) {
         case 'Department':
-            $parent=new Department($scope_data['Email Campaign Objetive Parent Key']);
+            $parent=new Department($scope_data['Email Campaign Objective Parent Key']);
             $parent_key=$parent->id;
             $parent_name=$parent->data['Product Department Name'];
             $term='Order';
             $term_metadata='0;;432000';
             break;
         case 'Family':
-            $parent=new Family($scope_data['Email Campaign Objetive Parent Key']);
+            $parent=new Family($scope_data['Email Campaign Objective Parent Key']);
             $parent_key=$parent->id;
             $parent_name='<b>'.$parent->data['Product Family Code'].'</b>, '.$parent->data['Product Family Name'];
             $term='Order';
             $term_metadata='0;;432000';
             break;
         case 'Store':
-            $parent=new Store($scope_data['Email Campaign Objetive Parent Key']);
+            $parent=new Store($scope_data['Email Campaign Objective Parent Key']);
             $parent_key=$parent->id;
             $parent_name=$parent->data['Product Store Name'];
             $term='Order';
             $term_metadata='0;;432000';
             break;
         case 'Product':
-            $parent=new Product('pid',$scope_data['Email Campaign Objetive Parent Key']);
+            $parent=new Product('pid',$scope_data['Email Campaign Objective Parent Key']);
             $parent_key=$parent->pid;
             $parent_name='<b>'.$parent->data['Product Code'].'</b>, '.$parent->data['Product Name'];
             $term='Order';
             $term_metadata='0;;432000';
             break;
         case 'Deal':
-            $parent=new DealMetadataMetadataMetadata($scope_data['Email Campaign Objetive Parent Key']);
+            $parent=new DealMetadataMetadataMetadata($scope_data['Email Campaign Objective Parent Key']);
             $parent_key=$parent->pid;
             $parent_name=$parent->data['Deal Metadata Name'];
             $term='Use';
@@ -338,7 +338,7 @@ switch ($this->data['Email Campaign Type']) {
             break;
         case 'External Link':
             $parent_key=0;
-            $parent_name=$scope_data['Email Campaign Objetive Parent Name'];
+            $parent_name=$scope_data['Email Campaign Objective Parent Name'];
             $term='Visit';
             $term_metadata='432000';
             break;
@@ -350,34 +350,34 @@ switch ($this->data['Email Campaign Type']) {
 
         $found=false;
 
-        if ($scope_data['Email Campaign Objetive Parent']!='External Link') {
+        if ($scope_data['Email Campaign Objective Parent']!='External Link') {
 
 
-            $sql=sprintf("select `Email Campaign Objetive Key` from `Email Campaign Objetive Dimension` where `Email Campaign Key`=%d  and `Email Campaign Objetive Parent`=%s  and  `Email Campaign Objetive Parent Key`=%d ",
+            $sql=sprintf("select `Email Campaign Objective Key` from `Email Campaign Objective Dimension` where `Email Campaign Key`=%d  and `Email Campaign Objective Parent`=%s  and  `Email Campaign Objective Parent Key`=%d ",
                          $this->id,
-                         prepare_mysql($scope_data['Email Campaign Objetive Parent']),
+                         prepare_mysql($scope_data['Email Campaign Objective Parent']),
                          $parent_key
                         );
             $res=mysql_query($sql);
             if ($row=mysql_fetch_assoc($res)) {
-                $found=$row['Email Campaign Objetive Key'];
+                $found=$row['Email Campaign Objective Key'];
 
             }
 
         }
         if ($found) {
-            if ($scope_data['Email Campaign Objetive Type']=='Link') {
-                $sql=sprintf("update `Email Campaign Objetive Dimension` set `Email Campaign Objetive Type`='Link'  where `Email Campaign Key`=%d ",
+            if ($scope_data['Email Campaign Objective Type']=='Link') {
+                $sql=sprintf("update `Email Campaign Objective Dimension` set `Email Campaign Objective Type`='Link'  where `Email Campaign Key`=%d ",
                              $found
                             );
 
             }
 
         } else {
-            $sql=sprintf("insert into `Email Campaign Objetive Dimension` (`Email Campaign Key`,`Email Campaign Objetive Type`,`Email Campaign Objetive Parent`,`Email Campaign Objetive Parent Key`,`Email Campaign Objetive Name`,`Email Campaign Objetive Links`,`Email Campaign Objetive Links Clicks`,`Email Campaign Objetive Term`,`Email Campaign Objetive Term Metadata`)  values (%d,%s,%s,%d,%s,0,0,%s,%s)  ",
+            $sql=sprintf("insert into `Email Campaign Objective Dimension` (`Email Campaign Key`,`Email Campaign Objective Type`,`Email Campaign Objective Parent`,`Email Campaign Objective Parent Key`,`Email Campaign Objective Name`,`Email Campaign Objective Links`,`Email Campaign Objective Links Clicks`,`Email Campaign Objective Term`,`Email Campaign Objective Term Metadata`)  values (%d,%s,%s,%d,%s,0,0,%s,%s)  ",
                          $this->id,
-                         prepare_mysql($scope_data['Email Campaign Objetive Type']),
-                         prepare_mysql($scope_data['Email Campaign Objetive Parent']),
+                         prepare_mysql($scope_data['Email Campaign Objective Type']),
+                         prepare_mysql($scope_data['Email Campaign Objective Parent']),
 
                          $parent_key,
                          prepare_mysql($parent_name),
@@ -1573,7 +1573,7 @@ switch ($this->data['Email Campaign Type']) {
 
 //print_r($links);
 
-        $sql=sprintf("delete from `Email Campaign Objetive Dimension` where `Email Campaign Objetive Type`='Link' and `Email Campaign Key`=%d ",
+        $sql=sprintf("delete from `Email Campaign Objective Dimension` where `Email Campaign Objective Type`='Link' and `Email Campaign Key`=%d ",
                      $this->id
                     );
         mysql_query($sql);
@@ -1670,15 +1670,15 @@ switch ($this->data['Email Campaign Type']) {
 
             unset($page);
 
-            $objetive_data=array(
-                               'Email Campaign Objetive Parent'=>$parent,
-                               'Email Campaign Objetive Parent Key'=>$parent_key,
-                               'Email Campaign Objetive Parent Name'=>$parent_name,
-                               'Email Campaign Objetive Type'=>'Link'
+            $objective_data=array(
+                               'Email Campaign Objective Parent'=>$parent,
+                               'Email Campaign Objective Parent Key'=>$parent_key,
+                               'Email Campaign Objective Parent Name'=>$parent_name,
+                               'Email Campaign Objective Type'=>'Link'
 
                            );
-            //      print_r($objetive_data);
-            $this->add_objetive($objetive_data);
+            //      print_r($objective_data);
+            $this->add_objective($objective_data);
 
 
 

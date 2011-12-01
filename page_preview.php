@@ -35,7 +35,7 @@ if ($_logged){
     $logged=0;
 }
 $smarty->assign('logged',$logged);
-
+$page->site=$site;
 $page->user=$user;
 $page->logged=$logged;
 $page->currency=$store->data['Store Currency Code'];

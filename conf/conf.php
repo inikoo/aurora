@@ -2696,7 +2696,7 @@ $default_state=array(
                                                            'nr'=>25,
                                                            'view'=>'general'
                                                        ),
-                                        'objetives'=>array(
+                                        'objectives'=>array(
                                                         'f_field'=>'email',
                                                         'f_value'=>'',
                                                         'f_show'=>false,

@@ -6,7 +6,7 @@
 </div>
 
 <div class="top_page_menu">
-    <div class="buttons left" style="float:left">
+    <div class="buttons" >
         <button style="margin-left:0px"  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
     </div>
     <div class="buttons" style="float:right">

@@ -9,15 +9,14 @@
   <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; {t}Webpage{/t}: {$page->get('Page Code')}</span>
 </div>
 <div class="top_page_menu">
-    <div class="buttons left" style="float:left">
+    <div class="buttons">
         <button style="margin-left:0px"  onclick="window.location='page.php?id={$page->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
  {if isset($referral_data)}
          <button   onclick="{$referral_data.url}'" ><img src="art/icons/door_out.png" alt=""/> {$referral_data.label}</button>
 
  {/if}
  </div>
-    <div class="buttons" style="float:right">
-    </div>
+  
     <div style="clear:both"></div>
 </div>
 

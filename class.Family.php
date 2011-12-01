@@ -3386,15 +3386,7 @@ class Family extends DB_Table {
 		//$see_also;
 	}
 	
-    function ecommerceURL($secure, $_port, $_protocol, $url, $server) {
-        $s = empty($secure) ? '' : ($secure == "on") ? "s" : "";
-        $protocol = $this->strleft1(strtolower($_protocol), "/").$s;
-        $port = ($_port == "80") ? "" : (":".$_port);
-        if (strpos($url, "?")) {
-            return $protocol."://".$server.$port.$this->strleft1(strtolower($url), "?");
-        } else
-            return $protocol."://".$server.$port.$url;
-    }
+ 
 
 
     function strleft1($s1, $s2) {
