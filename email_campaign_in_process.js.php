@@ -128,13 +128,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			,{key:"type",label:"", width:12,className:"aleft"}
 	         ,{key:"parent", label:"<?php echo _('Type')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
              ,{key:"name", label:"<?php echo _('Name')?>",width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			   , {key:"objetive", label:"<?php echo _('Objetive')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},action:'dialog',object:'email_campaign_objetive'}
-			,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'email_campaign_objetive'}
+			   , {key:"objective", label:"<?php echo _('objective')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},action:'dialog',object:'email_campaign_objective'}
+			,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'email_campaign_objective'}
 			
 			
 			  			];
 			       
-		this.dataSource9 = new YAHOO.util.DataSource("ar_edit_marketing.php?tipo=email_campaign_objetives&email_campaign_key="+Dom.get('email_campaign_key').value+"&tableid="+tableid+"&sf=0");
+		this.dataSource9 = new YAHOO.util.DataSource("ar_edit_marketing.php?tipo=email_campaign_objectives&email_campaign_key="+Dom.get('email_campaign_key').value+"&tableid="+tableid+"&sf=0");
 	 this.dataSource9.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource9.connXhrMode = "queueRequests";
 	    	    this.dataSource9.table_id=tableid;
@@ -154,7 +154,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "description","name","id","type","delete","objetive",'link','id','parent','term','metadata','temporal_metadata','valid_terms','temporal_formated_metadata'
+			 "description","name","id","type","delete","objective",'link','id','parent','term','metadata','temporal_metadata','valid_terms','temporal_formated_metadata'
 			 ]};
 
 	    this.table9 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -802,8 +802,8 @@ function validate_email_campaign_name(query){
  validate_general('email_campaign','name',unescape(query));
 }
 
-function validate_email_campaign_objetive(query){
- validate_general('email_campaign','objetive',unescape(query));
+function validate_email_campaign_objective(query){
+ validate_general('email_campaign','objective',unescape(query));
 }
 
 function validate_email_campaign_scope(query){
@@ -1582,24 +1582,24 @@ Event.addListener("cancel_upload_postcard", "click", close_upload_postcard);
     dialog_edit_objective.render();
 
 
-                  Event.addListener("objetive_term_Order", "click", change_objetive_term,'Order');
-                  Event.addListener("objetive_term_Buy", "click", change_objetive_term,'Buy');
-                  Event.addListener("objetive_term_Visit", "click", change_objetive_term,'Visit');
-                  Event.addListener("objetive_term_Use", "click", change_objetive_term,'Use');
+                  Event.addListener("objective_term_Order", "click", change_objective_term,'Order');
+                  Event.addListener("objective_term_Buy", "click", change_objective_term,'Buy');
+                  Event.addListener("objective_term_Visit", "click", change_objective_term,'Visit');
+                  Event.addListener("objective_term_Use", "click", change_objective_term,'Use');
 
 
-            Event.addListener("objetive_time_limit", "keyup", validate_change_objetive_interval);
+            Event.addListener("objective_time_limit", "keyup", validate_change_objective_interval);
 
-            Event.addListener("save_edit_objetive", "click", save_edit_objetive);
+            Event.addListener("save_edit_objective", "click", save_edit_objective);
 
 
 }
 
-function save_edit_objetive(){
+function save_edit_objective(){
 
 alert("xxx")
 
-if(Dom.hasClass('save_edit_objetive','disabled')){
+if(Dom.hasClass('save_edit_objective','disabled')){
 
 return;
 }
@@ -1608,11 +1608,11 @@ return;
 
 
 
-var objetive_key=Dom.get('objetive_key').value;
-var objetive_term=Dom.get('objetive_term').value;
-var objetive_time_limit_in_seconds=Dom.get('objetive_time_limit_in_seconds').value;
+var objective_key=Dom.get('objective_key').value;
+var objective_term=Dom.get('objective_term').value;
+var objective_time_limit_in_seconds=Dom.get('objective_time_limit_in_seconds').value;
 	
-var request='ar_edit_marketing.php?tipo=update_objetive&objetive_key='+objetive_key+'&objetive_term='+objetive_term+'&objetive_time_limit_in_seconds='+objetive_time_limit_in_seconds;
+var request='ar_edit_marketing.php?tipo=update_objective&objective_key='+objective_key+'&objective_term='+objective_term+'&objective_time_limit_in_seconds='+objective_time_limit_in_seconds;
 alert(request)
  YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -1629,21 +1629,21 @@ alert(request)
 
 }
 
-function validate_change_objetive_interval(){
+function validate_change_objective_interval(){
 
 date=parse_time_interval(this.value)
 if(!date){
-Dom.setStyle('objetive_time_parsed_interval_tr','display','none')
-Dom.setStyle('objetive_time_wrong_interval_tr','display','')
+Dom.setStyle('objective_time_parsed_interval_tr','display','none')
+Dom.setStyle('objective_time_wrong_interval_tr','display','')
 
-Dom.addClass('save_edit_objetive','disabled')
+Dom.addClass('save_edit_objective','disabled')
 }else{
 //alert(date)
-Dom.setStyle('objetive_time_parsed_interval_tr','display','')
-Dom.setStyle('objetive_time_parsed_interval_tr','visibility','visible')
+Dom.setStyle('objective_time_parsed_interval_tr','display','')
+Dom.setStyle('objective_time_parsed_interval_tr','visibility','visible')
 
-Dom.setStyle('objetive_time_wrong_interval_tr','display','none')
-Dom.removeClass('save_edit_objetive','disabled')
+Dom.setStyle('objective_time_wrong_interval_tr','display','none')
+Dom.removeClass('save_edit_objective','disabled')
 
 //date.advance({ seconds: 1 });
 //parsed_interval=date.relative()
@@ -1660,7 +1660,7 @@ if(date.daysSince()<0){
 }else{
 parsed_interval=date.daysSince()+' <?php echo _('days')?>';
 }
-Dom.get('objetive_time_parsed_interval').innerHTML=parsed_interval;
+Dom.get('objective_time_parsed_interval').innerHTML=parsed_interval;
 
 }
 
@@ -2178,16 +2178,16 @@ function  show_dialog_department_list(){
 
 function show_add_object_manually(){
 
-Dom.setStyle(['objetives_second_label','show_add_object_manually'],'visibility','hidden')
+Dom.setStyle(['objectives_second_label','show_add_object_manually'],'visibility','hidden')
 Dom.get('email_campaign_scope').value='';
 
-Dom.setStyle('add_objetive_tr','display','')
+Dom.setStyle('add_objective_tr','display','')
 
 }
 
 function hide_add_object_manually(){
 
-Dom.setStyle('objetives_second_label','visibility','hidden')
+Dom.setStyle('objectives_second_label','visibility','hidden')
 }
 
 function show_color_scheme_view_details(color_scheme_key,data,name){
@@ -2262,23 +2262,23 @@ function show_cell_dialog(datatable,oArgs){
     var recordIndex = datatable.getRecordIndex(record);
     
     switch ( column.object ) {
-    	case 'email_campaign_objetive':
+    	case 'email_campaign_objective':
     	  
-    	    var term_buttons=Dom.getElementsByClassName('objetive_term', 'button', 'objetive_terms');
+    	    var term_buttons=Dom.getElementsByClassName('objective_term', 'button', 'objective_terms');
     	    Dom.removeClass(term_buttons,'selected');
     	    Dom.setStyle(term_buttons,'display','none');
     	    var valid_terms=record.getData('valid_terms');
             for (x in valid_terms){
-                Dom.setStyle("objetive_term_"+valid_terms[x],'display','')
+                Dom.setStyle("objective_term_"+valid_terms[x],'display','')
             }
           
-    	    Dom.get('objetive_term').value=record.getData('term');
-    		Dom.addClass('objetive_term_'+record.getData('term'),'selected');
-    		Dom.get('objetive_time_limit').value=record.getData('temporal_formated_metadata');
+    	    Dom.get('objective_term').value=record.getData('term');
+    		Dom.addClass('objective_term_'+record.getData('term'),'selected');
+    		Dom.get('objective_time_limit').value=record.getData('temporal_formated_metadata');
     		    	
-    		     		Dom.get('objetive_key').value=record.getData('id');
+    		     		Dom.get('objective_key').value=record.getData('id');
    	
-    		Dom.get('objetive_time_limit_in_seconds').value=record.getData('temporal_metadata');
+    		Dom.get('objective_time_limit_in_seconds').value=record.getData('temporal_metadata');
     		 var pos = Dom.getXY(target);
             pos[0]=pos[0]-320+100
             Dom.setXY('dialog_edit_objective', pos);
@@ -2292,13 +2292,13 @@ function show_cell_dialog(datatable,oArgs){
     
 }
 
-function change_objetive_term( e,term ) {
-	  var term_buttons=Dom.getElementsByClassName('objetive_term', 'button', 'objetive_terms');
+function change_objective_term( e,term ) {
+	  var term_buttons=Dom.getElementsByClassName('objective_term', 'button', 'objective_terms');
     	    Dom.removeClass(term_buttons,'selected');
-    		Dom.addClass('objetive_term_'+term,'selected');
+    		Dom.addClass('objective_term_'+term,'selected');
 
 
-    	        	    Dom.get('objetive_term').value=term;
+    	        	    Dom.get('objective_term').value=term;
 
 }
 

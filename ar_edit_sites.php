@@ -24,11 +24,11 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('page_headers'):
-list_headers_for_edition();
-break;
+    list_headers_for_edition();
+    break;
 case('page_footers'):
-list_footers_for_edition();
-break;
+    list_footers_for_edition();
+    break;
 case('add_see_also_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -225,13 +225,23 @@ function  edit_page($data) {
 
     global $editor;
 
-
+//print_r($data);
 
 
     $page=new Page($data['id']);
     $page->editor=$editor;
 
-    $page->update_field_switcher($data['key'],stripslashes(urldecode($data['newvalue'])));
+
+    $value=stripslashes(urldecode($data['newvalue']));
+
+    if ($data['key']=='Page Store Source') {
+        $value=preg_replace("/\{(.*)\}/e",'"{".html_entity_decode(\'$1\')."}"', $value);
+
+
+    }
+
+
+    $page->update_field_switcher($data['key'],$value);
 
 
     if ($page->updated) {
@@ -627,18 +637,12 @@ function edit_checkout_method($data) {
         exit;
     }
 //print_r($site);
-    switch ($data['site_checkout_method']) {
-    case 'inikoo':
-    case 'Inikoo':
-        $method='Inikoo';
-        break;
-    default:
-        $method='Ecommerce';
-    }
+
+    $method=$data['site_checkout_method'];
 //print $method;
     $response=$site->update(array('Site Checkout Method'=>$method));
     if ($site->updated) {
-        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
+        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>$site->new_value);
     } else
         $response= array('state'=>400,'msg'=>$site->msg);
 
@@ -694,7 +698,7 @@ function edit_site($data) {
 
     }
 
-//print_r($values);
+ //   print_r($values);
 
     $responses=array();
     foreach($values as $key=>$values_data) {
@@ -717,10 +721,10 @@ function edit_site_field($site_key,$key,$value_data) {
     $site->editor=$editor;
 
     $key_dic=array(
-                 'slogan'=>'Site Slogan'
-                          ,'name'=>'Site Name'
-                                  ,'url'=>'Site URL'
-                                         ,'ftp'=>'Site FTP Credentials'
+                 'slogan'=>'Site Slogan',
+                 'name'=>'Site Name',
+                 'url'=>'Site URL',
+                 'ftp'=>'Site FTP Credentials',
              );
 
     if (array_key_exists($key,$key_dic))
@@ -905,7 +909,7 @@ function list_headers_for_edition() {
         $adata[]=array(
                      'id'=>$row['Page Header Key'],
                      'name'=>$row['Page Header Name'],
-                   'go'=>sprintf("<a href='edit_page_header.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
+                     'go'=>sprintf("<a href='edit_page_header.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
 
                      'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
 

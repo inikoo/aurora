@@ -5222,6 +5222,15 @@ RENAME TABLE `Dashboard Dimension` TO `Dashboard User Bridge` ;
 ALTER TABLE `Page Store Dimension` ADD `Page Product Metadata` LONGTEXT NOT NULL DEFAULT '';
 ALTER TABLE `Page Store Dimension` ADD `Page List Metadata` LONGTEXT NOT NULL DEFAULT '';
 ALTER TABLE `Page Store Dimension` ADD `Page Locale` CHAR( 5 ) NOT NULL DEFAULT 'en_GB' AFTER `Page Store Order Template` ;
+
+ALTER TABLE `Site Dimension` ADD `Site Checkout Mals Metadata` MEDIUMTEXT NOT NULL AFTER `Site Checkout Method` ;
+ALTER TABLE `Site Dimension` CHANGE `Site Checkout Metadata` `Site Checkout Mals Metadata` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Parent` `Email Campaign Objective Parent` ENUM('Product','Family','Department','Store','Campaign','Deal','Store Page','External Link') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Email Campaign Objetive Parent Key` `Email Campaign Objective Parent Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL, CHANGE `Email Campaign Objetive Name` `Email Campaign Objective Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Email Campaign Objetive Links` `Email Campaign Objective Links` MEDIUMINT(8) UNSIGNED NULL DEFAULT '0', CHANGE `Email Campaign Objetive Term` `Email Campaign Objective Term` ENUM('Order','Buy','Visit','Use') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Email Campaign Objetive Link Bridge` CHANGE `Email Campaign Objetive Key` `Email Campaign Objective Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
+RENAME TABLE `Email Campaign Objetive Link Bridge` TO `dw`.`Email Campaign Objective Link Bridge` ;
+RENAME TABLE `Email Campaign Objetive Dimension` TO `dw`.`Email Campaign Objective Dimension` ;
+ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After', 'Delivery', 'Category', 'Warehouse', 'Warehouse', 'Shelf', 'Location', 'Company', 'Company', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work', 'Office', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier', 'Part', 'Site', 'Page' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
 */
 
 ?>

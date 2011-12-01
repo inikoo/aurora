@@ -462,7 +462,7 @@ function validate_scope_edit(branch) {
         if (validate_scope_data[branch][items].changed==true)
             changed=true;
             
-            //alert(errors+' '+changed)
+         //   alert(errors+' '+changed)
     }
 
 
@@ -753,6 +753,18 @@ function post_item_updated_actions(branch,r) {
 
 function save_edit_general(branch) {
 
+
+if(Dom.hasClass('save_edit_'+branch,'disabled')){
+
+if(Dom.get("edit_"+branch+"_invalid_msg")!=undefined){
+
+Dom.setStyle("edit_"+branch+"_dialog_msg",'display','');
+            Dom.get("edit_"+branch+"_dialog_msg").innerHTML=Dom.get("edit_"+branch+"_invalid_msg").innerHTML;
+}
+
+return;
+}
+
   operation='edit';
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
@@ -798,7 +810,7 @@ function save_edit_general(branch) {
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {
-		//alert(o.responseText);
+		alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
                
@@ -835,6 +847,18 @@ function save_edit_general_bulk(branch) {
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
+
+
+if(Dom.hasClass('save_edit_'+branch,'disabled')){
+
+if(Dom.get("edit_"+branch+"_invalid_msg")!=undefined){
+
+Dom.setStyle("edit_"+branch+"_dialog_msg",'display','');
+            Dom.get("edit_"+branch+"_dialog_msg").innerHTML=Dom.get("edit_"+branch+"_invalid_msg").innerHTML;
+}
+
+return;
+}
 
  //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
  var data_to_update=new Object;

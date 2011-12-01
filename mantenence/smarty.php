@@ -6140,7 +6140,7 @@ gettext("Email Campaign");
 gettext("Invalid Campaign Name");
 
 /* ../templates//email_campaign_in_process.tpl */
-gettext("Invalid Campaign Objetive");
+gettext("Invalid Campaign objective");
 
 /* ../templates//email_campaign_in_process.tpl */
 gettext("Please add recipients");
@@ -6188,7 +6188,7 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates//email_campaign_in_process.tpl */
-gettext("Objetives");
+gettext("objectives");
 
 /* ../templates//email_campaign_in_process.tpl */
 gettext("Add");
@@ -6467,7 +6467,7 @@ gettext("Add");
 gettext("Cancel");
 
 /* ../templates//email_campaign_in_process.tpl */
-gettext("Objetive term");
+gettext("objective term");
 
 /* ../templates//email_campaign_in_process.tpl */
 gettext("Order");
@@ -8714,13 +8714,13 @@ gettext("Cancel");
 gettext("Invalid Campaign Name");
 
 /* ../templates//new_email_campaign.tpl */
-gettext("Invalid Campaign Objetive");
+gettext("Invalid Campaign objective");
 
 /* ../templates//new_email_campaign.tpl */
 gettext("Campaign Name");
 
 /* ../templates//new_email_campaign.tpl */
-gettext("Campaign Objetive");
+gettext("Campaign objective");
 
 /* ../templates//new_email_campaign.tpl */
 gettext("Products");
