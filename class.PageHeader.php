@@ -230,7 +230,7 @@ class PageHeader extends DB_Table {
         }
 
         elseif(preg_match('/linux/i',$_system)) {
-            $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py -o app_files/tmp/ph_image'.$this->id.'-clipped.png -g 976 160 --scale 488 80   '.$inikoo_public_url."public_header_preview.php?id=".$this->id;
+            $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/ph_image'.$this->id.'-clipped.png -g 976 160 --scale 488 80   '.$inikoo_public_url."public_header_preview.php?id=".$this->id;
 
 
 
