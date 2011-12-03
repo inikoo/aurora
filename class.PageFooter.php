@@ -218,6 +218,8 @@ class PageFooter extends DB_Table {
         ob_start();
         system("uname");
 
+
+print "$_system";
         $_system = ob_get_clean();
 
 
@@ -246,7 +248,7 @@ class PageFooter extends DB_Table {
         system($command,$retval);
         ob_get_clean();
 
-        // print "$command  $retval";
+        print "$command  $retval";
 
 
 
