@@ -220,33 +220,43 @@ class PageFooter extends DB_Table {
 
         $_system = ob_get_clean();
 
+
+
         if (preg_match('/darwin/i',$_system)) {
-            $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/pf_image".$this->id."  --clipheight=50  --clipwidth=488  -s 0.5     ".$inikoo_public_url."public_footer_preview.php?id=".$this->id;
+            $command="mantenence/scripts/webkit2png_mac.py  -C -o app_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5     ".$inikoo_public_url."public_footer_preview.php?id=".$this->id;
 
-            //       $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/pf_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_footer_preview.php?id=".$this->id;
-            ob_start();
-            system($command,$retval);
-            ob_get_clean();
+            //       $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_footer_preview.php?id=".$this->id;
 
-           // print "$command";
-            $image_data=array('file'=>"app_files/tmp/pf_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_footer'.$this->id);
-            $image=new Image('find',$image_data,'create');
-
-            if ($image->id) {
-                $new_image_key=$image->id;
-
-            }
         }
 
         elseif(preg_match('/linux/i',$_system)) {
+            $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py -o app_files/tmp/pfooter_image'.$this->id.'-clipped.png -g 976 160 --scale 488 80   '.$inikoo_public_url."public_footer_preview.php?id=".$this->id;
+
+
 
         }
         else {
-            $system='Other';
+            return;
 
         }
 
 
+
+        ob_start();
+        system($command,$retval);
+        ob_get_clean();
+
+        // print "$command  $retval";
+
+
+
+        $image_data=array('file'=>"app_files/tmp/pfooter_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_footer'.$this->id);
+        $image=new Image('find',$image_data,'create');
+        unlink("app_files/tmp/pfooter_image".$this->id."-clipped.png");
+        if ($image->id) {
+            $new_image_key=$image->id;
+
+        }
 
         if ($new_image_key!=$old_image_key) {
             $this->data['Page Footer Preview Image Key']=$new_image_key;
@@ -275,6 +285,8 @@ class PageFooter extends DB_Table {
 
                         );
             mysql_query($sql);
+            //      print $sql;
+
             $this->updated=true;
             $this->new_value=$this->data['Page Footer Preview Image Key'];
 
