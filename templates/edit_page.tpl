@@ -11,10 +11,16 @@
 <div class="top_page_menu">
     <div class="buttons">
         <button style="margin-left:0px"  onclick="window.location='page.php?id={$page->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+        
+        
+        
  {if isset($referral_data)}
          <button   onclick="{$referral_data.url}'" ><img src="art/icons/door_out.png" alt=""/> {$referral_data.label}</button>
 
  {/if}
+          <button  onclick="window.location='page_preview.php?id={$page->id}&logged=1&referral={"edit_page.php?id={$page->id}"|escape:'html'}'" ><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button>
+
+ 
  </div>
   
     <div style="clear:both"></div>
@@ -35,9 +41,13 @@
     <li> <span class="item {if $block_view=='page_header'}selected{/if}"  id="page_header">  <span> {t}Header{/t}</span></span></li>
     <li> <span class="item {if $block_view=='page_footer'}selected{/if}"  id="page_footer">  <span> {t}Footer{/t}</span></span></li>
     <li> <span class="item {if $block_view=='content'}selected{/if}" id="content"  ><span>  {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
+    <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
+
+  
+
+
     <li> <span class="item {if $block_view=='style'}selected{/if}" id="style"  ><span> {t}Style{/t}</span></span></li>
     <li> <span class="item {if $block_view=='media'}selected{/if}" id="media"  ><span> {t}Media{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
 
 	</ul>
   
@@ -136,8 +146,6 @@
     
     
     </div>   
-      
-
     <div class="edit_block" {if $block_view!="properties"}style="display:none"{/if}   id="d_properties">
 	
     <table class="edit" border=0  id="properties_edit_table" style="width:100%">
@@ -184,7 +192,6 @@
 	    
 	     </table>
     </div>
-
     <div class="edit_block" {if $block_view!="page_header"}style="display:none"{/if}   id="d_page_header">
 
 
@@ -291,7 +298,6 @@
     
    </table>
 	</div>
-
     <div class="edit_block" {if $block_view!="page_footer"}style="display:none"{/if}   id="d_page_footer">
     </div>
     <div class="edit_block" style="{if $block_view!="content"}display:none;{/if}padding:0px 0px;margin:0px"   id="d_content">
@@ -369,13 +375,14 @@
 	     <tr class="title"><td colspan="2">
 	  
 	    <div class="buttons left">
-	     <button id="download_page_content">{t}Download{/t}</button>
-	     <button id="show_upload_page_content">{t}Import{/t}</button>
-	     <button id="show_page_preview">{t}Preview{/t}</button>
+	   
 
          </div>   
            <div style="float:right" id="html_editor_msg"></div>
+          
   <div class="buttons">
+	        <button id="download_page_content">{t}Download{/t}</button>
+	     <button id="show_upload_page_content">{t}Import{/t}</button>
 	     <button class="positive" style="visibility:hidden" id="save_edit_page_content" >{t}Save{/t}</button>
 	     <button class="negative" style="visibility:hidden" id="reset_edit_page_content">{t}Reset{/t}</button>
 
@@ -394,21 +401,33 @@
     </div>
     <div class="edit_block" {if $block_view!="style"}style="display:none"{/if}   id="d_style">
     </div>
-
     <div class="edit_block" {if $block_view!="media"}style="display:none"{/if}   id="d_media">
     </div>
-    
+     <div class="edit_block" style="{if $block_view!="products"}display:none;{/if}padding:20px;"   id="d_products">
+     <div id="product_lists" style="width:890px;margin-bottom:20px">
+     <span class="clean_table_title">{t}Lists{/t}</span>
+     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+  <div  id="table2"   class="data_table_container dtable btable "> </div>
+     </div>
+     
+      <div id="product_lists" style="width:890px">
+     <span class="clean_table_title">{t}Buttons{/t}</span>
+     {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
+  <div  id="table3"   class="data_table_container dtable btable "> </div>
+     </div>
+     
+    </div>
 </div>
 
 
 
 
 
-<div id="the_table0" class="data_table" style="margin:20px 20px 40px 20px; clear:both;padding-top:10px">
+<div id="the_table1" class="data_table" style="margin:20px 20px 40px 20px; clear:both;padding-top:10px">
   <span class="clean_table_title">{t}Change log{/t}</span>
-      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+      {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
 
-  <div  id="table0"   class="data_table_container dtable btable "> </div>
+  <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
 
 
@@ -459,6 +478,7 @@
   <form enctype="multipart/form-data" method="post" id="upload_page_content_form">
 <input type="hidden" name="parent_key" value="{$page->id}" />
 <input type="hidden" name="parent" value="page" />
+<input id="upload_page_content_use_file" type="hidden" name="use_file" value="" />
 
  <tr><td>{t}File{/t}:</td><td><input id="upload_page_content_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
 
@@ -471,6 +491,28 @@
   </td></tr>
     </table>
 </div>
+
+
+<div id="dialog_upload_page_content_files" style="padding:30px 10px 10px 10px;width:420px">
+
+ <table style="margin:0 auto">
+ <tr><td >
+  <div style="margin-bottom:10px">{t}Multiple files found, please select one{/t}.</div>
+  </td></tr>
+  <tr><td >
+  <div id="upload_page_content_files" class="buttons left small"></div>
+  </td></tr>
+
+ 
+ <tr><td>
+  <div class="buttons">
+<button  id="cancel_upload_page_content_files" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
+
 
 
 {include file='footer.tpl'}

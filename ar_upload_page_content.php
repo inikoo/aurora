@@ -11,6 +11,8 @@
 
 require_once 'common.php';
 require_once 'class.Site.php';
+require_once 'class.Image.php';
+
 require_once 'ar_edit_common.php';
 
 //upload_page_content_from_file('app_files/tmp/page_content_1322053322_4ecceeca8d41c/jbb/index.php',469);
@@ -24,24 +26,31 @@ if (!isset($_REQUEST['tipo'])) {
     exit;
 }
 
+
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('upload_header'):
+case('upload_footer'):
     $data=prepare_values($_REQUEST,array(
                              'parent'=>array('type'=>'string'),
-                             'parent_key'=>array('type'=>'key')
+                             'parent_key'=>array('type'=>'key'),
+                             'use_file'=>array('type'=>'string')
 
                          ));
     $data['tipo']=$tipo;
     process_uploaded_files($data);
     break;
+    
+    
+    
 case('upload_page_content'):
     $data=prepare_values($_REQUEST,array(
                              'parent_key'=>array('type'=>'key'),
- 'parent'=>array('type'=>'string')
+                             'parent'=>array('type'=>'string'),
+                             'use_file'=>array('type'=>'string')
                          ));
     $data['tipo']=$tipo;
-  
+
     process_uploaded_files($data);
     break;
 
@@ -58,29 +67,7 @@ default:
 
 
 
-function upload_page_header($data) {
-    $page_key=$data['page_key'];
 
-    if (isset($_FILES['file']['tmp_name'])) {
-
-        $file_name=$_FILES['file']['tmp_name'];
-
-        if ($_FILES['file']['type']=='application/zip') {
-
-            upload_page_content_from_zip($data);
-            return;
-        }
-
-
-
-
-
-    } else {
-        $response= array('state'=>400,'msg'=>'no file');
-        echo json_encode($response);
-        return;
-    }
-}
 
 function process_uploaded_files($data) {
 //print_r($_FILES);
@@ -88,8 +75,8 @@ function process_uploaded_files($data) {
 
         $file_name=$_FILES['file']['tmp_name'];
 
-        if (preg_match('/^application.*zip.*/',$_FILES['file']['type'])){
-
+        if (preg_match('/^application.*zip.*/',$_FILES['file']['type'])) {
+            $data['original_filename']=$_FILES['file']['name'];
             upload_from_zip($data);
             return;
         }
@@ -99,8 +86,8 @@ function process_uploaded_files($data) {
 
 
     } else {
-    $poidsMax = ini_get('upload_max_filesize');
-    $msg=_("Your feet is too big, maximum allowed size here is")." $poidsMax"; 
+        $poidsMax = ini_get('upload_max_filesize');
+        $msg=_("Your feet is too big, maximum allowed size here is")." $poidsMax";
         $response= array('state'=>400,'msg'=>$msg);
         echo json_encode($response);
         return;
@@ -108,14 +95,27 @@ function process_uploaded_files($data) {
 
 }
 
+function get_footer($html) {
+    $html=preg_replace("/^.*\<\/head\>/msU",'',$html);
+    $html=preg_replace("/<\/html\>.*$/msU",'',$html);
+
+    $html=preg_replace("/^.*\<body.*\>/msU",'',$html);
+    $html=preg_replace("/<\/body>\s*$/",'',$html);
+
+
+//print $html;
+    //$a=getArray($div);
+    return $html;
+}
+
 function get_header($html) {
     $html=preg_replace("/^.*\<\/head\>/msU",'',$html);
     $html=preg_replace("/<\/html\>.*$/msU",'',$html);
 
     $html=preg_replace("/^.*\<body.*\>/msU",'',$html);
-      $html=preg_replace("/<\/body>\s*$/",'',$html);
-    
-    
+    $html=preg_replace("/<\/body>\s*$/",'',$html);
+
+
 //print $html;
     //$a=getArray($div);
     return $html;
@@ -126,7 +126,9 @@ function get_head_styles($dom,$html) {
 
     $heads = $dom->getElementsByTagName('head');
     $a=getArray($heads->item(0));
+  
     if (isset($a['style'])) {
+if(is_array($a['style']))    {    
         foreach($a['style'] as $style_data) {
             if (isset($style_data['#cdata-section'])) {
                 $_style=preg_replace('/^\<\!\-\-/','',$style_data['#cdata-section']);
@@ -134,6 +136,13 @@ function get_head_styles($dom,$html) {
                 $style[]= $_style;
             }
         }
+        }else if(is_string($a['style'])){
+            
+          $_style=preg_replace('/^\<\!\-\-/','',$a['style']);
+                $_style=preg_replace('/\-\-\>$/','',$_style);
+                $style[]= $_style;
+        }
+
     }
     return $style;
 }
@@ -226,6 +235,10 @@ function upload_from_zip($data) {
         case 'upload_header':
             $response=upload_header_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
             break;
+            case 'upload_footer':
+            $response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
+            break;   
+            
         default:
 
             break;
@@ -238,7 +251,39 @@ function upload_from_zip($data) {
         exit;
     }
     else {
+    
+  //  print $data['use_file'].' xxxx';
+    
+ if($data['use_file'] and in_array($data['use_file'],$html_files)){
+ 
+      switch ($data['tipo']) {
+        case 'upload_page_content':
+            $response=upload_page_content_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+            break;
+        case 'upload_header':
+            $response=upload_header_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+            break;
+            case 'upload_footer':
+            $response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+            break;   
+            
+        default:
 
+            break;
+        }
+
+
+        //deleteAll("app_files/tmp/page_content_".$folder_id);
+        echo json_encode($response);
+
+        exit;
+ 
+ }
+    
+ 
+    $response= array('state'=>201,'list'=>$html_files);
+        echo json_encode($response);
+        return;
 
     }
 
@@ -376,7 +421,7 @@ function upload_header_from_file($file,$data) {
     }
 
     $html=file_get_contents($file);
-  
+
     $html=remove_php_tags($html);
 
     $dom = new domDocument;
@@ -387,7 +432,7 @@ function upload_header_from_file($file,$data) {
 
     $styles=get_head_styles($dom,$html);
     $scripts=get_head_scripts($dom,$html);
-  
+
     $content=get_header($html);
 
 
@@ -426,12 +471,12 @@ function upload_header_from_file($file,$data) {
                     );
         mysql_query($sql);
         $external_file_id=mysql_insert_id();
-         $sql=sprintf("insert into `Page Header External File Bridge` values (%d,%d,%s) ",
-                    $external_file_id,
-                    $page_header->id,
-                    prepare_mysql('CSS')
-                   );
-         mysql_query($sql);
+        $sql=sprintf("insert into `Page Header External File Bridge` values (%d,%d,%s) ",
+                     $external_file_id,
+                     $page_header->id,
+                     prepare_mysql('CSS')
+                    );
+        mysql_query($sql);
     }
 
 
@@ -447,14 +492,115 @@ function upload_header_from_file($file,$data) {
         mysql_query($sql);
         $external_file_id=mysql_insert_id();
         $sql=sprintf("insert into `Page Header External File Bridge` values (%d,%d,%s) ",
-                    $external_file_id,
-                    $page_header->id,
-                    prepare_mysql('Javascript')
-                   );
-     mysql_query($sql);
+                     $external_file_id,
+                     $page_header->id,
+                     prepare_mysql('Javascript')
+                    );
+        mysql_query($sql);
         // exit;
     }
+    $page_header->update_image();
+    $response= array('state'=>200);
+    return $response;
+}
 
+function upload_footer_from_file($file,$data) {
+    include_once('class.PageFooter.php');
+    switch ($data['parent']) {
+    case 'site':
+        $parent=new Site($data['parent_key']);
+
+        $site_key=$parent->id;
+        break;
+    case 'page':
+        $parent=new Page($data['parent_key']);
+        $site_key=$parent->data['Page Site Key'];
+        break;
+    default:
+        exit;
+        break;
+    }
+
+    $html=file_get_contents($file);
+
+    $html=remove_php_tags($html);
+
+    $dom = new domDocument;
+    ini_set( "display_errors", 0);
+    $dom->loadHTML($html);
+    ini_set( "display_errors", 1);
+    $dom->preserveWhiteSpace = false;
+
+    $styles=get_head_styles($dom,$html);
+    $scripts=get_head_scripts($dom,$html);
+
+    $content=get_footer($html);
+
+
+
+    if ($content=='') {
+        $response= array('state'=>400,'msg'=>_('Footer not found'));
+        return $response;
+    }
+
+
+    $page_footer=new PageFooter();
+
+
+
+    $page_footer_data=array(
+                          'Page Footer Name'=>$data['original_filename'],
+                          'Site Key'=>$site_key,
+                          'Default Site'=>'No',
+                      );
+    $page_footer->create($page_footer_data);
+
+
+    $content=upload_content_images($content,dirname($file),array('subject'=>'Page Footer','subject_key'=>$page_footer->id));
+    $page_footer->update(array('Template'=>$content));
+
+
+
+    foreach($styles as $_key=>$style) {
+        $style=upload_content_images($style,dirname($file),array('subject'=>'Page Footer','subject_key'=>$page_footer->id));
+
+        $name='style_footer'.$parent->id.'_'.$_key;
+        $sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'CSS',%s) ",
+                     prepare_mysql($name),
+                     prepare_mysql($style)
+
+                    );
+        mysql_query($sql);
+        $external_file_id=mysql_insert_id();
+        $sql=sprintf("insert into `Page Footer External File Bridge` values (%d,%d,%s) ",
+                     $external_file_id,
+                     $page_footer->id,
+                     prepare_mysql('CSS')
+                    );
+        mysql_query($sql);
+    }
+
+
+    foreach($scripts as $_key=>$script) {
+
+
+        $name='script_footer'.$parent->id.'_'.$_key;
+        $sql=sprintf("insert into `Page Store External File Dimension` (`Page Store External File Name`,`Page Store External File Type`,`Page Store External File Content`) values (%s,'Javascript',%s) ",
+                     prepare_mysql($name),
+                     prepare_mysql($script)
+
+                    );
+        mysql_query($sql);
+        $external_file_id=mysql_insert_id();
+        $sql=sprintf("insert into `Page Footer External File Bridge` values (%d,%d,%s) ",
+                     $external_file_id,
+                     $page_footer->id,
+                     prepare_mysql('Javascript')
+                    );
+        mysql_query($sql);
+        // exit;
+    }
+    $page_footer->update_image();
     $response= array('state'=>200);
     return $response;
 }
@@ -480,7 +626,7 @@ function upload_page_content_from_file($file,$data) {
     $dom->preserveWhiteSpace = false;
 
     $styles=get_head_styles($dom,$html);
-    
+
     foreach($styles as $_key=>$style) {
         $style=upload_content_images($style,dirname($file),array('subject'=>'Page','subject_key'=>$page->id));
 
@@ -492,22 +638,33 @@ function upload_page_content_from_file($file,$data) {
                     );
         mysql_query($sql);
         $external_file_id=mysql_insert_id();
-         $sql=sprintf("insert into `Page Store External File Bridge` values (%d,%d,%s) ",
-                    $external_file_id,
-                    $page->id,
-                    prepare_mysql('CSS')
-                   );
-         mysql_query($sql);
+        $sql=sprintf("insert into `Page Store External File Bridge` values (%d,%d,%s) ",
+                     $external_file_id,
+                     $page->id,
+                     prepare_mysql('CSS')
+                    );
+        mysql_query($sql);
     }
-    
-    
-    
-    $html=clean_content($html);
-    
-            $html=upload_content_images($html,dirname($file),array('subject'=>'Page','subject_key'=>$page->id));
 
+
+
+    $html=clean_content($html);
+
+    $html=upload_content_images($html,dirname($file),array('subject'=>'Page','subject_key'=>$page->id));
+
+
+    $page->update_field_switcher('Page Store Source',$html,'no history');
     
-    $page->update_field_switcher('Page Store Source',$html);
+      $history_data=array(
+                              'History Abstract'=>_('Page content uploaded'),
+                              'History Details'=>'',
+
+                              'Indirect Object'=>'Page Store Source',
+                              'Indirect Object Key'=>''
+                          );
+            $page->add_history($history_data);
+    
+    
     $response= array('state'=>200);
     return $response;
 
@@ -537,7 +694,7 @@ function upload_content_images($html,$base_dir='',$parent_data) {
                                  prepare_mysql($caption,false)
                                 );
                     mysql_query($sql);
-                    $html=str_replace('src="'.$match[2].'"','src="image.php?id='.$image->id.'"',$html);
+                    $html=str_replace('src="'.$match[2].'"','src="public_image.php?id='.$image->id.'"',$html);
                 } else {
 
                 }
@@ -559,7 +716,7 @@ function upload_content_images($html,$base_dir='',$parent_data) {
 
 
             $_file= $base_dir.'/'.$file;
-       //     print "$_file\n";
+            //     print "$_file\n";
             if (file_exists($_file)) {
                 $image_data=array('file'=>$_file,'source_path'=>'','name'=>basename($file));
                 $image=new Image('find',$image_data,'create');
@@ -572,7 +729,7 @@ function upload_content_images($html,$base_dir='',$parent_data) {
                                  prepare_mysql($caption,false)
                                 );
                     mysql_query($sql);
-                    $html=str_replace($match[1],"'image.php?id=".$image->id."'",$html);
+                    $html=str_replace($match[1],"'public_image.php?id=".$image->id."'",$html);
 
                 } else {
                     //print "cont insert image\n";
@@ -681,6 +838,6 @@ function extract_products_info($html) {
 
     $html=preg_replace("/<\?php\s*show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
 
-    $html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/",'{$page->display_list()}',$html);
+    $html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/siU",'{$page->display_list()}',$html);
     return $html;
 }

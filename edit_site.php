@@ -150,6 +150,8 @@ $filter_menu=array(
 
              );
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu1',$filter_menu);
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
@@ -162,6 +164,8 @@ $filter_menu=array(
 
              );
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu2',$filter_menu);
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
@@ -174,6 +178,8 @@ $filter_menu=array(
 
              );
 $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu3',$filter_menu);
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 

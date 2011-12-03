@@ -2302,7 +2302,30 @@ $default_state=array(
                                             'from'=>'',
                                             'to'=>'',
                                             'elements'=>''
+                                        ),
+                                   'edit_product_list'=>array(
+                                            'f_field'=>'code',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'code',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
+                                        ),
+                                          'edit_product_button'=>array(
+                                            'f_field'=>'code',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'code',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
                                         )
+                                        
 
 
                           ),

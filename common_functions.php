@@ -3171,9 +3171,6 @@ function guess_file_format($filename) {
 
     ob_start();
     system("uname");
-
-
-
     $system='Unknown';
     $_system = ob_get_clean();
 

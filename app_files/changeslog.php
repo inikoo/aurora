@@ -5224,12 +5224,53 @@ ALTER TABLE `Page Store Dimension` ADD `Page List Metadata` LONGTEXT NOT NULL DE
 ALTER TABLE `Page Store Dimension` ADD `Page Locale` CHAR( 5 ) NOT NULL DEFAULT 'en_GB' AFTER `Page Store Order Template` ;
 
 ALTER TABLE `Site Dimension` ADD `Site Checkout Mals Metadata` MEDIUMTEXT NOT NULL AFTER `Site Checkout Method` ;
-ALTER TABLE `Site Dimension` CHANGE `Site Checkout Metadata` `Site Checkout Mals Metadata` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Email Campaign Objetive Dimension` CHANGE `Email Campaign Objetive Parent` `Email Campaign Objective Parent` ENUM('Product','Family','Department','Store','Campaign','Deal','Store Page','External Link') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Email Campaign Objetive Parent Key` `Email Campaign Objective Parent Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL, CHANGE `Email Campaign Objetive Name` `Email Campaign Objective Name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `Email Campaign Objetive Links` `Email Campaign Objective Links` MEDIUMINT(8) UNSIGNED NULL DEFAULT '0', CHANGE `Email Campaign Objetive Term` `Email Campaign Objective Term` ENUM('Order','Buy','Visit','Use') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `Email Campaign Objetive Link Bridge` CHANGE `Email Campaign Objetive Key` `Email Campaign Objective Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
-RENAME TABLE `Email Campaign Objetive Link Bridge` TO `dw`.`Email Campaign Objective Link Bridge` ;
-RENAME TABLE `Email Campaign Objetive Dimension` TO `dw`.`Email Campaign Objective Dimension` ;
+RENAME TABLE `Email Campaign Objetive Link Bridge` TO `Email Campaign Objective Link Bridge` ;
+RENAME TABLE `Email Campaign Objetive Dimension` TO .`Email Campaign Objective Dimension` ;
 ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After', 'Delivery', 'Category', 'Warehouse', 'Warehouse', 'Shelf', 'Location', 'Company', 'Company', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work', 'Office', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier', 'Part', 'Site', 'Page' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
+ALTER TABLE `Page Header Dimension` ADD `Number Pages` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Key` ;
+ALTER TABLE `Page Footer Dimension` ADD `Number Pages` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Key` ;
+
+ALTER TABLE `Page Header Dimension` ADD `Page Header Preview Image Key` MEDIUMINT NULL DEFAULT NULL AFTER `Page Header Name` ;
+ALTER TABLE `Page Footer Dimension` ADD `Page Footer Preview Image Key` MEDIUMINT NULL DEFAULT NULL AFTER `Page Footer Name` ;
+
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM('Product','Family','Department','Store','Website','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Site','Page Header Preview','Page Footer Preview','Page Preview') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `Site Dimension` ADD `Site Default Header Key` MEDIUMINT NULL DEFAULT NULL ,ADD `Site Default Footer Key` MEDIUMINT NULL DEFAULT NULL ;
+
+ALTER TABLE `Page Store Dimension` ADD `Page Header Type` ENUM( 'Set', 'SiteDefault' ) NOT NULL DEFAULT 'SiteDefault' AFTER `Page Header Key` ,ADD INDEX ( `Page Header Type` ); 
+ALTER TABLE `Page Store Dimension` ADD `Page Footer Type` ENUM( 'Set', 'SiteDefault' ) NOT NULL DEFAULT 'SiteDefault' AFTER `Page Footer Key` ,ADD INDEX ( `Page Footer Type` ); 
+
+CREATE TABLE IF NOT EXISTS `Page Product List Dimension` (
+  `Page Product Form Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Product Form Code` varchar(12) NOT NULL DEFAULT '1',
+  `Page Key` mediumint(8) unsigned NOT NULL,
+  `Page Product Form Type` enum('FamilyList','CustomList') NOT NULL DEFAULT 'FamilyList',
+  `Page Product Form Parent Key` mediumint(9) DEFAULT NULL,
+  `Show RRP` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `List Order` enum('Code','Name','Special Characteristic','Price','RRP','Sales','Date') NOT NULL DEFAULT 'Code',
+  `Range` varchar(246) DEFAULT NULL,
+  `Range Scope` enum('Code','Name','Special Characteristic') NOT NULL DEFAULT 'Special Characteristic',
+  `List Product Description` enum('Units Name','Units Special Characteristic') NOT NULL DEFAULT 'Units Special Characteristic',
+  `List Max Items` smallint(5) unsigned NOT NULL DEFAULT '500',
+  PRIMARY KEY (`Page Product Form Key`),
+  KEY `Page Key` (`Page Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8  ;
+
+
+CREATE TABLE IF NOT EXISTS `Page Product From Dimension` (
+  `Page Product From Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Key` mediumint(8) unsigned NOT NULL,
+  `Product ID` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`Page Product From Key`),
+  UNIQUE KEY `Page Key` (`Page Key`),
+  KEY `Product ID` (`Product ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Page Key` `Page Product Form Page Key` VARCHAR( 64 ) NOT NULL DEFAULT '1';
+ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Page Key` `Page Product Form Name` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1''
+ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Code` `Page Product Form Code` VARCHAR( 12 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'default';
+
 
 */
 
