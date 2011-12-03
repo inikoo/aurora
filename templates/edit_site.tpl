@@ -36,26 +36,29 @@
   
   <div class="tabbed_container" > 
    
-     <div  class="edit_block" style="{if $block_view!='headers'}display:none{/if}"  id="d_headers">
+    <div  class="edit_block" style="{if $block_view!='headers'}display:none{/if}"  id="d_headers">
      
      <div class='buttons'>
         <button id="new_header"><img src="art/icons/add.png" alt=""> {t}New Header{/t}</button>
-                <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button>
-
+        <button id="show_upload_header"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button>
      </div>
      <div style="clear:both">
-       <span class="clean_table_title">{t}Headers{/t}</span>
-     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
-  <div  id="table2"   class="data_table_container dtable btable "> </div>
+        <span class="clean_table_title">{t}Headers{/t}</span>
+        {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+        <div  id="table2"   class="data_table_container dtable btable "> </div>
+    </div>
    </div>
-   </div>
-        <div  class="edit_block" style="{if $block_view!='footers'}display:none{/if}"  id="d_footers">
-     
+    <div  class="edit_block" style="{if $block_view!='footers'}display:none{/if}"  id="d_footers">
+       <div class='buttons'>
+        <button id="new_footer"><img src="art/icons/add.png" alt=""> {t}New Footer{/t}</button>
+        <button id="show_upload_footer"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button>
+     </div>
+     <div style="clear:both">
      
        <span class="clean_table_title">{t}Footer{/t}</span>
      {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
   <div  id="table3"   class="data_table_container dtable btable "> </div>
-     
+       </div>
      </div>
     <div  class="edit_block" style="{if $block_view!='general'}display:none{/if}"  id="d_general">
       
@@ -376,6 +379,53 @@ link to edit_site_section.php?id=
   </div>
 </div>
 
+
+<div id="rppmenu2" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},2)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu2" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu2 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+
+<div id="rppmenu3" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu3 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},3)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu3" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu3 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',3)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+
+
+
 <div id="dialog_upload_header" style="padding:30px 10px 10px 10px;width:320px">
 
  <table style="margin:0 auto">
@@ -388,6 +438,8 @@ link to edit_site_section.php?id=
   </form>
  <tr><td colspan=2>
   <div class="buttons">
+    <span id="processing_upload_header" style="float:right;display:none" ><img src="art/loading.gif" alt=""> {t}Processing{/t}</span>
+
 <button class="positive"  id="upload_header"  >{t}Upload{/t}</button>
 <button  id="cancel_upload_header" class="negative" >{t}Cancel{/t}</button><br/>
 </div>
@@ -395,5 +447,26 @@ link to edit_site_section.php?id=
     </table>
 </div>
 
+
+
+<div id="dialog_upload_footer" style="padding:30px 10px 10px 10px;width:320px">
+
+ <table style="margin:0 auto">
+  <form enctype="multipart/form-data" method="post" id="upload_footer_form">
+<input type="hidden" name="parent_key" value="{$site->id}" />
+<input type="hidden" name="parent" value="site" />
+
+ <tr><td>{t}File{/t}:</td><td><input id="upload_footer_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
+
+  </form>
+ <tr><td colspan=2>
+  <div class="buttons">
+  <span id="processing_upload_footer" style="float:right;display:none" ><img src="art/loading.gif" alt=""> {t}Processing{/t}</span>
+<button class="positive"  id="upload_footer"  >{t}Upload{/t}</button>
+<button  id="cancel_upload_footer" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
 
 {include file='footer.tpl'}

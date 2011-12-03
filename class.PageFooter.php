@@ -11,13 +11,13 @@
 */
 include_once('class.DB_Table.php');
 include_once('class.Page.php');
-class PageHeader extends DB_Table {
+class PageFooter extends DB_Table {
 
     var $new=false;
 
-    function PageHeader($arg1=false,$arg2=false) {
-        $this->table_name='Page Header';
-        $this->ignore_fields=array('Page Header Key');
+    function PageFooter($arg1=false,$arg2=false) {
+        $this->table_name='Page Footer';
+        $this->ignore_fields=array('Page Footer Key');
 
 
         if (!$arg1 and !$arg2) {
@@ -48,13 +48,13 @@ class PageHeader extends DB_Table {
     function get_data($tipo,$tag,$tag2=false) {
 
 
-        $sql=sprintf("select * from `Page Header Dimension` where  `Page Header Key`=%d",$tag);
+        $sql=sprintf("select * from `Page Footer Dimension` where  `Page Footer Key`=%d",$tag);
 
 
 
         $result =mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->id=$this->data['Page Header Key'];
+            $this->id=$this->data['Page Footer Key'];
 
         }
 
@@ -85,15 +85,15 @@ class PageHeader extends DB_Table {
 
 
 
-        $sql=sprintf("select `Page Header Key` from `Page Header Dimension`  where `Page Header Name`=%s and `Site Key`=%d",
-                     prepare_mysql($data['Page Header Name']),
+        $sql=sprintf("select `Page Footer Key` from `Page Footer Dimension`  where `Page Footer Name`=%s and `Site Key`=%d",
+                     prepare_mysql($data['Page Footer Name']),
                      $data['Site Key']
 
                     );
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $this->found=true;
-            $this->found_key=$row['Page Header Key'];
+            $this->found_key=$row['Page Footer Key'];
             $this->get_data('id',$this->found_key);
         }
 
@@ -110,22 +110,22 @@ class PageHeader extends DB_Table {
     function create($raw_data) {
         $temporal_name=false;
         $this->new=false;
-        if (!isset($raw_data['Page Header Name']) or  $raw_data['Page Header Name']=='') {
+        if (!isset($raw_data['Page Footer Name']) or  $raw_data['Page Footer Name']=='') {
 
-            $raw_data['Page Header Name']=uniqid();
-            $temporal_name='header';
+            $raw_data['Page Footer Name']=uniqid();
+            $temporal_name='footer';
 
         }
-
-        $sql=sprintf("select `Page Header Name` from `Page Header Dimension`  where `Page Header Name`=%s and `Site Key`=%d",
-                     prepare_mysql($raw_data['Page Header Name']),
+        
+         $sql=sprintf("select `Page Footer Name` from `Page Footer Dimension`  where `Page Footer Name`=%s and `Site Key`=%d",
+                     prepare_mysql($raw_data['Page Footer Name']),
                      $raw_data['Site Key']
 
                     );
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
-            $raw_data['Page Header Name']=uniqid();
-            $temporal_name=$row['Page Header Name'];
+           $raw_data['Page Footer Name']=uniqid();
+            $temporal_name=$row['Page Footer Name'];
         }
 
 
@@ -150,17 +150,17 @@ class PageHeader extends DB_Table {
         }
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
-        $sql=sprintf("insert into `Page Header Dimension` %s %s",$keys,$values);
+        $sql=sprintf("insert into `Page Footer Dimension` %s %s",$keys,$values);
 
 
         if (mysql_query($sql)) {
             $this->id=mysql_insert_id();
 
             if ($temporal_name) {
-                $sql=sprintf("update `Page Header Dimension` set `Page Header Name`=%s where `Page Header Key`=%d",
-                             prepare_mysql($temporal_name.$this->id),
-                             $this->id
-                            );
+                $sql=sprintf("update `Page Footer Dimension` set `Page Footer Name`=%s where `Page Footer Key`=%d",
+                prepare_mysql($temporal_name.$this->id),
+                $this->id
+                );
                 mysql_query($sql);
 
             }
@@ -169,13 +169,13 @@ class PageHeader extends DB_Table {
             $this->get_data('id',$this->id);
 
             $site=new Site ($this->data['Site Key']);
-            $site->update_headers($this->id);
+            $site->update_footers($this->id);
 
 
 
         } else {
             $this->error=true;
-            $this->msg='Can not insert Page Header Dimension';
+            $this->msg='Can not insert Page Footer Dimension';
             exit("$sql\n");
         }
 
@@ -205,11 +205,11 @@ class PageHeader extends DB_Table {
 
 
 
-
-    function update_image() {
+   
+  function update_image() {
 
         global $inikoo_public_url;
-        $old_image_key=$this->data['Page Header Preview Image Key'];
+        $old_image_key=$this->data['Page Footer Preview Image Key'];
 
         $new_image_key=$old_image_key;
         //      $image=new Image($image_key);
@@ -221,15 +221,15 @@ class PageHeader extends DB_Table {
         $_system = ob_get_clean();
 
         if (preg_match('/darwin/i',$_system)) {
-            $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/ph_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5     ".$inikoo_public_url."public_header_preview.php?id=".$this->id;
+            $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/pf_image".$this->id."  --clipheight=50  --clipwidth=488  -s 0.5     ".$inikoo_public_url."public_footer_preview.php?id=".$this->id;
 
-            //       $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/ph_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_header_preview.php?id=".$this->id;
+            //       $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/pf_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_footer_preview.php?id=".$this->id;
             ob_start();
             system($command,$retval);
             ob_get_clean();
 
-         //   print "$command";
-            $image_data=array('file'=>"app_files/tmp/ph_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_header'.$this->id);
+           // print "$command";
+            $image_data=array('file'=>"app_files/tmp/pf_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_footer'.$this->id);
             $image=new Image('find',$image_data,'create');
 
             if ($image->id) {
@@ -249,9 +249,9 @@ class PageHeader extends DB_Table {
 
 
         if ($new_image_key!=$old_image_key) {
-            $this->data['Page Header Preview Image Key']=$new_image_key;
+            $this->data['Page Footer Preview Image Key']=$new_image_key;
             $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d `Image Key`=%d ",
-                         prepare_mysql('Page Header Preview'),
+                         prepare_mysql('Page Footer Preview'),
                          $this->id,
                          $image->id
                         );
@@ -262,21 +262,21 @@ class PageHeader extends DB_Table {
 
 
             $sql=sprintf("insert into `Image Bridge` values (%s,%d,%d,'Yes',%s)",
-                         prepare_mysql('Page Header Preview'),
+                         prepare_mysql('Page Footer Preview'),
                          $this->id,
                          $image->id,
                          ''
                         );
             mysql_query($sql);
 
-            $sql=sprintf("update `Page Header Dimension` set `Page Header Preview Image Key`=%d  where `Page Header Key`=%d",
-                         $this->data['Page Header Preview Image Key'],
+            $sql=sprintf("update `Page Footer Dimension` set `Page Footer Preview Image Key`=%d  where `Page Footer Key`=%d",
+                         $this->data['Page Footer Preview Image Key'],
                          $this->id
 
                         );
             mysql_query($sql);
             $this->updated=true;
-            $this->new_value=$this->data['Page Header Preview Image Key'];
+            $this->new_value=$this->data['Page Footer Preview Image Key'];
 
         }
 
@@ -287,11 +287,14 @@ class PageHeader extends DB_Table {
     }
 
 
+
+
+
     function update_field_switcher($field,$value,$options='') {
 
 
         switch ($field) {
-
+    
         default:
             $base_data=$this->base_data();
             if (array_key_exists($field,$base_data)) {
@@ -309,9 +312,56 @@ class PageHeader extends DB_Table {
     }
 
 
-    function get_number_pages() {
+
+
+
+
+  
+  function delete() {
+    
+    include_once("class.Image.php");
+        $this->deleted=false;
+        $sql=sprintf("delete from `Page Footer Dimension` where `Page Footer Key`=%d",$this->id);
+        mysql_query($sql);
+
+        $images=array();
+        $sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type` in ('Page Footer','Page Footer Preview') and `Subject Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $images[$row['Image Key']]=$row['Image Key'];
+        }
+
+        $sql=sprintf("select `Page Store External File Key` from `Page Footer External File Bridge` where `Page Footer Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $sql=sprintf("delete from `Page Store External File Dimension` where `Page Store External File Key`=%d ",$row['Page Store External File Key']);
+            mysql_query($sql);
+        }
+        $sql=sprintf("delete from `Page Footer External File Bridge` where `Page Footer Key`=%d",$this->id);
+        mysql_query($sql);
+
+
+        $sql=sprintf("delete from `Image Bridge` where `Subject Type` in ('Page Footer','Page Footer Preview') and `Subject Key`=%d",$this->id);
+        mysql_query($sql);
+
+        foreach($images as $image_key) {
+            $image=new Image($image_key);
+            if($image->id)
+            $image->delete();
+        }
+
+
+        $sql=sprintf("delete from `Page Footer Dimension` where `Page Footer Key`=%d",$this->id);
+        mysql_query($sql);
+
+        $this->deleted=true;
+
+    }
+
+
+   function get_number_pages() {
         $number_pages=0;
-        $sql=sprintf("select count(*) as num from `Page Store Dimension`  where `Page Header Key`=%d and `Page Site Key`=%d",
+        $sql=sprintf("select count(*) as num from `Page Store Dimension`  where `Page Footer Key`=%d and `Page Site Key`=%d",
                      $this->id,
                      $this->data['Site Key']
 
@@ -325,58 +375,13 @@ class PageHeader extends DB_Table {
 
     function update_number_pages() {
         $this->data['Number Pages']=$this->get_number_pages();
-        $sql=sprintf("update `Page Header Dimension` set `Number Pages`=%d  where `Page Header Key`=%d",
+        $sql=sprintf("update `Page Footer Dimension` set `Number Pages`=%d  where `Page Footer Key`=%d",
                      $this->data['Number Pages'],
                      $this->id
                     );
         mysql_query($sql);
 
     }
-
-
-
-
-    function delete() {
-    
-    include_once("class.Image.php");
-        $this->deleted=false;
-        $sql=sprintf("delete from `Page Header Dimension` where `Page Header Key`=%d",$this->id);
-        mysql_query($sql);
-
-        $images=array();
-        $sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type` in ('Page Header','Page Header Preview') and `Subject Key`=%d",$this->id);
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $images[$row['Image Key']]=$row['Image Key'];
-        }
-
-        $sql=sprintf("select `Page Store External File Key` from `Page Header External File Bridge` where `Page Header Key`=%d",$this->id);
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $sql=sprintf("delete from `Page Store External File Dimension` where `Page Store External File Key`=%d ",$row['Page Store External File Key']);
-            mysql_query($sql);
-        }
-        $sql=sprintf("delete from `Page Header External File Bridge` where `Page Header Key`=%d",$this->id);
-        mysql_query($sql);
-
-
-        $sql=sprintf("delete from `Image Bridge` where `Subject Type` in ('Page Header','Page Header Preview') and `Subject Key`=%d",$this->id);
-        mysql_query($sql);
-
-        foreach($images as $image_key) {
-            $image=new Image($image_key);
-            if($image->id)
-            $image->delete();
-        }
-
-
-        $sql=sprintf("delete from `Page Header Dimension` where `Page Header Key`=%d",$this->id);
-        mysql_query($sql);
-
-        $this->deleted=true;
-
-    }
-
 
 
 

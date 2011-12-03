@@ -1630,13 +1630,11 @@ function validate_customer_mobile_other_comment(query,id){
 
 function show_sticky_note(){
 
- //var pos = Dom.getXY('top_page_menu');
+ 
    region1 = Dom.getRegion('top_page_menu'); 
     region2 = Dom.getRegion('dialog_sticky_note'); 
 
  var pos =[region1.right-region2.width-20,region1.bottom]
- //pos[0]=pos[500]
-//pos[1]=pos[500]
 
     Dom.setXY('dialog_sticky_note', pos);
 

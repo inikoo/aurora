@@ -650,7 +650,9 @@ function list_history($asset_type) {
    elseif($asset_type=='site') {
         $asset='Site';
     }
-
+  elseif($asset_type=='page') {
+        $asset='Page';
+    }
     elseif($asset_type=='company_department') {
         $asset='Company Department';
     }

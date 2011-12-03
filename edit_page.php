@@ -41,7 +41,7 @@ if (!$page->id) {
     header('Location: index.php');
     exit;
 }
-
+$page->update_products();
 
 $_SESSION['state']['page']['id']=$page->id;
 
@@ -156,8 +156,8 @@ $smarty->assign('js_files',$js_files);
 
 
 $tipo_filter=$_SESSION['state']['page']['history']['f_field'];
-$smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['page']['history']['f_value']);
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['page']['history']['f_value']);
 $filter_menu=array(
                  'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
                  'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
@@ -165,9 +165,41 @@ $filter_menu=array(
                  'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
                  'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
              );
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_name1',$filter_menu);
+$smarty->assign('filter_menu1',$filter_menu[$tipo_filter]['label']);
+
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['page']['edit_product_list']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['page']['edit_product_list']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Code like *<i>x</i>*','label'=>_('Code')),
+                );
+$smarty->assign('filter_name2',$filter_menu);
+$smarty->assign('filter_menu2',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['page']['edit_product_button']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['page']['edit_product_button']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Code like *<i>x</i>*','label'=>_('Code')),
+                );
+$smarty->assign('filter_name3',$filter_menu);
+$smarty->assign('filter_menu3',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+
+
+
 
 
 

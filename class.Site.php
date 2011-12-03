@@ -266,9 +266,9 @@ class Site extends DB_Table {
             $base_data=$this->base_data();
 
             if (array_key_exists($field,$base_data)) {
- 
+
                 if ($value!=$this->data[$field]) {
-              
+
                     $this->update_field($field,$value,$options);
                 }
             }
@@ -789,5 +789,80 @@ class Site extends DB_Table {
 
     }
 
+    function set_default_header($new_header_key) {
+
+
+        $old_header_key=$this->data['Site Default Header Key'];
+        $this->update_field_switcher('Site Default Header Key',$new_header_key,'no history');
+
+
+        if ($this->updated) {
+
+
+            $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Header Type`='SiteDefault' and `Page Site Key`=%d",$this->id);
+            $res=mysql_query($sql);
+
+            while ($row=mysql_fetch_array($res)) {
+                $sql=sprintf("update  `Page Store Dimension` set `Page Header Key`=%d where `Page Key`=%d ",$new_header_key,$row['Page Key']);
+                //  print "$sql<br>";
+                mysql_query($sql);
+            }
+            $old_header=new PageHeader($old_header_key);
+            $new_header=new PageHeader($new_header_key);
+            $old_header->update_number_pages();
+            $new_header->update_number_pages();
+
+            $history_data=array(
+                              'History Abstract'=>_('Site default header changed').' ('.$old_header->data['Page Header Name'].' &rarr; '.$new_header->data['Page Header Name'].')',
+                              'History Details'=>'',
+
+                              'Indirect Object'=>'Page Header',
+                              'Indirect Object Key'=>$new_header_key
+                          );
+            $this->add_history($history_data);
+
+        }
+
+    }
+
+    function   update_footers($new_footer_key=false) {
+
+    }
+
+    function set_default_footer($new_footer_key) {
+
+
+        $old_footer_key=$this->data['Site Default Footer Key'];
+        $this->update_field_switcher('Site Default Footer Key',$new_footer_key,'no history');
+
+
+        if ($this->updated) {
+
+
+            $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Footer Type`='SiteDefault' and `Page Site Key`=%d",$this->id);
+            $res=mysql_query($sql);
+
+            while ($row=mysql_fetch_array($res)) {
+                $sql=sprintf("update  `Page Store Dimension` set `Page Footer Key`=%d where `Page Key`=%d ",$new_footer_key,$row['Page Key']);
+                //  print "$sql<br>";
+                mysql_query($sql);
+            }
+            $old_footer=new PageFooter($old_footer_key);
+            $new_footer=new PageFooter($new_footer_key);
+            $old_footer->update_number_pages();
+            $new_footer->update_number_pages();
+
+            $history_data=array(
+                              'History Abstract'=>_('Site default footer changed').' ('.$old_footer->data['Page Footer Name'].' &rarr; '.$new_footer->data['Page Footer Name'].')',
+                              'History Details'=>'',
+
+                              'Indirect Object'=>'Page Footer',
+                              'Indirect Object Key'=>$new_footer_key
+                          );
+            $this->add_history($history_data);
+
+        }
+
+    }
 }
 ?>
