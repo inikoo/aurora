@@ -8,13 +8,13 @@ $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if (!$con) {
     print "Error can not connect with database server\n";
-    exit;
+     exit('1');
 }
 //$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
-    exit;
+     exit('2');
 }
 date_default_timezone_set('UTC');
 
@@ -35,7 +35,7 @@ include_once('class.Site.php');
 
 if (!isset($_REQUEST['id'])  or  !is_numeric($_REQUEST['id']) ) {
    
-    exit;
+     exit('3');
 } 
 
 require('external_libs/Smarty/Smarty.class.php');
@@ -55,7 +55,7 @@ $page_footer_key=$_REQUEST['id'];
 $page_footer=new PageFooter($page_footer_key);
 
 if(!$page_footer->id)
-    exit;
+    exit('4');
     
  
 $site=new Site($page_footer->data['Site Key']);
