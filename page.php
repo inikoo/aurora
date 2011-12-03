@@ -32,6 +32,8 @@ if (!($user->can_view('stores')    ) ) {
 
 
 $page=new Page($page_key);
+
+
 if (!$page->id) {
     header('Location: index.php');
     exit;
