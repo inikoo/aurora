@@ -223,7 +223,7 @@ function upload_from_zip($data) {
     if ($number_html_files==0) {
         $response= array('state'=>400,'msg'=>_('no HTML/PHP file found'));
         echo json_encode($response);
-        return;
+      
 
     }
     elseif($number_html_files==1) {
@@ -248,7 +248,7 @@ function upload_from_zip($data) {
         //deleteAll("app_files/tmp/page_content_".$folder_id);
         echo json_encode($response);
 
-        exit;
+      
     }
     else {
     
@@ -276,20 +276,21 @@ function upload_from_zip($data) {
         //deleteAll("app_files/tmp/page_content_".$folder_id);
         echo json_encode($response);
 
-        exit;
+       
  
  }
+ else{
     
  
     $response= array('state'=>201,'list'=>$html_files);
         echo json_encode($response);
-        return;
-
+    
+}
     }
 
 
-
-
+deleteAll("app_files/tmp/page_content_".$folder_id);
+return;
 }
 
 

@@ -58,6 +58,9 @@
        <span class="clean_table_title">{t}Footer{/t}</span>
      {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
   <div  id="table3"   class="data_table_container dtable btable "> </div>
+  
+  
+  
        </div>
      </div>
     <div  class="edit_block" style="{if $block_view!='general'}display:none{/if}"  id="d_general">
@@ -432,6 +435,7 @@ link to edit_site_section.php?id=
   <form enctype="multipart/form-data" method="post" id="upload_header_form">
 <input type="hidden" name="parent_key" value="{$site->id}" />
 <input type="hidden" name="parent" value="site" />
+<input id="upload_page_content_use_file" type="hidden" name="use_file" value="" />
 
  <tr><td>{t}File{/t}:</td><td><input id="upload_header_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
 
@@ -455,6 +459,7 @@ link to edit_site_section.php?id=
   <form enctype="multipart/form-data" method="post" id="upload_footer_form">
 <input type="hidden" name="parent_key" value="{$site->id}" />
 <input type="hidden" name="parent" value="site" />
+<input id="upload_page_content_use_file" type="hidden" name="use_file" value="" />
 
  <tr><td>{t}File{/t}:</td><td><input id="upload_footer_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
 

@@ -399,7 +399,7 @@ function upload_header(e){
     
    var uploadHandler = {
       upload: function(o) {
-	  // alert(o.responseText)
+	   //alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
@@ -408,16 +408,18 @@ function upload_header(e){
 	     
          window.location.reload()
                 
-	    }else
+	    }
+	    else{
 	       
 	      Dom.setStyle('processing_upload_headerr','display','none');
         Dom.setStyle(['upload_headerr','cancel_upload_headerr'],'display','');
 		alert(r.msg);
 	    	}
-    };
-
+    
+    }
+}    
     YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
-};
+}
 
 
 function show_dialog_upload_footer(){
@@ -451,14 +453,16 @@ function upload_footer(e){
 	     
          window.location.reload()
                 
-	    }else{
+	    }
+	    else{
 	      Dom.setStyle('processing_upload_footer','display','none');
         Dom.setStyle(['upload_footer','cancel_upload_footer'],'display','');
 	    
 		alert(r.msg);
 		}
-	    	}
-    };
+}
+}
+
 
     YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
 };
