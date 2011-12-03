@@ -298,7 +298,7 @@ abstract class DB_Table {
 
 
 
-    protected function add_history($raw_data,$force=false) {
+     function add_history($raw_data,$force=false) {
 
 
         $editor_data=$this->get_editor_data();

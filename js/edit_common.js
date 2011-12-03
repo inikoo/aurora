@@ -277,7 +277,7 @@ if(delete_type== undefined)
      		        ar_file='ar_edit_staff.php';
 		        else if (column.object=='subcategory')
      		         ar_file='ar_edit_categories.php';
-     		        else if (column.object=='page_store')
+     		        else if (column.object=='page_store' || column.object=='page_header'  || column.object=='page_footer')
      		         ar_file='ar_edit_sites.php';    
                 else if (column.object=='order_list' || column.object=='invoice_list'|| column.object=='dn_list')
      		         ar_file='ar_edit_orders.php';
@@ -288,8 +288,7 @@ if(delete_type== undefined)
 
 
 
-          //alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
-//return;
+       //   alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record));return;
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {

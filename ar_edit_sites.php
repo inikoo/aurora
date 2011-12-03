@@ -12,6 +12,9 @@
 
 require_once 'common.php';
 require_once 'class.Site.php';
+require_once 'class.PageHeader.php';
+require_once 'class.PageFooter.php';
+
 require_once 'ar_edit_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
@@ -23,6 +26,42 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+case('page_product_lists'):
+list_page_product_lists_for_edition();
+break;
+
+case('set_default_header'):
+    $data=prepare_values($_REQUEST,array(
+                             'header_key'=>array('type'=>'key'),
+                             'site_key'=>array('type'=>'key'),
+
+                         ));
+    set_default_header($data);
+    break;
+    
+ case('set_default_footer'):
+    $data=prepare_values($_REQUEST,array(
+                             'footer_key'=>array('type'=>'key'),
+                             'site_key'=>array('type'=>'key'),
+
+                         ));
+    set_default_footer($data);
+    break;   
+    
+case('delete_page_header'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+
+                         ));
+    delete_page_header($data);
+    break;
+case('delete_page_footer'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+
+                         ));
+    delete_page_footer($data);
+    break;
 case('page_headers'):
     list_headers_for_edition();
     break;
@@ -564,7 +603,7 @@ function  delete_page_store($data) {
         $response= array('state'=>200,'action'=>'deleted');
 
     } else {
-        $response= array('state'=>400,'msg'=>$site->msg);
+        $response= array('state'=>400,'msg'=>$page->msg);
 
     }
     echo json_encode($response);
@@ -698,7 +737,7 @@ function edit_site($data) {
 
     }
 
- //   print_r($values);
+//   print_r($values);
 
     $responses=array();
     foreach($values as $key=>$values_data) {
@@ -709,6 +748,32 @@ function edit_site($data) {
     echo json_encode($responses);
 
 
+}
+
+function delete_page_header($data) {
+    $page_header=new PageHeader($data['id']);
+    $page_header->delete();
+    if ($page_header->deleted) {
+        $response= array('state'=>200,'action'=>'deleted');
+
+    } else {
+        $response= array('state'=>400,'msg'=>$page_header->msg);
+
+    }
+    echo json_encode($response);
+}
+
+function delete_page_footer($data) {
+    $page_footer=new Pagefooter($data['id']);
+    $page_footer->delete();
+    if ($page_footer->deleted) {
+        $response= array('state'=>200,'action'=>'deleted');
+
+    } else {
+        $response= array('state'=>400,'msg'=>$page_footer->msg);
+
+    }
+    echo json_encode($response);
 }
 
 function edit_site_field($site_key,$key,$value_data) {
@@ -891,8 +956,8 @@ function list_headers_for_edition() {
     $_order=$order;
 
 
-    if ($order=='name')
-        $order='`Page Header Name`';
+    if ($order=='pages')
+        $order='`Number Pages`';
     else
         $order='`Page Header Name`';
 
@@ -904,14 +969,36 @@ function list_headers_for_edition() {
 
     $total=mysql_num_rows($res);
 
+
+    if ($parent=='site') {
+
+        $site=new Site($parent_key);
+        $default_header_key=$site->data['Site Default Header Key'];
+    }
+
+
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+        if ($default_header_key==$row['Page Header Key']) {
+        $is_default=true;
+        $default=_('Default');
+        } else {
+        $default='<div class="buttons small"><button class="positive" onClick="set_default_header('.$row['Page Header Key'].')">'._('Set as default').'</button></div>';
+  $is_default=false;
+
+
+        }
 
         $adata[]=array(
                      'id'=>$row['Page Header Key'],
                      'name'=>$row['Page Header Name'],
+                     'pages'=>number($row['Number Pages']),
+                     'image'=>'<img alt="preview" style="width:300px" src="image.php?id='.$row['Page Header Preview Image Key'].'"/>',
+                     'default'=>$default,
                      'go'=>sprintf("<a href='edit_page_header.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
 
-                     'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
+                     'delete'=>(($row['Number Pages'] or $is_default)?'':"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />")
 
                  );
     }
@@ -936,6 +1023,502 @@ function list_headers_for_edition() {
     echo json_encode($response);
 }
 
+
+function list_footers_for_edition() {
+    if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','department','family','product')) ) {
+        $parent=$_REQUEST['parent'];
+
+    } else {
+        return;
+    }
+
+    if (isset( $_REQUEST['parent_key'])) {
+        $parent_key=$_REQUEST['parent_key'];
+
+    } else {
+        return;
+    }
+
+
+    $conf=$_SESSION['state'][$parent]['edit_footers'];
+
+
+
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+
+    } else
+        $number_results=$conf['nr'];
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+    $_SESSION['state'][$parent]['edit_footers']['order']=$order;
+    $_SESSION['state'][$parent]['edit_footers']['order_dir']=$order_direction;
+    $_SESSION['state'][$parent]['edit_footers']['nr']=$number_results;
+    $_SESSION['state'][$parent]['edit_footers']['sf']=$start_from;
+    $_SESSION['state'][$parent]['edit_footers']['f_field']=$f_field;
+    $_SESSION['state'][$parent]['edit_footers']['f_value']=$f_value;
+//    $_SESSION['state'][$parent]['edit_footers']['parent_key']=$parent_key;
+//    $_SESSION['state'][$parent]['edit_footers']['parent']=$parent;
+
+
+
+    switch ($parent) {
+    case 'site':
+        $table='  `Page Footer Dimension`  ';
+        $where=sprintf(' where `Site Key`=%d',$parent_key);
+        break;
+    default:
+
+        break;
+    }
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+    if ($f_field=='name'  and $f_value!='')
+        $wheref.=" and `Page Footer Name` like '".addslashes($f_value)."%'";
+//    elseif ($f_field=='title' and $f_value!='')
+//    $wheref.=" and  `Page Store Title` like '".addslashes($f_value)."%'";
+
+
+
+    $sql="select count(*) as total from $table  $where $wheref";
+//print $sql;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from $table  $where  ";
+//print $sql;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('footer','footers',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any footer with name")." <b>$f_value</b>* ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('footers with name')." <b>$f_value</b>*)";
+        break;
+
+    }
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+
+    if ($order=='pages')
+        $order='`Number Pages`';
+    else
+        $order='`Page Footer Name`';
+
+
+    $adata=array();
+    $sql="select *  from $table $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+
+    $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+
+
+    if ($parent=='site') {
+
+        $site=new Site($parent_key);
+        $default_footer_key=$site->data['Site Default Footer Key'];
+    }
+
+
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+        if ($default_footer_key==$row['Page Footer Key']) {
+        $is_default=true;
+        $default=_('Default');
+        } else {
+        $default='<div class="buttons small"><button class="positive" onClick="set_default_footer('.$row['Page Footer Key'].')">'._('Set as default').'</button></div>';
+  $is_default=false;
+
+
+        }
+
+        $adata[]=array(
+                     'id'=>$row['Page Footer Key'],
+                     'name'=>$row['Page Footer Name'],
+                     'pages'=>number($row['Number Pages']),
+                     'image'=>'<img alt="preview" style="width:300px" src="image.php?id='.$row['Page Footer Preview Image Key'].'"/>',
+                     'default'=>$default,
+                     'go'=>sprintf("<a href='edit_page_footer.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Footer Key'],$parent,$parent_key),
+
+                     'delete'=>(($row['Number Pages'] or $is_default)?'':"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />")
+
+                 );
+    }
+    mysql_free_result($res);
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+
+function set_default_header($data) {
+    $site=new Site($data['site_key']);
+    if (!$site->id) {
+        $response= array('state'=>400,'msg'=>'Site not found');
+        echo json_encode($response);
+
+        exit;
+    }
+    $header=new PageHeader($data['header_key']);
+    if (!$header->id) {
+        $response= array('state'=>400,'msg'=>'Header not found');
+        echo json_encode($response);
+
+        exit;
+    }
+
+    if ($header->data['Site Key']!=$site->id) {
+        $response= array('state'=>400,'msg'=>'Hader not in Site');
+        echo json_encode($response);
+
+        exit;
+    }
+
+    $site->set_default_header($data['header_key']);
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated');
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+
+    //$response=array();
+    echo json_encode($response);
+
+}
+
+function set_default_footer($data) {
+    $site=new Site($data['site_key']);
+    if (!$site->id) {
+        $response= array('state'=>400,'msg'=>'Site not found');
+        echo json_encode($response);
+
+        exit;
+    }
+    $footer=new PageFooter($data['footer_key']);
+    if (!$footer->id) {
+        $response= array('state'=>400,'msg'=>'Footer not found');
+        echo json_encode($response);
+
+        exit;
+    }
+
+    if ($footer->data['Site Key']!=$site->id) {
+        $response= array('state'=>400,'msg'=>'Hader not in Site');
+        echo json_encode($response);
+
+        exit;
+    }
+
+    $site->set_default_footer($data['footer_key']);
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated');
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+
+    //$response=array();
+    echo json_encode($response);
+
+
+}
+
+
+
+function list_page_product_lists_for_edition() {
+    if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','page')) ) {
+        $parent=$_REQUEST['parent'];
+
+    } else {
+        return;
+    }
+
+    if (isset( $_REQUEST['parent_key'])) {
+        $parent_key=$_REQUEST['parent_key'];
+
+    } else {
+        return;
+    }
+
+
+    $conf=$_SESSION['state'][$parent]['edit_product_list'];
+
+
+
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+
+    } else
+        $number_results=$conf['nr'];
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+    $_SESSION['state'][$parent]['edit_product_list']['order']=$order;
+    $_SESSION['state'][$parent]['edit_product_list']['order_dir']=$order_direction;
+    $_SESSION['state'][$parent]['edit_product_list']['nr']=$number_results;
+    $_SESSION['state'][$parent]['edit_product_list']['sf']=$start_from;
+    $_SESSION['state'][$parent]['edit_product_list']['f_field']=$f_field;
+    $_SESSION['state'][$parent]['edit_product_list']['f_value']=$f_value;
+//    $_SESSION['state'][$parent]['edit_headers']['parent_key']=$parent_key;
+//    $_SESSION['state'][$parent]['edit_headers']['parent']=$parent;
+
+
+
+    switch ($parent) {
+    case 'site':
+        $table='  `Page Product List Dimension` L  left join `Page Store Dimension` P on (P.`Page Key`=L.`Page Key`)  ';
+        $where=sprintf(' where `Site Key`=%d',$parent_key);
+        break;
+      case 'page':
+        $table='  `Page Product List Dimension` L  left join `Page Store Dimension` P on (P.`Page Key`=L.`Page Key`)  ';
+        $where=sprintf(' where L.`Page Key`=%d',$parent_key);
+        break;  
+    default:
+
+        break;
+    }
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+    if ($f_field=='code'  and $f_value!='')
+        $wheref.=" and `Page Product Form Code` like '".addslashes($f_value)."%'";
+//    elseif ($f_field=='title' and $f_value!='')
+//    $wheref.=" and  `Page Store Title` like '".addslashes($f_value)."%'";
+
+
+
+    $sql="select count(*) as total from $table  $where $wheref";
+//print $sql;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from $table  $where  ";
+//print $sql;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('record','records',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record with code")." <b>$f_value</b>* ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('records with code')." <b>$f_value</b>*)";
+        break;
+
+    }
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+
+    //if ($order=='pages')
+    //    $order='`Number Pages`';
+    //else
+        $order='`Page Product Form Code`';
+
+
+    $adata=array();
+    $sql="select *  from $table $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+
+    $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+
+
+  
+
+
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+switch ($row['List Order']) {
+    case 'Code':
+        $list_order=_('Code');
+        break;
+    default:
+        $list_order=$row['List Order'];
+        break;
+}
+
+
+       
+
+        $adata[]=array(
+                     'id'=>$row['Page Product Form Key'],
+                     'code'=>$row['Page Product Form Code'],
+                                       'type'=>($row['Page Product Form Type']=='CustomList'?_('Custom List'):_('Auto List')),
+                      'order'=>$list_order,  
+                     'max'=>$row['List Max Items'],
+                     'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_list_dialog(".$row['Page Product Form Key'].")'>"._('Edit')."</button></div>"),
+
+
+                 );
+    }
+    mysql_free_result($res);
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
 
 
 ?>

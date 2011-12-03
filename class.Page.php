@@ -445,7 +445,7 @@ class Page extends DB_Table {
         }
         return $data;
     }
- 
+
     function store_base_data() {
         $data=array();
         $result = mysql_query("SHOW COLUMNS FROM `Page Store Dimension`");
@@ -854,6 +854,7 @@ class Page extends DB_Table {
 
 
                 $see_also[]=array(
+                                'link'=>'<a href="'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>',
                                 'see_also_label'=>$see_also_page->data['Page Short Title'],
                                 'see_also_url'=>$see_also_page->data['Page URL'],
                                 'see_also_key'=>$see_also_page->id,
@@ -1087,7 +1088,7 @@ class Page extends DB_Table {
 
     function display_button_emals_commerce($product) {
 
-     
+
         if ($product->data['Product Web State']=='Out of Stock') {
             $message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
         }
@@ -1428,7 +1429,7 @@ class Page extends DB_Table {
 
         $form.=$this->get_list_header($products);
 
-        switch ($this->$site->data['Site Checkout Method']) {
+        switch ($this->site->data['Site Checkout Method']) {
         case 'Mals':
 
             $form.=$this->get_list_emals_commerce($products);
@@ -1592,13 +1593,13 @@ class Page extends DB_Table {
 
     function get_list_emals_commerce($products) {
 
- 
+
         $form=sprintf('
                       <form action="%s" method="post">
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nnocart"> '
-                      ,$this->site->update_mals_data('url_multi')
-                      ,$this->site->update_mals_data('url_multi')
+                      ,$this->site->get_mals_data('url_multi')
+                      ,$this->site->get_mals_data('id')
 
                      );
         $counter=1;
@@ -1664,7 +1665,7 @@ class Page extends DB_Table {
                 $tr_class='class="top"';
             else
                 $tr_class='';
-                
+
 
             $form.=sprintf('<tr %s >
                            <input type="hidden" name="price%s" value="%.2f"  >
@@ -1700,14 +1701,14 @@ class Page extends DB_Table {
 
             $counter++;
         }
-        
-          
+
+
         $form.=sprintf('<tr class="space"><td colspan="4">
                        <input type="hidden" name="return" value="%s">
                        <input class="button" name="Submit" type="submit"  value="Order">
                        <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
                        '
-                       ,$page->data['Page URL']);
+                       ,$this->data['Page URL']);
         return $form;
     }
 
@@ -1780,7 +1781,7 @@ class Page extends DB_Table {
                                                 'Product Price'=>$min_rrp,
                                                 'Product Units Per Case'=>1,
                                                 'Product Unit Type'=>'',
-                                                'Label'=>($min_price==$max_price?_('RRP'):_('RRP from')).':'
+                                                'Label'=>($min_rrp==$max_rrp?_('RRP'):_('RRP from')).':'
                                             )
                                            );
 
@@ -1826,6 +1827,87 @@ class Page extends DB_Table {
             $_data['price per unit text']=$data['price per unit text'];
 
         return formated_price($_data,$options);
+    }
+
+    function display_title() {
+        return $this->get('Page Store Title');
+    }
+
+    function display_top_bar() {
+
+    }
+
+    function display_label() {
+
+        return $this->get('Page Parent Code');
+    }
+
+
+    function update_products() {
+        list($lists,$buttons)=$this->get_products_from_source();
+
+        $valid_list_keys=array();
+        foreach($lists as $list_key) {
+
+            $sql=sprintf("select `Page Product Form Key` from `Page Product List Dimension` where `Page Key`=%d and `Page Product Form Code`=%s  ",
+                         $this->id,
+                         prepare_mysql($list_key)
+                        );
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_assoc($res)) {
+                $valid_list_keys[]=prepare_mysql($row['Page Product Form Key']);
+
+            } else {
+                if ($this->data['Page Store Section']=='Family Catalogue') {
+                    $sql=sprintf("insert into `Page Product List Dimension` (`Page Key`,`Page Product Form Code`,`Page Product Form Type`,`Page Product Form Parent Key`) values  (%d,%s,%s,%d)",
+                                 $this->id,
+                                 prepare_mysql($list_key),
+                                 prepare_mysql('FamilyList'),
+                                $this->data['Page Parent Key']
+
+                                );
+                    mysql_query($sql);
+                    
+                    $valid_list_keys[]=prepare_mysql(mysql_insert_id());
+                }
+            }
+
+            if (count($valid_list_keys)>0) {
+                $sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d and `Page Product Form Key` not in (%s) ",$this->id,join(',',$valid_list_keys));
+                mysql_query($sql);
+            } else {
+                $sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d",$this->id);
+                mysql_query($sql);
+            }
+        }
+
+    }
+
+
+
+    function get_products_from_source() {
+        $html=$this->data['Page Store Source'];
+
+        $lists=array();
+        $buttons=array();
+        $regexp = '\{\s*\$page->display_list\s*\((.*)\)\s*\}';
+        if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
+            foreach($matches as $match) {
+                $lists[]=($match[1]==''?'default':$match[1]);
+            }
+        }
+        $regexp = '\{\s*\$page->display_button\s*\((.*)\)\s*\}';
+        if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
+            foreach($matches as $match) {
+                $id=($match[1]==''?'default':$match[1]);
+                $id=preg_replace('/^\"/','',$id);
+                $id=preg_replace('/^\'/','',$id);
+                $id=preg_replace('/\"$/','',$id);
+                $id=preg_replace('/\'$/','',$id);
+                $buttons[]=$id;
+            }
+        }
+        return array($lists,$buttons);
     }
 
 
