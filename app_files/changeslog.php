@@ -5268,7 +5268,7 @@ CREATE TABLE IF NOT EXISTS `Page Product From Dimension` (
   KEY `Product ID` (`Product ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Page Key` `Page Product Form Page Key` VARCHAR( 64 ) NOT NULL DEFAULT '1';
-ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Page Key` `Page Product Form Name` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1''
+ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Page Key` `Page Product Form Name` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '1';
 ALTER TABLE `Page Product List Dimension` CHANGE `Page Product Form Code` `Page Product Form Code` VARCHAR( 12 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'default';
 
 
