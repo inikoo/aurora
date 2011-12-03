@@ -219,7 +219,7 @@ class PageFooter extends DB_Table {
         system("uname");
 
 
-print "$_system";
+//print "$_system";
         $_system = ob_get_clean();
 
 
@@ -248,13 +248,13 @@ print "$_system";
         system($command,$retval);
         ob_get_clean();
 
-        print "$command  $retval";
+      //  print "$command  $retval";
 
 
 
         $image_data=array('file'=>"app_files/tmp/pfooter_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_footer'.$this->id);
         $image=new Image('find',$image_data,'create');
-        unlink("app_files/tmp/pfooter_image".$this->id."-clipped.png");
+      
         if ($image->id) {
             $new_image_key=$image->id;
 
