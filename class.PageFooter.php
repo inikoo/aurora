@@ -248,7 +248,7 @@ class PageFooter extends DB_Table {
         system($command,$retval);
         ob_get_clean();
 
-      //  print "$command  $retval";
+        print "$command  $retval";
 
 
 
