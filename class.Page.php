@@ -1099,7 +1099,7 @@ class Page extends DB_Table {
             $message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
         }
         else {
-            $message=sprintf("<div class='order_but' style='text-align:left'>
+            $message=sprintf("<br/><div class='order_but' style='text-align:left'>
                              <form action='%s' method='post'>
                              <input type='hidden' name='userid' value='%s'>
                              <input type='hidden' name='product' value='%s %sx %s'>
@@ -1120,15 +1120,47 @@ class Page extends DB_Table {
                             );
         }
 
-        $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form">
+ $data=array(
+                  'Product Price'=>$product->data['Product Price'],
+                  'Product Units Per Case'=>$product->data['Product Units Per Case'],
+                  'Product Currency'=>$product->get('Product Currency'),
+                  'Product Unit Type'=>$product->data['Product Unit Type'],
+
+
+                  'locale'=>$locale);
+
+        $price= '<span class="price">'.formated_price($data).'</span><br>';
+
+ $data=array(
+                  'Product Price'=>$product->data['Product RRP'],
+                  'Product Units Per Case'=>$product->data['Product Units Per Case'],
+                  'Product Currency'=>$product->get('Product Currency'),
+                  'Product Unit Type'=>$product->data['Product Unit Type'],
+'Label'=>_('RRP').":",
+
+                  'locale'=>$locale);
+
+        $rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
+
+
+
+
+        $form=sprintf('<div style="font-size:11px;font-family:arial;" class="ind_form">
                       <span class="code">%s</span><br/>
-                      <span class="name">%sx %s</span>%s
+                      <span class="name">%sx %s</span><br>
+                     %s
+                    %s
+                    %s
                       </div>',
                       $product->data['Product Code'],
                       $product->data['Product Units Per Case'],
                       $product->data['Product Name'],
+                      $price,
+                      $rrp,
                       $message
                      );
+
+        
 
 
         return $form;
