@@ -4810,7 +4810,7 @@ PRIMARY KEY ( `Marketing Post Key` )
 
 
 
-CREATE TABLE .`Marketing Post Sent Fact` (
+CREATE TABLE `Marketing Post Sent Fact` (
 `Marketing Post Key` INT( 8 ) NOT NULL AUTO_INCREMENT ,
 `Customer Key` MEDIUMINT( 8 ) NOT NULL ,
 `Store Key` MEDIUMINT( 8 ) NOT NULL ,

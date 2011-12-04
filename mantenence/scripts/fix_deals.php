@@ -42,7 +42,7 @@ while ($row=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
     $deal_key=false;
     if ($row['Deal Metadata Terms Type']=='Order Interval') {
 
-        $sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Code`=%s",prepare_mysql($store->data['Store Code'].'.GR'));
+        $sql=sprintf("select `Deal Key` from `Deal Dimension` where `Deal Code`='Oro'");
         $result=mysql_query($sql);
         if ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
