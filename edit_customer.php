@@ -74,9 +74,10 @@ $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
-$number_of_sites=$store->get_active_sites_keys();
-$no_sites=count($number_of_sites[$customer->data['Customer Store Key']]);
-$smarty->assign('no_of_sites',$no_sites);
+$site_keys=$store->get_active_sites_keys();
+
+$no_sites=count($site_keys);
+$smarty->assign('no_of_sites',$site_keys);
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

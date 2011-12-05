@@ -1,4 +1,13 @@
 <?php
+
+$header_background='#285e85';
+$header_color='#ffffff';
+
+$body_background='#ffffff';
+$body_color='#333';
+$body_link='#285e85';
+
+
 print <<<END
 
 <?xml version="1.0" encoding="utf-8"?>
@@ -24,13 +33,13 @@ new TWTR.Widget({
   height: 300,
   theme: {
     shell: {
-      background: '#333333',
-      color: '#ffffff'
+      background: '$header_background',
+      color: '$header_color'
     },
     tweets: {
-      background: '#000000',
-      color: '#ffffff',
-      links: '#4aed05'
+      background: '$body_background',
+      color: '$body_color',
+      links: '$body_link'
     }
   },
   features: {
