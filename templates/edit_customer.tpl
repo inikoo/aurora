@@ -167,12 +167,13 @@
    </tr>
 
 
-{if $hq_country=='ES' and isset($cat2_id)}
+{if $hq_country=='ESP'}
 <tr>
 <td>RE:</td>
 <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-      <span class="{if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</span> <span class="{if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</span><br/><br/>
+   <div  class="buttons" >
+      <button class="positive {if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</button>
+      <button class="negative {if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</button>
    </div>
 <td>
 </tr>
