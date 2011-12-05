@@ -277,6 +277,7 @@ hide_buttons=1
  <input type="hidden" value="Yes" id="allow_newsletter"  />
  <input type="hidden" value="Yes" id="allow_marketing_email"  />
  <input type="hidden" value="Yes" id="allow_marketing_postal"  />
+ <input type="hidden" value="No" id="re"  />
 
  <td>
  <div  class="buttons small left" >
@@ -309,6 +310,19 @@ hide_buttons=1
    </div>
  </td>
  </tr>	
+ 
+ {if $hq_country=='ESP'}
+ 
+  <tr>
+ <td class="label" style="width:200px;font-size:90%">Recargo de Equivalencia:</td>
+ <td>
+   <div  class="buttons small left" >
+   <button class="option  " onclick="change_allow(this,'re','Yes')" >{t}Yes{/t}</button> 
+   <button class="option selected" onclick="change_allow(this,'re','No')" >{t}No{/t}</button>
+   </div>
+ </td>
+ </tr>	
+ {/if}
  
  {foreach from=$new_subject item=custom_fields}
  	<tr class="first">

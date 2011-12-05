@@ -529,7 +529,7 @@ $tax_codes[$row['Tax Category Code']]=array('code'=>$row['Tax Category Code'],'n
 }
 
 $smarty->assign('tax_codes',$tax_codes);
-$smarty->assign('hq_country',$myconf['country']);
+$smarty->assign('hq_country',$corporate_country_code);
 
 //show case 		
 $custom_field=Array();
