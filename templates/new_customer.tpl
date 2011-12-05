@@ -277,6 +277,7 @@ hide_buttons=1
  <input type="hidden" value="Yes" id="allow_newsletter"  />
  <input type="hidden" value="Yes" id="allow_marketing_email"  />
  <input type="hidden" value="Yes" id="allow_marketing_postal"  />
+ <input type="hidden" value="No" id="re"  />
 
  <td>
  <div  class="buttons small left" >
@@ -310,13 +311,26 @@ hide_buttons=1
  </td>
  </tr>	
  
+ {if $hq_country=='ESP'}
+ 
+  <tr>
+ <td class="label" style="width:200px;font-size:90%">Recargo de Equivalencia:</td>
+ <td>
+   <div  class="buttons small left" >
+   <button class="option  " onclick="change_allow(this,'re','Yes')" >{t}Yes{/t}</button> 
+   <button class="option selected" onclick="change_allow(this,'re','No')" >{t}No{/t}</button>
+   </div>
+ </td>
+ </tr>	
+ {/if}
+ 
  {foreach from=$new_subject item=custom_fields}
  	<tr class="first">
 	<td style="width:120px" class="label">{$custom_fields.custom_field_name}:</td>
 	  <td  style="text-align:left;width:350px">
 	    <div   >
 	      <input style="text-align:left;" id="{$custom_fields.custom_field_name}" value="" ovalue="" valid="0">
-	      <div id="{$custom_fields.custom_field_name}{t}_Container{/t}"  ></div>
+	      <div id="{$custom_fields.custom_field_name}_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
@@ -328,8 +342,9 @@ hide_buttons=1
 
 <tr>
 <td colspan=3>
-<div class="buttons">
 <div style="float:right;display:none" id="creating_message"><img src="art/loading.gif" alt=""/> {t}Creating Contact{/t}</div>
+
+<div id="new_Customer_buttons" class="buttons">
 <button class="disabled positive" id="save_new_Customer">{t}Save{/t}</button>
 <button class="negative" id="cancel_add_Customer">{t}Cancel{/t}</button>
 

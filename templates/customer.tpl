@@ -560,12 +560,12 @@
     <tr><td colspan=2>{t}Payment Method{/t}:</td></tr><tr><td colspan=2>
 	<select id="make_order_payment_method">
 	{if $hq_country=='ES'}
-	 <option>{t}Tarjeta{/t}</option>
-	  <option>{t}Paypal{/t}</option>
-	  <option>{t}Ingreso{/t}</option>
-	  <option>{t}Contra Reembolso{/t}</option>
-	  <option>{t}Transferencia{/t}</option>
-	  	  <option>{t}Efectivo{/t}</option>
+	 <option>Tarjeta</option>
+	  <option>Paypal</option>
+	  <option>Ingreso</option>
+	  <option>Contra Reembolso</option>
+	  <option>Transferencia</option>
+	  	  <option>Efectivo</option>
 
 	{else}
 	
@@ -582,8 +582,9 @@
 	</select>
     </td></tr>
     
-    
-     <tr  style="{if $hq_country=='ES'}display:none{/if}"  ><td colspan=2>{t}Special Offer{/t}:</td></tr><tr><td colspan=2>
+    <tbody  style="{if $hq_country=='ES'}display:none{/if}">
+     <tr   ><td colspan=2>{t}Special Offer{/t}:</td></tr>
+     <tr><td colspan=2>
 	<select id="offer">
 	<option value="none">None</option>
 	  <option value="gift focus">Gift Focus</option>
@@ -592,7 +593,7 @@
 	</select>
     </td></tr>
 
-    
+    </tbody>
     
     
 <tr><td colspan=2>Gold Reward:</td></tr><tr><td colspan=2>

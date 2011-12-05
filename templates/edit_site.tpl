@@ -140,7 +140,7 @@
 </td></tr>	
 
 <tr>
-<td  class="label">{t}Site URL{/t}:</td>
+<td  class="label">{t}Website URL{/t}:</td>
 <td  style="text-align:left">
      <div>
        <input style="text-align:left;width:100%" id="Site_URL" value="{$site->get('Site URL')}" ovalue="{$site->get('Site URL')}" valid="0">
@@ -152,7 +152,7 @@
 </tr>
 
 <tr>
-<td  class="label">{t}Site Name{/t}:</td>
+<td  class="label">{t}Website Name{/t}:</td>
 <td  style="text-align:left">
      <div>
        <input style="text-align:left;width:100%" id="Site_Name" value="{$site->get('Site Name')}" ovalue="{$site->get('Site Name')}" valid="0">
@@ -165,7 +165,7 @@
 
 
 <tr>
-<td  class="label">{t}Site Slogan{/t}:</td>
+<td  class="label">{t}Website Slogan{/t}:</td>
 <td  style="text-align:left">
      <div>
        <input style="text-align:left;width:100%" id="Site_Slogan" value="{$site->get('Site Slogan')}" ovalue="{$site->get('Site Slogan')}" valid="0">
@@ -177,7 +177,7 @@
 </tr>
 
 
-  <tr><td class="label">{t}Site Telephone{/t}:</td><td>
+  <tr><td class="label">{t}Website Telephone{/t}:</td><td>
 	 <div>
 	   <input  style="width:100%" id="telephone" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$site->get('Site Contact Telephone')}" ovalue="{$site->get('Site Contact Telephone')}" />
@@ -187,7 +187,7 @@
 	   <td id="telephone_msg" class="edit_td_alert" ></td>
 	  </tr>
 	  
-	 <tr><td class="label">{t}Site Address{/t}:</td>
+	 <tr><td class="label">{t}Website Address{/t}:</td>
 	<td>
 	  <div style="height:120px">
 	   <textarea style="width:100%" id="address"  changed=0   value="{$site->get('Site Address')}"  ovalue="{$site->get('Site Contact Address')}"   rows="6" cols="42">{$site->get('Site Contact Address')}</textarea>
@@ -200,7 +200,7 @@
 	  
 
 <tr style="display:none">
-<td  class="label">{t}Site FTP Credentials: {/t}</td>
+<td  class="label">{t}Website FTP Credentials: {/t}</td>
 <td  style="text-align:left">
      <div>
        <input style="text-align:left;width:100%" id="Site_FTP" value="{$site->get('Site FTP Credentials')}" ovalue="{$site->get('Site FTP Credentials')}" valid="0">

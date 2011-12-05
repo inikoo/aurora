@@ -466,7 +466,7 @@ function show_dialog_upload_page_content(){
 
 region1 = Dom.getRegion('show_upload_page_content'); 
     region2 = Dom.getRegion('dialog_upload_page_content'); 
- var pos =[region1.left,region1.bottom+2]
+ var pos =[region1.right-region2.width,region1.bottom+2]
     Dom.setXY('dialog_upload_page_content', pos);
 
 dialog_upload_page_content.show()
@@ -490,12 +490,12 @@ function upload_page_content(){
     var request='ar_upload_page_content.php?tipo=upload_page_content';
    var uploadHandler = {
       upload: function(o) {
-	   //alert(o.responseText)
+	   alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
 	     
-         window.location.reload()
+       //  window.location.reload()
                 
 	    }else if(r.state==201){
 	    // alert(r.list)

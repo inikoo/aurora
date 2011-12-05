@@ -4810,7 +4810,7 @@ PRIMARY KEY ( `Marketing Post Key` )
 
 
 
-CREATE TABLE .`Marketing Post Sent Fact` (
+CREATE TABLE `Marketing Post Sent Fact` (
 `Marketing Post Key` INT( 8 ) NOT NULL AUTO_INCREMENT ,
 `Customer Key` MEDIUMINT( 8 ) NOT NULL ,
 `Store Key` MEDIUMINT( 8 ) NOT NULL ,
@@ -5074,7 +5074,9 @@ ALTER TABLE `Order Deal Bridge` ADD INDEX ( `Order Key` ) ;
 ALTER TABLE `Order Deal Bridge` ADD INDEX ( `Deal Key` ) ;
 ALTER TABLE `Order Deal Bridge` ADD INDEX ( `Elegible` ); 
 ALTER TABLE `Order Deal Bridge` ADD INDEX ( `Used` ) ;
+
 ALTER TABLE `Order Deal Bridge` CHANGE `Elegible` `Applied` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
 ALTER TABLE `Deal Dimension` CHANGE `Deal Total Acc Elegible Orders` `Deal Total Acc Applied Orders` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
 CHANGE `Deal Total Acc Elegible Customers` `Deal Total Acc Applied Customers` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `Deal Dimension` CHANGE `Deal Terms Type` `Deal Terms Type` ENUM( 'Order Total Net Amount AND Order Number', 'Order Items Net Amount AND Shipping Country', 'Order Interval', 'Product Quantity Ordered', 'Family Quantity Ordered', 'Total Amount', 'Order Number', 'Total Amount AND Shipping Country', 'Total Amount AND Order Number', 'Voucher' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
