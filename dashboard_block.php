@@ -62,7 +62,7 @@ case 'sales_overview':
 
     switch ($_SESSION['state']['home']['splinters']['sales']['period']) {
     case 'ytd':
-        $table_title=_('Overview Sales:  Year-to-Date');
+        $table_title=_('Sales').": "._('Year-to-Date');
         break;
     default:
         $table_title=_('Sales').' '.$_SESSION['state']['home']['splinters']['sales']['period'];

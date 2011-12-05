@@ -3954,7 +3954,7 @@ class Contact extends DB_Table {
             return $card;
 
         case('Short Name'):
-            $name=_($this->data['Contact Salutation'].' '.$this->data['Contact Surname']);
+            $name=_trim($this->data['Contact Salutation'].' '.$this->data['Contact Surname']);
             if ($name=='')
                 $name=$this->name($this->data);
             return $name;
@@ -4671,8 +4671,8 @@ class Contact extends DB_Table {
 
                 $history_data=array(
                                   'Indirect Object'=>'Contact Main XHTML Mobile',
-                                  'History Abstract'=>_('Contact Main XHTML Mobile  Changed'),
-                                  'History Details'=>_('Contact Main XHTML Mobile  changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
+                                  'History Abstract'=>_('Contact Main XHTML Mobile Changed'),
+                                  'History Details'=>_('Contact Main XHTML Mobile changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
 
                               );
                 $this->add_history($history_data);

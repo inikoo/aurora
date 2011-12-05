@@ -133,8 +133,8 @@ $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['supplier']['supplier_products']['f_value']);
 
 $filter_menu=array(
-                 'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
-                 'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+                 'p.code'=>array('db_key'=>'p.code','menu_label'=>_('Our Product Code'),'label'=>_('Code')),
+                 'sup_code'=>array('db_key'=>'sup_code','menu_label'=>_('Supplier Product Code'),'label'=>_('Supplier Code')),
              );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
@@ -159,7 +159,7 @@ $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['supplier']['po']['f_value']);
 
 $filter_menu=array(
-                 'id'=>array('db_key'=>_('p.code'),'menu_label'=>'Purchase order','label'=>'Id'),
+                 'id'=>array('db_key'=>'p.code','menu_label'=>'Purchase order','label'=>'Id'),
                  'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
                  'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
                  'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
