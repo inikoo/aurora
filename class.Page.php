@@ -549,7 +549,8 @@ class Page extends DB_Table {
     function get_footer_template() {
         $template='';
         $sql=sprintf("select `Template` from `Page Footer Dimension` where `Page Footer Key`=%d",$this->data['Page Footer Key']);
-        $result = mysql_query($sql);
+      
+       $result = mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $template= $row['Template'];
         }

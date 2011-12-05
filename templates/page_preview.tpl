@@ -35,13 +35,14 @@
                 {include  file="string:{$page->get_header_template()}" }             
                 </div>
                 <div id="bd" style="z-index:1;">
-                    <div id="content" class="content" style="overflow:auto;position:relative;clear:both;width:100%;">
+                    <div id="content" class="content" style="overflow-x:hidden;overflow-y:auto;position:relative;clear:both;width:100%;">
                         {include file="string:$template_string"}
                     </div>
                 </div>
                 <div id="ft" style="z-index:2">
+                
                     {*}{include  file="footer.tpl" }{*}
-                    {*}{include  file="string:{$page->get_footer_template()}" }{*}
+                {include  file="string:{$page->get_footer_template()}" }
                 </div>
             </div>
     </body>
