@@ -114,11 +114,11 @@ function save_new_customer(e){
 	return;
     }
 
- Dom.setStyle("creating_message",'display','');
-Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
+
 
     get_data();
-
+ Dom.setStyle("creating_message",'display','');
+Dom.setStyle(["new_Customer_buttons"],'display','none');
  
         var ar_file='ar_edit_contacts.php';
    
@@ -142,7 +142,8 @@ Dom.setStyle(["save_new_Customer","cancel_add_Customer"],'display','none');
 
 
 		    }else{
-		       	window.location='customer.php?r=nc&id='+r.customer_key;
+		  
+		  window.location='customer.php?r=nc&id='+r.customer_key;
 
 		    }
 		    

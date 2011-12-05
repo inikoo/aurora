@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-12-05 00:04+0100\n"
-"PO-Revision-Date: 2011-12-05 00:06+0100\n"
+"PO-Revision-Date: 2011-12-05 10:27+0100\n"
 "Last-Translator: Raul Perusquia <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11442,7 +11442,7 @@ msgstr "Cliente ahora se conoce como"
 #: smarty.php:8942
 #: smarty.php:11735
 msgid "Creating Contact"
-msgstr "Creando de contacto"
+msgstr "Creando contacto"
 
 #: smarty.php:1328
 msgid "Source Code"
