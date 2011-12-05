@@ -40,9 +40,9 @@ case('upload_footer'):
     $data['tipo']=$tipo;
     process_uploaded_files($data);
     break;
-    
-    
-    
+
+
+
 case('upload_page_content'):
     $data=prepare_values($_REQUEST,array(
                              'parent_key'=>array('type'=>'key'),
@@ -126,21 +126,21 @@ function get_head_styles($dom,$html) {
 
     $heads = $dom->getElementsByTagName('head');
     $a=getArray($heads->item(0));
-  
+
     if (isset($a['style'])) {
-if(is_array($a['style']))    {    
-        foreach($a['style'] as $style_data) {
-            if (isset($style_data['#cdata-section'])) {
-                $_style=preg_replace('/^\<\!\-\-/','',$style_data['#cdata-section']);
-                $_style=preg_replace('/\-\-\>$/','',$_style);
-                $style[]= $_style;
+        if (is_array($a['style']))    {
+            foreach($a['style'] as $style_data) {
+                if (isset($style_data['#cdata-section'])) {
+                    $_style=preg_replace('/^\<\!\-\-/','',$style_data['#cdata-section']);
+                    $_style=preg_replace('/\-\-\>$/','',$_style);
+                    $style[]= $_style;
+                }
             }
-        }
-        }else if(is_string($a['style'])){
-            
-          $_style=preg_replace('/^\<\!\-\-/','',$a['style']);
-                $_style=preg_replace('/\-\-\>$/','',$_style);
-                $style[]= $_style;
+        } else if (is_string($a['style'])) {
+
+            $_style=preg_replace('/^\<\!\-\-/','',$a['style']);
+            $_style=preg_replace('/\-\-\>$/','',$_style);
+            $style[]= $_style;
         }
 
     }
@@ -223,7 +223,7 @@ function upload_from_zip($data) {
     if ($number_html_files==0) {
         $response= array('state'=>400,'msg'=>_('no HTML/PHP file found'));
         echo json_encode($response);
-      
+
 
     }
     elseif($number_html_files==1) {
@@ -235,10 +235,10 @@ function upload_from_zip($data) {
         case 'upload_header':
             $response=upload_header_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
             break;
-            case 'upload_footer':
+        case 'upload_footer':
             $response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
-            break;   
-            
+            break;
+
         default:
 
             break;
@@ -248,49 +248,48 @@ function upload_from_zip($data) {
         //deleteAll("app_files/tmp/page_content_".$folder_id);
         echo json_encode($response);
 
-      
+
     }
     else {
-    
-  //  print $data['use_file'].' xxxx';
-    
- if($data['use_file'] and in_array($data['use_file'],$html_files)){
- 
-      switch ($data['tipo']) {
-        case 'upload_page_content':
-            $response=upload_page_content_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
-            break;
-        case 'upload_header':
-            $response=upload_header_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
-            break;
+
+        //  print $data['use_file'].' xxxx';
+
+        if ($data['use_file'] and in_array($data['use_file'],$html_files)) {
+
+            switch ($data['tipo']) {
+            case 'upload_page_content':
+                $response=upload_page_content_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+                break;
+            case 'upload_header':
+                $response=upload_header_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+                break;
             case 'upload_footer':
-            $response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
-            break;   
-            
-        default:
+                $response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+                break;
 
-            break;
+            default:
+
+                break;
+            }
+
+
+            //deleteAll("app_files/tmp/page_content_".$folder_id);
+            echo json_encode($response);
+
+
+
+        } else {
+
+
+            $response= array('state'=>201,'list'=>$html_files);
+            echo json_encode($response);
+
         }
-
-
-        //deleteAll("app_files/tmp/page_content_".$folder_id);
-        echo json_encode($response);
-
-       
- 
- }
- else{
-    
- 
-    $response= array('state'=>201,'list'=>$html_files);
-        echo json_encode($response);
-    
-}
     }
 
 
-deleteAll("app_files/tmp/page_content_".$folder_id);
-return;
+    deleteAll("app_files/tmp/page_content_".$folder_id);
+    return;
 }
 
 
@@ -628,6 +627,15 @@ function upload_page_content_from_file($file,$data) {
 
     $styles=get_head_styles($dom,$html);
 
+    $sql=sprintf("select * from `Page Store External File Bridge` where `Page Key`=%d  ",$page->id);
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+
+
+        $sql=sprintf("delete from `Page Store External File Dimension` where `Page Store External File Key`=%d",$row['Page Store External File Key']);
+        mysql_query($sql);
+
+    }
     foreach($styles as $_key=>$style) {
         $style=upload_content_images($style,dirname($file),array('subject'=>'Page','subject_key'=>$page->id));
 
@@ -655,17 +663,17 @@ function upload_page_content_from_file($file,$data) {
 
 
     $page->update_field_switcher('Page Store Source',$html,'no history');
-    
-      $history_data=array(
-                              'History Abstract'=>_('Page content uploaded'),
-                              'History Details'=>'',
 
-                              'Indirect Object'=>'Page Store Source',
-                              'Indirect Object Key'=>''
-                          );
-            $page->add_history($history_data);
-    
-    
+    $history_data=array(
+                      'History Abstract'=>_('Page content uploaded'),
+                      'History Details'=>'',
+
+                      'Indirect Object'=>'Page Store Source',
+                      'Indirect Object Key'=>''
+                  );
+    $page->add_history($history_data);
+
+
     $response= array('state'=>200);
     return $response;
 
@@ -837,37 +845,37 @@ function extract_products_info($html) {
     $regexp = "<\?(.*)\?>";
     if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
         foreach($matches as $match) {
-        
-       if(preg_match('/new Family/',$match[1])){
-        $html=str_replace($match[0],'{$page->display_list()}',$html);
-       }
-       
+
+            if (preg_match('/new Family/',$match[1])) {
+                $html=str_replace($match[0],'{$page->display_list()}',$html);
+            }
+
         }
     }
 
-   $regexp = "<\?(.*)\?>";
+    $regexp = "<\?(.*)\?>";
     if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
         foreach($matches as $match) {
-        
-       if(preg_match('/new Product/',$match[1])){
-   
-        if(preg_match('/\$product_code=(.+);/',$match[1],$_match)){
-              
-                 $html=str_replace($match[0],'{$page->display_button('.$_match[1].')}',$html);
-                
-        }
-   
-   //    $html=str_replace($match[0],'{$page->display_list()}',$html);
-       }
-       
+
+            if (preg_match('/new Product/',$match[1])) {
+
+                if (preg_match('/\$product_code=(.+);/',$match[1],$_match)) {
+
+                    $html=str_replace($match[0],'{$page->display_button('.$_match[1].')}',$html);
+
+                }
+
+                //    $html=str_replace($match[0],'{$page->display_list()}',$html);
+            }
+
         }
     }
 
 
     $html=preg_replace("/<\?php\s*show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
 
-  $html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/siU",'{$page->display_list()}',$html);
+    $html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/siU",'{$page->display_list()}',$html);
 
-   
+
     return $html;
 }

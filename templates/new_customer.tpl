@@ -316,7 +316,7 @@ hide_buttons=1
 	  <td  style="text-align:left;width:350px">
 	    <div   >
 	      <input style="text-align:left;" id="{$custom_fields.custom_field_name}" value="" ovalue="" valid="0">
-	      <div id="{$custom_fields.custom_field_name}{t}_Container{/t}"  ></div>
+	      <div id="{$custom_fields.custom_field_name}_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
