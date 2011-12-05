@@ -342,8 +342,9 @@ hide_buttons=1
 
 <tr>
 <td colspan=3>
-<div class="buttons">
 <div style="float:right;display:none" id="creating_message"><img src="art/loading.gif" alt=""/> {t}Creating Contact{/t}</div>
+
+<div id="new_Customer_buttons" class="buttons">
 <button class="disabled positive" id="save_new_Customer">{t}Save{/t}</button>
 <button class="negative" id="cancel_add_Customer">{t}Cancel{/t}</button>
 
