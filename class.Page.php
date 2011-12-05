@@ -549,7 +549,8 @@ class Page extends DB_Table {
     function get_footer_template() {
         $template='';
         $sql=sprintf("select `Template` from `Page Footer Dimension` where `Page Footer Key`=%d",$this->data['Page Footer Key']);
-        $result = mysql_query($sql);
+      
+       $result = mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $template= $row['Template'];
         }
@@ -1099,7 +1100,7 @@ class Page extends DB_Table {
             $message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
         }
         else {
-            $message=sprintf("<div class='order_but' style='text-align:left'>
+            $message=sprintf("<br/><div class='order_but' style='text-align:left'>
                              <form action='%s' method='post'>
                              <input type='hidden' name='userid' value='%s'>
                              <input type='hidden' name='product' value='%s %sx %s'>
@@ -1120,15 +1121,47 @@ class Page extends DB_Table {
                             );
         }
 
-        $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form">
+ $data=array(
+                  'Product Price'=>$product->data['Product Price'],
+                  'Product Units Per Case'=>$product->data['Product Units Per Case'],
+                  'Product Currency'=>$product->get('Product Currency'),
+                  'Product Unit Type'=>$product->data['Product Unit Type'],
+
+
+                  'locale'=>$locale);
+
+        $price= '<span class="price">'.formated_price($data).'</span><br>';
+
+ $data=array(
+                  'Product Price'=>$product->data['Product RRP'],
+                  'Product Units Per Case'=>$product->data['Product Units Per Case'],
+                  'Product Currency'=>$product->get('Product Currency'),
+                  'Product Unit Type'=>$product->data['Product Unit Type'],
+'Label'=>_('RRP').":",
+
+                  'locale'=>$locale);
+
+        $rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
+
+
+
+
+        $form=sprintf('<div  class="ind_form">
                       <span class="code">%s</span><br/>
-                      <span class="name">%sx %s</span>%s
+                      <span class="name">%sx %s</span><br>
+                     %s
+                    %s
+                    %s
                       </div>',
                       $product->data['Product Code'],
                       $product->data['Product Units Per Case'],
                       $product->data['Product Name'],
+                      $price,
+                      $rrp,
                       $message
                      );
+
+        
 
 
         return $form;
@@ -1154,7 +1187,7 @@ class Page extends DB_Table {
             $message=sprintf('<br/><span style="color:green;font-style:italic;">In stock, please <a style="color:green;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:green;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
         }
 
-        $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form">
+        $form=sprintf('<div  class="ind_form">
                       <span class="code">%s</span><br/>
                       <span class="name">%sx %s</span>%s
                       </div>',
@@ -1270,7 +1303,7 @@ class Page extends DB_Table {
         switch ($this->data['Page Store Section']) {
         case 'Family Catalogue':
             $family=new Family($this->data['Page Parent Key']);
-            $html=sprintf('<tr class="list_info"><td>%s</td><td></td><td  colspan="4" style="padding:0">%s</td></tr>',$family->data['Product Family Code'],$family->data['Product Family Name']);
+            $html=sprintf('<tr class="list_info"><td colspan=5>%s %s</td></tr>',$family->data['Product Family Code'],$family->data['Product Family Name']);
 
             break;
         default:
@@ -1278,7 +1311,7 @@ class Page extends DB_Table {
             break;
         }
 
-        $html.=sprintf('<tr class="list_info price"><td style="padding-top:0;padding-bottom:0;text-align:left" colspan="6">%s</td></tr></tr>',$this->get_list_price_header_auto($products));
+        $html.=sprintf('<tr class="list_info price"><td style="padding-top:0;padding-bottom:0;text-align:left" colspan="6">%s </td></tr></tr>',$this->get_list_price_header_auto($products));
         $html.=sprintf('<tr class="list_info rrp"><td style="padding-top:0;padding-bottom:0;" colspan="6">%s</td></tr></tr>',$this->get_list_rrp_header_auto($products));
 
 
@@ -1421,7 +1454,7 @@ class Page extends DB_Table {
         $discontinued=_('Discontinued');
 
 
-        $form=sprintf('<table border=0 style="font-size:100%%" class="product_list form" >' );
+        $form=sprintf('<table border=0  class="product_list form" >' );
         $rrp_label='';
         $price_label='';
 
@@ -1512,7 +1545,7 @@ class Page extends DB_Table {
 
                 //      $state=' <span class="out_of_stock">('._('Out of Stock').')</span>';
 
-                $order_button=sprintf('<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:80%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>',_('Sold Out'));
+                $order_button=sprintf('<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:90%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>',_('Sold Out'));
 
 
             }
@@ -1639,7 +1672,7 @@ class Page extends DB_Table {
             if ($product['Product Web State']=='Out of Stock') {
                 $class_state='out_of_stock';
 
-                $input=' <span class="out_of_stock" style="font-size:60%">'._('Out of Stock').'</span>';
+                $input=' <span class="out_of_stock" style="font-size:70%">'._('Out of Stock').'</span>';
 
 
 

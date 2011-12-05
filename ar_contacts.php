@@ -1161,7 +1161,7 @@ function list_companies() {
     }
     mysql_free_result($res);
 
-    $rtext=$total_records." ".ngettext('contact','companies',$total_records);
+    $rtext=$total_records." ".ngettext('company','companies',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
@@ -5600,7 +5600,7 @@ function list_customers_lists() {
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
     else
-        $rtext_rpp=_("Showing all Lists");
+        $rtext_rpp='('._("Showing all").')';
 
 
 

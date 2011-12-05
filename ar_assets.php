@@ -10158,7 +10158,7 @@ function part_stock_history() {
         $rtext=$total_records.' '.ngettext('month','months',$total);
         break;
     case 'day':
-        $rtext=$total_records.' '.ngettext('days','days',$total);
+        $rtext=$total_records.' '.ngettext('day','days',$total);
         break;
     default:
         $rtext=$total_records.' '.ngettext('week','weeks',$total);

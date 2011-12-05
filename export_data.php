@@ -91,7 +91,7 @@ if (isset($_REQUEST['source']) && $_REQUEST['source'] =='db') {
             $included_data[] = '`Customer Name`';
             $included_data[] = '`Customer Main Contact Name`';
             $included_data[] = '`Customer Main Plain Email`';
-           $included_data[] = '`Customer Main XHTML Address`';
+            $included_data[] = '`Customer Main XHTML Address`';
             switch ($map_type) {
             case('customers_list'):
 
@@ -165,10 +165,12 @@ else {
 $filename = 'data_'.date("Ymd_Hmi").'.csv'; // Define the way of your exported file name here //
 
 $data='';
+
 header('Content-Type: application/csv; iso-8859-1');
 header("Content-Disposition: attachment; filename=$filename");
 header("Pragma: no-cache");
 header("Expires: 0");
+
 $output = fopen('php://output', 'w');
 
 foreach ($exported_data as $fields) {
@@ -344,6 +346,8 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
     } else {//dynamic
 
+
+//print_r($customer_list_data);
         $where='where true';
         $table='`Customer Dimension` C ';
 
@@ -355,8 +359,7 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
         list($where,$table)=customers_awhere($raw_data);
 
-        $where.=sprintf(' and `Customer Store Key` in (%s) ',$customer_list_data['List Store Key'] );
-
+  //      $where.=sprintf(' and `Customer Store Key` in (%s) ',$customer_list_data['List Store Key'] );
 
 
         $sql=sprintf("select $fields from $table $where   group by C.`Customer Key` "
@@ -366,11 +369,11 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
     }
 
 
-
+$customer_data=array();
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
-        foreach($row as $_key=>$_value){
-            if($_key=='Customer Main XHTML Address')
+        foreach($row as $_key=>$_value) {
+            if ($_key=='Customer Main XHTML Address')
                 $row[$_key]=strip_tags(str_replace("<br/>","\n",$_value));
         }
         $customer_data[]=$row;

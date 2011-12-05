@@ -135,6 +135,9 @@ $js_files[]='edit_contact_email.js.php';
 }
 */
 
+$smarty->assign('hq_country',$corporate_country_code);
+
+
 $new_subject=array();
 $sql = sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Customer' and `Custom Field In New Subject`='Yes'");
 $result=mysql_query($sql);

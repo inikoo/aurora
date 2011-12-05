@@ -32,9 +32,9 @@
 	        <div style="clear:both"></div>
 	        
 	      </div>
-	      	    <img src="art/inikoo_logo_small.png" style="position:absolute;margin-left:20px;margin-top:2px;height:34px"/>
+	 <img src="art/inikoo_logo_small.png" style="position:absolute;margin-left:10px;margin-top:2px;height:34px;z-index:1"/>
 
-	    <div class="buttons menu">
+	    <div class="buttons menu" style="z-index:2;position:relative;">
 	    
 	    {foreach from=$nav_menu item=menu }
 	            <button onClick="window.location='{$menu[1]}'" class="header {if $menu[2]==$parent} selected{/if}">{$menu[0]}</button>

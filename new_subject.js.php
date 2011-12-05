@@ -520,6 +520,7 @@ if(scope=='customer'){
     subject_data['Customer Send Newsletter']=Dom.get('allow_newsletter').value;
     subject_data['Customer Send Email Marketing']=Dom.get('allow_marketing_email').value;
     subject_data['Customer Send Postal Marketing']=Dom.get('allow_marketing_postal').value;
+    subject_data['Recargo Equivalencia']=Dom.get('re').value;
 
 }
 

@@ -69,8 +69,8 @@ $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',$_SESSION['state']['supplier_products']['table']['f_value']);
 
 $filter_menu=array( 
-		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Our Product Code','label'=>'Code'),
-		   'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+		   'code'=>array('db_key'=>'code','menu_label'=>_('Our Product Code'),'label'=>_('Code')),
+		   'sup_code'=>array('db_key'=>'sup_code','menu_label'=>_('Supplier Product Code'),'label'=>_('Supplier Code')),
 		   );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);

@@ -427,7 +427,7 @@ if($row=mysql_fetch_array($res)){
 $smarty->assign('show_case',$show_case);	
 $smarty->assign('customer_custom_fields',$customer_custom_fields);	
 $smarty->assign('correlation_msg',$correlation_msg);
-$smarty->assign('hq_country',$myconf['country']);
+$smarty->assign('hq_country',$corporate_country_code);
 
 $smarty->assign('gold_reward',$gold_reward);
 

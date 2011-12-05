@@ -90,7 +90,7 @@ while ($row=mysql_fetch_assoc($res)) {
         $js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
-/*
+
 $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Footer External File Bridge` where `Page Footer Key`=%d",$page->data['Page Footer Key']);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
@@ -100,7 +100,7 @@ while ($row=mysql_fetch_assoc($res)) {
         $js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
-*/
+
 
 
 
