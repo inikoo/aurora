@@ -45,12 +45,21 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 //new dashboard widget showing last updates in twitter available to all users
 $sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`) values (%d,1,'block_3','dashboard_block.php?tipo=sales_overview')",$row['User Key']);
-print "$sql\n";
+//print "$sql\n";
 mysql_query($sql);
 
-$sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`) values (%d,2,'block_1','splinter_twitter.php?')",$row['User Key']);
-print "$sql\n";
+$sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`,`Dashboard Height`) values (%d,2,'block_1','splinter_twitter.php?',405)",$row['User Key']);
+//print "$sql\n";
 mysql_query($sql);
+	
+	
+$url="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2FAncientWisdom.biz&amp;width=614&amp;height=560&amp;colorscheme=light&amp;show_faces=true&amp;border_color&amp;stream=true&amp;header=false";	
+$sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`,`Dashboard Height`) values (%d,2,'block_2',%s,560)",
+$row['User Key'],
+prepare_mysql($url)
+);
+print "$sql\n";
+mysql_query($sql);	
 	
 }
 
@@ -60,7 +69,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
-$sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`) values (%d,2,'block_1','splinter_twitter.php?')",$row['User Key']);
+$sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`,`Dashboard Height`) values (%d,2,'block_1','splinter_twitter.php?',405)",$row['User Key']);
 print "$sql\n";
 mysql_query($sql);
 	

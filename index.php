@@ -122,86 +122,12 @@ $user->id
 );
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
-    $blocks[]=array('key'=>$row['Dashboard Key'],'src'=>$row['Dashboard URL'],'class'=>$row['Dashboard Class'],'metadata'=>$row['Dashboard Metadata']);
+    $blocks[]=array('key'=>$row['Dashboard Key'],'src'=>$row['Dashboard URL'],'class'=>$row['Dashboard Class'],'metadata'=>$row['Dashboard Metadata'],'height'=>$row['Dashboard Height']);
 }
 $smarty->assign('blocks',$blocks);
 
 //print_r($blocks);
 
-
-$splinters_data=array(
-                    'messages'=>array(
-                                   'title'=>_('Display Board'),
-                                   'index'=>200,
-                                   'php'=>'splinter_messages.php',
-                                   'tpl'=>'splinter_messages.tpl',
-                                   'js'=>'splinter_messages.js.php'
-                               ),
-                    'top_customers'=>array(
-                                        'title'=>_('Top Customers'),
-                                        'index'=>201,
-                                        'php'=>'splinter_top_customers.php',
-                                        'tpl'=>'splinter_top_customers.tpl',
-                                        'js'=>'js/splinter_top_customers.js',
-                                        'order'=>$_SESSION['state']['home']['splinters']['top_customers']['order'],
-                                        'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
-
-                                    ),
-
-
-                    'sales'=>array(
-                                'title'=>_('Sales Overview'),
-                                'index'=>203,
-                                'php'=>'splinter_sales.php',
-                                'tpl'=>'splinter_sales.tpl',
-                                'js'=>'js/splinter_sales.js',
-                                'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
-                                'nr'=>$_SESSION['state']['home']['splinters']['top_customers']['nr'],
-
-                            ),
-
-
-
-
-
-                    'top_products'=>array(
-                                       'title'=>_('Top Products'),
-                                       'index'=>202,
-                                       'php'=>'splinter_top_products.php',
-                                       'tpl'=>'splinter_top_products.tpl',
-                                       'js'=>'js/splinter_top_products.js',
-                                       'order'=>$_SESSION['state']['home']['splinters']['top_products']['order'],
-                                       'nr'=>$_SESSION['state']['home']['splinters']['top_products']['nr'],
-                                       'type'=> $_SESSION['state']['home']['splinters']['top_products']['type']
-
-                                   ),
-
-                );
-
-$splinters=array();
-foreach($myconf['splinters'] as $splinter_name) {
-    if (array_key_exists($splinter_name,$splinters_data))
-        $splinters[$splinter_name]=$splinters_data[$splinter_name];
-}
-//exit;
-//print_r($splinters)     ;
-
-foreach($splinters as $splinter_name=>$splinter) {
-
-    if (array_key_exists('order',$splinter))
-        $smarty->assign($splinter_name.'_order',$splinter['order']);
-    if (array_key_exists('nr',$splinter))
-        $smarty->assign($splinter_name.'_nr',$splinter['nr']);
-
-
-
-    $smarty->assign($splinter_name.'_index',$splinter['index']);
-
-
-    if ($splinter['js']!='')
-        $js_files[]=$splinter['js'];
-    include_once($splinter['php']);
-}
 
 
 $valid_sales=true;
@@ -229,16 +155,11 @@ $valid_products=true;
 $smarty->assign('valid_products',$valid_products);
 //print_r($_SESSION['state']['orders']['invoices']);
 
-//print_r($_SESSION['state']['home']['splinters']);
-$smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);
-$smarty->assign('display_block',$_SESSION['state']['home']['display']);
-
 
 $smarty->assign('search_scope','all');
 
 $smarty->assign('search_label',_('Search'));
 
-$smarty->assign('splinters',$splinters);
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Home'));
 $smarty->assign('test','hola');
