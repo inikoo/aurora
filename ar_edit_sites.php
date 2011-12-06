@@ -25,29 +25,37 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('edit_page_product_list'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key'),
+                         ));
 
+    edit_page_product_list($data);
+    break;
 case('page_product_lists'):
-list_page_product_lists_for_edition();
-break;
-
+    list_page_product_lists_for_edition();
+    break;
+case('page_product_buttons'):
+    list_page_product_buttons_for_edition();
+    break;
 case('set_default_header'):
     $data=prepare_values($_REQUEST,array(
                              'header_key'=>array('type'=>'key'),
                              'site_key'=>array('type'=>'key'),
-
                          ));
     set_default_header($data);
     break;
-    
- case('set_default_footer'):
+
+case('set_default_footer'):
     $data=prepare_values($_REQUEST,array(
                              'footer_key'=>array('type'=>'key'),
                              'site_key'=>array('type'=>'key'),
-
                          ));
     set_default_footer($data);
-    break;   
-    
+    break;
+
 case('delete_page_header'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -981,11 +989,11 @@ function list_headers_for_edition() {
 
 
         if ($default_header_key==$row['Page Header Key']) {
-        $is_default=true;
+            $is_default=true;
         $default=_('Default');
         } else {
         $default='<div class="buttons small"><button class="positive" onClick="set_default_header('.$row['Page Header Key'].')">'._('Set as default').'</button></div>';
-  $is_default=false;
+            $is_default=false;
 
 
         }
@@ -1193,11 +1201,11 @@ function list_footers_for_edition() {
 
 
         if ($default_footer_key==$row['Page Footer Key']) {
-        $is_default=true;
+            $is_default=true;
         $default=_('Default');
         } else {
         $default='<div class="buttons small"><button class="positive" onClick="set_default_footer('.$row['Page Footer Key'].')">'._('Set as default').'</button></div>';
-  $is_default=false;
+            $is_default=false;
 
 
         }
@@ -1389,10 +1397,10 @@ function list_page_product_lists_for_edition() {
         $table='  `Page Product List Dimension` L  left join `Page Store Dimension` P on (P.`Page Key`=L.`Page Key`)  ';
         $where=sprintf(' where `Site Key`=%d',$parent_key);
         break;
-      case 'page':
+    case 'page':
         $table='  `Page Product List Dimension` L  left join `Page Store Dimension` P on (P.`Page Key`=L.`Page Key`)  ';
         $where=sprintf(' where L.`Page Key`=%d',$parent_key);
-        break;  
+        break;
     default:
 
         break;
@@ -1460,7 +1468,7 @@ function list_page_product_lists_for_edition() {
     //if ($order=='pages')
     //    $order='`Number Pages`';
     //else
-        $order='`Page Product Form Code`';
+    $order='`Page Product Form Code`';
 
 
     $adata=array();
@@ -1471,28 +1479,71 @@ function list_page_product_lists_for_edition() {
     $total=mysql_num_rows($res);
 
 
-  
+
 
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-switch ($row['List Order']) {
-    case 'Code':
-        $list_order=_('Code');
-        break;
-    default:
-        $list_order=$row['List Order'];
-        break;
-}
+        switch ($row['List Order']) {
+        case 'Code':
+            $list_order=_('Code');
+            break;
+        case 'Name':
+            $list_order=_('Name');
+            break;
+        case 'Special Characteristic':
+            $list_order=_('Description');
+            break;
+        case 'Price':
+            $list_order=_('Price');
+            break;
+        case 'RRP':
+            $list_order=_('RRP');
+            break;
+        case 'Sales':
+            $list_order=_('Sales');
+            break;
+        case 'Date':
+            $list_order=_('Date');
 
 
-       
+        default:
+            $list_order=$row['List Order'];
+            break;
+        }
+
+        switch ($row['List Product Description']) {
+        case 'Units Name':
+            $description=_('<i>units</i> x <i>name</i>');
+            break;
+        case 'Units Special Characteristic':
+            $description=_('<i>units</i> x <i>description</i>');
+            break;
+        case 'Units Name RRP':
+            $description=_('<i>units</i> x <i>name</i> RRP');
+            break;
+        case 'Units Special Characteristic RRP':
+            $description=_('<i>units</i> x <i>description</i> RRP');
+            break;
+
+        default:
+            $description=$row['List Product Description'];
+            break;
+        }
+
+
+
 
         $adata[]=array(
                      'id'=>$row['Page Product Form Key'],
                      'code'=>$row['Page Product Form Code'],
-                                       'type'=>($row['Page Product Form Type']=='CustomList'?_('Custom List'):_('Auto List')),
-                      'order'=>$list_order,  
+                     'products'=>number($row['Page Product List Number Products']),
+                     'type'=>($row['Page Product Form Type']=='CustomList'?_('Custom'):_('Family')).' ('.number($row['Page Product List Number Products']).')',
+                     'order'=>$row['List Order'],
+                     'order_formated'=>$list_order,
+                     'description'=>$row['List Product Description'],
+                     'range'=>$row['Range'],
+                     'description_formated'=>$description,
                      'max'=>$row['List Max Items'],
                      'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_list_dialog(".$row['Page Product Form Key'].")'>"._('Edit')."</button></div>"),
 
@@ -1520,5 +1571,344 @@ switch ($row['List Order']) {
     echo json_encode($response);
 }
 
+function list_page_product_buttons_for_edition() {
+    if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','page')) ) {
+        $parent=$_REQUEST['parent'];
+
+    } else {
+        return;
+    }
+
+    if (isset( $_REQUEST['parent_key'])) {
+        $parent_key=$_REQUEST['parent_key'];
+
+    } else {
+        return;
+    }
+
+
+    $conf=$_SESSION['state'][$parent]['edit_product_button'];
+
+
+
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+
+    } else
+        $number_results=$conf['nr'];
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+    $_SESSION['state'][$parent]['edit_product_button']['order']=$order;
+    $_SESSION['state'][$parent]['edit_product_button']['order_dir']=$order_direction;
+    $_SESSION['state'][$parent]['edit_product_button']['nr']=$number_results;
+    $_SESSION['state'][$parent]['edit_product_button']['sf']=$start_from;
+    $_SESSION['state'][$parent]['edit_product_button']['f_field']=$f_field;
+    $_SESSION['state'][$parent]['edit_product_button']['f_value']=$f_value;
+//    $_SESSION['state'][$parent]['edit_headers']['parent_key']=$parent_key;
+//    $_SESSION['state'][$parent]['edit_headers']['parent']=$parent;
+
+
+
+    switch ($parent) {
+    case 'site':
+        $table='  `Page Product Dimension` B  left join `Page Store Dimension` P on (P.`Page Key`=B.`Page Key`)  left join `Product Dimension` PD on (B.`Product ID`=PD.`Product ID`)  ';
+        $where=sprintf(' where `Site Key`=%d',$parent_key);
+        break;
+    case 'page':
+        $table='  `Page Product Dimension` B  left join `Page Store Dimension` P on (P.`Page Key`=B.`Page Key`)  left join `Product Dimension` PD on (B.`Product ID`=PD.`Product ID`) ';
+        $where=sprintf(' where P.`Page Key`=%d',$parent_key);
+        break;
+    default:
+
+        break;
+    }
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+    if ($f_field=='code'  and $f_value!='')
+        $wheref.=" and `Product Code` like '".addslashes($f_value)."%'";
+//    elseif ($f_field=='title' and $f_value!='')
+//    $wheref.=" and  `Page Store Title` like '".addslashes($f_value)."%'";
+
+
+
+    $sql="select count(*) as total from $table  $where $wheref";
+//print $sql;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from $table  $where  ";
+//print $sql;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('record','records',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record with code")." <b>$f_value</b>* ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('records with code')." <b>$f_value</b>*)";
+        break;
+
+    }
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+
+    //if ($order=='pages')
+    //    $order='`Number Pages`';
+    //else
+    $order='`Product Code`';
+
+
+    $adata=array();
+    $sql="select *  from $table $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+
+    $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+
+
+
+
+
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+
+
+
+        $adata[]=array(
+                     'id'=>$row['Page Product From Key'],
+                     'code'=>$row['Product Code'],
+
+                     'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_button_dialog(".$row['Page Product From Key'].")'>"._('Edit')."</button></div>"),
+
+
+                 );
+    }
+    mysql_free_result($res);
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+
+function edit_page_product_list($data) {
+
+    $page_product_list_key=$data['id'];
+
+    $sql=sprintf("select * from `Page Product List Dimension` where `Page Product Form Key`=%d",$page_product_list_key);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+
+
+        $key_translation=array(
+                             'order'=>'List Order',
+                             'show_rrp'=>'Show RRP',
+                             'max'=>'List Max Items',
+                             'range'=>'Range',
+                             'code'=>'Page Product Form Code',
+                             'description'=>'List Product Description'
+                         );
+
+
+        if (array_key_exists($data['key'],$key_translation)) {
+
+
+            if ($data['key']=='range') {
+                if (!(preg_match('/^[a-z0-9](\-)[a-z0-9]$/',$data['newvalue']) or $data['newvalue']=='')) {
+                    $response= array('state'=>400,'msg'=>_('Wrong value, range should have the following format: a-b'),'key'=>$data['key']);
+                    echo json_encode($response);
+                    return;
+                }
+
+            }
+
+
+            $sql=sprintf("update `Page Product List Dimension` set `%s`=%s where `Page Product Form Key`=%d",
+                         $key_translation[$data['key']],
+                         prepare_mysql($data['newvalue']),
+                         $page_product_list_key);
+
+            mysql_query($sql);
+
+            $response= array('state'=>200,'action'=>'updated','msg'=>'', 'newvalue'=>$data['newvalue'],'key'=>$data['key'],'newdata'=>array());
+            if ($data['key']=='description') {
+                switch ($data['newvalue']) {
+                case 'Units Name':
+                    $description=_('<i>units</i> x <i>name</i>');
+                    break;
+                case 'Units Special Characteristic':
+                    $description=_('<i>units</i> x <i>description</i>');
+                    break;
+                case 'Units Name RRP':
+                    $description=_('<i>units</i> x <i>name</i> RRP');
+                    break;
+                case 'Units Special Characteristic RRP':
+                    $description=_('<i>units</i> x <i>description</i> RRP');
+                    break;
+
+                default:
+                    $description=$data['newvalue'];
+                    break;
+                }
+
+                $response['newdata']=array('description_formated'=>$description);
+            }
+
+            if ($data['key']=='description') {
+                switch ($data['newvalue']) {
+                case 'Units Name':
+                    $description=_('<i>units</i> x <i>name</i>');
+                    break;
+                case 'Units Special Characteristic':
+                    $description=_('<i>units</i> x <i>description</i>');
+                    break;
+                case 'Units Name RRP':
+                    $description=_('<i>units</i> x <i>name</i> RRP');
+                    break;
+                case 'Units Special Characteristic RRP':
+                    $description=_('<i>units</i> x <i>description</i> RRP');
+                    break;
+
+                default:
+                    $description=$data['newvalue'];
+                    break;
+                }
+
+                $response['newdata']=array('description_formated'=>$description);
+            }
+
+
+            if ($data['key']=='order') {
+
+                switch ($data['newvalue']) {
+                case 'Code':
+                    $list_order=_('Code');
+                    break;
+                case 'Name':
+                    $list_order=_('Name');
+                    break;
+                case 'Special Characteristic':
+                    $list_order=_('Description');
+                    break;
+                case 'Price':
+                    $list_order=_('Price');
+                    break;
+                case 'RRP':
+                    $list_order=_('RRP');
+                    break;
+                case 'Sales':
+                    $list_order=_('Sales');
+                    break;
+                case 'Date':
+                    $list_order=_('Date');
+
+
+                default:
+                    $list_order=$row['List Order'];
+                    break;
+                }
+
+                $response['newdata']=array('order_formated'=>$list_order);
+            }
+
+
+
+
+
+
+        } else {
+
+            $response= array('state'=>400,'msg'=>'Error 1','key'=>$data['key']);
+        }
+
+    } else {
+        $response= array('state'=>400,'msg'=>'Error 2','key'=>$data['key']);
+
+    }
+    echo json_encode($response);
+
+}
 
 ?>
