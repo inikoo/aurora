@@ -507,7 +507,6 @@ alert(request);
 
 
  function formater_web_configuration  (el, oRecord, oColumn, oData) {
-		
 		     el.innerHTML = oRecord.getData("formated_web_configuration");
 	    }
 

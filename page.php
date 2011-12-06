@@ -32,8 +32,7 @@ if (!($user->can_view('stores')    ) ) {
 
 
 $page=new Page($page_key);
-$page->get_products_from_source();
-exit;
+
 
 if (!$page->id) {
     header('Location: index.php');

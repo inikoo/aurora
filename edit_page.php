@@ -41,7 +41,7 @@ if (!$page->id) {
     header('Location: index.php');
     exit;
 }
-$page->update_products();
+
 
 $_SESSION['state']['page']['id']=$page->id;
 
