@@ -638,7 +638,7 @@ function validate_page_content_presentation_template_data(query){validate_genera
 function validate_page_header_store_title(query){validate_general('page_header','store_title',unescape(query));}
 function validate_page_header_subtitle(query){validate_general('page_header','subtitle',unescape(query));}
 function validate_page_header_slogan(query){validate_general('page_header','slogan',unescape(query));}
-function validate_page_header_resume(query){validate_general('page_header','resume',unescape(query));}
+function validate_page_html_head_resume(query){validate_general('page_html_head','resume',unescape(query));}
 function validate_page_properties_url(query){validate_general('page_properties','url',unescape(query));}
 function validate_page_properties_link_title(query){validate_general('page_properties','link_title',unescape(query));}
 function validate_page_properties_page_code(query){validate_general('page_properties','page_code',unescape(query));}
@@ -788,6 +788,8 @@ Event.addListener("cancel_upload_page_content", "click", close_upload_page_conte
 	}
 	
 	,'keywords':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_html_head_keywords','ar':false}
+		,'resume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Page Store Resume','name':'page_html_head_resume','ar':false}
+
     }
 ,'page_header':{
 	'store_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
@@ -797,7 +799,6 @@ Event.addListener("cancel_upload_page_content", "click", close_upload_page_conte
 	}
 	,'subtitle':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_header_subtitle','ar':false}
 	,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_header_slogan','ar':false}
-	,'resume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_header_resume','ar':false}
 	
     }
 ,'page_content':{
@@ -875,11 +876,11 @@ var page_header_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_page_h
     page_header_slogan_oAutoComp.minQueryLength = 0; 
     page_header_slogan_oAutoComp.queryDelay = 0.1;
 
-    var page_header_resume_oACDS = new YAHOO.util.FunctionDataSource(validate_page_header_resume);
-    page_header_resume_oACDS.queryMatchContains = true;
-    var page_header_resume_oAutoComp = new YAHOO.widget.AutoComplete("page_header_resume","page_header_resume_Container", page_header_resume_oACDS);
-    page_header_resume_oAutoComp.minQueryLength = 0; 
-    page_header_resume_oAutoComp.queryDelay = 0.1;
+    var page_html_head_resume_oACDS = new YAHOO.util.FunctionDataSource(validate_page_html_head_resume);
+    page_html_head_resume_oACDS.queryMatchContains = true;
+    var page_html_head_resume_oAutoComp = new YAHOO.widget.AutoComplete("page_html_head_resume","page_html_head_resume_Container", page_html_head_resume_oACDS);
+    page_html_head_resume_oAutoComp.minQueryLength = 0; 
+    page_html_head_resume_oAutoComp.queryDelay = 0.1;
   
 dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", {context:["add_other_found_in_page","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_page_list.render();

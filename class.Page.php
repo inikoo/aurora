@@ -633,6 +633,7 @@ class Page extends DB_Table {
             break;
         case('Page Store Source'):
         case('Page Store CSS'):
+        case('Page Store Resume'):
             $this->update_field($field,$value,$options);
             break;
         case('presentation_template_data'):
