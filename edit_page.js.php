@@ -680,12 +680,12 @@ function upload_page_content(){
     var request='ar_upload_page_content.php?tipo=upload_page_content';
    var uploadHandler = {
       upload: function(o) {
-	 //  alert(o.responseText)
+	  alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
 	     
-         window.location.reload()
+     //    window.location.reload()
                 
 	    }else if(r.state==201){
 	    // alert(r.list)
@@ -746,7 +746,7 @@ Event.addListener("cancel_upload_page_content", "click", close_upload_page_conte
  dialog_upload_page_content_files = new YAHOO.widget.Dialog("dialog_upload_page_content_files", {visible : false,close:true,underlay: "none",draggable:false});
     dialog_upload_page_content_files.render();
 
-  init_search('products_store');
+  init_search('site');
 
     var ids = ['properties','page_header','page_footer','content','style','media','setup','products']; 
     Event.addListener(ids, "click", change_block);

@@ -468,7 +468,7 @@ function upload_footer(e){
 };
 
 function init(){
-init_search('products_store');
+init_search('site');
 
  Event.addListener('show_upload_header', "click", show_dialog_upload_header);
 Event.addListener("cancel_upload_header", "click", close_upload_header);

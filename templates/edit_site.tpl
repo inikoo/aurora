@@ -1,6 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
 <input type="hidden" id="site_key" value="{$site->id}"/>
+<input type="hidden" id="site_id" value="{$site->id}"/>
+
 <input type="hidden" id="store_key" value="{$store_key}"/>
 
 {include file='assets_navigation.tpl'}

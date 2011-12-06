@@ -95,8 +95,8 @@ $js_files=array(
               'js/pages_common.js'
           );
 
-$smarty->assign('search_label',_('Products'));
-$smarty->assign('search_scope','products');
+$smarty->assign('search_label',_('Website'));
+$smarty->assign('search_scope','site');
 
 $smarty->assign('block_view',$_SESSION['state']['site']['editing']);
 

@@ -2,6 +2,8 @@
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" style="padding:0">
 <input type="hidden" id="site_key" value="{$site->id}"/>
+<input type="hidden" id="site_id" value="{$site->id}"/>
+
 <input type="hidden" id="page_key" value="{$page->id}"/>
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
