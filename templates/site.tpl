@@ -2,6 +2,8 @@
 <div id="bd" style="padding:0px">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
 <input type="hidden" id="site_key" value="{$site->id}"/>
+<input type="hidden" id="site_id" value="{$site->id}"/>
+
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
 <div class="branch"> 

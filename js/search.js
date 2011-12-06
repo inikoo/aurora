@@ -62,6 +62,12 @@ function init_search(type) {
         search_scope='';
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
         break;
+      case 'site':
+        subject='site';
+        search_scope='site';
+        var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_site);
+        break;    
+        
     case 'products_store':
         var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
         search_scope='store';
@@ -211,7 +217,9 @@ function search_marketing_in_store(query) {
     search(query,'marketing','store');
 }
 
-
+function search_site(query) {
+    search(query,'site','site');
+}
 
 
 function search_all(query) {
@@ -443,7 +451,22 @@ success:function(o) {
 
                             }
 
+                        }else if (subject=='site') {
+                            oTR.setAttribute('key',r.data[result_key ].key);
+                            oTR.setAttribute('link',r.data[result_key ].link);
+
+                            var oTD= oTR.insertCell(1);
+                            oTD.innerHTML=r.data[result_key].code;
+                            var oTD= oTR.insertCell(2);
+                            oTD.innerHTML=r.data[result_key].description;
+                          
+
+                          
+
                         }
+                        
+                        
+                        
                         if (result_number==0)
                             oTR.setAttribute('prev',r.results-1);
                         else
