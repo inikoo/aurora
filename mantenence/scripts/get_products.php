@@ -784,6 +784,9 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
         $supplier_code='StoneM';
     }
 
+if (preg_match('/Ashoke/i',$supplier_code)) {
+                $supplier_code='Asoke';
+            }
 
     $the_supplier_data=array(
                            'name'=>$supplier_code,

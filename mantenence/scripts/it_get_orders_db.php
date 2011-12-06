@@ -831,6 +831,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $transaction['supplier_code']='Ackerman';
             }
 
+if (preg_match('/Ashoke/i',$transaction['supplier_code'])) {
+                $transaction['supplier_code']='Asoke';
+            }
+
             if ( preg_match('/\d/',$transaction['supplier_code']) ) {
                 $transaction['supplier_code'] ='';
                 $supplier_product_cost='';
