@@ -798,7 +798,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             if ($transaction['supplier_product_code']=='same')
                 $transaction['supplier_product_code']=$transaction['code'];
 
-
+if (preg_match('/Ashoke/i',$transaction['supplier_code'])) {
+                $transaction['supplier_code']='Asoke';
+            }
 
 
             if ($transaction['supplier_product_code']=='')

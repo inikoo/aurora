@@ -164,6 +164,9 @@
        <div id="Customer_Fiscal_Name_Container"  ></div>
      </div>
    </td>
+      <td id="Customer_Fiscal_Name_msg"  class="edit_td_alert"></td>
+
+   
    </tr>
 
 

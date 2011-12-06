@@ -864,6 +864,7 @@ return;
     for (items in validate_scope_data[branch]) {
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input=Dom.get(validate_scope_data[branch][items].name);
+            //alert(validate_scope_data[branch][items].name+'_msg')
 			Dom.get(validate_scope_data[branch][items].name+'_msg').innerHTML='<img src="art/loading.gif"/>';
             var updated_items=0;
 
