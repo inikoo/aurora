@@ -24,7 +24,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-vi
 
  function init(){
 
-  init_search('products_store');
+  init_search('site');
  Event.addListener(['details','hits','visitors'], "click",change_block);
 
 

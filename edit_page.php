@@ -91,8 +91,8 @@ if (isset($_REQUEST['referral']) and isset($_REQUEST['referral_key'])) {
 }
 
 
-$smarty->assign('search_label',_('Products'));
-$smarty->assign('search_scope','products');
+$smarty->assign('search_label',_('Website'));
+$smarty->assign('search_scope','site');
 
 
 

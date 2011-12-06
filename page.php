@@ -65,8 +65,8 @@ $smarty->assign('modify',$modify);
 
 
 
-$smarty->assign('search_label',_('Products'));
-$smarty->assign('search_scope','products');
+$smarty->assign('search_label',_('Website'));
+$smarty->assign('search_scope','site');
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
