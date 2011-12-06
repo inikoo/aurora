@@ -615,6 +615,7 @@ class Page extends DB_Table {
         case('link_title'):
             $this->update_field('Page Short Title',$value,$options);
             break;
+        case('Page Keywords'):
         case('keywords'):
         case('page_keywords'):
             $this->update_field('Page Keywords',$value,$options);

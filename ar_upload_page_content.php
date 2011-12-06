@@ -147,6 +147,26 @@ function get_head_styles($dom,$html) {
     return $style;
 }
 
+function get_head_meta($tag,$dom,$html) {
+
+    $heads = $dom->getElementsByTagName('head');
+
+    $head=$heads->item(0);
+    $a=getArray($head);
+
+    if (isset($a['meta'])) {
+        foreach($a['meta'] as $meta_data) {
+            if (isset($meta_data['name']) and isset($meta_data['content']) and $meta_data['name']==$tag  )
+                return $meta_data['content'];
+        }
+    }
+
+
+
+    return false;
+
+}
+
 function get_head_scripts($dom,$html) {
     $script=array();
     $heads = $dom->getElementsByTagName('head');
@@ -624,6 +644,25 @@ function upload_page_content_from_file($file,$data) {
     $dom->loadHTML($html);
     ini_set( "display_errors", 1);
     $dom->preserveWhiteSpace = false;
+
+
+if($page->data['Page Store Resume']==''){
+  $resume=get_head_meta('description',$dom,$html);
+  if($resume)
+  $page->update_field_switcher('Page Store Resume',$resume);
+  
+}
+
+if($page->data['Page Keywords']==''){
+  $keywords=get_head_meta('keywords',$dom,$html);
+  if($keywords)
+  $page->update_field_switcher('Page Keywords',$keywords);
+  
+}
+
+  
+
+
 
     $styles=get_head_styles($dom,$html);
 
