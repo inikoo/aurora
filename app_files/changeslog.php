@@ -5280,10 +5280,12 @@ RENAME TABLE `Page Product From Dimension` TO `Page Product Dimension` ;
 ALTER TABLE `Page Product Dimension` DROP INDEX `Page Key` ,ADD INDEX `Page Key` ( `Page Key` ) ;
 ALTER TABLE `Page Store Dimension` ADD `Number Lists` SMALLINT NOT NULL DEFAULT '0',ADD `Number Products In Lists` SMALLINT NOT NULL DEFAULT '0',ADD `Number Buttons` SMALLINT NOT NULL DEFAULT '0',ADD `Number Products` SMALLINT NOT NULL DEFAULT '0';
 ALTER TABLE `Page Product List Dimension` ADD `Page Product List Number Products` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Page Product Form Parent Key` ;
-
-
 ALTER TABLE `Page Product List Dimension` CHANGE `List Product Description` `List Product Description` ENUM('Units Name','Units Special Characteristic','Units Name RRP','Units Special Characteristic RRP') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Units Special Characteristic';
 ALTER TABLE `Page Product List Dimension` DROP `Range Scope`;
+
+ALTER TABLE `Page Store Dimension` ADD FULLTEXT (`Page Store Title`);
+ALTER TABLE `Page Store Dimension` ADD FULLTEXT (`Page Store Resume`);
+
 */
 
 ?>

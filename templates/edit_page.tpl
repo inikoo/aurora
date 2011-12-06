@@ -151,10 +151,10 @@
     <table class="edit" border=0  id="properties_edit_table" style="width:100%">
 	     <tr ><td colspan="3">
 
-<div class="general_options" style="float:right">
+<div class="buttons">
 	
-	    <span  style="margin-right:10px;visibility:hidden"  id="save_edit_page_html_head" class="state_details">{t}Save{/t}</span>
-	    <span style="margin-right:10px;visibility:hidden" id="reset_edit_page_html_head" class="state_details">{t}Reset{/t}</span>
+	    <button  style="visibility:hidden"  id="save_edit_page_html_head" class="positive">{t}Save{/t}</button>
+	    <button style="visibility:hidden" id="reset_edit_page_html_head" class="negative">{t}Reset{/t}</button>
     </div>
 
 	     </td></tr>
@@ -173,7 +173,18 @@
 
       </td></tr>
 	    
-	     <tr style="height:87px"><td class="label" style="width:120px">{t}Keywords{/t}:</td>
+	      <tr style="height:87px"><td class="label" style="width:120px">{t}Page Abstract{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="page_html_head_resume"  style="width:100%;height:80px" MAXLENGTH="24" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}"  >{$page->get('Page Store Resume')}</textarea>
+		   <div id="page_html_head_resume_msg"></div>
+		   <div id="page_html_head_resume_Container"  ></div>
+		 </div>
+		 
+		 
+	     </td></tr>
+	    
+	     <tr style="height:87px"><td class="label" style="width:120px">{t}Page Keywords{/t}:</td>
 	       <td style="width:400px">
 		 <div >
 		   <textarea  id="page_html_head_keywords"  style="width:100%;height:80px" MAXLENGTH="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}"  >{$page->get('Page Keywords')}</textarea>

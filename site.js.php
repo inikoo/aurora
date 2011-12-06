@@ -140,7 +140,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  function init(){
 
-  init_search('products_store');
+  init_search('site');
  Event.addListener(['details','pages','hits','visitors'], "click",change_block);
 
 ids=['elements_other','elements_department_catalogue','elements_family_catalogue','elements_product_description'];
