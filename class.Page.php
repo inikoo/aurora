@@ -549,8 +549,8 @@ class Page extends DB_Table {
     function get_footer_template() {
         $template='';
         $sql=sprintf("select `Template` from `Page Footer Dimension` where `Page Footer Key`=%d",$this->data['Page Footer Key']);
-      
-       $result = mysql_query($sql);
+
+        $result = mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $template= $row['Template'];
         }
@@ -1121,7 +1121,7 @@ class Page extends DB_Table {
                             );
         }
 
- $data=array(
+        $data=array(
                   'Product Price'=>$product->data['Product Price'],
                   'Product Units Per Case'=>$product->data['Product Units Per Case'],
                   'Product Currency'=>$product->get('Product Currency'),
@@ -1132,12 +1132,12 @@ class Page extends DB_Table {
 
         $price= '<span class="price">'.formated_price($data).'</span><br>';
 
- $data=array(
+        $data=array(
                   'Product Price'=>$product->data['Product RRP'],
                   'Product Units Per Case'=>$product->data['Product Units Per Case'],
                   'Product Currency'=>$product->get('Product Currency'),
                   'Product Unit Type'=>$product->data['Product Unit Type'],
-'Label'=>_('RRP').":",
+                  'Label'=>_('RRP').":",
 
                   'locale'=>$locale);
 
@@ -1149,9 +1149,9 @@ class Page extends DB_Table {
         $form=sprintf('<div  class="ind_form">
                       <span class="code">%s</span><br/>
                       <span class="name">%sx %s</span><br>
-                     %s
-                    %s
-                    %s
+                      %s
+                      %s
+                      %s
                       </div>',
                       $product->data['Product Code'],
                       $product->data['Product Units Per Case'],
@@ -1161,7 +1161,7 @@ class Page extends DB_Table {
                       $message
                      );
 
-        
+
 
 
         return $form;
@@ -1201,16 +1201,15 @@ class Page extends DB_Table {
         return $form;
     }
 
-    function display_list() {
-
-
-
-
+    function display_list($list_code='default') {
         if (!$this->data['Page Type']=='Store' or !$this->data['Page Store Section']=='Family Catalogue' ) {
             return '';
         }
 
-        $products=$this->get_products_from_family($this->data['Page Parent Key']);
+
+
+
+        $products=$this->get_products_from_list($list_code);
         $this->print_rrp=false;
 
         if (count($products)==0)
@@ -1232,67 +1231,131 @@ class Page extends DB_Table {
 
     }
 
-    function get_products_from_family($family_key) {
-
-
-
-        $options=unserialize($this->data['Page Product Metadata']);
-
-        if (isset($options['order_by'])) {
-            if (strtolower($options['order_by']) == 'code')
-                $order_by='`Product Code File As`';
-            else if (strtolower($options['order_by']) == 'rrp')
-                $order_by='`Product RRP`';
-            else if (strtolower($options['order_by']) == 'price')
-                $order_by='`Product Price`';
-
-            else if (strtolower($options['order_by']) == 'name')
-                $order_by='`Product Name`';
-            else if (strtolower($options['order_by']) == 'special_char')
-                $order_by='`Product Special Characteristic`';
-            else
-                $order_by='`Product Code File As`';
-
-
-        } else
-            $order_by='`Product Code File As`';
-
-
-
-        if (isset($options['limit']))
-            $limit=sprintf('limit %d',$options['limit']);
-        else
-            $limit='';
-
-
-
-        if (isset($options['range_special_char'])) {
-            list($range1, $range2)=explode(":", strtoupper($options['range_special_char']));
-            $range_where=sprintf("and ( (ord(`Product Special Characteristic`) >= %d and ord(`Product Special Characteristic`) <= %d) || (ord(`Product Special Characteristic`) >= %d and ord(`Product Special Characteristic`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
-
-        }
-        elseif (isset($options['range_name'])) {
-            list($range1, $range2)=explode(":", strtoupper($options['range_name']));
-            $range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
-
-        }
-        else
-            $range_where="";//"  true";
-
+    function get_products_from_list($list_code) {
 
         $products=array();
-        $sql=sprintf("select `Product ID`,`Product Code`,`Product Price`,`Product RRP`,`Product Units Per Case`,`Product Unit Type`,`Product Web State`,`Product Special Characteristic` from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s",
-                     $family_key,
-                     $range_where,
-                     $order_by,
-                     $limit)
-             ;
-        //  print $sql;
-        $result=mysql_query($sql);
-        $counter=0;
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $products[]=$row;
+        $sql=sprintf("select * from `Page Product List Dimension` where `Page Key`=%d and `Page Product Form Code`=%s",
+                     $this->id,
+                     prepare_mysql($list_code)
+                    );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+
+
+            $family_key=$row['Page Product Form Parent Key'];
+
+
+            if ($row['Page Product Form Type']=='FamilyList') {
+
+                switch ($row['List Order']) {
+                case 'Code':
+                    $order_by='`Product Code File As`';
+                    break;
+                case 'Name':
+                    $order_by='`Product Name`';
+                    break;
+                case 'Special Characteristic':
+                    $order_by='`Product Special Characteristic`';
+                    break;
+                case 'Price':
+                    $order_by='`Product Price`';
+                    break;
+                case 'RRP':
+                    $order_by='`Product RRP`';
+                    break;
+                case 'Sales':
+                    $order_by='`Product 1 Year Acc Quantity Ordered`';
+                    break;
+                case 'Date':
+                    $order_by='`Product Valid From`';
+                    break;
+                default:
+                    $order_by='`Product Code File As`';
+                    break;
+                }
+
+                $limit=sprintf('limit %d',$row['List Max Items']);
+
+
+                if ($row['Range']!='') {
+                    $range=preg_split('/-/',$row['Range']);
+
+                    $range_where=sprintf("and  $order_by>=%s  and $order_by<=%s ", prepare_mysql($range[0]), prepare_mysql($range[1]));
+                } else {
+                    $range_where='';
+                }
+                $sql=sprintf("select `Product Currency`,`Product Name`,`Product ID`,`Product Code`,`Product Price`,`Product RRP`,`Product Units Per Case`,`Product Unit Type`,`Product Web State`,`Product Special Characteristic` from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s",
+                             $family_key,
+                             $range_where,
+                             $order_by,
+                             $limit);
+//print $sql;
+                $result=mysql_query($sql);
+                while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+                    $products[]=$row2;
+                }
+
+            }
+
+
+            switch ($row['List Product Description']) {
+            case 'Units Name':
+                foreach ($products as $key=>$product) {
+                    $$products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+                }
+                break;
+            case 'Units Name RRP':
+
+
+
+
+                foreach ($products as $key=>$product) {
+                    $rrp=money_locale($product['Product RRP'],$this->locale,$product['Product Currency']);
+
+                    $products[$key]['description']=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
+                                                           $product['Product Units Per Case'],
+                                                           $product['Product Name'],
+                                                           _('RRP'),
+                                                           $rrp
+                                                          );
+                }
+                break;
+            case 'Units Special Characteristic':
+                foreach ($products as $key=>$product) {
+                    $products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Special Characteristic']);
+                }
+                break;
+            case 'Units Special Characteristic RRP':
+
+
+
+
+                foreach ($products as $key=>$product) {
+                    $rrp=money_locale($product['Product RRP'],$this->locale,$product['Product Currency']);
+
+                    $products[$key]['description']=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
+                                                           $product['Product Units Per Case'],
+                                                           $product['Product Special Characteristic'],
+                                                           _('RRP'),
+                                                           $rrp
+                                                          );
+                }
+                break;
+
+            default:
+                foreach ($products as $key=>$product) {
+                    $products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+                }
+                break;
+            }
+
         }
+
+
+
+
+
         return $products;
     }
 
@@ -1356,10 +1419,10 @@ class Page extends DB_Table {
                         $rrp=$row['min'];
 
 
-                        $rrp= $family->get_formated_rrp(array(
-                                                            'Product RRP'=>$rrp,
-                                                            'Product Units Per Case'=>1,
-                                                            'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
+                        $rrp= $this->get_formated_rrp(array(
+                                                          'Product RRP'=>$rrp,
+                                                          'Product Units Per Case'=>1,
+                                                          'Product Unit Type'=>''),array('prefix'=>false, 'show_unit'=>$show_unit));
 
                         if ($row['rrp_avg']<=0) {
                             $rrp_label='';
@@ -1700,6 +1763,8 @@ class Page extends DB_Table {
                 $tr_class='';
 
 
+
+
             $form.=sprintf('<tr %s >
                            <input type="hidden" name="price%s" value="%.2f"  >
                            <input type="hidden" name="product%s"  value="%s %s" >
@@ -1708,12 +1773,12 @@ class Page extends DB_Table {
                            <td class="input">
                            %s
                            </td>
-                           <td class="description">%s</td><td class="rrp">%s</td>
+                           <td class="description">%s</td>
                            </tr>'."\n",
                            $tr_class,
 
                            $counter,$product['Product Price'],
-                           $counter,$product['Product Code'],$product['Product Units Per Case'].'x '.$product['Product Special Characteristic'],
+                           $counter,$product['Product Code'],$product['description'],
 
                            $product['Product Code'],
                            $price,
@@ -1722,9 +1787,9 @@ class Page extends DB_Table {
 
 
 
-                           $product['Product Units Per Case'].'x '.$product['Product Special Characteristic'],
+                           $product['description']
 
-                           $rrp
+
 
                           );
 
@@ -1876,8 +1941,8 @@ class Page extends DB_Table {
     }
 
 
-    function update_products() {
-        list($lists,$buttons)=$this->get_products_from_source();
+    function update_list_products() {
+        $lists=$this->get_list_products_from_source();
 
         $valid_list_keys=array();
         foreach($lists as $list_key) {
@@ -1896,11 +1961,11 @@ class Page extends DB_Table {
                                  $this->id,
                                  prepare_mysql($list_key),
                                  prepare_mysql('FamilyList'),
-                                $this->data['Page Parent Key']
+                                 $this->data['Page Parent Key']
 
                                 );
                     mysql_query($sql);
-                    
+
                     $valid_list_keys[]=prepare_mysql(mysql_insert_id());
                 }
             }
@@ -1914,24 +1979,114 @@ class Page extends DB_Table {
             }
         }
 
+
+
+
     }
 
+    function update_number_products() {
+
+        $products_from_family=array();
+        $sql=sprintf("select `Page Product Form Code`,`Page Product Form Key` from `Page Product List Dimension` where `Page Key`=%d  ",
+                     $this->id
+
+                    );
+        $res=mysql_query($sql);
+        $number_lists=0;
+        while ($row=mysql_fetch_assoc($res)) {
+            $products=$this->get_products_from_list($row['Page Product Form Code']);
+
+            $sql=sprintf("update `Page Product List Dimension` set `Page Product List Number Products`=%d where `Page Product Form Key`=%d",
+                         count($products),
+                         $row['Page Product Form Key']
+                        );
+            mysql_query($sql);
+            foreach($products as $product) {
+                $products_from_family[$product['Product ID']]=$product['Product ID'];
+
+            }
+            $number_lists++;
+        }
+        $this->data['Number Products In Lists']=count($products_from_family);
+        $this->data['Number Lists']=$number_lists;
 
 
-    function get_products_from_source() {
+
+        $sql=sprintf("select count(*) as num from `Page Product Dimension`  where `Page Key`=%d",$this->id);
+        $res=mysql_query($sql);
+
+        if ($row=mysql_fetch_assoc($res)) {
+            $this->data['Number Buttons']=$row['num'];
+        }
+
+        $this->data['Number Products']=$this->data['Number Buttons']+$this->data['Number Products In Lists'];
+        $sql=sprintf("update `Page Store Dimension`  set `Number Buttons`=%d , `Number Products`=%d ,`Number Lists`=%d,`Number Products In Lists`=%d where `Page Key`=%d",
+                     $this->data['Number Buttons'],
+                     $this->data['Number Products'],
+                     $this->data['Number Lists'],
+                     $this->data['Number Products In Lists'],
+                     $this->id);
+        $res=mysql_query($sql);
+
+    }
+
+    function update_button_products() {
+        include_once('class.Product.php');
+        $buttons=$this->get_button_products_from_source();
+
+        $sql=sprintf("delete from  `Page Product Dimension`  where `Page Key`=%d",$this->id);
+        mysql_query($sql);
+
+        foreach($buttons as $product_code) {
+
+
+
+            $product=new Product('code_store',$product_code,$this->data['Page Store Key']);
+
+            if ($product->id) {
+                $sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Product ID`) values  (%d,%d)",
+                             $this->id,
+                             $product->pid
+
+                            );
+
+                mysql_query($sql);
+            }
+        }
+
+        $this->update_number_products();
+
+
+
+    }
+
+    function get_list_products_from_source() {
         $html=$this->data['Page Store Source'];
 
+
         $lists=array();
-        $buttons=array();
+
         $regexp = '\{\s*\$page->display_list\s*\((.*)\)\s*\}';
         if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
             foreach($matches as $match) {
                 $lists[]=($match[1]==''?'default':$match[1]);
             }
         }
+
+        return $lists;
+    }
+
+    function get_button_products_from_source() {
+        $html=$this->data['Page Store Source'];
+
+
+
+        $buttons=array();
+
         $regexp = '\{\s*\$page->display_button\s*\((.*)\)\s*\}';
         if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
             foreach($matches as $match) {
+
                 $id=($match[1]==''?'default':$match[1]);
                 $id=preg_replace('/^\"/','',$id);
                 $id=preg_replace('/^\'/','',$id);
@@ -1940,7 +2095,8 @@ class Page extends DB_Table {
                 $buttons[]=$id;
             }
         }
-        return array($lists,$buttons);
+
+        return $buttons;
     }
 
 

@@ -41,7 +41,7 @@ if (!$page->id) {
     header('Location: index.php');
     exit;
 }
-$page->update_products();
+
 
 $_SESSION['state']['page']['id']=$page->id;
 
@@ -147,7 +147,7 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/editor_image_uploader.js',
-              'edit_page.js.php?page_id='.$page_key,
+              'edit_page.js.php?page_key='.$page->id.'&site_key='.$page->data['Page Site Key'],
 
           );
 

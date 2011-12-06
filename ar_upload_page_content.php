@@ -628,19 +628,19 @@ function upload_page_content_from_file($file,$data) {
     $styles=get_head_styles($dom,$html);
 
     $sql=sprintf("select * from `Page Store External File Bridge` where `Page Key`=%d  ",$page->id);
-  
+
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
 
 
         $sql=sprintf("delete from `Page Store External File Dimension` where `Page Store External File Key`=%d",$row['Page Store External File Key']);
-     
-       mysql_query($sql);
+
+        mysql_query($sql);
 
     }
-       $sql=sprintf("delete from  `Page Store External File Bridge` where `Page Key`=%d  ",$page->id);
-        
-       mysql_query($sql);
+    $sql=sprintf("delete from  `Page Store External File Bridge` where `Page Key`=%d  ",$page->id);
+
+    mysql_query($sql);
     foreach($styles as $_key=>$style) {
         $style=upload_content_images($style,dirname($file),array('subject'=>'Page','subject_key'=>$page->id));
 
@@ -678,6 +678,9 @@ function upload_page_content_from_file($file,$data) {
                   );
     $page->add_history($history_data);
 
+    $page->update_button_products();
+    $page->update_list_products();
+    $page->update_number_products();
 
     $response= array('state'=>200);
     return $response;
