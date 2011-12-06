@@ -29,7 +29,7 @@ new TWTR.Widget({
   type: 'profile',
   rpp: 4,
   interval: 30000,
-  width: 260,
+  width: 280,
   height: 300,
   theme: {
     shell: {

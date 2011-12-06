@@ -25,13 +25,13 @@ function changeHeight(iframe){
 
           }else{
         // alert("x")
-          Dom.setStyle(iframe,'height','700px');
+       //   Dom.setStyle(iframe,'height','700px');
             
           }
         }
         catch(err)
         {
-          alert(err.message);
+         // alert(err.message);
         }
       }
 
