@@ -1,4 +1,9 @@
-<?php  include_once('common.php'); ?>
+<?php  include_once('common.php');
+
+$page_key=$_REQUEST['page_key'];
+$site_key=$_REQUEST['site_key'];
+
+?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var select_page_operation=false;
@@ -675,12 +680,12 @@ function upload_page_content(){
     var request='ar_upload_page_content.php?tipo=upload_page_content';
    var uploadHandler = {
       upload: function(o) {
-	   alert(o.responseText)
+	 //  alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
 	     
-       //  window.location.reload()
+         window.location.reload()
                 
 	    }else if(r.state==201){
 	    // alert(r.list)
@@ -977,6 +982,42 @@ dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", {context:["add_ot
     }, EmailHTMLEditor, true);
         yuiImgUploader(EmailHTMLEditor, 'html_editor', 'ar_upload_file_from_editor.php','image');
 
+  EmailHTMLEditor._defaultToolbar.titlebar = "";
+    
+    
+      EmailHTMLEditor.on('editorContentLoaded', function() {
+
+        var head = this._getDoc().getElementsByTagName('head')[0];
+
+<?php
+
+$css_files=array();
+
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `External File Type`='CSS' and `Site Key`=%d",$site_key);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+   $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `External File Type`='CSS' and `Page Key`=%d",$page_key);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+   $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+
+
+
+foreach($css_files as $css_file){
+printf("var link = this._getDoc().createElement('link');\nlink.setAttribute('rel', 'stylesheet');\nlink.setAttribute('type', 'text/css');\nlink.setAttribute('href', '%s');\nhead.appendChild(link);\n\n",
+ $css_file
+);
+}
+
+?>
+        
+
+    }, EmailHTMLEditor, true);
     
     EmailHTMLEditor.render();
 
