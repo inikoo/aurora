@@ -284,7 +284,7 @@ if ($user->data['User Type']=='Supplier') {
 
     //$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
     $nav_menu[] = array(_('Products'), 'suppliers.php'  ,'suppliers');
-    $nav_menu[] = array(_('Dashboard'), 'suppliers_index.php','home');
+    $nav_menu[] = array(_('Dashboard'), 'index.php','home');
 }
 
 

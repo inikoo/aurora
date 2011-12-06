@@ -53,4 +53,16 @@ print "$sql\n";
 mysql_query($sql);
 	
 }
+
+$sql="select * from `User Dimension`  where `User Type`='Supplier' ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+
+
+
+$sql=sprintf("insert into  `Dashboard User Bridge` (`User key`,`Dashboard Order`,`Dashboard Class`,`Dashboard URL`) values (%d,2,'block_1','splinter_twitter.php?')",$row['User Key']);
+print "$sql\n";
+mysql_query($sql);
+	
+}
 ?>
