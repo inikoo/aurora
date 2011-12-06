@@ -32,6 +32,17 @@ case('search'):
     $data['user']=$user;
     search($data);
     break;
+case('site'):
+    $data=prepare_values($_REQUEST,array(
+                             'q'=>array('type'=>'string'),
+                             'site_id'=>array('type'=>'key')
+                         ));
+
+
+    $data['user']=$user;
+    search_site($data);
+    break;
+
 case('products'):
     $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string'),
@@ -2089,7 +2100,7 @@ function search_supplier_products($data) {
     if ($data['scope']!='supplier') {
 
         $sql=sprintf('select `Supplier Key`,`Supplier Code` from `Supplier Dimension` where %s and  `Supplier Code` like "%s%%" limit 100 ',
-          $suppliers_where,
+                     $suppliers_where,
                      addslashes($q));
 //print $sql;
         $res=mysql_query($sql);
@@ -2223,20 +2234,127 @@ function search_supplier_products($data) {
 
     $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
     echo json_encode($response);
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
+
+
+function search_site($data) {
+    $the_results=array();
+
+    $max_results=10;
+    $user=$data['user'];
+    $q=$data['q'];
+
+
+    if ($q=='') {
+        $response=array('state'=>200,'results'=>0,'data'=>'');
+        echo json_encode($response);
+        return;
+    }
+
+
+
+
+
+
+    $extra_q='';
+    $array_q=preg_split('/\s/',$q);
+    if (count($array_q>1)) {
+        $q=array_shift($array_q);
+        $extra_q=join(' ',$array_q);
+
+    }
+
+    $found_family=false;
+
+    $candidates=array();
+    $sql=sprintf('select `Page Key`,`Page Parent Code` from `Page Store Dimension` where `Page Site Key`=%d and `Page Parent Code` like "%s%%" limit 100 ',$data['site_id'],addslashes($q));
+//print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        if (strtolower($row['Page Parent Code'])==strtolower($q)) {
+            $factor=210;
+        } else {
+            $factor=200;
+        }
+        $candidates[$row['Page Key']]=$factor;
+    }
+
+//`Page Store Title`,`Page Store Resume`,`Page Store Source`)
+
+
+    $sql=sprintf('select `Page Key`, MATCH (`Page Store Title`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key`=%d and MATCH (`Page Store Title`) AGAINST ("%s")  ',
+                 $data['site_id'],
+                 addslashes($q),
+                 addslashes($q)
+                );
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $candidates[$row['Page Key']]=$row['score']*3;
+    }
+
+  $sql=sprintf('select `Page Key`, MATCH (`Page Store Resume`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key`=%d and MATCH (`Page Store Resume`) AGAINST ("%s")  ',
+                 $data['site_id'],
+                 addslashes($q),
+                 addslashes($q)
+                );
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $candidates[$row['Page Key']]=$row['score']*2;
+    }
+    
+    
+      $sql=sprintf('select `Page Key`, MATCH (`Page Store Source`) AGAINST ("%s") AS score  from `Page Store Dimension`   where `Page Site Key`=%d and MATCH (`Page Store Source`) AGAINST ("%s")  ',
+                 $data['site_id'],
+                 addslashes($q),
+                 addslashes($q)
+                );
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $candidates[$row['Page Key']]=$row['score'];
+    }
+
+
+
+    arsort($candidates);
+// $candidates=array_reverse($candidates);
+//print_r($candidates);
+    $total_candidates=count($candidates);
+
+    if ($total_candidates==0) {
+        $response=array('state'=>200,'results'=>0,'data'=>'');
+        echo json_encode($response);
+        return;
+    }
+
+
+    $counter=0;
+    $results=array();
+    $page_keys='';
+    foreach($candidates as $key=>$val) {
+        $counter++;
+        $page_keys.=','.$key;
+        $results[$key]='';
+        if ($counter>$max_results)
+            break;
+    }
+    $page_keys=preg_replace('/^,/','',$page_keys);
+
+
+    $sql=sprintf("select PS.`Page Key`,`Page Short Title`,`Page URL`,`Page Store Resume` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)  where PS.`Page Key` in (%s) ",$page_keys);
+   
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $image='';
+        //if ($row['Product Main Image']!='art/nopic.png')
+        //     $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnail',$row['Product Main Image']));
+
+        $results[$row['Page Key']]=array('image'=>$image,'code'=>$row['Page Short Title'],'description'=>$row['Page Store Resume'],'link'=>'page.php?id=','key'=>$row['Page Key']);
+    }
+
+    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'page.php?id=','q'=>$q);
+
+    echo json_encode($response);
+}
 
 ?>
