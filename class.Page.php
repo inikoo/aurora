@@ -2132,11 +2132,11 @@ class Page extends DB_Table {
         global $inikoo_public_url;
 
 
-exit("xx");
+
 
         $r = unpack('v*', fread(fopen('/dev/random', 'r'),256));;
         $pwd=uniqid('',true).sha1(mt_rand()).'.'.join('.',$r);
-
+exit("xxa");
         $sql=sprintf("insert into `MasterKey Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)values (%s,%s,%s,%s) "
                      ,1
                      ,prepare_mysql($pwd)
