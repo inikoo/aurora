@@ -2197,7 +2197,7 @@ class Page extends DB_Table {
    //  print "x2\n";
         $new_image_key=$image->id;
       if(!$new_image_key){
-        exit(image->msg."\n");
+        exit(image->msg." xx \n");
       
       }
       
