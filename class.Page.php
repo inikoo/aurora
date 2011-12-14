@@ -2131,6 +2131,9 @@ class Page extends DB_Table {
 
         global $inikoo_public_url;
 
+
+exit("xx");
+
         $r = unpack('v*', fread(fopen('/dev/random', 'r'),256));;
         $pwd=uniqid('',true).sha1(mt_rand()).'.'.join('.',$r);
 
@@ -2151,7 +2154,7 @@ class Page extends DB_Table {
 
 
         $height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
-
+//ar_edit_sites.php?tipo=update_page_snapshot&id=1951;
 exit($height);
 
         ob_start();
