@@ -711,8 +711,8 @@ function upload_page_content(){
 
 
 
-Dom.setStyle('processing_upload_page_content','display','')
-Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','none')
+//Dom.setStyle('processing_upload_page_content','display','')
+//Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','none')
 
     YAHOO.util.Connect.setForm('upload_page_content_form', true,true);
     var request='ar_upload_page_content.php?tipo=upload_page_content';
@@ -758,7 +758,8 @@ Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','non
   
   YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key,{
   success: function(o) {
-   window.location.reload()
+  alert(o.responseText)
+  // window.location.reload()
   }
   });
   
