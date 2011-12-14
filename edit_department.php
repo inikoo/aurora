@@ -102,9 +102,7 @@ $js_files=array(
 
           );
 
-$department->load_images_slidesshow();
-$images=$department->images_slideshow;
-$smarty->assign('images',$images);
+
 
 
 $smarty->assign('pages_view',$_SESSION['state']['department']['edit_pages']['view']);
@@ -213,29 +211,38 @@ $smarty->assign('title', _('Editing').': '.$department->get('Product Department 
 
 
 
+$tipo_filter=$_SESSION['state']['department']['history']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['department']['history']['f_value']);
+$filter_menu=array(
+                 'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+                 'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+                 'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+                 'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
+                 'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
+
+             );
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu1',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
 
-$number_of_sites=0;
-$site_key=0;
-$number_of_pages=0;
-$page_key=0;
-
-$sql=sprintf("select count(*) as num, `Site Key` from `Site Dimension` where `Site Store Key`=%d ",
-             $department->data['Product Department Store Key']);
-
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-    $number_of_sites=$row['num'];
-    if ($number_of_sites==1)
-        $site_key=$row['Site Key'];
-
-}
 
 
+$tipo_filter=$_SESSION['state']['department']['edit_pages']['f_field'];
+$smarty->assign('filter6',$tipo_filter);
+$smarty->assign('filter_value6',$_SESSION['state']['department']['edit_pages']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'header'=>array('db_key'=>_('header'),'menu_label'=>_('Header'),'label'=>_('Header')),
 
-
-$smarty->assign('number_of_sites',$number_of_sites);
-$smarty->assign('site_key',$site_key);
+             );
+$smarty->assign('filter_menu6',$filter_menu);
+$smarty->assign('filter_name6',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu6',$paginator_menu);
 
 
 

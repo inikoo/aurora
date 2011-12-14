@@ -30,16 +30,18 @@ if(isset($_REQUEST['pid']) and is_numeric($_REQUEST['pid'])){
   $product_id=$_REQUEST['pid'];
   $_SESSION['state']['product']['mode']='pid';
   $_SESSION['state']['product']['tag']=$product_id;
-}elseif($_SESSION['state']['product']['mode']=='pid'){
-  $product_id=$_SESSION['state']['product']['tag'];
-
 }else{
-  exit('do not know what to do tying to editing no pid mode product');
+  header('Location: index.php?no_product_id');
+        exit;
 }
 
-if(!$product= new product('pid',$product_id))
-  exit('Error product not found');
+$product= new product('pid',$product_id);
+if(!$product->id){
+   header('Location: index.php?product_not_found');
+        exit;
 
+
+}
 
 $store=new Store($product->data['Product Store Key']);
 
@@ -49,12 +51,12 @@ $smarty->assign('store',$store);
 
 
 
-$product->load_images_slidesshow();
-$images=$product->images_slideshow;
+//$product->load_images_slidesshow();
+//$images=$product->images_slideshow;
 $product->load_currency_data();
 
-$smarty->assign('images',$images);
-$smarty->assign('num_images',count($images));
+//$smarty->assign('images',$images);
+//$smarty->assign('num_images',count($images));
 
 $parts_info=$product->get_parts_info();
 
@@ -205,6 +207,23 @@ foreach($units_types as $units_type ){
 $smarty->assign('unit_type_options',$unit_type_options
                                 );
 $smarty->assign('unit_type',$product->data['Product Unit Type']);
+
+
+
+$tipo_filter=$_SESSION['state']['product']['history']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['product']['history']['f_value']);
+$filter_menu=array(
+                 'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with notes *<i>x</i>*'),'label'=>_('Notes')),
+                 'author'=>array('db_key'=>'author','menu_label'=>_('Done by <i>x</i>*'),'label'=>_('Notes')),
+                 'uptu'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+                 'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
+                 'abstract'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract'),'label'=>_('Abstract'))
+             );
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+
+
 
 $tipo_filter2='code';
 $filter_menu2=array(

@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
-{include file='assets_navigation.tpl'}
+{include file='locations_navigation.tpl'}
 <div class="branch"> 
   <span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_parts.php?id={$warehouse->id}">{t}Parts{/t}</a> &rarr; {$part->get_sku()}</span>
 </div>
@@ -27,15 +27,15 @@
 <table class="edit"  style="width:800px">
  <td class="label" style="width:200px">{t}Keeping Status{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
-   <span class="{if $part->get('Part Status')=='In Use'}selected{/if}" onclick="save_status('Part Status','In Use')" id="Part Status In Use">{t}Keeping{/t}</span> <span class="{if $part->get('Part Status')=='Not In Use'}selected{/if}"  onclick="save_status('Part Status','Not In Use')" id="Part Status Not In Use">{t}Not Keeping{/t}</span>
+   <div   class="buttons" >
+   <button class="{if $part->get('Part Status')=='In Use'}selected{/if} positive" onclick="save_status('Part Status','In Use')" id="Part Status In Use">{t}Keeping{/t}</button> <button class="{if $part->get('Part Status')=='Not In Use'}selected{/if} negative"  onclick="save_status('Part Status','Not In Use')" id="Part Status Not In Use">{t}Not Keeping{/t}</button>
    </div>
  </td>
+ <td style="width:300px"></td>
  </tr>
 
 </table>
 </div>
-
 <div class="edit_block" {if $edit!="products"}style="display:none"{/if}  id="d_products">
  
 
@@ -56,7 +56,7 @@
  {t}Add new part{/t} 
   <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 </div>
-  
+  {*}
   <table  class="edit" style="display:none;width:33em"  >
     <tbody id="new_part_form" style="display:none;background:#f1fdf2"  part_id="" >
       <tr class="top title">
@@ -105,7 +105,7 @@
     </tbody>
     
   </table>
-  
+  {*}
   
   
   
@@ -120,9 +120,9 @@
 <table class="edit"  style="width:890px">
  <tr class="title"><td colspan=5>{t}Unit{/t}</td>
  <td>
- <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_unit" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_unit" class="state_details">{t}Reset{/t}</span>
+ <div class="buttons" >
+	<button  style="visibility:hidden"  id="save_edit_part_unit" class="positive">{t}Save{/t}</button>
+	<button style="visibility:hidden" id="reset_edit_part_unit" class="negative">{t}Reset{/t}</button>
 </div>
  </td>
  
@@ -234,7 +234,7 @@
 
 
 {*}
-
+{*}
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
  {foreach from=$categories item=cat key=cat_key name=foo  }
@@ -255,7 +255,7 @@
 
 
 </table>
-
+{*}
 <div class="general_options" style="float:right">
 	
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_custom_field" class="state_details">{t}Save{/t}</span>
@@ -265,7 +265,7 @@
 	  
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Custom Fields{/t}</td></tr>
- {*Edit custom fields*}
+
  
  {foreach from=$show_case key=custom_field_key item=custom_field_value }
  <tr  id="tr_{$custom_field_value.lable}"><td  class="label">{$custom_field_key}:</td>

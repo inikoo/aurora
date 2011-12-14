@@ -1801,24 +1801,16 @@ function list_contacts() {
 
 function list_customers() {
 
-
-
-
     global $myconf,$user;
-
-
-
 
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else {
-
         return;
     }
     if (isset( $_REQUEST['parent_key']))
         $parent_key=$_REQUEST['parent_key'];
     else {
-
         return;
     }
 
@@ -1913,11 +1905,6 @@ function list_customers() {
     if (isset( $_REQUEST['elements_contacts_with_orders_losing'])) {
         $elements['Losing']=$_REQUEST['elements_contacts_with_orders_losing'];
     }
-
-
-
-
-
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -2035,31 +2022,6 @@ $table=' `Category Bridge` left join  `Customer Dimension` C on (`Subject Key`=`
         $where.=$where_stores;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//print $table;exit;
-
-
-
-//print "yyyy $where_type";
-
-//exit;
 
 
     $filter_msg='';

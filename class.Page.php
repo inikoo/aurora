@@ -17,6 +17,8 @@ class Page extends DB_Table {
 
     var $new=false;
     var $logged=false;
+    var $snapshots_taken=0;
+
     function Page($arg1=false,$arg2=false,$arg3=false) {
         $this->table_name='Page';
         $this->ignore_fields=array('Page Key');
@@ -464,13 +466,13 @@ class Page extends DB_Table {
 
     function update_thumbnail_key($image_key) {
 
-        $old_value=$this->data['Page Thumbnail Image Key'];
+        $old_value=$this->data['Page Snapshot Image Key'];
         if ($old_value!=$image_key) {
             $this->updated;
-            $this->data['Page Thumbnail Image Key']=$image_key;
+            $this->data['Page Snapshot Image Key']=$image_key;
 
-            $sql=sprintf("update `Page Dimension` set `Page Thumbnail Image Key`=%d ,`Page Snapshot Last Update`=NOW() where `Page Key`=%d "
-                         ,$this->data['Page Thumbnail Image Key']
+            $sql=sprintf("update `Page Dimension` set `Page Snapshot Image Key`=%d ,`Page Snapshot Last Update`=NOW() where `Page Key`=%d "
+                         ,$this->data['Page Snapshot Image Key']
                          ,$this->id
                         );
             mysql_query($sql);
@@ -481,7 +483,7 @@ class Page extends DB_Table {
                         );
             mysql_query($sql);
 
-            if ($this->data['Page Thumbnail Image Key']) {
+            if ($this->data['Page Snapshot Image Key']) {
                 $sql=sprintf("insert into `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`) values('Website',%d,%d)"
                              ,$this->id
                              ,$image_key
@@ -615,11 +617,17 @@ class Page extends DB_Table {
         case('link_title'):
             $this->update_field('Page Short Title',$value,$options);
             break;
+        case('Page Store Resume'):
+        case('description'):
+        case('page_html_head_resume'):
+            $this->update_field('Page Store Resume',$value,$options);
+            break;
         case('Page Keywords'):
         case('keywords'):
         case('page_keywords'):
             $this->update_field('Page Keywords',$value,$options);
             break;
+
         case('store_title'):
             $this->update_field('Page Store Title',$value,$options);
             break;
@@ -634,7 +642,12 @@ class Page extends DB_Table {
             break;
         case('Page Store Source'):
         case('Page Store CSS'):
-        case('Page Store Resume'):
+        case('Number See Also Links'):
+        case('Page Footer Height'):
+        case('Page Header Height'):
+        case('Page Content Height'):
+
+
             $this->update_field($field,$value,$options);
             break;
         case('presentation_template_data'):
@@ -810,6 +823,7 @@ class Page extends DB_Table {
             $found_in_page=new Page($row['Page Store Found In Key']);
             if ($found_in_page->id) {
                 $found_in[]=array(
+                                'link'=>'<a href="'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>',
                                 'found_in_label'=>$found_in_page->data['Page Short Title'],
                                 'found_in_url'=>$found_in_page->data['Page URL'],
                                 'found_in_key'=>$found_in_page->id,
@@ -895,7 +909,7 @@ class Page extends DB_Table {
         if ($this->data['Page Type']!='Store' or $this->data['Page Store See Also Type']=='Manual')
             return;
 
-        $max_links=3;
+        $max_links=$this->data['Number See Also Links'];
         $min_sales_correlation_samples=20;
         $correlation_upper_limit=1/($min_sales_correlation_samples);
         $see_also=array();
@@ -998,8 +1012,11 @@ class Page extends DB_Table {
         $sql=sprintf("delete from `Page Store See Also Bridge`where `Page Store Key`=%d ",
                      $this->id);
         mysql_query($sql);
-
+        $count=0;
         foreach($see_also  as $see_also_page_key=>$see_also_data) {
+
+            if ($count>=$max_links)
+                break;
 
             $sql=sprintf("insert  into `Page Store See Also Bridge` values (%d,%d,%s,%f) ",
                          $this->id,
@@ -1130,7 +1147,7 @@ class Page extends DB_Table {
                   'Product Unit Type'=>$product->data['Product Unit Type'],
 
 
-                  'locale'=>$locale);
+                  'locale'=>$this->site->data['Site Locale']);
 
         $price= '<span class="price">'.formated_price($data).'</span><br>';
 
@@ -1141,7 +1158,7 @@ class Page extends DB_Table {
                   'Product Unit Type'=>$product->data['Product Unit Type'],
                   'Label'=>_('RRP').":",
 
-                  'locale'=>$locale);
+                  'locale'=>$this->site->data['Site Locale']);
 
         $rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
 
@@ -1313,7 +1330,7 @@ class Page extends DB_Table {
 
 
                 foreach ($products as $key=>$product) {
-                    $rrp=money_locale($product['Product RRP'],$this->locale,$product['Product Currency']);
+                    $rrp=money_locale($product['Product RRP'],$this->site->data['Site Locale'],$product['Product Currency']);
 
                     $products[$key]['description']=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
                                                            $product['Product Units Per Case'],
@@ -1334,7 +1351,7 @@ class Page extends DB_Table {
 
 
                 foreach ($products as $key=>$product) {
-                    $rrp=money_locale($product['Product RRP'],$this->locale,$product['Product Currency']);
+                    $rrp=money_locale($product['Product RRP'],$this->site->data['Site Locale'],$product['Product Currency']);
 
                     $products[$key]['description']=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
                                                            $product['Product Units Per Case'],
@@ -1386,12 +1403,12 @@ class Page extends DB_Table {
 
     function display_list_logged_out($products) {
 
-        $options=unserialize($this->data['Page List Metadata']);
+
 
         $show_unit=true;
-        if (isset($options['unit'])) {
-            $show_unit=$options['unit'];
-        }
+        //if (isset($options['unit'])) {
+        //    $show_unit=$options['unit'];
+        // }
         $print_header=true;
         $print_rrp=false;
         $print_register=true;
@@ -1452,7 +1469,7 @@ class Page extends DB_Table {
 
 
         }
-
+        $counter=0;
 
         foreach($products as $product) {
 
@@ -1904,7 +1921,7 @@ class Page extends DB_Table {
                   'Product Currency'=>$this->currency,
                   'Product Unit Type'=>$data['Product Unit Type'],
                   'Label'=>$data['Label'],
-                  'locale'=>$this->data['Page Locale']);
+                  'locale'=>$this->site->data['Site Locale']);
         if (isset($data['price per unit text']))
             $_data['price per unit text']=$data['price per unit text'];
 
@@ -1919,7 +1936,7 @@ class Page extends DB_Table {
                    'Product Currency'=>$this->currency,
                    'Product Unit Type'=>$data['Product Unit Type'],
                    'Label'=>$data['Label'],
-                   'locale'=>$this->data['Page Locale']
+                   'locale'=>$this->site->data['Site Locale']
 
                );
 
@@ -2101,6 +2118,118 @@ class Page extends DB_Table {
         return $buttons;
     }
 
+    function display_search() {
+        print $this->site->display_search();
+    }
+
+    function display_menu() {
+        print $this->site->display_menu();
+    }
+
+
+    function update_preview_snapshot() {
+
+        global $inikoo_public_url;
+
+        $r = unpack('v*', fread(fopen('/dev/random', 'r'),256));;
+        $pwd=uniqid('',true).sha1(mt_rand()).'.'.join('.',$r);
+
+        $sql=sprintf("insert into `MasterKey Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)values (%s,%s,%s,%s) "
+                     ,1
+                     ,prepare_mysql($pwd)
+                     ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now +1 minute")))
+                     ,prepare_mysql(ip())
+                    );
+
+
+        mysql_query($sql);
+        $old_image_key=$this->data['Page Preview Snapshot Image Key'];
+
+        //   $new_image_key=$old_image_key;
+        //      $image=new Image($image_key);
+
+
+
+        $height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
+
+        ob_start();
+        system("uname");
+
+
+        $url=$inikoo_public_url."authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
+
+        $_system = ob_get_clean();
+        if (preg_match('/darwin/i',$_system)) {
+            $command="mantenence/scripts/webkit2png_mac.py  -C -o app_files/tmp/pp_image".$this->id."  --clipheight=".($height*0.5)."  --clipwidth=512  -s 0.5  ".$url;
+
+            //       $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/ph_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_header_preview.php?id=".$this->id;
+
+        }
+
+        elseif(preg_match('/linux/i',$_system)) {
+            $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png -g 1024 '.($height*0.5).' -s  512 '.($height).'    '.$url;
+        }
+        else {
+            return;
+
+        }
+
+
+
+        ob_start();
+        system($command,$retval);
+        ob_get_clean();
+        $this->snapshots_taken++;
+        // print "$command  $retval";
+
+        $image_data=array('file'=>"app_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_header'.$this->id);
+        $image=new Image('find',$image_data,'create');
+        unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
+        $new_image_key=$image->id;
+        if ($new_image_key!=$old_image_key and $new_image_key) {
+            $this->data['Page Preview Snapshot Image Key']=$new_image_key;
+            $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d and `Image Key`=%d ",
+                         prepare_mysql('Page Preview'),
+                         $this->id,
+                         $image->id
+                        );
+            mysql_query($sql);
+//print $sql;
+            $old_image=new Image($old_image_key);
+            $old_image->delete();
+
+
+            $sql=sprintf("insert into `Image Bridge` values (%s,%d,%d,'Yes','')",
+                         prepare_mysql('Page Preview'),
+                         $this->id,
+                         $image->id
+
+                        );
+            mysql_query($sql);
+//print $sql;
+            $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Image Key`=%d  where `Page Key`=%d",
+                         $this->data['Page Preview Snapshot Image Key'],
+                         $this->id
+
+                        );
+            mysql_query($sql);
+            //  print $sql;
+
+            $this->updated=true;
+            $this->new_value=$this->data['Page Preview Snapshot Image Key'];
+
+        }
+
+
+        usleep(250000);
+        $this->get_data('id',$this->id);
+        $new_height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
+
+        if ($new_height!=$height) {
+            $this->update_preview_snapshot();
+        }
+
+    }
 
 }
 

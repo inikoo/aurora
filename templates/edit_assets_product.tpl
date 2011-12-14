@@ -68,7 +68,7 @@
 	  <span style="font-size:150%;font-weight:800">{$code}</span>
 	  
 	  <div id="imagediv"  pic_id="{$images[0].id}"  style="width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer">
-	    <img src="{ if $images[0]}{$images[0].src}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
+	    <img src="{if $images[0]}{$images[0].src}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
 	  </div>
 	  <div class="image_caption" id="caption" {if $images!=1}style="display:none"{/if}>{$images[0].caption}</div>
 	  <table class="other_images " id="otherimages"   xstyle="display:none"   >

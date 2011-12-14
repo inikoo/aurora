@@ -76,6 +76,7 @@ case('new_category'):
                              'name'=>array('type'=>'string'),
                              'subject'  =>array('type'=>'string'),
                              'store_key'  =>array('type'=>'number'),
+                             'warehouse_key'  =>array('type'=>'number'),
                              'parent_key'  =>array('type'=>'number')
                          ));
 
@@ -138,6 +139,7 @@ function add_category($raw_data) {
               'Category Name'=>$raw_data['name'],
               'Category Subject'=>$raw_data['subject'],
               'Category Store Key'=>   $raw_data['store_key'],
+                'Category Warehouse Key'=>   $raw_data['warehouse_key'],
               'Category Parent Key'=>$raw_data['parent_key'],
           );
 
@@ -1069,7 +1071,7 @@ function associate_subject_to_category($data) {
 
     if (mysql_affected_rows()>0) {
 
-        $category=new Category($data['category_key']);
+      //  $category=new Category($data['category_key']);
 
         $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id']);
         echo json_encode($response);

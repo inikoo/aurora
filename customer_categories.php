@@ -77,7 +77,8 @@ if (!$category_key) {
     }
 
     $store=new Store($store_id);
-
+   $block_view=$_SESSION['state']['customer_categories']['base_block_view'];
+    $smarty->assign('block_view',$block_view);
 
     $js_files[]='customer_categories_base.js.php';
     $tpl_file='customer_categories_base.tpl';
@@ -99,27 +100,23 @@ if (!$category_key) {
         $store_id=$_SESSION['state']['store']['id'];
     }
 
+
     $store=new Store($store_id);
+
+    if (!$store->id) {
+
+        exit("Error wrong store");
+    }
+
+    $currency=$store->data['Store Currency Code'];
+    $currency_symbol=currency_symbol($currency);
+
 
     $category_key=  $category->id;
 
-    $general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
-    $general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
-    $general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
-    $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
-    if ($modify) {
-        $general_options_list[]=array('class'=>'edit','tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
-        $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'edit_customer_category.php?&id='.$category->id,'label'=>_('Edit Category'));
-
-    }
 
     $block_view=$_SESSION['state']['customer_categories']['block_view'];
-
-
-    if ($category->data['Category Children Deep']==0) {
-        $block_view='subjects';
-    }
     $smarty->assign('block_view',$block_view);
     $smarty->assign('category',$category);
 
@@ -132,6 +129,34 @@ if (!$category_key) {
     $js_files[]='customer_categories.js.php';
     $tpl_file='customer_category.tpl';
 
+
+
+
+
+    $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
+    $smarty->assign('filter0',$tipo_filter);
+    $smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);
+
+    $filter_menu=array(
+                     'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
+                     'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+                     'country'=>array('db_key'=>_('country'),'menu_label'=>_('Customer Country'),'label'=>_('Country')),
+
+                     'min'=>array('db_key'=>_('min'),'menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
+                     'max'=>array('db_key'=>_('min'),'menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
+                     'last_more'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
+                     'last_less'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
+                     'maxvalue'=>array('db_key'=>_('maxvalue'),'menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
+                     'minvalue'=>array('db_key'=>_('minvalue'),'menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
+                 );
+
+
+    $smarty->assign('filter_menu0',$filter_menu);
+    $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+    $paginator_menu=array(10,25,50,100,500);
+    $smarty->assign('paginator_menu0',$paginator_menu);
+
+
 //print_r($category->data);
 
 }
@@ -140,17 +165,49 @@ if (!$category_key) {
 $_SESSION['state']['customer_categories']['category_key']=$category_key;
 
 
-$store=new Store($store_id);
 
-if (!$store->id) {
+$tipo_filter=$_SESSION['state']['customer_categories']['subcategories']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['customer_categories']['subcategories']['f_value']);
 
-    exit("Error wrong store");
-}
+$filter_menu=array(
+                 'name'=>array('db_key'=>_('name'),'menu_label'=>_('Category Name'),'label'=>_('Name')),
+             );
+
+
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['store']['history']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['site']['history']['f_value']);
+$filter_menu=array(
+                 'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+                 'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+                 'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+                 'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
+                 'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
+
+             );
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu2',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+
+
+
 
 $_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 
+$smarty->assign('parent','customers');
+$smarty->assign('title',_('Customers Categories'));
 
 $smarty->assign('subject','Customer');
 //$smarty->assign('general_options_list',$general_options_list);

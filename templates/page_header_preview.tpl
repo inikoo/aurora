@@ -11,9 +11,10 @@
             {foreach from=$js_files item=i }
             <script type="text/javascript" src="{$i}"></script>
             {/foreach}
-            
-           
-          
+            <link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
+            <link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
+            <script type="text/javascript" src="public_search.js.php?id={$site->id}"></script>
+            <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script>
     </head>
     <body class="yui-skin-sam inikoo" >
         <div id="doc4" >

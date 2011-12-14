@@ -120,9 +120,6 @@ $js_files=array(
 
           );
 
-$department->load_images_slidesshow();
-$images=$department->images_slideshow;
-$smarty->assign('images',$images);
 
 
 $js_files[]='js/search.js';

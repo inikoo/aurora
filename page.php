@@ -30,9 +30,10 @@ if (!($user->can_view('stores')    ) ) {
 }
 
 
-
+include_once('class.Image.php');
 $page=new Page($page_key);
-
+//$page->update_preview_snapshot();
+//exit;
 
 if (!$page->id) {
     header('Location: index.php');
@@ -41,7 +42,6 @@ if (!$page->id) {
 
 
 $_SESSION['state']['page']['id']=$page->id;
-
 $store=new Store($page->data['Page Store Key']);
 $smarty->assign('store',$store);
 $site=new Site($page->data['Page Site Key']);
@@ -49,22 +49,11 @@ $smarty->assign('site',$site);
 $store=new Store($site->data['Site Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
-
-
 $smarty->assign('page',$page);
-
-
 $create=$user->can_create('sites');
-
 $modify=$user->can_edit('sites');
-
-
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
-
-
-
-
 $smarty->assign('search_label',_('Website'));
 $smarty->assign('search_scope','site');
 
@@ -119,21 +108,63 @@ if (isset($_REQUEST['view'])) {
 }
 $smarty->assign('block_view',$_SESSION['state']['page']['view']);
 
-
-
-
-
 $subject_id=$page_key;
-
-
 $smarty->assign('site',$site);
 
 $smarty->assign('parent','products');
 $smarty->assign('title', $page->data['Page Store Title']);
 
 
+$order=$_SESSION['state']['site']['pages']['order'];
+if ($order=='code') {
+    $order='`Page Code`';
+    $order_label=_('Code');
+} else if ($order=='url') {
+    $order='`Page URL`';
+    $order_label=_('URL');
+} else if ($order=='title') {
+    $order='`Page Store Title`';
+    $order_label=_('Title');
+} else {
+    $order='`Page Code`';
+    $order_label=_('Code');
+}
 
+$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select `Page Key` as id , `Page Store Title` as name from `Page Store Dimension`   where  `Page Site Key`=%d  and %s < %s  order by %s desc  limit 1",
+             $site->id,
+             $order,
+             prepare_mysql($page->get($_order)),
+             $order
+            );
 
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $prev['link']='page.php?id='.$row['id'];
+    $prev['title']=$row['name'];
+}
+mysql_free_result($result);
+
+$smarty->assign('prev',$prev);
+$sql=sprintf(" select `Page Key` as id , `Page Store Title` as name from `Page Store Dimension`    where  `Page Site Key`=%d  and  %s>%s  order by %s   ",
+             $site->id,
+             $order,
+             prepare_mysql($page->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $next['link']='page.php?id='.$row['id'];
+    $next['title']=$row['name'];
+}
+mysql_free_result($result);
+$smarty->assign('prev',$prev);
+$smarty->assign('next',$next);
+
+$smarty->assign('parent_url','site.php?id='.$site->id);
+$parent_title=$site->data['Site Name'].' '._('Pages').' ('.$order_label.')';
+$smarty->assign('parent_title',$parent_title);
 
 $smarty->display('page.tpl');
 

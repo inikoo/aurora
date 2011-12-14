@@ -38,8 +38,12 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
     $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
 }
 
-if(!$part= new Part($part_id))
-  exit('Error product not found');
+$part= new Part($part_id);
+
+if (!$part->id) {
+    header('Location: warehouse.php?msg=part_not_found');
+    exit;
+}
 
 
 $smarty->assign('part',$part);
@@ -219,11 +223,51 @@ if($row=mysql_fetch_array($res)){
 $smarty->assign('show_case',$show_case);
 */
 
+$tipo_filter=$_SESSION['state']['part']['history']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['part']['history']['f_value']);
+$filter_menu=array(
+                 'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with notes *<i>x</i>*'),'label'=>_('Notes')),
+                 'author'=>array('db_key'=>'author','menu_label'=>_('Done by <i>x</i>*'),'label'=>_('Notes')),
+                 'uptu'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+                 'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
+                 'abstract'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract'),'label'=>_('Abstract'))
+             );
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['part']['products']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['part']['products']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Products with code *<i>x</i>*'),'label'=>_('Code')),
+              );
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu1',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['part']['supplier_products']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['part']['supplier_products']['f_value']);
+$filter_menu=array(
+                     'code'=>array('db_key'=>'code','menu_label'=>_('Products with code *<i>x</i>*'),'label'=>_('Code'))
+);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu2',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
 
 
 
 
 $smarty->assign('warehouse',$warehouse);
+$smarty->assign('warehouse_id',$warehouse->id);
 
 $smarty->display('edit_part.tpl');
 

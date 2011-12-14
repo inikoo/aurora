@@ -28,20 +28,20 @@
   <div id="photo_container" style="float:left">
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	     
-	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-		<img src="{ if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
+	      <div id="imagediv"   style="border:1px solid #ddd;width:190px;;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
+		<img src="{$part->get('Part Main Image')}"  style="vertical-align:middle;display:block;" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
 	      </div>
 	    </div>
 	    
-	    { if $num_images>1}
+	
 	    <div style="width:160px;margin:auto;padding-top:5px"  >
-	      {foreach from=$images item=image  name=foo}
+	      {foreach from=$part->get_images_slidesshow() item=image  name=foo}
 	      {if $image.is_principal==0}
 	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}"  title="" alt="" />
 	      {/if}
 	      {/foreach}
 	    </div>
-	    {/if}
+	
 	    
 	    
 	  </div>
@@ -71,7 +71,7 @@
  <div style="width:280px;float:left;margin-left:20px">
 	<table   class="show_info_product" style="width:260px">
 		  <tr>
-		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
+		    <td>{t}Stock{/t}:<br>({$part->get_unit($part->get('Part Current Stock'))})</td><td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
 		  </tr>
 <tr>
 		    <td style="{if $part->get('Part XHTML Available For Forecast')==''}display:none{/if}">{t}Available for{/t}:</td><td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>
@@ -79,7 +79,9 @@
 		   
 		  
 		   
-		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
+		    {foreach  from=$part->get_next_shipments() item=shipments   }
+		    <tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>
+		    {/foreach}
 		    </tr>
 		  </table>
 		  {t}Locations{/t}:<div id="add_location_button" style="float:right;font-size:80%;color:#777;margin-right:40px;cursor:pointer"><span onClick="add_location({$part->sku})">{t}Add Location{/t}</span></div>

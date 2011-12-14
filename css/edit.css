@@ -12,7 +12,7 @@ table.edit tr.validated td.label { background:url('../art/icons/accept.png') no-
 
 
 table.edit td.icon{ padding:0 5px;width:16px}
-table.edit tr.top{ border-top:1px solid #1d4e85}
+table.edit tr.top{ border-top:1px solid #a5b6c8}
 table.edit tr.title{text-align:left; border-bottom:1px solid #a5b6c8;}
 table.edit tr.title td{vertical-align:bottom;font-weight:800;text-align:left;}
 table.edit img.icon{margin-left:10px;float:right;cursor:pointer}

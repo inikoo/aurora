@@ -23,8 +23,27 @@ if (!isset($_REQUEST['tipo'])) {
     exit;
 }
 
+
+
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('update_page_height'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                             'footer'=>array('type'=>'numeric'),
+                             'header'=>array('type'=>'numeric'),
+                             'content'=>array('type'=>'numeric'),
+
+                         ));
+    update_page_height($data);
+    break;
+    break;
+case('update_page_snapshot'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                         ));
+    update_page_snapshot($data);
+    break;
 case('edit_page_product_list'):
     $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'string'),
@@ -87,6 +106,9 @@ case('add_see_also_page'):
 
 
     break;
+case('edit_site_menu'):
+case('edit_site_search'):
+
 case('edit_site'):
 
     $data=prepare_values($_REQUEST,array(
@@ -173,7 +195,13 @@ case('new_department_page'):
     new_department_page($data);
     break;
 
-
+case('update_see_also_quantity'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                             'operation'=>array('type'=>'string')
+                         ));
+    update_see_also_quantity($data);
+    break;
 case('new_family_page'):
     $data=prepare_values($_REQUEST,array(
                              'site_key'=>array('type'=>'key'),
@@ -266,34 +294,58 @@ default:
 
 }
 
+function update_see_also_quantity($data) {
 
+    include_once('class.Family.php');
+    global $editor;
+    $page=new Page($data['id']);
+    $page->editor=$editor;
+
+    if ($page->data['Number See Also Links']==0 and $data['operation']=='remove') {
+        $response= array('state'=>401,'msg'=>$page->msg);
+        echo json_encode($response);
+        return;
+    }
+
+
+    if ($data['operation']=='remove') {
+        $quantity=$page->data['Number See Also Links']-1;
+    } else {
+        $quantity=$page->data['Number See Also Links']+1;
+    }
+    $page->update_field_switcher('Number See Also Links',$quantity);
+
+    if ($page->updated) {
+        $page->update_see_also();
+        //$page->update_preview_snapshot();
+        $response= array('state'=>200,'newvalue'=>$page->new_value);
+    } else {
+        $response= array('state'=>400,'msg'=>$page->msg);
+    }
+    echo json_encode($response);
+
+
+}
 
 function  edit_page($data) {
 
     global $editor;
-
-//print_r($data);
-
-
     $page=new Page($data['id']);
     $page->editor=$editor;
-
 
     $value=stripslashes(urldecode($data['newvalue']));
 
     if ($data['key']=='Page Store Source') {
         $value=preg_replace("/\{(.*)\}/e",'"{".html_entity_decode(\'$1\')."}"', $value);
-
-
+         $page->update_field_switcher($data['key'],$value,'no_history');
+    }else{
+    $page->update_field_switcher($data['key'],$value);
     }
 
-
-    $page->update_field_switcher($data['key'],$value);
-
-
+   
     if ($page->updated) {
+       
         $response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$page->new_value);
-
     } else {
         $response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key']);
     }
@@ -369,26 +421,15 @@ function new_family_page($data) {
 
 
 function list_pages_for_edition() {
-    if (isset( $_REQUEST['site_key'])) {
-        $site_key=$_REQUEST['site_key'];
-
-    } else
-        $site_key=$conf['site_key'];
 
 
-    $parent='site';
-    $parent_key=$site_key;
 
 
-    if ( isset($_REQUEST['parent']))
-        $parent= $_REQUEST['parent'];
 
-    if ($parent=='store')
-        $parent_key=$_REQUEST['parent_key'];
-    elseif ($parent=='family')
+
+    $parent= $_REQUEST['parent'];
     $parent_key=$_REQUEST['parent_key'];
-    elseif ($parent=='department')
-    $parent_key=$_REQUEST['parent_key'];
+
 
 
 
@@ -448,24 +489,17 @@ function list_pages_for_edition() {
     $_SESSION['state'][$parent]['edit_pages']['sf']=$start_from;
     $_SESSION['state'][$parent]['edit_pages']['f_field']=$f_field;
     $_SESSION['state'][$parent]['edit_pages']['f_value']=$f_value;
-    $_SESSION['state'][$parent]['edit_pages']['parent_key']=$parent_key;
-    $_SESSION['state'][$parent]['edit_pages']['site_key']=$site_key;
 
 
+    if ($parent=='site') {
+        $where=sprintf(' where `Page Type`="Store" and `Page Site Key`=%d ',$parent_key);
 
-
-
-    // print_r($_SESSION['tables']['families_list']);
-
-    //  print_r($_SESSION['tables']['families_list']);
-
-    $where=sprintf(' where `Page Type`="Store" and `Page Site Key`=%d ',$site_key);
-    if ($parent=='store')
-        $where.=sprintf("and `Page Store Section`  not in ('Department Catalogue','Product Description','Family Catalogue') and `Page Store Key`=%d ",$parent_key);
-    elseif ($parent=='family')
-    $where.=sprintf("and `Page Store Section`='Family Catalogue'   and `Page Parent Key`=%d ",$parent_key);
-    elseif ($parent=='department')
-    $where.=sprintf("and `Page Store Section`='Department Catalogue'   and `Page Parent Key`=%d ",$parent_key);
+    } else if ($parent=='store')
+        $where.sprintf("and `Page Store Section`  not in ('Department Catalogue','Product Description','Family Catalogue') and `Page Store Key`=%d ",$parent_key);
+    else if ($parent=='family')
+        $where=sprintf("where `Page Store Section`='Family Catalogue'   and `Page Parent Key`=%d ",$parent_key);
+    else if ($parent=='department')
+        $where=sprintf("where `Page Store Section`='Department Catalogue'   and `Page Parent Key`=%d ",$parent_key);
 
     $filter_msg='';
     $wheref='';
@@ -540,7 +574,7 @@ function list_pages_for_edition() {
 
 
     $adata=array();
-    $sql="select *  from `Page Dimension`  P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select *  from `Page Dimension`  P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (`Site Key`=`Page Site Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
 
     $res = mysql_query($sql);
 
@@ -558,11 +592,12 @@ function list_pages_for_edition() {
                      'id'=>$row['Page Key'],
                      'section'=>$row['Page Section'],
                      'code'=>$row['Page Code'],
+                     'site'=>sprintf('<a href="site.php?id=%d">%s</a>',$row['Page Site Key'],$row['Site Code']),
                      'store_title'=>$row['Page Store Title'],
                      'link_title'=>$row['Page Short Title'],
                      'url'=>$row['Page URL'],
                      'page_title'=>$row['Page Title'],
-                     'page_keywords'=>$row['Page Keywords'],
+                     'page_description'=>$row['Page Store Resume'],
 
 
                      'go'=>sprintf("<a href='edit_page.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key'],$parent,$parent_key),
@@ -758,6 +793,43 @@ function edit_site($data) {
 
 }
 
+function edit_site_field($site_key,$key,$value_data) {
+
+    //print $value_data;
+    //print "$customer_key,$key,$value_data ***";
+    $site=new site($site_key);
+
+    global $editor;
+    $site->editor=$editor;
+
+    $key_dic=array(
+                 'slogan'=>'Site Slogan',
+                 'name'=>'Site Name',
+                 'url'=>'Site URL',
+                 'ftp'=>'Site FTP Credentials',
+
+             );
+
+    if (array_key_exists($key,$key_dic))
+        $key=$key_dic[$key];
+
+    $the_new_value=_trim($value_data['value']);
+    //print "$key: $the_new_value";
+
+    $site->update(array($key=>$the_new_value));
+
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'newvalue'=>strtolower($site->new_value),'key'=>$value_data['okey']);
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg,'key'=>$value_data['okey']);
+
+
+    //$response=array();
+    return $response;
+
+}
+
+
 function delete_page_header($data) {
     $page_header=new PageHeader($data['id']);
     $page_header->delete();
@@ -784,40 +856,7 @@ function delete_page_footer($data) {
     echo json_encode($response);
 }
 
-function edit_site_field($site_key,$key,$value_data) {
 
-    //print $value_data;
-    //print "$customer_key,$key,$value_data ***";
-    $site=new site($site_key);
-
-    global $editor;
-    $site->editor=$editor;
-
-    $key_dic=array(
-                 'slogan'=>'Site Slogan',
-                 'name'=>'Site Name',
-                 'url'=>'Site URL',
-                 'ftp'=>'Site FTP Credentials',
-             );
-
-    if (array_key_exists($key,$key_dic))
-        $key=$key_dic[$key];
-
-    $the_new_value=_trim($value_data['value']);
-    //print "$key: $the_new_value";
-
-    $site->update(array($key=>$the_new_value));
-
-    if ($site->updated) {
-        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'newvalue'=>strtolower($site->new_value),'key'=>$value_data['okey']);
-    } else
-        $response= array('state'=>400,'msg'=>$site->msg,'key'=>$value_data['okey']);
-
-
-    //$response=array();
-    return $response;
-
-}
 
 
 function list_headers_for_edition() {
@@ -1910,5 +1949,33 @@ function edit_page_product_list($data) {
     echo json_encode($response);
 
 }
+
+function update_page_snapshot($data) {
+    include_once('class.Image.php');
+    $page=new Page($data['id']);
+    if ($page->id) {
+        $page->update_preview_snapshot();
+    }
+    $response= array('state'=>200,'image_key'=>$page->data['Page Preview Snapshot Image Key']);
+    echo json_encode($response);
+}
+
+
+function update_page_height($data) {
+
+    $page=new Page($data['id']);
+    if ($page->id) {
+        $page->update_field_switcher('Page Footer Height',$data['footer'],'no_history');
+        $page->update_field_switcher('Page Header Height',$data['header'],'no_history');
+        $page->update_field_switcher('Page Content Height',$data['content'],'no_history');
+    }
+
+    $response= array('state'=>200);
+    echo json_encode($response);
+}
+
+
+
+
 
 ?>

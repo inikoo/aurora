@@ -2,6 +2,9 @@
 <div id="bd" >
  {include file='assets_navigation.tpl'}
 <input id="department_key" value="{$department->id}" type="hidden" />
+<input type='hidden' id="number_sites" value="{$store->get('Store Websites')}">
+<input type='hidden' id="site_key" value="{$store->get_site_key()}">
+
 <div class="branch"> 
   <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
 </div>
@@ -90,7 +93,7 @@
    <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
 
 
-{include file='edit_images_splinter.tpl'}
+{include file='edit_images_splinter.tpl' parent=$department}
 
 
 </div>  
@@ -197,36 +200,23 @@
 
 
 
-      <div class="general_options" style="float:right">
-	     <span style="margin-right:10px;"   id="new_department_page" class="state_details" >{t}Create Page{/t}</span>
-	        <span style="margin-right:10px;{if $number_of_pages<=1}display:none{/if}" " id="page_list" class="state_details"><a href="edit_department.php?id={$department->id}">{t}Page List{/t} ({$number_of_pages})</a></span>
-
+      <div class="buttons" >
+	     <button  id="new_department_page" class="positive" >{t}Create Page{/t}</button>
 	   </div>
-	
-	
-	
-		<input type='hidden' id="site_key" value="{$site_key}">
-				<input type='hidden' id="page_key" value="{$page_key}">
-
-  <div  class="data_table" style="clear:both;" >
+	<div style="clear:both">
 	        <span class="clean_table_title">{t}Pages{/t}</span> 
-	        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-	            <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	                <tr>
-	                    <td {if $pages_view=='page_properties'}class="selected"{/if} id="page_properties" >{t}Page Properties{/t}</td>
-	                    <td {if $pages_view=='page_html_head'}class="selected"{/if}  id="page_html_head"  >{t}HTML Head{/t}</td>
-	                    <td {if $pages_view=='page_header'}class="selected"{/if}  id="page_header"  >{t}Header{/t}</td>
-		            </tr>
-                </table>
-                {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6  }
-	            <div  id="table6"  style="font-size:90%" class="data_table_container dtable btable "> </div>
-	        </div>
-
-
-
-
-
-
+	        <div class="table_top_bar"></div>
+            <div class="clusters">
+                <div class="buttons small left cluster" >
+	                <button {if $pages_view=='page_properties'}class="selected"{/if} id="page_properties" >{t}Page Properties{/t}</button>
+	                <button {if $pages_view=='page_html_head'}class="selected"{/if}  id="page_html_head"  >{t}HTML Head{/t}</button>
+	                <button {if $pages_view=='page_header'}class="selected"{/if}  id="page_header"  >{t}Header{/t}</button>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+	        {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6  }
+	        <div  id="table6"  style="font-size:85%" class="data_table_container dtable btable "> </div>
+</div>
 
 
 

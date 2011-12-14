@@ -29,7 +29,7 @@ $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 
 
-
+$user=false;
 
 
 //putenv('LC_ALL=es_ES');

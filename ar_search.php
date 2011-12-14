@@ -2341,7 +2341,7 @@ function search_site($data) {
     $page_keys=preg_replace('/^,/','',$page_keys);
 
 
-    $sql=sprintf("select PS.`Page Key`,`Page Short Title`,`Page URL`,`Page Store Resume` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)  where PS.`Page Key` in (%s) ",$page_keys);
+    $sql=sprintf("select `Page Code`, PS.`Page Key`,`Page Short Title`,`Page URL`,`Page Store Resume` from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)  where PS.`Page Key` in (%s) ",$page_keys);
    
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
@@ -2349,7 +2349,7 @@ function search_site($data) {
         //if ($row['Product Main Image']!='art/nopic.png')
         //     $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnail',$row['Product Main Image']));
 
-        $results[$row['Page Key']]=array('image'=>$image,'code'=>$row['Page Short Title'],'description'=>$row['Page Store Resume'],'link'=>'page.php?id=','key'=>$row['Page Key']);
+        $results[$row['Page Key']]=array('image'=>$image,'code'=>$row['Page Code'],'name'=>$row['Page Short Title'],'description'=>$row['Page Store Resume'],'link'=>'page.php?id=','key'=>$row['Page Key']);
     }
 
     $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'page.php?id=','q'=>$q);

@@ -131,6 +131,8 @@ $_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store',$store);
 $smarty->assign('subject','Product');
 
+$smarty->assign('parent','products');
+$smarty->assign('title', _('Product Categories'));
 
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('category_key',$category_key);

@@ -206,7 +206,7 @@ class PageHeader extends DB_Table {
 
 
 
-    function update_image() {
+    function update_snapshot() {
 
         global $inikoo_public_url;
         $old_image_key=$this->data['Page Header Preview Image Key'];
@@ -260,7 +260,7 @@ class PageHeader extends DB_Table {
 
         if ($new_image_key!=$old_image_key) {
             $this->data['Page Header Preview Image Key']=$new_image_key;
-            $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d `Image Key`=%d ",
+            $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d and `Image Key`=%d ",
                          prepare_mysql('Page Header Preview'),
                          $this->id,
                          $image->id
@@ -271,11 +271,11 @@ class PageHeader extends DB_Table {
             $old_image->delete();
 
 
-            $sql=sprintf("insert into `Image Bridge` values (%s,%d,%d,'Yes',%s)",
+            $sql=sprintf("insert into `Image Bridge` values (%s,%d,%d,'Yes','')",
                          prepare_mysql('Page Header Preview'),
                          $this->id,
-                         $image->id,
-                         ''
+                         $image->id
+                        
                         );
             mysql_query($sql);
 

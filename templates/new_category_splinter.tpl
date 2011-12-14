@@ -4,7 +4,9 @@
   <div id="new_category_msg"></div>
  
   <input id="new_category_parent_key" value="{$category_key}" type="hidden"/>
-    <input id="new_category_store_key" value="{$store->id}" type="hidden"/>
+    <input id="new_category_store_key" value="{if isset($store_id)}{$store_id}{/if}" type="hidden"/>
+        <input id="new_category_warehouse_key" value="{if isset($warehouse_id)}{$warehouse_id}{/if}" type="hidden"/>
+
    <input id="new_category_subject" value="{$subject}" type="hidden"/>
  <table style="margin:10px">
 <tr>
