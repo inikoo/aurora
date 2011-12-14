@@ -2179,35 +2179,36 @@ class Page extends DB_Table {
 
         }
 
- // print "$command  $retval\n\n";
+// print "$command  $retval\n\n";
 
 
         ob_start();
         system($command,$retval);
         ob_get_clean();
         $this->snapshots_taken++;
-   
+
 
         $image_data=array('file'=>"app_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_preview'.$this->id);
-   
+
 //   print_r($image_data);
-   $image=new Image('find',$image_data,'create');
+        $image=new Image('find',$image_data,'create');
 //   print "x1\n";
-   unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
-   //  print "x2\n";
+        unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
+        //  print "x2\n";
         $new_image_key=$image->id;
-      if(!$new_image_key){
-        exit(image->msg." xx \n");
-      
-      }
-      
-      
-      //    print "x3\n";
-      //  print "$new_image_key $old_image_key\n";
+        if (!$new_image_key) {
+            print $image->msg;
+            exit("xx \n");
+
+        }
+
+
+        //    print "x3\n";
+        //  print "$new_image_key $old_image_key\n";
         //  print $image->msg." x4\n";
-        
-        
-        
+
+
+
         if ($new_image_key!=$old_image_key and $new_image_key) {
             $this->data['Page Preview Snapshot Image Key']=$new_image_key;
             $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d and `Image Key`=%d ",
@@ -2243,7 +2244,7 @@ class Page extends DB_Table {
         }
 
 
-    //    usleep(250000);
+        //    usleep(250000);
         $this->get_data('id',$this->id);
         $new_height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 
