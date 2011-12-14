@@ -31,18 +31,8 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('upload_header'):
 case('upload_footer'):
-    $data=prepare_values($_REQUEST,array(
-                             'parent'=>array('type'=>'string'),
-                             'parent_key'=>array('type'=>'key'),
-                             'use_file'=>array('type'=>'string')
-
-                         ));
-    $data['tipo']=$tipo;
-    process_uploaded_files($data);
-    break;
-
-
-
+case('upload_menu'):
+case('upload_search'):
 case('upload_page_content'):
     $data=prepare_values($_REQUEST,array(
                              'parent_key'=>array('type'=>'key'),
@@ -70,29 +60,23 @@ default:
 
 
 function process_uploaded_files($data) {
-//print_r($_FILES);
+
+
+
     if (isset($_FILES['file']['tmp_name']) and $_FILES['file']['tmp_name']) {
-
         $file_name=$_FILES['file']['tmp_name'];
-
-        if (preg_match('/^application.*zip.*/',$_FILES['file']['type'])) {
+        if (preg_match('/^application.*zip.*/',$_FILES['file']['type']) or preg_match('/\.zip$/i',$_FILES['file']['name']) ) {
             $data['original_filename']=$_FILES['file']['name'];
             upload_from_zip($data);
             return;
         }
-
-
-
-
-
     } else {
         $poidsMax = ini_get('upload_max_filesize');
-        $msg=_("Your feet is too big, maximum allowed size here is")." $poidsMax";
+        $msg=_("Your feet is too big, maximum allowed size here is").": $poidsMax";
         $response= array('state'=>400,'msg'=>$msg);
         echo json_encode($response);
         return;
     }
-
 }
 
 function get_footer($html) {
@@ -114,12 +98,30 @@ function get_header($html) {
 
     $html=preg_replace("/^.*\<body.*\>/msU",'',$html);
     $html=preg_replace("/<\/body>\s*$/",'',$html);
-
-
-//print $html;
-    //$a=getArray($div);
     return $html;
 }
+
+
+function get_menu($html) {
+    $html=preg_replace("/^.*\<\/head\>/msU",'',$html);
+    $html=preg_replace("/<\/html\>.*$/msU",'',$html);
+
+    $html=preg_replace("/^.*\<body.*\>/msU",'',$html);
+    $html=preg_replace("/<\/body>\s*$/",'',$html);
+    return $html;
+}
+
+
+function get_search($html) {
+    $html=preg_replace("/^.*\<\/head\>/msU",'',$html);
+    $html=preg_replace("/<\/html\>.*$/msU",'',$html);
+
+    $html=preg_replace("/^.*\<body.*\>/msU",'',$html);
+    $html=preg_replace("/<\/body>\s*$/",'',$html);
+    return $html;
+}
+
+
 
 function get_head_styles($dom,$html) {
     $style=array();
@@ -214,7 +216,6 @@ function getArray($node) {
 
 function upload_from_zip($data) {
 
-
     $folder_id=date('U').'_'.uniqid();
     $base_dir="app_files/tmp/page_content_".$folder_id;
 
@@ -248,6 +249,8 @@ function upload_from_zip($data) {
     }
     elseif($number_html_files==1) {
 
+
+
         switch ($data['tipo']) {
         case 'upload_page_content':
             $response=upload_page_content_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
@@ -258,9 +261,14 @@ function upload_from_zip($data) {
         case 'upload_footer':
             $response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
             break;
-
+   case 'upload_menu':
+                $response=upload_menu_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
+                break;
+            case 'upload_search':
+                $response=upload_search_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,array_pop($html_files)),$data);
+                break;
         default:
-
+ $response= array('state'=>400,'msg'=>'unknown scope');
             break;
         }
 
@@ -286,9 +294,15 @@ function upload_from_zip($data) {
             case 'upload_footer':
                 $response=upload_footer_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
                 break;
+            case 'upload_menu':
+                $response=upload_menu_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+                break;
+            case 'upload_search':
+                $response=upload_search_from_file("app_files/tmp/".preg_replace('/^\./',"page_content_".$folder_id,$data['use_file']),$data);
+                break;
 
             default:
-
+ $response= array('state'=>400,'msg'=>'unknown scope');
                 break;
             }
 
@@ -519,7 +533,7 @@ function upload_header_from_file($file,$data) {
         mysql_query($sql);
         // exit;
     }
-    $page_header->update_image();
+    $page_header->update_snapshot();
     $response= array('state'=>200);
     return $response;
 }
@@ -620,7 +634,7 @@ function upload_footer_from_file($file,$data) {
         mysql_query($sql);
         // exit;
     }
-    $page_footer->update_image();
+    $page_footer->update_snapshot();
     $response= array('state'=>200);
     return $response;
 }
@@ -646,21 +660,21 @@ function upload_page_content_from_file($file,$data) {
     $dom->preserveWhiteSpace = false;
 
 
-if($page->data['Page Store Resume']==''){
-  $resume=get_head_meta('description',$dom,$html);
-  if($resume)
-  $page->update_field_switcher('Page Store Resume',$resume);
-  
-}
+    if ($page->data['Page Store Resume']=='') {
+        $resume=get_head_meta('description',$dom,$html);
+        if ($resume)
+            $page->update_field_switcher('Page Store Resume',$resume);
 
-if($page->data['Page Keywords']==''){
-  $keywords=get_head_meta('keywords',$dom,$html);
-  if($keywords)
-  $page->update_field_switcher('Page Keywords',$keywords);
-  
-}
+    }
 
-  
+    if ($page->data['Page Keywords']=='') {
+        $keywords=get_head_meta('keywords',$dom,$html);
+        if ($keywords)
+            $page->update_field_switcher('Page Keywords',$keywords);
+
+    }
+
+
 
 
 
@@ -721,7 +735,7 @@ if($page->data['Page Keywords']==''){
     $page->update_list_products();
     $page->update_number_products();
 
-    $response= array('state'=>200);
+    $response= array('state'=>200,'page_key'=>$page->id);
     return $response;
 
 }
@@ -731,15 +745,22 @@ if($page->data['Page Keywords']==''){
 function upload_content_images($html,$base_dir='',$parent_data) {
     include_once('class.Image.php');
 
+//print htmlspecialchars($html);
+
     $regexp = "<img\s[^>]*src=(\"??)([^\" >]*?)\\1[^>]*>";
     if (preg_match_all("/$regexp/siU", $html, $matches, PREG_SET_ORDER)) {
         foreach($matches as $match) {
             $_file= getcwd().'/'.$base_dir.'/'.$match[2];
             $_file= $base_dir.'/'.$match[2];
 
+
+
             if (file_exists($_file)) {
                 $image_data=array('file'=>$_file,'source_path'=>'','name'=>basename($match[2])
                                  );
+                                 
+  //              print_r($image_data);                
+                                 
                 $image=new Image('find',$image_data,'create');
                 $caption='';
                 if ($image->id) {
@@ -752,12 +773,14 @@ function upload_content_images($html,$base_dir='',$parent_data) {
                     mysql_query($sql);
                     $html=str_replace('src="'.$match[2].'"','src="public_image.php?id='.$image->id.'"',$html);
                 } else {
-
+//print $image->msg."\n";
                 }
             }
         }
     }
-
+    
+    
+   
 //   print $html;
 
     $regexp = "url\((.+)\);";
@@ -926,3 +949,89 @@ function extract_products_info($html) {
 
     return $html;
 }
+
+
+
+
+function upload_menu_from_file($file,$data) {
+
+    switch ($data['parent']) {
+    case 'site':
+        $parent=new Site($data['parent_key']);
+        $site_key=$parent->id;
+        break;
+    default:
+        exit;
+        break;
+    }
+
+    $html=file_get_contents($file);
+    $html=remove_php_tags($html);
+    $dom = new domDocument;
+    ini_set( "display_errors", 0);
+    $dom->loadHTML($html);
+    ini_set( "display_errors", 1);
+    $dom->preserveWhiteSpace = false;
+    $style=_trim(join(' ',get_head_styles($dom,$html)));
+    $script=_trim(join(' ',get_head_scripts($dom,$html)));
+    $content=get_menu($html);
+
+    if ($content=='') {
+        $response= array('state'=>400,'msg'=>_('Menu not found'));
+        return $response;
+    }
+
+    $content=upload_content_images($content,dirname($file),array('subject'=>'Site Menu','subject_key'=>$parent->id));
+    $style=upload_content_images($style,dirname($file),array('subject'=>'Site Menu','subject_key'=>$parent->id));
+    $script=upload_content_images($script,dirname($file),array('subject'=>'Site Menu','subject_key'=>$parent->id));
+
+    $parent->update_field_switcher('Site Menu HTML',$content);
+    $parent->update_field_switcher('Site Menu CSS',$style);
+    $parent->update_field_switcher('Site Menu Javascript',$script);
+
+    $response= array('state'=>200);
+    return $response;
+}
+
+
+function upload_search_from_file($file,$data) {
+
+    switch ($data['parent']) {
+    case 'site':
+        $parent=new Site($data['parent_key']);
+        $site_key=$parent->id;
+        break;
+    default:
+        exit;
+        break;
+    }
+
+    $html=file_get_contents($file);
+    $html=remove_php_tags($html);
+    $dom = new domDocument;
+    ini_set( "display_errors", 0);
+    $dom->loadHTML($html);
+    ini_set( "display_errors", 1);
+    $dom->preserveWhiteSpace = false;
+    $style=_trim(join(' ',get_head_styles($dom,$html)));
+    $script=_trim(join(' ',get_head_scripts($dom,$html)));
+    $content=get_search($html);
+
+    if ($content=='') {
+        $response= array('state'=>400,'msg'=>_('Search not found'));
+        return $response;
+    }
+
+    $content=upload_content_images($content,dirname($file),array('subject'=>'Site Search','subject_key'=>$parent->id));
+    $style=upload_content_images($style,dirname($file),array('subject'=>'Site Search','subject_key'=>$parent->id));
+    $script=upload_content_images($script,dirname($file),array('subject'=>'Site Search','subject_key'=>$parent->id));
+
+    $parent->update_field_switcher('Site Search HTML',$content);
+    $parent->update_field_switcher('Site Search CSS',$style);
+    $parent->update_field_switcher('Site Search Javascript',$script);
+
+    $response= array('state'=>200);
+    return $response;
+}
+
+

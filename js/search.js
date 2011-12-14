@@ -457,7 +457,9 @@ success:function(o) {
 
                             var oTD= oTR.insertCell(1);
                             oTD.innerHTML=r.data[result_key].code;
-                            var oTD= oTR.insertCell(2);
+                              var oTD= oTR.insertCell(2);
+                            oTD.innerHTML=r.data[result_key].name;
+                            var oTD= oTR.insertCell(3);
                             oTD.innerHTML=r.data[result_key].description;
                           
 

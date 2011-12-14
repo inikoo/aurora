@@ -5,12 +5,14 @@ include_once('location_header_functions.php');
 
 
 
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $warehouse_id=$_REQUEST['id'];
+if(isset($_REQUEST['warehouse_id']) and is_numeric($_REQUEST['warehouse_id']) ){
+  $warehouse_id=$_REQUEST['warehouse_id'];
 
 }else{
-  $warehouse_id=$_SESSION['state']['warehouse']['id'];
+  header('Location: index.php?error_no_warehouse_key');
+   exit;
 }
+
 
 $warehouse=new warehouse($warehouse_id);
 if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ){
@@ -23,15 +25,12 @@ $smarty->assign('modify',$modify);
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));
-get_header_info($user,$smarty);
+//get_header_info($user,$smarty);
 
-$general_options_list=array();
-  $general_options_list[]=array('tipo'=>'url','url'=>'warehouse.php?id='.$warehouse->id,'label'=>_('Locations'));
 
-if($modify)
-  $general_options_list[]=array('class'=>'edit','tipo'=>'url','url'=>'part_configuration.php','label'=>_('Part Settings'));
 
-$general_options_list[]=array('tipo'=>'url','url'=>'parts_lists.php','label'=>_('Parts Lists'));
+
+
 
 
 $smarty->assign('search_label',_('Parts'));
@@ -120,6 +119,7 @@ foreach($_SESSION['state']['warehouse']['parts']['elements'] as $key=>$value){
 $smarty->assign('elements',$_elements);
 
 $smarty->assign('warehouse',$warehouse);
+$smarty->assign('warehouse_id',$warehouse->id);
 
 
 $elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);

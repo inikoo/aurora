@@ -2,14 +2,13 @@
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
   {include file='contacts_navigation.tpl'} 
-
  <input type="hidden" id="category_key" value="{$category->id}" />
  <div class="branch"> 
   <span>{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a  href="customer_categories.php?store_id={$store->id}&id=0">{t}Categories{/t}</a> &rarr;  {$category->get_smarty_tree('customer_categories.php')}</span>
 </div>
  <div class="top_page_menu">
     <div class="buttons" style="float:left">
- {if $parent_category}
+ {if isset($parent_category)}
          <button  onclick="window.location='customer_categories.php?store_id={$store->id}&id={$parent_category->id}'" ><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Name')}</button>
  {/if}
          <button  onclick="window.location='customer_categories.php?store_id={$store->id}&id=0'" ><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button>
@@ -30,14 +29,16 @@
 </div>
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
-    <li {if $category->get('Category Children Deep')==0}style="display:none;"{/if}> <span class="item {if $block_view=='subcategories'}selected{/if}"  id="subcategories">  <span> {t}Subcategories{/t}</span></span></li>
-    <li  {if $category->get('Category Deep')==1}style="display:none;"{/if}> <span class="item {if $block_view=='subjects'}selected{/if}"  id="subjects">  <span> {t}Customers{/t}</span></span></li>
-    <li  {if $category->get('Category Children Deep')==0}style="display:none;"{/if}> <span class="item {if $block_view=='subcategories_charts'}selected{/if}"  id="subcategories_charts">  <span> {t}Charts{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='subcategories'}selected{/if}"  id="subcategories">  <span> {t}Subcategories{/t}</span></span></li>
+    <li > <span class="item {if $block_view=='subjects'}selected{/if}"  id="subjects">  <span> {t}Customers{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='subcategories_charts'}selected{/if}"  id="subcategories_charts">  <span> {t}Charts{/t}</span></span></li>
+        <li> <span class="item {if $block_view=='history'}selected{/if}"  id="history">  <span> {t}History{/t}</span></span></li>
+
  </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 <div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-<div class="data_table" style="{if $category->get('Category Children')==0}display:none;{/if}clear:both;margin-bottom:20px">
+<div class="data_table" style="clear:both;margin-bottom:20px">
     <span class="clean_table_title">Subcategories</span>
 
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name0 filter_value=$filter_value0  }
@@ -64,10 +65,7 @@
  <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
  </div>
 </div>
- 
- 
- 
- <div id="block_subcategories_charts" style="{if $block_view!='subcategories_charts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div id="block_subcategories_charts" style="{if $block_view!='subcategories_charts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
  
  
  
@@ -109,12 +107,14 @@
 	</script>
 
 </div>
+<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
  
- 
- 
- 
- 
- 
+
+  <span class="clean_table_title" >{t}History{/t}</span>
+     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+  <div  id="table2"   class="data_table_container dtable btable "> </div>
+
+ </div>
  
 </div> 
 {include file='footer.tpl'}

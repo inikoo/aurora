@@ -741,10 +741,10 @@ function strleft($s1, $s2) {
     return substr($s1, 0, strpos($s1, $s2));
 }
 
-function get_page(){
-	$url=explode("/", $_SERVER['REQUEST_URI']);
-	$url=array_reverse($url);
-	return $url[0];
+function get_page() {
+    $url=explode("/", $_SERVER['REQUEST_URI']);
+    $url=array_reverse($url);
+    return $url[0];
 }
 /**
  * @return timestamp
@@ -1077,19 +1077,19 @@ function customers_awhere($awhere) {
     }
 
 //print_r($where_data);
-if($where_data['order_time_units_since_last_order_qty']>0){
+    if ($where_data['order_time_units_since_last_order_qty']>0) {
 
-switch ($where_data['order_time_units_since_last_order_units']) {
-    case 'days':
-       $where.=sprintf(' and Date(`Customer Last Order Date`)=DATE(DATE_SUB(NOW(), INTERVAL %d day)) ',$where_data['order_time_units_since_last_order_qty']);
-        break;
-    default:
-    
-        break;
-}
+        switch ($where_data['order_time_units_since_last_order_units']) {
+        case 'days':
+            $where.=sprintf(' and Date(`Customer Last Order Date`)=DATE(DATE_SUB(NOW(), INTERVAL %d day)) ',$where_data['order_time_units_since_last_order_qty']);
+            break;
+        default:
 
-}
-    
+            break;
+        }
+
+    }
+
 
 
 
@@ -1135,11 +1135,11 @@ switch ($where_data['order_time_units_since_last_order_units']) {
             break;
         }
     }
-    
-    
-    
 
-    
+
+
+
+
     $order_option_where=preg_replace('/^\s*and/','',$order_option_where);
 
 
@@ -1487,7 +1487,7 @@ function parts_awhere($awhere) {
                     //'price_lower'=>'',
                     //'price_upper'=>'',
                     //'invoice_lower'=>'',
-                   // 'invoice_upper'=>''
+                    // 'invoice_upper'=>''
                 );
 
 
@@ -1501,38 +1501,38 @@ function parts_awhere($awhere) {
 
     $where='where true';
     //$table='`Part Dimension` P ';
-	$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`) left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
+    $table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`) left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
 
     $use_product=false;
     //$use_categories =false;
     $use_otf =false;
 
 
-/*
-    $price_where='';
-    foreach($where_data['price'] as $price) {
-        switch ($price) {
-        case 'less':
-            $price_where.=sprintf(" and `Product Price`<%s ",prepare_mysql($where_data['price_lower']));
-            break;
-        case 'equal':
-            $price_where.=sprintf(" and `Product Price`=%s  ",prepare_mysql($where_data['price_lower']));
-            break;
-        case 'more':
-            $price_where.=sprintf(" and `Product Price`>%s  ",prepare_mysql($where_data['price_upper']));
-            break;
-        case 'between':
-            $price_where.=sprintf(" and  `Product Price`>%s  and `Product Price`<%s", prepare_mysql($where_data['price_lower']), prepare_mysql($where_data['price_upper']));
-            break;
+    /*
+        $price_where='';
+        foreach($where_data['price'] as $price) {
+            switch ($price) {
+            case 'less':
+                $price_where.=sprintf(" and `Product Price`<%s ",prepare_mysql($where_data['price_lower']));
+                break;
+            case 'equal':
+                $price_where.=sprintf(" and `Product Price`=%s  ",prepare_mysql($where_data['price_lower']));
+                break;
+            case 'more':
+                $price_where.=sprintf(" and `Product Price`>%s  ",prepare_mysql($where_data['price_upper']));
+                break;
+            case 'between':
+                $price_where.=sprintf(" and  `Product Price`>%s  and `Product Price`<%s", prepare_mysql($where_data['price_lower']), prepare_mysql($where_data['price_upper']));
+                break;
+            }
         }
-    }
-    $price_where=preg_replace('/^\s*and/','',$price_where);
+        $price_where=preg_replace('/^\s*and/','',$price_where);
 
-    if ($price_where!='') {
-        $where.=" and ($price_where)";
-    }
+        if ($price_where!='') {
+            $where.=" and ($price_where)";
+        }
 
-*/
+    */
 
     $date_interval_from=prepare_mysql_dates($where_data['part_valid_from'],$where_data['part_valid_to'],'ITF.`Date`','only_dates');
     //$date_interval_to=prepare_mysql_dates('',$where_data['product_valid_to'],'`Product Valid To`','only_dates');
@@ -1540,15 +1540,15 @@ function parts_awhere($awhere) {
 
 
     $where.=$date_interval_from['mysql'];
-	//print $where;exit;
+    //print $where;exit;
 
 
-	$where_geo_constraints='';
+    $where_geo_constraints='';
     if ($where_data['geo_constraints']!='') {
         $where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints'],'CD.`Country Code`','CD.`World Region Code`');
     }
-	$where.=$where_geo_constraints;
-	//print $where_geo_constraints;exit;
+    $where.=$where_geo_constraints;
+    //print $where_geo_constraints;exit;
     /*
 
     $where_billing_geo_constraints='';
@@ -3179,7 +3179,7 @@ function guess_file_format($filename) {
     if (preg_match('/darwin/i',$_system)) {
         ob_start();
         $system='Mac';
-        system("file -I $filename");
+        system('file -I "'.addslashes($filename).'"');
         $mimetype=ob_get_clean();
         $mimetype=preg_replace('/^.*\:/','',$mimetype);
 
@@ -3187,7 +3187,7 @@ function guess_file_format($filename) {
     elseif(preg_match('/linux/i',$_system)) {
         ob_start();
         $system='Linux';
-        $mimetype = system("file -ib $filename");
+        $mimetype = system('file -ib "'.addslashes($filename).'"');
         $mimetype=ob_get_clean();
     }
     else {
@@ -3196,15 +3196,17 @@ function guess_file_format($filename) {
     }
 
 
+//print "** $filename **";
+
     if (preg_match('/png/i',$mimetype))
         $format='png';
-    elseif(preg_match('/jpeg/i',$mimetype))
+    else if(preg_match('/jpeg/i',$mimetype))
     $format='jpeg';
-    elseif(preg_match('/image.psd/i',$mimetype))
+    else if(preg_match('/image.psd/i',$mimetype))
     $format='psd';
-    elseif(preg_match('/gif/i',$mimetype))
+    else if(preg_match('/gif/i',$mimetype))
     $format='gif';
-    elseif(preg_match('/wbmp$/i',$mimetype))
+    else if(preg_match('/wbmp$/i',$mimetype))
     $format='wbmp';
 
     else {
@@ -3858,7 +3860,7 @@ function aasort (&$array, $key) {
 }
 
 function sentence_similarity($a,$b) {
-   // print "$a | $b\n";
+    // print "$a | $b\n";
 
     $words_to_ignore=array('the','of','from','is','are','to','and','or','for','at','an','as','so');
 
@@ -3876,34 +3878,34 @@ function sentence_similarity($a,$b) {
     foreach($a as $item_a) {
 
         foreach($b as $item_b) {
-                similar_text($item_a, $item_b, $sim);
-               
-               if($sim>$max_sim)
+            similar_text($item_a, $item_b, $sim);
+
+            if ($sim>$max_sim)
                 $max_sim=$sim;
-               
-               if(array_key_exists($item_a, $similarity_array)   ){
-                if($similarity_array[$item_a]<$sim)
+
+            if (array_key_exists($item_a, $similarity_array)   ) {
+                if ($similarity_array[$item_a]<$sim)
+                    $similarity_array[$item_a]=$sim;
+
+            } else {
                 $similarity_array[$item_a]=$sim;
-               
-               }else{
-                $similarity_array[$item_a]=$sim;
-               }
-                                                
+            }
+
         }
 
     }
     $weight=0;
     $elements=count($similarity_array);
-    if($elements){
+    if ($elements) {
         $weight=array_sum($similarity_array)/$elements;
     }
-    
+
     $weight=($max_sim+$weight)/2;
-     //print_r($similarity_array);
-  //  print_r($a);
-   // print_r($b);
+    //print_r($similarity_array);
+    //  print_r($a);
+    // print_r($b);
     //exit($weight);
-return $weight;
+    return $weight;
 
 
 

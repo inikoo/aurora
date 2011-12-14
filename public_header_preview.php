@@ -114,7 +114,7 @@ $smarty->assign('title',_('Preview').' '.$page_header->data['Page Header Name'])
 
 $smarty->assign('site',$site);
 $page=new Dummy_Page();
-
+$page->site=$site;
 $smarty->assign('page',$page);
 $smarty->assign('page_header',$page_header);
 

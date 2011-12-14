@@ -5,7 +5,7 @@
 
 <table class="search"  border=0 style="{if $search_label==''}display:none{/if}">
 <tr>
-<td class="label"  >{t}Search{/t}:</td>
+<td class="label">{$search_label}:</td>
 <td class="form" >
 <div id="search" class="asearch_container"  style=";float:left;{if !$search_scope}display:none{/if}">
   <input style="width:300px" class="search" id="{$search_scope}_search" value="" state="" name="search"/>
@@ -20,16 +20,3 @@
 <table id="{$search_scope}_search_results_table"></table>
 </div>
 
-{if $general_options_list}
-<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}400px{/if};float:right;margin-bottom:10px" class="right_box">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-    {if $options.tipo=="url"}
-    <span {if $options.class}class="{$options.class}"{/if} onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-    {else}
-    <span {if $options.class}class="{$options.class}"{/if}  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-    {/if}
-    {/foreach}
-  </div>
-</div>
-{/if}

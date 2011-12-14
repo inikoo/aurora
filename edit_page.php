@@ -98,12 +98,22 @@ $smarty->assign('search_scope','site');
 
 
 if (isset($_REQUEST['view'])) {
-    $valid_views=array('properties','page_header','page_footer','content','style','media','setup');
+    $valid_views=array('content','style','media','setup');
     if (in_array($_REQUEST['view'], $valid_views))
         $_SESSION['state']['page']['editing']=$_REQUEST['view'];
 
 }
 $smarty->assign('block_view',$_SESSION['state']['page']['editing']);
+
+  
+$content_view='overview';
+if (isset($_REQUEST['content_view'])) {
+    $valid_views=array('header','content','footer','product_list','product_buttons');
+    if (in_array($_REQUEST['content_view'], $valid_views))
+        $content_view=$_REQUEST['content_view'];
+
+}
+$smarty->assign('content_view',$content_view);
 
 
 
@@ -198,7 +208,55 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
 
+$order=$_SESSION['state']['site']['pages']['order'];
+if ($order=='code') {
+    $order='`Page Code`';
+    $order_label=_('Code');
+} else if ($order=='url') {
+    $order='`Page URL`';
+    $order_label=_('URL');
+} else if ($order=='title') {
+    $order='`Page Store Title`';
+    $order_label=_('Title');
+} else {
+    $order='`Page Code`';
+    $order_label=_('Code');
+}
 
+$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select `Page Key` as id , `Page Store Title` as name from `Page Store Dimension`   where  `Page Site Key`=%d  and %s < %s  order by %s desc  limit 1",
+             $site->id,
+             $order,
+             prepare_mysql($page->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $prev['link']='edit_page.php?id='.$row['id'];
+    $prev['title']=$row['name'];
+}
+mysql_free_result($result);
+$smarty->assign('prev',$prev);
+$sql=sprintf(" select `Page Key` as id , `Page Store Title` as name from `Page Store Dimension`    where  `Page Site Key`=%d  and  %s>%s  order by %s   ",
+             $site->id,
+             $order,
+             prepare_mysql($page->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $next['link']='edit_page.php?id='.$row['id'];
+    $next['title']=$row['name'];
+}
+mysql_free_result($result);
+$smarty->assign('prev',$prev);
+$smarty->assign('next',$next);
+
+$smarty->assign('parent_url','site.php?id='.$site->id);
+$parent_title=$site->data['Site Name'].' '._('Pages').' ('.$order_label.')';
+$smarty->assign('parent_title',$parent_title);
 
 
 

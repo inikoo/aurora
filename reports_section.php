@@ -63,7 +63,7 @@ $plot_title=array(
 
 
 
-$sql=sprintf("select `Page Parent Category`,`Page Short Title`,`Page URL`,`Image Key` from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`) left join `Image Dimension` IM on (IM.`Image Key`=`Page Thumbnail Image Key`) where `Page Type`='Internal' and `Page Section`='Reports' and `Page Parent Category`=%s",
+$sql=sprintf("select `Page Parent Category`,`Page Short Title`,`Page URL`,`Image Key` from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`) left join `Image Dimension` IM on (IM.`Image Key`=`Page Snapshot Image Key`) where `Page Type`='Internal' and `Page Section`='Reports' and `Page Parent Category`=%s",
 prepare_mysql($report_category)
 );
 

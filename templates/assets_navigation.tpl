@@ -2,7 +2,7 @@
 <span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_products.php{if $store_key}?store={$store_key}{/if}">{t}here{/t}</a>.</span>
 <table class="search"  border=0 style="{if $search_label==''}display:none{/if}">
 <tr>
-<td class="label"  >{t}Search{/t}:</td>
+<td class="label">{$search_label}:</td>
 <td class="form" >
 <div id="search" class="asearch_container"  style=";float:left;{if !$search_scope}display:none{/if}">
   <input style="width:300px" class="search" id="{$search_scope}_search" value="" state="" name="search"/>

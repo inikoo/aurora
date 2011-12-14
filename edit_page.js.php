@@ -80,9 +80,7 @@ var CellEdit = function (callback, newValue) {
 
 function save_see_also_type(value){
 
-
-
-var request='ar_edit_sites.php?tipo=edit_page_header&newvalue='+value+"&id="+Dom.get('page_key').value+'&key=Page Store See Also Type'
+var request='ar_edit_sites.php?tipo=edit_page_header&newvalue='+value+"&id="+Dom.get('page_key').value+'&key=Page Store See Also Type&okey='
 
 
 //var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
@@ -100,7 +98,7 @@ var request='ar_edit_sites.php?tipo=edit_page_header&newvalue='+value+"&id="+Dom
                            Dom.removeClass(['see_also_type_Auto','see_also_type_Manual'],'selected');
 
                Dom.addClass('see_also_type_'+r.newvalue,'selected');
-                          location.href='edit_page.php?id='+r.page_key;
+                          location.href='edit_page.php?id='+r.page_key+'&content_view=header';
             }else{
                 alert(r.msg)
             }
@@ -125,7 +123,7 @@ function delete_found_in_page( page_key ) {
 	      //     alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
-        location.href='edit_page.php?id='+r.page_key;
+        location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
                                   }else{
                                   
                                   
@@ -137,33 +135,60 @@ function delete_found_in_page( page_key ) {
 	
 }
 
-
-function delete_see_also_page( page_key ) {
-	
-	var request='ar_edit_sites.php?tipo=delete_see_also_page&id=' + Dom.get('page_key').value +'&see_also_key='+page_key
-	           
-	          
-//alert(request);
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	            success:function(o){
-	      //     alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-        location.href='edit_page.php?id='+r.page_key;
-                                  }else{
-                                  
-                                  
-                                  
-                                  }
+function change_number_auto_see_also(e,operation){
+	var request='ar_edit_sites.php?tipo=update_see_also_quantity&id='+Dom.get('page_key').value +'&operation='+operation
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o){
+	                            alert(o.responseText);	
+			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+			                    if(r.state==200){
+			                    update_page_snapshot();
+                                    location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
+                                }else{
+                                
+                                }
    			}
     });
+}
 
-	
+function delete_see_also_page( page_key ) {
+	var request='ar_edit_sites.php?tipo=delete_see_also_page&id='+Dom.get('page_key').value +'&see_also_key='+page_key
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o){
+	                            //alert(o.responseText);	
+			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+			                    if(r.state==200){
+                                    location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
+                                }else{
+                                
+                                }
+   			}
+    });
 }
 
 
 
 function show_dialog_page_list(e,type){
+
+switch ( type ) {
+	case 'found_in':
+		region1 = Dom.getRegion('add_other_found_in_page'); 
+    region2 = Dom.getRegion('dialog_page_list'); 
+ var pos =[region1.right-region2.width,region1.bottom+2]
+    Dom.setXY('dialog_page_list', pos);
+		break;
+	
+	case 'see_also':
+	region1 = Dom.getRegion('add_other_see_also_page'); 
+    region2 = Dom.getRegion('dialog_page_list'); 
+ var pos =[region1.right-region2.width,region1.bottom+2]
+    Dom.setXY('dialog_page_list', pos);
+	break;
+	
+	
+}
+
+
 select_page_operation=type;
 dialog_page_list.show();
 }
@@ -198,7 +223,7 @@ see_also_key=tables.table7.getRecord(oArgs.target).getData('key');
 			var r = YAHOO.lang.JSON.parse(o.responseText);
 			if (r.state == 200) {
 				
-                    location.href='edit_page.php?id='+r.page_key;
+                    location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
 			} else {
 
 
@@ -227,7 +252,7 @@ found_in_key=tables.table7.getRecord(oArgs.target).getData('key');
 			var r = YAHOO.lang.JSON.parse(o.responseText);
 			if (r.state == 200) {
 				
-                    location.href='edit_page.php?id='+r.page_key;
+                    location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
 			} else {
 
 
@@ -636,14 +661,13 @@ function save_edit_page_properties(){save_edit_general('page_properties');}
 
 function validate_page_content_presentation_template_data(query){validate_general('page_content','presentation_template_data',unescape(query));}
 function validate_page_header_store_title(query){validate_general('page_header','store_title',unescape(query));}
-function validate_page_header_subtitle(query){validate_general('page_header','subtitle',unescape(query));}
-function validate_page_header_slogan(query){validate_general('page_header','slogan',unescape(query));}
-function validate_page_html_head_resume(query){validate_general('page_html_head','resume',unescape(query));}
+
+function validate_page_html_head_resume(query){validate_general('page_properties','resume',unescape(query));}
 function validate_page_properties_url(query){validate_general('page_properties','url',unescape(query));}
 function validate_page_properties_link_title(query){validate_general('page_properties','link_title',unescape(query));}
 function validate_page_properties_page_code(query){validate_general('page_properties','page_code',unescape(query));}
-function validate_page_html_head_title(query){validate_general('page_html_head','title',unescape(query));}
-function validate_page_html_head_keywords(query){validate_general('page_html_head','keywords',unescape(query));}
+function validate_page_html_head_title(query){validate_general('page_properties','title',unescape(query));}
+function validate_page_html_head_keywords(query){validate_general('page_properties','keywords',unescape(query));}
 
 function html_editor_changed(){
     validate_scope_data['page_content']['source']['changed']=true;
@@ -654,6 +678,10 @@ function html_editor_changed(){
 
 function show_dialog_upload_page_content(){
 
+Dom.setStyle('processing_upload_page_content','display','none')
+Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','')
+
+
 region1 = Dom.getRegion('show_upload_page_content'); 
     region2 = Dom.getRegion('dialog_upload_page_content'); 
  var pos =[region1.right-region2.width,region1.bottom+2]
@@ -663,11 +691,15 @@ dialog_upload_page_content.show()
 
 }
 function close_upload_page_content(){
+
+Dom.get('upload_page_content_use_file').value='';
+
 dialog_upload_page_content.hide();
 }
 
 
 function cancel_upload_page_content_files(){
+Dom.get('upload_page_content_use_file').value='';
 
 dialog_upload_page_content_files.hide();
 }
@@ -676,37 +708,39 @@ Dom.get('upload_page_content_use_file').value=file;
 upload_page_content();
 }
 function upload_page_content(){
+
+
+
+Dom.setStyle('processing_upload_page_content','display','')
+Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','none')
+
     YAHOO.util.Connect.setForm('upload_page_content_form', true,true);
     var request='ar_upload_page_content.php?tipo=upload_page_content';
    var uploadHandler = {
       upload: function(o) {
-	  alert(o.responseText)
-	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	// alert(o.responseText)
+	
+	var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
 	     
-     //    window.location.reload()
+	     update_page_snapshot_and_reload(r.page_key)
+	     
+      return;
                 
 	    }else if(r.state==201){
-	    // alert(r.list)
-	    dialog_upload_page_content.hide();
-	    
-	    region1 = Dom.getRegion('show_upload_page_content'); 
-    region2 = Dom.getRegion('dialog_upload_page_content_files'); 
- var pos =[region1.left,region1.bottom+2]
-    Dom.setXY('dialog_upload_page_content_files', pos);
-	    
-	    	    dialog_upload_page_content_files.show();
-
-buttons='';
-	   for(var i=0; i<r.list.length; i++) {
-buttons=buttons+"<button onClick='upload_page_content_file(\""+r.list[i]+"\")' style='margin-top:0px;margin-bottom:10px' >"+r.list[i]+"</button> ";
-}
-	   
-	   
-       Dom.get('upload_page_content_files').innerHTML=buttons
-                
-	    }else
+	        dialog_upload_page_content.hide();
+	        region1 = Dom.getRegion('show_upload_page_content'); 
+            region2 = Dom.getRegion('dialog_upload_page_content_files'); 
+            var pos =[region1.right-region2.width,region1.bottom+2]
+            Dom.setXY('dialog_upload_page_content_files', pos);
+	        dialog_upload_page_content_files.show();
+	        buttons='';
+	        for(var i=0; i<r.list.length; i++) {
+                buttons=buttons+"<button onClick='upload_page_content_file(\""+r.list[i]+"\")' style='margin-top:0px;margin-bottom:10px' >"+r.list[i]+"</button> ";
+            }
+	        Dom.get('upload_page_content_files').innerHTML=buttons
+        }else
 		alert(r.msg);
 	    
 	    
@@ -720,22 +754,93 @@ buttons=buttons+"<button onClick='upload_page_content_file(\""+r.list[i]+"\")' s
 
   };
   
+  function update_page_snapshot_and_reload(page_key){
+  
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key,{
+  success: function(o) {
+   window.location.reload()
+  }
+  });
+  
+  }
+  
+    function update_page_snapshot(){
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_snapshot&id='+Dom.get('page_key').value,{
+  success: function(o) {
+   var r = YAHOO.lang.JSON.parse(o.responseText);
+   Dom.get('page_preview_snapshot_image').src='image.php?id='+r.image_key
+   
+  }
+  });
+  
+  }
+  
   
   function post_item_updated_actions(branch,r){
-  
-  //alert(branch)
+  switch ( branch ) {
+  	case 'page_header':
+  		
+  		update_page_snapshot();
+  		
+  		break;
+  	
+ 
+  }
+
   
   }
 
+function show_more_configuration(){
+Dom.setStyle('advanced_configuration','display','')
+}
+function hide_more_configuration(){
+Dom.setStyle('advanced_configuration','display','none')
 
+}
+
+
+function change_content_block(e,block){
+
+Dom.setStyle('show_page_content_overview_block','display','')
+Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_product_list_block','show_page_product_buttons_block','show_page_footer_block'],'selected')
+Dom.addClass('show_'+block,'selected')
+    Dom.setStyle(['page_header_block','page_content_block','page_product_list_block','page_product_buttons_block','page_footer_block','page_content_overview_block'],'display','none')
+    Dom.setStyle(block,'display','')
+}
+
+function show_page_content_overview_block(){
+
+Dom.setStyle('show_page_content_overview_block','display','none')
+Dom.setStyle('page_content_overview_block','display','')
+
+Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_product_list_block','show_page_product_buttons_block','show_page_footer_block'],'selected')
+    Dom.setStyle(['page_header_block','page_content_block','page_product_list_block','page_product_buttons_block','page_footer_block'],'display','none')
+  
+}
 
 function init(){
 
 
+ 
+   Event.addListener('add_auto_see_also_page', "click", change_number_auto_see_also,'add');
+   Event.addListener('remove_auto_see_also_page', "click", change_number_auto_see_also,'remove');
+
+
+  Event.addListener('show_page_header_block', "click", change_content_block,'page_header_block');
+  Event.addListener('show_page_content_block', "click", change_content_block,'page_content_block');
+  Event.addListener('show_page_product_list_block', "click", change_content_block,'page_product_list_block');
+  Event.addListener('show_page_product_buttons_block', "click", change_content_block,'page_product_buttons_block');
+  Event.addListener('show_page_footer_block', "click", change_content_block,'page_footer_block');
+
+  Event.addListener('show_page_content_overview_block', "click", show_page_content_overview_block);
 
 
 
-  Event.addListener('cancel_upload_page_content_files', "click", cancel_upload_page_content_files);
+  Event.addListener('show_more_configuration', "click", show_more_configuration);
+  Event.addListener('hide_more_configuration', "click", hide_more_configuration);
+
+
+ 
 
   Event.addListener('show_upload_page_content', "click", show_dialog_upload_page_content);
 Event.addListener("cancel_upload_page_content", "click", close_upload_page_content);
@@ -743,8 +848,20 @@ Event.addListener("cancel_upload_page_content", "click", close_upload_page_conte
  dialog_upload_page_content = new YAHOO.widget.Dialog("dialog_upload_page_content", {visible : false,close:true,underlay: "none",draggable:false});
     dialog_upload_page_content.render();
 
+ Event.addListener('cancel_upload_page_content_files', "click", cancel_upload_page_content_files);
  dialog_upload_page_content_files = new YAHOO.widget.Dialog("dialog_upload_page_content_files", {visible : false,close:true,underlay: "none",draggable:false});
     dialog_upload_page_content_files.render();
+
+
+
+dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", { visible : false,close:true,underlay: "none",draggable:false});
+    dialog_page_list.render();
+	
+
+     Event.addListener("add_other_found_in_page", "click", show_dialog_page_list,'found_in', true);
+  Event.addListener("add_other_see_also_page", "click", show_dialog_page_list,'see_also' , true);
+  
+
 
   init_search('site');
 
@@ -767,8 +884,8 @@ Event.addListener("cancel_upload_page_content", "click", close_upload_page_conte
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
 		 ,'name':'page_properties_url','ar':false
 		 
-	}
-	,'page_code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	},
+	'page_code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Code')?>'}]
 		 ,'name':'page_properties_page_code'
 		 ,'ar':'find','ar_request':'ar_sites.php?tipo=is_page_store_code&site_key='+Dom.get('site_key').value+'&query='
@@ -777,28 +894,30 @@ Event.addListener("cancel_upload_page_content", "click", close_upload_page_conte
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Link Title')?>'}]
 		 ,'name':'page_properties_link_title','ar':false
 		 
-	}
-    }
-     ,'page_html_head':{
-
-	'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	},
+		'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
 		 ,'name':'page_html_head_title','ar':false
 		 
-	}
+	},
+	'keywords':{
+	'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_html_head_keywords','ar':false},
+	'resume':{
+		'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_html_head_resume','ar':false}
 	
-	,'keywords':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_html_head_keywords','ar':false}
-		,'resume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Page Store Resume','name':'page_html_head_resume','ar':false}
+    }
+     ,'page_html_head':{
+
+
 
     }
 ,'page_header':{
-	'store_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		'store_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
 		 ,'name':'page_header_store_title','ar':false
 		 
 	}
-	,'subtitle':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_header_subtitle','ar':false}
-	,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'page_header_slogan','ar':false}
+
 	
     }
 ,'page_content':{
@@ -865,16 +984,7 @@ YAHOO.util.Event.addListener('reset_edit_page_content', "click", reset_edit_page
     page_header_store_title_oAutoComp.minQueryLength = 0; 
     page_header_store_title_oAutoComp.queryDelay = 0.1;
     
- var page_header_subtitle_oACDS = new YAHOO.util.FunctionDataSource(validate_page_header_subtitle);
-    page_header_subtitle_oACDS.queryMatchContains = true;
-    var page_header_subtitle_oAutoComp = new YAHOO.widget.AutoComplete("page_header_subtitle","page_header_subtitle_Container", page_header_subtitle_oACDS);
-    page_header_subtitle_oAutoComp.minQueryLength = 0; 
-    page_header_subtitle_oAutoComp.queryDelay = 0.1;
-var page_header_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_page_header_slogan);
-    page_header_slogan_oACDS.queryMatchContains = true;
-    var page_header_slogan_oAutoComp = new YAHOO.widget.AutoComplete("page_header_slogan","page_header_slogan_Container", page_header_slogan_oACDS);
-    page_header_slogan_oAutoComp.minQueryLength = 0; 
-    page_header_slogan_oAutoComp.queryDelay = 0.1;
+
 
     var page_html_head_resume_oACDS = new YAHOO.util.FunctionDataSource(validate_page_html_head_resume);
     page_html_head_resume_oACDS.queryMatchContains = true;
@@ -882,13 +992,11 @@ var page_header_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_page_h
     page_html_head_resume_oAutoComp.minQueryLength = 0; 
     page_html_head_resume_oAutoComp.queryDelay = 0.1;
   
-dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", {context:["add_other_found_in_page","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_page_list.render();
-	
+  
+  
 
-     Event.addListener("add_other_found_in_page", "click", show_dialog_page_list,'found_in', true);
-  Event.addListener("add_other_see_also_page", "click", show_dialog_page_list,'see_also' , true);
-    var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
+  
+  var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS7.queryMatchContains = true;
  oACDS7.table_id=7;
  var oAutoComp7 = new YAHOO.widget.AutoComplete("f_input7","f_container7", oACDS7);
@@ -900,7 +1008,7 @@ dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", {context:["add_ot
 
     
        var myConfig = {
-        height: '2000px',
+        height: Dom.get('content_height').value+'px',
         width: '972px',
         animate: true,
         dompath: true,

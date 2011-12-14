@@ -228,7 +228,7 @@
 
 </div>
 <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
-    {include file='edit_images_splinter.tpl'}
+    {include file='edit_images_splinter.tpl' parent=$product}
 </div>
 <div class="edit_block" {if $edit!="description"}style="display:none"{/if}"  id="d_description">
 

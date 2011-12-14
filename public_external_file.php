@@ -20,8 +20,6 @@ if(!isset($_REQUEST['id'])){
 }else
   $id=$_REQUEST['id'];
  
- 
- 
 $sql=sprintf("select `Page Store External File Type`,`Page Store External File Content` from `Page Store External File Dimension` where `Page Store External File Key`=%d",$id);
 $result = mysql_query($sql);
 if($row=mysql_fetch_array($result, MYSQL_ASSOC)){

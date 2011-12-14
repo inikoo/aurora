@@ -252,6 +252,15 @@ class Site extends DB_Table {
     function update_field_switcher($field,$value,$options='') {
 
         switch ($field) {
+        
+        case('Site Menu HTML'):
+        case('Site Menu CSS'):
+        case('Site Menu Javascript'):
+        case('Site Search HTML'):
+        case('Site Search CSS'):
+        case('Site Search Javascript'):      
+     $this->update_field($field,$value,'no_history');
+     break;
         case 'mals_id':
             $this->update_mals_data('id',$value);
             break;
@@ -864,5 +873,17 @@ class Site extends DB_Table {
         }
 
     }
+    
+    function display_search(){
+    
+ 
+    return $this->data['Site Search HTML'];
+    }
+    
+    function display_menu(){
+     return $this->data['Site Menu HTML'];
+    }
+    
+    
 }
 ?>

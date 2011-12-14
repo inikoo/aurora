@@ -16,6 +16,8 @@ function save_new_category(){
 
 var name=Dom.get("new_category_name").value;
 var store_key=Dom.get("new_category_store_key").value;
+var warehouse_key=Dom.get("new_category_warehouse_key").value;
+
 var parent_key=Dom.get("new_category_parent_key").value;
 var subject=Dom.get("new_category_subject").value;
 
@@ -28,32 +30,37 @@ Dom.setStyle('new_category_no_name_msg','display','none')
 }
 
 var ar_file='ar_edit_categories.php'; 
-    	var request='tipo=new_category&subject='+subject+'&name='+name+'&store_key='+store_key+'&parent_key='+parent_key;
+    	var request='tipo=new_category&subject='+subject+'&name='+name+'&store_key='+store_key+'&warehouse_key='+warehouse_key+'&parent_key='+parent_key;
 
 //alert(request);
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-//						alert(o.responseText);
+					    
+					   
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-					table_id=0;
+					
+					
+					table_id=1;
 					var table=tables['table'+table_id];
     var datasource=tables['dataSource'+table_id];
-    var request='&table_id=0';
+    var request='&table_id='+table_id;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 					
-					table_id='_history';
+					table_id=2;
 					var table=tables['table'+table_id];
 					if(table!= undefined){
 					
     var datasource=tables['dataSource'+table_id];
     var request='&table_id=_history';
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+    
 					}
 					cancel_new_category()
-						}
+				
+				}
 						
 					    },
 					failure:function(o) {

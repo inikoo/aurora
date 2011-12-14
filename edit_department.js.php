@@ -467,7 +467,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+        this.table0.table_id=tableid;
+        this.table0.subscribe("renderEvent", myrenderEvent);
 
 
 
@@ -542,7 +543,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+        this.table1.table_id=tableid;
+        this.table1.subscribe("renderEvent", myrenderEvent);
 		    
 		    
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['department']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['history']['f_value']?>'};
@@ -572,7 +574,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       
 				       
 	    //?tipo=customers&tid=0"
-	        this.dataSource6 = new YAHOO.util.DataSource("ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&parent=department&parent_key="+Dom.get('department_key').value+"&tableid=6");
+	        this.dataSource6 = new YAHOO.util.DataSource("ar_edit_sites.php?tipo=pages&parent=department&parent_key="+Dom.get('department_key').value+"&tableid=6");
 
 //alert("ar_edit_sites.php?tipo=family_page_list&site_key="+Dom.get('site_key').value+"&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=6")
 	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -623,7 +625,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+        this.table6.table_id=tableid;
+        this.table6.subscribe("renderEvent", myrenderEvent);
 
 	    this.table6.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table6.subscribe("cellMouseoutEvent", unhighlightEditableCell);
@@ -697,13 +700,26 @@ newvalue=r.newvalue;
  
 }
 
+function show_new_department_page_dialog(){
+
+var number_sites=Dom.get('number_sites').value;
+
+if(number_sites==0){
+return;
+}else if(number_sites==1){
+new_department_page(Dom.get('site_key').value);
+}else{
+alert("todo")
+}
+
+}
 
 
 
-function new_department_page(){
+function new_department_page(site_key){
 
 
-var request='tipo=new_department_page&department_key='+department_id+'&site_key='+Dom.get('site_key').value
+var request='tipo=new_department_page&department_key='+Dom.get('department_key').value+'&site_key='+site_key
 
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
@@ -713,7 +729,10 @@ var request='tipo=new_department_page&department_key='+department_id+'&site_key=
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
-								        window.location = "edit_department.php?id=<?php echo$_SESSION['state']['department']['id']?>"
+								        var table=tables.table6;
+ var datasource=tables.dataSource6;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 							    }else{
 						
                                         alert(r.msg)								
@@ -783,7 +802,7 @@ init_search('products_store');
 
 
  	//YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
-  YAHOO.util.Event.addListener('new_department_page', "click", new_department_page);
+    YAHOO.util.Event.addListener('new_department_page', "click", show_new_department_page_dialog);
 
  YAHOO.util.Event.addListener('cancel_new_family', "click", cancel_new_family);
  YAHOO.util.Event.addListener('save_new_family', "click", save_new_family);

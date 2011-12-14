@@ -7,7 +7,7 @@
 
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
-  <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; {t}Website{/t}: {$site->get('Site URL')}</span>
+  <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt=""/> {$site->get('Site URL')}</span>
 </div>
 <div class="top_page_menu">
     <div class="buttons" >
@@ -26,18 +26,135 @@
 
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $block_view=='general'}selected{/if}"  id="general">  <span> {t}General{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='layout'}selected{/if}"  id="layout">  <span> {t}Layout{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='style'}selected{/if}"  id="style">  <span> {t}Style{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='sections'}selected{/if}"  id="sections">  <span> {t}Sections{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $block_view=='layout'}selected{/if}"  id="layout">  <span> {t}Layout{/t}</span></span></li>
+    <li  style="display:none"> <span class="item {if $block_view=='style'}selected{/if}"  id="style">  <span> {t}Style{/t}</span></span></li>
+    <li  style="display:none"> <span class="item {if $block_view=='sections'}selected{/if}"  id="sections">  <span> {t}Sections{/t}</span></span></li>
       <li> <span class="item {if $block_view=='headers'}selected{/if}"  id="headers">  <span> {t}Headers{/t}</span></span></li>
     <li> <span class="item {if $block_view=='footers'}selected{/if}"  id="footers">  <span> {t}Footers{/t}</span></span></li>
-
+  <li> <span class="item {if $block_view=='menu'}selected{/if}"  id="menu">  <span> {t}Menu{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='website_search'}selected{/if}"  id="website_search">  <span> {t}Search{/t}</span></span></li>
     <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
   
   </ul>
   
   <div class="tabbed_container" > 
    
+   <div  class="edit_block" style="{if $block_view!='website_search'}display:none{/if}"  id="d_website_search">
+   
+       <div class='buttons'>
+        <button id="show_upload_search"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button>
+     </div>
+   
+     <table class="edit" border=0  id="site_search_edit_table" style="width:100%">
+	     <tr ><td colspan="3">
+
+            <div class="buttons">
+	        <button  style="visibility:hidden"  id="save_edit_site_search" class="positive">{t}Save{/t}</button>
+	         <button style="visibility:hidden" id="reset_edit_site_search" class="negative">{t}Reset{/t}</button>
+        </div>
+
+	     </td></tr>
+
+
+ 
+	      <tr style="height:87px"><td class="label" style="width:120px">{t}Search HTML{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="site_search_html"  style="width:100%;height:80px" value="{$site->get('Site Search HTML')|escape}" ovalue="{$site->get('Site Search HTML')|escape}"  >{$site->get('Site Search HTML')}</textarea>
+		   
+		   <div id="site_search_html_Container"  ></div>
+		 </div>
+	     </td>
+	     <td style="width:200px"><div id="site_search_html_msg"></div></td>
+	     </tr>
+	 
+	  
+	    <tr style="height:87px"><td class="label" style="width:120px">{t}Search CSS{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="site_search_css"  style="width:100%;height:80px" value="{$site->get('Site Search CSS')|escape}" ovalue="{$site->get('Site Search CSS')|escape}"  >{$site->get('Site Search CSS')}</textarea>
+		   <div id="site_search_css_Container"  ></div>
+		 </div>
+		 
+	     </td>
+	      <td style="width:200px"><div id="site_search_css_msg"></div></td>
+	     </tr>
+	 
+	  
+	    <tr style="height:87px"><td class="label" style="width:120px">{t}Search Javascript{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="site_search_javascript"  style="width:100%;height:80px"  value="{$site->get('Site Search Javascript')|escape}" ovalue="{$site->get('Site Search Javascript'|escape)}"  >{$site->get('Site Search Javascript')}</textarea>
+		   <div id="site_search_javascript_Container"  ></div>
+		 </div>
+	     </td>
+	      <td style="width:200px"><div id="site_search_javascript_msg"></div></td>
+	     </tr>
+	 
+	     
+	    
+	     </table>
+   </div>
+      <div  class="edit_block" style="{if $block_view!='menu'}display:none{/if}"  id="d_menu">
+      
+        <div class='buttons'>
+        <button id="show_upload_menu"><img src="art/icons/add.png" alt=""> {t}Import From Sources{/t}</button>
+     </div>
+      
+      
+      <table class="edit" border=0  id="site_menu_edit_table" style="width:100%">
+	     <tr ><td colspan="3">
+
+            <div class="buttons">
+	        <button  style="visibility:hidden"  id="save_edit_site_menu" class="positive">{t}Save{/t}</button>
+	         <button style="visibility:hidden" id="reset_edit_site_menu" class="negative">{t}Reset{/t}</button>
+        </div>
+
+	     </td></tr>
+
+
+ 
+	      <tr style="height:87px"><td class="label" style="width:120px">{t}Menu HTML{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="site_menu_html"  style="width:100%;height:80px" value="{$site->get('Site Menu HTML')}" ovalue="{$site->get('Site Menu HTML')}"  >{$site->get('Site Menu HTML')}</textarea>
+		   
+		   <div id="site_menu_html_Container"  ></div>
+		 </div>
+	     </td>
+	     <td style="width:200px"><div id="site_menu_html_msg"></div></td>
+	     </tr>
+	 
+	  
+	    <tr style="height:87px"><td class="label" style="width:120px">{t}Menu CSS{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="site_menu_css"  style="width:100%;height:80px" value="{$site->get('Site Menu CSS')}" ovalue="{$site->get('Site Menu CSS')}"  >{$site->get('Site Menu CSS')}</textarea>
+		   <div id="site_menu_css_Container"  ></div>
+		 </div>
+		 
+	     </td>
+	      <td style="width:200px"><div id="site_menu_css_msg"></div></td>
+	     </tr>
+	 
+	  
+	    <tr style="height:87px"><td class="label" style="width:120px">{t}Menu Javascript{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="site_menu_javascript"  style="width:100%;height:80px" value="{$site->get('Site Menu Javascript')}" ovalue="{$site->get('Site Menu Javascript')}"  >{$site->get('Site Menu Javascript')}</textarea>
+		   <div id="site_menu_javascript_Container"  ></div>
+		 </div>
+	     </td>
+	      <td style="width:200px"><div id="site_menu_javascript_msg"></div></td>
+	     </tr>
+	 
+	     
+	    
+	     </table>
+      
+      
+      </div>
+
     <div  class="edit_block" style="{if $block_view!='headers'}display:none{/if}"  id="d_headers">
      
      <div class='buttons'>
@@ -337,7 +454,6 @@ link to edit_site_section.php?id=
 <div id="the_table1" class="data_table" >
   <span class="clean_table_title">{t}History{/t}</span>
      {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
-
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
 
@@ -437,7 +553,7 @@ link to edit_site_section.php?id=
   <form enctype="multipart/form-data" method="post" id="upload_header_form">
 <input type="hidden" name="parent_key" value="{$site->id}" />
 <input type="hidden" name="parent" value="site" />
-<input id="upload_page_content_use_file" type="hidden" name="use_file" value="" />
+<input id="upload_header_use_file" type="hidden" name="use_file" value="" />
 
  <tr><td>{t}File{/t}:</td><td><input id="upload_header_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
 
@@ -461,7 +577,7 @@ link to edit_site_section.php?id=
   <form enctype="multipart/form-data" method="post" id="upload_footer_form">
 <input type="hidden" name="parent_key" value="{$site->id}" />
 <input type="hidden" name="parent" value="site" />
-<input id="upload_page_content_use_file" type="hidden" name="use_file" value="" />
+<input id="upload_footer_use_file" type="hidden" name="use_file" value="" />
 
  <tr><td>{t}File{/t}:</td><td><input id="upload_footer_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
 
@@ -475,5 +591,118 @@ link to edit_site_section.php?id=
   </td></tr>
     </table>
 </div>
+
+<div id="dialog_upload_menu" style="padding:30px 10px 10px 10px;width:320px">
+
+ <table style="margin:0 auto">
+  <form enctype="multipart/form-data" method="post" id="upload_menu_form">
+<input type="hidden" name="parent_key" value="{$site->id}" />
+<input type="hidden" name="parent" value="site" />
+<input id="upload_menu_use_file" type="hidden" name="use_file" value="" />
+
+ <tr><td>{t}File{/t}:</td><td><input id="upload_menu_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
+
+  </form>
+ <tr><td colspan=2>
+  <div class="buttons">
+  <span id="processing_upload_menu" style="float:right;display:none" ><img src="art/loading.gif" alt=""> {t}Processing{/t}</span>
+<button class="positive"  id="upload_menu"  >{t}Upload{/t}</button>
+<button  id="cancel_upload_menu" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
+<div id="dialog_upload_search" style="padding:30px 10px 10px 10px;width:320px">
+
+ <table style="margin:0 auto">
+  <form enctype="multipart/form-data" method="post" id="upload_search_form">
+<input type="hidden" name="parent_key" value="{$site->id}" />
+<input type="hidden" name="parent" value="site" />
+<input id="upload_search_use_file" type="hidden" name="use_file" value="" />
+
+ <tr><td>{t}File{/t}:</td><td><input id="upload_search_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
+
+  </form>
+ <tr><td colspan=2>
+  <div class="buttons">
+  <span id="processing_upload_search" style="float:right;display:none" ><img src="art/loading.gif" alt=""> {t}Processing{/t}</span>
+<button class="positive"  id="upload_search"  >{t}Upload{/t}</button>
+<button  id="cancel_upload_search" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
+
+
+<div id="dialog_upload_header_files" style="padding:30px 10px 10px 10px;width:420px">
+
+    <table style="margin:0 auto">
+        <tr><td >
+            <div style="margin-bottom:10px">{t}Multiple files found, please select one{/t}.</div>
+            </td></tr>
+  <tr><td >
+  <div id="upload_header_files" class="buttons left small"></div>
+  </td></tr>
+ <tr><td>
+  <div class="buttons">
+<button  id="cancel_upload_header_files" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
+<div id="dialog_upload_footer_files" style="padding:30px 10px 10px 10px;width:420px">
+
+    <table style="margin:0 auto">
+        <tr><td >
+            <div style="margin-bottom:10px">{t}Multiple files found, please select one{/t}.</div>
+            </td></tr>
+  <tr><td >
+  <div id="upload_footer_files" class="buttons left small"></div>
+  </td></tr>
+ <tr><td>
+  <div class="buttons">
+<button  id="cancel_upload_footer_files" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
+<div id="dialog_upload_menu_files" style="padding:30px 10px 10px 10px;width:420px">
+
+    <table style="margin:0 auto">
+        <tr><td >
+            <div style="margin-bottom:10px">{t}Multiple files found, please select one{/t}.</div>
+            </td></tr>
+  <tr><td >
+  <div id="upload_menu_files" class="buttons left small"></div>
+  </td></tr>
+ <tr><td>
+  <div class="buttons">
+<button  id="cancel_upload_menu_files" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
+<div id="dialog_upload_search_files" style="padding:30px 10px 10px 10px;width:420px">
+
+    <table style="margin:0 auto">
+        <tr><td >
+            <div style="margin-bottom:10px">{t}Multiple files found, please select one{/t}.</div>
+            </td></tr>
+  <tr><td >
+  <div id="upload_search_files" class="buttons left small"></div>
+  </td></tr>
+ <tr><td>
+  <div class="buttons">
+<button  id="cancel_upload_search_files" class="negative" >{t}Cancel{/t}</button><br/>
+</div>
+  </td></tr>
+    </table>
+</div>
+
 
 {include file='footer.tpl'}

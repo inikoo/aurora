@@ -126,7 +126,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'supplier_categories.php','la
 //$smarty->assign('general_options_list',$general_options_list);
 
 
-$smarty->assign('search_label',_('Search'));
+$smarty->assign('search_label',_('Suppliers'));
 $smarty->assign('search_scope','supplier_products');
 
 //$smarty->assign('box_layout','yui-t4');
@@ -172,6 +172,7 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+$smarty->assign('supplier_id',false);
 
 
 $smarty->display('suppliers.tpl');

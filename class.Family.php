@@ -22,16 +22,15 @@ class Family extends DB_Table {
 
 
     var $products=false;
-    public $images_slideshow=array();
     var $external_DB_link=false;
-	var $id=false;
-	var $data=array();
-	var $locale;
-	var $url;
-	var $user_id;
-	var $method;
-	var $match=true;
-	var $currency;
+    var $id=false;
+    var $data=array();
+    var $locale;
+    var $url;
+    var $user_id;
+    var $method;
+    var $match=true;
+    var $currency;
     /*
       Constructor: Family
       Initializes the class, trigger  Search/Load/Create for the data set
@@ -42,10 +41,10 @@ class Family extends DB_Table {
 
 
     function Family($a1=false,$a2=false,$a3=false) {
-		//Transfered from LightFamily
+        //Transfered from LightFamily
 
-		//End Transfer
-		
+        //End Transfer
+
         $this->table_name='Product Family';
         $this->page_data=false;
         $this->ignore_fields=array(
@@ -291,7 +290,7 @@ class Family extends DB_Table {
         case('code'):
         case('code_store'):
             $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Store Key`=%d ",prepare_mysql($tag),$tag2);
-			//print $sql;
+            //print $sql;
             break;
         }
 
@@ -581,32 +580,32 @@ class Family extends DB_Table {
         }
     }
 
-   
-   function get_department_keys(){
-    $department_keys=array();
-            $sql=sprintf("Select `Product Department Key` from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $department_keys[]=$row['Product Department Key'];
-            }
-   return $department_keys;
-   }
-   
-   
-    function get_pages_keys(){
-    $page_keys=array();
-            $sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and  `Page Parent Key`=%d",$this->id);
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $page_keys[]=$row['Page Key'];
-            }
-   return $page_keys;
-   }
+
+    function get_department_keys() {
+        $department_keys=array();
+        $sql=sprintf("Select `Product Department Key` from `Product Family Department Bridge` where `Product Family Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $department_keys[]=$row['Product Department Key'];
+        }
+        return $department_keys;
+    }
+
+
+    function get_pages_keys() {
+        $page_keys=array();
+        $sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section`='Family Catalogue' and  `Page Parent Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $page_keys[]=$row['Page Key'];
+        }
+        return $page_keys;
+    }
 
     function load($tipo,$args=false) {
         switch ($tipo) {
 
-    
+
         case('products'):
 
 
@@ -1217,16 +1216,16 @@ class Family extends DB_Table {
         //$this->data["Product Family DC $db_interval Acc Profit"]=0;
 
         $sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
-        sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
+                     sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
                      $this->id,
                      prepare_mysql($from_date),
                      ($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
                     );
-                    
+
         $result=mysql_query($sql);
-       
-        
+
+
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
             $this->data["Product Family $db_interval Acc Invoiced Amount"]=$row["net"];
@@ -1251,7 +1250,7 @@ class Family extends DB_Table {
                     );
 
         mysql_query($sql);
-      
+
         /*
                 $sql=sprintf("update `Product Family Default Currency` set
                              `Product Family DC $db_interval Acc Invoiced Discount Amount`=%.2f,
@@ -1278,15 +1277,15 @@ class Family extends DB_Table {
             //$this->data["Product Family DC $db_interval Acc 1YB Profit"]=0;
 
             $sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
-        sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
-                     $this->id,
-                      prepare_mysql($from_date_1yb),
+                         sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
+                         $this->id,
+                         prepare_mysql($from_date_1yb),
                          prepare_mysql($to_1yb)
 
-                    );
-                    
-                    
-                   
+                        );
+
+
+
             // print "$sql\n\n";
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2202,104 +2201,6 @@ class Family extends DB_Table {
     }
 
 
-    function add_image($image_key,$args='') {
-
-        $tmp_images_dir='app_files/pics/';
-        $principal='No';
-        if (preg_match('/principal/i',$args))
-            $principal='Yes';
-        $sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Family' and `Subject Key`=%d",$this->id);
-        $res=mysql_query($sql);
-        $row=mysql_fetch_array($res,MYSQL_ASSOC );
-        $number_images=$row['num'];
-        if ($number_images==0)
-            $principal='Yes';
-        $sql=sprintf("insert into `Image Bridge` values ('Family',%d,%d,%s,'') on duplicate key update `Is Principal`=%s "
-                     ,$this->id
-                     ,$image_key
-                     ,prepare_mysql($principal)
-                     ,prepare_mysql($principal)
-                    );
-        //	print "$sql\n";
-        mysql_query($sql);
-        $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-                     ,$this->id
-                     ,$image_key
-                    );
-        //  print $sql;
-        $res=mysql_query($sql);
-
-        if ($row=mysql_fetch_array($res)) {
-            if ($row['Image Height']!=0)
-                $ratio=$row['Image Width']/$row['Image Height'];
-            else
-                $ratio=1;
-            $this->new_value=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-            $this->images_slideshow[]=$this->new_value;
-        }
-        $this->msg="image added";
-    }
-    function load_images() {
-        $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Thumbnail URL`,`Image Small URL`,`Image Large URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and `Subject Key`=%d",$this->id);
-
-        //    print $sql;
-        $res=mysql_query($sql);
-        $this->images=array();
-
-
-
-        while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
-
-            $this->images[$row['Image Key']]=$row;
-
-        }
-
-
-    }
-    function load_images_slidesshow() {
-        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d",$this->id);
-        //  print $sql;
-        $res=mysql_query($sql);
-        $this->images_slideshow=array();
-
-
-        while ($row=mysql_fetch_array($res)) {
-            if ($row['Image Height']!=0)
-                $ratio=$row['Image Width']/$row['Image Height'];
-            else
-                $ratio=1;
-            $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-        }
-
-    }
-    function update_main_image() {
-
-        $this->load_images();
-
-        $num_images=count($this->images);
-        $main_image_src='art/nopic.png';
-        if ($num_images>0) {
-
-            //print_r($this->images_original);
-            foreach( $this->images as $image ) {
-                // print_r($image);
-                $main_image_src=$image['Image Small URL'];
-                if ($image['Is Principal']=='Yes') {
-
-                    break;
-                }
-            }
-        }
-
-        $sql=sprintf("update `Product Family Dimension` set `Product Family Main Image`=%s  where `Product Family Key`=%d",
-                     prepare_mysql($main_image_src)
-                     ,$this->id
-                    );
-        // print "$sql\n";
-        mysql_query($sql);
-    }
-
-
 
 
 
@@ -2345,31 +2246,7 @@ class Family extends DB_Table {
     }
 
 
-    function remove_image($image_key) {
 
-        $this->load_images();
-
-        if (array_key_exists($image_key,$this->images)) {
-            $sql=sprintf("delete from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
-//print $sql;
-            mysql_query($sql);
-            if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-            $this->updated=true;
-            $was_principal=($this->images[$image_key]['Is Principal']=='Yes'?true:false);
-            unset($this->images[$image_key]);
-
-            if ($was_principal and count($this->images)>0) {
-                $this->update_principal_image();
-
-            }
-
-        } else {
-
-            $this->msg=_('Image not associated');
-        }
-
-
-    }
 
 
     function update_full_search() {
@@ -2650,54 +2527,53 @@ class Family extends DB_Table {
 
 
 
-           
+
         }
-	}
-	
+    }
 
-	function get_product_in_family_with_order_form($data, $header=false, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method, $options=false, $user=false, $path=false) {
 
-		
-		if(isset($options['order_by']))
-			if(strtolower($options['order_by']) == 'price')
-				$order_by='`Product RRP`';
-			elseif(strtolower($options['order_by']) == 'code')
-				$order_by='`Product Code File As`';
-			elseif(strtolower($options['order_by']) == 'name')
-				$order_by='`Product Name`';
-			else
-				$order_by='`Product Code File As`';
-		else
-			$order_by='`Product Code File As`';
-			
-		if(isset($options['limit']))
-			$limit='limit '.$options['limit'];
-		else
-			$limit='';
+    function get_product_in_family_with_order_form($data, $header=false, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method, $options=false, $user=false, $path=false) {
 
-		if(isset($options['range'])){
-			list($range1, $range2)=explode(":", strtoupper($options['range']));
-			$range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
-			
-		}
-		else 
-			$range_where="";//"  true";
-			
+
+        if (isset($options['order_by']))
+            if (strtolower($options['order_by']) == 'price')
+                $order_by='`Product RRP`';
+        elseif(strtolower($options['order_by']) == 'code')
+        $order_by='`Product Code File As`';
+        elseif(strtolower($options['order_by']) == 'name')
+        $order_by='`Product Name`';
+        else
+            $order_by='`Product Code File As`';
+        else
+            $order_by='`Product Code File As`';
+
+        if (isset($options['limit']))
+            $limit='limit '.$options['limit'];
+        else
+            $limit='';
+
+        if (isset($options['range'])) {
+            list($range1, $range2)=explode(":", strtoupper($options['range']));
+            $range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
+
+        } else
+            $range_where="";//"  true";
+
 
         $print_header=true;
-		$print_rrp=true;
-		if(isset($options['rrp'])){
-			//print 'ok';
-			$print_rrp=$options['rrp'];
-		}
-		
-		$show_unit=true;
-		if(isset($options['unit'])){
-			//print 'ok';
-			$show_unit=$options['unit'];
-		}
-		
-		
+        $print_rrp=true;
+        if (isset($options['rrp'])) {
+            //print 'ok';
+            $print_rrp=$options['rrp'];
+        }
+
+        $show_unit=true;
+        if (isset($options['unit'])) {
+            //print 'ok';
+            $show_unit=$options['unit'];
+        }
+
+
         $print_price=true;
 
         switch ($type) {
@@ -2706,10 +2582,10 @@ class Family extends DB_Table {
             $this->user_id=$username;
             $this->method=$method;
             break;
-		case 'inikoo':
-			$this->method='sc';
-			$this->user=$user;
-			break;
+        case 'inikoo':
+            $this->method='sc';
+            $this->user=$user;
+            break;
         default:
             break;
         }
@@ -2748,7 +2624,7 @@ class Family extends DB_Table {
             $discontinued='Discontinued';
         }
 
-		
+
 
         $form=sprintf('<table class="product_list form" >' );
 
@@ -2772,14 +2648,15 @@ class Family extends DB_Table {
 
 
 
-					if($row['rrp_avg']<=0){
-						$rrp_label='';
+                    if ($row['rrp_avg']<=0) {
+                        $rrp_label='';
                         $print_rrp=false;
-					}
+                    }
                     elseif ($row['rrp_avg']==$row['rrp_min']) {
                         $rrp_label='<br/><span class="rrp">RRP: '.$rrp.'</span>';
                         $print_rrp=false;
-                    } else
+                    }
+                    else
                         $rrp_label='<br/><span class="rrp">RRP from '.$rrp.'</span>';
 
 
@@ -2823,275 +2700,273 @@ class Family extends DB_Table {
 
         }
 
-		if($this->method=='reload'){
+        if ($this->method=='reload') {
 
-			$form.=sprintf('
-						   <form action="%s" method="post">
-						   <input type="hidden" name="userid" value="%s">
-						   <input type="hidden" name="nnocart"> '
-						   ,$ecommerce_url
-						   ,addslashes($username)
+            $form.=sprintf('
+                           <form action="%s" method="post">
+                           <input type="hidden" name="userid" value="%s">
+                           <input type="hidden" name="nnocart"> '
+                           ,$ecommerce_url
+                           ,addslashes($username)
 
-						  );
-			$counter=1;
-			//$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
-			$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
-			//print $sql;
-			$result=mysql_query($sql);
-			//while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			foreach($data as $row){
-
-
-
-				if ($print_rrp) {
-
-					$rrp= $this->get_formated_rrp(array(
-													  'Product RRP'=>$row['Product RRP'],
-													  'Product Units Per Case'=>$row['Product Units Per Case'],
-													  'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
-
-				} else {
-					$rrp='';
-				}
+                          );
+            $counter=1;
+            //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
+            $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
+            //print $sql;
+            $result=mysql_query($sql);
+            //while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            foreach($data as $row) {
 
 
 
+                if ($print_rrp) {
 
+                    $rrp= $this->get_formated_rrp(array(
+                                                      'Product RRP'=>$row['Product RRP'],
+                                                      'Product Units Per Case'=>$row['Product Units Per Case'],
+                                                      'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
 
-				if ($row['Product Web State']=='Out of Stock') {
-					$class_state='out_of_stock';
-				   
-					$state=' <span class="out_of_stock">('.$out_of_stock.')</span>';
-
-				}
-				elseif ($row['Product Web State']=='Discontinued') {
-					$class_state='discontinued';
-					$state=' <span class="discontinued">'.$discontinued.'</span>';
-
-				}
-				else {
-
-					$class_state='';
-					$state='';
-
-
-				}
-
-				$price= $this->get_formated_price(array(
-													  'Product Price'=>$row['Product Price'],
-													  'Product Units Per Case'=>1,
-													  'Product Unit Type'=>'',
-													  'Label'=>(''),
-													  'price per unit text'=>''
-
-												  ));
-
-
-
-
-				if ($counter==0)
-					$tr_class='class="top"';
-				else
-					$tr_class='';
-				$form.=sprintf('<tr %s >
-										<input type="hidden"  name="discountpr%s"     value="1,%.2f"  >
-										<input type="hidden"  name="product%s"  value="%s %s" >
-										<td class="code">%s</td><td class="price">%s</td>
-										<td class="input"><input name="qty%s"  id="qty%s"  type="text" value="" class="%s"  %s ></td>
-										<td class="description">%s %s</td><td class="rrp">%s</td>
-										</tr>'."\n",
-							   $tr_class,
-							   $counter,$row['Product Price'],
-							   $counter,$row['Product Code'],$row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
-
-							   $row['Product Code'],
-							   $price,
-							   $counter,
-							   $counter,
-								 $class_state,
-								 ($class_state!=''?' readonly="readonly" ':''),
-							   $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
-							   $state,
-							   $rrp
-							  
-							  );
+                } else {
+                    $rrp='';
+                }
 
 
 
 
 
-				$counter++;
-			}
+                if ($row['Product Web State']=='Out of Stock') {
+                    $class_state='out_of_stock';
 
-			$form.=sprintf('<tr class="space"><td colspan="4">
-						   <input type="hidden" name="return" value="%s">
-						   <input class="button" name="Submit" type="submit"  value="Order">
-						   <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
-						   '
-						   ,ecommerceURL($secure, $_port, $_protocol, $url, $server));
+                    $state=' <span class="out_of_stock">('.$out_of_stock.')</span>';
 
-		}
-		else if($this->method=='sc'){
-			$form.=sprintf('
-						   <form action="%s" method="post">
-						   <input type="hidden" name="userid" value="%s">
-						   <input type="hidden" name="nnocart"> '
-						   ,$ecommerce_url
-						   ,addslashes($username)
+                }
+                elseif ($row['Product Web State']=='Discontinued') {
+                    $class_state='discontinued';
+                    $state=' <span class="discontinued">'.$discontinued.'</span>';
 
-						  );
-			$counter=1;
-			//$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
-			$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
-			//print $sql;
-			$result=mysql_query($sql);
-			//while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			foreach($data as $row){
+                }
+                else {
+
+                    $class_state='';
+                    $state='';
 
 
+                }
 
-				if ($print_rrp) {
+                $price= $this->get_formated_price(array(
+                                                      'Product Price'=>$row['Product Price'],
+                                                      'Product Units Per Case'=>1,
+                                                      'Product Unit Type'=>'',
+                                                      'Label'=>(''),
+                                                      'price per unit text'=>''
 
-					$rrp= $this->get_formated_rrp(array(
-													  'Product RRP'=>$row['Product RRP'],
-													  'Product Units Per Case'=>$row['Product Units Per Case'],
-													  'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
-
-				} else {
-					$rrp='';
-				}
+                                                  ));
 
 
 
 
+                if ($counter==0)
+                    $tr_class='class="top"';
+                else
+                    $tr_class='';
+                $form.=sprintf('<tr %s >
+                               <input type="hidden"  name="discountpr%s"     value="1,%.2f"  >
+                               <input type="hidden"  name="product%s"  value="%s %s" >
+                               <td class="code">%s</td><td class="price">%s</td>
+                               <td class="input"><input name="qty%s"  id="qty%s"  type="text" value="" class="%s"  %s ></td>
+                               <td class="description">%s %s</td><td class="rrp">%s</td>
+                               </tr>'."\n",
+                               $tr_class,
+                               $counter,$row['Product Price'],
+                               $counter,$row['Product Code'],$row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
 
-				if ($row['Product Web State']=='Out of Stock') {
-					$class_state='out_of_stock';
-				   
-					$state=' <span class="out_of_stock">('.$out_of_stock.')</span>';
+                               $row['Product Code'],
+                               $price,
+                               $counter,
+                               $counter,
+                               $class_state,
+                               ($class_state!=''?' readonly="readonly" ':''),
+                               $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
+                               $state,
+                               $rrp
 
-				}
-				elseif ($row['Product Web State']=='Discontinued') {
-					$class_state='discontinued';
-					$state=' <span class="discontinued">'.$discontinued.'</span>';
-
-				}
-				else {
-
-					$class_state='';
-					$state='';
-
-
-				}
-
-				$price= $this->get_formated_price(array(
-													  'Product Price'=>$row['Product Price'],
-													  'Product Units Per Case'=>1,
-													  'Product Unit Type'=>'',
-													  'Label'=>(''),
-													  'price per unit text'=>''
-
-												  ));
+                              );
 
 
 
 
-				if ($counter==0)
-					$tr_class='class="top"';
-				else
-					$tr_class='';
-					
-					$sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
-									$result1=mysql_query($sql);
-									if($row1=mysql_fetch_array($result1))
-										$order_exist=true;
-									
-									$order_key=$row1['Order Key'];
-									
-									$sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d", $order_key, $row['Product ID']);
-									$result1=mysql_query($sql);
-									if($row1=mysql_fetch_array($result1))
-										$old_qty=$row1['Order Quantity'];
-									else
-										$old_qty=0;
-										
-									$form.=sprintf('<tr %s >
-															<input type="hidden" id="order_id%d" value="%d">
-														   <input type="hidden" id="pid%d" value="%d">
-														   <input type="hidden" id="old_qty%d" value="%d">
-															<td class="code">%s</td>
-															<td class="price">%s</td>
-															<td class="input"><input  id="qty%s"  type="text" value="%s" class="%s"  %s ></td>
-															<td><img src="%sinikoo_files/art/icons/basket_add.png" onClick="order_single_product(%d)" style="display:%s"/></td>
-															<td class="description">%s %s</td><td class="rrp">%s</td>
-															<td><span id="loading%d"></span></td>
-															</tr>'."\n",
-												   $tr_class,
-												   
-												   $row['Product ID'],$order_key,
-													$row['Product ID'],$row['Product ID'],
-													$row['Product ID'],$old_qty,
-												   $row['Product Code'],
-												   $price,
-												  
-												   $row['Product ID'],($old_qty>0?$old_qty:''),
-													 $class_state,
-													 ($class_state!=''?' readonly="readonly" ':''),
-													 $path,
-													$row['Product ID'], ($class_state!=''?' none ':''),
-												   $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
-												   $state,
-												   $rrp,
-												  $row['Product ID']
-												  );
+
+                $counter++;
+            }
+
+            $form.=sprintf('<tr class="space"><td colspan="4">
+                           <input type="hidden" name="return" value="%s">
+                           <input class="button" name="Submit" type="submit"  value="Order">
+                           <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
+                           '
+                           ,ecommerceURL($secure, $_port, $_protocol, $url, $server));
+
+        } else if ($this->method=='sc') {
+            $form.=sprintf('
+                           <form action="%s" method="post">
+                           <input type="hidden" name="userid" value="%s">
+                           <input type="hidden" name="nnocart"> '
+                           ,$ecommerce_url
+                           ,addslashes($username)
+
+                          );
+            $counter=1;
+            //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' ", $this->id);
+            $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
+            //print $sql;
+            $result=mysql_query($sql);
+            //while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            foreach($data as $row) {
 
 
-				$counter++;
-			}
 
-			$form.=sprintf('</form></table>');
-		}
+                if ($print_rrp) {
+
+                    $rrp= $this->get_formated_rrp(array(
+                                                      'Product RRP'=>$row['Product RRP'],
+                                                      'Product Units Per Case'=>$row['Product Units Per Case'],
+                                                      'Product Unit Type'=>$row['Product Unit Type']), array('show_unit'=>$show_unit));
+
+                } else {
+                    $rrp='';
+                }
+
+
+
+
+
+                if ($row['Product Web State']=='Out of Stock') {
+                    $class_state='out_of_stock';
+
+                    $state=' <span class="out_of_stock">('.$out_of_stock.')</span>';
+
+                }
+                elseif ($row['Product Web State']=='Discontinued') {
+                    $class_state='discontinued';
+                    $state=' <span class="discontinued">'.$discontinued.'</span>';
+
+                }
+                else {
+
+                    $class_state='';
+                    $state='';
+
+
+                }
+
+                $price= $this->get_formated_price(array(
+                                                      'Product Price'=>$row['Product Price'],
+                                                      'Product Units Per Case'=>1,
+                                                      'Product Unit Type'=>'',
+                                                      'Label'=>(''),
+                                                      'price per unit text'=>''
+
+                                                  ));
+
+
+
+
+                if ($counter==0)
+                    $tr_class='class="top"';
+                else
+                    $tr_class='';
+
+                $sql=sprintf("select * from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
+                $result1=mysql_query($sql);
+                if ($row1=mysql_fetch_array($result1))
+                    $order_exist=true;
+
+                $order_key=$row1['Order Key'];
+
+                $sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d", $order_key, $row['Product ID']);
+                $result1=mysql_query($sql);
+                if ($row1=mysql_fetch_array($result1))
+                    $old_qty=$row1['Order Quantity'];
+                else
+                    $old_qty=0;
+
+                $form.=sprintf('<tr %s >
+                               <input type="hidden" id="order_id%d" value="%d">
+                               <input type="hidden" id="pid%d" value="%d">
+                               <input type="hidden" id="old_qty%d" value="%d">
+                               <td class="code">%s</td>
+                               <td class="price">%s</td>
+                               <td class="input"><input  id="qty%s"  type="text" value="%s" class="%s"  %s ></td>
+                               <td><img src="%sinikoo_files/art/icons/basket_add.png" onClick="order_single_product(%d)" style="display:%s"/></td>
+                               <td class="description">%s %s</td><td class="rrp">%s</td>
+                               <td><span id="loading%d"></span></td>
+                               </tr>'."\n",
+                               $tr_class,
+
+                               $row['Product ID'],$order_key,
+                               $row['Product ID'],$row['Product ID'],
+                               $row['Product ID'],$old_qty,
+                               $row['Product Code'],
+                               $price,
+
+                               $row['Product ID'],($old_qty>0?$old_qty:''),
+                               $class_state,
+                               ($class_state!=''?' readonly="readonly" ':''),
+                               $path,
+                               $row['Product ID'], ($class_state!=''?' none ':''),
+                               $row['Product Units Per Case'].'x '.$row['Product Special Characteristic'],
+                               $state,
+                               $rrp,
+                               $row['Product ID']
+                              );
+
+
+                $counter++;
+            }
+
+            $form.=sprintf('</form></table>');
+        }
         return $form;
     }
-	
-	
-	
-	
+
+
+
+
 //Start
     function get_product_in_family_no_price($data, $header_options=false, $options=false) {
 
-		if(isset($options['order_by']))
-			if(strtolower($options['order_by']) == 'price')
-				$order_by='`Product RRP`';
-			elseif(strtolower($options['order_by']) == 'code')
-				$order_by='`Product Code File As`';
-			elseif(strtolower($options['order_by']) == 'name')
-				$order_by='`Product Name`';
-			else
-				$order_by='`Product Code File As`';
-		else
-			$order_by='`Product Code File As`';
-			
-		if(isset($options['limit']))
-			$limit='limit '.$options['limit'];
-		else
-			$limit='';
+        if (isset($options['order_by']))
+            if (strtolower($options['order_by']) == 'price')
+                $order_by='`Product RRP`';
+        elseif(strtolower($options['order_by']) == 'code')
+        $order_by='`Product Code File As`';
+        elseif(strtolower($options['order_by']) == 'name')
+        $order_by='`Product Name`';
+        else
+            $order_by='`Product Code File As`';
+        else
+            $order_by='`Product Code File As`';
 
-		if(isset($options['range'])){
-			list($range1, $range2)=explode(":", strtoupper($options['range']));
-			$range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
-			
-		}
-		else 
-			$range_where="";//"  true";				
-		
-		
-		$show_unit=true;
-		if(isset($options['unit'])){
-			//print 'ok';
-			$show_unit=$options['unit'];
-		}
-		
+        if (isset($options['limit']))
+            $limit='limit '.$options['limit'];
+        else
+            $limit='';
+
+        if (isset($options['range'])) {
+            list($range1, $range2)=explode(":", strtoupper($options['range']));
+            $range_where=sprintf("and ( (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d) || (ord(`Product Name`) >= %d and ord(`Product Name`) <= %d))", ord($range1), ord($range2), ord($range1)+32, ord($range2)+32);
+
+        } else
+            $range_where="";//"  true";
+
+
+        $show_unit=true;
+        if (isset($options['unit'])) {
+            //print 'ok';
+            $show_unit=$options['unit'];
+        }
+
         $print_header=true;
         $print_rrp=false;
         $print_register=true;
@@ -3158,11 +3033,11 @@ class Family extends DB_Table {
                                                           'Product Units Per Case'=>1,
                                                           'Product Unit Type'=>''),array('prefix'=>false,'show_unit'=>$show_unit));
 
-                        if($row['rrp_avg']<=0){
-							$rrp_label='';
-							$print_rrp=false;
-						}		
-						if ($row['avg']==$row['min'])
+                        if ($row['rrp_avg']<=0) {
+                            $rrp_label='';
+                            $print_rrp=false;
+                        }
+                        if ($row['avg']==$row['min'])
                             $rrp_label='<br/>RRP: '.$rrp;
                         else
                             $rrp_label='<br/>RRP from '.$rrp;
@@ -3184,14 +3059,14 @@ class Family extends DB_Table {
 
 
         }
-		
+
         //$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline' order by %s %s", $this->id, $order_by, $limit);
-		$sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
+        $sql=sprintf("select * from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'  %s order by %s %s", $this->id, $range_where, $order_by, $limit);
         //print $sql;
         $result=mysql_query($sql);
         $counter=0;
         //while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		foreach($data as $row){
+        foreach($data as $row) {
 
 
             if ($print_rrp) {
@@ -3246,18 +3121,18 @@ class Family extends DB_Table {
         return $form;
     }
 //End
-	
-	
-	
-	
-	
-	
-
-    
 
 
 
- 
+
+
+
+
+
+
+
+
+
 
     function get_formated_rrp($data,$options=false) {
 
@@ -3269,7 +3144,7 @@ class Family extends DB_Table {
                   'locale'=>$this->locale);
 
         return formated_rrp($data,$options);
-    }	
+    }
 
     function get_formated_price($data,$options=false) {
 
@@ -3288,110 +3163,289 @@ class Family extends DB_Table {
 
         return formated_price($_data,$options);
     }
-	function get_found_in(){
-		//print 'found in';
-		//print $this->data['Product Family Main Department Key'];
-		/*
-		$sql=sprintf("select `Product Department Name`, `Product Department URL` from `Product Department Dimension` where `Product Department Key`=%d", $this->data['Product Family Main Department Key']);
-		print $sql;
-		$result=mysql_query($sql);
-		if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-			$found_in_label=$row['Product Department Name'];
-			$found_in_url=$row['Product Department URL'];
-		}
-		*/
-		$found_in_label="";
-		$found_in_url="";
-		return array($found_in_label,$found_in_url);
-		
-	}
+    function get_found_in() {
+        //print 'found in';
+        //print $this->data['Product Family Main Department Key'];
+        /*
+        $sql=sprintf("select `Product Department Name`, `Product Department URL` from `Product Department Dimension` where `Product Department Key`=%d", $this->data['Product Family Main Department Key']);
+        print $sql;
+        $result=mysql_query($sql);
+        if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+        	$found_in_label=$row['Product Department Name'];
+        	$found_in_url=$row['Product Department URL'];
+        }
+        */
+        $found_in_label="";
+        $found_in_url="";
+        return array($found_in_label,$found_in_url);
 
-	function get_see_also($code, $base_url){
-	
-		$department_codes=array();
-		$department_keys=array();
-		$see_also=array();
-		
-		$sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Code`='%s'", $code);
-		$result=mysql_query($sql);
-		if($row=mysql_fetch_array($result));
-		$this_family_name=$row['Product Family Name'];
+    }
 
-		//print $this_family_name;
-		
-		$sql=sprintf("select `Product Family Main Department Code` from `Product Family Dimension` where `Product Family Code`='%s'", $code);
-		$result=mysql_query($sql);
-		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-			$department_codes[]=$row['Product Family Main Department Code'];
-		}
-		
-		$department_codes=array_unique(array_map('strtolower', $department_codes));
-		//print_r($department_codes);
-		
-		$keys=array();
-		foreach($department_codes as $department_code) {
-			$keys[] = '\''.$department_code.'\'';
-		}
-		$department_codes = implode(',',$keys);
+    function get_see_also($code, $base_url) {
 
-	
-		$sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s)", $department_codes);
-		//print $sql;
-		$result=mysql_query($sql);
-		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-			$department_keys[]=$row['Product Department Key'];
-		}
-		
-		//print_r($department_keys);
-		
-		$department_keys = implode(',',$department_keys);
-		//print_r($department_keys);
-		
-		$sql=sprintf("select `Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and (`Product Family Record Type`= 'Normal' or `Product Family Record Type`= 'Discontinuing') and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
-		//print $sql;
-		$match='/'.strtolower($code).'/';
-		$result=mysql_query($sql);
-		while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-			//if(!file_exists($base_url.strtolower($row['Product Family Code'])))
-			if($this_family_name == $row['Product Family Name'])
-				$weight=0;
-			elseif(preg_match($match, strtolower(preg_replace('/\s/','',$row['Product Family Code']))))
-				$weight=10;
-			else
-				$weight=0;
-			
-			//$temp='<a href="'.$base_url.strtolower($row['Product Family Code']).'">'.$row['Product Family Name'].'</a>';
-			$temp=$base_url.strtolower($row['Product Family Code']);
-				$see_also[]=array('url'=>$temp,
-									'label'=>$row['Product Family Name'],
-									'weight'=>$weight);
-			
+        $department_codes=array();
+        $department_keys=array();
+        $see_also=array();
 
-		}
-		
-		
-		aasort($see_also,"weight");
+        $sql=sprintf("select `Product Family Name` from `Product Family Dimension` where `Product Family Code`='%s'", $code);
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result));
+        $this_family_name=$row['Product Family Name'];
 
-		//$see_also_label=array();
-		$see_also_array=array();
-		
-		foreach($see_also as $value){
-			$see_also_array[$value['label']]=$value['url'];
-			//$see_also_url=$value['url'];
-		}
-			
-		
-		//print_r($see_also_array);
-		return $see_also_array;
-		//$see_also;
-	}
-	
- 
+        //print $this_family_name;
+
+        $sql=sprintf("select `Product Family Main Department Code` from `Product Family Dimension` where `Product Family Code`='%s'", $code);
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $department_codes[]=$row['Product Family Main Department Code'];
+        }
+
+        $department_codes=array_unique(array_map('strtolower', $department_codes));
+        //print_r($department_codes);
+
+        $keys=array();
+        foreach($department_codes as $department_code) {
+            $keys[] = '\''.$department_code.'\'';
+        }
+        $department_codes = implode(',',$keys);
+
+
+        $sql=sprintf("select `Product Department Key` from `Product Department Dimension` where `Product Department Code` in (%s)", $department_codes);
+        //print $sql;
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $department_keys[]=$row['Product Department Key'];
+        }
+
+        //print_r($department_keys);
+
+        $department_keys = implode(',',$department_keys);
+        //print_r($department_keys);
+
+        $sql=sprintf("select `Product Family Name`, `Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and (`Product Family Record Type`= 'Normal' or `Product Family Record Type`= 'Discontinuing') and `Product Family Main Department Key` in (%s)", $this->data['Product Family Store Key'], $department_keys);
+        //print $sql;
+        $match='/'.strtolower($code).'/';
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            //if(!file_exists($base_url.strtolower($row['Product Family Code'])))
+            if ($this_family_name == $row['Product Family Name'])
+                $weight=0;
+            elseif(preg_match($match, strtolower(preg_replace('/\s/','',$row['Product Family Code']))))
+            $weight=10;
+            else
+                $weight=0;
+
+            //$temp='<a href="'.$base_url.strtolower($row['Product Family Code']).'">'.$row['Product Family Name'].'</a>';
+            $temp=$base_url.strtolower($row['Product Family Code']);
+            $see_also[]=array('url'=>$temp,
+                              'label'=>$row['Product Family Name'],
+                              'weight'=>$weight);
+
+
+        }
+
+
+        aasort($see_also,"weight");
+
+        //$see_also_label=array();
+        $see_also_array=array();
+
+        foreach($see_also as $value) {
+            $see_also_array[$value['label']]=$value['url'];
+            //$see_also_url=$value['url'];
+        }
+
+
+        //print_r($see_also_array);
+        return $see_also_array;
+        //$see_also;
+    }
+
+
 
 
     function strleft1($s1, $s2) {
         return substr($s1, 0, strpos($s1, $s2));
     }
-		
+
+
+    function remove_image($image_key) {
+
+        $sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+
+            $sql=sprintf("delete from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+            mysql_query($sql);
+            $this->updated=true;
+
+            $number_images=$this->get_number_of_images();
+
+            if ($number_images==0) {
+                $main_image_src='';
+                $main_image_key=0;
+                $this->data['Product Family Main Image']='art/nopic.png';
+                $this->data['Product Family Main Image Key']=$main_image_key;
+                $sql=sprintf("update `Product Family Dimension` set `Product Family Main Image`=%s ,`Product Family Main Image Key`=%d where `Product Family Key`=%d",
+                             prepare_mysql($main_image_src),
+                             $main_image_key,
+                             $this->id
+                            );
+ mysql_query($sql);
+
+            }elseif ($row['Is Principal']=='Yes') {
+
+                $sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d  ",$this->id);
+                $res2=mysql_query($sql);
+                if ($row2=mysql_fetch_assoc($res2)) {
+                    $this->update_main_image($row2['Image Key']) ;
+                }
+            }
+
+
+        } else {
+            $this->error=true;
+            $this->msg='image not associated';
+
+        }
+
+
+
+
+
+    }
+    function update_image_caption($image_key,$value) {
+        $value=_trim($value);
+
+
+
+        $sql=sprintf("update `Image Bridge` set `Image Caption`=%s where  `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d"
+                     ,prepare_mysql($value)
+                     ,$this->id,$image_key);
+        mysql_query($sql);
+        //print $sql;
+        if (mysql_affected_rows()) {
+            $this->new_value=$value;
+            $this->updated=true;
+        } else {
+            $this->msg=_('No change');
+
+        }
+
+    }
+    function get_images_slidesshow() {
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        $images_slideshow=array();
+        while ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            // print_r($row);
+            $images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+        }
+        // print_r($images_slideshow);
+
+        return $images_slideshow;
+    }
+    function get_main_image_key() {
+
+        return $this->data['Product Main Image Key'];
+    }
+    function update_main_image($image_key) {
+
+        $sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if (!mysql_num_rows($res)) {
+            $this->error=true;
+            $this->msg='image not associated';
+        }
+
+        $sql=sprintf("update `Image Bridge` set `Is Principal`='No' where `Subject Type`='Family' and `Subject Key`=%d  ",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        mysql_query($sql);
+
+
+        $main_image_src='image.php?id='.$image_key.'&size=small';
+        $main_image_key=$image_key;
+
+        $this->data['Product Family Main Image']=$main_image_src;
+        $this->data['Product Family Main Image Key']=$main_image_key;
+        $sql=sprintf("update `Product Family Dimension` set `Product Family Main Image`=%s ,`Product Family Main Image Key`=%d where `Product Family Key`=%d",
+                     prepare_mysql($main_image_src),
+                     $main_image_key,
+                     $this->id
+                    );
+
+        mysql_query($sql);
+
+        $this->updated=true;
+
+    }
+    function get_number_of_images() {
+        $number_of_images=0;
+        $sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d ",$this->id);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $number_of_images=$row['num'];
+        }
+        return $number_of_images;
+    }
+    function add_image($image_key) {
+
+        $sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $this->nochange=true;
+            $this->msg=_('Image already uploaded');
+            return;
+        }
+
+
+        $number_images=$this->get_number_of_images();
+        if ($number_images==0) {
+            $principal='Yes';
+        } else {
+            $principal='No';
+        }
+
+        $sql=sprintf("insert into `Image Bridge` values ('Family',%d,%d,%s,'')"
+                     ,$this->id
+                     ,$image_key
+                     ,prepare_mysql($principal)
+
+                    );
+
+        mysql_query($sql);
+
+        if($principal=='Yes'){
+        $this->update_main_image($image_key);
+        }
+
+
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+                     ,$this->id
+                     ,$image_key
+                    );
+
+        $res=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            $this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+            // $this->images_slideshow[]=$this->new_value;
+        }
+
+        $this->updated=true;
+        $this->msg=_("image added");
+    }
+
+
+
 }
 ?>

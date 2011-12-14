@@ -28,5 +28,14 @@ class Dummy_Page {
         return 'Code';
     }
     function display_top_bar() {}
+    
+     function display_search(){
+    print $this->site->display_search();
+    }
+    
+    function display_menu(){
+     print $this->site->display_menu();
+    }
+    
 }
 ?>
