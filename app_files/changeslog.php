@@ -1,4 +1,7 @@
 <?php
+exit();
+
+?>
 // DB
 // 12 oct 2009 Product Image Bridge =>  Image Bridge
 // 13 oct 2009 kbase.Saludation Language Key -> Language Code
@@ -5310,5 +5313,5 @@ ALTER TABLE `Page Store Dimension` ADD `Number See Also Links` TINYINT( 3 ) UNSI
 
 */
 
-?>
+
 

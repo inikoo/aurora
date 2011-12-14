@@ -1,4 +1,3 @@
-
                     <div id="top_bar">
                         <img id="top_bar_logo" src="art/logo2.png" />
                     </div>
