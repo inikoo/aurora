@@ -5334,12 +5334,7 @@ $this->update_principal_telecom($telecom_key,'Telephone');
 
                 $customer->update_principal_delivery_address($address_key);
             }
-
-
-
-
-
-
+                
             $address_telecom_keys=$this->get_telecom_keys();
 
             $sql=sprintf("delete from `Address Dimension` where `Address Key`=%d",$this->id);
@@ -5358,6 +5353,8 @@ $this->update_principal_telecom($telecom_key,'Telephone');
 
             $sql=sprintf("delete from `Address Bridge`  where  `Address Key`=%d", $this->id);
             mysql_query($sql);
+            
+            
 
             /*
             $history_data['History Abstract']='Address Deleted';

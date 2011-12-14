@@ -123,15 +123,8 @@ case('edit_deals'):
     list_deals_for_edition();
     break;
 
-case('delete_image'):
-
-    delete_image();
 
 
-    break;
-case('upload_product_image'):
-    upload_image();
-    break;
 case('delete_family'):
     $data=prepare_values($_REQUEST,array(
                              'delete_type'=>array('type'=>'string'),
@@ -665,61 +658,7 @@ function edit_deal() {
 
 
 
-function upload_image($subject='product') {
 
-
-    if (isset($_FILES['testFile']['tmp_name'])) {
-
-        include_once('class.Image.php');
-        //   $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
-        // $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
-
-        //   print_r($_FILES);
-
-
-
-        $image_data=array(
-                        'file'=>$_FILES['testFile']['tmp_name'],
-                        'source_path'=>'',
-                        'name'=>$_FILES['testFile']['name'],
-                        'caption'=>''
-                    );
-
-        // print_r($image_data);
-
-
-        $image=new Image('find',$image_data,'create');
-        if (!$image->error) {
-            $subject=$_REQUEST['subject'];
-            if ($subject=='product')
-                $subject=new product('pid',$_REQUEST['subject_key']);
-            if ($subject=='family')
-                $subject=new Family('id',$_REQUEST['subject_key']);
-            if ($subject=='department')
-                $subject=new Department('id',$_REQUEST['subject_key']);
-            $subject->add_image($image->id);
-            $subject->update_main_image();
-            $msg=array(
-                     'set_main'=>_('Set Main'),
-                     'main'=>_('Main Image'),
-                     'caption'=>_('Caption'),
-                     'save_caption'=>_('Save caption'),
-                     'delete'=>_('Delete')
-                 );
-            $response= array('state'=>200,'msg'=>$msg,'image_key'=>$image->id,'data'=>$subject->new_value);
-            echo json_encode($response);
-            return;
-        } else {
-            $response= array('state'=>400,'msg'=>$image->msg);
-            echo json_encode($response);
-            return;
-        }
-    } else {
-        $response= array('state'=>400,'msg'=>'no image');
-        echo json_encode($response);
-        return;
-    }
-}
 
 
 function edit_product_multi() {
@@ -1802,37 +1741,6 @@ function list_departments_for_edition() {
     echo json_encode($response);
 }
 
-
-function delete_image() {
-    $scope=$_REQUEST['scope'];
-    $scope_key=$_REQUEST['scope_key'];
-    $image_key=$_REQUEST['image_key'];
-
-    if ($scope=='product')
-        $subject=new Product('pid',$scope_key);
-    elseif($scope=='family')
-    $subject=new Family($scope_key);
-    elseif($scope=='department')
-    $subject=new Department($scope_key);
-
-
-    $subject->remove_image($image_key);
-    $image=new Image($image_key);
-
-    $image->delete();
-
-    if ($subject->updated) {
-        $response=array('state'=>200,'msg'=>$subject->msg,'image_key'=>$image->id);
-        echo json_encode($response);
-
-    } else {
-        $response=array('state'=>400,'msg'=>$subject->msg);
-        echo json_encode($response);
-
-    }
-    return;
-
-}
 
 
 

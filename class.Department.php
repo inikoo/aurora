@@ -21,7 +21,7 @@ include_once('class.Page.php');
 
 class Department extends DB_Table {
 
-public $new_value=false;
+    public $new_value=false;
 
     /*
       Constructor: Department
@@ -30,7 +30,7 @@ public $new_value=false;
       Returns:
       void
     */
-var $external_DB_link=false;
+    var $external_DB_link=false;
     function Department ($a1=false,$a2=false,$a3=false) {
         $this->table_name='Product Department';
         $this->ignore_fields=array(
@@ -214,41 +214,41 @@ var $external_DB_link=false;
         }
 
         $data['Product Department Store Code']=$store->data['Store Code'];
-	$data['Product Department Currency Code']=$store->data['Store Currency Code'];
+        $data['Product Department Currency Code']=$store->data['Store Currency Code'];
 
         $keys='(';
         $values='values(';
         foreach($data as $key=>$value) {
-	  $keys.="`$key`,";
-	  if(preg_match('/Product Department Description|Marketing|Slogan/i',$key))
-	    $values.=prepare_mysql($value,false).",";
+            $keys.="`$key`,";
+            if (preg_match('/Product Department Description|Marketing|Slogan/i',$key))
+                $values.=prepare_mysql($value,false).",";
 
-	  else
-	    $values.=prepare_mysql($value).",";
+            else
+                $values.=prepare_mysql($value).",";
         }
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `Product Department Dimension` %s %s",$keys,$values);
 
-	//   print "$sql\n";
+        //   print "$sql\n";
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->msg=_("Department Added");
             $this->get_data('id',$this->id,false);
             $this->new=true;
-	    
-	    $this->add_history(array(
-				     'Action'=>'created'
-				     ,'History Abstract'=>_('Department Created')
-				     ,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')
-				     ));
 
-          
+            $this->add_history(array(
+                                   'Action'=>'created'
+                                            ,'History Abstract'=>_('Department Created')
+                                                                ,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')
+                               ));
+
+
             $store->update_departments();
             return;
         } else {
-	  $this->error=true;
-	  $this->msg=_("$sql Error can not create department");
+            $this->error=true;
+            $this->msg=_("$sql Error can not create department");
 
         }
 
@@ -275,7 +275,7 @@ var $external_DB_link=false;
         default:
             $sql=sprintf("select * from `Product Department Dimension` where `Product Department Type`='Unknown' ");
         }
-        
+
 
         $result=mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
@@ -283,33 +283,33 @@ var $external_DB_link=false;
 
     }
 
- function update_sales_type($value) {
-    if (
-        $value=='Public Sale' or $value=='Private Sale' or $value=='Not For Sale'
-    ) {
-        $sales_state=$value;
+    function update_sales_type($value) {
+        if (
+            $value=='Public Sale' or $value=='Private Sale' or $value=='Not For Sale'
+        ) {
+            $sales_state=$value;
 
-        $sql=sprintf("update `Product Department Dimension` set `Product Department Sales Type`=%s  where  `Product Department Key`=%d "
-                     ,prepare_mysql($sales_state)
-                     ,$this->id
-                    );
-        //print $sql;
-        if (mysql_query($sql)) {
-            if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-            $this->msg=_('Department Sales Type updated');
-            $this->updated=true;
+            $sql=sprintf("update `Product Department Dimension` set `Product Department Sales Type`=%s  where  `Product Department Key`=%d "
+                         ,prepare_mysql($sales_state)
+                         ,$this->id
+                        );
+            //print $sql;
+            if (mysql_query($sql)) {
+                if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+                $this->msg=_('Department Sales Type updated');
+                $this->updated=true;
 
-            $this->new_value=$value;
-            return;
-        } else {
-            $this->msg=_("Error: Department sales type could not be updated ");
-            $this->updated=false;
-            return;
-        }
-    } else
-        $this->msg=_("Error: wrong value")." [Sales Type] ($value)";
-    $this->updated=false;
-}
+                $this->new_value=$value;
+                return;
+            } else {
+                $this->msg=_("Error: Department sales type could not be updated ");
+                $this->updated=false;
+                return;
+            }
+        } else
+            $this->msg=_("Error: wrong value")." [Sales Type] ($value)";
+        $this->updated=false;
+    }
 
 
     function update($key,$a1=false,$a2=false) {
@@ -318,8 +318,8 @@ var $external_DB_link=false;
 
         switch ($key) {
         case('sales_type'):
-        $this->update_sales_type($a1);
-        break;
+            $this->update_sales_type($a1);
+            break;
         case('code'):
 
             if ($a1==$this->data['Product Department Code']) {
@@ -360,12 +360,12 @@ var $external_DB_link=false;
                 $this->data['Product Department Code']=$a1;
                 $editor_data=$this->get_editor_data();
 
-		
-		$this->add_history(array(
-				 'Indirect Object'=>'Product Department Code'
-				 ,'History Abstract'=>_('Product Department Changed').' ('.$this->get('Product Department Name').')'
-				 ,'History Details'=>_('Store')." ".$this->data['Product Department Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Code')
-				 ));
+
+                $this->add_history(array(
+                                       'Indirect Object'=>'Product Department Code'
+                                                         ,'History Abstract'=>_('Product Department Changed').' ('.$this->get('Product Department Name').')'
+                                                                             ,'History Details'=>_('Store')." ".$this->data['Product Department Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Code')
+                                   ));
 
 
 
@@ -413,13 +413,13 @@ var $external_DB_link=false;
                 $this->data['Product Department Name']=$a1;
 
 
-		$this->add_history(array(
-					 'Indirect Object'=>'Product Department Name'
-					 ,'History Abstract'=>_('Product Department Name Changed').' ('.$this->get('Product Department Name').')'
-					 ,'History Details'=>_('Product Department')." ("._('Code').":".$this->data['Product Department Code'].") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Name')
-					 ));
+                $this->add_history(array(
+                                       'Indirect Object'=>'Product Department Name'
+                                                         ,'History Abstract'=>_('Product Department Name Changed').' ('.$this->get('Product Department Name').')'
+                                                                             ,'History Details'=>_('Product Department')." ("._('Code').":".$this->data['Product Department Code'].") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Name')
+                                   ));
 
-             
+
 
             } else {
                 $this->msg=_("Error: Department name could not be updated");
@@ -456,7 +456,7 @@ var $external_DB_link=false;
         }
     }
 
- 
+
 
 
 
@@ -479,14 +479,14 @@ var $external_DB_link=false;
         }
 
         switch ($key) {
-	case('For Public For Sale Families'):
-	  return number($this->data['Product Department For Public For Sale Families']);
-	  break;
-	case('For Public Discontinued Families'):
-	  return number($this->data['Product Department For Public Discontinued Families']);
-	  break;
-	case('For Sale Products'):
-	  return number($this->data['Product Department For Sale Products']);
+        case('For Public For Sale Families'):
+            return number($this->data['Product Department For Public For Sale Families']);
+            break;
+        case('For Public Discontinued Families'):
+            return number($this->data['Product Department For Public Discontinued Families']);
+            break;
+        case('For Sale Products'):
+            return number($this->data['Product Department For Sale Products']);
             break;
         case('Families'):
             return number($this->data['Product Department Families']);
@@ -519,7 +519,7 @@ var $external_DB_link=false;
             mysql_query($sql);
             $this->update_product_data();
 
-          
+
             if (preg_match('/principal/',$args)) {
                 $sql=sprintf("update  `Product Dimension` set `Product Main Department Key`=%d ,`Product Main Department Code`=%s,`Product Main Department Name`=%s where `Product ID`=%d    "
                              ,$this->id
@@ -643,8 +643,8 @@ var $external_DB_link=false;
                          ,$this->id
                         );
 
-          //   print "$sql\n";
-           //  exit;
+            //   print "$sql\n";
+            //  exit;
             if (!mysql_query($sql))
                 exit("$sql\ncan not update dept sales\n");
         }
@@ -688,9 +688,9 @@ var $external_DB_link=false;
 
 
         //$sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Main Department Key`=".$this->id;
-        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
-        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
-        
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
+
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -698,7 +698,7 @@ var $external_DB_link=false;
         }
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 year"))));
 
-	//	print "$sql\n";
+        //	print "$sql\n";
 
         $result=mysql_query($sql);
 
@@ -711,7 +711,7 @@ var $external_DB_link=false;
             $this->data['Product Department 3 Year Acc Quantity Ordered']=$row['ordered'];
             $this->data['Product Department 3 Year Acc Quantity Invoiced']=$row['invoiced'];
             $this->data['Product Department 3 Year Acc Quantity Delivered']=$row['delivered'];
-	    $this->data['Product Department 3 Year Acc Customers']=$row['customers'];
+            $this->data['Product Department 3 Year Acc Customers']=$row['customers'];
             $this->data['Product Department 3 Year Acc Invoices']=$row['invoices'];
             $this->data['Product Department 3 Year Acc Pending Orders']=$pending_orders;
 
@@ -725,12 +725,12 @@ var $external_DB_link=false;
                          ,prepare_mysql($this->data['Product Department 3 Year Acc Quantity Invoiced'])
                          ,prepare_mysql($this->data['Product Department 3 Year Acc Quantity Delivered'])
                          ,$on_sale_days
-			 ,$this->data['Product Department 3 Year Acc Customers']
+                         ,$this->data['Product Department 3 Year Acc Customers']
                          ,$this->data['Product Department 3 Year Acc Invoices']
                          ,$this->data['Product Department 3 Year Acc Pending Orders']
                          ,$this->id
                         );
-	    //print "$sql\n";
+            //print "$sql\n";
             if (!mysql_query($sql))
                 exit("$sql\ncan not update dept sales\n");
         }
@@ -775,9 +775,9 @@ var $external_DB_link=false;
 
 
         //$sql="select sum(`Product 1 Year Acc Invoiced Gross Amount`) as net,sum(`Product 1 Year Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Year Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Year Acc Profit`)as profit ,sum(`Product 1 Year Acc Quantity Delivered`) as delivered,sum(`Product 1 Year Acc Quantity Ordered`) as ordered,sum(`Product 1 Year Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Main Department Key`=".$this->id;
-        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
-        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
- // print "$sql\n\n";     
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+// print "$sql\n\n";
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -785,7 +785,7 @@ var $external_DB_link=false;
         }
         $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
-	//	print "$sql\n";
+        //	print "$sql\n";
 
         $result=mysql_query($sql);
 
@@ -798,7 +798,7 @@ var $external_DB_link=false;
             $this->data['Product Department 1 Year Acc Quantity Ordered']=$row['ordered'];
             $this->data['Product Department 1 Year Acc Quantity Invoiced']=$row['invoiced'];
             $this->data['Product Department 1 Year Acc Quantity Delivered']=$row['delivered'];
-	    $this->data['Product Department 1 Year Acc Customers']=$row['customers'];
+            $this->data['Product Department 1 Year Acc Customers']=$row['customers'];
             $this->data['Product Department 1 Year Acc Invoices']=$row['invoices'];
             $this->data['Product Department 1 Year Acc Pending Orders']=$pending_orders;
 
@@ -812,30 +812,30 @@ var $external_DB_link=false;
                          ,prepare_mysql($this->data['Product Department 1 Year Acc Quantity Invoiced'])
                          ,prepare_mysql($this->data['Product Department 1 Year Acc Quantity Delivered'])
                          ,$on_sale_days
-			 ,$this->data['Product Department 1 Year Acc Customers']
+                         ,$this->data['Product Department 1 Year Acc Customers']
                          ,$this->data['Product Department 1 Year Acc Invoices']
                          ,$this->data['Product Department 1 Year Acc Pending Orders']
                          ,$this->id
                         );
-	  // print "$sql\n";
+            // print "$sql\n";
             if (!mysql_query($sql))
                 exit("$sql\ncan not update dept sales\n");
         }
         // exit;
- 
+
 
 
 // --------------------------------------start for yeartoday-----------------------------------
-     $on_sale_days=0;
-if(!function_exists('YTD')){
-function YTD(){
-$first_day_of_year = date('Y').'-01-01';
-$today = date('Y-m-d');
-$diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
-return $diff;
-}
-}
-$yeartoday=YTD();
+        $on_sale_days=0;
+        if (!function_exists('YTD')) {
+            function YTD() {
+                $first_day_of_year = date('Y').'-01-01';
+                $today = date('Y-m-d');
+                $diff = abs((strtotime($today) - strtotime($first_day_of_year))/ (60 * 60 * 24));
+                return $diff;
+            }
+        }
+        $yeartoday=YTD();
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
 
         $result=mysql_query($sql);
@@ -863,17 +863,17 @@ $yeartoday=YTD();
         }
 
         //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
- $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
-        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
-        
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
+
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
-        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
+                     ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
+                     from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- $yeartoday day"))));
 
         $result=mysql_query($sql);
 
@@ -886,7 +886,7 @@ $yeartoday=YTD();
             $this->data['Product Department YearToDay Acc Quantity Ordered']=$row['ordered'];
             $this->data['Product Department YearToDay Acc Quantity Invoiced']=$row['invoiced'];
             $this->data['Product Department YearToDay Acc Quantity Delivered']=$row['delivered'];
-	    $this->data['Product Department YearToDay Acc Customers']=$row['customers'];
+            $this->data['Product Department YearToDay Acc Customers']=$row['customers'];
             $this->data['Product Department YearToDay Acc Invoices']=$row['invoices'];
             $this->data['Product Department YearToDay Acc Pending Orders']=$pending_orders;
 
@@ -900,7 +900,7 @@ $yeartoday=YTD();
                          ,prepare_mysql($this->data['Product Department YearToDay Acc Quantity Invoiced'])
                          ,prepare_mysql($this->data['Product Department YearToDay Acc Quantity Delivered'])
                          ,$on_sale_days
-			 ,$this->data['Product Department YearToDay Acc Customers']
+                         ,$this->data['Product Department YearToDay Acc Customers']
                          ,$this->data['Product Department YearToDay Acc Invoices']
                          ,$this->data['Product Department YearToDay Acc Pending Orders']
                          ,$this->id
@@ -916,7 +916,7 @@ $yeartoday=YTD();
 // ----------------------------------start for 6 month-----------------------------------------
 
 
-       $on_sale_days=0;
+        $on_sale_days=0;
 
 
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
@@ -946,17 +946,17 @@ $yeartoday=YTD();
         }
 
         //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
- $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
-        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
-        
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
+
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
-        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
+                     ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
+                     from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 6 month"))));
 
         $result=mysql_query($sql);
 
@@ -969,7 +969,7 @@ $yeartoday=YTD();
             $this->data['Product Department 6 Month Acc Quantity Ordered']=$row['ordered'];
             $this->data['Product Department 6 Month Acc Quantity Invoiced']=$row['invoiced'];
             $this->data['Product Department 6 Month Acc Quantity Delivered']=$row['delivered'];
-	    $this->data['Product Department 6 Month Acc Customers']=$row['customers'];
+            $this->data['Product Department 6 Month Acc Customers']=$row['customers'];
             $this->data['Product Department 6 Month Acc Invoices']=$row['invoices'];
             $this->data['Product Department 6 Month Acc Pending Orders']=$pending_orders;
 
@@ -983,7 +983,7 @@ $yeartoday=YTD();
                          ,prepare_mysql($this->data['Product Department 6 Month Acc Quantity Invoiced'])
                          ,prepare_mysql($this->data['Product Department 6 Month Acc Quantity Delivered'])
                          ,$on_sale_days
-			 ,$this->data['Product Department 6 Month Acc Customers']
+                         ,$this->data['Product Department 6 Month Acc Customers']
                          ,$this->data['Product Department 6 Month Acc Invoices']
                          ,$this->data['Product Department 6 Month Acc Pending Orders']
                          ,$this->id
@@ -997,7 +997,7 @@ $yeartoday=YTD();
 // ----------------------------------end for 6 month-----------------------------------------
 
 
-       $on_sale_days=0;
+        $on_sale_days=0;
 
 
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
@@ -1027,17 +1027,17 @@ $yeartoday=YTD();
         }
 
         //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
- $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
-        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
-        
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
-        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
+                     ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
+                     from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
 
         $result=mysql_query($sql);
 
@@ -1050,7 +1050,7 @@ $yeartoday=YTD();
             $this->data['Product Department 1 Quarter Acc Quantity Ordered']=$row['ordered'];
             $this->data['Product Department 1 Quarter Acc Quantity Invoiced']=$row['invoiced'];
             $this->data['Product Department 1 Quarter Acc Quantity Delivered']=$row['delivered'];
-	    $this->data['Product Department 1 Quarter Acc Customers']=$row['customers'];
+            $this->data['Product Department 1 Quarter Acc Customers']=$row['customers'];
             $this->data['Product Department 1 Quarter Acc Invoices']=$row['invoices'];
             $this->data['Product Department 1 Quarter Acc Pending Orders']=$pending_orders;
 
@@ -1064,7 +1064,7 @@ $yeartoday=YTD();
                          ,prepare_mysql($this->data['Product Department 1 Quarter Acc Quantity Invoiced'])
                          ,prepare_mysql($this->data['Product Department 1 Quarter Acc Quantity Delivered'])
                          ,$on_sale_days
-			 ,$this->data['Product Department 1 Quarter Acc Customers']
+                         ,$this->data['Product Department 1 Quarter Acc Customers']
                          ,$this->data['Product Department 1 Quarter Acc Invoices']
                          ,$this->data['Product Department 1 Quarter Acc Pending Orders']
                          ,$this->id
@@ -1102,17 +1102,17 @@ $yeartoday=YTD();
         }
 
         //$sql="select  sum(`Product 1 Month Acc Invoiced Amount`) as net,sum(`Product 1 Month Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Month Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Month Acc Profit`)as profit ,sum(`Product 1 Month Acc Quantity Delivered`) as delivered,sum(`Product 1 Month Acc Quantity Ordered`) as ordered,sum(`Product 1 Month Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Main Department Key`=".$this->id;
-  $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
-        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
-        
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
-        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`  OTF   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
+                     ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
+                     from `Order Transaction Fact`  OTF   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
 
         $result=mysql_query($sql);
 
@@ -1125,7 +1125,7 @@ $yeartoday=YTD();
             $this->data['Product Department 1 Month Acc Quantity Ordered']=$row['ordered'];
             $this->data['Product Department 1 Month Acc Quantity Invoiced']=$row['invoiced'];
             $this->data['Product Department 1 Month Acc Quantity Delivered']=$row['delivered'];
-	    $this->data['Product Department 1 Month Acc Customers']=$row['customers'];
+            $this->data['Product Department 1 Month Acc Customers']=$row['customers'];
             $this->data['Product Department 1 Month Acc Invoices']=$row['invoices'];
             $this->data['Product Department 1 Month Acc Pending Orders']=$pending_orders;
 
@@ -1139,7 +1139,7 @@ $yeartoday=YTD();
                          ,prepare_mysql($this->data['Product Department 1 Month Acc Quantity Invoiced'])
                          ,prepare_mysql($this->data['Product Department 1 Month Acc Quantity Delivered'])
                          ,$on_sale_days
-	 ,$this->data['Product Department 1 Month Acc Customers']
+                         ,$this->data['Product Department 1 Month Acc Customers']
                          ,$this->data['Product Department 1 Month Acc Invoices']
                          ,$this->data['Product Department 1 Month Acc Pending Orders']
                          ,$this->id
@@ -1152,7 +1152,7 @@ $yeartoday=YTD();
 
 
 // --------------------------------------start for 10 days-----------------------------------
-     $on_sale_days=0;
+        $on_sale_days=0;
 
 
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Main Department Key`=".$this->id;
@@ -1182,17 +1182,17 @@ $yeartoday=YTD();
         }
 
         //$sql="select sum(`Product 1 Quarter Acc Invoiced Amount`) as net,sum(`Product 1 Quarter Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Quarter Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Quarter Acc Profit`)as profit ,sum(`Product 1 Quarter Acc Quantity Delivered`) as delivered,sum(`Product 1 Quarter Acc Quantity Ordered`) as ordered,sum(`Product 1 Quarter Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
- $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
-        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 10 day"))));
-        
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 10 day"))));
+
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
-        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 10 day"))));
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
+                     ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
+                     from `Order Transaction Fact`  OTF  where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 10 day"))));
 
         $result=mysql_query($sql);
 
@@ -1205,7 +1205,7 @@ $yeartoday=YTD();
             $this->data['Product Department 10 Day Acc Quantity Ordered']=$row['ordered'];
             $this->data['Product Department 10 Day Acc Quantity Invoiced']=$row['invoiced'];
             $this->data['Product Department 10 Day Acc Quantity Delivered']=$row['delivered'];
-	    $this->data['Product Department 10 Day Acc Customers']=$row['customers'];
+            $this->data['Product Department 10 Day Acc Customers']=$row['customers'];
             $this->data['Product Department 10 Day Acc Invoices']=$row['invoices'];
             $this->data['Product Department 10 Day Acc Pending Orders']=$pending_orders;
 
@@ -1219,7 +1219,7 @@ $yeartoday=YTD();
                          ,prepare_mysql($this->data['Product Department 10 Day Acc Quantity Invoiced'])
                          ,prepare_mysql($this->data['Product Department 10 Day Acc Quantity Delivered'])
                          ,$on_sale_days
-			 ,$this->data['Product Department 10 Day Acc Customers']
+                         ,$this->data['Product Department 10 Day Acc Customers']
                          ,$this->data['Product Department 10 Day Acc Invoices']
                          ,$this->data['Product Department 10 Day Acc Pending Orders']
                          ,$this->id
@@ -1260,18 +1260,18 @@ $yeartoday=YTD();
 
 
 
-	// $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Week Acc Profit`)as profit ,sum(`Product 1 Week Acc Quantity Delivered`) as delivered,sum(`Product 1 Week Acc Quantity Ordered`) as ordered,sum(`Product 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
-  $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled') 
-        and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
-        
+        // $sql="select sum(`Product 1 Week Acc Invoiced Amount`) as net,sum(`Product 1 Week Acc Invoiced Gross Amount`) as gross,sum(`Product 1 Week Acc Invoiced Discount Amount`) as disc, sum(`Product 1 Week Acc Profit`)as profit ,sum(`Product 1 Week Acc Quantity Delivered`) as delivered,sum(`Product 1 Week Acc Quantity Ordered`) as ordered,sum(`Product 1 Week Acc Quantity Invoiced`) as invoiced  from `Product Dimension` as P   where `Product Department Key`=".$this->id;
+        $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF  where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')
+                     and  `Product Department Key`=%d and `Invoice Date`>=%s ",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+
         $result=mysql_query($sql);
         $pending_orders=0;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
-        ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
-        from `Order Transaction Fact`   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross
+                     ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced
+                     from `Order Transaction Fact`   where `Product Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
 
 
         $result=mysql_query($sql);
@@ -1286,7 +1286,7 @@ $yeartoday=YTD();
             $this->data['Product Department 1 Week Acc Quantity Ordered']=$row['ordered'];
             $this->data['Product Department 1 Week Acc Quantity Invoiced']=$row['invoiced'];
             $this->data['Product Department 1 Week Acc Quantity Delivered']=$row['delivered'];
-   $this->data['Product Department 1 Week Acc Customers']=$row['customers'];
+            $this->data['Product Department 1 Week Acc Customers']=$row['customers'];
             $this->data['Product Department 1 Week Acc Invoices']=$row['invoices'];
             $this->data['Product Department 1 Week Acc Pending Orders']=$pending_orders;
 
@@ -1299,7 +1299,7 @@ $yeartoday=YTD();
                          ,prepare_mysql($this->data['Product Department 1 Week Acc Quantity Invoiced'])
                          ,prepare_mysql($this->data['Product Department 1 Week Acc Quantity Delivered'])
                          ,$on_sale_days
-	 ,$this->data['Product Department 1 Week Acc Customers']
+                         ,$this->data['Product Department 1 Week Acc Customers']
                          ,$this->data['Product Department 1 Week Acc Invoices']
                          ,$this->data['Product Department 1 Week Acc Pending Orders']
                          ,$this->id
@@ -1347,196 +1347,196 @@ $yeartoday=YTD();
     }
 
 
-    function update_averages_per_item(){
-
-      
-      $sql=sprintf("select *  from `Product Dimension` where `Product Main Department Key`=%d  ",$this->id);
-      $res=mysql_query($sql);
-      $avg_weekly_sales_per_product=0;
-      $avg_weekly_sales_per_product_1y=0;
-      $avg_weekly_sales_per_product_1q=0;
-      $avg_weekly_sales_per_product_1m=0;
-      $avg_weekly_sales_per_product_1w=0;
-      $avg_weekly_profit_per_product=0;
-      $avg_weekly_profit_per_product_1y=0;
-      $avg_weekly_profit_per_product_1q=0;
-      $avg_weekly_profit_per_product_1m=0;
-      $avg_weekly_profit_per_product_1w=0;
-      $count=0;
-      $count_1y=0;
-      $count_1q=0;
-      $count_1m=0;
-      $count_1w=0;
-      while($row=mysql_fetch_array($res)){
-	if( $row['Product Total Days On Sale']>0){
-	  $avg_weekly_sales_per_product+=7*$row['Product Total Invoiced Amount']/$row['Product Total Days On Sale'];
-	  $avg_weekly_profit_per_product+=7*$row['Product Total Profit']/$row['Product Total Days On Sale'];
-	  $count++;
-	}
-	if( $row['Product 1 Year Acc Days On Sale']>0){
-	  $avg_weekly_sales_per_product_1y+=7*$row['Product 1 Year Acc Invoiced Amount']/$row['Product 1 Year Acc Days On Sale'];
-	  $avg_weekly_profit_per_product_1y+=7*$row['Product 1 Year Acc Profit']/$row['Product 1 Year Acc Days On Sale'];
-	  $count_1y++;
-	}
-	if( $row['Product 1 Quarter Acc Days On Sale']>0){
-	  $avg_weekly_sales_per_product_1q+=7*$row['Product 1 Quarter Acc Invoiced Amount']/$row['Product 1 Quarter Acc Days On Sale'];
-	  $avg_weekly_profit_per_product_1q+=7*$row['Product 1 Quarter Acc Profit']/$row['Product 1 Quarter Acc Days On Sale'];
-	   $count_1q++;
-	}
-	if( $row['Product 1 Month Acc Days On Sale']>0){
-	  $avg_weekly_sales_per_product_1m+=7*$row['Product 1 Month Acc Invoiced Amount']/$row['Product 1 Month Acc Days On Sale'];
-	  $avg_weekly_profit_per_product_1m+=7*$row['Product 1 Month Acc Profit']/$row['Product 1 Month Acc Days On Sale'];
-	   $count_1m++;
-	}
-	if( $row['Product 1 Week Acc Days On Sale']>0){
-	  $avg_weekly_sales_per_product_1w+=7*$row['Product 1 Week Acc Invoiced Amount']/$row['Product 1 Week Acc Days On Sale'];
-	  $avg_weekly_profit_per_product_1w+=7*$row['Product 1 Week Acc Profit']/$row['Product 1 Week Acc Days On Sale'];
-
-	  $count_1w++;
-
-	}
-	 
-      }
-      if($count!=0){
-	$avg_weekly_sales_per_product=$avg_weekly_sales_per_product/$count;
-	$avg_weekly_sales_per_product_1y/=$count_1y;
-	$avg_weekly_sales_per_product_1q/=$count_1q;
-	$avg_weekly_sales_per_product_1m/=$count_1m;
-	$avg_weekly_sales_per_product_1w/=$count_1w;
-	$avg_weekly_profit_per_product/=$count;
-	$avg_weekly_profit_per_product_1y/=$count_1y;
-	$avg_weekly_profit_per_product_1q/=$count_1q;
-	$avg_weekly_profit_per_product_1m/=$count_1m;
-	$avg_weekly_profit_per_product_1w/=$count_1w;
-      
-      
-      }
-
-      $this->data['Product Department Total Avg Week Sales Per Product']=$avg_weekly_sales_per_product;
-      $this->data['Product Department Total Avg Week Profit Per Product']=$avg_weekly_profit_per_product;
-      $this->data['Product Department 1 Year Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1y;
-      $this->data['Product Department 1 Year Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1y;
-      $this->data['Product Department 1 Quarter Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1q;
-      $this->data['Product Department 1 Quarter Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1q;
-      $this->data['Product Department 1 Month Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1m;
-      $this->data['Product Department 1 Month Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1m;
-      $this->data['Product Department 1 Week Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1w;
-      $this->data['Product Department 1 Week Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1w;
+    function update_averages_per_item() {
 
 
-      $sql=sprintf("update `Product Department Dimension` set `Product Department Total Avg Week Sales Per Product`=%.2f , `Product Department Total Avg Week Profit Per Product`=%.2f ,`Product Department 1 Year Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Year Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Quarter Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Quarter Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Month Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Month Acc Avg Week Profit Per Product`=%.2f ,`Product Department 1 Week Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Week Acc Avg Week Profit Per Product`=%.2f where `Product Department Key`=%d   "
-		   ,$this->data['Product Department Total Avg Week Sales Per Product']
-		   ,$this->data['Product Department Total Avg Week Profit Per Product']
-		   ,$this->data['Product Department 1 Year Acc Avg Week Sales Per Product']
-		   ,$this->data['Product Department 1 Year Acc Avg Week Profit Per Product']
-		   ,$this->data['Product Department 1 Quarter Acc Avg Week Sales Per Product']
-		   ,$this->data['Product Department 1 Quarter Acc Avg Week Profit Per Product']
-		   ,$this->data['Product Department 1 Month Acc Avg Week Sales Per Product']
-		   ,$this->data['Product Department 1 Month Acc Avg Week Profit Per Product']
-		   ,$this->data['Product Department 1 Week Acc Avg Week Sales Per Product']
-		   ,$this->data['Product Department 1 Week Acc Avg Week Profit Per Product']
+        $sql=sprintf("select *  from `Product Dimension` where `Product Main Department Key`=%d  ",$this->id);
+        $res=mysql_query($sql);
+        $avg_weekly_sales_per_product=0;
+        $avg_weekly_sales_per_product_1y=0;
+        $avg_weekly_sales_per_product_1q=0;
+        $avg_weekly_sales_per_product_1m=0;
+        $avg_weekly_sales_per_product_1w=0;
+        $avg_weekly_profit_per_product=0;
+        $avg_weekly_profit_per_product_1y=0;
+        $avg_weekly_profit_per_product_1q=0;
+        $avg_weekly_profit_per_product_1m=0;
+        $avg_weekly_profit_per_product_1w=0;
+        $count=0;
+        $count_1y=0;
+        $count_1q=0;
+        $count_1m=0;
+        $count_1w=0;
+        while ($row=mysql_fetch_array($res)) {
+            if ( $row['Product Total Days On Sale']>0) {
+                $avg_weekly_sales_per_product+=7*$row['Product Total Invoiced Amount']/$row['Product Total Days On Sale'];
+                $avg_weekly_profit_per_product+=7*$row['Product Total Profit']/$row['Product Total Days On Sale'];
+                $count++;
+            }
+            if ( $row['Product 1 Year Acc Days On Sale']>0) {
+                $avg_weekly_sales_per_product_1y+=7*$row['Product 1 Year Acc Invoiced Amount']/$row['Product 1 Year Acc Days On Sale'];
+                $avg_weekly_profit_per_product_1y+=7*$row['Product 1 Year Acc Profit']/$row['Product 1 Year Acc Days On Sale'];
+                $count_1y++;
+            }
+            if ( $row['Product 1 Quarter Acc Days On Sale']>0) {
+                $avg_weekly_sales_per_product_1q+=7*$row['Product 1 Quarter Acc Invoiced Amount']/$row['Product 1 Quarter Acc Days On Sale'];
+                $avg_weekly_profit_per_product_1q+=7*$row['Product 1 Quarter Acc Profit']/$row['Product 1 Quarter Acc Days On Sale'];
+                $count_1q++;
+            }
+            if ( $row['Product 1 Month Acc Days On Sale']>0) {
+                $avg_weekly_sales_per_product_1m+=7*$row['Product 1 Month Acc Invoiced Amount']/$row['Product 1 Month Acc Days On Sale'];
+                $avg_weekly_profit_per_product_1m+=7*$row['Product 1 Month Acc Profit']/$row['Product 1 Month Acc Days On Sale'];
+                $count_1m++;
+            }
+            if ( $row['Product 1 Week Acc Days On Sale']>0) {
+                $avg_weekly_sales_per_product_1w+=7*$row['Product 1 Week Acc Invoiced Amount']/$row['Product 1 Week Acc Days On Sale'];
+                $avg_weekly_profit_per_product_1w+=7*$row['Product 1 Week Acc Profit']/$row['Product 1 Week Acc Days On Sale'];
 
-		   ,$this->id);
-	mysql_query($sql);
-	//print "$sql\n";
+                $count_1w++;
+
+            }
+
+        }
+        if ($count!=0) {
+            $avg_weekly_sales_per_product=$avg_weekly_sales_per_product/$count;
+            $avg_weekly_sales_per_product_1y/=$count_1y;
+            $avg_weekly_sales_per_product_1q/=$count_1q;
+            $avg_weekly_sales_per_product_1m/=$count_1m;
+            $avg_weekly_sales_per_product_1w/=$count_1w;
+            $avg_weekly_profit_per_product/=$count;
+            $avg_weekly_profit_per_product_1y/=$count_1y;
+            $avg_weekly_profit_per_product_1q/=$count_1q;
+            $avg_weekly_profit_per_product_1m/=$count_1m;
+            $avg_weekly_profit_per_product_1w/=$count_1w;
+
+
+        }
+
+        $this->data['Product Department Total Avg Week Sales Per Product']=$avg_weekly_sales_per_product;
+        $this->data['Product Department Total Avg Week Profit Per Product']=$avg_weekly_profit_per_product;
+        $this->data['Product Department 1 Year Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1y;
+        $this->data['Product Department 1 Year Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1y;
+        $this->data['Product Department 1 Quarter Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1q;
+        $this->data['Product Department 1 Quarter Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1q;
+        $this->data['Product Department 1 Month Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1m;
+        $this->data['Product Department 1 Month Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1m;
+        $this->data['Product Department 1 Week Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1w;
+        $this->data['Product Department 1 Week Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1w;
+
+
+        $sql=sprintf("update `Product Department Dimension` set `Product Department Total Avg Week Sales Per Product`=%.2f , `Product Department Total Avg Week Profit Per Product`=%.2f ,`Product Department 1 Year Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Year Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Quarter Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Quarter Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Month Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Month Acc Avg Week Profit Per Product`=%.2f ,`Product Department 1 Week Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Week Acc Avg Week Profit Per Product`=%.2f where `Product Department Key`=%d   "
+                     ,$this->data['Product Department Total Avg Week Sales Per Product']
+                     ,$this->data['Product Department Total Avg Week Profit Per Product']
+                     ,$this->data['Product Department 1 Year Acc Avg Week Sales Per Product']
+                     ,$this->data['Product Department 1 Year Acc Avg Week Profit Per Product']
+                     ,$this->data['Product Department 1 Quarter Acc Avg Week Sales Per Product']
+                     ,$this->data['Product Department 1 Quarter Acc Avg Week Profit Per Product']
+                     ,$this->data['Product Department 1 Month Acc Avg Week Sales Per Product']
+                     ,$this->data['Product Department 1 Month Acc Avg Week Profit Per Product']
+                     ,$this->data['Product Department 1 Week Acc Avg Week Sales Per Product']
+                     ,$this->data['Product Department 1 Week Acc Avg Week Profit Per Product']
+
+                     ,$this->id);
+        mysql_query($sql);
+        //print "$sql\n";
     }
 
 
     function update_product_data() {
-      $sql=sprintf("select sum(if(`Product Stage`='In process',1,0)) as in_process,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Availability Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Main Department Key`=%d",$this->id);
-      
-     $availability='No Applicable';
- $sales_type='No Applicable';
- $in_process=0;
- $public_sale=0;
- $private_sale=0;
- $discontinued=0;
- $not_for_sale=0;
- $sale_unknown=0;
- $availability_optimal=0;
- $availability_low=0;
- $availability_critical=0;
- $availability_outofstock=0;
- $availability_unknown=0;
- $availability_surplus=0;
- 
+        $sql=sprintf("select sum(if(`Product Stage`='In process',1,0)) as in_process,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Availability Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Main Department Key`=%d",$this->id);
 
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-     
-    $in_process=$row['in_process'];
-    $public_sale=$row['public_sale'];
-    $private_sale=$row['private_sale'];
-    $discontinued=$row['discontinued'];
-    $not_for_sale=$row['not_for_sale'];
-    $sale_unknown=$row['sale_unknown'];
-    $availability_optimal=$row['availability_optimal'];
-    $availability_low=$row['availability_low'];
-    $availability_critical=$row['availability_critical'];
-    $availability_outofstock=$row['availability_outofstock'];
-    $availability_unknown=$row['availability_unknown'];
-    $availability_surplus=$row['availability_surplus'];
-    
-    
+        $availability='No Applicable';
+        $sales_type='No Applicable';
+        $in_process=0;
+        $public_sale=0;
+        $private_sale=0;
+        $discontinued=0;
+        $not_for_sale=0;
+        $sale_unknown=0;
+        $availability_optimal=0;
+        $availability_low=0;
+        $availability_critical=0;
+        $availability_outofstock=0;
+        $availability_unknown=0;
+        $availability_surplus=0;
+
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $in_process=$row['in_process'];
+            $public_sale=$row['public_sale'];
+            $private_sale=$row['private_sale'];
+            $discontinued=$row['discontinued'];
+            $not_for_sale=$row['not_for_sale'];
+            $sale_unknown=$row['sale_unknown'];
+            $availability_optimal=$row['availability_optimal'];
+            $availability_low=$row['availability_low'];
+            $availability_critical=$row['availability_critical'];
+            $availability_outofstock=$row['availability_outofstock'];
+            $availability_unknown=$row['availability_unknown'];
+            $availability_surplus=$row['availability_surplus'];
 
 
 
-  }
-
-  $sql=sprintf("update `Product Department Dimension` set `Product Department In Process Products`=%d,`Product Department For Public Sale Products`=%d ,`Product Department For Private Sale Products`=%d,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Unknown Sales State Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d  where `Product Department Key`=%d  ",
-	       $in_process,
-	       $public_sale,
-	       $private_sale,
-
-	       $discontinued,
-	       $not_for_sale,
-	       $sale_unknown,
-
-	       $availability_optimal,
-	       $availability_low,
-	       $availability_critical,
-
-	       $availability_outofstock,
-	       $availability_unknown,
-	       $availability_surplus,
-
-	       // prepare_mysql($sales_type),
-	       // prepare_mysql($availability),
-	       $this->id
-	    );
-  
-  mysql_query($sql);
-  // print "$sql\n";
 
 
+        }
 
-  $this->get_data('id',$this->id);
+        $sql=sprintf("update `Product Department Dimension` set `Product Department In Process Products`=%d,`Product Department For Public Sale Products`=%d ,`Product Department For Private Sale Products`=%d,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Unknown Sales State Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d  where `Product Department Key`=%d  ",
+                     $in_process,
+                     $public_sale,
+                     $private_sale,
+
+                     $discontinued,
+                     $not_for_sale,
+                     $sale_unknown,
+
+                     $availability_optimal,
+                     $availability_low,
+                     $availability_critical,
+
+                     $availability_outofstock,
+                     $availability_unknown,
+                     $availability_surplus,
+
+                     // prepare_mysql($sales_type),
+                     // prepare_mysql($availability),
+                     $this->id
+                    );
+
+        mysql_query($sql);
+        // print "$sql\n";
+
+
+
+        $this->get_data('id',$this->id);
     }
 
-    function update_customers(){
-      $number_active_customers=0;
-      $number_active_customers_more_than_50=0;
+    function update_customers() {
+        $number_active_customers=0;
+        $number_active_customers_more_than_50=0;
 
-      $sql=sprintf(" select    (select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  , sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0  group by  OTF.`Customer Key`",$this->id);
-          // print "$sql\n";
-      $result=mysql_query($sql);
-      while($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	$number_active_customers++;
-	if($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
-	  $number_active_customers_more_than_50++;
-      }
-      
-      $this->data['Product Department Active Customers']=$number_active_customers;
-      $this->data['Product Department Active Customers More 0.5 Share']=$number_active_customers_more_than_50;
-	    
- $sql=sprintf("update `Product Department Dimension` set `Product Department Active Customers`=%d ,`Product Department Active Customers More 0.5 Share`=%d where `Product Department Key`=%d  ",
-	      $this->data['Product Department Active Customers'],
-	      $this->data['Product Department Active Customers More 0.5 Share'],
-	      $this->id
-                        );
- // print "$sql\n";
- mysql_query($sql);
- 
+        $sql=sprintf(" select    (select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  , sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,OTF.`Customer Key` from `Order Transaction Fact`  OTF  left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0  group by  OTF.`Customer Key`",$this->id);
+        // print "$sql\n";
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $number_active_customers++;
+            if ($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
+                $number_active_customers_more_than_50++;
+        }
+
+        $this->data['Product Department Active Customers']=$number_active_customers;
+        $this->data['Product Department Active Customers More 0.5 Share']=$number_active_customers_more_than_50;
+
+        $sql=sprintf("update `Product Department Dimension` set `Product Department Active Customers`=%d ,`Product Department Active Customers More 0.5 Share`=%d where `Product Department Key`=%d  ",
+                     $this->data['Product Department Active Customers'],
+                     $this->data['Product Department Active Customers More 0.5 Share'],
+                     $this->id
+                    );
+// print "$sql\n";
+        mysql_query($sql);
+
     }
 
     function update_families() {
@@ -1551,7 +1551,7 @@ $yeartoday=YTD();
             mysql_query($sql); //print "$sql\n";
         }
 
-  $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d and `Product Family Sales Type`='Public Sale' and `Product Family Record Type` in ('New','Normal','Discontinuing')  ",$this->id);
+        $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d and `Product Family Sales Type`='Public Sale' and `Product Family Record Type` in ('New','Normal','Discontinuing')  ",$this->id);
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data['Product Department For Public For Sale Families']=$row['num'];
@@ -1562,7 +1562,7 @@ $yeartoday=YTD();
             mysql_query($sql); //print "$sql\n";
         }
 
-  $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d  and `Product Family Sales Type`='Public Sale' and `Product Family Record Type`='Discontinued'    "   ,$this->id);
+        $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d  and `Product Family Sales Type`='Public Sale' and `Product Family Record Type`='Discontinued'    "   ,$this->id);
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data['Product Department For Public Discontinued Families']=$row['num'];
@@ -1570,7 +1570,7 @@ $yeartoday=YTD();
                          $this->data['Product Department For Public Discontinued Families'],
                          $this->id
                         );
-	    //   print "$sql\n";
+            //   print "$sql\n";
             mysql_query($sql);
         }
 
@@ -1578,110 +1578,18 @@ $yeartoday=YTD();
     }
 
 
-   
-
-function add_image($image_key,$args='') {
- 
- $tmp_images_dir='app_files/pics/';
-    $principal='No';
-    if (preg_match('/principal/i',$args))
-      $principal='Yes';
-  $sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Department' and `Subject Key`=%d",$this->id);
-      $res=mysql_query($sql);
-     $row=mysql_fetch_array($res,MYSQL_ASSOC );
-$number_images=$row['num'];
-	if ($number_images==0)
-	  $principal='Yes';
-	$sql=sprintf("insert into `Image Bridge` values ('Department',%d,%d,%s,'') on duplicate key update `Is Principal`=%s "
-	    ,$this->id
-	    ,$image_key
-	    ,prepare_mysql($principal)
-	    	    ,prepare_mysql($principal)
-	    );
-	//	print "$sql\n";
-	mysql_query($sql);
-       $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-		    ,$this->id
-		    ,$image_key
-		    );
-       //  print $sql;
-      $res=mysql_query($sql);
-
-      if ($row=mysql_fetch_array($res)) {
-	  if ($row['Image Height']!=0)
-	    $ratio=$row['Image Width']/$row['Image Height'];
-	  else
-	    $ratio=1;
-	$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-	$this->images_slideshow[]=$this->new_value;
-      }
-	$this->msg="image added";
-      }
-      
-      
-      
-function load_images(){
-  $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Thumbnail URL`,`Image Small URL`,`Image Large URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and `Subject Key`=%d",$this->id);
-
-      //      print $sql;
-      $res=mysql_query($sql);
-      $this->images=array();
-     
 
 
-      while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
-	
-	  $this->images[$row['Image Key']]=$row;
-
-      }
 
 
-}
-function load_images_slidesshow(){
-  $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d",$this->id);
-  //       print $sql;
-      $res=mysql_query($sql);
-      $this->images_slideshow=array();
 
 
-      while ($row=mysql_fetch_array($res)) {
-	  if ($row['Image Height']!=0)
-	    $ratio=$row['Image Width']/$row['Image Height'];
-	  else
-	    $ratio=1;
-	  $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-	}
-      
-
-}
-function update_main_image(){
-   
-    $this->load_images();
-    $num_images=count($this->images);
-    $main_image_src='art/nopic.png';
-    if($num_images>0){
-      
-      //print_r($this->images_original);
-      foreach( $this->images as $image ){
-	// print_r($image);
-	$main_image_src=$image['Image Small URL'];
-	  if($image['Is Principal']=='Yes'){
-	    
-	    break;
-	  }
-      }
-    }
-    
-    $sql=sprintf("update `Product Department Dimension` set `Product Department Main Image`=%s  where `Product Department Key`=%d",
-		 prepare_mysql($main_image_src)
-		 ,$this->id
-		 );
-    // print "$sql\n";
-    mysql_query($sql);
-  }
 
 
- function update_sales_default_currency() {
+
+
+
+    function update_sales_default_currency() {
         $this->data_default_currency=array();
         $this->data_default_currency['Product Department DC Total Invoiced Gross Amount']=0;
         $this->data_default_currency['Product Department DC Total Invoiced Discount Amount']=0;
@@ -1788,6 +1696,183 @@ function update_main_image(){
 
 
 
+    }
+
+    function remove_image($image_key) {
+
+        $sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Department' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+
+            $sql=sprintf("delete from `Image Bridge` where `Subject Type`='Department' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+            mysql_query($sql);
+            $this->updated=true;
+
+            $number_images=$this->get_number_of_images();
+
+            if ($number_images==0) {
+                $main_image_src='';
+                $main_image_key=0;
+                $this->data['Product Department Main Image']='art/nopic.png';
+                $this->data['Product Department Main Image Key']=$main_image_key;
+                $sql=sprintf("update `Product Department Dimension` set `Product Department Main Image`=%s ,`Product Department Main Image Key`=%d where `Product Department Key`=%d",
+                             prepare_mysql($main_image_src),
+                             $main_image_key,
+                             $this->id
+                            );
+
+                mysql_query($sql);
+            }
+            elseif ($row['Is Principal']=='Yes') {
+
+                $sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Department' and `Subject Key`=%d  ",$this->id);
+                $res2=mysql_query($sql);
+                if ($row2=mysql_fetch_assoc($res2)) {
+                    $this->update_main_image($row2['Image Key']) ;
+                }
+            }
+
+
+        } else {
+            $this->error=true;
+            $this->msg='image not associated';
+
+        }
+
+
+
+
+
+    }
+    function update_image_caption($image_key,$value) {
+        $value=_trim($value);
+
+
+
+        $sql=sprintf("update `Image Bridge` set `Image Caption`=%s where  `Subject Type`='Department' and `Subject Key`=%d  and `Image Key`=%d"
+                     ,prepare_mysql($value)
+                     ,$this->id,$image_key);
+        mysql_query($sql);
+        //print $sql;
+        if (mysql_affected_rows()) {
+            $this->new_value=$value;
+            $this->updated=true;
+        } else {
+            $this->msg=_('No change');
+
+        }
+
+    }
+    function get_images_slidesshow() {
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        $images_slideshow=array();
+        while ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            // print_r($row);
+            $images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+        }
+        // print_r($images_slideshow);
+
+        return $images_slideshow;
+    }
+    function get_main_image_key() {
+
+        return $this->data['Product Main Image Key'];
+    }
+    function update_main_image($image_key) {
+
+        $sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Department' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if (!mysql_num_rows($res)) {
+            $this->error=true;
+            $this->msg='image not associated';
+        }
+
+        $sql=sprintf("update `Image Bridge` set `Is Principal`='No' where `Subject Type`='Department' and `Subject Key`=%d  ",$this->id);
+        mysql_query($sql);
+        $sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Department' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        mysql_query($sql);
+
+
+        $main_image_src='image.php?id='.$image_key.'&size=small';
+        $main_image_key=$image_key;
+
+        $this->data['Product Department Main Image']=$main_image_src;
+        $this->data['Product Department Main Image Key']=$main_image_key;
+        $sql=sprintf("update `Product Department Dimension` set `Product Department Main Image`=%s ,`Product Department Main Image Key`=%d where `Product Department Key`=%d",
+                     prepare_mysql($main_image_src),
+                     $main_image_key,
+                     $this->id
+                    );
+
+        mysql_query($sql);
+
+        $this->updated=true;
+
+    }
+    function get_number_of_images() {
+        $number_of_images=0;
+        $sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Department' and `Subject Key`=%d ",$this->id);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $number_of_images=$row['num'];
+        }
+        return $number_of_images;
+    }
+    function add_image($image_key) {
+
+        $sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Department' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $this->nochange=true;
+            $this->msg=_('Image already uploaded');
+            return;
+        }
+
+
+        $number_images=$this->get_number_of_images();
+        if ($number_images==0) {
+            $principal='Yes';
+        } else {
+            $principal='No';
+        }
+
+        $sql=sprintf("insert into `Image Bridge` values ('Department',%d,%d,%s,'')"
+                     ,$this->id
+                     ,$image_key
+                     ,prepare_mysql($principal)
+
+                    );
+
+        mysql_query($sql);
+
+        if ($principal=='Yes') {
+            $this->update_main_image($image_key);
+        }
+
+
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+                     ,$this->id
+                     ,$image_key
+                    );
+
+        $res=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            $this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+            // $this->images_slideshow[]=$this->new_value;
+        }
+
+        $this->updated=true;
+        $this->msg=_("image added");
     }
 
 

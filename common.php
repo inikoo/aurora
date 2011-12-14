@@ -230,7 +230,7 @@ if ($user->can_view('warehouses')) {
 
 
     if (count($user->warehouses)==1)
-        $nav_menu[] = array(_('Inventory'), 'warehouse_parts.php','parts');
+        $nav_menu[] = array(_('Inventory'), 'warehouse_parts.php?warehouse_id='.$user->warehouses[0],'parts');
     else
         $nav_menu[] = array(_('Inventory'), 'warehouses.php','parts');
 

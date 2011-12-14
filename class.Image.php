@@ -314,9 +314,7 @@ class Image  {
     }
 
 
-    /**
-       *    @desc Open the image
-       **/
+
     function openImage($srcImage) {
 
 

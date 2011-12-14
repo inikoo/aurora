@@ -3192,6 +3192,23 @@ function list_products() {
 }
 
 function list_parts() {
+global $user;
+   if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else {
+        return;
+    }
+    if (isset( $_REQUEST['parent_key']))
+        $parent_key=$_REQUEST['parent_key'];
+    else {
+        return;
+    }
+
+
+
+
+
+
     $conf=$_SESSION['state']['warehouse']['parts'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
@@ -3337,11 +3354,9 @@ function list_parts() {
         $where_type='';
         $where_interval='';
     }
+    elseif ($parent=='list'){
 
-
-    if ($list_key) {
-
-        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
+        $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
         //print $sql;exit;
         $res=mysql_query($sql);
         if ($customer_list_data=mysql_fetch_assoc($res)) {
@@ -3349,7 +3364,7 @@ function list_parts() {
             if ($customer_list_data['List Type']=='Static') {
 
                 $table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
-                $where_type=sprintf(' and `List Key`=%d ',$_REQUEST['list_key']);
+                $where_type=sprintf(' and `List Key`=%d ',$parent_key);
 
             } else {// Dynamic by DEFAULT
 
@@ -3369,6 +3384,32 @@ function list_parts() {
             exit("error");
         }
     }
+    elseif ($parent=='category') {
+        
+        
+
+$category=new Category($parent_key);
+
+if(!in_array($category->data['Category Warehouse Key'],$user->warehouses)){
+return;
+}
+
+$where=sprintf(" where `Subject`='Part' and  `Category Key`=%d",$parent_key);
+$table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
+        $where_type='';
+     
+        
+        
+    }else{
+    
+    
+    }
+
+
+
+
+
+
 
     $_elements='';
     foreach($elements as $_key=>$_value) {
@@ -3404,7 +3445,7 @@ function list_parts() {
 
     $sql="select count(*) as total from $table  $where $wheref";
 
-   // print $sql;exit;
+    
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -3656,7 +3697,7 @@ function list_parts() {
 
 
     $sql="select * from $table  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-    //print $sql; exit;
+   
     $adata=array();
     $result=mysql_query($sql);
 

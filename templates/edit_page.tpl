@@ -5,13 +5,18 @@
 <input type="hidden" id="site_id" value="{$site->id}"/>
 
 <input type="hidden" id="page_key" value="{$page->id}"/>
+
+<input type="hidden" id="content_height" value="{$page->get('Page Content Height')}"/>
+
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
-  <span>{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; {t}Webpage{/t}: {$page->get('Page Code')}</span>
+  <span >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt=""/> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt=""/> {$page->get('Page Code')}</span>
 </div>
 <div class="top_page_menu">
     <div class="buttons">
+        {if isset($next)}<img class="next" onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{$next.title}"  onclick="window.location='{$next.link}'"   src="art/next_button.png" alt="{t}Next{/t}"  / >{/if}
+
         <button style="margin-left:0px"  onclick="window.location='page.php?id={$page->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
         
         
@@ -20,11 +25,14 @@
          <button   onclick="{$referral_data.url}'" ><img src="art/icons/door_out.png" alt=""/> {$referral_data.label}</button>
 
  {/if}
-          <button  onclick="window.location='page_preview.php?id={$page->id}&logged=1&referral={"edit_page.php?id={$page->id}"|escape:'html'}'" ><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button>
+          <button  onclick="window.location='page_preview.php?id={$page->id}&logged=1'" ><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button>
 
  
  </div>
-  
+  <div class="buttons left">
+          {if isset($prev)}<img class="previous" onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{$prev.title}" onclick="window.location='{$prev.link}'"  src="art/previous_button.png" alt="{t}Previous{/t}"   />{/if}
+
+  </div>
     <div style="clear:both"></div>
 </div>
 
@@ -39,17 +47,17 @@
   <ul class="tabs" id="chooser_ul">
       <li> <span class="item {if $block_view=='setup'}selected{/if}" id="setup"  ><span> {t}Page Properties{/t}</span></span></li>
 
-    <li><span  class="item {if $block_view=='properties'}selected{/if}" id="properties" > <span>{t}HTML Setup{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='page_header'}selected{/if}"  id="page_header">  <span> {t}Header{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='page_footer'}selected{/if}"  id="page_footer">  <span> {t}Footer{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='content'}selected{/if}" id="content"  ><span>  {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
+    <li style="display:none"><span  class="item {if $block_view=='properties'}selected{/if}" id="properties" > <span>{t}HTML Setup{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $block_view=='page_header'}selected{/if}"  id="page_header">  <span> {t}Header{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $block_view=='page_footer'}selected{/if}"  id="page_footer">  <span> {t}Footer{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='content'}selected{/if}" id="content"><span>  {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
     <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
 
   
 
 
-    <li> <span class="item {if $block_view=='style'}selected{/if}" id="style"  ><span> {t}Style{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='media'}selected{/if}" id="media"  ><span> {t}Media{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $block_view=='style'}selected{/if}" id="style"  ><span> {t}Style{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $block_view=='media'}selected{/if}" id="media"  ><span> {t}Media{/t}</span></span></li>
 
 	</ul>
   
@@ -63,16 +71,22 @@
     
     
     
-    	   <table class="edit" border=0 id="edit_family_page"  style="width:100%;clear:both;margin-top:0px" page_key="{$page->id}"   >
+    	   <table class="edit" border=0 id="edit_family_page"  style="width:880px;clear:both;margin-left:20px;margin-top:0px" page_key="{$page->id}"   >
 	  
 	  
 	  <tr >
 	  <td colspan=3 >
-	    
-	      <div class="general_options" style="float:right">
+	       <div class="buttons left" >
 		   
-		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_page_properties" class="state_details">{t}Save{/t}</span>
-		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_page_properties" class="state_details">{t}Reset{/t}</span>
+		   <button  id="show_more_configuration" >{t}Show Advanced Configuration{/t}</button>
+		   		   <button  style="display:none" id="hide_more_configuration" >{t}Hide Advanced Configuration{/t}</button>
+
+      </div>
+	    
+	      <div class="buttons" >
+		   
+		   <button  style="visibility:hidden"  id="save_edit_page_properties" class="positive">{t}Save{/t}</button>
+		   <button style="visibility:hidden" id="reset_edit_page_properties" class="negative">{t}Reset{/t}</button>
 		   
       </div>
 	     </td>
@@ -80,7 +94,10 @@
 	     </tr>
 
 
-<tr><td style="width:120px"  class="label">{t}Creation Method{/t}:</td>
+<tr class="top"><td></td></tr>
+
+<tbody id="advanced_configuration" style="display:none">
+<tr ><td style="width:120px"  class="label">{t}Creation Method{/t}:</td>
  <td style="width:400px">
  <table>
  <tr><td style="padding:0;" class="label">{t}External body & HTML HEAD{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page->get('Page Store Type') =="External Content and HTML HEAD"}checked="checked"{/if} ></td></tr>
@@ -98,7 +115,7 @@
  <tr><td style="padding:0;" class="label">{t}Information{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Information"}checked="checked"{/if} ></td></tr>
  <tr><td style="padding:0;" class="label">{t}Category Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Category Catalogue"}checked="checked"{/if} ></td><td>{if $page->get('Page Store Section') =="Category Catalogue"}{$page->get('Page Parent Code')}{/if} </td></tr>
  <tr><td style="padding:0;" class="label">{t}Family Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Family Catalogue"}checked="checked"{/if} ></td><td style="padding:0;">{if $page->get('Page Store Section') =="Family Catalogue"}<a href="family.php?id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>{/if} </td></tr>
- <tr><td style="padding:0;" class="label">{t}Department Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Department Catalogue"}checked="checked"{/if} ></td></tr>
+ <tr><td style="padding:0;" class="label">{t}Department Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Department Catalogue"}checked="checked"{/if} ></td><td style="padding:0;">{if $page->get('Page Store Section') =="Department Catalogue"}<a href="department.php?id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>{/if} </td></tr>
  <tr><td style="padding:0;" class="label">{t}Store Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Store Catalogue"}checked="checked"{/if} ></td></tr>
  <tr><td style="padding:0;" class="label">{t}Registration{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Registration"}checked="checked"{/if} ></td></tr>
  <tr><td style="padding:0;" class="label">{t}Client Section{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Client Section"}checked="checked"{/if} ></td></tr>
@@ -109,6 +126,31 @@
  </td></tr>
 
 
+      </td></tr>
+	     <tr><td class="label" style="width:120px">{t}Browser Title{/t}:</td>
+	     <td style="width:400px">
+		 <div   >
+		   <input  id="page_html_head_title"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Title')}" ovalue="{$page->get('Page Title')}"  />
+		   <div id="page_html_head_title_msg"></div>
+		   <div id="page_html_head_title_Container"  ></div>
+		 </div>
+	       </td><td>
+		
+
+      </td></tr>
+
+    <tr style="height:87px"><td class="label" style="width:120px">{t}Page Keywords{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="page_html_head_keywords"  style="width:100%;height:80px" MAXLENGTH="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}"  >{$page->get('Page Keywords')}</textarea>
+		   <div id="page_html_head_keywords_msg"></div>
+		   <div id="page_html_head_keywords_Container"  ></div>
+		 </div>
+		 
+		 
+	     </td></tr>
+
+</tbody>
   <tr><td style="width:120px" class="label">{t}Page Code{/t}:</td>
 	     <td style="width:400px">
 		 <div   >     
@@ -117,6 +159,17 @@
 		   <div id="page_properties_page_code_Container"  ></div>
 		 </div>
 	       </td><td><div style="font-size:80%;color:red" id="page_properties_page_code_msg"></div></td></tr>
+
+      <tr style="height:87px"><td class="label" style="width:120px">{t}Description{/t}:</td>
+	       <td style="width:400px">
+		 <div >
+		   <textarea  id="page_html_head_resume"  style="width:100%;height:80px" MAXLENGTH="24" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}"  >{$page->get('Page Store Resume')}</textarea>
+		   <div id="page_html_head_resume_msg"></div>
+		   <div id="page_html_head_resume_Container"  ></div>
+		 </div>
+		 
+		 
+	     </td></tr>
 
 
 	     <tr><td width:120px class="label">{t}URL{/t}:</td>
@@ -130,7 +183,7 @@
       </td></tr>
 
 
-<tr><td style="width:120px"  class="label">{t}Link Title{/t}:</td>
+<tr><td style="width:120px"  class="label">{t}Link Label{/t}:</td>
 	     <td style="width:400px"> 
 		 <div   >
 		   <input  style="width:100%" id="page_properties_link_title"   value="{$page->get('Page Short Title')}" ovalue="{$page->get('Page Short Title')}"  />
@@ -139,7 +192,6 @@
 		 </div>
 	       </td><td><div id="page_properties_link_title_msg"></div>
       </td></tr>
-
 
 
     
@@ -162,40 +214,11 @@
 	     </td></tr>
 
 
-      </td></tr>
-	     <tr><td class="label" style="width:120px">{t}Title{/t}:</td>
-	     <td style="width:400px">
-		 <div   >
-		   <input  id="page_html_head_title"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Title')}" ovalue="{$page->get('Page Title')}"  />
-		   <div id="page_html_head_title_msg"></div>
-		   <div id="page_html_head_title_Container"  ></div>
-		 </div>
-	       </td><td>
-		
 
-      </td></tr>
 	    
-	      <tr style="height:87px"><td class="label" style="width:120px">{t}Page Abstract{/t}:</td>
-	       <td style="width:400px">
-		 <div >
-		   <textarea  id="page_html_head_resume"  style="width:100%;height:80px" MAXLENGTH="24" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}"  >{$page->get('Page Store Resume')}</textarea>
-		   <div id="page_html_head_resume_msg"></div>
-		   <div id="page_html_head_resume_Container"  ></div>
-		 </div>
-		 
-		 
-	     </td></tr>
+	
 	    
-	     <tr style="height:87px"><td class="label" style="width:120px">{t}Page Keywords{/t}:</td>
-	       <td style="width:400px">
-		 <div >
-		   <textarea  id="page_html_head_keywords"  style="width:100%;height:80px" MAXLENGTH="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}"  >{$page->get('Page Keywords')}</textarea>
-		   <div id="page_html_head_keywords_msg"></div>
-		   <div id="page_html_head_keywords_Container"  ></div>
-		 </div>
-		 
-		 
-	     </td></tr>
+	 
 	     
 	  
 	  
@@ -204,113 +227,18 @@
 	     
 	    
 	     </table>
+	     
+	     
     </div>
     <div class="edit_block" {if $block_view!="page_header"}style="display:none"{/if}   id="d_page_header">
 
 
 
-    <table class="edit" border=0  id="header_edit_table" style="width:100%">
-        <tr ><td colspan="3">
-         <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_page_header" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_page_header" class="state_details">{t}Reset{/t}</span>
-    </div>
-        </td></tr>
-
-
-	     <tr><td class="label" style="width:120px">{t}Header Title{/t}:</td>
-	     <td style="width:500px">
-		 <div  >
-		   <input  id="page_header_store_title"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Title')}" ovalue="{$page->get('Page Store Title')}"  />
-		   <div id="page_header_store_title_msg"></div>
-		   <div id="page_header_store_title_Container"  ></div>
-		 </div>
-	       </td>
-	    
-	       
-	     </tr>
-	     <tr style="display:none" >
-	     <td  style="width:120px" class="label">{t}Subtitle{/t}:</td><td>
-		 <div  >
-		   <input  id="page_header_subtitle"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Subtitle')}" ovalue="{$page->get('Page Store Subtitle')}"  />
-		   <div id="page_header_subtitle_msg"></div>
-		   <div id="page_header_subtitle_Container"  ></div>
-		 </div>
-		 
-	     </td></tr>
-	     <tr style="display:none" ><td style="width:120px" class="label">{t}Slogan{/t}:</td><td>
-		 <div >
-		 <input  id="page_header_slogan"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Slogan')}" ovalue="{$page->get('Page Store Slogan')}"  />
-		 <div id="page_header_slogan_msg"></div>
-		 <div id="page_header_slogan_Container"  ></div>
-		 </div>
-	     </td></tr>
-	     <tr style="display:none;height:87px"  ><td style="width:120px" class="label">{t}Short Introduction{/t}:</td><td>
-		 <div  >
-		   <textarea  id="page_header_resume"  rows="5" style="width:100%;height:80px" MAXLENGTH="64" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}"  />{$page->get('Page Store Resume')}</textarea>
-		   <div id="page_header_resume_msg"></div>
-		   <div id="page_header_resume_Container"  ></div>
-		 </div>
-	     </td></tr>
-	     <tr style="height:15px"><td colspan=3></td></tr>
-	         <tr>
-	       <td style="width:120px" class="label">{t}Found In{/t}:</td>
-	       <td style="width:500px" >
-	        <div style="float:right"  class="general_options"><span id="add_other_found_in_page" class="state_details">Add page</span></div>
-	       <table >
-	       
-		    {foreach from=$page->get_found_in() item=found_in_page}
-               <tr><td style="padding:0">{$found_in_page.found_in_label}</td>
-               <td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
-             
-               </tr>
-            {/foreach}
-          
-	       </table>
-	      
-	       </td>
-	       <td></td>
-	       
-	    
-	       
-	     </tr>
-	     
-	     <tr>
-	       <td style="width:120px" class="label">{t}See Also{/t}:</td>
-	       <td  style="width:500px">
-	        <div id="see_also_type" default_cat=""   class="options" style="margin:0;float:right;padding:0">
-   <span style="margin:0px" class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</span> <span style="margin:0px" class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</span><br/><br/>
-   
-   </div>
-	        <div style="clear:right;float:right;{if $page->get('Page Store See Also Type')=='Auto'}display:none{/if}"  class="general_options"><span id="add_other_see_also_page" class="state_details">Add page</span></div>
-	       <table >
-	     
-		    {foreach from=$page->get_see_also() item=see_also_page}
-               <tr>
-               <td style="padding:0">{$see_also_page.see_also_label} (<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</td>
-               <td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
-               <td style="padding:0;padding-left:10px;{if $page->get('Page Store See Also Type')=='Auto'}display:none{/if}"><img onclick="delete_see_also_page({$see_also_page.see_also_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
-               </tr>
-            {/foreach}
-       
-	       </table>
-	      
-	       </td>
-	       
-	       <td>
-  
- </td>
-	       
-	     
-	       
-	    
-	       
-	     </tr>
-
- 
     
-   </table>
 	</div>
+	
+	
+	
     <div class="edit_block" {if $block_view!="page_footer"}style="display:none"{/if}   id="d_page_footer">
     </div>
     <div class="edit_block" style="{if $block_view!="content"}display:none;{/if}padding:0px 0px;margin:0px"   id="d_content">
@@ -383,7 +311,157 @@
 	     </table>
 	{else}
     
+    
+    <div style="border-bottom:1px dotted #ddd;padding-bottom:5px;margin:0 20px">
+    <div class="buttons" >
+        <button {if $content_view=='overview'}style="display:none;"{/if} id="show_page_content_overview_block"><img src="art/icons/layout.png" alt=""/> {t}Content Overview{/t}</button>
    
+   </div>
+   
+   <div class="buttons left" >
+        <button id="show_page_header_block" {if $content_view=='header'}class="selected"{/if}><img src="art/icons/layout_header.png" alt=""/> {t}Header{/t}</button>
+        <button id="show_page_content_block" {if $content_view=='content'}class="selected"{/if}><img src="art/icons/layout_content2.png" alt=""/> {t}Content{/t}</button>
+        <button id="show_page_product_list_block" {if $content_view=='product_list'}class="selected"{/if}><img src="art/icons/layout_sidebar.png" alt=""/> {t}Product Lists{/t}</button>
+        <button id="show_page_product_buttons_block" {if $content_view=='product_buttons'}class="selected"{/if}><img src="art/icons/layout_content.png" alt=""/> {t}Product Buttons{/t}</button>
+        <button id="show_page_footer_block" {if $content_view=='footer'}class="selected"{/if}><img src="art/icons/layout_footer.png" alt=""/> {t}Footer{/t}</button>
+  
+   </div>
+      <div style="clear:both"></div>
+   </div>
+  
+   
+    <div    id="page_content_overview_block" style="{if $content_view!='overview'}display:none{/if};margin:10px 20px">  
+   
+    <img id="page_preview_snapshot_image" style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="{t}No Snapshot Available{/t}"/>
+
+   
+   </div>
+   <div style="{if $content_view!='header'}display:none{/if};margin:10px 20px" id="page_header_block">  
+   
+   <table class="edit" border=0  id="header_edit_table" style="width:100%">
+        <tr ><td colspan="3">
+         <div class="buttons" >
+	<button  style="visibility:hidden"  id="save_edit_page_header" class="positive">{t}Save{/t}</button>
+	<button style="visibility:hidden" id="reset_edit_page_header" class="negative">{t}Reset{/t}</button>
+    </div>
+        </td></tr>
+
+
+
+
+
+ <tr><td class="label" style="width:120px">{t}Header Title{/t}:</td>
+	     <td style="width:500px">
+		 <div  >
+		   <input  id="page_header_store_title"  style="width:100%" MAXLENGTH="64" value="{$page->get('Page Store Title')}" ovalue="{$page->get('Page Store Title')}"  />
+		   <div id="page_header_store_title_msg"></div>
+		   <div id="page_header_store_title_Container"  ></div>
+		 </div>
+	       </td>
+	    
+	       
+	     </tr>
+  <tr  style="height:10px"><td colspan="3"></td></tr>
+    
+         <tr>
+	       <td style="width:120px" class="label">{t}Parent Pages{/t}:</td>
+	       <td style="width:500px" >
+	        <div  class="buttons small">
+	        <button id="add_other_found_in_page" class="positive">Add page</button></div>
+	       <table >
+	       
+		    {foreach from=$page->get_found_in() item=found_in_page}
+               <tr><td style="padding:0">{$found_in_page.found_in_label}</td>
+               <td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
+             
+               </tr>
+            {/foreach}
+          
+	       </table>
+	      
+	       </td>
+	       <td></td>
+	       
+	    
+	       
+	     </tr>
+	     
+	     <tr>
+	       <td style="width:120px" class="label">{t}Related Pages{/t}:</td>
+	       <td  style="width:500px">
+	        <div id="see_also_type" default_cat=""   class="buttons left" >
+                 <button  class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</button> 
+                 <button  class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</button>
+           </div>
+           
+           
+	        <div style="margin-top:40px;clear:right;"  class="buttons small">
+	        <button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} class="positive">{t}Add page{/t}</button>
+	        <button id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} class="positive">+</button>
+	        <button id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} class="negative">-</button>
+
+	        </div>
+	       
+	       <table >
+	     
+		    {foreach from=$page->get_see_also() item=see_also_page}
+               <tr>
+               <td style="padding:0">{$see_also_page.see_also_label} (<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</td>
+               <td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
+               <td style="padding:0;padding-left:10px;{if $page->get('Page Store See Also Type')=='Auto'}display:none{/if}"><img onclick="delete_see_also_page({$see_also_page.see_also_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}"  /></td>
+               </tr>
+            {/foreach}
+       
+	       </table>
+	      
+	       </td>
+	       
+	       <td>
+  
+ </td>
+	       
+	     
+	       
+	    
+	       
+	     </tr>
+	     
+
+
+
+	     
+	    
+	
+   </table>
+   
+   
+   
+   
+   
+   
+   </div>
+  
+   <div style="{if $content_view!='footer'}display:none{/if};margin:10px 20px" id="page_footer_block">  
+   
+   </div>
+   
+    <div style="{if $content_view!='product_list'}display:none{/if};margin:10px 20px" id="page_product_list_block">  
+    
+   <div id="product_lists" style="width:890px;margin-bottom:20px">
+     <span class="clean_table_title">{t}Lists{/t}</span>
+     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+  <div  id="table2"  style="font-size:80%" class="data_table_container dtable btable "> </div>
+     </div>
+   </div>
+     <div style="{if $content_view!='product_buttons'}display:none{/if};margin:10px 20px" id="page_product_buttons_block">  
+     <div id="product_buttons" style="width:890px">
+     <span class="clean_table_title">{t}Buttons{/t}</span>
+     {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
+  <div  id="table3"   class="data_table_container dtable btable "> </div>
+     </div>
+   </div>
+  
+ <div style="{if $content_view!='content'}display:none{/if};"  style="display:none" id="page_content_block">  
      <table class="edit"  id="content_edit_table" style="width:810px;padding:0px;margin:0;position:relative;left:-2px">
 	     <tr class="title"><td colspan="2">
 	  
@@ -409,7 +487,9 @@
       </td></tr>
       
       </table>
-      
+  </div>
+  
+  
     {/if}
     </div>
     <div class="edit_block" {if $block_view!="style"}style="display:none"{/if}   id="d_style">
@@ -417,17 +497,10 @@
     <div class="edit_block" {if $block_view!="media"}style="display:none"{/if}   id="d_media">
     </div>
      <div class="edit_block" style="{if $block_view!="products"}display:none;{/if}padding:20px;"   id="d_products">
-     <div id="product_lists" style="width:890px;margin-bottom:20px">
-     <span class="clean_table_title">{t}Lists{/t}</span>
-     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
-  <div  id="table2"  style="font-size:80%" class="data_table_container dtable btable "> </div>
-     </div>
+ 
+ 
      
-      <div id="product_lists" style="width:890px">
-     <span class="clean_table_title">{t}Buttons{/t}</span>
-     {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
-  <div  id="table3"   class="data_table_container dtable btable "> </div>
-     </div>
+    
      
     </div>
 </div>
@@ -493,11 +566,13 @@
 <input type="hidden" name="parent" value="page" />
 <input id="upload_page_content_use_file" type="hidden" name="use_file" value="" />
 
+
  <tr><td>{t}File{/t}:</td><td><input id="upload_page_content_file" style="border:1px solid #ddd;" type="file" name="file"/></td></tr>
 
   </form>
  <tr><td colspan=2>
   <div class="buttons">
+    <span id="processing_upload_page_content" style="float:right;display:none" ><img src="art/loading.gif" alt=""> {t}Processing{/t}</span>
 <button class="positive"  id="upload_page_content"  >{t}Upload{/t}</button>
 <button  id="cancel_upload_page_content" class="negative" >{t}Cancel{/t}</button><br/>
 </div>
@@ -507,16 +582,13 @@
 
 
 <div id="dialog_upload_page_content_files" style="padding:30px 10px 10px 10px;width:420px">
-
- <table style="margin:0 auto">
- <tr><td >
-  <div style="margin-bottom:10px">{t}Multiple files found, please select one{/t}.</div>
-  </td></tr>
+    <table style="margin:0 auto">
+        <tr><td >
+            <div style="margin-bottom:10px">{t}Multiple files found, please select one{/t}.</div>
+            </td></tr>
   <tr><td >
   <div id="upload_page_content_files" class="buttons left small"></div>
   </td></tr>
-
- 
  <tr><td>
   <div class="buttons">
 <button  id="cancel_upload_page_content_files" class="negative" >{t}Cancel{/t}</button><br/>

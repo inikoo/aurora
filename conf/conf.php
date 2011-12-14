@@ -672,6 +672,9 @@ $default_state=array(
                                              'avg'=>'totals',
                                              'view'=>'general',
                                              'block_view'=>'subcategories',
+                                            'base_block_view'=>'subcategories',
+
+                                             
                                              'from'=>'',
                                              'to'=>'',
                                              'exchange_type'=>'day2day',
@@ -692,17 +695,20 @@ $default_state=array(
 
                                                              ),
 
-                                             'products'=>array(
-
-                                                            'order'=>'code',
-                                                            'order_dir'=>'',
-                                                            'sf'=>0,
-                                                            'nr'=>25,
-                                                            'where'=>'where true',
-                                                            'f_field'=>'code',
-                                                            'f_value'=>'','f_show'=>false,
-
-                                                        ),
+                                            
+                                                  'history'=>array(
+                                               'where'=>'where true',
+                                               'f_field'=>'abstract',
+                                               'f_value'=>'','f_show'=>false,
+                                               'order'=>'date',
+                                               'order_dir'=>'desc',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>''
+                                           )
+                                           
                                          ),
 
                    'supplier_categories'=>array(
@@ -761,6 +767,8 @@ $default_state=array(
                                          'mode'=>'all',
                                          'avg'=>'totals',
                                          'view'=>'general',
+                                           'block_view'=>'subcategories',
+                                         'base_block_view'=>'subcategories',
                                          'from'=>'',
                                          'to'=>'',
                                          'exchange_type'=>'day2day',
@@ -780,18 +788,32 @@ $default_state=array(
                                                              'f_value'=>'','f_show'=>false,
 
                                                          ),
+                                                          'history'=>array(
+                                               'where'=>'where true',
+                                               'f_field'=>'abstract',
+                                               'f_value'=>'','f_show'=>false,
+                                               'order'=>'date',
+                                               'order_dir'=>'desc',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>''
+                                           ),
 
-                                         'products'=>array(
+                                         'parts'=>array(
 
-                                                        'order'=>'code',
+                                                        'order'=>'sku',
                                                         'order_dir'=>'',
                                                         'sf'=>0,
                                                         'nr'=>25,
                                                         'where'=>'where true',
-                                                        'f_field'=>'code',
+                                                        'f_field'=>'sku',
                                                         'f_value'=>'','f_show'=>false,
 
                                                     ),
+                                                    
+                                                    
                                      ),
 
                    'products'=>array(
@@ -3297,7 +3319,7 @@ $default_state=array(
                                                'sf'=>0,
                                                'nr'=>15,
                                                'where'=>'where true',
-                                               'f_field'=>'id',
+                                               'f_field'=>'abstract',
                                                'f_value'=>'','f_show'=>false,
                                                'from'=>'',
                                                'to'=>'',
@@ -3341,7 +3363,7 @@ $default_state=array(
                                             'sf'=>0,
                                             'nr'=>15,
                                             'where'=>'where true',
-                                            'f_field'=>'id',
+                                            'f_field'=>'abstract',
                                             'f_value'=>'','f_show'=>false,
                                             'from'=>'',
                                             'to'=>'',
@@ -3353,7 +3375,7 @@ $default_state=array(
                                              'sf'=>0,
                                              'nr'=>50,
                                              'where'=>'where true',
-                                             'f_field'=>'id',
+                                             'f_field'=>'code',
                                              'f_value'=>'','f_show'=>false,
                                              'from'=>'',
                                              'to'=>'',
@@ -3366,7 +3388,7 @@ $default_state=array(
                                                       'sf'=>0,
                                                       'nr'=>50,
                                                       'where'=>'where true',
-                                                      'f_field'=>'id',
+                                                      'f_field'=>'code',
                                                       'f_value'=>'','f_show'=>false,
                                                       'from'=>'',
                                                       'to'=>'',

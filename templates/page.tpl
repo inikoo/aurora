@@ -9,16 +9,20 @@
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
 <div  class="branch"> 
-  <span  >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; {t}Webpage{/t}: {$page->get('Page Code')}</span>
+  <span >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a>  &rarr; <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt=""/> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt=""/> {$page->get('Page Code')}</span>
 </div>
 <div class="top_page_menu">
     <div class="buttons" style="float:right">
+    {if isset($next)}<img class="next" onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{$next.title}"  onclick="window.location='{$next.link}'"   src="art/next_button.png" alt="{t}Next{/t}"  / >{/if}
+
          {if $modify}<button  onclick="window.location='edit_page.php?id={$page->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if}
-         <button  onclick="window.location='page_preview.php?id={$page->id}&logged=1&referral={"page.php?id={$page->id}"|escape:'html'}'" ><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button>
+         <button  onclick="window.location='page_preview.php?id={$page->id}&logged=1'" ><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button>
     </div>
     
     
     <div class="buttons" style="float:left">
+        {if isset($prev)}<img class="previous" onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{$prev.title}" onclick="window.location='{$prev.link}'"  src="art/previous_button.png" alt="{t}Previous{/t}"   />{/if}
+
         <button  onclick="window.location='site.php?id={$site->id}'" ><img src="art/icons/house.png" alt=""> {t}Site{/t}</button>
     </div>
     <div style="clear:both"></div>
@@ -40,35 +44,59 @@
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
-<div style="padding:0 20px">
-
-
-<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 
 
 
+<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:25px 0 40px 0;padding:0 20px">
 
-<div style="width:450px;float:left">
-  <table    class="show_info_product">
+
+
+
+<div style="width:450px;float:left;margin-top:0">
+  <table  id="page_info"  class="show_info_product">
 
      <tr >
-      <td>{t}Type{/t}:</td><td>{$page->get_formated_store_section()}</td>
+      <td style="width:140px">{t}Type{/t}:</td><td>{$page->get_formated_store_section()}</td>
     </tr>
     <tr >
-      <td>{t}Header Title{/t}:</td><td>{$page->get('Page Store Title')}</td>
+      <td style="width:140px">{t}Header Title{/t}:</td><td>{$page->get('Page Store Title')}</td>
     </tr>
  <tr >
-      <td>{t}URL{/t}:</td><td>{$page->get('Page URL')}</td>
+      <td style="width:140px">{t}URL{/t}:</td><td>{$page->get('Page URL')}</td>
     </tr>
       <tr >
-      <td>{t}Link Label{/t}:</td><td>{$page->get('Page Short Title')}</td>
+      <td style="width:140px">{t}Link Label{/t}:</td><td>{$page->get('Page Short Title')}</td>
     </tr>
     
 </table>
+ <table  border=0 id="table_total_visitors"  class="show_info_product">
+
+   <tr>
+	    <td style="width:140px">{t}Total Hits{/t}:</td><td class="number"><div >{$page->get('Visits')}</div></td>
+	  </tr>
+    <tr>
+	    <td style="width:140px">{t}Unique Visitors{/t}:</td><td class="number"><div>{$page->get('Unique Visitors')}</div></td>
+	  </tr>
+	 
+  </table>
+   <table  border=0   id="table_1day_visitors"  class="show_info_product">
+
+   <tr>
+	    <td style="width:140px">{t}Last 24h Hits{/t}:</td><td class="number"><div >{$page->get('1 Day Visits')}</div></td>
+	  </tr>
+    <tr>
+	    <td style="width:140px">{t}Last 24h Visitors{/t}:</td><td class="number"><div >{$page->get('1 Day Unique Visitors')}</div></td>
+	  </tr>
+	  
+	    <tr>
+	    <td style="width:140px">{t}Current Visitors{/t}:</td><td class="number"><div >{$page->get('Current Visitors')}</div></td>
+	  </tr>
+	 
+  </table>
 <table    class="show_info_product">
 
    <tr>
-	    <td>{t}Parent Pages{/t}:</td><td>
+	    <td style="width:140px">{t}Parent Pages{/t}:</td><td>
 	       <table >
 	       
 		    {foreach from=$page->get_found_in() item=found_in_page}
@@ -99,39 +127,14 @@
 
  
   </div>
-  <div style="margin-left:20px;width:350px;float:left">
-   <table    class="show_info_product">
-
-   <tr>
-	    <td>{t}Total Hits{/t}:</td><td class="number"><div >{$page->get('Visits')}</div></td>
-	  </tr>
-    <tr>
-	    <td>{t}Unique Visitors{/t}:</td><td class="number"><div >{$page->get('Unique Visitors')}</div></td>
-	  </tr>
-	 
-  </table>
-   <table    class="show_info_product">
-
-   <tr>
-	    <td>{t}Last 24h Hits{/t}:</td><td class="number"><div >{$page->get('1 Day Visits')}</div></td>
-	  </tr>
-    <tr>
-	    <td>{t}Last 24h Visitors{/t}:</td><td class="number"><div >{$page->get('1 Day Unique Visitors')}</div></td>
-	  </tr>
-	  
-	    <tr>
-	    <td>{t}Current Visitors{/t}:</td><td class="number"><div >{$page->get('Current Visitors')}</div></td>
-	  </tr>
-	 
-  </table>
+  <div style="margin-left:20px;width:450px;float:left">
   
+  <img style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt=""/>
   
 </div>
-<div style="width:15em;float:left;margin-left:20px">
-
-</div>
 
 
+<div style="clear:both;margin-bottom:20px"></div>
 </div>
 
 <div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
@@ -181,7 +184,7 @@
 
  
 
-</div>
+
 
 
 </div>

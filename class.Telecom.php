@@ -1401,7 +1401,7 @@ function prepare_data($raw_data,$options){
 
         function has_parents() {
             $has_parents=false;
-            $sql=sprintf("select count(*) as total from `Telecom Bridge`  where  `Telecom Key`=%d  ",$this->id);
+            $sql=sprintf("select count(*) as total from `Telecom Bridge`  where  `Telecom Key`=%d  and `Subject Type`in ('Customer','Contact','Staff','Company','Supplier') ",$this->id);
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
                 if ($row['total']>0)
@@ -1415,9 +1415,6 @@ function prepare_data($raw_data,$options){
             mysql_query($sql);
 
             $this->deleted=true;
-
-
-
             $history_data['History Abstract']='Telecom Deleted';
             $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
             $history_data['Action']='deleted';

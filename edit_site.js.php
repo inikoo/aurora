@@ -6,6 +6,14 @@ var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var dialog_upload_header;
 var dialog_upload_footer;
+var dialog_upload_menu;
+var dialog_upload_search;
+
+var dialog_upload_header_files;
+var dialog_upload_footer_files;
+var dialog_upload_menu_files;
+var dialog_upload_search_files;
+
 
 var id=<?php echo$_SESSION['state']['site']['id']?>;
 
@@ -18,17 +26,28 @@ var validate_scope_data=
 	,'ftp':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_FTP','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Credentials')?>'}]}
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Contact Telephone','name':'telephone','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
 	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'address','dbname':'Site Contact Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-
-
 	,'mals_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
 	,'mals_url_multi':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL_Multi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
 	,'mals_id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_ID','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid ID')?>'}]}
+},
+'site_menu':{
+		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu HTML','name':'site_menu_html','ar':false}
+		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu CSS','name':'site_menu_css','ar':false}
+		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu Javascript','name':'site_menu_javascript','ar':false}
+},
+'site_search':{
+		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search HTML','name':'site_search_html','ar':false}
+		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search CSS','name':'site_search_css','ar':false}
+		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search Javascript','name':'site_search_javascript','ar':false}
+}
 
-}};
+
+};
 
 var validate_scope_metadata={
 'site':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-//,'billing_data':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'customer_key','key':<?php echo $_SESSION['state']['customer']['id']?>}
+,'site_menu':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+,'site_search':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 
 };
 
@@ -38,8 +57,8 @@ var validate_scope_metadata={
 
 
 function change_block(e){
-    var ids = ["general","layout","style","sections","pages","headers","footers"]; 
-	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers"]; 
+    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu"]; 
+	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu"]; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
@@ -387,33 +406,59 @@ function show_dialog_upload_header(){
 dialog_upload_header.show()
 }
 function close_upload_header(){
+Dom.get('upload_header_use_file').value='';
+
 dialog_upload_header.hide();
 }
+
+function cancel_upload_header_files(){
+Dom.get('upload_header_use_file').value='';
+
+dialog_upload_header_files.hide();
+}
+function upload_header_file(file){
+Dom.get('upload_header_use_file').value=file;
+upload_header();
+}
+
+
 function upload_header(e){
     YAHOO.util.Connect.setForm('upload_header_form', true,true);
     var request='ar_upload_page_content.php?tipo=upload_header';
     
-     Dom.setStyle('processing_upload_header','display','');
-        Dom.setStyle(['upload_header','cancel_upload_header'],'display','none');
+  //   Dom.setStyle('processing_upload_header','display','');
+   //     Dom.setStyle(['upload_header','cancel_upload_header'],'display','none');
 
     
    var uploadHandler = {
       upload: function(o) {
-	   //alert(o.responseText)
+	 //  alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
 	  
 
 	     
-         window.location.reload()
+        window.location.reload()
                 
-	    }
+	    }else if(r.state==201){
+	        dialog_upload_header.hide();
+	        region1 = Dom.getRegion('show_upload_header'); 
+            region2 = Dom.getRegion('dialog_upload_header_files'); 
+            var pos =[region1.right-region2.width,region1.bottom+2]
+            Dom.setXY('dialog_upload_header_files', pos);
+	        dialog_upload_header_files.show();
+	        buttons='';
+	        for(var i=0; i<r.list.length; i++) {
+                buttons=buttons+"<button onClick='upload_header_file(\""+r.list[i]+"\")' style='margin-top:0px;margin-bottom:10px' >"+r.list[i]+"</button> ";
+            }
+	        Dom.get('upload_header_files').innerHTML=buttons
+        }
 	    else{
 	       
 	      Dom.setStyle('processing_upload_headerr','display','none');
         Dom.setStyle(['upload_headerr','cancel_upload_headerr'],'display','');
-		alert(r.msg);
+		//alert(r.msg);
 	    	}
     
     }
@@ -431,19 +476,26 @@ function show_dialog_upload_footer(){
 dialog_upload_footer.show()
 }
 function close_upload_footer(){
+Dom.get('upload_footer_use_file').value='';
+
 dialog_upload_footer.hide();
 }
+function cancel_upload_footer_files(){
+Dom.get('upload_footer_use_file').value='';
+
+dialog_upload_footer_files.hide();
+}
+function upload_footer_file(file){
+Dom.get('upload_footer_use_file').value=file;
+upload_footer();
+}
+
+
 function upload_footer(e){
     YAHOO.util.Connect.setForm('upload_footer_form', true,true);
     var request='ar_upload_page_content.php?tipo=upload_footer';
-    
     Dom.setStyle('processing_upload_footer','display','');
-        Dom.setStyle(['upload_footer','cancel_upload_footer'],'display','none');
-
-    
- 
-    
-    
+    Dom.setStyle(['upload_footer','cancel_upload_footer'],'display','none');
    var uploadHandler = {
       upload: function(o) {
 	   //alert(o.responseText)
@@ -453,7 +505,19 @@ function upload_footer(e){
 	     
          window.location.reload()
                 
-	    }
+	    }else if(r.state==201){
+	        dialog_upload_footer.hide();
+	        region1 = Dom.getRegion('show_upload_footer'); 
+            region2 = Dom.getRegion('dialog_upload_footer_files'); 
+            var pos =[region1.right-region2.width,region1.bottom+2]
+            Dom.setXY('dialog_upload_footer_files', pos);
+	        dialog_upload_footer_files.show();
+	        buttons='';
+	        for(var i=0; i<r.list.length; i++) {
+                buttons=buttons+"<button onClick='upload_footer_file(\""+r.list[i]+"\")' style='margin-top:0px;margin-bottom:10px' >"+r.list[i]+"</button> ";
+            }
+	        Dom.get('upload_footer_files').innerHTML=buttons
+        }
 	    else{
 	      Dom.setStyle('processing_upload_footer','display','none');
         Dom.setStyle(['upload_footer','cancel_upload_footer'],'display','');
@@ -462,13 +526,164 @@ function upload_footer(e){
 		}
 }
 }
+    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+};
 
 
+
+function show_dialog_upload_search(){
+
+  region1 = Dom.getRegion('show_upload_search'); 
+    region2 = Dom.getRegion('dialog_upload_search'); 
+ var pos =[region1.right-region2.width,region1.bottom+2]
+    Dom.setXY('dialog_upload_search', pos);
+dialog_upload_search.show()
+}
+function close_upload_search(){
+Dom.get('upload_search_use_file').value='';
+
+dialog_upload_search.hide();
+}
+
+function cancel_upload_search_files(){
+Dom.get('upload_search_use_file').value='';
+
+dialog_upload_search_files.hide();
+}
+function upload_search_file(file){
+Dom.get('upload_search_use_file').value=file;
+upload_search();
+}
+
+function upload_search(e){
+    YAHOO.util.Connect.setForm('upload_search_form', true,true);
+    var request='ar_upload_page_content.php?tipo=upload_search';
+    Dom.setStyle('processing_upload_search','display','');
+    Dom.setStyle(['upload_search','cancel_upload_search'],'display','none');
+   var uploadHandler = {
+      upload: function(o) {
+	   //alert(o.responseText)
+	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	   
+	    if(r.state==200){
+	     
+         window.location.reload()
+                
+	    }else if(r.state==201){
+	        dialog_upload_search.hide();
+	        region1 = Dom.getRegion('show_upload_search'); 
+            region2 = Dom.getRegion('dialog_upload_search_files'); 
+            var pos =[region1.right-region2.width,region1.bottom+2]
+            Dom.setXY('dialog_upload_search_files', pos);
+	        dialog_upload_search_files.show();
+	        buttons='';
+	        for(var i=0; i<r.list.length; i++) {
+                buttons=buttons+"<button onClick='upload_search_file(\""+r.list[i]+"\")' style='margin-top:0px;margin-bottom:10px' >"+r.list[i]+"</button> ";
+            }
+	        Dom.get('upload_search_files').innerHTML=buttons
+        }
+	    else{
+	      Dom.setStyle('processing_upload_search','display','none');
+        Dom.setStyle(['upload_search','cancel_upload_search'],'display','');
+	    
+		alert(r.msg);
+		}
+}
+}
+    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+};
+
+function show_dialog_upload_menu(){
+
+  region1 = Dom.getRegion('show_upload_menu'); 
+    region2 = Dom.getRegion('dialog_upload_menu'); 
+ var pos =[region1.right-region2.width,region1.bottom+2]
+    Dom.setXY('dialog_upload_menu', pos);
+dialog_upload_menu.show()
+}
+function close_upload_menu(){
+Dom.get('upload_menu_use_file').value='';
+
+dialog_upload_menu.hide();
+}
+
+function cancel_upload_menu_files(){
+Dom.get('upload_menu_use_file').value='';
+
+dialog_upload_menu_files.hide();
+}
+function upload_menu_file(file){
+Dom.get('upload_menu_use_file').value=file;
+upload_menu();
+}
+
+function upload_menu(e){
+    YAHOO.util.Connect.setForm('upload_menu_form', true,true);
+    var request='ar_upload_page_content.php?tipo=upload_menu';
+    Dom.setStyle('processing_upload_menu','display','');
+  Dom.setStyle(['upload_menu','cancel_upload_menu'],'display','none');
+   var uploadHandler = {
+      upload: function(o) {
+	  // alert(o.responseText)
+	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	   
+	    if(r.state==200){ 
+         window.location.reload()                
+	    }else if(r.state==201){
+	        dialog_upload_menu.hide();
+	        region1 = Dom.getRegion('show_upload_menu'); 
+            region2 = Dom.getRegion('dialog_upload_menu_files'); 
+            var pos =[region1.right-region2.width,region1.bottom+2]
+            Dom.setXY('dialog_upload_menu_files', pos);
+	        dialog_upload_menu_files.show();
+	        buttons='';
+	        for(var i=0; i<r.list.length; i++) {
+                buttons=buttons+"<button onClick='upload_menu_file(\""+r.list[i]+"\")' style='margin-top:0px;margin-bottom:10px' >"+r.list[i]+"</button> ";
+            }
+	        Dom.get('upload_menu_files').innerHTML=buttons
+        }
+	    else{
+	      Dom.setStyle('processing_upload_menu','display','none');
+        Dom.setStyle(['upload_menu','cancel_upload_menu'],'display','');
+	    
+		alert(r.msg);
+		}
+}
+}
     YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
 };
 
 function init(){
 init_search('site');
+
+
+
+
+  Event.addListener('cancel_upload_header_files', "click", cancel_upload_header_files);
+ dialog_upload_header_files = new YAHOO.widget.Dialog("dialog_upload_header_files", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_upload_header_files.render();
+    
+     Event.addListener('cancel_upload_footer_files', "click", cancel_upload_footer_files);
+ dialog_upload_footer_files = new YAHOO.widget.Dialog("dialog_upload_footer_files", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_upload_footer_files.render();
+ Event.addListener('cancel_upload_menu_files', "click", cancel_upload_menu_files);
+ dialog_upload_menu_files = new YAHOO.widget.Dialog("dialog_upload_menu_files", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_upload_menu_files.render();
+    
+     Event.addListener('cancel_upload_search_files', "click", cancel_upload_search_files);
+ dialog_upload_search_files = new YAHOO.widget.Dialog("dialog_upload_search_files", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_upload_search_files.render();
+    
+   
+  
+
+
+
+ Event.addListener('save_edit_site_menu', "click", save_edit_site_menu);
+ Event.addListener('reset_edit_site_menu', "click", reset_edit_site_menu);
+ Event.addListener('save_edit_site_search', "click", save_edit_site_search);
+ Event.addListener('reset_edit_site_search', "click", reset_edit_site_search);
+
 
  Event.addListener('show_upload_header', "click", show_dialog_upload_header);
 Event.addListener("cancel_upload_header", "click", close_upload_header);
@@ -484,11 +699,29 @@ Event.addListener("cancel_upload_footer", "click", close_upload_footer);
  dialog_upload_footer = new YAHOO.widget.Dialog("dialog_upload_footer", {visible : false,close:true,underlay: "none",draggable:false});
     dialog_upload_footer.render();
 
+
+
+ Event.addListener('show_upload_menu', "click", show_dialog_upload_menu);
+Event.addListener("cancel_upload_menu", "click", close_upload_menu);
+  Event.addListener('upload_menu', "click", upload_menu);
+ dialog_upload_menu = new YAHOO.widget.Dialog("dialog_upload_menu", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_upload_menu.render();
+    
+    
+ Event.addListener('show_upload_search', "click", show_dialog_upload_search);
+Event.addListener("cancel_upload_search", "click", close_upload_search);
+  Event.addListener('upload_search', "click", upload_search);
+ dialog_upload_search = new YAHOO.widget.Dialog("dialog_upload_search", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_upload_search.render();
+
+
+
+
  ids=['page_properties','page_html_head','page_header'];
  YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
 
 
-    var ids = ["general","layout","style","sections","pages","headers","footers"]; 
+    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
 	   
@@ -543,11 +776,48 @@ Event.addListener("cancel_upload_footer", "click", close_upload_footer);
     customer_Registration_Number_oAutoComp.minQueryLength = 0; 
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
     
-       var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_telephone);
+    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_telephone);
     site_slogan_oACDS.queryMatchContains = true;
     var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("telephone","telephone_Container", site_slogan_oACDS);
     customer_Registration_Number_oAutoComp.minQueryLength = 0; 
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+	
+	
+	var site_search_html_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_html);
+    site_search_html_oACDS.queryMatchContains = true;
+    var site_search_html_oAutoComp = new YAHOO.widget.AutoComplete("site_search_html","site_search_html_Container", site_search_html_oACDS);
+    site_search_html_oAutoComp.minQueryLength = 0; 
+    site_search_html_oAutoComp.queryDelay = 0.1;  
+	
+	var site_search_css_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_css);
+    site_search_css_oACDS.queryMatchContains = true;
+    var site_search_css_oAutoComp = new YAHOO.widget.AutoComplete("site_search_css","site_search_css_Container", site_search_css_oACDS);
+    site_search_css_oAutoComp.minQueryLength = 0; 
+    site_search_css_oAutoComp.queryDelay = 0.1;  
+
+	var site_search_javascript_oACDS = new YAHOO.util.FunctionDataSource(validate_site_search_javascript);
+    site_search_javascript_oACDS.queryMatchContains = true;
+    var site_search_javascript_oAutoComp = new YAHOO.widget.AutoComplete("site_search_javascript","site_search_javascript_Container", site_search_javascript_oACDS);
+    site_search_javascript_oAutoComp.minQueryLength = 0; 
+    site_search_javascript_oAutoComp.queryDelay = 0.1;  
+	
+	var site_menu_html_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_html);
+    site_menu_html_oACDS.queryMatchContains = true;
+    var site_menu_html_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_html","site_menu_html_Container", site_menu_html_oACDS);
+    site_menu_html_oAutoComp.minQueryLength = 0; 
+    site_menu_html_oAutoComp.queryDelay = 0.1;  
+	
+	var site_menu_css_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_css);
+    site_menu_css_oACDS.queryMatchContains = true;
+    var site_menu_css_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_css","site_menu_css_Container", site_menu_css_oACDS);
+    site_menu_css_oAutoComp.minQueryLength = 0; 
+    site_menu_css_oAutoComp.queryDelay = 0.1;  
+
+	var site_menu_javascript_oACDS = new YAHOO.util.FunctionDataSource(validate_site_menu_javascript);
+    site_menu_javascript_oACDS.queryMatchContains = true;
+    var site_menu_javascript_oAutoComp = new YAHOO.widget.AutoComplete("site_menu_javascript","site_menu_javascript_Container", site_menu_javascript_oACDS);
+    site_menu_javascript_oAutoComp.minQueryLength = 0; 
+    site_menu_javascript_oAutoComp.queryDelay = 0.1;  	
 	
 	
 	YAHOO.util.Event.addListener('save_edit_site', "click", save_edit_site);
@@ -587,13 +857,35 @@ Event.addListener("cancel_upload_footer", "click", close_upload_footer);
 }
 
 function save_edit_site(){
-
     save_edit_general_bulk('site');
 }
 
 function reset_edit_site(){
     reset_edit_general('site')
 }
+
+
+function save_edit_site_menu(){
+    save_edit_general_bulk('site_menu');
+}
+
+function reset_edit_site_menu(){
+    reset_edit_general('site_menu')
+     Dom.setStyle('show_upload_menu','display','')
+}
+
+function save_edit_site_search(){
+    save_edit_general_bulk('site_search');
+}
+
+function reset_edit_site_search(){
+    reset_edit_general('site_search');
+     Dom.setStyle('show_upload_search','display','')
+
+    
+}
+
+
 
 function validate_site_ftp(query){
   original_query= query;
@@ -654,6 +946,54 @@ function validate_site_address(query){
 function validate_site_telephone(query){
  validate_general('site','telephone',unescape(query));
 }
+
+function validate_site_search_html(query){
+ validate_general('site_search','html',unescape(query));
+ 
+ if(Dom.getStyle('save_edit_site_search', 'visibility')=='hidden')
+ Dom.setStyle('show_upload_search','display','')
+ else{
+  Dom.setStyle('show_upload_search','display','none')
+ }
+}
+function validate_site_search_css(query){
+ validate_general('site_search','css',unescape(query));
+ if(Dom.getStyle('save_edit_site_search', 'visibility')=='hidden')
+ Dom.setStyle('show_upload_search','display','')
+ else
+  Dom.setStyle('show_upload_search','display','none')
+}
+function validate_site_search_javascript(query){
+ validate_general('site_search','javascript',unescape(query));
+ if(Dom.getStyle('save_edit_site_search', 'visibility')=='hidden')
+ Dom.setStyle('show_upload_search','display','')
+ else
+  Dom.setStyle('show_upload_search','display','none')
+}
+
+function validate_site_menu_html(query){
+ validate_general('site_menu','html',unescape(query));
+  if(Dom.getStyle('save_edit_site_menu', 'visibility')=='hidden')
+ Dom.setStyle('show_upload_menu','display','')
+ else
+  Dom.setStyle('show_upload_menu','display','none')
+}
+function validate_site_menu_css(query){
+ validate_general('site_menu','css',unescape(query));
+   if(Dom.getStyle('save_edit_site_menu', 'visibility')=='hidden')
+ Dom.setStyle('show_upload_menu','display','')
+ else
+  Dom.setStyle('show_upload_menu','display','none')
+}
+function validate_site_menu_javascript(query){
+ validate_general('site_menu','javascript',unescape(query));
+   if(Dom.getStyle('save_edit_site_menu', 'visibility')=='hidden')
+ Dom.setStyle('show_upload_menu','display','')
+ else
+  Dom.setStyle('show_upload_menu','display','none')
+}
+
+
 
 function validate_site_slogan(query){
   original_query= query;

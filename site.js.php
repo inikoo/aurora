@@ -148,6 +148,8 @@ ids=['elements_other','elements_department_catalogue','elements_family_catalogue
 
 
 
+
+
   YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
  

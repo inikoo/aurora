@@ -34,6 +34,11 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 
 $customer=new customer($customer_id);
+if(!$customer->id){
+header('Location: customers.php?msg=not_found');
+exit;
+}
+
 //print $customer->get('Customer Type');
 $smarty->assign('customer_type',$customer->get('Customer Type'));
 //print_r($customer);

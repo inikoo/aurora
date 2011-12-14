@@ -9,8 +9,18 @@ include_once('class.Page.php');
 $page_key=$_REQUEST['id'];
 $page=new Page($page_key);
 
-//include_once('header.php');
+$site=new Site($page->data['Page Site Key']);
+$store=new Store($page->data['Page Store Key']);
 
+
+
+
+
+$smarty->assign('logged',$logged_in);
+$page->site=$site;
+$page->user=$user;
+$page->logged=$logged_in;
+$page->currency=$store->data['Store Currency Code'];
 
 $data=array('type'=>'parent', 'width'=>1000, 'customer_profile'=>1);
 
@@ -87,32 +97,16 @@ $js_files=array(
           );
 
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    if ($row['External File Type']=='CSS')
-        $css_files[]='external_file.php?id='.$row['external_file_key'];
-    else
-        $js_files[]='external_file.php?id='.$row['external_file_key'];
 
-}
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    if ($row['External File Type']=='CSS')
-        $css_files[]='external_file.php?id='.$row['external_file_key'];
-    else
-        $js_files[]='external_file.php?id='.$row['external_file_key'];
-
-}
 
 $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
 $res=mysql_query($sql);
+//print $sql;
 while ($row=mysql_fetch_assoc($res)) {
     if ($row['External File Type']=='CSS')
-        $css_files[]='external_file.php?id='.$row['external_file_key'];
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
     else
-        $js_files[]='external_file.php?id='.$row['external_file_key'];
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
 
@@ -120,14 +114,34 @@ $sql=sprintf("select `External File Type`,`Page Store External File Key` as exte
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     if ($row['External File Type']=='CSS')
-        $css_files[]='external_file.php?id='.$row['external_file_key'];
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
     else
-        $js_files[]='external_file.php?id='.$row['external_file_key'];
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    if ($row['External File Type']=='CSS')
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+    else
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }
 
 
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    if ($row['External File Type']=='CSS')
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+    else
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
+}
+
+  
 
 
 

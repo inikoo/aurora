@@ -10,9 +10,9 @@
 <div class="top_page_menu">
     <div class="buttons" style="float:right">
         {if $modify}
-                       <button  onclick="window.location='edit_warehouse.php?id={$warehouse->id}'" ><img src="art/icons/add.png" alt=""> {t}Add Supplier{/t}</button>
+                       <button  onclick="window.location='new_supplier.php'" ><img src="art/icons/add.png" alt=""> {t}Add Supplier{/t}</button>
 
-        <button  onclick="window.location='edit_warehouse.php?id={$warehouse->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Suppliers{/t}</button>
+        <button  onclick="window.location='edit_suppliers.php'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Suppliers{/t}</button>
 
        {/if}
     </div>

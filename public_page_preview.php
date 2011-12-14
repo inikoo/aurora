@@ -101,7 +101,7 @@ while ($row=mysql_fetch_assoc($res)) {
 */
        
  
-          
+    
           
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

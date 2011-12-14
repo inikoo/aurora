@@ -5284,8 +5284,29 @@ ALTER TABLE `Page Product List Dimension` CHANGE `List Product Description` `Lis
 ALTER TABLE `Page Product List Dimension` DROP `Range Scope`;
 ALTER TABLE `Page Store Dimension` ADD FULLTEXT (`Page Store Title`);
 ALTER TABLE `Page Store Dimension` ADD FULLTEXT (`Page Store Resume`);
-
 ALTER TABLE `Dashboard User Bridge` ADD `Dashboard Height` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Dashboard URL` ;
+ALTER TABLE `Site Dimension` ADD `Site Menu HTML` LONGTEXT NOT NULL ,ADD `Site Menu CSS` LONGTEXT NOT NULL ,ADD `Site Menu Javascript` LONGTEXT NOT NULL ,ADD `Site Search HTML` LONGTEXT NOT NULL ,ADD `Site Search CSS` LONGTEXT NOT NULL ,ADD `Site Search Javascript` LONGTEXT NOT NULL ;
+ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part', 'Site', 'Page' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Category Dimension` ADD `Category Warehouse Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Store Key` ,ADD INDEX ( `Category Warehouse Key` ) ;
+ALTER TABLE `Product Dimension` ADD `Product Main Image Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Main Image` ;
+ALTER TABLE `Product Family Dimension` ADD `Product Family Main Image Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Family Main Image` ;
+ALTER TABLE `Product Department Dimension` ADD `Product Department Main Image Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Department Main Image` ;
+ALTER TABLE `Part Dimension` ADD `Part Main Image Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Main Image` ;
+
+//run script Calc_Product_sales to add Product Main Image Key
+
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Store Email Template Header', 'Store Email Postcard', 'Email Image', 'Page', 'Page Header', 'Page Footer', 'Site', 'Page Header Preview', 'Page Footer Preview', 'Page Preview', 'Site Menu', 'Site Search' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Site Dimension` ADD `Site Locale` ENUM( 'en_GB', 'de_DE', 'fr_FR', 'es_ES', 'pl_PL', 'it_IT' ) NOT NULL DEFAULT 'en_GB' AFTER `Site URL` ;
+ALTER TABLE `MasterKey Dimension` CHANGE `Key` `Key` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Page Dimension` CHANGE `Page Thumbnail Image Key` `Page Snapshot Image Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Page Dimension` DROP `Page Thumbnail Image Key` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Preview Snapshot Image Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `Page Store Dimension` ADD `Page Header Height` MEDIUMINT UNSIGNED NOT NULL ,ADD `Page Content Height` MEDIUMINT UNSIGNED NOT NULL ,ADD `Page Footer Height` MEDIUMINT UNSIGNED NOT NULL ;
+ALTER TABLE `Page Store Dimension` CHANGE `Page Header Height` `Page Header Height` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '150',CHANGE `Page Content Height` `Page Content Height` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '518',CHANGE `Page Footer Height` `Page Footer Height` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '100';
+ALTER TABLE `Site Dimension` ADD `Site Code` VARCHAR( 8 ) NOT NULL AFTER `Site Store Key` ;
+
+ALTER TABLE `Page Store Dimension` DROP `Page Product Metadata`,DROP `Page List Metadata`;
+ALTER TABLE `Page Store Dimension` ADD `Number See Also Links` TINYINT( 3 ) UNSIGNED NOT NULL AFTER `Page Store Last Structural Change Date` ;
 
 */
 
