@@ -2174,13 +2174,14 @@ class Page extends DB_Table {
 
         }
 
-
+  print "$command  $retval";
+  exit;
 
         ob_start();
         system($command,$retval);
         ob_get_clean();
         $this->snapshots_taken++;
-     print "$command  $retval";
+   
 
         $image_data=array('file'=>"app_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_header'.$this->id);
         $image=new Image('find',$image_data,'create');
