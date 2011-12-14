@@ -219,7 +219,7 @@ class Auth {
             $sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   "
                          ,$row['MasterKey Key']
                         );
-            mysql_query($sql);
+           // mysql_query($sql);
             // print $sql;
             // exit;
 
