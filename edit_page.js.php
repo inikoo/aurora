@@ -718,7 +718,7 @@ function upload_page_content(){
     var request='ar_upload_page_content.php?tipo=upload_page_content';
    var uploadHandler = {
       upload: function(o) {
-	// alert(o.responseText)
+ alert(o.responseText)
 	
 	var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
