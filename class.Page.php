@@ -2134,9 +2134,9 @@ class Page extends DB_Table {
 
 
 
-        $r = unpack('v*', fread(fopen('/dev/random', 'r'),256));;
-        $pwd=uniqid('',true).sha1(mt_rand()).'.'.join('.',$r);
-exit("xxa");
+        $r = join('',unpack('v*', fread(fopen('/dev/urandom', 'r'),256)));
+        $pwd=uniqid('',true).sha1(mt_rand()).'.'.$r;
+
         $sql=sprintf("insert into `MasterKey Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)values (%s,%s,%s,%s) "
                      ,1
                      ,prepare_mysql($pwd)
@@ -2155,7 +2155,7 @@ exit("xxa");
 
         $height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 //ar_edit_sites.php?tipo=update_page_snapshot&id=1951;
-exit($height);
+
 
         ob_start();
         system("uname");
@@ -2180,7 +2180,7 @@ exit($height);
         }
 
   print "$command  $retval";
-  exit;
+
 
         ob_start();
         system($command,$retval);
