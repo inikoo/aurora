@@ -2198,7 +2198,7 @@ class Page extends DB_Table {
         $new_image_key=$image->id;
           print "x3\n";
         print "$new_image_key $old_image_key\n";
-          print "x4\n";
+          print $image->msg." x4\n";
         if ($new_image_key!=$old_image_key and $new_image_key) {
             $this->data['Page Preview Snapshot Image Key']=$new_image_key;
             $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d and `Image Key`=%d ",
