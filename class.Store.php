@@ -296,13 +296,13 @@ class Store extends DB_Table {
             return percentage($this->data['Store Active Contacts'],$this->data['Store Contacts']);
         case('Percentage Total With Orders'):
             return percentage($this->data['Store Contacts With Orders'],$this->data['Store Contacts']);
-        
-        
-            
+
+
+
         }
-        
-        
-        
+
+
+
         if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
 
             $amount='Store '.$key;
@@ -1362,12 +1362,40 @@ class Store extends DB_Table {
     function get_number_sites() {
         $number_sites=0;
         $sql=sprintf("select count(*) as number_sites from `Site Dimension` where `Site Store Key`=%d ",$this->id);
+        
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
             $number_sites=$row['number_sites'];
         }
         return $number_sites;
     }
+
+
+
+
+
+
+    function get_site_key() {
+
+        $site_key=0;
+
+
+        $sql=sprintf("select  `Site Key` from `Site Dimension` where `Site Store Key`=%d ",$this->id);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+
+            $site_key=$row['Site Key'];
+
+        }
+
+
+        return $site_key;
+
+           }
+
+
+
+
 
 
     function update_number_sites() {
@@ -1395,7 +1423,7 @@ class Store extends DB_Table {
     }
 
 
-  
+
     function get_email_credential_key($type) {
 
         $sql=sprintf("select C.`Email Credentials Key` from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",

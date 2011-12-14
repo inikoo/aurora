@@ -184,11 +184,11 @@
  <div id="photo_container" style="margin-top:0px;float:left">
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;text-align:center;margin:0 10px 0 0px">
 	     
-	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:160px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
+	      <div id="imagediv"   style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
 		        <img 
-		           src="{if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"   
+		           src="{$family->get('Product Family Main Image')}"   
 		            style="vertical-align:middle;display:block;" 
-		            width="{$img_width}px" 
+		             
 		            valign="center" 
 		            border=1  
 		            id="image"   
@@ -201,15 +201,15 @@
 	   
 	   
 
-	    {if $num_images>1}
+	   
 	    <div style="width:160px;margin:auto;padding-top:5px"  >
-	      {foreach from=$images item=image  name=foo}
+	      {foreach from=$family->get_images_slidesshow() item=image  name=foo}
 	      {if $image.is_principal==0}
 	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}"  title="" alt="" />
 	      {/if}
 	      {/foreach}
 	    </div>
-	    {/if}
+	  
 	  
 	    
 	  </div>

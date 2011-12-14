@@ -3,8 +3,6 @@
 include_once('common.php');
 
 
-
-
 include_once('class.Customer.php');
 include_once('class.Store.php');
 include_once('class.Page.php');
@@ -40,6 +38,15 @@ $page->user=$user;
 $page->logged=$logged;
 $page->currency=$store->data['Store Currency Code'];
 
+
+if(isset($_REQUEST['header']) and !$_REQUEST['header']){
+$show_header=false;
+}else{
+$show_header=true;
+}
+$smarty->assign('show_header',$show_header);
+
+
 if (isset($_REQUEST['referral'])   ) {
     $smarty->assign('referral',urldecode($_REQUEST['referral']));
 }
@@ -62,27 +69,12 @@ $js_files=array(
 
           );
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    if ($row['External File Type']=='CSS')
-        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
-    else
-        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
-}
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    if ($row['External File Type']=='CSS')
-        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
-    else
-        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
-}
 
 $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
 $res=mysql_query($sql);
+//print $sql;
 while ($row=mysql_fetch_assoc($res)) {
     if ($row['External File Type']=='CSS')
         $css_files[]='public_external_file.php?id='.$row['external_file_key'];
@@ -101,8 +93,28 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    if ($row['External File Type']=='CSS')
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+    else
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
 
 
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    if ($row['External File Type']=='CSS')
+        $css_files[]='public_external_file.php?id='.$row['external_file_key'];
+    else
+        $js_files[]='public_external_file.php?id='.$row['external_file_key'];
+
+}
+
+  
 
 
 $smarty->assign('css_files',$css_files);
@@ -115,7 +127,59 @@ $smarty->assign('title',_('Preview').' '.$page->data['Page Title']);
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
-
 $smarty->assign('template_string',$page->data['Page Store Source']);
+
+
+$order=$_SESSION['state']['site']['pages']['order'];
+if ($order=='code') {
+    $order='`Page Code`';
+    $order_label=_('Code');
+} else if ($order=='url') {
+    $order='`Page URL`';
+    $order_label=_('URL');
+} else if ($order=='title') {
+    $order='`Page Store Title`';
+    $order_label=_('Title');
+} else {
+    $order='`Page Code`';
+    $order_label=_('Code');
+}
+
+$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select `Page Key` as id , `Page Store Title` as name from `Page Store Dimension`   where  `Page Site Key`=%d  and %s < %s  order by %s desc  limit 1",
+             $site->id,
+             $order,
+             prepare_mysql($page->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $prev['link']='page_preview.php?id='.$row['id'];
+    $prev['title']=$row['name'];
+}
+mysql_free_result($result);
+$smarty->assign('prev',$prev);
+$sql=sprintf(" select `Page Key` as id , `Page Store Title` as name from `Page Store Dimension`    where  `Page Site Key`=%d  and  %s>%s  order by %s   ",
+             $site->id,
+             $order,
+             prepare_mysql($page->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $next['link']='page_preview.php?id='.$row['id'];
+    $next['title']=$row['name'];
+}
+mysql_free_result($result);
+$smarty->assign('prev',$prev);
+$smarty->assign('next',$next);
+
+$smarty->assign('parent_url','site.php?id='.$site->id);
+$parent_title=$site->data['Site Name'].' '._('Pages').' ('.$order_label.')';
+$smarty->assign('parent_title',$parent_title);
+
+
 $smarty->display('page_preview.tpl');
 ?>

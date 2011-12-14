@@ -32,6 +32,10 @@ require_once '../../conf/conf.php';
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
  $product=new Product('pid',$row['Product ID']);
+ 
+ $product->update_main_image();
+ continue;
+ 
 //$product=new Product('pid',37949);
 $product->update_sales_data();
  // $product->update_full_search();

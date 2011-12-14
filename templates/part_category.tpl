@@ -1,65 +1,168 @@
 {include file='header.tpl'}
-<div id="bd" >
- <span class="nav2 onleft"><a href="part_categories.php?id=0">{t}Parts Categories{/t}</a></span>
-{include file='assets_navigation.tpl'}
+<div id="bd"  style="padding:0px">
+<div style="padding:0 20px">
+{include file='locations_navigation.tpl'}
 
- 
+ <input type="hidden" id="category_key" value="{$category->id}" />
  <div class="branch"> 
- <span ><a  href="part_categories.php?id=0">{t}Part Categories{/t}</a> &rarr; {$category->get_smarty_tree('part_categories.php')}
- </div> 
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php">{t}Inventory{/t}</a>  &rarr;  {$category->get_smarty_tree('part_categories.php')}</span>
+</div>
+ <div class="top_page_menu">
+    <div class="buttons" style="float:left">
+ {if isset($parent_category)}
+         <button  onclick="window.location='part_categories.php?warehouse_id={$warehouse->id}&id={$parent_category->id}'" ><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Name')}</button>
+ {/if}
+         <button  onclick="window.location='part_categories.php?warehouse_id={$warehouse->id}&id=0'" ><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button>
+
+ </div>
+    <div class="buttons" style="float:right">
+        <button  onclick="window.location='edit_part_category.php?id={$category->id}'" ><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button>
+        <button id="new_category" ><img src="art/icons/add.png" alt=""> {t}Add Subcategory{/t}</button>
+    </div>
+    <div style="clear:both"></div>
+</div>
+
   
 <div style="clear:left;">
-  <h1>{t}Category{/t}: {$category->get('Category Name')}</h1>
+  <h1>{t}Category{/t}: {$category->get('Category Label')}</h1>
+</div> 
+
 </div>
 
 
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+    <li> <span class="item {if $block_view=='subcategories'}selected{/if}"  id="subcategories">  <span> {t}Subcategories{/t}</span></span></li>
+    <li > <span class="item {if $block_view=='subjects'}selected{/if}"  id="subjects">  <span> {t}Parts{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='subcategories_charts'}selected{/if}"  id="subcategories_charts">  <span> {t}Charts{/t}</span></span></li>
+        <li> <span class="item {if $block_view=='history'}selected{/if}"  id="history">  <span> {t}History{/t}</span></span></li>
 
-<div class="data_table" style="clear:both">
+ </ul>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div class="data_table" style="clear:both;margin-bottom:20px">
     <span class="clean_table_title">Subcategories</span>
 
- <span   style="float:right;margin-left:20px" class="state_details"  id="change_stores_mode" >{$display_stores_mode_label}</span>
- <span   style="float:right;margin-left:20px" class="state_details"  id="change_stores" >{$display_stores_label}</span>
- <span   style="float:right;margin-left:20px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
+    {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name0 filter_value=$filter_value0  }
+
+       <div  id="table1"   class="data_table_container dtable btable "> </div>		
+</div>
+</div>
+<div id="block_subjects" style="{if $block_view!='subjects'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div id="children_table" class="data_table" >
+  
+<span class="clean_table_title">{t}Parts in this category{/t} <img class="export_data_link" id="export_csv2"  label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+<div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="transaction_chooser" >
+                               <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NotKeeping}selected{/if} label_part_NotKeeping"  id="elements_NotKeeping" table_type="NotKeeping"   >{t}NotKeeping{/t} (<span id="elements_orders_number">{$elements_number.NotKeeping}</span>)</span>
+                       <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_part_Discontinued"  id="elements_Discontinued" table_type="Discontinued"   >{t}Discontinued{/t} (<span id="elements_orders_number">{$elements_number.Discontinued}</span>)</span>
+                       <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.LastStock}selected{/if} label_part_LastStock"  id="elements_LastStock" table_type="LastStock"   >{t}LastStock{/t} (<span id="elements_orders_number">{$elements_number.LastStock}</span>)</span>
+            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Keeping}selected{/if} label_part_Keeping"  id="elements_Keeping" table_type="Keeping"   >{t}Keeping{/t} (<span id="elements_orders_number">{$elements_number.Keeping}</span>)</span>
+
+        </div>
+     </div>
+    <div style="clear:both;margin:0 0px;padding:0 0px ;border-bottom:1px solid #999"></div>
+    <div class="clusters">
+    <div class="buttons small left cluster" >
+  <button  {if $parts_view=='general'}class="selected"{/if} id="parts_general"  name="general" >{t}Description{/t}</button>
+	  <button {if $parts_view=='stock'}class="selected"{/if}  id="parts_stock" name="stock"  >{t}Stock{/t}</button>
+	  <button  {if $parts_view=='sales'}class="selected"{/if}  id="parts_sales"  name="sales" >{t}Sales{/t}</button>
+	  	  <button  {if $parts_view=='forecast'}class="selected"{/if}  id="parts_forecast"name="forecast"   >{t}Forecast{/t}</button>
+ </div>
  
-    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+  <div class="buttons small left cluster"  id="period_options" style="{if $parts_view=='general' };display:none{/if}"   >
+	
 
-       <div  id="table0"   class="data_table_container dtable btable "> </div>		
+
+	  <button  {if $parts_period=='all'}class="selected"{/if} period="all"  id="parts_period_all" >{t}All{/t}</button>
+	  <button  {if $parts_period=='three_year'}class="selected"{/if}"  period="three_year"  id="parts_period_three_year"  >{t}3Y{/t}</button>
+	  <button  {if $parts_period=='year'}class="selected"{/if}  period="year"  id="parts_period_year"  >{t}1Yr{/t}</button>
+	  <button  {if $parts_period=='yeartoday'}class="selected"{/if}"  period="yeartoday"  id="parts_period_yeartoday"  >{t}YTD{/t}</button>	
+	  <button  {if $parts_period=='six_month'}class="selected"{/if}"  period="six_month"  id="parts_period_six_month"  >{t}6M{/t}</button>
+	  <button  {if $parts_period=='quarter'}class="selected"{/if}  period="quarter"  id="parts_period_quarter"  >{t}1Qtr{/t}</button>
+	  <button  {if $parts_period=='month'}class="selected"{/if}  period="month"  id="parts_period_month"  >{t}1M{/t}</button>
+	  <button  {if $parts_period=='ten_day'}selected{/if}"  period="ten_day"  id="parts_period_ten_day"  >{t}10D{/t}</button>
+	  <button  {if $parts_period=='week'}class="selected"{/if} period="week"  id="parts_period_week"  >{t}1W{/t}</button>
+  <button  {if $parts_period=='yeartoday'}class="selected"{/if}"  period="yeartoday"  id="parts_period_yeartoday"  >{t}YTD{/t}</button>	
+	  <button  {if $parts_period=='monthtoday'}class="selected"{/if}"  period="monthtoday"  id="parts_period_monthtoday"  >{t}MTD{/t}</button>	
+	  <button  {if $parts_period=='weektoday'}class="selected"{/if}"  period="weektoday"  id="parts_period_weektoday"  >{t}WTD{/t}</button>	
+	  <button  {if $parts_period=='today'}class="selected"{/if}"  period="today"  id="parts_period_today"  >{t}Today{/t}</button>	
+
+
+	
+      </div>
+       <div  class="buttons small left cluster" id="avg_options"  style="{if $parts_view!='sales' };display:none{/if}" >
+
+	  <button {if $parts_avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</button>
+	  <button {if $parts_avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</button>
+	  <button {if $parts_avg=='week'}class="selected"{/if}  avg="week"  id="avg_week"  >{t}W AVG{/t}</button>
+	  <button {if $parts_avg=='month_eff'}class="selected"{/if} style="display:none" avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</button>
+	  <button {if $parts_avg=='week_eff'}class="selected"{/if} style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</button>
+	
+       </div>
+ 
+ 
+<div style="clear:both"></div>
+ </div>
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
+    <div  id="table0"   class="data_table_container dtable btable " style="font-size:90%"> </div>
+
+
+
+ </div>
 </div>
+<div id="block_subcategories_charts" style="{if $block_view!='subcategories_charts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+ 
+ 
+ 
+	<div style="float:left" id="plot_referral_1">
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
 
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "350", "300", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category&category_key={$category->id}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS"); 
+			
+		// you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
 
-<div class="data_table" style="clear:both;margin-top:20px">
-    <span class="clean_table_title">{t}Products{/t}</span>
- <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
- <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
-    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
-	</tr>
-      </table>
-    <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
-	<tr>
+		so.write("plot_referral_1");
+		// ]]>
+	</script>
 
-	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
-	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
-	  <td  {if $period=='quarter'}class="selected"{/if}  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
-	  <td {if $period=='month'}class="selected"{/if}  period="month"  id="period_month"  >{t}1M{/t}</td>
-	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
-	</tr>
-      </table>
-    <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $view!='sales'};display:none{/if}"  class="options_mini" >
-	<tr>
-	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
-	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
-	  <td {if $avg=='week'}class="selected"{/if}  avg="week"  id="avg_week"  >{t}W AVG{/t}</td>
+<div style="float:left" id="plot_referral_2">
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
 
-	</tr>
-      </table>
-       
-        {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "550", "8", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category_subjects&category_key={$category->id}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");
+		so.addVariable("loading_settings", "LOADING SETTINGS");  // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
 
-       <div  id="table1"   class="data_table_container dtable btable with_total"> </div>		
+		so.write("plot_referral_2");
+		// ]]>
+	</script>
+
 </div>
+<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+ 
+
+  <span class="clean_table_title" >{t}History{/t}</span>
+     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+  <div  id="table2"   class="data_table_container dtable btable "> </div>
+
+ </div>
+
+
   
 </div> 
 {include file='footer.tpl'}

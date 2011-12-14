@@ -673,3 +673,5 @@ div.todo {;padding:20px}
 }
 
 .top_page_menu{clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px}
+img.previous{margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px}
+img.next{float:right;height:22px;cursor:pointer;position:relative;top:2px};

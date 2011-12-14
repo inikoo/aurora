@@ -260,33 +260,36 @@ function list_pages() {
 
     $group='';
 
-if($parent=='site'){
+    if ($parent=='site') {
 
-    $_elements='';
-    foreach($elements as $_key=>$_value) {
-        if ($_value) {
-            if ($_key=='Other') {
-                $_key="'Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'";
-                $_elements.=','.$_key;
+        $_elements='';
+        foreach($elements as $_key=>$_value) {
+            if ($_value) {
+                if ($_key=='Other') {
+                    $_key="'Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'";
+                    $_elements.=','.$_key;
 
-            } elseif($_key=='ProductDescription') {
-                $_elements.=",'Product Description'";
-            } elseif($_key=='FamilyCatalogue') {
-                $_elements.=",'Family Catalogue'";
-            } elseif($_key=='DepartmentCatalogue') {
-                $_elements.=",'Department Catalogue'";
+                }
+                elseif($_key=='ProductDescription') {
+                    $_elements.=",'Product Description'";
+                }
+                elseif($_key=='FamilyCatalogue') {
+                    $_elements.=",'Family Catalogue'";
+                }
+                elseif($_key=='DepartmentCatalogue') {
+                    $_elements.=",'Department Catalogue'";
+                }
             }
         }
-    }
-    $_elements=preg_replace('/^\,/','',$_elements);
-    if ($_elements=='') {
-        $where.=' and false' ;
-    } else {    
-        $where.=' and `Page Store Section` in ('.$_elements.')' ;
-    }
+        $_elements=preg_replace('/^\,/','',$_elements);
+        if ($_elements=='') {
+            $where.=' and false' ;
+        } else {
+            $where.=' and `Page Store Section` in ('.$_elements.')' ;
+        }
 
 
-}
+    }
 
 
 
@@ -349,224 +352,12 @@ if($parent=='site'){
 
     if ($order=='code')
         $order='`Page Code`';
-    elseif($order=='url')
-    $order='`Page URL`';
-    elseif($order=='title')
-    $order='`Page Store Title`';
-    elseif($order=='location')
-    $order='`Supplier Main Location`';
-    elseif($order=='email')
-    $order='`Supplier Main XHTML Email`';
-    elseif($order=='sales') {
-
-        switch ($period) {
-        case 'three_year':
-            $order='`Supplier 3 Year Acc Parts Sold Amount`';
-            break;
-        case 'year':
-            $order='`Supplier 1 Year Acc Parts Sold Amount`';
-            break;
-        case 'quarter':
-            $order='`Supplier 1 Quarter Acc Parts Sold Amount`';
-            break;
-
-        case 'six_month':
-            $order='`Supplier 6 Month Acc Parts Sold Amount`';
-
-            break;
-        case 'month':
-            $order='`Supplier 1 Month Acc Parts Sold Amount`';
-            break;
-        case 'ten_day':
-            $order='`Supplier 10 Day Acc Parts Sold Amount`';
-            break;
-        case 'week':
-            $order='`Supplier 1 Week Acc Parts Sold Amount`';
-            break;
-        case 'yeartoday':
-            $order='`Supplier Year To Day Acc Parts Sold Amount`';
-            break;
-        case 'monthtoday':
-            $order='`Supplier Month To Day Acc Parts Sold Amount`';
-            break;
-        case 'weektoday':
-            $order='`Supplier Week To Day Acc Parts Sold Amount`';
-            break;
-        default:
-            $order='`Supplier Total Acc Parts Sold Amount`';
-            break;
-        }
-
-
-
-
-    }
-    elseif($order=='pending_pos') {
-        $order='`Supplier Open Purchase Orders`';
-
-    }
-    elseif($order=='margin') {
-
-        switch ($period) {
-        case 'three_year':
-            $order='`Supplier 3 Year Acc Parts Margin`';
-            break;
-        case 'year':
-            $order='`Supplier 1 Year Acc Parts Margin`';
-            break;
-        case 'quarter':
-            $order='`Supplier 1 Quarter Acc Parts Margin`';
-            break;
-
-        case 'six_month':
-            $order='`Supplier 6 Month Acc Parts Margin`';
-
-            break;
-        case 'month':
-            $order='`Supplier 1 Month Acc Parts Margin`';
-            break;
-        case 'ten_day':
-            $order='`Supplier 10 Day Acc Parts Margin`';
-            break;
-        case 'week':
-            $order='`Supplier 1 Week Acc Parts Margin`';
-            break;
-        case 'yeartoday':
-            $order='`Supplier Year To Day Acc Parts Margin`';
-            break;
-        case 'monthtoday':
-            $order='`Supplier Month To Day Acc Parts Margin`';
-            break;
-        case 'weektoday':
-            $order='`Supplier Week To Day Acc Parts Margin`';
-            break;
-        default:
-            $order='`Supplier Total Acc Parts Margin`';
-            break;
-        }
-    }
-    elseif($order=='cost') {
-
-        switch ($period) {
-        case 'three_year':
-            $order='`Supplier 3 Year Acc Parts Cost`';
-            break;
-        case 'year':
-            $order='`Supplier 1 Year Acc Parts Cost`';
-            break;
-        case 'quarter':
-            $order='`Supplier 1 Quarter Acc Parts Cost`';
-            break;
-
-        case 'six_month':
-            $order='`Supplier 6 Month Acc Parts Cost`';
-
-            break;
-        case 'month':
-            $order='`Supplier 1 Month Acc Parts Cost`';
-            break;
-        case 'ten_day':
-            $order='`Supplier 10 Day Acc Parts Cost`';
-            break;
-        case 'week':
-            $order='`Supplier 1 Week Acc Parts Cost`';
-            break;
-        case 'yeartoday':
-            $order='`Supplier Year To Day Acc Parts Cost`';
-            break;
-        case 'monthtoday':
-            $order='`Supplier Month To Day Acc Parts Cost`';
-            break;
-        case 'weektoday':
-            $order='`Supplier Week To Day Acc Parts Cost`';
-            break;
-        default:
-            $order='`Supplier Total Acc Parts Cost`';
-            break;
-        }
-    }
-    elseif($order=='profit_after_storing') {
-
-        switch ($period) {
-        case 'three_year':
-            $order='`Supplier 3 Year Acc Parts Profit After Storing`';
-            break;
-        case 'year':
-            $order='`Supplier 1 Year Acc Parts Profit After Storing`';
-            break;
-        case 'quarter':
-            $order='`Supplier 1 Quarter Acc Parts Profit After Storing`';
-            break;
-
-        case 'six_month':
-            $order='`Supplier 6 Month Acc Parts Profit After Storing`';
-
-            break;
-        case 'month':
-            $order='`Supplier 1 Month Acc Parts Profit After Storing`';
-            break;
-        case 'ten_day':
-            $order='`Supplier 10 Day Acc Parts Profit After Storing`';
-            break;
-        case 'week':
-            $order='`Supplier 1 Week Acc Parts Profit After Storing`';
-            break;
-        case 'yeartoday':
-            $order='`Supplier Year To Day Acc Parts Profit After Storing`';
-            break;
-        case 'monthtoday':
-            $order='`Supplier Month To Day Acc Parts Profit After Storing`';
-            break;
-        case 'weektoday':
-            $order='`Supplier Week To Day Acc Parts Profit After Storing`';
-            break;
-        default:
-            $order='`Supplier Total Acc Parts Profit After Storing`';
-            break;
-        }
-    }
-    elseif($order=='profit') {
-
-        switch ($period) {
-        case 'three_year':
-            $order='`Supplier 3 Year Acc Parts Profit`';
-            break;
-        case 'year':
-            $order='`Supplier 1 Year Acc Parts Profit`';
-            break;
-        case 'quarter':
-            $order='`Supplier 1 Quarter Acc Parts Profit`';
-            break;
-
-        case 'six_month':
-            $order='`Supplier 6 Month Acc Parts Profit`';
-
-            break;
-        case 'month':
-            $order='`Supplier 1 Month Acc Parts Profit`';
-            break;
-        case 'ten_day':
-            $order='`Supplier 10 Day Acc Parts Profit`';
-            break;
-        case 'week':
-            $order='`Supplier 1 Week Acc Parts Profit`';
-            break;
-        case 'yeartoday':
-            $order='`Supplier Year To Day Acc Parts Profit`';
-            break;
-        case 'monthtoday':
-            $order='`Supplier Month To Day Acc Parts Profit`';
-            break;
-        case 'weektoday':
-            $order='`Supplier Week To Day Acc Parts Profit`';
-            break;
-        default:
-            $order='`Supplier Total Acc Parts Profit`';
-            break;
-        }
-    }
-    else{
-       $order='`Page Code`';
+    else if ($order=='url')
+        $order='`Page URL`';
+    else if ($order=='title')
+        $order='`Page Store Title`';
+    else {
+        $order='`Page Code`';
     }
     //print $order;
 //    elseif($order='used_in')
@@ -579,7 +370,7 @@ if($parent=='site'){
 
     $result=mysql_query($sql);
     $data=array();
-   // print $sql;
+    // print $sql;
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
         $code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";

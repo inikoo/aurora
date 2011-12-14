@@ -1476,7 +1476,7 @@ function formater_available  (el, oRecord, oColumn, oData) {
 			renderLoopSize: 50,
 			generateRequest: myRequestBuilder,
 			paginator: new YAHOO.widget.Paginator({
-				rowsPerPage: <?php echo $_SESSION['state']['part']['products']['nr'] ?>,
+				rowsPerPage: <?php echo $_SESSION['state']['part']['supplier_products']['nr'] ?>,
 				containers: 'paginator2',
 				alwaysVisible: false,
 				pageReportTemplate: '(<?php echo _('Page ')?> {currentPage} <?php echo _('of ')?> {totalPages})',
@@ -1493,8 +1493,8 @@ function formater_available  (el, oRecord, oColumn, oData) {
 
 			,
 			sortedBy: {
-				Key: "<?php echo $_SESSION['state']['part']['products']['order']?>",
-				dir: "<?php echo $_SESSION['state']['part']['products']['order_dir']?>"
+				Key: "<?php echo $_SESSION['state']['part']['supplier_products']['order']?>",
+				dir: "<?php echo $_SESSION['state']['part']['supplier_products']['order_dir']?>"
 
 				
 			},
@@ -1515,8 +1515,8 @@ function formater_available  (el, oRecord, oColumn, oData) {
 	    this.table2.subscribe("cellClickEvent", onCellClick);
 
 		this.table2.filter = {
-			key: '<?php echo $_SESSION['state']['part']['products']['f_field']?>',
-			value: '<?php echo $_SESSION['state']['part']['products']['f_value']?>'
+			key: '<?php echo $_SESSION['state']['part']['supplier_products']['f_field']?>',
+			value: '<?php echo $_SESSION['state']['part']['supplier_products']['f_value']?>'
 			
 		};
 

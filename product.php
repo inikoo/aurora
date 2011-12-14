@@ -250,12 +250,12 @@ $smarty->assign('department_id',$product->get('Product Main Department Key'));
 $smarty->assign('family',$product->get('Product Family Code'));
 $smarty->assign('family_id',$product->get('Product Family Key'));
 
-$product->load_images_slidesshow();
-$images=$product->images_slideshow;
-$smarty->assign('div_img_width',190);
-$smarty->assign('img_width',190);
-$smarty->assign('images',$images);
-$smarty->assign('num_images',count($images));
+//$product->load_images_slidesshow();
+//$images=$product->images_slideshow;
+//$smarty->assign('div_img_width',190);
+//$smarty->assign('img_width',190);
+//$smarty->assign('images',$images);
+//$smarty->assign('num_images',count($images));
 
 $subject_id=$product->id;
 

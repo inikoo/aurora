@@ -78,9 +78,16 @@ else
     $user_type="staff";
 
 
+
+
 if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
     $auth->authenticate_from_masterkey($_REQUEST['mk']);
+   
 }
+
+
+
+
 elseif($handle) {
 
     $auth->authenticate($handle,$sk,$user_type,0);
@@ -95,6 +102,10 @@ if ($auth->is_authenticated()) {
     $_SESSION['user_key']=$auth->get_user_key();
     $user=new User($_SESSION['user_key']);
     $_SESSION['text_locale']=$user->data['User Preferred Locale'];
+    if(isset($_REQUEST['url']))
+    header("Location: ".urldecode($_REQUEST['url']));
+
+    else
     header('Location: index.php');
     exit;
 

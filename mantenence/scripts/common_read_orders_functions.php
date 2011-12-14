@@ -273,7 +273,7 @@ function delete_old_data() {
         $sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Order' and `Direct Object Key`=%d",$row_test['Order Key']);
         mysql_query($sql);
 
-   $sql=sprintf("delete from `Order Deal Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
+        $sql=sprintf("delete from `Order Deal Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
         mysql_query($sql);
 
 
@@ -311,6 +311,15 @@ function delete_old_data() {
     $sql=sprintf("select `Delivery Note Key`  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
     $result_test=mysql_query($sql);
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
+    
+    $sql=sprintf("select `History Key` from `History Dimension`  where   `Direct Object Key`=%d and `Direct Object` in ('Delivery Note','After Sale')   ",$row_test['Delivery Note Key']);
+        $result_test2=mysql_query($sql);
+        while ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+            $sql=sprintf("delete from `Customer History Bridge`  where   `History Key`=%d",$row_test2['History Key']);
+            mysql_query($sql);
+        }
+    
+    
         $sql=sprintf("delete from `Order Delivery Note Bridge` where `Delivery Note Key`=%d   ",$row_test['Delivery Note Key']);
         mysql_query($sql);
 
@@ -554,7 +563,7 @@ function create_order($data) {
 
         if ($transaction['Order Quantity']>0) {
 
-        
+
 
             $product=new Product('id',$transaction['Product Key']);
 
@@ -564,9 +573,9 @@ function create_order($data) {
 
 
             $_supplier_metadata=array();
-            foreach($transaction['pick_method_data']['parts_sku'] as $__key=>$__value){
-             $_supplier_metadata[$__key]=$__value['supplier_product_pid'];
-            
+            foreach($transaction['pick_method_data']['parts_sku'] as $__key=>$__value) {
+                $_supplier_metadata[$__key]=$__value['supplier_product_pid'];
+
             }
 
             $data=array(
@@ -601,13 +610,13 @@ function create_order($data) {
             $quantity=$transaction['given'];
             $gross=0;
             $estimated_weight=$quantity*$product->data['Product Gross Weight'];
-            
-             $_supplier_metadata=array();
-            foreach($transaction['pick_method_data']['parts_sku'] as $__key=>$__value){
-             $_supplier_metadata[$__key]=$__value['supplier_product_pid'];
-            
+
+            $_supplier_metadata=array();
+            foreach($transaction['pick_method_data']['parts_sku'] as $__key=>$__value) {
+                $_supplier_metadata[$__key]=$__value['supplier_product_pid'];
+
             }
-            
+
             $data=array(
                       'Estimated Weight'=>$estimated_weight,
                       'date'=>$date_order,
@@ -620,7 +629,7 @@ function create_order($data) {
                       'Current Dispatching State'=>'In Process',
                       'Current Payment State'=>'Waiting Payment',
                       'Metadata'=>$store_code.$order_data_id,
-                        'Supplier Metadata'=>serialize($_supplier_metadata)
+                      'Supplier Metadata'=>serialize($_supplier_metadata)
                   );
             //   print_r($data);
 
@@ -635,12 +644,12 @@ function create_order($data) {
 
     }
 
-   foreach($discounts_with_order_as_term as $_deal_key){
-      $sql=sprintf("insert into `Order Deal Bridge` values(%d,%d,'Yes','No') ON DUPLICATE KEY UPDATE `Used`='No'",$order->id,$_deal_key);
-     mysql_query($sql);
-   
-   }
- $order->update_order_discounts();
+    foreach($discounts_with_order_as_term as $_deal_key) {
+        $sql=sprintf("insert into `Order Deal Bridge` values(%d,%d,'Yes','No') ON DUPLICATE KEY UPDATE `Used`='No'",$order->id,$_deal_key);
+        mysql_query($sql);
+
+    }
+    $order->update_order_discounts();
     $order->update_discounts();
     $order->update_item_totals_from_order_transactions();
 
@@ -650,16 +659,16 @@ function create_order($data) {
 
     $order->update_no_normal_totals();
     $order->update_totals_from_order_transactions();
-    
-    
+
+
     foreach($discounts_map as $otf_key=>$discount) {
         $order->update_transaction_discount_amount($otf_key,$discount);
     }
-    
-    
-$order->update_deal_bridge_from_assets_deals();    
+
+
+    $order->update_deal_bridge_from_assets_deals();
     $order->update_deals_usage();
-     $order->update_number_items();
+    $order->update_number_items();
     $order->categorize();
     $order->update_shipping_amount($shipping_net);
     $charges_data=array(array(
@@ -689,11 +698,11 @@ function send_order($data,$data_dn_transactions) {
     global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
     global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
 
-    
-    if(!isset($dn)){
-    
-    print "Error no transactions in this invoice\n";
-    return;
+
+    if (!isset($dn)) {
+
+        print "Error no transactions in this invoice\n";
+        return;
     }
 
 
@@ -755,18 +764,18 @@ function send_order($data,$data_dn_transactions) {
                 $_shipped_qty=0;
             }
 
-              if ($still_required<$_outstock_qty) {
+            if ($still_required<$_outstock_qty) {
                 $_out_of_stock_qty[$itf]=$still_required;
                 $_outstock_qty=$_outstock_qty-$still_required;
-               
+
             } else {
                 $_out_of_stock_qty[$itf]=$_outstock_qty;
-                 $_outstock_qty=0;
-               
+                $_outstock_qty=0;
+
             }
 
-            
-            
+
+
 
 
         }
@@ -796,14 +805,14 @@ function send_order($data,$data_dn_transactions) {
     }
     $dn->start_packing($staff_key,$date_order);
 
-   
-    
-    
-     $_packed_qty=array();
-      foreach($data_dn_transactions as $key=>$value) {
+
+
+
+    $_packed_qty=array();
+    foreach($data_dn_transactions as $key=>$value) {
 
         $shipped_quantity=round($value['Shipped Quantity'],8);
-    
+
 
         $sql=sprintf("select `Inventory Transaction Key`,`Required`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
         $res=mysql_query($sql);
@@ -842,28 +851,28 @@ function send_order($data,$data_dn_transactions) {
                 $_shipped_qty=0;
             }
 
-          
 
-            
-            
+
+
+
 
 
         }
 
 
     }
-    
-    
-     foreach($_packed_qty as $itf=>$_qty) {
+
+
+    foreach($_packed_qty as $itf=>$_qty) {
         $dn->set_as_packed($itf,$_qty,$date_order);
     }
 
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     $dn->update_packing_percentage();
 
     $dn->set_parcels($parcels,$parcel_type);

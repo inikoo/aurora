@@ -132,7 +132,6 @@ $subject_id=$part->id;
 if (!$part->id) {
     header('Location: warehouse.php?msg=part_not_found');
     exit;
-
 }
 
 
@@ -256,13 +255,8 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 // include_once('class.PartLocation.php');$part->update_stock_history();
 
 
-$part->load_images_slidesshow();
-$images=$part->images_slideshow;
-$smarty->assign('div_img_width',190);
-$smarty->assign('img_width',190);
-$smarty->assign('images',$images);
-$smarty->assign('num_images',count($images));
 $smarty->assign('warehouse',$warehouse);
+$smarty->assign('warehouse_id',$warehouse->id);
 
 $smarty->display('part.tpl');
 ?>

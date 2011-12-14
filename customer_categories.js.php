@@ -15,8 +15,8 @@ var dialog_new_category;
  
 
 function change_block(){
-ids=['subcategories','subjects','subcategories_charts'];
-block_ids=['block_subcategories','block_subjects','block_subcategories_charts'];
+ids=['subcategories','subjects','subcategories_charts','history'];
+block_ids=['block_subcategories','block_subjects','block_subcategories_charts','block_history'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -219,6 +219,80 @@ var tableid=0; // Change if you have more the 1 table
 
 
 
+ var tableid=2; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //     ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ];
+	    
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=category&id="+Dom.get('category_key').value+"tableid=2");
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		  
+		 rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"note"
+			 ,'author','date','tipo','abstract','details'
+			 ]};
+	    
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource2
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?php echo$_SESSION['state']['customer_categories']['history']['nr']?>,containers : 'paginator2', alwaysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    key: "<?php echo$_SESSION['state']['customer_categories']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['customer_categories']['history']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		       this.table2.table_id=tableid;
+     this.table2.subscribe("renderEvent", myrenderEvent);
+
+		    
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['customer_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['customer_categories']['history']['f_value']?>'};
+
+
+
+
 
 	};
     });
@@ -270,9 +344,8 @@ function change_display_mode(name,label){
 
 
  function init(){
- ids=['subcategories','subjects','subcategories_charts'];
-
-  Event.addListener(['subcategories','subjects','subcategories_charts'], "click",change_block);
+ ids=['subcategories','subjects','subcategories_charts','history'];
+  Event.addListener(ids, "click",change_block);
 
  
    init_search('customers_store');

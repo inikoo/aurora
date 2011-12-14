@@ -1,14 +1,15 @@
 <?php
 include_once('class.Category.php');
+include_once('class.Warehouse.php');
 
 include_once('common.php');
 include_once('assets_header_functions.php');
 
 
 
-if(!$user->can_view('stores')  ){
-  header('Location: index.php');
-   exit;
+if (!$user->can_view('warehouses')  ) {
+    header('Location: index.php');
+    exit;
 }
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
@@ -22,130 +23,202 @@ get_header_info($user,$smarty);
 $general_options_list=array();
 
 
+
+
+
+
+
+
+
+
+
 $smarty->assign('view',$_SESSION['state']['part_categories']['view']);
 
 
 
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 
-		 'container.css',
-		 'button.css'
-		 
-		 
-		 );
-
-if($common)
-{
-array_push($css_files, 'themes_css/'.$common);   
-array_push($css_files, 'themes_css/'.$row['Themes css4']);
-array_push($css_files, 'themes_css/'.$row['Themes css2']); 
-array_push($css_files, 'themes_css/'.$row['Themes css3']);
-}    
-
-else{
-array_push($css_files, 'common.css'); 
-array_push($css_files, 'css/dropdown.css'); 
-array_push($css_files, 'css/index.css');
-array_push($css_files, 'table.css');
-}
-
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
+           );
 
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/common.js',
-		'js/table_common.js',
-		'search.js',
-		'js/edit_category_common.js',
-		'part_categories.js.php',
-		'js/dropdown.js',
-		
-		);
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable-min.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              $yui_path.'calendar/calendar-min.js',
+              'js/common.js',
+              'js/table_common.js',
+               'external_libs/ammap/ammap/swfobject.js',
+              'js/edit_category_common.js'
+
+          );
 
 
-if(isset($_REQUEST['id'])){
-$category_key=$_REQUEST['id'];
-}else{
-$category_key=$_SESSION['state']['part_categories']['category_key'];
+
+
+
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
+
+
+
+if (isset($_REQUEST['id'])) {
+    $category_key=$_REQUEST['id'];
+} else {
+    $category_key=$_SESSION['state']['part_categories']['category_key'];
 }
 
-if(!$category_key){
+if (!$category_key) {
 
-if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
-    $store_id=$_REQUEST['store_id'];
+
+    if (isset($_REQUEST['warehouse_id'])  and is_numeric($_REQUEST['warehouse_id']) ) {
+
+        $warehouse=new Warehouse($_REQUEST['warehouse_id']);
+        if (!$warehouse->id) {
+
+            header('Location: index.php');
+            exit;
+
+        }
+
+    } else {
+        header('Location: index.php');
+        exit;
+    }
+
+
+
+    $block_view=$_SESSION['state']['part_categories']['base_block_view'];
+    $smarty->assign('block_view',$block_view);
+    $js_files[]='part_categories_base.js.php';
+    $tpl_file='part_categories_base.tpl';
 
 } else {
-    $store_id=$_SESSION['state']['store']['id'];
+
+
+
+    $category=new Category($category_key);
+    if (!$category->id) {
+        header('Location: part_categories.php?id=0&error=cat_not_found');
+        exit;
+
+    }
+
+    $category_key=  $category->id;
+    $warehouse=new Warehouse($category->data['Category Warehouse Key']);
+
+
+    $smarty->assign('category',$category);
+
+    $block_view=$_SESSION['state']['part_categories']['block_view'];
+    $smarty->assign('block_view',$block_view);
+    
+    
+    $tipo_filter=$_SESSION['state']['warehouse']['parts']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['warehouse']['parts']['f_value']);
+$filter_menu=array(
+		   'used_in'=>array('db_key'=>'used_in','menu_label'=>'Used in <i>x</i>','label'=>'Used in'),
+		   'supplied_by'=>array('db_key'=>'supplied_by','menu_label'=>'Supplied by <i>x</i>','label'=>'Supplied by'),
+		   'description'=>array('db_key'=>'description','menu_label'=>'Part Description like <i>x</i>','label'=>'Description'),
+
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('view',$_SESSION['state']['warehouse']['parts_view']);
+$smarty->assign('parts_view',$_SESSION['state']['warehouse']['parts']['view']);
+$smarty->assign('parts_period',$_SESSION['state']['warehouse']['parts']['period']);
+$smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
+
+    
+   $elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);
+   
+$sql=sprintf("select count(*) as num ,`Part Main State` from  `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`)  left join `Part Warehouse Bridge` B  on (P.`Part SKU`=B.`Part SKU`)  where `Warehouse Key`=%d  and `Subject`='Part' and  `Category Key`=%d group by  `Part Main State`   ",
+$warehouse->id,
+$category->id
+);
+
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[$row['Part Main State']]=$row['num'];
 }
-
-
-if($modify){
-
-     $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Main Category'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_part_category.php?id=0','label'=>_('Edit Categories'));
-
-}
-$tpl_file='part_categories_base.tpl';
-
-}else{
-
-
-
-$category=new Category($category_key);
-if(!$category->id){
-header('Location: part_categories.php?id=0&error=cat_not_found');
-   exit;
-
-}
-
- $category_key=  $category->id;         
-
-if($modify){
-   $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_part_category.php?&id='.$category->id,'label'=>_('Edit Category'));
-
-}
-
-$store_id=$category->data['Category Store Key'];
-
-$smarty->assign('category',$category);
-
-
-$tpl_file='part_category.tpl';
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['warehouse']['parts']['elements']); 
+    
+    $js_files[]='part_categories.js.php';
+    $tpl_file='part_category.tpl';
+    
+    
+    
 
 
 }
+$smarty->assign('warehouse_id',$warehouse->id);
+$smarty->assign('warehouse',$warehouse);
 
 
 $_SESSION['state']['part_categories']['category_key']=$category_key;
 
 
-$store=new Store($store_id);
+$tipo_filter=$_SESSION['state']['part_categories']['subcategories']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['part_categories']['subcategories']['f_value']);
 
-if(!$store->id){
+$filter_menu=array(
+                 'name'=>array('db_key'=>_('name'),'menu_label'=>_('Category Name'),'label'=>_('Name')),
+             );
 
-exit("Error wrong store");
-}
 
-$_SESSION['state']['store']['id']=$store->id;
-$smarty->assign('store',$store);
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
+
+$tipo_filter=$_SESSION['state']['store']['history']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['site']['history']['f_value']);
+$filter_menu=array(
+                 'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+                 'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+                 'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+                 'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
+                 'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
+
+             );
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu2',$filter_menu);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+
+
+$smarty->assign('parent','parts');
+$smarty->assign('title', _('Part Categories'));
 
 $smarty->assign('subject','Part');
-$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('category_key',$category_key);
-$smarty->assign('store_id',$store_id);
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+
 $smarty->display($tpl_file);
 ?>

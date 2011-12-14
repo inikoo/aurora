@@ -103,7 +103,7 @@ $pwd.=sha1(generatePassword(100,10));
 $sql=sprintf("insert into `MasterKey Dimension` (`Handle`,`Key`,`Valid Until`)values (%s,%s,%s) "
 	     ,prepare_mysql($handle)
 	     ,prepare_mysql($pwd)
-	     ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now +10 minute")))
+	     ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now +1 minute")))
 	     );
 //print $sql;
 mysql_query($sql);
@@ -112,12 +112,10 @@ return $pwd;
 }
 
 
-function make_seed()
-{
+function make_seed(){
   list($usec, $sec) = explode(' ', microtime());
   return (float) $sec + ((float) $usec * 100000)+rand()-rand();
 }
-
 function generatePassword($length=9, $strength=0) {
 	$vowels = 'aeuy'.md5(mt_rand());
 	$consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
