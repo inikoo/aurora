@@ -2152,6 +2152,8 @@ class Page extends DB_Table {
 
         $height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 
+exit($height);
+
         ob_start();
         system("uname");
 
