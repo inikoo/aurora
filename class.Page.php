@@ -2188,15 +2188,17 @@ class Page extends DB_Table {
         $this->snapshots_taken++;
    
 
-        $image_data=array('file'=>"app_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_header'.$this->id);
+        $image_data=array('file'=>"app_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_preview'.$this->id);
    
    print_r($image_data);
    $image=new Image('find',$image_data,'create');
-        unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
+   print "x1\n";
+   unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
+     print "x2\n";
         $new_image_key=$image->id;
-        
+          print "x3\n";
         print "$new_image_key $old_image_key\n";
-        
+          print "x4\n";
         if ($new_image_key!=$old_image_key and $new_image_key) {
             $this->data['Page Preview Snapshot Image Key']=$new_image_key;
             $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d and `Image Key`=%d ",
