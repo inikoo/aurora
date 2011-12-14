@@ -2156,12 +2156,12 @@ class Page extends DB_Table {
         $height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 //ar_edit_sites.php?tipo=update_page_snapshot&id=1951;
 
+        $url=$inikoo_public_url."authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
 
         ob_start();
         system("uname");
 
 
-        $url=$inikoo_public_url."authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
 
         $_system = ob_get_clean();
         if (preg_match('/darwin/i',$_system)) {
@@ -2189,7 +2189,9 @@ class Page extends DB_Table {
    
 
         $image_data=array('file'=>"app_files/tmp/pp_image".$this->id."-clipped.png",'source_path'=>'','name'=>'page_header'.$this->id);
-        $image=new Image('find',$image_data,'create');
+   
+   print_r($image_data);
+   $image=new Image('find',$image_data,'create');
         unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
         $new_image_key=$image->id;
         
