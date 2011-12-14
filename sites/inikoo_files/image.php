@@ -1,30 +1,20 @@
 <?php
 include_once('conf/dns.php');
 include_once('class.Image.php');
-
-
-
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
-if (!$con) {
-    print "Error can not connect with database server\n";
-    exit;
-}
-//$dns_db='dw_avant';
+if (!$con) {print "Error can not connect with database server\n";exit;}
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
     exit;
 }
 date_default_timezone_set('UTC');
-
 require_once 'common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once 'conf/conf.php';
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
-
-
 if(!isset($_REQUEST['id'])){
   $id=-1;
 }else
