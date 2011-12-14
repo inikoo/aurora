@@ -2179,7 +2179,7 @@ class Page extends DB_Table {
 
         }
 
-  print "$command  $retval";
+  print "$command  $retval\n\n";
 
 
         ob_start();
@@ -2192,6 +2192,9 @@ class Page extends DB_Table {
         $image=new Image('find',$image_data,'create');
         unlink("app_files/tmp/pp_image".$this->id."-clipped.png");
         $new_image_key=$image->id;
+        
+        print "$new_image_key $old_image_key\n";
+        
         if ($new_image_key!=$old_image_key and $new_image_key) {
             $this->data['Page Preview Snapshot Image Key']=$new_image_key;
             $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d and `Image Key`=%d ",
