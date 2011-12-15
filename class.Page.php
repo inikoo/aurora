@@ -2158,7 +2158,7 @@ class Page extends DB_Table {
         $height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 //ar_edit_sites.php?tipo=update_page_snapshot&id=1951;
 
-        $url=$inikoo_public_url."authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
+        $url="http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'])."/authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
 
         ob_start();
         system("uname");
