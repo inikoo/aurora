@@ -2174,7 +2174,7 @@ class Page extends DB_Table {
         }
 
         elseif(preg_match('/linux/i',$_system)) {
-              $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
+              $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
 
           //  $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png --scale  512 '.(ceil($height*0.5)).'    '.$url;
         }
