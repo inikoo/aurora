@@ -10,7 +10,7 @@ exit();
 //  UPDATE `kbase`.`Salutation Dimension` SET `Language Code` = 'es' WHERE `Salutation Dimension`.`Language Code` =2 ;
 
 // Edited Country dimsion (regex postal codes)
-/*
+
 
 
 ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Cancel Note`  TEXT NULL DEFAULT ''
@@ -5287,10 +5287,12 @@ ALTER TABLE `Page Product List Dimension` CHANGE `List Product Description` `Lis
 ALTER TABLE `Page Product List Dimension` DROP `Range Scope`;
 ALTER TABLE `Page Store Dimension` ADD FULLTEXT (`Page Store Title`);
 ALTER TABLE `Page Store Dimension` ADD FULLTEXT (`Page Store Resume`);
+
 ALTER TABLE `Dashboard User Bridge` ADD `Dashboard Height` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Dashboard URL` ;
 ALTER TABLE `Site Dimension` ADD `Site Menu HTML` LONGTEXT NOT NULL ,ADD `Site Menu CSS` LONGTEXT NOT NULL ,ADD `Site Menu Javascript` LONGTEXT NOT NULL ,ADD `Site Search HTML` LONGTEXT NOT NULL ,ADD `Site Search CSS` LONGTEXT NOT NULL ,ADD `Site Search Javascript` LONGTEXT NOT NULL ;
 ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part', 'Site', 'Page' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Category Dimension` ADD `Category Warehouse Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Store Key` ,ADD INDEX ( `Category Warehouse Key` ) ;
+
 ALTER TABLE `Product Dimension` ADD `Product Main Image Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Main Image` ;
 ALTER TABLE `Product Family Dimension` ADD `Product Family Main Image Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Family Main Image` ;
 ALTER TABLE `Product Department Dimension` ADD `Product Department Main Image Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Department Main Image` ;
@@ -5311,7 +5313,7 @@ ALTER TABLE `Site Dimension` ADD `Site Code` VARCHAR( 8 ) NOT NULL AFTER `Site S
 ALTER TABLE `Page Store Dimension` DROP `Page Product Metadata`,DROP `Page List Metadata`;
 ALTER TABLE `Page Store Dimension` ADD `Number See Also Links` TINYINT( 3 ) UNSIGNED NOT NULL AFTER `Page Store Last Structural Change Date` ;
 
-*/
+
 
 
 

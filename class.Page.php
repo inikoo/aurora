@@ -2144,7 +2144,7 @@ class Page extends DB_Table {
                      ,prepare_mysql(ip())
                     );
 
-print $sql;
+//print $sql;
         mysql_query($sql);
         $old_image_key=$this->data['Page Preview Snapshot Image Key'];
 
@@ -2181,7 +2181,7 @@ print $sql;
 
         }
 
-// print "$command  $retval\n\n";
+ print "$command  $retval\n\n";
 
 
         ob_start();

@@ -235,9 +235,10 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $prev['link']='edit_page.php?id='.$row['id'];
     $prev['title']=$row['name'];
+$smarty->assign('prev',$prev);
 }
 mysql_free_result($result);
-$smarty->assign('prev',$prev);
+
 $sql=sprintf(" select `Page Key` as id , `Page Store Title` as name from `Page Store Dimension`    where  `Page Site Key`=%d  and  %s>%s  order by %s   ",
              $site->id,
              $order,
@@ -249,10 +250,10 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $next['link']='edit_page.php?id='.$row['id'];
     $next['title']=$row['name'];
+    $smarty->assign('next',$next);
+
 }
 mysql_free_result($result);
-$smarty->assign('prev',$prev);
-$smarty->assign('next',$next);
 
 $smarty->assign('parent_url','site.php?id='.$site->id);
 $parent_title=$site->data['Site Name'].' '._('Pages').' ('.$order_label.')';

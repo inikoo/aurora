@@ -256,15 +256,15 @@ function list_locations() {
     $response=array('resultset'=>
                                 array(
                                     'state'=>200,
-                                      'data'=>$data,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total
-                                     )
+                                    'data'=>$data,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
+                                )
                    );
     echo json_encode($response);
 }
@@ -430,16 +430,16 @@ function list_shelfs() {
     }
     $response=array('resultset'=>
                                 array(
-                                         'state'=>200,
-                                      'data'=>$adata,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total
-                                     )
+                                    'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
+                                )
                    );
     echo json_encode($response);
 }
@@ -622,15 +622,15 @@ function list_warehouse_areas() {
     $response=array('resultset'=>
                                 array(
                                     'state'=>200,
-                                      'data'=>$adata,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total
-                                     )
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
+                                )
                    );
     echo json_encode($response);
 }
@@ -1195,7 +1195,7 @@ function parts_at_location() {
     $wheref='';
 
 
-  if ($f_field=='used_in' and $f_value!='')
+    if ($f_field=='used_in' and $f_value!='')
         $wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
     elseif($f_field=='description' and $f_value!='')
     $wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
@@ -1213,7 +1213,7 @@ function parts_at_location() {
     //   $where =$where.$view.sprintf(' and part_id=%d  %s',$part_id,$date_interval);
 
 
-   $sql="select count(*) as total from `Part Location Dimension` PLD  $where $wheref";
+    $sql="select count(*) as total from `Part Location Dimension` PLD  $where $wheref";
     //print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1237,7 +1237,7 @@ function parts_at_location() {
     mysql_free_result($res);
 
 
-  
+
     $rtext=$total_records." ".ngettext('part','parts',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
@@ -1284,7 +1284,7 @@ function parts_at_location() {
 
 
 
-        $order='PD.`Part SKU`';
+    $order='PD.`Part SKU`';
 
 
 
@@ -1753,32 +1753,6 @@ function list_part_categories() {
     else
         $order_dir=$conf['order_dir'];
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
-
-
-    if (isset( $_REQUEST['exchange_type'])) {
-        $exchange_type=addslashes($_REQUEST['exchange_type']);
-        $_SESSION['state']['part_categories']['exchange_type']=$exchange_type;
-    } else
-        $exchange_type=$conf2['exchange_type'];
-
-    if (isset( $_REQUEST['exchange_value'])) {
-        $exchange_value=addslashes($_REQUEST['exchange_value']);
-        $_SESSION['state']['part_categories']['exchange_value']=$exchange_value;
-    } else
-        $exchange_value=$conf2['exchange_value'];
-
-    if (isset( $_REQUEST['show_default_currency'])) {
-        $show_default_currency=addslashes($_REQUEST['show_default_currency']);
-        $_SESSION['state']['part_categories']['show_default_currency']=$show_default_currency;
-    } else
-        $show_default_currency=$conf2['show_default_currency'];
-
-
-
 
     if (isset( $_REQUEST['f_field']))
         $f_field=$_REQUEST['f_field'];
@@ -1823,8 +1797,17 @@ function list_part_categories() {
     } else
         $stores_mode=$_SESSION['state']['part_categories']['stores_mode'];
 
-    $_SESSION['state']['part_categories']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-    // print_r($_SESSION['tables']['families_list']);
+
+
+    $_SESSION['state']['part_categories']['table']['order']=$order;
+    $_SESSION['state']['part_categories']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['part_categories']['table']['nr']=$number_results;
+    $_SESSION['state']['part_categories']['table']['sf']=$start_from;
+    $_SESSION['state']['part_categories']['table']['f_field']=$f_field;
+    $_SESSION['state']['part_categories']['table']['f_value']=$f_value;
+
+
+// print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
 
@@ -1841,10 +1824,10 @@ function list_part_categories() {
     $where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$root_category);
     //  $where=sprintf("where `Category Subject`='Product'  ");
 
-    if ($stores_mode=='grouped')
-        $group=' group by S.`Category Key`';
-    else
-        $group='';
+    //  if ($stores_mode=='grouped')
+    //     $group=' group by S.`Category Key`';
+    // else
+    $group='';
 
     $filter_msg='';
     $wheref='';
@@ -1871,7 +1854,7 @@ function list_part_categories() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total  from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`) $where ";
+        $sql="select count(*) as total  from `Category Dimension`  $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1911,102 +1894,168 @@ function list_part_categories() {
     $_dir=$order_direction;
     $_order=$order;
 
-    if ($order=='families')
-        $order='`Product Category Families`';
-    elseif($order=='departments')
-    $order='`Product Category Departments`';
-    elseif($order=='code')
-    $order='`Product Category Code`';
-    elseif($order=='todo')
-    $order='`Product Category In Process Products`';
-    elseif($order=='discontinued')
-    $order='`Product Category In Process Products`';
-    else if ($order=='profit') {
-        if ($period=='all')
-            $order='`Product Category Total Profit`';
-        elseif($period=='year')
-        $order='`Product Category 1 Year Acc Profit`';
-        elseif($period=='quarter')
-        $order='`Product Category 1 Quarter Acc Profit`';
-        elseif($period=='month')
-        $order='`Product Category 1 Month Acc Profit`';
-        elseif($period=='week')
-        $order='`Product Category 1 Week Acc Profit`';
+    if ($order=='subjects')
+        $order='`Category Number Subjects`';
+    else if ($order=='departments')
+        $order='`Product Category Departments`';
+    else if ($order=='code')
+        $order='`Product Category Code`';
+    else if ($order=='todo')
+        $order='`Product Category In Process Products`';
+    else if ($order=='discontinued')
+        $order='`Product Category In Process Products`';
+    else if ($order=='sold') {
+        if ($period=='1w')
+            $order='`1 Week Acc Sold`';
+        else if ($period=='10d')
+            $order='`10 Days Acc Sold`';
+        else if ($period=='1m')
+            $order='`1 Month Acc Sold`';
+        else if ($period=='1q')
+            $order='`1 Quarter Acc Sold`';
+        else if ($period=='6m')
+            $order='`6 Month Acc Sold`';
+        else if ($period=='1y')
+            $order='`1 Year Acc Sold`';
+        else if ($period=='3y')
+            $order='`3 Year Acc Sold`';
+        else if ($period=='yesterday')
+            $order='`Yesterday Acc Sold`';
+        else if ($period=='last_m')
+            $order='`Last Month Acc Sold`';
+        else if ($period=='last_w')
+            $order='`Last Week Acc Sold`';
+        else if ($period=='today')
+            $order='`Today Acc Sold`';
+        else if ($period=='wtd')
+            $order='`Week To Day Acc Sold`';
+        else if ($period=='mtd')
+            $order='`Month To Day Acc Sold`';
+        else if ($period=='ytd')
+            $order='`Year To Day Acc Sold`';
+        else if ($period=='all')
+            $order='`Total Acc Sold`';
+    }  else if ($order=='profit') {
+        if ($period=='1w')
+            $order='`1 Week Acc Profit`';
+        else if ($period=='10d')
+            $order='`10 Days Acc Profit`';
+        else if ($period=='1m')
+            $order='`1 Month Acc Profit`';
+        else if ($period=='1q')
+            $order='`1 Quarter Acc Profit`';
+        else if ($period=='6m')
+            $order='`6 Month Acc Profit`';
+        else if ($period=='1y')
+            $order='`1 Year Acc Profit`';
+        else if ($period=='3y')
+            $order='`3 Year Acc Profit`';
+        else if ($period=='yesterday')
+            $order='`Yesterday Acc Profit`';
+        else if ($period=='last_m')
+            $order='`Last Month Acc Profit`';
+        else if ($period=='last_w')
+            $order='`Last Week Acc Profit`';
+        else if ($period=='today')
+            $order='`Today Acc Profit`';
+        else if ($period=='wtd')
+            $order='`Week To Day Acc Profit`';
+        else if ($period=='mtd')
+            $order='`Month To Day Acc Profit`';
+        else if ($period=='ytd')
+            $order='`Year To Day Acc Profit`';
+        else if ($period=='all')
+            $order='`Total Acc Profit`';
     }
     elseif($order=='sales') {
-        if ($period=='all')
-            $order='`Product Category Total Invoiced Amount`';
-        elseif($period=='year')
-        $order='`Product Category 1 Year Acc Invoiced Amount`';
-        elseif($period=='quarter')
-        $order='`Product Category 1 Quarter Acc Invoiced Amount`';
-        elseif($period=='month')
-        $order='`Product Category 1 Month Acc Invoiced Amount`';
-        elseif($period=='week')
-        $order='`Product Category 1 Week Acc Invoiced Amount`';
+        if ($period=='1w')
+            $order='`1 Week Acc Sold Amount`';
+        else if ($period=='10d')
+            $order='`10 Days Acc Sold Amount`';
+        else if ($period=='1m')
+            $order='`1 Month Acc Sold Amount`';
+        else if ($period=='1q')
+            $order='`1 Quarter Acc Sold Amount`';
+        else if ($period=='6m')
+            $order='`6 Month Acc Sold Amount`';
+        else if ($period=='1y')
+            $order='`1 Year Acc Sold Amount`';
+        else if ($period=='3y')
+            $order='`3 Year Acc Sold Amount`';
+        else if ($period=='yesterday')
+            $order='`Yesterday Acc Sold Amount`';
+        else if ($period=='last_m')
+            $order='`Last Month Acc Sold Amount`';
+        else if ($period=='last_w')
+            $order='`Last Week Acc Sold Amount`';
+        else if ($period=='today')
+            $order='`Today Acc Sold Amount`';
+        else if ($period=='wtd')
+            $order='`Week To Day Acc Sold Amount`';
+        else if ($period=='mtd')
+            $order='`Month To Day Acc Sold Amount`';
+        else if ($period=='ytd')
+            $order='`Year To Day Acc Sold Amount`';
+        else if ($period=='all')
+            $order='`Total Acc Sold Amount`';
 
     }
     elseif($order=='name')
     $order='`Category Name`';
-    elseif($order=='active')
-    $order='`Product Category For Public Sale Products`';
-    elseif($order=='outofstock')
-    $order='`Product Category Out Of Stock Products`';
-    elseif($order=='stock_error')
-    $order='`Product Category Unknown Stock Products`';
-    elseif($order=='surplus')
-    $order='`Product Category Surplus Availability Products`';
-    elseif($order=='optimal')
-    $order='`Product Category Optimal Availability Products`';
-    elseif($order=='low')
-    $order='`Product Category Low Availability Products`';
-    elseif($order=='critical')
-    $order='`Product Category Critical Availability Products`';
 
 
 
 
 
-    $sql="select S.`Category Key`, `Category Name` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Part Dimension` PD on (PD.`Part SKU`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-// print $sql;
+    $sql="select `1 Year Acc Sold` from `Category Dimension` C left join `Part Category Dimension` P on (P.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+ print $sql;
     $res = mysql_query($sql);
-
-    $total=mysql_num_rows($res);
     $adata=array();
-    $sum_sales=0;
-    $sum_profit=0;
-    $sum_outofstock=0;
-    $sum_low=0;
-    $sum_optimal=0;
-    $sum_critical=0;
-    $sum_surplus=0;
-    $sum_unknown=0;
-    $sum_departments=0;
-    $sum_families=0;
-    $sum_todo=0;
-    $sum_discontinued=0;
 
-    $DC_tag='';
-    if ($exchange_type=='day2day' and $show_default_currency  )
-        $DC_tag=' DC';
 
     // print "$sql";
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-        //$name=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Name']);
-        //$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Code']);
+
+     if ($period=='1w')
+            $sold=$row['1 Week Acc Sold'];
+        else if ($period=='10d')
+            $sold=$row['10 Days Acc Sold'];
+        else if ($period=='1m')
+            $sold=$row['1 Month Acc Sold'];
+        else if ($period=='1q')
+            $sold=$row['1 Quarter Acc Sold'];
+        else if ($period=='6m')
+            $sold=$row['6 Month Acc Sold'];
+        else if ($period=='1y')
+            $sold=$row['1 Year Acc Sold'];
+        else if ($period=='3y')
+            $sold=$row['3 Year Acc Sold'];
+        else if ($period=='yesterday')
+            $sold=$row['Yesterday Acc Sold'];
+        else if ($period=='last_m')
+            $sold=$row['Last Month Acc Sold'];
+        else if ($period=='last_w')
+            $sold=$row['Last Week Acc Sold'];
+        else if ($period=='today')
+            $sold=$row['Today Acc Sold'];
+        else if ($period=='wtd')
+            $sold=$row['Week To Day Acc Sold'];
+        else if ($period=='mtd')
+            $sold=$row['Month To Day Acc Sold'];
+        else if ($period=='ytd')
+            $sold=$row['Year To Day Acc Sold'];
+        else if ($period=='all')
+            $sold=$row['Total Acc Sold'];
 
 
+        $name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
 
-        if ($stores_mode=='grouped')
-            $name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
-        else
-            $name=$row['Category Key'].' '.$row['Category Name']." (".$row['Category Store Key'].")";
         $adata[]=array(
-                     //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
-
+                     'subjects'=>number($row['Category Number Subjects']),
+                     'sold'=>number($sold)
 
 
 
