@@ -6351,7 +6351,13 @@ class product extends DB_Table {
             else
                 $ratio=1;
             // print_r($row);
-            $images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+            $images_slideshow[]=array(
+            'name'=>$row['Image Filename'],
+            'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+            'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+            'filename'=>$row['Image Filename'],
+            'ratio'=>$ratio,'caption'=>$row['Image Caption'],
+            'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
         }
         // print_r($images_slideshow);
 
