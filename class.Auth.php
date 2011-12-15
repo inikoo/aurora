@@ -204,8 +204,6 @@ class Auth {
         }
 
 
-//xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py -o x.png    http://aw.inikoo.com/authorization.php?url=page_preview.php%3Fheader%3D0%26id%3D1951\&mk=4ee9e04316c563.39622045e3ecccc69a7476124a229122e4e6829ceb239d81.2765762742638713023234273514496274493063301011204582718917  
-
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
 
@@ -216,8 +214,8 @@ class Auth {
             $this->user_parent_key=$row['User Parent Key'];
             $this->create_user_log();
 
-            //$sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   " ,$row['MasterKey Key']);
-           //mysql_query($sql);
+            $sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   " ,$row['MasterKey Key']);
+           mysql_query($sql);
             // print $sql;
             // exit;
 
