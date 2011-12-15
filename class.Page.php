@@ -2183,7 +2183,7 @@ class Page extends DB_Table {
 
         }
 
- print "$command  $retval\n\n";
+// print "$command  $retval\n\n";
 
 
         ob_start();
