@@ -216,9 +216,7 @@ class Auth {
             $this->user_parent_key=$row['User Parent Key'];
             $this->create_user_log();
 
-            $sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   "
-                         ,$row['MasterKey Key']
-                        );
+            //$sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   " ,$row['MasterKey Key']);
            //mysql_query($sql);
             // print $sql;
             // exit;
