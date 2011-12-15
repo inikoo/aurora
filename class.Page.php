@@ -2158,7 +2158,7 @@ class Page extends DB_Table {
         $height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 //ar_edit_sites.php?tipo=update_page_snapshot&id=1951;
 
-        $url="http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF'])."/authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
+        $url="http://localhost/".dirname($_SERVER['PHP_SELF'])."/authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
 
         ob_start();
         system("uname");
@@ -2174,7 +2174,7 @@ class Page extends DB_Table {
         }
 
         elseif(preg_match('/linux/i',$_system)) {
-              $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
+              $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
 
           //  $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png --scale  512 '.(ceil($height*0.5)).'    '.$url;
         }
@@ -2248,7 +2248,7 @@ class Page extends DB_Table {
         }
 
 
-            usleep(250000);
+          //  usleep(250000);
         $this->get_data('id',$this->id);
         $new_height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 
