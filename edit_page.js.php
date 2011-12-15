@@ -755,10 +755,10 @@ Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','non
   };
   
   function update_page_snapshot_and_reload(page_key){
-  alert('ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key)
+//  alert('ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key)
   YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key,{
   success: function(o) {
-  alert(o.responseText)
+  //alert(o.responseText)
    window.location.reload()
   }
   });
