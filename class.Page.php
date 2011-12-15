@@ -2146,7 +2146,9 @@ class Page extends DB_Table {
 
 //print $sql;
         mysql_query($sql);
-        $old_image_key=$this->data['Page Preview Snapshot Image Key'];
+  
+  return;
+  $old_image_key=$this->data['Page Preview Snapshot Image Key'];
 
         //   $new_image_key=$old_image_key;
         //      $image=new Image($image_key);
