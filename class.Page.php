@@ -2140,14 +2140,14 @@ class Page extends DB_Table {
         $sql=sprintf("insert into `MasterKey Dimension` (`User Key`,`Key`,`Valid Until`,`IP`)values (%s,%s,%s,%s) "
                      ,1
                      ,prepare_mysql($pwd)
-                     ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now +1 minute")))
+                     ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now +5 minute")))
                      ,prepare_mysql(ip())
                     );
 
 //print $sql;
         mysql_query($sql);
   
-  return;
+  
   $old_image_key=$this->data['Page Preview Snapshot Image Key'];
 
         //   $new_image_key=$old_image_key;
