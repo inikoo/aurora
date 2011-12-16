@@ -1952,6 +1952,13 @@ class Page extends DB_Table {
 
     function display_top_bar() {
 
+
+
+$html='<button  id="show_register_dialog">'._('Register').'</button> <button id="show_login_dialog">'._('Log In').'</button>';
+   
+   return $html;
+
+
     }
 
     function display_label() {

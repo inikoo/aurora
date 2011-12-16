@@ -43,6 +43,20 @@ if (!$page->id) {
 }
 
 
+if (isset($_REQUEST['update_heights'])  and  $_REQUEST['update_heights']) {
+    $smarty->assign('update_heights',1);
+}else{
+ $smarty->assign('update_heights',0);
+}
+
+
+if (isset($_REQUEST['take_snapshot']) and $_REQUEST['take_snapshot']  ) {
+    $smarty->assign('take_snapshot',1);
+}else{
+    $smarty->assign('take_snapshot',0);
+}
+
+
 $_SESSION['state']['page']['id']=$page->id;
 
 $store=new Store($page->data['Page Store Key']);

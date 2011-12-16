@@ -19,6 +19,9 @@
             <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script>
     </head>
     <body class="yui-skin-sam inikoo" >
+    <input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
+        <input type="hidden" id="update_heights" value="{$update_heights}" />
+
         <div id="doc4" >
         <div id="preview_hd" style="background:#245e86 url('art/themes/cobalt.jpg') bottom left repeat-x;color:#fff;;padding:3px 10px;height:22px;{if !$show_header}display:none{/if}">
 <input type="hidden" id="page_key" value="{$page->id}"/>
