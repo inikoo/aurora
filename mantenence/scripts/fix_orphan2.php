@@ -47,9 +47,9 @@ $sql=sprintf("select `Order Key` from  `Order Dimension`    ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-    $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Order')   ");
+    $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Order')  and `Direct Object Key`=%d ",$row['Order Key']);
     $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    if ($ro2w=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     } else {
         $id=preg_replace('/[^\d]/i','',$row['Order Original Metadata']);
@@ -65,9 +65,9 @@ $sql=sprintf("select `Delivery Note Key` from  `Delivery Note Dimension`    ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-    $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Delivery Note','After Sale')     ");
+    $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Delivery Note','After Sale')  and  and `Direct Object Key`=%d ",$row['Delivery Note Key']);
     $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    if ($row=2mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     } else {
        $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
