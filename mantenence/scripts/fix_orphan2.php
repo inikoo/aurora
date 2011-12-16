@@ -52,7 +52,7 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     if ($ro2w=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     } else {
-        $id=preg_replace('/[^\d]/i','',$row['Order Original Metadata']);
+        $id=preg_replace('/[^\d]/i','',$row2['Order Original Metadata']);
         $sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
         mysql_query($sql);
     }
@@ -70,7 +70,7 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     if ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     } else {
-       $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
+       $id=preg_replace('/[^\d]/i','',$row2['Delivery Note Metadata']);
 
         $sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
         mysql_query($sql);
