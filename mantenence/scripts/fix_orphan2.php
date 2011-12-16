@@ -43,37 +43,40 @@ require_once '../../conf/conf.php';
 //}
 //exit;
 
-$sql=sprintf("select `Order Key` from  `Order Dimension`    ");
+$sql=sprintf("select *  from  `Order Dimension`    ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Order')  and `Direct Object Key`=%d ",$row['Order Key']);
-    $res=mysql_query($sql);
-    if ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    //print "$sql\n";
+    $res2=mysql_query($sql);
+    if ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 
     } else {
-        $id=preg_replace('/[^\d]/i','',$row2['Order Original Metadata']);
+        $id=preg_replace('/[^\d]/i','',$row['Order Original Metadata']);
         $sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
-        mysql_query($sql);
+        print "$sql\n";
+    //    mysql_query($sql);
     }
 
 }
 
 
 
-$sql=sprintf("select `Delivery Note Key` from  `Delivery Note Dimension`    ");
+$sql=sprintf("select * from  `Delivery Note Dimension`    ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Delivery Note','After Sale')    and `Direct Object Key`=%d ",$row['Delivery Note Key']);
-    $res=mysql_query($sql);
-    if ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $res2=mysql_query($sql);
+    if ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 
     } else {
-       $id=preg_replace('/[^\d]/i','',$row2['Delivery Note Metadata']);
+       $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
 
         $sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
-        mysql_query($sql);
+         print "$sql\n";
+     //   mysql_query($sql);
     }
 
 }
