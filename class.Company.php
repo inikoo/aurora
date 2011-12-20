@@ -1433,7 +1433,7 @@ class Company extends DB_Table {
 
 
 
-    function add_page($page_data,$args='principal') {
+    function add_webpage($page_data,$args='principal') {
         $url=$data['page url'];
         if (isset($data['page_type']) and preg_match('/internal/i',$data['page_type']))
             $email_type='Internal';
@@ -1460,9 +1460,9 @@ class Company extends DB_Table {
                 mysql_query($sql);
             }
 
-            $this->add_page=true;
+            $this->add_webpage=true;
         } else {
-            $this->add_page=false;
+            $this->add_webpage=false;
 
         }
 

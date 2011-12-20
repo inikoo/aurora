@@ -191,7 +191,7 @@ $day_interval=(strtotime($to)-strtotime($from))/3600/24;
 
 
       }elseif($net_ly < $net){
-	$diff_sales=+1;
+	$diff_sales+=1;
 	$smarty->assign('text_diff_sales',_('an increse of').' '.percentage(($net-$net_ly),$net_ly));
 
       }else{

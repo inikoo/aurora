@@ -4898,7 +4898,6 @@ class product extends DB_Table {
             /* 	//   print "$start_date $end_date ".count($total_days)."\n"; */
 
 
-            //=++++++++++++++++++++++++++++++++++++++++++
         }
         // print_r($days);
         $total_days=count($total_days);

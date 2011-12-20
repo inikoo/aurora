@@ -1,21 +1,3 @@
-/*
-  Script: aes.js 
-
-  Function: Cipher
-  AES Cipher, encrypt 'input' with Rijndael algorithm
-  
-  Parameters:
-  input -   byte-array  (16 bytes)
-  w -         2D byte-array key schedule  (Nr+1 x Nb bytes)
-  
-  applies Nr rounds (10/12/14) using key schedule w for 'add round key' stage
-  
-  returns: byte-array encrypted value (16 bytes)
-
-  About:
-  AES implementation in JavaScript (c) Chris Veness 2005-2008      
-
- */
 function Cipher(input, w) {    // main Cipher function [§5.1]
   var Nb = 4;               // block size (in words): no of columns in state (fixed at 4 for AES)
   var Nr = w.length/Nb - 1; // no of rounds: 10/12/14 for 128/192/256-bit keys
@@ -40,16 +22,12 @@ function Cipher(input, w) {    // main Cipher function [§5.1]
   for (var i=0; i<4*Nb; i++) output[i] = state[i%4][Math.floor(i/4)];
   return output;
 }
-
-
 function SubBytes(s, Nb) {    // apply SBox to state S [§5.1.1]
   for (var r=0; r<4; r++) {
     for (var c=0; c<Nb; c++) s[r][c] = Sbox[s[r][c]];
   }
   return s;
 }
-
-
 function ShiftRows(s, Nb) {    // shift row r of state S left by r bytes [§5.1.2]
   var t = new Array(4);
   for (var r=1; r<4; r++) {
@@ -58,8 +36,6 @@ function ShiftRows(s, Nb) {    // shift row r of state S left by r bytes [§5.1.
   }          // note that this will work for Nb=4,5,6, but not 7,8 (always 4 for AES):
   return s;  // see fp.gladman.plus.com/cryptography_technology/rijndael/aes.spec.311.pdf 
 }
-
-
 function MixColumns(s, Nb) {   // combine bytes of each col of state S [§5.1.3]
   for (var c=0; c<4; c++) {
     var a = new Array(4);  // 'a' is a copy of the current column from 's'
@@ -76,16 +52,12 @@ function MixColumns(s, Nb) {   // combine bytes of each col of state S [§5.1.3]
   }
   return s;
 }
-
-
 function AddRoundKey(state, w, rnd, Nb) {  // xor Round Key into state S [§5.1.4]
   for (var r=0; r<4; r++) {
     for (var c=0; c<Nb; c++) state[r][c] ^= w[rnd*4+c][r];
   }
   return state;
 }
-
-
 function KeyExpansion(key) {  // generate Key Schedule (byte-array Nr+1 x Nb) from Key [§5.2]
   var Nb = 4;            // block size (in words): no of columns in state (fixed at 4 for AES)
   var Nk = key.length/4  // key length (in words): 4/6/8 for 128/192/256-bit keys
@@ -113,21 +85,16 @@ function KeyExpansion(key) {  // generate Key Schedule (byte-array Nr+1 x Nb) fr
 
   return w;
 }
-
 function SubWord(w) {    // apply SBox to 4-byte word w
   for (var i=0; i<4; i++) w[i] = Sbox[w[i]];
   return w;
 }
-
 function RotWord(w) {    // rotate 4-byte word w left by one byte
   var tmp = w[0];
   for (var i=0; i<3; i++) w[i] = w[i+1];
   w[3] = tmp;
   return w;
 }
-
-
-// Sbox is pre-computed multiplicative inverse in GF(2^8) used in SubBytes and KeyExpansion [§5.1.1]
 var Sbox =  [0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,
              0xca,0x82,0xc9,0x7d,0xfa,0x59,0x47,0xf0,0xad,0xd4,0xa2,0xaf,0x9c,0xa4,0x72,0xc0,
              0xb7,0xfd,0x93,0x26,0x36,0x3f,0xf7,0xcc,0x34,0xa5,0xe5,0xf1,0x71,0xd8,0x31,0x15,
@@ -144,8 +111,6 @@ var Sbox =  [0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0x
              0x70,0x3e,0xb5,0x66,0x48,0x03,0xf6,0x0e,0x61,0x35,0x57,0xb9,0x86,0xc1,0x1d,0x9e,
              0xe1,0xf8,0x98,0x11,0x69,0xd9,0x8e,0x94,0x9b,0x1e,0x87,0xe9,0xce,0x55,0x28,0xdf,
              0x8c,0xa1,0x89,0x0d,0xbf,0xe6,0x42,0x68,0x41,0x99,0x2d,0x0f,0xb0,0x54,0xbb,0x16];
-
-// Rcon is Round Constant used for the Key Expansion [1st col is 2^(r-1) in GF(2^8)] [§5.2]
 var Rcon = [ [0x00, 0x00, 0x00, 0x00],
              [0x01, 0x00, 0x00, 0x00],
              [0x02, 0x00, 0x00, 0x00],
@@ -157,21 +122,6 @@ var Rcon = [ [0x00, 0x00, 0x00, 0x00],
              [0x80, 0x00, 0x00, 0x00],
              [0x1b, 0x00, 0x00, 0x00],
              [0x36, 0x00, 0x00, 0x00] ]; 
-
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-
-/** 
- * Encrypt a text using AES encryption in Counter mode of operation
- *  - see http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf
- *
- * Unicode multi-byte character safe
- *
- * @param plaintext source text to be encrypted
- * @param password  the password to use to generate a key
- * @param nBits     number of bits to be used in the key (128, 192, or 256)
- * @return          encrypted text
- */
 function AESEncryptCtr(plaintext, password, nBits) {
   var blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
   if (!(nBits==128 || nBits==192 || nBits==256)) return '';  // standard allows 128/192/256 bit keys
@@ -234,16 +184,6 @@ function AESEncryptCtr(plaintext, password, nBits) {
   //alert((new Date()) - t);
   return ciphertext;
 }
-
-
-/** 
- * Decrypt a text encrypted by AES in counter mode of operation
- *
- * @param ciphertext source text to be encrypted
- * @param password   the password to use to generate a key
- * @param nBits      number of bits to be used in the key (128, 192, or 256)
- * @return           decrypted text
- */
 function AESDecryptCtr(ciphertext, password, nBits) {
   var blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
   if (!(nBits==128 || nBits==192 || nBits==256)) return '';  // standard allows 128/192/256 bit keys
@@ -300,19 +240,7 @@ function AESDecryptCtr(ciphertext, password, nBits) {
   //alert((new Date()) - t);
   return plaintext;
 }
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-
-/**
- * Encode string into Base64, as defined by RFC 4648 [http://tools.ietf.org/html/rfc4648]
- * (instance method extending String object). As per RFC 4648, no newlines are added.
- *
- * @param utf8encode optional parameter, if set to true Unicode string is encoded to UTF8 before 
- *                   conversion to base64; otherwise string is assumed to be 8-bit characters
- * @return           base64-encoded string
- */ 
 var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-
 String.prototype.encodeBase64 = function(utf8encode) {  // http://tools.ietf.org/html/rfc4648
   utf8encode =  (typeof utf8encode == 'undefined') ? false : utf8encode;
   var o1, o2, o3, bits, h1, h2, h3, h4, e=[], pad = '', c, plain, coded;
@@ -345,15 +273,6 @@ String.prototype.encodeBase64 = function(utf8encode) {  // http://tools.ietf.org
    
   return coded;
 }
-
-/**
- * Decode string from Base64, as defined by RFC 4648 [http://tools.ietf.org/html/rfc4648]
- * (instance method extending String object). As per RFC 4648, newlines are not catered for.
- *
- * @param utf8decode optional parameter, if set to true UTF8 string is decoded back to Unicode  
- *                   after conversion from base64
- * @return           decoded string
- */ 
 String.prototype.decodeBase64 = function(utf8decode) {
   utf8decode =  (typeof utf8decode == 'undefined') ? false : utf8decode;
   var o1, o2, o3, h1, h2, h3, h4, bits, d=[], plain, coded;
@@ -381,15 +300,6 @@ String.prototype.decodeBase64 = function(utf8decode) {
    
   return utf8decode ? plain.decodeUTF8() : plain; 
 }
-
-/**
- * Encode multi-byte Unicode string into utf-8 multiple single-byte characters 
- * (BMP / basic multilingual plane only) (instance method extending String object).
- *
- * Chars in range U+0080 - U+07FF are encoded in 2 chars, U+0800 - U+FFFF in 3 chars
- *
- * @return encoded string
- */
 String.prototype.encodeUTF8 = function() {
   // use regular expressions & String.replace callback function for better efficiency 
   // than procedural approaches
@@ -407,13 +317,6 @@ String.prototype.encodeUTF8 = function() {
     );
   return str;
 }
-
-/**
- * Decode utf-8 encoded string back into multi-byte Unicode characters
- * (instance method extending String object).
- *
- * @return decoded string
- */
 String.prototype.decodeUTF8 = function() {
   var str = this.replace(
       /[\u00c0-\u00df][\u0080-\u00bf]/g,                 // 2-byte chars
@@ -430,4 +333,3 @@ String.prototype.decodeUTF8 = function() {
   return str;
 }
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
