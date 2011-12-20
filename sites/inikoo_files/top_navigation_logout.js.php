@@ -418,6 +418,7 @@ Dom.setStyle('dialog_register','display','block');
 Dom.get('register_email').focus();
 
 }
+
 function hide_register_dialog(){
 Dom.setStyle(['show_login_dialog','show_register_dialog'],'display','');
 Dom.setStyle('dialog_register','display','none');
@@ -431,6 +432,7 @@ Dom.setStyle(['show_login_dialog','dialog_login','dialog_forgot_password','dialo
 Dom.setStyle('dialog_register_part_2','display','block');
 Dom.get('register_password1').focus()
 }
+
 function hide_register_part_2_dialog(){
 Dom.setStyle(['show_login_dialog','show_register_dialog','dialog_register'],'display','');
 Dom.setStyle('dialog_register_part_2','display','none');
@@ -516,8 +518,6 @@ login()
 
 }
 
-
-
 function submit_check_email(){
 
 var error=false;
@@ -557,8 +557,6 @@ Dom.removeClass(['captcha_code2'],'error');
 if(!error)
 forgot_password()
 }
-
-
 
 function submit_forgot_password_from_email_in_db(){
 

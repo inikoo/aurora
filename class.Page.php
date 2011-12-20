@@ -296,7 +296,11 @@ class Page extends DB_Table {
 
 
 
+
+
         $data['Page Key']=$this->id;
+
+
 
         if (!is_array($data['Page Store Showcases'])) {
             $data['Page Store Showcases']=array();
@@ -339,7 +343,10 @@ class Page extends DB_Table {
         $values='values(';
         foreach($data as $key=>$value) {
             $keys.="`$key`,";
-            if (preg_match('/Subtitle|Title|Resume|Presentation|Slogan|Manual Layout Data|Page Store Showcases|Page Store Showcases/i',$key))
+            if ($key=='Page Source Template')
+                $values.=prepare_mysql($value,false).",";
+
+            else if (preg_match('/Subtitle|Title|Resume|Presentation|Slogan|Manual Layout Data|Page Store Showcases|Page Store Showcases/i',$key))
                 $values.="'".addslashes($value)."',";
             else
                 $values.=prepare_mysql($value).",";
@@ -1952,11 +1959,27 @@ class Page extends DB_Table {
 
     function display_top_bar() {
 
+        if ($this->logged) {
+//$ecommerce_basket.ecommerceURL()
+//$ecommerce_checkout
+            switch ($this->site->data['Site Checkout Method']) {
+            case 'Mals':
+                $basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://ww4.aitsafe.com/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+                break;
+            default:
+                $basket='';
+                break;
+            }
+ 
 
+            $html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <img src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
+        } else {
+            $html='<div style="float:right"> <span class="link" onClick=\'window.location="registration.php"\' id="show_register_dialog">'._('Register').'</span> <span class="link"  onClick=\'window.location="login.php?from='.$this->id.'"\' id="show_login_dialog">'._('Log in').'</span><img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
+        }
+        
 
-$html='<button  id="show_register_dialog">'._('Register').'</button> <button id="show_login_dialog">'._('Log In').'</button>';
-   
-   return $html;
+        
+        return $html;
 
 
     }
@@ -2153,9 +2176,9 @@ $html='<button  id="show_register_dialog">'._('Register').'</button> <button id=
 
 //print $sql;
         mysql_query($sql);
-  
-  
-  $old_image_key=$this->data['Page Preview Snapshot Image Key'];
+
+
+        $old_image_key=$this->data['Page Preview Snapshot Image Key'];
 
         //   $new_image_key=$old_image_key;
         //      $image=new Image($image_key);
@@ -2181,9 +2204,9 @@ $html='<button  id="show_register_dialog">'._('Register').'</button> <button id=
         }
 
         elseif(preg_match('/linux/i',$_system)) {
-              $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
+            $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
 
-          //  $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png --scale  512 '.(ceil($height*0.5)).'    '.$url;
+            //  $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png --scale  512 '.(ceil($height*0.5)).'    '.$url;
         }
         else {
             return;
@@ -2255,7 +2278,7 @@ $html='<button  id="show_register_dialog">'._('Register').'</button> <button id=
         }
 
 
-          //  usleep(250000);
+        //  usleep(250000);
         $this->get_data('id',$this->id);
         $new_height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 
