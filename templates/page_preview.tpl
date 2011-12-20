@@ -12,6 +12,8 @@
             <script type="text/javascript" src="{$i}"></script>
             {/foreach}
             <style type="text/css">{$page->get_css()}</style>
+                    
+
             <script type="text/javascript">{$page->get_javascript()}</script>
                       <link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
             <link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
@@ -54,14 +56,13 @@
                 {include  file="string:{$page->get_header_template()}" }             
                 </div>
                 <div id="bd" style="z-index:1;">
-                    <div id="content" class="content" style="overflow-x:hidden;overflow-y:auto;position:relative;clear:both;width:100%;height:{$page->get('Page Content Height')}px">
-                        {include file="string:$template_string"}
+                      <div  id="content" class="content"  style="overflow-x:hidden;overflow-y:auto;position:relative;clear:both;width:100%;{if $type_content=='string'}height:{$page->get('Page Content Height')}px{/if}">  
+                        {include file="$type_content:$template_string"}
+                        
                     </div>
                 </div>
                 <div id="ft" style="z-index:2">
-                
-                    {*}{include  file="footer.tpl" }{*}
-                {include  file="string:{$page->get_footer_template()}" }
+                                {include  file="string:{$page->get_footer_template()}" }
                 </div>
             </div>
     </body>

@@ -3,7 +3,9 @@ require_once 'ar_common.php';
 date_default_timezone_set('UTC');
 
 
-if(isset($user)){
+
+
+if(isset($user) and is_object($user)){
 $editor=array(
             'Author Name'=>$user->data['User Alias'],
             'Author Alias'=>$user->data['User Alias'],

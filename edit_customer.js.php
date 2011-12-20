@@ -981,7 +981,7 @@ Dom.get('billing_address').style.display='';
 
 function back_to_take_order(){
 
-    location.href='order.php?id=+id'; 
+    location.href='order.php?id='+id; 
 
 
 }

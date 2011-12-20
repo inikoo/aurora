@@ -205,7 +205,7 @@ $_key=preg_replace('/ /','',$row['Page Store Section']);
    if(in_array($_key,array('FamilyCatalogue','DepartmentCatalogue','ProductDescription')))
    $elements_number[$_key]=$row['num'];
    else{
-    $elements_number['Other']=+$row['num'];
+    $elements_number['Other']+=$row['num'];
    }
 }
 $smarty->assign('elements_number',$elements_number);
