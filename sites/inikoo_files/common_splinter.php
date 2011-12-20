@@ -320,11 +320,6 @@ if ($logged_in ) {
 log_visit($session->id,$user_log_key);
 
 
-/*
-if(isset($user))
-print_r($user);	
-*/
-
 
 function show_footer() {
     include_once('footer.php');
@@ -575,14 +570,14 @@ function add_extra_header_content($data, $type="child") {
     }
 }
 
- function slfURL() {
+function slfURL() {
         $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
         $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
         $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
         return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];
     }
 
-    function ecommerceURL() {
+function ecommerceURL() {
 
         $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
         $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
@@ -593,7 +588,7 @@ function add_extra_header_content($data, $type="child") {
             return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];//.strleft1(strtolower($_SERVER['REQUEST_URI']), "?");
     }
 
-    function strleft1($s1, $s2) {
+function strleft1($s1, $s2) {
         return substr($s1, 0, strpos($s1, $s2));
     }
 

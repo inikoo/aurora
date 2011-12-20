@@ -1,60 +1,31 @@
 <?php
+include_once('common.php');
 
-include_once('common_splinter.php');
-include_once('class.LightCustomer.php');
-include_once('class.Customer.php');
-include_once('class.Store.php');
-include_once('class.Page.php');
 
-$page_key=$_REQUEST['id'];
+
+if (!isset($page_key) and isset($_REQUEST['id'])) {
+    $page_key=$_REQUEST['id'];
+}
+
+if (!isset($page_key)) {
+
+    header('Location: index.php');
+    exit;
+}
+
 $page=new Page($page_key);
 
-$site=new Site($page->data['Page Site Key']);
-$store=new Store($page->data['Page Store Key']);
-
-
-
-
-
-$smarty->assign('logged',$logged_in);
-$page->site=$site;
-$page->user=$user;
-$page->logged=$logged_in;
-$page->currency=$store->data['Store Currency Code'];
-
-$data=array('type'=>'parent', 'width'=>1000, 'customer_profile'=>1);
-
-set_parameters($data);
-
-global $disable_redirect, $auto_load;
-
-$disable_redirect=true;
-
-if (isset($_REQUEST['dialog_box'])) {
-    $auto_load=$_REQUEST['dialog_box'];
-} else
-    $auto_load=false;
-
-
-//include_once('top_navigation.php');
-//include_once('footer.php');
-
-
-
-
-//$smarty->assign('footer',$footer_);
-if ($path=="../../") {
-    $path_id=2;
-    $path_menu='../';
+if (!$page->id) {
+    header('Location: index.php');
+    exit;
 }
-elseif($path=="../") {
-    $path_id=1;
-    $path_menu='../forms/';
+
+if ($page->data['Page Site Key']!=$site->id) {
+    header('Location: index.php');
+    exit;
 }
-elseif($path=="../sites/") {
-    $path_id=3;
-    $path_menu='../sites/forms/';
-}
+
+
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
@@ -63,15 +34,6 @@ $css_files=array(
                $yui_path.'editor/assets/skins/sam/editor.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
 
-               // 'text_editor.css',
-               //        'css/common.css',
-               // 'button.css',
-               // 'container.css',
-               // 'table.css',
-               //     'css/profile.css',
-               // 'css/upload.css',
-               //   'css/ui.css.php',
-               //        'css/styles_5lour.css'
            );
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -93,10 +55,87 @@ $js_files=array(
               'js/edit_common.js',
               'upload_common.js.php',
               'js/page.js'
-              //'top_navigation_logout.js.php?path='.$path_id
           );
 
 
+if ($page->data['Page Code']=='login') {
+    $Sk="skstart|".(date('U')+300000)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
+    $St=AESEncryptCtr($Sk,SKEY, 256);
+    $smarty->assign('St',$St);
+
+    if (isset($_REQUEST['logged_out'])) {
+        $smarty->assign('logged_out',1);
+
+    }
+
+    if (isset($_REQUEST['from']) and is_numeric($_REQUEST['from'])) {
+        $referral=$_REQUEST['from'];
+    } else {
+        $referral='';
+    }
+    $smarty->assign('referral',$referral);
+
+    $js_files[]='js/aes.js';
+    $js_files[]='js/sha256.js';
+    $css_files[]='css/inikoo.css';
+
+} else if ($page->data['Page Code']=='registration') {
+    $welcome=false;
+    if ($logged_in) {
+
+        if (isset($_REQUEST['welcome'])) {
+            $welcome=true;
+        } else {
+
+            header('location: profile.php');
+            exit;
+        }
+
+    }
+
+
+    $smarty->assign('welcome',$welcome);
+
+    $js_files[]='js/aes.js';
+    $js_files[]='js/sha256.js';
+    $css_files[]='css/inikoo.css';
+}
+
+else if ($page->data['Page Code']=='profile') {
+
+    if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('contact','orders','address_book','edit_details','edit_billing','change_password'))) {
+        $view=$_REQUEST['view'];
+    } else {
+        $view='contact';
+    }
+    $smarty->assign('view',$view);
+
+    $smarty->assign('user',$user);
+    $rnd='';
+
+    for ($i = 0; $i < 16; $i++) {
+        $rnd .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", mt_rand(0, 63), 1);
+    }
+
+    $epwcp1=sprintf("%sinsecure_key%s",$user->id,$rnd);
+
+    $smarty->assign('epwcp1',$epwcp1);
+    $smarty->assign('rnd',$rnd);
+    $js_files[]='js/aes.js';
+    $js_files[]='js/sha256.js';
+    $css_files[]='css/inikoo.css';
+
+}
+
+$smarty->assign('logged',$logged_in);
+$page->site=$site;
+$page->user=$user;
+$page->logged=$logged_in;
+$page->currency=$store->data['Store Currency Code'];
+
+if ($logged_in) {
+    $page->customer=$customer;
+}
 
 
 $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
@@ -141,46 +180,25 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
-  
+if ($page->data['Page Store Content Display Type']=='Source') {
+    $smarty->assign('type_content','string');
+    $smarty->assign('template_string',$page->data['Page Store Source']);
+
+} else {
+    $smarty->assign('type_content','file');
+    $smarty->assign('template_string',$page->data['Page Store Content Template Filename'].'.tpl');
+    $css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
+    $js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
+}
 
 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
-$categories=array();
-include_once('class.Category.php');
-
-$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$store_key);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    $tmp=new Category($row['Category Key']);
-    $categories[$row['Category Key']]=$tmp;
-}
-
-//print_r($categories);
-$smarty->assign('categories',$categories);
-$smarty->assign('count',1);
-$smarty->assign('path',$path);
-if (!$logged_in)
-    $smarty->assign('St',$St);
-$smarty->assign('authentication_type',$authentication_type);
-
-if ($logged_in) {
-    $rnd=md5(rand());
-    $smarty->assign('rnd',$rnd);
-    $smarty->assign('epwcp1',md5($user->id.'insecure_key'.$rnd));
-}
-$menubar=file_get_contents("$path".'inikoo_files/templates/menubar2011.html');
-$smarty->assign('menubar',$menubar);
-
 $smarty->assign('title',$page->data['Page Title']);
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
-
-$template_string = 'display  here';
-$smarty->assign('template_string',$page->data['Page Store Source']);
 $smarty->display('page.tpl');
+
 ?>
