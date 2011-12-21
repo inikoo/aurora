@@ -5848,7 +5848,7 @@ class Customer extends DB_Table {
 
     function badge_caption_gold() {
 
-        strtotime(    $this->data['Customer Last Order Date']   )
+   //     strtotime(    $this->data['Customer Last Order Date']   )
 
         return $this->data['Customer Last Order Date'];
     }
