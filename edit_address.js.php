@@ -66,7 +66,7 @@ function cancel_edit_address(prefix) {
 function change_main_address(address_key,options) {
 
     var request='ar_edit_contacts.php?tipo=set_main_address&value=' +address_key+'&key='+options.type+'&subject='+options.Subject+'&subject_key='+options.subject_key;
-	//alert(request);
+	alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
             // alert(o.responseText);
