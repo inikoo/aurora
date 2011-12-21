@@ -138,7 +138,7 @@ scope:this
                     'GET',
                 ar_file+'?tipo='+action+column.object + myBuildUrl(this,record), {
                 success: function (o) {
-                  //   alert(o.responseText);
+                  //   a(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         
                           var data = record.getData();
@@ -769,7 +769,7 @@ this.table0.table_id=tableid;
 				 
 					
 					 ];
-		alert("ar_contacts.php?tipo=customer_orders&customer_key="+customer_key+"&sf=0&tid="+tableid);
+		//alert("ar_contacts.php?tipo=customer_orders&customer_key="+customer_key+"&sf=0&tid="+tableid);
 		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_orders&customer_key="+customer_key+"&sf=0&tid="+tableid);
 		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
