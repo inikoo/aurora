@@ -37,7 +37,7 @@
 <h3>{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()})</h3> 
 
 <table id="customer_data" border=0 style="width:100%;margin-top:20px">
-<tr><td>{t}Company{/t}:</td><td><img src="art/edit.gif" onClick="show_edit_name()" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Company Name')}</td ></tr>
+<tr ><td >{t}Company{/t}:</td><td><img src="art/edit.gif" onClick="show_edit_name()" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Company Name')}</td ></tr>
 
 <tr><td>{t}Name{/t}:</td><td><img src="art/edit.gif" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Main Contact Name')}</td ></tr>
 
@@ -105,15 +105,15 @@ bla bla bla
 	<td>{t}Customer Name:{/t}</td>
 	<td>
 	<div style="width:220px">
-	<input type="text" id="Customer_Name" value="{$page->customer->get('Customer Company Name')}" ovalue="{$page->customer->get('Customer Company Name')}" valid="0">
-	<div id="Customer_Name_Container"  ></div>
+	<input type="text" id="Customer_Company_Name" value="{$page->customer->get('Customer Company Name')}" ovalue="{$page->customer->get('Customer Company Name')}" valid="0">
+	<div id="Customer_Company_Name_Container"  ></div>
 	</div>	
 	</td>
 
 	</tr>
 	<tr><td colspan=2>
 	<div class="buttons" style="margin-top:10px">
-	<span id="Customer_Name_msg" ></span>
+	<span id="Customer_Company_Name_msg" ></span>
 	<button class="positive" onClick="save_quick_edit_name()">{t}Save{/t}</button>
 	<button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button>
 

@@ -844,7 +844,7 @@ return;
 	   
 	 //  alert(item_input.value.length);
 	   
-//alert(scope_edit_ar_file+'?'+postData)
+alert(scope_edit_ar_file+'?'+postData)
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {
@@ -936,7 +936,7 @@ var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+br
 //alert(request+'?'+postData);return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {
-  alert(o.responseText);
+  //alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
