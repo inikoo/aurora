@@ -112,7 +112,7 @@ else if ($page->data['Page Code']=='profile') {
     }
 
 
-    if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('contact','orders','address_book','change_password'))) {
+    if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('contact','orders','address_book','change_password', 'add_address', 'edit_address'))) {
         $view=$_REQUEST['view'];
     } else {
         $view='contact';
