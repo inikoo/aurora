@@ -5327,4 +5327,22 @@ ALTER TABLE `Custom Field Dimension` ADD `Custom Field In Registration` ENUM( 'Y
 
 
 ALTER TABLE `Custom Field Dimension` CHANGE `Custom Field Type` `Custom Field Type` ENUM( 'Mediumint', 'Text', 'Longtext', 'Enum' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL 
+ALTER TABLE `Dashboard User Bridge` ADD `Dashboard ID` SMALLINT UNSIGNED NOT NULL DEFAULT '1' AFTER `User key` ;
+ALTER TABLE `Dashboard User Bridge` ADD `Dashboard Widget Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '1' AFTER `Dashboard Order` ;
+ALTER TABLE `Dashboard User Bridge` ADD `Dashboard Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+
+CREATE TABLE IF NOT EXISTS `Dashboard Widget Dimension` (
+ `Dashboard Widget Key` mediumint(8) NOT NULL,
+ `Widget Name` varchar(255) NOT NULL,
+ `Widget Block` varchar(255) NOT NULL,
+ `Widget Dimension` varchar(255) NOT NULL,
+ `Widget URL` varchar(255) NOT NULL,
+ `Widget Description` varchar(255) NOT NULL,
+ PRIMARY KEY (`Dashboard Widget Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8  ;
+
+INSERT INTO `Dashboard Widget Dimension` (`Dashboard Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`) VALUES
+(1, 'Dashboard Block', 'block_3', '', 'dashboard_block.php?tipo=sales_overview', ''),
+(2, 'Twitter', 'block_1', '405', 'splinter_twitter.php?', ''),
+(3, 'Facebook', 'block_2', '560', '//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2FAncientWisdom.biz&amp;width=614&amp;height=560&amp;colorscheme=light&amp;show_faces=true&amp;border_color&amp;stream=true&amp;header=false', '');
 
