@@ -217,6 +217,7 @@ elseif(isset($_REQUEST['p'])) {
         $_SESSION['customer_key']=$auth->get_user_parent_key();
 
 
+
         header('location: profile.php?view=change_password');
         exit;
 
