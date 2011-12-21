@@ -196,8 +196,8 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 } else {
     $smarty->assign('type_content','file');
     $smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
-    $css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
-    $js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
+    $css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
+    $js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
 }
 
 
