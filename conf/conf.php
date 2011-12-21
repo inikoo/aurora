@@ -322,7 +322,15 @@ $default_state=array(
 
                              ),
 
-
+		   'dashboard'=>array(
+				'table'=>array(
+					'nr'=>5,
+					'order'=>'id',
+					'order_dir'=>'desc',
+					'f_field'=>'customer_name',
+		                        'f_value'=>''
+				)
+		   ),
 
                    'orders'=>array(
                                 'details'=>false,

@@ -253,8 +253,9 @@ var onCellClick = function(oArgs) {
 
     var recordIndex = this.getRecordIndex(record);
   //var  datatable = this.getDataTable();
+   //alert(column.object)
     switch (column.action) {
-   
+
    
     case 'delete':
         if (record.getData('delete')!='') {
@@ -267,8 +268,10 @@ if(delete_type== undefined)
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
                 if (column.object=='company' || column.object=='company_area' || column.object=='customer_history' || column.object=='customer_list')
                     ar_file='ar_edit_contacts.php';
+		else if(column.object=='widget_list' )
+			ar_file='ar_dashboard.php';
                 else if (column.object=='warehouse_area' || column.object=='location')
-                    ar_file='ar_edit_warehouse.php';
+                    ar_file='ar_edit_warehousrecordIndexe.php';
                 else if (column.object=='position')
                     ar_file='ar_edit_staff.php';
                 else if (column.object=='supplier_product' || column.object=='supplier')
@@ -288,12 +291,12 @@ if(delete_type== undefined)
 
 
 
-       //   alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record));return;
+          //alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record));return;
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
                 success: function (o) {
-                  //  alert(o.responseText);
+                    //alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 
@@ -332,6 +335,40 @@ scope:this
 case 'dialog':
 show_cell_dialog(this,oArgs);
 break;
+
+case 'add':
+
+		if(column.object=='widget_list' )
+			ar_file='ar_dashboard.php';
+
+
+
+        //alert(ar_file+'?tipo=add_'+column.object + myBuildUrl(this,record));return;
+                YAHOO.util.Connect.asyncRequest(
+                    'GET',
+                ar_file+'?tipo=add_'+column.object + myBuildUrl(this,record), {
+                success: function (o) {
+                    //alert(o.responseText);
+                        var r = YAHOO.lang.JSON.parse(o.responseText);
+                        if (r.state == 200 && r.action=='added') {
+			  alert(r.msg);
+
+
+                        } else {
+                            alert(r.msg);
+                        }
+                    },
+failure: function (fail) {
+                        alert(fail.statusText);
+                    },
+scope:this
+                }
+                );
+
+
+break;
+
+
     default:
 
         this.onEventShowCellEditor(oArgs);
