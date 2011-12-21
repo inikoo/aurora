@@ -72,6 +72,7 @@
                     <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
                 </tr>
                 {/if}
+                
                 {if $customer->get('Customer Main Email Key')}<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')"><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td id="email_label{$customer->get('Customer Main Email Key')}"style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td><td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
                 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
                     <tr id="other_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_email{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_email{$key}','visibility','hidden')"><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td id="email_label{$key}" style="color:#777;font-size:80%">{$other_email.label}</td><td><img onMouseover="Dom.setStyle('other_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_email_tr','border-color','#fff')" id="quick_edit_other_email{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
@@ -255,6 +256,17 @@
   <div id="block_details"  style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
 
+<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
+
+
+{include file='customer_badges.tpl' customer=$customer}
+
+<div style="clear:both"></div>
+</div>
+
+
+{*}
+
 <h2 style="clear:both">{t}Custom Fields{/t}</h2>
 
 <div style="float:left;width:450px">
@@ -336,6 +348,8 @@
 		</table>
 </div>
 {/if}
+
+{*}
 
 <div style="clear:both"></div>
 
