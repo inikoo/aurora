@@ -1,0 +1,1 @@
+../../../templates/registration.tpl

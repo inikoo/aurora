@@ -290,7 +290,7 @@ foreach($page_data as $store_code=>$data) {
               //exit;
               $site->add_index_page($page_data);
             } else {
-                $site->add_page($page_data);
+                $site->add_store_page($page_data);
             }
            
 

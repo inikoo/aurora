@@ -12,6 +12,8 @@
             <script type="text/javascript" src="{$i}"></script>
             {/foreach}
             <style type="text/css">{$page->get_css()}</style>
+                    
+
             <script type="text/javascript">{$page->get_javascript()}</script>
                       <link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
             <link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
@@ -19,6 +21,9 @@
             <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script>
     </head>
     <body class="yui-skin-sam inikoo" >
+    <input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
+        <input type="hidden" id="update_heights" value="{$update_heights}" />
+
         <div id="doc4" >
         <div id="preview_hd" style="background:#245e86 url('art/themes/cobalt.jpg') bottom left repeat-x;color:#fff;;padding:3px 10px;height:22px;{if !$show_header}display:none{/if}">
 <input type="hidden" id="page_key" value="{$page->id}"/>
@@ -51,14 +56,13 @@
                 {include  file="string:{$page->get_header_template()}" }             
                 </div>
                 <div id="bd" style="z-index:1;">
-                    <div id="content" class="content" style="overflow-x:hidden;overflow-y:auto;position:relative;clear:both;width:100%;height:{$page->get('Page Content Height')}px">
-                        {include file="string:$template_string"}
+                      <div  id="content" class="content"  style="overflow-x:hidden;overflow-y:auto;position:relative;clear:both;width:100%;{if $type_content=='string'}height:{$page->get('Page Content Height')}px{/if}">  
+                        {include file="$type_content:$template_string"}
+                        
                     </div>
                 </div>
                 <div id="ft" style="z-index:2">
-                
-                    {*}{include  file="footer.tpl" }{*}
-                {include  file="string:{$page->get_footer_template()}" }
+                                {include  file="string:{$page->get_footer_template()}" }
                 </div>
             </div>
     </body>
