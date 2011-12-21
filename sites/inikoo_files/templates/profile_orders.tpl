@@ -20,11 +20,10 @@
 <input type="hidden" id="customer_key"  value="{$page->customer->id}"/>
 
 
-<div style="width:920px;margin:0px auto" >
-<h2>{t}Orders{/t}</h2>
-     {include file='table_splinter.tpl' table_id=0 filter_name='' filter_value='' no_filter=true  }
+
+     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
     <div  id="table0"   class="data_table_container dtable btable "> </div>
-</div>
+
 
 </div>     
 
