@@ -2954,7 +2954,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
         //  print "$customer_key,$key,$value_data ***";
 
 
-            print "$key  $the_new_value";
+      //      print "$key  $the_new_value";
 
         $customer->update(array($key=>$the_new_value));
     }
