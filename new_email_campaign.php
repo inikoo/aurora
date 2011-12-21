@@ -29,7 +29,7 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
                'common.css',
                'button.css',
-               'container.css',
+               'css/container.css',
                'table.css','css/users.css','css/edit.css'
            );
 $js_files=array(

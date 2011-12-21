@@ -11,7 +11,7 @@ $css_files=array(
 
 		
 		 'button.css',
-		 'container.css'
+		 'css/container.css'
 		 );
 
 $css_files[]='theme.css.php';

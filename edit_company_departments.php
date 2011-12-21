@@ -40,7 +40,7 @@ $css_files=array(
 		 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
 		 'common.css',
-		 'container.css'
+		 'css/container.css'
 		 );
 
 $css_files[]='theme.css.php';
