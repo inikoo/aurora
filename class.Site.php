@@ -252,15 +252,15 @@ class Site extends DB_Table {
     function update_field_switcher($field,$value,$options='') {
 
         switch ($field) {
-        
+
         case('Site Menu HTML'):
         case('Site Menu CSS'):
         case('Site Menu Javascript'):
         case('Site Search HTML'):
         case('Site Search CSS'):
-        case('Site Search Javascript'):      
-     $this->update_field($field,$value,'no_history');
-     break;
+        case('Site Search Javascript'):
+            $this->update_field($field,$value,'no_history');
+            break;
         case 'mals_id':
             $this->update_mals_data('id',$value);
             break;
@@ -290,10 +290,16 @@ class Site extends DB_Table {
 
 
 
-    function add_page($page_data) {
+    function add_store_page($page_data) {
         $page_data['Page Store Key']=$this->data['Site Store Key'];
         $page_data['Page Parent Key']=$this->data['Site Store Key'];
         $page_data['Page Site Key']=$this->id;
+        $page_data['Page Header Key']=$this->data['Site Default Header Key'];
+        $page_data['Page Footer Key']=$this->data['Site Default Footer Key'];
+        $page_data['Page Section']='catalogue';
+        $page_data['Page Type']='Store';
+        $page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
+
 
         $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
         $page_data['Page Store Section Key']=$page_section->id;
@@ -363,6 +369,7 @@ class Site extends DB_Table {
         $page_data['Page Store Key']=$store->data['Store Key'];
         $page_data['Page Parent Key']=$store->data['Store Key'];
 
+        $page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
 
 
         $page=new Page('find',$page_data,'create');
@@ -406,6 +413,7 @@ class Site extends DB_Table {
                        'Page Store Showcases Layout'=>$showcases_layout,
                        'Page Store Product Layouts'=>$product_layouts
                    );
+        $page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
 
         $page_data['Page Store Section']='Store Catalogue';
         $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
@@ -513,6 +521,7 @@ class Site extends DB_Table {
                        'Page Store Showcases Layout'=>$showcases_layout,
                        'Page Store Product Layouts'=>$product_layouts
                    );
+        $page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
 
         $page_data['Page Store Section']='Department Catalogue';
         $page_section=new PageStoreSection('code',$page_data['Page Store Section']);
@@ -632,6 +641,7 @@ class Site extends DB_Table {
         $page_data['Page Store Key']=$store->id;
         $page_data['Page Parent Key']=$family->id;
 
+        $page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
 
         $page=new Page('find',$page_data,'create');
 
@@ -731,6 +741,21 @@ class Site extends DB_Table {
         $page_section=new PageStoreSection('code',$code,$this->id);
         return $page_section;
     }
+
+function get_welcome_template(){
+    return $this->data['Site Welcome Source'];
+}
+
+    function get_page_key($code) {
+        $page_key=0;
+        $sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Code`=%s ",$this->id,prepare_mysql($code));
+ $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $page_key=$row['Page Key'];
+        }
+        return $page_key;
+    }
+
 
     function get_unique_family_page_code($family) {
 
@@ -873,17 +898,17 @@ class Site extends DB_Table {
         }
 
     }
-    
-    function display_search(){
-    
- 
-    return $this->data['Site Search HTML'];
+
+    function display_search() {
+
+
+        return $this->data['Site Search HTML'];
     }
-    
-    function display_menu(){
-     return $this->data['Site Menu HTML'];
+
+    function display_menu() {
+        return $this->data['Site Menu HTML'];
     }
-    
-    
+
+
 }
 ?>

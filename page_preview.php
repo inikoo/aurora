@@ -25,11 +25,11 @@ if (isset($_REQUEST['logged'])   ) {
     $_logged=$_REQUEST['logged'];
 }
 
-if ($_logged){
- 
- $logged=1;
- 
-}else{
+if ($_logged) {
+
+    $logged=1;
+
+} else {
     $logged=0;
 }
 $smarty->assign('logged',$logged);
@@ -39,10 +39,10 @@ $page->logged=$logged;
 $page->currency=$store->data['Store Currency Code'];
 
 
-if(isset($_REQUEST['header']) and !$_REQUEST['header']){
-$show_header=false;
-}else{
-$show_header=true;
+if (isset($_REQUEST['header']) and !$_REQUEST['header']) {
+    $show_header=false;
+} else {
+    $show_header=true;
 }
 $smarty->assign('show_header',$show_header);
 
@@ -50,6 +50,20 @@ $smarty->assign('show_header',$show_header);
 if (isset($_REQUEST['referral'])   ) {
     $smarty->assign('referral',urldecode($_REQUEST['referral']));
 }
+
+if (isset($_REQUEST['update_heights'])  and  $_REQUEST['update_heights']) {
+    $smarty->assign('update_heights',1);
+} else {
+    $smarty->assign('update_heights',0);
+}
+
+
+if (isset($_REQUEST['take_snapshot']) and $_REQUEST['take_snapshot']  ) {
+    $smarty->assign('take_snapshot',1);
+} else {
+    $smarty->assign('take_snapshot',0);
+}
+
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -114,7 +128,17 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
-  
+if ($page->data['Page Store Content Display Type']=='Source') {
+    $smarty->assign('type_content','string');
+    $smarty->assign('template_string',$page->data['Page Store Source']);
+    
+} else {
+    $smarty->assign('type_content','file');
+    $smarty->assign('template_string',$page->data['Page Store Content Template Filename'].'.tpl');
+     $css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
+     $js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
+}
+
 
 
 $smarty->assign('css_files',$css_files);
@@ -127,7 +151,9 @@ $smarty->assign('title',_('Preview').' '.$page->data['Page Title']);
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
-$smarty->assign('template_string',$page->data['Page Store Source']);
+
+
+
 
 
 $order=$_SESSION['state']['site']['pages']['order'];
@@ -157,9 +183,10 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $prev['link']='page_preview.php?id='.$row['id'];
     $prev['title']=$row['name'];
+    $smarty->assign('prev',$prev);
+
 }
 mysql_free_result($result);
-$smarty->assign('prev',$prev);
 $sql=sprintf(" select `Page Key` as id , `Page Store Title` as name from `Page Store Dimension`    where  `Page Site Key`=%d  and  %s>%s  order by %s   ",
              $site->id,
              $order,
@@ -168,13 +195,21 @@ $sql=sprintf(" select `Page Key` as id , `Page Store Title` as name from `Page S
             );
 
 $result=mysql_query($sql);
+
+
+
+
+
+
+
+
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $next['link']='page_preview.php?id='.$row['id'];
     $next['title']=$row['name'];
+    $smarty->assign('next',$next);
 }
 mysql_free_result($result);
-$smarty->assign('prev',$prev);
-$smarty->assign('next',$next);
+
 
 $smarty->assign('parent_url','site.php?id='.$site->id);
 $parent_title=$site->data['Site Name'].' '._('Pages').' ('.$order_label.')';
