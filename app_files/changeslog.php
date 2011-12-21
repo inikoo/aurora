@@ -5313,7 +5313,8 @@ ALTER TABLE `Site Dimension` ADD `Site Code` VARCHAR( 8 ) NOT NULL AFTER `Site S
 ALTER TABLE `Page Store Dimension` DROP `Page Product Metadata`,DROP `Page List Metadata`;
 ALTER TABLE `Page Store Dimension` ADD `Number See Also Links` TINYINT( 3 ) UNSIGNED NOT NULL AFTER `Page Store Last Structural Change Date` ;
 
+ALTER TABLE `Site Dimension` ADD `Site Default Number See Also Links` TINYINT( 4 ) UNSIGNED NOT NULL AFTER `Site Default Footer Key` ;
 
-
-
-
+ALTER TABLE `Page Store Dimension` ADD `Page Store Content Display Type` ENUM( 'Source', 'Template' ) NOT NULL DEFAULT 'Source' AFTER `Page Store See Also Type` ,ADD `Page Store Content Template Filename` VARCHAR( 128 ) NULL DEFAULT NULL AFTER `Page Store Content Display Type` ;
+ALTER TABLE `User Dimension` CHANGE `User Password` `User Password` VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `User Dimension` ADD `User Verified` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';

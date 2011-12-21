@@ -48,7 +48,7 @@ $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-    $dn=new Order($row['Direct Object Key']);
+    $dn=new DeliveryNote($row['Direct Object Key']);
     if (!$dn->id) {
     print "Deleting DN History ".$row['Direct Object Key']."\n";
         $sql=sprintf("delete from `Customer History Bridge`  where   `History Key`=%d",$row['History Key']);
@@ -64,7 +64,7 @@ $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-    $order=new DeliveryNote($row['Direct Object Key']);
+    $order=new Order($row['Direct Object Key']);
     if (!$order->id) {
         print "Deleting Order History ".$row['Direct Object Key']."  ".$row['History Key']."  \n";
         $sql=sprintf("delete from `Customer History Bridge`  where   `History Key`=%d",$row['History Key']);
