@@ -84,8 +84,8 @@ function list_orders(){
 			'id'=>$row['Order Public ID'],
                      'state'=>$row['Order Current XHTML State'],
                      'date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
-                     'total'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
-
+                   //  'total'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
+'total'=>money($row['Order Balance Total Amount'],'GBP')
 
                  );
     }

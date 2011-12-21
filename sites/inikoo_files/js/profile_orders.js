@@ -66,6 +66,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    
+	    this.table0.table_id=tableid;        
+        this.table0.subscribe("renderEvent", myrenderEvent);
+	    
 	    //this.table0.filter={key:'<?php echo$_SESSION['state']['locations']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['locations']['table']['f_value']?>'};
     }  });
 
