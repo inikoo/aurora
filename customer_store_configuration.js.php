@@ -24,34 +24,27 @@ var validate_scope_data=
 					,'Custom_Field_Type':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Custom_Field_Type', 'dbname':'Custom Field Type'}
 					,'Custom_Field_In_New_Subject':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Custom_Field_In_New_Subject', 'dbname':'Custom Field In New Subject'}
 					,'Custom_Field_In_Showcase':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Custom_Field_In_Showcase', 'dbname':'Custom Field In Showcase'}
+					,'Custom_Field_In_Registration':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Custom_Field_In_Registration', 'dbname':'Custom Field In Registration'}
+					,'Custom_Field_In_Profile':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Custom_Field_In_Profile', 'dbname':'Custom Field In Profile'}
+
+
 					,'Default_Value':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Default_Value', 'dbname':'Default Value'}
-	},
-	'email_field':{'Email':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item', 'name':'Email', 'dbname':'Email Address'}
-					,'Password':{'inputed':false,'validated':false,'regexp':"[^\\d]+",'required':false,'group':0,'type':'item', 'name':'Password', 'dbname':'Password'}
-					,'Incoming_Mail_Server':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Incoming_Mail_Server', 'dbname':'Incoming Mail Server'}
-					,'Outgoing_Mail_Server':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'Outgoing_Mail_Server', 'dbname':'Outgoing Mail Server'}
-	},'new_email_field':{'Email':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item', 'name':'newEmail', 'dbname':'Email Address'}
-					,'Password':{'inputed':false,'validated':false,'regexp':"[^\\d]+",'required':false,'group':0,'type':'item', 'name':'newPassword', 'dbname':'Password'}
-					,'Incoming_Mail_Server':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'newIncoming_Mail_Server', 'dbname':'Incoming Mail Server'}
-					,'Outgoing_Mail_Server':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item', 'name':'newOutgoing_Mail_Server', 'dbname':'Outgoing Mail Server'}
 	}
 }
 
 var validate_scope_metadata={
  'custom_field':{'type':'new','ar_file':'ar_edit_contacts.php','key_name':'store_key','key':store_key}
-,'email_field':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'store_key','key':store_key}
-,'new_email_field':{'type':'new','ar_file':'ar_edit_contacts.php','key_name':'store_key','key':store_key}
 
 };
 
-function validate_Email_Field (query) {
-	alert(query);
-	validate_general('email_field', 'Email', query)
+function validate_Default_Value (query) {
+	
+	validate_general('custom_field', 'Default_Value', query)
 	
 };
 
 function validate_Custom_Field_Name (query) {
-	alert(query);
+	
 	validate_general('custom_field', 'Custom_Field_Name', query)
 	
 };
@@ -61,10 +54,7 @@ function save_new_custom_field()
 	save_new_general('custom_field');
 }
 
-function save_new_email()
-{
-	save_new_general('email_field');
-}
+
 
 
 function cancel_add_custom_field(){
@@ -77,7 +67,7 @@ function cancel_add_custom_field(){
 function change_allow(o,key,value){
 
 Dom.get(key).value=value;
-Dom.removeClass(Dom.getElementsByClassName('option', 'span', o.parentNode ),'selected');
+Dom.removeClass(Dom.getElementsByClassName('option', 'button', o.parentNode ),'selected');
 Dom.addClass(o,'selected');
 
 }
@@ -96,13 +86,15 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=custome
 }
 
 function init(){
+
+  init_search('customers_store');
+
+
     Event.addListener(['new_custom_fields','custom_form','email_config'], "click",change_view);
 
 	Event.addListener("save_new_custom_field", "click", save_new_custom_field , true);
 	Event.addListener("cancel_add_custom_field", "click", cancel_add_custom_field , true);
-	Event.addListener("cancel_add_email", "click", cancel_add_custom_field , true);	
-	Event.addListener("save_new_email", "click", save_new_email , true);	
-
+	
 	
 	var Custom_Field_Name_oACDS = new YAHOO.util.FunctionDataSource(validate_Custom_Field_Name);
 	Custom_Field_Name_oACDS.queryMatchContains = true;
@@ -110,10 +102,11 @@ function init(){
 	Custom_Field_Name_oAutoComp.minQueryLength = 0; 
 	Custom_Field_Name_oAutoComp.queryDelay = 0.75;
 	
-	var Custom_Field_Name_oACDS = new YAHOO.util.FunctionDataSource(validate_Email_Field);
+	/*var Custom_Field_Name_oACDS = new YAHOO.util.FunctionDataSource(validate_Default_Value);
 	Custom_Field_Name_oACDS.queryMatchContains = true;
-	var Custom_Field_Name_oAutoComp = new YAHOO.widget.AutoComplete("Email","Email_Container", Custom_Field_Name_oACDS);
+	var Custom_Field_Name_oAutoComp = new YAHOO.widget.AutoComplete("Default_Value","Default_Value_Container", Custom_Field_Name_oACDS);
 	Custom_Field_Name_oAutoComp.minQueryLength = 0; 
 	Custom_Field_Name_oAutoComp.queryDelay = 0.75;
+	*/
     } 
 YAHOO.util.Event.onDOMReady(init);
