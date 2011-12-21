@@ -37,9 +37,9 @@
 <h3>{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()})</h3> 
 
 <table id="customer_data" border=0 style="width:100%;margin-top:20px">
-<tr ><td >{t}Company{/t}:</td><td><img src="art/edit.gif" onClick="show_edit_name()" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Company Name')}</td ></tr>
+<tr ><td >{t}Company{/t}:</td><td><img  style="cursor:pointer"  src="art/edit.gif" onClick="show_edit_name()" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Company Name')}</td ></tr>
 
-<tr><td>{t}Name{/t}:</td><td><img src="art/edit.gif" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Main Contact Name')}</td ></tr>
+<tr><td>{t}Name{/t}:</td><td><img style="cursor:pointer" src="art/edit.gif" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Main Contact Name')}</td ></tr>
 
 {if $page->customer->get('Customer Main Email Key')}
 <tr id="main_email_tr" >

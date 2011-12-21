@@ -40,7 +40,7 @@ $css_files=array(
 		  $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
 		 
-		 'container.css',
+		 'css/container.css',
 		
 		 'css/edit.css'
 		 

@@ -250,7 +250,7 @@ $css_files=array(
 		 'text_editor.css',
 		
 		 'button.css',
-		 'container.css'
+		 'css/container.css'
 		 );
 
 

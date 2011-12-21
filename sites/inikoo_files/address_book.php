@@ -88,7 +88,7 @@ $css_files=array(
                'text_editor.css',
                'common.css',
                'button.css',
-               'container.css',
+               'css/container.css',
                'table.css',
                'css/profile.css',
                'css/upload.css'
