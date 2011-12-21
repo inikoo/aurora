@@ -263,6 +263,3 @@ $columns=array(array('w'=>0,'txt'=>'','border'=>'T','align'=>'L'));
 // This method has several options, check the source code documentation for more information.
 $pdf->Output($dn->data['Delivery Note File As'], 'I');
 
-//============================================================+
-// END OF FILE
-//============================================================+

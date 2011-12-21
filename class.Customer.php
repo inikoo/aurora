@@ -2887,7 +2887,21 @@ class Customer extends DB_Table {
 
 
 
+function get_hello() {
 
+  
+            $unknown_name='';
+             $greeting_prefix=_('Hello');
+
+        if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
+            return $unknown_name;
+        $greeting=$greeting_prefix.' '.$this->data['Customer Main Contact Name'];
+        if ($this->data['Customer Type']=='Company') {
+            $greeting.=', '.$this->data['Customer Name'];
+        }
+        return $greeting;
+
+    }
 
 
 

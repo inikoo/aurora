@@ -611,3 +611,6 @@
     </div>
  </div>
 
+<iframe  id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights={$update_heights}" frameborder=1 style="position:absolute;top:-2000px;left:200px;width:1x;height:1px;" >
+<p>{t}Your browser does not support iframes{/t}.</p>
+</iframe>

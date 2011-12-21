@@ -213,7 +213,7 @@ function get_tipo_order($ltipo,$header){
   $header['notes2']=preg_replace('/^(Replacement|Remplacement)$/i','',$header['notes2']);
   $header['notes2']=preg_replace('/^(replacement|Remplacement)$/i','',_trim($header['notes2']));
 
-}elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORT\+REPLACEMENT|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
+}elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORT\+REPLACEMENT|SHORTAHGE|shortages|Shoratges|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
 
     $tipo=7;
   }elseif(preg_match('/^to follow|Follow.On Order|follow on/i',$ltipo)){

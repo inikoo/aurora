@@ -707,6 +707,15 @@ function upload_page_content_file(file){
 Dom.get('upload_page_content_use_file').value=file;
 upload_page_content();
 }
+
+
+function reload_this(page_key){
+
+	     	      window.location='edit_page.php?id='+page_key+'&take_snapshot=1&content_view=content';
+
+}
+
+
 function upload_page_content(){
 
 
@@ -723,8 +732,12 @@ Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','non
 	var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
+//	    update_page_height_and_reload(r.page_key)
+  //          Dom.get('page_preview_iframe').src='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
+
+window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=content';
+//setTimeout("reload_this("+r.page_key+")", 250);
 	     
-	     update_page_snapshot_and_reload(r.page_key)
 	     
       return;
                 
@@ -754,12 +767,13 @@ Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','non
 
   };
   
-  function update_page_snapshot_and_reload(page_key){
+  function update_page_height_and_reload(page_key){
 //  alert('ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key)
   YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key,{
   success: function(o) {
   //alert(o.responseText)
-   window.location.reload()
+  	    //  window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=content';
+
   }
   });
   
