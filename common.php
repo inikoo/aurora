@@ -1,8 +1,11 @@
 <?php
+
 define('DEBUG', 0);
 if (DEBUG) {
     error_reporting(E_ALL);
 }
+
+
 
 //$path = 'classes';set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
@@ -45,6 +48,7 @@ if (!$db_selected) {
 }
 
 
+
 //print_r($_REQUEST);
 
 mysql_query("SET NAMES 'utf8'");
@@ -58,6 +62,7 @@ require_once 'conf/conf.php';
 $max_session_time=$myconf['max_session_time'];
 $max_session_time_in_milliseconds=1000*$max_session_time;
 $session = new Session($max_session_time,1,100);
+
 
 
 
