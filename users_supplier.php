@@ -21,7 +21,7 @@ if(!$user->can_view('users'))
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
                'theme.css.php'

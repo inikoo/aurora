@@ -23,7 +23,7 @@ $css_files=array(
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		 
-		 'container.css'
+		 'css/container.css'
 		 );
 
 $css_files[]='theme.css.php';

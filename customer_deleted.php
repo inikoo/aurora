@@ -55,7 +55,7 @@ $css_files=array(
                'text_editor.css',
                'common.css',
                'button.css',
-               'container.css',
+               'css/container.css',
                'table.css',
                'css/customer.css'
 

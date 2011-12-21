@@ -73,7 +73,7 @@ $css_files=array(
 
 
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
                'css/edit.css',

@@ -55,7 +55,7 @@ $css_files=array(
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		
 		 'button.css',
-		 'container.css',
+		 'css/container.css',
 		
 		 'css/edit.css'
 		 );

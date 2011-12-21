@@ -229,7 +229,7 @@ PLEASE NOTE:
     width:12px;
     margin:0px;
     padding:0px;
-    background:url('art/icons/close.gif') no-repeat;
+    background:url('../art/icons/close.gif') no-repeat;
     cursor:pointer;
     visibility:inherit;
     text-indent:-10000em;
