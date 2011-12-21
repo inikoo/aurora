@@ -5843,15 +5843,98 @@ class Customer extends DB_Table {
 
     function badge_state_gold() {
 
-        return true;
+        if (strtotime($this->data['Customer Last Order Date'] .' +1 month')>time()) {
+            return true;
+        } else {
+            return false;
+        }
+
+
+    }
+    function badge_caption_gold($state) {
+
+        if ($state) {
+
+
+            return _('Valid until').": ".date('d-m-Y',strtotime($this->data['Customer Last Order Date'] .' +1 month'));
+
+
+
+        } else {
+
+            if ($this->data['Customer Orders'])
+                return _('Expired');
+            else
+                return '';
+        }
+
     }
 
-    function badge_caption_gold() {
 
-   //     strtotime(    $this->data['Customer Last Order Date']   )
+    function badge_state_freedom() {
 
-        return $this->data['Customer Last Order Date'];
+
+        $sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'free-%%' ",$this->id);
+
+
+
+
+
+        $res=mysql_query($sql);
+
+
+        if (mysql_num_rows($res)) {
+            return true;
+        }
+
+        $sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'freeinc-%%' ",$this->id);
+        $res=mysql_query($sql);
+        if (mysql_num_rows($res)) {
+            return true;
+        }
+
+        $sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Customer Key`=%s and `Product Code` like 'style-%%' ",$this->id);
+        $res=mysql_query($sql);
+        if (mysql_num_rows($res)) {
+            return true;
+        }
+        return false;
+
+
+
     }
+    function badge_caption_freedom($state) {
+
+
+
+
+        if ($state) {
+
+
+            return _('Thanks');
+
+
+
+        } else {
+
+
+            return _('Buy').': Free, FreeInc or Style ';
+
+        }
+
+    }
+
+
+    function badge_state_profile() {
+        return false;
+    }
+    
+    
+    function badge_caption_profile($state) {
+
+        return percentage(0,1,0);
+    }
+
 
     function display_badge($badge_key) {
 
@@ -5860,20 +5943,37 @@ class Customer extends DB_Table {
                               'Badge Image On'=>'art/gold.jpg',
                               'Badge Image Off'=>'art/gold_off.jpg',
                               'Badge Code'=>'gold'
+                          ),
+                        2=>array(
+                              'Badge Image On'=>'art/freedom.jpg',
+                              'Badge Image Off'=>'art/freedom_off.jpg',
+                              'Badge Code'=>'freedom'
+                          ),
+                        3=>array(
+                              'Badge Image On'=>'art/profile.jpg',
+                              'Badge Image Off'=>'art/profile_off.jpg',
+                              'Badge Code'=>'profile'
                           )
+
                     );
 
         $state=false;
-               $caption='';
+        $caption='';
         if ($badge_key==1) {
             $state= $this->badge_state_gold();
-            $caption= $this->badge_caption_gold();
-                  }
+            $caption= $this->badge_caption_gold($state);
+        } else if ($badge_key==2) {
+            $state= $this->badge_state_freedom();
+            $caption= $this->badge_caption_freedom($state);
+        } else if ($badge_key==3) {
+            $state= $this->badge_state_profile();
+            $caption= $this->badge_caption_profile($state);
+        }
 
         if ($state) {
-            $html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><span style="font-size:10px">%s</span></div>',$badge_data[$badge_key]['Badge Image On'],$caption);
+            $html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><div style="font-size:10px;margin-top:5px">%s</div></div>',$badge_data[$badge_key]['Badge Image On'],$caption);
         } else {
-            $html=sprintf('b<img src="%s" alt="" />',$badge_data[$badge_key]['Badge Image Off']);
+            $html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><div style="font-size:10px;margin-top:5px">%s</div></div>',$badge_data[$badge_key]['Badge Image Off'],$caption);
 
         }
 
