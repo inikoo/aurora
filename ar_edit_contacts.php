@@ -4024,9 +4024,20 @@ function new_customers_list($data) {
 
 function create_custom_field($data) {
 
-    //print_r ($data['values']);
+    print_r ($data['values']);
     $custom_field = new Customfield('find', $data['values'], 'create');
 
+ print_r ($custom_field);
+if($custom_field->new){
+
+
+}elseif($custom_field->error){
+   $response=array('state'=>400,'msg'=>$custom_field->msg);
+        echo json_encode($response);
+        return;
+
+
+}
 }
 
 function create_email_field($data) {

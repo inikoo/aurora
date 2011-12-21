@@ -26,7 +26,7 @@ class Customer extends DB_Table {
     var $ship_to=array();
     var $fuzzy=false;
     var $tax_number_read=false;
-	var $warning_messages=array();
+    var $warning_messages=array();
     function __construct($arg1=false,$arg2=false) {
 
         $this->table_name='Customer';
@@ -88,27 +88,26 @@ class Customer extends DB_Table {
     }
 
 
-	function is_user_customer($data){
-		$sql=sprintf("select * from `User Dimension` where `User Parent Key`=%d and `User Type`='Customer' ", $data);
-		$result=mysql_query($sql);
-		if($row=mysql_fetch_array($result, MYSQL_ASSOC))
-			return array(true, $row);
-	}
-	
-	function number_of_user_logins(){
-		list($is_user, $row)=$this->is_user_customer($this->id);
-		if($is_user){
-			$sql=sprintf("select * from `User Log Dimension` where `User Key`=%d", $row['User Key']);
-			$result=mysql_query($sql);
-			if($num=mysql_num_rows($result))
-				return $num;
-			else 
-				return 0;
-		}
-		else
-			return 0;
-	}
-	
+    function is_user_customer($data) {
+        $sql=sprintf("select * from `User Dimension` where `User Parent Key`=%d and `User Type`='Customer' ", $data);
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC))
+            return array(true, $row);
+    }
+
+    function number_of_user_logins() {
+        list($is_user, $row)=$this->is_user_customer($this->id);
+        if ($is_user) {
+            $sql=sprintf("select * from `User Log Dimension` where `User Key`=%d", $row['User Key']);
+            $result=mysql_query($sql);
+            if ($num=mysql_num_rows($result))
+                return $num;
+            else
+                return 0;
+        } else
+            return 0;
+    }
+
     function prepare_force_create($data) {
 
         if (array_key_exists('Customer Main Plain Email',$data)) {
@@ -516,7 +515,7 @@ class Customer extends DB_Table {
         return $this->data['Customer Name'];
     }
 
-	    function get_greetings($locale=false) {
+    function get_greetings($locale=false) {
 
         if ($locale) {
 
@@ -530,9 +529,9 @@ class Customer extends DB_Table {
 
 
 
-        } else{
+        } else {
             $unknown_name='To whom it corresponds';
-             $greeting_prefix='Dear';
+            $greeting_prefix='Dear';
         }
         if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
             return $unknown_name;
@@ -543,7 +542,7 @@ class Customer extends DB_Table {
         return $greeting;
 
     }
-	
+
     function get_data($tag,$id) {
         if ($tag=='id')
             $sql=sprintf("select * from `Customer Dimension` where `Customer Key`=%s",prepare_mysql($id));
@@ -1148,10 +1147,10 @@ class Customer extends DB_Table {
 
 
     function update_field_switcher($field,$value,$options='') {
-	
 
-        
-		
+
+
+
         if (is_string($value))
             $value=_trim($value);
 
@@ -1193,7 +1192,7 @@ class Customer extends DB_Table {
             break;
         case('Customer Main Plain Telephone'):
         case('Customer Main Plain FAX'):
-		
+
             if ($field=='Customer Main Plain Telephone')
                 $type='Telephone';
             else
@@ -1204,7 +1203,7 @@ class Customer extends DB_Table {
             $telephone_data['Telecom Raw Number']=$value;
             $telephone_data['Telecom Type']=$type;
             $telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-			//$telephone=new Telecom('new',$telephone_data);
+            //$telephone=new Telecom('new',$telephone_data);
             if ($telephone->id) {
                 $customers_with_this_telephone=$telephone->get_customer_keys();
 
@@ -1213,12 +1212,12 @@ class Customer extends DB_Table {
                     //$this->error=true;
 
                     //return;
-					$this->warning_messages[]=$this->msg;
+                    $this->warning_messages[]=$this->msg;
                 }
             }
 
 
-			
+
 
 
             if ($this->data['Customer Type']=='Person') {
@@ -1231,15 +1230,15 @@ class Customer extends DB_Table {
             }
 
 
-			
+
             $subject->editor=$this->editor;
 
             $subject->update(array($subject_type.' Main Plain '.$type=>$value));
-			//$address= new Address ($this->data['Customer Main Address Key']);
-			//$address->update_parents_principal_telecom_keys($type,array('Customer'));
-			
-			//$telecom= new Telecom($this->data['Customer Main '.$type.' Key']);
-			//$telecom->update_parents();
+            //$address= new Address ($this->data['Customer Main Address Key']);
+            //$address->update_parents_principal_telecom_keys($type,array('Customer'));
+
+            //$telecom= new Telecom($this->data['Customer Main '.$type.' Key']);
+            //$telecom->update_parents();
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
             $this->new_value=$subject->new_value;
@@ -1254,7 +1253,7 @@ class Customer extends DB_Table {
             $telephone_data['Telecom Raw Number']=$value;
             $telephone_data['Telecom Type']=$type;
             $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-			//$proposed_telephone=new Telecom('new',$telephone_data);
+            //$proposed_telephone=new Telecom('new',$telephone_data);
             if ($proposed_telephone->id) {
                 $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
 
@@ -1263,11 +1262,11 @@ class Customer extends DB_Table {
                     //$this->error=true;
 
                     //return;
-					$this->warning_messages[]=$this->msg;
+                    $this->warning_messages[]=$this->msg;
                 }
             }
             $contact=new Contact($this->data['Customer Main Contact Key']);
-			//$contact=new Contact($this->data['Customer Main Mobile Key']);
+            //$contact=new Contact($this->data['Customer Main Mobile Key']);
             $contact->editor=$this->editor;
             $contact->update(array('Contact Main Plain Mobile'=>$value));
             $this->updated=$contact->updated;
@@ -1417,8 +1416,7 @@ class Customer extends DB_Table {
                     $this->updated=$contact->updated;
                     $this->msg=$contact->msg;
                     $this->new_value=$contact->new_value;
-                } 
-                else {//new email address not found
+                } else {//new email address not found
 
                     $principal_email=new Email($this->data['Customer Main Email Key']);
                     if ($principal_email->id) {
@@ -1644,7 +1642,7 @@ class Customer extends DB_Table {
         $telephone_data['Telecom Raw Number']=$value;
         $telephone_data['Telecom Type']=$type;
         $proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-		//$proposed_telephone=new Telecom('new',$telephone_data);
+        //$proposed_telephone=new Telecom('new',$telephone_data);
 
         if ($proposed_telephone->id) {
             $customers_with_this_telephone=$proposed_telephone->get_customer_keys();
@@ -1653,8 +1651,8 @@ class Customer extends DB_Table {
                 $this->msg=_('The customer already has this number');
                 //$this->error=true;
 
-               // return;
-			   $this->warning_messages[]=$this->msg;
+                // return;
+                $this->warning_messages[]=$this->msg;
             }
             unset($customers_with_this_telephone[$this->id]);
 
@@ -1672,7 +1670,7 @@ class Customer extends DB_Table {
 
                     //$this->error=true;
 
-                   // return;
+                    // return;
                 }
 
             }
@@ -1716,7 +1714,7 @@ class Customer extends DB_Table {
         if ($type=='Telephone')
             $this->new_telephone_key=$telecom_key;
         elseif ($type=='Mobile')
-			$this->new_mobile_key=$telecom_key;
+        $this->new_mobile_key=$telecom_key;
         else
             $this->new_fax_key=$telecom_key;
 
@@ -2887,11 +2885,11 @@ class Customer extends DB_Table {
 
 
 
-function get_hello() {
+    function get_hello() {
 
-  
-            $unknown_name='';
-             $greeting_prefix=_('Hello');
+
+        $unknown_name='';
+        $greeting_prefix=_('Hello');
 
         if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
             return $unknown_name;
@@ -3357,7 +3355,7 @@ function get_hello() {
             $history_data['Subject']=$subject;
             $history_data['Subject Key']=$subject_key;
         }
-     
+
         if ($date!='')
             $history_data['Date']=$date;
 
@@ -3416,14 +3414,14 @@ function get_hello() {
                               'Indirect Object Key'=>$this->id
                           );
             $history_key=$this->add_customer_history($history_data,true,'No','Attachments');
-            
-             $sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`) values (%d,'Customer History Attachment',%d)",
-                        $attach->id,
-                        $history_key
-                    );
-                     mysql_query($sql);
-             //   print $sql;    
-            
+
+            $sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`) values (%d,'Customer History Attachment',%d)",
+                         $attach->id,
+                         $history_key
+                        );
+            mysql_query($sql);
+            //   print $sql;
+
             $this->updated=true;
             $this->new_value='';
         } else {
@@ -3492,22 +3490,22 @@ function get_hello() {
 
     }
 
-    function get_is_billing_address($address_key){
+    function get_is_billing_address($address_key) {
         $is_billing_address=false;
-        
-      $sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing')  and `Subject Type`='Customer' and `Subject Key`=%d  and `Address Key`=%d  ",
-      $this->id,
-      $address_key
-      
-      );
-      
+
+        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function` in ('Billing')  and `Subject Type`='Customer' and `Subject Key`=%d  and `Address Key`=%d  ",
+                     $this->id,
+                     $address_key
+
+                    );
+
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-          $is_billing_address=true;
+            $is_billing_address=true;
         }
-      return $is_billing_address;
+        return $is_billing_address;
     }
 
 
@@ -3525,7 +3523,7 @@ function get_hello() {
         return $address_keys;
 
     }
-	
+
     function get_billing_address_objects() {
 
 
@@ -3738,21 +3736,21 @@ function get_hello() {
 
     }
 
-	function get_other_email_login_handle(){
-		$other_login_handle_emails=array();
-		foreach($this->get_other_emails_data() as $email){
-			$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
+    function get_other_email_login_handle() {
+        $other_login_handle_emails=array();
+        foreach($this->get_other_emails_data() as $email) {
+            $sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
 
-			$result=mysql_query($sql);
-			
-			if($row=mysql_fetch_array($result)){
-				$other_login_handle_emails[$email['email']]=$email['email'];
-			}
-		}
-		
-		return $other_login_handle_emails;
-	}
-	
+            $result=mysql_query($sql);
+
+            if ($row=mysql_fetch_array($result)) {
+                $other_login_handle_emails[$email['email']]=$email['email'];
+            }
+        }
+
+        return $other_login_handle_emails;
+    }
+
     function get_email_keys() {
         $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d "
                      ,$this->id );
@@ -3973,7 +3971,7 @@ function get_hello() {
 
     }
 
- 
+
     function get_delivery_address_keys() {
 
 
@@ -4364,7 +4362,7 @@ function get_hello() {
 
 
     function get_ship_to($date=false) {
-      
+
         if (!$date) {
             $date=date("Y-m-d H:i:s");
         }
@@ -4486,7 +4484,7 @@ function get_hello() {
         }
 
     }
-	
+
     function display_contact_address($tipo='xhtml') {
         switch ($tipo) {
         case 'label':
@@ -5009,12 +5007,12 @@ function get_hello() {
         return $mobiles;
 
     }
-	
-	function get_telephones(){
-		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Telephone'    and `Subject Type`='Customer' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+
+    function get_telephones() {
+        $sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Telephone'    and `Subject Type`='Customer' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
         $mobiles=array();
         $result=mysql_query($sql);
-		//print $sql;
+        //print $sql;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $mobile= new Telecom($row['Telecom Key']);
             $mobile->set_scope('Contact',$this->id);
@@ -5024,8 +5022,8 @@ function get_hello() {
         }
         //$this->number_mobiles=count($mobiles);
         return $mobiles;
-	}
-	
+    }
+
     function get_work_telephones($company_key=false) {
         $telephones=array();
         $in_company='';
@@ -5050,7 +5048,7 @@ function get_hello() {
         }
         return $telephones;
     }
-	
+
     function remove_principal_email() {
         $this->remove_email($this->data['Customer Main Email Key']);
     }
@@ -5079,14 +5077,14 @@ function get_hello() {
         $email_contacts_number_keys=count($email_contacts_keys);
         $email_suppliers_number_keys=count($email_suppliers_keys);
         $email_companies_number_keys=count($email_companies_keys);
-        
-   //      print_r($email_customer_number_keys);
-     //     print_r($email_contacts_number_keys);
-       //    print_r($email_suppliers_number_keys);
-       // print_r($email_companies_number_keys);
-        
-      
-        
+
+        //      print_r($email_customer_number_keys);
+        //     print_r($email_contacts_number_keys);
+        //    print_r($email_suppliers_number_keys);
+        // print_r($email_companies_number_keys);
+
+
+
         $email->remove_from_parent('Customer',$this->id);
         if (($email_customer_number_keys+$email_contacts_number_keys+$email_suppliers_number_keys)==0) {
 
@@ -5110,7 +5108,7 @@ function get_hello() {
             $contact_customers_number_keys=count($contact_customers_keys);
             $contact_suppliers_number_keys=count($contact_suppliers_keys);
 
-           // print_r($contact_customers_keys);
+            // print_r($contact_customers_keys);
             // print_r($contact_suppliers_keys);
 
             if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
@@ -5124,7 +5122,7 @@ function get_hello() {
         }
 
 
-        
+
 
         $this->updated=true;
         $this->msg='';
@@ -5207,7 +5205,7 @@ function get_hello() {
     }
 
     function delete($note='',$customer_id_prefix='') {
-$this->deleted=false;
+        $this->deleted=false;
         $deleted_company_keys=array();
 
         $address_to_delete=array();
@@ -5574,30 +5572,29 @@ $this->deleted=false;
 
     }
 
-	function update_subscription($customer_id, $type){
-		if(!isset($customer_id) || !isset($type)){
-			return;
-		}
-		
-		
-	}
+    function update_subscription($customer_id, $type) {
+        if (!isset($customer_id) || !isset($type)) {
+            return;
+        }
 
-	function get_order_key(){
-		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Key` DESC", $this->id);
-		//print $sql;
-		$result=mysql_query($sql);
-		if($row=mysql_fetch_array($result)){
-			return $row['Order Key'];
-		}
-		else
-			return -1;
-	}
 
-	function get_faxes(){
-		$sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Fax'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
+    }
+
+    function get_order_key() {
+        $sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Key` DESC", $this->id);
+        //print $sql;
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result)) {
+            return $row['Order Key'];
+        } else
+            return -1;
+    }
+
+    function get_faxes() {
+        $sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Fax'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
         $telephones=array();
         $result=mysql_query($sql);
-		//print $sql;
+        //print $sql;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $telephone= new Telecom($row['Telecom Key']);
             $telephone->set_scope('Contact',$this->id);
@@ -5607,8 +5604,8 @@ $this->deleted=false;
         }
         //$this->number_mobiles=count($mobiles);
         return $telephones;
-	}
-	
+    }
+
     function update_principal_faxes($fax_key) {
 
 
@@ -5643,9 +5640,9 @@ $this->deleted=false;
 
         }
 
-    }	
-	
-	function get_principal_telephone_key() {
+    }
+
+    function get_principal_telephone_key() {
 
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Telephone'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
                      ,$this->id );
@@ -5662,7 +5659,7 @@ $this->deleted=false;
         return $main_telephone_key;
     }
 
-	function get_principal_fax_key() {
+    function get_principal_fax_key() {
 
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Fax'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
                      ,$this->id );
@@ -5678,7 +5675,7 @@ $this->deleted=false;
 
         return $main_fax_key;
     }
-	
+
     function update_parents_principal_telephone_keys() {
         $telephone_key=$this->data['Contact Main Telephone Key'];
         if (!$telephone_key)
@@ -5808,7 +5805,7 @@ $this->deleted=false;
             }
         }
     }
-	function update_principal_telephone($telephone_key) {
+    function update_principal_telephone($telephone_key) {
 
 
         $main_telephone_key=$this->get_principal_telephone_key();
@@ -5843,5 +5840,46 @@ $this->deleted=false;
         }
 
     }
+
+    function badge_state_gold() {
+
+        return true;
+    }
+
+    function badge_caption_gold() {
+
+        strtotime(    $this->data['Customer Last Order Date']   )
+
+        return $this->data['Customer Last Order Date'];
+    }
+
+    function display_badge($badge_key) {
+
+        $badge_data=array(
+                        1=>array(
+                              'Badge Image On'=>'art/gold.jpg',
+                              'Badge Image Off'=>'art/gold_off.jpg',
+                              'Badge Code'=>'gold'
+                          )
+                    );
+
+        $state=false;
+               $caption='';
+        if ($badge_key==1) {
+            $state= $this->badge_state_gold();
+            $caption= $this->badge_caption_gold();
+                  }
+
+        if ($state) {
+            $html=sprintf('<div style="text-align:center"><img src="%s" alt="" style="width:70px;height:70px"/><span style="font-size:10px">%s</span></div>',$badge_data[$badge_key]['Badge Image On'],$caption);
+        } else {
+            $html=sprintf('b<img src="%s" alt="" />',$badge_data[$badge_key]['Badge Image Off']);
+
+        }
+
+
+        return $html;
+    }
+
 }
 ?>
