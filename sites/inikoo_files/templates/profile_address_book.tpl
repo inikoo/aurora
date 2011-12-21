@@ -34,40 +34,35 @@
 <td>{if $page->customer->get('Customer Main Delivery Address Key')==$page->customer->get('Customer Main Address Key')}{t}Same as Contact Address{/t}{elseif $page->customer->get('Customer Billing Address Key')==$page->customer->get('Customer Delivery Address Key')}{t}Same as Billing Address{/t}{else}{$page->customer->display_delivery_address('xhtml')}{/if}</td>
 </tr>
 <tr><td>
-<form action="" method="POST" style="float:left">
-<input type="hidden" value="" name="" id="">
+
 <div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
-</form>
+
 </td>
 <td>
-<form action="" method="POST" style="float:left">
-<input type="hidden" value="" name="" id="">
+
 <div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
+<button onClick=window.location='profile.php?view=add_address'><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
 </div>
-</form>
-<form action="" method="POST" style="float:left">
-<input type="hidden" value="" name="" id="">
+
+
 <div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
-</form>
+
 </td>
 <td>
-<form action="" method="POST" style="float:left">
-<input type="hidden" value="" name="" id="">
+
 <div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
+<button onClick=window.location='profile.php?view=add_address'><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
 </div>
-</form>
-<form action="" method="POST" style="float:left">
-<input type="hidden" value="" name="" id="">
+
+
 <div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
-</form>
+
 </td>
 </tr>
 <tr>
@@ -79,38 +74,22 @@
 {if $page->customer->get('Customer Billing Address Key')!=$address->id}
 <tr><td>{$address->display('xhtml')}</td></tr>
 <tr><td>
-<form action="update_details.php" method="POST" style="float:left">
-<input type="hidden" value="site_edit_customer" name="tipo">
-<input type="hidden" value="set_address_main" name="submit" id="submit">
-<input type="hidden" value="{$address->id}" name="value" id="value">
-<input type="hidden" value="billing" name="key" id="key">
-<input type="hidden" value="Customer" name="subject" id="subject">
-<input type="hidden" value="{$page->customer->get('Customer Key')}" name="subject_key" id="subject_key">
+
 
 <div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Set as Main{/t}</button>
+<button onClick="change_main_address({$address->id},{literal}{{/literal}type:'billing',prefix:'billing_',Subject:'Customer',subject_key:{$page->customer->id}{literal}}{/literal})""><img src="art/icons/chart_pie.png" alt=""> {t}Set as Main{/t}</button>
 </div>
-</form>
 
-<form action="" method="POST" style="float:left">
-<input type="hidden" value="" name="" id="">
-<div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
-</div>
-</form>
 
-<form action="update_details.php" method="POST" style="float:left">
-<input type="hidden" value="site_edit_customer" name="tipo">
-<input type="hidden" value="delete_address" name="submit" id="submit">
-<input type="hidden" value="{$address->id}" name="value" id="value">
-<input type="hidden" value="billing" name="key" id="key">
-<input type="hidden" value="Customer" name="subject" id="subject">
-<input type="hidden" value="{$page->customer->get('Customer Key')}" name="subject_key" id="subject_key">
-<input type="hidden" value="" name="" id="">
 <div class="buttons" style="float:left">
-<button class="negative" type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Remove{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
-</form>
+
+
+<div class="buttons" style="float:left">
+<button class="negative" onClick="delete_address({$address->id},{literal}{{/literal}type:'billing',prefix:'billing_',Subject:'Customer',subject_key:{$page->customer->id}{literal}}{/literal})"><img src="art/icons/chart_pie.png" alt=""> {t}Remove{/t}</button>
+</div>
+
 
 </td></tr>
 {/if}
@@ -128,36 +107,23 @@
 {if $page->customer->get('Customer Main Delivery Address Key')!=$address->id}
 <tr><td>{$address->display('xhtml')}</td></tr>
 <tr><td>
-<form action="update_details.php" method="POST" style="float:left">
-<input type="hidden" value="site_edit_customer" name="tipo">
-<input type="hidden" value="set_address_main" name="submit" id="submit">
-<input type="hidden" value="{$address->id}" name="value" id="value">
-<input type="hidden" value="Delivery" name="key" id="key">
-<input type="hidden" value="Customer" name="subject" id="subject">
-<input type="hidden" value="{$page->customer->get('Customer Key')}" name="subject_key" id="subject_key">
-<div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Set as Main{/t}</button>
-</div>
-</form>
 
-<form action="" method="POST" style="float:left">
-<input type="hidden" value="" name="" id="">
 <div class="buttons" style="float:left">
-<button type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick="change_main_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$page->customer->id}{literal}}{/literal})"><img src="art/icons/chart_pie.png" alt=""> {t}Set as Main{/t}</button>
 </div>
-</form>
 
-<form action="update_details.php" method="POST" style="float:left">
-<input type="hidden" value="site_edit_customer" name="tipo">
-<input type="hidden" value="delete_address" name="submit" id="submit">
-<input type="hidden" value="{$address->id}" name="value" id="value">
-<input type="hidden" value="Delivery" name="key" id="key">
-<input type="hidden" value="Customer" name="subject" id="subject">
-<input type="hidden" value="{$page->customer->get('Customer Key')}" name="subject_key" id="subject_key">
+
+
 <div class="buttons" style="float:left">
-<button class="negative" type="submit"><img src="art/icons/chart_pie.png" alt=""> {t}Remove{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
-</form>
+
+
+
+<div class="buttons" style="float:left">
+<button class="negative" onClick="delete_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$page->customer->id}{literal}}{/literal})"><img src="art/icons/chart_pie.png" alt=""> {t}Remove{/t}</button>
+</div>
+
 
 </td></tr>
 {/if}
