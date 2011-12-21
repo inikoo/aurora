@@ -24,7 +24,7 @@ $css_files=array(
 		 $yui_path.'button/assets/skins/sam/button.css',
 		
 		 'button.css',
-		 'container.css'
+		 'css/container.css'
 		 );
 
 //for changing the theme by the user

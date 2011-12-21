@@ -136,8 +136,9 @@ else if ($page->data['Page Code']=='profile') {
     $smarty->assign('rnd',$rnd);
     $js_files[]='js/aes.js';
     $js_files[]='js/sha256.js';
+     $css_files[]='css/container.css';
     $css_files[]='css/inikoo.css';
-	$css_files[]='css/inikoo_table.css';
+    $css_files[]='css/inikoo_table.css';
 
 }
 

@@ -9,7 +9,7 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 'common.css',
-		 'container.css',
+		 'css/container.css',
 		 'table.css'
 		 );
 $js_files=array(

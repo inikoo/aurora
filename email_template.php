@@ -14,7 +14,7 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'assets/skins/sam/editor.css',
                'button.css',
-               'container.css',
+               'css/container.css',
                'table.css',
                'css/upload.css'
 

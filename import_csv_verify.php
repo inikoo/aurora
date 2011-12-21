@@ -19,7 +19,7 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
       //         'css/import_data.css',

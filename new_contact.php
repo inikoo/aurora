@@ -33,7 +33,7 @@ $css_files=array(
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 		 'common.css',
-		 'container.css',
+		 'css/container.css',
 		 'table.css',
 		 'css/edit.css'
 		 );

@@ -33,7 +33,7 @@ $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 		 'text_editor.css',
 		 'common.css',
 		 'button.css',
-		 'container.css',
+		 'css/container.css',
 		 'table.css',
 		 'css/edit.css'
 		 );

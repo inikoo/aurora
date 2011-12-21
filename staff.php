@@ -287,7 +287,7 @@ $css_files=array(
 		 'text_editor.css',
 		 
 		 'button.css',
-		 'container.css'
+		 'css/container.css'
 		 
 		 );
  $css_files[]='theme.css.php';
