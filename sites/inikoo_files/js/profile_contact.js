@@ -17,7 +17,7 @@ function show_edit_name(){
 }
 
 function validate_customer_name(query){
- validate_general('customer_quick','name',unescape(query));
+ validate_general('customer_quick','company_name',unescape(query));
 }
 
 function post_item_updated_actions(branch,r){
@@ -29,7 +29,7 @@ function init(){
 	 validate_scope_data=
 {
     'customer_quick':{
-	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Customer Name'}]}
+	'company_name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Company_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Customer Name'}]}
 	//,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
 	//,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':regex_valid_tel,'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
 	//,'mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
@@ -51,7 +51,7 @@ Event.addListener('close_quick_edit_name', "click", dialog_quick_edit_Customer_N
 
 var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_name);
 customer_name_oACDS.queryMatchContains = true;
-var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Name","Customer_Name_Container", customer_name_oACDS);
+var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Company_Name","Customer_Company_Name_Container", customer_name_oACDS);
 customer_name_oAutoComp.minQueryLength = 0; 
 customer_name_oAutoComp.queryDelay = 0.1;
 

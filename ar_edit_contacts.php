@@ -2853,7 +2853,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
                  "ship_country"=>'Main Ship To Country',
                  "sticky_note"=>'Customer Sticky Note',
                  "new_sticky_note"=>'Customer Sticky Note',
-                 "preferred_contact_number"=>'Customer Preferred Contact Number'
+                 "preferred_contact_number"=>'Customer Preferred Contact Number',
+		"company_name"=>'Customer Company Name'
              );
 
 
@@ -2953,7 +2954,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
         //  print "$customer_key,$key,$value_data ***";
 
 
-        //    print "$key  $the_new_value";
+            print "$key  $the_new_value";
 
         $customer->update(array($key=>$the_new_value));
     }
