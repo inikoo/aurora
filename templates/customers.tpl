@@ -1,7 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0px">
- <div style="padding:0 20px">
+<div style="padding:0 20px">
 {include file='contacts_navigation.tpl'}
+
 <div class="branch"> 
   <span   >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Customers{/t}</span>
 </div>
@@ -12,12 +13,12 @@
 {if $modify}
 <button  id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button>
 <button  onclick="window.location='edit_customers.php?store={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button>
-<button  onclick="window.location='customer_store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
 {/if}
 </div>
 
 
 <div class="buttons" style="float:left">
+<button  onclick="window.location='customer_store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
 
 <button  onclick="window.location='customers_stats.php?store={$store->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
 <button  onclick="window.location='customers_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>

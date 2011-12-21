@@ -5318,3 +5318,13 @@ ALTER TABLE `Site Dimension` ADD `Site Default Number See Also Links` TINYINT( 4
 ALTER TABLE `Page Store Dimension` ADD `Page Store Content Display Type` ENUM( 'Source', 'Template' ) NOT NULL DEFAULT 'Source' AFTER `Page Store See Also Type` ,ADD `Page Store Content Template Filename` VARCHAR( 128 ) NULL DEFAULT NULL AFTER `Page Store Content Display Type` ;
 ALTER TABLE `User Dimension` CHANGE `User Password` `User Password` VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `User Dimension` ADD `User Verified` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+ALTER TABLE `Custom Field Dimension` ADD `Custom Field In Registration` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Custom Field In Showcase` ,ADD `Custom Field In Profile` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Custom Field In Registration` ;
+
+
+
+
+
+
+
+ALTER TABLE `Custom Field Dimension` CHANGE `Custom Field Type` `Custom Field Type` ENUM( 'Mediumint', 'Text', 'Longtext', 'Enum' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL 
+

@@ -57,7 +57,7 @@ $js_files=array(
               'js/page.js'
           );
 
-
+$template_suffix='';
 if ($page->data['Page Code']=='login') {
     $Sk="skstart|".(date('U')+300000)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St=AESEncryptCtr($Sk,SKEY, 256);
@@ -103,11 +103,21 @@ if ($page->data['Page Code']=='login') {
 
 else if ($page->data['Page Code']=='profile') {
 
-    if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('contact','orders','address_book','edit_details','edit_billing','change_password'))) {
+    if (!$logged_in) {
+        header('location: login.php');
+        exit;
+    }
+
+
+    if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('contact','orders','address_book','change_password'))) {
         $view=$_REQUEST['view'];
     } else {
         $view='contact';
     }
+
+    $template_suffix='_'.$view;
+
+
     $smarty->assign('view',$view);
 
     $smarty->assign('user',$user);
@@ -183,10 +193,9 @@ while ($row=mysql_fetch_assoc($res)) {
 if ($page->data['Page Store Content Display Type']=='Source') {
     $smarty->assign('type_content','string');
     $smarty->assign('template_string',$page->data['Page Store Source']);
-
 } else {
     $smarty->assign('type_content','file');
-    $smarty->assign('template_string',$page->data['Page Store Content Template Filename'].'.tpl');
+    $smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
     $css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
     $js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
 }
