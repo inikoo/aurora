@@ -16,6 +16,15 @@
 
        
 <div id="orders_block" >
+
+<input type="hidden" id="customer_key"  value="{$page->customer->id}"/>
+
+
+
+     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+    <div  id="table0"   class="data_table_container dtable btable "> </div>
+
+
 </div>     
 
 

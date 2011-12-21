@@ -103,6 +103,9 @@ if ($page->data['Page Code']=='login') {
 
 else if ($page->data['Page Code']=='profile') {
 
+
+
+
     if (!$logged_in) {
         header('location: login.php');
         exit;
@@ -134,6 +137,7 @@ else if ($page->data['Page Code']=='profile') {
     $js_files[]='js/aes.js';
     $js_files[]='js/sha256.js';
     $css_files[]='css/inikoo.css';
+	$css_files[]='css/inikoo_table.css';
 
 }
 
@@ -200,8 +204,10 @@ if ($page->data['Page Store Content Display Type']=='Source') {
     $js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
 }
 
-
-
+$customer=new Customer(5);
+$page->customer=$customer;
+$smarty->assign('filter_name0','Order ID');
+$smarty->assign('filter_value0', '');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('title',$page->data['Page Title']);
