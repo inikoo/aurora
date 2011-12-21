@@ -105,15 +105,15 @@ bla bla bla
 	<td>{t}Customer Name:{/t}</td>
 	<td>
 	<div style="width:220px">
-	<input type="text" id="Customer_Company_Name" value="{$page->customer->get('Customer Company Name')}" ovalue="{$page->customer->get('Customer Company Name')}" valid="0">
-	<div id="Customer_Company_Name_Container"  ></div>
+	<input type="text" id="Customer_Name" value="{$page->customer->get('Customer Company Name')}" ovalue="{$page->customer->get('Customer Company Name')}" valid="0">
+	<div id="Customer_Name_Container"  ></div>
 	</div>	
 	</td>
 
 	</tr>
 	<tr><td colspan=2>
 	<div class="buttons" style="margin-top:10px">
-	<span id="Customer_Company_Name_msg" ></span>
+	<span id="Customer_Name_msg" ></span>
 	<button class="positive" onClick="save_quick_edit_name()">{t}Save{/t}</button>
 	<button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button>
 

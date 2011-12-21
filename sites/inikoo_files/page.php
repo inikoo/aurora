@@ -50,8 +50,8 @@ $js_files=array(
 
               'external_libs/ampie/ampie/swfobject.js',
               'js/common.js',
-              'js/table_common.js',
-              'js/search.js',
+        //      'js/table_common.js',
+        
               'js/edit_common.js',
               'upload_common.js.php',
               'js/page.js'
@@ -136,6 +136,7 @@ else if ($page->data['Page Code']=='profile') {
     $smarty->assign('rnd',$rnd);
     $js_files[]='js/aes.js';
     $js_files[]='js/sha256.js';
+     $js_files[]='js/edit_common.js';
      $css_files[]='css/container.css';
     $css_files[]='css/inikoo.css';
     $css_files[]='css/inikoo_table.css';

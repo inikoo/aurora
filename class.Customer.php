@@ -1786,9 +1786,13 @@ class Customer extends DB_Table {
         }
 
         if ($this->data['Customer Type']=='Company') {
+        
+        
+        
             $company=new Company($this->data['Customer Company Key']);
             $company->editor=$this->editor;
             $company->update(array('Company Name'=>$value));
+
 
             if ($company->updated) {
 
@@ -5931,8 +5935,41 @@ class Customer extends DB_Table {
     
     
     function badge_caption_profile($state) {
-
         return percentage(0,1,0);
+    }
+
+
+    function badge_state_connected() {
+        if($this->data['Customer Send Newsletter']=='Yes' and $this->data['Customer Send Email Marketing'])
+        return true;
+        else
+         return false;
+        
+    }
+    
+    
+    function badge_caption_connected($state) {
+        return '';
+    }
+
+
+    function badge_state_loyalty() {
+           if($this->data['Customer Orders Invoiced']>=10)
+        return true;
+        else
+         return false;
+    }
+    
+    
+    function badge_caption_loyalty($state) {
+        
+        if(!$state){
+        $to_go=10-$this->data['Customer Orders Invoiced'];
+            return number($to_go);
+        }else{
+            return "";
+        }
+        
     }
 
 
@@ -5953,6 +5990,16 @@ class Customer extends DB_Table {
                               'Badge Image On'=>'art/profile.jpg',
                               'Badge Image Off'=>'art/profile_off.jpg',
                               'Badge Code'=>'profile'
+                          ),
+                          4=>array(
+                              'Badge Image On'=>'art/connected.jpg',
+                              'Badge Image Off'=>'art/connected_off.jpg',
+                              'Badge Code'=>'connected'
+                          ),
+                           5=>array(
+                              'Badge Image On'=>'art/loyalty.jpg',
+                              'Badge Image Off'=>'art/loyalty_off.jpg',
+                              'Badge Code'=>'loyalty'
                           )
 
                     );
@@ -5968,6 +6015,12 @@ class Customer extends DB_Table {
         } else if ($badge_key==3) {
             $state= $this->badge_state_profile();
             $caption= $this->badge_caption_profile($state);
+        }else if ($badge_key==4) {
+            $state= $this->badge_state_connected();
+            $caption= $this->badge_caption_connected($state);
+        }else if ($badge_key==5) {
+            $state= $this->badge_state_loyalty();
+            $caption= $this->badge_caption_loyalty($state);
         }
 
         if ($state) {
