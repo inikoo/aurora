@@ -5346,3 +5346,10 @@ INSERT INTO `Dashboard Widget Dimension` (`Dashboard Widget Key`, `Widget Name`,
 (2, 'Twitter', 'block_1', '405', 'splinter_twitter.php?', ''),
 (3, 'Facebook', 'block_2', '560', '//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2FAncientWisdom.biz&amp;width=614&amp;height=560&amp;colorscheme=light&amp;show_faces=true&amp;border_color&amp;stream=true&amp;header=false', '');
 
+ALTER TABLE `Site Dimension` CHANGE `Site Registration Method` `Site Registration Method` ENUM( 'Simple', 'Wholesale', 'None' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Simple';
+ALTER TABLE `Site Dimension` DROP `Site FTP Credentials`;
+ALTER TABLE `Site Dimension` ADD `Site FTP Server` VARCHAR( 256 ) NULL DEFAULT NULL ,
+ADD `Site FTP User` VARCHAR( 256 ) NULL DEFAULT NULL ,
+ADD `Site FTP Password` VARCHAR( 256 ) NULL DEFAULT NULL ,
+ADD `Site FTP Directory` VARCHAR( 256 ) NOT NULL DEFAULT '',
+ADD `Site FTP Passive` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
