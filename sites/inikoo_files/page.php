@@ -130,7 +130,12 @@ else if ($page->data['Page Code']=='profile') {
 
 	if (isset($_REQUEST['type'])){
 		$smarty->assign('address_identifier',$_REQUEST['type']);
+		if($_REQUEST['type'] == 'delivery_')
+			$smarty->assign('address_function','Delivery');
+		else
+			$smarty->assign('address_function','Billing');
 	}
+
 
     for ($i = 0; $i < 16; $i++) {
         $rnd .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", mt_rand(0, 63), 1);
