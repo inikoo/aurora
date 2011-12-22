@@ -118,6 +118,7 @@ else if ($page->data['Page Code']=='profile') {
         $view='contact';
     }
 
+	
     $template_suffix='_'.$view;
 
 
@@ -125,6 +126,11 @@ else if ($page->data['Page Code']=='profile') {
 
     $smarty->assign('user',$user);
     $rnd='';
+
+
+	if (isset($_REQUEST['type'])){
+		$smarty->assign('address_identifier',$_REQUEST['type']);
+	}
 
     for ($i = 0; $i < 16; $i++) {
         $rnd .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", mt_rand(0, 63), 1);

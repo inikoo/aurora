@@ -43,7 +43,7 @@
 <td>
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=add_address'><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
+<button onClick=window.location='profile.php?view=add_address&type=billing_'><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
 </div>
 
 
@@ -55,7 +55,7 @@
 <td>
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=add_address'><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
+<button onClick=window.location='profile.php?view=add_address&type=delivery_'><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
 </div>
 
 
