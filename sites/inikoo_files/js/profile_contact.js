@@ -13,6 +13,18 @@ function save_quick_edit_name(){
 }
 
 function show_edit_name(){
+
+ region1 = Dom.getRegion('show_edit_name'); 
+    region2 = Dom.getRegion('dialog_quick_edit_Customer_Name'); 
+
+ var pos =[region1.right,region1.top]
+
+    Dom.setXY('dialog_quick_edit_Customer_Name', pos);
+
+
+//Dom.get('sticky_note_input').focus();
+
+
 	dialog_quick_edit_Customer_Name.show();
 }
 
@@ -42,6 +54,9 @@ function init(){
 };
 	
 	
+
+Event.addListener('show_edit_name', "click", show_edit_name);
+
 dialog_quick_edit_Customer_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Name", {context:["customer_name","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Name.render();
 
