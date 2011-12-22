@@ -21,6 +21,12 @@
     </div>
     <div style="clear:both"></div>
 
+       <div id="dialog_new_billing_address" style="width:540px;margin-top:10px;padding:10px 0 0 0 ;border:1px solid #ccc;display:''">
+       <table id="new_billing_address_table" border=0 style="width:500px;margin:0 auto">
+       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier=$address_identifier address_type='Shop' show_tel=true show_contact=true  address_function=$address_function  hide_type=true hide_description=true show_form=false  show_components=true }
+     </table>
+	</div>
+
 </div>     
 
 
