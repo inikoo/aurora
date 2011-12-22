@@ -127,7 +127,7 @@ var create_address=function(options) {
     for (i in items) {
 		if(items.length <= count++)
 			break;
-	//alert(address_prefix+'address_'+items[i]+':'+Dom.get(address_prefix+'address_'+items[i]).value);
+	alert(address_prefix+'address_'+items[i]+':'+Dom.get(address_prefix+'address_'+items[i]).value);
         value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
 	
     }
@@ -169,7 +169,7 @@ var create_address=function(options) {
 
 
     var request='ar_edit_contacts.php?tipo=new_'+options.type+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key;
-//alert(request);return;  
+alert(request);return;  
   
   YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
