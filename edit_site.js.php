@@ -23,7 +23,13 @@ var validate_scope_data=
 	'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Slogan','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Slogan')?>'}]}
 	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
 	,'url':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-	,'ftp':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_FTP','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Credentials')?>'}]}
+	
+	,'ftp_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Server','name':'Site_FTP_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Server')?>'}]}
+	,'ftp_user':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP User','name':'Site_FTP_User','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP User')?>'}]}
+	,'ftp_password':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Password','name':'Site_FTP_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Password')?>'}]}
+	,'ftp_directory':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Directory','name':'Site_FTP_Directory','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Directory')?>'}]}
+
+	
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Contact Telephone','name':'telephone','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
 	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'address','dbname':'Site Contact Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
 	,'mals_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
@@ -724,9 +730,10 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
     var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
+ 
 	   
 	Event.addListener(["Mals","Inikoo"], "click", change_checkout_method);
-	Event.addListener(["sidebar","mainpage"], "click", change_registration_method);
+	Event.addListener(["registration_simple","registration_wholesale","registration_none"], "click", change_registration_method);
    
     var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_slogan);
     site_slogan_oACDS.queryMatchContains = true;
@@ -745,12 +752,7 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
     var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_URL","Site_URL_Container", site_slogan_oACDS);
     customer_Registration_Number_oAutoComp.minQueryLength = 0; 
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
-	
-    var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp);
-    site_slogan_oACDS.queryMatchContains = true;
-    var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP","Site_FTP_Container", site_slogan_oACDS);
-    customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-    customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
+
     
        var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_id);
     site_slogan_oACDS.queryMatchContains = true;
@@ -820,6 +822,37 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
     site_menu_javascript_oAutoComp.queryDelay = 0.1;  	
 	
 	
+	
+	
+		
+    var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_server);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Server","Site_FTP_Server_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;  
+    
+    
+    var site_ftp_user_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_user);
+    site_ftp_user_oACDS.queryMatchContains = true;
+    var site_ftp_user_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_User","Site_FTP_User_Container", site_ftp_user_oACDS);
+    site_ftp_user_oAutoComp.minQueryLength = 0; 
+    site_ftp_user_oAutoComp.queryDelay = 0.1;  
+    
+    var site_ftp_password_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_password);
+    site_ftp_password_oACDS.queryMatchContains = true;
+    var site_ftp_password_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Password","Site_FTP_Password_Container", site_ftp_password_oACDS);
+    site_ftp_password_oAutoComp.minQueryLength = 0; 
+    site_ftp_password_oAutoComp.queryDelay = 0.1;  
+    
+    var site_ftp_directory_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_directory);
+    site_ftp_directory_oACDS.queryMatchContains = true;
+    var site_ftp_directory_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Directory","Site_FTP_Directory_Container", site_ftp_directory_oACDS);
+    site_ftp_directory_oAutoComp.minQueryLength = 0; 
+    site_ftp_directory_oAutoComp.queryDelay = 0.1;  
+    
+    
+	
+	
 	YAHOO.util.Event.addListener('save_edit_site', "click", save_edit_site);
     YAHOO.util.Event.addListener('reset_edit_site', "click", reset_edit_site);
     
@@ -887,19 +920,20 @@ function reset_edit_site_search(){
 
 
 
-function validate_site_ftp(query){
-  original_query= query;
-query=query.replace(/[^A-Z0-9]/i, "");
- //alert(query)
- validate_general('site','ftp',unescape(query));
-
- if(original_query==''){
-    
-     validate_scope_data.site.ftp.validated=true;
-     validate_scope('site'); 
- }
-
+function validate_site_ftp_server(query){
+ validate_general('site','ftp_server',unescape(query));
 }
+function validate_site_ftp_user(query){
+ validate_general('site','ftp_user',unescape(query));
+}
+function validate_site_ftp_password(query){
+ validate_general('site','ftp_password',unescape(query));
+}
+function validate_site_ftp_directory(query){
+ validate_general('site','ftp_directory',unescape(query));
+}
+
+
 
 function validate_site_url(query){
   original_query= query;
@@ -1013,7 +1047,7 @@ function change_registration_method(){
 types=Dom.getElementsByClassName('site_registration_method', 'button', 'site_registration_method_buttons')
 Dom.removeClass(types,'selected');
 
-Dom.get('site_registration_method').value=this.id;
+Dom.get('site_registration_method').value=this.getAttribute('dbvalue');
 //alert(Dom.get('site_checkout_method').value);
 
 
@@ -1025,10 +1059,10 @@ var request='ar_edit_sites.php?tipo=edit_registration_method&site_key=' + site_i
 
 	            success:function(o){
 					
-	            //alert(o.responseText);	
+	           // alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
-				Dom.addClass(r.new_value,'selected');
+				Dom.addClass('registration_'+r.new_value,'selected');
 
             }
 			else{

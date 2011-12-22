@@ -1,7 +1,5 @@
 <?php
 /*
-
-
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
@@ -739,17 +737,21 @@ function edit_registration_method($data) {
 
         exit;
     }
-//print_r($site);
-    switch ($data['site_registration_method']) {
-    case 'sidebar':
-    case 'Sidebar':
-        $method='SideBar';
-        break;
-    default:
-        $method='MainPage';
+    
+     
+     
+     
+     
+    if(!in_array($data['site_registration_method'],array('Simple','Wholesale','None'))){
+       $response= array('state'=>400,'msg'=>'wrong value '.$data['site_registration_method'],'key'=>$data['site_key']);
+        echo json_encode($response);
+
+        exit;
+    
     }
-//print $method;
-    $response=$site->update(array('Site Registration Method'=>$method));
+    
+
+    $response=$site->update(array('Site Registration Method'=>$data['site_registration_method']));
     if ($site->updated) {
         $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
     } else

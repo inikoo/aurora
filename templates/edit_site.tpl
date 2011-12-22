@@ -249,14 +249,16 @@
 
 </tbody>
 
-<tr><td class="label">{t}Select Registration Method{/t}:</td><td>
+<tr>
+<td class="label">{t}Select Registration Method{/t}:</td><td>
 <input id="site_registration_method" value="sidebar" type="hidden"   />
 <div class="buttons" id="site_registration_method_buttons" style="float:left">
-<button  id="sidebar" class="site_registration_method {if $site->get('Site Registration Method')=='SideBar'}selected{/if}" ><img src="art/icons/layout.png" alt=""/> {t}SideBar{/t}</button>
-<button  id="mainpage"  class="site_registration_method {if $site->get('Site Registration Method')=='MainPage'}selected{/if}"><img src="art/icons/layout.png" alt=""/> {t}MainPage{/t}</button>
+<button dbvalue="Wholesale"  id="registration_wholesale"  class="site_registration_method {if $site->get('Site Registration Method')=='Wholesale'}selected{/if}"> {t}Wholesale{/t}</button>
+<button dbvalue="Simple" id="registration_simple" class="site_registration_method {if $site->get('Site Registration Method')=='Simple'}selected{/if}" > {t}Simple{/t}</button>
+<button dbvalue="None"  id="registration_none"  class="site_registration_method {if $site->get('Site Registration Method')=='None'}selected{/if}"> {t}None{/t}</button>
 </div>
-     
-</td></tr>	
+</td>
+</tr>	
 
 <tr>
 <td  class="label">{t}Website URL{/t}:</td>
@@ -318,17 +320,51 @@
 	  
 	  
 
-<tr style="display:none">
-<td  class="label">{t}Website FTP Credentials: {/t}</td>
+<tr >
+<td  class="label">{t}Website FTP Server{/t}:</td>
 <td  style="text-align:left">
      <div>
-       <input style="text-align:left;width:100%" id="Site_FTP" value="{$site->get('Site FTP Credentials')}" ovalue="{$site->get('Site FTP Credentials')}" valid="0">
-       <div id="Site_FTP_Container"  ></div>
+       <input style="text-align:left;width:100%" id="Site_FTP_Server" value="{$site->get('Site FTP Server')}" ovalue="{$site->get('Site FTP Server')}" >
+       <div id="Site_FTP_Server_Container"  ></div>
      </div>
-
 </td>
-<td id="Site_FTP_msg" class="edit_td_alert"></td>
+<td id="Site_FTP_Server_msg" class="edit_td_alert"></td>
 </tr>
+
+<tr >
+<td  class="label">{t}Website FTP User{/t}:</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_FTP_User" value="{$site->get('Site FTP User')}" ovalue="{$site->get('Site FTP User')}" >
+       <div id="Site_FTP_User_Container"  ></div>
+     </div>
+</td>
+<td id="Site_FTP_User_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr >
+<td  class="label">{t}Website FTP Password{/t}:</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_FTP_Password" value="{$site->get('Site FTP Password')}" ovalue="{$site->get('Site FTP Password')}" >
+       <div id="Site_FTP_Password_Container"  ></div>
+     </div>
+</td>
+<td id="Site_FTP_Password_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr >
+<td  class="label">{t}Website FTP Directory{/t}:</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="Site_FTP_Directory" value="{$site->get('Site FTP Directory')}" ovalue="{$site->get('Site FTP Directory')}" >
+       <div id="Site_FTP_Directory_Container"  ></div>
+     </div>
+</td>
+<td id="Site_FTP_Directory_msg" class="edit_td_alert"></td>
+</tr>
+
+
 
 </table>	
      
