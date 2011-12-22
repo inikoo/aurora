@@ -23,7 +23,7 @@ var create_address=function(options) {
     for (i in items) {
 		if(items.length <= count++)
 			break;
-	//alert(address_prefix+'address_'+items[i]+':'+Dom.get(address_prefix+'address_'+items[i]).value);
+	alert(address_prefix+'address_'+items[i]+':'+Dom.get(address_prefix+'address_'+items[i]).value);
         value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
     }
 
