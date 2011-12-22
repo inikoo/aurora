@@ -20,7 +20,7 @@
 
        
 <div id="address_book_block" >
-///////
+
 
 
 
@@ -34,7 +34,7 @@
 <tr><td>
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=contact_&index={$page->customer->get('Customer Main Address Key')}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
 
 </td>
@@ -46,7 +46,7 @@
 
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=billing_'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=billing_&index={$page->customer->get('Customer Billing Address Key')}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
 
 </td>
@@ -58,7 +58,7 @@
 
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=delivery_'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=delivery_&index={$page->customer->get('Customer Main Delivery Address Key')}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
 
 </td>
@@ -80,7 +80,7 @@
 
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=billing_'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=billing_&index={$address->id}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
 
 
@@ -113,7 +113,7 @@
 
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=delivery_'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=delivery_&index={$address->id}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
 </div>
 
 
@@ -131,6 +131,8 @@
 </table></td>
 </tr>
 </table>
-///////////////////
+
+
+
 </div>     
 

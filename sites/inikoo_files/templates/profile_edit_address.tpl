@@ -1,6 +1,9 @@
 <input type="hidden" id="user_key" value="{$user->id}" />
 <input type="hidden" id="store_key" value="{$store->id}" />
 <input type="hidden" id="site_key" value="{$site->id}" />
+<input type="hidden" id="index"  value="{$index}"/>
+<input type="hidden" id="prefix"  value="{$address_identifier}"/>
+<input type="hidden" id="customer_key"  value="{$page->customer->id}"/>
 
 <div class="top_page_menu" style="padding:0px 20px 5px 20px">
 <div class="buttons" style="float:left">

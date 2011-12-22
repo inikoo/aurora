@@ -132,8 +132,13 @@ else if ($page->data['Page Code']=='profile') {
 		$smarty->assign('address_identifier',$_REQUEST['type']);
 		if($_REQUEST['type'] == 'delivery_')
 			$smarty->assign('address_function','Delivery');
-		else
+		else if($_REQUEST['type'] == 'billing_')
 			$smarty->assign('address_function','Billing');
+		else if($_REQUEST['type'] == 'contact_')
+			$smarty->assign('address_function','Contact');
+
+		$smarty->assign('index',$_REQUEST['index']);
+		
 	}
 
 
@@ -147,12 +152,12 @@ else if ($page->data['Page Code']=='profile') {
     $smarty->assign('rnd',$rnd);
     $js_files[]='js/aes.js';
     $js_files[]='js/sha256.js';
-       $js_files[]='js/table_common.js';
-     $js_files[]='js/edit_common.js';
-     $css_files[]='css/container.css';
+    $js_files[]='js/table_common.js';
+    $js_files[]='js/edit_common.js';
+    $css_files[]='css/container.css';
     $css_files[]='css/inikoo.css';
     $css_files[]='css/inikoo_table.css';
-
+    $js_files[]='address_data.js.php';
 }
 
 $smarty->assign('logged',$logged_in);
@@ -218,8 +223,8 @@ if ($page->data['Page Store Content Display Type']=='Source') {
     $js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
 }
 
-$customer=new Customer(5);
-$page->customer=$customer;
+//$customer=new Customer(5);
+//$page->customer=$customer;
 $smarty->assign('filter_name0','Order ID');
 $smarty->assign('filter_value0', '');
 $smarty->assign('css_files',$css_files);

@@ -23,7 +23,7 @@ var create_address=function(options) {
     for (i in items) {
 		if(items.length <= count++)
 			break;
-	alert(address_prefix+'address_'+items[i]+':'+Dom.get(address_prefix+'address_'+items[i]).value);
+	//alert(address_prefix+'address_'+items[i]+':'+Dom.get(address_prefix+'address_'+items[i]).value);
         value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
     }
 
@@ -91,8 +91,12 @@ id=["delivery_save_address_button", "billing_save_address_button"]
 if(Dom.get('prefix').value == 'delivery_'){
 	address_type='Delivery'
 }
-else
+else if(Dom.get('prefix').value == 'billing_'){
 	address_type='Billing'
+}
+else
+	address_type='Contact'
+	
 YAHOO.util.Event.addListener(id, "click",save_address,{prefix:Dom.get('prefix').value,subject:'Customer',subject_key:Dom.get('customer_key').value,type:address_type});
 
 
