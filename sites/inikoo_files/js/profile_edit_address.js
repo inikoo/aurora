@@ -88,14 +88,16 @@ var create_address=function(options) {
 
 
 
-    var request='ar_edit_contacts.php?tipo=new_'+options.type+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key;
-//alert(request);
+    //var request='ar_edit_contacts.php?tipo=new_'+options.type+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key;
+
   
+var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+options.index+'&key='+options.type+'&subject='+options.subject+'&subject_key='+options.subject_key;
+//alert(request);
   YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
           //  alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
-            if (r.action=='created') {
+            if (r.action=='updated') {
 		window.location='profile.php?view=address_book'
             } 
             else if (r.action=='nochange') {
@@ -116,7 +118,7 @@ function init(){
 
 edit_address(Dom.get('index').value, Dom.get('prefix').value);
 
-id=["delivery_save_address_button", "billing_save_address_button"]	
+id=["delivery_save_address_button", "billing_save_address_button", "contact_save_address_button"]	
 if(Dom.get('prefix').value == 'delivery_'){
 	address_type='Delivery'
 }
@@ -126,7 +128,7 @@ else if(Dom.get('prefix').value == 'billing_'){
 else
 	address_type='Contact'
 	
-YAHOO.util.Event.addListener(id, "click",save_address,{prefix:Dom.get('prefix').value,subject:'Customer',subject_key:Dom.get('customer_key').value,type:address_type});
+YAHOO.util.Event.addListener(id, "click",save_address,{prefix:Dom.get('prefix').value,subject:'Customer',subject_key:Dom.get('customer_key').value,type:address_type, index:Dom.get('index').value});
 
 }
 

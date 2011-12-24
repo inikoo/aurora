@@ -25,10 +25,6 @@ case('campaign_list'):
     campaign_list();
     break;
 
-
-
-
-
 default:
     $response=array('state'=>404,'resp'=>_('Operation not found'));
     echo json_encode($response);
