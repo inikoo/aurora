@@ -7,6 +7,9 @@ include_once('class.Customer.php');
 include_once('class.Store.php');
 include_once('class.Page.php');
 include_once('class.Site.php');
+include_once('class.DummyCustomer.php');
+
+
 
 if (!isset($_REQUEST['id'])  or  !is_numeric($_REQUEST['id']) ) {
     header('Location: index.php');
@@ -33,6 +36,10 @@ if ($_logged) {
     $logged=0;
 }
 $smarty->assign('logged',$logged);
+
+
+$customer=new Dummy_Customer();
+$page->customer=$customer;
 $page->site=$site;
 $page->user=$user;
 $page->logged=$logged;
@@ -131,12 +138,12 @@ while ($row=mysql_fetch_assoc($res)) {
 if ($page->data['Page Store Content Display Type']=='Source') {
     $smarty->assign('type_content','string');
     $smarty->assign('template_string',$page->data['Page Store Source']);
-    
+
 } else {
     $smarty->assign('type_content','file');
     $smarty->assign('template_string',$page->data['Page Store Content Template Filename'].'.tpl');
-     $css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
-     $js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
+    $css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
+    $js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
 }
 
 

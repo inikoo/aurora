@@ -19,6 +19,7 @@ if (!isset($_REQUEST['id'])) {
     $id=$_REQUEST['id'];
 header('Content-type: text/javascript');
 $sql=sprintf("select `Site Menu Javascript` from `Site Dimension` where `Site Key`=%d",$id);
+//print $sql;
 $result = mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     print $row['Site Menu Javascript'];

@@ -18,13 +18,44 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-vi
 
 
 
+function recapture_preview(){
+Dom.setStyle('recapture_preview_processing','display','')
+Dom.setStyle('recapture_preview','display','none')
 
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+Dom.get('page_key').value,{
+  success: function(o) {
+ //  alert(o.responseText)
+   var r = YAHOO.lang.JSON.parse(o.responseText);
+   Dom.setStyle('recapture_preview_processing','display','none')
+Dom.setStyle('recapture_preview','display','')
+Dom.get('capture_preview_date').innerHTML=', '+r.formated_date
+   
+   Dom.get('page_preview_snapshot').src='image.php?id='+r.image_key
+   
+  }
+  });
+}
 
+function recapture_page(){
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+Dom.get('page_key').value,{
+  success: function(o) {
+   alert(o.responseText)
+   var r = YAHOO.lang.JSON.parse(o.responseText);
+   //Dom.get('page_preview_snapshot_image').src='image.php?id='+r.image_key
+   
+  }
+  });
+}
 
 
  function init(){
 
   init_search('site');
+  
+    YAHOO.util.Event.addListener('recapture_page', "click",recapture_page);
+  YAHOO.util.Event.addListener('recapture_preview', "click",recapture_preview);
+
+  
  Event.addListener(['details','hits','visitors'], "click",change_block);
 
 

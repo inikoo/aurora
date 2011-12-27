@@ -36,11 +36,11 @@ case('update_page_height'):
     update_page_height($data);
     break;
     break;
-case('update_page_snapshot'):
+case('update_page_preview_snapshot'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
                          ));
-    update_page_snapshot($data);
+    update_page_preview_snapshot($data);
     break;
 case('edit_page_product_list'):
     $data=prepare_values($_REQUEST,array(
@@ -1952,13 +1952,13 @@ function edit_page_product_list($data) {
 
 }
 
-function update_page_snapshot($data) {
+function update_page_preview_snapshot($data) {
     include_once('class.Image.php');
     $page=new Page($data['id']);
     if ($page->id) {
         $page->update_preview_snapshot();
     }
-    $response= array('state'=>200,'image_key'=>$page->data['Page Preview Snapshot Image Key']);
+    $response= array('state'=>200,'image_key'=>$page->data['Page Preview Snapshot Image Key'],'formated_date'=>$page->get_preview_snapshot_date());
     echo json_encode($response);
 }
 
