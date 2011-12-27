@@ -1970,15 +1970,15 @@ class Page extends DB_Table {
                 $basket='';
                 break;
             }
- 
 
-            $html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <img src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
+
+            $html=$basket.'<div style="float:right"><span>'.$this->customer->get_hello().'</span>  <span class="link" onClick=\'window.location="logout.php"\' id="logout">'._('Log Out').'</span> <img alt="'._('Profile').'" src="art/gear.png"  onClick=\'window.location="profile.php"\' id="show_actions_dialog" ></div>';
         } else {
             $html='<div style="float:right"> <span class="link" onClick=\'window.location="registration.php"\' id="show_register_dialog">'._('Register').'</span> <span class="link"  onClick=\'window.location="login.php?from='.$this->id.'"\' id="show_login_dialog">'._('Log in').'</span><img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>';
         }
-        
 
-        
+
+
         return $html;
 
 
@@ -1986,7 +1986,7 @@ class Page extends DB_Table {
 
     function display_label() {
 
-        return $this->get('Page Parent Code');
+        return $this->data['Page Parent Code'];
     }
 
 
@@ -2241,9 +2241,9 @@ class Page extends DB_Table {
         //  print "$new_image_key $old_image_key\n";
         //  print $image->msg." x4\n";
 
+        
 
-
-        if ($new_image_key!=$old_image_key and $new_image_key) {
+        if ($new_image_key!=$old_image_key){
             $this->data['Page Preview Snapshot Image Key']=$new_image_key;
             $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d and `Image Key`=%d ",
                          prepare_mysql('Page Preview'),
@@ -2264,17 +2264,31 @@ class Page extends DB_Table {
                         );
             mysql_query($sql);
 //print $sql;
-            $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Image Key`=%d  where `Page Key`=%d",
+
+            $this->data['Page Preview Snapshot Last Update']=date('Y-m-d H:i:s',strtotime('now UTF'));
+            $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Image Key`=%d,`Page Preview Snapshot Last Update`=%s  where `Page Key`=%d",
                          $this->data['Page Preview Snapshot Image Key'],
+                         prepare_mysql($this->data['Page Preview Snapshot Last Update']),
                          $this->id
 
                         );
             mysql_query($sql);
-            //  print $sql;
+           
 
             $this->updated=true;
             $this->new_value=$this->data['Page Preview Snapshot Image Key'];
 
+        }
+        else{
+        $this->data['Page Preview Snapshot Last Update']=date('Y-m-d H:i:s',strtotime('now'));
+            $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Last Update`=%s  where `Page Key`=%d",
+                      
+                         prepare_mysql($this->data['Page Preview Snapshot Last Update']),
+                         $this->id
+
+                        );
+            mysql_query($sql);
+           
         }
 
 
@@ -2286,6 +2300,15 @@ class Page extends DB_Table {
             $this->update_preview_snapshot();
         }
 
+    }
+
+    function get_snapshot_date() {
+        return strftime("%c", strtotime($this->data['Page Snapshot Last Update'].' UTC')) ;
+    }
+    function get_preview_snapshot_date() {
+
+        if ($this->data['Page Preview Snapshot Last Update']!='')
+            return strftime("%c", strtotime($this->data['Page Preview Snapshot Last Update'].' UTC')) ;
     }
 
 }

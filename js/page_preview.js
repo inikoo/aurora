@@ -23,7 +23,7 @@ update_heights();
 
 function take_snapshot(){
 
-  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_snapshot&id='+Dom.get('page_key').value,{
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+Dom.get('page_key').value,{
   success: function(o) {
    var r = YAHOO.lang.JSON.parse(o.responseText);
    if(parent.Dom.get('page_preview_snapshot_image')!= null){

@@ -127,9 +127,22 @@
 
  
   </div>
-  <div style="margin-left:20px;width:450px;float:left">
+  <div style="{if $page->get('Page Upload State')!='Upload'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
   
-  <img style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt=""/>
+    <span style="font-size:11px;color:#777;">{t}Live snapshot{/t}, {$page->get_snapshot_date()}</span> <img id="recapture_page" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture"/>
+      <img style="width:470px" src="image.php?id={$page->get('Page Snapshot Image Key')}" alt=""/>
+
+</div>
+  <div style="{if $page->get('Page Upload State')=='Upload'}display:none;{/if}margin-left:20px;width:450px;float:left;position:relative;top:-12px">
+
+
+    <span style="font-size:11px;color:#777;">{t}Preview snapshot{/t}<span id="capture_preview_date">, {$page->get_preview_snapshot_date()}</span></span> <img id="recapture_preview" style="position:relative;top:-1px;cursor:pointer" src="art/icons/camera_bw.png" alt="recapture"/><img id="recapture_preview_processing" style="display:none;height:12.5px;position:relative;top:-1px;" src="art/loading.png"/>
+  <img id="page_preview_snapshot" style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt=""/>
+ 
+  
+  
+
+
   
 </div>
 

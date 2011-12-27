@@ -142,7 +142,7 @@ function change_number_auto_see_also(e,operation){
 	                            alert(o.responseText);	
 			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			                    if(r.state==200){
-			                    update_page_snapshot();
+			                    update_page_preview_snapshot();
                                     location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
                                 }else{
                                 
@@ -768,8 +768,8 @@ window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=co
   };
   
   function update_page_height_and_reload(page_key){
-//  alert('ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key)
-  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_snapshot&id='+page_key,{
+//  alert('ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+page_key)
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+page_key,{
   success: function(o) {
   //alert(o.responseText)
   	    //  window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=content';
@@ -779,8 +779,8 @@ window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=co
   
   }
   
-    function update_page_snapshot(){
-  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_snapshot&id='+Dom.get('page_key').value,{
+    function update_page_preview_snapshot(){
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+Dom.get('page_key').value,{
   success: function(o) {
    var r = YAHOO.lang.JSON.parse(o.responseText);
    Dom.get('page_preview_snapshot_image').src='image.php?id='+r.image_key
@@ -795,7 +795,7 @@ window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=co
   switch ( branch ) {
   	case 'page_header':
   		
-  		update_page_snapshot();
+  		update_page_preview_snapshot();
   		
   		break;
   	
