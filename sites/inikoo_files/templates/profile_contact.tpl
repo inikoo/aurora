@@ -43,7 +43,7 @@
         <td  class="aright">{$page->customer->get('Customer Company Name')}</td >
     </tr>
 
-<tr><td>{t}Name{/t}:</td><td><img style="cursor:pointer" src="art/edit.gif" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Main Contact Name')}</td ></tr>
+<tr><td>{t}Name{/t}:</td><td><img style="cursor:pointer" id="show_edit_contact" src="art/edit.gif" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Main Contact Name')}</td ></tr>
 
 {if $page->customer->get('Customer Main Email Key')}
 <tr id="main_email_tr" >
@@ -61,7 +61,7 @@
 {/foreach}
 
 
-<tr><td>{t}Telephone{/t}:</td><td><img src="art/edit.gif" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Main Contact Name')}</td ></tr>
+<tr><td>{t}Telephone{/t}:</td><td><img src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Main Plain Telephone')}</td ></tr>
 
 
 <tr><td>
@@ -127,5 +127,52 @@ bla bla bla
 
 </div>
 
+<div id="dialog_quick_edit_Customer_Contact" style="padding:10px">
+	<table style="margin:10px">
+	
+	<tr>
+	<td>{t}Name:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_Contact" value="{$page->customer->get('Customer Main Contact Name')}" ovalue="{$page->customer->get('Customer Main Contact Name')}" valid="0">
+	<div id="Customer_Contact_Container"  ></div>
+	</div>	
+	</td>
 
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Contact_msg" ></span>
+	<button class="positive" onClick="save_quick_edit_contact()">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_contact">{t}Cancel{/t}</button>
 
+	</div>
+	</td></tr>
+	</table>
+
+</div>
+
+<div id="dialog_quick_edit_Customer_Telephone" style="padding:10px">
+	<table style="margin:10px">
+	
+	<tr>
+	<td>{t}Telephone:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_Telephone" value="{$page->customer->get('Customer Main Plain Telephone')}" ovalue="{$page->customer->get('Customer Main Plain Telephone')}" valid="0">
+	<div id="Customer_Telephone_Container"  ></div>
+	</div>	
+	</td>
+
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Telephone_msg" ></span>
+	<button class="positive" onClick="save_quick_edit_telephone()">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_telephone">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
+	</table>
+
+</div>

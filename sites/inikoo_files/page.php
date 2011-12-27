@@ -225,6 +225,7 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 
 //$customer=new Customer(5);
 //$page->customer=$customer;
+print_r($customer);
 $smarty->assign('filter_name0','Order ID');
 $smarty->assign('filter_value0', '');
 $smarty->assign('css_files',$css_files);

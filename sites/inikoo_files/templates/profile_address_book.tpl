@@ -25,7 +25,7 @@
 
 
 <table class="edit" border=1 style="clear:both;margin-bottom:40px;width:100%">
-<tr><td>{t}Contact Address{/t}</td><td>{t}Billing Address{/t}</td><td>{t}Delivery Address{/t}</td></tr>
+<tr ><td style="width:33%">{t}Contact Address{/t}</td><td style="width:33%">{t}Billing Address{/t}</td><td style="width:33%">{t}Delivery Address{/t}</td></tr>
 <tr>
 <td>{$page->customer->get('Customer Main XHTML Address')}</td>
 <td>{if $page->customer->get('Customer Billing Address Key')==$page->customer->get('Customer Main Address Key')}{t}Same as Contact Address{/t}{elseif $page->customer->get('Customer Billing Address Key')==$page->customer->get('Customer Delivery Address Key')}{t}Same as Delivery Address{/t}{else}{$page->customer->display_billing_address('xhtml')}{/if}</td>
