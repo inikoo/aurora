@@ -79,6 +79,80 @@
 <div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px"></div>
 </div>
 
+<div style="padding:0px 20px;float:right">
+<h2>{t}Communication{/t}</h2>
+<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
+	
+	<table>
+	 <tr class="title"><td colspan=5>{t}Emails{/t}</td></tr>
+
+	 <tr>
+	 <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
+	 <td>
+
+	   <div   class="buttons" >
+	   <button class="{if $page->customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button>
+	   <button class="{if $page->customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button>
+
+	   </div>
+	 </td>
+	 </tr>
+	  <tr>
+	 <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
+	 <td>
+	   <div class="buttons" >
+	   <button class="{if $page->customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button>
+	   <button class="{if $page->customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+
+	  <tr class="title"><td colspan=5>{t}Post{/t}</td></tr>
+
+
+	  <tr>
+	 <td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
+	 <td>
+	   <div  class="buttons" >
+	   <button class="{if $page->customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> 
+	   <button class="{if $page->customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+
+
+	<tbody id="add_to_post_cue" style="display:none">
+
+	  <tr class="title"><td colspan=5>{t}Send Post {/t}</td></tr>
+	 <tr>
+	 <td class="label" style="width:200px">{t}Add Customer To Send Post{/t}:</td>
+	 <td>
+	   <div    class="buttons" >
+	   <button class="{if $page->customer->get('Send Post Status')=='To Send'}selected{/if} positive" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_To Send">{t}Yes{/t}</button>
+	   <button class="{if $page->customer->get('Send Post Status')=='Cancelled'}selected{/if} negative" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_Cancelled">{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+	<tr>
+	 <td class="label" style="width:200px">{t}Post Type{/t}:</td>
+	 <td>
+	   <div  class="buttons">
+	   <button class="{if $page->customer->get('Post Type')=='Letter'}selected{/if} positive" onclick="save_comunications_send_post('Post Type','Letter')" id="Post Type_Letter">{t}Letter{/t}</button>
+	   <button class="{if $page->customer->get('Post Type')=='Catalogue'}selected{/if} negative" onclick="save_comunications_send_post('Post Type','Catalogue')" id="Post Type_Catalogue">{t}Catalogue{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+	 </tbody>
+
+
+
+
+	</table>
+	
+	
+	
+</div>
+</div>
 
 </div>
        
