@@ -137,10 +137,19 @@ else if ($page->data['Page Code']=='profile') {
 		else if($_REQUEST['type'] == 'contact_')
 			$smarty->assign('address_function','Contact');
 
+		if(isset($_REQUEST['index']))
 		$smarty->assign('index',$_REQUEST['index']);
 		
 	}
 
+	$country_list=array();
+	$sql=sprintf("select * from kbase.`Country Dimension`");
+	$result=mysql_query($sql);
+	while($row=mysql_fetch_array($result)){
+		$country_list[]=array('country'=>$row['Country Name'], 'code'=>$row['Country Code']);
+	}
+
+	$smarty->assign('country_list',$country_list);
 
     for ($i = 0; $i < 16; $i++) {
         $rnd .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", mt_rand(0, 63), 1);

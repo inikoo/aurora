@@ -1,7 +1,7 @@
 <tbody id="{$address_identifier}address_form" style="{if !$show_form}display:none{/if}">
     <input type="hidden" id="{$address_identifier}address_key" value="" ovalue="" />
     <input type="hidden" id="{$address_identifier}address_fuzzy" value="Yes" ovalue="Yes" />
-    <input id="{$address_identifier}address_country_code" value="" type="hidden"/>
+    <input id="{$address_identifier}address_country_code_" value="" type="hidden"/>
     <input id="{$address_identifier}address_country_2acode" value="" type="hidden"/>
     
     <tr id="{$address_identifier}tr_address_type" style="display:none">
@@ -159,7 +159,13 @@
             {t}Country{/t}:</td>
         <td  >
         <div id="{$address_identifier}myAutoComplete" >
-	        <input id="{$address_identifier}address_country" style="text-align:left;width:100%" type="text"/>
+<input id="{$address_identifier}address_country" value="" type="hidden"/>
+	       <select size="1" id="{$address_identifier}address_country_code" >
+<option value="XX">Select One</option>
+{foreach from=$country_list key=key item=item}
+<option value="{$item.code}">{$item.country}</option>
+{/foreach}
+</select>
 
 
 	        <div id="{$address_identifier}address_country_container" ></div>
