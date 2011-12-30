@@ -26,6 +26,8 @@ var create_address=function(options) {
 	//alert(address_prefix+'address_'+items[i]+':'+Dom.get(address_prefix+'address_'+items[i]).value);
         value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
     }
+alert(value[items[6]])
+
 
     var address_type_values=new Array();
     var elements_array=Dom.getElementsByClassName(address_prefix+'address_type', 'span');
