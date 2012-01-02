@@ -2893,7 +2893,7 @@ function list_products_in_part() {
         $order='`Part SKU`';
 
 
-        $sql="select `Parts Per Product`,`Part SKU`,`Product Part List Note`,`Product Code` ,`Store Code`,`Store Key` from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+        $sql="select P.`Product ID`,`Product Web State`,`Product Web Configuration`,`Product Record Type`,`Product Sales Type`,`Parts Per Product`,`Part SKU`,`Product Part List Note`,`Product Code` ,`Store Code`,`Store Key` from `Product Part List` L  left join `Product Part Dimension` PP on (L.`Product Part Key`=PP.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PP.`Product ID`)left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
         //print $sql;
         $res = mysql_query($sql);
         $total=mysql_num_rows($res);
@@ -2901,13 +2901,102 @@ function list_products_in_part() {
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
             // $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
+
+
+
+     switch ($row['Product Sales Type']) {
+        case('Public Sale'):
+            $sales_type=_('Public Sale');
+            break;
+        case('Private Sale'):
+            $sales_type=_('Private Sale');
+            break;
+        case('Not for Sale'):
+            $sales_type=_('Not For Sale');
+            break;
+        default:
+            $sales_type=$row['Product Sales Type'];
+
+        }
+
+
+        switch ($row['Product Record Type']) {
+        default:
+            $record_type=$row['Product Record Type'];
+
+        }
+
+
+        switch ($row['Product Web Configuration']) {
+        case('Online Force Out of Stock'):
+            $formated_web_configuration=_('Force out of stock');
+            break;
+        case('Online Auto'):
+            $formated_web_configuration=_('Auto');
+            break;
+        case('Offline'):
+            $formated_web_configuration=_('Force Offline');
+            break;
+        case('Online Force For Sale'):
+            $formated_web_configuration=_('Force Online');
+            break;
+        default:
+            $formated_web_configuration=$row['Product Web Configuration'];
+        }
+
+        switch ($row['Product Web State']) {
+        case('Out of Stock'):
+            $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+            break;
+        case('For Sale'):
+            $web_state='';
+            break;
+        case('Discontinued'):
+            $web_state=_('Discontinued');
+        case('Offline'):
+            $web_state=_('Offline');
+        default:
+            $web_state=$row['Product Web State'];
+
+
+            break;
+
+
+        }
+
+        if ($row['Product Sales Type']!='Public Sale') {
+            $web_configuration=$row['Product Sales Type'];
+            switch ($row['Product Sales Type']) {
+            case 'Private Sale':
+                $formated_web_configuration=_('Private Sale');
+                break;
+            default:
+                $formated_web_configuration=_('Not For Sale');
+                break;
+            }
+        } else {
+
+            $web_configuration=$row['Product Web Configuration'];
+        }
+
+
+
+
             $relation=$row['Parts Per Product'].' &rarr; 1';
             $adata[]=array(
+            
+             'pid'=>$row['Product ID'],
                          'sku'=>$row['Part SKU'],
                          'relation'=>$relation,
                          'code'=>$row['Product Code'],
                          'store'=>$row['Store Code'],
                          'notes'=>$row['Product Part List Note'],
+                          'sales_type'=>$sales_type,
+                     'record_type'=>$record_type,
+
+                     'web_configuration'=>$web_configuration,
+                     'formated_web_configuration'=>$formated_web_configuration,
+                     'state_info'=>$sales_type,
 
                      );
         }

@@ -41,7 +41,7 @@
 
   <span class="clean_table_title">{t}Products{/t}</span>
   {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
-  <div  id="table1"   class="data_table_container dtable btable "> </div>
+  <div  id="table1"   class="data_table_container dtable btable" style="font-size:85%"> </div>
     
   
 </div>

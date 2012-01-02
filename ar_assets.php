@@ -3041,18 +3041,21 @@ function list_products() {
         switch ($row['Product Web State']) {
 
         case('For Sale'):
-            if ($row['Product Web Configuration']='Online Force For Sale')
+            if ($row['Product Web Configuration']=='Online Force For Sale')
                 $web_configuration='('._('forced').')';
 
             $formated_web_configuration='<span class="web_online">'._('Online')." $web_configuration</span>";
             break;
         case('Offline'):
-            if ($row['Product Web Configuration']='Offline')
+            if ($row['Product Web Configuration']=='Offline')
                 $web_configuration='('._('forced').')';
+             if ($row['Product Web Configuration']=='Online Auto')
+                $web_configuration='('._('auto').')';    
+                
             $formated_web_configuration='<span class="web_offline">'._('Offline')." $web_configuration</span>";
             break;
         case('Out of Stock'):
-            if ($row['Product Web Configuration']='Online Force Out of Stock')
+            if ($row['Product Web Configuration']=='Online Force Out of Stock')
                 $web_configuration='('._('forced').')';
             $formated_web_configuration='<span class="web_out_of_stock">'._('Out of Stock')." $web_configuration</span>";
             break;
@@ -6724,23 +6727,24 @@ function list_campaigns() {
         $order='`Deal Name`';
 
 
-    $sql="select *  from `Deal Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
-
+    $sql="select *  from `Campaign Deal Schema` $where    order by $order $order_direction limit $start_from,$number_results    ";
+print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-        $sql=sprintf("select * from `Campaign Deal Schema`  where `Deal Key`=%d  ",$row['Deal Key']);
-        $res2 = mysql_query($sql);
-        $deals='<ul style="padding:10px 20px">';
-        while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
-            $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Metadata Name']);
-        }
-        $deals.='</ul>';
+        //$sql=sprintf("select * from `Campaign Deal Schema`  where `Deal Key`=%d  ",$row['Deal Key']);
+        //$res2 = mysql_query($sql);
+        
+        //$deals='<ul style="padding:10px 20px">';
+        //while ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
+          //  $deals.=sprintf("<li style='list-style-type: circle' >%s</li>",$row2['Deal Metadata Name']);
+       // }
+       // $deals.='</ul>';
 
-
+$deals='';
         $used=0;
 
         if (!$row['Deal Expiration Date'] ) {

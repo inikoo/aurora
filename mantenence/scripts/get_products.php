@@ -46,6 +46,8 @@ $version='V 1.1';
 
 $Data_Audit_ETL_Software="$software $version";
 
+$set_part_as_available=true;
+
 
 $_argv=$_SERVER['argv'];
 
@@ -206,6 +208,9 @@ foreach($__cols as $cols) {
 
 
 
+
+
+
     if ($is_product) {
 
         $part_list=array();
@@ -231,31 +236,31 @@ foreach($__cols as $cols) {
             //	print "************".$current_promotion."\n";
             $deals[]=array(
                          'Deal Metadata Name'=>'Gold Reward'
-                                     ,'Deal Metadata Trigger'=>'Order'
+                                              ,'Deal Metadata Trigger'=>'Order'
 
-                                                     ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
-                                                                         ,'Deal Metadata Terms Type'=>'Order Interval'
-                                                                                            ,'Deal Metadata Terms Description'=>'last order within 1 calendar month'
-                                                                                                                      ,'Deal Metadata Allowance Description'=>$allowance
-                                                                                                                                                    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-                                                                                                                                                                           ,'Deal Metadata Allowance Target'=>'Family'
-                                                                                                                                                                                                    ,'Deal Metadata Allowance Target Key'=>''
-                                                                                                                                                                                                                                 ,'Deal Metadata Begin Date'=>''
-                                                                                                                                                                                                                                                    ,'Deal Metadata Expiration Date'=>''
+                                                                       ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
+                                                                                           ,'Deal Metadata Terms Type'=>'Order Interval'
+                                                                                                                       ,'Deal Metadata Terms Description'=>'last order within 1 calendar month'
+                                                                                                                                                          ,'Deal Metadata Allowance Description'=>$allowance
+                                                                                                                                                                                                 ,'Deal Metadata Allowance Type'=>'Percentage Off'
+                                                                                                                                                                                                                                 ,'Deal Metadata Allowance Target'=>'Family'
+                                                                                                                                                                                                                                                                   ,'Deal Metadata Allowance Target Key'=>''
+                                                                                                                                                                                                                                                                                                         ,'Deal Metadata Begin Date'=>''
+                                                                                                                                                                                                                                                                                                                                     ,'Deal Metadata Expiration Date'=>''
                      );
 
             $deals[]=array(
                          'Deal Metadata Name'=>'Family Volume Discount'
-                                     ,'Deal Metadata Trigger'=>'Family'
+                                              ,'Deal Metadata Trigger'=>'Family'
 
-                                                     ,'Deal Metadata Terms Type'=>'Family Quantity Ordered'
-                                                                        ,'Deal Metadata Terms Description'=>'order '.$terms
-                                                                                                  ,'Deal Metadata Allowance Description'=>$allowance
-                                                                                                                                ,'Deal Metadata Allowance Type'=>'Percentage Off'
-                                                                                                                                                       ,'Deal Metadata Allowance Target'=>'Family'
-                                                                                                                                                                                ,'Deal Metadata Allowance Target Key'=>''
-                                                                                                                                                                                                             ,'Deal Metadata Begin Date'=>''
-                                                                                                                                                                                                                                ,'Deal Metadata Expiration Date'=>''
+                                                                       ,'Deal Metadata Terms Type'=>'Family Quantity Ordered'
+                                                                                                   ,'Deal Metadata Terms Description'=>'order '.$terms
+                                                                                                                                      ,'Deal Metadata Allowance Description'=>$allowance
+                                                                                                                                                                             ,'Deal Metadata Allowance Type'=>'Percentage Off'
+                                                                                                                                                                                                             ,'Deal Metadata Allowance Target'=>'Family'
+                                                                                                                                                                                                                                               ,'Deal Metadata Allowance Target Key'=>''
+                                                                                                                                                                                                                                                                                     ,'Deal Metadata Begin Date'=>''
+                                                                                                                                                                                                                                                                                                                 ,'Deal Metadata Expiration Date'=>''
                      );
 
 
@@ -270,30 +275,30 @@ foreach($__cols as $cols) {
 
             $deals[]=array(
                          'Deal Metadata Name'=>'Gold Reward'
-                                     ,'Deal Metadata Trigger'=>'Order'
-                                                     ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
-                                                                         ,'Deal Metadata Terms Type'=>'Order Interval'
-                                                                                            ,'Deal Metadata Terms Description'=>'last order within 1 calendar month'
-                                                                                                                      ,'Deal Metadata Allowance Description'=>$allowance
-                                                                                                                                                    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-                                                                                                                                                                           ,'Deal Metadata Allowance Target'=>'Family'
-                                                                                                                                                                                                    ,'Deal Metadata Allowance Target Key'=>''
-                                                                                                                                                                                                                                 ,'Deal Metadata Begin Date'=>''
-                                                                                                                                                                                                                                                    ,'Deal Metadata Expiration Date'=>''
+                                              ,'Deal Metadata Trigger'=>'Order'
+                                                                       ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
+                                                                                           ,'Deal Metadata Terms Type'=>'Order Interval'
+                                                                                                                       ,'Deal Metadata Terms Description'=>'last order within 1 calendar month'
+                                                                                                                                                          ,'Deal Metadata Allowance Description'=>$allowance
+                                                                                                                                                                                                 ,'Deal Metadata Allowance Type'=>'Percentage Off'
+                                                                                                                                                                                                                                 ,'Deal Metadata Allowance Target'=>'Family'
+                                                                                                                                                                                                                                                                   ,'Deal Metadata Allowance Target Key'=>''
+                                                                                                                                                                                                                                                                                                         ,'Deal Metadata Begin Date'=>''
+                                                                                                                                                                                                                                                                                                                                     ,'Deal Metadata Expiration Date'=>''
                      );
 
             $deals[]=array(
                          'Deal Metadata Name'=>'Family Volume Discount'
-                                     ,'Deal Metadata Trigger'=>'Family'
-                                                     ,'Deal Description'=>$allowance.' if '.$terms.' same family'
-                                                                         ,'Deal Metadata Terms Type'=>'Family Quantity Ordered'
-                                                                                            ,'Deal Metadata Terms Description'=>'order '.$terms
-                                                                                                                      ,'Deal Metadata Allowance Description'=>$allowance
-                                                                                                                                                    ,'Deal Metadata Allowance Type'=>'Percentage Off'
-                                                                                                                                                                           ,'Deal Metadata Allowance Target'=>'Family'
-                                                                                                                                                                                                    ,'Deal Metadata Allowance Target Key'=>''
-                                                                                                                                                                                                                                 ,'Deal Metadata Begin Date'=>''
-                                                                                                                                                                                                                                                    ,'Deal Metadata Expiration Date'=>''
+                                              ,'Deal Metadata Trigger'=>'Family'
+                                                                       ,'Deal Description'=>$allowance.' if '.$terms.' same family'
+                                                                                           ,'Deal Metadata Terms Type'=>'Family Quantity Ordered'
+                                                                                                                       ,'Deal Metadata Terms Description'=>'order '.$terms
+                                                                                                                                                          ,'Deal Metadata Allowance Description'=>$allowance
+                                                                                                                                                                                                 ,'Deal Metadata Allowance Type'=>'Percentage Off'
+                                                                                                                                                                                                                                 ,'Deal Metadata Allowance Target'=>'Family'
+                                                                                                                                                                                                                                                                   ,'Deal Metadata Allowance Target Key'=>''
+                                                                                                                                                                                                                                                                                                         ,'Deal Metadata Begin Date'=>''
+                                                                                                                                                                                                                                                                                                                                     ,'Deal Metadata Expiration Date'=>''
 
                      );
 
@@ -309,16 +314,16 @@ foreach($__cols as $cols) {
 
             $deals[]=array(
                          'Deal Metadata Name'=>'BOGOF'
-                                     ,'Deal Metadata Trigger'=>'Product'
-                                                     ,'Deal Description'=>'buy '.$buy.' get '.$get.' free'
-                                                                         ,'Deal Metadata Terms Type'=>'Product Quantity Ordered'
-                                                                                            ,'Deal Metadata Terms Description'=>'foreach '.$buy
-                                                                                                                      ,'Deal Metadata Allowance Description'=>$get.' free'
-                                                                                                                                                    ,'Deal Metadata Allowance Type'=>'Get Free'
-                                                                                                                                                                           ,'Deal Metadata Allowance Target'=>'Family'
-                                                                                                                                                                                                    ,'Deal Metadata Allowance Target Key'=>''
-                                                                                                                                                                                                                                 ,'Deal Metadata Begin Date'=>''
-                                                                                                                                                                                                                                                    ,'Deal Metadata Expiration Date'=>''
+                                              ,'Deal Metadata Trigger'=>'Product'
+                                                                       ,'Deal Description'=>'buy '.$buy.' get '.$get.' free'
+                                                                                           ,'Deal Metadata Terms Type'=>'Product Quantity Ordered'
+                                                                                                                       ,'Deal Metadata Terms Description'=>'foreach '.$buy
+                                                                                                                                                          ,'Deal Metadata Allowance Description'=>$get.' free'
+                                                                                                                                                                                                 ,'Deal Metadata Allowance Type'=>'Get Free'
+                                                                                                                                                                                                                                 ,'Deal Metadata Allowance Target'=>'Family'
+                                                                                                                                                                                                                                                                   ,'Deal Metadata Allowance Target Key'=>''
+                                                                                                                                                                                                                                                                                                         ,'Deal Metadata Begin Date'=>''
+                                                                                                                                                                                                                                                                                                                                     ,'Deal Metadata Expiration Date'=>''
                      );
 
 
@@ -337,6 +342,9 @@ foreach($__cols as $cols) {
             continue;
         }
 
+
+      //  if (!preg_match('/advent-05/i',$code))
+        //    continue;
 
         if ($code=='Jhex-08')
             $description='Musk';
@@ -465,63 +473,63 @@ foreach($__cols as $cols) {
             }
 
 
+            /*
+                        foreach($deals as $deal_data) {
+                            //         print_r($deal_data);
+                            //exit;
 
-            foreach($deals as $deal_data) {
-                //         print_r($deal_data);
-                //exit;
+                            $deal_data['Store Key']=$store_key;
 
-                $deal_data['Store Key']=$store_key;
+                            if (preg_match('/Family Volume/i',$deal_data['Deal Metadata Name'])) {
+                                //$deal_data['Deal Deal Key']=$volume_cam_id;
+                                //$deal_data['Deal Metadata Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Metadata Name']);
+                                //$deal_data['Deal Description']=preg_replace('/same family/',$family->data['Product Family Name'].' outers',$deal_data['Deal Description']);
 
-                if (preg_match('/Family Volume/i',$deal_data['Deal Metadata Name'])) {
-                    //$deal_data['Deal Deal Key']=$volume_cam_id;
-                    //$deal_data['Deal Metadata Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Metadata Name']);
-                    //$deal_data['Deal Description']=preg_replace('/same family/',$family->data['Product Family Name'].' outers',$deal_data['Deal Description']);
+                                $data=array(
+                                          'Deal Metadata Allowance Target Key'=>$family->id,
+                                          'Deal Metadata Trigger Key'=>$family->id,
 
-                    $data=array(
-                              'Deal Metadata Allowance Target Key'=>$family->id,
-                              'Deal Metadata Trigger Key'=>$family->id,
+                                          'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description'],
+                                          'Deal Metadata Terms Description'=>$deal_data['Deal Metadata Terms Description']
 
-                              'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description'],
-                              'Deal Metadata Terms Description'=>$deal_data['Deal Metadata Terms Description']
+                                      );
 
-                          );
-
-                    $vol_camp->create_deal('[Product Family Code] Volume Discount',$data);
-
-
-                }
+                                $vol_camp->create_deal('[Product Family Code] Volume Discount',$data);
 
 
-                if (preg_match('/Gold/i',$deal_data['Deal Metadata Name'])) {
-                    //$deal_data['Deal Deal Key']=$gold_reward_cam_id;
-                    //$deal_data['Deal Metadata Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Metadata Name'];
-
-                    $data=array(
-                              'Deal Metadata Trigger Key'=>$family->id,
-                              'Deal Metadata Allowance Target Key'=>$family->id,
-                              'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
-                          );
-
-                    $gold_camp->create_deal('[Product Family Code] Gold Reward',$data);
-
-                }
-
-                if (preg_match('/bogof/i',$deal_data['Deal Metadata Name'])) {
-                    $data=array(
-                              'Deal Metadata Trigger Key'=>$family->id,
-                              'Deal Metadata Allowance Target Key'=>$family->id,
-                              'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
-                          );
-
-                    $bogof_camp->create_deal('[Product Family Code] BOGOF',$data);
+                            }
 
 
-                }
+                            if (preg_match('/Gold/i',$deal_data['Deal Metadata Name'])) {
+                                //$deal_data['Deal Deal Key']=$gold_reward_cam_id;
+                                //$deal_data['Deal Metadata Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Metadata Name'];
+
+                                $data=array(
+                                          'Deal Metadata Trigger Key'=>$family->id,
+                                          'Deal Metadata Allowance Target Key'=>$family->id,
+                                          'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
+                                      );
+
+                                $gold_camp->create_deal('[Product Family Code] Gold Reward',$data);
+
+                            }
+
+                            if (preg_match('/bogof/i',$deal_data['Deal Metadata Name'])) {
+                                $data=array(
+                                          'Deal Metadata Trigger Key'=>$family->id,
+                                          'Deal Metadata Allowance Target Key'=>$family->id,
+                                          'Deal Metadata Allowance Description'=>$deal_data['Deal Metadata Allowance Description']
+                                      );
+
+                                $bogof_camp->create_deal('[Product Family Code] BOGOF',$data);
+
+
+                            }
 
 
 
-            }
-
+                        }
+            */
 
             if ($family->id) {
                 $_special_char=$special_char;
@@ -572,11 +580,13 @@ foreach($__cols as $cols) {
                 continue;
             }
 
+
+
             $codigos[$code]=1;
 
             $product=new Product('find',$data,'create');
 
-
+//print_r($family->data);
             if ($product->new_id) {
                 $scode=_trim($cols[$map['supplier_product_code']]);
                 $supplier_code=$cols[$map['supplier_code']];
@@ -607,14 +617,47 @@ foreach($__cols as $cols) {
             $product->change_current_key($product->id);
 //print_r($cols);
 //print $product->data['Product Code'].": ".$product->data['Product RRP']." -> $rrp\n";
-
+//print("x");
             $product->update_rrp('Product RRP',$rrp);
+//exit("x");
 
+            if ($set_part_as_available) {
+                set_part_as_available($product);
+            }
+
+
+if($product->data['Product Family Key']==1){
+$product->update_family_key($family->id);
+}
+
+            if ($product->data['Product Sales Type']!='Private Sale') {
+                $product->update_sales_type('Public Sale');
+
+
+
+            }
+
+
+
+
+            $sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d and `Product ID`!=%d group by `Product ID`",
+                         prepare_mysql($product->code),
+                         $product->data['Product Store Key'],
+                         $product->pid
+                        );
+            $res=mysql_query($sql);
+            //print $sql;
+            $pids=array();
+            while ($row=mysql_fetch_array($res)) {
+                $_product=new Product('pid',$row['Product ID']);
+                $_product->set_as_historic();
+            }
 
 
         }
 
-    } else {
+    } 
+    else {
 
         $new_family=true;
 
@@ -784,9 +827,9 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
         $supplier_code='StoneM';
     }
 
-if (preg_match('/Ashoke/i',$supplier_code)) {
-                $supplier_code='Asoke';
-            }
+    if (preg_match('/Ashoke/i',$supplier_code)) {
+        $supplier_code='Asoke';
+    }
 
     $the_supplier_data=array(
                            'name'=>$supplier_code,
@@ -1529,6 +1572,41 @@ if (preg_match('/Ashoke/i',$supplier_code)) {
     $part->update_used_in();
     $part->update_supplied_by();
     $product->update_cost_supplier();
+
+}
+
+
+function set_part_as_available($product) {
+
+    $current_part_skus=$product->get_current_part_skus();
+    foreach($current_part_skus as $_part_sku) {
+        $part=new Part($_part_sku);
+        //$part->update_status('Not In Use');
+
+        $supplier_products=$part->get_supplier_products();
+
+        foreach($supplier_products as $supplier_product) {
+            $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='In Use' where `Supplier Product Key`=%d",
+                         $supplier_product['Supplier Product Key']
+                        );
+            mysql_query($sql);
+            //print "$sql\n";
+            $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='Yes' where `Supplier Product Part Key`=%d",
+                         $supplier_product['Supplier Product Part Key']
+                        );
+            mysql_query($sql);
+            //  print "$sql\n";
+
+        }
+
+        $part->update_availability();
+
+
+            $part->update_status('In Use');
+    
+
+
+    }
 
 }
 

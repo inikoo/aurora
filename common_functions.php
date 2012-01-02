@@ -128,7 +128,7 @@ function money($amount,$currency='') {
 
 function money_locale($amount,$locale='',$currency_code='') {
 
-print "\n";
+//print "\n";
 
     if (!is_numeric($amount))
         $amount=0;

@@ -258,7 +258,11 @@ class Deal extends DB_Table {
         $this->schema_found=false;
         if (is_string($arg)) {
             $sql=sprintf("select * from `Campaign Deal Schema` where `Deal Metadata Name`=%s",prepare_mysql($arg));
+            //print "$sql\n";
+           
+            
             $res=mysql_query($sql);
+           
             if ($schema_data=mysql_fetch_array($res)) {
 
                 $this->schema_found=true;
