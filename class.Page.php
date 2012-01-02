@@ -899,12 +899,18 @@ class Page extends DB_Table {
 
     function delete() {
         $this->deleted=false;
+        
+        $site=new Site($this->data['Page Site Key']);
+        
         $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
         // print "$sql\n";
         mysql_query($sql);
         $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
         mysql_query($sql);
         $this->deleted=true;
+        
+        $site->update_page_totals();
+        
     }
 
 

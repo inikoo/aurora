@@ -910,5 +910,9 @@ function get_welcome_template(){
     }
 
 
+function update_page_totals(){
+
+}
+
 }
 ?>

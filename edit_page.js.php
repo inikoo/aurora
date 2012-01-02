@@ -9,7 +9,7 @@ var Dom   = YAHOO.util.Dom;
 var select_page_operation=false;
 var dialog_upload_page_content;
 var dialog_upload_page_content_files;
-
+var dialog_delete_page;
 
 
 var CellEdit = function (callback, newValue) {
@@ -82,12 +82,9 @@ function save_see_also_type(value){
 
 var request='ar_edit_sites.php?tipo=edit_page_header&newvalue='+value+"&id="+Dom.get('page_key').value+'&key=Page Store See Also Type&okey='
 
-
-//var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
-//	alert(request);
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-//alert(o.responseText)
+
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				
 				if(r.state==200){
@@ -833,10 +830,52 @@ Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_p
   
 }
 
+function save_delete_page(){
+var request='ar_edit_sites.php?tipo=delete_page&id='+Dom.get('page_key').value
+//alert(request)
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+//alert(o.responseText)
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				
+				if(r.state==200){
+			
+			if(r.page_key)
+location.href='page_deleted.php?id='+r.page_key;
+      else
+      location.href='site.php?id='+Dom.get('site_key').value;
+
+      
+      }else{
+                alert(r.msg)
+            }
+            }
+        
+    
+    });
+}
+
+function cancel_delete_page(){
+ dialog_delete_page.hide();
+}
+
+function show_delete_page(){
+
+	region1 = Dom.getRegion('delete_page'); 
+    region2 = Dom.getRegion('dialog_delete_page'); 
+ var pos =[region1.right-region2.width,region1.bottom+2]
+
+    Dom.setXY('dialog_delete_page', pos);
+    dialog_delete_page.show();
+}
+
 function init(){
 
+    Event.addListener('cancel_delete_page', "click", cancel_delete_page);
+    Event.addListener('save_delete_page', "click", save_delete_page);
 
- 
+    Event.addListener('delete_page', "click", show_delete_page);
+
    Event.addListener('add_auto_see_also_page', "click", change_number_auto_see_also,'add');
    Event.addListener('remove_auto_see_also_page', "click", change_number_auto_see_also,'remove');
 
@@ -867,6 +906,8 @@ Event.addListener("cancel_upload_page_content", "click", close_upload_page_conte
  dialog_upload_page_content_files = new YAHOO.widget.Dialog("dialog_upload_page_content_files", {visible : false,close:true,underlay: "none",draggable:false});
     dialog_upload_page_content_files.render();
 
+ dialog_delete_page = new YAHOO.widget.Dialog("dialog_delete_page", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_delete_page.render();
 
 
 dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", { visible : false,close:true,underlay: "none",draggable:false});
