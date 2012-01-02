@@ -3752,6 +3752,7 @@ class product extends DB_Table {
                 $this->new_value='';
             else
                 $this->new_value=money($amount,$this->get('Product Currency'));
+                
             return;
 
         }
@@ -3798,9 +3799,9 @@ class product extends DB_Table {
                             );
 
             $this->add_history(array(
-                                   'Indirect Object'=>'Product RRP'
-                                                     ,'History Abstract'=>_('Product RRP Changed').' ('.$this->get('RRP Per Unit').')'
-                                                                         ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('RRP changed').' '._('from')." ".$old_rrp_per_unit." "._('per unit')." "._('to').' '. $this->get('RRP Per Unit').' '._('per unit')
+                                   'Indirect Object'=>'Product RRP',
+                                   'History Abstract'=>_('Product RRP Changed').' ('.$this->get('RRP Per Unit').')',
+                                   'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('RRP changed').' '._('from')." ".$old_rrp_per_unit." "._('per unit')." "._('to').' '. $this->get('RRP Per Unit').' '._('per unit')
                                ));
 
 
@@ -3869,7 +3870,7 @@ class product extends DB_Table {
 
         if ($new_family->data['Product Family Main Department Key']!=$old_family->data['Product Family Main Department Key']) {
             $old_department=new Department($old_family->data['Product Family Main Department Key']);
-            $new_family=new Department($new_family->data['Product Family Main Department Key']);
+            $new_department=new Department($new_family->data['Product Family Main Department Key']);
             $new_department->update_product_data();
             $new_department->update_product_data();
         }
@@ -5754,7 +5755,7 @@ class product extends DB_Table {
         $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Availability Type`='Discontinued',`Product Web Configuration`='Offline',`Product Sales Type`='Public Sale',`Product Web State`='Offline',`Product Availability`=0,`Product Available Days Forecast`=0,`Product XHTML Available Forecast`='Historic',`Product Availability State`='No applicable' where `Product ID`=%d"
                      ,prepare_mysql($date)
                      ,$this->pid);
-        //    print "$sql\n";
+        //  print "$sql\n";
         mysql_query($sql);
 
 
@@ -6016,6 +6017,12 @@ class product extends DB_Table {
                 else
                     $_web_configuration='Offline';
                 $this->update_web_configuration($_web_configuration);
+
+
+                $this->update_main_type();
+                $this->update_availability_type();
+                $this->update_availability();
+
 
                 $this->msg=_('Product Sales Type updated');
                 $this->new_value=$value;
