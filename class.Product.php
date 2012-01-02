@@ -3845,7 +3845,20 @@ class product extends DB_Table {
         $old_family=new Family($this->data['Product Family Key']);
         $new_family=new Family($key);
 
-        $sql=sprintf("update `Product Dimension` set `Product Family Key`=%d, `Product Family Code`='%s', `Product Family Name`='%s' where `Product ID`=%d", $key, $new_family->data['Product Family Code'], $new_family->data['Product Family Name'], $this->pid);
+        $sql=sprintf("update `Product Dimension` set `Product Family Key`=%d, `Product Family Code`=%s, `Product Family Name`=%s,
+                     `Product Main Department Key`=%d,
+                     `Product Main Department Code`=%s,
+                     `Product Main Department Name`=%s
+
+                     where `Product ID`=%d",
+                     $new_family->id,
+                     prepare_mysql($new_family->data['Product Family Code']),
+                     prepare_mysql($new_family->data['Product Family Name']),
+                     $new_family->data['Product Family Main Department Key'],
+                     prepare_mysql($new_family->data['Product Family Main Department Code']),
+                     prepare_mysql($new_family->data['Product Family Main Department Name']),
+
+                     $this->pid);
 
 
         mysql_query($sql);
@@ -3853,6 +3866,13 @@ class product extends DB_Table {
 
         $old_family->update_product_data();
         $new_family->update_product_data();
+
+        if ($new_family->data['Product Family Main Department Key']!=$old_family->data['Product Family Main Department Key']) {
+            $old_department=new Department($old_family->data['Product Family Main Department Key']);
+            $new_family=new Department($new_family->data['Product Family Main Department Key']);
+            $new_department->update_product_data();
+            $new_department->update_product_data();
+        }
 
         $this->data['Product Family Key']=$key;
         $this->new_value=$key;
@@ -6351,12 +6371,12 @@ class product extends DB_Table {
                 $ratio=1;
             // print_r($row);
             $images_slideshow[]=array(
-            'name'=>$row['Image Filename'],
-            'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-            'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-            'filename'=>$row['Image Filename'],
-            'ratio'=>$ratio,'caption'=>$row['Image Caption'],
-            'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+                                    'name'=>$row['Image Filename'],
+                                    'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+                                    'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+                                    'filename'=>$row['Image Filename'],
+                                    'ratio'=>$ratio,'caption'=>$row['Image Caption'],
+                                    'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
         }
         // print_r($images_slideshow);
 
@@ -6434,8 +6454,8 @@ class product extends DB_Table {
         mysql_query($sql);
 
 
-        if($principal=='Yes'){
-        $this->update_main_image($image_key);
+        if ($principal=='Yes') {
+            $this->update_main_image($image_key);
         }
 
 

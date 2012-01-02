@@ -5357,3 +5357,16 @@ ADD `Site FTP Passive` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
 
 ALTER TABLE `Page Store Dimension` ADD `Page Upload State` ENUM( 'ToUpload', 'Uploaded' ) NOT NULL DEFAULT 'ToUpload' AFTER `Page Code` ;
 ALTER TABLE `Page Store Dimension` ADD `Page Preview Snapshot Last Update` DATETIME NULL DEFAULT NULL AFTER `Page Preview Snapshot Image Key` ;
+
+
+CREATE TABLE `Page Store Deleted Dimension` (
+  `Page Store Deleted Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Title` varchar(255) NOT NULL,
+  `Page Short Title` varchar(64) NOT NULL,
+  `Page Description` text,
+  `Page URL` varchar(1024) NOT NULL,
+  `Page Snapshot Image Key` mediumint(8) unsigned DEFAULT NULL,
+  `Page Snapshot Last Update` datetime DEFAULT NULL,
+   `Page Valid To` datetime DEFAULT NULL,
+  PRIMARY KEY (`Page Store Deleted Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

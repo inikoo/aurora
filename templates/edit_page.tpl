@@ -19,7 +19,8 @@
 
         <button style="margin-left:0px"  onclick="window.location='page.php?id={$page->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
         
-        
+                <button class="negative"  id="delete_page"><img src="art/icons/cross.png" alt=""/> {t}Delete{/t}</button>
+
         
  {if isset($referral_data)}
          <button   onclick="{$referral_data.url}'" ><img src="art/icons/door_out.png" alt=""/> {$referral_data.label}</button>
@@ -525,37 +526,6 @@
 </div>
 
 
-<div id="Editor_add_part" style="position:fixed;top:-200px;width:280px">
-  <div style="display:none" class="hd"></div>
-    <div class="bd dt-editor" >
-          <table border=0>
-          
-         
-          
-	    <input type="hidden" id="add_part_sku" value=0 >
-	     <input type="hidden" id="add_part_key" value=0 >
-
-	    <tr><td>{t}Add part{/t}</tr>
-	    <tr>
-	    
-	    <td id="other_part" >
-			
-			<div id="add_part"  style="width:260px">
-			  <input id="add_part_input" type="text" value="" >
-			  <div id="add_part_container"></div>
-			</div>
-
-
-	      </td>
-	    </tr>
-	   
-	  </table>
-	  <div class="yui-dt-button">
-	    <button style="display:none" onclick="save_add_part();" class="yui-dt-default">{t}Save{/t}</button>
-	    <button onclick="close_add_part_dialog()" >{t}Cancel{/t}</button>
-	  </div>
-    </div>
-</div>
 
 
 <div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px">
@@ -598,7 +568,23 @@
 </div>
 
 
+<div id="dialog_delete_page"  style="padding:20px 10px 10px 10px;text-align:left">
 
+<h2 style="padding-top:0px">{t}Delete Page{/t}</h2>
+<p>
+{t}This operation cannot be undone{/t}.<br> {t}Would you like to proceed?{/t}
+</p>
+
+
+<div style="display:none" id="deleting">
+<img src="art/loading.gif" alt=""> {t}Deleting page, wait please{/t}
+</div>
+
+<div  id="delete_page_buttons" class="buttons">
+ <button id="save_delete_page"  class="positive">{t}Yes, delete it!{/t}</button>
+ <button id="cancel_delete_page"  class="negative" >{t}No i dont want to delete it{/t}</button>
+ </div>
+</div>
 
 {include file='footer.tpl'}
  <div id="dialog_page_list">
