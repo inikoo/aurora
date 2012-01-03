@@ -52,6 +52,7 @@ function validate_Custom_Field_Name (query) {
 function save_new_custom_field()
 {
 	save_new_general('custom_field');
+	window.location.reload();
 }
 
 

@@ -153,13 +153,39 @@
 	
 </div>
 </div>
-
+<div style="clear:both"></div>
 </div>
        
 
 
 
+<div style="padding:0px 20px 20px 20px;float:right">
+<h2>{t}Questionare{/t}</h2>
+<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
 
+<table style="margin:10px">
+ 
+ {foreach from=$categories item=cat key=cat_key name=foo  }
+ <tr>
+ 
+ <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
+ <td>
+  <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
+    {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
+        {if $smarty.foreach.foo2.first}
+        <option {if $categories_value[$cat_key]=='' }selected="selected"{/if} value="">{t}Unknown{/t}</option>
+        {/if}
+        <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+    {/foreach}
+  </select>
+  
+ </td>   
+</tr>
+{/foreach}
+</table>
+
+</div>
+</div>
 
 
 

@@ -159,6 +159,13 @@ class CustomField extends DB_Table {
 
             switch ($base_data['Custom Field Table']) {
             case 'Customer':
+                    if ($base_data['Custom Field Type'] == 'Enum')
+                        $base_data['Custom Field Type'] = 'Enum(\'Yes\', \'No\')';
+
+                    $sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s",
+                                   $custom_id,
+                                   $base_data['Custom Field Type']);
+/*
                 if ($base_data['Custom Field Type'] == 'Mediumint') {
                     if ($base_data['Default Value'] == '')
                         $base_data['Default Value'] = 0;
@@ -168,14 +175,16 @@ class CustomField extends DB_Table {
                                    $base_data['Default Value']);
 
                 }
-                elseif($base_data['Custom Field Type'] == 'varchar') {
+                elseif($base_data['Custom Field Type'] == 'Text') {
                     $sql = sprintf("ALTER TABLE `Customer Custom Field Dimension` ADD `%s` %s(255) default '%s'",
                                    $custom_id,
                                    $base_data['Custom Field Type'],
                                    $base_data['Default Value']);
                 }
+*/
+		
                 mysql_query($sql);
-                print $sql;
+                //print $sql;
                 break;
 
             case 'Part':

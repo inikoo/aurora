@@ -12,7 +12,9 @@ switch ($tipo) {
 case('list_orders'):
     list_orders();
     break;
-
+case('transactions_dipatched'):
+    transactions_dipatched();
+    break;
 
 default:
 
@@ -80,8 +82,8 @@ function list_orders(){
 
 
         $adata[]=array(
-                     //'id'=>sprintf("<a href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
-			'id'=>$row['Order Public ID'],
+                     'id'=>sprintf("<a href='profile.php?view=orders&order_id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']),
+			//'id'=>$row['Order Public ID'],
                      'state'=>$row['Order Current XHTML State'],
                      'date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
                    //  'total'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
@@ -109,5 +111,85 @@ function list_orders(){
     echo json_encode($response);
 }
 
+function transactions_dipatched() {
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+        $order_id=$_REQUEST['id'];
+  //  else
+  //      $order_id=$_SESSION['state']['order']['id'];
 
+
+
+
+    $where=' where `Order Transaction Type` not in ("Resend")  and  O.`Order Key`='.$order_id;
+
+    $total_charged=0;
+    $total_discounts=0;
+    $total_picks=0;
+
+    $data=array();
+
+    $order=' order by O.`Product Code`';
+
+    $sql="select O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
+         from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)
+         left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
+         left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`)
+
+         $where $order  ";
+
+    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+
+    //print $sql;
+
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+        $ordered='';
+        if ($row['Order Quantity']!=0)
+            $ordered.=number($row['Order Quantity']);
+        if ($row['Order Bonus Quantity']>0) {
+            $ordered='<br/>'._('Bonus').' +'.number($row['Order Bonus Quantity']);
+        }
+        if ($row['No Shipped Due Out of Stock']>0) {
+            $ordered.='<br/> '._('No Stk').' -'.number($row['No Shipped Due Out of Stock']);
+        }
+        $ordered=preg_replace('/^<br\/>/','',$ordered);
+        $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+
+        $dispatched=number($row['Shipped Quantity']);
+
+        if ($row['Quantity']>0  and $row['Operation']=='Resend') {
+            $dispatched.='<br/> '._('Resend').' +'.number($row['Quantity']);
+        }
+
+        $data[]=array(
+
+                    'code'=>$code
+                           ,'description'=>$row['Product XHTML Short Description'].' <span style="color:red">'.$row['Deal Info'].'</span>'
+
+                                          ,'ordered'=>$ordered
+                                                     ,'dispatched'=>$dispatched
+                                                                   ,'invoiced'=>money($row['amount'],$row['Order Currency Code'])
+                );
+    }
+
+
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$res->numRows(),
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
 ?>
