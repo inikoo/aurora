@@ -53,6 +53,124 @@
 
   <div id="block_new_custom_fields"  style="{if $view!='new_custom_fields'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
   
+
+<div style="xdisplay:none;width:640px">
+
+  
+      
+  
+      
+      
+      <table class="edit"  border=1 style="width:100%;margin-bottom:0px" >
+      <input type="hidden" value="{$store_key}" id="Store_Key"/>
+      <input type="hidden" value="{$customer_type}" id="Customer_Type"/>
+	  
+	<tr class="first">
+	<td style="width:120px" class="label">{t}Field Label{/t}:</td>
+	  <td  style="text-align:left;width:450px">
+	    <div   >
+	      <input style="text-align:left;" id="Custom_Field_Name" value="" ovalue="" >
+	      <div id="Custom_Field_Name_Container"  ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
+	
+	<tr style="display:none">
+		<td style="width:120px" class="label">{t}Default Value{/t}:</td>
+	  <td  style="text-align:left;width:450px">
+	    <div   >
+	      <input style="text-align:left;" id="Default_Value" value="" ovalue="" >
+	      <div id="Default_Value_Container"  ></div>
+	    </div>
+	  </td>
+	  <td style="width:70px"></td>
+	  
+	</tr>
+	
+	<tr>
+	 <td class="label" style="width:200px">{t}Value Type{/t}:</td>
+	 <input type="hidden" value="Text" id="Custom_Field_Type"  />
+	 <input type="hidden" value="Yes" id="Custom_Field_In_New_Subject"  />
+	 <input type="hidden" value="Yes" id="Custom_Field_In_Showcase"  />
+	  <input type="hidden" value="No" id="Custom_Field_In_Registration"  />
+	 <input type="hidden" value="No" id="Custom_Field_In_Profile"  />
+	 <td>
+	   <div class="buttons small left">
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_Type','Text')" >{t}Short Text{/t}</button> 
+	   	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Longtext')" >{t}Long Text{/t}</button>
+	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Mediumint')" >{t}Number{/t}</button>
+	   	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Enum')" >{t}Yes/No{/t}</button>
+
+	   </div>
+	 </td>
+	 </tr>
+	 
+	   <tr>
+	   <td colspan="3">{t}Display in{/t} ...</td>
+	   </tr>
+	  <tr>
+	 <td class="label" >... {t}new customer form{/t}:</td>
+	 <td>
+	   <div class="buttons small left">
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_New_Subject','Yes')" >{t}Yes{/t}</button> 
+	   <button class="option" onclick="change_allow(this,'Custom_Field_In_New_Subject','No')" >{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+
+	 <tr>
+	 <td class="label" >... {t}customer showcase{/t}:</td>
+	 <td>
+	   <div class="buttons small left">
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Showcase','Yes')" >{t}Yes{/t}</button> 
+	   <button class="option" onclick="change_allow(this,'Custom_Field_In_Showcase','No')" >{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+	 
+	 	 <td class="label" >... {t}registration form{/t}:</td>
+	 <td>
+	   <div class="buttons small left">
+	   <button class="option " onclick="change_allow(this,'Custom_Field_In_Registration','Yes')" >{t}Yes{/t}</button> 
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Registration','No')" >{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+
+	 <tr>
+	 <td class="label" >... {t}customer profile{/t}:</td>
+	 <td>
+	   <div class="buttons small left">
+	   <button class="option " onclick="change_allow(this,'Custom_Field_In_Profile','Yes')" >{t}Yes{/t}</button> 
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Profile','No')" >{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+	
+	 
+<tr>
+<td colspan="2">
+<span style="float:right;display:none" id="processing"><img src="art/loading.gif" alt=""/> {t}Processing Request{/t}</span>
+<div class="buttons">
+<button id="save_new_custom_field" class="disabled positive">{t}Save{/t}</button>
+<button id="cancel_add_custom_field" class="negative">{t}Cancel{/t}</button>
+
+</div>
+
+</td>
+	
+	</tr>
+
+
+
+    
+    </table>
+     
+	
+</div>
+
  
   </div>
 		
@@ -293,119 +411,3 @@
 {include file='footer.tpl'}
 
 
-<div style="xdisplay:none;width:640px">
-
-  
-      
-  
-      
-      
-      <table class="edit"  border=1 style="width:100%;margin-bottom:0px" >
-      <input type="hidden" value="{$store_key}" id="Store_Key"/>
-      <input type="hidden" value="{$customer_type}" id="Customer_Type"/>
-	  
-	<tr class="first">
-	<td style="width:120px" class="label">{t}Field Label{/t}:</td>
-	  <td  style="text-align:left;width:450px">
-	    <div   >
-	      <input style="text-align:left;" id="Custom_Field_Name" value="" ovalue="" >
-	      <div id="Custom_Field_Name_Container"  ></div>
-	    </div>
-	  </td>
-	  <td style="width:70px"></td>
-	  
-	</tr>
-	
-	<tr style="display:none">
-		<td style="width:120px" class="label">{t}Default Value{/t}:</td>
-	  <td  style="text-align:left;width:450px">
-	    <div   >
-	      <input style="text-align:left;" id="Default_Value" value="" ovalue="" >
-	      <div id="Default_Value_Container"  ></div>
-	    </div>
-	  </td>
-	  <td style="width:70px"></td>
-	  
-	</tr>
-	
-	<tr>
-	 <td class="label" style="width:200px">{t}Value Type{/t}:</td>
-	 <input type="hidden" value="Text" id="Custom_Field_Type"  />
-	 <input type="hidden" value="Yes" id="Custom_Field_In_New_Subject"  />
-	 <input type="hidden" value="Yes" id="Custom_Field_In_Showcase"  />
-	  <input type="hidden" value="No" id="Custom_Field_In_Registration"  />
-	 <input type="hidden" value="No" id="Custom_Field_In_Profile"  />
-	 <td>
-	   <div class="buttons small left">
-	   <button class="option selected" onclick="change_allow(this,'Custom_Field_Type','Text')" >{t}Short Text{/t}</button> 
-	   	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Longtext')" >{t}Long Text{/t}</button>
-	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Mediumint')" >{t}Number{/t}</button>
-	   	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Enum')" >{t}Yes/No{/t}</button>
-
-	   </div>
-	 </td>
-	 </tr>
-	 
-	   <tr>
-	   <td colspan="3">{t}Display in{/t} ...</td>
-	   </tr>
-	  <tr>
-	 <td class="label" >... {t}new customer form{/t}:</td>
-	 <td>
-	   <div class="buttons small left">
-	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_New_Subject','Yes')" >{t}Yes{/t}</button> 
-	   <button class="option" onclick="change_allow(this,'Custom_Field_In_New_Subject','No')" >{t}No{/t}</button>
-	   </div>
-	 </td>
-	 </tr>
-
-	 <tr>
-	 <td class="label" >... {t}customer showcase{/t}:</td>
-	 <td>
-	   <div class="buttons small left">
-	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Showcase','Yes')" >{t}Yes{/t}</button> 
-	   <button class="option" onclick="change_allow(this,'Custom_Field_In_Showcase','No')" >{t}No{/t}</button>
-	   </div>
-	 </td>
-	 </tr>
-	 
-	 	 <td class="label" >... {t}registration form{/t}:</td>
-	 <td>
-	   <div class="buttons small left">
-	   <button class="option " onclick="change_allow(this,'Custom_Field_In_Registration','Yes')" >{t}Yes{/t}</button> 
-	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Registration','No')" >{t}No{/t}</button>
-	   </div>
-	 </td>
-	 </tr>
-
-	 <tr>
-	 <td class="label" >... {t}customer profile{/t}:</td>
-	 <td>
-	   <div class="buttons small left">
-	   <button class="option " onclick="change_allow(this,'Custom_Field_In_Profile','Yes')" >{t}Yes{/t}</button> 
-	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Profile','No')" >{t}No{/t}</button>
-	   </div>
-	 </td>
-	 </tr>
-	
-	 
-<tr>
-<td colspan="2">
-<span style="float:right;display:none" id="processing"><img src="art/loading.gif" alt=""/> {t}Processing Request{/t}</span>
-<div class="buttons">
-<button id="save_new_custom_field" class="disabled positive">{t}Save{/t}</button>
-<button id="cancel_add_custom_field" class="negative">{t}Cancel{/t}</button>
-
-</div>
-
-</td>
-	
-	</tr>
-
-
-
-    
-    </table>
-     
-	
-</div>

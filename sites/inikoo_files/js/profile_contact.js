@@ -3,7 +3,8 @@ var Dom = YAHOO.util.Dom;
 var dialog_quick_edit_Customer_Name;
 var validate_scope_metadata;
 var validate_scope_data;
-
+var dialog_quick_edit_Customer_Contact;
+var dialog_quick_edit_Customer_Telephone;
  
     
 
@@ -88,7 +89,7 @@ function save_comunications(key,value){
 
  var data_to_update=new Object;
  data_to_update[key]={'okey':key,'value':value}
-
+var customer_id=Dom.get('customer_key').value;
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 
 
@@ -121,6 +122,48 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
     });
 
 }
+
+
+function save_category(o) {
+
+var parent_category_key=o.getAttribute('cat_key');
+var category_key=o.options[o.selectedIndex].value;
+var subject='Customer';
+var subject_key=Dom.get('customer_key').value;
+
+//if(Dom.hasClass(o,'selected'))
+//    var operation_type='disassociate_subject_to_category_radio';
+//else
+
+
+if(category_key==''){
+var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
+
+}else{
+var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
+
+
+}
+
+
+	alert(request);
+	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+			//alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				}
+
+
+        
+    }
+                                                                 });
+
+
+
+}
+
 
 function init(){
 var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";
