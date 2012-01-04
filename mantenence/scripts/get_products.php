@@ -343,8 +343,8 @@ foreach($__cols as $cols) {
         }
 
 
-      //  if (!preg_match('/advent-05/i',$code))
-        //    continue;
+        //   if (!preg_match('/advent-01/i',$code))
+        //     continue;
 
         if ($code=='Jhex-08')
             $description='Musk';
@@ -553,6 +553,7 @@ foreach($__cols as $cols) {
                       'product stage'=>'Normal',
                       'product sales type'=>'Public Sale',
                       'product type'=>'Normal',
+                      'Product stage'=>'Normal',
                       'product record type'=>'Normal',
                       'Product Web Configuration'=>'Online Auto',
                       'product store key'=>$store_key,
@@ -621,14 +622,15 @@ foreach($__cols as $cols) {
             $product->update_rrp('Product RRP',$rrp);
 //exit("x");
 
+            $product->update_stage('Normal');
             if ($set_part_as_available) {
                 set_part_as_available($product);
             }
 
 
-if($product->data['Product Family Key']==1){
-$product->update_family_key($family->id);
-}
+            if ($product->data['Product Family Key']==1) {
+                $product->update_family_key($family->id);
+            }
 
             if ($product->data['Product Sales Type']!='Private Sale') {
                 $product->update_sales_type('Public Sale');
@@ -652,12 +654,11 @@ $product->update_family_key($family->id);
                 $_product=new Product('pid',$row['Product ID']);
                 $_product->set_as_historic();
             }
-
+$product->update_web_state();
 
         }
 
-    } 
-    else {
+    } else {
 
         $new_family=true;
 
@@ -1602,8 +1603,8 @@ function set_part_as_available($product) {
         $part->update_availability();
 
 
-            $part->update_status('In Use');
-    
+        $part->update_status('In Use');
+
 
 
     }

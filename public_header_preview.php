@@ -118,6 +118,8 @@ $page->site=$site;
 $smarty->assign('page',$page);
 $smarty->assign('page_header',$page_header);
 
+
+
 $smarty->display('page_header_preview.tpl');
 
 

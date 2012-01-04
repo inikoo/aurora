@@ -445,7 +445,7 @@ function upload_header(e){
 	  
 
 	     
-        window.location.reload()
+        //window.location.reload()
                 
 	    }else if(r.state==201){
 	        dialog_upload_header.hide();

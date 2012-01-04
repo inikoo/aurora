@@ -120,7 +120,7 @@ if (isset($_REQUEST['view'])) {
 $smarty->assign('block_view',$_SESSION['state']['page']['editing']);
 
   
-$content_view='overview';
+$content_view=$_SESSION['state']['page']['editing_content_block'];
 if (isset($_REQUEST['content_view'])) {
     $valid_views=array('header','content','footer','product_list','product_buttons');
     if (in_array($_REQUEST['content_view'], $valid_views))

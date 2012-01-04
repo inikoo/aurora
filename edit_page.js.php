@@ -23,12 +23,12 @@ var CellEdit = function (callback, newValue) {
 
 
 						
-		//	if(column.object=='family_page_properties')	
-		//			request_page=	'ar_edit_sites.php';			
-		//	else
+			if(column.object=='product')	
+					request_page=	'ar_edit_assets.php';			
+			else
 		request_page=	'ar_edit_sites.php';			
 						
-						
+					
 						
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
@@ -38,6 +38,9 @@ var CellEdit = function (callback, newValue) {
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
+
+
+
 							 if(column.key=='description'  ){
 								 datatable.updateCell(record,'description_formated',r.newdata['description_formated']);
 								callback(true, r.newvalue);
@@ -46,7 +49,18 @@ var CellEdit = function (callback, newValue) {
 								 datatable.updateCell(record,'order_formated',r.newdata['order_formated']);
 								callback(true, r.newvalue);
 								
-							    }else{
+							    } else if(column.key=='web_configuration'  ){
+								 //datatable.updateCell(record,'smallname',r.newdata['description']);
+								 datatable.updateCell(record,'formated_web_configuration',r.newdata['formated_web_configuration']);
+								 datatable.updateCell(record,'web_configuration',r.newdata['web_configuration']);
+
+
+                             	// alert(r.newdata['web_configuration'])   
+								callback(true, r.newdata['web_configuration']);
+								
+							    }
+							    
+							    else{
 							
 								callback(true, r.newvalue);
 								
@@ -440,7 +454,7 @@ function formater_order  (el, oRecord, oColumn, oData) {
 				       				       ,{key:"description_formated", label:"", hidden:true}
 				       				       ,{key:"order_formated", label:"", hidden:true}
 
-				     //   ,{key:"go", label:"", width:25,action:"none"}
+				       ,{key:"go", label:"", width:65,action:"none"}
 				        ,{key:"code",label:"<?php echo _('Name')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					    ,{key:"type",label:"<?php echo _('Type')?>", width:60,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					    ,{key:"description",label:"<?php echo _('Description')?>", formatter: formater_description ,width:140,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'page_product_list'
@@ -537,15 +551,29 @@ function formater_order  (el, oRecord, oColumn, oData) {
 	    this.table2.filter={key:'<?php echo $_SESSION['state']['page']['edit_product_list']['f_field']?>',value:'<?php echo $_SESSION['state']['page']['edit_product_list']['f_value']?>'};
 
 
-	    
+	    function formater_web_configuration  (el, oRecord, oColumn, oData) {
+		     el.innerHTML = oRecord.getData("formated_web_configuration");
+	    }
 	      var tableid=3; 
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+	    				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+
+				       ,{key:"pid", label:"", hidden:true,action:"none",isTypeKey:true}
 				        ,{key:"go", label:"", width:40,action:"none",className:"aleft"}
-				        ,{key:"code",label:"<?php echo _('Code')?>", width:700,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-					       ];
+				        ,{key:"code",label:"<?php echo _('Code')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+			  ,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web/Sale Status')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
+				    {'value':"Online Auto",'label':"<?php echo _('Auto')?><br/>"},
+				    {'value':"Online Force For Sale",'label':"<?php echo _('Force online')?><br/>"},
+				    {'label':"<?php echo _('Force out of stock')?><br/>",'value':"Online Force Out of Stock"},
+				    {'label':"<?php echo _('Force offline')?><br/>",'value':'Offline'},
+				    {'label':"<?php echo _('Private Sale')?><br/>",'value':'Private Sale'},
+				    {'label':"<?php echo _('Not For Sale')?>",'value':'Not for Sale'}
+				    ],disableBtns:true})}
+				    ,{key:"formated_web_configuration" , label:"",hidden:true}
+					    
+					    ];
 				       
 	 
 	    var request="ar_edit_sites.php?tipo=page_product_buttons&parent=page&parent_key="+Dom.get('page_key').value+"&tableid=3";
@@ -571,7 +599,7 @@ function formater_order  (el, oRecord, oColumn, oData) {
 		
 		fields: [
 			 "id"
-			 ,"go","code"
+			 ,"go","code",'formated_web_configuration','web_configuration','pid'
 
 			 ]};
 
@@ -635,6 +663,8 @@ Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('d_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
+
+
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-editing&value='+this.id ,{});
 }
 
@@ -815,9 +845,12 @@ function change_content_block(e,block){
 
 Dom.setStyle('show_page_content_overview_block','display','')
 Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_product_list_block','show_page_product_buttons_block','show_page_footer_block'],'selected')
-Dom.addClass('show_'+block,'selected')
+Dom.addClass('show_page_'+block+'_block','selected')
     Dom.setStyle(['page_header_block','page_content_block','page_product_list_block','page_product_buttons_block','page_footer_block','page_content_overview_block'],'display','none')
-    Dom.setStyle(block,'display','')
+    Dom.setStyle('page_'+block+'_block','display','')
+    
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=page-editing_content_block&value='+block ,{});
+
 }
 
 function show_page_content_overview_block(){
@@ -880,11 +913,11 @@ function init(){
    Event.addListener('remove_auto_see_also_page', "click", change_number_auto_see_also,'remove');
 
 
-  Event.addListener('show_page_header_block', "click", change_content_block,'page_header_block');
-  Event.addListener('show_page_content_block', "click", change_content_block,'page_content_block');
-  Event.addListener('show_page_product_list_block', "click", change_content_block,'page_product_list_block');
-  Event.addListener('show_page_product_buttons_block', "click", change_content_block,'page_product_buttons_block');
-  Event.addListener('show_page_footer_block', "click", change_content_block,'page_footer_block');
+  Event.addListener('show_page_header_block', "click", change_content_block,'header');
+  Event.addListener('show_page_content_block', "click", change_content_block,'content');
+  Event.addListener('show_page_product_list_block', "click", change_content_block,'product_list');
+  Event.addListener('show_page_product_buttons_block', "click", change_content_block,'product_buttons');
+  Event.addListener('show_page_footer_block', "click", change_content_block,'footer');
 
   Event.addListener('show_page_content_overview_block', "click", show_page_content_overview_block);
 

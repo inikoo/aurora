@@ -1855,7 +1855,7 @@ class product extends DB_Table {
         $this->msg="Nothing to change $key ";
         global $myconf;
 
-        //print $a1;
+       
 
         switch ($key) {
         case('Product Sales Type'):
@@ -2180,16 +2180,14 @@ class product extends DB_Table {
 
             }
             break;
+    
+        
         }
 
 
     }
 
-    /*
-      Function: selfsave
-      Actualiza valores de la tabla Product Dimension.
-    */
-    // JFA
+   
 
 
     function selfsave() {
@@ -5987,6 +5985,17 @@ class product extends DB_Table {
 
 
 
+    
+    function update_stage($value){
+    
+      $sql=sprintf("update `Product Dimension` set `Product Stage`=%s  where  `Product ID`=%d "
+                         ,prepare_mysql($value)
+                         ,$this->pid
+                        );
+                        mysql_query($sql);
+                        
+    }
+    
     function update_sales_type($value) {
         if (
             $value=='Public Sale' or $value=='Private Sale'

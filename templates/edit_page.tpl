@@ -20,7 +20,7 @@
         <button style="margin-left:0px"  onclick="window.location='page.php?id={$page->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
         
                 <button class="negative"  id="delete_page"><img src="art/icons/cross.png" alt=""/> {t}Delete{/t}</button>
-
+ <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt=""/>  {t}Import{/t}</button>
         
  {if isset($referral_data)}
          <button   onclick="{$referral_data.url}'" ><img src="art/icons/door_out.png" alt=""/> {$referral_data.label}</button>
@@ -322,8 +322,8 @@
    <div class="buttons left" >
         <button id="show_page_header_block" {if $content_view=='header'}class="selected"{/if}><img src="art/icons/layout_header.png" alt=""/> {t}Header{/t}</button>
         <button id="show_page_content_block" {if $content_view=='content'}class="selected"{/if}><img src="art/icons/layout_content2.png" alt=""/> {t}Content{/t}</button>
-        <button id="show_page_product_list_block" {if $content_view=='product_list'}class="selected"{/if}><img src="art/icons/layout_sidebar.png" alt=""/> {t}Product Lists{/t}</button>
-        <button id="show_page_product_buttons_block" {if $content_view=='product_buttons'}class="selected"{/if}><img src="art/icons/layout_content.png" alt=""/> {t}Product Buttons{/t}</button>
+        <button id="show_page_product_list_block" {if $content_view=='product_list'}class="selected"{/if}><img src="art/icons/text_list_bullets.png" alt=""/> {t}Lists{/t}</button>
+        <button id="show_page_product_buttons_block" {if $content_view=='product_buttons'}class="selected"{/if}><img src="art/icons/bricks.png" alt=""/> {t}Products{/t}</button>
         <button id="show_page_footer_block" {if $content_view=='footer'}class="selected"{/if}><img src="art/icons/layout_footer.png" alt=""/> {t}Footer{/t}</button>
   
    </div>
@@ -451,8 +451,16 @@
    <div id="product_lists" style="width:890px;margin-bottom:20px">
      <span class="clean_table_title">{t}Lists{/t}</span>
      {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
-  <div  id="table2"  style="font-size:80%" class="data_table_container dtable btable "> </div>
+        <div id="table2" style="font-size:80%" class="data_table_container dtable btable "> </div>
      </div>
+     
+       <div id="product_lists" style="width:890px;margin-bottom:20px">
+     <span class="clean_table_title">{t}List Items{/t}</span>
+     {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8  }
+        <div id="table8" style="font-size:80%" class="data_table_container dtable btable "> </div>
+     </div>
+     
+     
    </div>
      <div style="{if $content_view!='product_buttons'}display:none{/if};margin:10px 20px" id="page_product_buttons_block">  
      <div id="product_buttons" style="width:890px">
@@ -474,7 +482,7 @@
           
   <div class="buttons">
 	        <button id="download_page_content">{t}Download{/t}</button>
-	     <button id="show_upload_page_content">{t}Import{/t}</button>
+	    
 	     <button class="positive" style="visibility:hidden" id="save_edit_page_content" >{t}Save{/t}</button>
 	     <button class="negative" style="visibility:hidden" id="reset_edit_page_content">{t}Reset{/t}</button>
 
