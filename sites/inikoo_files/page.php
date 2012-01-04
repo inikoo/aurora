@@ -121,18 +121,26 @@ in_array($_REQUEST['view'],array('contact','orders','address_book','change_passw
     }
 
 
-$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
+$custom_fields=array();
+$sql=sprintf("show columns from `Customer Custom Field Dimension`");
 $result=mysql_query($sql);
-$row=mysql_fetch_assoc($result);
+mysql_fetch_assoc($result);
+while($row=mysql_fetch_assoc($result)){
+	$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
 
-$sql=sprintf("select * form `Custom Field Dimension` where `Custom Field Table`=%s and `Custom Field In Registration`=%s and `Custom Field Store Key`=%d",
-	'Customer', 'Yes', $store->id );
-print $sql;
+	$res=mysql_query($sql);
+	$r=mysql_fetch_assoc($res);
+	$val=$r[$row['Field']];
 
-$result1=mysql_query($sql);
-while($row1=mysql_fetch_assoc($result1)){
 
+	$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Key`=%d", $row['Field']);
+	$res=mysql_query($sql);
+	$r=mysql_fetch_assoc($res);
+	
+	$custom_fields[]=array('name'=>$r['Custom Field Name'], 'value'=>$val, 'type'=>$r['Custom Field Type']);
 }
+
+$smarty->assign('custom_fields',$custom_fields);
 
 
 $order_template='dummy.tpl';
@@ -334,6 +342,7 @@ mt_rand(0, 63), 1);
     $css_files[]='css/inikoo.css';
     $css_files[]='css/inikoo_table.css';
     $js_files[]='address_data.js.php';
+    $js_files[]='profile_contact.js.php';
 }
 
 $smarty->assign('logged',$logged_in);

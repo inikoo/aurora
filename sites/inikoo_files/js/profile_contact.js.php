@@ -6,6 +6,37 @@ var validate_scope_data;
 var dialog_quick_edit_Customer_Contact;
 var dialog_quick_edit_Customer_Telephone;
  
+<?php
+
+include_once('../common.php');
+
+$custom_fields=array();
+$sql=sprintf("show columns from `Customer Custom Field Dimension`");
+$result=mysql_query($sql);
+mysql_fetch_assoc($result);
+while($row=mysql_fetch_assoc($result)){
+	$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
+
+	$res=mysql_query($sql);
+	$r=mysql_fetch_assoc($res);
+	$val=$r[$row['Field']];
+
+
+	$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Key`=%d", $row['Field']);
+	$res=mysql_query($sql);
+	$r=mysql_fetch_assoc($res);
+	$all_fields[]=$r['Custom Field Name'];
+	if($r['Custom Field Type']=='Enum')
+		continue;
+	$custom_fields[]='dialog_quick_edit_Customer_'.$r['Custom Field Name'];
+	$fields[]=$r['Custom Field Name'];
+}
+
+	$vars=implode(',', $custom_fields);
+
+print 'var '.$vars.';';
+
+?>
     
 
 
@@ -69,6 +100,26 @@ function show_edit_telephone(){
 	dialog_quick_edit_Customer_Telephone.show();
 }
 
+
+
+<?php
+foreach($all_fields as $field){
+print "function show_edit_{$field}(){\n";
+print "region1 = Dom.getRegion('show_edit_{$field}');\n"; 
+print "region2 = Dom.getRegion('dialog_quick_edit_Customer_{$field}');\n"; 
+
+print "var pos =[region1.right,region1.top]\n";
+
+print "Dom.setXY('dialog_quick_edit_Customer_{$field}', pos);\n";
+
+
+//Dom.get('sticky_note_input').focus();
+
+print "dialog_quick_edit_Customer_{$field}.show();}\n";
+}
+
+
+?>
 function validate_customer_name(query){
  validate_general('customer_quick','name',unescape(query));
 }
@@ -189,6 +240,16 @@ Event.addListener('show_edit_name', "click", show_edit_name);
 Event.addListener('show_edit_contact', "click", show_edit_contact);
 Event.addListener('show_edit_telephone', "click", show_edit_telephone);
 
+<?php
+
+foreach($all_fields as $field){
+	print 'Event.addListener(\'show_edit_'.$field.'\', "click", show_edit_'.$field.');';
+	print "\n";
+}
+	
+?>
+
+
 dialog_quick_edit_Customer_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Name", {context:["customer_name","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Name.render();
 
@@ -198,10 +259,30 @@ dialog_quick_edit_Customer_Contact.render();
 dialog_quick_edit_Customer_Telephone = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Telephone", {context:["customer_telephone","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Telephone.render();
 
+<?php
+
+foreach($all_fields as $field){
+print 'dialog_quick_edit_Customer_'.$field.' = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_'.$field.'", {context:["customer_'.$field.'","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});dialog_quick_edit_Customer_'.$field.'.render();';	
+print "\n";
+}
+
+?>
+
+
+
 Event.addListener('close_quick_edit_name', "click", dialog_quick_edit_Customer_Name.hide,dialog_quick_edit_Customer_Name , true);
 Event.addListener('close_quick_edit_contact', "click", dialog_quick_edit_Customer_Contact.hide,dialog_quick_edit_Customer_Contact , true);
 Event.addListener('close_quick_edit_telephone', "click", dialog_quick_edit_Customer_Telephone.hide,dialog_quick_edit_Customer_Telephone , true);
 
+
+<?php
+
+foreach($all_fields as $field){
+print 'Event.addListener(\'close_quick_edit_'.$field.'\', "click", dialog_quick_edit_Customer_'.$field.'.hide,dialog_quick_edit_Customer_'.$field.' , true);';
+print "\n";
+}
+
+?>
 
 var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_name);
 customer_name_oACDS.queryMatchContains = true;
@@ -220,6 +301,20 @@ customer_name_oACDS.queryMatchContains = true;
 var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Telephone","Customer_Telephone_Container", customer_name_oACDS);
 customer_name_oAutoComp.minQueryLength = 0; 
 customer_name_oAutoComp.queryDelay = 0.1;
+
+<?php
+
+foreach($fields as $field){
+print "var customer_{$field}_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_telephone);\n";
+print "customer_{$field}_oACDS.queryMatchContains = true;\n";
+print "var customer_{$field}_oAutoComp = new YAHOO.widget.AutoComplete(\"Customer_{$field}\",\"Customer_{$field}_Container\", customer_{$field}_oACDS);";
+print "customer_{$field}_oAutoComp.minQueryLength = 0;\n"; 
+print "customer_{$field}_oAutoComp.queryDelay = 0.1;\n";
+print "\n";
+}
+
+?>
+
 
 }
 Event.onDOMReady(init);

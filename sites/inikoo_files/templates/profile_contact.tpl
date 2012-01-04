@@ -64,6 +64,15 @@
 <tr><td>{t}Telephone{/t}:</td><td><img src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}"/></td><td  class="aright">{$page->customer->get('Customer Main Plain Telephone')}</td ></tr>
 
 
+{foreach from=$custom_fields item=custom_field key=key}
+<tr>
+<td>{$custom_field.name}:</td>
+<td><img src="art/edit.gif" id="show_edit_{$custom_field.name}" alt="{t}Edit{/t}"/></td>
+<td  class="aright">{$custom_field.value}</td >
+</tr>
+{/foreach}
+
+
 <tr><td>
 <div class="buttons">
 <button style="display:none"  onclick="window.location='client.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Edit Profile{/t}</button>
@@ -276,3 +285,48 @@ bla bla bla
 	</table>
 
 </div>
+
+{foreach from=$custom_fields item=custom_field key=key}
+
+{if $custom_field.type=='Enum'}
+<div id="dialog_quick_edit_Customer_{$custom_field.name}" style="padding:10px">
+	<table style="margin:10px">
+	  <tr>
+	 <td class="label" style="width:">{t}{$custom_field.name}{/t}:</td>
+	 <td>
+	   <div class="buttons" >
+	   <button class="{if $custom_field.value=='Yes'}selected{/if} positive" onclick="save_custom_enum('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button>
+	   <button class="{if $custom_field.value=='No'}selected{/if} negative" onclick="save_custom_enum('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+	</table>
+</div>
+{else}
+<div id="dialog_quick_edit_Customer_{$custom_field.name}" style="padding:10px">
+	<table style="margin:10px">
+	
+	<tr>
+	<td>{t}{$custom_field.name}:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_{$custom_field.name}" value="{$custom_field.value}" ovalue="{$custom_field.value}" valid="0">
+	<div id="Customer_{$custom_field.name}_Container"  ></div>
+	</div>	
+	</td>
+
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_{$custom_field.name}_msg" ></span>
+	<button class="positive" onClick="save_quick_edit_{$custom_field.name}()">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_{$custom_field.name}">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
+	</table>
+
+</div>
+{/if}
+
+{/foreach}
