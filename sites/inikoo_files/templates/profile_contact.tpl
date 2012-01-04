@@ -295,8 +295,8 @@ bla bla bla
 	 <td class="label" style="width:">{t}{$custom_field.name}{/t}:</td>
 	 <td>
 	   <div class="buttons" >
-	   <button class="{if $custom_field.value=='Yes'}selected{/if} positive" onclick="save_custom_enum('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button>
-	   <button class="{if $custom_field.value=='No'}selected{/if} negative" onclick="save_custom_enum('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button>
+	   <button class="{if $custom_field.value=='Yes'}selected{/if} positive" onclick="save_custom_enum('{$custom_field.name}','Yes')" id="{$custom_field.name}_Yes">{t}Yes{/t}</button>
+	   <button class="{if $custom_field.value=='No'}selected{/if} negative" onclick="save_custom_enum('{$custom_field.name}','No')" id="{$custom_field.name}_No">{t}No{/t}</button>
 	   </div>
 	 </td>
 	 </tr>
