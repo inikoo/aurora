@@ -2799,8 +2799,8 @@ function edit_customer($data) {
 
 function edit_customer_field($customer_key,$key,$value_data) {
 
-    //print $value_data;
-    //print "$customer_key,$key,$value_data ***";
+    //print_r($value_data);
+   // print "$customer_key,$key,$value_data ***";
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;

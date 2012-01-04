@@ -26,9 +26,10 @@ while($row=mysql_fetch_assoc($result)){
 	$res=mysql_query($sql);
 	$r=mysql_fetch_assoc($res);
 	$all_fields[]=$r['Custom Field Name'];
+	$custom_fields[]='dialog_quick_edit_Customer_'.$r['Custom Field Name'];
 	if($r['Custom Field Type']=='Enum')
 		continue;
-	$custom_fields[]='dialog_quick_edit_Customer_'.$r['Custom Field Name'];
+
 	$fields[]=$r['Custom Field Name'];
 }
 
@@ -51,6 +52,14 @@ function save_quick_edit_contact(){
 function save_quick_edit_telephone(){
     save_edit_general_bulk('customer_quick');
 }
+
+<?php
+foreach($fields as $field){
+print "function save_quick_edit_{$field}(){";
+print "save_edit_general_bulk('customer_quick');}";
+
+}
+?>
 
 function show_edit_name(){
 
@@ -132,8 +141,57 @@ function validate_customer_telephone(query){
  validate_general('customer_quick','telephone',unescape(query));
 }
 
+<?php
+foreach($fields as $field){
+print "function validate_customer_{$field}(query){";
+print "validate_general('customer_quick','custom_field_customer_{$field}',unescape(query));}";
+	
+}
+?>
+
 function post_item_updated_actions(branch,r){
 	window.location.reload()
+}
+
+function save_custom_enum(key,value){
+
+ var data_to_update=new Object;
+ data_to_update['custom_field_customer_'+key]={'okey':'custom_field_customer_'+key,'value':value}
+var customer_id=Dom.get('customer_key').value;
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+
+
+var request='ar_edit_contacts.php?tipo=edit_customer_quick&values='+ jsonificated_values+"&customer_key="+customer_id
+
+
+//var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
+	//alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+//alert(o.responseText)
+				var ra =  YAHOO.lang.JSON.parse(o.responseText);
+				  for (x in ra){
+               r=ra[x]
+				if(r.state==200){
+			
+  /*
+ 
+            if (r.newvalue=='No' || r.newvalue=='Yes') {
+                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
+
+               Dom.addClass(r.key+'_'+r.newvalue,'selected');
+
+		
+
+            }else{
+                alert(r.msg)
+            }*/
+window.location.reload()
+            }
+        }
+    }
+    });
+
 }
 
 function save_comunications(key,value){
@@ -225,6 +283,11 @@ var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Customer Name'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Contact','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Contact Name'}]}
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Telephone','validation':[{'regexp':regex_valid_tel,'invalid_msg':'Invalid Telephone'}]}
+
+<?php
+foreach($fields as $field)
+	print ",'custom_field_customer_{$field}':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_{$field}','validation':[{'regexp':\"[a-z\\d]+\",'invalid_msg':'Invalid {$field}'}]}";
+?>
 	//,'mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
     }};
 
@@ -305,7 +368,7 @@ customer_name_oAutoComp.queryDelay = 0.1;
 <?php
 
 foreach($fields as $field){
-print "var customer_{$field}_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_telephone);\n";
+print "var customer_{$field}_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_{$field});\n";
 print "customer_{$field}_oACDS.queryMatchContains = true;\n";
 print "var customer_{$field}_oAutoComp = new YAHOO.widget.AutoComplete(\"Customer_{$field}\",\"Customer_{$field}_Container\", customer_{$field}_oACDS);";
 print "customer_{$field}_oAutoComp.minQueryLength = 0;\n"; 
