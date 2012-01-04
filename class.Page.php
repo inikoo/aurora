@@ -337,6 +337,9 @@ class Page extends DB_Table {
 //print_r($data);
 
 
+
+
+
         $data['Page Store Product Layouts']=serialize($data['Page Store Product Layouts']);
 
         $keys='(';
@@ -899,18 +902,18 @@ class Page extends DB_Table {
 
     function delete() {
         $this->deleted=false;
-        
+
         $site=new Site($this->data['Page Site Key']);
-        
+
         $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$this->id);
         // print "$sql\n";
         mysql_query($sql);
         $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
         mysql_query($sql);
         $this->deleted=true;
-        
+
         $site->update_page_totals();
-        
+
     }
 
 
@@ -2036,11 +2039,6 @@ class Page extends DB_Table {
 
 
 
-
-    }
-
-    function update_number_products() {
-
         $products_from_family=array();
         $sql=sprintf("select `Page Product Form Code`,`Page Product Form Key` from `Page Product List Dimension` where `Page Key`=%d  ",
                      $this->id
@@ -2062,28 +2060,35 @@ class Page extends DB_Table {
             }
             $number_lists++;
         }
+        
+        foreach($products_from_family as $_product){
+        
+        $product=new Product('pid',$_product);
+          $sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Product ID`) values  (%d,%d)",
+                             $this->id,
+                             $product->pid
+
+                            );
+
+                mysql_query($sql);
+        }
+        
         $this->data['Number Products In Lists']=count($products_from_family);
         $this->data['Number Lists']=$number_lists;
-
-
-
-        $sql=sprintf("select count(*) as num from `Page Product Dimension`  where `Page Key`=%d",$this->id);
-        $res=mysql_query($sql);
-
-        if ($row=mysql_fetch_assoc($res)) {
-            $this->data['Number Buttons']=$row['num'];
-        }
-
         $this->data['Number Products']=$this->data['Number Buttons']+$this->data['Number Products In Lists'];
-        $sql=sprintf("update `Page Store Dimension`  set `Number Buttons`=%d , `Number Products`=%d ,`Number Lists`=%d,`Number Products In Lists`=%d where `Page Key`=%d",
-                     $this->data['Number Buttons'],
+
+        $sql=sprintf("update `Page Store Dimension`  set  `Number Products`=%d ,`Number Lists`=%d,`Number Products In Lists`=%d where `Page Key`=%d",
+
                      $this->data['Number Products'],
                      $this->data['Number Lists'],
                      $this->data['Number Products In Lists'],
                      $this->id);
         $res=mysql_query($sql);
 
+
     }
+
+
 
     function update_button_products() {
         include_once('class.Product.php');
@@ -2109,7 +2114,18 @@ class Page extends DB_Table {
             }
         }
 
-        $this->update_number_products();
+
+        $this->data['Number Buttons']=count($buttons);
+
+        $this->data['Number Products']=$this->data['Number Products In Lists']+$this->data['Number Buttons'];
+        $sql=sprintf("update `Page Store Dimension`  set `Number Buttons`=%d , `Number Products`=%d where `Page Key`=%d",
+                     $this->data['Number Buttons'],
+                     $this->data['Number Products'],
+
+                     $this->id);
+        $res=mysql_query($sql);
+
+        //  $this->update_number_products();
 
 
 
@@ -2247,9 +2263,9 @@ class Page extends DB_Table {
         //  print "$new_image_key $old_image_key\n";
         //  print $image->msg." x4\n";
 
-        
 
-        if ($new_image_key!=$old_image_key){
+
+        if ($new_image_key!=$old_image_key) {
             $this->data['Page Preview Snapshot Image Key']=$new_image_key;
             $sql=sprintf("delete from `Image Bridge` where `Subject Type`=%s and `Subject Key`=%d and `Image Key`=%d ",
                          prepare_mysql('Page Preview'),
@@ -2279,22 +2295,21 @@ class Page extends DB_Table {
 
                         );
             mysql_query($sql);
-           
+
 
             $this->updated=true;
             $this->new_value=$this->data['Page Preview Snapshot Image Key'];
 
-        }
-        else{
-        $this->data['Page Preview Snapshot Last Update']=date('Y-m-d H:i:s',strtotime('now'));
+        } else {
+            $this->data['Page Preview Snapshot Last Update']=date('Y-m-d H:i:s',strtotime('now'));
             $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Last Update`=%s  where `Page Key`=%d",
-                      
+
                          prepare_mysql($this->data['Page Preview Snapshot Last Update']),
                          $this->id
 
                         );
             mysql_query($sql);
-           
+
         }
 
 

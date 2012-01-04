@@ -2979,16 +2979,16 @@ function list_products_in_part() {
             $web_configuration=$row['Product Web Configuration'];
         }
 
-
+$code=sprintf("<a href='edit_product.php?pid=%d'>%s</a>",$row['Product ID'],$row['Product Code']);
 
 
             $relation=$row['Parts Per Product'].' &rarr; 1';
             $adata[]=array(
-            
+            	
              'pid'=>$row['Product ID'],
                          'sku'=>$row['Part SKU'],
                          'relation'=>$relation,
-                         'code'=>$row['Product Code'],
+                         'code'=>$code,
                          'store'=>$row['Store Code'],
                          'notes'=>$row['Product Part List Note'],
                           'sales_type'=>$sales_type,

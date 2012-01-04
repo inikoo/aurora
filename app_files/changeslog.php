@@ -5320,12 +5320,6 @@ ALTER TABLE `User Dimension` CHANGE `User Password` `User Password` VARCHAR( 128
 ALTER TABLE `User Dimension` ADD `User Verified` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
 ALTER TABLE `Custom Field Dimension` ADD `Custom Field In Registration` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Custom Field In Showcase` ,ADD `Custom Field In Profile` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Custom Field In Registration` ;
 
-
-
-
-
-
-
 ALTER TABLE `Custom Field Dimension` CHANGE `Custom Field Type` `Custom Field Type` ENUM( 'Mediumint', 'Text', 'Longtext', 'Enum' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL 
 ALTER TABLE `Dashboard User Bridge` ADD `Dashboard ID` SMALLINT UNSIGNED NOT NULL DEFAULT '1' AFTER `User key` ;
 ALTER TABLE `Dashboard User Bridge` ADD `Dashboard Widget Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '1' AFTER `Dashboard Order` ;

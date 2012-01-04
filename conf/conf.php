@@ -2321,6 +2321,7 @@ $default_state=array(
                               'id'=>0,
                               'view'=>'details',
                               'editing'=>'content',
+                              'editing_content_block'=>'overview',
                               'history'=>array(
                                             'where'=>'where true',
                                             'f_field'=>'abstract',
