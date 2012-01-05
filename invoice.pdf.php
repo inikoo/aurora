@@ -4,18 +4,18 @@
 require_once('common.php');
 require_once('class.Store.php');
 
-require_once('class.DeliveryNote.php');
+require_once('class.Invoice.php');
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit;
 }
-$dn=new DeliveryNote($id);
-if (!$dn->id) {
+$invoice=new Invoice($id);
+if (!$invoice->id) {
     exit;
 }
-
-$store=new Store($dn->data['Delivery Note Store Key']);
+//print_r($invoice);
+$store=new Store($invoice->data['Invoice Store Key']);
 
 
 require_once('external_libs/pdf/config/lang/eng.php');
@@ -79,7 +79,7 @@ class MYPDF extends TCPDF {
                          'module_width' => 1, // width of a single module in points
                          'module_height' => 1 // height of a single module in points
                      );
-            $this->write2DBarcode('aw.inikoo.com/order_pick_aid.php?id=215167', 'QRCODE,Q', $cw, 0, 50, 50, $style, 'N');
+            //$this->write2DBarcode('aw.inikoo.com/invoice.pdf.php?id=215167', 'QRCODE,Q', $cw, 0, 50, 50, $style, 'N');
 
 
             // print an ending header line
@@ -164,13 +164,13 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor($store->data['Store Name']);
-$pdf->SetTitle($dn->data['Delivery Note ID']);
+$pdf->SetTitle($invoice->data['Invoice Public ID']);
 $pdf->SetSubject(_('Order Picking Aid'));
 
 
-$header_text=$dn->data['Delivery Note Customer Name'];
+$header_text=$invoice->data['Invoice Customer Name'];
 
-$pdf->SetHeaderData(false, 0, $dn->data['Delivery Note ID'], $header_text);
+$pdf->SetHeaderData(false, 0, 'Invoice '.$invoice->data['Invoice Public ID'], $header_text);
 
 // set header and footer fonts
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -207,15 +207,137 @@ $pdf->setCellPaddings(1,0.5,1,0.5);
 // This method has several options, check the source code documentation for more information.
 $pdf->AddPage();
 
+if ($invoice->get('Invoice Items Discount Amount')!=0)
+	$discount='<tr><td  class="aright" >Items Gross</td><td width=100 class="aright">{$invoice->get(\'Items Gross Amount\')}</td></tr> 
+<tr><td  class="aright" >Discounts</td><td width=100 class="aright">{$invoice->get(\'Items Discount Amount\')}</td></tr>';
+else
+	$discount='';
+
+if($invoice->get('Invoice Refund Net Amount')!=0){
+	$credit='<tr><td  class="aright" >Credits</td><td width=100 class="aright">{$invoice->get(\'Refund Net Amount\')}</td></tr>';
+}
+else
+	$credit='';
+
+if ($invoice->get('Invoice Charges Net Amount')!=0){
+	$charges=' <tr><td  class="aright" >Charges</td><td width=100 class="aright">{$invoice->get(\'Charges Net Amount\')}</td></tr>';
+}
+else
+	$charges='';
+
+if ($invoice->get('Invoice Total Net Adjust Amount')!=0)
+	$total_net='<tr style="color:red"><td  class="aright" >Adjust Net</td><td width=100 class="aright">{$invoice->get(\'Total Net Adjust Amount\')}</td></tr>';
+else
+	$total_net='';
+
+if ($invoice->get('Invoice Shipping Net Amount')!=0){
+	$shipping_net='<tr style="border-bottom:1px solid #777"><td  class="aright" >Shipping</td><td width=100 class="aright">{$invoice->get(\'Shipping Net Amount\')}</td></tr>	';
+}
+else
+	$shipping_net='';
+
+
+if ($invoice->get('Invoice Total Tax Adjust Amount')!=0){
+	$total_tax='<tr  style="color:red"><td  class="aright" >Adjust Tax</td><td width=100 class="aright">{$invoice->get(\'Total Tax Adjust Amount\')}</td></tr>';
+}
+else
+	$total_tax='';
+
+$tax_data=array();
+$sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  `Invoice Tax Bridge` B  left join `Tax Category Dimension` T on (T.`Tax Category Code`=B.`Tax Code`)  where B.`Invoice Key`=%d ",$invoice->id);
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+    $tax_data[]=array('name'=>$row['Tax Category Name'],'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
+}
+$tax_info='';
+foreach($tax_data as $tax){
+	$tax_info.='<tr ><td  class="aright" >$tax[\'name\']</td><td width=100 class="aright">$tax[\'amount\']</td></tr>';
+}
+
+
+
+$html = <<<EOD
+<div style="clear:both"></div>
+
+<div style="padding:0px 20px;float:left">
+<h2>Notes</h2>
+<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">a</div>
+</div>
+
+<div style="padding:0px 20px;float:right">
+<h2>Notes</h2>
+<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
+
+<table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:120px" >
+{$discount}
+
+
+
+  <tr><td  class="aright" >Items Net</td><td width=100 class="aright">{$invoice->get('Items Net Amount')}</td></tr>
+
+{$credit}
+
+{$charges}
+
+{$total_net}
+
+{$shipping_net}
+
+  <tr  style="border-top:1px solid #777;border-bottom:1px solid #777"     ><td    class="aright" >Total Net</td><td width=100 class="aright">{$invoice->get('Total Net Amount')}</td></tr>
+  
+ {$tax_info}
+
+{$total_tax}
+  <tr style="border-top:1px solid #777"><td  class="aright" >Total</td><td width=100 class="aright"><b>{$invoice->get('Total Amount')}</b></td></tr>
+
+	</table>
+
+
+</div>
+</div>
+
+<div style="padding:0px 20px;float:right">
+<h2>Notes</h2>
+<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
+<table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:20px;margin-right:30px;float:right" >
+
+<tr><td>Invoice Date:</td><td class="aright">{$invoice->data['Invoice Date']}</td></tr>
+
+<tr><td>Order:</td><td class="aright">{$invoice->data['Invoice XHTML Orders']}</td></tr>
+<tr><td>Delivery Notes:</td><td class="aright">{$invoice->data['Invoice XHTML Delivery Notes']}</td></tr>
+<tr><td>Payment Method:</td><td class="aright">{$invoice->data['Invoice Main Payment Method']}</td></tr>
+<tr><td>Payment State:</td><td class="aright">{$invoice->get('Payment State')}</td></tr>
+
+</table>
+
+
+</div>
+</div>
+
+
+
+
+<div style="clear: both;"></div>
+      
+
+EOD;
+
+// output the HTML content
+$pdf->writeHTML($html, true, false, true, false, '');
+
+
+
+
 // Set some content to print
 $pdf->ln(3);
 $columns=array(
-             array('w'=>15,'txt'=>'SKU','border'=>'TB','align'=>'L'),
+             array('w'=>15,'txt'=>_('Code'),'border'=>'TB','align'=>'L'),
              array('w'=>50,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
-             array('w'=>55,'txt'=>_('Notes'),'border'=>'TB','align'=>'L'),
-             array('w'=>35,'txt'=>_('Location'),'border'=>'TB','align'=>'L'),
-             array('w'=>8,'txt'=>'Q','border'=>'TB','align'=>'R'),
-             array('w'=>0,'txt'=>_('Observations'),'border'=>'TB','align'=>'L'),
+             array('w'=>55,'txt'=>_('Qty'),'border'=>'TB','align'=>'R'),
+             array('w'=>20,'txt'=>_('Gross'),'border'=>'TB','align'=>'R'),
+             array('w'=>20,'txt'=>_('Discounts'),'border'=>'TB','align'=>'R'),
+             array('w'=>20,'txt'=>_('Charge'),'border'=>'TB','align'=>'R'),
 
 
          );
@@ -223,22 +345,23 @@ $columns=array(
 $pdf->MultiRow($columns);
 
 
-$sql=sprintf("select  `Picking Note`,ITF.`Part SKU`,`Part XHTML Description`,`Required`,`Location Code` from `Inventory Transaction Fact` ITF   left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d  ",
-             $dn->id
-            );
+
+
+ $sql=sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d ", $invoice->id);
+//print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 
-    $sku=sprintf('SKU%05d',$row['Part SKU']);
+    //$sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
-                 array('w'=>15,'txt'=>$sku,'border'=>'T','align'=>'L'),
-                 array('w'=>50,'txt'=>strip_tags($row['Part XHTML Description']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>55,'txt'=> strip_tags($row['Picking Note']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>35,'txt'=>$row['Location Code'],'border'=>'T','align'=>'L'),
-                 array('w'=>8,'txt'=>$row['Required'],'border'=>'T','align'=>'R'),
-                 array('w'=>0,'txt'=>'','border'=>'T','align'=>'L')
+                 array('w'=>15,'txt'=>$row['Product Code'],'border'=>'T','align'=>'L'),
+                 array('w'=>50,'txt'=>strip_tags($row['Product XHTML Short Description']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>55,'txt'=>$row['Invoice Quantity'] ,'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>$row['Invoice Transaction Gross Amount'],'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>$row['Invoice Transaction Total Discount Amount'],'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>$row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],'border'=>'T','align'=>'R')
 
 
              );
@@ -254,8 +377,46 @@ $columns=array(array('w'=>0,'txt'=>'','border'=>'T','align'=>'L'));
  $pdf->MultiRow($columns);
 
 
+   $response= array('state'=>200);
+$tbl = <<<EOD
+<table border="0" cellpadding="2" cellspacing="2" align="left" WIDTH="100%">
+	<tr nobr="true">
+		<th colspan="5" ><font size="15">Thank you for your business</font></th>
+		<th></th>
+		<th></th
+		><th></th>
+		<th></th>
+	</tr>
+	<tr nobr="true">
+		<td colspan="5">Please notify us immediately of any discrepancies of breakages</td>
+	</tr>
+	<tr nobr="true">
+		<td colspan="5">Ancient Wisdom Marketing Ltd<br />
+		Unit 15, Block B<br />
+		Parkwood Business Park<br />
+		Parkwood Road<br />
+		Sheffield S3 8AL<br />
+		United Kingdom
+		</td>
+	</tr>
+	<tr >
+		<th WIDTH="20%">Company Number</th>
+		<th WIDTH="20%">VAT Number</th>
+		<th WIDTH="20%">Telephone</th>
+		<th WIDTH="20%">Email</th>
+		<th WIDTH="20%">Web</th>
+	</tr>
+	<tr width=100%>
+		<td>4108870</td>
+		<td>7642985889</td>
+		<td>0114 2729165</td>
+		<td>mail@ancinentwisdom.biz</td>
+		<td>www.ancientwisdom.biz</td>
+	</tr>
+</table>
+EOD;
 
-
+$pdf->writeHTML($tbl, true, false, false, false, '');
 // Print text using writeHTMLCell()
 //$pdf->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
 
@@ -263,7 +424,8 @@ $columns=array(array('w'=>0,'txt'=>'','border'=>'T','align'=>'L'));
 
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
-$pdf->Output($dn->data['Delivery Note File As'], 'I');
+$pdf->Output($invoice->data['Invoice File As'], 'I');
+
 
 
 ?>
