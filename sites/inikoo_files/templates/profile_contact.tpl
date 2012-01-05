@@ -23,7 +23,7 @@
 
 <div id="contact_block" {if $view!='contact'}style="display:none"{/if}>
 <div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
-<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px">Thank you form trading with us!</div>
+<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px">Thank you for trading with us!</div>
 
 {include file='customer_badges.tpl' customer=$page->customer}
 
@@ -191,6 +191,8 @@
  </td>   
 </tr>
 {/foreach}
+<tr style="display:none"><td colspan="2"><textarea rows="2" cols="20" id="type_of_business"> </textarea> </tr>
+<tr style="display:none"><td colspan="2"><textarea rows="2" cols="20" id="referrer"> </textarea> </tr>
 </table>
 
 </div>

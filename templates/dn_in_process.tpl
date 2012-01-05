@@ -1,7 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
 <div id="table_type" class="table_type">
- <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="pdf_delivery_notes.php?id={$dn->get('Delivery Note Key')}">PDF Delivery Note</a></span>
+ <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="delivery_notes.pdf.php?id={$dn->get('Delivery Note Key')}">PDF Delivery Note</a></span>
 </div>
 
 

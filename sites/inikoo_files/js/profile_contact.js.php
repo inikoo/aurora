@@ -174,18 +174,6 @@ var request='ar_edit_contacts.php?tipo=edit_customer_quick&values='+ jsonificate
                r=ra[x]
 				if(r.state==200){
 			
-  /*
- 
-            if (r.newvalue=='No' || r.newvalue=='Yes') {
-                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
-
-               Dom.addClass(r.key+'_'+r.newvalue,'selected');
-
-		
-
-            }else{
-                alert(r.msg)
-            }*/
 window.location.reload()
             }
         }
@@ -244,6 +232,14 @@ var subject_key=Dom.get('customer_key').value;
 //    var operation_type='disassociate_subject_to_category_radio';
 //else
 
+if(parent_category_key==1 && category_key==38){
+	Dom.setStyle('type_of_business', 'display', 'none'); 
+
+}
+
+if(parent_category_key==2 && category_key==16){
+	Dom.setStyle('referrer', 'display', ''); 
+}
 
 if(category_key==''){
 var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
