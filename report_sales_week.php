@@ -7,7 +7,7 @@
  Version 2.0
 */
 include_once('common.php');
-
+include_once('class.Store.php');
 if(!$user->can_view('reports')){
   header('Location: index.php');
   exit();
@@ -92,15 +92,16 @@ $smarty->assign('subtitle2',$subtitle2);
 
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-	
-		 $yui_path.'build/assets/skins/sam/skin.css',
-		
-		 'css/container.css'
-		 );
-
-$css_files[]='theme.css.php';
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'css/container.css',
+               'button.css',
+               'table.css',
+               'theme.css.php'
+           );
 
 
 $js_files=array(
