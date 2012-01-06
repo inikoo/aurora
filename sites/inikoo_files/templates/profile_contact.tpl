@@ -175,6 +175,7 @@
 <table style="margin:10px">
  
  {foreach from=$categories item=cat key=cat_key name=foo  }
+{$other_field=''}
  <tr>
  
  <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
@@ -182,17 +183,23 @@
   <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
     {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
         {if $smarty.foreach.foo2.first}
-        <option {if $categories_value[$cat_key]=='' }selected="selected"{/if} value="">{t}Unknown{/t}</option>
+
         {/if}
+	{if $sub_cat->get('Category Name')=='Other'}
+{assign var="other_field" value="<tr style='display:none' id='`$sub_cat_key`_tr'><td></td><td colspan='2'><textarea rows='2' cols='20' id='type_of_`$sub_cat_key`'> </textarea></tr>"}
+
+		
+	{/if}
         <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
     {/foreach}
   </select>
   
  </td>   
 </tr>
+{$other_field}
 {/foreach}
-<tr style="display:none"><td colspan="2"><textarea rows="2" cols="20" id="type_of_business"> </textarea> </tr>
-<tr style="display:none"><td colspan="2"><textarea rows="2" cols="20" id="referrer"> </textarea> </tr>
+
+
 </table>
 
 </div>

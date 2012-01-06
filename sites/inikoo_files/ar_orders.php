@@ -15,7 +15,12 @@ case('list_orders'):
 case('transactions_dipatched'):
     transactions_dipatched();
     break;
-
+case('transactions_invoice'):
+    list_transactions_in_invoice();
+    break;
+case('transactions_in_process_in_dn'):
+    list_transactions_in_process_in_dn();
+    break;
 default:
 
     $response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -174,6 +179,213 @@ function transactions_dipatched() {
     }
 
 
+
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$res->numRows(),
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+function list_transactions_in_invoice() {
+
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+        $order_id=$_REQUEST['id'];
+    else
+        $order_id=$_SESSION['state']['invoice']['id'];
+
+
+
+
+    $where=' where `Invoice Quantity`!=0 and  `Invoice Key`='.$order_id;
+    $where2=' where  `Invoice Key`='.$order_id;
+    $total_charged=0;
+    $total_discounts=0;
+    $total_picks=0;
+
+    $data=array();
+    $sql="select * from `Order Transaction Fact` O   left join  `Product Dimension` P on (O.`Product ID`=P.`Product ID`) $where order by O.`Product Code`  ";
+
+    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+    //   print $sql;
+    $result=mysql_query($sql);
+    $total_gross=0;
+    $total_discount=0;
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        //   $total_charged+=$row['charge'];
+//      $total_discounts+=$ndiscount;
+//      $total_picks+=$row['dispatched'];
+        $total_discount+=$row['Invoice Transaction Total Discount Amount'];
+        $total_gross+=$row['Invoice Transaction Gross Amount'];
+        $code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
+
+        if ($row['Invoice Transaction Total Discount Amount']==0)
+            $discount='';
+        else
+            $discount=money($row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']);
+
+        $data[]=array(
+
+                    'code'=>$code,
+                    'description'=>$row['Product XHTML Short Description'],
+                    'tariff_code'=>$row['Product Tariff Code'],
+                    'quantity'=>number($row['Invoice Quantity']),
+                    'gross'=>money($row['Invoice Transaction Gross Amount'],$row['Invoice Currency Code']),
+                    'discount'=>$discount,
+                    'to_charge'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code'])
+                );
+    }
+
+
+    $sql="select * from `Order No Product Transaction Fact` $where2  ";
+//print $sql;
+    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+    //   print $sql;
+    $result=mysql_query($sql);
+    $total_gross=0;
+    $total_discount=0;
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        //   $total_charged+=$row['charge'];
+//      $total_discounts+=$ndiscount;
+//      $total_picks+=$row['dispatched'];
+        //$total_discount+=$row['Invoice Transaction Total Discount Amount'];
+        //$total_gross+=$row['Invoice Transaction Gross Amount'];
+        //$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
+
+
+        $data[]=array(
+
+                    'code'=>'',
+                    'description'=>$row['Transaction Description'],
+                    'tariff_code'=>'',
+                    'quantity'=>'',
+                    'gross'=>money($row['Transaction Invoice Net Amount'],$row['Currency Code']),
+                    'discount'=>'',
+                    'to_charge'=>money($row['Transaction Invoice Net Amount']+$row['Transaction Invoice Tax Amount'],$row['Currency Code'])
+                );
+    }
+
+
+    /*
+        $invoice=new Invoice($order_id);
+
+
+
+        if ($invoice->data['Invoice Shipping Net Amount']!=0) {
+
+            $data[]=array(
+
+                        'code'=>'',
+                        'description'=>_('Shipping'),
+                        'tariff_code'=>'',
+                        'quantity'=>'',
+                        'gross'=>money($invoice->data['Invoice Shipping Net Amount'],$invoice->data['Invoice Currency']),
+                        'discount'=>'',
+                        'to_charge'=>money($invoice->data['Invoice Shipping Net Amount'],$invoice->data['Invoice Currency'])
+                    );
+
+        }
+        if ($invoice->data['Invoice Charges Net Amount']!=0) {
+            $data[]=array(
+
+                        'code'=>'',
+                        'description'=>_('Charges'),
+                        'tariff_code'=>'',
+                        'quantity'=>'',
+                        'gross'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency']),
+                        'discount'=>'',
+                        'to_charge'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency'])
+                    );
+        }
+        if ($invoice->data['Invoice Total Tax Amount']!=0) {
+            $data[]=array(
+
+                        'code'=>'',
+                        'description'=>_('Tax'),
+                        'tariff_code'=>'',
+                        'quantity'=>'',
+                        'gross'=>money($invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Currency']),
+                        'discount'=>'',
+                        'to_charge'=>money($invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Currency'])
+                    );
+        }
+
+        $data[]=array(
+
+                    'code'=>'',
+                    'description'=>_('Total'),
+                    'tariff_code'=>'',
+                    'quantity'=>'',
+                    'gross'=>'',
+                    'discount'=>'',
+                    'to_charge'=>'<b>'.money($invoice->data['Invoice Total Amount'],$invoice->data['Invoice Currency']).'</b>'
+                );
+
+             */
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$res->numRows(),
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
+
+function list_transactions_in_process_in_dn() {
+
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+        $order_id=$_REQUEST['id'];
+    else
+        $order_id=$_SESSION['state']['dn']['id'];
+
+
+
+
+    $where=sprintf(' where   `Delivery Note Key`=%d',$order_id);
+
+    $total_charged=0;
+    $total_discounts=0;
+    $total_picks=0;
+
+    $data=array();
+
+    $sql=sprintf("select `Required`,`Part XHTML Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`)$where");
+
+    $result=mysql_query($sql);
+    $total_gross=0;
+    $total_discount=0;
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+        $data[]=array(
+
+                    'part'=>sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU'])
+                           ,'description'=>$row['Part XHTML Description']
+                                          ,'used_in'=>$row['Part XHTML Currently Used In']
+                                                     ,'quantity'=>number($row['Required'])
+
+                );
+    }
 
 
 

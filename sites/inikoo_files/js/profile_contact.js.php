@@ -233,13 +233,17 @@ var subject_key=Dom.get('customer_key').value;
 //else
 
 if(parent_category_key==1 && category_key==38){
-	Dom.setStyle('type_of_business', 'display', 'none'); 
-
+	//Dom.setStyle('type_of_'+category_key, 'display', 'none'); 
+	Dom.get(category_key+'_tr').style.display='';
 }
+else if(parent_category_key==1 )
+	Dom.get('38_tr').style.display='none';
 
 if(parent_category_key==2 && category_key==16){
-	Dom.setStyle('referrer', 'display', ''); 
+	Dom.get(category_key+'_tr').style.display='';
 }
+else if(parent_category_key==2 )
+	Dom.get('16_tr').style.display='none';
 
 if(category_key==''){
 var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 

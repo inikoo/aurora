@@ -114,12 +114,40 @@ else if ($page->data['Page Code']=='profile') {
 
     if (isset($_REQUEST['view']) and
 in_array($_REQUEST['view'],array('contact','orders','address_book','change_password', 'add_address',
-'edit_address'))) {
+'edit_address', 'invoices', 'delivery_notes'))) {
         $view=$_REQUEST['view'];
     } else {
         $view='contact';
     }
 
+
+if($_REQUEST['view']=='delivery_notes'){
+	if (isset($_REQUEST['id']))
+	$smarty->assign('id',$_REQUEST['id']);
+	$dn=new DeliveryNote($_REQUEST['id']);
+	$smarty->assign('dn',$dn);
+	$smarty->assign('user',$user);
+}
+
+if($_REQUEST['view']=='invoices'){
+	if (isset($_REQUEST['id']))
+	$smarty->assign('id',$_REQUEST['id']);
+	$smarty->assign('user',$user);
+	$invoice=new Invoice($_REQUEST['id']);
+	//print_r($invoice);
+	$smarty->assign('invoice',$invoice);
+
+	$tax_data=array();
+	$sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  `Invoice Tax Bridge` B  left join `Tax Category Dimension` T on (T.`Tax Category Code`=B.`Tax Code`)  where B.`Invoice Key`=%d ",$invoice->id);
+
+	$res=mysql_query($sql);
+	while($row=mysql_fetch_assoc($res)){
+	$tax_data[]=array('name'=>$row['Tax Category Name'],'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
+	}
+
+	$smarty->assign('tax_data',$tax_data);
+
+}
 
 $custom_fields=array();
 $sql=sprintf("show columns from `Customer Custom Field Dimension`");
@@ -152,6 +180,14 @@ if(isset($_REQUEST['order_id'])){
 		exit;
 	}
 $smarty->assign('order',$order);
+
+$invoice_number=explode("?id=", $order->get('Order XHTML Invoices'));
+$invoice_number=explode("\"", $invoice_number[1]);
+$smarty->assign('invoice_number',$invoice_number[0]);
+
+$dn_number=explode("?id=", $order->get('Order XHTML Delivery Notes'));
+$dn_number=explode("\"", $dn_number[1]);
+$smarty->assign('dn_number',$dn_number[0]);
 
     switch ($order->get('Order Current Dispatch State')) {
 
@@ -414,7 +450,7 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 
 $customer=new Customer(5);
 $page->customer=$customer;
-//print_r($customer);
+//print_r($order);
 $smarty->assign('filter_name0','Order ID');
 $smarty->assign('filter_value0', '');
 $smarty->assign('css_files',$css_files);
