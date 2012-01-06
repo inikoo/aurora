@@ -1,9 +1,6 @@
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 
-
-
-
 YAHOO.namespace ("orders"); 
 
 
