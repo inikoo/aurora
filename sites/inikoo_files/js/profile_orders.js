@@ -71,43 +71,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.table0.subscribe("renderEvent", myrenderEvent);
 	    
 	    //this.table0.filter={key:'<?php echo$_SESSION['state']['locations']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['locations']['table']['f_value']?>'};
-    }  
-
-		var tableid=1; 
-	    // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-
-
-
-	    var InvoiceColumnDefs = [
-				     {key:"code", label:"<?php echo _('Code')?>",width:60,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description", label:"<?php echo _('Description')?>",width:370,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"ordered",label:"<?php echo _('Ordered')?>", width:100,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"dispatched",label:"<?php echo _('Dispatched')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"invoiced",label:"<?php echo _('Amount')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ];
-
-		alert("ar_orders.php?tipo=transactions_dipatched&tid=1");
-	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_dipatched&tid=1");
-	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.InvoiceDataSource.connXhrMode = "queueRequests";
-	    this.InvoiceDataSource.responseSchema = {
-		resultsList: "resultset.data", 
-		fields: [
-			 "code"
-			 ,"description"
-			 ,"ordered"
-			 ,"invoiced","dispatched"
-			 ]};
-	    this.InvoiceDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
-								   this.InvoiceDataSource, {
-								       renderLoopSize: 50
-								   }
-								   
-								   );
-
-
-
+   }  
 });
 
 

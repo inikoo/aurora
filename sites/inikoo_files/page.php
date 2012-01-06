@@ -119,7 +119,7 @@ in_array($_REQUEST['view'],array('contact','orders','address_book','change_passw
     } else {
         $view='contact';
     }
-
+$smarty->assign('user',$user);
 
 if($_REQUEST['view']=='delivery_notes'){
 	if (isset($_REQUEST['id']))
@@ -181,14 +181,16 @@ if(isset($_REQUEST['order_id'])){
 	}
 $smarty->assign('order',$order);
 
+if($order->get('Order XHTML Invoices') != ''){
 $invoice_number=explode("?id=", $order->get('Order XHTML Invoices'));
 $invoice_number=explode("\"", $invoice_number[1]);
 $smarty->assign('invoice_number',$invoice_number[0]);
-
+}
+if($order->get('Order XHTML Invoices') != ''){
 $dn_number=explode("?id=", $order->get('Order XHTML Delivery Notes'));
 $dn_number=explode("\"", $dn_number[1]);
 $smarty->assign('dn_number',$dn_number[0]);
-
+}
     switch ($order->get('Order Current Dispatch State')) {
 
     case('In Process'):
@@ -264,28 +266,28 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
         $smarty->assign('search_label',_('Orders'));
         $smarty->assign('search_scope','orders_store');
 
-        $js_files[]='order_dispatched.js.php';
+        $js_files[]='js/order_dispatched.js.php';
         $order_template='order_dispatched.tpl';
         break;
     case('Cancelled'):
         $smarty->assign('search_label',_('Orders'));
         $smarty->assign('search_scope','orders_store');
 
-        $js_files[]='order_cancelled.js.php';
+        $js_files[]='js/order_cancelled.js.php';
         $order_template='order_cancelled.tpl';
         break;
     case('Suspended'):
 
 
-        $js_files[]='order_suspended.js.php';
+        $js_files[]='js/order_suspended.js.php';
         $order_template='order_suspended.tpl';
         break;
     case('Unknown'):
-        $js_files[]='order_unknown.js.php';
+        $js_files[]='js/order_unknown.js.php';
         $order_template='order_unknown.tpl';
         break;
     case('Ready to Ship'):
-        $js_files[]='order_ready_to_ship.js.php';
+        $js_files[]='js/order_ready_to_ship.js.php';
         $order_template='order_ready_to_ship.tpl';
         break;
     default:
@@ -448,7 +450,7 @@ if ($page->data['Page Store Content Display Type']=='Source') {
     $js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
 }
 
-$customer=new Customer(5);
+$customer=new Customer(56);
 $page->customer=$customer;
 //print_r($order);
 $smarty->assign('filter_name0','Order ID');
