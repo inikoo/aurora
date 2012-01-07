@@ -1,10 +1,22 @@
-{include file='header.tpl'}
-<div id="bd" >
-<div  class="branch"> 
-  <span  >{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {t}Invoice{/t} {$invoice->get('Invoice Public ID')}</span>
+<input type="hidden" id="user_key" value="{$user->id}" />
+<input type="hidden" id="store_key" value="{$store->id}" />
+<input type="hidden" id="site_key" value="{$site->id}" />
+<input type="hidden" id="site_key" value="{$site->id}" />
+<input type="hidden" id="customer_key"  value="{$page->customer->id}"/>
+
+<div class="top_page_menu" style="padding:0px 20px 5px 20px">
+<div class="buttons" style="float:left">
+<button  onclick="window.location='profile.php?view=change_password'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Change Password{/t}</button>
+<button  onclick="window.location='profile.php?view=address_book'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Address Book{/t}</button>
+<button  class="selected" onclick="window.location='profile.php?view=orders'" ><img src="art/icons/table.png" alt=""> {t}Orders{/t}</button>
+<button  onclick="window.location='profile.php?view=contact'" ><img src="art/icons/chart_pie.png" alt=""> {t}My Account{/t}</button>
+</div>
+<div style="clear:both">
+</div>
 </div>
 
-<input type="hidden" id="invoice_key" value="{$invoice->id}"/>
+
+<input type="hidden" id="invoice_key" value="{$id}"/>
 <div  class="buttons">
  <button  onclick="window.location='invoice.pdf.php?id={$invoice->id}'">PDF Invoice</button>
 </div>
@@ -19,7 +31,7 @@
 
     <div style="width:340px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Invoice{/t} {$invoice->get('Invoice Public ID')}</h1>
-        <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a></h2>
+        <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$page->customer->id}</a></h2>
 	
 	
 	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><b>{$invoice->get('Invoice Main Contact Name')}</b><br/>{$invoice->get('Invoice XHTML Address')}</div>
@@ -61,7 +73,7 @@
 	</table>
       </div>
     <div style="border:0px solid #ddd;width:300px;float:right">
-       {if $note}<div class="notes">{$note}</div>{/if}
+
 
 
 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:20px;margin-right:30px;float:right" >
@@ -95,13 +107,8 @@
 	    
     </div>
 </div>
-{if $items_out_of_stock}
-<div style="clear:both;margin:30px 0" >
-<h2>{t}Items Out of Stock{/t}</h2>
-<div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
-</div>
-{/if}
+
   </div>
-</div>
-</div> 
-{include file='footer.tpl'}
+
+
+

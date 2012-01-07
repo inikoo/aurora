@@ -26,6 +26,7 @@
     <div  id="table0"   class="data_table_container dtable btable "> </div>
 </div>
 
+{$order_template}
 <div>
  {include file=$order_template}
 </div>
