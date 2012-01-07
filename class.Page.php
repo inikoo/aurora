@@ -901,6 +901,9 @@ class Page extends DB_Table {
 
 
     function delete() {
+    
+    
+    
         $this->deleted=false;
 
         $site=new Site($this->data['Page Site Key']);
@@ -912,7 +915,29 @@ class Page extends DB_Table {
         mysql_query($sql);
         $this->deleted=true;
 
+
         $site->update_page_totals();
+    
+    $data=array(
+    'Page Code'=>$this->data['Page Code'] ,
+    'Site Key'=>$this->data['Page Site Key'] ,
+    'Page Store Section'=>$this->data['Page Store Section'] ,
+    'Page Parent Key'=>$this->data['Page Parent Key'] ,
+    'Page Parent Code'=>$this->data['Page Parent Code'] ,
+    'Page Title'=>$this->data['Page Store Title'] ,
+    'Page Short Title'=>$this->data['Page Short Title'] ,
+     'Page Description'=>$this->data['Page Description'] ,
+      'Page URL'=>$this->data['Page URL'] ,
+       'Page Valid To'=>'NOW()' ,
+       
+    );
+    
+      $deleted_page=new PageDeleted();
+      $deleted_page->create($data);
+      
+
+$this->deleted=true;
+$this->new_value=$deleted_page->id;
 
     }
 
@@ -1048,7 +1073,7 @@ class Page extends DB_Table {
 
 
     function get_formated_store_section() {
-        if ($this->data['Page Type']!='Store' or $this->data['Page Store See Also Type']=='Manual')
+        if ($this->data['Page Type']!='Store' )
             return;
 
 
@@ -2287,10 +2312,8 @@ class Page extends DB_Table {
             mysql_query($sql);
 //print $sql;
 
-            $this->data['Page Preview Snapshot Last Update']=date('Y-m-d H:i:s',strtotime('now UTF'));
-            $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Image Key`=%d,`Page Preview Snapshot Last Update`=%s  where `Page Key`=%d",
+            $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Image Key`=%d,`Page Preview Snapshot Last Update`=NOW()  where `Page Key`=%d",
                          $this->data['Page Preview Snapshot Image Key'],
-                         prepare_mysql($this->data['Page Preview Snapshot Last Update']),
                          $this->id
 
                         );
@@ -2301,10 +2324,8 @@ class Page extends DB_Table {
             $this->new_value=$this->data['Page Preview Snapshot Image Key'];
 
         } else {
-            $this->data['Page Preview Snapshot Last Update']=date('Y-m-d H:i:s',strtotime('now'));
-            $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Last Update`=%s  where `Page Key`=%d",
+            $sql=sprintf("update `Page Store Dimension` set `Page Preview Snapshot Last Update`=NOW()  where `Page Key`=%d",
 
-                         prepare_mysql($this->data['Page Preview Snapshot Last Update']),
                          $this->id
 
                         );

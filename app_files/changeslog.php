@@ -5364,3 +5364,9 @@ CREATE TABLE `Page Store Deleted Dimension` (
    `Page Valid To` datetime DEFAULT NULL,
   PRIMARY KEY (`Page Store Deleted Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Page Store Deleted Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Store Deleted Key` ,ADD INDEX ( `Site Key` ) ;
+ALTER TABLE `Page Store Deleted Dimension` ADD `Page Code` VARCHAR( 256 ) NOT NULL AFTER `Page Store Deleted Key` ;
+ALTER TABLE `Page Store Deleted Dimension` ADD `Page Store Section` VARCHAR( 256 ) NULL AFTER `Page URL` ,
+ADD `Page Parent Key` MEDIUMINT UNSIGNED NULL AFTER `Page Store Section` ,
+ADD `Page Parent Code` VARCHAR( 256 ) NULL AFTER `Page Parent Key` ;

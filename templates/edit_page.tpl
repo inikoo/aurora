@@ -3,6 +3,7 @@
 <div id="bd" style="padding:0">
 <input type="hidden" id="site_key" value="{$site->id}"/>
 <input type="hidden" id="site_id" value="{$site->id}"/>
+<input type="hidden" id="store_key" value="{$store->id}"/>
 
 <input type="hidden" id="page_key" value="{$page->id}"/>
 
@@ -52,7 +53,7 @@
     <li style="display:none"> <span class="item {if $block_view=='page_header'}selected{/if}"  id="page_header">  <span> {t}Header{/t}</span></span></li>
     <li style="display:none"> <span class="item {if $block_view=='page_footer'}selected{/if}"  id="page_footer">  <span> {t}Footer{/t}</span></span></li>
     <li> <span class="item {if $block_view=='content'}selected{/if}" id="content"><span>  {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
-    <li> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $block_view=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
 
   
 
@@ -115,7 +116,7 @@
  <tr><td style="padding:0;" class="label">{t}Product Description{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Product Description"}checked="checked"{/if} ></td></tr>
  <tr><td style="padding:0;" class="label">{t}Information{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Information"}checked="checked"{/if} ></td></tr>
  <tr><td style="padding:0;" class="label">{t}Category Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Category Catalogue"}checked="checked"{/if} ></td><td>{if $page->get('Page Store Section') =="Category Catalogue"}{$page->get('Page Parent Code')}{/if} </td></tr>
- <tr><td style="padding:0;" class="label">{t}Family Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Family Catalogue"}checked="checked"{/if} ></td><td style="padding:0;">{if $page->get('Page Store Section') =="Family Catalogue"}<a href="family.php?id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>{/if} </td></tr>
+ <tr><td style="padding:0;" class="label">{t}Family Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Family Catalogue"}checked="checked"{/if} ></td><td style="padding:0;">{if $page->get('Page Store Section') =="Family Catalogue"}<a href="family.php?id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>{/if} <span id="edit_parent_family" style="color:#777;font-style:italic;cursor:pointer">({t}Change{/t})</span></td></tr>
  <tr><td style="padding:0;" class="label">{t}Department Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Department Catalogue"}checked="checked"{/if} ></td><td style="padding:0;">{if $page->get('Page Store Section') =="Department Catalogue"}<a href="department.php?id={$page->get('Page Parent Key')}">{$page->get('Page Parent Code')}</a>{/if} </td></tr>
  <tr><td style="padding:0;" class="label">{t}Store Catalogue{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Store Catalogue"}checked="checked"{/if} ></td></tr>
  <tr><td style="padding:0;" class="label">{t}Registration{/t}:</td><td><input layout="thumbnails" id="radio_thumbnails" type="radio"  {if $page->get('Page Store Section') =="Registration"}checked="checked"{/if} ></td></tr>
@@ -463,10 +464,10 @@
      
    </div>
      <div style="{if $content_view!='product_buttons'}display:none{/if};margin:10px 20px" id="page_product_buttons_block">  
-     <div id="product_buttons" style="width:890px">
-     <span class="clean_table_title">{t}Buttons{/t}</span>
+     <div id="product_buttons" style="width:925px">
+     <span class="clean_table_title">{t}Products{/t}</span>
      {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3  }
-  <div  id="table3"   class="data_table_container dtable btable "> </div>
+  <div  id="table3"   class="data_table_container dtable btable" style="font-size:85%"> </div>
      </div>
    </div>
   
@@ -592,7 +593,25 @@
  <button id="save_delete_page"  class="positive">{t}Yes, delete it!{/t}</button>
  <button id="cancel_delete_page"  class="negative" >{t}No i dont want to delete it{/t}</button>
  </div>
+ 
+ 
+ 
+ 
+ 
+ 
 </div>
+
+
+ <div id="dialog_family_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Family List{/t}</span>
+            {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4}
+            <div id="table4"   class="data_table_container dtable btable"> </div>
+        </div>
+    </div>
+ </div>
+
 
 {include file='footer.tpl'}
  <div id="dialog_page_list">

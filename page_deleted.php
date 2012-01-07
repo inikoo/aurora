@@ -10,7 +10,7 @@
 include_once('common.php');
 include_once('class.Store.php');
 
-include_once('class.Page.php');
+include_once('class.PageDeleted.php');
 include_once('class.Site.php');
 
 
@@ -18,7 +18,8 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
     $page_key=$_REQUEST['id'];
 
 } else {
-    $page_key=$_SESSION['state']['page']['id'];
+     header('Location: index.php');
+    exit;
 }
 
 
@@ -30,10 +31,8 @@ if (!($user->can_view('stores')    ) ) {
 }
 
 
-include_once('class.Image.php');
-$page=new Page($page_key);
-//$page->update_preview_snapshot();
-//exit;
+$page=new PageDeleted($page_key);
+
 
 if (!$page->id) {
     header('Location: index.php');
@@ -41,9 +40,8 @@ if (!$page->id) {
 }
 
 
-$_SESSION['state']['page']['id']=$page->id;
 
-$site=new Site($page->data['Page Site Key']);
+$site=new Site($page->data['Site Key']);
 $smarty->assign('site',$site);
 $store=new Store($site->data['Site Store Key']);
 $smarty->assign('store',$store);
@@ -89,7 +87,7 @@ $js_files=array(
 $js_files[]='js/search.js';
 $js_files[]='common_plot.js.php?page='.'site';
 
-$js_files[]='page.js.php';
+$js_files[]='page_deleted.js.php';
 
 
 
@@ -111,7 +109,7 @@ $subject_id=$page_key;
 $smarty->assign('site',$site);
 
 $smarty->assign('parent','products');
-$smarty->assign('title', $page->data['Page Store Title']);
+$smarty->assign('title', $page->data['Page Title']);
 
 
 $order=$_SESSION['state']['site']['pages']['order'];
@@ -166,6 +164,6 @@ $smarty->assign('parent_url','site.php?id='.$site->id);
 $parent_title=$site->data['Site Name'].' '._('Pages').' ('.$order_label.')';
 $smarty->assign('parent_title',$parent_title);
 
-$smarty->display('page.tpl');
+$smarty->display('page_deleted.tpl');
 
 ?>
