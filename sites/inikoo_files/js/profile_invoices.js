@@ -1,8 +1,7 @@
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 
-<?php
-include_once('common.php');?>
+
 
 
 YAHOO.namespace ("invoice"); 
@@ -22,17 +21,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var InvoiceColumnDefs = [
-				     {key:"code", label:"<?php echo _('Code')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description", label:"<?php echo _('Description')?>",width:420,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     {key:"code", label:"Code",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"description", label:"Description",width:420,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     // ,{key:"tariff_code", label:"<?php echo _('Tariff Code')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:45,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"gross",label:"<?php echo _('Gross')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"discount",label:"<?php echo _('Discounts')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"to_charge",label:"<?php echo _('Charge')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"quantity",label:"Qty", width:45,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"gross",label:"Gross", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"discount",label:"Discounts", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"to_charge",label:"Charge", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
-
-	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_invoice&tid=0");
+		alert("ar_orders.php?tipo=transactions_invoice&tid=0&id="+Dom.get('invoice_key').value);
+	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_invoice&tid=0&id="+Dom.get('invoice_key').value);
 	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.InvoiceDataSource.connXhrMode = "queueRequests";
 	    this.InvoiceDataSource.responseSchema = {
