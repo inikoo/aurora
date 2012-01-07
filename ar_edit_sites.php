@@ -49,6 +49,8 @@ case('update_page_preview_snapshot'):
                          ));
     update_page_preview_snapshot($data);
     break;
+
+
 case('edit_page_product_list'):
     $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'string'),
@@ -58,6 +60,9 @@ case('edit_page_product_list'):
 
     edit_page_product_list($data);
     break;
+
+
+
 case('page_product_lists'):
     list_page_product_lists_for_edition();
     break;
@@ -237,6 +242,7 @@ case('edit_page_properties'):
     edit_page($data);
     break;
 
+case('edit_family_page_parent_key'):
 case('edit_family_page_html_head'):
 case('edit_family_page_header'):
 case('edit_family_page_content'):
@@ -338,6 +344,10 @@ function  edit_page($data) {
     $page=new Page($data['id']);
     $page->editor=$editor;
 
+    if (!array_key_exists('okey',$data)) {
+        $data['okey']=$data['key'];
+    }
+
     $value=stripslashes(urldecode($data['newvalue']));
 
     if ($data['key']=='Page Store Source') {
@@ -362,17 +372,20 @@ function  edit_page($data) {
 function  delete_page($data) {
 
     global $editor;
+
+    include_once('class.PageDeleted.php');
+
     $page=new Page($data['id']);
     $page->editor=$editor;
 
 
     $page->delete();
 
-    $page_deleted_key=0;
+
 
     if ($page->deleted) {
 
-        $response= array('state'=>200,'page_key'=>$page_deleted_key);
+        $response= array('state'=>200,'page_key'=>$page->new_value);
     } else {
         $response= array('state'=>400,'msg'=>$page->msg);
     }
@@ -1604,7 +1617,7 @@ function list_page_product_lists_for_edition() {
 
 
 
-$go=sprintf("<div class='buttons small'><button onClick='window.location=\"edit_family.php?id=".$row['Page Product Form Parent Key']."\"'>"._('Edit Items')."</button></div>");
+        $go=sprintf("<div class='buttons small'><button onClick='window.location=\"edit_family.php?id=".$row['Page Product Form Parent Key']."\"'>"._('Edit Items')."</button></div>");
 
         $adata[]=array(
                      'id'=>$row['Page Product Form Key'],
@@ -1811,7 +1824,25 @@ function list_page_product_buttons_for_edition() {
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
+        switch ($row['Product Web State']) {
+        case('Out of Stock'):
+            $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+            break;
+        case('For Sale'):
+            $web_state='';
+            break;
+        case('Discontinued'):
+            $web_state=_('Discontinued');
+        case('Offline'):
+            $web_state=_('Offline');
+        default:
+            $web_state=$row['Product Web State'];
 
+
+            break;
+
+
+        }
 
         $code=sprintf("<a href='edit_product.php?pid=%d'>%s</a>",$row['Product ID'],$row['Product Code']);
         $web_configuration='';
@@ -1850,6 +1881,8 @@ function list_page_product_buttons_for_edition() {
 
         $adata[]=array(
                      'id'=>$row['Page Product From Key'],
+                     'smallname'=>$row['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($row['Product Availability']).'</span> <span class="web_state">'.$web_state.'</span>',
+
                      'code'=>$code,
                      'pid'=>$row['Product ID'],
                      'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_button_dialog(".$row['Page Product From Key'].")'>"._('Edit')."</button></div>"),
