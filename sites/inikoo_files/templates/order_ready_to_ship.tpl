@@ -1,29 +1,29 @@
 
 
-
-
 <input type="hidden" id="order_key" value="{$order->id}"/>
 
+<div  class="buttons">
+ <button  onClick=window.location="profile.php?view=invoices&id={$invoice_number}">Invoice</button>
+ <button  onClick=window.location="profile.php?view=delivery_notes&id={$dn_number}">Delivery Note</button>
+</div>
+<div style="clear:both"></div>
 
-     <div style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+
+
+     <div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 10px 0 10px 0">
 
        <div style="border:0px solid #ddd;width:400px;float:left"> 
          <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
 
-	 <h2 style="padding:0">{$order->get('order customer name')} (ID:{$page->customer->get_formated_id()})</h2>
-       <br/>
+         <h2 style="padding:0">{$order->get('Order Customer Name')} ({$page->customer->get_formated_id()})</h2>
 
-	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Contact Address{/t}</span>:<br/><b>{$page->customer->get('Customer Main Contact Name')}</b><br/>{$page->customer->get('Customer Main XHTML Address')}</div>
-	<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}</div>
-
-
+	 <div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br/>{$page->customer->get('Customer Main XHTML Address')}</div>
+	 <div style="float:left;line-height: 1.0em;margin:5px 0 0 30px;color:#444"><span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}</div>
+	 
 	<div style="clear:both"></div>
        </div>
        
-      
-
-
- <div style="border:0px solid #ddd;width:190px;float:right">
+       <div style="border:0px solid #ddd;width:190px;float:right">
 	 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
 	   {if $order->get('Order Items Discount Amount')!=0 }
 	   <tr><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright">{$order->get('Items Gross Amount')}</td></tr>
@@ -45,21 +45,18 @@
 	 </table>
        </div>
 
-       <div style="zborder:1px solid red;width:290px;float:right">
+       <div style="border:0px solid red;width:290px;float:right">
 
 	 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right" >
 	   
 	   <tr><td>{t}Order Date{/t}:</td><td class="aright">{$order->get('Date')}</td></tr>
-	   <tr><td>{t}Cancel Date{/t}:</td><td class="aright">{$order->get('Cancel Date')}</td></tr>
-
-
+	   
+	   <tr style="display:none"><td>{t}Invoices{/t}:</td><td class="aright">{if $order->get('Order XHTML Invoices')!=''}{$order->get('Order XHTML Invoices')}{else}<span style="color:red;cursor:pointer" onClick="create_invoice(this)">Create Invoice</span>{/if}</td></tr>
+	   <tr style="display:none"><td>{t}Delivery Notes{/t}:</td><td class="aright">{$order->get('Order XHTML Delivery Notes')}</td></tr>
 	 </table>
-	 <div style="text-align:right;color:#b51616;margin-right:30px;zborder:1px solid black;clear:both">
-	   {$order->get('Order Cancel Note')}
-	 </div>
-
+	 
        </div>
-      
+       
        
        <div style="clear:both"></div>
      </div>
@@ -67,9 +64,8 @@
 
 
 <h2>{t}Items{/t}</h2>
-      <div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
+      <div  id="table1" class="dtable btable" style="margin-bottom:0"></div>
 
-	    
 
 
 

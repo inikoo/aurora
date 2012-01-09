@@ -208,45 +208,28 @@ $pdf->setCellPaddings(1,0.5,1,0.5);
 $pdf->AddPage();
 
 if($dn->get('Delivery Note XHTML Invoices')!='')
-	$invoices='<tr><td>Invoices:</td><td class="aright">{$dn->get(\'Delivery Note XHTML Invoices\')}</td></tr>';
+	$invoices="<tr><td>Invoices:</td><td >{$dn->get('Delivery Note XHTML Invoices')}</td></tr>";
 else
 	$invoices='';
 
 $html = <<<EOD
 <div style="clear:both"></div>
 
-<div style="padding:0px 20px;float:left">
-<h2>Notes</h2>
-<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">a</div>
-</div>
 
-<div style="padding:0px 20px;float:right">
-<h2>Notes</h2>
-<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
-	 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right" >
+<div>
+<h2></h2>
+<div>
+	 <table border=0 width="300px">
 	   
-	   <tr><td>Creation Date:</td><td class="aright">{$dn->get('Date Created')}</td></tr>
-	   <tr><td>Orders:</td><td class="aright">{$dn->get('Delivery Note XHTML Orders')}</td></tr>
-
-	{$invoices}
+	<tr><td width="150px">Creation Date:</td><td width="150px">{$dn->get('Date Created')}</td></tr>
+	<tr><td width="150px">Estimated Weight</td><td width="150px" >{$dn->get('Estimated Weight')}</td></tr>
 
 	 </table>
 
 </div>
 </div>
 
-<div style="padding:0px 20px;float:right">
-<h2>Notes</h2>
-<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
-	 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
-	 	   <tr><td  class="aright" >Estimated Weight</td><td width=100 class="aright">{$dn->get('Estimated Weight')}</td></tr>
 
-	
-	   
-	 </table>
-
-</div>
-</div>
 
 
 
@@ -265,9 +248,9 @@ $pdf->writeHTML($html, true, false, true, false, '');
 // Set some content to print
 $pdf->ln(3);
 $columns=array(
-             array('w'=>15,'txt'=>_('Part SKU'),'border'=>'TB','align'=>'L'),
-             array('w'=>50,'txt'=>_('Used In'),'border'=>'TB','align'=>'L'),
-             array('w'=>55,'txt'=>_('Description'),'border'=>'TB','align'=>'R'),
+             array('w'=>30,'txt'=>_('Part SKU'),'border'=>'TB','align'=>'L'),
+             array('w'=>70,'txt'=>_('Used In'),'border'=>'TB','align'=>'L'),
+             array('w'=>70,'txt'=>_('Description'),'border'=>'TB','align'=>'R'),
              array('w'=>20,'txt'=>_('Qty'),'border'=>'TB','align'=>'R')
          );
 
@@ -285,9 +268,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
     //$sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
-                 array('w'=>15,'txt'=>$row['Part SKU'],'border'=>'T','align'=>'L'),
-                 array('w'=>50,'txt'=>strip_tags($row['Part XHTML Currently Used In']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>55,'txt'=>strip_tags($row['Part XHTML Description']) ,'border'=>'T','align'=>'R'),
+                 array('w'=>30,'txt'=>'SKU'.$row['Part SKU'],'border'=>'T','align'=>'L'),
+                 array('w'=>70,'txt'=>strip_tags($row['Part XHTML Currently Used In']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>70,'txt'=>strip_tags($row['Part XHTML Description']) ,'border'=>'T','align'=>'R'),
                  array('w'=>20,'txt'=>$row['Required'],'border'=>'T','align'=>'R')
 
 
@@ -302,7 +285,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 $columns=array(array('w'=>0,'txt'=>'','border'=>'T','align'=>'L'));
  $pdf->MultiRow($columns);
+$sql=sprintf("select * from `Store Dimension` where `Store Key`=%d", $store->id);
+$result=mysql_query($sql);
+$row=mysql_fetch_assoc($result);
 
+$address='';
+$store_address=explode(",",$row['Store Address']);
+foreach($store_address as $ad)
+	$address.=$ad.",<br/>";
 
    $response= array('state'=>200);
 $tbl = <<<EOD
@@ -318,13 +308,8 @@ $tbl = <<<EOD
 		<td colspan="5">Please notify us immediately of any discrepancies of breakages</td>
 	</tr>
 	<tr nobr="true">
-		<td colspan="5">Ancient Wisdom Marketing Ltd<br />
-		Unit 15, Block B<br />
-		Parkwood Business Park<br />
-		Parkwood Road<br />
-		Sheffield S3 8AL<br />
-		United Kingdom
-		</td>
+		<td colspan="5">{$address}
+				</td>
 	</tr>
 	<tr >
 		<th WIDTH="20%">Company Number</th>
@@ -334,11 +319,11 @@ $tbl = <<<EOD
 		<th WIDTH="20%">Web</th>
 	</tr>
 	<tr width=100%>
-		<td>4108870</td>
-		<td>7642985889</td>
-		<td>0114 2729165</td>
-		<td>mail@ancinentwisdom.biz</td>
-		<td>www.ancientwisdom.biz</td>
+		<td>{$row['Store Company Number']}</td>
+		<td>{$row['Store VAT Number']}</td>
+		<td>{$row['Store Telephone']}</td>
+		<td>{$row['Store Email']}</td>
+		<td>{$row['Store URL']}</td>
 	</tr>
 </table>
 EOD;
