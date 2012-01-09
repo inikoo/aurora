@@ -441,7 +441,7 @@ if ($page->data['Page Store Content Display Type']=='Source') {
     $js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
 }
 
-$customer=new Customer(56);
+$customer=new Customer(5);
 $page->customer=$customer;
 //print_r($order);
 $smarty->assign('filter_name0','Order ID');
