@@ -121,7 +121,7 @@ in_array($_REQUEST['view'],array('contact','orders','address_book','change_passw
     }
 $smarty->assign('user',$user);
 
-if($_REQUEST['view']=='delivery_notes'){
+if(isset($_REQUEST['view']) && $_REQUEST['view']=='delivery_notes'){
 	if (isset($_REQUEST['id']))
 	$smarty->assign('id',$_REQUEST['id']);
 	$dn=new DeliveryNote($_REQUEST['id']);
@@ -129,7 +129,7 @@ if($_REQUEST['view']=='delivery_notes'){
 	$smarty->assign('user',$user);
 }
 
-if($_REQUEST['view']=='invoices'){
+if(isset($_REQUEST['view']) && $_REQUEST['view']=='invoices'){
 	if (isset($_REQUEST['id']))
 	$smarty->assign('id',$_REQUEST['id']);
 	$smarty->assign('user',$user);
@@ -260,32 +260,23 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
         break;
     case('Dispatched'):
-
-
-
         $smarty->assign('search_label',_('Orders'));
         $smarty->assign('search_scope','orders_store');
 
         $js_files[]='js/order_dispatched.js.php';
         $order_template='order_dispatched.tpl';
+
+
         break;
     case('Cancelled'):
+    case('Suspended'):
         $smarty->assign('search_label',_('Orders'));
         $smarty->assign('search_scope','orders_store');
 
         $js_files[]='js/order_cancelled.js.php';
         $order_template='order_cancelled.tpl';
         break;
-    case('Suspended'):
 
-
-        $js_files[]='js/order_suspended.js.php';
-        $order_template='order_suspended.tpl';
-        break;
-    case('Unknown'):
-        $js_files[]='js/order_unknown.js.php';
-        $order_template='order_unknown.tpl';
-        break;
     case('Ready to Ship'):
         $js_files[]='js/order_ready_to_ship.js.php';
         $order_template='order_ready_to_ship.tpl';

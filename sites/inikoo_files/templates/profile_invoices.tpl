@@ -31,7 +31,7 @@
 
     <div style="width:340px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Invoice{/t} {$invoice->get('Invoice Public ID')}</h1>
-        <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$page->customer->id}</a></h2>
+        <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} ({$page->customer->id})</h2>
 	
 	
 	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><b>{$invoice->get('Invoice Main Contact Name')}</b><br/>{$invoice->get('Invoice XHTML Address')}</div>

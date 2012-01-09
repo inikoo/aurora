@@ -30,7 +30,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ,{key:"to_charge",label:"Charge", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
-		alert("ar_orders.php?tipo=transactions_invoice&tid=0&id="+Dom.get('invoice_key').value);
+		//alert("ar_orders.php?tipo=transactions_invoice&tid=0&id="+Dom.get('invoice_key').value);
 	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_invoice&tid=0&id="+Dom.get('invoice_key').value);
 	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.InvoiceDataSource.connXhrMode = "queueRequests";
