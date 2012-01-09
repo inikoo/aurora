@@ -34,31 +34,31 @@
 <tr><td>
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=contact_&index={$page->customer->get('Customer Main Address Key')}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=contact_&index={$page->customer->get('Customer Main Address Key')}'><img src="art/icons/edit.gif" alt=""> {t}Edit{/t}</button>
 </div>
 
 </td>
 <td>
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=add_address&type=billing_'><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
+<button onClick=window.location='profile.php?view=add_address&type=billing_'><img src="art/icons/add.png" alt=""> {t}Add{/t}</button>
 </div>
 
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=billing_&index={$page->customer->get('Customer Billing Address Key')}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=billing_&index={$page->customer->get('Customer Billing Address Key')}'><img src="art/icons/edit.gif" alt=""> {t}Edit{/t}</button>
 </div>
 
 </td>
 <td>
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=add_address&type=delivery_'><img src="art/icons/chart_pie.png" alt=""> {t}Add{/t}</button>
+<button onClick=window.location='profile.php?view=add_address&type=delivery_'><img src="art/icons/add.png" alt=""> {t}Add{/t}</button>
 </div>
 
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=delivery_&index={$page->customer->get('Customer Main Delivery Address Key')}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=delivery_&index={$page->customer->get('Customer Main Delivery Address Key')}'><img src="art/icons/edit.gif" alt=""> {t}Edit{/t}</button>
 </div>
 
 </td>
@@ -80,12 +80,12 @@
 
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=billing_&index={$address->id}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=billing_&index={$address->id}'><img src="art/icons/edit.gif" alt=""> {t}Edit{/t}</button>
 </div>
 
 
 <div class="buttons" style="float:left">
-<button class="negative" onClick="delete_address({$address->id},{literal}{{/literal}type:'billing',prefix:'billing_',Subject:'Customer',subject_key:{$page->customer->id}{literal}}{/literal})"><img src="art/icons/chart_pie.png" alt=""> {t}Remove{/t}</button>
+<button class="negative" onClick="delete_address({$address->id},{literal}{{/literal}type:'billing',prefix:'billing_',Subject:'Customer',subject_key:{$page->customer->id}{literal}}{/literal})"><img src="art/icons/cross.png" alt=""> {t}Remove{/t}</button>
 </div>
 
 
@@ -113,13 +113,13 @@
 
 
 <div class="buttons" style="float:left">
-<button onClick=window.location='profile.php?view=edit_address&type=delivery_&index={$address->id}'><img src="art/icons/chart_pie.png" alt=""> {t}Edit{/t}</button>
+<button onClick=window.location='profile.php?view=edit_address&type=delivery_&index={$address->id}'><img src="art/icons/edit.gif" alt=""> {t}Edit{/t}</button>
 </div>
 
 
 
 <div class="buttons" style="float:left">
-<button class="negative" onClick="delete_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$page->customer->id}{literal}}{/literal})"><img src="art/icons/chart_pie.png" alt=""> {t}Remove{/t}</button>
+<button class="negative" onClick="delete_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$page->customer->id}{literal}}{/literal})"><img src="art/icons/cross.png" alt=""> {t}Remove{/t}</button>
 </div>
 
 

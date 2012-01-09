@@ -167,11 +167,12 @@ $pdf->SetAuthor($store->data['Store Name']);
 $pdf->SetTitle($invoice->data['Invoice Public ID']);
 $pdf->SetSubject(_('Order Picking Aid'));
 
+//print_r($invoice);
+$header_text=$store->data['Store Name'];
 
-$header_text=$invoice->data['Invoice Customer Name'];
+$pdf->SetHeaderData(false, 0, $header_text, 'Invoice ');
 
-$pdf->SetHeaderData(false, 0, 'Invoice '.$invoice->data['Invoice Public ID'], $header_text);
-
+//print $invoice->data['Invoice Customer Name'].$invoice->data['Invoice Public ID'];
 // set header and footer fonts
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
 $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
@@ -208,25 +209,25 @@ $pdf->setCellPaddings(1,0.5,1,0.5);
 $pdf->AddPage();
 
 if ($invoice->get('Invoice Items Discount Amount')!=0)
-	$discount='<tr><td>Items Gross</td><td  >{$invoice->get(\'Items Gross Amount\')}</td></tr> 
-<tr><td   >Discounts</td><td  >{$invoice->get(\'Items Discount Amount\')}</td></tr>';
+	$discount="<tr><td>Items Gross</td><td  >{$invoice->get('Items Gross Amount')}</td></tr> 
+<tr><td   >Discounts</td><td  >{$invoice->get('Items Discount Amount')}</td></tr>";
 else
 	$discount='';
 
 if($invoice->get('Invoice Refund Net Amount')!=0){
-	$credit='<tr><td   >Credits</td><td  >{$invoice->get(\'Refund Net Amount\')}</td></tr>';
+	$credit="<tr><td   >Credits</td><td  >{$invoice->get('Refund Net Amount')}</td></tr>";
 }
 else
 	$credit='';
 
 if ($invoice->get('Invoice Charges Net Amount')!=0){
-	$charges=' <tr><td   >Charges</td><td  >{$invoice->get(\'Charges Net Amount\')}</td></tr>';
+	$charges=" <tr><td   >Charges</td><td  >{$invoice->get('Charges Net Amount')}</td></tr>";
 }
 else
 	$charges='';
 
 if ($invoice->get('Invoice Total Net Adjust Amount')!=0)
-	$total_net='<tr style="color:red"><td   >Adjust Net</td><td  >{$invoice->get(\'Total Net Adjust Amount\')}</td></tr>';
+	$total_net="<tr style=\"color:red\"><td>Adjust Net</td><td>{$invoice->get('Total Net Adjust Amount')}</td></tr>";
 else
 	$total_net='';
 
@@ -238,7 +239,7 @@ else
 
 
 if ($invoice->get('Invoice Total Tax Adjust Amount')!=0){
-	$total_tax='<tr  style="color:red"><td   >Adjust Tax</td><td  >{$invoice->get(\'Total Tax Adjust Amount\')}</td></tr>';
+	$total_tax="<tr  style=\"color:red\"><td   >Adjust Tax</td><td  >{$invoice->get('Total Tax Adjust Amount')}</td></tr>";
 }
 else
 	$total_tax='';
@@ -259,8 +260,8 @@ foreach($tax_data as $tax){
 
 $html = <<<EOD
 <div style="clear:both"></div>
-
-
+<h3>{$invoice->data['Invoice Customer Name']} ({$invoice->data['Invoice Public ID']})</h3>
+{$invoice->data['Invoice XHTML Address']}
 
 <div>
 <h2></h2>
@@ -301,8 +302,6 @@ $html = <<<EOD
 
 <tr><td width="150px">Invoice Date:</td><td width="150px">{$invoice->data['Invoice Date']}</td></tr>
 
-<tr><td>Order:</td><td >{$invoice->data['Invoice XHTML Orders']}</td></tr>
-<tr><td>Delivery Notes:</td><td >{$invoice->data['Invoice XHTML Delivery Notes']}</td></tr>
 <tr><td>Payment Method:</td><td >{$invoice->data['Invoice Main Payment Method']}</td></tr>
 <tr><td>Payment State:</td><td >{$invoice->get('Payment State')}</td></tr>
 
@@ -357,10 +356,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                  array('w'=>50,'txt'=>strip_tags($row['Product XHTML Short Description']) ,'border'=>'T','align'=>'L'),
                  array('w'=>60,'txt'=>$row['Invoice Quantity'] ,'border'=>'T','align'=>'R'),
                  array('w'=>20,'txt'=>'£'.$row['Invoice Transaction Gross Amount'],'border'=>'T','align'=>'R'),
-                 array('w'=>20,'txt'=>'£'.$row['Invoice Transaction Total Discount Amount'],'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>($row['Invoice Transaction Total Discount Amount']!=0?'£'.$row['Invoice Transaction Total Discount Amount'].' ('.percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount']).')':''),'border'=>'T','align'=>'R'),
                  array('w'=>20,'txt'=>'£'.$row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],'border'=>'T','align'=>'R')
-
-
              );
     $pdf->MultiRow($columns);
 

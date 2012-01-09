@@ -167,10 +167,10 @@ $pdf->SetAuthor($store->data['Store Name']);
 $pdf->SetTitle($dn->data['Delivery Note Key']);
 $pdf->SetSubject(_('Delivery Note'));
 
+$header_text=$store->data['Store Name'];
 
-$header_text=$dn->data['Delivery Note Customer Name'];
+$pdf->SetHeaderData(false, 0, $header_text, 'Delivery Note ');
 
-$pdf->SetHeaderData(false, 0, 'Delivery Note '.$dn->data['Delivery Note Key'], $header_text);
 
 // set header and footer fonts
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -215,7 +215,8 @@ else
 $html = <<<EOD
 <div style="clear:both"></div>
 
-
+<h3>{$dn->data['Delivery Note Customer Name']} ({$dn->data['Delivery Note Key']})</h3>
+{$dn->data['Delivery Note XHTML Ship To']}
 <div>
 <h2></h2>
 <div>
