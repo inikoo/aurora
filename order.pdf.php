@@ -10,12 +10,12 @@ $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit;
 }
-$dn=new DeliveryNote($id);
-if (!$dn->id) {
+$order=new Order($id);
+if (!$order->id) {
     exit;
 }
-
-$store=new Store($dn->data['Delivery Note Store Key']);
+//print_r($order);
+$store=new Store($order->data['Order Store Key']);
 
 
 require_once('external_libs/pdf/config/lang/eng.php');
@@ -111,7 +111,6 @@ class MYPDF extends TCPDF {
             $this->header_xobjid = -1;
         }
     }
-
     public function Footer() {
         // Position at 15 mm from bottom
         $this->SetY(-30);
@@ -211,14 +210,15 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor($store->data['Store Name']);
-$pdf->SetTitle($dn->data['Delivery Note Key']);
-$pdf->SetSubject(_('Delivery Note'));
+$pdf->SetTitle($order->data['Order Key']);
+$pdf->SetSubject(_('Order Picking Aid'));
 
+//print_r($invoice);
 $header_text=$store->data['Store Name'];
 
-$pdf->SetHeaderData(false, 0, $header_text, 'Delivery Note ');
-
+$pdf->SetHeaderData(false, 0, $header_text, 'Invoice ');
 $pdf->set_footer_var($store->id);
+//print $invoice->data['Invoice Customer Name'].$invoice->data['Invoice Public ID'];
 // set header and footer fonts
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
 $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
@@ -254,31 +254,101 @@ $pdf->setCellPaddings(1,0.5,1,0.5);
 // This method has several options, check the source code documentation for more information.
 $pdf->AddPage();
 
-if($dn->get('Delivery Note XHTML Invoices')!='')
-	$invoices="<tr><td>Invoices:</td><td >{$dn->get('Delivery Note XHTML Invoices')}</td></tr>";
-else
-	$invoices='';
+
+
+$net_amount='';
+if($order->get('Order Out of Stock Net Amount')!=0){
+$net_amount="<tr><td>Out of Stock (N)</td><td width=100 >-{$order->get('Out of Stock Net Amount')}</td></tr>";
+}
+
+$charged_amount='';
+if ($order->get('Order Invoiced Charges Amount')!=0){
+$charged_amount="<tr><td >Charges (N)</td><td width=100 >{$order->get('Invoiced Charges Amount')}</td></tr>";
+}
+
+$refund_amount='';
+if ($order->get('Order Invoiced Refund Net Amount')!=0){
+$refund_amount="<tr><td   ><i>Other Order Refunds</i></td><td width=100 >{$order->get('Invoiced Refund Net Amount')}</td></tr>";
+}
+
+
+$net_adjustment='';
+if ($order->get('Order Invoiced Total Net Adjust Amount')!=0){
+$net_adjustment="<tr ><td   >Adjusts (N)</td><td width=100 >{$order->get('Invoiced Total Net Adjust Amount')}</td></tr>";
+}
+
+
+
+$net_refund='';
+if ($order->get('Order Net Refund Amount')!=0){
+$net_refund="<tr><td >Net</td><td width=100 >{$order->get('Net Refund Amount')}</td></tr>";
+}
+
+
+
+$total_tax='';
+if ($order->get('Order Invoiced Total Tax Adjust Amount')!=0){
+$total_tax=" <tr style=\"color:red\"><td   >Tax Adjusts</td><td width=100 >{$order->get('Invoiced Total Tax Adjust Amount')}</td></tr>";
+}
+
 
 $html = <<<EOD
 <div style="clear:both"></div>
+<h3>{$order->data['Order Customer Name']} ({$order->data['Order Public ID']})</h3>
+{$order->data['Order XHTML Ship Tos']}
 
-<h3>{$dn->data['Delivery Note Customer Name']} ({$dn->data['Delivery Note Key']})</h3>
-{$dn->data['Delivery Note XHTML Ship To']}
+<table>
+<tr><td>
 <div>
 <h2></h2>
-<div>
-	 <table border=0 width="300px">
-	   
-	<tr><td width="150px">Creation Date:</td><td width="150px">{$dn->get('Date Created')}</td></tr>
-	<tr><td width="150px">Estimated Weight</td><td width="150px" >{$dn->get('Estimated Weight')}</td></tr>
+<div >
 
+	 <table>
+	   <tr><td>Order Date:</td><td>{$order->get('Date')}</td></tr>
+	   <tr><td>Invoices:</td><td>{$order->get('Order XHTML Invoices')}</td></tr>
+	   <tr><td>Delivery Notes:</td><td>{$order->get('Order XHTML Delivery Notes')}</td></tr>
 	 </table>
 
+
 </div>
 </div>
+</td><td>
+<div>
+<h2></h2>
+<div >
+	 <table>
+	  
+	   <tr><td   >Total Ordered (N)</td><td width=100 >{$order->get('Total Net Amount')}</td></tr>
+	    {$net_amount}
+	   
+	   <tr><td colspan=2 >Invoiced Amounts</td></tr>
+	   
+	  
+	   <tr><td   >Items (N)</td><td width=100 >{$order->get('Invoiced Items Amount')}</td></tr>
+	   
+	   <tr><td   >Shipping (N)</td><td width=100 >{$order->get('Invoiced Shipping Amount')}</td></tr>
+	   {$charged_amount}
+	   {$refund_amount}
+	   {$net_adjustment}
+           {$net_refund}
+	   
+	   
+	   
+	   
+	   <tr>
+	     
+	     <td   >Total (N)</td><td width=100 >{$order->get('Invoiced Total Net Amount')}</td>
+	   </tr>
+	   <tr><td   >Tax</td><td width=100 >{$order->get('Invoiced Total Tax Amount')}</td></tr>
+	    {$total_tax}
+	   <tr><td   >Total</td><td width=100 ><b>{$order->get('Invoiced Total Amount')}</b></td></tr>
+	   
+	 </table>
 
 
-
+</div>
+</div>
+</td></tr>
 
 
 
@@ -296,10 +366,14 @@ $pdf->writeHTML($html, true, false, true, false, '');
 // Set some content to print
 $pdf->ln(3);
 $columns=array(
-             array('w'=>30,'txt'=>_('Part SKU'),'border'=>'TB','align'=>'L'),
-             array('w'=>70,'txt'=>_('Used In'),'border'=>'TB','align'=>'L'),
-             array('w'=>70,'txt'=>_('Description'),'border'=>'TB','align'=>'R'),
-             array('w'=>20,'txt'=>_('Qty'),'border'=>'TB','align'=>'R')
+             array('w'=>20,'txt'=>_('Code'),'border'=>'TB','align'=>'L'),
+             array('w'=>50,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
+             array('w'=>60,'txt'=>_('Ordered'),'border'=>'TB','align'=>'R'),
+             array('w'=>20,'txt'=>_('Dispatched'),'border'=>'TB','align'=>'R'),
+             array('w'=>20,'txt'=>_('Amount'),'border'=>'TB','align'=>'R')
+
+
+
          );
 
 $pdf->MultiRow($columns);
@@ -307,7 +381,10 @@ $pdf->MultiRow($columns);
 
 
 
-$sql=sprintf("select `Required`,`Part XHTML Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d", $dn->id);
+$sql=sprintf("select O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
+         from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)
+         left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
+         left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`) where O.`Order Key`=%d ", $order->id);
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -316,12 +393,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
     //$sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
-                 array('w'=>30,'txt'=>'SKU'.$row['Part SKU'],'border'=>'T','align'=>'L'),
-                 array('w'=>70,'txt'=>strip_tags($row['Part XHTML Currently Used In']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>70,'txt'=>strip_tags($row['Part XHTML Description']) ,'border'=>'T','align'=>'R'),
-                 array('w'=>20,'txt'=>$row['Required'],'border'=>'T','align'=>'R')
-
-
+                 array('w'=>20,'txt'=>$row['Order Transaction Fact Key'],'border'=>'T','align'=>'L'),
+                 array('w'=>55,'txt'=>strip_tags($row['Product XHTML Short Description']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>55,'txt'=>$row['Order Quantity'] ,'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>$row['Shipped Quantity'],'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>'£'.$row['amount'],'border'=>'T','align'=>'R')
+                 
              );
     $pdf->MultiRow($columns);
 
@@ -333,6 +410,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 $columns=array(array('w'=>0,'txt'=>'','border'=>'T','align'=>'L'));
  $pdf->MultiRow($columns);
+
+
 $sql=sprintf("select * from `Store Dimension` where `Store Key`=%d", $store->id);
 $result=mysql_query($sql);
 $row=mysql_fetch_assoc($result);
@@ -341,6 +420,7 @@ $address='';
 $store_address=explode(",",$row['Store Address']);
 foreach($store_address as $ad)
 	$address.=$ad.",<br/>";
+
 
    $response= array('state'=>200);
 $tbl = <<<EOD
@@ -356,11 +436,27 @@ $tbl = <<<EOD
 		<td colspan="5">Please notify us immediately of any discrepancies of breakages</td>
 	</tr>
 
-
 </table>
 EOD;
 
+
 $pdf->writeHTML($tbl, true, false, false, false, '');
+
+// set JPEG quality
+$pdf->setJPEGQuality(75);
+
+// Image method signature:
+// Image($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false)
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+$str = 'This is an encoded string';
+
+// Example of Image from data stream ('PHP rules')
+
+
+// The '@' character is used to indicate that follows an image data stream and not an image file name
+//$pdf->Image('@'.$imgdata);
+
 // Print text using writeHTMLCell()
 //$pdf->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
 
@@ -368,7 +464,7 @@ $pdf->writeHTML($tbl, true, false, false, false, '');
 
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
-$pdf->Output($dn->data['Delivery Note File As'], 'I');
+$pdf->Output($order->data['Order File As'], 'I');
 
 
 
