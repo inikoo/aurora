@@ -17,7 +17,9 @@ $css_files=array(
 		 'text_editor.css',
 		 'common.css',
 		 'css/container.css',
-		 'table.css'
+		 'table.css',
+		'button.css',
+		'theme.css.php'
 		 );
 $js_files=array(
 
@@ -98,6 +100,6 @@ $smarty->assign('parent','orders');
 $smarty->assign('title',_('Delivery Note').' '.$dn->get('Delivery Note Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-print $template;
+
 $smarty->display($template);
 ?>

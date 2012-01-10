@@ -134,6 +134,11 @@ elseif($mode=='code') {
 
 $product= new product($mode,$tag);
 
+
+echo $product->get('Product Main Image');
+
+//exit;
+
 if ($user->data['User Type']=='Supplier') {
     $data=array_pop($product->get_part_list());
     header('Location: part.php?id='.$data['Part SKU']);

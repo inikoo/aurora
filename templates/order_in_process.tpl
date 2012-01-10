@@ -7,10 +7,10 @@
   <input type="hidden" value="{$order->get('Order Current Dispatch State')}" id="dispatch_state"  />
 
  <input type="hidden" value="{$products_display_type}" id="products_display_type"  />
-<div  class="branch"> 
+<div  class="branch "> 
 <span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span>
 </div>
- 
+
  <div class="top_page_menu" style="border:none">
  
   <div class="buttons">
@@ -20,7 +20,7 @@
          <button {if $order->get('Order Current Dispatch State')=='In Process'}style="display:none"{/if} id="modify_order">{t}Modify Order{/t}</button>
 
      <button id="cancel" class="negative">{t}Cancel Order{/t}</button>
-   
+   <button  onclick="window.location='order.pdf.php?id={$order->id}'">PDF Order</button>
 </div>
 <div style="clear:both"></div>
 </div>
