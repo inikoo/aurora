@@ -95,7 +95,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     //   print $sql;
 
     $tipo=$row['tipo'];
-    print $row['product_id']." $code     $tipo           \r";
+    print $row['product_id']." $code     $tipo     \r";
     
     $qty=$row['quantity'];
     $notes=$row['notes'];

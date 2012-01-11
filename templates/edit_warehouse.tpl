@@ -1,6 +1,27 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='locations_navigation.tpl'}
+<div class="branch"> 
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Locations{/t}</span>
+</div>
+
+
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+       
+        <button  onclick="window.location='warehouse.php?id={$warehouse->id}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
+                <button  onclick="window.location='new_warehouse_area.php?warehouse_id={$warehouse->id}'" ><img src="art/icons/add.png" alt=""> {t}Add Area{/t}</button>
+        <button  onclick="window.location='new_location.php?warehouse_id={$warehouse->id}'" ><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button>
+
+        
+       
+    </div>
+    <div class="buttons" style="float:left">
+      
+
+ </div>
+    <div style="clear:both"></div>
+</div>
 
 
 
@@ -10,19 +31,19 @@
 <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
     <li> <span class="item {if $edit=='areas'}selected{/if}"  id="areas">  <span> {t}Areas{/t}</span></span></li>
-    <li> <span class="item {if $edit=='shelfs'}selected{/if}"  id="shelfs">  <span> {t}Shelfs{/t}</span></span></li>
+    <li style="display:none"> <span class="item {if $edit=='shelfs'}selected{/if}"  id="shelfs">  <span> {t}Shelfs{/t}</span></span></li>
     <li> <span class="item {if $edit=='locations'}selected{/if}"  id="locations">  <span> {t}Locations{/t}</span></span></li>
-	<li> <span class="item {if $edit=='shelf_types'}selected{/if}"  id="shelf_types">  <span> {t}Shelf Types{/t}</span></span></li>
-	<li> <span class="item {if $edit=='location_types'}selected{/if}"  id="location_types">  <span> {t}Location Types{/t}</span></span></li>
+	<li style="display:none"> <span class="item {if $edit=='shelf_types'}selected{/if}"  id="shelf_types">  <span> {t}Shelf Types{/t}</span></span></li>
+	<li style="display:none"> <span class="item {if $edit=='location_types'}selected{/if}"  id="location_types">  <span> {t}Location Types{/t}</span></span></li>
 </ul>
 <div class="tabbed_container" > 
    <div id="description_block" style="{if $edit!='description'}display:none{/if}" >
-														   
-     <div style="float:right">
-	<div id="new_warehouse_area_block" style="font-size:80%;float:left;padding:10px 15px;border:1px solid #ddd;width:200px;margin-bottom:15px;margin-left:10px;display:none">
-     </div>
-	<span class="save" id="description_save" onclick="save_description_data()">{t}Save{/t}</span>
-	<span id="description_reset" class="undo" onclick="reset_description_data()">{t}Cancel{/t}</span>
+		<div id="new_warehouse_area_block" style="font-size:80%;float:left;padding:10px 15px;border:1px solid #ddd;width:200px;margin-bottom:15px;margin-left:10px;display:none">
+     </div>												   
+     <div class="buttons">
+	
+	<button class="positive" id="description_save" onclick="save_description_data()">{t}Save{/t}</button>
+	<button id="description_reset" class="negative" onclick="reset_description_data()">{t}Cancel{/t}</button>
 	</div>
 
 	

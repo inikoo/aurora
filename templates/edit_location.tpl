@@ -1,7 +1,27 @@
 {include file='header.tpl'}
 <div id="bd" >
- {include file='locations_navigation.tpl'}`
+ {include file='locations_navigation.tpl'}
+
+<div class="branch"> 
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if}<a href="warehouse.php?id={$location->get('Location Warehouse Key')}">{t}Locations{/t}</a>  &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')} {t}Area{/t}</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {$location->get('Location Code')}</span>
+</div>
+
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+     
+   
+        <button  onclick="window.location='location.php?id={$location->id}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
+         
+    </div>
+    <div class="buttons" style="float:left">
+
+
+ </div>
+    <div style="clear:both"></div>
+</div>
 <input type="hidden" id="location_key" value="{$location->id}"/>
+
+
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Location{/t}: <span id="title_name">{$location->get('Location Code')}</span></h1>
 </div>

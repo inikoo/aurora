@@ -11,28 +11,18 @@ else
 $warehouse=new warehouse($wid);
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		
-		 'button.css',
-		 'css/container.css'
+	             $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'css/container.css',
+               'button.css',
+               'table.css',
+               'css/edit',
+               'theme.css.php'
 		 );
 
-if($common)
-{
-array_push($css_files, 'themes_css/'.$common);   
-
-array_push($css_files, 'themes_css/'.$row['Themes css2']); 
-}    
-
-else{
-array_push($css_files, 'common.css'); 
-
-array_push($css_files, 'table.css');
-}
 
 
 
@@ -54,7 +44,9 @@ $js_files=array(
 		);
 
 
-
+$smarty->assign('warehouse','warehouse');
+$smarty->assign('search_label',_('Locations'));
+$smarty->assign('search_scope','locations');
 
 $smarty->assign('parent','warehouses');
 $smarty->assign('title', _('New Warehouse Area'));
