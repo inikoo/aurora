@@ -2,13 +2,34 @@
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
- <div style="clear:left;"> 
- <span class="branch" >{t}Warehouse{/t}: <a  href="warehouse.php?id={$warehouse_area->get('Warehouse Area Warehouse Key')}">{$warehouse_area->get('Warehouse Name')}({$warehouse_area->get('Warehouse Code')})</a></span>
+ <div class="branch" > 
+ 
+ <span >
+ {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$warehouse_area->get('Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if} <a href="warehouse.php?id={$warehouse_area->get('Warehouse Key')}">{t}Locations{/t}</a>  &rarr; {$warehouse_area->get('Warehouse Area Name')} 
+ </span>
+
+</div>
+ 
+ <div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_warehouse_area.php?id={$warehouse_area->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Warehouse Area{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+              <button  onclick="  window.location='warehouse.php?id={$warehouse_area->get('Warehouse Key')}'" ><img src="art/icons/house.png" alt=""> {t}Locations{/t}</button>
+
+
+ </div>
+    <div style="clear:both"></div>
+</div>
+ 
+ 
  <div style="clear:left;margin:0 0px">
     <h1>{t}Warehouse Area{/t}: {$warehouse_area->get('Warehouse Area Name')} ({$warehouse_area->get('Warehouse Area Code')})</h1>
   </div>
   
-</div>  
+
   </div>
 
 

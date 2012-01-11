@@ -91,10 +91,10 @@ validate_scope_metadata={
 };
 
 
+  init_search('locations');
 
 
  
-init_search('locations');
 
  
 //Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px',close:false,visible:false,underlay: "none",draggable:false});

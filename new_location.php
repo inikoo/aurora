@@ -14,25 +14,20 @@ $smarty->assign('box_layout','yui-t0');
 $warehouse=new warehouse($_SESSION['state']['warehouse']['id']);
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		
-		 'button.css',
-		 'css/container.css'
+	             $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'css/container.css',
+               'button.css',
+               'table.css',
+               'css/edit',
+               'theme.css.php'
 		 );
 
-$css_files[]='theme.css.php';
-
-$general_options_list=array();
-
-$general_options_list[]=array('tipo'=>'url','url'=>'http://localhost/kaktus/edit_warehouse.php','label'=>_('Back'));
 
 
-$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
 $js_files=array(

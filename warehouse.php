@@ -36,9 +36,10 @@ get_header_info($user,$smarty);
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
 
+
+
+
 //$smarty->assign('general_options_list',$general_options_list);
-
-
 
 
 
