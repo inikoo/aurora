@@ -132,18 +132,11 @@ newvalue=r.newvalue;
 
 function change_block(e){
    
-     
-     
-     
      Dom.setStyle(['d_products','d_details','d_discounts','d_pictures','d_web'],'display','none');
-     
-	
-	 Dom.get('d_'+this.id).style.display='';
+ 	 Dom.get('d_'+this.id).style.display='';
 	 Dom.removeClass(['products','details','discounts','pictures','web'],'selected');
 	 Dom.addClass(this, 'selected');
-	 //alert('ar_sessions.php?tipo=update&keys=family-edit&value='+this.id );
 	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-editing&value='+this.id ,{});
-
    
 }
 

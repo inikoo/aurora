@@ -2,6 +2,8 @@
 <div id="bd" style="padding:0px">
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
+<input type="hidden" id="warehouse_area_key" value="{$warehouse_area->id}"   />
+
  <div class="branch" > 
  
  <span >
@@ -35,9 +37,8 @@
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
-        <li> <span class="item {if $view=='locations'}selected{/if}"  id="locations">  <span> {t}Locations{/t}</span></span></li>
-
-    <li> <span class="item {if $view=='parts'}selected{/if}"  id="parts">  <span> {t}Parts{/t}</span></span></li>
+    <li> <span class="item {if $view=='locations'}selected{/if}"  id="locations">  <span> {t}Locations{/t}</span></span></li>
+    
 </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
@@ -56,11 +57,8 @@
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
-<div id="block_parts" style="{if $view!='parts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
-   
 
-</div>
 
 </div>
 <div id="filtermenu0" class="yuimenu">

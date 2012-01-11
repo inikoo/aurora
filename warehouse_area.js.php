@@ -1,8 +1,20 @@
 <?php
 include_once('common.php');
-print "var warehouse_area_key="
-
 ?>
+
+
+ var Dom   = YAHOO.util.Dom;
+
+
+function change_block(e){
+   
+     Dom.setStyle(['block_details','block_locations'],'display','none');
+ 	 Dom.get('block_'+this.id).style.display='';
+	 Dom.removeClass(['locations','details'],'selected');
+	 Dom.addClass(this, 'selected');
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse_area-view&value='+this.id ,{});
+   
+}
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -19,7 +31,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"parts", label:"<?php echo _('Products')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 	    //?tipo=locations&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=locations&parent=warehouse_area&parent_key="+warehouse_area_key);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=locations&parent=warehouse_area&parent_key="+Dom.get('warehouse_area_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -78,7 +90,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
  function init(){
- var Dom   = YAHOO.util.Dom;
+
 
   init_search('locations');
 
@@ -102,66 +114,11 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
     });
 
- var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
 
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
-    });
+  var ids = ["details","locations"]; 
+    YAHOO.util.Event.addListener(ids, "click", change_block);
 
 
-YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu1", { context:["filter_name1","tr", "bl"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("paginator_info1", "click", oMenu.show, null, oMenu);
-    });
-
-
-
-
-
-
-  var change_view=function(e){
-      var tipo=this.id;
-      var table=tables['table0'];
-      old_view=table.view;
-      
-      if(tipo=='general'){
-	  table.hideColumn('email');
-	  table.hideColumn('tel');
-	  table.showColumn('location');
-	  table.showColumn('last_order');
-	  table.showColumn('orders');
-	  table.showColumn('super_total');
-	  Dom.get('contact').className='';
-	  Dom.get('general').className='selected';
-      }else{
-	  table.showColumn('email');
-	  table.showColumn('tel');
-	  table.hideColumn('location');
-	  table.hideColumn('last_order');
-	  table.hideColumn('orders');
-	  table.hideColumn('super_total');
-
-
-      }
-
-
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=locations-view&value='+escape(tipo));
-  }
-
-
-
-YAHOO.util.Event.addListener('but_show_details', "click",show_details,'locations');
-var ids=['general','contact'];
-YAHOO.util.Event.addListener(ids, "click",change_view);
-//YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
 
 
 
