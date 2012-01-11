@@ -37,6 +37,9 @@ while($row=mysql_fetch_assoc($result)){
 
 print 'var '.$vars.';';
 
+
+for($i=1; $i<=5; $i++)
+print 'var dialog_badge_info_'.$i.';';
 ?>
     
 
@@ -109,7 +112,13 @@ function show_edit_telephone(){
 	dialog_quick_edit_Customer_Telephone.show();
 }
 
+function show_badge_info(e, no){
+	region1 = Dom.getRegion(e); 
+	var pos =[region1.right,region1.top]
 
+Dom.setXY(no, pos);
+eval(no).show();
+	}
 
 <?php
 foreach($all_fields as $field){
@@ -329,6 +338,12 @@ print 'dialog_quick_edit_Customer_'.$field.' = new YAHOO.widget.Dialog("dialog_q
 print "\n";
 }
 
+
+for($i=1; $i<=5; $i++){
+print 'dialog_badge_info_'.$i.' = new YAHOO.widget.Dialog("dialog_badge_info_'.$i.'", {visible : false,close:true,underlay: "none",draggable:false});dialog_badge_info_'.$i.'.render();';	
+print "\n";
+}
+
 ?>
 
 
@@ -344,6 +359,12 @@ foreach($all_fields as $field){
 print 'Event.addListener(\'close_quick_edit_'.$field.'\', "click", dialog_quick_edit_Customer_'.$field.'.hide,dialog_quick_edit_Customer_'.$field.' , true);';
 print "\n";
 }
+
+for($i=1; $i<=5; $i++){
+print 'Event.addListener(\'close_badge_info_'.$i.'\', "click", dialog_badge_info_'.$i.'.hide,dialog_badge_info_'.$i.' , true);';
+print "\n";
+}
+
 
 ?>
 
@@ -378,6 +399,8 @@ print "\n";
 
 ?>
 
+//Event.addListener('show_edit_telephone', "click", show_badge_info);
+//badge_1
 
 }
 Event.onDOMReady(init);

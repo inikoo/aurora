@@ -23,10 +23,11 @@
 
 <div id="contact_block" {if $view!='contact'}style="display:none"{/if}>
 <div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
-<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px">Thank you for trading with us!</div>
+<div style="float:left;;xborder:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px"> <img src="art/siluet.jpg" style="height:100px"> </div>
 
 {include file='customer_badges.tpl' customer=$page->customer}
 
+<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px;margin-left:20px">Thank you for trading with us!</div>
 <div style="clear:both"></div>
 </div>
 
@@ -153,8 +154,25 @@
 	 </tr>
 	 </tbody>
 
+	<tr>
+	 <td class="label" style="width:200px">{t}Follower on Twitter{/t}:</td>
+	 <td>
+	   <div  class="buttons">
+	   <button class="{if $page->customer->get('Customer Follower On Twitter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Follower On Twitter','Yes')" id="Customer Follower On Twitter_Yes">{t}Yes{/t}</button>
+	   <button class="{if $page->customer->get('Customer Follower On Twitter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Follower On Twitter','No')" id="Customer Follower On Twitter_No">{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
 
-
+	<tr>
+	 <td class="label" style="width:200px">{t}Friend on Facebook{/t}:</td>
+	 <td>
+	   <div  class="buttons">
+	   <button class="{if $page->customer->get('Customer Friend On Facebook')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Friend On Facebook','Yes')" id="Customer Friend On Facebook_Yes">{t}Yes{/t}</button>
+	   <button class="{if $page->customer->get('Customer Friend On Facebook')=='No'}selected{/if} negative" onclick="save_comunications('Customer Friend On Facebook','No')" id="Customer Friend On Facebook_No">{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
 
 	</table>
 	
@@ -339,3 +357,24 @@ bla bla bla
 {/if}
 
 {/foreach}
+
+
+{section name=foo loop=5}
+<div id="dialog_badge_info_{$smarty.section.foo.iteration}" style="padding:10px">
+	<table style="margin:10px">
+	
+	<tr>
+	<td>{$page->customer->badge_info($smarty.section.foo.iteration)}</td>
+	<td></td>
+	</tr>
+	<tr>
+	<td>
+	<div class="buttons" style="margin-top:10px">
+		<button class="negative" id="close_badge_info_{$smarty.section.foo.iteration}">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
+	</table>
+
+</div>
+{/section}

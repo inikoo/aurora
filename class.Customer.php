@@ -5972,6 +5972,44 @@ class Customer extends DB_Table {
         
     }
 
+function badge_info($badge_key) {
+
+	$badge_data=array(
+			1=>array(
+			'Badge Image On'=>'art/gold.jpg',
+			'Badge Image Off'=>'art/gold_off.jpg',
+			'Badge Code'=>'gold',
+			'Badge Description'=>'gold Info'
+			),
+			2=>array(
+			'Badge Image On'=>'art/freedom.jpg',
+			'Badge Image Off'=>'art/freedom_off.jpg',
+			'Badge Code'=>'freedom',
+			'Badge Description'=>'Freedom Info'	
+			),
+			3=>array(
+			'Badge Image On'=>'art/profile.jpg',
+			'Badge Image Off'=>'art/profile_off.jpg',
+			'Badge Code'=>'profile',
+			'Badge Description'=>'Profile Info'
+			),
+			4=>array(
+			'Badge Image On'=>'art/connected.jpg',
+			'Badge Image Off'=>'art/connected_off.jpg',
+			'Badge Code'=>'connected',
+			'Badge Description'=>'Conencted Info'
+			),
+			5=>array(
+			'Badge Image On'=>'art/loyalty.jpg',
+			'Badge Image Off'=>'art/loyalty_off.jpg',
+			'Badge Code'=>'loyalty',
+			'Badge Description'=>'Loyality Info'
+			)
+
+		);
+	return $badge_data[$badge_key]['Badge Description'];
+}
+
 
     function display_badge($badge_key) {
 
@@ -5979,27 +6017,32 @@ class Customer extends DB_Table {
                         1=>array(
                               'Badge Image On'=>'art/gold.jpg',
                               'Badge Image Off'=>'art/gold_off.jpg',
-                              'Badge Code'=>'gold'
+                              'Badge Code'=>'gold',
+			      'Badge Description'=>'gold Info'
                           ),
                         2=>array(
                               'Badge Image On'=>'art/freedom.jpg',
                               'Badge Image Off'=>'art/freedom_off.jpg',
-                              'Badge Code'=>'freedom'
+                              'Badge Code'=>'freedom',
+			      'Badge Description'=>'Freedom Info'	
                           ),
                         3=>array(
                               'Badge Image On'=>'art/profile.jpg',
                               'Badge Image Off'=>'art/profile_off.jpg',
-                              'Badge Code'=>'profile'
+                              'Badge Code'=>'profile',
+			      'Badge Description'=>'Profile Info'
                           ),
                           4=>array(
                               'Badge Image On'=>'art/connected.jpg',
                               'Badge Image Off'=>'art/connected_off.jpg',
-                              'Badge Code'=>'connected'
+                              'Badge Code'=>'connected',
+			      'Badge Description'=>'Conencted Info'
                           ),
                            5=>array(
                               'Badge Image On'=>'art/loyalty.jpg',
                               'Badge Image Off'=>'art/loyalty_off.jpg',
-                              'Badge Code'=>'loyalty'
+                              'Badge Code'=>'loyalty',
+			      'Badge Description'=>'Loyality Info'
                           )
 
                     );

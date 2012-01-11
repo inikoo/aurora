@@ -1,7 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div id="table_type" class="table_type">
- <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="delivery_notes" ><a href="delivery_notes.pdf.php?id={$dn->get('Delivery Note Key')}">PDF Delivery Note</a></span>
+
+
+<div  class="buttons">
+ <button  onclick="window.location='delivery_notes.pdf.php?id={$dn->id}'">PDF Delivery Note</button>
 </div>
 
      <div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
