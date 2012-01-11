@@ -541,12 +541,11 @@ function validate_scope_new(branch) {
         }
     }
 	
-	if (errors) {
+    if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
         Dom.removeClass('save_new_'+branch,'disabled');
     }
-
 }
 
 
@@ -660,6 +659,7 @@ function client_validation(branch,items,query) {
 function validate_general_new(branch,items,query) {
 	
     var data= validate_scope_data[branch][items];
+    //alert(data)
     if (''!=trim(query.toLowerCase())    ) {
         validate_scope_data[branch][items].changed=true;
 
@@ -851,7 +851,7 @@ return;
 //alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
-               
+           
                     
                         validate_scope_data[branch][r.key].changed=false;
                         validate_scope_data[branch][r.key].validated=true;

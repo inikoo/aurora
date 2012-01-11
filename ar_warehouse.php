@@ -64,13 +64,68 @@ case('warehouses'):
 case('part_categories'):
     list_part_categories();
     break;
-
+case('is_warehouse_code'):
+    $data=prepare_values($_REQUEST,array(
+                             'warehouse_code'=>array('type'=>'string'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_warehouse_code($data);
+    break;
 
 default:
 
     $response=array('state'=>404,'resp'=>_('Operation not found ha ha'));
     echo json_encode($response);
 
+
+}
+
+function is_warehouse_code($data) {
+    if (!isset($data['query']) or !isset($data['warehouse_code'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $warehouse_code=$data['warehouse_code'];
+
+    $sql=sprintf("select * from `Warehouse Dimension` where  `Warehouse Code`=%s"
+                 ,prepare_mysql($data['query'])
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another warehouse (<a href="warehouse.php?pid=%d">%s</a>) already has this name'
+                     ,$data['Warehouse Key']
+                     ,$data['Warehouse Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
 
 }
 
