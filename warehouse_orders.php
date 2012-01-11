@@ -12,41 +12,9 @@ if (!  ($user->can_view('orders') or $user->data['User Type']=='Warehouse'   ) )
 
 
 
-$q='';
-if (isset($_REQUEST['search']) and $_REQUEST['search']!=''  ) {
-    // SEARCH!!!!!!!!!!!!
-    $q=$_REQUEST['search'];
-    //  print "$q";
-    $sql=sprintf("select `Order Key` as id from `Order Dimension` where `Order Public ID`='%s' ",addslashes($q));
-    $result=mysql_query($sql);
-    if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        header('Location: order.php?id='. $found['id']);
-        exit;
-    }
-    mysql_free_result($result);
-    $_SESSION['tables']['order_list'][5]='public_id';
-    $_SESSION['tables']['order_list'][6]=addslashes($q);
-
-
-}
-
-
-
-$sql="select count(*) as numberof from `Order Dimension`";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC))
-    $orders=$row['numberof'];
-else
-    exit('Internal Error');
-mysql_free_result($result);
-
 
 
 $smarty->assign('view','warehouse_orders');
-$smarty->assign('from',$_SESSION['state']['orders']['from']);
-$smarty->assign('to',$_SESSION['state']['orders']['to']);
-
-
 
 
 $css_files=array(
@@ -83,7 +51,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','orders');
+$smarty->assign('parent','parts');
 $smarty->assign('title', _('Warehouse Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
