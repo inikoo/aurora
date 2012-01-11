@@ -135,7 +135,15 @@ case('locations'):
   list_locations();
   break;
 
+case('edit_warehouse'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
 
+    edit_warehouse($data);
+    break;
  default:
 
    $response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -176,6 +184,42 @@ exit;
 
 }
 
+function edit_warehouse($data) {
+    //print $data['newvalue'];
+
+
+    $warehouse=new warehouse($data['id']);
+    global $editor;
+    $warehouse->editor=$editor;
+
+    $translator=array(
+                    'warehouse_name'=>'Warehouse Name',
+                    'warehouse_code'=>'Warehouse Code'
+
+                );
+
+    foreach($data as $key=>$value) {
+        if (array_key_exists($key, $translator)) {
+            $data[$translator[$key]]=$value;
+	    print $translator[$key].":".$value;
+        }
+    }
+
+
+
+    $warehouse->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+    if ($warehouse->updated) {
+if($data['key']=='Warehouse Code')
+	$data['key']='warehouse_code';
+if($data['key']=='Warehouse Name')
+	$data['key']='warehouse_name';
+        $response= array('state'=>200,'newvalue'=>$warehouse->new_value,'key'=>$data['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$warehouse->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+}
 
 function part_location_update_can_pick($data){
  global $editor;

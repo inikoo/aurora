@@ -5,7 +5,6 @@ $location_type=array('Picking'=>_('Picking'),'Storing'=>_('Storing'),'Loading'=>
 
 
 
-
 $l='';$ln='';
 foreach($location_type as $key=>$value){
     $l.=",'$value'";
@@ -18,6 +17,7 @@ print 'var location_type_options=['.$l."];\n";
 print 'var location_type_name={'.$ln."};\n";
 
 ?>
+var warehouse_code='<?php echo $_REQUEST['name']?>';
 var editing='<?php echo $_SESSION['state']['warehouse']['edit']?>';
 
    var Dom   = YAHOO.util.Dom;
@@ -336,6 +336,8 @@ function get_description_data(){
     var str = '&key='+key+'&code='+code+'&name='+name;
     return str;
 }
+
+
 function save_description_data(){
     str = get_description_data();
     //var json_value = YAHOO.lang.JSON.stringify(str);
@@ -361,6 +363,8 @@ function save_description_data(){
 	    }
 	});
 }
+
+
 function show_add_area_dialog(){
 Dom.get('new_warehouse_area_block').style.display='';
 Dom.get('new_warehouse_area_messages').style.display='';
@@ -479,6 +483,20 @@ record_index=Dom.get('record_index').value;
 
 }
 
+function validate_warehouse_code(query){
+warehouse_code=query
+	//alert(query)
+	validate_general('warehouse','warehouse_code',unescape(query));
+}
+function validate_warehouse_name(query){
+	//alert(query)
+	validate_general('warehouse','warehouse_name',unescape(query));
+}
+
+function save_edit_warehouse(){
+ save_edit_general('warehouse');
+}
+
 
  function init(){
      
@@ -538,6 +556,48 @@ record_index=Dom.get('record_index').value;
 
 
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
+
+
+ validate_scope_metadata={
+     'warehouse':{'type':'new','ar_file':'ar_edit_warehouse.php','key_name':'id','key':<?php echo $_REQUEST['id']?>}
+  //ar_edit_warehouse.php?tipo=save_description'+str;
+};
+var warehouse_code_validated=false;
+if(Dom.get('warehouse_code').value!=''){
+warehouse_code_validated=true;
+}
+
+
+ validate_scope_data={
+ 
+ 	'warehouse':{
+	'warehouse_name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Warehouse Name'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Warehouse Name')?>'}],'name':'warehouse_name'
+		}
+	
+	,'warehouse_code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Warehouse Code'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Warehouse Code')?>'}]
+		 ,'name':'warehouse_code','ar':'find','ar_request':'ar_warehouse.php?tipo=is_warehouse_code&warehouse_code='+warehouse_code+'&query='}		 
+	}
+ };
+
+var warehouse_code_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_code);
+    warehouse_code_oACDS.queryMatchContains = true;
+    var warehouse_code_oAutoComp = new YAHOO.widget.AutoComplete("warehouse_code","warehouse_code_Container", warehouse_code_oACDS);
+    warehouse_code_oAutoComp.minQueryLength = 0; 
+    warehouse_code_oAutoComp.queryDelay = 0.1;
+
+
+var warehouse_name_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_name);
+    warehouse_name_oACDS.queryMatchContains = true;
+    var warehouse_name_oAutoComp = new YAHOO.widget.AutoComplete("warehouse_name","warehouse_name_Container", warehouse_name_oACDS);
+    warehouse_name_oAutoComp.minQueryLength = 0; 
+    warehouse_name_oAutoComp.queryDelay = 0.1;
+
+
+
+
+
  }
 
 YAHOO.util.Event.onDOMReady(init);
@@ -547,6 +607,8 @@ function warehouse_area_to_selected(sType,aArgs){
  var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
 
 	   Dom.get("area_key").value = oData[1];
+
+
 
 }
 
