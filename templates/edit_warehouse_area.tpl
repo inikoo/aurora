@@ -40,65 +40,39 @@
      </div>												   
      <div class="buttons">
 	
-	<button class="positive" id="description_save" onclick="save_description_data()">{t}Save{/t}</button>
-	<button id="description_reset" class="negative" onclick="reset_description_data()">{t}Cancel{/t}</button>
+	<button class="positive" id="save_new_warehouse_area" onclick="save_edit_warehouse_area()">{t}Save{/t}</button>
+	<button id="description_reset" class="negative" onclick="reset_description_data_area()">{t}Cancel{/t}</button>
 	</div>
 
-	
       <table style="margin:0;" class="edit" border=0>
-	<tr><td class="label">{t}Warehouse Code{/t}:</td><td>
-	      <input  
-		 id="warehouse_code"
-		 onKeyUp="changed(this)" 
-		 onMouseUp="changed(this)"  
-		 onChange="changed(this)"  
-		 name="code" 
-		 changed=0 
-		 type='text' 
-		 class='text' 
-		 style="width:15em" 
-		 MAXLENGTH="16" 
-		 value="{$warehouse->get('Warehouse Code')}" 
-		 ovalue="{$warehouse->get('Warehouse Code')}"  
-		 />
-	    </td>
-	  </tr>
-	  <tr><td class="label">{t}Warehouse Name{/t}:</td><td>
-	      <input   
-		 id="warehouse_name"
-		 onKeyUp="changed(this)"    
-		 onMouseUp="changed(this)"  
-		 onChange="changed(this)"  
-		 name="name" 
-		 changed=0 
-		 type='text'  
-		 MAXLENGTH="255" 
-		 style="width:16em"
-		 class='text'
-		 value="{$warehouse->get('Warehouse Name')}"
-		     ovalue="{$warehouse->get('Warehouse Name')}"
-		 />
-	    </td>
-	  </tr>
-	<tr><td class="label"></td><td>
-	      <input
-		 id="warehouse_key"
-		 onKeyUp="changed(this)"
-		 onMouseUp="changed(this)"
-		 onChange="changed(this)"
-		 name="key"
-		 changed=0
-		 type='hidden'
-		 MAXLENGTH="255"
-		 style="width:16em"
-		 class='text'
-		readonly="readonly"
-		 value="{$warehouse->get('Warehouse Key')}"
-		     ovalue="{$warehouse->get('Warehouse Key')}"
-		 />
-	    </td>
-	  </tr>
+	<tr>
+	<td class="label">{t}Warehouse Area Code{/t}:</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="warehouse_area_code" value="{$warehouse_area->get('Warehouse Area Code')}" ovalue="{$warehouse_area->get('Warehouse Area Code')}" valid="0">
+	<div id="warehouse_area_code_Container"  ></div>
+	</div>
+	</td><td>
+	<span id="warehouse_area_code_msg" ></span>	
+	</td>
+
+	</tr>
+
+	<tr>
+	<td class="label">{t}Warehouse Area Name{/t}:</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="warehouse_area_name" value="{$warehouse_area->get('Warehouse Area Name')}" ovalue="{$warehouse_area->get('Warehouse Area Name')}" valid="0">
+	<div id="warehouse_area_name_Container"  ></div>
+	</div>
+	</td><td>
+	<span id="warehouse_area_name_msg" ></span>	
+	</td>
+
+	</tr>
+
 	</table>
+
   </div>
    <div id="locations_block" style="{if $edit!='locations'}display:none{/if}" >
  

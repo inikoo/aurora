@@ -540,7 +540,7 @@ function validate_scope_new(branch) {
             errors=true;
         }
     }
-	
+
     if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
@@ -553,11 +553,13 @@ function validate_scope_new(branch) {
 
 
 function ar_validation(branch,items,query) {
+	
     var data= validate_scope_data[branch][items];
     var request=data.ar_request+query;
-  //alert(request)
+   // alert(data.ar_request)
+ // alert(request)
    YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
-       //alert(o.responseText)
+      // alert(o.responseText)
         var r =  YAHOO.lang.JSON.parse(o.responseText);
         if (r.state==200) {
             if (r.found==1) {

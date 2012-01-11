@@ -18,6 +18,7 @@ print 'var location_type_options=['.$l."];\n";
 print 'var location_type_name={'.$ln."};\n";
 
 ?>
+var warehouse_code='';
 var editing='<?php echo $_SESSION['state']['warehouse']['edit']?>';
 
    var Dom   = YAHOO.util.Dom;
@@ -299,11 +300,11 @@ function change_block(e){
 	
 
 	Dom.get('description_block').style.display='none';
-	Dom.get('areas_block').style.display='none';
+	//Dom.get('areas_block').style.display='none';
 	Dom.get('locations_block').style.display='none';
-	Dom.get('shelfs_block').style.display='none';
-	Dom.get('shelf_types_block').style.display='none';
-	Dom.get('location_types_block').style.display='none';	
+	//Dom.get('shelfs_block').style.display='none';
+	//Dom.get('shelf_types_block').style.display='none';
+	//Dom.get('location_types_block').style.display='none';	
 	
 	Dom.get(this.id+'_block').style.display='';
 
@@ -315,7 +316,6 @@ function change_block(e){
 	
 	editing=this.id;
     }
-
 
 
 }
@@ -479,9 +479,22 @@ record_index=Dom.get('record_index').value;
 
 }
 
+function validate_warehouse_code(query){
+warehouse_code=query
+	//alert(query)
+	validate_general('warehouse_area','warehouse_area_code',unescape(query));
+}
+function validate_warehouse_name(query){
+	//alert(query)
+	validate_general('warehouse_area','warehouse_area_name',unescape(query));
+}
+
+function save_edit_warehouse_area(){
+ save_edit_general('warehouse_area');
+}
 
  function init(){
-     
+
       init_search('locations');
      
     area_dialog = new YAHOO.widget.Dialog("area_dialog", {visible : false,close:true,underlay: "none",draggable:false});
@@ -492,9 +505,10 @@ record_index=Dom.get('record_index').value;
      
      
      
-     
+ 
      YAHOO.util.Event.addListener(ids, "click", change_block);
-     var ids = ["add_area","add_area_here"]; 
+
+    /*   var ids = ["add_area","add_area_here"]; 
      YAHOO.util.Event.addListener(ids, "click", show_add_area_dialog);
      var ids = ["add_shelf"]; 
      YAHOO.util.Event.addListener(ids, "click", show_add_shelf_dialog);
@@ -519,7 +533,7 @@ record_index=Dom.get('record_index').value;
      var ids=['shelf_type_general_view','shelf_type_dimensions_view'];
      YAHOO.util.Event.addListener(ids, "click",change_shelf_type_view);
 
-
+*/
  
 
 
@@ -538,6 +552,42 @@ record_index=Dom.get('record_index').value;
 
 
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
+
+
+ validate_scope_metadata={
+     'warehouse_area':{'type':'new','ar_file':'ar_edit_warehouse.php','key_name':'id','key':<?php echo $_REQUEST['id']?>}
+  //ar_edit_warehouse.php?tipo=save_description'+str;
+};
+
+
+
+ validate_scope_data={
+ 
+ 	'warehouse_area':{
+	'warehouse_area_name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Warehouse Area Name'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Warehouse Area Name')?>'}],'name':'warehouse_area_name'
+		}
+	
+	,'warehouse_area_code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Warehouse Area Code'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Warehouse Area Code')?>'}]
+		 ,'name':'warehouse_area_code','ar':'find','ar_request':'ar_warehouse.php?tipo=is_warehouse_area_code&warehouse_code='+warehouse_code+'&query='}		 
+	}
+ };
+
+var warehouse_area_code_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_code);
+    warehouse_area_code_oACDS.queryMatchContains = true;
+    var warehouse_area_code_oAutoComp = new YAHOO.widget.AutoComplete("warehouse_area_code","warehouse_area_code_Container", warehouse_area_code_oACDS);
+    warehouse_area_code_oAutoComp.minQueryLength = 0; 
+    warehouse_area_code_oAutoComp.queryDelay = 0.1;
+
+
+var warehouse_area_name_oACDS = new YAHOO.util.FunctionDataSource(validate_warehouse_name);
+    warehouse_area_name_oACDS.queryMatchContains = true;
+    var warehouse_area_name_oAutoComp = new YAHOO.widget.AutoComplete("warehouse_area_name","warehouse_area_name_Container", warehouse_area_name_oACDS);
+    warehouse_area_name_oAutoComp.minQueryLength = 0; 
+    warehouse_area_name_oAutoComp.queryDelay = 0.1;
+
+
  }
 
 YAHOO.util.Event.onDOMReady(init);

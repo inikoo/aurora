@@ -31,6 +31,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"parts", label:"<?php echo _('Products')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 	    //?tipo=locations&tid=0"
+	//alert("ar_warehouse.php?tipo=locations&parent=warehouse_area&parent_key="+Dom.get('warehouse_area_key').value);
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=locations&parent=warehouse_area&parent_key="+Dom.get('warehouse_area_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

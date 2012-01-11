@@ -41,7 +41,7 @@ $smarty->assign('search_scope','locations');
 
 
 
-$smarty->assign('edit',$_SESSION['state']['warehouse_area']['edit']);
+$smarty->assign('edit',$_SESSION['state']['warehouse_area']['view']);
 
 
 $css_files=array(
@@ -57,7 +57,6 @@ $css_files=array(
                'theme.css.php'
            );
 
-
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
@@ -71,7 +70,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/edit_common.js',
-		'edit_warehouse_area.js.php',
+		'edit_warehouse_area.js.php?id='.$_REQUEST['id'],
 		'js/search.js'
 		);
 

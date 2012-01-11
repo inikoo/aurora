@@ -168,7 +168,15 @@ validate_scope_metadata={
 	product_name_oAutoComp.queryDelay = 0.1;
 	
 
+
+	dialog_area_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["edit_location_area","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_area_list.render();
 	
+		   
+
+	
+    Event.addListener("edit_location_area", "click", dialog_area_list.show,dialog_area_list , true);
+	alert('dd');
 }
 
 
