@@ -74,7 +74,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/edit_common.js',
 		'edit_warehouse_shelf.js.php',
-		'edit_warehouse.js.php',
+		'edit_warehouse.js.php?id='.$warehouse->id.'&name='.$warehouse->data['Warehouse Code'],
 		'js/search.js'
 		);
 
