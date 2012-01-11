@@ -1,11 +1,13 @@
 {include file='header.tpl'}
 <div id="bd" >
+{include file='locations_navigation.tpl'}
+
 <div class="branch"> 
   <span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')}</span>
 </div>
 
 <input value="{$delivery_note->id}" id="dn_key" type="hidden"/>
-  <div id="control_panel"  >
+  <div id="control_panel" style="clear:both;margin-top:15px" >
 
 
     <div  style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
@@ -18,12 +20,12 @@
        </div>
 
    <div style="width:120px;float:right;margin-left:20px;">
-    <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
-    <tr><td  ><a href="order_pick_aid.pdf.php?&id={$delivery_note->id}" target="_blank">{t}Print Order{/t}</a></td></tr>
-    <tr><td  ><a href="order_pick_aid.php?id={$delivery_note->id}&refresh" target="_blank">{t}Refresh Order{/t}</a></td></tr>
+    <div class="buttons">
+    <a style="width:100px;text-align:center"  href="order_pick_aid.pdf.php?&id={$delivery_note->id}" target="_blank">{t}Print Order{/t}</a><br>
+ <a style="margin-top:5px;width:100px;text-align:center"  href="order_pick_aid.php?id={$delivery_note->id}&refresh" target="_blank">{t}Refresh Order{/t}</a>
 
 
-</table>
+</div>
        
        </div>
       <div style="border:0px solid #ddd;width:330px;float:right;">

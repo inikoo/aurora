@@ -462,6 +462,11 @@ YAHOO.util.Connect.asyncRequest(
 
 
 function set_pending_as_picked(){
+
+
+
+
+
 ar_file='ar_edit_orders.php';
    
    request=ar_file+'?tipo=set_picking_aid_sheet_pending_as_picked&dn_key='+Dom.get('dn_key').value;
@@ -502,6 +507,7 @@ scope:this
 
 function init(){
 
+  init_search('parts');
 
  no_dispatchable_editor_dialog = new YAHOO.widget.Dialog("no_dispatchable_editor_dialog", {visible : false,close:true,underlay: "none",draggable:false});
  no_dispatchable_editor_dialog.render();

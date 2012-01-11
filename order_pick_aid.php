@@ -39,6 +39,8 @@ $warehouse= new Warehouse($dn->data['Delivery Note Warehouse Key']);
 $smarty->assign('warehouse',$warehouse);
 
 
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
 
 
 
@@ -57,15 +59,16 @@ $smarty->assign('number_picked_transactions',$number_picked_transactions);
   
   
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'editor/assets/skins/sam/editor.css',
-		 'text_editor.css',
-		 'common.css',
-		 'css/container.css',
-		 'table.css',
-		  'css/edit.css'
+	            $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'css/container.css',
+               'button.css',
+               'table.css',
+               'css/edit',
+               'theme.css.php'
 		 );
 $js_files=array(
 
@@ -79,6 +82,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js',
+		'js/search.js',
 		'js/table_common.js',
 		'js/edit_common.js',
 		'order_pick_aid.js.php?dn_key='.$dn->id
@@ -100,5 +104,23 @@ $smarty->assign('parent','orders');
 $smarty->assign('title',_('Picking Aid Sheet').' '.$dn->get('Delivery Note Title') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
+
+
+$tipo_filter=$_SESSION['state']['picking_aid']['items']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['picking_aid']['items']['f_value']);
+$filter_menu=array(
+		   'sku'=>array('db_key'=>'SKU','menu_label'=>_('SKU'),'label'=>_('SKU')),
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+
 $smarty->display($template);
 ?>

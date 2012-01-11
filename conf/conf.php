@@ -2317,6 +2317,23 @@ $default_state=array(
                                         ),
 
                            ),
+                    'picking_aid'=>array(
+                    'items'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'sku',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'sku',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
+                    
+                    )
+                    ),
+                           
+                           
                    'page'=>array(
                               'id'=>0,
                               'view'=>'details',
