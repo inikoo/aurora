@@ -541,7 +541,7 @@ function validate_scope_new(branch) {
         }
     }
 	
-	if (errors) {
+    if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
         Dom.removeClass('save_new_'+branch,'disabled');
@@ -844,14 +844,14 @@ return;
 	   
 	 //  alert(item_input.value.length);
 	   
-alert(scope_edit_ar_file+'?'+postData)
+//alert(scope_edit_ar_file+'?'+postData)
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {
-alert(o.responseText);
+//alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
-               
+           
                     
                         validate_scope_data[branch][r.key].changed=false;
                         validate_scope_data[branch][r.key].validated=true;

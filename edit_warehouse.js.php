@@ -559,7 +559,7 @@ function save_edit_warehouse(){
 
 
  validate_scope_metadata={
-     'warehouse':{'type':'new','ar_file':'ar_edit_warehouse.php','key_name':'famiy_key','key':<?php echo $_REQUEST['id']?>}
+     'warehouse':{'type':'new','ar_file':'ar_edit_warehouse.php','key_name':'id','key':<?php echo $_REQUEST['id']?>}
   //ar_edit_warehouse.php?tipo=save_description'+str;
 };
 var warehouse_code_validated=false;
