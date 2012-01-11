@@ -35,7 +35,7 @@
     <li style="display:none"> <span class="item {if $view=='shelfs'}selected{/if}"  id="shelfs">  <span> {t}Shelfs{/t}</span></span></li>
     <li style="display:none"> <span class="item {if $view=='map'}selected{/if}" id="map"  ><span>  {t}Map{/t}</span></span></li>
      <li style="display:none"> <span class="item {if $view=='movements'}selected{/if}"  id="movements">  <span> {t}Movements{/t}</span></span></li>
- <li> <span class="item {if $view=='stats'}selected{/if}"  id="stats">  <span> {t}Stats{/t}</span></span></li>
+ <li style="display:none"> <span class="item {if $view=='stats'}selected{/if}"  id="stats">  <span> {t}Stats{/t}</span></span></li>
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
