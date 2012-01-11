@@ -457,7 +457,7 @@ $default_state=array(
                                                              'f_value'=>'','f_show'=>false,
                                                              'from'=>'',
                                                              'to'=>'',
-                                                             'elements'=>array(),
+                                                             'elements'=>array('ReadytoPick'=>1,'ReadytoPack'=>1,'ReadytoShip'=>1,'PickingAndPacking'=>1,'ReadytoRestock'=>1),
                                                              'csv_export'=>array(
                                                                               'id'=>true,
                                                                               'date'=>true,

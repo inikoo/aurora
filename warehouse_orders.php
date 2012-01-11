@@ -12,6 +12,29 @@ if (!  ($user->can_view('orders') or $user->data['User Type']=='Warehouse'   ) )
 
 
 
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
+  $warehouse_id=$_REQUEST['id'];
+
+}else{
+  $warehouse_id=$_SESSION['state']['warehouse']['id'];
+}
+
+$warehouse=new warehouse($warehouse_id);
+if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ){
+  header('Location: index.php');
+   exit;
+}
+
+
+
+$smarty->assign('warehouse',$warehouse);
+$smarty->assign('warehouse_id',$warehouse->id);
+
+
+
+
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
 
 
 $smarty->assign('view','warehouse_orders');
@@ -142,7 +165,7 @@ $csv_export_options0=array(
 $smarty->assign('export_csv_table_cols',0);
 $smarty->assign('csv_export_options',$csv_export_options0);
 
-$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'Others'=>0,'Restock'=>0);
+$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') ");
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
@@ -162,18 +185,20 @@ if ($row=mysql_fetch_assoc($res)) {
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed') ");
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['Others']=$row['num'];
+    $elements_number['PickingAndPacking']=$row['num'];
 }
 
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock') ");
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['Restock']=$row['num'];
+    $elements_number['ReadytoRestock']=$row['num'];
 }
 
 
+
+
 $smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['customer']['table']['elements']);
+$smarty->assign('elements',$_SESSION['state']['orders']['ready_to_pick_dn']['elements']);
 
 
 
