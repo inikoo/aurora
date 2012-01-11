@@ -111,7 +111,53 @@ class MYPDF extends TCPDF {
             $this->header_xobjid = -1;
         }
     }
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-30);
+        // Set font
+        $this->SetFont('helvetica', 'I', 6);
+        // Page number
+	$sql=sprintf("select * from `Store Dimension` where `Store Key`=%d", $this->get_footer_var());
 
+$result=mysql_query($sql);
+$row=mysql_fetch_assoc($result);
+
+$address='';
+$store_address=explode(",",$row['Store Address']);
+foreach($store_address as $ad)
+	$address.=$ad.",<br/>";
+
+
+   $response= array('state'=>200);
+$tbl = <<<EOD
+<table border="0" cellpadding="2" cellspacing="2" align="left" WIDTH="100%">
+	<tr >
+		<th WIDTH="20%">Company Address</th> 
+		<th WIDTH="12%">Company Number</th>
+		<th WIDTH="12%">VAT Number</th>
+		<th WIDTH="16%">Telephone</th>
+		<th WIDTH="20%">Email</th>
+		<th WIDTH="16%">Web</th>
+	</tr>
+	<tr >
+		<td>{$row['Store Address']}</td>	
+		<td>{$row['Store Company Number']}</td>
+		<td>{$row['Store VAT Number']}</td>
+		<td>{$row['Store Telephone']}</td>
+		<td>{$row['Store Email']}</td>
+		<td>{$row['Store URL']}</td>
+		
+	</tr>
+
+</table>
+EOD;
+
+
+$this->writeHTML($tbl, true, false, false, false, '');
+
+
+        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+    }
 
     public function MultiRow($columns) {
         // MultiCell($w, $h, $txt, $border=0, $align='J', $fill=0, $ln=1, $x='', $y='', $reseth=true, $stretch=0)
@@ -169,9 +215,15 @@ $pdf->SetSubject(_('Order Picking Aid'));
 
 //print_r($invoice);
 $header_text=$store->data['Store Name'];
+//$image="../../image"
+//$pdf->SetHeaderData("../../../image.php\?id=1", 100, $header_text, 'Invoice ');
 
-$pdf->SetHeaderData(false, 0, $header_text, 'Invoice ');
 
+
+
+
+$pdf->SetHeaderData("../../../alpha.php", 100, $header_text, 'Invoice ');
+$pdf->set_footer_var($store->id);
 //print $invoice->data['Invoice Customer Name'].$invoice->data['Invoice Public ID'];
 // set header and footer fonts
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -263,6 +315,8 @@ $html = <<<EOD
 <h3>{$invoice->data['Invoice Customer Name']} ({$invoice->data['Invoice Public ID']})</h3>
 {$invoice->data['Invoice XHTML Address']}
 
+<table>
+<tr><td>
 <div>
 <h2></h2>
 <div >
@@ -294,7 +348,7 @@ $html = <<<EOD
 
 </div>
 </div>
-
+</td><td>
 <div>
 <h2></h2>
 <div >
@@ -310,7 +364,7 @@ $html = <<<EOD
 
 </div>
 </div>
-
+</td></tr>
 
 
 
@@ -343,7 +397,7 @@ $pdf->MultiRow($columns);
 
 
 
- $sql=sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d ", $invoice->id);
+$sql=sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) where `Invoice Key`=%d ", $invoice->id);
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -394,25 +448,7 @@ $tbl = <<<EOD
 	<tr nobr="true">
 		<td colspan="5">Please notify us immediately of any discrepancies of breakages</td>
 	</tr>
-	<tr nobr="true">
-		<td colspan="5">{$address}
-		</td>
-	</tr>
-	<tr >
-		<th WIDTH="20%">Company Number</th>
-		<th WIDTH="20%">VAT Number</th>
-		<th WIDTH="20%">Telephone</th>
-		<th WIDTH="20%">Email</th>
-		<th WIDTH="20%">Web</th>
-	</tr>
-	<tr %>
-		<td>{$row['Store Company Number']}</td>
-		<td>{$row['Store VAT Number']}</td>
-		<td>{$row['Store Telephone']}</td>
-		<td>{$row['Store Email']}</td>
-		<td>{$row['Store URL']}</td>
-		
-	</tr>
+
 </table>
 EOD;
 
@@ -422,6 +458,20 @@ $pdf->writeHTML($tbl, true, false, false, false, '');
 // set JPEG quality
 $pdf->setJPEGQuality(75);
 
+
+$sql="select * from `Image Dimension` where `Image Key`=1";
+
+$res=mysql_query($sql);
+$row=mysql_fetch_assoc($res);
+
+$imgdata= ($row['Image Data']);
+//print $imgdata;
+$imgdata = base64_decode($imgdata);
+//print $imgdata;
+//$imgdata = base64_decode('iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABlBMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDrEX4IJTRkb7lobNUStXsB0jIXIAMSsQnWlsV+wULF4Avk9fLq2r8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==');
+
+// The '@' character is used to indicate that follows an image data stream and not an image file name
+$pdf->Image('@'.$imgdata);
 // Image method signature:
 // Image($file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false)
 
