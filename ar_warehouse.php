@@ -35,9 +35,11 @@ case('parts_at_location'):
     break;
 case('find_warehouse_area'):
     $data=prepare_values($_REQUEST,array(
+				'parent_key'=>array('type'=>'string'),
                              'query'=>array('type'=>'string')
-                                     ,'parent_key'=>array('type'=>'key')
+                          
                          ));
+
     find_warehouse_area($data);
     break;
 case('find_location'):
