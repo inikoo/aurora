@@ -64,14 +64,15 @@ $smarty->assign('sub_parent','hr');
 
 $smarty->assign('title', _('Staff'));
 
-$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
 
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['hr']['staff']['f_value']);
 
 $smarty->assign('block_view',$_SESSION['state']['hr']['view']);
 $smarty->assign('staff_view',$_SESSION['state']['hr']['staff']['view']);
 
+
+$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['hr']['staff']['f_value']);
 $filter_menu=array(
                  'name'=>array('db_key'=>'staff.alias','menu_label'=>'Staff name <i>*x*</i>','label'=>'Name'),
                  'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
@@ -84,6 +85,10 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+
 $csv_export_options=array(
                         'description'=>array(
                                           'title'=>_('Description'),
