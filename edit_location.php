@@ -107,11 +107,19 @@ $js_files=array(
 		'js/table_common.js',
 		'js/dropdown.js',
 		'js/edit_common.js',
-		'edit_location.js.php?location_id='.$location_id
+		'edit_location.js.php?location_id='.$location_id.'&warehouse_key='.$location->data['Location Warehouse Key']
 		);
 
-
-
+//print_r($location);
+$tipo_filter2='code';
+$filter_menu2=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
 
 $order=$_SESSION['state']['locations']['table']['order'];
 

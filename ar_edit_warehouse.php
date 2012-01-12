@@ -5,7 +5,7 @@ require_once 'class.Warehouse.php';
 require_once 'class.WarehouseArea.php';
 require_once 'class.PartLocation.php';
 require_once 'class.ShelfType.php';
-
+require_once 'class.Location.php';
 require_once 'ar_edit_common.php';
 
 
@@ -158,6 +158,15 @@ case('edit_warehouse_area'):
 
     edit_warehouse_area($data);
     break;
+case('edit_location_area'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
+
+    edit_location_area($data);
+    break;
  default:
 
    $response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -234,6 +243,42 @@ if($data['key']=='Warehouse Area Name')
     echo json_encode($response);
 }
 
+function edit_location_area($data) {
+    //print $data['newvalue'];
+
+
+    $location=new Location($data['id']);
+    global $editor;
+    $location->editor=$editor;
+
+    $translator=array(
+                    'location_key'=>'Location Warehouse Area Key',
+                    'warehouse_code'=>'Warehouse Code'
+
+                );
+//print_r($data);
+    foreach($data as $key=>$value) {
+        if (array_key_exists($key, $translator)) {
+            $data[$translator[$key]]=$value;
+	    print $translator[$key].":".$value;
+        }
+    }
+
+
+
+    $location->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+    if ($location->updated) {
+if($data['key']=='Warehouse Area Code')
+	$data['key']='warehouse_area_code';
+if($data['key']=='Warehouse Area Name')
+	$data['key']='warehouse_area_name';
+        $response= array('state'=>200,'newvalue'=>$location->new_value,'key'=>$data['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$location->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+}
 
 function edit_warehouse($data) {
     //print $data['newvalue'];
