@@ -13,7 +13,7 @@
     <div class="buttons" style="float:right">
        
         <button  onclick="window.location='warehouse.php?id={$warehouse->id}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
-        <button  onclick="window.location='new_location.php?warehouse_area_id={$warehouse_area->id}'" ><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button>
+        <button  onclick="window.location='new_location.php?warehouse_area_id={$warehouse_area->id}&window=2'" ><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button>
 
         
        
