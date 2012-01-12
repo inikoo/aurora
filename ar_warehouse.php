@@ -1407,7 +1407,7 @@ function parts_at_location() {
 
 
     $sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`)    $where $wheref    order by $order $order_direction  limit $start_from,$number_results ");
-
+//print $sql;
 
     $adata=array();
 
@@ -1427,7 +1427,12 @@ function parts_at_location() {
 
         }
 
-
+	$min='0';
+	$max='0';
+	if($data['Can Pick']='Yes'){
+		$min=$data['Minimum Quantity'];
+		$max=$data['Maximum Quantity'];
+	}
 
 
         $adata[]=array(
@@ -1445,7 +1450,9 @@ function parts_at_location() {
                      'delete'=>($data['Quantity On Hand']==0?'<img src="art/icons/cross.png"  alt="'._('Free location').'" />':''),
                      'number_locations'=>$data['Part Distinct Locations'],
                      'number_qty'=>$data['Quantity On Hand'],
-                     'part_stock'=>$data['Part Current Stock']
+                     'part_stock'=>$data['Part Current Stock'],
+		     'min'=>$min,
+		     'max'=>$max
                  );
     }
     $response=array('resultset'=>

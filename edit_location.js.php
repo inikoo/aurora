@@ -137,6 +137,104 @@ var tableid=2;
 
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table2.filter={key:'code',value:''};
+
+
+
+		var tableid=0; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var CustomersColumnDefs = [
+				       {key:"sku", label:"<?php echo _('SKU')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"location_key", label:"", hidden:true,isPrimaryKey:true} 
+				       ,{key:"part_sku", label:"", hidden:true,isPrimaryKey:true} 
+				       ,{key:"description", label:"<?php echo _('Description')?>", width:470,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
+				       ,{key:"min", label:"<?php echo _('Min')?>", width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
+				       ,{key:"qty", label:"<?php echo _('Qty')?>", hidden:true,width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
+				       ,{key:"move",label:"<?php echo _('Move')?>", hidden:true,width:30,className:"aright",action:'move'}
+				       ,{key:"lost", label:"<?php echo _('Lost')?>",hidden:true, width:30,className:"aright",action:'lost'}
+				       ,{key:"delete", label:"", width:30,className:"aright",object:'part_location',action:'delete'}
+				     
+				       ];
+	    alert("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    	    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		
+		fields: [
+			 "sku"
+			 ,"description"
+			 ,'qty'
+			 ,'can_pick','move','audit','lost','delete','number_locations','number_qty','part_sku','location_key','part_stock','location', 'min', 'max'
+		
+			 ]};
+	    
+this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource0
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							   ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['location']['parts']['nr']?>,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+							 ,sortedBy : {
+							    key: "<?php echo$_SESSION['state']['location']['parts']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['location']['parts']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
+    
+	  
+
+		
+
+
+		    
+	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
+
+
+
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['location']['parts']['f_field']?>',value:'<?php echo$_SESSION['state']['location']['parts']['f_value']?>'};
+
+
+
+
+
+
+
+
 }});
 
 function select_area(oArgs){
