@@ -34,7 +34,7 @@ date_default_timezone_set('UTC');
 //$where='and  `Part XHTML Currently Used In` like "%awred%"';
 //$where='and `Part SKU`=4303';
 $where='';
-$sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="in Use" %s   order by `Part Valid From` desc ',$where);
+$sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="in Use" %s   order by `Part Valid From`  ',$where);
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   $total=$row['num'];
@@ -42,7 +42,9 @@ while($row=mysql_fetch_array($res)){
 
 
 //print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s  order by `Part Total Acc Sold Amount` ,`Part Valid From`   ',$where);
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s  order by `Part Total Acc Sold Amount` desc ,`Part Valid From`   ',$where);
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s     ',$where);
+
 //print $sql;
 $res=mysql_query($sql);
 $count=0;

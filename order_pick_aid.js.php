@@ -278,26 +278,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
 				     ,{key:"sku", label:"<?php echo _('Part')?>",width:45,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description",label:"<?php echo _('Description')?>", width:250,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"picking_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"description",label:"<?php echo _('Description')?>", width:338,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				//	,{key:"picking_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				
 				// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"location",label:"<?php echo _('Location')?>", width:200,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"location",label:"<?php echo _('Location')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				   ,{key:"quantity",label:"<?php echo _('Qty')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-                       //,{key:"picked",label:"<?php echo _('Picked')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
-					//					,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
+				  // ,{key:"quantity",label:"<?php echo _('Qty')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+                
+                ,{key:"picked",label:"<?php echo _('Picked')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
+										,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
 
-					//,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pick_aid'}
-					//,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pick_aid'}
+					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pick_aid'}
+					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pick_aid'}
 					
 
-					//,{key:"formated_todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					//,{key:"notes",label:"", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					//,{key:"out_of_stock",label:"", width:1,hidden:true}
-					//,{key:"not_found",label:"", width:1,hidden:true}
-					//,{key:"no_picked_other",label:"", width:1,hidden:true}
+					,{key:"formated_todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					,{key:"notes",label:"", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					,{key:"out_of_stock",label:"", width:1,hidden:true}
+					,{key:"not_found",label:"", width:1,hidden:true}
+					,{key:"no_picked_other",label:"", width:1,hidden:true}
 
 				   ];
 
@@ -394,7 +395,7 @@ var ar_file='ar_edit_orders.php';
 var request='tipo=update_no_dispatched&dn_key='+dn_key+'&itf_key='+Dom.get('todo_itf_key').value+'&out_of_stock='+out_of_stock+'&not_found='+not_found+'&no_picked_other='+no_picked_other;
 
 
-
+alert(request)
 
 YAHOO.util.Connect.asyncRequest(
 				    'POST',

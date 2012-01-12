@@ -1,10 +1,13 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='locations_navigation.tpl'}
+<div class="branch"> 
+  <span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {t}Pending Orders{/t}</span>
+</div>
 
 
   <div  id="orders_table" class="data_table" style="clear:both;margin-top:23px">
-    <span class="clean_table_title">{t}Orders In Warehouse{/t} 
+    <span class="clean_table_title">{t}Pending Orders{/t} 
     <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
      
 
@@ -101,8 +104,15 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('assign_picker_dialog')">Cancel</span>
-  <span class="button" onclick="assign_picker_save()" >Go</span><td></tr>
+ 
+  
+      <div class="buttons">
+  <button class="negative" onclick="close_dialog('assign_picker_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="assign_picker_save()" >{t}Go{/t}</button>
+  </div>
+  
+  
+  <td></tr>
 </table>
 </div>
 <div id="pick_it_dialog" style="width:300px;">
@@ -139,8 +149,15 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('pick_it_dialog')">Cancel</span>
-  <span class="button" onclick="pick_it_save()" >Go</span><td></tr>
+  
+  
+     <div class="buttons">
+  <button class="negative" onclick="close_dialog('pick_it_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="pick_it_save()" >{t}Go{/t}</button>
+  </div>
+  
+  
+  <td></tr>
 </table>
 </div>
 <div id="pick_assigned_dialog" style="width:300px;">
@@ -155,8 +172,17 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('pick_assigned_dialog')">Cancel</span>
-  <span class="button" onclick="pick_assigned_save()" >Go</span><td></tr>
+
+  
+    <div class="buttons">
+  <button class="negative" onclick="close_dialog('pick_assigned_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="pick_assigned_save()" >{t}Go{/t}</button>
+  </div>
+  
+  <td></tr>
+  
+  
+  
 </table>
 </div>
 
@@ -194,8 +220,14 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('assign_packer_dialog')">Cancel</span>
-  <span class="button" onclick="assign_packer_save()" >Go</span><td></tr>
+
+  
+    <div class="buttons">
+  <button class="negative" onclick="close_dialog('assign_packer_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="assign_packer_save()" >{t}Go{/t}</button>
+  </div>
+  
+  <td></tr>
 </table>
 </div>
 <div id="pack_it_dialog" style="width:300px;">
@@ -232,8 +264,11 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('pack_it_dialog')">Cancel</span>
-  <span class="button" onclick="pack_it_save()" >Go</span><td></tr>
+  <div class="buttons">
+  <button class="negative" onclick="close_dialog('pack_it_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="pack_it_save()" >{t}Go{/t}</button>
+  </div>
+  <td></tr>
 </table>
 </div>
 <div id="pack_assigned_dialog" style="width:300px;">
@@ -248,8 +283,12 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('pack_assigned_dialog')">Cancel</span>
-  <span class="button" onclick="pack_assigned_save()" >Go</span><td></tr>
+  <div class="buttons">
+  <button class="negative" onclick="close_dialog('pack_assigned_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="pack_assigned_save()" >{t}Go{/t}</button>
+  </div>
+  <td></tr>
+
 </table>
 </div>
 

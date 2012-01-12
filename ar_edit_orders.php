@@ -1326,7 +1326,7 @@ function ready_to_pick_orders() {
     $_SESSION['state']['orders']['ready_to_pick_dn']['f_field']=$f_field;
     $_SESSION['state']['orders']['ready_to_pick_dn']['f_value']=$f_value;
 
-    $where.=' and `Delivery Note State` not in ("Dispatched","Cancelled") ';
+    $where.=' and `Delivery Note State` not in ("Dispatched","Cancelled","") ';
 
 
     $wheref='';
@@ -1779,7 +1779,7 @@ function picking_aid_sheet() {
         $data[]=array(
                     'itf_key'=>$row['Inventory Transaction Key'],
                     'sku'=>$sku,
-                    'description'=>$row['Part XHTML Description'],
+                    'description'=>$row['Part XHTML Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':''),
                     'used_in'=>$row['Part XHTML Currently Used In'],
                     'quantity'=>number($row['Required']),
                     'location'=>$row['Location Code'],

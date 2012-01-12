@@ -19,7 +19,7 @@
 <table id="{$search_scope}_search_results_table"></table>
 </div>
 
-{if $general_options_list}
+{if isset($general_options_list)}
 <div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}450px{/if};float:right;margin-bottom:10px" class="right_box">
   <div class="general_options">
     {foreach from=$general_options_list item=options }

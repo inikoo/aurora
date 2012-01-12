@@ -1124,8 +1124,9 @@ class part extends DB_Table {
             $locations[]=array('location_key'=>$locations_data[0]['location_key'],'qty'=>$qty);
         }
         else {
-
-
+//print "===== $qty ================\n";
+//print_r($locations_data);
+//print_r($locations);
             foreach($locations_data as $location_data) {
 
                 if ($qty>0) {
@@ -1149,7 +1150,11 @@ class part extends DB_Table {
             }
 
             if ($qty>0) {
+            
+            	if(count($locations))
                 $locations[0]['qty']=$locations[0]['qty']+$qty;
+                else
+                $locations[]=array('location_key'=>1,'qty'=>$qty);
 
             }
 
