@@ -45,18 +45,36 @@ $js_files=array(
 		'js/table_common.js',
 		'js/edit_common.js',
 		'js/raphael.js',
-		'new_location.js.php?auto='.$auto,
+		'new_location.js.php?auto='.$auto.'&warehouse_key='.$warehouse->id,
 		'js/search.js'
 		
 		);
 
+if(isset($_REQUEST['warehouse_area_id'])){
+	$smarty->assign('warehouse_area_id',$_REQUEST['warehouse_area_id']);
+}
 
+if(isset($_REQUEST['window'])){
+	$smarty->assign('window',$_REQUEST['window']);
+}
 
-
+$smarty->assign('window',$_REQUEST['window']);
 $smarty->assign('parent','warehouses');
 $smarty->assign('title', _('New Location'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
+$tipo_filter2='code';
+$filter_menu2=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
+
 
 $used_for='Picking';
 $used_for_list=array(
