@@ -5370,3 +5370,10 @@ ALTER TABLE `Page Store Deleted Dimension` ADD `Page Code` VARCHAR( 256 ) NOT NU
 ALTER TABLE `Page Store Deleted Dimension` ADD `Page Store Section` VARCHAR( 256 ) NULL AFTER `Page URL` ,
 ADD `Page Parent Key` MEDIUMINT UNSIGNED NULL AFTER `Page Store Section` ,
 ADD `Page Parent Code` VARCHAR( 256 ) NULL AFTER `Page Parent Key` ;
+
+ALTER TABLE `Part Location Dimension` ADD `Minimum Quantity` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Can Pick` ,ADD `Maximum Quantity` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Minimum Quantity` ;
+
+ALTER TABLE `Store Dimension` ADD `Store VAT Number` VARCHAR( 255 ) NOT NULL ,ADD `Store Company Number` VARCHAR( 255 ) NOT NULL;
+ALTER TABLE `Customer Dimension` ADD `Customer Follower On Twitter` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',ADD `Customer Friend On Facebook` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
+
+

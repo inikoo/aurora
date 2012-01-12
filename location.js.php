@@ -38,13 +38,13 @@ sku=tables.table2.getRecord(oArgs.target).getData('sku')
 		
 		
 		ids=['details','parts','history'];
-block_ids=['block_details','block_parts','block_history'];
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+'parts','display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(Dom.get('parts'),'selected');
+		block_ids=['block_details','block_parts','block_history'];
+		Dom.setStyle(block_ids,'display','none');
+		Dom.setStyle('block_'+'parts','display','');
+		Dom.removeClass(ids,'selected');
+		Dom.addClass(Dom.get('parts'),'selected');
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=location-view&value='+'parts' ,{});
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=location-view&value='+'parts' ,{});
 		dialog_add_part.hide()
 		
 		    var table=tables.table1;
@@ -236,7 +236,7 @@ Editor_move_items.show();
 		    var qty=record.getData('qty');
 		    Dom.get('lost_max_value').innerHTML=qty;
 		    Dom.get('lost_sku').value=record.getData('part_sku');
-Dom.get('lost_location_key').value=record.getData('location_key');
+			Dom.get('lost_location_key').value=record.getData('location_key');
 
 		    Dom.get('lost_record_index').value= record.getId();
 
@@ -323,7 +323,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
 		    
 		    
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['location']['stock_history']['f_field']?>',value:'<?php echo$_SESSION['state']['location']['stock_history']['f_value']?>'};
@@ -438,7 +439,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
     
 	  
 

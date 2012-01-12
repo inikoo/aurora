@@ -835,25 +835,25 @@ success:function(o) {
 
 function init() {
 
-audit_dialog = new YAHOO.widget.Dialog("Editor_audit", {  visible : true,close:false,underlay: "none",draggable:false});
+audit_dialog = new YAHOO.widget.Dialog("Editor_audit", {  visible : true,close:true,underlay: "none",draggable:false});
     audit_dialog.render();
 
-add_stock_dialog = new YAHOO.widget.Dialog("Editor_add_stock", {  visible : true,close:false,underlay: "none",draggable:false});
+add_stock_dialog = new YAHOO.widget.Dialog("Editor_add_stock", {  visible : true,close:true,underlay: "none",draggable:false});
     add_stock_dialog.render();
 
 
-Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {close:false,visible:false,draggable:false});
+Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {close:true,visible:false,draggable:false});
     Editor_lost_items.render();
-Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {close:false,visible:false,underlay: "none",draggable:false});
+Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {close:true,visible:false,underlay: "none",draggable:false});
     Editor_move_items.render();
 
 
-Editor_add_location = new YAHOO.widget.Dialog("Editor_add_location", {close:false,visible:true,underlay: "none",draggable:false});
+Editor_add_location = new YAHOO.widget.Dialog("Editor_add_location", {close:true,visible:true,underlay: "none",draggable:false});
     Editor_add_location.render();
     
-// Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {  visible : false,close:false,underlay: "none",draggable:false});
+// Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {  visible : false,close:true,underlay: "none",draggable:false});
 // Editor_lost_items.render();
-// Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {  visible : false,close:false,underlay: "none",draggable:false});
+// Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {  visible : false,close:true,underlay: "none",draggable:false});
 // Editor_move_items.render();
 }
 

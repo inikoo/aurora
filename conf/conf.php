@@ -2318,6 +2318,8 @@ $default_state=array(
 
                            ),
                     'picking_aid'=>array(
+                    
+                    'type'=>'dynamic',
                     'items'=>array(
                                             'where'=>'where true',
                                             'f_field'=>'sku',
