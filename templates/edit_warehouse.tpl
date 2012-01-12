@@ -11,7 +11,7 @@
        
         <button  onclick="window.location='warehouse.php?id={$warehouse->id}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
                 <button  onclick="window.location='new_warehouse_area.php?warehouse_id={$warehouse->id}'" ><img src="art/icons/add.png" alt=""> {t}Add Area{/t}</button>
-        <button  onclick="window.location='new_location.php?warehouse_id={$warehouse->id}'" ><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button>
+        <button  onclick="window.location='new_location.php?warehouse_id={$warehouse->id}&window=1'" ><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button>
 
         
        
