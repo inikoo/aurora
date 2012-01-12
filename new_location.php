@@ -1,6 +1,7 @@
 <?php
 include_once('common.php');
 include_once('class.Warehouse.php');
+include_once('class.WarehouseArea.php');
 
 
 if(isset($_REQUEST['auto']))
@@ -49,10 +50,15 @@ $js_files=array(
 		'js/search.js'
 		
 		);
-
+$warehouse_area='';
 if(isset($_REQUEST['warehouse_area_id'])){
+	$warehouse_area=new WarehouseArea($_REQUEST['warehouse_area_id']);
+	//print_r($warehouse_area->data['Warehouse Area Name']);
+	$warehouse_area=$warehouse_area->data['Warehouse Area Name'];
 	$smarty->assign('warehouse_area_id',$_REQUEST['warehouse_area_id']);
 }
+
+$smarty->assign('warehouse_area_name',$warehouse_area);
 
 if(isset($_REQUEST['window'])){
 	$smarty->assign('window',$_REQUEST['window']);

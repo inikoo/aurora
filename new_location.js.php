@@ -192,7 +192,7 @@ function select_area(oArgs){
 
 area_name=tables.table2.getRecord(oArgs.target).getData('name');
 area_key=tables.table2.getRecord(oArgs.target).getData('key');
- //dialog_area_list.hide();
+ dialog_area_list.hide();
 
 Dom.get('location_area').value=area_name;
 Dom.get('location_warehouse_area_key').value=area_key;
@@ -475,12 +475,25 @@ function isometric_transformation(path3d){
      return data;
 }
 
+function show_dialog_area_list(){
+
+ region1 = Dom.getRegion('show_area_list'); 
+    region2 = Dom.getRegion('dialog_area_list'); 
+
+ var pos =[region1.right-region2.width-20,region1.bottom]
+
+    Dom.setXY('dialog_area_list', pos);
+
+dialog_area_list.show();
+}
+
 function init(){
 
 init_search('locations');
 
 edit_window=Dom.get('window').value;
 warehouse_area_id=Dom.get('warehouse_area_id').value;
+
 
 if(auto==1){
     Dom.get('welcome').innerHTML='<?php echo _('Adding new location')?>';
@@ -490,56 +503,52 @@ if(auto==1){
 	
     var ids = ["individual","shelf","rack","floor"]; 
     YAHOO.util.Event.addListener(ids, "click", get_block);
-
+	
     YAHOO.util.Event.addListener('add_location', "click", save_add_location);
+
 	YAHOO.util.Event.addListener('add_location_and_add_other', "click", save_add_location_return);
 
-    var waDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
-     waDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
- 	waDS.responseSchema = {
- 	    resultsList : "data",
- 	    fields : ["name","code","key"]
- 	};
-	var waAC = new YAHOO.widget.AutoComplete("location_area", "location_area_container", waDS);
-	waAC.generateRequest = function(sQuery) {
-
-	    return "?tipo=find_warehouse_area&parent_key=0&query=" + sQuery ;
-	};
-	waAC.forceSelection = true; 
-	wa_selected= function(sType, aArgs) {
-	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
-	    Dom.get("location_warehouse_area_key").value = oData[2];
-	    
-	};
-	waAC.itemSelectEvent.subscribe(wa_selected); 
 
 
-
-	var R = Raphael("paper",300,300 );
- 
-	
-
-	iso=draw_isometric_box(100,200,50,300,300);
-	var b = R.path(iso.svg_path_base);
-	b.translate(iso.translate.x,iso.translate.y);
-	b.attr("fill", "#a8bcd7");
-	var c = R.path(iso.svg_path);
-	c.translate(iso.translate.x,iso.translate.y);
-	c.attr({"fill": "#fff","fill-opacity":.7});
-	var t = R.path(iso.svg_path_top);
-	t.translate(iso.translate.x,iso.translate.y);
-	t.attr({"fill": "#fff","fill-opacity":.9});
-	var t = R.text(50, 50, "Area 1");
-	t.rotate(-30);
-// following line will paint first letter in red
-	
-	dialog_area_list = new YAHOO.widget.Dialog("dialog_area_list", {context:["show_area_list","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_area_list = new YAHOO.widget.Dialog("dialog_area_list", {visible : false,close:true,underlay: "none",draggable:false});
     dialog_area_list.render();
 	
 		   
 
 	
-    Event.addListener("show_area_list", "click", dialog_area_list.show,dialog_area_list , true);
+    Event.addListener("show_area_list", "click", show_dialog_area_list);
+
+YAHOO.util.Event.onContentReady("location_area", function () {
+  
+ 
+  
+  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
+    new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+    new_loc_oDS.responseSchema = {
+resultsList : "data"
+        ,
+fields :
+        ["code","key","stock"]
+    };
+    var new_loc_oAC = new YAHOO.widget.AutoComplete("location_area", "location_area_container", new_loc_oDS);
+   new_loc_oAC.maxResultsDisplayed = 5;
+  
+  new_loc_oAC.generateRequest = function(sQuery) {
+
+	return "?tipo=find_warehouse_area&parent_key=0&query=" + sQuery ;
+    };
+    new_loc_oAC.forceSelection = true;
+
+	wa_selected= function(sType, aArgs) {
+	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
+	    Dom.get("location_warehouse_area_key").value = oData[2];
+	    
+	};
+
+    new_loc_oAC.itemSelectEvent.subscribe(wa_selected);
+    
+});
+
 
 }
 YAHOO.util.Event.onDOMReady(init);
