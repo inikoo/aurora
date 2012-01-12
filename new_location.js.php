@@ -490,10 +490,13 @@ if(auto==1){
 	
     var ids = ["individual","shelf","rack","floor"]; 
     YAHOO.util.Event.addListener(ids, "click", get_block);
-
+	
     YAHOO.util.Event.addListener('add_location', "click", save_add_location);
+
 	YAHOO.util.Event.addListener('add_location_and_add_other', "click", save_add_location_return);
 
+
+/*
     var waDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
      waDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
  	waDS.responseSchema = {
@@ -532,7 +535,7 @@ if(auto==1){
 	var t = R.text(50, 50, "Area 1");
 	t.rotate(-30);
 // following line will paint first letter in red
-	
+*/
 	dialog_area_list = new YAHOO.widget.Dialog("dialog_area_list", {context:["show_area_list","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_area_list.render();
 	
@@ -540,6 +543,43 @@ if(auto==1){
 
 	
     Event.addListener("show_area_list", "click", dialog_area_list.show,dialog_area_list , true);
+
+YAHOO.util.Event.onContentReady("location_area", function () {
+  
+ 
+  
+  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
+    new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+    new_loc_oDS.responseSchema = {
+resultsList : "data"
+        ,
+fields :
+        ["code","key","stock"]
+    };
+    var new_loc_oAC = new YAHOO.widget.AutoComplete("location_area", "location_area_container", new_loc_oDS);
+   new_loc_oAC.maxResultsDisplayed = 5;
+  
+  new_loc_oAC.generateRequest = function(sQuery) {
+
+        //var sku=Dom.get("add_location_sku").value
+	//var sku=0;
+      //alert("?tipo=find_location&except_part_location=1&get_data=sku"+sku+"&query=" + sQuery);
+      //return "?tipo=find_location&except_part_location=1&get_data=sku"+sku+"&query=" + sQuery ;
+//`alert("?tipo=find_warehouse_area&parent_key=0&query=" + sQuery)
+	return "?tipo=find_warehouse_area&parent_key=0&query=" + sQuery ;
+    };
+    new_loc_oAC.forceSelection = true;
+
+	wa_selected= function(sType, aArgs) {
+	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
+	    Dom.get("location_warehouse_area_key").value = oData[2];
+	    
+	};
+
+    new_loc_oAC.itemSelectEvent.subscribe(wa_selected);
+    
+});
+
 
 }
 YAHOO.util.Event.onDOMReady(init);
