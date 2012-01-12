@@ -40,7 +40,10 @@ case('part_list'):
     break;    
 case('department_list'):
     department_list();
-    break;    
+    break; 
+case('area_list'):
+    area_list();
+    break;      
 case('family_list'):
     family_list();
     break;
@@ -213,7 +216,159 @@ function world_region_list() {
 
     echo json_encode($response);
 }
+function area_list() {
 
+    global $user;
+
+    if (isset( $_REQUEST['sf']))$start_from=$_REQUEST['sf'];
+    else $start_from=0;
+    if (isset( $_REQUEST['nr']))$number_results=$_REQUEST['nr'];
+    else $number_results=20;
+    if (isset( $_REQUEST['o'])) $order=$_REQUEST['o'];
+    else$order='code';
+    if (isset( $_REQUEST['od']))$order_dir=$_REQUEST['od'];
+    else$order_dir='';
+    if (isset( $_REQUEST['f_field']))$f_field=$_REQUEST['f_field'];
+    else$f_field='code';
+    if (isset( $_REQUEST['f_value']))$f_value=$_REQUEST['f_value'];
+    else$f_value='';
+    if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
+    else$tableid=0;
+
+    if (isset( $_REQUEST['warehouse_key']))$warehouse_key=$_REQUEST['warehouse_key'];
+    else $warehouse_key='';
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+
+   // if (!in_array($store_key,$user->stores)) {
+   //     $where=sprintf('where false ');
+  //  } else {
+        $where=sprintf('where `Warehouse Key`=%d',$warehouse_key);
+ //   }
+
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Warehouse Area Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Warehouse Area Name` like '".addslashes($f_value)."%'";
+
+
+    $sql="select count(DISTINCT `Warehouse Area Name`) as total from `Warehouse Area Dimension` $where $wheref  ";
+
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($res);
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(DISTINCT `Warehouse Area Name`) as total from `Warehouse Area Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($res);
+    }
+
+
+    $rtext=$total_records." ".ngettext('Area','Areas',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=_('(Showing all)');
+
+
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any area with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('areas with code like')." <b>$f_value</b>)";
+        break;
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg=_("There isn't any area with name")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg=_('Showing')." $total ("._('areas with name like')." <b>$f_value</b>)";
+        break;
+
+    }
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    if ($order=='name')
+        $order='`Warehouse Area Name`';
+    else
+        $order='`Warehouse Area Code`';
+
+
+
+
+
+    $adata=array();
+    $sql="select  `Warehouse Area Key`, `Warehouse Area Name`,`Warehouse Area Code` from `Warehouse Area Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+
+        $adata[]=array(
+					'key'=>$row['Warehouse Area Key'],
+                     'name'=>$row['Warehouse Area Name'],
+                     'code'=>$row['Warehouse Area Code'],
+
+
+                 );
+
+    }
+    mysql_free_result($res);
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$total,
+                                      'records_perpage'=>$number_results,
+                                      // 'records_text'=>$rtext,
+                                      // 'records_order'=>$order,
+                                      // 'records_order_dir'=>$order_dir,
+                                      // 'filtered'=>$filtered,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp
+                                     )
+                   );
+
+    echo json_encode($response);
+}
 function department_list() {
 
     global $user;

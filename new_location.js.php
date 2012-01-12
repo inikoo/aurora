@@ -144,7 +144,7 @@ function get_location_data(){
 
      
     individual_location_data['Location Width']=Dom.get('location_width').value;
-    individual_location_data['Location Deepth']=Dom.get('location_deepth').value;
+    individual_location_data['Location Deepth']=Dom.get('location_Depth').value;
     individual_location_data['Location Heigth']=Dom.get('location_heigth').value;
      individual_location_data['Location Radius']=Dom.get('location_radius').value;
 }
