@@ -13,6 +13,17 @@ var warehouse_key=<?php echo $_REQUEST['warehouse_key'] ?>;
 var Editor_change_part;
 
 
+function change_block(e){
+   
+     Dom.setStyle(['description_block','parts_block'],'display','none');
+ 	 Dom.get(this.id+'_block').style.display='';
+	 Dom.removeClass(['description','parts'],'selected');
+	 Dom.addClass(this, 'selected');
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=location-edit&value='+this.id ,{});
+   
+}
+
+
 
 function validate_location_code(query){
 validate_general('location_description','code',unescape(query));
@@ -168,6 +179,10 @@ area_key=tables.table2.getRecord(oArgs.target).getData('key');
 }
 
 function init(){
+ var ids = ['description','parts']; 
+    YAHOO.util.Event.addListener(ids, "click", change_block);
+
+
 number_regex="\\d+";
 validate_scope_data=
 {
