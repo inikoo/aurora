@@ -191,10 +191,18 @@ scope:this
 
 function add_location(sku){
   Dom.get('add_location_sku').value=sku;
-   x= Dom.getX('add_location_button');
-   y= Dom.getY('add_location_button');
-   Dom.setX('Editor_add_location', x);
-   Dom.setY('Editor_add_location', y);
+   
+
+   
+   
+   region1 = Dom.getRegion('add_location_button'); 
+    region2 = Dom.getRegion('Editor_add_location'); 
+
+ var pos =[region1.right-region2.width-20,region1.bottom]
+Dom.setXY('Editor_add_location', pos);
+   
+   
+   
    Dom.get('add_location_input').focus();
    Editor_add_location.show();
 }
@@ -905,6 +913,8 @@ fields :
 
 YAHOO.util.Event.onContentReady("add_location_input", function () {
   
+ 
+  
   var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
     new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
     new_loc_oDS.responseSchema = {
@@ -914,7 +924,7 @@ fields :
         ["code","key","stock"]
     };
     var new_loc_oAC = new YAHOO.widget.AutoComplete("add_location_input", "add_location_container", new_loc_oDS);
-  
+   new_loc_oAC.maxResultsDisplayed = 5;
   
   new_loc_oAC.generateRequest = function(sQuery) {
 

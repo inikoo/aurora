@@ -100,10 +100,10 @@
 </div>
 
 
-<div id="Editor_add_location" style="position:fixed;left:-1000px;width:200px;padding:20px 10px;height:300px">
+<div id="Editor_add_location" style="position:fixed;left:-1000px;width:200px;padding:20px 10px;height:140px">
   <div style="display:none" class="hd"></div>
     <div class="bd dt-editor" >
-          <table border=1 style="width:100%;" >
+          <table border=0 style="width:100%;" >
           
          
           
