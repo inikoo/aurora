@@ -1,25 +1,42 @@
-    <div style="float:left;padding:20px;border:1px solid #ddd;width:400px">
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+       
+<button  onClick="exit_add_location()" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>    
+
+        
+       
+    </div>
+    <div class="buttons" style="float:left">
+      
+
+ </div>
+    <div style="clear:both"></div>
+</div>
+
+    <div style="float:left;padding:20px 5px 5px;border:1px solid #ddd;width:500px">
       <table class="edit">
 	<tr><td class="label">{t}Warehouse{/t}:</td><td><input id="location_warehouse" type="text" value="{$warehouse->get('Warehouse Name')}"/><input type="hidden" id="warehouse_key" value="{$warehouse->id}"></td></tr>
 	
 	<tr>
 	   <td class="label">{t}Area{/t}:</td>
 	   <td>
-	     <div  style="width:15em;xposition:relative;top:00px" >
+	     <div  style="width:25em;xposition:relative;top:00px" >
 	       <input type="hidden" id="location_warehouse_area_key" value=""/>
 		<input type="hidden" id="window" value="{$window}"/>
 		<input type="hidden" id="warehouse_area_id" value="{$warehouse_area_id}"/>
+		<input type="hidden" id="warehouse_area_name" value="{$warehouse_area_name}"/>
 
-	       <input width=10  value="" id="location_area" type="text"/>
+
+	       <input width=10  value="{$warehouse_area_name}" id="location_area" type="text"/>
 	    <div id="location_area_container"  ></div>
 	  </div>
 	   </td>
-	<td><span id="show_area_list">List</span></td>
+	<td><span class="state_details" id="show_area_list">List</span></td>
 	</tr>
 	
 	<tr><td class="label">{t}Used for{/t}:</td>
 	  <td>
-	    <div class="buttons" id="location_used_for" value="{$used_for}"  ovalue="{$used_for}"   prefix="used_for_" class="options" style="float:left;margin:5px 0">
+	    <div class="buttons small left" id="location_used_for" value="{$used_for}"  ovalue="{$used_for}"   prefix="used_for_" class="options" style="margin:5px 0">
 	    {foreach from=$used_for_list item=cat key=cat_id name=foo}
 	    <button {if $cat.selected}class="selected"{/if} name="{$cat_id}" onclick="radio_changed(this)" id="used_for_{$cat_id}">{$cat.name}</button>
 	    {/foreach}
@@ -30,7 +47,7 @@
 	<tr><td>{t}Max Slots{/t}:</td><td><input id="location_max_slots" value="" ovalue="" type="text"/></td></tr>
 	<tr xstyle="display:none"><td class="label">{t}Shape Type{/t}:</td>
 	  <td>
-	    <div class="buttons" id="location_shape_type" value="{$shape_type}" ovalue="{$shape_type}"  prefix="shape_type_"  class="options" style="margin:5px 0">
+	    <div class="buttons small left" id="location_shape_type" value="{$shape_type}" ovalue="{$shape_type}"  prefix="shape_type_"  class="options" style="margin:5px 0">
 	    {foreach from=$shape_type_list item=cat key=cat_id name=foo}
 	    <button {if $cat.selected}class="selected"{/if} name="{$cat_id}"   onclick="radio_changed(this);shape_type_changed();"  id="shape_type_{$cat_id}">{$cat.name}</button>
 	    {/foreach}
@@ -46,10 +63,13 @@
 
 
        </table>
-      
+	<div class="buttons" style="float:right">      
+	<button  onClick="save_add_location_return()" ><img src="art/icons/door_out.png" alt=""> {t}Create & Add Other{/t}</button>  
+	<button  onClick="save_add_location()" ><img src="art/icons/add.png" alt=""> {t}Create{/t}</button>
+	</div>
     </div>
     
-    <div id="location_save_block" style="margin:0px 20px;padding:20px 20px;float:right;border:1px solid #ddd;width:350px">
+    <div id="location_save_block" style="margin:0px 20px;padding:20px 20px;float:right;border:1px solid #ddd;width:350px; display:none">
     <div class="buttons" style="float:right">    
         <button  onClick="exit_add_location()" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>    
 	<button  onClick="save_add_location_return()" ><img src="art/icons/door_out.png" alt=""> {t}Create & Add Other{/t}</button>  
