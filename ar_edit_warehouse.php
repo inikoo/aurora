@@ -20,6 +20,7 @@ if(!isset($_REQUEST['tipo']))
 
 
 $tipo=$_REQUEST['tipo'];
+
 switch($tipo){
 case('part_location_update_can_pick'):
 $data=prepare_values($_REQUEST,array(
@@ -114,7 +115,7 @@ case('edit_shelf_location_type'):
   break;
 
 
-case('delete_area'):
+case('delete_warehouse_area'):
   delete_warehouse_area();
   break;
 case('delete_location'):
@@ -1709,6 +1710,31 @@ function edit_location_description(){
     exit;
 
 
+
+}
+
+function delete_warehouse_area(){
+
+	$data=$_REQUEST;
+	$wa=new WarehouseArea($_REQUEST['area_key']);
+
+	if (!$wa->id) {
+		$response= array('state'=>400,'msg'=>'Area not found');
+		echo json_encode($response);
+		exit;
+	}
+	
+	$wa->delete();
+
+
+	if($wa->deleted){
+		$response= array('state'=>200,'action'=>'deleted');
+	} else {
+		$response= array('state'=>400,'msg'=>$wa->deleted_msg);
+	}
+	
+	echo json_encode($response);
+	exit;
 
 }
 
