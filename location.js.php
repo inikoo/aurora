@@ -116,7 +116,7 @@ var CellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    alert(o.responseText);
+					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -376,7 +376,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"location_key", label:"", hidden:true,isPrimaryKey:true} 
 				       ,{key:"part_sku", label:"", hidden:true,isPrimaryKey:true} 
 				       ,{key:"description", label:"<?php echo _('Description')?>", width:470,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
+				       //,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
+					,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"qty", label:"<?php echo _('Qty')?>", width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
 				       ,{key:"move",label:"<?php echo _('Move')?>", width:30,className:"aright",action:'move'}
 				       ,{key:"lost", label:"<?php echo _('Lost')?>", width:30,className:"aright",action:'lost'}
@@ -384,6 +385,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     
 				       ];
 	    //?tipo=customers&tid=0"
+	//alert("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
 	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
