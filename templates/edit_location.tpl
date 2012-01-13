@@ -1,3 +1,4 @@
+
 {include file='header.tpl'}
 <div id="bd" >
  {include file='locations_navigation.tpl'}
@@ -47,7 +48,7 @@
 	<td colspan=5>
 		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="buttons left" >
 		{foreach from=$used_for_list item=cat key=cat_id name=foo}
-		<button class="{if $location->get('Location Mainly Used For')==$cat.name}selected{/if}" onclick="save_location('used_for','{$cat.name}')" id="used_for_{$cat.name}">{$cat.name}</button> 
+		<button class="{if $location->get('Location Mainly Used For')==$cat.name}selected{/if}" onclick="save_location_used_for('used_for','{$cat.name}')" id="used_for_{$cat.name}">{$cat.name}</button> 
 	    {/foreach}
 		</div>
 	</td>
