@@ -747,7 +747,6 @@ class DeliveryNote extends DB_Table {
 
 
     function actualize_inventory_transaction_facts() {
-
         $last_used_index=0;
         $sql=sprintf("select * from `Inventory Transaction Fact` where `Delivery Note Key`=%d  ",$this->id);
         $res=mysql_query($sql);
@@ -766,6 +765,7 @@ class DeliveryNote extends DB_Table {
                 mysql_query($sql);
 
             }
+print "$sql\n";
 
             $part_index=$metadata[0];
             $parts_per_product=$metadata[1];
@@ -840,10 +840,10 @@ class DeliveryNote extends DB_Table {
 
                     if ($location_key) {
                         if ($location_key==1) {
-                            $a.=' '._('Taken from an')." ".sprintf("<a href='location.php?id=1'>%s</a>",_('Unknown Location'));
+                            $a.=' '._('To be taken from an')." ".sprintf("<a href='location.php?id=1'>%s</a>",_('Unknown Location'));
                         } else {
                             $location = new Location($location_key);
-                            $a.=' '._('Taken from').": ".sprintf("<a href='location.php?id=%d'>%s</a>",$location->id,$location->data['Location Code']);
+                            $a.=' '._('To be taken from').": ".sprintf("<a href='location.php?id=%d'>%s</a>",$location->id,$location->data['Location Code']);
                         }
 
                     }
@@ -878,7 +878,7 @@ class DeliveryNote extends DB_Table {
                                      prepare_mysql($part_index.';'.$parts_per_product.';'.$location_index)
                                    );
                     mysql_query($sql);
-                    // print "$sql\n";
+                     print "$sql\n";
                     $location_index++;
                 }
 
@@ -1970,7 +1970,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-        $sql=sprintf("select `Out of Stock`,`No Picked Other`,`Not Found`,`Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+        $sql=sprintf("select `Map To Order Transaction Fact Key`,`Location Key`,`Out of Stock`,`No Picked Other`,`Not Found`,`Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
                      ,$itf_key
                     );
 
@@ -1996,8 +1996,64 @@ class DeliveryNote extends DB_Table {
             $part=new Part($sku);
             $cost_storing=0;
             $cost_supplier=$part->get_unit_cost($date)*$qty;
+            
+             $sql=sprintf('select `Product Key` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d  '
+                     ,$row['Map To Order Transaction Fact Key']);
+        $resx=mysql_query($sql);
 
-            $sql = sprintf ( "update `Inventory Transaction Fact` set `Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s where `Inventory Transaction Key`=%d  "
+        if ($row_x=mysql_fetch_assoc($resx)) {
+               $product = new product ($row_x ['Product Key'] );
+                $a = sprintf ( '<a href="product.php?id=%d">%s</a> <a href="dn.php?id=%d">%s</a>'
+                               , $product->id
+                               , $product->code
+                               , $this->id
+                               , $this->data['Delivery Note ID']
+           );
+           
+           
+           
+           }
+           else{
+            $a='';
+            }
+            
+           
+
+
+            
+            
+            $location_key=$row['Location Key'];
+        	if ($location_key) {
+                if ($location_key==1) {
+                        if($pending){
+                        $a.=' '._('To be taken from an')." ";
+                        }else{
+                           $a.=' '._('Taken from an')." ";
+                        }
+                        
+                            $a.=sprintf("<a href='location.php?id=1'>%s</a>",_('Unknown Location'));
+                        } else {
+                             if($pending){
+                        $a.=' '._('To be taken from').": ";
+                        }else{
+                           $a.=' '._('Taken from').": ";
+                        }
+                        
+                        
+                        
+                            $location = new Location($location_key);
+                            $a.=sprintf("<a href='location.php?id=%d'>%s</a>",$location->id,$location->data['Location Code']);
+                        }
+
+                    }
+
+
+                    $note = $a;
+            
+            
+
+            $sql = sprintf ( "update `Inventory Transaction Fact` set `Note`=%s,`Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s where `Inventory Transaction Key`=%d  "
+                             , prepare_mysql ( $note )
                              ,$qty
                              ,-1*$qty
                              ,-1*$cost_supplier
@@ -2007,6 +2063,7 @@ class DeliveryNote extends DB_Table {
                              ,$itf_key
                            );
             mysql_query ( $sql );
+
 
 
             $otf_key=$row['Map To Order Transaction Fact Key'];

@@ -1,7 +1,19 @@
 <?php
+/*
+ File: Staff.php 
+
+ This file contains the Staff Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2012, Inikoo 
+ 
+ Version 2.0
+*/
+
 include_once('common.php');
 include_once('class.Warehouse.php');
-include_once('location_header_functions.php');
 
 
 

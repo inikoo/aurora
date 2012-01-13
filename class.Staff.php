@@ -78,6 +78,30 @@ class Staff extends DB_Table{
      if(array_key_exists($key,$this->data))
       return $this->data[$key];
      switch($key){
+     case('Type'):
+       switch(	$this->data['Staff Type']){
+       case('Employee'):
+       $type=_('Permanent');
+       break;
+        case('Volunteer'):
+       $type=_('Volunteer');
+        break;
+        case('Contractor'):
+       $type=_('Contractor');
+        break;
+          case('Temporal Worker'):
+       $type=_('Temporal');
+        break;
+          case('Work Experience'):
+       $type=_('Work Experience');
+        break;
+        
+       	default:
+       	$type=$this->data['Staff Type'];
+       }
+     
+     return $type;
+     break;
      case('Formated ID'):
      case("ID"):
         return $this->get_formated_id();
@@ -99,7 +123,7 @@ class Staff extends DB_Table{
        break;
      case('Email'):
        if(!is_object($this->contact))
-	 $this->contact=new Contact($this->data['Staff Contact Key']);
+	 		$this->contact=new Contact($this->data['Staff Contact Key']);
        if($this->contact->id)
 	 return strip_tags($this->contact->data['Contact Main XHTML Email']);
        else

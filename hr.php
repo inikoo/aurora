@@ -19,11 +19,14 @@ $staff_options_list=array();
 
 
 if ($modify) {
-    $staff_options_list[]=array('tipo'=>'url','url'=>'edit_staff.php','label'=>_('Edit Staff'));
     $staff_options_list[]=array('tipo'=>'url','url'=>'new_staff.php','label'=>_('Add Staff'));
     $staff_options_list[]=array('tipo'=>'url','url'=>'import_csv.php?subject=staff','label'=>_('Import Staff'));
 
 }
+
+
+
+$smarty->assign('modify',$modify);
 
 
 
@@ -88,7 +91,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 
-
+/*
 $csv_export_options=array(
                         'description'=>array(
                                           'title'=>_('Description'),
@@ -121,11 +124,12 @@ $csv_export_options=array(
                                                    )
                                         )
                     );
+
 $smarty->assign('export_csv_table_cols',2);
 
 
 $smarty->assign('csv_export_options',$csv_export_options);
-
+*/
 
 $smarty->assign('search_label',_('Staff'));
 $smarty->assign('search_scope','staff');

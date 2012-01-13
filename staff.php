@@ -44,14 +44,14 @@ $_SESSION['state']['staff']['id']=$staff_id;
 //$_SESSION['state']['staff']['store']=$customer->data['Customer Store Key'];
 
 
-/*if(isset($_REQUEST['view']) and preg_match('/^(history|products|orders)$/',$_REQUEST['view']) ){
+if(isset($_REQUEST['view']) and preg_match('/^(history|details|working_hours)$/',$_REQUEST['view']) ){
   $_SESSION['state']['staff']['view']=$_REQUEST['view'];
   $view=$_REQUEST['view'];
 }else{
   $view=$_SESSION['state']['staff']['view'];
 }
 $smarty->assign('view',$view);
-*/
+
 
 
 $css_files=array(
@@ -207,6 +207,8 @@ $filter_menu=array(
              );
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu0',$filter_menu);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 
 
@@ -218,8 +220,10 @@ $filter_menu=array(
 		   'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
 		   'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)'))
 		   );
-$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
-$filter_value=$_SESSION['state']['hr']['staff']['f_value'];
+
+
+$tipo_filter=$_SESSION['state']['staff']['working_hours']['f_field'];
+$filter_value=$_SESSION['state']['staff']['working_hours']['f_value'];
 
 $smarty->assign('filter_value0',$filter_value);
 $smarty->assign('filter_menu0',$filter_menu);
@@ -228,10 +232,11 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 $filter_menu=array(
-		   'code'=>array('db_key'=>'code','menu_label'=>'Code like','label'=>_('Code')),
+		   'hours_worked'=>array('db_key'=>'hours_worked','menu_label'=>_('Hours'),'label'=>_('Hours Worked')),
 		   );
 //$tipo_filter=$_SESSION['state']['staff']['assets']['f_field'];
 //$filter_value=$_SESSION['state']['staff']['assets']['f_value'];
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 
 $smarty->assign('filter_value1',$filter_value);
 $smarty->assign('filter_menu1',$filter_menu);

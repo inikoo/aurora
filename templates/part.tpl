@@ -29,7 +29,7 @@
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	     
 	      <div id="imagediv"   style="border:1px solid #ddd;width:190px;;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-		<img src="{$part->get('Part Main Image')}"  style="vertical-align:middle;display:block;" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
+		<img src="{$part->get('Part Main Image')}"  style="vertical-align:middle;display:block;;width:190px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
 	      </div>
 	    </div>
 	    
