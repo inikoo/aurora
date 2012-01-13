@@ -314,7 +314,7 @@ function save_add_location_return(){
 		if(r.action=='created'){
 		
 		//new_location.php?warehouse_id=1
-		    window.location='new_location.php?warehouse_id=1&auto=1';
+		    window.location='new_location.php?warehouse_id=1&auto=1&window='+edit_window;
 		    //reset_location_data();
 		    //var table=tables['table0']
 		    //var datasource=tables['dataSource0'];    
