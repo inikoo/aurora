@@ -53,6 +53,19 @@ $smarty->assign('title', _('New Warehouse Area'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$tipo_filter=$_SESSION['state']['locations']['table']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['locations']['table']['f_value']);
+
+$filter_menu=array(
+		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Location Code','label'=>'Code'),
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
 $used_for=array(
 		'Picking'=>array('selected'=>true,'name'=>_('Picking'))
 		,'Storing'=>array('selected'=>false,'name'=>_('Storing'))

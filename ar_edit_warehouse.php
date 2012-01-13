@@ -980,14 +980,18 @@ function delete_location(){
 
   $location->delete();
   
-  if($location->deleted){
-    echo 'Ok';
-    return;
-    
-  }else{
-    echo $location->deleted_msg;
-    return;
-  }
+	if($location->deleted){
+		$response= array('state'=>200,'action'=>'deleted');
+	} else {
+		$response= array('state'=>400,'msg'=>$location->deleted_msg);
+	}
+
+	$unknown_wa=new WarehouseArea($_REQUEST['area_key']);
+	$unknown_wa->update_children();
+
+
+	echo json_encode($response);
+	exit;
   
 
 }
@@ -1726,6 +1730,8 @@ function delete_warehouse_area(){
 	
 	$wa->delete();
 
+		
+	
 
 	if($wa->deleted){
 		$response= array('state'=>200,'action'=>'deleted');
@@ -1733,6 +1739,9 @@ function delete_warehouse_area(){
 		$response= array('state'=>400,'msg'=>$wa->deleted_msg);
 	}
 	
+	$unknown_wa=new WarehouseArea(1);
+	$unknown_wa->update_children();
+
 	echo json_encode($response);
 	exit;
 

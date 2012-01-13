@@ -239,6 +239,31 @@ this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 }});
 
 
+function delete_location(){
+	wa_name='df';
+	if (confirm('Are you sure, you want to delete location '+wa_name+' now?')) {
+		var request='ar_edit_warehouse.php?tipo=delete_location&location_key=' + Dom.get('location_key').value + '&area_key=' + Dom.get('area_key').value
+		//alert(request);//return;
+		YAHOO.util.Connect.asyncRequest('POST',request ,{
+			success:function(o) {
+			//alert(o.responseText)
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+
+
+			if(r.state==200){
+				window.location.href='warehouse.php';
+			}
+			else{
+				alert(r.msg);
+			}
+
+			}
+		});
+	}
+
+
+
+}
 
 function save_location_used_for(key,value){
 

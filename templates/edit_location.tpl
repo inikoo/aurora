@@ -12,7 +12,8 @@
      
    
         <button  onclick="window.location='location.php?id={$location->id}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
-         
+        <button  {if $location_id==1 || $location_id==2}style="display:none"{/if} onclick="delete_location()" ><img src="art/icons/cancel.png" alt=""> {t}Delete Area{/t}</button>
+
     </div>
     <div class="buttons" style="float:left">
 
@@ -21,7 +22,7 @@
     <div style="clear:both"></div>
 </div>
 <input type="hidden" id="location_key" value="{$location->id}"/>
-
+<input type="hidden" id="area_key" value="{$location->get('Location Warehouse Area Key')}"/>
 
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Location{/t}: <span id="title_name">{$location->get('Location Code')}</span></h1>

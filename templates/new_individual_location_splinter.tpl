@@ -21,7 +21,7 @@
 	   <td class="label">{t}Area{/t}:</td>
 	   <td>
 	     <div  style="width:25em;xposition:relative;top:00px" >
-	       <input type="hidden" id="location_warehouse_area_key" value=""/>
+	       <input type="hidden" id="location_warehouse_area_key" value="{$warehouse_area_id}"/>
 		<input type="hidden" id="window" value="{$window}"/>
 		<input type="hidden" id="warehouse_area_id" value="{$warehouse_area_id}"/>
 		<input type="hidden" id="warehouse_area_name" value="{$warehouse_area_name}"/>
