@@ -43,6 +43,7 @@ if(!$user->can_edit('warehouses')  ){
 }
 
 $smarty->assign('edit',$_SESSION['state']['location']['edit']);
+$smarty->assign('location_id',$location_id);
 
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
@@ -111,6 +112,22 @@ $js_files=array(
 		);
 
 //print_r($location);
+
+
+$tipo_filter0=$_SESSION['state']['location']['stock_history']['f_field'];
+$filter_menu0=array(
+                  'note'=>array('db_key'=>_('note'),'menu_label'=>'Part SKU','label'=>_('Note')),
+		   'author'=>array('db_key'=>_('author'),'menu_label'=>'Used in','label'=>_('Author')),
+              );
+$smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
+$smarty->assign('filter_menu0',$filter_menu0);
+$smarty->assign('filter0',$tipo_filter0);
+$smarty->assign('filter_value0','');
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
 $tipo_filter2='code';
 $filter_menu2=array(
                   'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
