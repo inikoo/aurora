@@ -306,13 +306,14 @@ $sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Area
 			$move_all_locations&=false;
 		}
 	}
+	
 
 	if($move_all_locations){
 		$sql=sprintf("delete from `Warehouse Area Dimension` where `Warehouse Area Key`=%d",$this->id);
 		mysql_query($sql);
 	}
 
-
+	
         if (mysql_affected_rows()>0) {
             $this->deleted=true;
         } else {

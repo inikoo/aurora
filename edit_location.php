@@ -43,6 +43,7 @@ if(!$user->can_edit('warehouses')  ){
 }
 
 $smarty->assign('edit',$_SESSION['state']['location']['edit']);
+$smarty->assign('location_id',$location_id);
 
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);

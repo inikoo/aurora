@@ -40,8 +40,8 @@ $smarty->assign('search_scope','locations');
 
 
 
-
-$smarty->assign('edit',$_SESSION['state']['warehouse_area']['view']);
+//print $_SESSION['state']['warehouse_area']['edit'];
+$smarty->assign('edit',$_SESSION['state']['warehouse_area']['edit']);
 
 
 $css_files=array(

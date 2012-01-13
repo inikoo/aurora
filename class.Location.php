@@ -799,9 +799,29 @@ $this->update_parts();
     function delete() {
         $this->deleted=false;
         $this->deleted_msg='';
-        $warehouse_area=new WarehouseArea($this->data['Location Warehouse Area Key']);
-        $sql=sprintf("delete from `Location Dimension` where `Location Key`=%d",$this->id);
-        mysql_query($sql);
+
+
+	if($this->id==1){
+		$this->deleted_msg='Error location unknown can not be deleted';
+		return;
+	}
+
+	$move_all_parts=true;
+	$sql=sprintf("select `Part SKU` from `Part Location Dimension` where `Location Key`=%d", $this->id);
+	$result=mysql_query($sql);
+	while($row=mysql_fetch_assoc($result)){
+		$sql=sprintf("update `Part Location Dimension` set `Location Key`=1 where `Location Key`=%d", $this->id);
+		//print $sql;
+		if (!mysql_query($sql)) {
+			$move_all_parts&=false;
+		}
+	}
+
+
+	if($move_all_parts){
+		$sql=sprintf("delete from `Location Dimension` where `Location Key`=%d",$this->id);
+		mysql_query($sql);
+	}
         if (mysql_affected_rows()>0) {
             $this->deleted=true;
         } else {
