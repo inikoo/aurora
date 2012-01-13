@@ -14,7 +14,6 @@
     <div class="buttons" style="float:left">
         <button  onclick="window.location='warehouse_stats.php?id={$warehouse->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
          <button  onclick="window.location='warehouse_map.php?id={$warehouse->id}'" ><img src="art/icons/application_view_gallery.png" alt=""> {t}Map{/t}</button>
-        <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/arrow_switch.png" alt=""> {t}Movements{/t}</button>
 
  </div>
     <div style="clear:both"></div>

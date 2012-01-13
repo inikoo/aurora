@@ -173,11 +173,13 @@
   
   </td></tr>
   <tr><td>{if $customer_type}User is registered in the site{/if}</td></tr>
-  <tr><td>{$correlation_msg}</td></tr>
+  <tr>
+  <td>{$correlation_msg}</td></tr>
   
 {if  $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'}
 
-   <tr><td>
+   <tr>
+   <td>
    <div style="font-size:90%">
    {if $customer->get('Customer Send Newsletter')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send newsletters{/t}<span><br/>{/if}
    {if $customer->get('Customer Send Email Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send marketing by email{/t}<span><br/>{/if}

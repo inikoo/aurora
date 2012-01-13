@@ -5375,5 +5375,5 @@ ALTER TABLE `Part Location Dimension` ADD `Minimum Quantity` MEDIUMINT UNSIGNED 
 
 ALTER TABLE `Store Dimension` ADD `Store VAT Number` VARCHAR( 255 ) NOT NULL ,ADD `Store Company Number` VARCHAR( 255 ) NOT NULL;
 ALTER TABLE `Customer Dimension` ADD `Customer Follower On Twitter` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',ADD `Customer Friend On Facebook` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
-
+ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM( 'Employee', 'Volunteer', 'Contractor', 'Temporal Worker', 'Work Experience' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Employee';
 

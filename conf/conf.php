@@ -2102,100 +2102,35 @@ $default_state=array(
                                ),
 
                    'staff'=>array(
-                               'view'=>'general',
-                               'parent'=>'none',
-                               'details'=>0,
-                               'view'=>'history',
+                   'view'=>'details',
+                   
+                    'working_hours'=>array(
+                                                           'id'=>'',
+                                                           'order'=>'start_time',
+                                                           'order_dir'=>'',
+                                                           'sf'=>0,
+                                                           'nr'=>25,
+                                                           'where'=>'where true',
+                                                           'f_field'=>'hours_worked',
+                                                           'f_value'=>'','f_show'=>false,
+                                                           // 'from'=>'',
+                                                           //  'to'=>'',
+                                                           //'type'=>'Family'
 
-                               'table'=>array(
-                                           'order'=>'name',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>25,
-                                           'where'=>'where true',
-                                           'f_field'=>'name',
-                                           'f_value'=>'','f_show'=>false,
-                                           'csv_export'=>array(
-                                                            'id'=>true,
-                                                            'alias'=>false,
-                                                            'name'=>true,
-                                                            'position'=>true,
-                                                            'description'=>false,
-                                                            'valid_from'=>false,
-                                                            'valid_to'=>false
-                                                        )
-                                       ),
-                               'company_areas'=>array(
-                                                   'view'=>'general',
-                                                   'parent'=>'none',
-                                                   'details'=>0,
-                                                   'order'=>'name',
-                                                   'order_dir'=>'',
-                                                   'sf'=>0,
-                                                   'nr'=>25,
-                                                   'where'=>'where true',
-                                                   'f_field'=>'name',
-                                                   'f_value'=>'','f_show'=>false,
-                                                   'mode'=>'',
-                                                   'restrictions'=>'none',
-                                                   'parent'=>'',
-                                                   'csv_export'=>array(
-                                                                    'id'=>true,
-                                                                    'code'=>false,
-                                                                    'name'=>true,
-                                                                    'description'=>true,
-                                                                    'number_of_department'=>false,
-                                                                    'number_of_position'=>false,
-                                                                    'number_of_employee'=>false
-                                                                )
-                                               ),
-                               'positions'=>array(
-                                               'view'=>'general',
-                                               'parent'=>'none',
-                                               'details'=>0,
-                                               'order'=>'name',
-                                               'order_dir'=>'',
+                                                       ),
+                   
+                                  'history'=>array(
+                                               'where'=>'where true',
+                                               'f_field'=>'abstract',
+                                               'f_value'=>'','f_show'=>false,
+                                               'order'=>'date',
+                                               'order_dir'=>'desc',
                                                'sf'=>0,
                                                'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'name',
-                                               'f_value'=>'','f_show'=>false,
-                                               'mode'=>'',
-                                               'restrictions'=>'none',
-                                               'parent'=>'',
-                                               'csv_export'=>array(
-                                                                'code'=>true,
-                                                                'name'=>true,
-                                                                'description'=>true,
-                                                                'employees'=>false,
-                                                                'department_name'=>true,
-                                                                'department_code'=>false,
-                                                                'department_description'=>false
-                                                            )
-                                           ),
-                               'company_departments'=>array(
-                                                         'view'=>'general',
-                                                         'parent'=>'none',
-                                                         'details'=>0,
-                                                         'order'=>'name',
-                                                         'order_dir'=>'',
-                                                         'sf'=>0,
-                                                         'nr'=>25,
-                                                         'where'=>'where true',
-                                                         'f_field'=>'name',
-                                                         'f_value'=>'','f_show'=>false,
-                                                         'mode'=>'',
-                                                         'restrictions'=>'none',
-                                                         'parent'=>'',
-                                                         'csv_export'=>array(
-                                                                          'id'=>false,
-                                                                          'code'=>true,
-                                                                          'name'=>true,
-                                                                          'department_description'=>true,
-                                                                          'number_of_position'=>false,
-                                                                          'number_of_employee'=>false
-                                                                      )
-                                                     ),
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>''
+                                           )
                            ),
 
 

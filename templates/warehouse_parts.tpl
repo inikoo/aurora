@@ -15,7 +15,7 @@
     
                 <button  onclick="window.location='warehouse_orders.php?id={$warehouse->id}'" ><img src="art/icons/basket_put.png" alt=""> {t}Pick Orders{/t}</button>
 
-            <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/arrow_switch.png" alt=""> {t}Movements{/t}</button>
+            <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/arrow_switch.png" alt=""> {t}Part Movements{/t}</button>
 
         <button  onclick="window.location='parts_stats.php?warehouse={$warehouse->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
         <button  onclick="window.location='parts_lists.php?warehouse={$warehouse->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>

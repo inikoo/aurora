@@ -132,7 +132,7 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					 // alert(o.responseText);
+					 alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){

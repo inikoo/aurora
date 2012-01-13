@@ -2,13 +2,25 @@
 <div id="bd" style="padding:0" >
 
 <div style="padding:0 20px">
-
-
 {include file='hr_navigation.tpl'}
 <div class="branch"> 
   <span>{t}Staff{/t}</span>
 </div>
-    <h1>{t}Staff{/t}</h1>
+ 
+
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_hr.php'" ><img src="art/icons/cog.png" alt=""> {t}Edit HR{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+
+ </div>
+    <div style="clear:both"></div>
+</div>
+
+   <h1>{t}Staff{/t}</h1>
   </div>
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">

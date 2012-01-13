@@ -7,8 +7,19 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var dialog_note;
 
-var staff_key=<?php echo $_SESSION['state']['staff']['id']?>;
 
+function change_block(){
+ids=['history','details', 'working_hours'];
+block_ids=['block_working_hours','block_history','block_details'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+
+Dom.removeClass(ids,'selected');
+
+Dom.addClass(this,'selected');
+//alert('ar_sessions.php?tipo=update&keys=customer-view&value='+this.id)
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=staff-view&value='+this.id ,{});
+}
 
 
  
@@ -27,7 +38,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:150}
 					   ];
 		
-		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=staff_history&tid="+tableid);
+		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=staff_history&tid="+tableid+"&parent_key="+Dom.get('staff_key').value);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -100,14 +111,17 @@ fields: ["note","date","time","objeto" ]};
 
 					   ];
 		
-		    this.dataSource1  = new YAHOO.util.DataSource("ar_staff.php?tipo=staff_working_hours&tid="+tableid+"&id="+staff_key);
+		
+		request="ar_staff.php?tipo=staff_working_hours&tid="+tableid+"&id="+Dom.get('staff_key').value;
+		
+		    this.dataSource1  = new YAHOO.util.DataSource(request);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.table_id=tableid;
 	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		 rowsPerPage:"resultset.records_perpage",
+			 rowsPerPage:"resultset.records_perpage",
 		    RecordOffset : "resultset.records_offset", 
 		       rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
@@ -169,7 +183,7 @@ function init(){
 
 
 
- var Dom   = YAHOO.util.Dom;
+
 
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -177,8 +191,8 @@ function init(){
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
  oAutoComp.minQueryLength = 0; 
 
- var ids=['all','staff','exstaff'];
- YAHOO.util.Event.addListener(ids, "click", change_view);
+ids=['history','details', 'working_hours'];
+ YAHOO.util.Event.addListener(ids, "click", change_block);
  
 
 
@@ -204,23 +218,4 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 
 
 
-var change_view = function (e){
 
-    new_view=this.id
-
-    if(new_view!=view){
-	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=hr-view&value='+escape(new_view));
-	this.className='selected';
-	Dom.get(view).className='';
-	
-	view=new_view;
-	
-	
-	var table=tables.table0;
-	var datasource=tables.dataSource0;
-	var request='&sf=0&view='+view;
-	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-    }
-    
-
-	}

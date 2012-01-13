@@ -1,4 +1,17 @@
 <?php
+/*
+ File: Staff.php 
+
+ This file contains the Staff Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2012, Inikoo 
+ 
+ Version 2.0
+*/
+
 include_once('common.php');
 if(!$user->can_view('staff')){
    header('Location: index.php');
