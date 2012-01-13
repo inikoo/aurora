@@ -72,7 +72,7 @@ var staff_key=Dom.get('assign_picker_staff_key').value;
  var sup_pwd=   Dom.get('assign_picker_sup_password').value;
 var dn_key=Dom.get('assign_picker_dn_key').value;
     var request='ar_edit_orders.php?tipo=assign_picker&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
-    alert(request); 
+   // alert(request); return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
@@ -81,13 +81,14 @@ var dn_key=Dom.get('assign_picker_dn_key').value;
 		if (r.state==200) {
 		    
 		    if(r.action='updated'){
+
 		    Dom.get('operations'+dn_key).innerHTML=r.operations;
-		    Dom.get('dn_state'+dn_key).innerHTML=r.dn_state;
+		    //Dom.get('dn_state'+dn_key).innerHTML=r.dn_state;
 		    }
 		    close_dialog('assign_picker_dialog');
 
 		}else{
-		  //  alert(r.msg);
+		   alert(r.msg);
 	    }
 	    }
 	});    
@@ -161,11 +162,11 @@ var staff_key=Dom.get('assign_packer_staff_key').value;
  var sup_pwd=   Dom.get('assign_packer_sup_password').value;
 var dn_key=Dom.get('assign_packer_dn_key').value;
     var request='ar_edit_orders.php?tipo=assign_packer&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
-     
+    // alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				//alert(o.responseText)
+				alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		    
@@ -176,7 +177,7 @@ var dn_key=Dom.get('assign_packer_dn_key').value;
 		    close_dialog('assign_packer_dialog');
 
 		}else{
-		  //  alert(r.msg);
+		    alert(r.msg);
 	    }
 	    }
 	});    
