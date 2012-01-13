@@ -1395,7 +1395,7 @@ print "$sql\n";
 
 
 
-    function assign_picker($staff_key) {
+    function assign_picker($staff_key, $staff_pin) {
         $this->assigned=false;
 
         if (!preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
@@ -1411,6 +1411,12 @@ print "$sql\n";
             $this->msg=_('Staff not found');
             return;
         }
+
+	if($staff->data['Staff PIN']!=$staff_pin){
+	    $this->error=true;
+            $this->msg=_('Incorrect Staff PIN');
+            return;
+	}
 
         if ($this->data ['Delivery Note Assigned Picker Key']==$staff->id) {
             return;
@@ -1433,6 +1439,7 @@ print "$sql\n";
         $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$this->id.')">';
         $this->operations=$operations;
         $this->dn_state=_('Picker Assigned');
+	$this->dn_key=$this->id;
 
     }
     function assign_packer($staff_key) {
@@ -1491,7 +1498,7 @@ print "$sql\n";
         $this->dn_state=_('Packer Assigned');
 
     }
-    function start_picking($staff_key,$date=false) {
+    function start_picking($staff_key,$staff_pin, $date=false) {
 
         if (!$date)
             $date=date("Y-m-d H:i:s");
@@ -1520,6 +1527,12 @@ print "$sql\n";
             $staff_alias=$staff->data['Staff Alias'];
             $staff_key=$staff->id;
         }
+
+	if($staff->data['Staff PIN']!=$staff_pin){
+	    $this->error=true;
+            $this->msg=_('Incorrect Staff PIN');
+            return;
+	}
 
         if ($this->data ['Delivery Note Assigned Picker Key']==$staff_key) {
             return;
