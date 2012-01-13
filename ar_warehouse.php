@@ -1415,7 +1415,7 @@ function parts_at_location() {
 
     while ($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-//print_r($data);
+
 
         if ($data['Part Current Stock']==0 or !is_numeric($data['Quantity On Hand'])) {
             $move='';
@@ -1426,15 +1426,14 @@ function parts_at_location() {
                 $move='<img src="art/icons/package_go.png" alt="'._('Move').'" />';
 
         }
-
+/*
 	$min='0';
 	$max='0';
-	if($data['Can Pick']='Yes'){
+	if($data['Can Pick']=='Yes'){
 		$min=$data['Minimum Quantity'];
 		$max=$data['Maximum Quantity'];
 	}
-
-
+*/
         $adata[]=array(
 
                      'sku'=>sprintf('<a href="part.php?id=%d&edit_stock=1">SKU%05d</a>',$data['Part SKU'],$data['Part SKU']),
@@ -1451,9 +1450,10 @@ function parts_at_location() {
                      'number_locations'=>$data['Part Distinct Locations'],
                      'number_qty'=>$data['Quantity On Hand'],
                      'part_stock'=>$data['Part Current Stock'],
-		     'min'=>$min,
-		     'max'=>$max
+		     'min'=>$data['Minimum Quantity'],
+		     'max'=>$data['Maximum Quantity']
                  );
+	
     }
     $response=array('resultset'=>
 

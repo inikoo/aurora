@@ -435,6 +435,8 @@ function update_part_location(){
   $traslator=array(
 		   'qty'=>'Quantity On Hand',
 		   'can_pick'=>'Can Pick',
+		   'min'=>'Minimum Quantity',
+		   'max'=>'Maximum Quantity'
 		   );
   if(array_key_exists($_REQUEST['key'],$traslator)){
     $key=$traslator[$_REQUEST['key']];
@@ -986,7 +988,7 @@ function delete_location(){
 		$response= array('state'=>400,'msg'=>$location->deleted_msg);
 	}
 
-	$unknown_wa=new WarehouseArea($_REQUEST['area_key']);
+	$unknown_wa=new WarehouseArea($_REQUEST['area_key`']);
 	$unknown_wa->update_children();
 
 

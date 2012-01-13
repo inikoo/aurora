@@ -202,6 +202,7 @@ class PartLocation extends DB_Table {
                      ,$this->part_sku
                      ,$this->location_key
                     );
+	//print $sql;
         if (mysql_query($sql)) {
             $this->updated=true;
             $this->data['Can Pick']=$value;
@@ -211,7 +212,74 @@ class PartLocation extends DB_Table {
 
 
     }
-    
+    function update_min($value) {
+
+	$sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d "
+                     ,$this->part_sku
+                     ,$this->location_key
+                    );
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_assoc($result)){
+		if($row['Quantity On Hand'] < $value){
+			$this->updated=false;
+			$this->msg='Minimum Qty cannot be greater than Qty in hand';
+			return;
+		}
+	}
+
+        $sql=sprintf("update `Part Location Dimension` set `Minimum Quantity`=%d where `Part SKU`=%d and `Location Key`=%d "
+                     ,$value
+                     ,$this->part_sku
+                     ,$this->location_key
+                    );
+	//print $sql;
+        if (mysql_query($sql)) {
+            $this->updated=true;
+            $this->data['Minimum Quantity']=$value;
+            //$this->part->update_picking_location();
+        }
+
+
+
+    }
+
+     function update_max($value) {
+
+	$sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d "
+                     ,$this->part_sku
+                     ,$this->location_key
+                    );
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_assoc($result)){
+		if($row['Minimum Quantity'] > $value){
+			$this->updated=false;
+			$this->msg='Maximum Qty has to be greater than Minimum Qty';
+			return;
+		}
+		if($row['Quantity On Hand'] < $value){
+			$this->updated=false;
+			$this->msg='Maximum Qty cannot be greater than Qty in hand';
+			return;
+		}
+	}
+
+        $sql=sprintf("update `Part Location Dimension` set `Maximum Quantity`=%d where `Part SKU`=%d and `Location Key`=%d "
+                     ,$value
+                     ,$this->part_sku
+                     ,$this->location_key
+                    );
+	//print $sql;
+        if (mysql_query($sql)) {
+            $this->updated=true;
+            $this->data['Maximum Quantity']=$value;
+            //$this->part->update_picking_location();
+        }
+
+
+
+    }   
+
+
     function audit($qty,$note='') {
 
         if (!is_numeric($qty) or $qty<0) {
@@ -1342,6 +1410,7 @@ class PartLocation extends DB_Table {
     }
 
     function update_field_switcher($field,$value,$options='') {
+	
         switch ($field) {
         case('Quantity On Hand'):
             $this->audit($value);
@@ -1349,8 +1418,12 @@ class PartLocation extends DB_Table {
         case('Can Pick'):
             $this->update_can_pick($value);
             break;
-
-
+	case('Minimum Quantity'):
+	    $this->update_min($value);
+	    break;
+	case('Maximum Quantity'):
+	    $this->update_max($value);
+	    break;
         }
     }
 
