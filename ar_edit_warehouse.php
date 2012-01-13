@@ -1681,7 +1681,8 @@ function edit_location_description(){
                  'volume'=>'Location Max Volume',
                  'weight'=>'Location Max Weight',
                  'slots'=>'Location Max Slots',
-                 'parts'=>'Location Distinct Parts'
+                 'parts'=>'Location Distinct Parts',
+		'used_for'=>'Location Mainly Used For'
              );
 
 

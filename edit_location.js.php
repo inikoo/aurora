@@ -149,13 +149,14 @@ var tableid=2;
 				       ,{key:"description", label:"<?php echo _('Description')?>", width:470,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
 				       ,{key:"min", label:"<?php echo _('Min')?>", width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
+				       ,{key:"max", label:"<?php echo _('Max')?>", width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
 				       ,{key:"qty", label:"<?php echo _('Qty')?>", hidden:true,width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
 				       ,{key:"move",label:"<?php echo _('Move')?>", hidden:true,width:30,className:"aright",action:'move'}
 				       ,{key:"lost", label:"<?php echo _('Lost')?>",hidden:true, width:30,className:"aright",action:'lost'}
 				       ,{key:"delete", label:"", width:30,className:"aright",object:'part_location',action:'delete'}
 				     
 				       ];
-	    alert("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
+	    //alert("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -237,6 +238,36 @@ this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 
 }});
 
+
+
+function save_location_used_for(key,value){
+
+ var data_to_update=new Object;
+
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+
+
+
+var request='ar_edit_warehouse.php?tipo=edit_location_description&key=' + key+ '&newvalue=' + value +'&location_key=' + location_id+'&okey=' + key
+	//alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+//alert(o.responseText)
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+
+
+				if(r.state==200){
+
+				window.location.reload()
+            }
+
+    }
+    });
+
+}
+
+
+
 function select_area(oArgs){
 //alert('ss');return;
 
@@ -289,16 +320,16 @@ validate_scope_data=
 	'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Code','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Location Code')?>'}]}
 	//,'stock':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Stock_Value','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Stock Value')?>'}]}
 
-	,'radius':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Radius','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Radius')?>'}]}
-	,'deep':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Deep','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Depth')?>'}]}	
-	,'height':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Height','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Height')?>'}]}	
-	,'width':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Width','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Width')?>'}]}	
+	//,'radius':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Radius','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Radius')?>'}]}
+	//,'deep':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Deep','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Depth')?>'}]}	
+	//,'height':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Height','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Height')?>'}]}	
+	//,'width':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Width','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Width')?>'}]}	
 
 	,'volume':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Max_Volume','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Volume')?>'}]}	
 	,'weight':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Max_Weight','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
 
 
-	,'slots':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Max_Slots','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
+	//,'slots':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Max_Slots','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
 	//,'parts':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Distinct_Parts','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid parts')?>'}]}
 	//,'stock_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'location_has_stock_type','ar':false}
 	

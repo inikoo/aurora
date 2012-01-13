@@ -1407,7 +1407,7 @@ function parts_at_location() {
 
 
     $sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`)    $where $wheref    order by $order $order_direction  limit $start_from,$number_results ");
-//print $sql;
+print $sql;
 
     $adata=array();
 
@@ -1415,7 +1415,7 @@ function parts_at_location() {
 
     while ($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-
+print_r($data);
 
         if ($data['Part Current Stock']==0 or !is_numeric($data['Quantity On Hand'])) {
             $move='';
