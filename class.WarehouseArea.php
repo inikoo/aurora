@@ -286,6 +286,40 @@ $sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Area
         mysql_query($sql);
         $this->get_data('id',$this->id);
   }
+
+    function delete() {
+        $this->deleted=false;
+        $this->deleted_msg='';
+
+	if($this->id==1){
+		$this->deleted_msg='Error area unknown can not be deleted';
+		return;
+	}
+
+	$move_all_locations=true;
+	$sql=sprintf("select `Location Key` from `Location Dimension` where `Location Warehouse Area Key`=%d", $this->id);
+	$result=mysql_query($sql);
+	while($row=mysql_fetch_assoc($result)){
+		$location=new Location($row['Location Key']);
+		$location->update(array('Location Warehouse Area Key'=>'1'));
+		if (!$location->updated) {
+			$move_all_locations&=false;
+		}
+	}
+
+	if($move_all_locations){
+		$sql=sprintf("delete from `Warehouse Area Dimension` where `Warehouse Area Key`=%d",$this->id);
+		mysql_query($sql);
+	}
+
+
+        if (mysql_affected_rows()>0) {
+            $this->deleted=true;
+        } else {
+            $this->deleted_msg='Error area can not be deleted';
+        }
+
+    }
 }
 
 ?>
