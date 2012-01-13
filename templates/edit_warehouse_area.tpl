@@ -3,7 +3,7 @@
 {include file='locations_navigation.tpl'}
 <input type="hidden" id="warehouse_key" value="{$warehouse->id}" />
 <input type="hidden" id="warehouse_area_key" value="{$warehouse_area->id}" />
-
+<input type="hidden" id="wa_name" value="{$warehouse_area->get('Warehouse Area Name')}" />
 <div class="branch"> 
  {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$warehouse_area->get('Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if} <a href="warehouse.php?id={$warehouse_area->get('Warehouse Key')}">{t}Locations{/t}</a>  &rarr; {$warehouse_area->get('Warehouse Area Name')} 
 </div>
@@ -14,6 +14,7 @@
        
         <button  onclick="window.location='warehouse.php?id={$warehouse->id}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
         <button  onclick="window.location='new_location.php?warehouse_area_id={$warehouse_area->id}&window=2'" ><img src="art/icons/add.png" alt=""> {t}Add Location{/t}</button>
+	<button  {if $warehouse_area->id==1}style="display:none"{/if} onclick="delete_area()" ><img src="art/icons/cancel.png" alt=""> {t}Delete Area{/t}</button>
 
         
        

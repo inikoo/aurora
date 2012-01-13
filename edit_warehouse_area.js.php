@@ -18,6 +18,8 @@ print 'var location_type_options=['.$l."];\n";
 print 'var location_type_name={'.$ln."};\n";
 
 ?>
+var wa_name='';
+var wa_key=<?php echo $_REQUEST['id'] ?>;
 var warehouse_code='';
 var editing='<?php echo $_SESSION['state']['warehouse']['edit']?>';
 
@@ -99,6 +101,7 @@ el.innerHTML =location_type_name[oData];
 
 					 ];
 	    //?tipo=locations&tid=0"
+	//alert("ar_edit_warehouse.php?tipo=locations");
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_warehouse.php?tipo=locations");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -493,10 +496,37 @@ function save_edit_warehouse_area(){
  save_edit_general('warehouse_area');
 }
 
+
+function delete_area(){
+	if (confirm('Are you sure, you want to delete area '+wa_name+' now?')) {
+		var request='ar_edit_warehouse.php?tipo=delete_warehouse_area&area_key=' + wa_key
+		//alert(request);//return;
+		YAHOO.util.Connect.asyncRequest('POST',request ,{
+			success:function(o) {
+			//alert(o.responseText)
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+
+
+			if(r.state==200){
+				window.location.href='warehouse.php?id=1';
+			}
+			else{
+				alert(r.msg);
+			}
+
+			}
+		});
+	}
+
+
+
+}
+
  function init(){
 
-      init_search('locations');
-     
+    init_search('locations');
+    wa_name=Dom.get('wa_name').value;
+
     area_dialog = new YAHOO.widget.Dialog("area_dialog", {visible : false,close:true,underlay: "none",draggable:false});
     area_dialog.render();
 

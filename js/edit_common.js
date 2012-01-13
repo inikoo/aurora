@@ -518,13 +518,13 @@ if(changed){
 
 
     if (errors) {
-        
+        //alert('x')
         Dom.addClass('save_edit_'+branch,'disabled');
     } else {
 
         Dom.removeClass('save_edit_'+branch,'disabled');
     }
-
+//alert(branch)
 }
 
 
@@ -680,24 +680,18 @@ function validate_general_new(branch,items,query) {
 }
 
 function validate_general_edit(branch,items,query) {
-//return;
+
 //alert(branch+' I:'+items+' q:'+query);
 
-//return;
 
     var data= validate_scope_data[branch][items];
 
     var old_value=Dom.get(data.name).getAttribute('ovalue');
-    
-   
-    
-	//alert('old val:' + old_value)
-	//alert('old val:' + trim(query))
+
     if (old_value!=trim(query) ) {
-		//alert('in')
+
 		
         if (old_value.toLowerCase()!=trim(query.toLowerCase())    ) {
-			//alert('old val neq query')
             validate_scope_data[branch][items].changed=true;
 
             if (data.ar=='find') {
@@ -712,7 +706,6 @@ function validate_general_edit(branch,items,query) {
 
 
         } else {
-			//alert('old val eq query')
             validate_scope_data[branch][items].validated=true;
             validate_scope_data[branch][items].changed=true;
             validate_scope(branch);
@@ -846,7 +839,7 @@ return;
 	   
 	 //  alert(item_input.value.length);
 	   
-//alert(scope_edit_ar_file+'?'+postData)
+alert(scope_edit_ar_file+'?'+postData)
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {

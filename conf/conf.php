@@ -1591,7 +1591,8 @@ $default_state=array(
                                      ),
                    'warehouse_area'=>array(
                                         'id'=>1,
-                                        'view'=>'locations',
+                                        'view'=>'description',
+					'edit'=>'description',
                                         'locations'=>array(
                                                         'order'=>'code',
                                                         'order_dir'=>'',
