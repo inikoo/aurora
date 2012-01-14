@@ -1745,7 +1745,7 @@ function picking_aid_sheet() {
     $total_picks=0;
 
     $data=array();
-    $sql="select  `Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) $where  ";
+    $sql="select `Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) $where  ";
     //   print $sql;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1779,7 +1779,7 @@ function picking_aid_sheet() {
         $data[]=array(
                     'itf_key'=>$row['Inventory Transaction Key'],
                     'sku'=>$sku,
-                    'description'=>$row['Part XHTML Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':''),
+                    'description'=>$row['Part XHTML Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':'').' '.$row['Inventory Transaction Key'],
                     'used_in'=>$row['Part XHTML Currently Used In'],
                     'quantity'=>number($row['Required']),
                     'location'=>$row['Location Code'],
