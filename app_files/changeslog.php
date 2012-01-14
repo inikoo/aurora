@@ -5377,3 +5377,5 @@ ALTER TABLE `Store Dimension` ADD `Store VAT Number` VARCHAR( 255 ) NOT NULL ,AD
 ALTER TABLE `Customer Dimension` ADD `Customer Follower On Twitter` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',ADD `Customer Friend On Facebook` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
 ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM( 'Employee', 'Volunteer', 'Contractor', 'Temporal Worker', 'Work Experience' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Employee';
 
+
+ALTER TABLE `Staff Dimension` ADD `Staff PIN` VARCHAR( 4 ) NOT NULL DEFAULT '1234' AFTER `Staff Department Key`;

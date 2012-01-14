@@ -753,7 +753,11 @@ class DeliveryNote extends DB_Table {
         $inventory_to_actualize=array();
 //   print $sql;
         while ($row=mysql_fetch_assoc($res)) {
-//print_r($row);
+print_r($row);
+
+          //  $todo=$row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
+
+
             $to_pick=$row['Required']-$row['Picked'];
             $metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
 
@@ -779,7 +783,17 @@ print "$sql\n";
                     $product_key=$row2['Product Key'];
                 }
 
-                $transaction_data=array('itf'=>$row['Inventory Transaction Key'],'qty'=>$to_pick,'sku'=>$row['Part SKU'],'part_index'=>$part_index,'location_index'=>$location_index,'otf'=>$row['Map To Order Transaction Fact Key'],'product_key'=>$product_key,'picking_note'=>$row['Picking Note'],'parts_per_product'=>$parts_per_product);
+                $transaction_data=array(
+                		'itf'=>$row['Inventory Transaction Key'],
+                		'qty'=>$to_pick,
+                			
+                		'sku'=>$row['Part SKU'],
+                		'part_index'=>$part_index,
+                		'location_index'=>$location_index,
+                		'otf'=>$row['Map To Order Transaction Fact Key'],
+                		'product_key'=>$product_key,
+                		'picking_note'=>$row['Picking Note'],
+                		'parts_per_product'=>$parts_per_product);
                 $inventory_to_actualize[$row['Map To Order Transaction Fact Key']][$row['Part SKU']]=$transaction_data;
 
 
@@ -789,7 +803,7 @@ print "$sql\n";
         }
 
 
-        // print_r($inventory_to_actualize);
+         print_r($inventory_to_actualize);
 
         foreach($inventory_to_actualize as $otf=>$transactions_parts) {
 
