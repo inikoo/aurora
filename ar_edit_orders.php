@@ -1536,13 +1536,14 @@ function assign_picker($data) {
     }
 
 
-    $dn->assign_picker($data['staff_key']);
+    $dn->assign_picker($data['staff_key'], $data['pin']);
     if ($dn->assigned) {
         $response=array(
                       'state'=>200,
                       'action'=>'updated',
                       'operations'=>$dn->operations,
-                      'dn_state'=>$dn->dn_state
+                      'dn_state'=>$dn->dn_state,
+		      'dn_key'=>$dn->dn_key
                   );
 
 
@@ -1581,7 +1582,7 @@ function start_picking($data) {
     }
 
 
-    $dn->start_picking($data['staff_key']);
+    $dn->start_picking($data['staff_key'], $data['pin']);
     if ($dn->assigned) {
         $response=array(
                       'state'=>200,
