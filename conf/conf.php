@@ -2104,7 +2104,7 @@ $default_state=array(
 
                    'staff'=>array(
                    'view'=>'details',
-                   
+                   'edit'=>'description',
                     'working_hours'=>array(
                                                            'id'=>'',
                                                            'order'=>'start_time',
