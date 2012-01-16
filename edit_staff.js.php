@@ -62,6 +62,28 @@ validate_scope_metadata={
 
 }
 
+function save_position(o) {
+
+var newval=Dom.get(o).value;
+
+var request='ar_edit_staff.php?tipo=edit_staff_description&staff_key='+Dom.get('staff_key').value+'&newvalue='+newval+'&key=position_key';
+
+
+
+
+
+	//alert(request);
+	
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+			//alert(o.responseText);
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+			}
+		}
+	});
+}
+
 function save_staff(){
 	save_edit_general('staff_description');
 }

@@ -72,7 +72,17 @@
 		</tr>
 	  
 
+	<tr>
 
+	<td class="label"><div >{t}Staff Position{/t}:</div></td>
+	<td>
+		<select id="staff_position_" onChange="save_position(this)">
+			{foreach from=$staff_position item=item key=key  }
+				<option {if $key==$staff_position_key }selected="selected"{/if} value="{$key}">{$item}</option>
+			{/foreach}
+		</select>
+	</td>   
+	</tr>
 
 	</table>
   </div> 
@@ -84,7 +94,7 @@
 	</div>
 		<tr class="first"><td class="label">{t}Staff PIN{/t}:</td><td>
 		<div>
-			<input id="Staff_PIN" changed=0 type='text' class='text' style="width:100px"  MAXLENGTH="16" value="{$staff->get('Staff PIN')}" ovalue="{$staff->get('Staff PIN')}" />
+			<input id="Staff_PIN" changed=0 type='password' class='text' style="width:100px"  MAXLENGTH="16" value="{$staff->get('Staff PIN')}" ovalue="{$staff->get('Staff PIN')}" />
 			<div id="Staff_PIN_Container"  ></div>
 			</div>
 			</td>
@@ -92,7 +102,7 @@
 		</tr>
 		<tr class="first"><td class="label">{t}Confirm PIN{/t}:</td><td>
 		<div>
-			<input id="Staff_PIN_Confirm" changed=0 type='text' class='text' style="width:100px"  MAXLENGTH="16" value="" ovalue="" />
+			<input id="Staff_PIN_Confirm" changed=0 type='password' class='text' style="width:100px"  MAXLENGTH="16" value="" ovalue="" />
 			<div id="Staff_PIN_Confirm_Container"  ></div>
 			</div>
 			</td>

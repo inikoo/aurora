@@ -41,32 +41,27 @@ $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Staff'));
 $smarty->assign('search_scope','staff');
 
-$used_for_list=array(
-                  'picking'=>array('name'=>_('Picking')),
-                  'storing'=>array('name'=>_('Storing')),
-                  'loading'=>array('name'=>_('Loading')),
-                  'displaying'=>array('name'=>_('Displaying')),
-				  'other'=>array('name'=>_('Other'))
-              );
-			  
-$smarty->assign('used_for_list',$used_for_list);
+$staff_position=array();
 
-$shape_type_list=array(
-                  'box'=>array('name'=>_('Box')),
-                  'cylinder'=>array('name'=>_('Cylinder')),
-                  'unknown'=>array('name'=>_('Unknown'))
-              );
-			  
-$smarty->assign('shape_type_list',$shape_type_list);
+$sql=sprintf("select * from `Company Position Dimension`");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_position[$row['Company Position Key']]=$row['Company Position Title'];
+}
+
+//print_r($staff_position);
+$smarty->assign('staff_position',$staff_position);
 
 
-$has_stock_list=array(
-                  'yes'=>array('name'=>_('Yes')),
-                  'no'=>array('name'=>_('No')),
-                  'unknown'=>array('name'=>_('Unknown'))
-              );
-			  
-$smarty->assign('has_stock_list',$has_stock_list);
+$sql=sprintf("select `Position Key` from `Company Position Staff Bridge` where `Staff Key`=%d", $staff->id);
+$result=mysql_query($sql);
+if($row=mysql_fetch_assoc($result)){
+	$smarty->assign('staff_position_key',$row['Position Key']);
+}
+else
+	$smarty->assign('staff_position_key',0);
+
+
 $css_files=array(
               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
