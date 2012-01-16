@@ -380,7 +380,9 @@ function create_user() {
              case('name'):
             $this->update_name($value);
             break;
-
+	case('Staff Position'):
+		$this->update_position($value);
+		break;
         default:
             $base_data=$this->base_data();
             if (array_key_exists($field,$base_data)) {
@@ -394,7 +396,36 @@ function get_name(){
     return $this->data['Staff Name'];
 }
 
+
+function update_position($value){
+	$updated=false;
+	$sql=sprintf("select * from `Company Position Staff Bridge` where `Staff Key`=%d", $this->id);
+	$result=mysql_query($sql);
+	if(mysql_num_rows($result)){
+		$sql=sprintf("update `Company Position Staff Bridge` set `Position Key`=%d where `Staff Key`=%d", $value, $this->id);
+		if(mysql_query($sql)){
+			$updated=true;
+		}
+	}
+	else{
+		$sql=sprintf("insert into `Company Position Staff Bridge` (`Position Key`, `Staff Key`) values (%d, %d)", $value, $this->id);
+		if(mysql_query($sql)){
+			$updated=true;
+		}		
+	}
+
+	if($updated){
+		$this->updated=true;
+		$this->data['Staff Position']=_trim($value);
+	}
+	else{
+		$this->updated=false;
+		$this->msg="Error";
+	}
 }
+
+}
+
 
 
 ?>
