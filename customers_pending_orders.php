@@ -5,39 +5,30 @@ include_once('class.CompanyArea.php');
 
 
 
-if (!  ($user->can_view('orders') or $user->data['User Type']=='Warehouse'   ) ) {
-    header('Location: index.php?cannot_view');
+if (!$user->can_view('customers')) {
+    header('Location: index.php');
+    exit();
+}
+if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
+    $store_id=$_REQUEST['store'];
+} else {
+    $store_id=$_SESSION['state']['customers']['store'];
+}
+if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+    header('Location: index.php');
     exit;
 }
+$store=new Store($store_id);
+$currency=$store->data['Store Currency Code'];
+$currency_symbol=currency_symbol($currency);
+$smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
 
 
-
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $warehouse_id=$_REQUEST['id'];
-
-}else{
-  $warehouse_id=$_SESSION['state']['warehouse']['id'];
-}
-
-$warehouse=new warehouse($warehouse_id);
-if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ){
-  header('Location: index.php');
-   exit;
-}
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
 
 
-
-$smarty->assign('warehouse',$warehouse);
-$smarty->assign('warehouse_id',$warehouse->id);
-
-
-
-
-$smarty->assign('search_label',_('Parts'));
-$smarty->assign('search_scope','parts');
-
-
-$smarty->assign('view','warehouse_orders');
 
 
 $css_files=array(
@@ -66,56 +57,21 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/edit_common.js',
-              'warehouse_orders.js.php',
+              'customers_pending_orders.js.php',
               'js/edit_common.js',
-              'js/csv_common.js'
+              'js/csv_common.js',
+              
           );
 
 
 
 
-$smarty->assign('parent','parts');
-$smarty->assign('title', _('Warehouse Orders'));
+$smarty->assign('parent','customers');
+$smarty->assign('title', _('Pending Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$warehouse_area=new CompanyArea('code','WAH');
-$pickers=$warehouse_area->get_current_staff_with_position_code('PICK');
-$number_cols=5;
-$row=0;
-$pickers_data=array();
-$contador=0;
-foreach($pickers as $picker) {
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-        $row++;
-    $tmp=array();
-    foreach($picker as $key=>$value) {
-        $tmp[preg_replace('/\s/','',$key)]=$value;
-    }
-    $pickers_data[$row][]=$tmp;
-    $contador++;
-}
-
-$smarty->assign('pickers',$pickers_data);
-
-$packers=$warehouse_area->get_current_staff_with_position_code('PACK');
-$number_cols=5;
-$row=0;
-$packers_data=array();
-$contador=0;
-foreach($packers as $packer) {
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-        $row++;
-    $tmp=array();
-    foreach($packer as $key=>$value) {
-        $tmp[preg_replace('/\s/','',$key)]=$value;
-    }
-    $packers_data[$row][]=$tmp;
-    $contador++;
-}
-
-$smarty->assign('packers',$packers_data);
 
 
 //print_r($pickers_data);
@@ -132,30 +88,31 @@ $paginator_menu0=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu0);
 
 
+
 $elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') ");
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') and `Delivery Note Store Key`=%d ",$store_id);
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
     $elements_number['ReadytoPick']=$row['num'];
 }
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Approved') ");
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Approved') and `Delivery Note Store Key`=%d ",$store_id);
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
     $elements_number['ReadytoShip']=$row['num'];
 }
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picked') ");
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picked') and `Delivery Note Store Key`=%d ",$store_id);
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
     $elements_number['ReadytoPack']=$row['num'];
 }
 
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed') ");
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed') and `Delivery Note Store Key`=%d ",$store_id);
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
     $elements_number['PickingAndPacking']=$row['num'];
 }
 
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock') ");
+$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock') and `Delivery Note Store Key`=%d ",$store_id);
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
     $elements_number['ReadytoRestock']=$row['num'];
@@ -169,5 +126,5 @@ $smarty->assign('elements',$_SESSION['state']['orders']['ready_to_pick_dn']['ele
 
 
 
-$smarty->display('warehouse_orders.tpl');
+$smarty->display('customers_pending_orders.tpl');
 ?>

@@ -30,17 +30,7 @@ $smarty->assign('store_id',$store->id);
 
 $_SESSION['state']['customers']['store']=$store_id;
 $modify=$user->can_edit('customers');
-$general_options_list=array();
 
-$general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store->id.'&id=0','label'=>_('Categories'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers_lists.php?store='.$store->id,'label'=>_('Lists'));
-$general_options_list[]=array('tipo'=>'url','url'=>'search_customers.php?store='.$store->id,'label'=>_('Advanced Search'));
-//$general_options_list[]=array('tipo'=>'url','url'=>'customers_stats.php','label'=>_('Stats'));
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-
-
-
-//$smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 $css_files=array(
