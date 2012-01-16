@@ -59,8 +59,10 @@ if(!($user->can_view('stores') and in_array($dn->data['Delivery Note Store Key']
 }
 
 $customer=new Customer($dn->get('Delivery Note Customer Key'));
+$store=new Store($dn->get('Delivery Note Store Key'));
 
-
+$smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders');
 
 if($dn->data['Delivery Note State']=='Dispatched'){
 $js_files[]='dn.js.php';
@@ -93,6 +95,7 @@ $template='dn_in_process.tpl';
 
 $smarty->assign('dn',$dn);
 $smarty->assign('customer',$customer);
+$smarty->assign('store',$store);
 
 
 

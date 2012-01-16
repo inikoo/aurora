@@ -4,7 +4,7 @@
 {include file='contacts_navigation.tpl'}
 
 <div class="branch"> 
-  <span   >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Customers{/t}</span>
+<span   >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Customers{/t}</span>
 </div>
 <div class="top_page_menu">
 
@@ -14,6 +14,8 @@
 <button  id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button>
 <button  onclick="window.location='edit_customers.php?store={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button>
 {/if}
+<button   onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button>
+
 </div>
 
 

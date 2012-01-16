@@ -3,9 +3,7 @@
 <input type="hidden" id="order_key" value="{$order->id}"/>
  {include file='orders_navigation.tpl'}
 <div  class="branch"> 
-
-
-<span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$customer->get_formated_id()} ({t}Dispatched{/t})</span>
+<span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({t}Dispatched{/t})</span>
 </div>
 <div class="buttons">
  <button  onclick="window.location='order.pdf.php?id={$order->id}'">{t}PDF Order{/t}</button>

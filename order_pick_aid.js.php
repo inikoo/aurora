@@ -11,6 +11,8 @@ YAHOO.namespace ("invoice");
      var Dom   = YAHOO.util.Dom;
 var updating_record;
 var no_dispatchable_editor_dialog;
+var pack_it_dialog;
+
 var myonCellClick = function(oArgs) {
 
 
@@ -132,7 +134,7 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					 alert(o.responseText);
+				//	 alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){
@@ -146,12 +148,12 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 					        Dom.get('number_transactions').innerHTML=r.number_transactions;
 					        Dom.get('percentage_picked').innerHTML=r.percentage_picked;
 
+
+				
 					        if(r.number_picked_transactions>=r.number_transactions){
-					            Dom.setStyle('finish','display','');
-					            Dom.setStyle('continue_later','display','none');
+					            Dom.setStyle(['pick_all','update_locations'],'display','none');
 					        }else{
-					            Dom.setStyle('finish','display','none');
-					            Dom.setStyle('continue_later','display','');
+					            Dom.setStyle(['pick_all','update_locations'],'display','');
 					        }
                      
                                    
@@ -214,37 +216,43 @@ var CellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   // alert(o.responseText);
+					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    
 					     if(r.result=='updated'){
 					    
-					     datatable.updateCell(record,'picked',r.picked);
-					     					     datatable.updateCell(record,'todo',r.todo);
-
-					     Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
+					    					    	datatable.updateCell(record,'picked',r.picked);
+					    	if(r.formated_todo==0)
+					    	    r.formated_todo='';
+					    	datatable.updateCell(record,'formated_todo',r.formated_todo);
+                            datatable.updateCell(record,'todo',r.todo);
+					        
+					        Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
 					        Dom.get('number_transactions').innerHTML=r.number_transactions;
 					        Dom.get('percentage_picked').innerHTML=r.percentage_picked;
-					        if(r.number_picked_transactions>=r.number_transactions){
-					            Dom.setStyle('finish','display','');
-					            Dom.setStyle('continue_later','display','none');
+					    
+					    
+					    
+					    
+					    
+					     //datatable.updateCell(record,'picked',r.picked);
+					     //datatable.updateCell(record,'todo',r.todo);
+					     //Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
+					       // Dom.get('number_transactions').innerHTML=r.number_transactions;
+					        //Dom.get('percentage_picked').innerHTML=r.percentage_picked;
+					        
+					        
+					     	        if(r.number_picked_transactions>=r.number_transactions){
+					            Dom.setStyle(['pick_all','update_locations'],'display','none');
 					        }else{
-					            Dom.setStyle('finish','display','none');
-					            Dom.setStyle('continue_later','display','');
+					            Dom.setStyle(['pick_all','update_locations'],'display','');
 					        }
+                     
 						
                       }
                         
-					   
-                        
-
-					    
 					    callback(true,r.new_value);
-					    
-					
-						
-
 					    } else {
 						alert(r.msg);
 						callback();
@@ -292,10 +300,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pick_aid'}
 					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pick_aid'}
-					
-
 					,{key:"formated_todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					,{key:"notes",label:"", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					,{key:"notes",label:"<?php echo _('Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
 					,{key:"out_of_stock",label:"", width:1,hidden:true}
 					,{key:"not_found",label:"", width:1,hidden:true}
 					,{key:"no_picked_other",label:"", width:1,hidden:true}
@@ -464,34 +470,20 @@ YAHOO.util.Connect.asyncRequest(
 
 function set_pending_as_picked(){
 
-
-
-
-
-ar_file='ar_edit_orders.php';
-   
-   request=ar_file+'?tipo=set_picking_aid_sheet_pending_as_picked&dn_key='+Dom.get('dn_key').value;
-  
-   alert(request);return;
+	ar_file='ar_edit_orders.php';
+   	request=ar_file+'?tipo=set_picking_aid_sheet_pending_as_picked&dn_key='+Dom.get('dn_key').value;
+  	
     YAHOO.util.Connect.asyncRequest(
         'GET',
     request, {
-success: function (o) {
+		success: function (o) {
 //alert(o.responseText)
 var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
             
             
        
-           if(r.can_pick=='Yes'){
-                Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).setAttribute('can_pick','No');
-             Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).src="art/icons/basket.png";
-            }else{
-                         Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).src="art/icons/box.png";
-
-                            Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).setAttribute('can_pick','Yes');
-
-            }
+      window.location='order_pick_aid.php?id='+Dom.get('dn_key').value;
             
             }
            
@@ -505,6 +497,90 @@ scope:this
 
 
 }
+function close_dialog(dialog_name) {
+
+    switch ( dialog_name ) {
+   
+    case('pack_it_dialog'):
+    
+        Dom.get('pack_it_Staff_Name').value='';
+        Dom.get('pack_it_staff_key').value='';
+        Dom.setStyle('pack_it_pin_tr','visibility','hidden');
+        Dom.get("pack_it_pin_alias").innerHTML='';
+        Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'assign_packer_buttons'),'selected');
+        Dom.get('pack_it_password').value='';
+        pack_it_dialog.hide();
+        break;
+    default:
+
+    }
+}
+function pack_it_save(){
+
+var staff_key=Dom.get('pack_it_staff_key').value;
+var sup_pwd=   Dom.get('pack_it_password').value;
+var dn_key=Dom.get('pack_it_dn_key').value;
+    var request='ar_edit_orders.php?tipo=pack_it&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
+     
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		    
+		    if(r.action='updated'){
+		    location.href='order_pack_aid.php?id='+dn_key;
+		    }
+		    close_dialog('pack_it_dialog');
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+
+}
+
+function select_staff_pack_it(o){
+var staff_key=o.getAttribute('staff_id');
+var staff_alias=o.innerHTML;
+Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'pack_it_buttons'),'selected');
+Dom.addClass(o,'selected');
+Dom.get('pack_it_Staff_Name').value=staff_alias;
+Dom.get('pack_it_staff_key').value=staff_key;
+
+Dom.setStyle('pack_it_pin_tr','visibility','visible');
+Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
+Dom.get('pack_it_password').focus();
+}
+
+
+function select_staff(o){
+var staff_key=o.getAttribute('staff_id');
+var staff_alias=o.innerHTML;
+Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'),'selected');
+Dom.addClass(o,'selected');
+Dom.get('Assign_Picker_Staff_Name').value=staff_alias;
+Dom.get('assign_picker_staff_key').value=staff_key;
+Dom.get('assign_picker_sup_password').focus();
+}
+
+function start_packing(){
+
+    
+     region1 = Dom.getRegion('start_packing'); 
+    region2 = Dom.getRegion('pack_it_dialog'); 
+
+ var pos =[region1.right-region2.width-20,region1.bottom]
+
+    Dom.setXY('pack_it_dialog', pos);
+
+pack_it_dialog.show()
+Dom.get('pack_it_Staff_Name').focus();
+    
+}
+
 
 function init(){
 
@@ -515,7 +591,10 @@ function init(){
 
 
 
-Event.addListener('set_pending_as_picked', "click",set_pending_as_picked);
+Event.addListener('pick_all', "click",set_pending_as_picked);
+ pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {visible : false,close:true,underlay: "none",draggable:false});
+ pack_it_dialog.render();    
+ Event.addListener('start_packing', "click",start_packing);
 
 
 }

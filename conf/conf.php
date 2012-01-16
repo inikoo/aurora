@@ -458,15 +458,7 @@ $default_state=array(
                                                              'from'=>'',
                                                              'to'=>'',
                                                              'elements'=>array('ReadytoPick'=>1,'ReadytoPack'=>1,'ReadytoShip'=>1,'PickingAndPacking'=>1,'ReadytoRestock'=>1),
-                                                             'csv_export'=>array(
-                                                                              'id'=>true,
-                                                                              'date'=>true,
-                                                                              'type'=>true,
-                                                                              'customer_name'=>false,
-                                                                              'weight'=>false,
-                                                                              'picks'=>false,
-                                                                              'parcel_type'=>false
-                                                                          )
+                                                            
                                                          )
 
 
@@ -1717,7 +1709,19 @@ $default_state=array(
                                                                  )
                                                 ),
 
-
+  												'pending_orders'=>array(
+                                                             'order'=>'date',
+                                                             'order_dir'=>'',
+                                                             'sf'=>0,
+                                                             'nr'=>25,
+                                                             'where'=>'where true',
+                                                             'f_field'=>'public_id',
+                                                             'f_value'=>'','f_show'=>false,
+                                                             'from'=>'',
+                                                             'to'=>'',
+                                                             'elements'=>array('ReadytoPick'=>1,'ReadytoPack'=>1,'ReadytoShip'=>1,'PickingAndPacking'=>1,'ReadytoRestock'=>1),
+                                                            
+                                                         ),
 
                                    'advanced_search'=>array(
                                                          'order'=>'name',
@@ -2270,7 +2274,23 @@ $default_state=array(
                     
                     )
                     ),
-                           
+                     'packing_aid'=>array(
+                    
+                    'type'=>'dynamic',
+                    'items'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'sku',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'sku',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
+                    
+                    )
+                    ),       
                            
                    'page'=>array(
                               'id'=>0,
