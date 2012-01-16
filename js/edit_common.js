@@ -506,7 +506,7 @@ function validate_scope_edit(branch) {
 Dom.setStyle('save_edit_'+branch,'visibility','visible');
 Dom.setStyle('reset_edit_'+branch,'visibility','visible');
 
-if(changed){
+if(changed){	
         Dom.setStyle('save_edit_'+branch,'visibility','visible');
         Dom.setStyle('reset_edit_'+branch,'visibility','visible');
 
@@ -843,7 +843,7 @@ alert(scope_edit_ar_file+'?'+postData)
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {
-//alert(o.responseText);
+alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
            

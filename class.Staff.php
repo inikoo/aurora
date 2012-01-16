@@ -380,7 +380,9 @@ function create_user() {
              case('name'):
             $this->update_name($value);
             break;
-
+	case('Staff Position'):
+		$this->update_position($value);
+		break;
         default:
             $base_data=$this->base_data();
             if (array_key_exists($field,$base_data)) {
@@ -396,5 +398,12 @@ function get_name(){
 
 }
 
+function update_position($value){
+	$sql=sprintf("select * from `Company Position Staff Bridge` where `Staff Key`=%d", $this->id);
+	$result=mysql_query($sql);
+	if(mysql_num_rows($result)){
+	
+	}
+}
 
 ?>
