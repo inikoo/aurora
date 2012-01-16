@@ -1094,7 +1094,8 @@ function edit_staff_description(){
   $traslator=array(
 		   'alias'=>'Staff Alias',
 		'pin'=>'Staff PIN',
-		'pin_confirm'=>'Staff PIN'
+		'pin_confirm'=>'Staff PIN',
+		'position_key'=>'Staff Position'
 
 		   );
   if(array_key_exists($_REQUEST['key'],$traslator)){
