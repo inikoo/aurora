@@ -568,6 +568,50 @@ class part extends DB_Table {
 
 
         switch ($key) {
+        
+            case('Cost'):
+        global $corporate_currency;
+        	return money($this->data['Part Current Stock Cost Per Unit'],$corporate_currency);
+        	
+        	
+        	break;
+        
+               case('Volume'):
+        
+        	if(!is_numeric($this->data['Part Package Volume']) or $this->data['Part Package Volume']==0){
+        		return '';
+        	}
+        	
+        	
+        	$number_digits=strlen(substr(strrchr($this->data['Part Package Volume'], "."), 1));
+
+        	
+        	if($this->data['Part Package Volume']<1){
+        		return number($this->data['Part Gross Weight']/1000,$number_digits).'mL';
+        	}else{
+        	return number($this->data['Part Package Volume'],$number_digits).'L';
+        	}
+        	
+        	break;
+        
+        
+        case('Weight'):
+        
+        	if(!is_numeric($this->data['Part Gross Weight']) or $this->data['Part Gross Weight']==0){
+        		return '';
+        	}
+        	
+        	
+        	$number_digits=strlen(substr(strrchr($this->data['Part Gross Weight'], "."), 1));
+
+        	
+        	if($this->data['Part Gross Weight']<1){
+        		return number($this->data['Part Gross Weight']/1000,$number_digits).'g';
+        	}else{
+        	return number($this->data['Part Gross Weight'],$number_digits).'kg';
+        	}
+        	
+        	break;
         case('SKU'):
             return sprintf('SKU%5d',$this->sku);
             break;
@@ -1124,8 +1168,9 @@ class part extends DB_Table {
             $locations[]=array('location_key'=>$locations_data[0]['location_key'],'qty'=>$qty);
         }
         else {
-
-
+//print "===== $qty ================\n";
+//print_r($locations_data);
+//print_r($locations);
             foreach($locations_data as $location_data) {
 
                 if ($qty>0) {
@@ -1149,7 +1194,11 @@ class part extends DB_Table {
             }
 
             if ($qty>0) {
+            
+            	if(count($locations))
                 $locations[0]['qty']=$locations[0]['qty']+$qty;
+                else
+                $locations[]=array('location_key'=>1,'qty'=>$qty);
 
             }
 

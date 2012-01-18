@@ -128,23 +128,28 @@ function money($amount,$currency='') {
 
 function money_locale($amount,$locale='',$currency_code='') {
 
-
+//print "\n";
 
     if (!is_numeric($amount))
         $amount=0;
-    global $_client_locale;
+  //  global $_client_locale;
     $format='%i';
-    if ($locale) {
+  
+
+$oldLocale = setlocale(LC_MONETARY, '0');
+  
+  
+  if ($locale) {
         $locale.='.UTF-8';
         setlocale(LC_MONETARY, ($locale));
     }
     if ($currency_code) {
 
         $locale_info = localeconv();
-
-
         $client_currency=_trim($locale_info['int_curr_symbol']);
-        //print("->".$client_currency."<-");
+//        print("->".$_client_locale."<-");
+//        print("->".$client_currency."<-");
+//        print("->".money_format($format,$amount)."<-");
         $format='%i';
 
         $money=preg_replace("/$client_currency/",$currency_code,money_format($format,$amount));
@@ -154,7 +159,7 @@ function money_locale($amount,$locale='',$currency_code='') {
 
 //
 
-
+//print("->".$money."<-");
     //exit($money);
     if (preg_match('/[A-Z]{3}/',$money,$match)) {
         $money=preg_replace('/[A-Z]{3}/',currency_symbol($match[0]),$money);
@@ -162,10 +167,10 @@ function money_locale($amount,$locale='',$currency_code='') {
     }
 
 
-    setlocale(LC_MONETARY, ($_client_locale));
+    setlocale(LC_MONETARY, $oldLocale);
 
     // exit($money);
-
+//print "\n";
     return $money;
 }
 
@@ -3200,14 +3205,14 @@ function guess_file_format($filename) {
 
     if (preg_match('/png/i',$mimetype))
         $format='png';
-    else if(preg_match('/jpeg/i',$mimetype))
-    $format='jpeg';
-    else if(preg_match('/image.psd/i',$mimetype))
-    $format='psd';
-    else if(preg_match('/gif/i',$mimetype))
-    $format='gif';
-    else if(preg_match('/wbmp$/i',$mimetype))
-    $format='wbmp';
+    else if (preg_match('/jpeg/i',$mimetype))
+        $format='jpeg';
+    else if (preg_match('/image.psd/i',$mimetype))
+        $format='psd';
+    else if (preg_match('/gif/i',$mimetype))
+        $format='gif';
+    else if (preg_match('/wbmp$/i',$mimetype))
+        $format='wbmp';
 
     else {
         $format='other';

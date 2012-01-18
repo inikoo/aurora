@@ -26,7 +26,7 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
 
                'button.css',
-               'container.css'
+               'css/container.css'
            );
 
 $css_files[]='theme.css.php';

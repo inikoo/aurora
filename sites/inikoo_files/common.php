@@ -19,7 +19,8 @@ require_once "class.Site.php";
 require_once "class.Customer.php";
 require_once "class.Product.php";
 require_once "class.Family.php";
-
+require_once "class.Invoice.php";
+require_once "class.DeliveryNote.php";
 
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
@@ -215,6 +216,7 @@ elseif(isset($_REQUEST['p'])) {
 
         $_SESSION['user_key']=$auth->get_user_key();
         $_SESSION['customer_key']=$auth->get_user_parent_key();
+
 
 
         header('location: profile.php?view=change_password');

@@ -733,7 +733,7 @@ function upload_page_content_from_file($file,$data) {
 
     $page->update_button_products();
     $page->update_list_products();
-    $page->update_number_products();
+   
 
     $response= array('state'=>200,'page_key'=>$page->id);
     return $response;

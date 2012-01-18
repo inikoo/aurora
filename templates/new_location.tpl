@@ -13,7 +13,7 @@
   </div>
   
 
-  <div id="block_individual"  style="display:none;margin:0px 20px;clear:both;">
+  <div id="block_individual"  style="display:'';margin:0px 20px;clear:both;">
     {include file='new_individual_location_splinter.tpl'}
 
     

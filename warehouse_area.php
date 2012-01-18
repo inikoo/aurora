@@ -27,15 +27,13 @@ $modify=$user->can_edit('warehouses');
 $smarty->assign('view_parts',$user->can_view('parts'));
 
 
-
+$smarty->assign('search_label',_('Locations'));
+$smarty->assign('search_scope','locations');
 
 get_header_info($user,$smarty);
 
-$general_options_list=array();
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse Area '));
+$smarty->assign('modify',$modify);
 
-$smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->assign('view',$_SESSION['state']['warehouse_area']['view']);
@@ -47,7 +45,7 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
                'theme.css.php'
@@ -68,7 +66,7 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js',
 		'js/table_common.js',
-		'js/dropdown.js',
+		'js/search.js',
 		'warehouse_area.js.php'
 		);
 

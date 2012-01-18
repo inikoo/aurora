@@ -464,7 +464,7 @@ var clear_interval = function(e,suffix){
      Dom.removeClass(Dom.getElementsByClassName('dispatch','span' , 'dispatch_chooser'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&dispatch='+this.getAttribute('table_type');
-	 //alert(request);
+	 alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
  var change_invoice_type=function(e){

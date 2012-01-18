@@ -48,7 +48,7 @@ $css_files=array(
                $yui_path.'build/assets/skins/sam/skin.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
               // 'common.css',
-               'container.css',
+               'css/container.css',
               // 'table.css'
            );
 
@@ -59,7 +59,7 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'assets/skins/sam/autocomplete.css',
               // 'common.css',
-               'container.css',
+               'css/container.css',
               // 'table.css'
            );
 $css_files[]='theme.css.php';

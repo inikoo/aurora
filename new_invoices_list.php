@@ -1,5 +1,6 @@
 <?php
 include_once('common.php');
+include_once('class.Store.php');
 
 
 if (!$user->can_view('customers') ) {
@@ -56,7 +57,7 @@ $css_files=array(
                               $yui_path.'assets/skins/sam/autocomplete.css',
 
                'common.css',
-               'container.css',
+               'css/container.css',
                'table.css'
            );
 $css_files[]='theme.css.php';

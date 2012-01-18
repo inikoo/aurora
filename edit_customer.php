@@ -90,8 +90,10 @@ $css_files=array(
                'text_editor.css',
                'common.css',
                'button.css',
-               'container.css',
-               'table.css'
+               'css/container.css',
+               
+               'table.css',
+               'css/edit_address.css'
            );
 $css_files[]='theme.css.php';
 $js_files=array(
@@ -133,13 +135,19 @@ $smarty->assign('customer',$customer);
 
 
 
+$smarty->assign('default_country_2alpha',$store->get('Store Home Country Code 2 Alpha'));
 
 
 $other_email=$customer->get_other_emails_data();
 
 $registered_email=array();
 $unregistered_email=array();
-$main_email=array();
+$main_email=array(
+			'email'=>false,								
+									'epwcp1'=>false,
+									'epwcp2'=>false,
+									'user_key'=>false
+);
 foreach($other_email as $email){
 	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle`='%s'", $email['email']);
 
@@ -155,9 +163,10 @@ foreach($other_email as $email){
 							);
 	
 	}	else
-		$unregistered_email[]=array('email'=>$email['email']								
-									//'epwcp1'=>$epwcp1,
-									//'epwcp2'=>$rnd
+		$unregistered_email[]=array('email'=>$email['email'],								
+									'epwcp1'=>false,
+									'epwcp2'=>false,
+									'user_key'=>false
 							);
 	
 }
@@ -199,7 +208,8 @@ $general_options_list[]=array('class'=>'return','tipo'=>'url','url'=>'customer.p
 $smarty->assign('other_email_login_handle',$customer->get_other_email_login_handle());
 list($site_customer, $login_stat)=$customer->is_user_customer($customer_id);
 
-$_login_stat=array();
+
+$_login_stat=array('UserHandle'=>false);
 
 if($site_customer){
 	
@@ -572,7 +582,16 @@ $smarty->assign('delete_button_tooltip',$delete_button_tooltip);
 $smarty->assign('parent','customers');
 $smarty->assign('title',_('Edit Customer').': '.$customer->get('customer name'));
 
-
+$tipo_filter100='code';
+$filter_menu100=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
+                	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Country Name'),'label'=>_('Name')),
+                 'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
+              );
+$smarty->assign('filter_name100',$filter_menu100[$tipo_filter100]['label']);
+$smarty->assign('filter_menu100',$filter_menu100);
+$smarty->assign('filter100',$tipo_filter100);
+$smarty->assign('filter_value100','');
 
 $smarty->display('edit_customer.tpl');
 exit();

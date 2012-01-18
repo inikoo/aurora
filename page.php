@@ -42,8 +42,7 @@ if (!$page->id) {
 
 
 $_SESSION['state']['page']['id']=$page->id;
-$store=new Store($page->data['Page Store Key']);
-$smarty->assign('store',$store);
+
 $site=new Site($page->data['Page Site Key']);
 $smarty->assign('site',$site);
 $store=new Store($site->data['Site Store Key']);
@@ -63,7 +62,7 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
                'theme.css.php'

@@ -322,7 +322,15 @@ $default_state=array(
 
                              ),
 
-
+		   'dashboard'=>array(
+				'table'=>array(
+					'nr'=>5,
+					'order'=>'id',
+					'order_dir'=>'desc',
+					'f_field'=>'customer_name',
+		                        'f_value'=>''
+				)
+		   ),
 
                    'orders'=>array(
                                 'details'=>false,
@@ -449,16 +457,8 @@ $default_state=array(
                                                              'f_value'=>'','f_show'=>false,
                                                              'from'=>'',
                                                              'to'=>'',
-                                                             'elements'=>array(),
-                                                             'csv_export'=>array(
-                                                                              'id'=>true,
-                                                                              'date'=>true,
-                                                                              'type'=>true,
-                                                                              'customer_name'=>false,
-                                                                              'weight'=>false,
-                                                                              'picks'=>false,
-                                                                              'parcel_type'=>false
-                                                                          )
+                                                             'elements'=>array('ReadytoPick'=>1,'ReadytoPack'=>1,'ReadytoShip'=>1,'PickingAndPacking'=>1,'ReadytoRestock'=>1),
+                                                            
                                                          )
 
 
@@ -1583,7 +1583,8 @@ $default_state=array(
                                      ),
                    'warehouse_area'=>array(
                                         'id'=>1,
-                                        'view'=>'locations',
+                                        'view'=>'description',
+					'edit'=>'description',
                                         'locations'=>array(
                                                         'order'=>'code',
                                                         'order_dir'=>'',
@@ -1708,7 +1709,19 @@ $default_state=array(
                                                                  )
                                                 ),
 
-
+  												'pending_orders'=>array(
+                                                             'order'=>'date',
+                                                             'order_dir'=>'',
+                                                             'sf'=>0,
+                                                             'nr'=>25,
+                                                             'where'=>'where true',
+                                                             'f_field'=>'public_id',
+                                                             'f_value'=>'','f_show'=>false,
+                                                             'from'=>'',
+                                                             'to'=>'',
+                                                             'elements'=>array('ReadytoPick'=>1,'ReadytoPack'=>1,'ReadytoShip'=>1,'PickingAndPacking'=>1,'ReadytoRestock'=>1),
+                                                            
+                                                         ),
 
                                    'advanced_search'=>array(
                                                          'order'=>'name',
@@ -2094,100 +2107,35 @@ $default_state=array(
                                ),
 
                    'staff'=>array(
-                               'view'=>'general',
-                               'parent'=>'none',
-                               'details'=>0,
-                               'view'=>'history',
+                   'view'=>'details',
+                   'edit'=>'description',
+                    'working_hours'=>array(
+                                                           'id'=>'',
+                                                           'order'=>'start_time',
+                                                           'order_dir'=>'',
+                                                           'sf'=>0,
+                                                           'nr'=>25,
+                                                           'where'=>'where true',
+                                                           'f_field'=>'hours_worked',
+                                                           'f_value'=>'','f_show'=>false,
+                                                           // 'from'=>'',
+                                                           //  'to'=>'',
+                                                           //'type'=>'Family'
 
-                               'table'=>array(
-                                           'order'=>'name',
-                                           'order_dir'=>'',
-                                           'sf'=>0,
-                                           'nr'=>25,
-                                           'where'=>'where true',
-                                           'f_field'=>'name',
-                                           'f_value'=>'','f_show'=>false,
-                                           'csv_export'=>array(
-                                                            'id'=>true,
-                                                            'alias'=>false,
-                                                            'name'=>true,
-                                                            'position'=>true,
-                                                            'description'=>false,
-                                                            'valid_from'=>false,
-                                                            'valid_to'=>false
-                                                        )
-                                       ),
-                               'company_areas'=>array(
-                                                   'view'=>'general',
-                                                   'parent'=>'none',
-                                                   'details'=>0,
-                                                   'order'=>'name',
-                                                   'order_dir'=>'',
-                                                   'sf'=>0,
-                                                   'nr'=>25,
-                                                   'where'=>'where true',
-                                                   'f_field'=>'name',
-                                                   'f_value'=>'','f_show'=>false,
-                                                   'mode'=>'',
-                                                   'restrictions'=>'none',
-                                                   'parent'=>'',
-                                                   'csv_export'=>array(
-                                                                    'id'=>true,
-                                                                    'code'=>false,
-                                                                    'name'=>true,
-                                                                    'description'=>true,
-                                                                    'number_of_department'=>false,
-                                                                    'number_of_position'=>false,
-                                                                    'number_of_employee'=>false
-                                                                )
-                                               ),
-                               'positions'=>array(
-                                               'view'=>'general',
-                                               'parent'=>'none',
-                                               'details'=>0,
-                                               'order'=>'name',
-                                               'order_dir'=>'',
+                                                       ),
+                   
+                                  'history'=>array(
+                                               'where'=>'where true',
+                                               'f_field'=>'abstract',
+                                               'f_value'=>'','f_show'=>false,
+                                               'order'=>'date',
+                                               'order_dir'=>'desc',
                                                'sf'=>0,
                                                'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'name',
-                                               'f_value'=>'','f_show'=>false,
-                                               'mode'=>'',
-                                               'restrictions'=>'none',
-                                               'parent'=>'',
-                                               'csv_export'=>array(
-                                                                'code'=>true,
-                                                                'name'=>true,
-                                                                'description'=>true,
-                                                                'employees'=>false,
-                                                                'department_name'=>true,
-                                                                'department_code'=>false,
-                                                                'department_description'=>false
-                                                            )
-                                           ),
-                               'company_departments'=>array(
-                                                         'view'=>'general',
-                                                         'parent'=>'none',
-                                                         'details'=>0,
-                                                         'order'=>'name',
-                                                         'order_dir'=>'',
-                                                         'sf'=>0,
-                                                         'nr'=>25,
-                                                         'where'=>'where true',
-                                                         'f_field'=>'name',
-                                                         'f_value'=>'','f_show'=>false,
-                                                         'mode'=>'',
-                                                         'restrictions'=>'none',
-                                                         'parent'=>'',
-                                                         'csv_export'=>array(
-                                                                          'id'=>false,
-                                                                          'code'=>true,
-                                                                          'name'=>true,
-                                                                          'department_description'=>true,
-                                                                          'number_of_position'=>false,
-                                                                          'number_of_employee'=>false
-                                                                      )
-                                                     ),
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>''
+                                           )
                            ),
 
 
@@ -2201,7 +2149,8 @@ $default_state=array(
                                            'where'=>'where true',
                                            'f_field'=>'name',
                                            'f_value'=>'',
-                                           'view'=>'staff'
+                                           'view'=>'staff',
+                                           'elements'=>array('Working'=>1,'NotWorking'=>0)
 
                                           ),
                             'areas'=>array(
@@ -2309,10 +2258,46 @@ $default_state=array(
                                         ),
 
                            ),
+                    'picking_aid'=>array(
+                    
+                    'type'=>'dynamic',
+                    'items'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'sku',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'sku',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
+                    
+                    )
+                    ),
+                     'packing_aid'=>array(
+                    
+                    'type'=>'dynamic',
+                    'items'=>array(
+                                            'where'=>'where true',
+                                            'f_field'=>'sku',
+                                            'f_value'=>'','f_show'=>false,
+                                            'order'=>'sku',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>''
+                    
+                    )
+                    ),       
+                           
                    'page'=>array(
                               'id'=>0,
                               'view'=>'details',
                               'editing'=>'content',
+                              'editing_content_block'=>'overview',
                               'history'=>array(
                                             'where'=>'where true',
                                             'f_field'=>'abstract',

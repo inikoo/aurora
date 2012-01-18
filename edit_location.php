@@ -43,6 +43,7 @@ if(!$user->can_edit('warehouses')  ){
 }
 
 $smarty->assign('edit',$_SESSION['state']['location']['edit']);
+$smarty->assign('location_id',$location_id);
 
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
@@ -81,18 +82,16 @@ $has_stock_list=array(
 			  
 $smarty->assign('has_stock_list',$has_stock_list);
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-		 $yui_path.'container/assets/skins/sam/container.css',
-
-		 'common.css',
-		 //	 'container.css',
-		 'button.css',
-		 'table.css',
-		'css/dropdown.css',
-		'css/edit.css'
+              $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               'common.css',
+               'css/container.css',
+               'button.css',
+               'table.css',
+               'css/edit',
+               'theme.css.php'
 
 		 );
 $js_files=array(
@@ -109,11 +108,35 @@ $js_files=array(
 		'js/table_common.js',
 		'js/dropdown.js',
 		'js/edit_common.js',
-		'edit_location.js.php?location_id='.$location_id
+		'edit_location.js.php?location_id='.$location_id.'&warehouse_key='.$location->data['Location Warehouse Key']
 		);
 
+//print_r($location);
 
 
+$tipo_filter0=$_SESSION['state']['location']['stock_history']['f_field'];
+$filter_menu0=array(
+                  'note'=>array('db_key'=>_('note'),'menu_label'=>'Part SKU','label'=>_('Note')),
+		   'author'=>array('db_key'=>_('author'),'menu_label'=>'Used in','label'=>_('Author')),
+              );
+$smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
+$smarty->assign('filter_menu0',$filter_menu0);
+$smarty->assign('filter0',$tipo_filter0);
+$smarty->assign('filter_value0','');
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+$tipo_filter2='code';
+$filter_menu2=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
 
 $order=$_SESSION['state']['locations']['table']['order'];
 

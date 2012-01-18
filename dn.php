@@ -16,8 +16,10 @@ $css_files=array(
 		 $yui_path.'editor/assets/skins/sam/editor.css',
 		 'text_editor.css',
 		 'common.css',
-		 'container.css',
-		 'table.css'
+		 'css/container.css',
+		 'table.css',
+		'button.css',
+		'theme.css.php'
 		 );
 $js_files=array(
 
@@ -57,8 +59,10 @@ if(!($user->can_view('stores') and in_array($dn->data['Delivery Note Store Key']
 }
 
 $customer=new Customer($dn->get('Delivery Note Customer Key'));
+$store=new Store($dn->get('Delivery Note Store Key'));
 
-
+$smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders');
 
 if($dn->data['Delivery Note State']=='Dispatched'){
 $js_files[]='dn.js.php';
@@ -91,6 +95,7 @@ $template='dn_in_process.tpl';
 
 $smarty->assign('dn',$dn);
 $smarty->assign('customer',$customer);
+$smarty->assign('store',$store);
 
 
 
@@ -98,5 +103,6 @@ $smarty->assign('parent','orders');
 $smarty->assign('title',_('Delivery Note').' '.$dn->get('Delivery Note Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
 $smarty->display($template);
 ?>

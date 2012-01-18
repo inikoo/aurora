@@ -1,5 +1,9 @@
+var Event = YAHOO.util.Event;
+var Dom = YAHOO.util.Dom;
+
 <?php
 include_once('common.php');?>
+
 
 YAHOO.namespace ("invoice"); 
 
@@ -61,7 +65,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
-
 
 
 }

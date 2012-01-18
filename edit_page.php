@@ -120,9 +120,9 @@ if (isset($_REQUEST['view'])) {
 $smarty->assign('block_view',$_SESSION['state']['page']['editing']);
 
   
-$content_view='overview';
+$content_view=$_SESSION['state']['page']['editing_content_block'];
 if (isset($_REQUEST['content_view'])) {
-    $valid_views=array('header','content','footer','product_list','product_buttons');
+    $valid_views=array('header','content','footer','product_list','product_buttons','overview');
     if (in_array($_REQUEST['content_view'], $valid_views))
         $content_view=$_REQUEST['content_view'];
 
@@ -140,7 +140,7 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'assets/skins/sam/colorpicker.css',
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
                'css/edit.css',

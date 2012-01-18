@@ -12,41 +12,32 @@ if (!  ($user->can_view('orders') or $user->data['User Type']=='Warehouse'   ) )
 
 
 
-$q='';
-if (isset($_REQUEST['search']) and $_REQUEST['search']!=''  ) {
-    // SEARCH!!!!!!!!!!!!
-    $q=$_REQUEST['search'];
-    //  print "$q";
-    $sql=sprintf("select `Order Key` as id from `Order Dimension` where `Order Public ID`='%s' ",addslashes($q));
-    $result=mysql_query($sql);
-    if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        header('Location: order.php?id='. $found['id']);
-        exit;
-    }
-    mysql_free_result($result);
-    $_SESSION['tables']['order_list'][5]='public_id';
-    $_SESSION['tables']['order_list'][6]=addslashes($q);
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
+  $warehouse_id=$_REQUEST['id'];
 
+}else{
+  $warehouse_id=$_SESSION['state']['warehouse']['id'];
+}
 
+$warehouse=new warehouse($warehouse_id);
+if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ){
+  header('Location: index.php');
+   exit;
 }
 
 
 
-$sql="select count(*) as numberof from `Order Dimension`";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC))
-    $orders=$row['numberof'];
-else
-    exit('Internal Error');
-mysql_free_result($result);
+$smarty->assign('warehouse',$warehouse);
+$smarty->assign('warehouse_id',$warehouse->id);
 
+
+
+
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
 
 
 $smarty->assign('view','warehouse_orders');
-$smarty->assign('from',$_SESSION['state']['orders']['from']);
-$smarty->assign('to',$_SESSION['state']['orders']['to']);
-
-
 
 
 $css_files=array(
@@ -55,7 +46,7 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
                'theme.css.php'
@@ -83,14 +74,14 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','orders');
+$smarty->assign('parent','parts');
 $smarty->assign('title', _('Warehouse Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$warehouse_area=new CompanyArea('code','WAH');
-$pickers=$warehouse_area->get_current_staff_with_position_code('PICK');
+$company_area=new CompanyArea('code','WAH');
+$pickers=$company_area->get_current_staff_with_position_code('PICK');
 $number_cols=5;
 $row=0;
 $pickers_data=array();
@@ -108,7 +99,7 @@ foreach($pickers as $picker) {
 
 $smarty->assign('pickers',$pickers_data);
 
-$packers=$warehouse_area->get_current_staff_with_position_code('PACK');
+$packers=$company_area->get_current_staff_with_position_code('PACK');
 $number_cols=5;
 $row=0;
 $packers_data=array();
@@ -126,6 +117,24 @@ foreach($packers as $packer) {
 
 $smarty->assign('packers',$packers_data);
 
+$tipo_filter2='code';
+$filter_menu2=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
+
+$staff_list_active=array();
+$sql=sprintf("select * from `Staff Dimension` where `Staff Currently Working`='Yes'");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_list_active[$row['Staff Key']]=$row['Staff Alias'];
+}
+$smarty->assign('staff_list_active',$staff_list_active);
+
 
 //print_r($pickers_data);
 
@@ -140,41 +149,8 @@ $smarty->assign('filter_name0',$filter_menu2[$tipo_filter2]['label']);
 $paginator_menu0=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu0);
 
-$csv_export_options0=array(
-                         'description'=>array(
-                                           'title'=>_('Description'),
-                                           'rows'=>
-                                                  array(
-                                                      array(
-                                                          'id'=>array('label'=>_('Order Id'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['id']),
-                                                          'date'=>array('label'=>_('Last Updated'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['date']),
 
-                                                          'type'=>array('label'=>_('Type'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['type']),
-                                                          'customer_name'=>array('label'=>_('Customer Name'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['customer_name']),
-
-
-                                                      )
-                                                  )
-                                       ),
-
-                         'details'=>array('title'=>_('Other Details'),
-                                          'rows'=>
-                                                 array(
-                                                     array(
-                                                         'weight'=>array('label'=>_('Weight'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['weight']),
-                                                         'picks'=>array('label'=>_('Picks'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['picks']),
-                                                         'parcel_type'=>array('label'=>_('Parcel Type'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['parcel_type'])
-
-
-
-                                                     )
-                                                 )
-                                         )
-                     );
-$smarty->assign('export_csv_table_cols',0);
-$smarty->assign('csv_export_options',$csv_export_options0);
-
-$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'Others'=>0,'Restock'=>0);
+$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') ");
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
@@ -194,18 +170,20 @@ if ($row=mysql_fetch_assoc($res)) {
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed') ");
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['Others']=$row['num'];
+    $elements_number['PickingAndPacking']=$row['num'];
 }
 
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock') ");
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['Restock']=$row['num'];
+    $elements_number['ReadytoRestock']=$row['num'];
 }
 
 
+
+
 $smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['customer']['table']['elements']);
+$smarty->assign('elements',$_SESSION['state']['orders']['ready_to_pick_dn']['elements']);
 
 
 

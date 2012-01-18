@@ -623,7 +623,9 @@ class Site extends DB_Table {
                        'Page Store Abstract'=>$data['Page Store Resume'],
                        'Page Store Showcases'=>$showcases,
                        'Page Store Showcases Layout'=>$showcases_layout,
-                       'Page Store Product Layouts'=>$product_layouts
+                       'Page Store Product Layouts'=>$product_layouts,
+                       'Page Header Key'=>$this->data['Site Default Header Key'],
+                       'Page Footer Key'=>$this->data['Site Default Footer Key']
                    );
 
 
@@ -909,6 +911,10 @@ function get_welcome_template(){
         return $this->data['Site Menu HTML'];
     }
 
+
+function update_page_totals(){
+
+}
 
 }
 ?>

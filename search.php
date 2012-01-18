@@ -35,7 +35,7 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
                'common.css',
                'button.css',
-               'container.css',
+               'css/container.css',
                'table.css',
                'css/index.css'
            );

@@ -49,7 +49,7 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
                'css/index.css',
@@ -117,7 +117,7 @@ $js_files=array(
 
 
 $blocks=array();
-$sql=sprintf("select * from `Dashboard User Bridge` where `User Key`=%d order by `Dashboard Order`",
+$sql=sprintf("select * from `Dashboard User Bridge` where `User Key`=%d and `Dashboard Active`='Yes' and `Dashboard Widget Key`!=0 order by `Dashboard Order`",
 $user->id
 );
 $res=mysql_query($sql);

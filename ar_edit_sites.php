@@ -1,7 +1,5 @@
 <?php
 /*
-
-
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
@@ -27,6 +25,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('delete_page'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key')
+                         ));
+    delete_page($data);
+    break;
 case('update_page_height'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -38,12 +43,14 @@ case('update_page_height'):
     update_page_height($data);
     break;
     break;
-case('update_page_snapshot'):
+case('update_page_preview_snapshot'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
                          ));
-    update_page_snapshot($data);
+    update_page_preview_snapshot($data);
     break;
+
+
 case('edit_page_product_list'):
     $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'string'),
@@ -53,6 +60,9 @@ case('edit_page_product_list'):
 
     edit_page_product_list($data);
     break;
+
+
+
 case('page_product_lists'):
     list_page_product_lists_for_edition();
     break;
@@ -232,6 +242,7 @@ case('edit_page_properties'):
     edit_page($data);
     break;
 
+case('edit_family_page_parent_key'):
 case('edit_family_page_html_head'):
 case('edit_family_page_header'):
 case('edit_family_page_content'):
@@ -333,18 +344,22 @@ function  edit_page($data) {
     $page=new Page($data['id']);
     $page->editor=$editor;
 
+    if (!array_key_exists('okey',$data)) {
+        $data['okey']=$data['key'];
+    }
+
     $value=stripslashes(urldecode($data['newvalue']));
 
     if ($data['key']=='Page Store Source') {
         $value=preg_replace("/\{(.*)\}/e",'"{".html_entity_decode(\'$1\')."}"', $value);
-         $page->update_field_switcher($data['key'],$value,'no_history');
-    }else{
-    $page->update_field_switcher($data['key'],$value);
+        $page->update_field_switcher($data['key'],$value,'no_history');
+    } else {
+        $page->update_field_switcher($data['key'],$value);
     }
 
-   
+
     if ($page->updated) {
-       
+
         $response= array('state'=>200,'key'=>$data['okey'],'newvalue'=>$page->new_value);
     } else {
         $response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key']);
@@ -352,6 +367,32 @@ function  edit_page($data) {
     echo json_encode($response);
 
 }
+
+
+function  delete_page($data) {
+
+    global $editor;
+
+    include_once('class.PageDeleted.php');
+
+    $page=new Page($data['id']);
+    $page->editor=$editor;
+
+
+    $page->delete();
+
+
+
+    if ($page->deleted) {
+
+        $response= array('state'=>200,'page_key'=>$page->new_value);
+    } else {
+        $response= array('state'=>400,'msg'=>$page->msg);
+    }
+    echo json_encode($response);
+
+}
+
 
 function edit_page_layout() {
     $page_key=$_REQUEST['page_key'];
@@ -739,17 +780,21 @@ function edit_registration_method($data) {
 
         exit;
     }
-//print_r($site);
-    switch ($data['site_registration_method']) {
-    case 'sidebar':
-    case 'Sidebar':
-        $method='SideBar';
-        break;
-    default:
-        $method='MainPage';
+
+
+
+
+
+    if (!in_array($data['site_registration_method'],array('Simple','Wholesale','None'))) {
+        $response= array('state'=>400,'msg'=>'wrong value '.$data['site_registration_method'],'key'=>$data['site_key']);
+        echo json_encode($response);
+
+        exit;
+
     }
-//print $method;
-    $response=$site->update(array('Site Registration Method'=>$method));
+
+
+    $response=$site->update(array('Site Registration Method'=>$data['site_registration_method']));
     if ($site->updated) {
         $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
     } else
@@ -1572,6 +1617,7 @@ function list_page_product_lists_for_edition() {
 
 
 
+        $go=sprintf("<div class='buttons small'><button onClick='window.location=\"edit_family.php?id=".$row['Page Product Form Parent Key']."\"'>"._('Edit Items')."</button></div>");
 
         $adata[]=array(
                      'id'=>$row['Page Product Form Key'],
@@ -1584,7 +1630,8 @@ function list_page_product_lists_for_edition() {
                      'range'=>$row['Range'],
                      'description_formated'=>$description,
                      'max'=>$row['List Max Items'],
-                     'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_list_dialog(".$row['Page Product Form Key'].")'>"._('Edit')."</button></div>"),
+                     //'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_list_dialog(".$row['Page Product Form Key'].")'>"._('Edit Items')."</button></div>"),
+                     'go'=>$go
 
 
                  );
@@ -1777,16 +1824,70 @@ function list_page_product_buttons_for_edition() {
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
+        switch ($row['Product Web State']) {
+        case('Out of Stock'):
+            $web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+            break;
+        case('For Sale'):
+            $web_state='';
+            break;
+        case('Discontinued'):
+            $web_state=_('Discontinued');
+        case('Offline'):
+            $web_state=_('Offline');
+        default:
+            $web_state=$row['Product Web State'];
+
+
+            break;
+
+
+        }
+
+        $code=sprintf("<a href='edit_product.php?pid=%d'>%s</a>",$row['Product ID'],$row['Product Code']);
+        $web_configuration='';
+        switch ($row['Product Web State']) {
+
+        case('For Sale'):
+            if ($row['Product Web Configuration']=='Online Force For Sale')
+                $web_configuration='('._('forced').')';
+
+            $formated_web_configuration='<span class="web_online">'._('Online')." $web_configuration</span>";
+            break;
+        case('Offline'):
+            if ($row['Product Web Configuration']=='Offline')
+                $web_configuration='('._('forced').')';
+            if ($row['Product Web Configuration']=='Online Auto')
+                $web_configuration='('._('auto').')';
+
+            $formated_web_configuration='<span class="web_offline">'._('Offline')." $web_configuration</span>";
+            break;
+        case('Out of Stock'):
+            if ($row['Product Web Configuration']=='Online Force Out of Stock')
+                $web_configuration='('._('forced').')';
+            $formated_web_configuration='<span class="web_out_of_stock">'._('Out of Stock')." $web_configuration</span>";
+            break;
+        case('Discontinued'):
+            $formated_web_configuration='<span class="web_discontinued">'._('Discontinued')." $web_configuration</span>";
+            break;
+        default:
+            $formated_web_configuration=$row['Product Web State'];
+
+        }
+
 
 
 
 
         $adata[]=array(
                      'id'=>$row['Page Product From Key'],
-                     'code'=>$row['Product Code'],
+                     'smallname'=>$row['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($row['Product Availability']).'</span> <span class="web_state">'.$web_state.'</span>',
 
+                     'code'=>$code,
+                     'pid'=>$row['Product ID'],
                      'go'=>sprintf("<div class='buttons small'><button onClick='show_edit_product_button_dialog(".$row['Page Product From Key'].")'>"._('Edit')."</button></div>"),
-
+                     'web_configuration'=>$web_configuration,
+                     'formated_web_configuration'=>$formated_web_configuration,
 
                  );
     }
@@ -1810,6 +1911,8 @@ function list_page_product_buttons_for_edition() {
                    );
     echo json_encode($response);
 }
+
+
 
 
 function edit_page_product_list($data) {
@@ -1950,13 +2053,13 @@ function edit_page_product_list($data) {
 
 }
 
-function update_page_snapshot($data) {
+function update_page_preview_snapshot($data) {
     include_once('class.Image.php');
     $page=new Page($data['id']);
     if ($page->id) {
         $page->update_preview_snapshot();
     }
-    $response= array('state'=>200,'image_key'=>$page->data['Page Preview Snapshot Image Key']);
+    $response= array('state'=>200,'image_key'=>$page->data['Page Preview Snapshot Image Key'],'formated_date'=>$page->get_preview_snapshot_date());
     echo json_encode($response);
 }
 

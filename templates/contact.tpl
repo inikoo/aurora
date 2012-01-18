@@ -9,7 +9,7 @@
 <span class="nav2"><a href="contacts.php">{$home}</a></span>
 
 
-  <div id="yui-main" >
+<div id="yui-main" >
 
   <div class="search_box" >
        <span class="search_title" style="padding-right:15px" tipo="contact_name">{t}Contact Name{/t}:</span> <br>

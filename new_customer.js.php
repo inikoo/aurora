@@ -186,7 +186,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			       ,{key:"name", formatter:"remove_links",label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			];
 			       
-	    this.dataSource100 = new YAHOO.util.DataSource("ar_regions.php?tipo=country_list&tableid="+tableid+"&nr=20&sf=0");
+	    this.dataSource100 = new YAHOO.util.DataSource("ar_regions.php?tipo=country_list&tableid="+tableid+"&nr=20&sf=0&f_value=");
 	    this.dataSource100.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource100.connXhrMode = "queueRequests";
 	    	    this.dataSource100.table_id=tableid;
@@ -245,7 +245,7 @@ this.table100.prefix='';
 
 
 	    this.table100.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table100.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
+	    this.table100.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:''};
 	    //
 
 };
@@ -517,6 +517,9 @@ Dom.addClass(o,'selected');
 
 function init(){
 
+
+
+
   init_search('customers_store');
     
 	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_customer);
@@ -530,6 +533,14 @@ function init(){
 	company_name_oAutoComp.queryDelay = 0.75;
 	company_name_oAutoComp.autoHighlight = false;
 	
+	
+//	YAHOO.util.Event.addListener('clean_table_filter_show100', "click",show_filter,100);
+ //YAHOO.util.Event.addListener('clean_table_filter_hide100', "click",hide_filter,100);
+ //var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ //oACDS.queryMatchContains = true;
+ //var oAutoComp = new YAHOO.widget.AutoComplete("f_input100","f_container100", oACDS);
+ //oAutoComp.minQueryLength = 0; 
+
 
     } 
 YAHOO.util.Event.onDOMReady(init);

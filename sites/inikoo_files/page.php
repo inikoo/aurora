@@ -50,14 +50,14 @@ $js_files=array(
 
               'external_libs/ampie/ampie/swfobject.js',
               'js/common.js',
-              'js/table_common.js',
-              'js/search.js',
+        //      'js/table_common.js',
+        
               'js/edit_common.js',
               'upload_common.js.php',
               'js/page.js'
           );
 
-
+$template_suffix='';
 if ($page->data['Page Code']=='login') {
     $Sk="skstart|".(date('U')+300000)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St=AESEncryptCtr($Sk,SKEY, 256);
@@ -103,18 +103,260 @@ if ($page->data['Page Code']=='login') {
 
 else if ($page->data['Page Code']=='profile') {
 
-    if (isset($_REQUEST['view']) and in_array($_REQUEST['view'],array('contact','orders','address_book','edit_details','edit_billing','change_password'))) {
+    
+
+
+    if (!$logged_in) {
+        header('location: login.php');
+        exit;
+    }
+
+
+    if (isset($_REQUEST['view']) and
+in_array($_REQUEST['view'],array('contact','orders','address_book','change_password', 'add_address',
+'edit_address', 'invoices', 'delivery_notes'))) {
         $view=$_REQUEST['view'];
     } else {
         $view='contact';
     }
+$smarty->assign('user',$user);
+
+if(isset($_REQUEST['view']) && $_REQUEST['view']=='delivery_notes'){
+	if (isset($_REQUEST['id']))
+	$smarty->assign('id',$_REQUEST['id']);
+	$dn=new DeliveryNote($_REQUEST['id']);
+	$smarty->assign('dn',$dn);
+	$smarty->assign('user',$user);
+}
+
+if(isset($_REQUEST['view']) && $_REQUEST['view']=='invoices'){
+	if (isset($_REQUEST['id']))
+	$smarty->assign('id',$_REQUEST['id']);
+	$smarty->assign('user',$user);
+	$invoice=new Invoice($_REQUEST['id']);
+	//print_r($invoice);
+	$smarty->assign('invoice',$invoice);
+
+	$tax_data=array();
+	$sql=sprintf("select `Tax Category Name`,`Tax Category Rate`,`Tax Amount` from  `Invoice Tax Bridge` B  left join `Tax Category Dimension` T on (T.`Tax Category Code`=B.`Tax Code`)  where B.`Invoice Key`=%d ",$invoice->id);
+
+	$res=mysql_query($sql);
+	while($row=mysql_fetch_assoc($res)){
+	$tax_data[]=array('name'=>$row['Tax Category Name'],'amount'=>money($row['Tax Amount'],$invoice->data['Invoice Currency']));
+	}
+
+	$smarty->assign('tax_data',$tax_data);
+
+}
+
+$custom_fields=array();
+$sql=sprintf("show columns from `Customer Custom Field Dimension`");
+$result=mysql_query($sql);
+mysql_fetch_assoc($result);
+while($row=mysql_fetch_assoc($result)){
+	$sql=sprintf("select * from `Customer Custom Field Dimension` where `Customer Key`=%d", $customer->id);
+
+	$res=mysql_query($sql);
+	$r=mysql_fetch_assoc($res);
+	$val=$r[$row['Field']];
+
+
+	$sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Key`=%d", $row['Field']);
+	$res=mysql_query($sql);
+	$r=mysql_fetch_assoc($res);
+	
+	$custom_fields[]=array('name'=>$r['Custom Field Name'], 'value'=>$val, 'type'=>$r['Custom Field Type']);
+}
+
+$smarty->assign('custom_fields',$custom_fields);
+
+
+$order_template='dummy.tpl';
+if(isset($_REQUEST['order_id'])){
+	$order=new Order($_REQUEST['order_id']);
+
+	if (!$order->id) {
+		header('Location: profile.php');
+		exit;
+	}
+$smarty->assign('order',$order);
+
+if($order->get('Order XHTML Invoices') != ''){
+$invoice_number=explode("?id=", $order->get('Order XHTML Invoices'));
+$invoice_number=explode("\"", $invoice_number[1]);
+$smarty->assign('invoice_number',$invoice_number[0]);
+}
+if($order->get('Order XHTML Invoices') != ''){
+$dn_number=explode("?id=", $order->get('Order XHTML Delivery Notes'));
+$dn_number=explode("\"", $dn_number[1]);
+$smarty->assign('dn_number',$dn_number[0]);
+}
+    switch ($order->get('Order Current Dispatch State')) {
+
+    case('In Process'):
+    case('Ready to Pick'):
+        $js_files[]='js/edit_common.js';
+
+
+        $js_files[]='edit_address.js.php';
+        $js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+
+        $js_files[]='edit_delivery_address_js/common.js';
+        $js_files[]='order_in_process.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
+
+        $css_files[]='css/edit_address.css';
+
+
+        $order_template='order_in_process.tpl';
+
+
+
+        $_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
+
+        if ($order->data['Order Number Items']) {
+            $products_display_type='ordered_products';
+
+        } else {
+            $products_display_type='all_products';
+
+        }
+
+        $_SESSION['state']['order']['products']['display']=$products_display_type;
+
+        $products_display_type=$_SESSION['state']['order']['products']['display'];
+
+        $smarty->assign('products_display_type',$products_display_type);
+
+
+
+
+        $tipo_filter=$_SESSION['state']['order']['products']['f_field'];
+
+
+        $smarty->assign('filter',$tipo_filter);
+        $smarty->assign('filter_value',$_SESSION['state']['order']['products']['f_value']);
+        $filter_menu=array(
+            'code'=>array('db_key'=>'code','menu_label'=>'Code starting with 
+<i>x</i>','label'=>'Code'),
+            'family'=>array('db_key'=>'family','menu_label'=>'Family starting with 
+<i>x</i>','label'=>'Code'),
+            'name'=>array('db_key'=>'name','menu_label'=>'Name starting with 
+<i>x</i>','label'=>'Code')
+
+        );
+        $smarty->assign('filter_menu0',$filter_menu);
+        $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+
+        $paginator_menu=array(10,25,50,100);
+        $smarty->assign('paginator_menu0',$paginator_menu);
+
+        $smarty->assign('search_label',_('Products'));
+        $smarty->assign('search_scope','products');
+
+       
+$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_(
+'Customers'));
+
+        break;
+    case('Dispatched'):
+        $smarty->assign('search_label',_('Orders'));
+        $smarty->assign('search_scope','orders_store');
+
+        $js_files[]='js/order_dispatched.js.php';
+        $order_template='order_dispatched.tpl';
+
+
+        break;
+    case('Cancelled'):
+    case('Suspended'):
+        $smarty->assign('search_label',_('Orders'));
+        $smarty->assign('search_scope','orders_store');
+
+        $js_files[]='js/order_cancelled.js.php';
+        $order_template='order_cancelled.tpl';
+        break;
+
+    case('Ready to Ship'):
+        $js_files[]='js/order_ready_to_ship.js.php';
+        $order_template='order_ready_to_ship.tpl';
+        break;
+    default:
+        //exit('todo '.$order->get('Order Current Dispatch State'));
+	$order_template='dummy.tpl';
+        break;
+    }
+
+}
+
+	
+    //$order_template='dummy.tpl';
+
+
+    $smarty->assign('order_template',$order_template);
+
+	
+    $template_suffix='_'.$view;
+
+
     $smarty->assign('view',$view);
 
     $smarty->assign('user',$user);
     $rnd='';
 
+
+	if (isset($_REQUEST['type'])){
+		$smarty->assign('address_identifier',$_REQUEST['type']);
+		if($_REQUEST['type'] == 'delivery_')
+			$smarty->assign('address_function','Delivery');
+		else if($_REQUEST['type'] == 'billing_')
+			$smarty->assign('address_function','Billing');
+		else if($_REQUEST['type'] == 'contact_')
+			$smarty->assign('address_function','Contact');
+
+		if(isset($_REQUEST['index']))
+		$smarty->assign('index',$_REQUEST['index']);
+		
+	}
+
+	$country_list=array();
+	$sql=sprintf("select * from kbase.`Country Dimension`");
+	$result=mysql_query($sql);
+	while($row=mysql_fetch_array($result)){
+		$country_list[]=array('country'=>$row['Country Name'], 'code'=>$row['Country Code']);
+	}
+
+	$smarty->assign('country_list',$country_list);
+
+
+	$categories=array();
+	$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Name` in
+('Type of Business','Referrer') and `Category Subject`='Customer' and `Category Deep`=1 and
+`Category Store Key`=%d",$customer->data['Customer Store Key']);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+	$tmp=new Category($row['Category Key']);
+	$selected_array=$tmp->sub_category_selected_by_subject($customer->id);
+
+
+	if (count($selected_array)==0) {
+		$tmp_selected='';
+	} else {
+		$tmp_selected=array_pop($selected_array);
+	}
+
+	$categories[$row['Category Key']]=$tmp;
+	$categories_value[$row['Category Key']]=$tmp_selected;
+
+	}
+
+	$smarty->assign('categories',$categories);
+	$smarty->assign('categories_value',$categories_value);
+//print_r($categories);
+
     for ($i = 0; $i < 16; $i++) {
-        $rnd .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", mt_rand(0, 63), 1);
+        $rnd .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+mt_rand(0, 63), 1);
     }
 
     $epwcp1=sprintf("%sinsecure_key%s",$user->id,$rnd);
@@ -123,8 +365,13 @@ else if ($page->data['Page Code']=='profile') {
     $smarty->assign('rnd',$rnd);
     $js_files[]='js/aes.js';
     $js_files[]='js/sha256.js';
+    $js_files[]='js/table_common.js';
+    $js_files[]='js/edit_common.js';
+    $css_files[]='css/container.css';
     $css_files[]='css/inikoo.css';
-
+    $css_files[]='css/inikoo_table.css';
+    $js_files[]='address_data.js.php';
+    $js_files[]='profile_contact.js.php';
 }
 
 $smarty->assign('logged',$logged_in);
@@ -138,7 +385,8 @@ if ($logged_in) {
 }
 
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
+`Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
 $res=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_assoc($res)) {
@@ -149,7 +397,8 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Footer External File Bridge` where `Page Footer Key`=%d",$page->data['Page Footer Key']);
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
+`Page Footer External File Bridge` where `Page Footer Key`=%d",$page->data['Page Footer Key']);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     if ($row['External File Type']=='CSS')
@@ -159,7 +408,8 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
+`Site External File Bridge` where `Site Key`=%d",$site->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     if ($row['External File Type']=='CSS')
@@ -170,7 +420,8 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
+`Page Store External File Bridge` where `Page Key`=%d",$page->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     if ($row['External File Type']=='CSS')
@@ -183,16 +434,18 @@ while ($row=mysql_fetch_assoc($res)) {
 if ($page->data['Page Store Content Display Type']=='Source') {
     $smarty->assign('type_content','string');
     $smarty->assign('template_string',$page->data['Page Store Source']);
-
 } else {
     $smarty->assign('type_content','file');
-    $smarty->assign('template_string',$page->data['Page Store Content Template Filename'].'.tpl');
-    $css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
-    $js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
+    $smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
+    $css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
+    $js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
 }
 
-
-
+$customer=new Customer(73257);
+$page->customer=$customer;
+//print_r($order);
+$smarty->assign('filter_name0','Order ID');
+$smarty->assign('filter_value0', '');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('title',$page->data['Page Title']);

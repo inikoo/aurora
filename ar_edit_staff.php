@@ -22,6 +22,10 @@ $editor=array(
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('edit_staff_pin'):
+case('edit_staff_description'):
+edit_staff_description();
+break;
  case('staff'):
 edit_staff();
    break;
@@ -1070,5 +1074,61 @@ function edit_company_area() {
 
 }
 
+
+function edit_staff_description(){
+  global $editor;
+
+   if(!isset($_REQUEST['staff_key'])
+     or !isset($_REQUEST['key'])
+     or !isset($_REQUEST['newvalue'])
+     ){
+    $response=array('state'=>400,'action'=>'error','msg'=>'');
+    echo json_encode($response);
+     return;
+  }
+  //print_r($editor);
+
+  $staff_key=$_REQUEST['staff_key'];
+
+  $new_value=stripslashes(urldecode($_REQUEST['newvalue']));
+  $traslator=array(
+		   'alias'=>'Staff Alias',
+		'pin'=>'Staff PIN',
+		'pin_confirm'=>'Staff PIN',
+		'position_key'=>'Staff Position'
+
+		   );
+  if(array_key_exists($_REQUEST['key'],$traslator)){
+    $key=$traslator[$_REQUEST['key']];
+  }else{
+    $response=array('state'=>400,'action'=>'error','msg'=>'Unknown key '.$_REQUEST['key']);
+    echo json_encode($response);
+    return;
+  }    
+  
+
+
+  $staff=new Staff($staff_key);
+
+ $staff->editor=$editor;
+
+  $data=array($key=>$new_value);
+  $staff->editor=$editor;
+  $staff->update($data);
+  
+  if($staff->updated){
+    $response=array('state'=>200,'action'=>'updated','newvalue'=>$staff->data[$key], 'msg'=>$staff->msg, 'key'=>$_REQUEST['key']);
+     echo json_encode($response);
+     return;
+  }else{
+    $response=array('state'=>400,'action'=>'nochange','msg'=>$staff->msg);
+    echo json_encode($response);
+     return;
+
+  }
+  
+
+
+}
 
 ?>

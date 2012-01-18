@@ -1,14 +1,47 @@
-	{include file='header.tpl'}
+{include file='header.tpl'}
 <input type="hidden" id="Custom_Field_Store_Key" value="{$store_key}">
 <input type="hidden" id="Custom_Field_Table" value="Customer">
-<div id="bd" style="padding:0px">
 
+<div id="bd" style="padding:0px">
 <div style="padding:0 20px">
-<h1>{t}Customer Store Configuration{/t}</h1>
+{include file='contacts_navigation.tpl'}
+
+<div class="branch"> 
+  <span   >{if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}{$store->get('Store Code')} {t}Customers{/t}</span>
+</div>
+<div class="top_page_menu">
+
+<div class="buttons" style="float:right">
+
+{if $modify}
+<button  id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button>
+<button  onclick="window.location='edit_customers.php?store={$store->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button>
+<button  onclick="window.location='customer_store_configuration.php?store={$store->id}'" ><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button>
+{/if}
+</div>
+
+
+<div class="buttons" style="float:left">
+
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+
+
 
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+
+<div style="clear:both"></div>
+</div>
+
+<h1>{t}Customer Store Configuration{/t} <span class="id">{$store->get('Store Code')}</span></h1>
+
+
+
+</div>
+
+
+
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $view=='new_custom_fields'}selected{/if}"  id="new_custom_fields">  <span> {t}Adding New Custom Fields{/t}</span></span></li>
     <li> <span class="item {if $view=='custom_form'}selected{/if}"  id="custom_form">  <span> {t}Custom Form{/t}</span></span></li>
 	<li> <span class="item {if $view=='email_config'}selected{/if}"  id="email_config">  <span> {t}Email Configuration{/t}</span></span></li>
@@ -20,57 +53,35 @@
 
   <div id="block_new_custom_fields"  style="{if $view!='new_custom_fields'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
   
-<h3>{t}Adding new custom field{/t}</h3>
-	<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}700px{/if};float:right;margin-bottom:10px" class="right_box">
-	  <div class="general_options">
-		{foreach from=$general_options_list item=options }
-		{if $options.tipo=="url"}
-		<span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-		{else}
-		<span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-		{/if}
-		{/foreach}
-	  </div>
-	</div>
 
+<div style="xdisplay:none;width:640px">
 
-    
-    
-
-  <div >
-     <div id="results" style="margin-top:0px;float:right;width:390px;"></div>
+  
       
-      <div  style="float:left;width:540px;" >
+  
       
       
-      <table class="edit"  border=0 style="width:100%;margin-bottom:0px" >
+      <table class="edit"  border=1 style="width:100%;margin-bottom:0px" >
       <input type="hidden" value="{$store_key}" id="Store_Key"/>
       <input type="hidden" value="{$customer_type}" id="Customer_Type"/>
 	  
-	  
-	<tbody id="company_section">
-
-      
-  
-
-
-	
 	<tr class="first">
-	<td style="width:120px" class="label">{t}Field Name{/t}:</td>
-	  <td  style="text-align:left;width:350px">
+	<td style="width:120px" class="label">{t}Field Label{/t}:</td>
+	  <td  style="text-align:left;width:450px">
 	    <div   >
-	      <input style="text-align:left;" id="Custom_Field_Name" value="" ovalue="" valid="0">
+	      <input style="text-align:left;" id="Custom_Field_Name" value="" ovalue="" >
 	      <div id="Custom_Field_Name_Container"  ></div>
 	    </div>
 	  </td>
 	  <td style="width:70px"></td>
 	  
 	</tr>
-	<tr>
+	
+	<tr style="display:none">
 		<td style="width:120px" class="label">{t}Default Value{/t}:</td>
-	  <td  style="text-align:left;width:350px">
+	  <td  style="text-align:left;width:450px">
 	    <div   >
-	      <input style="text-align:left;" id="Default_Value" value="" ovalue="" valid="0">
+	      <input style="text-align:left;" id="Default_Value" value="" ovalue="" >
 	      <div id="Default_Value_Container"  ></div>
 	    </div>
 	  </td>
@@ -79,84 +90,107 @@
 	</tr>
 	
 	<tr>
-	 <td class="label" style="width:200px">{t}Custom Field Type{/t}:</td>
-	 <input type="hidden" value="varchar" id="Custom_Field_Type"  />
+	 <td class="label" style="width:200px">{t}Value Type{/t}:</td>
+	 <input type="hidden" value="Text" id="Custom_Field_Type"  />
 	 <input type="hidden" value="Yes" id="Custom_Field_In_New_Subject"  />
 	 <input type="hidden" value="Yes" id="Custom_Field_In_Showcase"  />
-	 
+	  <input type="hidden" value="No" id="Custom_Field_In_Registration"  />
+	 <input type="hidden" value="No" id="Custom_Field_In_Profile"  />
 	 <td>
-	   <div  class="options" style="margin:0">
-	   <span class="option selected" onclick="change_allow(this,'Custom_Field_Type','varchar')" >{t}String{/t}</span> 
-	   <span class="option" onclick="change_allow(this,'Custom_Field_Type','Mediumint')" >{t}Integer{/t}</span>
+	   <div class="buttons small left">
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_Type','Text')" >{t}Short Text{/t}</button> 
+	   	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Longtext')" >{t}Long Text{/t}</button>
+	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Mediumint')" >{t}Number{/t}</button>
+	   	   <button class="option" onclick="change_allow(this,'Custom_Field_Type','Enum')" >{t}Yes/No{/t}</button>
+
 	   </div>
 	 </td>
 	 </tr>
 	 
+	   <tr>
+	   <td colspan="3">{t}Display in{/t} ...</td>
+	   </tr>
 	  <tr>
-	 <td class="label" style="width:400px">{t}Custom Field In New Subject{/t}:</td>
+	 <td class="label" >... {t}new customer form{/t}:</td>
 	 <td>
-	   <div class="options" style="margin:0">
-	   <span class="option selected" onclick="change_allow(this,'Custom_Field_In_New_Subject','Yes')" >{t}Yes{/t}</span> 
-	   <span class="option" onclick="change_allow(this,'Custom_Field_In_New_Subject','No')" >{t}No{/t}</span>
+	   <div class="buttons small left">
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_New_Subject','Yes')" >{t}Yes{/t}</button> 
+	   <button class="option" onclick="change_allow(this,'Custom_Field_In_New_Subject','No')" >{t}No{/t}</button>
 	   </div>
 	 </td>
 	 </tr>
 
 	 <tr>
-	 <td class="label" style="width:300px">{t}Custom Field In Showcase{/t}:</td>
+	 <td class="label" >... {t}customer showcase{/t}:</td>
 	 <td>
-	   <div class="options" style="margin:0">
-	   <span class="option selected" onclick="change_allow(this,'Custom_Field_In_Showcase','Yes')" >{t}Yes{/t}</span> 
-	   <span class="option" onclick="change_allow(this,'Custom_Field_In_Showcase','No')" >{t}No{/t}</span>
+	   <div class="buttons small left">
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Showcase','Yes')" >{t}Yes{/t}</button> 
+	   <button class="option" onclick="change_allow(this,'Custom_Field_In_Showcase','No')" >{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+	 
+	 	 <td class="label" >... {t}registration form{/t}:</td>
+	 <td>
+	   <div class="buttons small left">
+	   <button class="option " onclick="change_allow(this,'Custom_Field_In_Registration','Yes')" >{t}Yes{/t}</button> 
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Registration','No')" >{t}No{/t}</button>
+	   </div>
+	 </td>
+	 </tr>
+
+	 <tr>
+	 <td class="label" >... {t}customer profile{/t}:</td>
+	 <td>
+	   <div class="buttons small left">
+	   <button class="option " onclick="change_allow(this,'Custom_Field_In_Profile','Yes')" >{t}Yes{/t}</button> 
+	   <button class="option selected" onclick="change_allow(this,'Custom_Field_In_Profile','No')" >{t}No{/t}</button>
 	   </div>
 	 </td>
 	 </tr>
 	
-	 </tbody>
+	 
+<tr>
+<td colspan="2">
+<span style="float:right;display:none" id="processing"><img src="art/loading.gif" alt=""/> {t}Processing Request{/t}</span>
+<div class="buttons">
+<button id="save_new_custom_field" class="disabled positive">{t}Save{/t}</button>
+<button id="cancel_add_custom_field" class="negative">{t}Cancel{/t}</button>
+
+</div>
+
+</td>
+	
+	</tr>
 
 
-
-{foreach from=$categories item=cat key=cat_key name=foo  }
- <tr>
- 
- <td class="label">{t}{$cat->get('Category Label')}{/t}:</td>
- <td>
-  <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="update_category(this)">
-    {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
-        {if $smarty.foreach.foo2.first}
-        <option  value="">{t}Unknown{/t}</option>
-        {/if}
-        <option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
-    {/foreach}
-  </select>
-  
- </td>   
-</tr>
-{/foreach}
 
     
     </table>
-      <table class="options" border=0 style="font-size:120%;margin-top:20px;;float:right;padding:0">
-	<tr>
-		<td   id="creating_message" style="border:none;display:none">{t}Creating Contact{/t}</td>
+     
+	
+</div>
 
-	  <td  class="disabled" id="save_new_custom_field">{t}Save{/t}</td>
-	  <td  id="cancel_add_custom_field">{t}Cancel{/t}</td>
-	</tr>
-      </table>
-
-
-      
-      
-
-      </div>
-      
-      
-      <div style="clear:both;height:40px"></div>
-	</div>
+ 
   </div>
 		
 		
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 
 

@@ -90,7 +90,7 @@ $css_files=array(
                'text_editor.css',
                'common.css',
                'button.css',
-               'container.css',
+               'css/container.css',
                'table.css',
                'css/customer.css',
                  'css/upload.css',
@@ -146,7 +146,7 @@ $smarty->assign('all_warning',get_all_warnings($customer));
 
 
 list($customer_type, $login_stat)=$customer->is_user_customer($customer_id);
-$_login_stat=array();
+$_login_stat=array('UserHandle'=>false);
 
 if($customer_type){
 	

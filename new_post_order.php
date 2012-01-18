@@ -42,7 +42,7 @@ $css_files=array(
 		 $yui_path.'editor/assets/skins/sam/editor.css',
 		 'text_editor.css',
 		 'common.css',
-		 'container.css',
+		 'css/container.css',
 		 'table.css',
 		 'css/edit_address.css',
 		  'css/edit.css'

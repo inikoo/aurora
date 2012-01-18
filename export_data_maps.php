@@ -25,7 +25,7 @@ $css_files=array(
          'text_editor.css',
          'common.css',
          'button.css',
-         'container.css',
+         'css/container.css',
          'table.css',
 	 'css/export_wizard.css',
          'css/customer.css'
