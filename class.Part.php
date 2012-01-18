@@ -1304,10 +1304,11 @@ class part extends DB_Table {
 	}
 
 	function update_up_today_sales() {
+	
 		$this->update_sales_from_invoices('Today');
 		$this->update_sales_from_invoices('Week To Day');
 		$this->update_sales_from_invoices('Month To Day');
-		$this->update_sales_from_invoices('Year To Day');
+		$this->update_sales_from_invoices('Year To Day');	
 		$this->update_sales_from_invoices('Total');
 
 	}
@@ -1316,10 +1317,11 @@ class part extends DB_Table {
 
 		$this->update_sales_from_invoices('Yesterday');
 		$this->update_sales_from_invoices('Last Week');
-		$this->update_sales_from_invoices('Last Month');
+		$this->update_sales_from_invoices('Last Month');	
 	}
 
 	function update_interval_sales() {
+
 		$this->update_sales_from_invoices('3 Year');
 		$this->update_sales_from_invoices('1 Year');
 		$this->update_sales_from_invoices('6 Month');
@@ -1327,6 +1329,7 @@ class part extends DB_Table {
 		$this->update_sales_from_invoices('1 Month');
 		$this->update_sales_from_invoices('10 Day');
 		$this->update_sales_from_invoices('1 Week');
+
 	}
 
 	function update_sales_from_invoices($interval) {
@@ -1489,7 +1492,7 @@ class part extends DB_Table {
 		$this->data["Part $db_interval Acc Given"]=0;
 		$this->data["Part $db_interval Acc Sold Amount"]=0;
 		$this->data["Part $db_interval Acc Profit"]=0;
-		$this->data["Part $db_interval Acc Profit When Sold"]=0;
+		$this->data["Part $db_interval Acc Profit After Storing"]=0;
 		$this->data["Part $db_interval Acc Sold"]=0;
 		$this->data["Part $db_interval Acc Margin"]=0;
 
@@ -1600,7 +1603,7 @@ class part extends DB_Table {
                      `Part $db_interval Acc Given`=%f ,
                      `Part $db_interval Acc Sold Amount`=%f ,
                      `Part $db_interval Acc Profit`=%f ,
-                     `Part $db_interval Acc Profit When Sold`=%f ,
+                     `Part $db_interval Acc Profit After Storing`=%f ,
                      `Part $db_interval Acc Sold`=%f ,
                      `Part $db_interval Acc Margin`=%s where
                      `Part SKU`=%d "
@@ -1609,7 +1612,7 @@ class part extends DB_Table {
 			,$this->data["Part $db_interval Acc Given"]
 			,$this->data["Part $db_interval Acc Sold Amount"]
 			,$this->data["Part $db_interval Acc Profit"]
-			,$this->data["Part $db_interval Acc Profit When Sold"]
+			,$this->data["Part $db_interval Acc Profit After Storing"]
 			,$this->data["Part $db_interval Acc Sold"]
 			,$this->data["Part $db_interval Acc Margin"]
 
@@ -1617,7 +1620,7 @@ class part extends DB_Table {
 
 		mysql_query($sql);
 
-		// print "$sql\n";
+	//	 print "$sql\n";
 
 
 
