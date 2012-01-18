@@ -5082,12 +5082,7 @@ class Customer extends DB_Table {
         $email_suppliers_number_keys=count($email_suppliers_keys);
         $email_companies_number_keys=count($email_companies_keys);
 
-        //      print_r($email_customer_number_keys);
-        //     print_r($email_contacts_number_keys);
-        //    print_r($email_suppliers_number_keys);
-        // print_r($email_companies_number_keys);
-
-
+            
 
         $email->remove_from_parent('Customer',$this->id);
         if (($email_customer_number_keys+$email_contacts_number_keys+$email_suppliers_number_keys)==0) {
@@ -5112,11 +5107,11 @@ class Customer extends DB_Table {
             $contact_customers_number_keys=count($contact_customers_keys);
             $contact_suppliers_number_keys=count($contact_suppliers_keys);
 
-            // print_r($contact_customers_keys);
-            // print_r($contact_suppliers_keys);
+         
 
             if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
                 $email->remove_from_parent('Contact',$contact->id);
+                $email->delete();
             }
 
             $this->updated=true;

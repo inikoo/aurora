@@ -158,7 +158,7 @@
 	 
       
 	<tr id="email_mould"   style="{if $scope=='corporation'}display:none{/if}"  >
-	  <td  class="label"  ><img  id="{$address_identifier}email_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Email{/t}:</td>
+	  <td  class="label"  ><img  id="email_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Email{/t}:</td>
 	  <td >
 	    <div>
 	    <input style="width:100%" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
@@ -172,7 +172,7 @@
  	<tr id="telephone_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
 	    
-	    <img  id="{$address_identifier}telephone_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Telephone{/t}:
+	    <img  id="telephone_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Telephone{/t}:
 	  </td>
 	  <td>
 	    <div>
@@ -207,7 +207,7 @@
 	<tr id="mobile_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
 	    
-	   <img  id="{$address_identifier}mobile_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Mobile{/t}:
+	   <img  id="mobile_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Mobile{/t}:
 	  </td>
 	  <td>
 	    <div>
@@ -220,7 +220,7 @@
 	
 	<tr id="FAX_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
-	    <img  id="{$address_identifier}FAX_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Fax{/t}:
+	    <img  id="FAX_warning" title=""  src="art/icons/exclamation.png" style="margin-left:5px;visibility:hidden" /> {t}Fax{/t}:
 	  </td>
 	  <td>
 	    <div>
@@ -246,6 +246,14 @@ hide_description=1
 show_default_country=1 
 default_country_2alpha=$store->get('Store Home Country Code 2 Alpha')
 hide_buttons=1
+address_identifier=''
+address_type=''
+function_value=''
+address_function=''
+show_components=false
+show_contact=false
+show_tel=false
+close_if_reset=false
 }
 
 
@@ -414,16 +422,6 @@ hide_buttons=1
 	</div>
     
 <div class="star_rating" id="star_rating_template" style="display:none"><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /></div>
-<div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
-    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
-        <div id="the_table" class="data_table" >
-            <span class="clean_table_title">{t}Country List{/t}</span>
-            
-            {include file='table_splinter.tpl' table_id=100 filter_name=$filter_name100 filter_value=$filter_value100}
-            <div  id="table100"   class="data_table_container dtable btable "> </div>
-        </div>
-    </div>
- </div>
 
 
       
@@ -433,4 +431,13 @@ hide_buttons=1
 </div>
 {include file='footer.tpl'}
 
+<div id="dialog_country_list">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Country List{/t}</span>
+            {include file='table_splinter.tpl' table_id=100 filter_name=$filter_name100 filter_value=$filter_value100}
+            <div  id="table100"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
 

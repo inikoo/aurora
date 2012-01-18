@@ -3,15 +3,40 @@
 <input type="hidden" id="order_key" value="{$order->id}"/>
  {include file='orders_navigation.tpl'}
 <div  class="branch"> 
-<span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Delivery Notes{/t}</a> &rarr; {$dn->get('Delivery Note ID')} ({$dn->get_state()})</span>
-</div>
-
-<div  class="buttons">
- <button  onclick="window.location='delivery_notes.pdf.php?id={$dn->id}'">PDF Delivery Note</button>
+<span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=dns">{$store->get('Store Code')} {t}Delivery Notes{/t}</a> &rarr; {$dn->get('Delivery Note ID')} ({$dn->get_state()})</span>
 </div>
 
 
-     <div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+
+
+<div class="top_page_menu" style="border-bottom:none">
+
+<div class="buttons" style="float:right">
+
+ <button style="height:24px;" onclick="window.location='delivery_notes.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button>
+
+</div>
+
+
+<div class="buttons" style="float:left">
+{if isset($referal) and $referal=='store_pending_orders'}
+<button  onclick="window.location='$referal_url'" ><img src="art/icons/text_list_bullets.png" alt=""> {t}Pending Orders (Store){/t}</button>
+{/if}
+{if isset($referal) and $referal=='warehouse_orders'}
+<button   onclick="window.location='$referal_url" ><img src="art/icons/package.png" alt=""> {t}Pending Orders (Warehouse){/t}</button>
+{/if}
+
+<button  onclick="window.location='orders.php?store={$store->id}&view=dns'" ><img src="art/icons/paste_plain.png" alt=""> {t}Delivery Notes{/t}</button>
+
+
+</div>
+
+
+<div style="clear:both"></div>
+</div>
+
+
+     <div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
 
        <div style="border:0px solid #ddd;width:350px;float:left"> 
          <h1 style="padding:0 0 0px 0">{t}Delivery Note{/t} {$dn->get('Delivery Note ID')}</h1>

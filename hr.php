@@ -15,22 +15,12 @@ $general_options_list[]=array('tipo'=>'url','url'=>'staff_holidays.php','label'=
 $smarty->assign('general_options_list',$general_options_list);
 
 
-$staff_options_list=array();
-
-
-if ($modify) {
-    $staff_options_list[]=array('tipo'=>'url','url'=>'new_staff.php','label'=>_('Add Staff'));
-    $staff_options_list[]=array('tipo'=>'url','url'=>'import_csv.php?subject=staff','label'=>_('Import Staff'));
-
-}
-
 
 
 $smarty->assign('modify',$modify);
 
 
 
-$smarty->assign('staff_options_list',$staff_options_list);
 
 
 $css_files=array(
@@ -134,6 +124,20 @@ $smarty->assign('csv_export_options','');
 $smarty->assign('export_csv_table_cols',2);
 $smarty->assign('search_label',_('Staff'));
 $smarty->assign('search_scope','staff');
+
+$elements_number=array('Working'=>0,'NotWorking'=>0);
+$sql=sprintf("select count(*) as num,`Staff Currently Working` from  `Staff Dimension`  group by `Staff Currently Working`");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$key=($row['Staff Currently Working']=='Yes'?'Working':'NotWorking');	
+
+    $elements_number[$key]=$row['num'];
+}
+
+
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['hr']['staff']['elements']);
+
 
 $smarty->display('hr.tpl');
 ?>

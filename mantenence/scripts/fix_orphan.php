@@ -42,7 +42,7 @@ require_once '../../conf/conf.php';
 //print "cp ../../examples/_countries/".strtolower(preg_replace('/\s/','_',$row['Country Name']))."/ammap_data.xml ".$row['Country Code'].".xml\n";
 //}
 //exit;
-
+/*
 
 $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Delivery Note','After Sale')    ");
 $res=mysql_query($sql);
@@ -76,7 +76,7 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     }
 }
 
-
+*/
 
 
 
