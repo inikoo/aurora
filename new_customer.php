@@ -28,27 +28,46 @@ if (!$modify or!$create) {
 
 
 
-$store_key=$_SESSION['state']['customers']['store'];
+if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
+    $store_id=$_REQUEST['store'];
 
-$store=new Store($store_key);
+} else {
+    $store_id=$_SESSION['state']['customers']['store'];
+
+}
+
+if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+    header('Location: index.php');
+    exit;
+}
+
+$store=new Store($store_id);
+if ($store->id) {
+    $_SESSION['state']['customers']['store']=$store->id;
+} else {
+    header('Location: index.php?error=store_not_found');
+    exit();
+}
+
+$store_key=$store->id;
+
+
+
+
+
 $smarty->assign('store',$store);
 
 
+$smarty->assign('store_id',$store_key);
 
 $smarty->assign('store_key',$store_key);
 $smarty->assign('scope','customer');
 
 
-$general_options_list=array();
-
-
-$general_options_list[]=array('tipo'=>'url','url'=>'customers.php','label'=>_('Go Back'));
-
-//$smarty->assign('general_options_list',$general_options_list);
-
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+                  $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
                'text_editor.css',
                'common.css',
@@ -56,6 +75,7 @@ $css_files=array(
                'css/container.css',
                'table.css',
                'css/edit.css',
+               'css/edit_address.css',
                'theme.css.php'
            );
 
@@ -166,6 +186,19 @@ $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','customers');
 
 $smarty->assign('title',_('Creating New Customer'));
+
+
+$tipo_filter100='code';
+$filter_menu100=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
+                	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Country Name'),'label'=>_('Name')),
+                 'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
+              );
+$smarty->assign('filter_name100',$filter_menu100[$tipo_filter100]['label']);
+$smarty->assign('filter_menu100',$filter_menu100);
+$smarty->assign('filter100',$tipo_filter100);
+$smarty->assign('filter_value100','');
+
 
 
 

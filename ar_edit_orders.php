@@ -1866,6 +1866,7 @@ function start_picking($data) {
 
 
 	print_r($data);exit;
+	$sql=sprintf();
 
 	$dn->start_picking($data['staff_key']);
 

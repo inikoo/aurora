@@ -5381,3 +5381,12 @@ ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM( 'Employee',
 ALTER TABLE `Staff Dimension` ADD `Staff PIN` VARCHAR( 4 ) NOT NULL DEFAULT '1234' AFTER `Staff Department Key`;
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Date Done Approved` DATETIME NULL DEFAULT NULL AFTER `Delivery Note Date Finish Packing` ;ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Approved Done` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Delivery Note Date` , ADD `Delivery Note Approved To Dispatch` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Delivery Note Approved Done` ;
 ALTER TABLE `Staff Dimension` DROP `Staff Position Key`;
+
+ALTER TABLE `HQ Dimension` ADD `Short Message` VARCHAR( 128 ) NOT NULL ;
+
+ALTER TABLE `Part Dimension` ADD `Part Transactions` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Main Image Key` ,
+ADD `Part Transactions In` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions` ,
+ADD `Part Transactions Out` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions In` ,
+ADD `Part Transactions Audit` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions Out` ,
+ADD `Part Transactions OIP` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions Audit` ,
+ADD `Part Transactions Move` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions OIP` ;

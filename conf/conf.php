@@ -2149,7 +2149,8 @@ $default_state=array(
                                            'where'=>'where true',
                                            'f_field'=>'name',
                                            'f_value'=>'',
-                                           'view'=>'staff'
+                                           'view'=>'staff',
+                                           'elements'=>array('Working'=>1,'NotWorking'=>0)
 
                                           ),
                             'areas'=>array(

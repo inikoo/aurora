@@ -1429,6 +1429,7 @@ class DeliveryNote extends DB_Table {
 		}
 
 
+
 		if ($this->data ['Delivery Note Assigned Picker Key']==$staff->id) {
 			return;
 		}
@@ -1538,6 +1539,7 @@ class DeliveryNote extends DB_Table {
 			$staff_alias=$staff->data['Staff Alias'];
 			$staff_key=$staff->id;
 		}
+
 
 
 		if ($this->data ['Delivery Note Assigned Picker Key']==$staff_key) {

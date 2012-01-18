@@ -19,7 +19,23 @@
      
        <div id="dialog_new_billing_address" style="width:540px;margin-top:10px;padding:10px 0 0 0 ;border:1px solid #ccc;display:none">
        <table id="new_billing_address_table" border=0 style="width:500px;margin:0 auto">
-       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='billing_' address_type='Shop' show_tel=true show_contact=true  address_function='Billing'  hide_type=true hide_description=true show_form=false  show_components=false }
+       {include file='edit_address_splinter.tpl' 
+       close_if_reset=true 
+       address_identifier='billing_' 
+       address_type='Shop' 
+       show_tel=true show_contact=true  
+       address_function='Billing'  
+       hide_type=true hide_description=true 
+       show_form=false  
+       show_components=false 
+       
+       show_form=1  
+show_default_country=1 
+    default_country_2alpha="$default_country_2alpha"
+function_value=false
+       hide_buttons=false
+       
+       }
      </table>
 </div>
       <table>
@@ -49,7 +65,7 @@
 		    <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}"/>
 		  </span>
 		  <div class="buttons small">
-		  <button id="billing_set_main0" style="float:left" class="{if $key==$customer->get('Customer Billing Address Key')}hide{/if}  billing_set_main small_button small_button_edit"  onClick="change_main_address(0,{literal}{{/literal}type:'billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</button>
+		  <button id="billing_set_main0" style="float:left" class="hide  billing_set_main small_button small_button_edit"  onClick="change_main_address(0,{literal}{{/literal}type:'billing',prefix:'billing_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</button>
 		  <button  class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(0,'billing_')" >{t}Remove{/t}</span>
 		  <button  class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(0,'billing_')" >{t}Edit{/t}</span>
 		   </div> 
