@@ -266,11 +266,11 @@ foreach (array('view'=>$view,'order'=>$order,'order_dir'=>$order_direction,'nr'=
 
 // ------------------------------------------ Staff Working Hours Table Starts Here ----------------------------------
 function list_staff_working_hours() {
-    $conf=$_SESSION['state']['staff_history']['working_hours'];
+    $conf=$_SESSION['state']['staff']['working_hours'];
     if (isset( $_REQUEST['id']))
         $staff_id=$_REQUEST['id'];
     else
-       $staff_id=$_SESSION['state']['staff_history']['id'];
+     	exit;
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -322,9 +322,16 @@ function list_staff_working_hours() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_SESSION['state']['staff_history']['id']=$staff_id;
 
-    $_SESSION['state']['staff_history']['working_hours']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value);
+  //  $_SESSION['state']['staff_history']['working_hours']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value);
+
+   $_SESSION['state']['staff']['working_hours']['order']=$order;
+   $_SESSION['state']['staff']['working_hours']['order_dir']=$order_direction;
+   $_SESSION['state']['staff']['working_hours']['nr']=$number_results;
+   $_SESSION['state']['staff']['working_hours']['sf']=$start_from;
+   $_SESSION['state']['staff']['working_hours']['f_field']=$f_field;
+    $_SESSION['state']['staff']['working_hours']['f_value']=$f_value;
+
     /*$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
     if ($date_interval['error']) {
         $date_interval=prepare_mysql_dates($_SESSION['state']['staff']['table']['from'],$_SESSION['state']['staff']['table']['to']);
@@ -405,9 +412,17 @@ function list_staff_working_hours() {
    }
    
    mysql_free_result($res);
-   $rtext=$total_records." ".ngettext('record','records',$total_records);
-   if($total_records>$number_results)
-     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+ 
+  
+  $rtext=$total_records." ".ngettext('record','records',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._("Showing All").')';
+
+
+
+
    $filter_msg='';
    
     switch($f_field){
@@ -432,6 +447,10 @@ function list_staff_working_hours() {
 
     }
 
+
+    $_order=$order;
+    $_dir=$order_direction;
+
 if($order=='start_time')
   $order='`Start Time`';
 
@@ -453,22 +472,21 @@ if($order=='start_time')
 		    
 		    );
   }
+  
+  
+  
   mysql_free_result($res);
    $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			// 'sort_key'=>$_order,
-			// 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'rtext'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
+		   array(
+   'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
 			 )
 		   );
    echo json_encode($response);

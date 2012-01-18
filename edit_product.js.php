@@ -150,7 +150,6 @@ function select_family(oArgs){
 family_key=tables.table2.getRecord(oArgs.target).getData('key');
  dialog_family_list.hide();
 
- 	//var request = 'ar_edit_assets.php?tipo=edit_product&key=' + key + '&newvalue=' + json_value
 	var request = 'ar_edit_assets.php?tipo=edit_product&key=' + 'family_key' + '&newvalue=' + family_key+ '&pid=' + product_pid
 	 //alert(request);
 
@@ -158,28 +157,12 @@ family_key=tables.table2.getRecord(oArgs.target).getData('key');
 		success: function(o) {
 			//alert(o.responseText);
 			var r = YAHOO.lang.JSON.parse(o.responseText);
-			if (r.state == 200) {
-				
+			if (r.state == 200) {				
 				Dom.get('current_family_code').innerHTML=r.newdata['code'];
-
-
-
-				
 			} else {
-
-
 				}
-
-
-			
 		}
-
-
-		
 	});
- 
- 
-	
 }
 
 function reset_part(key){

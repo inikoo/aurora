@@ -965,7 +965,6 @@ class Company extends DB_Table {
 
 
 
-
         switch ($field) {
         case('Company Tax Number'):
             $this->update_field($field,$value,$options);
@@ -1060,6 +1059,9 @@ class Company extends DB_Table {
             $this->update_Company_Old_ID($value,$options);
             break;
         default:
+        
+        
+        
             $base_data=$this->base_data();
             if (array_key_exists($field,$base_data)) {
                 $this->update_field($field,$value,$options);
@@ -1149,9 +1151,9 @@ class Company extends DB_Table {
 
 
             $history_data=array(
-                              'History Abstract'=>_('Company Name Changed')
-                                                 ,'History Details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
-                                                                    ,'Indirect Object'=>'Name'
+                              'History Abstract'=>_('Company Name Changed'),
+                                                 'History Details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name']),
+                                                                    'Indirect Object'=>'Name'
                           );
 
             $this->add_history($history_data);
@@ -1177,14 +1179,16 @@ class Company extends DB_Table {
             }
 
             $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Company Key`=%d  ",$this->id);
-            $res=mysql_query($sql);
+         // print $sql;
+          
+          $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $customer=new Customer ($row['Customer Key']);
                 if ($customer->data['Customer Type']=='Company') {
                     $customer->editor=$this->editor;
                     $customer->update_name($this->data['Company Name']);
                     $customer->update_file_as($this->data['Company File As']);
-
+                    $customer->update_field('Customer Company Name',$this->data['Company Name'],'no_history');
                 }
             }
             mysql_free_result($res);

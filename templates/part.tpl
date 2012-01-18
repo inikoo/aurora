@@ -3,7 +3,7 @@
 <div style="padding: 0 20px;">
 {include file='locations_navigation.tpl'}
 <div class="branch"> 
-  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?id={$warehouse->id}">{t}Parts{/t}</a> &rarr; {$part->get_sku()}</span>
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {$part->get_sku()}</span>
 </div>
 <div class="top_page_menu">
     <div class="buttons" style="float:right">
@@ -29,7 +29,7 @@
 	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	     
 	      <div id="imagediv"   style="border:1px solid #ddd;width:190px;;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-		<img src="{$part->get('Part Main Image')}"  style="vertical-align:middle;display:block;" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
+		<img src="{$part->get('Part Main Image')}"  style="vertical-align:middle;display:block;;width:190px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
 	      </div>
 	    </div>
 	    
@@ -84,8 +84,8 @@
 		    {/foreach}
 		    </tr>
 		  </table>
-		  {t}Locations{/t}:<div id="add_location_button" style="float:right;font-size:80%;color:#777;margin-right:40px;cursor:pointer"><span onClick="add_location({$part->sku})">{t}Add Location{/t}</span></div>
-		  <table  id="part_locations" class="show_info_product" style="width:260px" >
+		  {t}Locations{/t}:<div id="add_location_button" style="float:right;font-size:80%;color:#777;margin-right:20px;cursor:pointer"><span onClick="add_location({$part->sku})">{t}Add Location{/t}</span></div>
+		  <table  border=0  id="part_locations" class="show_info_product" style="width:260px" >
 	
 			{foreach from=$part->get_locations(true) item=location name=foo }
 			<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
@@ -94,11 +94,11 @@
 				<img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  {if $location.CanPick=='Yes'}can_pick="No"  src="art/icons/basket.png"{else} can_pick="Yes"   src="art/icons/box.png"{/if} alt="{t}can_pick{/t}"   onClick="save_can_pick({$location.PartSKU},{$location.LocationKey})" />
 			</td>
 		     <td class="quantity"  id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}"  >{$location.FormatedQuantityOnHand}</td>
-		     <td class="button"   ><img  id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onClick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
-			     <td class="button"  > <img  sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_add_stock_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/lorry.png" title="{t}add stock{/t}"  alt="{t}add stock{/t}" onClick="add_stock_part_location({$location.PartSKU},{$location.LocationKey})" /></td>
+		     <td class="button"   ><img  style="cursor:pointer" id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onClick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
+			     <td class="button"  > <img  style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_add_stock_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/lorry.png" title="{t}add stock{/t}"  alt="{t}add stock{/t}" onClick="add_stock_part_location({$location.PartSKU},{$location.LocationKey})" /></td>
 
-	<td class="button"  > <img style="{if $location.QuantityOnHand!=0}display:none{/if}" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_delete_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/cross_bw.png"  title="{t}delete{/t}" alt="{t}delete{/t}" onClick="delete_part_location({$location.PartSKU},{$location.LocationKey})" /><img style="{if $location.QuantityOnHand==0}display:none{/if}" id="part_location_lost_items_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/package_delete.png" title="{t}lost{/t}" alt="{t}lost{/t}" onClick="lost({$location.PartSKU},{$location.LocationKey})" /></td>
-			 <td class="button"  ><img sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_move_items_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/package_go.png" title="{t}move{/t}"  alt="{t}move{/t}" onClick="move({$location.PartSKU},{$location.LocationKey})" /></td>
+	<td class="button"  > <img style="{if $location.QuantityOnHand!=0}display:none;{/if}cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_delete_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/cross_bw.png"  title="{t}delete{/t}" alt="{t}delete{/t}" onClick="delete_part_location({$location.PartSKU},{$location.LocationKey})" /><img style="{if $location.QuantityOnHand==0}display:none;{/if}cursor:pointer" id="part_location_lost_items_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/package_delete.png" title="{t}lost{/t}" alt="{t}lost{/t}" onClick="lost({$location.PartSKU},{$location.LocationKey})" /></td>
+			 <td class="button"  ><img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_move_items_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/package_go.png" title="{t}move{/t}"  alt="{t}move{/t}" onClick="move({$location.PartSKU},{$location.LocationKey})" /></td>
 
 
 			</tr>
@@ -202,7 +202,7 @@
 		<td>{t}Volume{/t}:</td><td>{$part->get('Volume')}</td>
 	</tr>
 	<tr>
-		<td>{t}Export Code{/t}:</td><td>{$part->get('Part Export Code')}</td>
+		<td>{t}Export Code{/t}:</td><td>{$part->get('Part Tariff Code')}</td>
 	</tr>
 </table>
 

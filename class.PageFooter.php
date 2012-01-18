@@ -213,6 +213,7 @@ class PageFooter extends DB_Table {
 
         $new_image_key=$old_image_key;
         //      $image=new Image($image_key);
+        $url="http://localhost/".dirname($_SERVER['PHP_SELF'])."/public_footer_preview.php?id=".$this->id;
 
 
         ob_start();
@@ -225,14 +226,14 @@ class PageFooter extends DB_Table {
 
 
         if (preg_match('/darwin/i',$_system)) {
-            $command="mantenence/scripts/webkit2png_mac.py  -C -o app_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5     ".$inikoo_public_url."public_footer_preview.php?id=".$this->id;
+            $command="mantenence/scripts/webkit2png_mac.py  -C -o app_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5    ".$url;
 
             //       $command="mantenence/scripts/webkit2png  -C -o app_files/tmp/pfooter_image".$this->id."  --clipheight=80  --clipwidth=488  -s 0.5   http://localhost/dw/public_footer_preview.php?id=".$this->id;
 
         }
 
         elseif(preg_match('/linux/i',$_system)) {
-            $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log    -o app_files/tmp/pfooter_image'.$this->id.'-clipped.png -g 976 160 --scale 488 80   '.$inikoo_public_url."public_footer_preview.php?id=".$this->id;
+            $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log    -o app_files/tmp/pfooter_image'.$this->id.'-clipped.png -g 976 160 --scale 488 80    '.$url;
 
 
 

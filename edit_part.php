@@ -249,7 +249,7 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('filter_menu1',$filter_menu);
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
 $tipo_filter=$_SESSION['state']['part']['supplier_products']['f_field'];
 $smarty->assign('filter2',$tipo_filter);

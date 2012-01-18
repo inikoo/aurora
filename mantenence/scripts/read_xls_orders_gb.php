@@ -64,12 +64,19 @@ $do_refunds=false;
 $correct_partner=true;
 $force_update=false;
 
+$orders_array_full_path = glob("/mnt/c/Orders/*.xls");
+if (count($orders_array_full_path)==0) {
+    print "->End.(RO UK) ".date("r")."\n";
+
+    exit;
+}
+
 $sql="update orders_data.orders set deleted='Yes'  where filename like '/mnt/c/Orders/%'  ";
   mysql_query($sql);
 
 
 
-$orders_array_full_path = glob("/mnt/c/Orders/*.xls");
+
 //$orders_array_full_path1 = glob("/mnt/z/Orders_Aug10/*.xls");
 //$orders_array_full_path2 = glob("/mnt/z/Orders_Aug10/*.xls");
 //$orders_array_full_path =array_merge($orders_array_full_path1,$orders_array_full_path2);
@@ -79,11 +86,7 @@ $orders_array_full_path = glob("/mnt/c/Orders/*.xls");
 //$orders_array_full_path=array_reverse($orders_array_full_path);
 
 
-if (count($orders_array_full_path)==0) {
-    print "->End.(RO UK) ".date("r")."\n";
 
-    exit;
-}
 foreach($orders_array_full_path as $key=>$order) {
     $tmp=str_replace('.xls','',$order);
     $tmp=preg_replace('/.*rders\//i','',$tmp);

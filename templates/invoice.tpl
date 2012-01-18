@@ -6,15 +6,15 @@
 
 <input type="hidden" id="invoice_key" value="{$invoice->id}"/>
 <div  class="buttons">
- <button  id="pdf_invoice"  >PDF Invoice</button>
+ <button  onclick="window.location='invoice.pdf.php?id={$invoice->id}'">PDF Invoice</button>
 </div>
 
   <div id="yui-main">
 
 
-    <div class="yui-b">
+    <div  class="yui-b">
 
-    <div class="yui-b" style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+    <div id="main_details" class="yui-b" style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
     {if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}<img style="position:absolute;top:20px;left:220px;z-index:4" src="art/stamp.paid.en.png"/>{/if}
 
     <div style="width:340px;float:left"> 
@@ -83,11 +83,18 @@
 
 
 
+
+
+
+
+
+<div id="data_table">
 <h2>{t}Items{/t}</h2>
       <div  id="table0" class="dtable btable" style="margin-bottom:0;font-size:90%"></div>
 
 	    
     </div>
+</div>
 {if $items_out_of_stock}
 <div style="clear:both;margin:30px 0" >
 <h2>{t}Items Out of Stock{/t}</h2>

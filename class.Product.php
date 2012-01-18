@@ -1855,7 +1855,7 @@ class product extends DB_Table {
         $this->msg="Nothing to change $key ";
         global $myconf;
 
-        //print $a1;
+       
 
         switch ($key) {
         case('Product Sales Type'):
@@ -2180,16 +2180,14 @@ class product extends DB_Table {
 
             }
             break;
+    
+        
         }
 
 
     }
 
-    /*
-      Function: selfsave
-      Actualiza valores de la tabla Product Dimension.
-    */
-    // JFA
+   
 
 
     function selfsave() {
@@ -3752,6 +3750,7 @@ class product extends DB_Table {
                 $this->new_value='';
             else
                 $this->new_value=money($amount,$this->get('Product Currency'));
+                
             return;
 
         }
@@ -3798,9 +3797,9 @@ class product extends DB_Table {
                             );
 
             $this->add_history(array(
-                                   'Indirect Object'=>'Product RRP'
-                                                     ,'History Abstract'=>_('Product RRP Changed').' ('.$this->get('RRP Per Unit').')'
-                                                                         ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('RRP changed').' '._('from')." ".$old_rrp_per_unit." "._('per unit')." "._('to').' '. $this->get('RRP Per Unit').' '._('per unit')
+                                   'Indirect Object'=>'Product RRP',
+                                   'History Abstract'=>_('Product RRP Changed').' ('.$this->get('RRP Per Unit').')',
+                                   'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('RRP changed').' '._('from')." ".$old_rrp_per_unit." "._('per unit')." "._('to').' '. $this->get('RRP Per Unit').' '._('per unit')
                                ));
 
 
@@ -3845,7 +3844,20 @@ class product extends DB_Table {
         $old_family=new Family($this->data['Product Family Key']);
         $new_family=new Family($key);
 
-        $sql=sprintf("update `Product Dimension` set `Product Family Key`=%d, `Product Family Code`='%s', `Product Family Name`='%s' where `Product ID`=%d", $key, $new_family->data['Product Family Code'], $new_family->data['Product Family Name'], $this->pid);
+        $sql=sprintf("update `Product Dimension` set `Product Family Key`=%d, `Product Family Code`=%s, `Product Family Name`=%s,
+                     `Product Main Department Key`=%d,
+                     `Product Main Department Code`=%s,
+                     `Product Main Department Name`=%s
+
+                     where `Product ID`=%d",
+                     $new_family->id,
+                     prepare_mysql($new_family->data['Product Family Code']),
+                     prepare_mysql($new_family->data['Product Family Name']),
+                     $new_family->data['Product Family Main Department Key'],
+                     prepare_mysql($new_family->data['Product Family Main Department Code']),
+                     prepare_mysql($new_family->data['Product Family Main Department Name']),
+
+                     $this->pid);
 
 
         mysql_query($sql);
@@ -3853,6 +3865,13 @@ class product extends DB_Table {
 
         $old_family->update_product_data();
         $new_family->update_product_data();
+
+        if ($new_family->data['Product Family Main Department Key']!=$old_family->data['Product Family Main Department Key']) {
+            $old_department=new Department($old_family->data['Product Family Main Department Key']);
+            $new_department=new Department($new_family->data['Product Family Main Department Key']);
+            $new_department->update_product_data();
+            $new_department->update_product_data();
+        }
 
         $this->data['Product Family Key']=$key;
         $this->new_value=$key;
@@ -5734,7 +5753,7 @@ class product extends DB_Table {
         $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Availability Type`='Discontinued',`Product Web Configuration`='Offline',`Product Sales Type`='Public Sale',`Product Web State`='Offline',`Product Availability`=0,`Product Available Days Forecast`=0,`Product XHTML Available Forecast`='Historic',`Product Availability State`='No applicable' where `Product ID`=%d"
                      ,prepare_mysql($date)
                      ,$this->pid);
-        //    print "$sql\n";
+        //  print "$sql\n";
         mysql_query($sql);
 
 
@@ -5966,6 +5985,17 @@ class product extends DB_Table {
 
 
 
+    
+    function update_stage($value){
+    
+      $sql=sprintf("update `Product Dimension` set `Product Stage`=%s  where  `Product ID`=%d "
+                         ,prepare_mysql($value)
+                         ,$this->pid
+                        );
+                        mysql_query($sql);
+                        
+    }
+    
     function update_sales_type($value) {
         if (
             $value=='Public Sale' or $value=='Private Sale'
@@ -5996,6 +6026,12 @@ class product extends DB_Table {
                 else
                     $_web_configuration='Offline';
                 $this->update_web_configuration($_web_configuration);
+
+
+                $this->update_main_type();
+                $this->update_availability_type();
+                $this->update_availability();
+
 
                 $this->msg=_('Product Sales Type updated');
                 $this->new_value=$value;
@@ -6351,12 +6387,12 @@ class product extends DB_Table {
                 $ratio=1;
             // print_r($row);
             $images_slideshow[]=array(
-            'name'=>$row['Image Filename'],
-            'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-            'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-            'filename'=>$row['Image Filename'],
-            'ratio'=>$ratio,'caption'=>$row['Image Caption'],
-            'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+                                    'name'=>$row['Image Filename'],
+                                    'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+                                    'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+                                    'filename'=>$row['Image Filename'],
+                                    'ratio'=>$ratio,'caption'=>$row['Image Caption'],
+                                    'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
         }
         // print_r($images_slideshow);
 
@@ -6434,8 +6470,8 @@ class product extends DB_Table {
         mysql_query($sql);
 
 
-        if($principal=='Yes'){
-        $this->update_main_image($image_key);
+        if ($principal=='Yes') {
+            $this->update_main_image($image_key);
         }
 
 

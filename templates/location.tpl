@@ -4,9 +4,28 @@
 <div style="padding:0 20px">
 <input type="hidden" id="location_key" value="{$location->id}" />
 {include file='locations_navigation.tpl'}
-<div style="clear:left;"> 
-  <span class="branch">{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a>  &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')} {t}Area{/t}</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {$location->get('Location Code')}</span>
+<div class="branch"> 
+  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if}<a href="warehouse.php?id={$location->get('Location Warehouse Key')}">{t}Locations{/t}</a>  &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')} {t}Area{/t}</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {$location->get('Location Code')}</span>
 </div>
+
+ <div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        
+   
+        <button  onclick="window.location='edit_location.php?id={$location->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Location{/t}</button>
+            <button  id="add_part" ><img src="art/icons/add.png" alt=""> {t}Add Part{/t}</button>
+
+    {/if}
+    </div>
+    <div class="buttons" style="float:left">
+              <button  onclick="  window.location='warehouse.php?id={$location->get('Location Warehouse Key')}'" ><img src="art/icons/house.png" alt=""> {t}Locations{/t}</button>
+
+
+ </div>
+    <div style="clear:both"></div>
+</div>
+ 
 
  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
     <h1>{t}Location{/t}: {$location->get('Location Code')} </h1>

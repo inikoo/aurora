@@ -1,13 +1,20 @@
 {include file='header.tpl'}
 <div id="bd" >
- {include file='orders_navigation.tpl'}
+ {include file='locations_navigation.tpl'}
+<div class="branch"> 
+  <span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {t}Pending Orders{/t}</span>
+</div>
 
 
-  <div  id="orders_table" class="data_table" style="clear:left;margin-top:23px">
-    <span class="clean_table_title">{t}Orders In Warehouse{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+  <div  id="orders_table" class="data_table" style="clear:both;margin-top:23px">
+    <span class="clean_table_title">{t}Pending Orders{/t} 
+    <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
      
-   <div  style="font-size:90%">
-   
+
+  <div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="transaction_chooser" >
+
+
                               <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.ReadytoShip}selected{/if} label_dn_state_ready_to_ship"  id="elements_ready_to_ship" table_type="ready_to_ship"   >{t}Ready to Ship{/t} (<span id="elements_notes_number">{$elements_number.ReadytoShip}</span>)</span>
 
                               <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.PickingAndPacking}selected{/if} label_dn_state_picking_and_packing"  id="elements_picking_and_packing" table_type="picking_and_packing"   >{t}Picking/Packing{/t} (<span id="elements_notes_number">{$elements_number.PickingAndPacking}</span>)</span>
@@ -18,8 +25,10 @@
 
                      <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.ReadytoPick}selected{/if} label_dn_state_ready_to_pick"  id="elements_ready_to_pick" table_type="ready_to_pick"   >{t}Ready to Pick{/t} (<span id="elements_notes_number">{$elements_number.ReadytoPick}</span>)</span>
 
-         
+     
      </div>
+     </div>
+     
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   
   <table style="float:left;margin:0 0 0 0px ;padding:0;height:15px;"  class="options">
@@ -95,10 +104,18 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('assign_picker_dialog')">Cancel</span>
-  <span class="button" onclick="assign_picker_save()" >Go</span><td></tr>
+ 
+  
+      <div class="buttons">
+  <button class="negative" onclick="close_dialog('assign_picker_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="assign_picker_save()" >{t}Go{/t}</button>
+  </div>
+  
+  
+  <td></tr>
 </table>
 </div>
+xx
 <div id="pick_it_dialog" style="width:300px;">
 <div class="options" style="width:300px;padding:10px;text-align:center" >
 
@@ -109,17 +126,18 @@
 	
 	<td staff_id="{$picker.StaffKey}" id="picker_pick_it{$picker.StaffKey}" class="pick_it_button" onClick="select_staff_pick_it(this,event)" >{$picker.StaffAlias}</td>
 	{/foreach}
+	<td class="pick_it_button" td_id="other_staff_picker" onClick="show_other_staff(this)">{t}Other{/t}</td>
 	</tr>
       {/foreach}
     </table>
-
-
 </div>
+
+<div>
 <table class="edit">
 <input type="hidden" id="pick_it_staff_key">
 <input type="hidden" id="pick_it_dn_key">
 
-<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
+<tr id="staff_name_pick_tr" class="first"><td  class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="pick_it_Staff_Name" value="" ovalue="" valid="0">
@@ -130,11 +148,20 @@
  </tr>
 <tr id="pick_it_pin_tr" style="visibility:hidden"><td><span id="pick_it_pin_alias"></span> {t}PIN{/t}:</td><td><input id="pick_it_password" type="password" /></td></tr>
 </table>
+</div>
+
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('pick_it_dialog')">Cancel</span>
-  <span class="button" onclick="pick_it_save()" >Go</span><td></tr>
+  
+  
+     <div class="buttons">
+  <button class="negative" onclick="close_dialog('pick_it_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="pick_it_save()" >{t}Go{/t}</button>
+  </div>
+  
+  
+  <td></tr>
 </table>
 </div>
 <div id="pick_assigned_dialog" style="width:300px;">
@@ -149,8 +176,17 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('pick_assigned_dialog')">Cancel</span>
-  <span class="button" onclick="pick_assigned_save()" >Go</span><td></tr>
+
+  
+    <div class="buttons">
+  <button class="negative" onclick="close_dialog('pick_assigned_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="pick_assigned_save()" >{t}Go{/t}</button>
+  </div>
+  
+  <td></tr>
+  
+  
+  
 </table>
 </div>
 
@@ -188,8 +224,14 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('assign_packer_dialog')">Cancel</span>
-  <span class="button" onclick="assign_packer_save()" >Go</span><td></tr>
+
+  
+    <div class="buttons">
+  <button class="negative" onclick="close_dialog('assign_packer_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="assign_packer_save()" >{t}Go{/t}</button>
+  </div>
+  
+  <td></tr>
 </table>
 </div>
 <div id="pack_it_dialog" style="width:300px;">
@@ -202,6 +244,7 @@
 	
 	<td staff_id="{$packer.StaffKey}" id="packer_pack_it{$packer.StaffKey}" class="pack_it_button" onClick="select_staff_pack_it(this,event)" >{$packer.StaffAlias}</td>
 	{/foreach}
+	<td class="pack_it_button" td_id="other_staff_packer" onClick="show_other_staff(this)">{t}Other{/t}</td>
 	</tr>
       {/foreach}
     </table>
@@ -212,7 +255,7 @@
 <input type="hidden" id="pack_it_staff_key">
 <input type="hidden" id="pack_it_dn_key">
 
-<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
+<tr id="staff_name_tr" class="first"><td  class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="pack_it_Staff_Name" value="" ovalue="" valid="0">
@@ -222,12 +265,19 @@
    <td id="pack_it_Staff_Name_msg" class="edit_td_alert"></td>
  </tr>
 <tr id="pack_it_pin_tr" style="visibility:hidden"><td><span id="pack_it_pin_alias"></span> {t}PIN{/t}:</td><td><input id="pack_it_password" type="password" /></td></tr>
+
+
 </table>
+
+
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('pack_it_dialog')">Cancel</span>
-  <span class="button" onclick="pack_it_save()" >Go</span><td></tr>
+  <div class="buttons">
+  <button class="negative" onclick="close_dialog('pack_it_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="pack_it_save()" >{t}Go{/t}</button>
+  </div>
+  <td></tr>
 </table>
 </div>
 <div id="pack_assigned_dialog" style="width:300px;">
@@ -242,11 +292,23 @@
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
-  <span class="button" onclick="close_dialog('pack_assigned_dialog')">Cancel</span>
-  <span class="button" onclick="pack_assigned_save()" >Go</span><td></tr>
+  <div class="buttons">
+  <button class="negative" onclick="close_dialog('pack_assigned_dialog')">{t}Cancel{/t}</button>
+  <button class="positive" onclick="pack_assigned_save()" >{t}Go{/t}</button>
+  </div>
+  <td></tr>
+
 </table>
 </div>
 
 
 
-{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="ready_to_pick_orders-table-csv_export" export_options=$csv_export_options }
+<div id="dialog_other_staff">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Staff List{/t}</span>
+            {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
+            <div  id="table2"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>

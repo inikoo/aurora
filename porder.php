@@ -61,7 +61,7 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
 
                'button.css',
-               'container.css'
+               'css/container.css'
 
            );
 $css_files[]='theme.css.php';

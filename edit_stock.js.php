@@ -191,10 +191,18 @@ scope:this
 
 function add_location(sku){
   Dom.get('add_location_sku').value=sku;
-   x= Dom.getX('add_location_button');
-   y= Dom.getY('add_location_button');
-   Dom.setX('Editor_add_location', x);
-   Dom.setY('Editor_add_location', y);
+   
+
+   
+   
+   region1 = Dom.getRegion('add_location_button'); 
+    region2 = Dom.getRegion('Editor_add_location'); 
+
+ var pos =[region1.right-region2.width-20,region1.bottom]
+Dom.setXY('Editor_add_location', pos);
+   
+   
+   
    Dom.get('add_location_input').focus();
    Editor_add_location.show();
 }
@@ -835,25 +843,25 @@ success:function(o) {
 
 function init() {
 
-audit_dialog = new YAHOO.widget.Dialog("Editor_audit", {  visible : true,close:false,underlay: "none",draggable:false});
+audit_dialog = new YAHOO.widget.Dialog("Editor_audit", {  visible : true,close:true,underlay: "none",draggable:false});
     audit_dialog.render();
 
-add_stock_dialog = new YAHOO.widget.Dialog("Editor_add_stock", {  visible : true,close:false,underlay: "none",draggable:false});
+add_stock_dialog = new YAHOO.widget.Dialog("Editor_add_stock", {  visible : true,close:true,underlay: "none",draggable:false});
     add_stock_dialog.render();
 
 
-Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {close:false,visible:false,draggable:false});
+Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {close:true,visible:false,draggable:false});
     Editor_lost_items.render();
-Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {close:false,visible:false,underlay: "none",draggable:false});
+Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {close:true,visible:false,underlay: "none",draggable:false});
     Editor_move_items.render();
 
 
-Editor_add_location = new YAHOO.widget.Dialog("Editor_add_location", {close:false,visible:true,underlay: "none",draggable:false});
+Editor_add_location = new YAHOO.widget.Dialog("Editor_add_location", {close:true,visible:true,underlay: "none",draggable:false});
     Editor_add_location.render();
     
-// Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {  visible : false,close:false,underlay: "none",draggable:false});
+// Editor_lost_items = new YAHOO.widget.Dialog("Editor_lost_items", {  visible : false,close:true,underlay: "none",draggable:false});
 // Editor_lost_items.render();
-// Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {  visible : false,close:false,underlay: "none",draggable:false});
+// Editor_move_items = new YAHOO.widget.Dialog("Editor_move_items", {  visible : false,close:true,underlay: "none",draggable:false});
 // Editor_move_items.render();
 }
 
@@ -905,6 +913,8 @@ fields :
 
 YAHOO.util.Event.onContentReady("add_location_input", function () {
   
+ 
+  
   var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
     new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
     new_loc_oDS.responseSchema = {
@@ -914,7 +924,7 @@ fields :
         ["code","key","stock"]
     };
     var new_loc_oAC = new YAHOO.widget.AutoComplete("add_location_input", "add_location_container", new_loc_oDS);
-  
+   new_loc_oAC.maxResultsDisplayed = 5;
   
   new_loc_oAC.generateRequest = function(sQuery) {
 

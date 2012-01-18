@@ -20,7 +20,7 @@ function salect_part_from_list(oArgs){
 sku=tables.table2.getRecord(oArgs.target).getData('sku')
 
   var request='ar_edit_warehouse.php?tipo=add_part_to_location&is_primary=false&can_pick=true&location_key='+Dom.get('location_key').value+'&msg=&part_sku='+ sku;
-    alert(request)
+   // alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 			      // 	alert(o.responseText);
@@ -34,6 +34,19 @@ sku=tables.table2.getRecord(oArgs.target).getData('sku')
 
 
 		if (r.state == 200) {
+		
+		
+		
+		ids=['details','parts','history'];
+		block_ids=['block_details','block_parts','block_history'];
+		Dom.setStyle(block_ids,'display','none');
+		Dom.setStyle('block_'+'parts','display','');
+		Dom.removeClass(ids,'selected');
+		Dom.addClass(Dom.get('parts'),'selected');
+
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=location-view&value='+'parts' ,{});
+		dialog_add_part.hide()
+		
 		    var table=tables.table1;
 		    var datasource=tables.dataSource1;
 		    var request='';
@@ -103,7 +116,7 @@ var CellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    alert(o.responseText);
+					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -223,7 +236,7 @@ Editor_move_items.show();
 		    var qty=record.getData('qty');
 		    Dom.get('lost_max_value').innerHTML=qty;
 		    Dom.get('lost_sku').value=record.getData('part_sku');
-Dom.get('lost_location_key').value=record.getData('location_key');
+			Dom.get('lost_location_key').value=record.getData('location_key');
 
 		    Dom.get('lost_record_index').value= record.getId();
 
@@ -310,7 +323,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
 		    
 		    
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['location']['stock_history']['f_field']?>',value:'<?php echo$_SESSION['state']['location']['stock_history']['f_value']?>'};
@@ -362,7 +376,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"location_key", label:"", hidden:true,isPrimaryKey:true} 
 				       ,{key:"part_sku", label:"", hidden:true,isPrimaryKey:true} 
 				       ,{key:"description", label:"<?php echo _('Description')?>", width:470,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
+				       //,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
+					,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"qty", label:"<?php echo _('Qty')?>", width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
 				       ,{key:"move",label:"<?php echo _('Move')?>", width:30,className:"aright",action:'move'}
 				       ,{key:"lost", label:"<?php echo _('Lost')?>", width:30,className:"aright",action:'lost'}
@@ -370,6 +385,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     
 				       ];
 	    //?tipo=customers&tid=0"
+	//alert("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
 	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -425,7 +441,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
     
 	  
 
@@ -997,6 +1014,7 @@ dialog_add_part.show();
 }
 
 function init(){
+  init_search('locations');
 
     Event.addListener(['details','parts','history'], "click",change_block);
 
@@ -1011,10 +1029,15 @@ Event.addListener('location_submit_search', "click",submit_search,'location');
  Event.addListener("add_part", "click", show_add_part_dialog);
  Event.addListener("change_stock", "click", change_stock);
 
+
+
+
 	dialog_add_part = new YAHOO.widget.Dialog("dialog_add_part", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_add_part.render();
 
-	
+	dialog_add_part = new YAHOO.widget.Dialog("dialog_part_list", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_add_part.render();
+
 	
  }
 

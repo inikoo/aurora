@@ -15,19 +15,12 @@ $general_options_list[]=array('tipo'=>'url','url'=>'staff_holidays.php','label'=
 $smarty->assign('general_options_list',$general_options_list);
 
 
-$staff_options_list=array();
 
 
-if ($modify) {
-    $staff_options_list[]=array('tipo'=>'url','url'=>'edit_staff.php','label'=>_('Edit Staff'));
-    $staff_options_list[]=array('tipo'=>'url','url'=>'new_staff.php','label'=>_('Add Staff'));
-    $staff_options_list[]=array('tipo'=>'url','url'=>'import_csv.php?subject=staff','label'=>_('Import Staff'));
-
-}
+$smarty->assign('modify',$modify);
 
 
 
-$smarty->assign('staff_options_list',$staff_options_list);
 
 
 $css_files=array(
@@ -36,7 +29,7 @@ $css_files=array(
                $yui_path.'assets/skins/sam/autocomplete.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                'common.css',
-               'container.css',
+               'css/container.css',
                'button.css',
                'table.css',
                'theme.css.php'
@@ -64,14 +57,15 @@ $smarty->assign('sub_parent','hr');
 
 $smarty->assign('title', _('Staff'));
 
-$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
 
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['hr']['staff']['f_value']);
 
 $smarty->assign('block_view',$_SESSION['state']['hr']['view']);
 $smarty->assign('staff_view',$_SESSION['state']['hr']['staff']['view']);
 
+
+$tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['hr']['staff']['f_value']);
 $filter_menu=array(
                  'name'=>array('db_key'=>'staff.alias','menu_label'=>'Staff name <i>*x*</i>','label'=>'Name'),
                  'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
@@ -84,6 +78,10 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+/*
 $csv_export_options=array(
                         'description'=>array(
                                           'title'=>_('Description'),
@@ -116,14 +114,30 @@ $csv_export_options=array(
                                                    )
                                         )
                     );
-$smarty->assign('export_csv_table_cols',2);
+
+
 
 
 $smarty->assign('csv_export_options',$csv_export_options);
-
-
+*/
+$smarty->assign('csv_export_options','');
+$smarty->assign('export_csv_table_cols',2);
 $smarty->assign('search_label',_('Staff'));
 $smarty->assign('search_scope','staff');
+
+$elements_number=array('Working'=>0,'NotWorking'=>0);
+$sql=sprintf("select count(*) as num,`Staff Currently Working` from  `Staff Dimension`  group by `Staff Currently Working`");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$key=($row['Staff Currently Working']=='Yes'?'Working':'NotWorking');	
+
+    $elements_number[$key]=$row['num'];
+}
+
+
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['hr']['staff']['elements']);
+
 
 $smarty->display('hr.tpl');
 ?>

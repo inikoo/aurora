@@ -8,7 +8,7 @@ if($_REQUEST['submit'] == 'contact_details')
 	update_contact_details();
 elseif($_REQUEST['submit'] == 'set_address_main'){
 	update_main_address($_REQUEST);
-	header( "Location: address_book.php" ) ;
+	//header( "Location: address_book.php" ) ;
 }
 elseif($_REQUEST['submit'] == 'delete_address'){
 	delete_address();
@@ -20,7 +20,9 @@ else
 
 
 
+function update_main_address($_REQ){
 	
+}	
 	
 function update_contact_details(){
 	

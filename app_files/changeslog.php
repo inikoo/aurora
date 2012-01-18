@@ -5318,3 +5318,66 @@ ALTER TABLE `Site Dimension` ADD `Site Default Number See Also Links` TINYINT( 4
 ALTER TABLE `Page Store Dimension` ADD `Page Store Content Display Type` ENUM( 'Source', 'Template' ) NOT NULL DEFAULT 'Source' AFTER `Page Store See Also Type` ,ADD `Page Store Content Template Filename` VARCHAR( 128 ) NULL DEFAULT NULL AFTER `Page Store Content Display Type` ;
 ALTER TABLE `User Dimension` CHANGE `User Password` `User Password` VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `User Dimension` ADD `User Verified` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+ALTER TABLE `Custom Field Dimension` ADD `Custom Field In Registration` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Custom Field In Showcase` ,ADD `Custom Field In Profile` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Custom Field In Registration` ;
+
+ALTER TABLE `Custom Field Dimension` CHANGE `Custom Field Type` `Custom Field Type` ENUM( 'Mediumint', 'Text', 'Longtext', 'Enum' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL 
+ALTER TABLE `Dashboard User Bridge` ADD `Dashboard ID` SMALLINT UNSIGNED NOT NULL DEFAULT '1' AFTER `User key` ;
+ALTER TABLE `Dashboard User Bridge` ADD `Dashboard Widget Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '1' AFTER `Dashboard Order` ;
+ALTER TABLE `Dashboard User Bridge` ADD `Dashboard Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+
+CREATE TABLE IF NOT EXISTS `Dashboard Widget Dimension` (
+ `Dashboard Widget Key` mediumint(8) NOT NULL,
+ `Widget Name` varchar(255) NOT NULL,
+ `Widget Block` varchar(255) NOT NULL,
+ `Widget Dimension` varchar(255) NOT NULL,
+ `Widget URL` varchar(255) NOT NULL,
+ `Widget Description` varchar(255) NOT NULL,
+ PRIMARY KEY (`Dashboard Widget Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8  ;
+
+INSERT INTO `Dashboard Widget Dimension` (`Dashboard Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`) VALUES
+(1, 'Dashboard Block', 'block_3', '', 'dashboard_block.php?tipo=sales_overview', ''),
+(2, 'Twitter', 'block_1', '405', 'splinter_twitter.php?', ''),
+(3, 'Facebook', 'block_2', '560', '//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2FAncientWisdom.biz&amp;width=614&amp;height=560&amp;colorscheme=light&amp;show_faces=true&amp;border_color&amp;stream=true&amp;header=false', '');
+
+// dashboard.sql
+ALTER TABLE `Site Dimension` CHANGE `Site Registration Method` `Site Registration Method` ENUM( 'Simple', 'Wholesale', 'None' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Simple';
+ALTER TABLE `Site Dimension` DROP `Site FTP Credentials`;
+ALTER TABLE `Site Dimension` ADD `Site FTP Server` VARCHAR( 256 ) NULL DEFAULT NULL ,
+ADD `Site FTP User` VARCHAR( 256 ) NULL DEFAULT NULL ,
+ADD `Site FTP Password` VARCHAR( 256 ) NULL DEFAULT NULL ,
+ADD `Site FTP Directory` VARCHAR( 256 ) NOT NULL DEFAULT '',
+ADD `Site FTP Passive` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+
+ALTER TABLE `Page Store Dimension` ADD `Page Upload State` ENUM( 'ToUpload', 'Uploaded' ) NOT NULL DEFAULT 'ToUpload' AFTER `Page Code` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Preview Snapshot Last Update` DATETIME NULL DEFAULT NULL AFTER `Page Preview Snapshot Image Key` ;
+
+
+CREATE TABLE `Page Store Deleted Dimension` (
+  `Page Store Deleted Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Title` varchar(255) NOT NULL,
+  `Page Short Title` varchar(64) NOT NULL,
+  `Page Description` text,
+  `Page URL` varchar(1024) NOT NULL,
+  `Page Snapshot Image Key` mediumint(8) unsigned DEFAULT NULL,
+  `Page Snapshot Last Update` datetime DEFAULT NULL,
+   `Page Valid To` datetime DEFAULT NULL,
+  PRIMARY KEY (`Page Store Deleted Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Page Store Deleted Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Store Deleted Key` ,ADD INDEX ( `Site Key` ) ;
+ALTER TABLE `Page Store Deleted Dimension` ADD `Page Code` VARCHAR( 256 ) NOT NULL AFTER `Page Store Deleted Key` ;
+ALTER TABLE `Page Store Deleted Dimension` ADD `Page Store Section` VARCHAR( 256 ) NULL AFTER `Page URL` ,
+ADD `Page Parent Key` MEDIUMINT UNSIGNED NULL AFTER `Page Store Section` ,
+ADD `Page Parent Code` VARCHAR( 256 ) NULL AFTER `Page Parent Key` ;
+
+ALTER TABLE `Part Location Dimension` ADD `Minimum Quantity` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Can Pick` ,ADD `Maximum Quantity` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Minimum Quantity` ;
+
+ALTER TABLE `Store Dimension` ADD `Store VAT Number` VARCHAR( 255 ) NOT NULL ,ADD `Store Company Number` VARCHAR( 255 ) NOT NULL;
+ALTER TABLE `Customer Dimension` ADD `Customer Follower On Twitter` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',ADD `Customer Friend On Facebook` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
+ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM( 'Employee', 'Volunteer', 'Contractor', 'Temporal Worker', 'Work Experience' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Employee';
+
+
+ALTER TABLE `Staff Dimension` ADD `Staff PIN` VARCHAR( 4 ) NOT NULL DEFAULT '1234' AFTER `Staff Department Key`;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Date Done Approved` DATETIME NULL DEFAULT NULL AFTER `Delivery Note Date Finish Packing` ;ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Approved Done` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Delivery Note Date` , ADD `Delivery Note Approved To Dispatch` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Delivery Note Approved Done` ;
+ALTER TABLE `Staff Dimension` DROP `Staff Position Key`;

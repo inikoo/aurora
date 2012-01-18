@@ -14,7 +14,6 @@
     <div class="buttons" style="float:left">
         <button  onclick="window.location='warehouse_stats.php?id={$warehouse->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
          <button  onclick="window.location='warehouse_map.php?id={$warehouse->id}'" ><img src="art/icons/application_view_gallery.png" alt=""> {t}Map{/t}</button>
-        <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/arrow_switch.png" alt=""> {t}Movements{/t}</button>
 
  </div>
     <div style="clear:both"></div>
@@ -35,7 +34,7 @@
     <li style="display:none"> <span class="item {if $view=='shelfs'}selected{/if}"  id="shelfs">  <span> {t}Shelfs{/t}</span></span></li>
     <li style="display:none"> <span class="item {if $view=='map'}selected{/if}" id="map"  ><span>  {t}Map{/t}</span></span></li>
      <li style="display:none"> <span class="item {if $view=='movements'}selected{/if}"  id="movements">  <span> {t}Movements{/t}</span></span></li>
- <li> <span class="item {if $view=='stats'}selected{/if}"  id="stats">  <span> {t}Stats{/t}</span></span></li>
+ <li style="display:none"> <span class="item {if $view=='stats'}selected{/if}"  id="stats">  <span> {t}Stats{/t}</span></span></li>
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
@@ -43,6 +42,7 @@
 
  <div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
     <span class="clean_table_title">{t}Locations{/t}</span>
+
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>

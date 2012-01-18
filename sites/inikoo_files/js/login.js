@@ -3,7 +3,7 @@ var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 
 
-function forgot_password(){
+function submit_forgot_password(){
 
     var login_handle=Dom.get('forgot_password_handle').value;
     var store_key=Dom.get('store_key').value;
@@ -33,6 +33,12 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 		    if(r.state=='200'){
 			Dom.removeClass('captcha_code2','error');
 		        if(r.result=='send'){
+		          remove_forgot_password_message_blocks()
+		          
+		       
+		          
+		          
+		          
                     show_login_dialog();
 			            Dom.setStyle('message_forgot_password_send','display','');
 			            
@@ -156,6 +162,12 @@ return (str + '').replace(/'/g, '%27');
 
 
 function show_login_dialog(){
+
+   remove_login_message_blocks()
+   Dom.get('login_handle').value='';
+   Dom.get('login_password').value='';
+Dom.removeClass(['login_handle','login_password'],'error');
+
 	Dom.setStyle('dialog_forgot_password','display','none');
 Dom.setStyle('dialog_login','display','');
 	Dom.get('login_handle').focus();
@@ -164,6 +176,10 @@ cancel_forgot_password();
 }
 
 function show_forgot_password_dialog(){
+remove_forgot_password_message_blocks()
+
+Dom.removeClass(['forgot_password_handle','captcha_code2'],'error');
+
 
 Dom.get('forgot_password_handle').value=Dom.get('login_handle').value;
 
@@ -235,7 +251,7 @@ login()
 
 
 }
-function submit_forgot_password(){
+function forgot_password(){
 
 remove_forgot_password_message_blocks()
 
@@ -265,7 +281,7 @@ Dom.removeClass(['captcha_code2'],'error');
 
 
 if(!error)
-forgot_password()
+submit_forgot_password()
 }
 function submit_login_on_enter(e){
     Dom.removeClass('login_password','error');
@@ -291,7 +307,7 @@ function submit_forgot_password_form_on_enter(e){
          Key = e.which; //firefox     
 
      if (Key == 13){
-	 submit_forgot_password();
+	 forgot_password();
 	 
 	 }
 };
@@ -315,7 +331,7 @@ function init(){
 Event.addListener("submit_login", "click", submit_login);
 Event.addListener("link_forgot_password_from_login", "click", show_forgot_password_dialog);
 Event.addListener(['show_login_dialog3','show_login_dialog2'], "click", show_login_dialog);
-Event.addListener('submit_forgot_password', "click", submit_forgot_password);
+Event.addListener('submit_forgot_password', "click", forgot_password);
 Event.addListener('captcha_code2', "keydown", submit_forgot_password_form_on_enter);
 Event.addListener('cancel_forgot_password', "click", cancel_forgot_password);
 

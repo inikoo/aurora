@@ -5,7 +5,7 @@ require_once 'class.Warehouse.php';
 require_once 'class.WarehouseArea.php';
 require_once 'class.PartLocation.php';
 require_once 'class.ShelfType.php';
-
+require_once 'class.Location.php';
 require_once 'ar_edit_common.php';
 
 
@@ -20,6 +20,7 @@ if(!isset($_REQUEST['tipo']))
 
 
 $tipo=$_REQUEST['tipo'];
+
 switch($tipo){
 case('part_location_update_can_pick'):
 $data=prepare_values($_REQUEST,array(
@@ -88,8 +89,13 @@ case('edit_location_description'):
 
 	edit_location_description();
 	break;
-case('edit_warehouse_area'):
-  update_warehouse_area();
+case('hedit_warehouse_area'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
+  //update_warehouse_area($data);
   break;
 case('edit_part_location'):
   update_part_location();
@@ -109,7 +115,7 @@ case('edit_shelf_location_type'):
   break;
 
 
-case('delete_area'):
+case('delete_warehouse_area'):
   delete_warehouse_area();
   break;
 case('delete_location'):
@@ -135,7 +141,33 @@ case('locations'):
   list_locations();
   break;
 
+case('edit_warehouse'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
 
+    edit_warehouse($data);
+    break;
+case('edit_warehouse_area'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
+
+    edit_warehouse_area($data);
+    break;
+case('edit_location_area'):
+    $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                         ));
+
+    edit_location_area($data);
+    break;
  default:
 
    $response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -175,7 +207,116 @@ exit;
 	}
 
 }
+function edit_warehouse_area($data) {
+    //print $data['newvalue'];
 
+
+    $warehouse=new WarehouseArea($data['id']);
+    global $editor;
+    $warehouse->editor=$editor;
+
+    $translator=array(
+                    'warehouse_name'=>'Warehouse Name',
+                    'warehouse_code'=>'Warehouse Code'
+
+                );
+
+    foreach($data as $key=>$value) {
+        if (array_key_exists($key, $translator)) {
+            $data[$translator[$key]]=$value;
+	    print $translator[$key].":".$value;
+        }
+    }
+
+
+
+    $warehouse->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+    if ($warehouse->updated) {
+if($data['key']=='Warehouse Area Code')
+	$data['key']='warehouse_area_code';
+if($data['key']=='Warehouse Area Name')
+	$data['key']='warehouse_area_name';
+        $response= array('state'=>200,'newvalue'=>$warehouse->new_value,'key'=>$data['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$warehouse->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+}
+
+function edit_location_area($data) {
+    //print $data['newvalue'];
+
+
+    $location=new Location($data['id']);
+    global $editor;
+    $location->editor=$editor;
+
+    $translator=array(
+                    'location_key'=>'Location Warehouse Area Key',
+                    'warehouse_code'=>'Warehouse Code'
+
+                );
+//print_r($data);
+    foreach($data as $key=>$value) {
+        if (array_key_exists($key, $translator)) {
+            $data[$translator[$key]]=$value;
+	    print $translator[$key].":".$value;
+        }
+    }
+
+
+
+    $location->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+    if ($location->updated) {
+if($data['key']=='Warehouse Area Code')
+	$data['key']='warehouse_area_code';
+if($data['key']=='Warehouse Area Name')
+	$data['key']='warehouse_area_name';
+        $response= array('state'=>200,'newvalue'=>$location->new_value,'key'=>$data['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$location->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+}
+
+function edit_warehouse($data) {
+    //print $data['newvalue'];
+
+
+    $warehouse=new warehouse($data['id']);
+    global $editor;
+    $warehouse->editor=$editor;
+
+    $translator=array(
+                    'warehouse_name'=>'Warehouse Name',
+                    'warehouse_code'=>'Warehouse Code'
+
+                );
+
+    foreach($data as $key=>$value) {
+        if (array_key_exists($key, $translator)) {
+            $data[$translator[$key]]=$value;
+	    print $translator[$key].":".$value;
+        }
+    }
+
+
+
+    $warehouse->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
+    if ($warehouse->updated) {
+if($data['key']=='Warehouse Code')
+	$data['key']='warehouse_code';
+if($data['key']=='Warehouse Name')
+	$data['key']='warehouse_name';
+        $response= array('state'=>200,'newvalue'=>$warehouse->new_value,'key'=>$data['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$warehouse->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+}
 
 function part_location_update_can_pick($data){
  global $editor;
@@ -294,6 +435,8 @@ function update_part_location(){
   $traslator=array(
 		   'qty'=>'Quantity On Hand',
 		   'can_pick'=>'Can Pick',
+		   'min'=>'Minimum Quantity',
+		   'max'=>'Maximum Quantity'
 		   );
   if(array_key_exists($_REQUEST['key'],$traslator)){
     $key=$traslator[$_REQUEST['key']];
@@ -336,20 +479,22 @@ function update_part_location(){
 
 }
 
-function update_warehouse_area(){
-  
+function update_warehouse_area($data){
+//print_r($data['key']);
+
+/*
   if(
-     !isset($_REQUEST['wa_key'])
-     or !isset($_REQUEST['key'])
-     or !isset($_REQUEST['newvalue'])
+     !isset($data['wa_key'])
+     or !isset($data['key'])
+     or !isset($data['newvalue'])
      ){
     $response=array('state'=>400,'action'=>'error','msg'=>'');
     echo json_encode($response);
      return;
   }
-    
+  */  
   
-  $wa_key=$_REQUEST['wa_key'];
+  $wa_key=$_REQUEST['key'];
  
   $new_value=stripslashes(urldecode($_REQUEST['newvalue']));
 
@@ -383,7 +528,6 @@ function update_warehouse_area(){
     $response=array('state'=>400,'action'=>'nochange','msg'=>$wa->msg);
     echo json_encode($response);
      return;
-
   }
 }
 
@@ -838,14 +982,18 @@ function delete_location(){
 
   $location->delete();
   
-  if($location->deleted){
-    echo 'Ok';
-    return;
-    
-  }else{
-    echo $location->deleted_msg;
-    return;
-  }
+	if($location->deleted){
+		$response= array('state'=>200,'action'=>'deleted');
+	} else {
+		$response= array('state'=>400,'msg'=>$location->deleted_msg);
+	}
+
+	$unknown_wa=new WarehouseArea($_REQUEST['area_key`']);
+	$unknown_wa->update_children();
+
+
+	echo json_encode($response);
+	exit;
   
 
 }
@@ -1214,9 +1362,17 @@ $conf=$_SESSION['state']['locations']['edit_table'];
       $filter_msg='';
    
    
-   $rtext=$total_records." ".ngettext('location','locations',$total_records);
-   if($total_records>$number_results)
-     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+  
+
+
+    $rtext=$total_records." ".ngettext('location','locations',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._("Showing All").')';
+
+
+
   $_order=$order;
   $_dir=$order_direction;
 
@@ -1282,20 +1438,15 @@ $conf=$_SESSION['state']['locations']['edit_table'];
   }
   $response=array('resultset'=>
 		   array('state'=>200,
-			 'data'=>$data,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'rtext'=>$rtext,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			'records_perpage'=>$number_results,
-			 
-			 'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'filtered'=>$filtered
+		  'state'=>200,
+                                    'data'=>$data,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
 			 )
 		   );
    echo json_encode($response);
@@ -1537,7 +1688,8 @@ function edit_location_description(){
                  'volume'=>'Location Max Volume',
                  'weight'=>'Location Max Weight',
                  'slots'=>'Location Max Slots',
-                 'parts'=>'Location Distinct Parts'
+                 'parts'=>'Location Distinct Parts',
+		'used_for'=>'Location Mainly Used For'
              );
 
 
@@ -1564,6 +1716,36 @@ function edit_location_description(){
     exit;
 
 
+
+}
+
+function delete_warehouse_area(){
+
+	$data=$_REQUEST;
+	$wa=new WarehouseArea($_REQUEST['area_key']);
+
+	if (!$wa->id) {
+		$response= array('state'=>400,'msg'=>'Area not found');
+		echo json_encode($response);
+		exit;
+	}
+	
+	$wa->delete();
+
+		
+	
+
+	if($wa->deleted){
+		$response= array('state'=>200,'action'=>'deleted');
+	} else {
+		$response= array('state'=>400,'msg'=>$wa->deleted_msg);
+	}
+	
+	$unknown_wa=new WarehouseArea(1);
+	$unknown_wa->update_children();
+
+	echo json_encode($response);
+	exit;
 
 }
 

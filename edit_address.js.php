@@ -127,7 +127,9 @@ var create_address=function(options) {
     for (i in items) {
 		if(items.length <= count++)
 			break;
+	//alert(address_prefix+'address_'+items[i]+':'+Dom.get(address_prefix+'address_'+items[i]).value);
         value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
+	
     }
 
     var address_type_values=new Array();
@@ -167,7 +169,7 @@ var create_address=function(options) {
 
 
     var request='ar_edit_contacts.php?tipo=new_'+options.type+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key;
-//alert(request)  
+//alert(request);return;  
   
   YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
@@ -383,7 +385,7 @@ function  save_address(e,options) {
 
 var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&key='+options.type+'&subject='+options.subject+'&subject_key='+options.subject_key;
          
-   //alert(request);
+  // alert(request);
                     cancel_edit_address(address_prefix);
 if(address_prefix=='delivery_'){
 hide_new_delivery_address();
@@ -1169,16 +1171,18 @@ change_country(this.prefix,oData)
 
 };
 function select_default_country(prefix,code){
+
  var request='ar_regions.php?tipo=country_info_from_2alpha&2alpha=' +code+'&prefix='+prefix;
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            //alert(o.responseText);
+
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state==200) {
-               Dom.get('address_country').value=r.data['Country Name'] + " (" + r.data['Country Code'] + ") ";
+               Dom.get(r.prefix+'address_country').value=r.data['Country Name'] + "x (" + r.data['Country Code'] + ") ";
 
               change_country(r.prefix,{
               'code':r.data['Country Code'],
+                'name':r.data['Country Name'],
               'code2a':r.data['Country 2 Alpha Code'],
               'postal_regex':r.data['Country Postal Code Regex'],
               'postcode_help':r.data['Country Postal Code Format']
@@ -1200,11 +1204,12 @@ record=tables.table100.getRecord(oArgs.target)
 var data={
     'code':record.getData('code3a'),
     'code2a':record.getData('code2a'),
+      'name':record.getData('plain_name'),
     'postal_regex':record.getData('postal_regex'),
     'postcode_help':record.getData('postcode_help')
     
     }
-               Dom.get(tables.table100.prefix+'address_country').value= record.getData('plain_name')+ " (" + record.getData('code3a') + ") ";
+  Dom.get(tables.table100.prefix+'address_country').value= record.getData('plain_name')+ " (" + record.getData('code3a') + ") ";
 
   change_country(tables.table100.prefix,data);
     dialog_country_list.hide();
@@ -1278,14 +1283,21 @@ var countries_highlightMatch = function(full, snippet, matchindex) {
 
 
 function show_countries_list(o,prefix){
-Event.addListener('clean_table_filter_show100', "click",show_filter,100);
+
 
 //alert(tables.table100.prefix);return;
 tables.table100.prefix=prefix
-  var y=(Dom.getY(o))-160
-    var x=(Dom.getX(o))-25
- Dom.setX('dialog_country_list', x)
-    Dom.setY('dialog_country_list', y)
+  
+    
+    
+      region1 = Dom.getRegion(o); 
+    region2 = Dom.getRegion('dialog_country_list'); 
+
+ var pos =[region1.right-region2.width+20,region1.bottom]
+
+    Dom.setXY('dialog_country_list', pos);
+    
+    
 dialog_country_list.show();
 }
 
@@ -1295,7 +1307,16 @@ dialog_country_list.show();
 function init_address(){
 dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", { visible : false,close:true,underlay: "none",draggable:false});
   dialog_country_list.render();
+Event.addListener('clean_table_filter_show100', "click",show_filter,100);
+Event.addListener('clean_table_filter_hide100', "click",hide_filter,100);
 
+ var oACDS100 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS100.queryMatchContains = true;
+ oACDS100.table_id=100;
+ var oAutoComp100 = new YAHOO.widget.AutoComplete("f_input100","f_container100", oACDS100);
+ oAutoComp100.minQueryLength = 0; 
+YAHOO.util.Event.addListener('clean_table_filter_show100', "click",show_filter,100);
+ YAHOO.util.Event.addListener('clean_table_filter_hide100', "click",hide_filter,100);
 
 }
 YAHOO.util.Event.onDOMReady(init_address);

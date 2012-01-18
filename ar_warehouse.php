@@ -35,9 +35,11 @@ case('parts_at_location'):
     break;
 case('find_warehouse_area'):
     $data=prepare_values($_REQUEST,array(
+				'parent_key'=>array('type'=>'string'),
                              'query'=>array('type'=>'string')
-                                     ,'parent_key'=>array('type'=>'key')
+                          
                          ));
+
     find_warehouse_area($data);
     break;
 case('find_location'):
@@ -64,8 +66,20 @@ case('warehouses'):
 case('part_categories'):
     list_part_categories();
     break;
-
-
+case('is_warehouse_code'):
+    $data=prepare_values($_REQUEST,array(
+                             'warehouse_code'=>array('type'=>'string'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_warehouse_code($data);
+    break;
+case('is_warehouse_area_code'):
+    $data=prepare_values($_REQUEST,array(
+                             'warehouse_code'=>array('type'=>'string'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_warehouse_area_code($data);
+    break;
 default:
 
     $response=array('state'=>404,'resp'=>_('Operation not found ha ha'));
@@ -74,6 +88,103 @@ default:
 
 }
 
+function is_warehouse_code($data) {
+    if (!isset($data['query']) or !isset($data['warehouse_code'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $warehouse_code=$data['warehouse_code'];
+
+    $sql=sprintf("select * from `Warehouse Dimension` where  `Warehouse Code`=%s"
+                 ,prepare_mysql($data['query'])
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another warehouse (<a href="warehouse.php?pid=%d">%s</a>) already has this name'
+                     ,$data['Warehouse Key']
+                     ,$data['Warehouse Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_warehouse_area_code($data) {
+    if (!isset($data['query']) or !isset($data['warehouse_code'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $warehouse_code=$data['warehouse_code'];
+
+    $sql=sprintf("select * from `Warehouse Area Dimension` where  `Warehouse Area Code`=%s"
+                 ,prepare_mysql($data['query'])
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another warehouse (<a href="warehouse.php?pid=%d">%s</a>) already has this name'
+                     ,$data['Warehouse Area Key']
+                     ,$data['Warehouse Area Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
 function list_locations() {
     $conf=$_SESSION['state']['locations']['table'];
 
@@ -122,7 +233,11 @@ function list_locations() {
     } else
         $parent=$_SESSION['state']['locations']['parent'];
 
-
+    if (isset( $_REQUEST['parent_key'])) {
+        $parent_key=$_REQUEST['parent_key'];
+        $_SESSION['state']['warehouse_area']['id']=$parent_key;
+    } else
+        $parent_key=$_SESSION['state']['warehouse_area']['id'];
 
 
     $_SESSION['state']['locations']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
@@ -221,7 +336,7 @@ function list_locations() {
 
     $data=array();
     $sql="select * from `Location Dimension` left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-    //  print $sql;
+     // print $where;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
         $code=sprintf('<a href="location.php?id=%d" >%s</a>',$row['Location Key'],$row['Location Code']);
@@ -1292,7 +1407,7 @@ function parts_at_location() {
 
 
     $sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`)    $where $wheref    order by $order $order_direction  limit $start_from,$number_results ");
-
+//print $sql;
 
     $adata=array();
 
@@ -1311,10 +1426,14 @@ function parts_at_location() {
                 $move='<img src="art/icons/package_go.png" alt="'._('Move').'" />';
 
         }
-
-
-
-
+/*
+	$min='0';
+	$max='0';
+	if($data['Can Pick']=='Yes'){
+		$min=$data['Minimum Quantity'];
+		$max=$data['Maximum Quantity'];
+	}
+*/
         $adata[]=array(
 
                      'sku'=>sprintf('<a href="part.php?id=%d&edit_stock=1">SKU%05d</a>',$data['Part SKU'],$data['Part SKU']),
@@ -1330,8 +1449,11 @@ function parts_at_location() {
                      'delete'=>($data['Quantity On Hand']==0?'<img src="art/icons/cross.png"  alt="'._('Free location').'" />':''),
                      'number_locations'=>$data['Part Distinct Locations'],
                      'number_qty'=>$data['Quantity On Hand'],
-                     'part_stock'=>$data['Part Current Stock']
+                     'part_stock'=>$data['Part Current Stock'],
+		     'min'=>$data['Minimum Quantity'],
+		     'max'=>$data['Maximum Quantity']
                  );
+	
     }
     $response=array('resultset'=>
 

@@ -1,10 +1,10 @@
 <tbody id="{$address_identifier}address_form" style="{if !$show_form}display:none{/if}">
     <input type="hidden" id="{$address_identifier}address_key" value="" ovalue="" />
     <input type="hidden" id="{$address_identifier}address_fuzzy" value="Yes" ovalue="Yes" />
-    <input id="{$address_identifier}address_country_code" value="" type="hidden"/>
+    <input id="{$address_identifier}address_country_code_" value="" type="hidden"/>
     <input id="{$address_identifier}address_country_2acode" value="" type="hidden"/>
     
-    <tr id="{$address_identifier}tr_address_type" {if $hide_type}style="display:none"{/if}>
+    <tr id="{$address_identifier}tr_address_type" style="display:none">
     <td class="label">
       <span id="{$address_identifier}show_description" onclick="show_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">+</span> {t}Address Type{/t}:</td><td  style="text-align:left"   id="{$address_identifier}address_type" value="" ovalue=""  >
       <span id="{$address_identifier}address_type_Office" label="Office" onclick="toggle_address_type(this)" class="small_button address_type {if $address_type=='Office'}selected{/if}" style="margin:0">{t}Office{/t}</span>
@@ -36,7 +36,7 @@
 
 <tbody id="{$address_identifier}address_components"  style="{if !$show_components}display:none{/if}">
 
-    <tr id="{$address_identifier}tr_address_contact"  style="{if !$show_contact}display:none{/if}">
+    <tr id="{$address_identifier}tr_address_contact"  style="{if $show_contact}display:none{/if}">
     <td class="label" >{t}Contact{/t}:</td>
     <td  style="text-align:left">
     <div>
@@ -78,7 +78,7 @@
   </tr>
     <tr id="{$address_identifier}tr_address_town">
     <td class="label" >
-      <span id="{$address_identifier}show_town_subdivisions" onclick="show_town_subdivisions('{$address_identifier}')" style="cursor:pointer">&oplus;</span> {t}City{/t}:</td>
+      <span id="{$address_identifier}show_town_subdivisions" donclick="show_town_subdivisions('{$address_identifier}')" style="cursor:pointer">&oplus;</span> {t}City{/t}:</td>
     <td  style="text-align:left">
      <div >
     <input style="text-align:left;width:100%" id="{$address_identifier}address_town" value="" ovalue="" />
@@ -159,27 +159,27 @@
             {t}Country{/t}:</td>
         <td  >
         <div id="{$address_identifier}myAutoComplete" >
-	        <input id="{$address_identifier}address_country" style="text-align:left;width:100%" type="text"/>
+<input id="{$address_identifier}address_country" value="" type="hidden"/>
+	       <select size="1" id="{$address_identifier}address_country_code" >
+<option value="XX">Select One</option>
+{foreach from=$country_list key=key item=item}
+<option value="{$item.code}">{$item.country}</option>
+{/foreach}
+</select>
+
+
 	        <div id="{$address_identifier}address_country_container" ></div>
         </div>
         
     </td>
-    <td  style="width:70px">
-   
-        {if $default_country_2alpha}
-        <span style="margin-left:0px;;float:none" id="{$address_identifier}default_country_selector" onClick="select_default_country('{$address_identifier}','{$default_country_2alpha}')"  ><img style="cursor:pointer;vertical-align:-1px;"  src="art/flags/{$default_country_2alpha|lower}.gif" alt="({$default_country_2alpha})"/></span>	
-	    <span  id="{$address_identifier}default_country_selector"></span>
-	    {else}
-	    {/if}
-	    <span  style="margin-left:0px;;float:none"   id="{$address_identifier}browse_countries"  onClick="show_countries_list(this,'{$address_identifier}')"   class="state_details">{t}List{/t}</span>
-   
-  
 
-</td>
        
     </tr>  
-<tr {if $hide_buttons==true}style="display:none"{/if}>
-  <td colspan=2 style="text-align:right"><button close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}visibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button><button address_key="" style="visibility:hidden;margin-left:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button></td>
-  </tr>
+<tr >
+  <td colspan=2 style="text-align:right">
+<button close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}visibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button>
+<button address_key="" style="visibility:'';margin-left:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button></td>
+
+</tr>
   
 

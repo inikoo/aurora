@@ -2799,8 +2799,8 @@ function edit_customer($data) {
 
 function edit_customer_field($customer_key,$key,$value_data) {
 
-    //print $value_data;
-    //print "$customer_key,$key,$value_data ***";
+    //print_r($value_data);
+   // print "$customer_key,$key,$value_data ***";
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;
@@ -2853,7 +2853,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
                  "ship_country"=>'Main Ship To Country',
                  "sticky_note"=>'Customer Sticky Note',
                  "new_sticky_note"=>'Customer Sticky Note',
-                 "preferred_contact_number"=>'Customer Preferred Contact Number'
+                 "preferred_contact_number"=>'Customer Preferred Contact Number',
+		"company_name"=>'Customer Company Name'
              );
 
 
@@ -2953,7 +2954,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
         //  print "$customer_key,$key,$value_data ***";
 
 
-        //    print "$key  $the_new_value";
+      //      print "$key  $the_new_value";
 
         $customer->update(array($key=>$the_new_value));
     }
@@ -4027,6 +4028,17 @@ function create_custom_field($data) {
     //print_r ($data['values']);
     $custom_field = new Customfield('find', $data['values'], 'create');
 
+ //print_r ($custom_field);
+if($custom_field->new){
+return;
+
+}elseif($custom_field->error){
+   $response=array('state'=>400,'msg'=>$custom_field->msg);
+        echo json_encode($response);
+        return;
+
+
+}
 }
 
 function create_email_field($data) {

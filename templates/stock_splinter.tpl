@@ -92,18 +92,18 @@
 	      <td style="padding-left:10px;cursor:pointer" id="move_stock_right"  ovalue="" onclick="move_stock_left()"></td>
 	    </tr>
 	  </table>
-	  <div class="yui-dt-button">
-	    <button onclick="save_move_items();" class="yui-dt-default">{t}Save{/t}</button>
-	    <button onclick="close_move_dialog()" >{t}Cancel{/t}</button>
+	  <div class="buttons">
+	    <button onclick="save_move_items();" class="positive">{t}Save{/t}</button>
+	    <button onclick="close_move_dialog()"  class="negative" >{t}Cancel{/t}</button>
 	  </div>
     </div>
 </div>
 
 
-<div id="Editor_add_location" style="position:fixed;top:-200px;">
+<div id="Editor_add_location" style="position:fixed;left:-1000px;width:200px;padding:20px 10px;height:140px">
   <div style="display:none" class="hd"></div>
     <div class="bd dt-editor" >
-          <table border=0>
+          <table border=0 style="width:100%;" >
           
          
           
@@ -111,23 +111,32 @@
 	     <input type="hidden" id="add_location_key" value=0 >
 
 	    <tr><td>{t}Add Location{/t}</tr>
-	    <tr>
+	    <tr style="height:30px">
 	    
 	    <td id="other_location" >
 			
 			<div id="add_location" >
-			  <input id="add_location_input" type="text"  value="" >
+			  <input id="add_location_input" type="text"  value="" style="width:100%" >
 			  <div id="add_location_container"></div>
 			</div>
 
 
 	      </td>
 	    </tr>
+	    
+	    <tr>
+	    <td>
+	     <div class="buttons">
+	    <button style="display:none" onclick="save_add_location();" class="positive">{t}Save{/t}</button>
+	    <button class="negative" onclick="close_add_location_dialog()" >{t}Cancel{/t}</button>
+	  </div>
+	    </td>
+	    </tr>
+	     <tr style="height:200px">
+	     
+	     </tr>
 	   
 	  </table>
-	  <div class="yui-dt-button">
-	    <button style="display:none" onclick="save_add_location();" class="yui-dt-default">{t}Save{/t}</button>
-	    <button onclick="close_add_location_dialog()" >{t}Cancel{/t}</button>
-	  </div>
+	 
     </div>
 </div>

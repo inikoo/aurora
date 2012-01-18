@@ -3,7 +3,10 @@
 <input type="hidden" id="order_key" value="{$order->id}"/>
  {include file='orders_navigation.tpl'}
 <div  class="branch"> 
-<span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$customer->get_formated_id()} ({t}Dispatched{/t})</span>
+<span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({t}Dispatched{/t})</span>
+</div>
+<div class="buttons">
+ <button  onclick="window.location='order.pdf.php?id={$order->id}'">{t}PDF Order{/t}</button>
 </div>
 
      <div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 40px 0 10px 0">
@@ -12,8 +15,7 @@
          <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
 
          <h2 style="padding:0">{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get_formated_id()}</a>)</h2>
-         {$contact}<br/>
-           {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
+        
 	 <div style="float:left;line-height: 1.0em;margin:5px 30px 0 0px;color:#444"><span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
 	 <div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444"><span style="font-weight:500;color:#000">{t}Shipped to{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}</div>
 	 
@@ -64,7 +66,7 @@
        </div>
 
        <div style="border:0px solid red;width:230px;float:right">
-	 {if $note}<div class="notes">{$note}</div>{/if}
+	 {if isset($note)}<div class="notes">{$note}</div>{/if}
 	 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right" >
 	   
 	   <tr><td>{t}Order Date{/t}:</td><td class="aright">{$order->get('Date')}</td></tr>
