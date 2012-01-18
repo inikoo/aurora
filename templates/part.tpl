@@ -202,7 +202,7 @@
 		<td>{t}Volume{/t}:</td><td>{$part->get('Volume')}</td>
 	</tr>
 	<tr>
-		<td>{t}Export Code{/t}:</td><td>{$part->get('Part Export Code')}</td>
+		<td>{t}Export Code{/t}:</td><td>{$part->get('Part Tariff Code')}</td>
 	</tr>
 </table>
 

@@ -11,11 +11,12 @@
 
 
 <div class="top_page_menu">
-    <img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'"  src="art/previous_button.png" alt="<"  style="margin-right:0px;float:left;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};position:relative;top:2px" />
-        <img onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{t}Next Customer{/t} {$next.name}"  onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'"   src="art/next_button.png" alt=">"  style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none;{/if}position:relative;top:2px"/ >
+    {if isset($parent_list)}<img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'"  src="art/previous_button.png" alt="<"  style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if}
+
+       {if isset($parent_list)}<img onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{t}Next Customer{/t} {$next.name}"  onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'"   src="art/next_button.png" alt=">"  style="float:right;height:22px;cursor:pointer;position:relative;top:2px"/ >{/if}
 
     <div class="buttons" >
-<button style="margin-left:10px" onclick="window.location='customer.php?id={$customer->id}{if $parent_list}&p={$parent_list}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+<button style="margin-left:10px" onclick="window.location='customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
     </div>
   
     <div style="clear:both"></div>
@@ -319,7 +320,7 @@
 
 </div>
 <div  class="edit_block" style="{if $edit!="delivery"}display:none{/if};min-height:260px"  id="d_delivery">
- {include file='edit_delivery_address_splinter.tpl'}
+ {include file='edit_delivery_address_splinter.tpl' return_to_order=false}
 
 </div>
 <div  class="edit_block" style="{if $edit!="details"}display:none{/if};"  id="d_details">
@@ -412,7 +413,7 @@
  {foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email }
   <tr  id="tr_other_email{$other_email_key}">
   <td  class="label">
-  {if $other_email_login_handle[$other_email.email] == $other_email.email}xxx{/if}<img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:</span>
+  <img  src="art/icons/edit.gif" style="cursor:pointer" onClick="change_other_field_label(this,'email',{$other_email_key})">  <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:</span>
   </td>
    <td  style="text-align:left">
      <div   >
@@ -587,7 +588,7 @@
  <tr id="tr_Customer_Preferred_Contact_Number"   style="{if $customer->get('Customer Main XHTML Mobile')=='' or $customer->get('Customer Main XHTML Telephone')==''   }display:none{/if}" >
  <td class="label" style="width:200px">{t}Preferred contact number{/t}:</td>
  <td>
-   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:0">
+   <div  class="options" style="margin:0">
    <span class="{if $customer->get('Customer Preferred Contact Number')=='Telephone'}selected{/if}" onclick="save_preferred(this,'Telephone')" id="Customer_Preferred_Contact_Number_Telephone">{t}Telephone{/t}</span> <span class="{if $customer->get('Customer Preferred Contact Number')=='Mobile'}selected{/if}" onclick="save_preferred(this,'Mobile')" id="Customer_Preferred_Contact_Number_Mobile">{t}Mobile{/t}</span>
    </div>
  </td>
@@ -601,7 +602,32 @@
        {t}Contact Address{/t}:
      </div>
      <table border=0 style="width:100%">
-       {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}
+       {include file='edit_address_splinter.tpl' 
+       
+   
+       
+       
+       address_identifier='contact_' 
+       hide_type=true 
+       hide_description=true  
+       show_components=true 
+       hide_buttons=false 
+       default_country_2alpha="$default_country_2alpha"
+       
+       
+       show_form=1  
+show_default_country=1 
+address_type=false
+function_value=''
+address_function=''
+show_contact=false
+show_tel=false
+close_if_reset=false
+       
+       
+       
+       
+       }
      </table>
      <div style="display:none" id='contact_current_address' ></div>
      <div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}' ></div>
@@ -647,6 +673,7 @@
    
  {if $customer_type=='Company'}
    <div  class="edit_block" style="{if $edit!="company"}display:none{/if}"  id="d_company">
+   {*}
       <div class="general_options" style="float:right">
 	
 	<span  style="margin-right:10px;display:none"  id="save_new_customer" class="state_details">{t}Save{/t}</span>
@@ -662,8 +689,8 @@
 
      
 	  
-       {include file='edit_company_splinter.tpl'}
-
+      {include file='edit_company_splinter.tpl'}
+{*} 
      
    </div>
 {else}
@@ -675,27 +702,7 @@
 
 </div>
 
-<div id="filtermenu0" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-      {foreach from=$filter_menu0 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
 
-<div id="rppmenu0" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-      {foreach from=$paginator_menu0 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
 
 <div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
@@ -762,20 +769,15 @@
 
 
 <div id="dialog_set_password_main">
-Change Password
+{t}Change Password{/t}
 
 <table border=0 id="change_password_form" >
-
-
 <tr style="display:none;width:120px"><td class="label" >{t}Current Password{/t}: </td><td><input type="password" id="current_password_password1"></td></tr>
 <tr><td style="width:120px" class="label">{t}New Password{/t}: </td><td><input type="password" id="change_password_password1"></td></tr>
 <tr><td style="width:120px" class="label">{t}Confirm Password{/t}: </td><td><input type="password" id="change_password_password2"></td></tr>
 <input id="epwcp1" value="{$main_email.epwcp1}" type="hidden"/>
 <input id="epwcp2" value="{$main_email.epwcp2}" type="hidden"/>
 <input id="user_key" value="{$main_email.user_key}" type="hidden"/>
-
-
-
 <tr  id="tr_change_password_buttons"  class="button space" >
 <td colspan=2><span style="display:none" id="change_password_error_no_password">{t}Write new password{/t}</span><span style="display:none" id="change_password_error_password_not_march">{t}Passwords don't match{/t}</span><span style="display:none" id="change_password_error_password_too_short">{t}Password is too short{/t}</span><span>
 </span><button id="submit_change_password">{t}Change Password{/t}</button> 
@@ -805,7 +807,7 @@ Change Password
 
 <tr  id="tr_change_password_buttons_"  class="button space" >
 <td colspan=2><span style="display:none" id="change_password_error_no_password_">{t}Write new password{/t}</span><span style="display:none" id="change_password_error_password_not_march_">{t}Passwords don't match{/t}</span><span style="display:none" id="change_password_error_password_too_short_">{t}Password is too short{/t}</span><span>
-</span><button id="submit_change_password_" user={$email.user_key}>{t}Change Password{/t}</button> 
+</span><button id="submit_change_password_" user=''>{t}Change Password{/t}</button> 
 </td></tr>
 <tr id="tr_change_password_wait_"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="art/wait.gif"> <span style="position:relative;top:-5px">{t}Submitting changes{/t}</span></td></tr>
 

@@ -1279,11 +1279,16 @@ var part_Tariff_Code_oACDS = new YAHOO.util.FunctionDataSource(validate_Part_Tar
 
 
 }
-
+ function formater_web_configuration  (el, oRecord, oColumn, oData) {
+		     el.innerHTML = oRecord.getData("formated_web_configuration");
+	    }
+	    
 YAHOO.util.Event.addListener(window, "load", 
 function() {
 	tables = new
 	function() {
+
+
 
 		var tableid = 0;
 		var tableDivEL = "table" + tableid;
@@ -1409,6 +1414,8 @@ function() {
 		var tableid = 1;
 		var tableDivEL = "table" + tableid;
 
+
+
 		var CustomersColumnDefs = [
 						    {key:"pid", label:"", hidden:true,action:"none",isPrimaryKey:true}
 
@@ -1428,7 +1435,6 @@ function() {
 				    ],disableBtns:true})}
 				    ,{key:"formated_web_configuration" , label:"",hidden:true}
 		];
-
 		this.dataSource1 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=products_in_part&sku="+part_sku+"&tableid=1");
 		this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource1.connXhrMode = "queueRequests";

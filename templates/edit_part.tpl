@@ -5,9 +5,23 @@
 <div class="branch"> 
   <span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="inventory.php?id={$warehouse->id}">{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</a> &rarr; <a href="warehouse_parts.php?id={$warehouse->id}">{t}Parts{/t}</a> &rarr; {$part->get_sku()}</span>
 </div>
+
+
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+       
+        <button  onclick="window.location='part.php?id={$part->sku}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
+     
+    </div>
+    <div class="buttons" style="float:left">
+
+ </div>
+    <div style="clear:both"></div>
+</div>
+
 <div style="clear:left;margin:0 0px">
-    <h1>{t}Editing part{/t}: <span class="id">{$part->get_sku()}<span> </h1>
-    <h2 id="title_description">{$part->get('Part XHTML Description')}</h2>
+    <h1>{t}Editing part{/t}: <span class="id">{$part->get_sku()}</span> <span id="title_description">{$part->get('Part XHTML Description')}</span>  <span style="padding:0;font-size:80%">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</span> </h1>
+    
 </div>
 
 <ul class="tabs" id="chooser_ul">
@@ -111,7 +125,7 @@
   
 </div>
 <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
-    {include file='edit_images_splinter.tpl'}
+    {include file='edit_images_splinter.tpl' parent=$part}
 </div>
 <div class="edit_block" {if $edit!="description"}style="display:none"{/if}"  id="d_description">
 
@@ -199,9 +213,9 @@
 <table class="edit" border=0 style="width:890px">
  <tr class="title"><td >{t}General Description{/t} <span id="part_general_description_msg"></span></td>
  <td>
- <div class="general_options" style="float:right">	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_description" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_description" class="state_details">{t}Reset{/t}</span>
+ <div class="buttons" >	
+	<button  style="margin-right:10px;visibility:hidden"  id="save_edit_part_description" class="state_details">{t}Save{/t}</button>
+	<button style="margin-right:10px;visibility:hidden" id="reset_edit_part_description" class="state_details">{t}Reset{/t}</button>
 </div>
  </td>
   </tr>
@@ -216,9 +230,9 @@
 <table class="edit" border=0 style="width:890px">
  <tr class="title"><td >{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
  <td>
- <div class="general_options" style="float:right">	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_health_and_safety" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_health_and_safety" class="state_details">{t}Reset{/t}</span>
+ <div class="buttons" >	
+	<button  style="margin-right:10px;visibility:hidden"  id="save_edit_part_health_and_safety" class="state_details">{t}Save{/t}</button>
+	<button style="margin-right:10px;visibility:hidden" id="reset_edit_part_health_and_safety" class="state_details">{t}Reset{/t}</button>
 </div>
  </td>
   </tr>
@@ -234,7 +248,7 @@
 
 
 {*}
-{*}
+
 <table class="edit">
  <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
  {foreach from=$categories item=cat key=cat_key name=foo  }
@@ -255,11 +269,11 @@
 
 
 </table>
-{*}
-<div class="general_options" style="float:right">
+
+<div class="buttons">
 	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_part_custom_field" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_part_custom_field" class="state_details">{t}Reset{/t}</span>
+	<button  style="margin-right:10px;visibility:hidden"  id="save_edit_part_custom_field" class="state_details">{t}Save{/t}</button>
+	<button style="margin-right:10px;visibility:hidden" id="reset_edit_part_custom_field" class="state_details">{t}Reset{/t}</button>
 	
 </div>
 	  

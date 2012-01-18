@@ -10,9 +10,7 @@ if (DEBUG) {
 //$path = 'classes';set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
 require_once 'app_files/db/dns.php';
-
 require_once 'common_functions.php';
-
 require_once 'common_detect_agent.php';
 
 require_once "class.Session.php";
@@ -64,19 +62,17 @@ $max_session_time_in_milliseconds=1000*$max_session_time;
 $session = new Session($max_session_time,1,100);
 
 
-
-
-
 //print_r($session);
 //print '//'.session_id( );
 //print_r($_SESSION['state']);
+
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
 $smarty->template_dir = 'templates';
 $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
-//$smarty->error_reporting = E_STRICT;
+$smarty->error_reporting = E_STRICT;
 
 if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
     $log_as="supplier";
