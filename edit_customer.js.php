@@ -1110,7 +1110,7 @@ function post_change_main_delivery_address(){}
 
 
 
-function display_new_billing_address(){
+function xdisplay_new_billing_address(){
     Dom.setStyle(['add_new_billing_address','billing_address_showcase'],'display','none')
     Dom.setStyle('dialog_new_billing_address','display','')
       Dom.get('billing_address_country').focus();
@@ -1124,7 +1124,7 @@ function post_create_billing_address_function(r){
 }
 
 
-function display_edit_billing_address(address_id){
+function xdisplay_edit_billing_address(address_id){
 
    edit_address(address_id,'billing_')
    Dom.setStyle(['add_new_billing_address','billing_address_showcase'],'display','none')

@@ -2,6 +2,9 @@
 
 
 function display_new_delivery_address(){
+Dom.get('delivery_address_key').value='';
+Dom.get('delivery_address_fuzzy').value='Yes';
+
 Dom.get('delivery_address_contact').value='';
 Dom.get('delivery_address_telephone').value='';
 Dom.get('delivery_address_internal').value='';
