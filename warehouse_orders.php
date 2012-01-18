@@ -80,8 +80,8 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$warehouse_area=new CompanyArea('code','WAH');
-$pickers=$warehouse_area->get_current_staff_with_position_code('PICK');
+$company_area=new CompanyArea('code','WAH');
+$pickers=$company_area->get_current_staff_with_position_code('PICK');
 $number_cols=5;
 $row=0;
 $pickers_data=array();
@@ -99,7 +99,7 @@ foreach($pickers as $picker) {
 
 $smarty->assign('pickers',$pickers_data);
 
-$packers=$warehouse_area->get_current_staff_with_position_code('PACK');
+$packers=$company_area->get_current_staff_with_position_code('PACK');
 $number_cols=5;
 $row=0;
 $packers_data=array();
@@ -116,6 +116,24 @@ foreach($packers as $packer) {
 }
 
 $smarty->assign('packers',$packers_data);
+
+$tipo_filter2='code';
+$filter_menu2=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
+
+$staff_list_active=array();
+$sql=sprintf("select * from `Staff Dimension` where `Staff Currently Working`='Yes'");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_list_active[$row['Staff Key']]=$row['Staff Alias'];
+}
+$smarty->assign('staff_list_active',$staff_list_active);
 
 
 //print_r($pickers_data);
