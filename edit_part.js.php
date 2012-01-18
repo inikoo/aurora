@@ -43,6 +43,8 @@ if ($row = mysql_fetch_array($res)) {
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 var part_sku = <?php echo $_REQUEST['sku'] ?>;
+var scope_key = <?php echo $_REQUEST['sku'] ?>;
+var scope='part';
 var Editor_change_part;
 var GeneralDescriptionEditor;
 var HealthAndSafetyEditor;

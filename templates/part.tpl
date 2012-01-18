@@ -12,7 +12,7 @@
         {/if}
     </div>
     <div class="buttons" style="float:left">
-            <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/house.png" alt=""> {t}Inventory{/t}</button>
+            <button  onclick="window.location='warehouse_parts.php?warehouse_id={$warehouse->id}'" ><img src="art/icons/house.png" alt=""> {t}Inventory{/t}</button>
 
  </div>
     <div style="clear:both"></div>
