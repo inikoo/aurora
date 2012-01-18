@@ -62,15 +62,45 @@
 	
 
 	 
+
+
 		<tr class="first"><td class="label">{t}Staff Alias{/t}:</td><td>
 		<div>
-			<input id="Staff_Alias" changed=0 type='text' class='text' MAXLENGTH="16" value="{$staff->get('Staff Alias')}" ovalue="{$staff->get('Staff Alias')}" />
+			<input id="Staff_Alias" changed=0 type='text' class='text' value="{$staff->get('Staff Alias')}" ovalue="{$staff->get('Staff Alias')}" />
 			<div id="Staff_Alias_Container"  ></div>
 			</div>
 			</td>
 			<td style="width:200px" id="Staff_Alias_msg" class="edit_td_alert"></td>
 		</tr>
-	  
+
+		<tr class="first"><td class="label">{t}Staff Name{/t}:</td><td>
+		<div>
+			<input id="Staff_Name" changed=0 type='text' class='text' value="{$staff->get('Staff Name')}" ovalue="{$staff->get('Staff Name')}" />
+			<div id="Staff_Name_Container"  ></div>
+			</div>
+			</td>
+			<td style="width:200px" id="Staff_Name_msg" class="edit_td_alert"></td>
+		</tr>
+
+		<tr>
+		<td class="label" style="width:200px">{t}Staff Working{/t}:</td>
+		<td>
+		<div  class="buttons" style="float:left">
+		<button class="{if $staff->get('Staff Currently Working')=='Yes'}selected{/if} positive" onclick="save_staff_status('Staff Currently Working','Yes')" id="Staff Currently Working_Yes">{t}Yes{/t}</button> 
+		<button class="{if $staff->get('Staff Currently Working')=='No'}selected{/if} negative" onclick="save_staff_status('Staff Currently Working','No')" id="Staff Currently Working_No">{t}No{/t}</button>
+		</div>
+		</td>
+		</tr>
+
+		<tr>
+		<td class="label" style="width:200px">{t}Staff Supervisor{/t}:</td>
+		<td>
+		<div  class="buttons" style="float:left">
+		<button class="{if $staff->get('Staff Is Supervisor')=='Yes'}selected{/if} positive" onclick="save_staff_status('Staff Is Supervisor','Yes')" id="Staff Is Supervisor_Yes">{t}Yes{/t}</button> 
+		<button class="{if $staff->get('Staff Is Supervisor')=='No'}selected{/if} negative" onclick="save_staff_status('Staff Is Supervisor','No')" id="Staff Is Supervisor_No">{t}No{/t}</button>
+		</div>
+		</td>
+		</tr>
 
 	<tr>
 
