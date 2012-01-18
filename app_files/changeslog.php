@@ -5383,3 +5383,10 @@ ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Date Done Approved` DAT
 ALTER TABLE `Staff Dimension` DROP `Staff Position Key`;
 
 ALTER TABLE `HQ Dimension` ADD `Short Message` VARCHAR( 128 ) NOT NULL ;
+
+ALTER TABLE `Part Dimension` ADD `Part Transactions` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Main Image Key` ,
+ADD `Part Transactions In` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions` ,
+ADD `Part Transactions Out` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions In` ,
+ADD `Part Transactions Audit` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions Out` ,
+ADD `Part Transactions OIP` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions Audit` ,
+ADD `Part Transactions Move` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions OIP` ;
