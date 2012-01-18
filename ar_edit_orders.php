@@ -1818,7 +1818,27 @@ function assign_picker($data) {
 	}
 
 
-	$dn->assign_picker($data['staff_key'], $data['pin']);
+	$sql=sprintf("select count(*) as cnt from `Staff Dimension` where `Staff PIN`=%d and `Staff Is Supervisor`='Yes' and `Staff Currently Working`='Yes'", $data['pin']);
+	//print $sql;
+	$result=mysql_query($sql);
+	$row=mysql_fetch_assoc($result);
+	//print_r($row);exit;
+	if($row['cnt'] > 0){
+		$dn->assign_picker($data['staff_key']);
+	}
+	else{
+		$response=array(
+			'state'=>400,
+			'msg'=>'Wrong Supervisor PIN'
+		);
+		echo json_encode($response);
+		exit;
+
+	}
+		
+	
+
+
 	if ($dn->assigned) {
 		$response=array(
 			'state'=>200,
@@ -1865,10 +1885,23 @@ function start_picking($data) {
 
 
 
-	print_r($data);exit;
-	$sql=sprintf();
+	//print_r($data);exit;
+	$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d and `Staff Currently Working`='Yes'", $data['staff_key']);
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_assoc($result)){
+		if($row['Staff PIN'] != $data['pin']){
+			$response=array(
+			'state'=>400,
+			'msg'=>'Wrong PIN'
+			);
+		echo json_encode($response);
+		return;
+		}
+		else
+			$dn->start_picking($data['staff_key']);
+	}
 
-	$dn->start_picking($data['staff_key']);
+
 
 
 	if ($dn->assigned) {
@@ -1914,8 +1947,24 @@ function start_packing($data) {
 		exit;
 	}
 
+	$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d and `Staff Currently Working`='Yes'", $data['staff_key']);
+	$result=mysql_query($sql);
+	if($row=mysql_fetch_assoc($result)){
+		if($row['Staff PIN'] != $data['pin']){
+			$response=array(
+			'state'=>400,
+			'msg'=>'Wrong PIN'
+			);
+		echo json_encode($response);
+		return;
+		}
+		else
+			$dn->start_packing($data['staff_key']);
+	}
+	
 
-	$dn->start_packing($data['staff_key']);
+
+
 	if ($dn->assigned) {
 		$response=array(
 			'state'=>200,
