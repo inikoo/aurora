@@ -115,7 +115,7 @@
   <td></tr>
 </table>
 </div>
-xx
+
 <div id="pick_it_dialog" style="width:300px;">
 <div class="options" style="width:300px;padding:10px;text-align:center" >
 

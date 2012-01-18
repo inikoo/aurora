@@ -21,8 +21,26 @@ var pack_assigned_dialog;
 
 
 
-function select_staff(){
-alert('x')
+function select_staff_from_list(oArgs){
+	
+var staff_alias=tables.table2.getRecord(oArgs.target).getData('code');
+var staff_key=tables.table2.getRecord(oArgs.target).getData('key');
+//`alert(staff_alias + ':' + staff_key )
+Dom.get('pick_it_Staff_Name').value=staff_alias;
+Dom.get('pick_it_staff_key').value=staff_key;
+
+Dom.setStyle('pick_it_pin_tr','visibility','visible');
+Dom.get("pick_it_pin_alias").innerHTML=staff_alias;
+Dom.get('pick_it_password').focus();
+
+Dom.get('pack_it_Staff_Name').value=staff_alias;
+Dom.get('pack_it_staff_key').value=staff_key;
+
+Dom.setStyle('pack_it_pin_tr','visibility','visible');
+Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
+Dom.get('pack_it_password').focus();
+
+dialog_other_staff.hide();
 }
 
 
@@ -30,17 +48,16 @@ alert('x')
 function show_active_staff_dialog(o){
 
 
-Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'pack_it_buttons'),'selected');
-Dom.removeClass(Dom.getElementsByClassName('pick_it_button', 'td', 'pick_it_buttons'),'selected');
-Dom.addClass(o,'selected');
+	Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'pack_it_buttons'),'selected');
+	Dom.removeClass(Dom.getElementsByClassName('pick_it_button', 'td', 'pick_it_buttons'),'selected');
+	Dom.addClass(o,'selected');
 
-Dom.get('staff_name_tr').style.display='none';
-Dom.get('staff_name_pick_tr').style.display='none';
+	Dom.get('staff_name_tr').style.display='none';
+	Dom.get('staff_name_pick_tr').style.display='none';
 
-Dom.get('pack_it_pin_tr').style.display='none';
-Dom.get('pick_it_pin_tr').style.display='none';
-Dom.get('active_staff_list_dialog').style.display='';
-
+	Dom.get('pack_it_pin_tr').style.display='none';
+	Dom.get('pick_it_pin_tr').style.display='none';
+	Dom.get('active_staff_list_dialog').style.display='';
 
 
 }
@@ -91,6 +108,9 @@ function close_dialog(dialog_name) {
 function select_staff(o){
 var staff_key=o.getAttribute('staff_id');
 var staff_alias=o.innerHTML;
+
+
+
 Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'),'selected');
 Dom.addClass(o,'selected');
 Dom.get('Assign_Picker_Staff_Name').value=staff_alias;
@@ -117,6 +137,7 @@ Dom.setStyle('pick_it_pin_tr','visibility','visible');
 Dom.get("pick_it_pin_alias").innerHTML=staff_alias;
 Dom.get('pick_it_password').focus();
 }
+
 function assign_picker_save(){
 
 var staff_key=Dom.get('assign_picker_staff_key').value;
@@ -151,7 +172,7 @@ var staff_key=Dom.get('pick_it_staff_key').value;
 var sup_pwd=   Dom.get('pick_it_password').value;
 var dn_key=Dom.get('pick_it_dn_key').value;
     var request='ar_edit_orders.php?tipo=pick_it&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
-     
+     alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
@@ -183,6 +204,15 @@ function assign_picker(o,dn_key){
     assign_picker_dialog.show();
 }
 function pick_it(o,dn_key){
+
+var staff_alias='';
+var staff_key='';
+
+Dom.get('pick_it_Staff_Name').value=staff_alias;
+Dom.get('pick_it_staff_key').value=staff_key;
+Dom.get("pick_it_pin_alias").innerHTML=staff_alias;
+
+
     var y=(Dom.getY(o))
     var x=(Dom.getX(o))
     x=x-120;
@@ -360,7 +390,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['orders']['ready_to_pick_dn']['f_field']?>',value:'<?php echo$_SESSION['state']['orders']['ready_to_pick_dn']['f_value']?>'};
 
 	       this.table0.table_id=tableid;
-     this.table0.subscribe("renderEvent", myrenderEvent);
+     //this.table0.subscribe("renderEvent", myrenderEvent);
 	    
 
 
@@ -429,14 +459,13 @@ var tableid=2;
 
  this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
        this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
-      this.table2.subscribe("rowClickEvent", select_staff);
+      this.table2.subscribe("rowClickEvent", select_staff_from_list);
         this.table2.table_id=tableid;
            this.table2.subscribe("renderEvent", myrenderEvent);
 
 
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table2.filter={key:'code',value:''};
-
 
 	};
     });
@@ -487,8 +516,6 @@ dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {context:["ot
 
 //Event.addListener("other_staff", "click", show_other_staff);
 
-
-
 }
 
 YAHOO.util.Event.onDOMReady(init);
@@ -507,6 +534,17 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
     });
 
 function show_other_staff(e){
+/*
+var staff_alias='';
+var staff_key='';
+
+Dom.get('pick_it_Staff_Name').value=staff_alias;
+Dom.get('pick_it_staff_key').value=staff_key;
+Dom.get("pick_it_pin_alias").innerHTML=staff_alias;
+Dom.get('pack_it_Staff_Name').value=staff_alias;
+Dom.get('pack_it_staff_key').value=staff_key;
+Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
+*/
 
 	Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'pack_it_buttons'),'selected');
 	Dom.addClass(e,'selected');

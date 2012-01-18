@@ -1864,7 +1864,13 @@ function start_picking($data) {
 	}
 
 
-	$dn->start_picking($data['staff_key'], $data['pin']);
+
+	print_r($data);exit;
+	$sql=sprintf();
+
+	$dn->start_picking($data['staff_key']);
+
+
 	if ($dn->assigned) {
 		$response=array(
 			'state'=>200,
