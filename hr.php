@@ -115,12 +115,13 @@ $csv_export_options=array(
                                         )
                     );
 
-$smarty->assign('export_csv_table_cols',2);
+
 
 
 $smarty->assign('csv_export_options',$csv_export_options);
 */
-
+$smarty->assign('csv_export_options','');
+$smarty->assign('export_csv_table_cols',2);
 $smarty->assign('search_label',_('Staff'));
 $smarty->assign('search_scope','staff');
 
