@@ -1411,7 +1411,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-	function assign_picker($staff_key,$staff_pin) {
+	function assign_picker($staff_key) {
 		$this->assigned=false;
 
 		if (!preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
@@ -1428,11 +1428,7 @@ class DeliveryNote extends DB_Table {
 			return;
 		}
 
-		if ($staff->data['Staff PIN']!=$staff_pin) {
-			$this->error=true;
-			$this->msg=_('Incorrect Staff PIN');
-			return;
-		}
+	
 
 		if ($this->data ['Delivery Note Assigned Picker Key']==$staff->id) {
 			return;
@@ -1514,7 +1510,7 @@ class DeliveryNote extends DB_Table {
 		$this->dn_state=_('Packer Assigned');
 
 	}
-	function start_picking($staff_key,$staff_pin,$date=false) {
+	function start_picking($staff_key,$date=false) {
 
 		if (!$date)
 			$date=date("Y-m-d H:i:s");
@@ -1544,11 +1540,7 @@ class DeliveryNote extends DB_Table {
 			$staff_key=$staff->id;
 		}
 
-		if ($staff->data['Staff PIN']!=$staff_pin) {
-			$this->error=true;
-			$this->msg=_('Incorrect Staff PIN');
-			return;
-		}
+	
 
 		if ($this->data ['Delivery Note Assigned Picker Key']==$staff_key) {
 			return;
