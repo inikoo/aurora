@@ -160,6 +160,7 @@ var tableid=2;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
 
+
  this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
        this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
       this.table2.subscribe("rowClickEvent", select_area);
@@ -169,7 +170,6 @@ var tableid=2;
 
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table2.filter={key:'code',value:''};
-
 
 
 
@@ -188,7 +188,7 @@ function exit_add_location(){
 }
 
 function select_area(oArgs){
-//alert('ss');return;
+
 
 area_name=tables.table2.getRecord(oArgs.target).getData('name');
 area_key=tables.table2.getRecord(oArgs.target).getData('key');
