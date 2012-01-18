@@ -73,9 +73,28 @@
                 </tr>
                 {/if}
                 
-                {if $customer->get('Customer Main Email Key')}<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')"><td id="main_email" colspan=2  class="aright">{$customer->get('customer main XHTML email')}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>{if $customer->get('customer main Plain Email') == $login_stat.UserHandle}<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>{/if}<td id="email_label{$customer->get('Customer Main Email Key')}"style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td><td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
+                {if $customer->get('Customer Main Email Key')!=''}
+                <tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">
+                <td id="main_email" colspan=2  class="aright">{$customer->get('Customer Main XHTML email')}</td >
+                <td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>
+                {if $customer->get('Customer Main Plain Email') == $login_stat.UserHandle}
+                	<td><img src="art/icons/user_go.png" title="{t}User Login{/t}" alt="{t}User Login{/t}"></td>
+                {/if}
+                	<td id="email_label{$customer->get('Customer Main Email Key')}"style="color:#777;font-size:80%">{$customer->get_principal_email_comment()}</td>
+                	<td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+                </tr>{/if}
                 {foreach from=$customer->get_other_emails_data() item=other_email key=key}
-                    <tr id="other_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_email{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_email{$key}','visibility','hidden')"><td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td ><td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png"/></td>{if $other_email_login_handle[$other_email.email] == $other_email.email}<td><img src="art/icons/user_go.png"/></td>{/if}<td id="email_label{$key}" style="color:#777;font-size:80%">{$other_email.label}</td><td><img onMouseover="Dom.setStyle('other_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_email_tr','border-color','#fff')" id="quick_edit_other_email{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
+                    <tr id="other_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_other_email{$key}','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_other_email{$key}','visibility','hidden')">
+                    <td id="email{$key}" colspan=2   class="aright">{$other_email.xhtml}</td >
+                    <td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png"/></td>
+                    {*}
+                    {if $other_email_login_handle[$other_email.email] == $other_email.email}
+                    	<td><img src="art/icons/user_go.png"/></td>
+                    {/if}
+                    {/*}
+                    <td id="email_label{$key}" style="color:#777;font-size:80%">{$other_email.label}</td>
+                    <td><img onMouseover="Dom.setStyle('other_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('other_email_tr','border-color','#fff')" id="quick_edit_other_email{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+                    </tr>
                 {/foreach}
                 {if $customer->get('Customer Main Telephone Key')}<tr id="main_telephone_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_telephone','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_telephone','visibility','hidden')"><td id="main_telephone" colspan=2 class="aright"  style="{if $customer->get('Customer Main XHTML Mobile') and $customer->get('Customer Preferred Contact Number')=='Telephone'}font-weight:800{/if}"   >{$customer->get('Customer Main XHTML Telephone')}</td ><td><img alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td><td id="telephone_label{$customer->get('Customer Main Telephone Key')}" style="color:#777;font-size:80%">{$customer->get_principal_telecom_comment('Telephone')}</td><td><img onMouseover="Dom.setStyle('main_telephone_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_telephone_tr','border-color','#fff')" id="quick_edit_main_telephone" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>{/if}
                 {foreach from=$customer->get_other_telephones_data() item=other_tel key=key}
@@ -360,16 +379,14 @@
  <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
       <span class="clean_table_title">{t}History/Notes{/t}</span>
            <div id="table_type" class="table_type">
-        <div  style="font-size:90%"   id="transaction_chooser" >
-
-            <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes"  id="elements_changes" table_type="changes"   >{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span>
-            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders"  id="elements_orders" table_type="orders"   >{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span>
-            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes"  id="elements_notes" table_type="notes"   >{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span>
-            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments"  id="elements_attachments" table_type="attachments"   >{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span>
-            <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails"  id="elements_emails" table_type="emails"   >{t}Emails{/t} (<span id="elements_notes_number">{$elements_number.Emails}</span>)</span>
-
-        </div>
-     </div>
+        		<div  style="font-size:90%"   id="transaction_chooser" >
+            		<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes"  id="elements_changes" table_type="changes"   >{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span>
+            		<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders"  id="elements_orders" table_type="orders"   >{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span>
+            		<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes"  id="elements_notes" table_type="notes"   >{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span>
+            		<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments"  id="elements_attachments" table_type="attachments"   >{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span>
+            		<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails"  id="elements_emails" table_type="emails"   >{t}Emails{/t} (<span id="elements_notes_number">{$elements_number.Emails}</span>)</span>
+        		</div>
+     		</div>
           <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
 
       
@@ -602,10 +619,8 @@
      <tr   ><td colspan=2>{t}Special Offer{/t}:</td></tr>
      <tr><td colspan=2>
 	<select id="offer">
-	<option value="none">None</option>
-	  <option value="gift focus">Gift Focus</option>
-	  <option value="garden" >Garden</option>
-	  <option value="Party2011" >Party2011</option>
+		<option value="none">None</option>
+	  	<option value="V2012" >V2012</option>
 	</select>
     </td></tr>
 

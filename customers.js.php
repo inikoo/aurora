@@ -24,7 +24,7 @@ function close_dialog(tipo){
 }
 
 function new_customer(tipo){
-    location.href='new_customer.php';
+    location.href='new_customer.php?store='+store_key;
     dialog_new_customer.hide();
 }
 
@@ -253,8 +253,6 @@ Event.addListener("export_data", "click", dialog_export.show,dialog_export , tru
 
 YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-
-
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);

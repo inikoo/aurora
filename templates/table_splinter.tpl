@@ -4,10 +4,12 @@
 	</div>
 	<div style="{if (isset($no_filter) && $no_filter)}display:none{/if}">
 	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show{$table_id}" {if (isset($filter_show) && $filter_show) or $filter_value!=''}style="display:none"{/if}>{t}filter results{/t}</div>
+
 	<div class="clean_table_filter" id="clean_table_filter{$table_id}" {if !(isset($filter_show) && $filter_show) and $filter_value==''}style="display:none"{/if}>
 	  <div class="clean_table_info" style="padding-bottom:1px; ">
 	    <span id="filter_name{$table_id}" class="filter_name"  style="margin-right:5px">{$filter_name}:</span>
-	    <input style="border-bottom:none;width:6em;" id='f_input{$table_id}' value="{$filter_value}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide{$table_id}" style="margin-left:8px">{t}Close filter{/t}</span>
+	    <input style="border-bottom:none;width:70px;" id='f_input{$table_id}' value="{$filter_value}" /> 
+	    <span class="clean_table_filter_show" id="clean_table_filter_hide{$table_id}" >{t}Close filter{/t}</span>
 	    <div id='f_container{$table_id}'></div>
 	  </div>
 	</div>	
