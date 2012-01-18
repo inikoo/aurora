@@ -183,7 +183,7 @@ $smarty->assign('next',$next);
 
 
 
-$smarty->assign('parent','hr');
+$smarty->assign('parent','staff');
 $smarty->assign('title','Staff: '.$staff->get('Staff Name'));
 $staff_home=_("Staff List");
 //$smarty->assign('id',$myconf['staff_id_prefix'].sprintf("%05d",$staff->id));

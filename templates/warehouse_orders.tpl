@@ -115,6 +115,7 @@
   <td></tr>
 </table>
 </div>
+xx
 <div id="pick_it_dialog" style="width:300px;">
 <div class="options" style="width:300px;padding:10px;text-align:center" >
 
@@ -125,17 +126,18 @@
 	
 	<td staff_id="{$picker.StaffKey}" id="picker_pick_it{$picker.StaffKey}" class="pick_it_button" onClick="select_staff_pick_it(this,event)" >{$picker.StaffAlias}</td>
 	{/foreach}
+	<td class="pick_it_button" td_id="other_staff_picker" onClick="show_other_staff(this)">{t}Other{/t}</td>
 	</tr>
       {/foreach}
     </table>
-
-
 </div>
+
+<div>
 <table class="edit">
 <input type="hidden" id="pick_it_staff_key">
 <input type="hidden" id="pick_it_dn_key">
 
-<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
+<tr id="staff_name_pick_tr" class="first"><td  class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="pick_it_Staff_Name" value="" ovalue="" valid="0">
@@ -146,6 +148,8 @@
  </tr>
 <tr id="pick_it_pin_tr" style="visibility:hidden"><td><span id="pick_it_pin_alias"></span> {t}PIN{/t}:</td><td><input id="pick_it_password" type="password" /></td></tr>
 </table>
+</div>
+
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
@@ -240,6 +244,7 @@
 	
 	<td staff_id="{$packer.StaffKey}" id="packer_pack_it{$packer.StaffKey}" class="pack_it_button" onClick="select_staff_pack_it(this,event)" >{$packer.StaffAlias}</td>
 	{/foreach}
+	<td class="pack_it_button" td_id="other_staff_packer" onClick="show_other_staff(this)">{t}Other{/t}</td>
 	</tr>
       {/foreach}
     </table>
@@ -250,7 +255,7 @@
 <input type="hidden" id="pack_it_staff_key">
 <input type="hidden" id="pack_it_dn_key">
 
-<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
+<tr id="staff_name_tr" class="first"><td  class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:190px;position:relative;top:00px" >
        <input style="text-align:left;width:180px" id="pack_it_Staff_Name" value="" ovalue="" valid="0">
@@ -260,7 +265,11 @@
    <td id="pack_it_Staff_Name_msg" class="edit_td_alert"></td>
  </tr>
 <tr id="pack_it_pin_tr" style="visibility:hidden"><td><span id="pack_it_pin_alias"></span> {t}PIN{/t}:</td><td><input id="pack_it_password" type="password" /></td></tr>
+
+
 </table>
+
+
 <table class="edit" style="margin-top:10px;float:right">
   
   <tr><td colspan="2">
@@ -294,3 +303,12 @@
 
 
 
+<div id="dialog_other_staff">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Staff List{/t}</span>
+            {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
+            <div  id="table2"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>
