@@ -3398,7 +3398,8 @@ function edit_part_list($data) {
     }
 
 
-
+$part=new Part($value['sku']);
+ $part->update_used_in();
 
 
 //

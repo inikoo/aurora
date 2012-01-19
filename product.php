@@ -135,7 +135,7 @@ elseif($mode=='code') {
 $product= new product($mode,$tag);
 
 
-echo $product->get('Product Main Image');
+
 
 //exit;
 
