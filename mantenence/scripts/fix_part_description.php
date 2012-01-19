@@ -29,12 +29,12 @@ $i=1;
 
 
 
-$sql=sprintf("select `Part XHTML Description`,`Part SKU` from `Part Dimension` limit 2000000 ");
+$sql=sprintf("select `Part Unit Description`,`Part SKU` from `Part Dimension` limit 2000000 ");
 $res_code=mysql_query($sql);
 while($row=mysql_fetch_array($res_code)){
 $sql=sprintf("update `Part Dimension` set `Part Unit Description`=%s where `Part SKU`=%d "
 
-,prepare_mysql(strip_tags($row['Part XHTML Description']))
+,prepare_mysql(strip_tags($row['Part Unit Description']))
 
 ,$row['Part SKU']
 );
