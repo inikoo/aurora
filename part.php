@@ -74,6 +74,7 @@ $css_files=array(
                'button.css',
                'table.css',
                'css/part_locations.css',
+                'css/edit.css',
                'theme.css.php'
            );
 

@@ -24,6 +24,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('other_locations_quick_buttons'):
+ $data=prepare_values($_REQUEST,array(
+				'sku'=>array('type'=>'key'),
+                             'location_key'=>array('type'=>'key')
+                          
+                         ));
+
+    other_locations_quick_buttons($data);
+    break;
 case('location_stock_history'):
     history_stock_location();
     break;
@@ -1441,11 +1450,13 @@ function parts_at_location() {
                      'location_key'=>$data['Location Key'],
                      'location'=>$data['Location Code'],
                      'description'=>$data['Part XHTML Description'].' ('.$data['Part XHTML Currently Used In'].')',
-                     'qty'=>number($data['Quantity On Hand']),
+                     'formated_qty'=>number($data['Quantity On Hand']),
+                      'qty'=>$data['Quantity On Hand'],
                      'can_pick'=>($data['Can Pick']=='Yes'?_('Yes'):_('No')),
                      'move'=>$move,
                      'audit'=>'<img src="art/icons/page_white_edit.png" alt="'._('Audit').'" />',
                      'lost'=>($data['Quantity On Hand']==0?'':'<img src="art/icons/package_delete.png" alt="'._('Set stock as damaged/lost').'" />'),
+                     'add'=>'<img src="art/icons/lorry.png" alt="'._('Add stock').'" />',
                      'delete'=>($data['Quantity On Hand']==0?'<img src="art/icons/cross.png"  alt="'._('Free location').'" />':''),
                      'number_locations'=>$data['Part Distinct Locations'],
                      'number_qty'=>$data['Quantity On Hand'],
@@ -2204,5 +2215,59 @@ function list_part_categories() {
     echo json_encode($response);
 }
 
+
+function other_locations_quick_buttons($data){
+
+
+$sql=sprintf("select `Quantity On Hand`,L.`Location Key`,`Location Code` from `Part Location Dimension` B left join `Location Dimension` L on (B.`Location Key`=L.`Location Key`) where `Part Sku`=%d and B.`Location Key`not in (0,%d)",
+$data['sku'],
+$data['location_key']
+);
+//print $sql;
+
+$res=mysql_query($sql);
+$location_data=array();
+while($row=mysql_fetch_assoc($res)){
+$locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
+}
+
+
+$number_cols=5;
+$row=0;
+$location_buttons=array();
+$contador=0;
+  $_row_tmp='';
+  
+  
+  
+$other_locations_quick_buttons='<div class="options" style="xwidth:270px;padding:0px 0px 0px 0px;text-align:center;margin:0px" >
+<table border=1 style="margin:auto" id="pack_it_buttons"><tr>'."\n";
+foreach($locations_data as $location_data) {
+ 
+  
+    
+    if (fmod($contador,$number_cols)==0 and $contador>0)
+         $_row_tmp.="</tr><tr>\n";
+   
+  $other_locations_quick_buttons.='<td onClick="select_move_location('.$location_data['location_key'].',\''.$location_data['location_code'].'\',\''.$location_data['stock'].'\')" >'.$location_data['location_code']."</td>\n";
+    $contador++;
+}
+$other_locations_quick_buttons.='</tr></table></div>';
+
+
+    
+//print "\n $other_locations_quick_buttons \n\n";
+
+
+
+$response=array(
+			'state'=>200,
+			'other_locations_quick_buttons'=>$other_locations_quick_buttons
+
+		);
+
+
+ echo json_encode($response);
+}
 
 ?>
