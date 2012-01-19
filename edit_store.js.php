@@ -46,10 +46,29 @@ var validate_scope_data={
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FAX')?>'}]
 	     ,'name':'marketing_description','ar':false} 
    }
+,'invoice':{
+    'vat_number':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid VAT Number')?>'}],'name':'Store_VAT_Number'
+	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_store_vat&query='}
+    ,'company_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Company Number')?>'}]
+	     ,'name':'Store_Company_Number','ar':'find','ar_request':'ar_assets.php?tipo=is_store_company_number&query='}
+,'company_name':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Company Name')?>'}]
+	     ,'name':'Store_Company_Name','ar':false} 
+,'msg_header':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Message Header')?>'}]
+	     ,'name':'header','ar':false} 
+,'msg':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Message')?>'}]
+	     ,'name':'msg','ar':false} 
+
+   }
 };
 
 var validate_scope_metadata={
     'store':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['store']['id']?>}
+	,'invoice':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['store']['id']?>}
   
 };
 
@@ -65,6 +84,13 @@ function validate_url(query){validate_general('store','url',unescape(query));}
 function validate_fax(query){validate_general('store','fax',unescape(query));}
 function validate_address(query){validate_general('store','address',unescape(query));}
 function validate_marketing_description(query){validate_general('store','marketing_description',unescape(query));}
+
+function validate_vat_number(query){ validate_general('invoice','vat_number',unescape(query));}
+function validate_company_number(query){ validate_general('invoice','company_number',unescape(query));}
+function validate_company_name(query){ validate_general('invoice','company_name',unescape(query));}
+function validate_header(query){ validate_general('invoice','msg_header',unescape(query));}
+function validate_msg(query){ validate_general('invoice','msg',unescape(query));}
+				
 
 
 function new_store_page(){
@@ -103,6 +129,13 @@ var request='tipo=new_store_page&store_key='+store_id+'&site_key='+Dom.get('site
 }
 
 
+function reset_edit_invoice(){
+ reset_edit_general('invoice');
+}
+function save_edit_invoice(){
+ save_edit_general('invoice');
+}
+
 function reset_edit_store(){
  reset_edit_general('store');
 }
@@ -130,7 +163,7 @@ newvalue=r.newvalue;
 
 
 function change_block(e){
-        var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","website","communications"]; 
+        var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","invoice", "website","communications"]; 
 
 	
 	if(this.id=='pictures'  ){
@@ -148,6 +181,7 @@ function change_block(e){
 	Dom.get('d_charges').style.display='none';
 	Dom.get('d_discounts').style.display='none';
 	Dom.get('d_campaigns').style.display='none';
+Dom.get('d_invoice').style.display='none';
 Dom.get('d_communications').style.display='none';
 	Dom.get('d_shipping').style.display='none';
 	Dom.get('d_'+this.id).style.display='';
@@ -709,7 +743,7 @@ function init(){
   init_search('products_store');
 
 
-    var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","website","communications"]; 
+    var ids = ["description","pictures","departments","discounts","charges","shipping","campaigns","invoice", "website","communications"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
@@ -718,6 +752,11 @@ function init(){
 
     YAHOO.util.Event.addListener('reset_edit_store', "click", reset_edit_store);
     YAHOO.util.Event.addListener('save_edit_store', "click", save_edit_store);
+
+    YAHOO.util.Event.addListener('reset_edit_invoice', "click", reset_edit_invoice);
+    YAHOO.util.Event.addListener('save_edit_invoice', "click", save_edit_invoice);
+
+
   YAHOO.util.Event.addListener('new_store_page', "click", new_store_page);
 
     var store_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
@@ -779,6 +818,36 @@ function init(){
     var store_name_oAutoComp = new YAHOO.widget.AutoComplete("marketing_description","marketing_description_Container", store_name_oACDS);
     store_name_oAutoComp.minQueryLength = 0; 
     store_name_oAutoComp.queryDelay = 0.1;   
+
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_vat_number);
+    store_name_oACDS.queryMatchContains = true;
+    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("Store_VAT_Number","Store_VAT_Number_Container", store_name_oACDS);
+    store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.1;   
+
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_company_number);
+    store_name_oACDS.queryMatchContains = true;
+    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("Store_Company_Number","Store_Company_Number_Container", store_name_oACDS);
+    store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.1;   
+
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_company_name);
+    store_name_oACDS.queryMatchContains = true;
+    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("Store_Company_Name","Store_Company_Name_Container", store_name_oACDS);
+    store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.1;   
+
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_header);
+    store_name_oACDS.queryMatchContains = true;
+    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("header","header_Container", store_name_oACDS);
+    store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.1;   
+
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_msg);
+    store_name_oACDS.queryMatchContains = true;
+    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("msg","msg_Container", store_name_oACDS);
+    store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.1;  
 
  var formObject = document.getElementById('aForm');
  

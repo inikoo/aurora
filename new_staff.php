@@ -70,7 +70,7 @@ $smarty->assign('scope','staff');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');
-$smarty->assign('parent','contacts');
+$smarty->assign('parent','staff');
 $smarty->assign('title','New Staff');
 $smarty->display('new_staff.tpl');
 

@@ -171,6 +171,7 @@ case('edit_department'):
     edit_department();
     break;
 case('edit_store'):
+case('edit_invoice'):
     edit_store();
 
     break;
@@ -422,7 +423,7 @@ function edit_store() {
     $store=new Store($_REQUEST['id']);
     global $editor;
     $store->editor=$editor;
-    $store->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+    $store->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])));//,stripslashes(urldecode($_REQUEST['oldvalue'])));
 
     if ($store->updated) {
         $response= array('state'=>200,'newvalue'=>$store->new_value,'key'=>$_REQUEST['key']);
