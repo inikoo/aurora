@@ -85,7 +85,7 @@
 		<tr>
 		<td class="label" style="width:200px">{t}Staff Working{/t}:</td>
 		<td>
-		<div  class="buttons" style="float:left">
+		<div  class="buttons small left" style="float:left">
 		<button class="{if $staff->get('Staff Currently Working')=='Yes'}selected{/if} positive" onclick="save_staff_status('Staff Currently Working','Yes')" id="Staff Currently Working_Yes">{t}Yes{/t}</button> 
 		<button class="{if $staff->get('Staff Currently Working')=='No'}selected{/if} negative" onclick="save_staff_status('Staff Currently Working','No')" id="Staff Currently Working_No">{t}No{/t}</button>
 		</div>
@@ -95,12 +95,28 @@
 		<tr>
 		<td class="label" style="width:200px">{t}Staff Supervisor{/t}:</td>
 		<td>
-		<div  class="buttons" style="float:left">
+		<div  class="buttons small left" style="float:left">
 		<button class="{if $staff->get('Staff Is Supervisor')=='Yes'}selected{/if} positive" onclick="save_staff_status('Staff Is Supervisor','Yes')" id="Staff Is Supervisor_Yes">{t}Yes{/t}</button> 
 		<button class="{if $staff->get('Staff Is Supervisor')=='No'}selected{/if} negative" onclick="save_staff_status('Staff Is Supervisor','No')" id="Staff Is Supervisor_No">{t}No{/t}</button>
 		</div>
 		</td>
 		</tr>
+
+
+		<tr>
+		<td class="label" style="width:200px">{t}Staff Type{/t}:</td>
+		<td>
+		<div  class="buttons small left" style="float:left" class="options">
+		<button class="{if $staff->get('Staff Type')=='Employee'}selected{/if} " onclick="save_staff_status('Staff Type','Employee')" id="Staff Type_Employee">{t}Employee{/t}</button> 
+		<button class="{if $staff->get('Staff Type')=='Volunteer'}selected{/if} " onclick="save_staff_status('Staff Type','Volunteer')" id="Staff Type_Volunteer">{t}Volunteer{/t}</button>
+		<button class="{if $staff->get('Staff Type')=='Contractor'}selected{/if} " onclick="save_staff_status('Staff Type','Contractor')" id="Staff Type_Contractor">{t}Contractor{/t}</button>
+		<button class="{if $staff->get('Staff Type')=='Temporal Worker'}selected{/if} " onclick="save_staff_status('Staff Type','Temporal Worker')" id="Staff Type_Temporal Worker">{t}Temporal Worker{/t}</button>
+		<button class="{if $staff->get('Staff Type')=='Work Experience'}selected{/if} " onclick="save_staff_status('Staff Type','Work Experience')" id="Staff Type_Work Experience">{t}Work Experience{/t}</button>
+
+		</div>
+		</td>
+		</tr>
+
 
 	<tr>
 
