@@ -106,16 +106,7 @@ var request='ar_edit_staff.php?tipo=edit_staff_description&okey='+key+'&key='+ke
 
 				if(r.state==200){
 			
-  
- 
-            if (r.newvalue=='No' || r.newvalue=='Yes') {
-                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
-
-               Dom.addClass(r.key+'_'+r.newvalue,'selected');
-
-            }else{
-                alert(r.msg)
-            }
+				window.location.reload();
             }
 
     }
