@@ -1098,7 +1098,8 @@ function edit_staff_description(){
 		'position_key'=>'Staff Position',
 		'name'=>'Staff Name',
 		'Staff Currently Working'=>'Staff Currently Working',
-		'Staff Is Supervisor'=>'Staff Is Supervisor'
+		'Staff Is Supervisor'=>'Staff Is Supervisor',
+		'Staff Type'=>'Staff Type'
 
 		   );
   if(array_key_exists($_REQUEST['key'],$traslator)){
