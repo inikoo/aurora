@@ -19,7 +19,7 @@
 </div>
 
 <div style="clear:left">
-  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part XHTML Description')}</h1>
+  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part Unit Description')}</h1>
   <h3 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h3>
 </div>
 

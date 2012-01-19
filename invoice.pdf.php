@@ -16,6 +16,7 @@ if (!$invoice->id) {
 }
 //print_r($invoice);
 $store=new Store($invoice->data['Invoice Store Key']);
+$customer=new Customer($invoice->data['Invoice Customer Key']);
 
 
 require_once('external_libs/pdf/config/lang/eng.php');
@@ -117,40 +118,33 @@ class MYPDF extends TCPDF {
         // Set font
         $this->SetFont('helvetica', 'I', 6);
         // Page number
-	$sql=sprintf("select * from `Store Dimension` where `Store Key`=%d", $this->get_footer_var());
 
-$result=mysql_query($sql);
-$row=mysql_fetch_assoc($result);
 
 $address='';
-$store_address=explode(",",$row['Store Address']);
-foreach($store_address as $ad)
+
+global $store;
+
+$store_address=explode(",",$store->data['Store Address']);
+
+foreach($store_address as $ad){
 	$address.=$ad.",<br/>";
+}
 
+ 
+$tbl ='<table border="0" cellpadding="2" cellspacing="2" align="left" WIDTH="100%">
+	<tr><th COLSPAN=6>'.$store->data['Store Company Name'].'</th></tr>
 
-   $response= array('state'=>200);
-$tbl = <<<EOD
-<table border="0" cellpadding="2" cellspacing="2" align="left" WIDTH="100%">
 	<tr >
-		<th WIDTH="20%">Company Address</th> 
-		<th WIDTH="12%">Company Number</th>
-		<th WIDTH="12%">VAT Number</th>
-		<th WIDTH="16%">Telephone</th>
-		<th WIDTH="20%">Email</th>
-		<th WIDTH="16%">Web</th>
-	</tr>
-	<tr >
-		<td>{$row['Store Address']}</td>	
-		<td>{$row['Store Company Number']}</td>
-		<td>{$row['Store VAT Number']}</td>
-		<td>{$row['Store Telephone']}</td>
-		<td>{$row['Store Email']}</td>
-		<td>{$row['Store URL']}</td>
+		<td WIDTH="20%">'.$store->data['Store Address'].'</td>	
+		<td WIDTH="12%">'.$store->data['Store Company Number'].'</td>
+		<td WIDTH="12%">'.$store->data['Store VAT Number'].'</td>
+		<td WIDTH="16%">'.$store->data['Store Telephone'].'</td>
+		<td WIDTH="20%">'.$store->data['Store Email'].'</td>
+		<td WIDTH="16%">'.$store->data['Store URL'].'</td>
 		
 	</tr>
 
-</table>
-EOD;
+</table>';
 
 
 $this->writeHTML($tbl, true, false, false, false, '');
@@ -211,10 +205,13 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor($store->data['Store Name']);
 $pdf->SetTitle($invoice->data['Invoice Public ID']);
-$pdf->SetSubject(_('Order Picking Aid'));
+$pdf->SetSubject(_('Invoice'));
 
 //print_r($invoice);
-$header_text=$store->data['Store Name'];
+$header_text=_('Invoice').' '.$invoice->data['Invoice Public ID'];
+
+
+
 //$image="../../image"
 //$pdf->SetHeaderData("../../../image.php\?id=1", 100, $header_text, 'Invoice ');
 
@@ -222,7 +219,7 @@ $header_text=$store->data['Store Name'];
 
 
 
-$pdf->SetHeaderData(false, 0, $header_text, 'Invoice ');
+$pdf->SetHeaderData(false, 0, $header_text,$store->data['Store Name']);
 $pdf->set_footer_var($store->id);
 //print $invoice->data['Invoice Customer Name'].$invoice->data['Invoice Public ID'];
 // set header and footer fonts
@@ -261,37 +258,41 @@ $pdf->setCellPaddings(1,0.5,1,0.5);
 $pdf->AddPage();
 
 if ($invoice->get('Invoice Items Discount Amount')!=0)
-	$discount="<tr><td>Items Gross</td><td  >{$invoice->get('Items Gross Amount')}</td></tr> 
-<tr><td   >Discounts</td><td  >{$invoice->get('Items Discount Amount')}</td></tr>";
+	$discount='<tr><td width="120px"   align="right" >'._('Discounts').' :</td><td width="10px"></td><td   width="70px" align="right">'.$invoice->get('Items Discount Amount')."</td></tr>";
 else
 	$discount='';
 
 if($invoice->get('Invoice Refund Net Amount')!=0){
-	$credit="<tr><td   >Credits</td><td  >{$invoice->get('Refund Net Amount')}</td></tr>";
+	$credit='<tr><td width="120px"  align="right"  >'._('Credits').' :</td><td width="10px"></td><td   width="70px" align="right">'.$invoice->get('Refund Net Amount').'</td></tr>';
 }
 else
 	$credit='';
 
 if ($invoice->get('Invoice Charges Net Amount')!=0){
-	$charges=" <tr><td   >Charges</td><td  >{$invoice->get('Charges Net Amount')}</td></tr>";
+		$charges='<tr><td width="120px"  align="right"  >'._('Charges').' :</td><td width="10px"></td><td   width="70px" align="right">'.$invoice->get('Charges Net Amount').'</td></tr>';
+
 }
 else
 	$charges='';
 
 if ($invoice->get('Invoice Total Net Adjust Amount')!=0)
-	$total_net="<tr style=\"color:red\"><td>Adjust Net</td><td>{$invoice->get('Total Net Adjust Amount')}</td></tr>";
+		$total_net='<tr><td width="120px"  align="right"  >'._('Adjust Net').' :</td><td width="10px"></td><td   width="70px" align="right">'.$invoice->get('Total Net Adjust Amount').'</td></tr>';
+
 else
 	$total_net='';
 
 if ($invoice->get('Invoice Shipping Net Amount')!=0){
-	$shipping_net="<tr><td>Shipping</td><td>{$invoice->get('Shipping Net Amount')}</td></tr>";
+	
+	$shipping_net='<tr><td width="120px"   align="right"  >'._('Shipping').' :</td><td width="10px"></td><td   width="70px" align="right">'.$invoice->get('Shipping Net Amount').'</td></tr>';
+
 }
 else
 	$shipping_net='';
 
 
 if ($invoice->get('Invoice Total Tax Adjust Amount')!=0){
-	$total_tax="<tr  style=\"color:red\"><td   >Adjust Tax</td><td  >{$invoice->get('Total Tax Adjust Amount')}</td></tr>";
+		$total_tax='<tr><td width="120px"  align="right"  >'._('Adjust Tax').' :</td><td width="10px"></td><td   width="70px" align="right">'.$invoice->get('Total Tax Adjust Amount').'</td></tr>';
+
 }
 else
 	$total_tax='';
@@ -305,73 +306,53 @@ while($row=mysql_fetch_assoc($res)){
 }
 $tax_info='';
 foreach($tax_data as $tax){
-	$tax_info.="<tr ><td>{$tax['name']}</td><td  >{$tax['amount']}</td></tr>";
+	$tax_info.="<tr ><td align=\"right\">{$tax['name']}</td><td  >{$tax['amount']}</td></tr>";
+	$tax_info='<tr><td width="120px"  align="right"  >'._('Tax').' ('.$tax['name'].')  :</td><td width="10px"></td><td   width="70px" align="right">'.$tax['amount'].'</td></tr>';
+
 }
 
+//<tr><td align="right">'._('Payment Method').':</td><td >'.$invoice->data['Invoice Main Payment Method'].'</td></tr>
 
 
-$html = <<<EOD
-<div style="clear:both"></div>
-<h3>{$invoice->data['Invoice Customer Name']} ({$invoice->data['Invoice Public ID']})</h3>
-{$invoice->data['Invoice XHTML Address']}
+$invoice_info='<table border="0" width="300px" >
+<tr>
+<td width="90px" align="right" style="padding-left:10px">'._('Customer ID').':</td>
+<td width="10px"></td>
+<td width="120px">'.$customer->get_formated_id().'</td>
+</tr>
+<tr>
+<td width="90px" align="right" style="padding-left:10px">'._('Invoice Date').':</td>
+<td width="10px"></td>
+<td width="120px">'.$invoice->data['Invoice Date'].'</td>
+</tr>
+<tr><td align="right">'._('Payment State').':</td><td width="10px"></td><td >'.$invoice->get('Payment State').'</td></tr>
+</table>';
 
-<table>
-<tr><td>
-<div>
-<h2></h2>
-<div >
+$invoice_amounts='<table border="0" width="250px">
+<tr><td width="120px" align="right">'._('Items Gross').' :</td><td width="10px"></td><td   width="70px" align="right">'.$invoice->get('Items Gross Amount').'</td></tr> 
 
-<table border=0 width="300px">
-{$discount}
-
-
-
-  <tr><td width="150px">Items Net</td><td width="150px" >{$invoice->get('Items Net Amount')}</td></tr>
-
-{$credit}
-
-{$charges}
-
-{$total_net}
-
-{$shipping_net}
-
-  <tr><td     >Total Net</td><td  >{$invoice->get('Total Net Amount')}</td></tr>
-  
- {$tax_info}
-
-{$total_tax}
-  <tr><td   >Total</td><td  ><b>{$invoice->get('Total Amount')}</b></td></tr>
-
-	</table>
+'.$discount.'
+<tr><td width="120px" align="right">'._('Items Net').' :</td><td width="10px"></td> <td width="70px"  align="right">'.$invoice->get('Items Net Amount').'</td></tr>
+'.$credit.'
+'.$charges.'
+'.$total_net.'
+'.$shipping_net.'
+<tr><td width="120px" align="right">'._('Total Net').' :</td><td width="10px"></td> <td width="70px"  align="right">'.$invoice->get('Total Net Amount').'</td></tr>
+'.$tax_info.'
+'.$total_tax.'
+<tr><td width="120px" align="right"><b>'._('Total').' :</b></td><td width="10px"></td> <td width="70px"  align="right"><b>'.$invoice->get('Total Amount').'</b></td></tr>
+</table>';
 
 
-</div>
-</div>
-</td><td>
-<div>
-<h2></h2>
-<div >
-<table border=0 width="300px">
-
-<tr><td width="150px">Invoice Date:</td><td width="150px">{$invoice->data['Invoice Date']}</td></tr>
-
-<tr><td>Payment Method:</td><td >{$invoice->data['Invoice Main Payment Method']}</td></tr>
-<tr><td>Payment State:</td><td >{$invoice->get('Payment State')}</td></tr>
-
-</table>
+$html='<div style="clear:both"></div>';
 
 
-</div>
-</div>
-</td></tr>
+$html.='<table border="0"><tr><td width="240px"><h3>'.$invoice->data['Invoice Customer Name'].'</h3> '.$invoice->data['Invoice XHTML Address'].'</td>
+<td width="230px">'.$invoice_info.'</td>
+<td width="250px">'.$invoice_amounts.'</td>
+</tr></table>';
 
 
-
-<div style="clear: both;"></div>
-      
-
-EOD;
 
 // output the HTML content
 $pdf->writeHTML($html, true, false, true, false, '');
@@ -383,11 +364,12 @@ $pdf->writeHTML($html, true, false, true, false, '');
 $pdf->ln(3);
 $columns=array(
              array('w'=>20,'txt'=>_('Code'),'border'=>'TB','align'=>'L'),
-             array('w'=>50,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
-             array('w'=>60,'txt'=>_('Qty'),'border'=>'TB','align'=>'R'),
+             array('w'=>75,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
+             array('w'=>20,'txt'=>_('Qty'),'border'=>'TB','align'=>'R'),
              array('w'=>20,'txt'=>_('Gross'),'border'=>'TB','align'=>'R'),
              array('w'=>20,'txt'=>_('Discounts'),'border'=>'TB','align'=>'R'),
-             array('w'=>20,'txt'=>_('Charge'),'border'=>'TB','align'=>'R'),
+             array('w'=>20,'txt'=>_('Net'),'border'=>'TB','align'=>'R'),
+             array('w'=>15,'txt'=>_('Tax'),'border'=>'TB','align'=>'R'),
 
 
          );
@@ -407,12 +389,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     //$sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
                  array('w'=>20,'txt'=>$row['Product Code'],'border'=>'T','align'=>'L'),
-                 array('w'=>50,'txt'=>strip_tags($row['Product XHTML Short Description']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>60,'txt'=>$row['Invoice Quantity'] ,'border'=>'T','align'=>'R'),
-                 array('w'=>20,'txt'=>'£'.$row['Invoice Transaction Gross Amount'],'border'=>'T','align'=>'R'),
-                 array('w'=>20,'txt'=>($row['Invoice Transaction Total Discount Amount']!=0?'£'.$row['Invoice Transaction Total Discount Amount'].' ('.percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount']).')':''),'border'=>'T','align'=>'R'),
-                 array('w'=>20,'txt'=>'£'.$row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],'border'=>'T','align'=>'R')
-             );
+                 array('w'=>75,'txt'=>strip_tags($row['Product XHTML Short Description']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>20,'txt'=>$row['Invoice Quantity'] ,'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>money($row['Invoice Transaction Gross Amount'],$invoice->data['Invoice Currency']) ,'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>($row['Invoice Transaction Total Discount Amount']!=0? money($row['Invoice Transaction Total Discount Amount'],$invoice->data['Invoice Currency']).' ('.percentage($row['Invoice Transaction Total Discount Amount'],$row['Invoice Transaction Gross Amount']).')':''),'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>money(($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']),$invoice->data['Invoice Currency']),'border'=>'T','align'=>'R'),
+                    array('w'=>15,'txt'=>money(($row['Invoice Transaction Item Tax Amount']),$invoice->data['Invoice Currency']),'border'=>'T','align'=>'R')
+
+   );
     $pdf->MultiRow($columns);
 
 
@@ -439,14 +423,14 @@ foreach($store_address as $ad)
 $tbl = <<<EOD
 <table border="0" cellpadding="2" cellspacing="2" align="left" WIDTH="100%">
 	<tr nobr="true">
-		<th colspan="5" ><font size="15">Thank you for your business</font></th>
+		<th colspan="5" ><font size="15">{$store->data['Store Invoice Message Header']}</font></th>
 		<th></th>
 		<th></th
 		><th></th>
 		<th></th>
 	</tr>
 	<tr nobr="true">
-		<td colspan="5">Please notify us immediately of any discrepancies of breakages</td>
+		<td colspan="5">{$store->data['Store Invoice Message']}</td>
 	</tr>
 
 </table>

@@ -307,7 +307,7 @@ $pdf->MultiRow($columns);
 
 
 
-$sql=sprintf("select `Required`,`Part XHTML Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d", $dn->id);
+$sql=sprintf("select `Required`,`Part Unit Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d", $dn->id);
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -318,7 +318,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $columns=array(
                  array('w'=>30,'txt'=>'SKU'.$row['Part SKU'],'border'=>'T','align'=>'L'),
                  array('w'=>70,'txt'=>strip_tags($row['Part XHTML Currently Used In']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>70,'txt'=>strip_tags($row['Part XHTML Description']) ,'border'=>'T','align'=>'R'),
+                 array('w'=>70,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>'T','align'=>'R'),
                  array('w'=>20,'txt'=>$row['Required'],'border'=>'T','align'=>'R')
 
 

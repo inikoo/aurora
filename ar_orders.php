@@ -1289,7 +1289,7 @@ function list_transactions_in_process_in_dn() {
 
     $data=array();
 
-    $sql=sprintf("select `Required`,`Part XHTML Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`)$where");
+    $sql=sprintf("select `Required`,`Part Unit Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`)$where");
 
     $result=mysql_query($sql);
     $total_gross=0;
@@ -1300,7 +1300,7 @@ function list_transactions_in_process_in_dn() {
         $data[]=array(
 
                     'part'=>sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU'])
-                           ,'description'=>$row['Part XHTML Description']
+                           ,'description'=>$row['Part Unit Description']
                                           ,'used_in'=>$row['Part XHTML Currently Used In']
                                                      ,'quantity'=>number($row['Required'])
 

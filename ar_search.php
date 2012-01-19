@@ -1067,7 +1067,7 @@ function search_locations($data) {
 
     if (is_numeric($q)) {
 
-        $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,L.`Location Key`,`Location Code`,P.`Part SKU`, `Quantity On Hand`,`Part XHTML Description`,`Part Currently Used In`  from     `Part Dimension`    P     left join   `Part Location Dimension`  PL  on (P.`Part SKU`=PL.`Part SKU`)   left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Location Warehouse Key` in (%s) and PL.`Part SKU`=%d ',
+        $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,L.`Location Key`,`Location Code`,P.`Part SKU`, `Quantity On Hand`,`Part Unit Description`,`Part Currently Used In`  from     `Part Dimension`    P     left join   `Part Location Dimension`  PL  on (P.`Part SKU`=PL.`Part SKU`)   left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Location Warehouse Key` in (%s) and PL.`Part SKU`=%d ',
                      $warehouses,
                      $q
                     );
@@ -1076,7 +1076,7 @@ function search_locations($data) {
         while ($row=mysql_fetch_array($res)) {
             if ($number_results>$max_results)
                 continue;
-            $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+            $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
             $number_results++;
 
         }
@@ -1085,7 +1085,7 @@ function search_locations($data) {
 
     if ($q_sku and $q_sku!=$q) {
 
-        $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,L.`Location Key`,`Location Code`,P.`Part SKU`, `Quantity On Hand`,`Part XHTML Description`,`Part Currently Used In`  from `Part Location Dimension`  PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Location Warehouse Key` in (%s) and PL.`Part SKU`=%d ',
+        $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,L.`Location Key`,`Location Code`,P.`Part SKU`, `Quantity On Hand`,`Part Unit Description`,`Part Currently Used In`  from `Part Location Dimension`  PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Location Warehouse Key` in (%s) and PL.`Part SKU`=%d ',
                      $warehouses,
                      $q_sku
                     );
@@ -1093,14 +1093,14 @@ function search_locations($data) {
         while ($row=mysql_fetch_array($res)) {
             if ($number_results>$max_results)
                 continue;
-            $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+            $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
             $number_results++;
 
         }
     }
 
 
-    $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,`Part XHTML Description`,PL.`Part SKU`,`Quantity On Hand`,L.`Location Key`,GROUP_CONCAT(`Product Code`," (",`Store Code`,")") as `Product Code`,`Location Code`
+    $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,`Part Unit Description`,PL.`Part SKU`,`Quantity On Hand`,L.`Location Key`,GROUP_CONCAT(`Product Code`," (",`Store Code`,")") as `Product Code`,`Location Code`
                  from `Part Location Dimension` PL
                  left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`)
                  left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`)
@@ -1116,7 +1116,7 @@ function search_locations($data) {
     while ($row=mysql_fetch_array($res)) {
         if ($number_results>$max_results)
             continue;
-        $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],'used_in'=>$row['Product Code'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+        $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],'used_in'=>$row['Product Code'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
         $number_results++;
 
     }
@@ -1362,37 +1362,37 @@ function search_parts($data) {
 
     if (is_numeric($q)  or preg_match('/^sku:\?\d+/i',$q)  ) {
         $_q=preg_replace('/[^\d]/','',$q);
-        $sql=sprintf('select `Part XHTML Currently Used In`,`Part SKU`,`Part XHTML Description` from `Part Dimension` where `Part SKU`=%d ',$_q);
+        $sql=sprintf('select `Part XHTML Currently Used In`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part SKU`=%d ',$_q);
 //print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
 
             $candidates[$row['Part SKU']]=210;
-            $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=> strip_tags($row['Part XHTML Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+            $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=> strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
         }
     }
     /*
 
-    $sql=sprintf("select `Part XHTML Description`,`Part SKU`,`Part Unit Description`, match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Part Dimension` where match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) limit 20",addslashes($q),addslashes($q));;
+    $sql=sprintf("select `Part Unit Description`,`Part SKU`,`Part Unit Description`, match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Part Dimension` where match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) limit 20",addslashes($q),addslashes($q));;
 
     // print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
 
         $candidates[$row['Part SKU']]=$row['score'];
-        $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part XHTML Description']);
+        $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part Unit Description']);
 
     }
     */
 
-    $sql=sprintf('select `Part XHTML Currently Used In`,`Part XHTML Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 20',addslashes($q));
+    $sql=sprintf('select `Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 20',addslashes($q));
 
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
 
         $candidates[$row['Part SKU']]=100;
-        $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>strip_tags($row['Part XHTML Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+        $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
     }
 
@@ -1403,13 +1403,13 @@ function search_parts($data) {
           $qs=preg_split('/\s+|\,/',$q);
           if(count($sq>1)){
             foreach($qs as $q){
-             $sql=sprintf('select `Part SKU`,`Part XHTML Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 20',addslashes($q));
+             $sql=sprintf('select `Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 20',addslashes($q));
 
          $res=mysql_query($sql);
           while($row=mysql_fetch_array($res)){
 
               $candidates[$row['Part SKU']]=100;
-              $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description']);
+              $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description']);
 
           }
 

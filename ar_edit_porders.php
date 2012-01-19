@@ -1624,7 +1624,7 @@ function dn_transactions_to_stock() {
 
 
 
-    $sql="select `Purchase Order Transaction Fact Key`,`Supplier Delivery Note Received Location Key`,`Quantity On Hand`,  `Part XHTML Currently Used In`,`Supplier Product Code`,`Part XHTML Description`,`Supplier Delivery Note Damaged Quantity`,`Supplier Product XHTML Sold As`,`Supplier Delivery Note Quantity Type`,`Part Quantity`,`Done`,PA.`Part SKU`,`Notes`, `Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Name`,`Supplier Delivery Note Received Quantity` 
+    $sql="select `Purchase Order Transaction Fact Key`,`Supplier Delivery Note Received Location Key`,`Quantity On Hand`,  `Part XHTML Currently Used In`,`Supplier Product Code`,`Part Unit Description`,`Supplier Delivery Note Damaged Quantity`,`Supplier Product XHTML Sold As`,`Supplier Delivery Note Quantity Type`,`Part Quantity`,`Done`,PA.`Part SKU`,`Notes`, `Supplier Product Unit Type`,`SPH Case Cost`,`SPH Units Per Case`,`Supplier Product Name`,`Supplier Delivery Note Received Quantity` 
     
     from $table  $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 
@@ -1672,7 +1672,7 @@ function dn_transactions_to_stock() {
                      'used_in'=>$row['Supplier Product XHTML Sold As'],
                      'to_stock_quantity'=>$qty,
                      'sku'=>sprintf("<a href='part.php?id=%d'>SKU%05d</a>",$row['Part SKU'],$row['Part SKU']),
-                     'sku_name'=>$row['Part XHTML Description'].'<br/>'.$row['Part XHTML Currently Used In'],
+                     'sku_name'=>$row['Part Unit Description'].'<br/>'.$row['Part XHTML Currently Used In'],
                      'part_quantity'=>$row['Part Quantity'],
                      'notes'=>$notes,
                      'done'=>$row['Done'],
