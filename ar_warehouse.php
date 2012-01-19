@@ -1206,7 +1206,7 @@ function historic_parts_at_location() {
         $adata[]=array(
 
                      'sku'=>sprintf('<a href="part.php?sku=%d">%05d</a>',$data['Part SKU'],$data['Part SKU'])
-                           ,'description'=>$data['Part XHTML Description']
+                           ,'description'=>$data['Part Unit Description']
                                           ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
                                                          ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
                                                                         ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
@@ -1449,7 +1449,7 @@ function parts_at_location() {
                      'part_sku'=>$data['Part SKU'],
                      'location_key'=>$data['Location Key'],
                      'location'=>$data['Location Code'],
-                     'description'=>$data['Part XHTML Description'].' ('.$data['Part XHTML Currently Used In'].')',
+                     'description'=>$data['Part Unit Description'].' ('.$data['Part XHTML Currently Used In'].')',
                      'formated_qty'=>number($data['Quantity On Hand']),
                       'qty'=>$data['Quantity On Hand'],
                      'can_pick'=>($data['Can Pick']=='Yes'?_('Yes'):_('No')),

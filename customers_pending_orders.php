@@ -71,8 +71,7 @@ $smarty->assign('title', _('Pending Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-
-
+//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
 //print_r($pickers_data);
 
@@ -89,7 +88,7 @@ $smarty->assign('paginator_menu0',$paginator_menu0);
 
 
 
-$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
+$elements_number=array('InProcess'=>0,'SubmittedbyCustomer'=>0,'ReadytoPick'=>0,'PickingPacking'=>0,'Packed'=>0);
 $sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') and `Delivery Note Store Key`=%d ",$store_id);
 $res=mysql_query($sql);
 if ($row=mysql_fetch_assoc($res)) {
