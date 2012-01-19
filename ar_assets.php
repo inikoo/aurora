@@ -105,6 +105,18 @@ case('is_store_code'):
                          ));
     is_store_code($data);
     break;
+case('is_store_vat'):
+    $data=prepare_values($_REQUEST,array(
+                             'query'=>array('type'=>'string')
+                         ));
+    is_store_vat($data);
+    break;
+case('is_store_company_number'):
+    $data=prepare_values($_REQUEST,array(
+                             'query'=>array('type'=>'string')
+                         ));
+    is_store_company_number($data);
+    break;
 case('is_department_code'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
@@ -9450,6 +9462,104 @@ function list_product_categories() {
                                      )
                    );
     echo json_encode($response);
+}
+
+function is_store_company_number($data){
+    if (!isset($data['query'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+
+
+    $sql=sprintf("select `Store Key`,`Store Name`,`Store Company Number` from `Store Dimension` where  `Store Company Number`=%s  "
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Store <a href="store.php?id=%d">%s</a> already has this Company Number (%s)'
+                     ,$data['Store Key']
+                     ,$data['Store Name']
+                     ,$data['Store Company Number']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+}
+
+function is_store_vat($data){
+    if (!isset($data['query'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+
+
+    $sql=sprintf("select `Store Key`,`Store Name`,`Store VAT Number` from `Store Dimension` where  `Store VAT Number`=%s  "
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Store <a href="store.php?id=%d">%s</a> already has this VAT (%s)'
+                     ,$data['Store Key']
+                     ,$data['Store Name']
+                     ,$data['Store VAT Number']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
 }
 
 function is_store_code($data) {

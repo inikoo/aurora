@@ -556,7 +556,7 @@ function ar_validation(branch,items,query) {
 	
     var data= validate_scope_data[branch][items];
     var request=data.ar_request+query;
-   // alert(data.ar_request)
+  //  alert(data.ar_request)
  // alert(request)
    YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
       // alert(o.responseText)
