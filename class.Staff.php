@@ -367,6 +367,7 @@ function create_user() {
 
             $this->updated=true;
             $this->new_value=$contact->new_value;
+	    $this->data['Staff Name']=$value;
         }
 
     }
