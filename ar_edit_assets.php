@@ -420,10 +420,28 @@ include_once('class.Charge.php');
 }
 
 function edit_store() {
+	
     $store=new Store($_REQUEST['id']);
     global $editor;
     $store->editor=$editor;
-    $store->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])));//,stripslashes(urldecode($_REQUEST['oldvalue'])));
+
+    $key_dic=array(
+                 'vat_number'=>'Store VAT Number',
+                 'company_number'=>'Store Company Number',
+                 'company_name'=>'Store VAT Number',
+                 'vat_number'=>'Store VAT Number',
+                 'vat_number'=>'Store VAT Number',
+             );
+
+
+
+    if (array_key_exists($_REQUEST['key'],$key_dic))
+        $key=$key_dic[$_REQUEST['key']];
+    else
+        $key=$_REQUEST['okey'];
+
+
+    $store->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));//,stripslashes(urldecode($_REQUEST['oldvalue'])));
 
     if ($store->updated) {
         $response= array('state'=>200,'newvalue'=>$store->new_value,'key'=>$_REQUEST['key']);
