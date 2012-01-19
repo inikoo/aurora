@@ -6,6 +6,8 @@
     <tr class="title"><td colspan=2>{t}Audit{/t}</td></tr>
       <input type="hidden" id="audit_location_key" value=""/>
       <input type="hidden" id="audit_sku" value=""/>
+              <input type="hidden" id="audit_record_index" value=""/>
+
       <tr style="height:10px"><td colspan=2></td></tr>
       <tr ><td>{t}Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_audit" /></td></tr>
      <tr><td>{t}Notes{/t}:</td><td><input type="text" id="note_audit" /></td></tr>
