@@ -428,9 +428,9 @@ function edit_store() {
     $key_dic=array(
                  'vat_number'=>'Store VAT Number',
                  'company_number'=>'Store Company Number',
-                 'company_name'=>'Store VAT Number',
-                 'vat_number'=>'Store VAT Number',
-                 'vat_number'=>'Store VAT Number',
+                 'company_name'=>'Store Company Name',
+                 'msg_header'=>'Store Invoice Message Header',
+                 'msg'=>'Store Invoice Message',
              );
 
 
