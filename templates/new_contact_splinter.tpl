@@ -150,6 +150,7 @@ hide_buttons=1
 }
 
 
+{if $scope=='customer'}
 <tr class="title">
       <td colspan=3>{t}Other Info{/t}</td>
       </tr>
@@ -171,7 +172,7 @@ hide_buttons=1
  </td>   
 </tr>
 {/foreach}
-
+{/if}
 
 
 
