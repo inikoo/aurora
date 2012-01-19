@@ -168,28 +168,24 @@ family_key=tables.table2.getRecord(oArgs.target).getData('key');
 function reset_part(key){
 
 for(part_key in part_list){
+	
+	if(part_list[part_key].new  ){
+		to_delete=Dom.get('part_list'+part_list[part_key].sku);
+		to_delete.parentNode.removeChild(to_delete);
+				to_delete=Dom.get('sup_tr2_'+part_list[part_key].sku);
+		to_delete.parentNode.removeChild(to_delete);
+				to_delete=Dom.get('sup_tr3_'+part_list[part_key].sku);
+		to_delete.parentNode.removeChild(to_delete);
+		
+	}else if (part_list[part_key].deleted){
 
-if(part_list[part_key].new  ){
-
-Dom.get('part_editor_table').removeChild(Dom.get('part_list'+part_list[part_key].sku));
-
-
-
-}else if (part_list[part_key].deleted){
-
-
-}else{
-
-
-key=part_list[part_key].sku;
-Dom.get('parts_per_product'+key).value=Dom.get('parts_per_product'+key).getAttribute('ovalue')
-Dom.get('pickers_note'+key).value=Dom.get('pickers_note'+key).getAttribute('ovalue');
-
-}
+	}else{
+		key=part_list[part_key].sku;
+		Dom.get('parts_per_product'+key).value=Dom.get('parts_per_product'+key).getAttribute('ovalue')
+		Dom.get('pickers_note'+key).value=Dom.get('pickers_note'+key).getAttribute('ovalue');
+	}
 
 }
-
-
 
 part_render_save_buttons();
 
@@ -207,7 +203,7 @@ part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
 }
 json_value = YAHOO.lang.JSON.stringify(part_list);
  var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value+'&pid='+product_pid;
-		alert(request);
+		//alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
@@ -933,6 +929,19 @@ resultsList : "data"
 
 function remove_part(sku){
 
+
+if(part_list['sku'+sku].new  ){
+	to_delete=Dom.get('part_list'+part_list[part_key].sku);
+		to_delete.parentNode.removeChild(to_delete);
+				to_delete=Dom.get('sup_tr2_'+part_list[part_key].sku);
+		to_delete.parentNode.removeChild(to_delete);
+				to_delete=Dom.get('sup_tr3_'+part_list[part_key].sku);
+		to_delete.parentNode.removeChild(to_delete);
+delete part_list['sku'+sku];
+
+
+}else{
+
 part_list['sku'+sku].deleted=true;
 Dom.setStyle(['part_list'+sku+'_label1','part_list'+sku+'_label2'],'opacity',0.6);
 Dom.setStyle(['part_list'+sku+'_label2'],'text-decoration','line-through');
@@ -942,7 +951,7 @@ Dom.setStyle(['sup_tr2_'+sku,'sup_tr3_'+sku],'opacity',0.4);
 Dom.setStyle(['part_list'+sku+'_controls'],'display','none');
 Dom.setStyle(['part_list'+sku+'_controls2'],'display','');
 
-
+}
 
 Dom.setStyle(['add_part'],'display','');
 

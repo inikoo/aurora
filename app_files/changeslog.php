@@ -5390,3 +5390,5 @@ ADD `Part Transactions Out` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part 
 ADD `Part Transactions Audit` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions Out` ,
 ADD `Part Transactions OIP` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions Audit` ,
 ADD `Part Transactions Move` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions OIP` ;
+ALTER TABLE `Staff Dimension` ADD `Staff Is Supervisor` ENUM( 'Yes', 'No' ) NOT NULL;
+ALTER TABLE `Staff Dimension` CHANGE `Staff Is Supervisor` `Staff Is Supervisor` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';

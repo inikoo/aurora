@@ -585,6 +585,9 @@ class product extends DB_Table {
         case('Formated Weight'):
             return number($this->data['Product Net Weight'])."Kg";
             break;
+ case('Formated Dimensions'):
+            return '';
+            break;
 
         case('historic short description'):
         case('short description'):
