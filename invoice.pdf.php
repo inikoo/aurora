@@ -222,7 +222,7 @@ $header_text=$store->data['Store Name'];
 
 
 
-$pdf->SetHeaderData("../../../alpha.php", 100, $header_text, 'Invoice ');
+$pdf->SetHeaderData(false, 0, $header_text, 'Invoice ');
 $pdf->set_footer_var($store->id);
 //print $invoice->data['Invoice Customer Name'].$invoice->data['Invoice Public ID'];
 // set header and footer fonts
