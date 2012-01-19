@@ -80,6 +80,7 @@
 	
 	<td staff_id="{$picker.StaffKey}" id="picker{$picker.StaffKey}" class="assign_picker_button" onClick="select_staff(this,event)" >{$picker.StaffAlias}</td>
 	{/foreach}
+<td class="assign_picker_button" td_id="other_staff_picker" onClick="show_other_staff(this)">{t}Other{/t}</td>
 	</tr>
       {/foreach}
     </table>
@@ -198,8 +199,9 @@
       <tr>
 	 {foreach from=$packer_row key=row_key item=packer }
 	
-	<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" class="assign_packer_button" onClick="select_staff(this,event)" >{$packer.StaffAlias}</td>
+	<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" class="assign_packer_button" onClick="select_staff_assign_packer(this,event)" >{$packer.StaffAlias}</td>
 	{/foreach}
+	<td class="assign_packer_button" td_id="other_staff_picker" onClick="show_other_staff(this)">{t}Other{/t}</td>
 	</tr>
       {/foreach}
     </table>
@@ -304,6 +306,7 @@
 
 
 <div id="dialog_other_staff">
+<input type="hidden" id="staff_list_parent_dialog" value="" >
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Staff List{/t}</span>
