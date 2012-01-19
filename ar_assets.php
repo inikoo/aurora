@@ -3540,7 +3540,7 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
     if ($order=='sku')
         $order='`Part SKU`';
     else if ($order=='description')
-        $order='`Part XHTML Description`';
+        $order='`Part Unit Description`';
     else if ($order=='available_for')
         $order='`Part Available Days Forecast`';
     else if ($order=='supplied_by')
@@ -4179,7 +4179,7 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
         $adata[]=array(
                      'sku'=>sprintf(
                                '<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
-                     'description'=>$data['Part XHTML Description'],
+                     'description'=>$data['Part Unit Description'],
                      'used_in'=>$data['Part XHTML Currently Used In'],
                      'supplied_by'=>$data['Part XHTML Currently Supplied By'],
                      'stock'=>number($data['Part Current Stock']),
@@ -4321,10 +4321,10 @@ function find_part() {
 
     if (isset($_REQUEST['except']) and  isset($_REQUEST['except_id'])  and   is_numeric($_REQUEST['except_id']) and $_REQUEST['except']=='location' ) {
 
-        $sql=sprintf("select `Part SKU`,`Part XHTML Description`,`Part Currently Used In` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20 ",$_REQUEST['query'],addslashes($_REQUEST['query']));
+        $sql=sprintf("select `Part SKU`,`Part Unit Description`,`Part Currently Used In` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20 ",$_REQUEST['query'],addslashes($_REQUEST['query']));
 
     } else {
-        $sql=sprintf("select `Part SKU`,`Part XHTML Description`,`Part Currently Used In` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20",$_REQUEST['query'],addslashes($_REQUEST['query']));
+        $sql=sprintf("select `Part SKU`,`Part Unit Description`,`Part Currently Used In` from `Part Dimension` where  (`Part SKU`=%d or `Part XHTML Currently Used In` like '%%%s%%' ) limit 20",$_REQUEST['query'],addslashes($_REQUEST['query']));
 
     }
     //print $sql;
@@ -4341,16 +4341,16 @@ function find_part() {
 
         $_data[]= array(
 
-                      'info'=>sprintf("%s%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
-                             ,'info_plain'=>sprintf("%s%05d - %s",_('SKU'),$data['Part SKU'],strip_tags($data['Part XHTML Description']))
+                      'info'=>sprintf("%s%05d - %s",_('SKU'),$data['Part SKU'],$data['Part Unit Description'])
+                             ,'info_plain'=>sprintf("%s%05d - %s",_('SKU'),$data['Part SKU'],strip_tags($data['Part Unit Description']))
 
                                            ,'sku'=>$data['Part SKU']
                                                   ,'formated_sku'=>sprintf("%s%05d",_('SKU'),$data['Part SKU'])
-                                                                  ,'description'=>$data['Part XHTML Description']
+                                                                  ,'description'=>$data['Part Unit Description']
                                                                                  ,'usedin'=>$data['Part Currently Used In']
 
                                                                                            //	 'sku'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
-                                                                                           // ,'description'=>$data['Part XHTML Description']
+                                                                                           // ,'description'=>$data['Part Unit Description']
                                                                                            //  ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
                                                                                            // 			 ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
 // 			 ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
@@ -10982,7 +10982,7 @@ function part_location_info($data) {
 
 
     $data=array(
-              'description'=>'<span class="id">'.$part->get_sku().'</span><br/>'.$part->data['Part XHTML Description'].'<br/>'._('Sold as').': '.$part->data['Part XHTML Currently Used In']
+              'description'=>'<span class="id">'.$part->get_sku().'</span><br/>'.$part->data['Part Unit Description'].'<br/>'._('Sold as').': '.$part->data['Part XHTML Currently Used In']
           );
 
     $response= array('state'=>200,'data'=>$data);

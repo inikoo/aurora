@@ -5367,9 +5367,7 @@ CREATE TABLE `Page Store Deleted Dimension` (
 
 ALTER TABLE `Page Store Deleted Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Store Deleted Key` ,ADD INDEX ( `Site Key` ) ;
 ALTER TABLE `Page Store Deleted Dimension` ADD `Page Code` VARCHAR( 256 ) NOT NULL AFTER `Page Store Deleted Key` ;
-ALTER TABLE `Page Store Deleted Dimension` ADD `Page Store Section` VARCHAR( 256 ) NULL AFTER `Page URL` ,
-ADD `Page Parent Key` MEDIUMINT UNSIGNED NULL AFTER `Page Store Section` ,
-ADD `Page Parent Code` VARCHAR( 256 ) NULL AFTER `Page Parent Key` ;
+ALTER TABLE `Page Store Deleted Dimension` ADD `Page Store Section` VARCHAR( 256 ) NULL AFTER `Page URL` ,ADD `Page Parent Key` MEDIUMINT UNSIGNED NULL AFTER `Page Store Section` ,ADD `Page Parent Code` VARCHAR( 256 ) NULL AFTER `Page Parent Key` ;
 
 ALTER TABLE `Part Location Dimension` ADD `Minimum Quantity` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Can Pick` ,ADD `Maximum Quantity` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Minimum Quantity` ;
 
@@ -5392,3 +5390,6 @@ ADD `Part Transactions OIP` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part 
 ADD `Part Transactions Move` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions OIP` ;
 ALTER TABLE `Staff Dimension` ADD `Staff Is Supervisor` ENUM( 'Yes', 'No' ) NOT NULL;
 ALTER TABLE `Staff Dimension` CHANGE `Staff Is Supervisor` `Staff Is Supervisor` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+ALTER TABLE `Store Dimension` ADD `Store Company Name` VARCHAR( 256 ) NOT NULL ;
+ALTER TABLE `Store Dimension` ADD `Store Invoice Message Header` text NOT NULL ;
+ALTER TABLE `Store Dimension` ADD `Store Invoice Message` text NOT NULL ;

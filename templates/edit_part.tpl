@@ -22,7 +22,7 @@
 </div>
 
 <div style="clear:left;margin:0 0px">
-    <h1>{t}Editing part{/t}: <span class="id">{$part->get_sku()}</span> <span id="title_description">{$part->get('Part XHTML Description')}</span>  <span style="padding:0;font-size:80%">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</span> </h1>
+    <h1>{t}Editing part{/t}: <span class="id">{$part->get_sku()}</span> <span id="title_description">{$part->get('Part Unit Description')}</span>  <span style="padding:0;font-size:80%">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</span> </h1>
     
 </div>
 

@@ -3288,7 +3288,7 @@ function add_part_new_product($sku) {
             $_SESSION['state']['new_product']['parts'][$part->sku]=array(
                         'part_sku'=>$part->sku
                                    ,'sku'=>$part->get_sku()
-                                          ,'description'=>$part->data['Part XHTML Description']
+                                          ,'description'=>$part->data['Part Unit Description']
                                                          ,'picks'=>1
                                                                   ,'notes'=>''
                                                                            ,'delete'=>'<img src="art/icons/delete.png"/>'

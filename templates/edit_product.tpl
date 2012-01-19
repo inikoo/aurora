@@ -95,7 +95,7 @@
 	   <tr  id="part_list{$sku}" sku="{$sku}" class="top title">
 		<td  id="part_list{$sku}_label1" class="label" style="width:150px;font-weight:200">{t}Part{/t}</td>
 		<td id="part_list{$sku}_label2" colspan="2"style="width:120px"><span class="id">{$part_list.part->get_sku()}</span>
-		{$part_list.part->get('Part XHTML Description')}</td>
+		{$part_list.part->get('Part Unit Description')}</td>
 		<td style="width:200px;text-align:right">
 		<div id="part_list{$sku}_controls">
 		<span onClick="remove_part({$sku})" style="cursor:pointer"><img   src="art/icons/delete_bw.png"/> {t}Remove{/t}</span>
