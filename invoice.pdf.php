@@ -454,7 +454,7 @@ EOD;
 
 
 $pdf->writeHTML($tbl, true, false, false, false, '');
-
+/*
 // set JPEG quality
 $pdf->setJPEGQuality(75);
 
@@ -483,7 +483,7 @@ $str = 'This is an encoded string';
 
 // The '@' character is used to indicate that follows an image data stream and not an image file name
 //$pdf->Image('@'.$imgdata);
-
+*/
 // Print text using writeHTMLCell()
 //$pdf->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
 
