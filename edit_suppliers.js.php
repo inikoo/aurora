@@ -34,15 +34,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.dataSource0.responseSchema = {
 		    resultsList: "resultset.data", 
 		    metaFields: {
-			rtext:"resultset.rtext",
-			rtext_rpp:"resultset.rtext_rpp",
-
-			rowsPerPage:"resultset.records_perpage",
-			sort_key:"resultset.sort_key",
-			sort_dir:"resultset.sort_dir",
-			tableid:"resultset.tableid",
-			filter_msg:"resultset.filter_msg",
-			totalRecords: "resultset.total_records"
+			    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
 		    },
 		
 		    fields: [
@@ -185,6 +184,9 @@ function validate_supplier_code(){
 
 
     function init(){
+
+     init_search('supplier_products');
+
 	var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
 	oACDS.queryMatchContains = true;
 	var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);

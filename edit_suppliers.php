@@ -25,6 +25,8 @@ if (!($user->can_edit('suppliers'))) {
 }
 
 
+$smarty->assign('view',$_SESSION['state']['suppliers']['edit_suppliers']['view']);
+
 
 
 $general_options_list=array();
@@ -67,6 +69,7 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
 	'js/table_common.js',
+	'js/search.js',
 	'js/edit_common.js',
 	'edit_suppliers.js.php',
 	'js/validate_telecom.js',
@@ -79,7 +82,8 @@ $js_files=array(
 );
 
 
-
+$smarty->assign('search_label',_('Suppliers'));
+$smarty->assign('search_scope','supplier_products');
 
 
 
@@ -95,9 +99,9 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$tipo_filter=$_SESSION['state']['suppliers']['table']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['suppliers']['table']['f_value']);
+$tipo_filter=$_SESSION['state']['suppliers']['edit_suppliers']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['suppliers']['edit_suppliers']['f_value']);
 
 
 $filter_menu=array(
