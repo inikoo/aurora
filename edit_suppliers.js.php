@@ -2,7 +2,7 @@
     include_once('common.php');?>
     
     var Dom   = YAHOO.util.Dom;
-var editing='<?php echo $_SESSION['state']['suppliers']['edit']?>';
+
 
 
 var validate_scope_data={'code':{'inputed':false,'validated':false,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+"}};
@@ -20,10 +20,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					   ,{key:"go", label:"", width:20,action:"none"}
 					   ,{key:"id", label:"", width:20,action:"none",hidden:true}
 					   ,{key:"code", label:"<?php echo _('Code')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"name", label:"<?php echo _('Name')?>",<?php echo($_SESSION['state']['suppliers']['view']!='general'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier'}
-					   ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['suppliers']['view']!='contact'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"email", label:"<?php echo _('Email')?>",<?php echo($_SESSION['state']['suppliers']['view']!='contact'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					   ,{key:"tel",<?php echo($_SESSION['state']['suppliers']['view']!='contact'?'hidden:true,':'')?> label:"<?php echo _('Tel')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"name", label:"<?php echo _('Name')?>",<?php echo($_SESSION['state']['suppliers']['edit_suppliers']['view']!='general'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'supplier'}
+					   ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['suppliers']['edit_suppliers']['view']!='contact'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"email", label:"<?php echo _('Email')?>",<?php echo($_SESSION['state']['suppliers']['edit_suppliers']['view']!='contact'?'hidden:true,':'')?> width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"tel",<?php echo($_SESSION['state']['suppliers']['edit_suppliers']['view']!='contact'?'hidden:true,':'')?> label:"<?php echo _('Tel')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       
 				       
 					   ];
@@ -58,7 +58,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 this.dataSource0, {draggableColumns:true,
 									    renderLoopSize: 50,generateRequest : myRequestBuilder
 									    ,paginator : new YAHOO.widget.Paginator({
-										    rowsPerPage    : <?php echo$_SESSION['state']['suppliers']['table']['nr']?>,containers : 'paginator', 
+										    rowsPerPage    : <?php echo$_SESSION['state']['suppliers']['edit_suppliers']['nr']?>,containers : 'paginator', 
 										    pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 										    previousPageLinkLabel : "<",
 										    nextPageLinkLabel : ">",
@@ -68,8 +68,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 										})
 								     
 									    ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['suppliers']['table']['order']?>",
-								 dir: "<?php echo$_SESSION['state']['suppliers']['table']['order_dir']?>"
+								 key: "<?php echo$_SESSION['state']['suppliers']['edit_suppliers']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['suppliers']['edit_suppliers']['order_dir']?>"
 							     }
 									    ,dynamicData : true
 
@@ -78,8 +78,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		this.table0.filter={key:'<?php echo$_SESSION['state']['suppliers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['suppliers']['table']['f_value']?>'};
-		this.table0.view='<?php echo$_SESSION['state']['suppliers']['view']?>';
+		this.table0.filter={key:'<?php echo$_SESSION['state']['suppliers']['edit_suppliers']['f_field']?>',value:'<?php echo$_SESSION['state']['suppliers']['edit_suppliers']['f_value']?>'};
+		this.table0.view='<?php echo$_SESSION['state']['suppliers']['edit_suppliers']['view']?>';
 	    
 		this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 		this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
@@ -137,7 +137,7 @@ var change_view=function(e){
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-view&value=' + escape(tipo),{} );
 };
 function change_block(e){
-     if(editing!=this.id){
+    
 	
 
 
@@ -151,8 +151,7 @@ function change_block(e){
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-edit&value='+this.id ,{});
 	
-	editing=this.id;
-    }
+
 
 
 
@@ -195,7 +194,7 @@ function validate_supplier_code(){
 	ids=['general','sales','stock','products'];
 	YAHOO.util.Event.addListener(ids, "click",change_view);
 
-	var ids = ["suppliers","new"]; 
+	var ids = ["suppliers"]; 
 	YAHOO.util.Event.addListener(ids, "click", change_block);
 
     }

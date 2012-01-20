@@ -1,50 +1,18 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div class="search_box" style="margin-top:15px">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-        {if $options.tipo=="url"}
-            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-        {else}
-            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-        {/if}
-    {/foreach}
-    </div>
-</div>
+
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1>{t}Edit Suppliers{/t}</h1>
   </div>
 
   <ul class="tabs" id="chooser_ul" style="clear:both">
-    <li> <span class="item {if $edit=='new'}selected{/if}"  id="new">  <span> {t}New Supplier{/t}</span></span></li>
+
     <li> <span class="item {if $edit=='suppliers'}selected{/if}"  id="suppliers">  <span> {t}Suppliers{/t}</span></span></li>
    
   </ul>
 
  <div class="tabbed_container" > 
  
- <div  class="edit_block" style="{if $edit!="new"}display:none{/if}"  id="d_new">
-     
-     
-     <div class="general_options" style="float:right">
-	
-	<span  style="margin-right:10px;display:none"  id="save_new_supplier" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;display:none" id="close_add_supplier" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
-
-
-      <div id="new_supplier_messages" class="messages_block"></div>
-      {include file='new_company_splinter.tpl'}
-
-
-     
-   </div>
-
-
-
-
-
 
 
   <div  class="edit_block" style="{if $edit!="suppliers"}display:none{/if}"  id="d_suppliers">

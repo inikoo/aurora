@@ -496,7 +496,7 @@ ul.tabs{margin-left:20px;margin-top:10px}
 .tabs span.item
 {
 color: #777;
-background: #fff url(left-tab.gif) left top no-repeat;
+background: #fff ;
 text-decoration: none;
 padding-left: 10px;
 border:1px solid #ddd;
@@ -520,7 +520,7 @@ border-bottom:1px solid #ddd;
 
 .tabs span.item span
 {
- background: url(right-tab.gif) right top no-repeat;
+ 
  padding-right: 10px;
 }
 
@@ -540,13 +540,13 @@ float: none
 .tabs span.item:hover
 {
 color: #000;
-background: #fff url(left-tab-hover.gif) left top no-repeat;
+background: #fff ;
 padding-left: 10px
 }
 
 .tabs span.item:hover span
 {
-background: url(right-tab-hover.gif) right top no-repeat;
+
 padding-right: 10px
 }
 

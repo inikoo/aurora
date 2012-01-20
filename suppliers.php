@@ -137,16 +137,16 @@ $smarty->assign('search_scope','supplier_products');
 $smarty->assign('total_suppliers',$suppliers['numberof']);
 
 
-$tipo_filter=($q==''?$_SESSION['state']['suppliers']['suppliers']['f_field']:'public_id');
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['suppliers']['suppliers']['f_value']:addslashes($q)));
+$tipo_filter=$_SESSION['state']['suppliers']['suppliers']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['suppliers']['suppliers']['f_value']);
 
 
 $filter_menu=array(
-		   'code'=>array('db_key'=>'code','menu_label'=>'Suppliers with code starting with  <i>x</i>','label'=>'Code'),
-		   'name'=>array('db_key'=>'name','menu_label'=>'Suppliers which name starting with <i>x</i>','label'=>'Name'),
-		   'low'=>array('db_key'=>'low','menu_label'=>'Suppliers with more than <i>n</i> low stock products','label'=>'Low'),
-		   'outofstock'=>array('db_key'=>'outofstock','menu_label'=>'Suppliers with more than <i>n</i> products out of stock','label'=>'Out of Stock'),
+		   'code'=>array('db_key'=>'code','menu_label'=>_('Suppliers with code starting with  <i>x</i>'),'label'=>_('Code')),
+		   'name'=>array('db_key'=>'name','menu_label'=>_('Suppliers which name starting with <i>x</i>'),'label'=>_('Name')),
+		   'low'=>array('db_key'=>'low','menu_label'=>_('Suppliers with more than <i>n</i> low stock products'),'label'=>_('Low')),
+		   'outofstock'=>array('db_key'=>'outofstock','menu_label'=>_('Suppliers with more than <i>n</i> products out of stock'),'label'=>_('Out of Stock')),
 		   );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
@@ -158,12 +158,12 @@ $smarty->assign('paginator_menu0',$paginator_menu);
  
 
 $tipo_filter=$_SESSION['state']['suppliers']['supplier_products']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['suppliers']['supplier_products']['f_value']);
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['suppliers']['supplier_products']['f_value']);
 
 
 $filter_menu=array(
-		   'sup_code'=>array('db_key'=>'code','menu_label'=>'Suppliers products with code starting with  <i>x</i>','label'=>'Code'),
+		   'sup_code'=>array('db_key'=>'code','menu_label'=>_('Suppliers products with code starting with  <i>x</i>'),'label'=>_('Code')),
 		   );
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
