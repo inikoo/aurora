@@ -65,7 +65,7 @@ $js_files=array(
 
 $smarty->assign('display',$_SESSION['state']['supplier_product']['display']);
 
-
+$smarty->assign('pid',$_REQUEST['pid']);
 
 $supplier_product_code=$supplier_product->code;
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
