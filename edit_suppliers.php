@@ -1,29 +1,31 @@
 <?php
 /*
- File: suppliers.php 
+ File: suppliers.php
 
  UI suppliers page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Inikoo 
- 
+
+ Copyright (c) 2009, Inikoo
+
  Version 2.0
 */
-include_once('common.php');
+include_once 'common.php';
 
 
-if(!($user->can_view('suppliers'))){
-  header('Location: index.php');
-   exit;
+if (!($user->can_view('suppliers'))) {
+	header('Location: index.php');
+	exit;
 }
 
-if(!($user->can_edit('suppliers'))){
-  header('Location: suppliers.php');
-  exit;
+if (!($user->can_edit('suppliers'))) {
+	header('Location: suppliers.php');
+	exit;
 }
 
+
+$smarty->assign('view',$_SESSION['state']['suppliers']['edit_suppliers']['view']);
 
 
 
@@ -31,61 +33,58 @@ $general_options_list=array();
 
 
 
-  $general_options_list[]=array('tipo'=>'url','url'=>'suppliers.php','label'=>_('Exit Edit'));
-   $general_options_list[]=array('tipo'=>'url','url'=>'new_suppler.php','label'=>_('Add Supplier'));
+$general_options_list[]=array('tipo'=>'url','url'=>'suppliers.php','label'=>_('Exit Edit'));
+$general_options_list[]=array('tipo'=>'url','url'=>'new_suppler.php','label'=>_('Add Supplier'));
 
 $smarty->assign('general_options_list',$general_options_list);
 
-
-
-//$smarty->assign('box_layout','yui-t4');
-
-
-
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'assets/skins/sam/autocomplete.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		
-		 'button.css',
-		 'css/container.css',
-		 'css/edit.css'
-		 );
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'editor/assets/skins/sam/editor.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
+               'text_editor.css',
+               'common.css',
+               'button.css',
+               'css/container.css',
+               'table.css',
+               'css/edit_address.css',
+               'theme.css.php'
+           );
 
-$css_files[]='theme.css.php';
 
 
 $js_files=array(
 
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'calendar/calendar-min.js',
-		'js/common.js',
-		'js/table_common.js',
-	
-		'js/edit_common.js',
-	
-		'edit_suppliers.js.php'
-		);
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable-min.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	$yui_path.'calendar/calendar-min.js',
+	'js/common.js',
+	'js/table_common.js',
+	'js/search.js',
+	'js/edit_common.js',
+	'edit_suppliers.js.php',
+	'js/validate_telecom.js',
+
+'edit_address.js.php',
+'edit_contact_from_parent.js.php',
+'edit_contact_telecom.js.php',
+'edit_contact_name.js.php',
+'edit_contact_email.js.php'
+);
 
 
+$smarty->assign('search_label',_('Suppliers'));
+$smarty->assign('search_scope','supplier_products');
 
- $js_files[]='js/validate_telecom.js';
-  $js_files[]='new_company.js.php?scope=supplier';
-  $js_files[]='edit_address.js.php';
-  $js_files[]='edit_contact_from_parent.js.php';
-  $js_files[]='edit_contact_telecom.js.php';
-  $js_files[]='edit_contact_name.js.php';
-  $js_files[]='edit_contact_email.js.php';
 
 
 $smarty->assign('edit',$_SESSION['state']['suppliers']['edit']);
@@ -100,17 +99,17 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$tipo_filter=$_SESSION['state']['suppliers']['table']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['suppliers']['table']['f_value']);
+$tipo_filter=$_SESSION['state']['suppliers']['edit_suppliers']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['suppliers']['edit_suppliers']['f_value']);
 
 
 $filter_menu=array(
-		   'code'=>array('db_key'=>'code','menu_label'=>'Suppliers with code starting with  <i>x</i>','label'=>'Code'),
-		   'name'=>array('db_key'=>'name','menu_label'=>'Suppliers which name starting with <i>x</i>','label'=>'Name'),
-		   'low'=>array('db_key'=>'low','menu_label'=>'Suppliers with more than <i>n</i> low stock products','label'=>'Low'),
-		   'outofstock'=>array('db_key'=>'outofstock','menu_label'=>'Suppliers with more than <i>n</i> products out of stock','label'=>'Out of Stock'),
-		   );
+	'code'=>array('db_key'=>'code','menu_label'=>'Suppliers with code starting with  <i>x</i>','label'=>'Code'),
+	'name'=>array('db_key'=>'name','menu_label'=>'Suppliers which name starting with <i>x</i>','label'=>'Name'),
+	'low'=>array('db_key'=>'low','menu_label'=>'Suppliers with more than <i>n</i> low stock products','label'=>'Low'),
+	'outofstock'=>array('db_key'=>'outofstock','menu_label'=>'Suppliers with more than <i>n</i> products out of stock','label'=>'Out of Stock'),
+);
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 

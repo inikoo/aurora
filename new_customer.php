@@ -96,7 +96,16 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
-	'new_subject.js.php'
+	'new_subject.js.php',
+	'company.js.php',
+	'js/validate_telecom.js',
+	'new_customer.js.php?&store_key='.$store_key,
+	'edit_address.js.php',
+	'edit_contact_from_parent.js.php',
+	'edit_contact_telecom.js.php',
+	'edit_contact_name.js.php',
+	'edit_contact_email.js.php'
+
 );
 
 
@@ -127,33 +136,15 @@ $smarty->assign('customer_type',$tipo);
 
 
 
-//if($tipo=='company'){
+
 $js_files[]='company.js.php';
 $js_files[]='js/validate_telecom.js';
-//$js_files[]='new_company.js.php?scope=customer&store_key='.$store_key;
 $js_files[]='new_customer.js.php?&store_key='.$store_key;
-
 $js_files[]='edit_address.js.php';
 $js_files[]='edit_contact_from_parent.js.php';
 $js_files[]='edit_contact_telecom.js.php';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
-/*
-}else{
-$js_files[]='contact.js.php';
-$js_files[]='js/validate_telecom.js';
-$js_files[]='new_contact.js.php?scope=customer&store_key='.$store_key;
-$js_files[]='new_contact.js.php?scope=customer&store_key='.$store_key;
-
-$js_files[]='edit_address.js.php';
-$js_files[]='edit_contact_from_parent.js.php';
-$js_files[]='edit_contact_telecom.js.php';
-$js_files[]='edit_contact_name.js.php';
-$js_files[]='edit_contact_email.js.php';
-
-
-}
-*/
 
 $smarty->assign('hq_country',$corporate_country_code);
 

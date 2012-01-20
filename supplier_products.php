@@ -77,6 +77,22 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
+$tipo_filter=$_SESSION['state']['supplier_products']['table']['f_field'];
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',$_SESSION['state']['supplier_products']['table']['f_value']);
+
+$filter_menu=array( 
+		   'code'=>array('db_key'=>'code','menu_label'=>_('Our Product Code'),'label'=>_('Code')),
+		   'sup_code'=>array('db_key'=>'sup_code','menu_label'=>_('Supplier Product Code'),'label'=>_('Supplier Code')),
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+
     $csv_export_options=array(
                             'description'=>array(
                                               'title'=>_('Description'),
@@ -162,6 +178,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                         );
 $smarty->assign('export_csv_table_cols',7);
 $smarty->assign('csv_export_options',$csv_export_options);
+
+
 
 
 $smarty->display('supplier_products.tpl');

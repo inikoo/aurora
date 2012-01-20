@@ -1,6 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='assets_navigation.tpl'}
+<div  class="branch"> 
+  <span  >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {else}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {/if}  {$code}</span>
+</div>
  <div style="clear:both">
 	  <h1>{$code}</h1>
 	  
