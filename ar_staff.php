@@ -757,7 +757,7 @@ function is_staff_id() {
 }
 
 function is_staff_alias() {
-  if (!isset($_REQUEST['query']) or !isset($_REQUEST['staff_key']) ) {
+  if (!isset($_REQUEST['query'] )) {
         $response= array(
                        'state'=>400,
                        'msg'=>'Error'
@@ -775,16 +775,15 @@ function is_staff_alias() {
         return;
     }
 
-    $staff_key=$_REQUEST['staff_key'];
 
-   $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Key`=%d  ",prepare_mysql($query)
+   $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s  ",prepare_mysql($query)
                 );
 
-
+//print $sql;
     $res=mysql_query($sql);
 
     if ($data=mysql_fetch_array($res)) {
-     $msg=sprintf('Another Company Staff <a href="edit_each_staff.php?id=%d">(%s)</a> already has this alias name'
+     $msg=sprintf('Another Staff <a href="staff.php?id=%d">(%s)</a> already has this alias'
                    ,$data['Staff Key']
                    ,$data['Staff Alias']
                     );

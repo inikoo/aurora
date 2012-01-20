@@ -65,6 +65,15 @@ $js_files=array(
 		//'new_contact.js.php?scope=staff'
 		);
 
+$sql=sprintf("select * from `Company Position Dimension`");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_position[$row['Company Position Key']]=$row['Company Position Title'];
+}
+
+$smarty->assign('staff_position',$staff_position);
+
+
 $smarty->assign('scope','staff');
 
 $smarty->assign('css_files',$css_files);

@@ -521,7 +521,7 @@ if(changed){
         //alert('x')
         Dom.addClass('save_edit_'+branch,'disabled');
     } else {
-
+alert('save_edit_'+branch)
         Dom.removeClass('save_edit_'+branch,'disabled');
     }
 //alert(branch)
@@ -531,10 +531,10 @@ if(changed){
 
 
 function validate_scope_new(branch) {
-
     var changed=false;
     var errors=false;
     for (items in validate_scope_data[branch]) {
+	//alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
         if (validate_scope_data[branch][items].required==true && validate_scope_data[branch][items].validated==false) {
              //alert(branch+' , '+items+" error")
             errors=true;
@@ -556,7 +556,7 @@ function ar_validation(branch,items,query) {
 	
     var data= validate_scope_data[branch][items];
     var request=data.ar_request+query;
-  //  alert(data.ar_request)
+ //   alert(data.ar_request)
  // alert(request)
    YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
       // alert(o.responseText)
@@ -666,7 +666,6 @@ function validate_general_new(branch,items,query) {
         validate_scope_data[branch][items].changed=true;
 
         if (data.ar=='find') {
-
             ar_validation(branch,items,query)
             return;
         } else {
@@ -839,7 +838,7 @@ return;
 	   
 	 //  alert(item_input.value.length);
 	   
-//alert(scope_edit_ar_file+'?'+postData)
+alert(scope_edit_ar_file+'?'+postData)
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {
