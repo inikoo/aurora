@@ -746,7 +746,7 @@ function create_product($data) {
     $sp_data['editor']=$editor;
     $sp_data['Supplier Key']=$data['parent_key'];
     $sp_data['Supplier Key']=$data['parent_key'];
-    $sp_data['Supplier Product Valid From']=date("Y-m-d H:i:s");
+    $sp_data['Supplier Product Valid From']=gmdate("Y-m-d H:i:s");
                                                      
 
 
@@ -755,7 +755,7 @@ function create_product($data) {
 
     if ($supplier_product->new) {
     $msg=_('Supplier Product logged');
-        $response= array('state'=>200,'action'=>'created','object_key'=>$supplier_product->id,'msg'=>$msg);
+        $response= array('state'=>200,'action'=>'created_','object_key'=>$supplier_product->id_,'msg'=>$msg);
     } else {
         if ($supplier_product->found)
             $response= array('state'=>400,'action'=>'found','object_key'=>$supplier_product->found_key,'msg'=>_('Product already in the database'));

@@ -544,6 +544,7 @@ function validate_scope_new(branch) {
     if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
+	//alert('save_new_'+branch)
         Dom.removeClass('save_new_'+branch,'disabled');
     }
 }
@@ -1053,16 +1054,16 @@ return;
 
 	//alert(scope_edit_ar_file);
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-	alert(request);
+	//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-alert(o.responseText);
+//alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
 
             if(r.msg!=undefined){
-            Dom.setStyle("new_"+branch+"_dialog_msg",'display','');
-            Dom.get("new_"+branch+"_dialog_msg").innerHTML=r.msg;
+           // Dom.setStyle("new_"+branch+"_dialog_msg",'display','');
+          //  Dom.get("new_"+branch+"_dialog_msg").innerHTML=r.msg;
             }
             
          
@@ -1075,7 +1076,7 @@ alert(o.responseText);
 			
 
                 }
-                else if(r.action='staff_created'){
+                else if(r.action='created_'){
 			post_action(branch,r);	
 		}
             } else {
