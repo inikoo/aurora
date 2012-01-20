@@ -460,7 +460,7 @@ function create_part_location_tr(tag,r) {
 
 
     oTbl=Dom.get('part_locations');
-    oTR= oTbl.insertRow(-1);
+    oTR= oTbl.insertRow(0);
     oTR.id='part_location_tr_'+sku+'_'+location_key;
 
     var oTD= oTR.insertCell(0);
@@ -817,6 +817,9 @@ success:function(o) {
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='added') {
                 close_add_location_dialog();
+                
+                
+                
                 if (Dom.get('part_location_quantity_'+sku+'_'+r.location_key)==undefined) {
                     create_part_location_tr('',r);
                 }

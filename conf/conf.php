@@ -2103,7 +2103,20 @@ $default_state=array(
 
                                                                 )
 
-                                               )
+                                               ),
+                                   'edit_suppliers'=>array(
+                                           
+                                                   'view'=>'general',
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'',
+                                                  
+
+                                               )            
                                ),
 
                    'staff'=>array(

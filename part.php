@@ -226,11 +226,11 @@ $smarty->assign('transactions',$transactions);
 $smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['view']);
 
 
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['part']['transactions']['f_field']:'note');
+
+$tipo_filter=$_SESSION['state']['part']['transactions']['f_field'];
 $smarty->assign('filter_show1',$_SESSION['state']['part']['transactions']['f_show']);
 $smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',($q==''?$_SESSION['state']['part']['transactions']['f_value']:addslashes($q)));
+$smarty->assign('filter_value1',$_SESSION['state']['part']['transactions']['f_value']);
 $filter_menu=array(
                  'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
                  'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
