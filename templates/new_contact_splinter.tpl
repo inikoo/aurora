@@ -10,25 +10,32 @@
 	<tr class="title">
 	<td colspan=3>{t}Staff Info{/t}</td>
 	</tr>
-	<tr>
-	<td style=";" class="label">{t}Staff Name{/t}:</td>
-	<td>
-	<input style="width:18em" id="Staff_Name" value="" >
-	<div id="Staff_Name_Container"  ></div>
-	</td>
-	</tr>
 
 
-	<tr>
-	<td style=";" class="label">{t}Staff Alias{/t}:</td>
-	<td><div>
-	<input style="width:18em" id="Staff_Alias" value="" >
-	<div id="Staff_Alias_Container"  ></div>
-	</div>
-	</td>
-	<td style="width:200px" id="Staff_Alias_msg" class="edit_td_alert"></td>
-	</tr>
-	<tr><td class="label">{t}Staff Working{/t}:</td>
+	 <tr><td style="width:200px"class="label">{t}Staff Name{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="Staff_Name" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="Staff_Name_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="Staff_Name_msg" class="edit_td_alert" ></td>
+	  </tr>
+
+
+
+	 <tr><td style="width:200px"class="label">{t}Staff Alias{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="Staff_Alias" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="Staff_Alias_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="Staff_Alias_msg" class="edit_td_alert" ></td>
+	  </tr>
+
+ 
+	<tr style="display:none"><td class="label">{t}Staff Working{/t}:</td>
 	  <td>
 	    <div class="buttons small left" id="staff_working" value="Yes"  ovalue="Yes"   prefix="staff_working_" class="options" style="margin:5px 0">
 
@@ -43,22 +50,33 @@
 	  <td>
 	    <div class="buttons small left" id="staff_supervisor" value="No"  ovalue="No"   prefix="staff_supervisor_" class="options" style="margin:5px 0">
 
-	    <button  name="1" class="positive" onclick="radio_changed(this)" id="staff_supervisor_1">{t}Yes{/t}</button>
-	    <button name="2" class="negative" onclick="radio_changed(this)" id="staff_supervisor_2">{t}No{/t}</button>
+	    <button  name="1" class="positive" onclick="radio_changed_staff(this)" id="staff_supervisor_1">{t}Yes{/t}</button>
+	    <button name="2" class="negative" onclick="radio_changed_staff(this)" id="staff_supervisor_2">{t}No{/t}</button>
 
 	    </div>
 	  </td>
 	 </tr>
 
+	<tr>
+
+	<td class="label"><div >{t}Staff Position{/t}:</div></td>
+	<td>
+		<select id="staff_position" onChange="change_position(this)">
+			{foreach from=$staff_position item=item key=key  }
+				<option value="{$key}">{$item}</option>
+			{/foreach}
+		</select>
+	</td>   
+	</tr>
 
 </table>
 
 
 <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
-<div class="buttons" >
-		<button  style="margin-right:10px;visibility:hidden"  id="save_add_staff_description" class="positive">{t}Save{/t}</button>
-		<button style="margin-right:10px;visibility:hidden" id="reset_add_staff_description" class="negative">{t}Reset{/t}</button>
+	<div class="buttons" >
+			<button  style="margin-right:10px;visibility:"  id="save_new_staff" class="positive disabled">{t}Save{/t}</button>
+			<button style="margin-right:10px;visibility:" id="reset_new_staff" class="negative">{t}Reset{/t}</button>
 	</div>
 	</tr>
 </table>
