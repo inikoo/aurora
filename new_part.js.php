@@ -9,8 +9,8 @@ include_once('class.Company.php');
 
 	
 
-function validate_part_description(query){ validate_general('part','product_description',unescape(query));}
-function validate_gross_weight(query){ validate_general('part','weight',unescape(query));}
+function validate_part_description(query){ validate_general('part','part_description',unescape(query));}
+function validate_gross_weight(query){ validate_general('part','gross_weight',unescape(query));}
 
 
 
@@ -36,8 +36,8 @@ function reset_new_staff(){
 
 
 
-function save_new_product(){
- save_new_general('product');
+function save_new_part(){
+ save_new_general('part');
 }
 
 function post_action(branch,r){
@@ -54,7 +54,7 @@ validate_scope_data=
 	//    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],'name':'product_code'
 	//    ,'ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_product_code&supplier_key='+Dom.get('supplier_key').value+'&query=', 'dbname':'Supplier Product Code'}
 	//,'units_per_case':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','name':'units_per_case','ar':false,'dbname':'Supplier Product Units Per Case', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
-	,'gross_weight':{'changed':false,'validated':false,'required':true,'dbname':'Part Gross Weight','group':1,'type':'item','name':'gross_weight','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
+	'gross_weight':{'changed':false,'validated':false,'required':true,'dbname':'Part Gross Weight','group':1,'type':'item','name':'gross_weight','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
 ,'part_description':{'changed':false,'validated':false,'required':true,'dbname':'Part Unit Description','group':1,'type':'item','name':'part_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Part Description'}]}
 
 
@@ -65,7 +65,7 @@ validate_scope_data=
 
 	
 validate_scope_metadata={
-    'part':{'type':'new','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key', 'key':Dom.get('supplier_key').value}
+    'part':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'sp_key', 'key':Dom.get('sp_key').value}
     
 
 };
@@ -86,8 +86,10 @@ validate_scope_metadata={
     product_units_oAutoComp.minQueryLength = 0; 
     product_units_oAutoComp.queryDelay = 0.1;
 
- //  YAHOO.util.Event.addListener('reset_new_staff', "click",reset_new_staff)
-   YAHOO.util.Event.addListener('save_new_product', "click",save_new_product)
+ //  YAHOO.util.Event.addListener('reset_new_part', "click",reset_new_part)
+   YAHOO.util.Event.addListener('save_new_part', "click",save_new_part)
+
+
 }
 
 

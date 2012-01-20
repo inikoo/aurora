@@ -13,6 +13,8 @@ if (!$product_supplier_key) {
     header('Location: suppliers.php?e');
     exit();
 }
+
+
 $supplier_product= new SupplierProduct('pid',$product_supplier_key);
 if (!$supplier_product->id) {
     header('Location: suppliers.php');
@@ -20,6 +22,7 @@ if (!$supplier_product->id) {
 
 }
 
+ 
 $supplier_key=$supplier_product->supplier_key;
 if ($user->data['User Type']=='Supplier') {
 
@@ -65,7 +68,7 @@ $js_files=array(
 
 $smarty->assign('display',$_SESSION['state']['supplier_product']['display']);
 
-$smarty->assign('pid',$_REQUEST['pid']);
+$smarty->assign('pid',$supplier_product->id);
 
 $supplier_product_code=$supplier_product->code;
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
