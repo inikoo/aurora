@@ -14,6 +14,10 @@ require_once 'class.Order.php';
 require_once 'class.Location.php';
 require_once 'class.PartLocation.php';
 require_once 'class.Image.php';
+require_once 'class.SupplierProduct.php';
+require_once 'class.Supplier.php';
+require_once 'class.Part.php';
+
 require_once 'ar_edit_common.php';
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -51,6 +55,15 @@ case('edit_part_health_and_safety'):
 
     break;
 
+case('create_part'):
+    $data=prepare_values($_REQUEST,array(
+                             'parent_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+
+                         ));
+
+    create_part($data);
+    break;
 case('edit_location'):
     $data=prepare_values($_REQUEST,array(
                              'location_key'=>array('type'=>'key'),
@@ -225,6 +238,89 @@ default:
     echo json_encode($response);
 
 }
+
+
+function create_part($data){
+
+$part_data=$data['values'];
+
+
+$part_data['Part Most Recent']='Yes';
+
+$sp=new SupplierProduct($data['parent_key']);
+
+$supplier=new Supplier($sp->get('Supplier Key'));
+
+
+print_r($sp);exit;
+
+$part_data['Part XHTML Currently Supplied By']=sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code'));
+$part_data['Part XHTML Currently Used In']=sprintf('<a href="product.php?id=%d">%s</a>',$sp->id,$sp->get('Product Code'));
+
+
+
+//$part_data['editor']=$editor;
+
+
+    $part_data=array(
+                   'editor'=>$editor,
+                   'Part Most Recent'=>'Yes',
+                   'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+                   'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+                   'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
+
+                   'part valid from'=>$editor['Date'],
+                   'part valid to'=>$editor['Date'],
+                   'Part Gross Weight'=>$w
+               );
+    $part=new Part('new',$part_data);
+    if ($part->new) {
+
+    }
+
+
+/*
+    $spp_header=array(
+                    'Supplier Product Part Type'=>'Simple',
+                    'Supplier Product Part Most Recent'=>'Yes',
+                    'Supplier Product Part Valid From'=>$editor['Date'],
+                    'Supplier Product Part Valid To'=>$editor['Date'],
+                    'Supplier Product Part In Use'=>'Yes'
+                );
+
+    $spp_list=array(
+                  array(
+                      'Part SKU'=>$part->data['Part SKU'],
+                      'Supplier Product Units Per Part'=>1,
+                      'Supplier Product Part Type'=>'Simple'
+                  )
+              );
+
+
+
+    $supplier_product->new_current_part_list($spp_header,$spp_list);
+
+    $part_list[]=array(
+                     'Part SKU'=>$part->get('Part SKU'),
+                     'Parts Per Product'=>1,
+                     'Product Part Type'=>'Simple'
+                 );
+
+
+
+    $product->new_current_part_list(array(),$part_list)  ;
+
+    $supplier_product->update_sold_as();
+    $supplier_product->update_store_as();
+    $product->update_parts();
+    $part->update_used_in();
+    $part->update_supplied_by();
+    $product->update_cost_supplier();
+*/
+
+}
+
+
 function create_store() {
     global $editor;
     if (isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ) {

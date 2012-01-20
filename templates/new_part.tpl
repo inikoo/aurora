@@ -10,11 +10,11 @@
      <div id="results" style="margin-top:0px;float:right;width:600px;"></div>
 	 <div  style="float:left;width:600px;" >
 
-<input type="hidden" value="{$supplier_key}" id="supplier_key"/>
+<input type="hidden" value="{$sp_key}" id="sp_key"/>
     <table class="edit"  border="0" style="width:100%;margin-bottom:0px" >
 	
 	<tr class="title">
-	<td colspan=3>{t}Supplier Product Info{/t}</td>
+	<td colspan=3>{t}Part Info{/t}</td>
 	</tr>
 
 
@@ -48,8 +48,8 @@
 <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
 	<div class="buttons" >
-			<button  style="margin-right:10px;visibility:"  id="save_new_product" class="positive disabled">{t}Save{/t}</button>
-			<button style="margin-right:10px;visibility:" id="reset_new_product" class="negative">{t}Reset{/t}</button>
+			<button  style="margin-right:10px;visibility:"  id="save_new_part" class="positive disabled">{t}Save{/t}</button>
+			<button style="margin-right:10px;visibility:" id="reset_new_part" class="negative">{t}Reset{/t}</button>
 	</div>
 	</tr>
 </table>
