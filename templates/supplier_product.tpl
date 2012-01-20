@@ -15,6 +15,7 @@
 		</div>
 		<div class="buttons">
 			<button class="negative" onclick="window.location='edit_supplier_product.php?id='">{t}Edit Supplier Product{/t}</button> 
+			<button class="negative" onclick="window.location='new_part.php?id={$pid}'">{t}Add Part{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>

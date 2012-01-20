@@ -36,10 +36,6 @@ function reset_new_staff(){
 	reset_edit_general('staff')
 }
 
-function post_action(branch,response) {
-
-   window.location.href='staff.php?id='+response.staff_id;
-}
 
 function save_new_product(){
  save_new_general('product');
