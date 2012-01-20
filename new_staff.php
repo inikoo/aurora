@@ -73,6 +73,22 @@ while($row=mysql_fetch_assoc($result)){
 
 $smarty->assign('staff_position',$staff_position);
 
+$sql=sprintf("select * from `Company Department Dimension`");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_department[$row['Company Department Key']]=$row['Company Department Name'];
+}
+
+$smarty->assign('staff_department',$staff_department);
+
+$sql=sprintf("select * from `Company Area Dimension`");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_area[$row['Company Area Key']]=$row['Company Area Name'];
+}
+
+$smarty->assign('staff_area',$staff_area);
+
 
 $smarty->assign('scope','staff');
 
