@@ -111,7 +111,7 @@ $values=$data['values'];
       $staff=$position->add_staff($values);
 
 if($staff->new){
-	$response=array('state'=>200, 'staff_id'=>$staff->id, 'action'=>'staff_created');
+	$response=array('state'=>200, 'staff_id'=>$staff->id, 'action'=>'created_');
 }
 else{
 	$response=array('state'=>400, 'msg'=>'Error');
