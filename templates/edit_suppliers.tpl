@@ -1,9 +1,24 @@
 {include file='header.tpl'}
 <div id="bd" >
 
- <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
+ 		{include file='suppliers_navigation.tpl'} 
+		<div class="branch">
+			<span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {t}Edit Suppliers{/t}</span> 
+		</div>
+		<div class="top_page_menu">
+			<div class="buttons" style="float:left">
+			</div>
+			<div class="buttons">
+							<button onclick="window.location='suppliers.php'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> 
+
+				<button onclick="window.location='new_supplier.php'"><img src="art/icons/add.png" alt=""> {t}Add Supplier{/t}</button> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		
     <h1>{t}Edit Suppliers{/t}</h1>
-  </div>
+  
 
   <ul class="tabs" id="chooser_ul" style="clear:both">
 
@@ -20,11 +35,10 @@
   <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Suppliers List{/t}</span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
+    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
       <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  <td {if $view=='products'}class="selected"{/if}  id="products"  >{t}Products{/t}</td>
-	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
+
       </tr>
       </table>
     

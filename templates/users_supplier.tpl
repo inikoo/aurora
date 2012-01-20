@@ -2,7 +2,21 @@
 
 <div id="bd" >
 {include file='users_navigation.tpl'}
-
+<div  class="branch"> 
+<span><a  href="users.php">{t}Users{/t}</a> &rarr; {t}Staff Users{/t} </span>
+</div>
+<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+        {if $modify}
+        <button  onclick="window.location='edit_users_supplier.php'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Users{/t}</button>
+        {/if}
+    </div>
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='users.php'" ><img src="art/icons/house.png" alt=""> {t}Users Home{/t}</button>
+        </div>
+    <div style="clear:both"></div>
+</div>
+<h1>{t}Supplier Users{/t}</h1>
 
 
   <div id="yui-main">

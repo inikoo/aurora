@@ -46,7 +46,8 @@ $js_files=array(
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
+$modify=$user->can_edit('users');
+$smarty->assign('modify',$modify);
 
 $general_options_list=array();
 if($user->can_edit('users')){

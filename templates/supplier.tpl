@@ -16,9 +16,9 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+		
 			<h1>
-				{$supplier->get('Supplier Name')} <span style="color:SteelBlue">({$supplier->get('Supplier Code')})</span>
+				{$supplier->get('Supplier Name')} <span class="id">({$supplier->get('Supplier Code')})</span>
 			</h1>
 			<table style="width:500px">
 				<tr>
@@ -42,7 +42,7 @@
 				</tr>
 			</table>
 		</div>
-	</div>
+	
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Supplier Products{/t}</span></span></li>
