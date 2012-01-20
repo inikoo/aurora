@@ -50,19 +50,55 @@
 	  <td>
 	    <div class="buttons small left" id="staff_supervisor" value="No"  ovalue="No"   prefix="staff_supervisor_" class="options" style="margin:5px 0">
 
-	    <button  name="1" class="positive" onclick="radio_changed_staff(this)" id="staff_supervisor_1">{t}Yes{/t}</button>
-	    <button name="2" class="negative" onclick="radio_changed_staff(this)" id="staff_supervisor_2">{t}No{/t}</button>
+	    <button  name="Yes" selected class="positive" onclick="radio_changed_staff(this, 'staff_supervisor')" id="staff_supervisor_Yes">{t}Yes{/t}</button>
+	    <button name="No" class="negative" onclick="radio_changed_staff(this, 'staff_supervisor')" id="staff_supervisor_No">{t}No{/t}</button>
+
+	    </div>
+	  </td>
+		<td id="staff_supervisor_msg" class="edit_td_alert" ></td>
+	 </tr>
+
+	<tr><td class="label">{t}Staff Type{/t}:</td>
+	  <td>
+	    <div class="buttons small left" id="staff_type" value=""  ovalue=""   prefix="staff_type_" class="options" style="margin:5px 0">
+	    <button  name="Employee" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Employee">{t}Employee{/t}</button>
+	    <button name="Volunteer" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Volunteer">{t}Volunteer{/t}</button>
+	<button name="Contractor" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Contractor">{t}Contractor{/t}</button>
+	<button name="Temporal Worker" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Temporal Worker">{t}Temporal Worker{/t}</button>
+	<button name="Work Experience" class="" onclick="radio_changed_staff(this, 'staff_type')" id="staff_type_Work Experience">{t}Work Experience{/t}</button>
 
 	    </div>
 	  </td>
 	 </tr>
 
-	<tr>
 
+	<tr>
 	<td class="label"><div >{t}Staff Position{/t}:</div></td>
 	<td>
-		<select id="staff_position" onChange="change_position(this)">
+		<select id="staff_position">
 			{foreach from=$staff_position item=item key=key  }
+				<option value="{$key}">{$item}</option>
+			{/foreach}
+		</select>
+	</td>   
+	</tr>
+
+	<tr>
+	<td class="label"><div >{t}Staff Department{/t}:</div></td>
+	<td>
+		<select id="staff_department">
+			{foreach from=$staff_department item=item key=key  }
+				<option value="{$key}">{$item}</option>
+			{/foreach}
+		</select>
+	</td>   
+	</tr>
+
+	<tr>
+	<td class="label"><div >{t}Staff Area{/t}:</div></td>
+	<td>
+		<select id="staff_area">
+			{foreach from=$staff_area item=item key=key  }
 				<option value="{$key}">{$item}</option>
 			{/foreach}
 		</select>

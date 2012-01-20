@@ -1039,8 +1039,9 @@ return;
         //
         var item_input=Dom.get(validate_scope_data[branch][items].name);
 
-//alert(validate_scope_data[branch][items].dbname+' --- '+item_input.value)
+
         values[validate_scope_data[branch][items].dbname]=item_input.value;
+	//alert(validate_scope_data[branch][items].dbname+' --- '+item_input.value)
     }
 
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
@@ -1055,21 +1056,28 @@ return;
 	alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-//alert(o.responseText);
+alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
+
             if(r.msg!=undefined){
             Dom.setStyle("new_"+branch+"_dialog_msg",'display','');
             Dom.get("new_"+branch+"_dialog_msg").innerHTML=r.msg;
             }
+            
+         
             if (r.state==200) {
 
                 if (r.action=='created') {
 
-                    post_new_create_actions(branch,r);
-
+                   post_new_create_actions(branch,r);
+		   // alert(branch)
+			
 
                 }
+                else if(r.action='staff_created'){
+			post_action(branch,r);	
+		}
             } else {
                 if (r.action=='found') {
                     post_new_found_actions(branch,r);

@@ -83,12 +83,42 @@ case('delete_ind_department'):
                          ));
     delete_ind_department($data);
     break;
+case('create_staff'):
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array')
+		));
+	create_staff($data);
+	break;
+
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
    echo json_encode($response);
 }
 
+function create_staff($data){
+	
+$values=$data['values'];
+//print_r($values);
+
+    $position=new CompanyPosition('id',$values['Position Key']);
+    if(!$position->id){
+      print "$position_code\n";
+      //print_r($position);
+    exit;
+    }
+
+      $staff=$position->add_staff($values);
+
+if($staff->new){
+	$response=array('state'=>200, 'staff_id'=>$staff->id, 'action'=>'staff_created');
+}
+else{
+	$response=array('state'=>400, 'msg'=>'Error');
+}
+
+  echo json_encode($response);
+}
 
 function edit_staff(){
   global $myconf;
