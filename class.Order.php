@@ -264,16 +264,16 @@ class Order extends DB_Table {
 		$dn->create_inventory_transaction_fact($this->id,$extra_data);
 		$this->update_delivery_notes('save');
 		$this->data['Order Current Dispatch State']='Ready to Pick';
-$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
-$this->data['Order Current XHTML State']=$this->calculate_state();
-	$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`,=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
-				,prepare_mysql($this->data['Order Current Dispatch State'])
-				,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
-				,prepare_mysql($this->data['Order Current XHTML State'])
-				,$this->id
-			);
+		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
+		$this->data['Order Current XHTML State']=$this->calculate_state();
+		$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`,=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+			,prepare_mysql($this->data['Order Current Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML State'])
+			,$this->id
+		);
 
-			mysql_query($sql);
+		mysql_query($sql);
 		$this->update_full_search();
 
 		return $dn;
@@ -2138,6 +2138,7 @@ $this->data['Order Current XHTML State']=$this->calculate_state();
 		// $array_state[$row['state']]=$row['state'];
 		//}
 
+		//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
 		if (in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','Submitted by Customer','Dispatched','Cancelled','Suspended')) )
 			return;
@@ -2148,27 +2149,29 @@ $this->data['Order Current XHTML State']=$this->calculate_state();
 
 		$dispatch_state='Unknown';
 
-		$sql=sprintf("select `Delivery Note XHTML State`,`Delivery Note State`,DN.`Delivery Note Key`,DN.`Delivery Note ID`,`Delivery Note Faction Picked`,`Delivery Note Assigned Picker Alias`,`Delivery Note Faction Packed`,`Delivery Note Assigned Packer Alias` from `Order Transaction Fact` B  left join `Delivery Note Dimension` DN  on (DN.`Delivery Note Key`=B.`Delivery Note Key`) where `Order Key`=%d group by B.`Delivery Note Key`",$this->id);
+//
+
+		$sql=sprintf("select `Delivery Note XHTML State`,`Delivery Note State`,DN.`Delivery Note Key`,DN.`Delivery Note ID`,`Delivery Note Faction Picked`,`Delivery Note Assigned Picker Alias`,`Delivery Note Faction Packed`,`Delivery Note Assigned Packer Alias` from `Order Transaction Fact` B  left join `Delivery Note Dimension` DN  on (DN.`Delivery Note Key`=B.`Delivery Note Key`) 
+		where `Order Key`=%d group by B.`Delivery Note Key`  order by Field (`Delivery Note State`,  'Dispatched','Cancelled','Cancelled to Restock','Approved' ,'Packed Done' , 'Packed','Ready to be Picked','Picker Assigned','Packer Assigned','Picker & Packer Assigned','Picked','Picking' ,'Packing' ,'Picking & Packing') ",$this->id);
 
 		$res = mysql_query( $sql );
 		$delivery_notes=array();
 		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
+
+			//print_r($row);
 			if ($row['Delivery Note Key']) {
-
-				//,'Ready to Pick','Picking & Packing','Packed','Ready to Ship','Unknown'
-
-
-				//print $row['Delivery Note State']."<-XX\n";
-				//'Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
-
 				if ($row['Delivery Note State']=='Ready to be Picked') {
 					$dispatch_state='Ready to Pick';
-				}else if (in_array($row['Delivery Note State'],array('Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed')) ) {
-						$dispatch_state='Picking & Packing';
+				}elseif (in_array($row['Delivery Note State'],array('Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed')) ) {
+					$dispatch_state='Picking & Packing';
 
-					}else if ($row['Delivery Note State']=='Packed Done') {
-						$dispatch_state='Packed';
-					}else {
+				}elseif ($row['Delivery Note State']=='Packed Done') {
+					$dispatch_state='Packed';
+				}elseif ($row['Delivery Note State']=='Approved') {
+					$dispatch_state='Ready to Ship';
+				}elseif ($row['Delivery Note State']=='Dispatched') {
+					$dispatch_state='Dispatched';
+				}else {
 					$dispatch_state='Unknown';
 				}
 
@@ -2192,7 +2195,7 @@ $this->data['Order Current XHTML State']=$this->calculate_state();
 			$this->id
 		);
 		//print $sql.' '.$dispatch_state;
-		//print $dispatch_state;
+		//print $xhtml_dispatch_state.' xox '.$dispatch_state."\n =========\n";
 		mysql_query($sql);
 
 
@@ -2207,7 +2210,7 @@ $this->data['Order Current XHTML State']=$this->calculate_state();
 			$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
 				,prepare_mysql($this->data['Order Current Dispatch State'])
 				,prepare_mysql($this->data['Order Current XHTML State'])
-				
+
 				,$this->id
 			);
 
@@ -2217,8 +2220,8 @@ $this->data['Order Current XHTML State']=$this->calculate_state();
 		}
 
 	}
-	
-	
+
+
 
 
 	function translate_payment_state($array_payment_state) {
@@ -2976,7 +2979,7 @@ $this->data['Order Current XHTML State']=$this->calculate_state();
 			$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Transaction Fact Key` =%d",$otf_key);
 			mysql_query($sql);
 
-$this->data['Order Transaction Total Discount Amount']=$amount;
+			$this->data['Order Transaction Total Discount Amount']=$amount;
 			$sql=sprintf('update `Order Transaction Fact` OTF set  `Order Transaction Total Discount Amount`=%f where `Order Transaction Fact Key`=%d ',
 				$amount,
 				$otf_key
