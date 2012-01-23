@@ -21,7 +21,7 @@
 	 <tr><td style="width:200px"class="label">{t}Part Description{/t}:</td><td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="part_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
-	   value="" />
+	   value="{$sp->get('Supplier Product Description')}" />
 	   <div id="part_description_Container"  ></div>
        </div>
 	   </td>
@@ -31,7 +31,7 @@
 		<tr><td style="width:200px"class="label">{t}Part Weight{/t}:</td><td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="gross_weight" changed=0 type='text' MAXLENGTH="255"  class='text' 
-	   value="" />
+	   value="{$sp->get('Supplier Product Unit Gross Weight')}" />
 	   <div id="gross_weight_Container"  ></div>
        </div>
 	   </td>
