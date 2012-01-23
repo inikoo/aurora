@@ -94,6 +94,7 @@ class part extends DB_Table {
 		$values=preg_replace('/,$/',')',$values);
 
 		$sql=sprintf("insert into `Part Dimension` %s %s",$keys,$values);
+//print $sql;
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->sku =$this->id ;
@@ -117,6 +118,7 @@ class part extends DB_Table {
 
 		} else {
 			print "Error Part can not be created $sql\n";
+			$this->msg='Error Part can not be created';
 			exit;
 		}
 
