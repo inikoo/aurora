@@ -14,7 +14,7 @@
 
 include_once('common.php');
 include_once('class.Contact.php');
-
+include_once('class.SupplierProduct.php');
 
 if(!$user->can_view('contacts')){
   header('Location: index.php');
@@ -67,6 +67,9 @@ $js_files=array(
 		);
 
 $smarty->assign('sp_key',$_REQUEST['id']);
+
+$sp=new SupplierProduct($_REQUEST['id']);
+$smarty->assign('sp',$sp);
 
 $smarty->assign('scope','staff');
 
