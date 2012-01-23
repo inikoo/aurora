@@ -6,7 +6,13 @@ if(!$user->can_view('orders'))
 
 
 YAHOO.namespace ("orders"); 
+var assign_picker_dialog;
+var pick_it_dialog;
+var pick_assigned_dialog;
 
+var assign_packer_dialog;
+var pack_it_dialog;
+var pack_assigned_dialog;
 
 YAHOO.util.Event.addListener(window, "load", function() {
     YAHOO.orders.XHR_JSON = new function() {
@@ -123,12 +129,25 @@ function init(){
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
     oAutoComp.minQueryLength = 0; 
-    
+ 
+
+ assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+ assign_picker_dialog.render();
+ pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+ pick_assigned_dialog.render();
+ pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+ pick_it_dialog.render();
+
+assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+ assign_packer_dialog.render();
+ pack_assigned_dialog = new YAHOO.widget.Dialog("pack_assigned_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+ pack_assigned_dialog.render();
+ pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+ pack_it_dialog.render();    
 
 
-    
-
-
+dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {context:["other_staff","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_other_staff.render();
 
 
 }

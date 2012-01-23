@@ -18,7 +18,7 @@
 
 			<button style="height:24px;" onclick="window.location='delivery_notes.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
 			<button style="height:24px;"  class="{if !$dn->get('Delivery Note Assigned Packer Key')}disabled{/if}" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Packing{/t}</button> 
-			<button style="height:24px;" id="pick_it"><img src="art/icons/basket_put.png" alt=""> {t}Picking{/t}</button> 
+			<button style="height:24px;" id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Picking{/t}</button> 
 
 		</div>
 		<div class="buttons" style="float:left">
@@ -120,3 +120,5 @@
   </div>
 
 </div>
+
+{include file='assign_picker_packer_splinter.tpl'}
