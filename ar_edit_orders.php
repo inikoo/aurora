@@ -206,7 +206,14 @@ case('create_invoice'):
 	create_invoice();
 	break;
 case('assign_picker'):
-
+	if($_REQUEST['staff_key']=='' || $_REQUEST['pin']==''){
+		$response=array(
+			'state'=>400,
+			'msg'=>'Required fields missing'
+		);
+		echo json_encode($response);
+		exit;
+	}
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'pin'=>array('type'=>'string'),
@@ -216,6 +223,15 @@ case('assign_picker'):
 	assign_picker($data);
 	break;
 case('pick_it'):
+
+	if($_REQUEST['staff_key']=='' || $_REQUEST['pin']==''){
+		$response=array(
+			'state'=>400,
+			'msg'=>'Required fields missing'
+		);
+		echo json_encode($response);
+		exit;
+	}
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'pin'=>array('type'=>'string'),
@@ -225,6 +241,14 @@ case('pick_it'):
 	start_picking($data);
 	break;
 case('pack_it'):
+	if($_REQUEST['staff_key']=='' || $_REQUEST['pin']==''){
+		$response=array(
+			'state'=>400,
+			'msg'=>'Required fields missing'
+		);
+		echo json_encode($response);
+		exit;
+	}
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'pin'=>array('type'=>'string'),
@@ -1909,9 +1933,9 @@ function start_picking($data) {
 		echo json_encode($response);
 		exit;
 	}
+/*
 
-
-
+*/
 	//print_r($data);exit;
 	$sql=sprintf("select * from `Staff Dimension` where `Staff Key`=%d and `Staff Currently Working`='Yes'", $data['staff_key']);
 	$result=mysql_query($sql);
