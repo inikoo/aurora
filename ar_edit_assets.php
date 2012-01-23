@@ -242,7 +242,7 @@ default:
 
 function create_part($data){
 
-$part_data=$data['values'];
+$_part=$data['values'];
 
 
 $part_data['Part Most Recent']='Yes';
@@ -252,7 +252,7 @@ $sp=new SupplierProduct($data['parent_key']);
 $supplier=new Supplier($sp->get('Supplier Key'));
 
 
-print_r($sp);exit;
+//print_r($sp);exit;
 
 $part_data['Part XHTML Currently Supplied By']=sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code'));
 $part_data['Part XHTML Currently Used In']=sprintf('<a href="product.php?id=%d">%s</a>',$sp->id,$sp->get('Product Code'));
@@ -263,28 +263,31 @@ $part_data['Part XHTML Currently Used In']=sprintf('<a href="product.php?id=%d">
 
 
     $part_data=array(
-                   'editor'=>$editor,
+ //                  'editor'=>$editor,
                    'Part Most Recent'=>'Yes',
                    'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
-                   'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
-                   'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
+  //                 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+                   'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$_part['Part Unit Description'])),
 
-                   'part valid from'=>$editor['Date'],
-                   'part valid to'=>$editor['Date'],
-                   'Part Gross Weight'=>$w
+                   'part valid from'=>gmdate("Y-m-d H:i:s"),
+                   'part valid to'=>gmdate("Y-m-d H:i:s"),
+                   'Part Gross Weight'=>$_part['Part Gross Weight']
                );
+
+//print_r($part_data);exit;
+
     $part=new Part('new',$part_data);
     if ($part->new) {
-
+	print $part->msg;
     }
 
 
-/*
+
     $spp_header=array(
                     'Supplier Product Part Type'=>'Simple',
                     'Supplier Product Part Most Recent'=>'Yes',
-                    'Supplier Product Part Valid From'=>$editor['Date'],
-                    'Supplier Product Part Valid To'=>$editor['Date'],
+                    'Supplier Product Part Valid From'=>gmdate("Y-m-d H:i:s"),
+                    'Supplier Product Part Valid To'=>gmdate("Y-m-d H:i:s"),
                     'Supplier Product Part In Use'=>'Yes'
                 );
 
@@ -298,8 +301,16 @@ $part_data['Part XHTML Currently Used In']=sprintf('<a href="product.php?id=%d">
 
 
 
-    $supplier_product->new_current_part_list($spp_header,$spp_list);
+    $sp->new_current_part_list($spp_header,$spp_list);
 
+
+    $response= array('state'=>200,'action'=>'created_','object_key'=>$part->id,'msg'=>$part->msg);
+
+
+    echo json_encode($response);
+
+
+/*
     $part_list[]=array(
                      'Part SKU'=>$part->get('Part SKU'),
                      'Parts Per Product'=>1,
