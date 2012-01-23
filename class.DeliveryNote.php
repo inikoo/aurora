@@ -1063,6 +1063,7 @@ class DeliveryNote extends DB_Table {
 	function approved_for_shipping($date) {
 		foreach ($this->get_orders_objects() as $key=>$order) {
 			$order->update_dispatch_state();
+
 		}
 	}
 	private function handle_to_customer($data) {
@@ -1161,6 +1162,7 @@ class DeliveryNote extends DB_Table {
 
 		foreach ($this->get_orders_objects() as $key=>$order) {
 			$order->update_dispatch_state();
+
 		}
 
 
@@ -1225,6 +1227,7 @@ class DeliveryNote extends DB_Table {
 		}
 		foreach ($this->get_orders_objects() as $order) {
 			$order->update_dispatch_state();
+
 		}
 
 
@@ -1642,44 +1645,54 @@ class DeliveryNote extends DB_Table {
 		$percentage_picked=$this->get_picking_percentage();
 
 
-
+		// print "Picking percentage:".$percentage_picked."\n";
 		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note Faction Picked`=%f where `Delivery Note Key`=%d  '
 			,$percentage_picked
 			,$this->id
 		);
 		mysql_query($sql);
 		$this->data['Delivery Note Faction Picked']=$percentage_picked;
-		if ($percentage_picked==1) {
 
-			if ($this->data['Delivery Note State']=='Picking & Packing' or $this->data['Delivery Note State']=='Packing')
-				$state='Packing';
-			else if ($this->data['Delivery Note State']=='Picking & Packer Assigned')
-					$state='Packer Assigned';
-				else if ($this->data['Delivery Note State']=='Picked' or  $this->data['Delivery Note State']=='Picking' or $this->data['Delivery Note State']=='Ready to be Picked')
-						$state='Picked';
-					else {
-						$this->error=true;
-						$this->msg="unknown error in update_picking_percentage\n";
-						//print  $this->msg;
-						return;
-					}
+		if ($this->data['Delivery Note Faction Picked']==1 and $this->data['Delivery Note Faction Packed']==1) {
 
-		} else {
-			if ($this->data['Delivery Note State']=='Picking')
-				$state='Picking';
-			else if ($this->data['Delivery Note State']=='Packing')
-					$state='Piking & Packing';
-				else if ($this->data['Delivery Note State']=='Packer Assigned')
-						$state='Picking & Packer Assigned';
-					else if ($this->data['Delivery Note State']=='Picked')
-							$state='Picking';
-						else {
-							$this->error=true;
-							$this->msg="unknown error in update_picking_percentage\n";
-							//print  $this->msg;
-							return;
-						}
+			if ($this->data['Delivery Note Approved Done']=='Yes') {
+
+				$state='Packed Done';
+			}else {
+
+				$state='Packed';
+			}
+
+
+		}elseif ($this->data['Delivery Note Faction Picked']>0 and $this->data['Delivery Note Faction Packed']>0) {
+			$state='Picking & Packing';
+
+		}elseif ($this->data['Delivery Note Assigned Picker Alias'] and $this->data['Delivery Note Assigned Packer Alias'] and $this->data['Delivery Note Faction Picked']==0 and $this->data['Delivery Note Faction Packed']==0) {
+			$state='Ready to be Picked';
 		}
+		elseif (!$this->data['Delivery Note Assigned Picker Alias'] and !$this->data['Delivery Note Assigned Packer Alias']) {
+			$state='Ready to be Picked';
+		}elseif ($this->data['Delivery Note Assigned Picker Alias'] and $this->data['Delivery Note Faction Picked']==0 and !$this->data['Delivery Note Assigned Packer Alias']) {
+			$state='Picker Assigned';
+		}elseif ($this->data['Delivery Note Assigned Picker Alias'] and $this->data['Delivery Note Faction Picked']<1 and !$this->data['Delivery Note Assigned Packer Alias']) {
+			$state='Picking';
+		}elseif ($this->data['Delivery Note Assigned Picker Alias'] and $this->data['Delivery Note Faction Picked']==1 and !$this->data['Delivery Note Assigned Packer Alias']) {
+			$state='Picked';
+		}elseif ($this->data['Delivery Note Assigned Packer Alias'] and $this->data['Delivery Note Faction Packed']==0) {
+			$state='Packer Assigned';
+		}elseif ($this->data['Delivery Note Assigned Packer Alias'] and $this->data['Delivery Note Faction Packed']<1) {
+			$state='Packing';
+
+		}else {
+			$this->error=true;
+			$this->msg="unknown error in update_picking_percentage\n";
+			//print  $this->msg;
+			return;
+
+		}
+
+
+		//'Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
 		$this->update_state($state);
 
 	}
@@ -1777,19 +1790,10 @@ class DeliveryNote extends DB_Table {
 			$percentage_picked=1;
 		}
 
-
-		$orders_ids=$this->get_orders_ids();
-
-
-
-		if (count($orders_ids)==1) {
-			$order=new Order(array_pop($orders_ids));
-
-
+		foreach ($this->get_orders_objects() as $order) {
 			$order->update_dispatch_state();
-
-
 		}
+
 
 		//print "percentage picked $percentage_picked\n";
 
@@ -1838,11 +1842,12 @@ class DeliveryNote extends DB_Table {
 			$order->update_item_totals_from_order_transactions();
 			$order->update_totals_from_order_transactions();
 			$order->update_dispatch_state();
+
 		}
 	}
 
 	function get_packing_percentage() {
-		$sql=sprintf("select `Required`,`Out of Stock`,ifnull(`Part Gross Weight`,0) as `Part Gross Weight`,`Packed` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF           left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
+		$sql=sprintf("select `Required`,`Out of Stock`,ifnull(`Part Gross Weight`,0) as `Part Gross Weight`,`Not Found`,`No Picked Other`,`Packed` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF   left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
 			,$this->id
 
 		);
@@ -1853,30 +1858,25 @@ class DeliveryNote extends DB_Table {
 		$packed_items=0;
 
 		while ($row=mysql_fetch_assoc($res)) {
-			$to_be_packed=$row['Required']+$row['Given'];
+			$to_be_packed=$row['Required']+$row['Given']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
 
 
-			$qty=$row['Out of Stock']+$row['Packed'];
 
-			$required_weight.=$to_be_packed*$row['Part Gross Weight'];
+
+			$qty=$row['Packed'];
+			if ($qty>$to_be_packed)
+				$qty=$to_be_packed;
+
+			$required_weight+=$to_be_packed*$row['Part Gross Weight'];
 			$required_items++;
 
-			if ($to_be_packed==0) {
-			} else if ($qty>=$to_be_packed) {
-					$packed_weight=$to_be_packed*$row['Part Gross Weight'];
-					$packed_items++;
-
-				} else {
-				$packed_weight.=$qty*$row['Part Gross Weight'];
-
-
+			if ($to_be_packed>0) {
+				$packed_weight+=$qty*$row['Part Gross Weight'];
 				$packed_items+=($qty/$to_be_packed);
-
 			}
-
-
-
 		}
+
+
 		if ($required_items==0) {
 			$percentage_packed=1;
 		}
@@ -1904,11 +1904,72 @@ class DeliveryNote extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
+		$this->update_xhtml_state();
 	}
 
 
-	function approve_packed(){
-			$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note Approved Done`="Yes" ,`Delivery Note Date Done Approved`=NOW() where `Delivery Note Key`=%d'
+	function update_xhtml_state() {
+
+
+		$state='';
+		if ($this->data['Delivery Note State']=='Ready to be Picked') {
+			$state=_('Ready to be Picked');
+		}
+		else if ($this->data['Delivery Note State']=='Ready to be Picked') {
+				$state=_('Ready to be Dispatched');
+			}
+		else if ($this->data['Delivery Note State']=='Dispatched') {
+				$state=_('Dispatched');
+			}
+		else if ($this->data['Delivery Note State']=='Cancelled to Restock') {
+				$state=_('Cancelled to Restock');
+			}
+		else if ($this->data['Delivery Note State']=='Cancelled') {
+				$state=_('Cancelled');
+			}
+		else {
+
+
+			if ($this->data['Delivery Note Assigned Picker Alias']) {
+
+				if ($this->data['Delivery Note Faction Picked']==1) {
+					$_tmp=_('Picked');
+				}else {
+					$_tmp=_('Picking').'('.percentage($this->data['Delivery Note Faction Picked'],1,0).')';
+				}
+				$state.='<div id="dn_state'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Picker Alias'].'</b> </div>';
+			}
+
+			if ($this->data['Delivery Note Assigned Packer Alias']) {
+
+				if ($this->data['Delivery Note Faction Packed']==1) {
+
+					$_tmp=_('Packed');
+
+				}else {
+					$_tmp=_('Packing').'('.percentage($this->data['Delivery Note Faction Packed'],1,0).')';
+				}
+				$state.='<div id="dn_state'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Packer Alias'].'</b> </div>';
+				if ($this->data['Delivery Note Date Done Approved']=='Yes') {
+					$state.='&#x2713;';
+				}
+
+			}
+		}
+
+		$this->data['Delivery Note XHTML State']=$state;
+		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note XHTML State`=%s where `Delivery Note Key`=%d  '
+			,prepare_mysql($state)
+			,$this->id
+		);
+		
+		mysql_query($sql);
+
+	}
+
+
+	function approve_packed() {
+		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note Approved Done`="Yes" ,`Delivery Note Date Done Approved`=NOW() where `Delivery Note Key`=%d'
 			,$this->id
 		);
 		mysql_query($sql);
@@ -1992,11 +2053,7 @@ class DeliveryNote extends DB_Table {
 			$picker_key=$this->data['Delivery Note Assigned Picker Key'];
 
 		}
-
-
-
-
-		$sql=sprintf("select `Map To Order Transaction Fact Key`,`Location Key`,`Out of Stock`,`No Picked Other`,`Not Found`,`Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+		$sql=sprintf("select `Given`,`Map To Order Transaction Fact Key`,`Location Key`,`Packed`,`Out of Stock`,`No Picked Other`,`Not Found`,`Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
 			,$itf_key
 		);
 
@@ -2009,7 +2066,12 @@ class DeliveryNote extends DB_Table {
 			$out_of_stock=$row['Out of Stock'];
 			$not_found=$row['No Picked Other'];
 			$no_picked_other=$row['Not Found'];
-			$pending=$row['Required']-$qty-$out_of_stock-$not_found-$no_picked_other;
+			$packed=$row['Packed'];
+			$pending=$row['Required']+$row['Given']-$out_of_stock-$not_found-$no_picked_other-$packed;
+
+			//print "qty: $qty ; pending: $pending ";
+
+
 			if ($pending!=0) {
 				$picking_factor=round($qty/$pending,4);
 			} else
@@ -2045,7 +2107,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-
+			$pending=$pending-$qty;
 
 
 			$location_key=$row['Location Key'];
@@ -2102,7 +2164,7 @@ class DeliveryNote extends DB_Table {
 			else
 				$state='Picking';
 
-
+			// print "$picking_factor $state xx";
 
 			$sql = sprintf("update `Order Transaction Fact` set `Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f ,`Cost Supplier`=%f,`Cost Storing`=%f where `Order Transaction Fact Key`=%d  ",
 				prepare_mysql ($state),
@@ -2261,13 +2323,9 @@ class DeliveryNote extends DB_Table {
 
 		if (!$packer_key) {
 			$packer_key=$this->data['Delivery Note Assigned Packer Key'];
-
 		}
 
-
-
-
-		$sql=sprintf("select `Note`,`Inventory Transaction Amount`,`Inventory Transaction Storing Charge Amount`,`Part SKU`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+		$sql=sprintf("select `Given`,`Not Found`,`No Picked Other`,`Note`,`Inventory Transaction Amount`,`Inventory Transaction Storing Charge Amount`,`Part SKU`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
 			,$itf_key
 		);
 		$res=mysql_query($sql);
@@ -2276,7 +2334,7 @@ class DeliveryNote extends DB_Table {
 
 
 			$sku=$row['Part SKU'];
-			if ($row['Required']-$row['Out of Stock']<=0 or $row['Picked']==0) {
+			if ($row['Required']+$row['Given']-$row['Out of Stock']<=0 or $row['Picked']==0) {
 				return;
 			}
 
@@ -2287,7 +2345,19 @@ class DeliveryNote extends DB_Table {
 				$qty=$row['Picked'];
 			}
 
-			$packing_factor=round($qty/$row['Picked'],4);
+			$out_of_stock=$row['Out of Stock'];
+			$not_found=$row['No Picked Other'];
+			$no_picked_other=$row['Not Found'];
+			$pending=$row['Required']+$row['Given']-$out_of_stock-$not_found-$no_picked_other;
+
+			if ($pending==0)
+				$packing_factor=1;
+			else
+				$packing_factor=round($qty/$pending,4);
+
+
+			//print $packing_factor;
+
 			$part=new Part($row['Part SKU']);
 			$weight=$qty*$part->data['Part Gross Weight'];
 
@@ -2303,7 +2373,7 @@ class DeliveryNote extends DB_Table {
 				,$itf_key
 			);
 			mysql_query($sql);
-//print $sql;
+			//print $sql;
 			$otf_key=$row['Map To Order Transaction Fact Key'];
 
 			$metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
@@ -2429,14 +2499,14 @@ class DeliveryNote extends DB_Table {
 	}
 
 
-function get_state(){
-switch($this->data['Delivery Note State']){
+	function get_state() {
+		switch ($this->data['Delivery Note State']) {
 
-default:
-return $this->data['Delivery Note State'];
-}
+		default:
+			return $this->data['Delivery Note State'];
+		}
 
-}
+	}
 
 	function ready_to_ship() {
 
@@ -2444,6 +2514,7 @@ return $this->data['Delivery Note State'];
 			// $order->update_shipping($this->id);
 			//  $order->update_charges($this->id);
 			$order->update_dispatch_state();
+
 
 		}
 

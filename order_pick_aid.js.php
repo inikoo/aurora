@@ -85,10 +85,15 @@ var myonCellClick = function(oArgs) {
 	  //  var new_qty=parseFloat(data['picked'])+1;
 	  
 	  
-	  	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_picked_other']
+	  	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_picked_other']-data['packed']
 
 
-	//  if(new_qty>(pending))
+if(pending==0 )
+return;
+
+
+
+	
 	        new_qty=pending;
 	    
 	    
@@ -100,19 +105,21 @@ var myonCellClick = function(oArgs) {
 	    var new_qty=parseFloat(data['picked'])+1;
 	  
 	  
-	  	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_picked_other']
+	  	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_picked_other']-data['packed']
+
+if(pending==0 || new_qty>pending)
+return;
 
 	// alert('('+new_qty+'>'+pending+')  '+data['required']+' o:'+data['out_of_stock']+' '+data['not_found']+' '+data['no_picked_other'])
 	//  return;
-	  
-	  //alert(pending);
-	  if(new_qty>(pending))
-	        new_qty=pending;
+	  alert(new_qty)
+	
+	    
 	    
 	    
 	}
 	else{
-	    qty=parseFloat(data['picked'])
+	    qty=parseFloat(data['picked']-data['packed'])
 	    if(qty==0){
 	        return;
 	    }
@@ -143,6 +150,28 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 					    	    r.formated_todo='';
 					    	datatable.updateCell(record,'formated_todo',r.formated_todo);
                             datatable.updateCell(record,'todo',r.todo);
+					        
+					        
+					        if(r.todo){
+					         	datatable.updateCell(record,'add','+');
+					         	datatable.updateCell(record,'check_mark','<span style="color:#ccc">&#x2713;</span>');
+					        }else{
+					        	datatable.updateCell(record,'add','<span style="color:#ccc">+</span>');
+					        	datatable.updateCell(record,'check_mark','&#x2713;');
+
+					        }
+					        
+					        if((r.picked-r.packed)>0){
+					        datatable.updateCell(record,'remove','-');
+
+					        }else{
+					        datatable.updateCell(record,'remove','<span style="color:#ccc">-</span>');
+					        }
+					        
+					        
+					   
+					        
+					        
 					        
 					        Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
 					        Dom.get('number_transactions').innerHTML=r.number_transactions;
@@ -197,7 +226,7 @@ var CellEdit = function (callback, newValue) {
     var data = record.getData();
     
     var picker_key=Dom.get('assigned_picker').getAttribute('key');
-    	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_picked_other']
+    	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_picked_other']-data['packed']
 
     if(newValue>pending)
         new_qty=pending
@@ -234,7 +263,22 @@ var CellEdit = function (callback, newValue) {
 					    
 					    
 					    
-					    
+					    	if(r.todo){
+					         	datatable.updateCell(record,'add','+');
+					         	datatable.updateCell(record,'check_mark','<span style="color:#ccc">&#x2713;</span>');
+					        }else{
+					        	datatable.updateCell(record,'add','<span style="color:#ccc">+</span>');
+					        	datatable.updateCell(record,'check_mark','&#x2713;');
+
+					        }
+					        
+					        if((r.picked-r.packed)>0){
+					        datatable.updateCell(record,'remove','-');
+
+					        }else{
+					        datatable.updateCell(record,'remove','<span style="color:#ccc">-</span>');
+					        }
+				
 					    
 					     //datatable.updateCell(record,'picked',r.picked);
 					     //datatable.updateCell(record,'todo',r.todo);
@@ -305,7 +349,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					,{key:"out_of_stock",label:"", width:1,hidden:true}
 					,{key:"not_found",label:"", width:1,hidden:true}
 					,{key:"no_picked_other",label:"", width:1,hidden:true}
-
+					,{key:"packed",label:"", width:1,hidden:true}
 				   ];
 
 
@@ -320,7 +364,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "sku"
 			 ,"used_in"
 			 ,"description"
-			 ,"location","picking_notes"
+			 ,"location","picking_notes","packed"
 			 ,"quantity","picked","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_picked_other","check_mark"
 			
 			 ]};

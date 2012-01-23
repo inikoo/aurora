@@ -5393,3 +5393,16 @@ ALTER TABLE `Staff Dimension` CHANGE `Staff Is Supervisor` `Staff Is Supervisor`
 ALTER TABLE `Store Dimension` ADD `Store Company Name` VARCHAR( 256 ) NOT NULL ;
 ALTER TABLE `Store Dimension` ADD `Store Invoice Message Header` text NOT NULL ;
 ALTER TABLE `Store Dimension` ADD `Store Invoice Message` text NOT NULL ;
+
+pcd.sql;
+
+ALTER TABLE `Order Dimension` ADD `Order Customer Sevices Note` TEXT NOT NULL;
+ALTER TABLE `Invoice Dimension` ADD `Invoice Customer Sevices Note` TEXT NOT NULL ;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Customer Sevices Note` TEXT NOT NULL ;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Warehouse Note` TEXT NOT NULL ;
+ALTER TABLE `Order Dimension` ADD `Order Current XHTML Dispatch State` TEXT NOT NULL AFTER `Order Current Dispatch State` ;
+
+
+ALTER TABLE `Delivery Note Dimension` CHANGE `Delivery Note State` `Delivery Note State` ENUM( 'Picker & Packer Assigned', 'Picking & Packing', 'Packer Assigned', 'Ready to be Picked', 'Picker Assigned', 'Picking', 'Picked', 'Packing', 'Packed', 'Approved', 'Dispatched', 'Cancelled', 'Cancelled to Restock', 'Packed Done' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Ready to be Picked';
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML State` TEXT NOT NULL AFTER `Delivery Note State`;
+

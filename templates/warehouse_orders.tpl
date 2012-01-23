@@ -1,6 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
- {include file='locations_navigation.tpl'}
+ {include file='orders_navigation.tpl'}
 <div class="branch"> 
   <span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {t}Pending Orders{/t}</span>
 </div>

@@ -405,7 +405,6 @@ var highlightEditableCell = function(oArgs) {
      case('check_all_object'):
     case('remove_object'):
     case('edit_object'):
-    case('edit_object'):
         case('edit_pending'):    
 
         this.highlightCell(target);

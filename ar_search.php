@@ -1057,7 +1057,7 @@ function search_locations($data) {
     while ($row=mysql_fetch_array($res)) {
         if ($number_results>$max_results)
             continue;
-        $results[]=array('type'=>'Location','area'=>$row['Warehouse Area Name'],'code'=>$row['Location Code'],'use'=>$row['Location Mainly Used For'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+        $results[$row['Location Key']]=array('type'=>'Location','area'=>$row['Warehouse Area Name'],'code'=>$row['Location Code'],'use'=>$row['Location Mainly Used For'],'link'=>'location.php?id=','key'=>$row['Location Key']);
         $number_results++;
 
     }
@@ -1076,10 +1076,11 @@ function search_locations($data) {
         while ($row=mysql_fetch_array($res)) {
             if ($number_results>$max_results)
                 continue;
-            $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+            $results[$row['Location Key']]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
             $number_results++;
 
         }
+$number_results=count($results);
     }
 
 
@@ -1093,10 +1094,11 @@ function search_locations($data) {
         while ($row=mysql_fetch_array($res)) {
             if ($number_results>$max_results)
                 continue;
-            $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+            $results[$row['Location Key']]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
             $number_results++;
 
         }
+        $number_results=count($results);
     }
 
 
@@ -1116,11 +1118,11 @@ function search_locations($data) {
     while ($row=mysql_fetch_array($res)) {
         if ($number_results>$max_results)
             continue;
-        $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],'used_in'=>$row['Product Code'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+        $results[$row['Location Key']]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],'used_in'=>$row['Product Code'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
         $number_results++;
 
     }
-
+ $number_results=count($results);
     $limit=$max_results-$number_results;
     if ($limit>0) {
 
@@ -1129,7 +1131,7 @@ function search_locations($data) {
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
 
-            $results[]=array('type'=>'Location','area'=>$row['Warehouse Area Name'],'code'=>$row['Location Code'],'use'=>$row['Location Mainly Used For'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+            $results[$row['Location Key']]=array('type'=>'Location','area'=>$row['Warehouse Area Name'],'code'=>$row['Location Code'],'use'=>$row['Location Mainly Used For'],'link'=>'location.php?id=','key'=>$row['Location Key']);
 
         }
     }
