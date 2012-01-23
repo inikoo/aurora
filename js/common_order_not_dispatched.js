@@ -195,7 +195,7 @@ Dom.addClass('change_discount_save','disabled')
 
 
 
-function change_discount(o,transaction_key,record_key){
+function change_discount(o,transaction_key,record_key,value){
 	region1 = Dom.getRegion(o); 
     region2 = Dom.getRegion('change_staff_discount'); 
 	var pos =[region1.right-region2.width,region1.bottom]
@@ -204,7 +204,7 @@ function change_discount(o,transaction_key,record_key){
 	
 		Dom.get('change_discount_transaction_key').value=transaction_key;
      Dom.get('change_discount_record_key').value= record_key;
-
+Dom.get('change_discount_value').value=value;
 	Dom.get('change_discount_value').focus();
 }
 function cancel_change_discount(){
@@ -221,6 +221,10 @@ function cancel_change_discount(){
 function save_change_discount(){
 if(!Dom.hasClass('change_discount_save','disabled')){
 
+Dom.setStyle('change_staff_discount_waiting','display','')
+Dom.setStyle('change_staff_discount_buttons','display','none')
+
+
 var ar_file='ar_edit_orders.php'; 
     	var request='tipo=update_percentage_discount&order_transaction_key='+Dom.get('change_discount_transaction_key').value+'&percentage='+Dom.get('change_discount_value').value+'&order_key='+Dom.get('order_key').value;
 
@@ -229,19 +233,25 @@ var ar_file='ar_edit_orders.php';
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
+						//alert(o.responseText);
+					
 					
 						
 						
-										    var r = YAHOO.lang.JSON.parse(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
-						for(x in r.data){
+					
+						  datatable=tables['table0'];
+
+
+		    record=datatable.getRecord(Dom.get("change_discount_record_key").value);
+					
+					for(x in r.data){
 
 						    Dom.get(x).innerHTML=r.data[x];
 						}
 					      Dom.get('ordered_products_number').value=r.data['ordered_products_number'];
-                 if(r.discounts){
+                 		if(r.discounts){
 						    Dom.get('tr_order_items_gross').style.display='';
 						}
 						else{
@@ -261,17 +271,12 @@ var ar_file='ar_edit_orders.php';
 
 						datatable.updateCell(record,'quantity',r.quantity);
 						datatable.updateCell(record,'to_charge',r.to_charge);
+						datatable.updateCell(record,'description',r.description);
 					
+change_staff_discount.hide();
+Dom.setStyle('change_staff_discount_waiting','display','none')
+Dom.setStyle('change_staff_discount_buttons','display','')
 
-
-						for(var i=0; i<records.getLength(); i++) {
-						    var rec=records.getRecord(i);
-						    if(r.discount_data[rec.getData('pid')]!=undefined){
-						    datatable.updateCell(rec,'to_charge',r.discount_data[rec.getData('pid')].to_charge);
-						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
-						    }
-						}
-						
 						
 						
 						

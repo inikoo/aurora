@@ -17,7 +17,7 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 case('update_percentage_discount'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_transaction_key'=>array('type'=>'key'),
 			'percentage'=>array('type'=>'numeric'),
 			'order_key'=>array('type'=>'key'),
@@ -545,14 +545,14 @@ function edit_new_order() {
 
 		$disconted_products=$order->get_discounted_products();
 		$order->skip_update_after_individual_transaction=false;
-		
+
 		$transaction_data=$order->add_order_transaction($data);
-		if(!$transaction_data['updated']){
-		$response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
-		echo json_encode($response);
-		return;
+		if (!$transaction_data['updated']) {
+			$response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
+			echo json_encode($response);
+			return;
 		}
-		
+
 		$new_disconted_products=$order->get_discounted_products();
 		foreach ($new_disconted_products as $key=>$value) {
 			$disconted_products[$key]=$value;
@@ -604,6 +604,7 @@ function edit_new_order() {
 			'state'=>200,
 			'quantity'=>$transaction_data['qty'],
 			'description'=>$product->data['Product XHTML Short Description'],
+			'discount_percentage'=>$transaction_data['discount_percentage'],
 			'key'=>$_REQUEST['id'],
 			'data'=>$updated_data,
 			'to_charge'=>$transaction_data['to_charge'],
@@ -784,7 +785,7 @@ function transactions_to_process() {
 	} else if ($display=='ordered_products') {
 			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
 			$where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-			$sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+			$sql_qty=',`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 		} else {
 		exit();
 	}
@@ -890,8 +891,8 @@ function transactions_to_process() {
 
 
 
-	$sql="select `Order Transaction Fact Key`, `Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-	// print $sql;
+	$sql="select `Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	//  print $sql;
 
 	$res = mysql_query($sql);
 
@@ -995,7 +996,7 @@ function transactions_to_process() {
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
-			'otf_key'=>$row['Order Transaction Fact Key'],
+			'otf_key'=>($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
 			'code'=>$code,
 			'description'=>$row['Product XHTML Short Description'].$deal_info,
 			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea'),
@@ -1018,7 +1019,11 @@ function transactions_to_process() {
 			//'to_charge'=>'<span style="cursor:pointer" onClick="change_discount(this,'.$row['Order Transaction Fact Key'].')">'.money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']).'</span>',
 			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']),
 
-			'dispatching_status'=>$dispatching_status
+			'dispatching_status'=>$dispatching_status,
+			'discount_percentage'=>($row['Order Transaction Total Discount Amount']>0?percentage($row['Order Transaction Total Discount Amount'],$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''):'')
+
+
+
 
 		);
 
@@ -1728,7 +1733,7 @@ function ready_to_pick_orders() {
 
 		//$dn=new DeliveryNote($row['Delivery Note Key']);
 		//$dn->update_xhtml_state();
-//,'','','','','','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
+		//,'','','','','','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
 
 		$operations='<div id="operations'.$row['Delivery Note Key'].'">';
 		if ($row['Delivery Note State']=='Ready to be Picked') {
@@ -1746,11 +1751,11 @@ function ready_to_pick_orders() {
 		}
 		elseif ($row['Delivery Note State']=='Picking') {
 			$operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
-		
+
 			$operations.=' | <b>'.$row['Delivery Note Assigned Picker Alias'].'</b>   <a  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  > '._('picking order')."</a>";
 			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
 
-	}
+		}
 		elseif ($row['Delivery Note State']=='Picked') {
 			$operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
 			$operations.=' | <span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].')">'._('Start packing')."</span>";
@@ -1765,23 +1770,23 @@ function ready_to_pick_orders() {
 
 		}elseif ($row['Delivery Note State']=='Picking & Packing') {
 			$operations.='<b>'.$row['Delivery Note Assigned Picker Alias'].'</b>   <a  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  > '._('picking order')."</a>";
-					$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
+			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
 
-		$operations.=' | <b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('packing order')."</a>";
+			$operations.=' | <b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('packing order')."</a>";
 			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
 
-			
+
 		}elseif ($row['Delivery Note State']=='Picking & Packing') {
 			$operations.='<b>'.$row['Delivery Note Assigned Picker Alias'].'</b>   <a  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  > '._('pick order')."</a>";
-					$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
+			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
 
-		$operations.=' | <b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('pack order')."</a>";
+			$operations.=' | <b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('pack order')."</a>";
 			$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
 
-			
-		}elseif ($row['Delivery Note State']=='Packed Done')  {
+
+		}elseif ($row['Delivery Note State']=='Packed Done') {
 			$operations.='<span style="color:#777">'._('Waiting shipping approval').'</a>';
-		}elseif ($row['Delivery Note State']=='Approved')  {
+		}elseif ($row['Delivery Note State']=='Approved') {
 			$operations.='<a  href="dn.php?id='.$row['Delivery Note Key'].'"  > '._('Dispatch order')."</a>";
 		}
 		else {
@@ -2142,7 +2147,7 @@ function picking_aid_sheet() {
 		//print_r($row);
 
 		$todo=$row['Required']+$row['Given']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
-	
+
 		if ($todo==0)
 			$formated_todo='';
 		else
@@ -3155,46 +3160,55 @@ function cc_payment($data) {
 }
 
 
-function update_percentage_discount($data){
+function update_percentage_discount($data) {
 
 	$order=new Order($data['order_key']);
-	if(!$order->id){
-	$response= array('state'=>400,'msg'=>'order not found');
-	echo json_encode($response);
-	return;
-	}
-	
-	
-	 $transaction_data=$order->update_transaction_discount_percentage($data['order_transaction_key'],$data['percentage']);
-
-		$updated_data=array(
-			'order_items_gross'=>$order->get('Items Gross Amount'),
-			'order_items_discount'=>$order->get('Items Discount Amount'),
-			'order_items_net'=>$order->get('Items Net Amount'),
-			'order_net'=>$order->get('Total Net Amount'),
-			'order_tax'=>$order->get('Total Tax Amount'),
-			'order_charges'=>$order->get('Charges Net Amount'),
-			'order_credits'=>$order->get('Net Credited Amount'),
-			'order_shipping'=>$order->get('Shipping Net Amount'),
-			'order_total'=>$order->get('Total Amount'),
-			'ordered_products_number'=>$order->get('Number Items'),
-		);
-
-
-
-
-		$response= array(
-			'state'=>200,
-			'quantity'=>$transaction_data['qty'],
-		//	'description'=>$product->data['Product XHTML Short Description'],
-		//	'key'=>$_REQUEST['id'],
-			'data'=>$updated_data,
-			'to_charge'=>$transaction_data['to_charge'],
-			'discount_data'=>$adata,
-			'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
-			'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
-		);
+	if (!$order->id) {
+		$response= array('state'=>400,'msg'=>'order not found');
 		echo json_encode($response);
+		return;
+	}
+
+
+	$transaction_data=$order->update_transaction_discount_percentage($data['order_transaction_key'],$data['percentage']);
+if($order->error){
+
+$response= array('state'=>400,'msg'=>$order->msg);
+		echo json_encode($response);
+		return;
+}
+
+
+
+
+	$updated_data=array(
+		'order_items_gross'=>$order->get('Items Gross Amount'),
+		'order_items_discount'=>$order->get('Items Discount Amount'),
+		'order_items_net'=>$order->get('Items Net Amount'),
+		'order_net'=>$order->get('Total Net Amount'),
+		'order_tax'=>$order->get('Total Tax Amount'),
+		'order_charges'=>$order->get('Charges Net Amount'),
+		'order_credits'=>$order->get('Net Credited Amount'),
+		'order_shipping'=>$order->get('Shipping Net Amount'),
+		'order_total'=>$order->get('Total Amount'),
+		'ordered_products_number'=>$order->get('Number Items'),
+	);
+
+
+
+
+	$response= array(
+		'state'=>200,
+		'quantity'=>$transaction_data['qty'],
+		'description'=>$transaction_data['description'],
+		// 'key'=>$_REQUEST['id'],
+		'data'=>$updated_data,
+		'to_charge'=>$transaction_data['to_charge'],
+		//'discount_data'=>$adata,
+		'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
+		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
+	);
+	echo json_encode($response);
 
 }
 

@@ -36,53 +36,26 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-//$sql="select * from kbase.`Country Dimension`";
-//$result=mysql_query($sql);
-//while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-//print "cp ../../examples/_countries/".strtolower(preg_replace('/\s/','_',$row['Country Name']))."/ammap_data.xml ".$row['Country Code'].".xml\n";
-//}
-//exit;
 
-$sql=sprintf("select *  from  `Order Dimension`    ");
+$sql=sprintf("select *  from  `Order Transaction Deal Bridge`    ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-    $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Order')  and `Direct Object Key`=%d ",$row['Order Key']);
+    $sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d ",
+    $row['Order Transaction Fact Key']);
     //print "$sql\n";
     $res2=mysql_query($sql);
     if ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 
     } else {
-        $id=preg_replace('/[^\d]/i','',$row['Order Original Metadata']);
-        $sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
+       
+        $sql=sprintf("delete  from  `Order Transaction Deal Bridge` where `Order Transaction Fact Key`=%d",
+        $row['Order Transaction Fact Key']);
     //    print "$sql\n";
        mysql_query($sql);
     }
 
 }
-
-
-
-$sql=sprintf("select * from  `Delivery Note Dimension`    ");
-$res=mysql_query($sql);
-while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-    $sql=sprintf("select `History Key` , `Direct Object Key` from `History Dimension`  where  `Direct Object` in ('Delivery Note','After Sale')    and `Direct Object Key`=%d ",$row['Delivery Note Key']);
-    $res2=mysql_query($sql);
-    if ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
-
-    } else {
-       $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
-
-        $sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
-     //    print "$sql\n";
-        mysql_query($sql);
-    }
-
-}
-
-
-
 
 
 

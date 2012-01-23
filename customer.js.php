@@ -2257,7 +2257,7 @@ function validate_customer_tax_number(query){
 }
 
 function validate_email_comment(query){
-alert(query)
+//alert(query)
  //if(Dom.get('Customer_Main_Email_comment').getAttribute('ovalue')!=query){
      validate_scope_data.customer_quick.email.changed=true;
  //}
