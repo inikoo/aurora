@@ -1,7 +1,7 @@
 <?php
 include_once 'common.php';
 include_once 'class.CurrencyExchange.php';
-
+include_once('class.CompanyArea.php');
 include_once 'class.Order.php';
 if (!$user->can_view('orders')) {
 	header('Location: index.php');
@@ -34,7 +34,9 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
 	'js/table_common.js',
-	'js/search.js'
+	'js/common_assign_picker_packer.js.php',
+	'js/search.js',
+	'dn.js.php'
 );
 
 
@@ -95,6 +97,53 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
+$company_area=new CompanyArea('code','WAH');
+$pickers=$company_area->get_current_staff_with_position_code('PICK');
+$number_cols=5;
+$row=0;
+$pickers_data=array();
+$contador=0;
+foreach($pickers as $picker) {
+    if (fmod($contador,$number_cols)==0 and $contador>0)
+        $row++;
+    $tmp=array();
+    foreach($picker as $key=>$value) {
+        $tmp[preg_replace('/\s/','',$key)]=$value;
+    }
+    $pickers_data[$row][]=$tmp;
+    $contador++;
+}
+
+$smarty->assign('pickers',$pickers_data);
+
+$packers=$company_area->get_current_staff_with_position_code('PACK');
+$number_cols=5;
+$row=0;
+$packers_data=array();
+$contador=0;
+foreach($packers as $packer) {
+    if (fmod($contador,$number_cols)==0 and $contador>0)
+        $row++;
+    $tmp=array();
+    foreach($packer as $key=>$value) {
+        $tmp[preg_replace('/\s/','',$key)]=$value;
+    }
+    $packers_data[$row][]=$tmp;
+    $contador++;
+}
+
+$smarty->assign('packers',$packers_data);
+
+
+$tipo_filter2='code';
+$filter_menu2=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
 
 
 $smarty->assign('dn',$dn);
@@ -107,6 +156,6 @@ $smarty->assign('parent','orders');
 $smarty->assign('title',_('Delivery Note').' '.$dn->get('Delivery Note Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
+//print $template;
 $smarty->display($template);
 ?>

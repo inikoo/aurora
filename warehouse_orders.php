@@ -70,6 +70,7 @@ $js_files=array(
               'js/search.js',
               'warehouse_orders.js.php',
               'js/edit_common.js',
+		'js/common_assign_picker_packer.js.php',
               'js/csv_common.js'
           );
 
