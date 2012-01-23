@@ -1060,12 +1060,7 @@ class DeliveryNote extends DB_Table {
 	}
 
 
-	function approved_for_shipping($date) {
-		foreach ($this->get_orders_objects() as $key=>$order) {
-			$order->update_dispatch_state();
-
-		}
-	}
+	
 	private function handle_to_customer($data) {
 
 		//   print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
@@ -1159,7 +1154,7 @@ class DeliveryNote extends DB_Table {
 		);
 		mysql_query($sql);
 
-
+$this->update_xhtml_state();
 		foreach ($this->get_orders_objects() as $key=>$order) {
 			$order->update_dispatch_state();
 
@@ -1225,7 +1220,11 @@ class DeliveryNote extends DB_Table {
 
 			);
 		}
+
+		// print "Dispatching\n";
+
 		foreach ($this->get_orders_objects() as $order) {
+			// print_r($order->data);
 			$order->update_dispatch_state();
 
 		}
@@ -1641,17 +1640,17 @@ class DeliveryNote extends DB_Table {
 		mysql_query($sql);
 
 	}
-	function update_picking_percentage() {
-		$percentage_picked=$this->get_picking_percentage();
 
 
-		// print "Picking percentage:".$percentage_picked."\n";
-		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note Faction Picked`=%f where `Delivery Note Key`=%d  '
-			,$percentage_picked
-			,$this->id
-		);
-		mysql_query($sql);
-		$this->data['Delivery Note Faction Picked']=$percentage_picked;
+
+
+
+
+	function get_state() {
+
+		$state='Unknown';
+
+
 
 		if ($this->data['Delivery Note Faction Picked']==1 and $this->data['Delivery Note Faction Packed']==1) {
 
@@ -1662,8 +1661,6 @@ class DeliveryNote extends DB_Table {
 
 				$state='Packed';
 			}
-
-
 		}elseif ($this->data['Delivery Note Faction Picked']>0 and $this->data['Delivery Note Faction Packed']>0) {
 			$state='Picking & Packing';
 
@@ -1686,14 +1683,40 @@ class DeliveryNote extends DB_Table {
 		}else {
 			$this->error=true;
 			$this->msg="unknown error in update_picking_percentage\n";
-			//print  $this->msg;
-			return;
+
 
 		}
+
+		return $state;
+
+	}
+
+
+
+	function update_picking_percentage() {
+		$percentage_picked=$this->get_picking_percentage();
+
+
+		// print "Picking percentage:".$percentage_picked."\n";
+		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note Faction Picked`=%f where `Delivery Note Key`=%d  '
+			,$percentage_picked
+			,$this->id
+		);
+		mysql_query($sql);
+		$this->data['Delivery Note Faction Picked']=$percentage_picked;
+
+		$state=$this->get_state();
 
 
 		//'Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
 		$this->update_state($state);
+
+		foreach ($this->get_orders_objects() as $order) {
+
+
+			$order->update_dispatch_state();
+		}
+
 
 	}
 
@@ -1790,9 +1813,7 @@ class DeliveryNote extends DB_Table {
 			$percentage_picked=1;
 		}
 
-		foreach ($this->get_orders_objects() as $order) {
-			$order->update_dispatch_state();
-		}
+
 
 
 		//print "percentage picked $percentage_picked\n";
@@ -1809,41 +1830,28 @@ class DeliveryNote extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-		$this->data['Delivery Order Packing Factor']=$percentage_packed;
+		$this->data['Delivery Note Faction Packed']=$percentage_packed;
 
-		//print $percentage_packed;
-		if ($percentage_packed==1) {
-			if ($this->data['Delivery Note State']=='Packing' or $this->data['Delivery Note State']=='Picked') {
-				$state='Packed';
-			} else {
-				$this->error=true;
-				$this->msg="unknown error in update_packing_percentage\n";
-				//print  $this->msg;
-				return;
-			}
-		} else {
-			if ($this->data['Delivery Note State']=='Picking' or $this->data['Delivery Note State']=='Packer Assigned' or $this->data['Delivery Note State']=='Picking & Packing') {
-				$state='Picking & Packing';
 
-			}else if ($this->data['Delivery Note State']=='Packed' or $this->data['Delivery Note State']=='Picked' or $this->data['Delivery Note State']=='Packing') {
-					$state='Packing';
-				}else {
-				$this->error=true;
-				$this->msg="unknown error in update_packing_percentage2\n";
-				//print  $this->msg;
-				return;
-			}
-		}
+		$state=$this->get_state();
+
+
+
+
 		$this->update_state($state);
 
-		$orders_ids=$this->get_orders_ids();
-		if (count($orders_ids)==1) {
-			$order=new Order(array_pop($orders_ids));
+
+		foreach ($this->get_orders_objects() as $order) {
+
 			$order->update_item_totals_from_order_transactions();
 			$order->update_totals_from_order_transactions();
-			$order->update_dispatch_state();
 
+
+
+			$order->update_dispatch_state();
 		}
+
+
 	}
 
 	function get_packing_percentage() {
@@ -1864,6 +1872,10 @@ class DeliveryNote extends DB_Table {
 
 
 			$qty=$row['Packed'];
+
+
+			//print "Packing $qty $to_be_packed\n";
+
 			if ($qty>$to_be_packed)
 				$qty=$to_be_packed;
 
@@ -1892,7 +1904,7 @@ class DeliveryNote extends DB_Table {
 		}
 
 
-
+		//print "packing percentage: $percentage_packed\n";
 
 		return $percentage_packed;
 
@@ -1924,9 +1936,13 @@ class DeliveryNote extends DB_Table {
 		else if ($this->data['Delivery Note State']=='Cancelled to Restock') {
 				$state=_('Cancelled to Restock');
 			}
+		else if ($this->data['Delivery Note State']=='Approved') {
+				$state=_('Ready to Ship');
+			}
 		else if ($this->data['Delivery Note State']=='Cancelled') {
 				$state=_('Cancelled');
-			}
+			}	
+			
 		else {
 
 
@@ -1950,8 +1966,8 @@ class DeliveryNote extends DB_Table {
 					$_tmp=_('Packing').'('.percentage($this->data['Delivery Note Faction Packed'],1,0).')';
 				}
 				$state.='<div id="dn_state'.$this->data['Delivery Note Key'].'">'.$_tmp.' <b>'.$this->data['Delivery Note Assigned Packer Alias'].'</b> </div>';
-				if ($this->data['Delivery Note Date Done Approved']=='Yes') {
-					$state.='&#x2713;';
+				if ($this->data['Delivery Note Approved Done']=='Yes') {
+					$state.=' &#x2713;';
 				}
 
 			}
@@ -1962,19 +1978,82 @@ class DeliveryNote extends DB_Table {
 			,prepare_mysql($state)
 			,$this->id
 		);
-		
+
 		mysql_query($sql);
 
 	}
 
 
-	function approve_packed() {
-		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note Approved Done`="Yes" ,`Delivery Note Date Done Approved`=NOW() where `Delivery Note Key`=%d'
+	function approve_packed($date=false) {
+
+		$this->data['Delivery Note Approved Done']="Yes";
+		$this->data['Delivery Note State']="Packed Done";
+
+		if (!$date)
+			$this->data['Delivery Note Date Done Approved']=gmdate('Y-m-d H:i:s');
+		else
+			$this->data['Delivery Note Date Done Approved']=$date;
+
+		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note State`=%s,`Delivery Note Approved Done`="Yes" ,`Delivery Note Date Done Approved`=%s where `Delivery Note Key`=%d'
+			,prepare_mysql($this->data['Delivery Note State'])
+			,prepare_mysql($this->data['Delivery Note Date Done Approved'])
 			,$this->id
 		);
 		mysql_query($sql);
+
+		$this->update_xhtml_state();
+		foreach ($this->get_orders_objects() as $order) {
+
+			$order->update_dispatch_state();
+
+		}
+
+
 		$this->updated=true;
 	}
+
+
+
+	function approved_for_shipping($date=false) {
+
+
+//print "-->> approve shipping\n";
+
+		$this->data['Delivery Note Approved To Dispatch']="Yes";
+
+		$this->data['Delivery Note State']="Approved";
+		if (!$date)
+			$this->data['Delivery Note Date Dispatched Approved']=gmdate('Y-m-d H:i:s');
+		else
+			$this->data['Delivery Note Date Dispatched Approved']=$date;
+
+		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note State`=%s,`Delivery Note Approved Done`="Yes" ,`Delivery Note Date Dispatched Approved`=%s where `Delivery Note Key`=%d'
+			,prepare_mysql($this->data['Delivery Note State'])
+			,prepare_mysql($this->data['Delivery Note Date Dispatched Approved'])
+			,$this->id
+		);
+		mysql_query($sql);
+
+$this->update_xhtml_state();
+		foreach ($this->get_orders_objects() as $order) {
+			// $order->update_shipping($this->id);
+			//  $order->update_charges($this->id);
+			$order->update_dispatch_state();
+
+
+		}
+
+
+		//$shipping_amount=$this->calculate_shipping();
+		//$charges_amount=$this->calculate_charges();
+
+
+
+	}
+
+
+
+
 
 	function set_as_out_of_stock($itf_key,$qty,$date=false,$picker_key=false) {
 
@@ -2406,7 +2485,8 @@ class DeliveryNote extends DB_Table {
 			$sql = sprintf("update `Delivery Note Dimension` set `Delivery Note Weight`=%f,`Delivery Note Date Finish Packing`=%s where `Delivery Note Key`=%d",
 				$weight,
 				prepare_mysql ($date),
-				$this->id);
+				$this->id
+			);
 			mysql_query($sql);
 
 
@@ -2499,32 +2579,9 @@ class DeliveryNote extends DB_Table {
 	}
 
 
-	function get_state() {
-		switch ($this->data['Delivery Note State']) {
-
-		default:
-			return $this->data['Delivery Note State'];
-		}
-
-	}
-
-	function ready_to_ship() {
-
-		foreach ($this->get_orders_objects() as $order) {
-			// $order->update_shipping($this->id);
-			//  $order->update_charges($this->id);
-			$order->update_dispatch_state();
-
-
-		}
-
-
-		//$shipping_amount=$this->calculate_shipping();
-		//$charges_amount=$this->calculate_charges();
 
 
 
-	}
 
 	function add_orphan_transactions($data) {
 		if ($data['Order Key']) {
