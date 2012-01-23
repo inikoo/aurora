@@ -68,7 +68,7 @@ sku=tables.table2.getRecord(oArgs.target).getData('sku')
 
 
 
-var highlightEditableCell = function(oArgs) {
+function highlightEditableCell(oArgs) {
 
     var target = oArgs.target;
     column = this.getColumn(target);

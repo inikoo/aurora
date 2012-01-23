@@ -1,6 +1,6 @@
 {include file='header.tpl'} 
 <div id="bd">
-	{include file='locations_navigation.tpl'}
+	{include file='locations_navigation.tpl'} 
 	<input value="{$delivery_note->id}" id="dn_key" type="hidden" />
 	<div class="branch">
 		<span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pick Aid{/t})</span> 
@@ -10,29 +10,19 @@
 			<button onclick="window.location='warehouse_orders.php?id={$warehouse->id}'"><img src="art/icons/house.png" alt=""> {t}Pending Orders{/t}</button> 
 		</div>
 		<div class="buttons" style="float:right">
-			<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> 
-			<button id="pick_all" style="height:24px;{if $delivery_note->get('Delivery Note Faction Picked')==1}display:none{/if}" ><img src="art/icons/accept.png" alt="" /> {t}Set all as Picked{/t}</button> 
-			<a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Faction Picked')==1}display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1" ><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> 
-			
-			<button id="start_packing" style="height:24px;{if $delivery_note->get('Delivery Note Faction Picked')==0 or $delivery_note->get('Delivery Note Assigned Packer Key')}display:none{/if}"><img src="art/icons/package.png" alt="" /> {t}Start Packing{/t}</button> 
-			
-			<a  style="height:14px;{if $delivery_note->get('Delivery Note Faction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key')}display:none{/if}"  href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 
-
-			
-
+			<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> <button id="pick_all" style="height:24px;{if $delivery_note->get('Delivery Note Faction Picked')==1}display:none{/if}"><img src="art/icons/accept.png" alt="" /> {t}Set all as Picked{/t}</button> <a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Faction Picked')==1}display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> <button id="start_packing" style="height:24px;{if $delivery_note->get('Delivery Note Faction Picked')==0 or $delivery_note->get('Delivery Note Assigned Packer Key')}display:none{/if}"><img src="art/icons/package.png" alt="" /> {t}Start Packing{/t}</button> <a style="height:14px;{if $delivery_note->get('Delivery Note Faction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key')}display:none{/if}" href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	
 	<div id="control_panel" style="clear:both;margin-top:15px">
 		<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
 			<div style="xborder:1px solid #ddd;width:350px;float:left">
 				<h1 style="padding:0 0 10px 0">
-					{t}Picking for Delivery Note{/t} {$delivery_note->get('Delivery Note ID')} 
+					{t}Picking of Delivery Note{/t} <a href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> 
 				</h1>
 				<h2 style="padding:0">
-					{$delivery_note->get('Delivery Note Customer Name')} ({$customer->get_formated_id()}) {$delivery_note->get('Delivery Note Country 2 Alpha Code')} 
+					{$delivery_note->get('Delivery Note Customer Name')} (<a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a>) {$delivery_note->get('Delivery Note Country 2 Alpha Code')} 
 				</h2>
 				<div style="clear:both">
 				</div>
@@ -120,43 +110,44 @@
 	</div>
 </div>
 <div id="pack_it_dialog" style="width:300px;">
-<div class="options" style="width:300px;padding:10px;text-align:center" >
-
-   <table border=1 style="margin:auto" id="pack_it_buttons">
-      {foreach from=$packers item=packer_row name=foo}
-      <tr>
-	 {foreach from=$packer_row key=row_key item=packer }
-	
-	<td staff_id="{$packer.StaffKey}" id="packer_pack_it{$packer.StaffKey}" class="pack_it_button" onClick="select_staff_pack_it(this,event)" >{$packer.StaffAlias}</td>
-	{/foreach}
-	</tr>
-      {/foreach}
-    </table>
-
-
+	<div class="options" style="width:300px;padding:10px;text-align:center">
+		<table border="1" style="margin:auto" id="pack_it_buttons">
+			{foreach from=$packers item=packer_row name=foo} 
+			<tr>
+				{foreach from=$packer_row key=row_key item=packer } 
+				<td staff_id="{$packer.StaffKey}" id="packer_pack_it{$packer.StaffKey}" class="pack_it_button" onclick="select_staff_pack_it(this,event)">{$packer.StaffAlias}</td>
+				{/foreach} 
+			</tr>
+			{/foreach} 
+		</table>
+	</div>
+	<table class="edit" border="0" style="margin:0px auto;margin-bottom:12px">
+		<input type="hidden" id="pack_it_staff_key"> 
+		<input type="hidden" id="pack_it_dn_key" value="{$delivery_note->id}"> 
+		<tr class="first">
+			<td class="label">{t}Staff Name{/t}:</td>
+			<td style="text-align:left"> 
+			<div style="width:190px;position:relative;top:00px">
+				<input style="text-align:left;width:180px" id="pack_it_Staff_Name" value="" ovalue="" valid="0"> 
+				<div id="pack_it_Staff_Name_Container">
+				</div>
+			</div>
+			</td>
+			<td id="pack_it_Staff_Name_msg" class="edit_td_alert"></td>
+		</tr>
+		<tr id="pack_it_pin_tr" style="visibility:hidden">
+			<td><span id="pack_it_pin_alias"></span> {t}PIN{/t}:</td>
+			<td>
+			<input id="pack_it_password" type="password" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons">
+				<button class="negative" onclick="close_dialog('pack_it_dialog')">{t}Cancel{/t}</button> <button class="positive" onclick="pack_it_save()">{t}Go{/t}</button> 
+			</div>
+			<td>
+		</tr>
+	</table>
 </div>
-<table class="edit" border=0 style="margin:0px auto;margin-bottom:12px">
-<input type="hidden" id="pack_it_staff_key">
-<input type="hidden" id="pack_it_dn_key" value="{$delivery_note->id}">
-
-<tr class="first"><td  class="label">{t}Staff Name{/t}:</td>
-   <td  style="text-align:left">
-     <div  style="width:190px;position:relative;top:00px" >
-       <input style="text-align:left;width:180px" id="pack_it_Staff_Name" value="" ovalue="" valid="0">
-       <div id="pack_it_Staff_Name_Container"  ></div>
-     </div>
-   </td>
-   <td id="pack_it_Staff_Name_msg" class="edit_td_alert"></td>
- </tr>
-<tr id="pack_it_pin_tr" style="visibility:hidden"><td><span id="pack_it_pin_alias"></span> {t}PIN{/t}:</td><td><input id="pack_it_password" type="password" /></td></tr>
-  <tr><td colspan="2">
-  <div class="buttons">
-  <button class="negative" onclick="close_dialog('pack_it_dialog')">{t}Cancel{/t}</button>
-  <button class="positive" onclick="pack_it_save()" >{t}Go{/t}</button>
-  </div>
-  <td></tr>
-</table>
-
-</div>
-
 {include file='footer.tpl'} 

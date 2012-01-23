@@ -33,11 +33,12 @@ $smarty->assign('warehouse_id',$warehouse->id);
 
 
 
-$smarty->assign('search_label',_('Parts'));
-$smarty->assign('search_scope','parts');
+$smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders');
 
 
 $smarty->assign('view','warehouse_orders');
+$smarty->assign('store_id',false);
 
 
 $css_files=array(
@@ -66,6 +67,7 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/edit_common.js',
+              'js/search.js',
               'warehouse_orders.js.php',
               'js/edit_common.js',
               'js/csv_common.js'

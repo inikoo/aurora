@@ -143,19 +143,15 @@ var packer_key=Dom.get('assigned_packer').getAttribute('key');
 
                             if(r.number_packed_transactions<r.number_picked_transactions){
                             datatable.updateCell(record,'add','+');
-                                                        datatable.updateCell(record,'remove','<span style="color:#ccc">+</span>');
-
+                            datatable.updateCell(record,'remove','<span style="color:#ccc">+</span>');
                             datatable.updateCell(record,'done','');
                             datatable.updateCell(record,'check_mark','&#8704;');
 
 							}else{
 							datatable.updateCell(record,'add','<span style="color:#ccc">+</span>');
-                                                        datatable.updateCell(record,'remove','-');
-
+                            datatable.updateCell(record,'remove','-');
                             datatable.updateCell(record,'done','&#x2713;');
                             datatable.updateCell(record,'check_mark','<span style="color:#ccc">&#8704;</span>');
-
-
 							}
 
 
@@ -316,8 +312,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pack_aid'}
 					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pack_aid'}
 					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pack_aid'}
-					,{key:"picked",label:"<?php echo _('Picked')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					,{key:"notes",label:"<?php echo _('Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					,{key:"picked",label:"<?php echo _('Picked')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"notes",label:"<?php echo _('Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"out_of_stock",label:"", width:1,hidden:true}
 					,{key:"not_found",label:"", width:1,hidden:true}
 					,{key:"no_packed_other",label:"", width:1,hidden:true}
@@ -395,92 +391,7 @@ if(no_dipatchable_units>0){
 
 }
 
-function save_no_dispatchable(){
 
-todo=Dom.get('todo_units').value;
-packed=Dom.get('packed_units').value;
-
-required=Dom.get('required_units').value;
-
-out_of_stock=(Dom.get('out_of_stock_units').value==''?0:Dom.get('out_of_stock_units').value);
-not_found=(Dom.get('not_found_units').value==''?0:Dom.get('not_found_units').value);
-no_packed_other=(Dom.get('no_packed_other_units').value==''?0:Dom.get('no_packed_other_units').value);
-
-//alert(todo+' '+out_of_stock+' '+not_found+' '+no_packed_other)
-if(required-packed-out_of_stock-not_found-no_packed_other<0){
-Dom.setStyle('todo_error_msg','display','block')
-return;
-}
-
-
-var ar_file='ar_edit_orders.php';
-var request='tipo=update_no_dispatched&dn_key='+dn_key+'&itf_key='+Dom.get('todo_itf_key').value+'&out_of_stock='+out_of_stock+'&not_found='+not_found+'&no_packed_other='+no_packed_other;
-
-
-alert(request)
-
-YAHOO.util.Connect.asyncRequest(
-				    'POST',
-				    ar_file, {
-					success:function(o) {
-					//    alert(o.responseText);
-
-					   var r = YAHOO.lang.JSON.parse(o.responseText);
-					    if (r.state == 200) {
-
-					     if(r.result=='updated'){
-
-						    Dom.get('number_packed_transactions').innerHTML=r.number_packed_transactions;
-					        Dom.get('number_transactions').innerHTML=r.number_transactions;
-					        Dom.get('percentage_packed').innerHTML=r.percentage_packed;
-					        if(r.number_packed_transactions>=r.number_transactions){
-					            Dom.setStyle('finish','display','');
-					            Dom.setStyle('continue_later','display','none');
-					        }else{
-					            Dom.setStyle('finish','display','none');
-					            Dom.setStyle('continue_later','display','');
-					        }
-
-					        datatable=tables['pack_aidDataTable'];
-					        datatable.updateCell(updating_record,'formated_todo',r.formated_todo);
-                            datatable.updateCell(updating_record,'notes',r.notes);
-                           // datatable.updateCell(updating_record,'todo',r.todo);
-                            datatable.updateCell(updating_record,'out_of_stock',r.out_of_stock);
-
-                            datatable.updateCell(updating_record,'not_found',r.not_found);
-                            datatable.updateCell(updating_record,'no_packed_other',no_packed_other);
-
-  no_dispatchable_editor_dialog.hide();
-
-
-
-                      }
-
-
-
-
-
-
-
-
-
-
-					    } else {
-						alert(r.msg);
-
-					    }
-					},
-					    failure:function(o) {
-					    alert(o.statusText);
-
-					},
-					    scope:this
-					    },
-				    request
-
-				    );
-
-}
 
 
 

@@ -2140,8 +2140,8 @@ function list_part_categories() {
 
 
 
-    $sql="select `1 Year Acc Sold` from `Category Dimension` C left join `Part Category Dimension` P on (P.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
- print $sql;
+    $sql="select * from `Category Dimension` C left join `Part Category Dimension` P on (P.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+ 
     $res = mysql_query($sql);
     $adata=array();
 
@@ -2150,7 +2150,7 @@ function list_part_categories() {
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-     if ($period=='1w')
+     if ($period=='week')
             $sold=$row['1 Week Acc Sold'];
         else if ($period=='10d')
             $sold=$row['10 Days Acc Sold'];
@@ -2160,7 +2160,7 @@ function list_part_categories() {
             $sold=$row['1 Quarter Acc Sold'];
         else if ($period=='6m')
             $sold=$row['6 Month Acc Sold'];
-        else if ($period=='1y')
+        else if ($period=='year')
             $sold=$row['1 Year Acc Sold'];
         else if ($period=='3y')
             $sold=$row['3 Year Acc Sold'];
@@ -2183,7 +2183,8 @@ function list_part_categories() {
 
 
         $name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
-
+	
+	
         $adata[]=array(
                      'id'=>$row['Category Key'],
                      'name'=>$name,

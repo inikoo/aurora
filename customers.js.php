@@ -258,14 +258,6 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
-
-
-
-
-
-
-
-
 var ids=['all_contacts','contacts_with_orders'];
 YAHOO.util.Event.addListener(ids, "click",change_block_view);
 
@@ -273,13 +265,9 @@ YAHOO.util.Event.addListener(ids, "click",change_block_view);
 
 //var search_data={tipo:'customer_name',container:'customer'};
 
-
-
-
 dialog_new_customer = new YAHOO.widget.Dialog("dialog_new_customer", {context:["new_customer","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_new_customer.render();
 Event.addListener("new_customer", "click", dialog_new_customer.show,dialog_new_customer , true);
-
 Event.addListener("close_dialog_new_customer", "click", dialog_new_customer.hide,dialog_new_customer , true);
 
  
