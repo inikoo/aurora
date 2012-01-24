@@ -897,18 +897,17 @@ function family_list() {
 
 
     $adata=array();
-    $sql="select  `Product Family Key`, `Product Family Name`,`Product Family Code` from `Product Family Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
+    $sql="select  `Product Family Key`, `Product Family Name`,`Product Family Code`, `Product Family Store Key` from `Product Family Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 //print $sql;
 
     $res=mysql_query($sql);
 
     while ($row=mysql_fetch_array($res)) {
-
         $adata[]=array(
  'key'=>$row['Product Family Key'],
                      'name'=>$row['Product Family Name'],
                      'code'=>$row['Product Family Code'],
-
+		'store_key'=>$row['Product Family Store Key']
 
                  );
 
