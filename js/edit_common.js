@@ -533,7 +533,7 @@ function validate_scope_new(branch) {
     var changed=false;
     var errors=false;
     for (items in validate_scope_data[branch]) {
-	alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
+	//alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
         if (validate_scope_data[branch][items].required==true && validate_scope_data[branch][items].validated==false) {
              //alert(branch+' , '+items+" error")
             errors=true;
@@ -543,7 +543,7 @@ function validate_scope_new(branch) {
     if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
-	alert('save_new_'+branch)
+	//alert('save_new_'+branch)
         Dom.removeClass('save_new_'+branch,'disabled');
     }
 }

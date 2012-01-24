@@ -10,6 +10,7 @@ var validate_scope_data;
 	
 
 function validate_product_code(query){ validate_general('product','product_code',unescape(query));}
+function validate_product_name(query){ validate_general('product','product_name',unescape(query));}
 function validate_product_description(query){ validate_general('product','product_description',unescape(query));}
 function validate_special_characteristics(query){ validate_general('product','special_characteristics',unescape(query));}
 function validate_product_weight(query){ validate_general('product','product_weight',unescape(query));}
@@ -46,7 +47,7 @@ var family_key=tables.table2.getRecord(oArgs.target).getData('key');
 Dom.get('family_key').value=family_key;
 Dom.get('family_code').value=family_code;
 
-
+validate_scope_data['product']['family_key'].validated=true;
 dialog_family_list.hide();
 
 }
@@ -61,7 +62,8 @@ var store_key=tables.table0.getRecord(oArgs.target).getData('key');
 Dom.get('store_key').value=store_key;
 Dom.get('store_code').value=store_code;
 
-reload_scope_data();	
+validate_scope_data['product']['product_code'].ar_request='ar_assets.php?tipo=is_product_code&store_key='+Dom.get('store_key').value+'&query=';
+validate_scope_data['product']['product_code'].validated=true;
 dialog_store_list.hide();
 }
 
@@ -246,17 +248,21 @@ function reset_new_staff(){
 
 
 
-function save_new_part(){
- save_new_general('part');
+function save_new_product(){
+ save_new_general('product');
 }
 
 function post_action(branch,r){
-	window.location.href='part.php?pid='+r.object_key;
+	window.location.href='product.php?id='+r.object_key;
 }
 
 
-function reload_scope_data(){
 
+
+function init(){
+
+
+	
 validate_scope_data=
 {
 
@@ -265,26 +271,19 @@ validate_scope_data=
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],'name':'product_code'
 	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_code&store_key='+Dom.get('store_key').value+'&query=', 'dbname':'Product Code'}
 	,'family_key':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','name':'family_key','ar':false,'dbname':'Product Family Key', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
-	,'store_key':{'changed':true,'validated':true,'required':false,'dbname':'Product Store Key','group':1,'type':'item','name':'store_key','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
-,'product_description':{'changed':true,'validated':true,'required':false,'dbname':'Product Description','group':1,'type':'item','name':'product_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Part Description'}]}
-,'special_characteristics':{'changed':true,'validated':true,'required':false,'dbname':'Product Special Characteristic','group':1,'type':'item','name':'special_characteristics','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Part Description'}]}
-,'product_weight':{'changed':true,'validated':true,'required':false,'dbname':'Product Net Weight','group':1,'type':'item','name':'product_weight','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Part Description'}]}
+	,'store_key':{'changed':true,'validated':true,'required':true,'dbname':'Product Store Key','group':1,'type':'item','name':'store_key','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
+,'product_name':{'changed':true,'validated':true,'required':true,'dbname':'Product Name','group':1,'type':'item','name':'product_name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Name'}]}
+,'product_description':{'changed':true,'validated':true,'required':false,'dbname':'Product Description','group':1,'type':'item','name':'product_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Description'}]}
+,'special_characteristics':{'changed':true,'validated':true,'required':false,'dbname':'Product Special Characteristic','group':1,'type':'item','name':'special_characteristics','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Characteristics'}]}
+,'product_weight':{'changed':true,'validated':true,'required':false,'dbname':'Product Net Weight','group':1,'type':'item','name':'product_weight','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Weight'}]}
 
 
 	}
 };
 
-}
-
-function init(){
-
-
-	
-reload_scope_data();	
-
 	
 validate_scope_metadata={
-    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'department_key', 'key':''}
+    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'parent_key', 'key':''}
     
 
 };
@@ -296,6 +295,12 @@ validate_scope_metadata={
     var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_code);
     product_units_oACDS.queryMatchContains = true;
     var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_code","product_code_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
+
+    var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_name);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_name","product_name_Container", product_units_oACDS);
     product_units_oAutoComp.minQueryLength = 0; 
     product_units_oAutoComp.queryDelay = 0.1;
 
@@ -318,7 +323,7 @@ validate_scope_metadata={
     product_units_oAutoComp.queryDelay = 0.1;
 
  //  YAHOO.util.Event.addListener('reset_new_part', "click",reset_new_part)
-   YAHOO.util.Event.addListener('save_new_part', "click",save_new_part)
+   YAHOO.util.Event.addListener('save_new_product', "click",save_new_product)
 
 dialog_store_list = new YAHOO.widget.Dialog("dialog_store_list", {context:["store_list","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_store_list.render();
