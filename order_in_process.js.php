@@ -133,8 +133,8 @@ var myonCellClick = function(oArgs) {
    
    case('edit_object'):
   
-    
-		    change_discount(this.getCell(target),record.getData('otf_key'),record.getId())
+  
+		    change_discount(this.getCell(target),record.getData('otf_key'),record.getId(),record.getData('discount_percentage'))
   
 	break;	    
     default:
@@ -212,7 +212,7 @@ var CellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					 //   alert(o.responseText);
+					    alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
@@ -313,13 +313,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					,{key:"remove",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'remove_object',object:'new_order'}
 			     ,{key:"to_charge",label:"To Charge", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
 				,{key:"dispatching_status",label:"Status" ,hidden:(Dom.get('dispatch_state').value!='In Process'?false:true),width:90,sortable:false,className:"aright"}
-				,{key:"otf_key",label:"Status" ,hidden:true, width:1}
-
+				,{key:"otf_key",label:"" ,hidden:true, width:1}
+	            ,{key:"discount_percentage",label:"" ,hidden:true, width:1}
 				];
 
 		//alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	    //alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
+	  
+	  	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
+
+	 // alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -339,7 +341,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
-			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status','otf_key'
+			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status','otf_key','discount_percentage'
 			 // "promotion_id",
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
@@ -482,6 +484,9 @@ function show_all_products(){
    var datasource=tables['dataSource0'];
    var request='&display=all_products';
   Dom.get('products_display_type').value='all_products';
+  
+  
+  
    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
 
