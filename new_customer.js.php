@@ -110,6 +110,7 @@ function get_custom_data(){
 
 function save_new_customer(e){
    
+ 
     if(!can_add_subject){
 	return;
     }
@@ -516,7 +517,6 @@ Dom.addClass(o,'selected');
 }
 
 function init(){
-
 
 
 
