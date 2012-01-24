@@ -52,6 +52,20 @@
 	   <td id="product_code_msg" class="edit_td_alert" ></td>
 	  </tr>
 
+
+
+	 <tr><td style="width:200px"class="label">{t}Product Name{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="product_name" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="product_name_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="product_name_msg" class="edit_td_alert" ></td>
+	  </tr>
+
+
+
 		<tr><td style="width:200px"class="label">{t}Product Weight{/t}:</td><td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="product_weight" changed=0 type='text' MAXLENGTH="255"  class='text' 
@@ -91,8 +105,8 @@
 <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
 	<div class="buttons" >
-			<button  style="margin-right:10px;visibility:"  id="save_new_part" class="positive disabled">{t}Save{/t}</button>
-			<button style="margin-right:10px;visibility:" id="reset_new_part" class="negative">{t}Reset{/t}</button>
+			<button  style="margin-right:10px;visibility:"  id="save_new_product" class="positive disabled">{t}Save{/t}</button>
+			<button style="margin-right:10px;visibility:" id="reset_new_product" class="negative">{t}Reset{/t}</button>
 	</div>
 	</tr>
 </table>

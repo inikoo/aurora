@@ -73,6 +73,16 @@ case('edit_location'):
 
     edit_location($data);
     break;
+
+case('create_product'):
+    $data=prepare_values($_REQUEST,array(
+                             //'parent_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+
+                         ));
+
+    create_product($data);
+    break;
 case('delete_parts_list'):
     $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'key'),
@@ -3681,14 +3691,17 @@ function edit_supplier_product_part($data) {
 
 function create_product($data) {
     global $editor;
-
+//print_r($data['values']);exit;
     if (array_key_exists('Product Name',$data['values'])
             and  array_key_exists('Product Code',$data['values'])
             and  array_key_exists('Product Special Characteristic',$data['values'])
             and  array_key_exists('Product Description',$data['values'])
 
        ) {
-        $department_key=$data['parent_key'];
+
+	$family=new Family($data['values']['Product Family Key']);
+	
+        $department_key=$family->data['Product Family Main Department Key'];
 	$store_key=(isset($data['values']['Product Store Key'])?$data['values']['Product Store Key']:'');
 	$weight=(isset($data['values']['Product Net Weight'])?$data['values']['Product Net Weight']:'');
 
@@ -3703,14 +3716,15 @@ function create_product($data) {
                                  'editor'=>$editor,
 				'Product Store Key'=>$store_key,
 				'Product Net Weight'=>$weight,
-				'Product Gross Weight'=>$weight
+				'Product Gross Weight'=>$weight,
+				'Product Family Key'=>$data['values']['Product Family Key']
                              ));
         if (!$product->new) {
 
             $response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->id);
         } else {
 
-            $response=array('state'=>200,'msg'=>$product->msg,'action'=>'created');
+            $response=array('state'=>200,'msg'=>$product->msg,'action'=>'created_', 'object_key'=>$product->id);
         }
 
 
