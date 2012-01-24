@@ -94,6 +94,7 @@ class part extends DB_Table {
 		$values=preg_replace('/,$/',')',$values);
 
 		$sql=sprintf("insert into `Part Dimension` %s %s",$keys,$values);
+//print $sql;
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->sku =$this->id ;
@@ -111,12 +112,13 @@ class part extends DB_Table {
 			$data_for_history=array(
 				'Action'=>'created',
 				'History Abstract'=>_('Part Created'),
-				'History Details'=>_('Part')." ".$this->get_sku()." (".$this->data['Part XHTML Description'].")"._('Created')
+				'History Details'=>_('Part')." ".$this->get_sku()." (".$this->data['Part Unit Description'].")"._('Created')
 			);
 
 
 		} else {
 			print "Error Part can not be created $sql\n";
+			$this->msg='Error Part can not be created';
 			exit;
 		}
 
@@ -1304,10 +1306,11 @@ class part extends DB_Table {
 	}
 
 	function update_up_today_sales() {
+	
 		$this->update_sales_from_invoices('Today');
 		$this->update_sales_from_invoices('Week To Day');
 		$this->update_sales_from_invoices('Month To Day');
-		$this->update_sales_from_invoices('Year To Day');
+		$this->update_sales_from_invoices('Year To Day');	
 		$this->update_sales_from_invoices('Total');
 
 	}
@@ -1316,10 +1319,11 @@ class part extends DB_Table {
 
 		$this->update_sales_from_invoices('Yesterday');
 		$this->update_sales_from_invoices('Last Week');
-		$this->update_sales_from_invoices('Last Month');
+		$this->update_sales_from_invoices('Last Month');	
 	}
 
 	function update_interval_sales() {
+
 		$this->update_sales_from_invoices('3 Year');
 		$this->update_sales_from_invoices('1 Year');
 		$this->update_sales_from_invoices('6 Month');
@@ -1327,6 +1331,7 @@ class part extends DB_Table {
 		$this->update_sales_from_invoices('1 Month');
 		$this->update_sales_from_invoices('10 Day');
 		$this->update_sales_from_invoices('1 Week');
+
 	}
 
 	function update_sales_from_invoices($interval) {
@@ -1489,7 +1494,7 @@ class part extends DB_Table {
 		$this->data["Part $db_interval Acc Given"]=0;
 		$this->data["Part $db_interval Acc Sold Amount"]=0;
 		$this->data["Part $db_interval Acc Profit"]=0;
-		$this->data["Part $db_interval Acc Profit When Sold"]=0;
+		$this->data["Part $db_interval Acc Profit After Storing"]=0;
 		$this->data["Part $db_interval Acc Sold"]=0;
 		$this->data["Part $db_interval Acc Margin"]=0;
 
@@ -1600,7 +1605,7 @@ class part extends DB_Table {
                      `Part $db_interval Acc Given`=%f ,
                      `Part $db_interval Acc Sold Amount`=%f ,
                      `Part $db_interval Acc Profit`=%f ,
-                     `Part $db_interval Acc Profit When Sold`=%f ,
+                     `Part $db_interval Acc Profit After Storing`=%f ,
                      `Part $db_interval Acc Sold`=%f ,
                      `Part $db_interval Acc Margin`=%s where
                      `Part SKU`=%d "
@@ -1609,7 +1614,7 @@ class part extends DB_Table {
 			,$this->data["Part $db_interval Acc Given"]
 			,$this->data["Part $db_interval Acc Sold Amount"]
 			,$this->data["Part $db_interval Acc Profit"]
-			,$this->data["Part $db_interval Acc Profit When Sold"]
+			,$this->data["Part $db_interval Acc Profit After Storing"]
 			,$this->data["Part $db_interval Acc Sold"]
 			,$this->data["Part $db_interval Acc Margin"]
 
@@ -1617,7 +1622,7 @@ class part extends DB_Table {
 
 		mysql_query($sql);
 
-		// print "$sql\n";
+	//	 print "$sql\n";
 
 
 
@@ -2411,7 +2416,7 @@ class part extends DB_Table {
 	}
 
 	function get_description() {
-		return $this->data['Part XHTML Description'];
+		return $this->data['Part Unit Description'];
 	}
 
 	function get_product_ids() {
@@ -2505,7 +2510,7 @@ class part extends DB_Table {
 
 	function update_full_search() {
 
-		$first_full_search=$this->get_sku().' '.strip_tags($this->data['Part XHTML Description']);
+		$first_full_search=$this->get_sku().' '.strip_tags($this->data['Part Unit Description']);
 		$second_full_search=strip_tags($this->data['Part XHTML Currently Supplied By']);
 
 		$sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)  values  (%s,'Part',%d,%s,%s,%s,%s,%s) on duplicate key
@@ -2515,12 +2520,12 @@ class part extends DB_Table {
 			,prepare_mysql($first_full_search)
 			,prepare_mysql($second_full_search,false)
 			,prepare_mysql($this->get_sku(),false)
-			,prepare_mysql($this->data['Part XHTML Description'],false)
+			,prepare_mysql($this->data['Part Unit Description'],false)
 			,prepare_mysql('',false)
 			,prepare_mysql($first_full_search)
 			,prepare_mysql($second_full_search,false)
 			,prepare_mysql($this->get_sku(),false)
-			,prepare_mysql($this->data['Part XHTML Description'],false)
+			,prepare_mysql($this->data['Part Unit Description'],false)
 
 			,prepare_mysql('',false)
 		);

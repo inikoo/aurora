@@ -83,12 +83,42 @@ case('delete_ind_department'):
                          ));
     delete_ind_department($data);
     break;
+case('create_staff'):
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array')
+		));
+	create_staff($data);
+	break;
+
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
    echo json_encode($response);
 }
 
+function create_staff($data){
+	
+$values=$data['values'];
+//print_r($values);
+
+    $position=new CompanyPosition('id',$values['Position Key']);
+    if(!$position->id){
+      print "$position_code\n";
+      //print_r($position);
+    exit;
+    }
+
+      $staff=$position->add_staff($values);
+
+if($staff->new){
+	$response=array('state'=>200, 'staff_id'=>$staff->id, 'action'=>'created_');
+}
+else{
+	$response=array('state'=>400, 'msg'=>'Error');
+}
+
+  echo json_encode($response);
+}
 
 function edit_staff(){
   global $myconf;
@@ -1095,7 +1125,11 @@ function edit_staff_description(){
 		   'alias'=>'Staff Alias',
 		'pin'=>'Staff PIN',
 		'pin_confirm'=>'Staff PIN',
-		'position_key'=>'Staff Position'
+		'position_key'=>'Staff Position',
+		'name'=>'Staff Name',
+		'Staff Currently Working'=>'Staff Currently Working',
+		'Staff Is Supervisor'=>'Staff Is Supervisor',
+		'Staff Type'=>'Staff Type'
 
 		   );
   if(array_key_exists($_REQUEST['key'],$traslator)){

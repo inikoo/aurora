@@ -1,18 +1,36 @@
 {include file='header.tpl'}
 <div id="bd" style="background-image:url('art/stamp.cancel.en.png');background-repeat:no-repeat;background-position:300px 50px">
+{include file='orders_navigation.tpl'}
 <input type="hidden" id="order_key" value="{$order->id}"/>
 <div  class="branch"> 
 <span>{if $user->get_number_stores()>1}<a  href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$customer->get_formated_id()} ({t}Cancelled{/t})</span>
 </div>
 
-     <div style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+<div class="top_page_menu" style="border:none">
+		 <div class="buttons" style="float:left">
+		   {if $referral=='store_pending_orders'}
+    <button   onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button>
+
+    {/if}
+        <button  onclick="window.location='orders.php?store={$store->id}&view=orders'" ><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button>
+  
+    </div>
+		
+		<div class="buttons">
+		</div>
+		<div style="clear:both">
+		</div>
+	</div>
+
+
+
+     <div style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
 
        <div style="border:0px solid #ddd;width:400px;float:left"> 
          <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
 
 	 <h2 style="padding:0"><a style="position:relative;z-index:5" href="customer.php?id={$order->get('order customer key')}">{$order->get('order customer name')} (ID:{$customer->get_formated_id()})</a></h2>
-        {$contact}<br/>
-           {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
+    
 	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Contact Address{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
 	<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}</div>
 
@@ -46,7 +64,7 @@
        </div>
 
        <div style="zborder:1px solid red;width:290px;float:right">
-	 {if $note}<div class="notes">{$note}</div>{/if}
+	 {if $order->get_notes()}<div class="notes">{ $order->get_notes()}</div>{/if}
 	 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right" >
 	   
 	   <tr><td>{t}Order Date{/t}:</td><td class="aright">{$order->get('Date')}</td></tr>
@@ -71,12 +89,7 @@
 
 	    
     </div>
-{if $items_out_of_stock}
-<div style="clear:both;margin:30px 0" >
-<h2>{t}Items Out of Stock{/t}</h2>
-<div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
-</div>
-{/if}
+
   </div>
 </div>
 </div> 

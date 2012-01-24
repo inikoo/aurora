@@ -14,6 +14,10 @@ require_once 'class.Order.php';
 require_once 'class.Location.php';
 require_once 'class.PartLocation.php';
 require_once 'class.Image.php';
+require_once 'class.SupplierProduct.php';
+require_once 'class.Supplier.php';
+require_once 'class.Part.php';
+
 require_once 'ar_edit_common.php';
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -51,6 +55,15 @@ case('edit_part_health_and_safety'):
 
     break;
 
+case('create_part'):
+    $data=prepare_values($_REQUEST,array(
+                             'parent_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+
+                         ));
+
+    create_part($data);
+    break;
 case('edit_location'):
     $data=prepare_values($_REQUEST,array(
                              'location_key'=>array('type'=>'key'),
@@ -171,6 +184,7 @@ case('edit_department'):
     edit_department();
     break;
 case('edit_store'):
+case('edit_invoice'):
     edit_store();
 
     break;
@@ -224,6 +238,100 @@ default:
     echo json_encode($response);
 
 }
+
+
+function create_part($data){
+
+$_part=$data['values'];
+
+
+$part_data['Part Most Recent']='Yes';
+
+$sp=new SupplierProduct($data['parent_key']);
+
+$supplier=new Supplier($sp->get('Supplier Key'));
+
+
+//print_r($sp);exit;
+
+$part_data['Part XHTML Currently Supplied By']=sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code'));
+$part_data['Part XHTML Currently Used In']=sprintf('<a href="product.php?id=%d">%s</a>',$sp->id,$sp->get('Product Code'));
+
+
+
+//$part_data['editor']=$editor;
+
+
+    $part_data=array(
+ //                  'editor'=>$editor,
+                   'Part Most Recent'=>'Yes',
+                   'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+  //                 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+                   'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$_part['Part Unit Description'])),
+
+                   'part valid from'=>gmdate("Y-m-d H:i:s"),
+                   'part valid to'=>gmdate("Y-m-d H:i:s"),
+                   'Part Gross Weight'=>$_part['Part Gross Weight']
+               );
+
+//print_r($part_data);exit;
+
+    $part=new Part('new',$part_data);
+    if ($part->new) {
+	print $part->msg;
+    }
+
+
+
+    $spp_header=array(
+                    'Supplier Product Part Type'=>'Simple',
+                    'Supplier Product Part Most Recent'=>'Yes',
+                    'Supplier Product Part Valid From'=>gmdate("Y-m-d H:i:s"),
+                    'Supplier Product Part Valid To'=>gmdate("Y-m-d H:i:s"),
+                    'Supplier Product Part In Use'=>'Yes'
+                );
+
+    $spp_list=array(
+                  array(
+                      'Part SKU'=>$part->data['Part SKU'],
+                      'Supplier Product Units Per Part'=>1,
+                      'Supplier Product Part Type'=>'Simple'
+                  )
+              );
+
+
+
+    $sp->new_current_part_list($spp_header,$spp_list);
+
+
+    $response= array('state'=>200,'action'=>'created_','object_key'=>$part->id,'msg'=>$part->msg);
+
+
+    echo json_encode($response);
+
+
+/*
+    $part_list[]=array(
+                     'Part SKU'=>$part->get('Part SKU'),
+                     'Parts Per Product'=>1,
+                     'Product Part Type'=>'Simple'
+                 );
+
+
+
+    $product->new_current_part_list(array(),$part_list)  ;
+
+    $supplier_product->update_sold_as();
+    $supplier_product->update_store_as();
+    $product->update_parts();
+    $part->update_used_in();
+    $part->update_supplied_by();
+    $product->update_cost_supplier();
+*/
+
+}
+
+
 function create_store() {
     global $editor;
     if (isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ) {
@@ -419,10 +527,28 @@ include_once('class.Charge.php');
 }
 
 function edit_store() {
+	
     $store=new Store($_REQUEST['id']);
     global $editor;
     $store->editor=$editor;
-    $store->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+
+    $key_dic=array(
+                 'vat_number'=>'Store VAT Number',
+                 'company_number'=>'Store Company Number',
+                 'company_name'=>'Store Company Name',
+                 'msg_header'=>'Store Invoice Message Header',
+                 'msg'=>'Store Invoice Message',
+             );
+
+
+
+    if (array_key_exists($_REQUEST['key'],$key_dic))
+        $key=$key_dic[$_REQUEST['key']];
+    else
+        $key=$_REQUEST['okey'];
+
+
+    $store->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));//,stripslashes(urldecode($_REQUEST['oldvalue'])));
 
     if ($store->updated) {
         $response= array('state'=>200,'newvalue'=>$store->new_value,'key'=>$_REQUEST['key']);
@@ -3269,7 +3395,7 @@ function add_part_new_product($sku) {
             $_SESSION['state']['new_product']['parts'][$part->sku]=array(
                         'part_sku'=>$part->sku
                                    ,'sku'=>$part->get_sku()
-                                          ,'description'=>$part->data['Part XHTML Description']
+                                          ,'description'=>$part->data['Part Unit Description']
                                                          ,'picks'=>1
                                                                   ,'notes'=>''
                                                                            ,'delete'=>'<img src="art/icons/delete.png"/>'
@@ -3398,7 +3524,8 @@ function edit_part_list($data) {
     }
 
 
-
+$part=new Part($value['sku']);
+ $part->update_used_in();
 
 
 //

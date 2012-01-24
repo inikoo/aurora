@@ -71,14 +71,13 @@ $smarty->assign('title', _('Pending Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-
-
+//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
 //print_r($pickers_data);
 
-$tipo_filter2=$_SESSION['state']['orders']['ready_to_pick_dn']['f_field'];
+$tipo_filter2=$_SESSION['state']['customers']['pending_orders']['f_field'];
 $smarty->assign('filter0',$tipo_filter2);
-$smarty->assign('filter_value0',($_SESSION['state']['orders']['ready_to_pick_dn']['f_value']));
+$smarty->assign('filter_value0',($_SESSION['state']['customers']['pending_orders']['f_value']));
 $filter_menu2=array(
                   'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
               );
@@ -87,44 +86,26 @@ $smarty->assign('filter_name0',$filter_menu2[$tipo_filter2]['label']);
 $paginator_menu0=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu0);
 
+//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
-
-$elements_number=array('ReadytoPick'=>0,'ReadytoPack'=>0,'ReadytoShip'=>0,'PickingAndPacking'=>0,'ReadytoRestock'=>0);
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Ready to be Picked') and `Delivery Note Store Key`=%d ",$store_id);
+$elements_number=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
+$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Store Key`=%d  group by `Order Current Dispatch State` ",$store_id);
 $res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['ReadytoPick']=$row['num'];
-}
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Approved') and `Delivery Note Store Key`=%d ",$store_id);
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['ReadytoShip']=$row['num'];
-}
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picked') and `Delivery Note Store Key`=%d ",$store_id);
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['ReadytoPack']=$row['num'];
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
 }
 
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Picking & Packing','Packer Assigned','Picker Assigned','Picking','Packing','Packed') and `Delivery Note Store Key`=%d ",$store_id);
+$sql=sprintf("select count(*) as num  from  `Order Dimension` where  `Order Store Key`=%d  and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$store_id);
 $res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['PickingAndPacking']=$row['num'];
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number['InWarehouse']=$row['num'];
 }
-
-$sql=sprintf("select count(*) as num from  `Delivery Note Dimension` where `Delivery Note State`  in ('Cancelled to Restock') and `Delivery Note Store Key`=%d ",$store_id);
-$res=mysql_query($sql);
-if ($row=mysql_fetch_assoc($res)) {
-    $elements_number['ReadytoRestock']=$row['num'];
-}
-
-
 
 
 $smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['orders']['ready_to_pick_dn']['elements']);
+$smarty->assign('elements',$_SESSION['state']['customers']['pending_orders']['elements']);
 
-
+//print_r($_SESSION['state']['customers']['pending_orders']['elements']);
 
 $smarty->display('customers_pending_orders.tpl');
 ?>

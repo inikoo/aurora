@@ -1,3 +1,10 @@
+<?php
+include_once('common.php');
+
+
+
+?>
+
 var audit_dialog;
 var add_stock_dialog;
 
@@ -209,6 +216,19 @@ Dom.setXY('Editor_add_location', pos);
 
 function move(sku,location_key) {
 
+	 Dom.get('location_move_other_locations').innerHTML='';
+    var request='ar_warehouse.php?tipo=other_locations_quick_buttons&sku=' + sku+'&location_key='+location_key ;
+
+   YAHOO.util.Connect.asyncRequest('POST',request , {
+success:function(o) {
+  //alert(o.responseText);
+var r =  YAHOO.lang.JSON.parse(o.responseText);
+ Dom.get('location_move_other_locations').innerHTML=r.other_locations_quick_buttons;
+
+}
+});
+	
+
     part_location_element=Dom.get('part_location_move_items_'+sku+'_'+location_key);
 
     qty=Dom.get('part_location_quantity_'+sku+'_'+location_key).getAttribute('quantity');
@@ -235,7 +255,7 @@ function move(sku,location_key) {
 
     Dom.setX('Editor_move_items', x-256);
     Dom.setY('Editor_move_items', y-4);
- Dom.get('location_move_to_input').focus();
+ 	Dom.get('location_move_to_input').focus();
 
     Editor_move_items.show();
 
@@ -440,7 +460,7 @@ function create_part_location_tr(tag,r) {
 
 
     oTbl=Dom.get('part_locations');
-    oTR= oTbl.insertRow(-1);
+    oTR= oTbl.insertRow(0);
     oTR.id='part_location_tr_'+sku+'_'+location_key;
 
     var oTD= oTR.insertCell(0);
@@ -680,10 +700,6 @@ function move_qty_changed() {
     if (_qty_change=='')_qty_change=0;
     var qty_change=parseFloat(_qty_change+' '+qty_change);
 
-
-
-
-
     if (isNaN(qty_change))
         return;
 
@@ -695,10 +711,10 @@ function move_qty_changed() {
         Dom.removeClass('move_qty','error');
 
 
-
-
     left_old_value=parseFloat(Dom.get("move_stock_left").getAttribute('ovalue'));
     right_old_value=parseFloat(Dom.get("move_stock_right").getAttribute('ovalue'));
+
+//alert(left_old_value)
 
     if (Dom.get('flow').getAttribute('flow')=='right') {
         if (left_old_value < qty_change) {
@@ -749,6 +765,17 @@ function close_move_dialog() {
     Editor_move_items.cfg.setProperty('visible',false);
 }
 
+function select_move_location(location_key,location_code,stock){
+
+  Dom.get('move_stock_right').innerHTML=stock;
+    Dom.get('move_stock_right').setAttribute('ovalue',stock);
+    Dom.get('move_other_location_key').value=location_key;
+     Dom.get('location_move_to_input').value=location_code;
+    Dom.get('move_qty').value='';
+   
+    move_qty_changed();
+}
+
 
 function location_move_to_selected(sType, aArgs) {
 
@@ -790,6 +817,9 @@ success:function(o) {
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='added') {
                 close_add_location_dialog();
+                
+                
+                
                 if (Dom.get('part_location_quantity_'+sku+'_'+r.location_key)==undefined) {
                     create_part_location_tr('',r);
                 }

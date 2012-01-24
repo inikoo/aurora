@@ -80,11 +80,12 @@
 	 	   <tr class="title">
 	 	   <td colspan=2 >{t}Part List{/t}</td>
 	 	   <td colspan=2>
-	 	   <div style="text-align:right;font-weight:100"  id="product_part_items" product_part_key="{$product->get_current_product_part_key()}"  >
-	 
-	  <span style="margin-right:10px;visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</span>
-	  <span style="margin-right:10px;visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Reset{/t}</span>
-	   <span style="margin-right:10px; {if $product->get('Product Type')=="Normal" and $num_parts!=0}xdisplay:none{/if}" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
+	 	   <div class="buttons" id="product_part_items" product_part_key="{$product->get_current_product_part_key()}"  >
+	 	   <button style="margin-right:0px;{if $product->get('Product Type')=="Normal" and $num_parts!=0}xdisplay:none{/if}" id="add_part" class="state_details">{t}Add Part to List{/t}</button>
+	 	  <button  class="positive" style="visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</button>
+
+	 <button class="negative" style="visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Cancel{/t}</button>
+
 	  </div>
 	 	   </td>
 	 	   </tr>
@@ -94,7 +95,7 @@
 	   <tr  id="part_list{$sku}" sku="{$sku}" class="top title">
 		<td  id="part_list{$sku}_label1" class="label" style="width:150px;font-weight:200">{t}Part{/t}</td>
 		<td id="part_list{$sku}_label2" colspan="2"style="width:120px"><span class="id">{$part_list.part->get_sku()}</span>
-		{$part_list.part->get('Part XHTML Description')}</td>
+		{$part_list.part->get('Part Unit Description')}</td>
 		<td style="width:200px;text-align:right">
 		<div id="part_list{$sku}_controls">
 		<span onClick="remove_part({$sku})" style="cursor:pointer"><img   src="art/icons/delete_bw.png"/> {t}Remove{/t}</span>
@@ -132,14 +133,7 @@
 
 </div>
 <div class="edit_block" {if $edit!="web"}style="display:none"{/if}  id="d_web">
-  <table class="edit" >
-
-    {foreach from=$web_pages item=page }
-    <tr><td><input id="pagetitle{$page.id}" value="{$page.title}" ovalue="{$page.title}"/></td><td><input id="pageurl{$page.id}" value="{$page.url}" ovalue="{$page.url}"/></td><td><img src="art/icons/cross.png"/></td><td><img src="art/icons/disk.png"/></td></tr>
-    {/foreach}
-      
-    
-  </table>
+ 
 </div>
 <div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
 

@@ -223,7 +223,7 @@ $columns=array(
 $pdf->MultiRow($columns);
 
 
-$sql=sprintf("select  `Picking Note`,ITF.`Part SKU`,`Part XHTML Description`,`Required`,`Location Code` from `Inventory Transaction Fact` ITF   left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d  ",
+$sql=sprintf("select  `Picking Note`,ITF.`Part SKU`,`Part Unit Description`,`Required`,`Location Code` from `Inventory Transaction Fact` ITF   left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d  ",
              $dn->id
             );
 $result=mysql_query($sql);
@@ -234,7 +234,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
                  array('w'=>15,'txt'=>$sku,'border'=>'T','align'=>'L'),
-                 array('w'=>50,'txt'=>strip_tags($row['Part XHTML Description']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>50,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>'T','align'=>'L'),
                  array('w'=>55,'txt'=> strip_tags($row['Picking Note']) ,'border'=>'T','align'=>'L'),
                  array('w'=>35,'txt'=>$row['Location Code'],'border'=>'T','align'=>'L'),
                  array('w'=>8,'txt'=>$row['Required'],'border'=>'T','align'=>'R'),

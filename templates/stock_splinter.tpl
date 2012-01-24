@@ -1,80 +1,99 @@
-  <div id="Editor_audit" style="position:fixed;top:-200px;width:250px">
-  <div style="display:none" class="hd">s</div>
+  <div id="Editor_audit" style="position:fixed;top:-200px;width:250px;padding:10px 10px 10px 0">
+  <div style="display:none" class="hd"></div>
   <div class="bd dt-editor">
   
-    <table>
+    <table class="edit" border=0 style="margin:0 auto">
+    <tr class="title"><td colspan=2>{t}Audit{/t}</td></tr>
       <input type="hidden" id="audit_location_key" value=""/>
       <input type="hidden" id="audit_sku" value=""/>
-      <tr><td>{t}Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_audit" /></td></tr>
+              <input type="hidden" id="audit_record_index" value=""/>
+
+      <tr style="height:10px"><td colspan=2></td></tr>
+      <tr ><td>{t}Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_audit" /></td></tr>
      <tr><td>{t}Notes{/t}:</td><td><input type="text" id="note_audit" /></td></tr>
+    <tr><td colspan=2><div class="buttons">
+      <button onclick="save_audit();" class="positive">{t}Save{/t}</button>
+      <button onclick="close_audit_dialog()" class="negative" >{t}Cancel{/t}</button>
+    </div></td></tr>
     </table>
-    <div class="yui-dt-button">
-      <button onclick="save_audit();" class="yui-dt-default">{t}Save{/t}</button>
-      <button onclick="close_audit_dialog()" >{t}Cancel{/t}</button>
-    </div>
+    
     
   </div>
 </div>
 
 
- <div id="Editor_add_stock" style="position:fixed;top:-200px;width:250px">
-  <div style="display:none" class="hd">s</div>
+ <div id="Editor_add_stock"  style="position:fixed;top:-200px;width:250px;padding:10px 10px 10px 0">
+  <div style="display:none" class="hd"></div>
   <div class="bd dt-editor">
   
-    <table>
+   <table class="edit" border=0 style="margin:0 auto">
+    <tr class="title"><td colspan=2>{t}Add stock{/t}</td></tr>
       <input type="hidden" id="add_stock_location_key" value=""/>
       <input type="hidden" id="add_stock_sku" value=""/>
+        <input type="hidden" id="add_record_index" value=""/>
+         <tr style="height:10px"><td colspan=2></td></tr>
+         
       <tr><td>{t}Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_add_stock" /></td></tr>
      <tr><td>{t}Notes{/t}:</td><td><input type="text" id="note_add_stock" /></td></tr>
+		<tr><td colspan=2><div class="buttons">
+      <button onclick="save_add_stock();" class="positive">{t}Save{/t}</button>
+      <button onclick="close_add_stock_dialog()" class="negative" >{t}Cancel{/t}</button>
+    </div></td></tr>
     </table>
-    <div class="yui-dt-button">
-      <button onclick="save_add_stock();" class="yui-dt-default">{t}Save{/t}</button>
-      <button onclick="close_add_stock_dialog()" >{t}Cancel{/t}</button>
-    </div>
+    
     
   </div>
 </div>
 
 
 
-<div id="Editor_lost_items" style="position:fixed;top:-200px">
-  <div style="display:none" class="hd">s</div>
+<div id="Editor_lost_items"  style="position:fixed;top:-200px;width:250px;padding:10px 10px 10px 0">
+  <div style="display:none" class="hd"></div>
   <div class="bd dt-editor">
   
-    <table>
+       <table class="edit" border=0 style="margin:0 auto">
+        <tr class="title"><td colspan=2>{t}Lost Stock{/t}</td></tr>
+         <tr style="height:10px"><td colspan=2></td></tr>
       <input type="hidden" id="lost_record_index" value=""/>
       <input type="hidden" id="lost_sku" value=""/>
       <input type="hidden" id="lost_location_key" value=""/>
       <tr><td>{t}Quantity Lost{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_lost" /> {t}max{/t} <span onclick="set_all_lost()" id="lost_max_value" style="cursor:pointer"></span></td></tr>
       <tr><td>{t}Why?{/t}:</td><td><input type="text" id="lost_why" /></td></tr>
       <tr><td>{t}Action{/t}:</td><td><input type="text" id="lost_action" /></td></tr>
+	<tr><td colspan=2><div class="buttons">
+      <button onclick="save_lost_items();" class="positive">{t}Save{/t}</button>
+      <button onclick="close_lost_dialog()" class="negative" >{t}Cancel{/t}</button>
+    </div></td></tr>
     </table>
-    <div class="yui-dt-button">
-      <button onclick="save_lost_items();" class="yui-dt-default">{t}Save{/t}</button>
-      <button onclick="close_lost_dialog()" >{t}Cancel{/t}</button>
-    </div>
+    
     
   </div>
 </div>
 
-<div id="Editor_move_items" style="position:fixed;top:-200px">
+<div id="Editor_move_items"  style="position:fixed;top:-200px;padding:10px 10px 10px 0;width:300px;">
   <div style="display:none" class="hd"></div>
     <div class="bd dt-editor" >
-          <table border=0>
+           <table class="edit" border=0 style="margin:0 auto;width:270px;">
           
-         
+            <tr class="title"><td colspan=3>{t}Move Stock{/t} (<span id="move_sku_formated"></span>)</td></tr>
+       	     
+
           
 	    <input type="hidden" id="move_sku" value=0 >
 	    <input type="hidden" id="move_record_index" value=0 >
 	    <input type="hidden" id="move_other_location_key" value=0 >
 	    <input type="hidden" id="move_this_location_key" value="{$location->id}" >
 
-	    <tr><td colspan="3">{t}Move{/t} <span id="move_sku_formated"></span></td></tr>
-	    <tr>
-	    <td id="this_location"  style="width:80px;text-align:right;padding-right:10px;"></td>
+	 
+	    <tr><td colspan="3" id="location_move_other_locations" ></td></tr>
+	      <tr class="top" style="height:5px"><td colspan=3></td></tr>
+	      	    
+
+	    <tr >
+	    <td id="this_location"  style="width:110px;text-align:right;padding-right:10px;"></td>
 	    <td id="flow"  style="width:40px;text-align:center" onClick="change_move_flow()" flow="right"><img src="art/icons/arrow_right.png" /></td>
-	    <td id="other_location" style="width:80px">
-			<div id="location_move_to" style="width:80px;margin-left:2px">
+	    <td id="other_location" style="width:110px;text-align:left;padding:0px">
+			<div id="location_move_to" style="width:80px;margin-left:0px;float:left">
 			  <input id="location_move_to_input" type="text" style="width:80px;">
 			  <div id="location_move_to_container" ></div>
 			</div>
@@ -91,11 +110,14 @@
 	      <td><input value='' style="width:45px;text-align:center" id="move_qty"  onkeyup="move_qty_changed()"   /></td>
 	      <td style="padding-left:10px;cursor:pointer" id="move_stock_right"  ovalue="" onclick="move_stock_left()"></td>
 	    </tr>
+	    	      <tr  style="height:5px"><td colspan=3></td></tr>
+
+	    <tr><td colspan=3><div class="buttons">
+      <button onclick="save_move_items();" class="positive">{t}Save{/t}</button>
+      <button onclick="close_move_dialog()" class="negative" >{t}Cancel{/t}</button>
+    </div></td></tr>
 	  </table>
-	  <div class="buttons">
-	    <button onclick="save_move_items();" class="positive">{t}Save{/t}</button>
-	    <button onclick="close_move_dialog()"  class="negative" >{t}Cancel{/t}</button>
-	  </div>
+	  
     </div>
 </div>
 

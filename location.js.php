@@ -68,7 +68,7 @@ sku=tables.table2.getRecord(oArgs.target).getData('sku')
 
 
 
-var highlightEditableCell = function(oArgs) {
+function highlightEditableCell(oArgs) {
 
     var target = oArgs.target;
     column = this.getColumn(target);
@@ -88,7 +88,16 @@ var highlightEditableCell = function(oArgs) {
 	if(record.getData('move')!='')
 	    this.highlightCell(target);
 	break;
-
+ 	case 'audit':
+	if(record.getData('audit')!='')
+	    this.highlightCell(target);
+	break;
+	case 'add':
+	if(record.getData('add')!='')
+	    this.highlightCell(target);
+	break;	
+	
+	
     case 'lost':
 	if(record.getData('lost')!='')
 	    this.highlightCell(target);
@@ -199,12 +208,31 @@ var onCellClick = function(oArgs) {
 		break;
 		case 'move':
 
+ 				Dom.get('location_move_other_locations').innerHTML='';
+    			var request='ar_warehouse.php?tipo=other_locations_quick_buttons&sku=' + record.getData('part_sku')+'&location_key='+Dom.get('location_key').value ;
+
+   				YAHOO.util.Connect.asyncRequest('POST',request , {
+					success:function(o) {
+	
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+ Dom.get('location_move_other_locations').innerHTML=r.other_locations_quick_buttons;
+
+}
+});
+			
+
 		    Dom.get('move_record_index').value= record.getId();
 		    Dom.get('move_sku').value=record.getData('part_sku');
 		    Dom.get('move_sku_formated').innerHTML=record.getData('sku');
 		    Dom.get('this_location').innerHTML=record.getData('location');
-	    Dom.get('move_stock_left').innerHTML=record.getData('qty');
-	    Dom.get('move_stock_left').setAttribute('ovalue',record.getData('qty'));
+	    	Dom.get('move_stock_left').innerHTML=record.getData('qty');
+	    	Dom.get('move_stock_left').setAttribute('ovalue',record.getData('qty'));
+	    	
+	    	
+	    	
+	    
+	    	
+	    	
 		  // Dom.get('move_this_location_key')=record.getData('location_key');
 
 
@@ -228,6 +256,46 @@ Editor_move_items.show();
 		    
 		    
 		    break;
+		    
+				case 'add':
+				  Dom.get("add_stock_location_key").value=record.getData('location_key');
+    Dom.get("add_stock_sku").value=record.getData('part_sku');;
+
+    var x =Dom.getX(this.getCell(target))-Dom.get('Editor_add_stock').offsetWidth+this.getCell(target).offsetWidth;
+		    var y =Dom.getY(this.getCell(target));
+		   
+		    Dom.setX('Editor_add_stock', x);
+    Dom.setY('Editor_add_stock', y);
+  add_stock_dialog.show();
+        Dom.get('add_record_index').value= record.getId();
+Dom.get('qty_add_stock').focus();
+		
+		
+		
+		    break;
+		    
+		    
+		    			case 'audit':
+		    			
+		    		
+		    			
+				  Dom.get("audit_location_key").value=record.getData('location_key');
+    Dom.get("audit_sku").value=record.getData('part_sku');;
+
+    var x =Dom.getX(this.getCell(target))-Dom.get('Editor_audit').offsetWidth+this.getCell(target).offsetWidth;
+		    var y =Dom.getY(this.getCell(target));
+		   
+		    Dom.setX('Editor_audit', x);
+    Dom.setY('Editor_audit', y);
+  audit_dialog.show();
+        Dom.get('audit_record_index').value= record.getId();
+Dom.get('qty_audit').focus();
+		
+		
+		
+		    break;
+		    
+		    
 		case 'lost':
 		
 		
@@ -375,12 +443,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"sku", label:"<?php echo _('SKU')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location_key", label:"", hidden:true,isPrimaryKey:true} 
 				       ,{key:"part_sku", label:"", hidden:true,isPrimaryKey:true} 
-				       ,{key:"description", label:"<?php echo _('Description')?>", width:470,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"description", label:"<?php echo _('Description')?>", width:440,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
-					,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"qty", label:"<?php echo _('Qty')?>", width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
-				       ,{key:"move",label:"<?php echo _('Move')?>", width:30,className:"aright",action:'move'}
+					,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"formated_qty", label:"<?php echo _('Qty')?>", width:50,className:"aright",action:'audit'}
+				      ,{key:"qty",label:"", width:30,hidden:true}
+
+				      ,{key:"move",label:"<?php echo _('Move')?>", width:30,className:"aright",action:'move'}
 				       ,{key:"lost", label:"<?php echo _('Lost')?>", width:30,className:"aright",action:'lost'}
+				       				       ,{key:"add", label:"<?php echo _('Add')?>", width:30,className:"aright",action:'add'}
+
 				       ,{key:"delete", label:"", width:30,className:"aright",object:'part_location',action:'delete'}
 				     
 				       ];
@@ -407,7 +479,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "sku"
 			 ,"description"
 			 ,'qty'
-			 ,'can_pick','move','audit','lost','delete','number_locations','number_qty','part_sku','location_key','part_stock','location'
+			 ,'can_pick','move','audit','lost','delete','number_locations','number_qty','part_sku','location_key','part_stock','location','formated_qty','add'
 		
 			 ]};
 	    
@@ -786,10 +858,156 @@ var change_stock_save= function(){
     
 }
 
+function save_audit() {
 
 
+  var data=new Object();
+    data['qty']=Dom.get('qty_audit').value;
+    data['note']=Dom.get('note_audit').value;
+    data['location_key']=Dom.get('audit_location_key').value
+    data['part_sku']=Dom.get('audit_sku').value;
+    
+    sku=Dom.get('lost_sku').value;
+    var json_value = YAHOO.lang.JSON.stringify(data);
+    var request='ar_edit_warehouse.php?tipo=audit_stock&values=' + my_encodeURIComponent(json_value);
+
+   YAHOO.util.Connect.asyncRequest('POST',request , {
+success:function(o) {
+            //alert(o.responseText);
+            var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+            	
+            		
+            
+            
+            	Dom.get('qty_audit').value='';
+				Dom.get('note_audit').value='';
+ 				audit_dialog.hide();
+ 				
+ 				  datatable=tables['table1'];
 
 
+		    record=datatable.getRecord(Dom.get("audit_record_index").value);
+	
+		datatable.updateCell(record,'qty',r.qty);
+				datatable.updateCell(record,'formated_qty',r.formated_qty);
+
+ 		 if(r.qty==0){
+			 datatable.updateCell(record,'delete',delete_label);
+			 datatable.updateCell(record,'lost','');
+			 
+		     }else{
+			 datatable.updateCell(record,'delete','');
+			 datatable.updateCell(record,'lost',lost_label);
+
+		     }							  
+		     
+		     if(r.stock==0){
+			 datatable.updateCell(record,'move','');
+			 
+		     }else{
+			 datatable.updateCell(record,'move',move_label);
+			 
+		     }	
+		     
+
+		    var table=tables['table0'];
+		    var datasource=tables['dataSource0'];
+		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
+		    
+            
+            
+            
+            
+            } else {
+                alert(r.msg);
+                callback();
+            }
+        },
+failure:function(o) {
+            alert(o.statusText);
+            callback();
+        },
+scope:this
+    },
+    request
+
+    );
+
+}
+
+
+function save_add_stock() {
+
+
+  var data=new Object();
+    data['qty']=Dom.get('qty_add_stock').value;
+    data['note']=Dom.get('note_add_stock').value;
+    data['location_key']=Dom.get('add_stock_location_key').value
+    data['part_sku']=Dom.get('add_stock_sku').value;
+    
+    var json_value = YAHOO.lang.JSON.stringify(data);
+    var request='ar_edit_warehouse.php?tipo=add_stock&values=' + my_encodeURIComponent(json_value);
+
+   YAHOO.util.Connect.asyncRequest('POST',request , {
+success:function(o) {
+          //  alert(o.responseText);
+            var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                
+				Dom.get('qty_add_stock').value='';
+				Dom.get('note_add_stock').value='';
+ 				add_stock_dialog.hide();
+ 				
+ 				  datatable=tables['table1'];
+
+
+		    record=datatable.getRecord(Dom.get("add_record_index").value);
+	
+		datatable.updateCell(record,'qty',r.qty);
+				datatable.updateCell(record,'formated_qty',r.formated_qty);
+
+ 		 if(r.qty==0){
+			 datatable.updateCell(record,'delete',delete_label);
+			 datatable.updateCell(record,'lost','');
+			 
+		     }else{
+			 datatable.updateCell(record,'delete','');
+			 datatable.updateCell(record,'lost',lost_label);
+
+		     }							  
+		     
+		     if(r.stock==0){
+			 datatable.updateCell(record,'move','');
+			 
+		     }else{
+			 datatable.updateCell(record,'move',move_label);
+			 
+		     }	
+		     
+
+		    var table=tables['table0'];
+		    var datasource=tables['dataSource0'];
+		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
+		    
+		
+
+            } else {
+                alert(r.msg);
+                callback();
+            }
+        },
+failure:function(o) {
+            alert(o.statusText);
+            callback();
+        },
+scope:this
+    },
+    request
+
+    );
+
+}
 
 
 function save_lost_items() {
@@ -821,6 +1039,7 @@ success:function(o) {
 
 		    record=datatable.getRecord(Dom.get("lost_record_index").value);
 		    datatable.updateCell(record,'qty',r.qty);
+	datatable.updateCell(record,'formated_qty',r.formated_qty);
 
 
   if(r.qty==0){
@@ -832,7 +1051,7 @@ success:function(o) {
 			 datatable.updateCell(record,'lost',lost_label);
 
 		     }							  
-		     // alert(r.stock)
+		     
 		     if(r.stock==0){
 			 datatable.updateCell(record,'move','');
 			 
@@ -895,7 +1114,7 @@ function save_move_items(){
 
 		    record=datatable.getRecord(Dom.get("move_record_index").value);
 		    datatable.updateCell(record,'qty',r.qty_from);
-		    
+		    datatable.updateCell(record,'formated_qty',r.formated_qty_from);
 
 		    if(r.qty_from==0){
 			 datatable.updateCell(record,'delete',delete_label);

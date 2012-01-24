@@ -412,7 +412,7 @@ foreach($staff as $position_codes=>$staff_data) {
 $data=array(
 	    'Tax Category Code'=>'S1',
 	    'Tax Category Name'=>'VAT 17.5%',
-'Tax Category Rate'=>0.175
+	'Tax Category Rate'=>0.175
 );
 $cat_tax=new TaxCategory('find',$data,'create');
 

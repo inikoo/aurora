@@ -59,6 +59,7 @@ class supplierproduct extends DB_Table {
         }
         $data=$this->base_data();
         foreach($raw_data as $key=>$value) {
+
             if (array_key_exists($key,$data))
                 $data[$key]=_trim($value);
         }
@@ -66,6 +67,8 @@ class supplierproduct extends DB_Table {
         if (!isset($raw_data['SPH Units Per Case']) or $raw_data['SPH Units Per Case']=='')
             $raw_data['SPH Units Per Case']=1;
 
+        if (!isset($raw_data['SPH Case Cost']) or $raw_data['SPH Case Cost']=='')
+            $raw_data['SPH Case Cost']=$raw_data['Supplier Product Cost Per Case'];
 
         $data['SPH Units Per Case']=$raw_data['SPH Units Per Case'];
         $data['SPH Case Cost']=$raw_data['SPH Case Cost'];
@@ -344,7 +347,7 @@ class supplierproduct extends DB_Table {
             $keys=preg_replace('/,$/',')',$keys);
             $values=preg_replace('/,$/',')',$values);
             $sql=sprintf("insert into `Supplier Product Dimension` %s %s",$keys,$values);
-            //  print "$sql\n\n";
+              //print "$sql\n\n";
             if (mysql_query($sql)) {
                 //print mysql_affected_rows()."\n";
                 $this->code = $base_data['Supplier Product Code'];
@@ -352,7 +355,7 @@ class supplierproduct extends DB_Table {
                 $this->pid=mysql_insert_id();
                 $this->new_key_id=$this->pid;
                 $this->new_code=true;
-
+		$this->id_=mysql_insert_id();
                 $sql=sprintf("update `Supplier Product History Dimension` set `Supplier Product Key`=%d where `SPH Key`=%d",
                              $this->pid,
                              $this->id

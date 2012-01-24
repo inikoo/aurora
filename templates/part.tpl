@@ -19,7 +19,7 @@
 </div>
 
 <div style="clear:left">
-  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part XHTML Description')}</h1>
+  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part Unit Description')}</h1>
   <h3 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h3>
 </div>
 
@@ -84,8 +84,10 @@
 		    {/foreach}
 		    </tr>
 		  </table>
-		  {t}Locations{/t}:<div id="add_location_button" style="float:right;font-size:80%;color:#777;margin-right:20px;cursor:pointer"><span onClick="add_location({$part->sku})">{t}Add Location{/t}</span></div>
-		  <table  border=0  id="part_locations" class="show_info_product" style="width:260px" >
+		  
+		  
+		 {t}Locations{/t}:
+		  <table  border=0  id="part_locations" class="show_info_product" style="width:260px;margin-top:0px" >
 	
 			{foreach from=$part->get_locations(true) item=location name=foo }
 			<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
@@ -103,7 +105,11 @@
 
 			</tr>
 			{/foreach}
-			
+			<tr><td colspan=6>
+			<div id="add_location_button" class="buttons small left">
+		  <button onClick="add_location({$part->sku})">{t}Add Location{/t}</button>
+		  </div>
+			</td></tr>
 		  </table>
 		  
 		

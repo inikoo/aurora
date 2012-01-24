@@ -317,7 +317,7 @@ $company=new Company($company_key);
       $this->new=true;
 
       
-  
+	$this->create_user();
 
 
       
@@ -337,7 +337,7 @@ function create_user() {
                    'User Alias'=>$this->data['Staff Name'],
 
                    'User Password'=>hash('sha256',$password),
-                   'User Active'=>'Yes',
+                   'User Active'=>'No',
                    'User Type'=>'Staff',
 
                    'User Parent Key'=>$this->id,
@@ -345,7 +345,7 @@ function create_user() {
                );
      
     $user= new User('find',$user_data,'create');
-  
+
    return $user;
 
 }
@@ -367,6 +367,7 @@ function create_user() {
 
             $this->updated=true;
             $this->new_value=$contact->new_value;
+	    $this->data['Staff Name']=$value;
         }
 
     }

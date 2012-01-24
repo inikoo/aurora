@@ -24,6 +24,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('other_locations_quick_buttons'):
+ $data=prepare_values($_REQUEST,array(
+				'sku'=>array('type'=>'key'),
+                             'location_key'=>array('type'=>'key')
+                          
+                         ));
+
+    other_locations_quick_buttons($data);
+    break;
 case('location_stock_history'):
     history_stock_location();
     break;
@@ -1197,7 +1206,7 @@ function historic_parts_at_location() {
         $adata[]=array(
 
                      'sku'=>sprintf('<a href="part.php?sku=%d">%05d</a>',$data['Part SKU'],$data['Part SKU'])
-                           ,'description'=>$data['Part XHTML Description']
+                           ,'description'=>$data['Part Unit Description']
                                           ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
                                                          ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
                                                                         ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
@@ -1440,12 +1449,14 @@ function parts_at_location() {
                      'part_sku'=>$data['Part SKU'],
                      'location_key'=>$data['Location Key'],
                      'location'=>$data['Location Code'],
-                     'description'=>$data['Part XHTML Description'].' ('.$data['Part XHTML Currently Used In'].')',
-                     'qty'=>number($data['Quantity On Hand']),
+                     'description'=>$data['Part Unit Description'].' ('.$data['Part XHTML Currently Used In'].')',
+                     'formated_qty'=>number($data['Quantity On Hand']),
+                      'qty'=>$data['Quantity On Hand'],
                      'can_pick'=>($data['Can Pick']=='Yes'?_('Yes'):_('No')),
                      'move'=>$move,
                      'audit'=>'<img src="art/icons/page_white_edit.png" alt="'._('Audit').'" />',
                      'lost'=>($data['Quantity On Hand']==0?'':'<img src="art/icons/package_delete.png" alt="'._('Set stock as damaged/lost').'" />'),
+                     'add'=>'<img src="art/icons/lorry.png" alt="'._('Add stock').'" />',
                      'delete'=>($data['Quantity On Hand']==0?'<img src="art/icons/cross.png"  alt="'._('Free location').'" />':''),
                      'number_locations'=>$data['Part Distinct Locations'],
                      'number_qty'=>$data['Quantity On Hand'],
@@ -2129,8 +2140,8 @@ function list_part_categories() {
 
 
 
-    $sql="select `1 Year Acc Sold` from `Category Dimension` C left join `Part Category Dimension` P on (P.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
- print $sql;
+    $sql="select * from `Category Dimension` C left join `Part Category Dimension` P on (P.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+ 
     $res = mysql_query($sql);
     $adata=array();
 
@@ -2139,7 +2150,7 @@ function list_part_categories() {
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-     if ($period=='1w')
+     if ($period=='week')
             $sold=$row['1 Week Acc Sold'];
         else if ($period=='10d')
             $sold=$row['10 Days Acc Sold'];
@@ -2149,7 +2160,7 @@ function list_part_categories() {
             $sold=$row['1 Quarter Acc Sold'];
         else if ($period=='6m')
             $sold=$row['6 Month Acc Sold'];
-        else if ($period=='1y')
+        else if ($period=='year')
             $sold=$row['1 Year Acc Sold'];
         else if ($period=='3y')
             $sold=$row['3 Year Acc Sold'];
@@ -2172,7 +2183,8 @@ function list_part_categories() {
 
 
         $name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
-
+	
+	
         $adata[]=array(
                      'id'=>$row['Category Key'],
                      'name'=>$name,
@@ -2204,5 +2216,59 @@ function list_part_categories() {
     echo json_encode($response);
 }
 
+
+function other_locations_quick_buttons($data){
+
+
+$sql=sprintf("select `Quantity On Hand`,L.`Location Key`,`Location Code` from `Part Location Dimension` B left join `Location Dimension` L on (B.`Location Key`=L.`Location Key`) where `Part Sku`=%d and B.`Location Key`not in (0,%d)",
+$data['sku'],
+$data['location_key']
+);
+//print $sql;
+
+$res=mysql_query($sql);
+$location_data=array();
+while($row=mysql_fetch_assoc($res)){
+$locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
+}
+
+
+$number_cols=5;
+$row=0;
+$location_buttons=array();
+$contador=0;
+  $_row_tmp='';
+  
+  
+  
+$other_locations_quick_buttons='<div class="options" style="xwidth:270px;padding:0px 0px 0px 0px;text-align:center;margin:0px" >
+<table border=1 style="margin:auto" id="pack_it_buttons"><tr>'."\n";
+foreach($locations_data as $location_data) {
+ 
+  
+    
+    if (fmod($contador,$number_cols)==0 and $contador>0)
+         $_row_tmp.="</tr><tr>\n";
+   
+  $other_locations_quick_buttons.='<td onClick="select_move_location('.$location_data['location_key'].',\''.$location_data['location_code'].'\',\''.$location_data['stock'].'\')" >'.$location_data['location_code']."</td>\n";
+    $contador++;
+}
+$other_locations_quick_buttons.='</tr></table></div>';
+
+
+    
+//print "\n $other_locations_quick_buttons \n\n";
+
+
+
+$response=array(
+			'state'=>200,
+			'other_locations_quick_buttons'=>$other_locations_quick_buttons
+
+		);
+
+
+ echo json_encode($response);
+}
 
 ?>

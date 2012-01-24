@@ -35,6 +35,13 @@ require_once '../../conf/conf.php';
 
 global $myconf;
 
+$sql=sprintf("delete from `Category Dimension` where `Category Subject`='Part';");
+mysql_query($sql);
+
+$sql=sprintf("delete from `Category Bridge` where `Subject`='Part';");
+mysql_query($sql);
+
+
 $data=array('Category Warehouse Key'=>1,'Category Name'=>'Family Map','Category Subject'=>'Part');
 $main_cat=new Category('find create',$data);
 
@@ -59,6 +66,9 @@ while ($row=mysql_fetch_assoc($res)) {
                           'Category Subject'=>'Part');
 
                 $cat=new Category('find create',$data);
+                
+              
+                
                 $_data=array(
                            'category_key'=>$cat->id,
                            'parent_category_key'=>$main_cat->id,

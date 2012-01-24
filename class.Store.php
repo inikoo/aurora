@@ -538,8 +538,6 @@ class Store extends DB_Table {
     function update_field_switcher($field,$value,$options='') {
 
 
-
-
         switch ($field) {
         case('code'):
             $this->update_code($value);
