@@ -9,8 +9,10 @@ include_once('class.Company.php');
 
 	
 
-function validate_part_description(query){ validate_general('part','part_description',unescape(query));}
-function validate_gross_weight(query){ validate_general('part','gross_weight',unescape(query));}
+function validate_product_code(query){ validate_general('product','product_code',unescape(query)); alert(Dom.get('store_key').value)}
+function validate_product_description(query){ validate_general('product','product_description',unescape(query));}
+function validate_special_characteristics(query){ validate_general('product','special_characteristics',unescape(query));}
+function validate_product_weight(query){ validate_general('product','product_weight',unescape(query));}
 
 
 function view_store_list(e){
@@ -257,13 +259,15 @@ function init(){
 validate_scope_data=
 {
 
-    'part':{
-	//'product_code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
-	//    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],'name':'product_code'
-	//    ,'ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_product_code&supplier_key='+Dom.get('supplier_key').value+'&query=', 'dbname':'Supplier Product Code'}
-	//,'units_per_case':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','name':'units_per_case','ar':false,'dbname':'Supplier Product Units Per Case', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
-	'gross_weight':{'changed':true,'validated':true,'required':false,'dbname':'Part Gross Weight','group':1,'type':'item','name':'gross_weight','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
-,'part_description':{'changed':true,'validated':true,'required':false,'dbname':'Part Unit Description','group':1,'type':'item','name':'part_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Part Description'}]}
+    'product':{
+	'product_code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],'name':'product_code'
+	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_code&store_key='+Dom.get('store_key').value+'&query=', 'dbname':'Product Code'}
+	,'family_key':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','name':'family_key','ar':false,'dbname':'Product Family Key', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
+	,'store_key':{'changed':true,'validated':true,'required':false,'dbname':'Product Store Key','group':1,'type':'item','name':'store_key','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
+,'product_description':{'changed':true,'validated':true,'required':false,'dbname':'Product Description','group':1,'type':'item','name':'product_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Part Description'}]}
+,'special_characteristics':{'changed':true,'validated':true,'required':false,'dbname':'Product Special Characteristic','group':1,'type':'item','name':'special_characteristics','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Part Description'}]}
+,'product_weight':{'changed':true,'validated':true,'required':false,'dbname':'Product Net Weight','group':1,'type':'item','name':'product_weight','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Part Description'}]}
 
 
 	}
@@ -273,7 +277,7 @@ validate_scope_data=
 
 	
 validate_scope_metadata={
-    'part':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'sp_key', 'key':Dom.get('sp_key').value}
+    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'department_key', 'key':''}
     
 
 };
@@ -282,15 +286,27 @@ validate_scope_metadata={
 
 
 
-    var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_part_description);
+    var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_code);
     product_units_oACDS.queryMatchContains = true;
-    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("part_description","part_description_Container", product_units_oACDS);
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_code","product_code_Container", product_units_oACDS);
     product_units_oAutoComp.minQueryLength = 0; 
     product_units_oAutoComp.queryDelay = 0.1;
 
-    var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_gross_weight);
+    var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_description);
     product_units_oACDS.queryMatchContains = true;
-    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("gross_weight","gross_weight_Container", product_units_oACDS);
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_description","product_description_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
+
+    var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_special_characteristics);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("special_characteristics","special_characteristics_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
+
+    var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_weight);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_weight","product_weight_Container", product_units_oACDS);
     product_units_oAutoComp.minQueryLength = 0; 
     product_units_oAutoComp.queryDelay = 0.1;
 
