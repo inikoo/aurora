@@ -642,7 +642,13 @@ class Order extends DB_Table {
 			}
 
 
-			$sql=sprintf("select `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Order Key`=%d and `Product Key`=%d ",
+
+
+
+
+
+
+			$sql=sprintf("select `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF where `Order Key`=%d and `Product Key`=%d ",
 				$this->id,
 				$data ['Product Key']);
 
@@ -678,6 +684,7 @@ class Order extends DB_Table {
 					$gross=$quantity*$product->data['Product History Price'];
 
 
+				
 
 					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
 						$estimated_weight ,
@@ -791,14 +798,15 @@ class Order extends DB_Table {
 
 		}
 
-
+//print "xx $gross $gross_discounts ";
 
 		return array(
 			'updated'=>true,
 			'otf_key'=>$otf_key,
 			'to_charge'=>money($gross-$gross_discounts,$this->data['Order Currency']),
 			'qty'=>$quantity,
-			'bonus qty'=>$bonus_quantity
+			'bonus qty'=>$bonus_quantity,
+			'discount_percentage'=>($gross_discounts>0?percentage($gross_discounts,$gross,$fixed=1,$error_txt='NA',$psign=''):'')
 		);
 
 		//  print "$sql\n";
@@ -2953,7 +2961,10 @@ class Order extends DB_Table {
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$amount=$row['Order Transaction Gross Amount']*$percentage/100;
-			$this->update_transaction_discount_amount($otf_key,$amount);
+			return $this->update_transaction_discount_amount($otf_key,$amount);
+		}else{
+			$this->error=true;
+			$this->msg='otf not found';		
 		}
 
 	}
@@ -2965,7 +2976,7 @@ class Order extends DB_Table {
 			$deal_info='';
 		}
 
-		$sql=sprintf('select `Order Quantity`,`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from  `Order Transaction Fact`  where `Order Transaction Fact Key`=%d ',
+		$sql=sprintf('select `Product XHTML Short Description`,`Order Quantity`,`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from  `Order Transaction Fact` OTF left join `Product Dimension` P on  (P.`Product ID`=OTF.`Product ID`) where `Order Transaction Fact Key`=%d ',
 			$otf_key
 		);
 
@@ -3008,6 +3019,8 @@ class Order extends DB_Table {
 				return array(
 					'updated'=>true,
 					'otf_key'=>$otf_key,
+					'description'=>$row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
+					'discount_percentage'=>percentage($amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
 					'to_charge'=>money($row['Order Transaction Gross Amount']-$this->data['Order Transaction Total Discount Amount'],$this->data['Order Currency']),
 					'qty'=>$row['Order Quantity'],
 					'bonus qty'=>0
@@ -3017,6 +3030,10 @@ class Order extends DB_Table {
 			}
 
 
+		}
+		else{
+			$this->error=true;
+			$this->msg='otf not found';		
 		}
 
 
@@ -3092,10 +3109,8 @@ class Order extends DB_Table {
 		$this->allowance=array('Family Percentage Off'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
-		$sql=sprintf("select `Product Code`,`Order Transaction Fact Key`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d",$this->id);
-
-
-
+		$sql=sprintf("select `Product Code`,`Order Transaction Fact Key`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d",
+		$this->id);
 		$res_lines=mysql_query($sql);
 		while ($row_lines=mysql_fetch_array($res_lines)) {
 			//     print "\n".$row_lines['Product Code']."\n";
@@ -3187,6 +3202,7 @@ class Order extends DB_Table {
 			// print $sql;
 
 
+
 			foreach ($deals_metadata as $deal_metadata ) {
 
 				$terms_ok=false;
@@ -3258,10 +3274,13 @@ class Order extends DB_Table {
 		$sql=sprintf('update `Order Transaction Fact`  set  `Order Transaction Total Discount Amount`=0 where `Order Key`=%d  '
 			,$this->id
 		);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and ``  ",$this->id);
+		mysql_query($sql);
 
-		mysql_query($sql);
-		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d",$this->id);
-		mysql_query($sql);
+
+
+
 
 		foreach ($this->allowance['Family Percentage Off'] as $allowance_data) {
 
@@ -3280,10 +3299,6 @@ class Order extends DB_Table {
 
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-
-
-
-
 				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%f,0)"
 					,$row['Order Transaction Fact Key']
 					,$this->id

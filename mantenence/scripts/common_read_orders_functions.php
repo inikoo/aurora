@@ -258,7 +258,7 @@ function delete_old_data() {
 
 	$sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 
-	//print "$sql\n";
+	
 	$result_test=mysql_query($sql);
 	while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
 
@@ -275,6 +275,10 @@ function delete_old_data() {
 
 		$sql=sprintf("delete from `Order Deal Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
 		mysql_query($sql);
+		
+		$sql=sprintf("delete from `Order Transaction Deal Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
+		mysql_query($sql);
+		
 
 
 		$sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);

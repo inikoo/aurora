@@ -61,7 +61,7 @@
 			<tr style="height:10px">
 				<td colspan="3"></td>
 			</tr>
-			<tr>
+			<tr id="change_staff_discount_buttons">
 				<td colspan="3"> 
 				<div class="buttons">
 					<button  id="change_discount_save" class="positive disabled">{t}Save{/t}</button>
@@ -70,6 +70,12 @@
 				</div>
 				</td>
 			</tr>
+			<tr id="change_staff_discount_waiting" style="display:none">
+				<td colspan="3" style="text-align:right;"> 
+					<img src="art/loading.gif"> {t}Processing your request{/t}
+				</td>
+			</tr>
+			
 			
 		</table>
 	</div>

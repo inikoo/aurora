@@ -520,7 +520,7 @@ if(changed){
         //alert('x')
         Dom.addClass('save_edit_'+branch,'disabled');
     } else {
-alert('save_edit_'+branch)
+//alert('save_edit_'+branch)
         Dom.removeClass('save_edit_'+branch,'disabled');
     }
 //alert(branch)

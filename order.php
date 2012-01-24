@@ -158,6 +158,9 @@ if (isset($_REQUEST['pick_aid'])) {
 
 
 		$products_display_type='ordered_products';
+			//	$products_display_type='all_products';
+
+		
 		$_SESSION['state']['order']['products']['display']=$products_display_type;
 
 		$products_display_type=$_SESSION['state']['order']['products']['display'];
