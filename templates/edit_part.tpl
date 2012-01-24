@@ -13,7 +13,7 @@
     <div class="buttons" style="float:right">
        
         <button  onclick="window.location='part.php?id={$part->sku}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
-     
+     <button  onclick="window.location='associate_product.php?id={$part->sku}'" ><img src="art/icons/door_out.png" alt=""> {t}Associate Product{/t}</button>
     </div>
     <div class="buttons" style="float:left">
 

@@ -938,8 +938,7 @@ class product extends DB_Table {
 
         $sql=sprintf("insert into `Product History Dimension` %s %s",$keys,$values);
         //   print "creating parod key --------------------------------\n";
-        //  print "$sql\n";
-        // exit;
+         // print "$sql\n";exit;
         if (mysql_query($sql)) {
             if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
@@ -1025,7 +1024,7 @@ class product extends DB_Table {
         }
 
 
-
+//print_r($base_data);exit;
 
         $base_data['product code file as']=$this->normalize_code($base_data['product code']);
 
@@ -1073,7 +1072,7 @@ class product extends DB_Table {
         // exit;
         //}
         $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-
+//print $sql;exit;
         if (mysql_query($sql)) {
             if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
             $this->pid = mysql_insert_id();
@@ -1178,6 +1177,7 @@ class product extends DB_Table {
 
 
     function create($data) {
+
         $this->new_key=false;
         $this->new_id=false;
         $this->new_code=false;
