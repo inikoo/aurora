@@ -3689,6 +3689,9 @@ function create_product($data) {
 
        ) {
         $department_key=$data['parent_key'];
+	$store_key=(isset($data['values']['Product Store Key'])?$data['values']['Product Store Key']:'');
+	$weight=(isset($data['values']['Product Net Weight'])?$data['values']['Product Net Weight']:'');
+
 
         $product=new Product('create',array(
 
@@ -3697,7 +3700,10 @@ function create_product($data) {
                                  'Product Description'=>$data['values']['Product Description'],
                                  'Product Special Characteristic'=>$data['values']['Product Special Characteristic'],
                                  'Product Main Department Key'=>$department_key,
-                                 'editor'=>$editor
+                                 'editor'=>$editor,
+				'Product Store Key'=>$store_key,
+				'Product Net Weight'=>$weight,
+				'Product Gross Weight'=>$weight
                              ));
         if (!$product->new) {
 

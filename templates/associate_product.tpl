@@ -42,28 +42,47 @@
 
 
 
-	 <tr><td style="width:200px"class="label">{t}Part Description{/t}:</td><td style="width:370px">
+	 <tr><td style="width:200px"class="label">{t}Product Code{/t}:</td><td style="width:370px">
 	  <div  >
-	   <input  style="width:100%" id="part_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
-	   value="{$sp->get('Supplier Product Description')}" />
-	   <div id="part_description_Container"  ></div>
+	   <input  style="width:100%" id="product_code" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="product_code_Container"  ></div>
        </div>
 	   </td>
-	   <td id="part_description_msg" class="edit_td_alert" ></td>
+	   <td id="product_code_msg" class="edit_td_alert" ></td>
 	  </tr>
 
-		<tr><td style="width:200px"class="label">{t}Part Weight{/t}:</td><td style="width:370px">
+		<tr><td style="width:200px"class="label">{t}Product Weight{/t}:</td><td style="width:370px">
 	  <div  >
-	   <input  style="width:100%" id="gross_weight" changed=0 type='text' MAXLENGTH="255"  class='text' 
-	   value="{$sp->get('Supplier Product Unit Gross Weight')}" />
-	   <div id="gross_weight_Container"  ></div>
+	   <input  style="width:100%" id="product_weight" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="product_weight_Container"  ></div>
        </div>
 	   </td>
-	   <td id="gross_weight_msg" class="edit_td_alert" ></td>
+	   <td id="product_weight_msg" class="edit_td_alert" ></td>
 	  </tr>
 
 
+		<tr><td style="width:200px"class="label">{t}Product Special Characteristics{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="special_characteristics" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="special_characteristics_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="special_characteristics_msg" class="edit_td_alert" ></td>
+	  </tr>
 
+
+		<tr><td style="width:200px"class="label">{t}Product Description{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="product_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="product_description_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="product_description_msg" class="edit_td_alert" ></td>
+	  </tr>
 
 
 </table>
