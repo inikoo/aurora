@@ -41,18 +41,17 @@ function view_family_list(e){
 	dialog_family_list.show();
 }
 
-function select_family(oArgs){
-var family_code=tables.table2.getRecord(oArgs.target).getData('code');
-var family_key=tables.table2.getRecord(oArgs.target).getData('key');
-var store_key=tables.table2.getRecord(oArgs.target).getData('store_key');
+function select_part(oArgs){
+var part_code=tables.table1.getRecord(oArgs.target).getData('formated_sku');
+var part_key=tables.table1.getRecord(oArgs.target).getData('sku');
 
 
-Dom.get('family_key').value=family_key;
-Dom.get('family_code').value=family_code;
-Dom.get('store_key').value=store_key;
+Dom.get('part_key').value=part_key;
+Dom.get('part_code').value=part_code;
 
-validate_scope_data['product']['family_key'].validated=true;
-validate_scope_data['product']['product_code'].ar_request='ar_assets.php?tipo=is_product_code&store_key='+Dom.get('store_key').value+'&query=';
+
+validate_scope_data['product']['part_key'].validated=true;
+validate_scope_metadata['product'].key=Dom.get('part_key').value;
 validate_scope_data['product']['product_code'].validated=true;
 dialog_family_list.hide();
 
@@ -154,79 +153,85 @@ var tableid=0;
 
 
 
+var tableid=1;
+		      var tableDivEL="table"+tableid;
+		      
+		      var ColumnDefs = [
+{key:"sku", label:"",width:100,hidden:true}
+		      		,{key:"formated_sku", label:"SKU",width:60, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"description", label:"<?php echo _('Description')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:140, sortable:false,className:"aleft"}
+			     	,{key:"status", label:"",width:70, sortable:false,className:"aleft"}
+                   
+					];
+		    
+		      
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=part_list&tableid=1");
+		      
+		      
+		      
+		      
+	
+		      
+		      
+		      
+		      
+		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource1.connXhrMode = "queueRequests";
+		      	    this.dataSource1.table_id=tableid;
 
-var tableid=2; 
-	    var tableDivEL="table"+tableid;
-
-	   
-	    var ColumnDefs = [
-			 {key:"key", label:"",width:100,hidden:true}
-		    ,{key:"store_key", label:"<?php echo _('Store')?>",width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                    ,{key:"code", label:"<?php echo _('Alias')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                    ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-						
-			];
-		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=family_list&tableid="+tableid+"&nr=20&sf=0");
-//alert("ar_quick_tables.php?tipo=family_list&tableid="+tableid+"&nr=20&sf=0");
-	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource2.connXhrMode = "queueRequests";
-	    	    this.dataSource2.table_id=tableid;
-
-	    this.dataSource2.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		    rtext:"resultset.rtext",
+		      this.dataSource1.responseSchema = {
+			  resultsList: "resultset.data", 
+			  metaFields: {
+			  rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
+
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
-		},
-		
-		
-		fields: [
-			 "code",'name','key', 'store_key'
-			 ]};
-
-	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource2
+		    totalRecords: "resultset.total_records" 
+			  },
+			  
+			  fields: [
+				  "sku","description","used_in","status","formated_sku"
+				   ]};
+		      
+		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource1
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:20,containers : 'paginator2', 
+									      rowsPerPage:20,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+									      ,template : "{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}"
 									  })
-								     
-								     ,sortedBy : {
-									 key: "code",
-									 dir: ""
-								     },
-								     dynamicData : true
-
-								  }
 								   
-								 );
-	    
-	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
-	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+								   ,sortedBy : {
+								      key: "formated_sku",
+								       dir: ""
+								   }
+								   ,dynamicData : true
+								 
+							       }
+							       );
+		      this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+                   
+                   this.table1.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow);
+       this.table1.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow);
+      this.table1.subscribe("rowClickEvent", select_part);
+     
 
- this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
-       this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
-      this.table2.subscribe("rowClickEvent", select_family);
-        this.table2.table_id=tableid;
-           this.table2.subscribe("renderEvent", myrenderEvent);
+                   
+	    this.table1.filter={key:'used_in',value:''};
 
-
-	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table2.filter={key:'code',value:''};	    
 	};
     });
 
@@ -277,7 +282,7 @@ validate_scope_data=
 	'product_code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],'name':'product_code'
 	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_code&store_key='+Dom.get('store_key').value+'&query=', 'dbname':'Product Code'}
-	,'family_key':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','name':'family_key','ar':false,'dbname':'Product Family Key', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
+	,'part_key':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','name':'family_key','ar':false,'dbname':'Product Family Key', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
 	,'store_key':{'changed':true,'validated':true,'required':true,'dbname':'Product Store Key','group':1,'type':'item','name':'store_key','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
 ,'product_name':{'changed':true,'validated':true,'required':true,'dbname':'Product Name','group':1,'type':'item','name':'product_name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Name'}]}
 ,'product_description':{'changed':true,'validated':true,'required':false,'dbname':'Product Description','group':1,'type':'item','name':'product_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Description'}]}
@@ -290,7 +295,7 @@ validate_scope_data=
 
 	
 validate_scope_metadata={
-    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'parent_key', 'key':Dom.get('part_id').value}
+    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'parent_key', 'key':Dom.get('part_key').value}
     
 
 };

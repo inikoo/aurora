@@ -1234,7 +1234,7 @@ class product extends DB_Table {
                          $value['Part SKU'],
                          $value['Parts Per Product'],
                          prepare_mysql($value['Product Part Type'])
-                        );
+                        ); 
 
             $res=mysql_query($sql);
 

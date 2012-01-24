@@ -15,6 +15,7 @@
 include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.SupplierProduct.php');
+include_once('class.Family.php');
 
 if(!$user->can_view('contacts')){
   header('Location: index.php');
@@ -62,11 +63,13 @@ $js_files=array(
 		'edit_contact_telecom.js.php',
 		'edit_contact_name.js.php',
 		'edit_contact_email.js.php',
-		'associate_product.js.php'
+		'associate_product_part.js.php'
 		//'new_contact.js.php?scope=staff'
 		);
 
-$smarty->assign('part_id',$_REQUEST['id']);
+$family=new Family($_REQUEST['id']);
+
+$smarty->assign('family',$family);
 
 
 $tipo_filter2='code';
@@ -88,9 +91,9 @@ $smarty->assign('scope','staff');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');
-$smarty->assign('parent','suppliers');
+$smarty->assign('parent','products');
 $smarty->assign('title','Associate New Product');
-$smarty->display('associate_product.tpl');
+$smarty->display('associate_product_part.tpl');
 
 
 ?>
