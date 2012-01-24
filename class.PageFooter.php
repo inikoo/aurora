@@ -206,7 +206,7 @@ class PageFooter extends DB_Table {
 
 
    
-  function update_snapshoot() {
+  function update_snapshot() {
 
         global $inikoo_public_url;
         $old_image_key=$this->data['Page Footer Preview Image Key'];
