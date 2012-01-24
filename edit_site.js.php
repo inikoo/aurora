@@ -432,8 +432,8 @@ function upload_header(e){
     YAHOO.util.Connect.setForm('upload_header_form', true,true);
     var request='ar_upload_page_content.php?tipo=upload_header';
     
-  //   Dom.setStyle('processing_upload_header','display','');
-   //     Dom.setStyle(['upload_header','cancel_upload_header'],'display','none');
+    Dom.setStyle('processing_upload_header','display','');
+        Dom.setStyle(['upload_header','cancel_upload_header'],'display','none');
 
     
    var uploadHandler = {
@@ -445,7 +445,7 @@ function upload_header(e){
 	  
 
 	     
-        //window.location.reload()
+        window.location.reload()
                 
 	    }else if(r.state==201){
 	        dialog_upload_header.hide();
