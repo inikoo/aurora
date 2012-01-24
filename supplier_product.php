@@ -13,6 +13,8 @@ if (!$product_supplier_key) {
     header('Location: suppliers.php?e');
     exit();
 }
+
+
 $supplier_product= new SupplierProduct('pid',$product_supplier_key);
 if (!$supplier_product->id) {
     header('Location: suppliers.php');
@@ -20,6 +22,7 @@ if (!$supplier_product->id) {
 
 }
 
+ 
 $supplier_key=$supplier_product->supplier_key;
 if ($user->data['User Type']=='Supplier') {
 
@@ -65,7 +68,7 @@ $js_files=array(
 
 $smarty->assign('display',$_SESSION['state']['supplier_product']['display']);
 
-
+$smarty->assign('pid',$supplier_product->id);
 
 $supplier_product_code=$supplier_product->code;
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
@@ -131,6 +134,28 @@ $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
 
 $smarty->assign('supplier_id',$supplier_key);
+
+
+$tipo_filter=$_SESSION['state']['part']['stock_history']['f_field'];
+$smarty->assign('filter_show1',$_SESSION['state']['part']['stock_history']['f_show']);
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['part']['transactions']['f_value']);
+$filter_menu=array(
+                 'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
+                 'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+
+$tipo_filter=$_SESSION['state']['supplier_product']['porders']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['supplier_product']['porders']['f_value']);
+$filter_menu=array(
+                 'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Id'),'label'=>_('Id')),
+             );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
 
 $smarty->display('supplier_product.tpl');
 

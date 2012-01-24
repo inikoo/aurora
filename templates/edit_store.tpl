@@ -22,6 +22,7 @@
 
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+    <li> <span class="item {if $edit=='invoice'}selected{/if}"  id="invoice">  <span> {t}Invoice{/t}</span></span></li>
     <li style="display:none"> <span class="item {if $edit=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Deal Templates{/t}</span></span></li>
     <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Deals{/t}</span></span></li>
     <li> <span class="item {if $edit=='charges'}selected{/if}"  id="charges">  <span> {t}Charges{/t}</span></span></li>
@@ -39,6 +40,75 @@
     <div id="info_name" style="margin-left:20px;float:left;width:260px;display:none">
    
     </div>
+
+
+     <div  class="edit_block" style="min-height:200px;{if $edit!='invoice'}display:none{/if}"  id="d_invoice">
+<table style="margin:0;clear:both;width:870px" class="edit"  >
+      <tr class="title"><td >{t}Invoice Details{/t} </td>
+       <td colspan=2>
+       <div class="buttons">
+	
+	<button class="positive"  style="margin-right:10px;visibility:hidden"  id="save_edit_invoice" >{t}Save{/t}</button>
+	<button class="negative" style="margin-right:10px;visibility:hidden" id="reset_edit_invoice" >{t}Reset{/t}</button>
+	
+      </div>
+      </td>
+      </tr>
+	 <tr><td style="width:200px"class="label">{t}Store VAT Number{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="Store_VAT_Number" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="{$store->get('Store VAT Number')}" ovalue="{$store->get('Store VAT Number')}" />
+	   <div id="Store_VAT_Number_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="Store_VAT_Number_msg" class="edit_td_alert" ></td>
+	  </tr>
+
+	 <tr><td class="label">{t}Store Company  Number{/t}:</td><td>
+	  <div  >
+	   <input  style="width:100%" id="Store_Company_Number" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="{$store->get('Store Company Number')}" ovalue="{$store->get('Store Company Number')}" />
+	   <div id="Store_Company_Number_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="Store_Company_Number_msg" class="edit_td_alert" ></td>
+	  </tr>
+
+	 <tr><td class="label">{t}Store Company  Name{/t}:</td><td>
+	  <div  >
+	   <input  style="width:100%" id="Store_Company_Name" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="{$store->get('Store Company Name')}" ovalue="{$store->get('Store Company Name')}" />
+	   <div id="Store_Company_Name_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="Store_Company_Name_msg" class="edit_td_alert" ></td>
+	  </tr>
+	
+	<tr><td class="label">{t}Message Header{/t}:</td>
+	<td>
+	  <div style="height:120px">
+	   <textarea style="width:100%" id="header"  changed=0 olength="{$store->get('Store Invoice Message Header')}"  value="{$store->get('Store Invoice Message Header')}"  ovalue="{$store->get('Store Invoice Message Header')}" rows="6" cols="42">{$store->get('Store Invoice Message Header')}</textarea>
+	   <div id="header_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="header_msg" class="edit_td_alert" ></td>
+	 </tr>
+
+	<tr><td class="label">{t}Message{/t}:</td>
+	<td>
+	  <div style="height:120px">
+	   <textarea style="width:100%" id="msg"  changed=0 olength="{$store->get('Store Invoice Message')}"  value="{$store->get('Store Invoice Message')}"  ovalue="{$store->get('Store Invoice Message')}" rows="6" cols="42">{$store->get('Store Invoice Message')}</textarea>
+	   <div id="msg_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="msg_msg" class="edit_td_alert" ></td>
+	 </tr>
+
+</table>
+	</div>
+
+
+
      <div  class="edit_block" style="min-height:200px;{if $edit!='website'}display:none{/if}"  id="d_website">
       
 
@@ -181,7 +251,7 @@
 	  </tr>
 	
 	 <tr><td class="label">{t}Store URL{/t}:</td><td>
-	  <div  >
+	  <div>
 	   <input  style="width:100%" id="url" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="{$store->get('Store URL')}" ovalue="{$store->get('Store URL')}" />
 	   <div id="url_Container"  ></div>
@@ -445,7 +515,7 @@
   </div>
 </div>
 
-<div id="dialog_edit_campaign" style="20px 10px 10px 10px">
+<div id="dialog_edit_campaign" style="20px 10px 10px 10px; display:none">
 <table class="edit">
 <tr>
 <td class="label">{t}Name{/t}</td>

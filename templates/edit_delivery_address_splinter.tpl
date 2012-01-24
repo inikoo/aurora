@@ -54,7 +54,7 @@ function_value=false
 	      <div  style="display:none" class="address_container"  id="address_container0">
 		<div class="address_display" id="address_display0"></div>
 		<div  class="address_buttons" id="address_buttons0" >
-		  <span class="small_button small_button_edit" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" ><img src="art/icons/person.png" alt="{t}Contacts{/t}"/></span>
+		  <span class="small_button small_button_edit" style="float:left" id="contacts_address_button0" address_id="0" onclick="contacts_address(event,this)" ><img src="art/icons/vcard.png" alt="{t}Contacts{/t}"/></span>
 		  
 		  <input type="checkbox" class='Is_Main' /> {t}Main{/t}
 		  <span class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(event,this)" >{t}Remove{/t}</span>

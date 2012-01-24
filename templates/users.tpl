@@ -87,15 +87,15 @@
 <h2>{t}Staff{/t}</h2>
 <table>
 <tr><td>{t}Employees{/t}:</td><td>{$number_staff}</td><tr>
-<tr><td><a href="users_staff.php">{t}Users{/t}</a>:</td><td><a href="users_staff.php">{$number_users.Staff}</a>&nbsp;&larr;Click</td><tr>
+<tr><td>{t}Users{/t}:</td><td><a style="text-decoration:none" href="users_staff.php">{$number_users.Staff} <img style="vertical-align:middle;" src="art/link.gif" alt=""/></a></td><tr>
 </table>
 
 </div>	
 <div id="suppliers_column" class="col">
 <h2>{t}Suppliers{/t}</h2>
 <table>
-<tr><td><a href="suppliers.php">{t}Suppliers{/t}:</a></td><td><a href="suppliers.php">{$number_suppliers}</a></td><tr>
-<tr><td><a href="users_supplier.php">{t}Users{/t}</a>:</td><td><a href="users_supplier.php">{$number_users.Supplier}</a>&nbsp;&larr;Click</td><tr>
+<tr><td><a href="suppliers.php">{t}Suppliers{/t}</a>:</td><td>{$number_suppliers}</td><tr>
+<tr><td>{t}Users{/t}:</td><td><a style="text-decoration:none" href="users_supplier.php">{$number_users.Supplier} <img style="vertical-align:middle;" src="art/link.gif" alt=""/></a></td><tr>
 </table>
 </div>
 <div id="customers_column" class="col" style="margin-right:0px">

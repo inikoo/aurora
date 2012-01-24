@@ -321,7 +321,7 @@ global $editor;
 function edit_suppliers(){
 global $myconf;
 
-    $conf=$_SESSION['state']['suppliers']['table'];
+    $conf=$_SESSION['state']['suppliers']['edit_suppliers'];
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
@@ -357,10 +357,15 @@ if(isset( $_REQUEST['where']))
   else
     $tableid=0;
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-  $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
   
   
-  
+  $_SESSION['state']['suppliers']['edit_suppliers']['order']=$order;
+    $_SESSION['state']['suppliers']['edit_suppliers']['order_dir']=$order_direction;
+  $_SESSION['state']['suppliers']['edit_suppliers']['nr']=$number_results;
+  $_SESSION['state']['suppliers']['edit_suppliers']['sf']=$start_from;
+  $_SESSION['state']['suppliers']['edit_suppliers']['f_field']=$f_field;
+  $_SESSION['state']['suppliers']['edit_suppliers']['f_value']=$f_value;
+
 
   $_order=$order;
   $_dir=$order_direction;
@@ -394,9 +399,13 @@ if(isset( $_REQUEST['where']))
      }
      
    }
-   $rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
-  if($total_records>$number_results)
-    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+ 
+  $rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._("Showing All").')';
+
 
   $filter_msg='';
   
@@ -469,21 +478,16 @@ if(isset( $_REQUEST['where']))
    
 
    $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data,
-			 'sort_key'=>$_order,
-			 'rtext'=>$rtext,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
+		   array(
+  'state'=>200,
+                                    'data'=>$data,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
 			 )
 		   );
    echo json_encode($response);
@@ -742,7 +746,7 @@ function create_product($data) {
     $sp_data['editor']=$editor;
     $sp_data['Supplier Key']=$data['parent_key'];
     $sp_data['Supplier Key']=$data['parent_key'];
-    $sp_data['Supplier Product Valid From']=date("Y-m-d H:i:s");
+    $sp_data['Supplier Product Valid From']=gmdate("Y-m-d H:i:s");
                                                      
 
 
@@ -751,7 +755,7 @@ function create_product($data) {
 
     if ($supplier_product->new) {
     $msg=_('Supplier Product logged');
-        $response= array('state'=>200,'action'=>'created','object_key'=>$supplier_product->id,'msg'=>$msg);
+        $response= array('state'=>200,'action'=>'created_','object_key'=>$supplier_product->id_,'msg'=>$msg);
     } else {
         if ($supplier_product->found)
             $response= array('state'=>400,'action'=>'found','object_key'=>$supplier_product->found_key,'msg'=>_('Product already in the database'));

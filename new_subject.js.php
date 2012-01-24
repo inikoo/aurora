@@ -25,7 +25,7 @@ the_tipo='find_'+Subject
 		    subject_found=true;
 		    subject_found_email=true;
 		    subject_found_key=r.found_key;
-		    display_form_state();
+		    
 		    contact_with_same_email=r.found_key;
 		    //alert(subject_found+' '+subject_found_email);
 		     update_save_button();
@@ -33,17 +33,17 @@ the_tipo='find_'+Subject
 		    subject_found=true;
 		    subject_found_email=false;
 		    subject_found_key=r.found_key;
-		    display_form_state();
+		    
 		     update_save_button();
 		}else if(r.action=='found_candidates'){
 		    subject_found=false; subject_found_email=false;
 		    subject_found_key=0;
-		     display_form_state();
+		     
 		      update_save_button();
 		}else{
 		    subject_found=false; subject_found_email=false;
 		    subject_found_key=0; 
-		       display_form_state();
+		       
 		        update_save_button();
 		}
 		//if(old_subject_found!=subject_found || old_subject_found_email!=subject_found_email){
@@ -137,7 +137,7 @@ function update_save_button(){
     }
 function validate_form(){
 
-	display_form_state();
+	
       
 	 valid_form=true;
 	for (item in validate_data ){
@@ -185,35 +185,7 @@ function validate_form(){
 function display_form_state(){
     
     
-    
-  //  if(subject_found==true){
-//	Dom.get('mark_'+Subject+'_found').style.display='';
- //   }else{
-//	Dom.get('mark_'+Subject+'_found').style.display='none';
-
- //   }
-    
-    for (i in validate_data){
-	// alert(i+'_valid')
-	if(validate_data[i].validated==true)
-	    Dom.get(i+'_valid').innerHTML="<img src='art/icons/accept.png'>";
-	else{
-	    
-	    //Dom.get(i+'_valid').innerHTML="<img src='art/icons/cross.png'>";
-	}
-
-	if(validate_data[i].inputed==true){
-	    
-	    Dom.get(i+'_inputed').innerHTML="<img src='art/icons/accept.png'>";
-	  
-
-
-	}else{
-	    //Dom.get(i+'_inputed').innerHTML="";
-	}
-	
-
-    }
+   
 }
 
 
@@ -237,7 +209,7 @@ function contact_name_inputed(){
 	validate_data[item].inputed=false;
     else
 	validate_data[item].inputed=true;
-    display_form_state();
+    
     
 }    
 function validate_telephone(original_query) {
@@ -300,7 +272,7 @@ function telephone_inputed(){
     else
 	validate_data[item].inputed=true;
 
-    display_form_state();
+    
     
     //validate_postal_code(postal_code);
     
@@ -412,7 +384,7 @@ return;
 	}
 	
     }
-    display_form_state();
+    
     
 }
 function validate_email_address(email) {

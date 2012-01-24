@@ -72,6 +72,9 @@
 	</h2>
 	<div id="table0" class="dtable btable" style="margin-bottom:0">
 	</div>
+
+
+
 </div>
 {if $items_out_of_stock} 
 <div style="clear:both;margin:30px 0">
@@ -85,4 +88,8 @@
 </div>
 </div>
 </div>
+
+
+
 {include file='footer.tpl'} 
+

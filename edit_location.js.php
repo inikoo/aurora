@@ -350,8 +350,8 @@ validate_scope_data=
 	//,'height':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Height','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Height')?>'}]}	
 	//,'width':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Width','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Width')?>'}]}	
 
-	,'volume':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Max_Volume','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Volume')?>'}]}	
-	,'weight':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Location_Max_Weight','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
+	,'volume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Max_Volume','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Volume')?>'}]}	
+	,'weight':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Max_Weight','ar':false,'validation':[{'regexp':number_regex,'invalid_msg':'<?php echo _('Invalid Weight')?>'}]}
 
 
 	//,'slots':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Location_Max_Slots','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}

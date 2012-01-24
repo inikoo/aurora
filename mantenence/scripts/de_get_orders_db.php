@@ -119,7 +119,7 @@ $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  o
 
 
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/%DE0145ref.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/%DE1742.xls' ) order by filename";
 
 
 $contador=0;
@@ -1059,7 +1059,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                                    'Part Status'=>'Not In Use',
                                    'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
                                    'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
-                                   'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
+                                   'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
                                    'part valid from'=>$date_order,
                                    'part valid to'=>$date2,
                                    'Part Gross Weight'=>$w

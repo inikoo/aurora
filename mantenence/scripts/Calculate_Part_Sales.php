@@ -73,9 +73,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   $part->update_picking_location();
   $part->update_main_state();
-//$part->update_up_today_sales();
-//$part->update_interval_sales();
-//$part->update_last_period_sales();
+$part->update_up_today_sales();
+$part->update_interval_sales();
+$part->update_last_period_sales();
   
 
 

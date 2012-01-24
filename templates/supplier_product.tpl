@@ -8,6 +8,20 @@
   <div  class="branch"> 
   <span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a href="supplier.php?id={$supplier->id}">{$supplier->get('Supplier Name')}</a> &rarr; {$supplier_product->get('Supplier Product Code')}</span>
   </div>
+  
+  <div class="top_page_menu">
+		<div class="buttons" style="float:left">
+			<button onclick="window.location='suppliers.php'"><img src="art/icons/house.png" alt=""> {t}Suppliers{/t}</button> 
+		</div>
+		<div class="buttons">
+			<button class="negative" onclick="window.location='edit_supplier_product.php?id='">{t}Edit Supplier Product{/t}</button> 
+			<button class="negative" onclick="window.location='new_part.php?id={$pid}'">{t}Add Part{/t}</button> 
+		</div>
+		<div style="clear:both">
+		</div>
+	</div>
+  
+  
   <h1><span class="id">{$supplier_product->get('Supplier Product Code')}</span> {$supplier_product->get('Supplier Product Name')} </h1>
   
 
@@ -58,7 +72,7 @@
 		</table>
 </div>
 <div style="width:280px;float:left;margin-left:20px">
-    {$product_chain_diagram}
+   
 	<table class="show_info_product" style="{if $supplier_product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%"  >
 		 <tr><td>{t}Current Stock{/t}:</td></tr>
 		 {foreach from=$supplier_product->get_parts() item=part_data}
@@ -92,15 +106,11 @@
 
  <table  class="show_info_product">
 		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$supplier_product->get('Formated Weight')}</td></tr>
-		    {if $data.dimension!=''}
-		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
-		    {/if}
-		     {if $data.oweight!=''}
-		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
-		    {/if}
-		    {if $data.odimension!=''}
-		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
-		    {/if}
+		
+		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$supplier_product->get('Formated Dimensions')}</td></tr>
+		
+
+	
 		  </table>
 </div>
 

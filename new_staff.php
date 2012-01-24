@@ -27,18 +27,20 @@ if(!$user->can_edit('customers')){
 }
 
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-	
-		 $yui_path.'build/assets/skins/sam/skin.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-	
-		 'css/container.css',
-		
-		 'css/edit.css'
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+	'text_editor.css',
+	'common.css',
+	'button.css',
+	'css/container.css',
+	'table.css',
+	'css/edit.css',
+	'css/edit_address.css',
+	'theme.css.php'
 		 );
 
-$css_files[]='theme.css.php';
+
 
 
 
@@ -63,11 +65,37 @@ $js_files=array(
 		//'new_contact.js.php?scope=staff'
 		);
 
+$sql=sprintf("select * from `Company Position Dimension`");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_position[$row['Company Position Key']]=$row['Company Position Title'];
+}
+
+$smarty->assign('staff_position',$staff_position);
+
+$sql=sprintf("select * from `Company Department Dimension`");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_department[$row['Company Department Key']]=$row['Company Department Name'];
+}
+
+$smarty->assign('staff_department',$staff_department);
+
+$sql=sprintf("select * from `Company Area Dimension`");
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$staff_area[$row['Company Area Key']]=$row['Company Area Name'];
+}
+
+$smarty->assign('staff_area',$staff_area);
+
+
+$smarty->assign('scope','staff');
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');
-$smarty->assign('parent','contacts');
+$smarty->assign('parent','staff');
 $smarty->assign('title','New Staff');
 $smarty->display('new_staff.tpl');
 

@@ -585,6 +585,9 @@ class product extends DB_Table {
         case('Formated Weight'):
             return number($this->data['Product Net Weight'])."Kg";
             break;
+ case('Formated Dimensions'):
+            return '';
+            break;
 
         case('historic short description'):
         case('short description'):
@@ -5556,7 +5559,7 @@ class product extends DB_Table {
     }
 
     function get_parts_info() {
-        $sql=sprintf("select IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part List Key`,`Product Part List Note`,PPL.`Part SKU`,`Part XHTML Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
+        $sql=sprintf("select IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part List Key`,`Product Part List Note`,PPL.`Part SKU`,`Part Unit Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPD.`Product ID`=%d and PPD.`Product Part Most Recent`='Yes';",$this->data['Product ID']);
 //print $sql;
         $result=mysql_query($sql);
         $parts=array();

@@ -170,7 +170,11 @@ class Category extends DB_Table {
             elseif($this->data['Category Subject']=='Supplier') {
                 $sql=sprintf("insert into `Supplier Category Dimension` (`Category Key`) values (%d)",$this->id);
                 mysql_query($sql);
+            }elseif($this->data['Category Subject']=='Part') {
+                $sql=sprintf("insert into `Part Category Dimension` (`Category Key`) values (%d)",$this->id);
+                mysql_query($sql);
             }
+
 
 
             $parent_category=new Category($data['Category Parent Key']);

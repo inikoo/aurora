@@ -5,10 +5,7 @@ $order_key=0;
 if(isset($_REQUEST['order_key']) )
     $order_key=$_REQUEST['order_key'];
 print "var order_key=$order_key;";
-$customer_key=0;
-if(isset($_REQUEST['customer_key']) )
-    $customer_key=$_REQUEST['customer_key'];
-print "var customer_key=$customer_key;";
+
 ?>
 
 
@@ -20,93 +17,6 @@ YAHOO.namespace ("invoice");
 
 var edit_delivery_address;
 
-
-
-function post_change_main_delivery_address(){
- 
-    var ar_file='ar_edit_orders.php';
-    request='tipo=update_ship_to_key&order_key='+order_key+'&ship_to_key=0';
-	
-	YAHOO.util.Connect.asyncRequest(
-				    'POST',
-				    ar_file, {
-					success:function(o) {
-					 
-					   var r = YAHOO.lang.JSON.parse(o.responseText);
-					    if (r.state == 200) {
-						if(r.result=='updated'){
-						edit_delivery_address.hide()
-					Dom.get('delivery_address').innerHTML=r.new_value;
-						     Dom.setStyle('tr_order_shipping','display','');
-						    Dom.setStyle('shipping_address','display','');
-						    Dom.setStyle('for_collection','display','none');
-						}
-					    } else {
-						alert(r.msg);
-						//	callback();
-					    }
-					},
-					    failure:function(o) {
-					    alert(o.statusText);
-					    // callback();
-					},
-					    scope:this
-					    },
-				    request
-				    
-				    );  
-}
-
-
-
-function change_shipping_type(){
-
-
-new_value=this.getAttribute('value');
-var ar_file='ar_edit_orders.php';
-	request='tipo=edit_new_order_shipping_type&id='+order_key+'&key=collection&newvalue='+new_value;
-	//alert(request);return;
-	YAHOO.util.Connect.asyncRequest(
-				    'POST',
-				    ar_file, {
-					success:function(o) {
-					    var r = YAHOO.lang.JSON.parse(o.responseText);
-					    if (r.state == 200) {
-						if(r.result=='updated'){
-						    if(r.new_value=='Yes'){
-						    Dom.setStyle('tr_order_shipping','display','none');
-						    Dom.setStyle('shipping_address','display','none');
-						    Dom.setStyle('for_collection','display','');
-
-						    
-						    }else{
-						     Dom.setStyle('tr_order_shipping','display','');
-						    Dom.setStyle('shipping_address','display','');
-						    Dom.setStyle('for_collection','display','none');
-						    
-						    }
-						    
-						
-						}
-						    
-						
-					    } else {
-						alert(r.msg);
-						//	callback();
-					    }
-					},
-					    failure:function(o) {
-					    alert(o.statusText);
-					    // callback();
-					},
-					    scope:this
-					    },
-				    request
-				    
-				    );  
-	
-
-}
 
 
 var myonCellClick = function(oArgs) {
@@ -125,7 +35,7 @@ var myonCellClick = function(oArgs) {
 
     //return;
 
-    //alert(datatable)
+  
     var recordIndex = this.getRecordIndex(record);
 
 		
@@ -221,7 +131,12 @@ var myonCellClick = function(oArgs) {
 	
 	break;
    
-		    
+   case('edit_object'):
+  
+  
+		    change_discount(this.getCell(target),record.getData('otf_key'),record.getId(),record.getData('discount_percentage'))
+  
+	break;	    
     default:
 		    
 	this.onEventShowCellEditor(oArgs);
@@ -297,7 +212,7 @@ var CellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    //alert(o.responseText);
+					    alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
@@ -305,14 +220,14 @@ var CellEdit = function (callback, newValue) {
 						    Dom.get(x).innerHTML=r.data[x];
 						}
 					      Dom.get('ordered_products_number').value=r.data['ordered_products_number'];
-if(r.discounts){
+                 if(r.discounts){
 						    Dom.get('tr_order_items_gross').style.display='';
 						}else{
 						    Dom.get('tr_order_items_gross').style.display='none';
 
 						}
 
-		if(r.charges){
+		           if(r.charges){
 						    Dom.get('tr_order_items_charges').style.display='';
 
 						}else{
@@ -336,7 +251,9 @@ if(r.discounts){
 						callback(true,r.quantity);
 						
 
-					    } else {
+					    } 
+					    
+					    else {
 						alert(r.msg);
 						callback();
 					    }
@@ -374,6 +291,7 @@ var mygetTerms =function (query) {
 };
 
 
+
 YAHOO.util.Event.addListener(window, "load", function() {
  tables  = new function() {
 
@@ -393,14 +311,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ,{key:"quantity",label:"Qty", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
 					,{key:"add",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'add_object',object:'new_order'}
 					,{key:"remove",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false,action:'remove_object',object:'new_order'}
-			     ,{key:"to_charge",label:"To Charge", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			     ,{key:"to_charge",label:"To Charge", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'transaction_discount_percentage'}
 				,{key:"dispatching_status",label:"Status" ,hidden:(Dom.get('dispatch_state').value!='In Process'?false:true),width:90,sortable:false,className:"aright"}
-
+				,{key:"otf_key",label:"" ,hidden:true, width:1}
+	            ,{key:"discount_percentage",label:"" ,hidden:true, width:1}
 				];
 
 		//alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	    //alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
+	  
+	  	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
+
+	 // alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -420,7 +341,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
-			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status'
+			 ,"to_charge","gross","tariff_code","stock","add","remove","pid",'dispatching_status','otf_key','discount_percentage'
 			 // "promotion_id",
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
@@ -506,12 +427,17 @@ function create_delivery_note(){
 					'POST',
 					ar_file, {
 					    success:function(o) {
-									alert(o.responseText);
+								//	alert(o.responseText);
 
 						//return;
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-						window.location="customer.php?id="+customer_key;
+								
+								if(Dom.get('referral').value=='store_pending_orders'){
+								window.location="customers_pending_orders.php?store="+Dom.get('store_key').value;
+								}else{
+								window.location="customer.php?id="+Dom.get('customer_key').value;
+								}
 						}
 					    },
 					failure:function(o) {
@@ -534,95 +460,6 @@ function open_cancel_dialog(){
 }
 
 
-function save_use_calculated_shipping(){
-var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=use_calculated_shipping&order_key='+order_key;
-
-alert(request);
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-						//alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-					
-					for(x in r.data){
-
-						    Dom.get(x).innerHTML=r.data[x];
-						}
-					        Dom.get('order_shipping_method').innerHTML=r.order_shipping_method;
-					 Dom.get('shipping_amount').value=r.shipping_amount
-						}
-						reset_set_shipping()
-					    },
-					failure:function(o) {
-					    alert(o.statusText);
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    );  
-
-}
-
-function save_set_shipping(){
-value=Dom.get("shipping_amount").value;
-var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=set_order_shipping&value='+value+'&order_key='+order_key;
-
-//alert(request);
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-						//alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-					
-					for(x in r.data){
-
-						    Dom.get(x).innerHTML=r.data[x];
-						}
-					           Dom.get('order_shipping_method').innerHTML=r.order_shipping_method;
-					            Dom.get('shipping_amount').value=r.shipping_amount
-						}
-						reset_set_shipping()
-					    },
-					failure:function(o) {
-					    alert(o.statusText);
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    );  
-
-}
-
-function reset_set_shipping(){
-dialog_edit_shipping.hide();
-}
-
-
-
-
-
-function close_edit_delivery_address_dialog(){
-edit_delivery_address.hide();
-}
-
-function change_delivery_address(){
-
- var y=(Dom.getY('control_panel'))
-    var x=(Dom.getX('control_panel'))
-Dom.setX('edit_delivery_address_splinter_dialog',x);
-Dom.setY('edit_delivery_address_splinter_dialog',y+0);
- edit_delivery_address.show();
-}
 
 function show_only_ordered_products(){
  
@@ -647,6 +484,9 @@ function show_all_products(){
    var datasource=tables['dataSource0'];
    var request='&display=all_products';
   Dom.get('products_display_type').value='all_products';
+  
+  
+  
    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
 
@@ -715,32 +555,8 @@ var ar_file='ar_edit_orders.php';
 function init(){
 
  init_search('products_store');
-
-Event.addListener("tr_order_shipping", "mouseover", show_edit_button,{'name':'shipping'});
-Event.addListener("tr_order_shipping", "mouseout", hide_edit_button,{'name':'shipping'});
-
-Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
-
-
-
 Event.addListener("ordered_products", "click", show_only_ordered_products);
 Event.addListener("all_products", "click", show_all_products);
-
-
-
- edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", 
-			{ 
-			    visible : false,close:false,
-			    underlay: "none",draggable:false
-			    
-			} );
-       edit_delivery_address.render();
-    
-                        YAHOO.util.Event.addListener("change_delivery_address", "click",change_delivery_address);
-
-    
- 
-
    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
@@ -748,41 +564,10 @@ Event.addListener("all_products", "click", show_all_products);
 
 Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+  YAHOO.util.Event.addListener("done", "click",create_delivery_note );
 
 
-//---------------------------------------discount search code from here-----------------------
- change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", 
-			{ 
-			    visible : false,close:false,
-			    underlay: "none",draggable:false
-			    
-			} );
-       change_staff_discount.render();
-       //       change_staff_discount.show();
 
-//---------------------------------------discount search ends here---------------------------
-
-        YAHOO.util.Event.addListener(["set_for_collection","set_for_shipping"], "click",change_shipping_type);
-
-
-var myDialog = new YAHOO.widget.Dialog("myDialog"); 
-
-
-//alert(Dom.get('cancel'));
-  dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {context:["cancel","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-
-//  alert('xx')
-
-dialog_cancel.render();
-  YAHOO.util.Event.addListener("cancel", "click",open_cancel_dialog );
-   YAHOO.util.Event.addListener("done", "click",create_delivery_note );
-
-dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {context:["edit_button_shipping","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_edit_shipping.render();
-Event.addListener("edit_button_shipping", "click", dialog_edit_shipping.show,dialog_edit_shipping , true);
-
-Event.addListener("save_set_shipping", "click", save_set_shipping);
-Event.addListener("reset_set_shipping", "click", reset_set_shipping);
 
 dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {context:["import_transactions_mals_e","tl","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_import_transactions_mals_e.render();
@@ -813,34 +598,10 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
-//------------------------------------ discount code ------------------------------
-var change_discount=function(o){
-//alert("caca")
-    var y=(Dom.getY(o))
-    var x=(Dom.getX(o))
-    x=x-90;y=y+15;
-    //    alert(y);
-    Dom.setX('change_staff_discount', x)
-    Dom.setY('change_staff_discount', y)
-   
-    //    add_user_dialog_staff.cfg.setProperty("x", "500");
-    //add_user_dialog_staff.cfg.setProperty("y", 500);
-    
-    change_staff_discount.show();
-    
-}
-function close_change_discount_dialog(){
 
-	Dom.get('change_discount_value').value='';
-	
-	
 
-	Dom.get('change_discount_save').style.visibility='hidden';
-	change_staff_discount.hide();
 
-    }
-
-function checkout(){
+function checkout_wrong(){
 	var path=Dom.get('path').value;
 	var items=Dom.get('ordered_products_number').value;
 	//alert(items);

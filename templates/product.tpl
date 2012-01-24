@@ -72,7 +72,6 @@
 		    </tr>
 		    
 		    <tr><td>{t}Sold Since{/t}:</td><td class="aright">{$product->get('For Sale Since Date')} </td>
-		      {if $edit} <td   class="aright" ><input style="text-align:right" class="date_input" size="8" type="text"  id="v_invoice_date"  value="{$v_po_date_invoice}" name="invoice_date" /></td>{/if}
 		    </tr>
 		  
 		</table>
@@ -89,21 +88,34 @@
 	      </div>
               <div  style="width:250px;float:left">
 
-		{if $data.sale_status=='discontinued'}
+		{if $product->get('Product Main Type')=='Discontinued'}
 		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
 		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td></tr>
 		</table>
 		{/if}
-		{if $data.sale_status=='tobediscontinued'}
-		<table  style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2"  >
-		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td></tr>
+		
+		{if  $product->get('Product Main Type')=='Private'}
+		<table  style="margin:0;padding:5px 10px;border-top:1px solid #c7cbe0;width:100%;background:#deceb2"  >
+		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Not for Public Sale{/t}</td></tr>
 		</table>
 		{/if}
-		{if $data.sale_status=='nosale'}
+			{if  $product->get('Product Main Type')=='NoSale'}
 		<table  style="margin:0;padding:5px 10px;border-top:1px solid #c7cbe0;width:100%;background:#deceb2"  >
 		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Not for Sale{/t}</td></tr>
 		</table>
 		{/if}
+		
+		{if  $product->get('Product Main Type')=='Historic'}
+		<table  style="margin:0;padding:5px 10px;border-top:1px solid #c7cbe0;width:100%;background:#deceb2"  >
+		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Historic{/t}</td></tr>
+		</table>
+		{/if}
+		{if  $product->get('Product Main Type')=='NoSale'}
+		<table  style="margin:0;padding:5px 10px;border-top:1px solid #c7cbe0;width:100%;background:#deceb2"  >
+		  <tr><td style="font-weight:800;font-size:160%;text-align:center">{t}Not for Sale{/t}</td></tr>
+		</table>
+		{/if}
+		
 
 		<table   class="show_info_product" style="{if $product->get('Product Record Type')=='Historic'}display:none{/if}">
 		  <tr>
@@ -128,16 +140,12 @@
 
 		  
 		  <table  class="show_info_product">
+		    
 		    <tr ><td>{t}Unit Weight{/t}:</td><td class="aright">{$product->get('Formated Weight')}</td></tr>
-		    {if $data.dimension!=''}
-		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$data.dimension}</td></tr>
-		    {/if}
-		     {if $data.oweight!=''}
-		    <tr ><td>{t}Outer Weight{/t}:</td><td class="aright">{$data.oweight}{t}Kg{/t}</td></tr>
-		    {/if}
-		    {if $data.odimension!=''}
-		    <tr><td>{t}Outer Dimensions{/t}:</td><td class="aright">{$data.odimension}</td></tr>
-		    {/if}
+		 
+		    <tr><td>{t}Unit Dimensions{/t}:</td><td class="aright">{$product->get('Formated Dimensions')}</td></tr>
+		 
+		   
 		  </table>
 		  
 		
@@ -172,15 +180,15 @@
 <table  class="show_info_product">
             <tr>
 		      <td>{t}Categories{/t}:</td>
-		      <td>{$categories}</td>
+		      <td></td>
 		    </tr>
 		    <tr>
 		      <td>{t}Material{/t}:</td>
-		      <td>{$materials}</td>
+		      <td></td>
 		    </tr>
 		    <tr>
 		      <td>{t}Ingredients{/t}:</td>
-		      <td>{$ingredients}</td>
+		      <td></td>
 		    </tr>
 		  </table>
 </div>

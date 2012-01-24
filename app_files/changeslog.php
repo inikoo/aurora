@@ -5367,9 +5367,7 @@ CREATE TABLE `Page Store Deleted Dimension` (
 
 ALTER TABLE `Page Store Deleted Dimension` ADD `Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Store Deleted Key` ,ADD INDEX ( `Site Key` ) ;
 ALTER TABLE `Page Store Deleted Dimension` ADD `Page Code` VARCHAR( 256 ) NOT NULL AFTER `Page Store Deleted Key` ;
-ALTER TABLE `Page Store Deleted Dimension` ADD `Page Store Section` VARCHAR( 256 ) NULL AFTER `Page URL` ,
-ADD `Page Parent Key` MEDIUMINT UNSIGNED NULL AFTER `Page Store Section` ,
-ADD `Page Parent Code` VARCHAR( 256 ) NULL AFTER `Page Parent Key` ;
+ALTER TABLE `Page Store Deleted Dimension` ADD `Page Store Section` VARCHAR( 256 ) NULL AFTER `Page URL` ,ADD `Page Parent Key` MEDIUMINT UNSIGNED NULL AFTER `Page Store Section` ,ADD `Page Parent Code` VARCHAR( 256 ) NULL AFTER `Page Parent Key` ;
 
 ALTER TABLE `Part Location Dimension` ADD `Minimum Quantity` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Can Pick` ,ADD `Maximum Quantity` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Minimum Quantity` ;
 
@@ -5379,7 +5377,8 @@ ALTER TABLE `Staff Dimension` CHANGE `Staff Type` `Staff Type` ENUM( 'Employee',
 
 
 ALTER TABLE `Staff Dimension` ADD `Staff PIN` VARCHAR( 4 ) NOT NULL DEFAULT '1234' AFTER `Staff Department Key`;
-ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Date Done Approved` DATETIME NULL DEFAULT NULL AFTER `Delivery Note Date Finish Packing` ;ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Approved Done` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Delivery Note Date` , ADD `Delivery Note Approved To Dispatch` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Delivery Note Approved Done` ;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Date Done Approved` DATETIME NULL DEFAULT NULL AFTER `Delivery Note Date Finish Packing` ;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Approved Done` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Delivery Note Date` , ADD `Delivery Note Approved To Dispatch` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Delivery Note Approved Done` ;
 ALTER TABLE `Staff Dimension` DROP `Staff Position Key`;
 
 ALTER TABLE `HQ Dimension` ADD `Short Message` VARCHAR( 128 ) NOT NULL ;
@@ -5390,3 +5389,19 @@ ADD `Part Transactions Out` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part 
 ADD `Part Transactions Audit` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions Out` ,
 ADD `Part Transactions OIP` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions Audit` ,
 ADD `Part Transactions Move` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Part Transactions OIP` ;
+ALTER TABLE `Staff Dimension` ADD `Staff Is Supervisor` ENUM( 'Yes', 'No' ) NOT NULL;
+ALTER TABLE `Staff Dimension` CHANGE `Staff Is Supervisor` `Staff Is Supervisor` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+ALTER TABLE `Store Dimension` ADD `Store Company Name` VARCHAR( 256 ) NOT NULL ;
+ALTER TABLE `Store Dimension` ADD `Store Invoice Message Header` text NOT NULL ;
+ALTER TABLE `Store Dimension` ADD `Store Invoice Message` text NOT NULL ;
+
+pcd.sql;
+
+ALTER TABLE `Order Dimension` ADD `Order Customer Sevices Note` TEXT NOT NULL;
+ALTER TABLE `Invoice Dimension` ADD `Invoice Customer Sevices Note` TEXT NOT NULL ;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Customer Sevices Note` TEXT NOT NULL ;
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Warehouse Note` TEXT NOT NULL ;
+ALTER TABLE `Order Dimension` ADD `Order Current XHTML Dispatch State` TEXT NOT NULL AFTER `Order Current Dispatch State` ;
+ALTER TABLE `Delivery Note Dimension` CHANGE `Delivery Note State` `Delivery Note State` ENUM( 'Picker & Packer Assigned', 'Picking & Packing', 'Packer Assigned', 'Ready to be Picked', 'Picker Assigned', 'Picking', 'Picked', 'Packing', 'Packed', 'Approved', 'Dispatched', 'Cancelled', 'Cancelled to Restock', 'Packed Done' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Ready to be Picked';
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML State` TEXT NOT NULL AFTER `Delivery Note State`;
+

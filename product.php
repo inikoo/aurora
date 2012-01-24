@@ -85,6 +85,16 @@ if ($mode=='pid') {
 
 }
 elseif($mode=='code') {
+
+$number_stores=$user->get_number_stores();
+if($number_stores==0){
+  header('Location: index.php');
+    exit;
+}elseif($number_stores==1){
+	$store=array_pop($user->stores);
+	  $smarty->assign('store',$store);
+}
+
     $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s  and `Product Store Key` in (%s)   ;"
                  ,prepare_mysql($tag)
                  ,join(',',$user->stores)
@@ -105,6 +115,29 @@ elseif($mode=='code') {
 
         $smarty->assign('search_label',_('Products'));
         $smarty->assign('search_scope','products');
+        
+        
+        
+        
+        
+        $tipo_filter=$_SESSION['state']['product']['server']['f_field'];
+$smarty->assign('filter_name2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['product']['server']['f_value']);
+$filter_menu=array(
+  'id'=>array('db_key'=>'pid','menu_label'=>_('Product ID like<i>x</i>'),'label'=>_('Id')),
+        'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+       'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
+             );
+             
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+        
+        
+        
+        
         $smarty->display('product_server.tpl');
         mysql_free_result($result);
         exit;
@@ -135,7 +168,7 @@ elseif($mode=='code') {
 $product= new product($mode,$tag);
 
 
-echo $product->get('Product Main Image');
+
 
 //exit;
 
@@ -221,10 +254,6 @@ $smarty->assign('data',$product->data);
 
 get_header_info($user,$smarty);
 
-$general_options_list=array();
-if ($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'edit_product.php','label'=>_('Edit Product'));
-//$smarty->assign('general_options_list',$general_options_list);
 
 $web_status_error=false;
 $web_status_error_title='';

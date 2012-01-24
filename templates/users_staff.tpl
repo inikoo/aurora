@@ -19,7 +19,7 @@
 </div>
 
 
-<h1>Staff Users</h1>
+<h1>{t}Staff Users{/t}</h1>
 </div>
 
 

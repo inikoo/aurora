@@ -23,13 +23,14 @@ include_once('common.php');
 		      this.dataSource2.responseSchema = {
 			  resultsList: "resultset.data", 
 			  metaFields: {
-			      rowsPerPage:"resultset.records_perpage",
-			      rtext:"resultset.rtext",
-			      sort_key:"resultset.sort_key",
-			      sort_dir:"resultset.sort_dir",
-			      tableid:"resultset.tableid",
-			      filter_msg:"resultset.filter_msg",
-			      totalRecords: "resultset.total_records"
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
 			  },
 			
 			  fields: [
@@ -61,7 +62,8 @@ include_once('common.php');
 		      this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 		      this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+this.table2.table_id=tableid;
+     this.table2.subscribe("renderEvent", myrenderEvent);
 	    
 	    };
     });

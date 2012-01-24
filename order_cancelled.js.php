@@ -62,7 +62,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function init(){
 
-
+init_search('orders_store');
 
 }
 

@@ -23,19 +23,7 @@ get_header_info($user,$smarty);
 $general_options_list=array();
 
 
-
-
-
-
-
-
-
-
-
 $smarty->assign('view',$_SESSION['state']['part_categories']['view']);
-
-
-
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -61,6 +49,7 @@ $js_files=array(
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
               'js/common.js',
+                'js/search.js',
               'js/table_common.js',
                'external_libs/ammap/ammap/swfobject.js',
               'js/edit_category_common.js'

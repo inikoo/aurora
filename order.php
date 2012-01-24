@@ -1,14 +1,14 @@
 <?php
-include_once('common.php');
-include_once('class.CurrencyExchange.php');
+include_once 'common.php';
+include_once 'class.CurrencyExchange.php';
 
 
-include_once('class.Store.php');
+include_once 'class.Store.php';
 
-include_once('class.Order.php');
+include_once 'class.Order.php';
 if (!$user->can_view('orders')) {
-    header('Location: index.php');
-    exit;
+	header('Location: index.php');
+	exit;
 }
 
 $modify=$user->can_edit('orders');
@@ -17,72 +17,73 @@ $modify=$user->can_edit('orders');
 
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'assets/skins/sam/autocomplete.css',
-               'common.css',
-               'css/container.css',
-               'button.css',
-               'table.css',
-               'theme.css.php'
-           );
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'button/assets/skins/sam/button.css',
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	'common.css',
+	'css/container.css',
+	'button.css',
+	'table.css',
+	'theme.css.php'
+);
 
 
 $js_files=array(
 
-              $yui_path.'utilities/utilities.js',
-              $yui_path.'json/json-min.js',
-              $yui_path.'paginator/paginator-min.js',
-              $yui_path.'datasource/datasource-min.js',
-              $yui_path.'autocomplete/autocomplete-min.js',
-              $yui_path.'datatable/datatable-min.js',
-              $yui_path.'container/container-min.js',
-              $yui_path.'menu/menu-min.js',
-              $yui_path.'calendar/calendar-min.js',
-              'js/common.js',
-              'js/table_common.js',
-              'js/search.js'
-          );
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable-min.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	$yui_path.'calendar/calendar-min.js',
+	'js/common.js',
+	'js/table_common.js',
+	'js/search.js'
+);
 
 if (isset($_REQUEST['new']) ) {
-    date_default_timezone_set('UTC');
-    if (isset($_REQUEST['customer_key']) and is_numeric($_REQUEST['customer_key']) ) {
-        $customer=new Customer($_REQUEST['customer_key']);
-        if (!$customer->id)
-            $customer=new Customer('create anonymous');
-    } else
-        $customer=new Customer('create anonymous');
-    $editor=array(
-                'Author Name'=>$user->data['User Alias'],
-                'Author Alias'=>$user->data['User Alias'],
-                'Author Type'=>$user->data['User Type'],
-                'Author Key'=>$user->data['User Parent Key'],
-                'User Key'=>$user->id
-            );
+	date_default_timezone_set('UTC');
+	if (isset($_REQUEST['customer_key']) and is_numeric($_REQUEST['customer_key']) ) {
+		$customer=new Customer($_REQUEST['customer_key']);
+		if (!$customer->id)
+			$customer=new Customer('create anonymous');
+	} else
+		$customer=new Customer('create anonymous');
+	$editor=array(
+		'Author Name'=>$user->data['User Alias'],
+		'Author Alias'=>$user->data['User Alias'],
+		'Author Type'=>$user->data['User Type'],
+		'Author Key'=>$user->data['User Parent Key'],
+		'User Key'=>$user->id
+	);
 
-    $order_data=array(
+	$order_data=array(
 
-                    'Customer Key'=>$customer->id,
-                    'Order Original Data MIME Type'=>'application/inikoo',
-                    'Order Type'=>'Order',
-                    'editor'=>$editor
+		'Customer Key'=>$customer->id,
+		'Order Original Data MIME Type'=>'application/inikoo',
+		'Order Type'=>'Order',
+		'editor'=>$editor
 
-                );
-
-
-    $order=new Order('new',$order_data);
-//exit;
-    if ($order->error)
-        exit('error');
+	);
 
 
-    $ship_to=$customer->get_ship_to();
-    $order-> update_ship_to($ship_to->id);
+	$order=new Order('new',$order_data);
+	
+	
+	if ($order->error)
+		exit('error');
 
 
-    header('Location: order.php?id='.$order->id);
-    exit;
+	$ship_to=$customer->get_ship_to();
+	$order-> update_ship_to($ship_to->id);
+
+
+	header('Location: order.php?id='.$order->id);
+	exit;
 
 
 
@@ -91,23 +92,33 @@ if (isset($_REQUEST['new']) ) {
 
 
 if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])) {
-    header('Location: orders_server.php?msg=wrong_id');
-    exit;
+	header('Location: orders_server.php?msg=wrong_id');
+	exit;
 }
 
 $general_options_list=array();
 $order_id=$_REQUEST['id'];
 $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
+
+//$order->update_dispatch_state();exit;
+
 if (!$order->id) {
-    header('Location: orders_server.php?msg=order_not_found');
-    exit;
+	header('Location: orders_server.php?msg=order_not_found');
+	exit;
 
 }
 if (!($user->can_view('stores') and in_array($order->data['Order Store Key'],$user->stores)   ) ) {
-    header('Location: orders_server.php');
-    exit;
+	header('Location: orders_server.php');
+	exit;
 }
+
+if (isset($_REQUEST['referral'])) {
+	$referral=$_REQUEST['referral'];
+}else {
+	$referral='';
+}
+$smarty->assign('referral',$referral);
 
 $customer=new Customer($order->get('order customer key'));
 
@@ -117,116 +128,215 @@ $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
 
 if (isset($_REQUEST['pick_aid'])) {
-    $js_files[]='order_pick_aid.js.php';
-    $template='order_pick_aid.tpl';
+	$js_files[]='order_pick_aid.js.php';
+	$template='order_pick_aid.tpl';
 } else {
 
-    switch ($order->get('Order Current Dispatch State')) {
+	switch ($order->get('Order Current Dispatch State')) {
 
-    case('In Process'):
-    case('Ready to Pick'):
-        $js_files[]='js/edit_common.js';
+	case('In Process'):
 
-
-        $js_files[]='edit_address.js.php';
-        $js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
-
-        $js_files[]='edit_delivery_address_js/common.js';
-        $js_files[]='order_in_process.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
-
-        $css_files[]='css/edit_address.css';
+		$js_files[]='js/edit_common.js';
 
 
-        $template='order_in_process.tpl';
+		$js_files[]='edit_address.js.php';
+		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+
+		$js_files[]='edit_delivery_address_common.js.php';
+		$js_files[]='order_in_process.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
+					$js_files[]='js/common_order_not_dispatched.js';
+
+		$css_files[]='css/edit.css';
+		$css_files[]='css/edit_address.css';
 
 
-
-        $_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
-
-        if ($order->data['Order Number Items']) {
-            $products_display_type='ordered_products';
-
-        } else {
-            $products_display_type='all_products';
-
-        }
-
-        $_SESSION['state']['order']['products']['display']=$products_display_type;
-
-        $products_display_type=$_SESSION['state']['order']['products']['display'];
-
-        $smarty->assign('products_display_type',$products_display_type);
+		$template='order_in_process.tpl';
 
 
 
-
-        $tipo_filter=$_SESSION['state']['order']['products']['f_field'];
-
-
-        $smarty->assign('filter',$tipo_filter);
-        $smarty->assign('filter_value',$_SESSION['state']['order']['products']['f_value']);
-        $filter_menu=array(
-            'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
-            'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
-            'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
-
-        );
-        $smarty->assign('filter_menu0',$filter_menu);
-        $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
 
 
-        $paginator_menu=array(10,25,50,100);
-        $smarty->assign('paginator_menu0',$paginator_menu);
+		$products_display_type='ordered_products';
+			//	$products_display_type='all_products';
 
-        $smarty->assign('search_label',_('Products'));
-        $smarty->assign('search_scope','products');
+		
+		$_SESSION['state']['order']['products']['display']=$products_display_type;
 
-        $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+		$products_display_type=$_SESSION['state']['order']['products']['display'];
 
-        break;
-    case('Dispatched'):
+		$smarty->assign('products_display_type',$products_display_type);
+		$smarty->assign('view',$_SESSION['state']['order']['products']['view']);
 
 
 
-        if ($modify) {
-            $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?id='.$order->id,'label'=>_('Post Dispatch Operations'));
-//   $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=sht&id='.$order->id,'label'=>_('Make Shortage'));
-            //     $general_options_list[]=array('tipo'=>'url','url'=>'new_refund.php?id='.$order->id,'label'=>_('Refund'));
+
+		$tipo_filter=$_SESSION['state']['order']['products']['f_field'];
 
 
-        }
+		$smarty->assign('filter0',$tipo_filter);
+		$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
+		$filter_menu=array(
+			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
 
-        $smarty->assign('search_label',_('Orders'));
-        $smarty->assign('search_scope','orders_store');
-
-        $js_files[]='order_dispatched.js.php';
-        $template='order_dispatched.tpl';
-        break;
-    case('Cancelled'):
-        $smarty->assign('search_label',_('Orders'));
-        $smarty->assign('search_scope','orders_store');
-
-        $js_files[]='order_cancelled.js.php';
-        $template='order_cancelled.tpl';
-        break;
-    case('Suspended'):
+		);
+		$smarty->assign('filter_menu0',$filter_menu);
+		$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 
-        $js_files[]='order_suspended.js.php';
-        $template='order_suspended.tpl';
-        break;
-    case('Unknown'):
-        $js_files[]='order_unknown.js.php';
-        $template='order_unknown.tpl';
-        break;
-    case('Ready to Ship'):
-        $js_files[]='order_ready_to_ship.js.php';
-        $template='order_ready_to_ship.tpl';
-        break;
-    default:
-        exit('todo '.$order->get('Order Current Dispatch State'));
-        break;
-    }
+		$paginator_menu=array(10,25,50,100);
+		$smarty->assign('paginator_menu0',$paginator_menu);
+
+		$smarty->assign('search_label',_('Products'));
+		$smarty->assign('search_scope','products');
+
+		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+
+		break;
+		
+			case('Ready to Pick'):
+	case('Picking & Packing'):
+	case('Packed'):
+		$js_files[]='js/edit_common.js';
+
+
+		$js_files[]='edit_address.js.php';
+		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+
+		$js_files[]='edit_delivery_address_common.js.php';
+		$js_files[]='order_in_warehouse.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
+			$js_files[]='js/common_order_not_dispatched.js';
+		
+		
+		$css_files[]='css/edit.css';
+		$css_files[]='css/edit_address.css';
+
+
+		$template='order_in_warehouse.tpl';
+
+
+
+		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
+
+
+		$products_display_type='ordered_products';
+		$_SESSION['state']['order']['products']['display']=$products_display_type;
+
+		$products_display_type=$_SESSION['state']['order']['products']['display'];
+
+		$smarty->assign('products_display_type',$products_display_type);
+		$smarty->assign('view',$_SESSION['state']['order']['products']['view']);
+
+
+
+
+		$tipo_filter=$_SESSION['state']['order']['products']['f_field'];
+
+
+		$smarty->assign('filter0',$tipo_filter);
+		$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
+		$filter_menu=array(
+			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+
+		);
+		$smarty->assign('filter_menu0',$filter_menu);
+		$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+
+		$paginator_menu=array(10,25,50,100);
+		$smarty->assign('paginator_menu0',$paginator_menu);
+
+		$smarty->assign('search_label',_('Products'));
+		$smarty->assign('search_scope','products');
+
+		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+
+		break;
+		
+		
+	case('Dispatched'):
+
+
+
+		if ($modify) {
+			$general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?id='.$order->id,'label'=>_('Post Dispatch Operations'));
+			//   $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=sht&id='.$order->id,'label'=>_('Make Shortage'));
+			//     $general_options_list[]=array('tipo'=>'url','url'=>'new_refund.php?id='.$order->id,'label'=>_('Refund'));
+
+
+		}
+
+		$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_scope','orders');
+		$js_files[]='order_dispatched.js.php';
+		$template='order_dispatched.tpl';
+		break;
+	case('Cancelled'):
+		$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_scope','orders');
+		$smarty->assign('store_id',$store->id);
+		$js_files[]='order_cancelled.js.php';
+		$template='order_cancelled.tpl';
+		break;
+	case('Suspended'):
+
+
+		$js_files[]='order_suspended.js.php';
+		$template='order_suspended.tpl';
+		break;
+	case('Unknown'):
+		$css_files[]='css/edit.css';
+		$js_files[]='order_unknown.js.php';
+	
+
+		$products_display_type='ordered_products';
+		$_SESSION['state']['order']['products']['display']=$products_display_type;
+
+		$products_display_type=$_SESSION['state']['order']['products']['display'];
+
+		$smarty->assign('products_display_type',$products_display_type);
+		$smarty->assign('view',$_SESSION['state']['order']['products']['view']);
+
+
+
+
+		$tipo_filter=$_SESSION['state']['order']['products']['f_field'];
+
+
+		$smarty->assign('filter0',$tipo_filter);
+		$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
+		$filter_menu=array(
+			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+
+		);
+		$smarty->assign('filter_menu0',$filter_menu);
+		$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+
+		$paginator_menu=array(10,25,50,100);
+		$smarty->assign('paginator_menu0',$paginator_menu);
+
+		$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_scope','orders');
+
+		
+			$template='order_unknown.tpl';
+		
+		break;
+	case('Ready to Ship'):
+		$js_files[]='order_ready_to_ship.js.php';
+		$template='order_ready_to_ship.tpl';
+		break;
+	default:
+		exit('todo '.$order->get('Order Current Dispatch State'));
+		break;
+	}
 }
 //$smarty->assign('general_options_list',$general_options_list);
 
