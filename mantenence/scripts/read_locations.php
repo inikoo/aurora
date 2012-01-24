@@ -53,6 +53,7 @@ $wa_data=array(	'Warehouse Area Name'=>'Unknown'
 $wa=new WarehouseArea('find',$wa_data,'create');
 
 
+print "get old locations\n";
 
 $sql=sprintf("select * from aw_old.location group by code;  ");
 
