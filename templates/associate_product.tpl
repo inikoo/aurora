@@ -14,11 +14,12 @@
     <table class="edit"  border="0" style="width:100%;margin-bottom:0px" >
 	<input type="hidden" value="" id="store_key"/>
 	<input type="hidden" value="" id="family_key"/>
+	<input type="hidden" value="{$part_id}" id="part_id"/>
 	<tr class="title">
 	<td colspan=3>{t}Product Info{/t}</td>
 	</tr>
 
-	 <tr><td style="width:200px"class="label">{t}Product Store{/t}:</td><td style="width:370px">
+	 <tr style="display:none"><td style="width:200px"class="label">{t}Product Store{/t}:</td><td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="store_code" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="" />

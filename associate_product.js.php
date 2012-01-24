@@ -4,6 +4,7 @@
 include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.Company.php');
+include_once('class.Family.php');
 ?>
 
 var validate_scope_data;
@@ -43,11 +44,16 @@ function view_family_list(e){
 function select_family(oArgs){
 var family_code=tables.table2.getRecord(oArgs.target).getData('code');
 var family_key=tables.table2.getRecord(oArgs.target).getData('key');
+var store_key=tables.table2.getRecord(oArgs.target).getData('key');
+
 
 Dom.get('family_key').value=family_key;
 Dom.get('family_code').value=family_code;
+Dom.get('store_key').value=store_key;
 
 validate_scope_data['product']['family_key'].validated=true;
+validate_scope_data['product']['product_code'].ar_request='ar_assets.php?tipo=is_product_code&store_key='+Dom.get('store_key').value+'&query=';
+validate_scope_data['product']['product_code'].validated=true;
 dialog_family_list.hide();
 
 }
@@ -155,8 +161,9 @@ var tableid=2;
 	   
 	    var ColumnDefs = [
 			 {key:"key", label:"",width:100,hidden:true}
+		    ,{key:"store_key", label:"<?php echo _('Store')?>",width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                     ,{key:"code", label:"<?php echo _('Alias')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                   ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                    ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 						
 			];
 		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=family_list&tableid="+tableid+"&nr=20&sf=0");
@@ -180,7 +187,7 @@ var tableid=2;
 		
 		
 		fields: [
-			 "code",'name','key'
+			 "code",'name','key', 'store_key'
 			 ]};
 
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -283,7 +290,7 @@ validate_scope_data=
 
 	
 validate_scope_metadata={
-    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'parent_key', 'key':''}
+    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'parent_key', 'key':Dom.get('part_id').value}
     
 
 };

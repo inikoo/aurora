@@ -76,7 +76,7 @@ case('edit_location'):
 
 case('create_product'):
     $data=prepare_values($_REQUEST,array(
-                             //'parent_key'=>array('type'=>'key'),
+                             'parent_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
 
                          ));
@@ -3698,7 +3698,7 @@ function create_product($data) {
             and  array_key_exists('Product Description',$data['values'])
 
        ) {
-
+	$part_id=$data['parent_key'];
 	$family=new Family($data['values']['Product Family Key']);
 	
         $department_key=$family->data['Product Family Main Department Key'];
@@ -3720,6 +3720,19 @@ function create_product($data) {
 				'Product Family Key'=>$data['values']['Product Family Key']
                              ));
         if (!$product->new) {
+		$part= new Part($part_id);
+		$part_list[]=array(
+				'Part SKU'=>$part->get('Part SKU'),
+				'Parts Per Product'=>1,
+				'Product Part Type'=>'Simple'
+				);
+
+
+
+		$product->new_current_part_list(array(),$part_list);
+
+		$product->update_parts();
+		$product->update_cost_supplier();
 
             $response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->id);
         } else {

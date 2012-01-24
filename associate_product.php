@@ -66,7 +66,7 @@ $js_files=array(
 		//'new_contact.js.php?scope=staff'
 		);
 
-$smarty->assign('sp_key',$_REQUEST['id']);
+$smarty->assign('part_id',$_REQUEST['id']);
 
 
 $tipo_filter2='code';
