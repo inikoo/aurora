@@ -13,6 +13,7 @@
 <div class="top_page_menu">
     <div class="buttons">
         <button style="margin-left:0px"  onclick="window.location='family.php?id={$family->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+<button style="margin-left:0px"  onclick="window.location='associate_product_part.php?id={$family->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Associate Product{/t}</button>
     </div>
     <div class="buttons" style="float:right">
     </div>
