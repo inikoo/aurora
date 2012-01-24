@@ -160,6 +160,11 @@ case('is_family_special_char'):
     break;
 
 case('is_product_code'):
+if($_REQUEST['store_key']==''){
+$response=array('state'=>404,'msg'=>_('Select Store First'));
+    echo json_encode($response);
+exit;
+}
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
                              'query'=>array('type'=>'string')

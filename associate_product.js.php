@@ -6,10 +6,10 @@ include_once('class.Contact.php');
 include_once('class.Company.php');
 ?>
 
-
+var validate_scope_data;
 	
 
-function validate_product_code(query){ validate_general('product','product_code',unescape(query)); alert(Dom.get('store_key').value)}
+function validate_product_code(query){ validate_general('product','product_code',unescape(query));}
 function validate_product_description(query){ validate_general('product','product_description',unescape(query));}
 function validate_special_characteristics(query){ validate_general('product','special_characteristics',unescape(query));}
 function validate_product_weight(query){ validate_general('product','product_weight',unescape(query));}
@@ -61,7 +61,7 @@ var store_key=tables.table0.getRecord(oArgs.target).getData('key');
 Dom.get('store_key').value=store_key;
 Dom.get('store_code').value=store_code;
 
-
+reload_scope_data();	
 dialog_store_list.hide();
 }
 
@@ -254,7 +254,8 @@ function post_action(branch,r){
 	window.location.href='part.php?pid='+r.object_key;
 }
 
-function init(){
+
+function reload_scope_data(){
 
 validate_scope_data=
 {
@@ -272,8 +273,14 @@ validate_scope_data=
 
 	}
 };
+
+}
+
+function init(){
+
+
 	
-	
+reload_scope_data();	
 
 	
 validate_scope_metadata={
