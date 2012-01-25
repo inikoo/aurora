@@ -1,11 +1,10 @@
 <?php
 include_once('common.php');
-echo 'var user_key='.$_REQUEST['user_id'].';'
+
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-//var user_id=Dom.get('user_id').value;
-//alert(Dom.get('user_id').value)
+
 
 function changeHeight(iframe){
         try
@@ -81,10 +80,10 @@ Event.addListener(window, "load", function() {
             var Event = YAHOO.util.Event;
             var DDM = YAHOO.util.DragDropMgr;
 		OrdersColumnDefs = [
-				       {key:"id", label:"<?php echo _('Widget ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				   //    {key:"id", label:"<?php echo _('Widget ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"name", label:"<?php echo _('Widget Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       {key:"widget_block",label:"<?php echo _('Widget Block')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"widget_dimesnion", label:"<?php echo _('Widget Dimesnion')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				     //  {key:"widget_block",label:"<?php echo _('Widget Block')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				      // {key:"widget_dimesnion", label:"<?php echo _('Widget Dimesnion')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"description", label:"<?php echo _('Widget Description')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"delete", label:"",width:12,sortable:false,action:'delete',object:'widget_list'},
 					{key:"key", label:"",width:12,sortable:false, isPrimaryKey:true,hidden:true},
@@ -93,8 +92,8 @@ Event.addListener(window, "load", function() {
 
 //var ids =Array("restrictions_orders_cancelled","restrictions_orders_suspended","restrictions_orders_unknown","restrictions_orders_dispatched","restrictions_orders_in_process","restrictions_all_orders") ;
 
-		//alert("ar_dashboard.php?tipo=list_widgets&user_id="+user_key+"&where=");
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_dashboard.php?tipo=list_widgets&user_id="+user_key+"&where=");
+		//alert("ar_edit_dashboard.php?tipo=list_widgets&user_id="+Dom.get('user_key').value+"&where=");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_dashboard.php?tipo=list_widgets&user_id="+Dom.get('user_key').value+"&where=");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -127,7 +126,7 @@ Event.addListener(window, "load", function() {
 						     this.dataSource0, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?php echo $_SESSION['state']['dashboard']['table']['nr']?>,containers : 'paginator0', 
+									       rowsPerPage    : <?php echo $_SESSION['state']['dashboards']['active_widgets']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -137,8 +136,8 @@ Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['dashboard']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['dashboard']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['dashboards']['active_widgets']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['dashboards']['active_widgets']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -259,8 +258,13 @@ Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    
+	   this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
+
+	    
        	    this.table0.subscribe("cellClickEvent", onCellClick);  
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['dashboard']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['dashboard']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['dashboards']['active_widgets']['f_field']?>',value:'<?php echo$_SESSION['state']['dashboards']['active_widgets']['f_value']?>'};
 
 
 	};
@@ -269,12 +273,12 @@ Event.addListener(window, "load", function() {
 
 
 function add_dashboard(){
-      var request='ar_dashboard.php?tipo=add_dashboard&id='+user_key;
-       //alert(request);
+      var request='ar_edit_dashboard.php?tipo=add_dashboard&user_key='+Dom.get('user_key').value;
+   //  alert(request);
       YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
 	      success:function(o) {
-		  	  //alert(o.responseText)
+		  	//  alert(o.responseText)
 		      var r =  YAHOO.lang.JSON.parse(o.responseText);
 		  if (r.state == 200) {
 			window.location.reload();
@@ -286,13 +290,12 @@ function add_dashboard(){
 }
 
 function delete_dashboard(key){
-//	alert(key)
-	//var element = Dom.get('dash_board_id_');
-      var request='ar_dashboard.php?tipo=delete_dashboard&user_id='+user_key+'&dashboard_id='+key;
-       //alert(request);
+
+      var request='ar_edit_dashboard.php?tipo=delete_dashboard&dashboard_key='+key+'&user_key='+Dom.get('user_key').value;
+     
       YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
-	      success:function(o) {user_key
+	      success:function(o) {
 		  	  //alert(o.responseText)
 		      var r =  YAHOO.lang.JSON.parse(o.responseText);
 		  if (r.state == 200) {
@@ -304,13 +307,13 @@ function delete_dashboard(key){
 	  });   
 }
 
-function set_default(key){
-	var request='ar_dashboard.php?tipo=set_default_dashboard&user_id='+user_key+'&dashboard_id='+key;
+function set_as_default(key){
+	var request='ar_edit_dashboard.php?tipo=set_default_dashboard&user_key='+Dom.get('user_key').value+'&dashboard_key='+key;
        //alert(request);
       YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
 	      success:function(o) {
-		  	  //alert(o.responseText)
+		  	//  alert(o.responseText)
 		      var r =  YAHOO.lang.JSON.parse(o.responseText);
 		  if (r.state == 200) {
 			window.location.reload();
@@ -332,7 +335,7 @@ function edit_dashboard(key){
 }
 
 function add_widget(key){
-	var request='add_widgets.php?tipo=add_widget&user_id='+user_key+'&dashboard_id='+key;
+	var request='add_widgets.php?tipo=add_widget&user_id='+Dom.get('user_key').value+'&dashboard_id='+key;
 	window.location=request;
        //alert(request);
       YAHOO.util.Connect.asyncRequest('POST',request ,{

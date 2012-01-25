@@ -1545,7 +1545,6 @@ function store_pending_orders() {
 				$operations.='<span style="cursor:pointer"  onClick="create_invoice(this,'.$row['Order Key'].')">'._('Create Invoice')."</span>";;
 
 			}
-
 		}
 		else {
 			$operations.='';
