@@ -96,7 +96,7 @@ function add_widget_to_dashboard($data) {
 
 
 	$sql=sprintf("insert into `Dashboard Widget Bridge` ( `Dashboard ID`,`Widget Key`) values (%d, %d)",
-		$dashboard_key
+		$dashboard_key,
 		$widget_key
 	);
 
