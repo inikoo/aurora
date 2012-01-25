@@ -255,6 +255,8 @@ this.table100.prefix='';
 
 
 
+
+
 function customer_is_a_person(){
 Dom.get('Customer_Type').value='Person'
 Dom.get('Company_Tax_Number').value='';
@@ -409,6 +411,8 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
  
 
 }
+
+
 
 function find_subject(){
     get_data();

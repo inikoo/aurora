@@ -719,8 +719,8 @@ foreach($data['values'] as $key=>$value){
 }
 
 $supplier_data['editor']=$editor;
-//print_r($supplier_data);
-//return;
+//print_r($supplier_data);exit;
+
 
   $supplier=new Supplier('find',$supplier_data,'create');
   if($supplier->new){

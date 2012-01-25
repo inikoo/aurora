@@ -5,7 +5,16 @@
   <span   class="branch"><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span>
 </div>
 
-
+		<div class="top_page_menu">
+			<div class="buttons" style="float:left">
+				<button onclick="window.location='suppliers.php'"><img src="art/icons/house.png" alt=""> {t}Suppliers{/t}</button> 
+			</div>
+			<div class="buttons">
+				<button onclick="window.location='supplier.php?id={$supplier->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
 
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
