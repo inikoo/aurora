@@ -4,7 +4,15 @@ include_once('common.php');
 
 ?>
    var supplier_key='<?php echo$_SESSION['state']['supplier']['id']?>';
-
+var dialog_quick_edit_Customer_Main_Contact_Name;
+var dialog_quick_edit_Customer_Tax_Number;
+var dialog_quick_edit_Customer_Name;
+var dialog_quick_edit_Customer_Main_Email;
+var dialog_quick_edit_Customer_Main_Address;
+var dialog_quick_edit_Customer_Main_Telephone;
+var dialog_quick_edit_Customer_Main_Mobile;
+var dialog_quick_edit_Customer_Main_FAX;
+var list_of_dialogs;
 
     var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -324,11 +332,66 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-block_view&value='+this.id ,{});
 }
 
+function show_edit_main_contact_name(){
+Dom.get('Customer_Main_Contact_Name').value=Dom.get('Customer_Main_Contact_Name').getAttribute('ovalue')
+hide_all_dialogs();
+dialog_quick_edit_Customer_Main_Contact_Name.show();
+}
+
+
+function show_edit_tax(){
+hide_all_dialogs();
+Dom.get('Customer_Tax_Number').value=Dom.get('Customer_Tax_Number').getAttribute('ovalue')
+dialog_quick_edit_Customer_Tax_Number.show();
+}
+
+function show_edit_name(){
+hide_all_dialogs();
+Dom.get('Customer_Name').value=Dom.get('Customer_Name').getAttribute('ovalue')
+dialog_quick_edit_Customer_Name.show();
+}
+
+function dialog_quick_edit_Customer_Main_Email_(){
+	Dom.get('Customer_Main_Email').value=Dom.get('Customer_Main_Email').getAttribute('ovalue');
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_Email.show();
+}
+function dialog_quick_edit_Customer_Main_Address_(){
+
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_Address.show();
+}
+function dialog_quick_edit_Customer_Main_Telephone_(){
+	Dom.get('Customer_Main_Telephone').value=Dom.get('Customer_Main_Telephone').getAttribute('ovalue');
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_Telephone.show();
+}
+
+function dialog_quick_edit_Customer_Main_FAX_(){
+	Dom.get('Customer_Main_FAX').value=Dom.get('Customer_Main_FAX').getAttribute('ovalue');
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Main_FAX.show();
+}
+
+function hide_all_dialogs(){
+	for(x in list_of_dialogs)
+		eval(list_of_dialogs[x]).hide();
+		//alert(list_of_dialogs[x])
+}
 
 function init(){
   init_search('supplier_products_supplier');
   
-  
+  list_of_dialogs=["dialog_quick_edit_Customer_Name", 
+"dialog_quick_edit_Customer_Name",
+"dialog_quick_edit_Customer_Main_Address",
+"dialog_quick_edit_Customer_Tax_Number",
+"dialog_quick_edit_Customer_Main_Contact_Name",
+"dialog_quick_edit_Customer_Main_Email",
+"dialog_quick_edit_Customer_Main_Telephone",
+"dialog_quick_edit_Customer_Main_Mobile",
+"dialog_quick_edit_Customer_Main_FAX"
+];
   
   
   
@@ -373,6 +436,32 @@ function init(){
  YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'supplier_products'});
 
 
+
+dialog_quick_edit_Customer_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Name", {context:["customer_name","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Name.render();
+
+dialog_quick_edit_Customer_Main_Contact_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Contact_Name", {context:["quick_edit_main_contact_name_edit","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Main_Contact_Name.render();
+
+dialog_quick_edit_Customer_Tax_Number = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Tax_Number", {context:["quick_edit_tax","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Tax_Number.render();
+
+
+dialog_quick_edit_Customer_Main_Email = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Email", {context:["quick_edit_email","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Main_Email.render();
+dialog_quick_edit_Customer_Main_Address = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Address", {context:["main_address","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Main_Address.render();
+dialog_quick_edit_Customer_Main_Telephone = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Telephone", {context:["quick_edit_main_telephone","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Main_Telephone.render();
+dialog_quick_edit_Customer_Main_Mobile = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Mobile", {context:["quick_edit_main_mobile","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Main_Mobile.render();
+dialog_quick_edit_Customer_Main_FAX = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_FAX", {context:["quick_edit_main_fax","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Main_FAX.render();
+
+
+Event.addListener('quick_edit_main_contact_name_edit', "click", show_edit_main_contact_name);
+Event.addListener('quick_edit_name_edit', "click", show_edit_name);
+Event.addListener('quick_edit_tax', "click", show_edit_tax);
 Event.addListener('quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email_);
 Event.addListener('quick_edit_main_address', "click", dialog_quick_edit_Customer_Main_Address_);
 Event.addListener('quick_edit_main_telephone', "click", dialog_quick_edit_Customer_Main_Telephone_);
