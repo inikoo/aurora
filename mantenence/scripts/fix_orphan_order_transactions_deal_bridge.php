@@ -47,6 +47,21 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $res2=mysql_query($sql);
     if ($row2=mysql_fetch_array($res2, MYSQL_ASSOC)) {
 
+		if(preg_match('/[0-9\.]+\% Off$/i',$row['Deal Info'],$match)){
+			$percentage=floatval($match[0])/100;
+			//print $row['Deal Info']." ".$match[0]." $percentage\n";
+			
+				if($percentage>0){
+				  $sql=sprintf("update   `Order Transaction Deal Bridge` set `Deal Metadata`=%s where `Order Transaction Fact Key`=%d",
+				  prepare_mysql($percentage),
+        $row['Order Transaction Fact Key']);
+    //    print "$sql\n";
+       mysql_query($sql);
+				
+				}
+		
+		}
+
     } else {
        
         $sql=sprintf("delete  from  `Order Transaction Deal Bridge` where `Order Transaction Fact Key`=%d",

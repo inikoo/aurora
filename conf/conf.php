@@ -323,16 +323,33 @@ $default_state=array(
 
 	),
 
-	'dashboard'=>array(
-		'table'=>array(
-			'nr'=>5,
-			'order'=>'id',
+	'dashboards'=>array(
+		'active_widgets'=>array(
+			'nr'=>20,
+			'sf'=>0,
+			'order'=>'name',
 			'order_dir'=>'desc',
-			'f_field'=>'customer_name',
+			'f_field'=>'description',
+			'f_value'=>''
+		),'widgets'=>array(
+			'nr'=>20,
+			'sf'=>0,
+			'order'=>'name',
+			'order_dir'=>'desc',
+			'f_field'=>'description',
 			'f_value'=>''
 		)
 	),
-
+	'dashboard'=>array(
+		'active_widgets'=>array(
+			'nr'=>20,
+			'sf'=>0,
+			'order'=>'name',
+			'order_dir'=>'desc',
+			'f_field'=>'description',
+			'f_value'=>''
+		)
+	),
 	'orders'=>array(
 		'details'=>false,
 		'store'=>'1',
@@ -2072,7 +2089,7 @@ $default_state=array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>25,
+			'nr'=>25,"""'''
 			'where'=>'where true',
 			'f_field'=>'name',
 			'f_value'=>'',
