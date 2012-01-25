@@ -22,21 +22,34 @@
 			</h1>
 			<table style="width:500px">
 				<tr>
-					<td valign="top">{$company->get('Company Main XHTML Address')}</td>
+<td id="main_address_td" style="border:1px dotted #fff"  onMouseover="Dom.setStyle('quick_edit_main_address','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_address','visibility','hidden')">
+            <img onMouseover="Dom.setStyle('main_address_td','border-color','#ccc')"  onMouseout="Dom.setStyle('main_address_td','border-color','#fff')" id="quick_edit_main_address" style="float:right;cursor:pointer;visibility:hidden" src="art/icons/edit.gif">
+
+					<div  id="main_address" >{$company->get('Company Main XHTML Address')}</div>
+ </td>
 					<td valign="top"> 
 					<table border="0" style="padding:0">
-						<tr>
-							<td colspan="2">{$company->get('Company Main Contact Name')}</td>
-						</tr>
-						<tr>
-							<td colspan="2">{$company->get('Company Main XHTML Email')}</td>
-						</tr>
-						<tr>
-							<td colspan="2">{$company->get('Company Main XHTML Telephone')}</td>
-						</tr>
-						<tr>
-							<td colspan="2">{$company->get('Company Main XHTML FAX')}</td>
-						</tr>
+						  <tr id="main_contact_name_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
+                    <td id="main_contact_name" colspan=2  class="aright">{$company->get('Company Main Contact Name')}</td>
+ <td><img  alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td>
+                    <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+                </tr>
+						<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">
+                <td id="main_email" colspan=2  class="aright">{$company->get('Company Main XHTML Email')}</td>
+<td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>
+<td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>           	
+                </tr>
+					
+<tr id="main_telephone_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_telephone','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_telephone','visibility','hidden')">
+<td id="main_telephone" colspan=2 class="aright"  >{$company->get('Company Main XHTML Telephone')}</td >
+<td><img alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td>
+
+<td><img onMouseover="Dom.setStyle('main_telephone_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_telephone_tr','border-color','#fff')" id="quick_edit_main_telephone" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
+						
+<tr id="main_fax_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_fax','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_fax','visibility','hidden')">
+<td id="main_fax" colspan=2 class="aright">{$company->get('Company Main XHTML FAX')}</td >
+<td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td>
+<td><img onMouseover="Dom.setStyle('main_fax_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_fax_tr','border-color','#fff')" id="quick_edit_main_fax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
 					</table>
 					</td>
 				</tr>

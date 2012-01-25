@@ -152,7 +152,9 @@
 						</div>
 					</div>
 					</td>
+					<td id="Telephone_msg" class="edit_td_alert"></td>
 				</tr>
+
 				<tr class="Telecom_Details" style="display:none">
 					<td class="label">{t}Country Code{/t}:</td>
 					<td> 
@@ -216,7 +218,7 @@
 						<img src="art/loading.gif" alt="" /> {t}Creating Contact{/t} 
 					</div>
 					<div id="new_Supplier_buttons" class="buttons">
-						<button class="disabled positive" id="save_new_Supplier">{t}Save{/t}</button> <button class="negative" id="cancel_add_Supplier">{t}Cancel{/t}</button> 
+						<button class="disabled positive" id="save_new_supplier">{t}Save{/t}</button> <button class="negative" id="cancel_add_Supplier">{t}Cancel{/t}</button> 
 					</div>
 					</td>
 				</tr>

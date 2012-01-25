@@ -520,7 +520,7 @@ if(changed){
         //alert('x')
         Dom.addClass('save_edit_'+branch,'disabled');
     } else {
-//alert('save_edit_'+branch)
+alert('save_edit_'+branch)
         Dom.removeClass('save_edit_'+branch,'disabled');
     }
 //alert(branch)
@@ -543,7 +543,7 @@ function validate_scope_new(branch) {
     if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
-	//alert('save_new_'+branch)
+	alert('save_new_'+branch)
         Dom.removeClass('save_new_'+branch,'disabled');
     }
 }

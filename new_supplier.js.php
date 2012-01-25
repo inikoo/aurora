@@ -46,7 +46,9 @@ var subject_data={
     
 };
 
-var validate_data={'postal_code':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address'}
+var validate_scope_data={
+'supplier':{
+		    'postal_code':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address'}
 		   ,'town':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z]+"}
 		   ,'street':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
 		   ,'building':{'inputed':false,'validated':false,'required':false,'group':2,'type':'component','parent':'address','regexp':"[a-z\\d]+"}
@@ -58,6 +60,11 @@ var validate_data={'postal_code':{'inputed':false,'validated':false,'required':f
 		   ,'telephone':{'inputed':false,'validated':false,'required':false,'group':1,'type':'item','regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$"}
 		   ,'company_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':true,'group':0,'type':'item'}
 		   ,'contact_name':{'inputed':false,'validated':false,'regexp':"[^\\s]+",'required':false,'group':0,'type':'item'}
+}};
+
+var validate_scope_metadata={
+'supplier':{'type':'new','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>}
+
 };
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -153,6 +160,11 @@ this.table100.prefix='';
 
     });
 
+
+function validate_telephone(query){
+validate_general('supplier','telephone',unescape(query));
+}
+
 function select_country_from_list(oArgs){
 record=tables.table100.getRecord(oArgs.target)
 var data={
@@ -172,35 +184,35 @@ var data={
 
 
 function validate_company_name (query) {
-
-    var validator=new RegExp(validate_data.company_name.regexp,"i");
+/*
+    var validator=new RegExp(validate_scope_data['supplier'].company_name.regexp,"i");
 
     if(validator.test(query)){
-	validate_data.company_name.validated=true;
+	validate_scope_data['supplier'].company_name.validated=true;
     }else{
-	validate_data.company_name.validated=false;
+	validate_scope_data['supplier'].company_name.validated=false;
     }
- 
+ */
     get_subject_data();
     //find_subject();
-    validate_form();
-
+    //validate_form();
+validate_general('supplier','company_name',unescape(query));
 };
 
-
+/*
 function validate_form(){
 
 	
       
 	 valid_form=true;
-	for (item in validate_data ){
-	    if(validate_data[item].required==true && validate_data[item].validated==false){
+	for (item in validate_scope_data['supplier'] ){
+	    if(validate_scope_data['supplier'][item].required==true && validate_scope_data['supplier'][item].validated==false){
 		valid_form=false;
 		
-			    //	    alert(item+' '+validate_data[item].required+' '+validate_data[item].validated)
+			    //	    alert(item+' '+validate_scope_data['supplier'][item].required+' '+validate_scope_data['supplier'][item].validated)
 
 	    }
-	    if(validate_data[item].inputed==true && validate_data[item].validated==false){
+	    if(validate_scope_data['supplier'][item].inputed==true && validate_scope_data['supplier'][item].validated==false){
 	//	valid_form=false;
 	    }
 	}
@@ -208,17 +220,17 @@ function validate_form(){
 	var validate_group_id=1;
 	var min_valid_items=1;
 	var valid_items_in_group=0;
-	for (item in validate_data ){
+	for (item in validate_scope_data['supplier'] ){
 	   
-	    if(validate_data[item].group==validate_group_id){
+	    if(validate_scope_data['supplier'][item].group==validate_group_id){
 		
-		if( validate_data[item].validated==true && validate_data[item].inputed==true ){  
+		if( validate_scope_data['supplier'][item].validated==true && validate_scope_data['supplier'][item].inputed==true ){
 		    valid_items_in_group++;
 		}
 	    }
 
 	}
-	//	alert(validate_data.email.validated+' '+validate_data.email.inputed)
+	//	alert(validate_scope_data['supplier'].email.validated+' '+validate_scope_data['supplier'].email.inputed)
 	if(valid_items_in_group<min_valid_items){
 	    //valid_form=false;
 	}
@@ -233,7 +245,7 @@ function validate_form(){
 	}
 	
 }
-
+*/
 function get_subject_data(){
     subject_data[Subject+' Name']=Dom.get('Company_Name').value;
         subject_data[Subject+' Tax Number']=Dom.get('Company_Tax_Number').value;
@@ -446,6 +458,14 @@ function init(){
 	company_name_oAutoComp.minQueryLength = 0; 
 	company_name_oAutoComp.queryDelay = 0.75;
 	company_name_oAutoComp.autoHighlight = false;
+
+	var company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_telephone);
+	company_name_oACDS.queryMatchContains = true;
+	var company_name_oAutoComp = new YAHOO.widget.AutoComplete("Telephone","Telephone_Container", company_name_oACDS);
+	company_name_oAutoComp.minQueryLength = 0; 
+	company_name_oAutoComp.queryDelay = 0.75;
+	company_name_oAutoComp.autoHighlight = false;
+
 
 	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_supplier);
 

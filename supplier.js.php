@@ -373,6 +373,10 @@ function init(){
  YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'supplier_products'});
 
 
+Event.addListener('quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email_);
+Event.addListener('quick_edit_main_address', "click", dialog_quick_edit_Customer_Main_Address_);
+Event.addListener('quick_edit_main_telephone', "click", dialog_quick_edit_Customer_Main_Telephone_);
+Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Main_FAX_);
 
 };
 
