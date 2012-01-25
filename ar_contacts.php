@@ -2654,7 +2654,8 @@ function list_customers_send_post() {
 
 
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                		'state'=>200,
                                       'data'=>$adata,
                                       'rtext'=>$rtext,
                                       'rtext_rpp'=>$rtext_rpp,
@@ -2664,7 +2665,6 @@ function list_customers_send_post() {
                                       'filter_msg'=>$filter_msg,
                                       'total_records'=>$total,
                                       'records_offset'=>$start_from,
-
                                       'records_perpage'=>$number_results,
                                       'records_order'=>$order,
                                       'records_order_dir'=>$order_dir,

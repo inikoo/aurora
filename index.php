@@ -113,16 +113,16 @@ $js_files=array(
 */
 
 
-
-
+$smarty->assign('dashboard_key',$user->data['User Dashboard Key']);
 
 $blocks=array();
-$sql=sprintf("select * from `Dashboard User Bridge` where `User Key`=%d and `Dashboard Active`='Yes' and `Dashboard Widget Key`!=0 order by `Dashboard Order`",
-$user->id
+$sql=sprintf("select * from  `Dashboard Widget Bridge`B  left join `Widget Dimension` W on (B.`Widget Key`=W.`Widget Key`)   where `Dashboard Key`=%d  order by `Dashboard Widget Order`",
+$user->data['User Dashboard Key']
 );
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
-    $blocks[]=array('key'=>$row['Dashboard Key'],'src'=>$row['Dashboard URL'],'class'=>$row['Dashboard Class'],'metadata'=>$row['Dashboard Metadata'],'height'=>$row['Dashboard Height']);
+$dashboard_key=$row['Dashboard Key'];
+    $blocks[]=array('key'=>$row['Dashboard Widget Key'],'src'=>$row['Widget URL'],'class'=>$row['Widget Block'],'metadata'=>$row['Dashboard Widget Metadata'],'height'=>$row['Dashboard Widget Height']);
 }
 $smarty->assign('blocks',$blocks);
 

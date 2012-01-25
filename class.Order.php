@@ -2983,7 +2983,7 @@ class Order extends DB_Table {
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 
-			if ($amount==$row['Order Transaction Total Discount Amount']) {
+			if ($amount==$row['Order Transaction Total Discount Amount'] or $row['Order Transaction Gross Amount']==0) {
 				$this->msg='Nothing to Change';
 				return;
 			}
@@ -3002,14 +3002,17 @@ class Order extends DB_Table {
 
 			$this->update_totals_from_order_transactions();
 
-			if ($amount>0) {
+			if ($amount>0  ) {
 				$deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
-
-				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%f,0)",
+				
+				
+				
+				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,'%.3f',%s,%f,0)",
 					$row['Order Transaction Fact Key'],
 					$this->id,
 					$row['Product Key'],
 					$deal_key,
+					($amount/$row['Order Transaction Gross Amount']),
 					prepare_mysql($deal_info,false),
 					$amount
 				);
@@ -3299,12 +3302,13 @@ class Order extends DB_Table {
 
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%f,0)"
+				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%s,%f,0)"
 					,$row['Order Transaction Fact Key']
 					,$this->id
 
 					,$row['Product Key']
 					,$allowance_data['Deal Metadata Key']
+					,prepare_mysql($allowance_data['Percentage Off'])
 					,prepare_mysql($allowance_data['Deal Info'])
 					,$row['Order Transaction Gross Amount']*$allowance_data['Percentage Off']
 				);
