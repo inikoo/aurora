@@ -27,6 +27,7 @@
 
 					<div  id="main_address" >{$company->get('Company Main XHTML Address')}</div>
  </td>
+
 					<td valign="top"> 
 					<table border="0" style="padding:0">
 						  <tr id="main_contact_name_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
@@ -228,4 +229,118 @@
 		</ul>
 	</div>
 </div>
+
+
+
 {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="supplier-table-csv_export" export_options=$csv_export_options } {include file='footer.tpl'} 
+
+
+
+
+
+
+<div id="dialog_quick_edit_Customer_Name" style="padding:10px">
+	<table style="margin:10px">
+	
+	<tr>
+	<td>{t}Customer Name:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_Name" value="{$company->get('Company Main Contact Name')}" ovalue="{$company->get('Company Main Contact Name')}" valid="0">
+	<div id="Customer_Name_Container"  ></div>
+	</div>	
+	</td>
+
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Name_msg" ></span>
+	<button class="positive" id="save_quick_edit_name">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
+	</table>
+
+</div>
+
+<div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
+	<table style="margin:10px">
+	<tr>
+	<td>{t}Contact Email:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Email" value="{$company->get('Company Main XHTML Email')}" ovalue="{$company->get('Company Main XHTML Email')}" valid="0">
+		<div id="Customer_Main_Email_Container"  ></div>
+	</div>	
+	</td>
+	</tr>
+	
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Email_msg" ></span>
+	<button class="positive" id="save_quick_edit_email">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
+	</table>
+
+</div>
+
+
+
+<div id="dialog_quick_edit_Customer_Main_Telephone" style="padding:10px">
+	<table style="margin:10px">
+
+	<tr>
+	<td>{t}Telephone:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Telephone" value="{$company->get('Company Main XHTML Telephone')}" ovalue="{$company->get('Company Main XHTML Telephone')}" valid="0">
+	<div id="Customer_Main_Telephone_Container"></div>
+	</div>	
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Telephone_msg" ></span>
+	<button class="positive" id="save_quick_edit_telephone">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_telephone">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
+	</table>
+
+</div>
+
+<div id="dialog_quick_edit_Customer_Main_FAX" style="padding:10px">
+	<table style="margin:10px">
+	<tr>
+	<td>{t}Fax:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_FAX" value="{$company->get('Company Main XHTML FAX')}" ovalue="{$company->get('Company Main XHTML FAX')}" valid="0">
+	<div id="Customer_Main_FAX_Container"></div>
+	</div>	
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_FAX_msg" ></span>
+	<button class="positive" id="save_quick_edit_fax">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_fax">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
+	</table>
+
+</div>
+			
+
+<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;padding-bottom:50px">
+
+<table border=0 style="margin:10px; width:100%">
+{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}
+</table>
+<div style="display:none" id='contact_current_address' ></div>
+<div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}' ></div>
+</div>
