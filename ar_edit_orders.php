@@ -1159,7 +1159,7 @@ function post_transactions_to_process() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+		$wheref.=" and  P.`Product Code` like '".addslashes($f_value)."%'";
 	elseif ($f_field=='name' and $f_value!='')
 		$wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
@@ -1252,8 +1252,8 @@ function post_transactions_to_process() {
 
 
 
-	$sql="select `Reason`,`To Be Returned`,`Operation`,IFNULL(`Quantity`,'') as Quantity,OTF.`Order Key`,OTF.`Order Transaction Fact Key`,`Invoice Currency Code`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as charged, `Delivery Note Quantity`,`Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-	//print $sql;
+	$sql="select `Reason`,`To Be Returned`,`Operation`,IFNULL(`Quantity`,'') as Quantity,OTF.`Order Key`,OTF.`Order Transaction Fact Key`,`Invoice Currency Code`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as charged, `Delivery Note Quantity`,`Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+
 
 	$res = mysql_query($sql);
 
@@ -1266,8 +1266,7 @@ function post_transactions_to_process() {
 		else
 			$stock='?';
 		$type=$row['Product Record Type'];
-		if ($row['Product Stage']=='In Process')
-			$type.='<span style="color:red">*</span>';
+		
 		switch ($row['Product Web Configuration']) {
 		case('Online Force Out of Stock'):
 			$web_state=_('Out of Stock');

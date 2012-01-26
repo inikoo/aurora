@@ -45,18 +45,40 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'edit_dashboards.js.php?user_id='.$user->id,
+	'edit_dashboard.js.php',
 );
 
-$smarty->assign('user_id',$user->id);
+if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
+header('Location: edit_dashboards.php');
+	exit;
+}
+
+$dashboard_key=$_REQUEST['id'];
+	$sql=sprintf("select * from  `Dashboard Dimension` where `Dashboard Key`=%d", $dashboard_key);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+	}else {
+	header('Location: edit_dashboards.php');
+	exit;
+
+	}
+
+$smarty->assign('dashboard_key',$dashboard_key);
+
+$smarty->assign('user_key',$user->id);
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Dashboard Configuration'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$tipo_filter0=$_SESSION['state']['dashboard']['active_widgets']['f_field'];
+
+
+
+
+$tipo_filter0=$_SESSION['state']['dashboards']['widgets']['f_field'];
 $smarty->assign('filter0',$tipo_filter0);
-$smarty->assign('filter_value0',$_SESSION['state']['dashboard']['active_widgets']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['dashboards']['widgets']['f_value']);
 $filter_menu0=array(
 	'name'=>array('db_key'=>'name','menu_label'=>_('Widget name starting with  <i>x</i>'),'label'=>_('Name')),
 	'description'=>array('db_key'=>'description','menu_label'=>_('Widget description starting with  <i>x</i>'),'label'=>_('Description')),
@@ -66,6 +88,19 @@ $smarty->assign('filter_menu0',$filter_menu0);
 $smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
 $paginator_menu0=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu0);
+
+$tipo_filter1=$_SESSION['state']['dashboard']['active_widgets']['f_field'];
+$smarty->assign('filter1',$tipo_filter1);
+$smarty->assign('filter_value1',$_SESSION['state']['dashboard']['active_widgets']['f_value']);
+$filter_menu1=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Widget name starting with  <i>x</i>'),'label'=>_('Name')),
+	'description'=>array('db_key'=>'description','menu_label'=>_('Widget description starting with  <i>x</i>'),'label'=>_('Description')),
+
+);
+$smarty->assign('filter_menu1',$filter_menu1);
+$smarty->assign('filter_name1',$filter_menu1[$tipo_filter1]['label']);
+$paginator_menu1=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu1);
 
 $smarty->display('edit_dashboard.tpl');
 ?>
