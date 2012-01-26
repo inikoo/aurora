@@ -268,8 +268,8 @@ if(delete_type== undefined)
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
                 if (column.object=='company' || column.object=='company_area' || column.object=='customer_history' || column.object=='customer_list')
                     ar_file='ar_edit_contacts.php';
-		else if(column.object=='widget_list' )
-			ar_file='ar_dashboard.php';
+		else if(column.object=='widget_in_dashboard' )
+			ar_file='ar_edit_dashboard.php';
                 else if (column.object=='warehouse_area' || column.object=='location')
                     ar_file='ar_edit_warehousrecordIndexe.php';
                 else if (column.object=='position')
@@ -291,12 +291,12 @@ if(delete_type== undefined)
 
 
 
-          //alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record));return;
+        
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
                 success: function (o) {
-                    //alert(o.responseText);
+                    alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 

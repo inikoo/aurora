@@ -81,9 +81,11 @@ Event.addListener(window, "load", function() {
             var DDM = YAHOO.util.DragDropMgr;
 		OrdersColumnDefs = [
 				      // {key:"id", label:"<?php echo _('Widget ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"name", label:"<?php echo _('Widget Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				    		//		    {key:"widget_order", label:"<?php echo _('Position')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+
+				    {key:"name", label:"<?php echo _('Widget Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				     //  {key:"widget_block",label:"<?php echo _('Widget Block')?>", width:240,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				      // {key:"widget_dimesnion", label:"<?php echo _('Widget Dimesnion')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				      // {key:"widget_dimension", label:"<?php echo _('Widget Dimension')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"description", label:"<?php echo _('Widget Description')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"delete", label:"",width:12,sortable:false,action:'delete',object:'widget_list'},
 					 {key:"id", label:"",width:100,hidden:true}
@@ -93,7 +95,7 @@ Event.addListener(window, "load", function() {
 //var ids =Array("restrictions_orders_cancelled","restrictions_orders_suspended","restrictions_orders_unknown","restrictions_orders_dispatched","restrictions_orders_in_process","restrictions_all_orders") ;
 
 		//alert("ar_dashboard.php?tipo=list_widgets&user_id="+Dom.get('user_key').value+"&where=");
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_dashboard.php?tipo=list_widgets&user_id="+Dom.get('user_key').value+"&where=");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_dashboard.php?tipo=list_widgets&user_id="+Dom.get('user_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -114,7 +116,7 @@ Event.addListener(window, "load", function() {
 			 "id",
 			 "name",
 			 "widget_block",
-			 "widget_dimesnion",
+			 "widget_dimension",
 			 "description",
 			 "delete",
 			"user_id",
@@ -126,7 +128,7 @@ Event.addListener(window, "load", function() {
 						     this.dataSource0, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?php echo $_SESSION['state']['dashboards']['active_widgets']['nr']?>,containers : 'paginator0', 
+									       rowsPerPage    : <?php echo $_SESSION['state']['dashboards']['widgets']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -136,8 +138,8 @@ Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['dashboards']['active_widgets']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['dashboards']['active_widgets']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['dashboards']['widgets']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['dashboards']['widgets']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -155,7 +157,7 @@ Event.addListener(window, "load", function() {
 this.table0.subscribe("rowClickEvent", select_widget_from_list);
 	    
        	    this.table0.subscribe("cellClickEvent", onCellClick);  
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['dashboards']['active_widgets']['f_field']?>',value:'<?php echo$_SESSION['state']['dashboards']['active_widgets']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['dashboards']['widgets']['f_field']?>',value:'<?php echo$_SESSION['state']['dashboards']['widgets']['f_value']?>'};
 
 
 	};
@@ -252,10 +254,10 @@ function edit_dashboard(key){
 }
 
 function add_widget(e, key){
-	region1 = Dom.getRegion(e); 
+	region1 = Dom.getRegion('widget_list'); 
 	region2 = Dom.getRegion('dialog_widget_list'); 
 
-	var pos =[region1.right-region2.width-20,region1.bottom]
+	var pos =[region1.left,region2.top]
 
 	Dom.setXY('dialog_widget_list', pos);
 
@@ -269,7 +271,6 @@ function add_widget(e, key){
 function init(){
 
  YAHOO.util.Event.addListener('add_dashboard', "click",add_dashboard);
-
 dialog_widget_list = new YAHOO.widget.Dialog("dialog_widget_list", {context:["widget_add","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_widget_list.render();
 

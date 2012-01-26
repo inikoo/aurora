@@ -52,8 +52,8 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			//print $row['Deal Info']." ".$match[0]." $percentage\n";
 			
 				if($percentage>0){
-				  $sql=sprintf("update   `Order Transaction Deal Bridge` set `Deal Metadata`=%s where `Order Transaction Fact Key`=%d",
-				  prepare_mysql($percentage),
+				  $sql=sprintf("update   `Order Transaction Deal Bridge` set `Fraction Discount`=%f where `Order Transaction Fact Key`=%d",
+				  $percentage,
         $row['Order Transaction Fact Key']);
     //    print "$sql\n";
        mysql_query($sql);
