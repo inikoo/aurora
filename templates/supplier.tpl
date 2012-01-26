@@ -30,10 +30,10 @@
 
 					<td valign="top"> 
 					<table border="0" style="padding:0">
-						  <tr id="main_contact_name_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
+						  <tr id="main_contact_name_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')">
                     <td id="main_contact_name" colspan=2  class="aright">{$company->get('Company Main Contact Name')}</td>
  <td><img  alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td>
-                    <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+                    <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
                 </tr>
 						<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">
                 <td id="main_email" colspan=2  class="aright">{$company->get('Company Main XHTML Email')}</td>
@@ -239,22 +239,22 @@
 
 
 
-<div id="dialog_quick_edit_Customer_Name" style="padding:10px">
+<div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
 	<table style="margin:10px">
 	
 	<tr>
 	<td>{t}Customer Name:{/t}</td>
 	<td>
 	<div style="width:220px">
-	<input type="text" id="Customer_Name" value="{$company->get('Company Main Contact Name')}" ovalue="{$company->get('Company Main Contact Name')}" valid="0">
-	<div id="Customer_Name_Container"  ></div>
+	<input type="text" id="Customer_Main_Contact_Name" value="{$company->get('Company Main Contact Name')}" ovalue="{$company->get('Company Main Contact Name')}" valid="0">
+	<div id="Customer_Main_Contact_Name_Container"  ></div>
 	</div>	
 	</td>
 
 	</tr>
 	<tr><td colspan=2>
 	<div class="buttons" style="margin-top:10px">
-	<span id="Customer_Name_msg" ></span>
+	<span id="Customer_Main_Contact_Name_msg" ></span>
 	<button class="positive" id="save_quick_edit_name">{t}Save{/t}</button>
 	<button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button>
 
@@ -270,7 +270,7 @@
 	<td>{t}Contact Email:{/t}</td>
 	<td>
 	<div style="width:200px">
-	<input type="text" id="Customer_Main_Email" value="{$company->get('Company Main XHTML Email')}" ovalue="{$company->get('Company Main XHTML Email')}" valid="0">
+	<input type="text" id="Customer_Main_Email" value="{$company->get('Company Main Plain Email')}" ovalue="{$company->get('Company Main Plain Email')}" valid="0">
 		<div id="Customer_Main_Email_Container"  ></div>
 	</div>	
 	</td>

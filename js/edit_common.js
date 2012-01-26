@@ -520,7 +520,7 @@ if(changed){
         //alert('x')
         Dom.addClass('save_edit_'+branch,'disabled');
     } else {
-alert('save_edit_'+branch)
+//alert('save_edit_'+branch)
         Dom.removeClass('save_edit_'+branch,'disabled');
     }
 //alert(branch)
@@ -895,6 +895,7 @@ return;
  //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
  var data_to_update=new Object;
     for (items in validate_scope_data[branch]) {
+	//alert(validate_scope_data[branch][items].name +':'+validate_scope_data[branch][items].changed+':'+validate_scope_data[branch][items].validated)
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input=Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
@@ -927,10 +928,10 @@ return;
 var request=scope_edit_ar_file
 
 var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request+'?'+postData);return;
+alert(request+'?'+postData);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {
-  //alert(o.responseText);
+  alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
