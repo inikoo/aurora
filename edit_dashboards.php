@@ -34,14 +34,23 @@ $css_files=array(
 
 
 $dashboard_data=array();
-$sql=sprintf("select * from `Dashboard Dimension` where `User Key`=%d order by `Dashboard Order` ",$user->id);
+$sql=sprintf("select * from `Dashboard Dimension` where `User Key`=%d order by `Dashboard Key` ",$user->id);
 //print $sql;
 $res=mysql_query($sql);
 $number_dashboards=0;
+
+
+
 while ($row=mysql_fetch_assoc($res)) {
-	$dashboard_data[$row['Dashboard Key']][]=array('order'=>$row['Dashboard Order']);
+$sql=sprintf("select * from `Dashboard Widget Bridge` where `Dashboard Key`=%d", $row['Dashboard Key']);
+$result=mysql_query($sql);
+
+	$dashboard_data[$row['Dashboard Key']]=array('order'=>$row['Dashboard Order'], 'number_of_widgets'=> mysql_num_rows($result));
 	$number_dashboards++;
 }
+
+
+//print_r($dashboard_data);
 $smarty->assign('dashboard_data',$dashboard_data);
 $smarty->assign('number_dashboards',$number_dashboards);
 $smarty->assign('default_dashboard_key',$user->data['User Dashboard Key']);
