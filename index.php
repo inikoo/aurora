@@ -115,9 +115,20 @@ $js_files=array(
 
 $smarty->assign('dashboard_key',$user->data['User Dashboard Key']);
 
+
+if(isset($_REQUEST['dashboard_id']) and is_numeric($_REQUEST['dashboard_id'])){
+	$dashboard_key=$_REQUEST['dashboard_id'];
+}
+else{
+	$dashboard_key=$user->data['User Dashboard Key'];
+}
+
+
+
+
 $blocks=array();
 $sql=sprintf("select * from  `Dashboard Widget Bridge`B  left join `Widget Dimension` W on (B.`Widget Key`=W.`Widget Key`)   where `Dashboard Key`=%d  order by `Dashboard Widget Order`",
-$user->data['User Dashboard Key']
+$dashboard_key
 );
 $res=mysql_query($sql);
 while($row=mysql_fetch_assoc($res)){
@@ -128,7 +139,64 @@ $smarty->assign('blocks',$blocks);
 
 //print_r($blocks);
 
+$sql=sprintf("select *	from `Dashboard Dimension` where `User Key`=%d", $user->id);
 
+$result=mysql_query($sql);
+$number_of_dashboards=mysql_num_rows($result);
+$smarty->assign('number_of_dashboards',$number_of_dashboards);
+
+/*
+$sql=sprintf("select * from `Dashboard Dimension` where `Dashboard key`=%d", $dashboard_key);
+$result=mysql_query($sql);
+$current_dashboard_data=mysql_fetch_assoc($result);
+
+
+
+
+
+
+
+
+$sql=sprintf("select * from `Dashboard Dimension` where `User key`=%d order by `Dashboard Order` DESC", $user->id);
+$result=mysql_query($sql);
+$row=mysql_fetch_assoc($result);
+$last_dashboard_id=$row['Dashboard Order'];
+*/
+
+$dashboard_data=array();
+$dashboard_data2=array();
+$sql=sprintf("select * from `Dashboard Dimension` where `User key`=%d order by `Dashboard Order`", $user->id);
+$result=mysql_query($sql);
+while($row=mysql_fetch_assoc($result)){
+	$dashboard_data[$row['Dashboard Order']]=$row['Dashboard Key'];
+$dashboard_data2[$row['Dashboard Key']]=$row['Dashboard Order'];
+}
+
+
+
+
+if($dashboard_data2[$dashboard_key] == $number_of_dashboards ){
+	$next_id=$dashboard_data[1];
+}
+else{
+$next_id=$dashboard_data[$dashboard_data2[$dashboard_key]+1];
+
+}
+
+if($dashboard_data2[$dashboard_key] == 1 ){
+	$prev_id=$dashboard_data[$number_of_dashboards];
+}
+else{
+$prev_id=$dashboard_data[$dashboard_data2[$dashboard_key]-1];
+
+}
+
+
+
+$prev=array('id'=> $prev_id, 'name'=>'');
+$next=array('id'=> $next_id, 'name'=>'');
+$smarty->assign('prev',$prev);
+$smarty->assign('next',$next);
 
 $valid_sales=true;
 //$sql = "select count(*) from `Invoice Dimension`";
