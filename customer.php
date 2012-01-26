@@ -439,7 +439,7 @@ $smarty->assign('gold_reward',$gold_reward);
 $smarty->assign('options_box_width','550px');
 $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
 
-
+$smarty->assign('default_country_2alpha',$store->get('Store Home Country Code 2 Alpha'));
 $smarty->assign('other_email_login_handle',$customer->get_other_email_login_handle());
 
 
