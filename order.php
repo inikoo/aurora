@@ -269,6 +269,7 @@ if (isset($_REQUEST['pick_aid'])) {
 
 
 		}
+		$smarty->assign('modify',$modify);
 
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');

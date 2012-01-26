@@ -684,7 +684,7 @@ class Order extends DB_Table {
 					$gross=$quantity*$product->data['Product History Price'];
 
 
-				
+
 
 					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
 						$estimated_weight ,
@@ -798,7 +798,7 @@ class Order extends DB_Table {
 
 		}
 
-//print "xx $gross $gross_discounts ";
+		//print "xx $gross $gross_discounts ";
 
 		return array(
 			'updated'=>true,
@@ -2157,9 +2157,9 @@ class Order extends DB_Table {
 
 		$dispatch_state='Unknown';
 
-//
+		//
 
-		$sql=sprintf("select `Delivery Note XHTML State`,`Delivery Note State`,DN.`Delivery Note Key`,DN.`Delivery Note ID`,`Delivery Note Faction Picked`,`Delivery Note Assigned Picker Alias`,`Delivery Note Faction Packed`,`Delivery Note Assigned Packer Alias` from `Order Transaction Fact` B  left join `Delivery Note Dimension` DN  on (DN.`Delivery Note Key`=B.`Delivery Note Key`) 
+		$sql=sprintf("select `Delivery Note XHTML State`,`Delivery Note State`,DN.`Delivery Note Key`,DN.`Delivery Note ID`,`Delivery Note Faction Picked`,`Delivery Note Assigned Picker Alias`,`Delivery Note Faction Packed`,`Delivery Note Assigned Packer Alias` from `Order Transaction Fact` B  left join `Delivery Note Dimension` DN  on (DN.`Delivery Note Key`=B.`Delivery Note Key`)
 		where `Order Key`=%d group by B.`Delivery Note Key`  order by Field (`Delivery Note State`,  'Dispatched','Cancelled','Cancelled to Restock','Approved' ,'Packed Done' , 'Packed','Ready to be Picked','Picker Assigned','Packer Assigned','Picker & Packer Assigned','Picked','Picking' ,'Packing' ,'Picking & Packing') ",$this->id);
 
 		$res = mysql_query( $sql );
@@ -2962,9 +2962,9 @@ class Order extends DB_Table {
 		if ($row=mysql_fetch_array($res)) {
 			$amount=$row['Order Transaction Gross Amount']*$percentage/100;
 			return $this->update_transaction_discount_amount($otf_key,$amount);
-		}else{
+		}else {
 			$this->error=true;
-			$this->msg='otf not found';		
+			$this->msg='otf not found';
 		}
 
 	}
@@ -3004,17 +3004,18 @@ class Order extends DB_Table {
 
 			if ($amount>0  ) {
 				$deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
-				
-				
-				
-				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,'%.3f',%s,%f,0)",
+
+
+
+				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%f,%f,0)",
 					$row['Order Transaction Fact Key'],
 					$this->id,
 					$row['Product Key'],
 					$deal_key,
-					($amount/$row['Order Transaction Gross Amount']),
+					
 					prepare_mysql($deal_info,false),
-					$amount
+					$amount,
+					($amount/$row['Order Transaction Gross Amount'])
 				);
 				mysql_query($sql);
 				$this->updated=true;
@@ -3034,9 +3035,9 @@ class Order extends DB_Table {
 
 
 		}
-		else{
+		else {
 			$this->error=true;
-			$this->msg='otf not found';		
+			$this->msg='otf not found';
 		}
 
 
@@ -3113,7 +3114,7 @@ class Order extends DB_Table {
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
 		$sql=sprintf("select `Product Code`,`Order Transaction Fact Key`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d",
-		$this->id);
+			$this->id);
 		$res_lines=mysql_query($sql);
 		while ($row_lines=mysql_fetch_array($res_lines)) {
 			//     print "\n".$row_lines['Product Code']."\n";
@@ -3278,7 +3279,7 @@ class Order extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and ``  ",$this->id);
+		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Metadata Key`!=0  ",$this->id);
 		mysql_query($sql);
 
 
@@ -3288,12 +3289,12 @@ class Order extends DB_Table {
 		foreach ($this->allowance['Family Percentage Off'] as $allowance_data) {
 
 
-			$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Transaction Total Discount Amount`=`Order Transaction Gross Amount`*%f where `Order Key`=%d and `Product Family Key`=%d '
-				,$allowance_data['Percentage Off']
-				,$this->id
-				,$allowance_data['Family Key']
-			);
-			mysql_query($sql);
+			//$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Transaction Total Discount Amount`=`Order Transaction Gross Amount`*%f where `Order Key`=%d and `Product Family Key`=%d '
+			// ,$allowance_data['Percentage Off']
+			//  ,$this->id
+			//  ,$allowance_data['Family Key']
+			// );
+			// mysql_query($sql);
 
 			$sql=sprintf('select OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount` from  `Order Transaction Fact` OTF  where `Order Key`=%d and `Product Family Key`=%d '
 				,$this->id
@@ -3302,26 +3303,33 @@ class Order extends DB_Table {
 
 			$res=mysql_query($sql);
 			while ($row=mysql_fetch_array($res)) {
-				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%s,%f,0)"
+				$sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%f,%f,0)"
 					,$row['Order Transaction Fact Key']
 					,$this->id
 
 					,$row['Product Key']
 					,$allowance_data['Deal Metadata Key']
-					,prepare_mysql($allowance_data['Percentage Off'])
+					
 					,prepare_mysql($allowance_data['Deal Info'])
 					,$row['Order Transaction Gross Amount']*$allowance_data['Percentage Off']
+					,prepare_mysql($allowance_data['Percentage Off'])
 				);
 				mysql_query($sql);
 				//print "$sql\n";
 			}
-
-
-
-
 		}
 
-
+		$sql=sprintf("select * from `Order Transaction Deal Bridge` where `Order Key`=%d  ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			if ( $row['Fraction Discount']>0  ) {
+				$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Transaction Total Discount Amount`=`Order Transaction Gross Amount`*%f where `Order Transaction Fact Key`=%d '
+					,$row['Fraction Discount']
+					,$row['Order Transaction Fact Key']
+				);
+				mysql_query($sql);
+			}
+		}
 
 
 

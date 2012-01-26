@@ -5407,3 +5407,6 @@ ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML State` TEXT NOT N
 
 ALTER TABLE `Order Transaction Deal Bridge` ADD `Deal Metadata` VARCHAR( 256 ) NOT NULL AFTER `Deal Metadata Key` ;
 ALTER TABLE `User Dimension` ADD `User Dashboard Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `User Created` ;
+
+ALTER TABLE `Order Transaction Deal Bridge` DROP `Deal Metadata Key`;
+ALTER TABLE `Order Transaction Deal Bridge` ADD `Fraction Discount` FLOAT NOT NULL DEFAULT '0' AFTER `Amount Discount` ;

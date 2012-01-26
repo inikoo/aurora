@@ -9,7 +9,7 @@
 		<div class="top_page_menu" style="margin-top:10px">
 		
 			<div class="buttons" style="float:left">
-										<button onclick="window.location='widgets.php'"><img src="art/icons/bricks.png" alt=""> {t}Widget List{/t}</button> 
+										<button id="widget_list" onclick="window.location='widgets.php'"><img src="art/icons/bricks.png" alt=""> {t}Widget List{/t}</button> 
 
 			</div>
 			<div class="buttons" style="float:right">
@@ -44,13 +44,7 @@
 			<div style="clear:both;"></div>
 		</div>
 		
-			<div style="clear:both;">
-		  <span class="clean_table_title">{t}Widget List{/t} </span>
- <div class="table_top_bar" style="margin-bottom:10px"></div>
-		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table1" style="font-size:90%" class="data_table_container dtable btable ">
-		</div>
-		</div>
+		
 	
 </div>
 {include file='footer.tpl'} 
