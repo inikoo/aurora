@@ -208,7 +208,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 $smarty->assign('categories',$categories);
 $smarty->assign('categories_value',$categories_value);
-
+$smarty->assign('default_country_2alpha','GB');
 
 $smarty->display('edit_supplier.tpl');
 

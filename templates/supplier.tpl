@@ -16,10 +16,10 @@
 			<div style="clear:both">
 			</div>
 		</div>
+<h1  style="padding-bottom:0px">
+<span id="customer_name_heading" style="padding:2px 7px;border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')" >
+<span id="customer_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span> <img onMouseover="Dom.setStyle('customer_name_heading','border-color','#ccc')"  onMouseout="Dom.setStyle('customer_name_heading','border-color','#fff')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span></h1>
 		
-			<h1>
-				{$supplier->get('Supplier Name')} <span class="id">({$supplier->get('Supplier Code')})</span>
-			</h1>
 			<table style="width:500px">
 				<tr>
 <td id="main_address_td" style="border:1px dotted #fff"  onMouseover="Dom.setStyle('quick_edit_main_address','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_address','visibility','hidden')">
@@ -30,10 +30,10 @@
 
 					<td valign="top"> 
 					<table border="0" style="padding:0">
-						  <tr id="main_contact_name_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')">
+						  <tr id="main_contact_name_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
                     <td id="main_contact_name" colspan=2  class="aright">{$company->get('Company Main Contact Name')}</td>
  <td><img  alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td>
-                    <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+                    <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
                 </tr>
 						<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">
                 <td id="main_email" colspan=2  class="aright">{$company->get('Company Main XHTML Email')}</td>
@@ -255,8 +255,8 @@
 	<tr><td colspan=2>
 	<div class="buttons" style="margin-top:10px">
 	<span id="Customer_Main_Contact_Name_msg" ></span>
-	<button class="positive" id="save_quick_edit_name">{t}Save{/t}</button>
-	<button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button>
+	<button class="positive" id="save_quick_edit_main_contact_name">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_main_contact_name">{t}Cancel{/t}</button>
 
 	</div>
 	</td></tr>
@@ -335,6 +335,31 @@
 
 </div>
 			
+<div id="dialog_quick_edit_Customer_Name" style="padding:10px">
+	<table style="margin:10px">
+
+	<tr>
+	<td>{t}Customer Name:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_Name" value="{$supplier->get('Supplier Name')}" ovalue="{$supplier->get('Supplier Name')}" valid="0">
+	<div id="Customer_Name_Container"  ></div>
+	</div>	
+	</td>
+
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Name_msg" ></span>
+	<button class="positive" id="save_quick_edit_name">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
+	</table>
+
+</div>
+
 
 <div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;padding-bottom:50px">
 

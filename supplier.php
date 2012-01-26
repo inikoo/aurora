@@ -108,6 +108,16 @@ $js_files=array(
               'js/csv_common.js',
               'js/suppliers_common.js',
 
+"edit_address.js.php"
+,"edit_delivery_address_common.js.php"
+,"js/validate_telecom.js"
+,"address_data.js.php?tipo=supplier&id=".$supplier->id
+,"edit_contact_from_parent.js.php"
+,"edit_contact_telecom.js.php"
+,"edit_contact_name.js.php"
+,"edit_contact_email.js.php"
+
+
           );
 
 
@@ -257,7 +267,7 @@ $csv_export_options=array(
 $smarty->assign('export_csv_table_cols',7);
 $smarty->assign('csv_export_options',$csv_export_options);
 
-
+$smarty->assign('default_country_2alpha','GB');
 
 $smarty->display('supplier.tpl');
 

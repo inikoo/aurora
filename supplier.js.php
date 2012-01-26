@@ -335,7 +335,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplie
 function show_edit_main_contact_name(){
 Dom.get('Customer_Main_Contact_Name').value=Dom.get('Customer_Main_Contact_Name').getAttribute('ovalue')
 hide_all_dialogs();
-dialog_quick_edit_Customer_Main_Contact_Name.show();
+dialog_quick_edit_Customer_Name.show();
 }
 
 
@@ -515,7 +515,7 @@ var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\
 var validate_scope_data=
 {
     'supplier_quick':{
-	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Main_Contact_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
+	'name':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
 	,'email':{'ar':false,'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
 	
@@ -535,7 +535,7 @@ function init(){
   init_search('supplier_products_supplier');
   
   list_of_dialogs=[
-//"dialog_quick_edit_Customer_Name", 
+"dialog_quick_edit_Customer_Name", 
 "dialog_quick_edit_Customer_Main_Contact_Name",
 "dialog_quick_edit_Customer_Main_Address",
 "dialog_quick_edit_Customer_Tax_Number",
@@ -590,8 +590,11 @@ function init(){
 
 
 
-dialog_quick_edit_Customer_Main_Contact_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Contact_Name", {context:["quick_edit_name_edit","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Main_Contact_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Contact_Name", {context:["quick_edit_main_contact_name_edit","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Main_Contact_Name.render();
+
+dialog_quick_edit_Customer_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Name", {context:["quick_edit_name_edit","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Name.render();
 /*
 dialog_quick_edit_Customer_Main_Contact_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Contact_Name", {context:["quick_edit_main_contact_name_edit","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Main_Contact_Name.render();
@@ -612,8 +615,8 @@ dialog_quick_edit_Customer_Main_FAX = new YAHOO.widget.Dialog("dialog_quick_edit
 dialog_quick_edit_Customer_Main_FAX.render();
 
 
-Event.addListener('quick_edit_main_contact_name_edit', "click", show_edit_main_contact_name);
-Event.addListener('quick_edit_name_edit', "click", show_edit_name);
+Event.addListener('quick_edit_main_contact_name_edit', "click", show_edit_name);
+Event.addListener('quick_edit_name_edit', "click", show_edit_main_contact_name);
 Event.addListener('quick_edit_tax', "click", show_edit_tax);
 Event.addListener('quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email_);
 Event.addListener('quick_edit_main_address', "click", dialog_quick_edit_Customer_Main_Address_);
@@ -621,15 +624,15 @@ Event.addListener('quick_edit_main_telephone', "click", dialog_quick_edit_Custom
 Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Main_FAX_);
 
 
-//Event.addListener('save_quick_edit_main_contact_name', "click", save_quick_edit_main_contact_name, true);
-//Event.addListener('close_quick_edit_main_contact_name', "click", dialog_quick_edit_Customer_Main_Contact_Name.hide,dialog_quick_edit_Customer_Main_Contact_Name , true);
-
+Event.addListener('save_quick_edit_name', "click", save_quick_edit_main_contact_name, true);
+Event.addListener('close_quick_edit_name', "click", dialog_quick_edit_Customer_Name.hide,dialog_quick_edit_Customer_Name , true);
+//save_quick_edit_name
 
 Event.addListener('save_quick_edit_tax_number', "click", save_quick_edit_tax_number, true);                                                                                 
 Event.addListener('close_quick_edit_tax_number', "click", dialog_quick_edit_Customer_Tax_Number.hide,dialog_quick_edit_Customer_Tax_Number , true);
     
-Event.addListener('save_quick_edit_name', "click", save_quick_edit_name, true);
-Event.addListener('close_quick_edit_name', "click", dialog_quick_edit_Customer_Main_Contact_Name.hide,dialog_quick_edit_Customer_Main_Contact_Name , true);
+Event.addListener('save_quick_edit_main_contact_name', "click", save_quick_edit_main_contact_name, true);
+Event.addListener('close_quick_edit_main_contact_name', "click", dialog_quick_edit_Customer_Main_Contact_Name.hide,dialog_quick_edit_Customer_Main_Contact_Name , true);
 
 Event.addListener('save_quick_edit_email', "click", save_quick_edit_email, true);
 Event.addListener('close_quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email.hide,dialog_quick_edit_Customer_Main_Email , true);
