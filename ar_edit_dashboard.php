@@ -34,12 +34,16 @@ case('set_default_dashboard'):
 	set_default_dashboard($data);
 	break;
 
-case('list_widgets'):
-	list_widgets();
+case('list_widgets_in_dashboard'):
+	list_widgets_in_dashboard();
 	break;
 
-case('delete_widget_list'):
-	delete_widget();
+case('delete_widget_in_dashboard'):
+	$data=prepare_values($_REQUEST,array(
+			'dashboard_widget_key'=>array('type'=>'dashboard_widget_key'),
+
+		));
+	delete_widget_in_dashboard($data);
 	break;
 
 case('add_widget_to_dashboard'):
@@ -60,7 +64,7 @@ case('add_widget_list'):
 
 default:
 
-	$response=array('state'=>404,'msg'=>_('Operation not found'));
+	$response=array('state'=>404,'msg'=>"Operation not found $tipo");
 	echo json_encode($response);
 
 }
@@ -92,12 +96,16 @@ function add_widget_to_dashboard($data) {
 
 	}
 
+	$sql=sprintf("select count(*) as num from  `Dashboard Widget Bridge` where `Dashboard Key`=%d", $dashboard_key);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$number_widgets_in_dashboard=$row['num'];
+	}
 
-
-
-	$sql=sprintf("insert into `Dashboard Widget Bridge` ( `Dashboard Key`,`Widget Key`) values (%d, %d)",
+	$sql=sprintf("insert into `Dashboard Widget Bridge` ( `Dashboard Key`,`Widget Key`,`Dashboard Widget Order`) values (%d, %d,%d)",
 		$dashboard_key,
-		$widget_key
+		$widget_key,
+		($number_widgets_in_dashboard+1)
 	);
 
 	// print $sql;
@@ -114,85 +122,59 @@ function add_widget_to_dashboard($data) {
 	}
 }
 
-function delete_widget() {
-	$key=$_REQUEST['key'];
+function delete_widget_in_dashboard($data) {
+	$dashboard_widget_key=$data['dashboard_widget_key'];
 
-	$sql=sprintf("delete from `Dashboard Widget User Bridge` where `Dashboard Key`=%d", $key);
-	if (mysql_query($sql)) {
-		$response=array('state'=>200, 'action'=>_('deleted'));
-		echo json_encode($response);
-		exit;
-	}
-	else {
-		$response=array('state'=>400, 'msg'=>_('Cannot Delete'));
-		echo json_encode($response);
-		exit;
-	}
-
-
-
-
-}
-
-function view_widgets() {
-	$dashboard_id=$_REQUEST['dashboard_id'];
-	$user_id=$_REQUEST['user_id'];
-	$sql=sprintf("select * from `Dashboard Widget Dimension`");
+	$sql=sprintf("select `Dashboard Key` from  `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $dashboard_widget_key);
 	$result=mysql_query($sql);
-
-	$total=mysql_num_rows($result);
-	$tableid=0;
-
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$adata[]=array(
-			'id'=>$row['Dashboard Widget Key'],
-			'name'=>$row['Widget Name'],
-			'widget_block'=>$row['Widget Block'],
-			'widget_dimesnion'=>$row['Widget Dimension'],
-			'url'=>$row['Widget URL'],
-			'description'=>$row['Widget Description'],
-			'add'=>'<img src="art/icons/add.png"/>',
-			'user_id'=>$user_id,
-			'dashboard_id'=>$dashboard_id
-
-		);
-
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$dashboard_key=$row['Dashboard Key'];
+	}else{
+	$response=array('state'=>200, 'action'=>'not_found');
+		echo json_encode($response);
+		exit;
 	}
-	mysql_free_result($result);
-	$response=array('resultset'=>
-		array(
-			'state'=>200,
-			'data'=>$adata,
-			'rtext'=>'',
-			'rtext_rpp'=>'',
-			'sort_key'=>'',
-			'sort_dir'=>'',
-			'tableid'=>$tableid,
-			'filter_msg'=>'',
-			'total_records'=>$total,
-			'records_offset'=>'',
-			'records_perpage'=>'10',
-			'records_order'=>'',
-			'records_order_dir'=>'',
-			'filtered'=>''
-		)
-	);
-	echo json_encode($response);
+
+	$sql=sprintf("delete from `Dashboard Widget Bridge` where `Dashboard Widget Key`=%d", $dashboard_widget_key);
+	if (mysql_query($sql)) {
+	update_widgets_in_dashboard_order($dashboard_key);
+		$response=array('state'=>200, 'action'=>'deleted');
+		echo json_encode($response);
+		exit;
+	}
+	else {
+		$response=array('state'=>400, 'msg'=>_('Can not Delete'));
+		echo json_encode($response);
+		exit;
+	}
+
+
 
 
 }
 
-function list_widgets() {
 
 
+function list_widgets_in_dashboard() {
 
-	$conf=$_SESSION['state']['dashboards']['active_widgets'];
-
-	if (isset( $_REQUEST['user_id']))
-		$user_id=$_REQUEST['user_id'];
-	else {
-		return;
+	if (!isset($_REQUEST['parent']) or !isset($_REQUEST['parent_key'])) {
+		$response=array('state'=>400, 'msg'=>'no parent info');
+		echo json_encode($response);
+		exit;
 	}
+
+	if ($_REQUEST['parent']=='dashboards') {
+		$parent=$_REQUEST['parent'];
+		$parent_key=$_REQUEST['parent_key'];
+
+	}elseif ($_REQUEST['parent']=='dashboard') {
+		$parent=$_REQUEST['parent'];
+		$parent_key=$_REQUEST['parent_key'];
+	}
+
+	$conf=$_SESSION['state'][$parent]['active_widgets'];
+
+
 
 
 
@@ -234,15 +216,22 @@ function list_widgets() {
 		$tableid=0;
 
 
-	$_SESSION['state']['dashboards']['active_widgets']['order']=$order;
-	$_SESSION['state']['dashboards']['active_widgets']['order_dir']=$order_dir;
-	$_SESSION['state']['dashboards']['active_widgets']['nr']=$number_results;
-	$_SESSION['state']['dashboards']['active_widgets']['sf']=$start_from;
-	$_SESSION['state']['dashboards']['active_widgets']['f_field']=$f_field;
-	$_SESSION['state']['dashboards']['active_widgets']['f_value']=$f_value;
+	$_SESSION['state'][$parent]['active_widgets']['order']=$order;
+	$_SESSION['state'][$parent]['active_widgets']['order_dir']=$order_dir;
+	$_SESSION['state'][$parent]['active_widgets']['nr']=$number_results;
+	$_SESSION['state'][$parent]['active_widgets']['sf']=$start_from;
+	$_SESSION['state'][$parent]['active_widgets']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['active_widgets']['f_value']=$f_value;
 
 
-	$where=sprintf("where `User Key`=%d",$user_id);
+	if ($parent=='dashboards') {
+		$where=sprintf("where `User Key`=%d",$parent_key);
+	}elseif ($parent=='dashboard') {
+		$where=sprintf("where B.`Dashboard Key`=%d",$parent_key);
+	}else {
+		$where=' where false ';
+	}
+
 
 	$wheref='';
 	if ($f_field=='name' and $f_value!='')
@@ -251,7 +240,7 @@ function list_widgets() {
 		$wheref.=" and  `Widget Description` like '%".addslashes($f_value)."%'";
 
 	$sql="select count(*) as total from `Dashboard Widget Bridge`B left join `Dashboard Dimension` D on (B.`Dashboard Key`=D.`Dashboard Key`) left join `Widget Dimension` W on (B.`Widget Key`=W.`Widget Key`)   $where $wheref";
-	// print $sql;
+	//print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -308,35 +297,60 @@ function list_widgets() {
 
 
 
+	if($order=='widget_order'){
+		$order='`Dashboard Widget Key`';
+	}elseif($order=='name'){
+		$order='`Widget Name`';
+	}else{
+	$order='`Dashboard Widget Key`';
+	}
 
-
-
-
-
+$number_widgets_in_dashboard=0;
+if ($parent=='dashboard') {
+$sql=sprintf("select count(*) as num from  `Dashboard Widget Bridge` where `Dashboard Key`=%d", $parent_key);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$number_widgets_in_dashboard=$row['num'];
+	}
+}
 
 	$adata=array();
 
 
-	$sql=sprintf("select * from  `Dashboard Widget Bridge`B left join `Dashboard Dimension` D on (B.`Dashboard Key`=D.`Dashboard Key`) left join `Widget Dimension` W on (B.`Widget Key`=W.`Widget Key`)   $where $wheref  ");
+	$sql=sprintf("select * from  `Dashboard Widget Bridge`B left join `Dashboard Dimension` D on (B.`Dashboard Key`=D.`Dashboard Key`) left join `Widget Dimension` W on (B.`Widget Key`=W.`Widget Key`)   $where $wheref order by  $order $order_direction ");
 	// print $sql;
 	$result=mysql_query($sql);
 
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-
+		switch ($row['Widget Block']) {
+		case('block_1'):
+			$widget_block='1 '.ngettext('Column','Columns',1);
+			break;
+		case('block_2'):
+			$widget_block='2 '.ngettext('Column','Columns',2);
+			break;
+		case('block_3'):
+			$widget_block='2 '.ngettext('Column','Columns',3);
+			break;
+		default:
+			$widget_block=$row['Widget Block'];
+		}
 
 		$adata[]=array(
-			'id'=>$row['Dashboard Widget Key'],
+			'dashboard_widget_key'=>$row['Dashboard Widget Key'],
 			'name'=>$row['Widget Name'],
-			//   'widget_block'=>$row['Widget Block'],
-			//   'widget_dimesnion'=>$row['Widget Dimension'],
+			'widget_block'=>$widget_block,
+			'widget_height'=>$row['Dashboard Widget Height'],
 			'url'=>$row['Widget URL'],
 			'description'=>$row['Widget Description'],
-			'delete'=>'<img src="art/icons/cross.png"/>',
-			//   'user_key'=>$_row['User key'],
+			'delete'=>'<img style="cursor:pointer" src="art/icons/cross.png"/>',
+			'widget_order'=>$row['Dashboard Widget Order'],
 			'dashboard_key'=>$row['Dashboard Key'],
 			'widget_key'=>$row['Widget Key'],
-
+			'widget_order_up'=>($row['Dashboard Widget Order']!=1?'<span style="cursor:pointer" onClick="widget_order_up('.$row['Dashboard Widget Key'].')" >&#8593;':''),
+			'widget_order_down'=>($row['Dashboard Widget Order']<$number_widgets_in_dashboard?'<span style="cursor:pointer" onClick="widget_order_down('.$row['Dashboard Widget Key'].')" >&#8595;':''),
+			
 		);
 
 	}
@@ -446,4 +460,23 @@ function new_dashboard($data) {
 	$response=array('state'=>200);
 	echo json_encode($response);
 }
+
+function update_widgets_in_dashboard_order($dashboard_key) {
+
+	$dashboard_widget_order_array=array();
+	$counter=1;
+	$sql=sprintf("select `Dashboard Widget Key` from  `Dashboard Widget Bridge` where `Dashboard Key`=%d order by `Dashboard Widget Order`", $dashboard_key);
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$dashboard_widget_order_array[$row['Dashboard Widget Key']]=$counter;
+		$counter++;
+	}
+
+	foreach ($dashboard_widget_order_array as $dashboard_widget_key=>$dashboard_widget_order) {
+		$sql=sprintf("update `Dashboard Widget Bridge` SET `Dashboard Widget Order` = %d  where `Dashboard Widget Key`=%d",$dashboard_widget_order, $dashboard_widget_key);
+		mysql_query($sql);
+	}
+
+}
+
 ?>
