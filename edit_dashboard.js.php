@@ -196,12 +196,12 @@ this.table0.subscribe("rowClickEvent", select_widget_from_list);
             var DDM = YAHOO.util.DragDropMgr;
 		OrdersColumnDefs = [
 				   //    {key:"id", label:"<?php echo _('Widget ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				      {key:"widget_order", label:"<?php echo _('Position')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      {key:"widget_order", label:"<?php echo _('Position')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				     				      {key:"widget_order_up", label:"", width:5,sortable:false,className:"aleft"},
 				     				      {key:"widget_order_down", label:"", width:20,sortable:false,className:"aleft"},
 
 				     {key:"widget_block",label:"<?php echo _('Columns')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				      {key:"widget_height", label:"<?php echo _('Height')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				      {key:"widget_height", label:"<?php echo _('Height')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'widget'},
 
 				     {key:"name", label:"<?php echo _('Widget Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"description", label:"<?php echo _('Widget Description')?>", width:370,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
@@ -213,7 +213,7 @@ this.table0.subscribe("rowClickEvent", select_widget_from_list);
 					 ];
 
 	 request="ar_edit_dashboard.php?tipo=list_widgets_in_dashboard&parent=dashboard&parent_key="+Dom.get('dashboard_key').value+'tableid='+tableid;
-	
+	//alert(request)
 	 this.dataSource1 = new YAHOO.util.DataSource(request);
 	  this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -413,14 +413,14 @@ function add_widget(){
 
 function widget_order_down(dashboard_widget_key){
    var request='ar_edit_dashboard.php?tipo=widget_order_down&dashboard_widget_key='+dashboard_widget_key;
-       alert(request);
+      // alert(request);
       YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
-	      success:function(o) {user_key
-		  	  alert(o.responseText)
+	      success:function(o) {
+		  	 // alert(o.responseText)
 		      var r =  YAHOO.lang.JSON.parse(o.responseText);
 		  if (r.state == 200) {
-			//window.location.reload();
+			window.location.reload();
 		  }else{
 		      alert(r.msg);
 		  }
@@ -428,7 +428,20 @@ function widget_order_down(dashboard_widget_key){
 	  });   
 }
 function widget_order_up(dashboard_widget_key){
-
+   var request='ar_edit_dashboard.php?tipo=widget_order_up&dashboard_widget_key='+dashboard_widget_key;
+      // alert(request);
+      YAHOO.util.Connect.asyncRequest('POST',request ,{
+	      
+	      success:function(o) {
+		  	//  alert(o.responseText)
+		      var r =  YAHOO.lang.JSON.parse(o.responseText);
+		  if (r.state == 200) {
+			window.location.reload();
+		  }else{
+		      alert(r.msg);
+		  }
+	      }
+	  });   
 }
 
 

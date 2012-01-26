@@ -39,8 +39,9 @@
 				
 				
 			</div>
+			<span style="cursor:pointer" onclick="window.location='edit_dashboard.php?id={$key}'" >Number of Widgets: {$dashboard.number_of_widgets}</span>
 			</div>
-			{/foreach} 
+			{/foreach}
 			<div style="clear:both;"></div>
 		</div>
 		
