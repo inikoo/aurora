@@ -64,8 +64,9 @@ case('edit_product_description'):
   edit_supplier_product($data);
   break;  
 case('edit_supplier'):
+case('edit_supplier_quick'):
   edit_supplier();
-  break;
+	break;
 case('edit_supplier_product'):
 
 			     $data=prepare_values($_REQUEST,array(
