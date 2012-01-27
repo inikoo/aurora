@@ -1078,10 +1078,180 @@ function update_staff_type(){
 
 }
 
+
+    function add_image($image_key) {
+
+	$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Key`=%d and `Subject Type`='Customer Profile'", $this->id);
+	$result=mysql_query($sql);
+	while($row=mysql_fetch_assoc($result)){
+		$image_id=$row['Image Key'];
+		if($image_id==$image_key){	
+			continue;
+		}	
+		else
+			$this->remove_image($image_id);
+	}
+
+
+
+
+///////////////////
+        $sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Customer Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            $this->nochange=true;
+            $this->msg=_('Image already uploaded');
+            return;
+        }
+
+
+
+        $principal='Yes';
+	
+
+        $sql=sprintf("insert into `Image Bridge` values ('Customer Profile',%d,%d,%s,'')"
+                     ,$this->id
+                     ,$image_key
+                     ,prepare_mysql($principal)
+
+                    );
+
+        mysql_query($sql);
+
+
+        if ($principal=='Yes') {
+            $this->update_main_image($image_key);
+        }
+
+
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Customer Profile' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+                     ,$this->id
+                     ,$image_key
+                    );
+
+        $res=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            $this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+            // $this->images_slideshow[]=$this->new_value;
+        }
+
+        $this->updated=true;
+        $this->msg=_("image added");
+    }
+
+    function update_main_image($image_key) {
+
+        $sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Customer Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if (!mysql_num_rows($res)) {
+            $this->error=true;
+            $this->msg='image not associated';
+        }
+
+
+        $sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Customer Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        mysql_query($sql);
+
+
+        $main_image_src='image.php?id='.$image_key.'&size=small';
+        $main_image_key=$image_key;
+
+        $this->data['User Main Image']=$main_image_src;
+        $this->data['User Main Image Key']=$main_image_key;
+        $sql=sprintf("update `User Dimension` set `User Main Image`=%s ,`User Main Image Key`=%d where `User Key`=%d",
+                     prepare_mysql($main_image_src),
+                     $main_image_key,
+                     $this->id
+                    );
+
+        mysql_query($sql);
+
+        $this->updated=true;
+
+    }
+
+    function get_image() {
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Customer Profile' and   `Subject Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        $image=array();
+        while ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            // print_r($row);
+            $image=array(
+                                    'name'=>$row['Image Filename'],
+                                    'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+                                    'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+                                    'filename'=>$row['Image Filename'],
+                                    'ratio'=>$ratio,'caption'=>$row['Image Caption'],
+                                    'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+        }
+        // print_r($images_slideshow);
+
+        return $image;
+    }
+
+    function get_image_src(){
+        $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Customer Profile' and   `Subject Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        $image=false;
+        while ($row=mysql_fetch_array($res)) {
+            if ($row['Image Height']!=0)
+                $ratio=$row['Image Width']/$row['Image Height'];
+            else
+                $ratio=1;
+            // print_r($row);
+            $image='image.php?id='.$row['Image Key'].'&size=small';
+	}
+
+        return $image;
+    }
+
+    function get_image_key(){
+        $data=$this->get_image();
+
+	$new_data=end($data);
+//print_r($new_data);
+	return $new_data;
+    }
+
+    function remove_image($image_key) {
+
+        $sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Customer Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+
+            $sql=sprintf("delete from `Image Bridge` where `Subject Type`='Customer Profile' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+            mysql_query($sql);
+            $this->updated=true;
+
+
+                $sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Customer Profile' and `Subject Key`=%d  ",$this->id);
+                $res2=mysql_query($sql);
+                if ($row2=mysql_fetch_assoc($res2)) {
+                    $this->update_main_image($row2['Image Key']) ;
+                }
+
+
+
+        } else {
+            $this->error=true;
+            $this->msg='image not associated';
+
+        }
+
+
+
+
+
+    }
 }
-
-
-
-
 
 ?>

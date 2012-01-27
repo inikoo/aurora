@@ -153,7 +153,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 
-$js_files[]=sprintf('supplier.js.php');
+$js_files[]=sprintf('supplier.js.php?id=%d', $supplier->id);
 $smarty->assign('display',$_SESSION['state']['supplier']['display']);
 
 $smarty->assign('supplier_products_view',$_SESSION['state']['supplier']['supplier_products']['view']);
@@ -268,6 +268,17 @@ $smarty->assign('export_csv_table_cols',7);
 $smarty->assign('csv_export_options',$csv_export_options);
 
 $smarty->assign('default_country_2alpha','GB');
+
+$tipo_filter100='code';
+$filter_menu100=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
+                	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Country Name'),'label'=>_('Name')),
+                 'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
+              );
+$smarty->assign('filter_name100',$filter_menu100[$tipo_filter100]['label']);
+$smarty->assign('filter_menu100',$filter_menu100);
+$smarty->assign('filter100',$tipo_filter100);
+$smarty->assign('filter_value100','');
 
 $smarty->display('supplier.tpl');
 
