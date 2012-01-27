@@ -136,7 +136,7 @@ function add_customer($data) {
                 }
 
                 if ($data_value) {
-                    $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d)",
+                    $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d, NULL)",
                                  $data_value,
 
                                  $customer->id

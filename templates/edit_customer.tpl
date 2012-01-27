@@ -228,12 +228,12 @@
 				{foreach from=$categories item=cat key=cat_key name=foo } 
 				<tr>
 					<td class="label">{t}{$cat->get('Category Name')}{/t}:</td>
-					<td> 
+					<td> {$categories_value[$cat_key]}
 					<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="save_category(this)">
 						{foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
 						<option selected="{if $categories_value[$cat_key]=='' }selected{/if}" value="">{t}Unknown{/t}</option>
 						{/if} 
-						<option selected="{if $categories_value[$cat_key]==$sub_cat_key }selected{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+						<option selected="{if $categories_value[$cat_key]==$sub_cat_key }selected{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}{$sub_cat_key}</option>
 						{/foreach} 
 					</select>
 					</td>

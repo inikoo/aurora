@@ -1552,7 +1552,7 @@ class Invoice extends DB_Table {
         $category_key=$newfunc($this->data);
 
         if ($category_key) {
-            $sql=sprintf("insert into `Category Bridge` values (%d,'Invoice',%d)",$category_key,$this->id);
+            $sql=sprintf("insert into `Category Bridge` values (%d,'Invoice',%d, NULL)",$category_key,$this->id);
             mysql_query($sql);
         }
 
