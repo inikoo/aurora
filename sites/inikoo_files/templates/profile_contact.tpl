@@ -20,10 +20,9 @@
 </div>
 
 
-
 <div id="contact_block" {if $view!='contact'}style="display:none"{/if}>
 <div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
-<div style="float:left;;xborder:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px"> <img src="art/siluet.jpg" style="height:100px"> </div>
+<div style="float:left;;xborder:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px" id="show_upload_image"> <img id="avatar" src="{if $user->get_image_src()}{$user->get_image_src()}{else}art/siluet.jpg{/if}" style="height:100px"> </div>
 
 {include file='customer_badges.tpl' customer=$page->customer}
 
@@ -193,7 +192,6 @@
 <table style="margin:10px">
  
  {foreach from=$categories item=cat key=cat_key name=foo  }
-{$other_field=''}
  <tr>
  
  <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
@@ -203,18 +201,18 @@
         {if $smarty.foreach.foo2.first}
 
         {/if}
-	{if $sub_cat->get('Category Name')=='Other'}
-{assign var="other_field" value="<tr style='display:none' id='`$sub_cat_key`_tr'><td></td><td colspan='2'><textarea rows='2' cols='20' id='type_of_`$sub_cat_key`'> </textarea></tr>"}
 
-		
-	{/if}
         <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
     {/foreach}
   </select>
   
  </td>   
 </tr>
-{$other_field}
+<tbody id="other_tbody_{$cat_key}" style="display:none">
+<tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}"></textarea></td></tr>
+<tr><td></td><td><button onClick="save_other_{$cat_key}(this)">Save<button></td></tr>
+</tbody>
+
 {/foreach}
 
 
@@ -378,3 +376,29 @@ bla bla bla
 
 </div>
 {/section}
+
+
+
+
+<div id="dialog_image_upload" style="padding:10px">
+<table>
+<tr><td>{t}Upload Image{/t}</td></tr>
+<tr><td>
+<div class="image"  image_id="{$user->get_image_key()}" >
+<img {if $user->get_image_src()}style="display:''"{else}style="display:none"{/if} class="delete" src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}" onClick="delete_image(this)">
+</div>
+</td></tr>
+<tr>
+<td>
+ <form action="upload.php" enctype="multipart/form-data" method="post" id="testForm">
+    <input id="upload_image_input" style="border:1px solid #ddd;" type="file" name="testFile"/>
+ </form>
+  </td>
+  <td>
+  <div class="buttons left">
+    <button  id="uploadButton" class="positive">{t}Upload{/t}</button>
+    </div>
+ </td>
+ </tr>
+ </table>
+</div>

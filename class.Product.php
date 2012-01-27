@@ -1097,7 +1097,7 @@ class product extends DB_Table {
             $res_cat=mysql_query($sql);
             //print "$sql\n";
             while ($row=mysql_fetch_array($res_cat)) {
-                $sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d) ",$row['Category Key'],$this->pid  );
+                $sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d, NULL) ",$row['Category Key'],$this->pid  );
                 mysql_query($sql);
                 if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
             }
@@ -4242,7 +4242,7 @@ class product extends DB_Table {
 
 
             foreach($category_location as $category_location_key) {
-                $sql=sprintf("insert into  `Category Bridge`   values (%d,'Product',%d) ",$category_location_key,$this->pid);
+                $sql=sprintf("insert into  `Category Bridge`   values (%d,'Product',%d, NULL) ",$category_location_key,$this->pid);
                 //print "$sql\n";
                 if (mysql_query($sql)) {
                     if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
