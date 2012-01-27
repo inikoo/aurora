@@ -5405,8 +5405,42 @@ ALTER TABLE `Order Dimension` ADD `Order Current XHTML Dispatch State` TEXT NOT 
 ALTER TABLE `Delivery Note Dimension` CHANGE `Delivery Note State` `Delivery Note State` ENUM( 'Picker & Packer Assigned', 'Picking & Packing', 'Packer Assigned', 'Ready to be Picked', 'Picker Assigned', 'Picking', 'Picked', 'Packing', 'Packed', 'Approved', 'Dispatched', 'Cancelled', 'Cancelled to Restock', 'Packed Done' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Ready to be Picked';
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML State` TEXT NOT NULL AFTER `Delivery Note State`;
 
-ALTER TABLE `Order Transaction Deal Bridge` ADD `Deal Metadata` VARCHAR( 256 ) NOT NULL AFTER `Deal Metadata Key` ;
 ALTER TABLE `User Dimension` ADD `User Dashboard Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `User Created` ;
 
-ALTER TABLE `Order Transaction Deal Bridge` DROP `Deal Metadata Key`;
 ALTER TABLE `Order Transaction Deal Bridge` ADD `Fraction Discount` FLOAT NOT NULL DEFAULT '0' AFTER `Amount Discount` ;
+
+ALTER TABLE `Store Dimension` ADD `Store Total Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store 3 Year Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store 1 Year Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store Year To Day Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store Month To Day Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store Week To Day Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store 6 Month Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store 1 Quarter Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store 1 Month Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store 10 Day Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store 1 Week Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store Today Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store Yesterday Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store Last Week Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Store Dimension` ADD `Store Last Month Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+
+
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Total Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse 3 Year Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse 1 Year Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Year To Day Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Month To Day Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Week To Day Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse 6 Month Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse 1 Quarter Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse 1 Month Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse 10 Day Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse 1 Week Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Today Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Yesterday Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Last Week Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Last Month Acc Average Dispatch Time` FLOAT NULL DEFAULT NULL;
+
+ALTER TABLE `Order Dimension` ADD `Order Dispatched Date` DATETIME NULL DEFAULT NULL AFTER `Order Date` ;
+ALTER TABLE `Order Dimension` ADD `Order Post Transactions Dispatched Date` DATETIME NULL DEFAULT NULL AFTER `Order Dispatched Date`;

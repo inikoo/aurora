@@ -24,15 +24,13 @@
 
 <div  id="title" class="title" style="height:22px">
 <img id="configuration" style="cursor:pointer;position:relative;top:3px;float:right" src="art/icons/cog.png"/>
-<h1 style="padding:3px 0px ;font-size:90%">{t}Pending Orders{/t}: <span  id="stores_title">{$store_title}</span></h1>
+<h1 style="padding:3px 0px ;font-size:90%">{t}Average Dispatch Time{/t}: <span  id="stores_title">{$scope->code}</span></h1>
 
 </div>
-<div style="margin-top:5px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;width:100px">
-	{$number_pending_orders}
+<div style="margin-top:5px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;width:210px">
+	{$scope->get_formated_dispatch_time('1 Month')} {t}hrs{/t}
 </div>
-<div style="margin-top:5px;margin-left:10px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;width:100px;display:none">
-	
-</div>
+
 <div style="clear:both"></div>
 </body>
 </html>

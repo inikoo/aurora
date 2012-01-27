@@ -1241,8 +1241,8 @@ class Order extends DB_Table {
 	function get_delivery_notes_objects() {
 		$delivery_notes=array();
 		$delivery_notes_ids=$this->get_delivery_notes_ids();
-		foreach ($delivery_notes_ids as $order_id) {
-			$delivery_notes[$order_id]=new DeliveryNote($order_id);
+		foreach ($delivery_notes_ids as $delivery_notes_id) {
+			$delivery_notes[$delivery_notes_id]=new DeliveryNote($delivery_notes_id);
 		}
 		return $delivery_notes;
 	}
@@ -2166,6 +2166,7 @@ class Order extends DB_Table {
 		$delivery_notes=array();
 		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
 
+
 			//print_r($row);
 			if ($row['Delivery Note Key']) {
 				if ($row['Delivery Note State']=='Ready to be Picked') {
@@ -2226,6 +2227,47 @@ class Order extends DB_Table {
 			$this->update_customer_history();
 			$this->update_full_search();
 		}
+
+	}
+
+
+	function set_order_as_dispatched($date) {
+
+		// TODO dont set as dispatched until all the DN are dispatched (no inclide post transactions)
+
+		$this->data['Order Current Dispatch State']='Dispatched';
+		$this->data['Order Current Dispatch State']=_('Dispatched');
+		$this->data['Order Current XHTML State']=$this->calculate_state();
+
+		$sql=sprintf("update `Order Dimension` set `Order Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+			,prepare_mysql($date)
+			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+			,prepare_mysql($this->data['Order Current Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML State'])
+			,$this->id
+		);
+		mysql_query($sql);
+
+	}
+
+
+
+	function set_order_post_actions_as_dispatched($date) {
+
+		// TODO dont set as dispatched until all the DN are dispatched (no inclide post transactions)
+
+		$this->data['Order Current Dispatch State']='Dispatched';
+		$this->data['Order Current Dispatch State']=_('Dispatched');
+		$this->data['Order Current XHTML State']=$this->calculate_state();
+
+		$sql=sprintf("update `Order Dimension` set `Order Post Transactions Dispatched Date`=%s , `Order Current XHTML Dispatch State`=%s ,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+			,prepare_mysql($date)
+			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
+			,prepare_mysql($this->data['Order Current Dispatch State'])
+			,prepare_mysql($this->data['Order Current XHTML State'])
+			,$this->id
+		);
+		mysql_query($sql);
 
 	}
 
@@ -3012,7 +3054,7 @@ class Order extends DB_Table {
 					$this->id,
 					$row['Product Key'],
 					$deal_key,
-					
+
 					prepare_mysql($deal_info,false),
 					$amount,
 					($amount/$row['Order Transaction Gross Amount'])
@@ -3309,7 +3351,7 @@ class Order extends DB_Table {
 
 					,$row['Product Key']
 					,$allowance_data['Deal Metadata Key']
-					
+
 					,prepare_mysql($allowance_data['Deal Info'])
 					,$row['Order Transaction Gross Amount']*$allowance_data['Percentage Off']
 					,prepare_mysql($allowance_data['Percentage Off'])
@@ -3887,6 +3929,9 @@ class Order extends DB_Table {
 		return $notes;
 
 	}
+
+
+
 
 }
 

@@ -27,7 +27,7 @@ date_default_timezone_set('UTC');
 
 $start_date='2002-12-30';
 
-$end_date='2012-01-04';
+$end_date='2020-01-04';
 
 $i=0;
 $date=strtotime($start_date);
@@ -44,7 +44,7 @@ while($date<strtotime($end_date)){
     $__y=date('Y',strtotime(date('Y-m-d',$date).' +0 days'));
 
 
-  $sql=sprintf("insert into `Week Dimension` values ('%s%s','%s','%s','%s%s','%s','%s','%s','%s','%s')"
+  $sql=sprintf("insert into kbase.`Week Dimension` values ('%s%s','%s','%s','%s%s','%s','%s','%s','%s','%s')"
 	       ,$__y
 	       ,date('W',$date)
 	       ,date('Y-m-d',$date)
@@ -58,41 +58,41 @@ while($date<strtotime($end_date)){
 	       ,date('W',$date)
 	       );
   mysql_query($sql);
-    print "$sql\n";
+   // print "$sql\n";
   if(date('W',$date)==53){
     $_year=date('Y',$date);
     if(date('d',$date>=25)){
 
-      $sql=sprintf("select  `Last Day` from `Week Dimension` where `Year Week`='%s02'",$_year);
+      $sql=sprintf("select  `Last Day` from kbase.`Week Dimension` where `Year Week`='%s02'",$_year);
       $res=mysql_query($sql);
       $__lastday='';
       while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$__lastday=$row['Last Day'];
       }
 
-      $sql=sprintf("update `Week Dimension` set `Normalized Last Day`='%s' where `Year Week`='%d%02d'",$__lastday,$_year,1);
+      $sql=sprintf("update kbase.`Week Dimension` set `Normalized Last Day`='%s' where `Year Week`='%d%02d'",$__lastday,$_year,1);
       print "$sql\n";
       mysql_query($sql);
 
 
       for($i=2;$i<=53;$i++){
-	$sql=sprintf("update `Week Dimension` set `Week Normalized`='%02d' where `Year Week`='%d%02d'",$i-1,$_year,$i);
+	$sql=sprintf("update kbase.`Week Dimension` set `Week Normalized`='%02d' where `Year Week`='%d%02d'",$i-1,$_year,$i);
 		mysql_query($sql);
 		//	print "$sql\n";
-	$sql=sprintf("update `Week Dimension` set `Year Week Normalized`=%s%02d where `Year Week`='%d%02d'",$_year,$i-1,$_year,$i);
+	$sql=sprintf("update kbase.`Week Dimension` set `Year Week Normalized`=%s%02d where `Year Week`='%d%02d'",$_year,$i-1,$_year,$i);
 	//print "$sql\n";
 
 
 	mysql_query($sql);
       }
     }else{
-      $sql=sprintf("update `Week Dimension` set `Normalized Last Day`='%s' where `Year Week`='%d%02d'",date('Y-m-d',strtotime(date('Y-m-d',$date).' +6 days')),$_year,52);
+      $sql=sprintf("update kbase.`Week Dimension` set `Normalized Last Day`='%s' where `Year Week`='%d%02d'",date('Y-m-d',strtotime(date('Y-m-d',$date).' +6 days')),$_year,52);
       mysql_query($sql);
 
-      $sql=sprintf("update `Week Dimension` set `Week Normalized`=%d where `Year Week`='%d%02d'",52,$_year,53);
+      $sql=sprintf("update kbase.`Week Dimension` set `Week Normalized`=%d where `Year Week`='%d%02d'",52,$_year,53);
       mysql_query($sql);
       print "$sql\n";
-      $sql=sprintf("update `Week Dimension` set `Year Week Normalized`=%s%02d where `Year Week`='%d%02d'",$_year,52,$_year,53);
+      $sql=sprintf("update kbase.`Week Dimension` set `Year Week Normalized`=%s%02d where `Year Week`='%d%02d'",$_year,52,$_year,53);
       //print "$sql\n";
       mysql_query($sql);
     }

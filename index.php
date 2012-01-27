@@ -162,7 +162,8 @@ $result=mysql_query($sql);
 $row=mysql_fetch_assoc($result);
 $last_dashboard_id=$row['Dashboard Order'];
 */
-
+$next_id=0;
+$prev_id=0;
 $dashboard_data=array();
 $dashboard_data2=array();
 $sql=sprintf("select * from `Dashboard Dimension` where `User key`=%d order by `Dashboard Order`", $user->id);
@@ -172,7 +173,7 @@ while($row=mysql_fetch_assoc($result)){
 $dashboard_data2[$row['Dashboard Key']]=$row['Dashboard Order'];
 }
 
-
+if(count($dashboard_data)>1){
 
 
 if($dashboard_data2[$dashboard_key] == $number_of_dashboards ){
@@ -191,7 +192,7 @@ $prev_id=$dashboard_data[$dashboard_data2[$dashboard_key]-1];
 
 }
 
-
+}
 
 $prev=array('id'=> $prev_id, 'name'=>'');
 $next=array('id'=> $next_id, 'name'=>'');

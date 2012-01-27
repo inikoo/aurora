@@ -34,11 +34,14 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
  $store=new Store($row['Store Key']);
-  $store->update_customers_data();
-  $store->update_orders();
-// $store->update_store_sales();
- //     $store->update_sales_default_currency();
-  $store->load('products_info');
+
+$store->update_up_today_dispatch_times();
+$store->update_last_period_dispatch_times();
+$store->update_interval_dispatch_times();
+
+  //$store->update_customers_data();
+  //$store->update_orders();
+  //$store->load('products_info');
   print $store->id."\n";
  }
 mysql_free_result($result);
