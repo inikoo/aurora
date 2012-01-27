@@ -1324,7 +1324,7 @@ $this->new_value=$deleted_page->id;
                     $order_by='`Product RRP`';
                     break;
                 case 'Sales':
-                    $order_by='`Product 1 Year Acc Quantity Ordered`';
+                    $order_by='`Product 1 Year Acc Quantity Ordered` desc';
                     break;
                 case 'Date':
                     $order_by='`Product Valid From`';

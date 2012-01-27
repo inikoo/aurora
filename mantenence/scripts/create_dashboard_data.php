@@ -63,6 +63,10 @@ if($row['User Type']=='Administrator' or $row['User Type']=='Staff'){
 	mysql_query($sql);       
 	$sql=sprintf("insert into `Dashboard Widget Bridge` (`Dashboard Key`, `Widget Key`, `Dashboard Widget Order`) values ($dashboard1_id, 4, 2)");
 	mysql_query($sql);
+	$sql=sprintf("insert into `Dashboard Widget Bridge` (`Dashboard Key`, `Widget Key`, `Dashboard Widget Order`) values ($dashboard1_id, 5, 3)");
+	mysql_query($sql);
+	
+	
 	$sql=sprintf("insert into `Dashboard Widget Bridge` (`Dashboard Key`, `Widget Key`, `Dashboard Widget Order`, `Dashboard Widget Height`) values ($dashboard2_id, 2, 1, 405)");
 	mysql_query($sql);
 	$sql=sprintf("insert into `Dashboard Widget Bridge` (`Dashboard Key`, `Widget Key`, `Dashboard Widget Order`, `Dashboard Widget Height`) values ($dashboard2_id, 3, 2, 560)");

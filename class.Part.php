@@ -94,7 +94,7 @@ class part extends DB_Table {
 		$values=preg_replace('/,$/',')',$values);
 
 		$sql=sprintf("insert into `Part Dimension` %s %s",$keys,$values);
-//print $sql;
+		//print $sql;
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->sku =$this->id ;
@@ -802,16 +802,7 @@ class part extends DB_Table {
 
 	}
 
-	function get_current_product_ids() {
-		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ",$this->data['Part SKU']);
-		// print $sql;
-		$result=mysql_query($sql);
-		$products=array();
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$products[$row['Product ID']]=array('Product ID'=>$row['Product ID']);
-		}
-		return $products;
-	}
+
 
 	function get_all_product_ids() {
 		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d  group by `Product ID`",$this->data['Part SKU']);
@@ -978,6 +969,28 @@ class part extends DB_Table {
 		return $suppliers;
 	}
 
+
+	function get_all_supplier_products_pids() {
+
+
+		$supplier_products=array();
+		$sql=sprintf("
+
+                     select  SPPD.`Supplier Product Key` 
+                     from `Supplier Product Part List` SPPL
+                     left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+                     where `Part SKU`=%d ;
+                     ",$this->data['Part SKU']);
+		// print $sql;
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$supplier_products[$row['Supplier Product Key']]=$row['Supplier Product Key'];
+
+
+		}
+		return $supplier_products;
+	}
 	function get_supplier_products($date=false) {
 		//exit("xxxx");
 		if ($date) {
@@ -1015,7 +1028,8 @@ class part extends DB_Table {
 		$supplier_products=array();
 		$sql=sprintf("select `SPH Key`,  `Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SD.`Supplier Key`,SD.`Supplier Code`     from `Supplier Product Part List` SPPL    left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)    left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`)    left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPD.`Supplier Key`)     left join `Supplier Product History Dimension` H on ( H.`Supplier Product Key`=SPD.`Supplier Product Key` )    where `Part SKU`=%d
                      and ( (`SPH Valid From`<=%s and `SPH Valid To`>=%s and `SPH Type`='Historic') or (`SPH Valid From`<=%s and  `SPH Type`='Normal')     )
-                     and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')  ) ;"
+                     and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')
+                     ) ;"
 			,$this->data['Part SKU'],
 			prepare_mysql($date),
 			prepare_mysql($date),
@@ -1306,11 +1320,11 @@ class part extends DB_Table {
 	}
 
 	function update_up_today_sales() {
-	
+
 		$this->update_sales_from_invoices('Today');
 		$this->update_sales_from_invoices('Week To Day');
 		$this->update_sales_from_invoices('Month To Day');
-		$this->update_sales_from_invoices('Year To Day');	
+		$this->update_sales_from_invoices('Year To Day');
 		$this->update_sales_from_invoices('Total');
 
 	}
@@ -1319,7 +1333,7 @@ class part extends DB_Table {
 
 		$this->update_sales_from_invoices('Yesterday');
 		$this->update_sales_from_invoices('Last Week');
-		$this->update_sales_from_invoices('Last Month');	
+		$this->update_sales_from_invoices('Last Month');
 	}
 
 	function update_interval_sales() {
@@ -1622,7 +1636,7 @@ class part extends DB_Table {
 
 		mysql_query($sql);
 
-	//	 print "$sql\n";
+		//  print "$sql\n";
 
 
 
@@ -2195,7 +2209,7 @@ class part extends DB_Table {
 	function update_used_in() {
 		$used_in_products='';
 		$raw_used_in_products='';
-		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
+		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes'  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
 		$result=mysql_query($sql);
 		//  print "$sql\n";
 		$used_in=array();
@@ -2419,16 +2433,23 @@ class part extends DB_Table {
 		return $this->data['Part Unit Description'];
 	}
 
-	function get_product_ids() {
+	function get_product_ids($date=false) {
 
+		if (!$date) {
+			return $this->get_current_product_ids();
 
-		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Most Recent`='Yes' "
+		}
+
+		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and ( `Product Part Valid From`>=%s  and `Product Part Most Recent`='Yes' ) or (`Product Part Valid From`>=%s  and `Product Part Valid From`<=%s and `Product Part Most Recent`='No' ) "
 			,$this->sku
+			,prepare_mysql($date)
+			,prepare_mysql($date)
+			,prepare_mysql($date)
 		);
 
 		$res=mysql_query($sql);
 		$product_ids=array();
-		if ($row=mysql_fetch_array($res)) {
+		while ($row=mysql_fetch_array($res)) {
 			$product_ids[$row['Product ID']]= $row['Product ID'];
 		}
 
@@ -2439,10 +2460,21 @@ class part extends DB_Table {
 
 	}
 
+	function get_current_product_ids() {
+		$sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ",$this->data['Part SKU']);
+		// print $sql;
+		$result=mysql_query($sql);
+		$product_ids=array();
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$product_ids[$row['Product ID']]= $row['Product ID'];
+		}
+		return $product_ids;
+	}
+
+
+
+
 	function update_product_part_list_dates() {
-
-
-
 
 		$part_from=$this->data['Part Valid From'];
 		$part_to=$this->data['Part Valid To'];
@@ -2465,17 +2497,9 @@ class part extends DB_Table {
 					$to=$product_to;
 			}
 
-
-
 			$from=$part_from;
 			if (strtotime($from)>strtotime($product_from))
 				$from=$product_from;
-
-
-
-
-
-
 
 			$sql=sprintf("select  PPD.`Product Part Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU`=%d  and PPD.`Product ID`=%d "
 				,$this->sku,$pid);
@@ -2490,8 +2514,6 @@ class part extends DB_Table {
 				$sql=sprintf("update `Product Part Dimension` set `Product Part Valid From`=%s , `Product Part Valid To`=%s  where `Product Part Key`=%d"
 					,prepare_mysql($from)
 					,prepare_mysql($to)
-
-					//   ,prepare_mysql($status)
 					,$row2['Product Part Key']
 				);
 
@@ -2809,5 +2831,10 @@ class part extends DB_Table {
 
 
 	}
+
+function delete(){
+
+
+}
 
 }

@@ -67,37 +67,73 @@ case 'sales_overview':
 	}
 	$smarty->assign('table_title',$table_title);
 	break;
-case 'pending_orders':	
+case 'pending_orders':
 	$js_files[]='js/splinter_pending_orders.js';
 	$template='splinter_pending_orders.tpl';
 
-if(count($user->stores)==0){
-	return;
-}
+	if (count($user->stores)==0) {
+		return;
+	}
 
-$store_keys=join(',',$user->stores);
-$number_pending_orders=0;
-$elements_number=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
-$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Current Dispatch State` not in ('Dispatched','Unknown','Packing','Cancelled','Suspended','')  and `Order Store Key` in (%s)  group by `Order Current Dispatch State` ",$store_keys);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    $elements_number[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
-    $number_pending_orders+=$row['num'];
-}
+	$store_keys=join(',',$user->stores);
+	$store_title='';
 
-$sql=sprintf("select count(*) as num  from  `Order Dimension` where  `Order Store Key` in (%s)  and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$store_keys);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    $elements_number['InWarehouse']=$row['num'];
-}
+	$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension` where `Store Key` in (%s) ",$store_keys);
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_assoc($res)) {
+		$store_title.=sprintf(" ,<a target='_parent' style='color: inherit;' href='customers_pending_orders.php?store=%d'>%s</a>",$row['Store Key'],$row['Store Code']);
+	}
+	$store_title=preg_replace('/^\s*\,/','',$store_title);
+	$smarty->assign('store_title',$store_title);
+
+
+	$number_pending_orders=0;
+	$elements_number=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
+	$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Current Dispatch State` not in ('Dispatched','Unknown','Packing','Cancelled','Suspended','')  and `Order Store Key` in (%s)  group by `Order Current Dispatch State` ",
+		$store_keys);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
+		$number_pending_orders+=$row['num'];
+	}
+
+	$sql=sprintf("select count(*) as num  from  `Order Dimension` where  `Order Store Key` in (%s)  and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$store_keys);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number['InWarehouse']=$row['num'];
+	}
 
 	$smarty->assign('elements_number',$elements_number);
 
 	$smarty->assign('number_pending_orders',$number_pending_orders);
 
 	break;
-	
-	
+
+
+case 'dispatch_time':
+	$js_files[]='js/splinter_dispatch_time.js';
+	$template='splinter_dispatch_time.tpl';
+
+
+$parent='store';
+$parent_key=1;
+
+if($parent=='store'){
+include_once('class.Store.php');
+	$scope= new Store($parent_key);
+		$smarty->assign('scope',$scope);
+}elseif($parent=='warehouse'){
+include_once('class.Warehouse.php');
+	$scope= new Warehouse($parent_key);
+		$smarty->assign('scope',$scope);
+}else{
+exit;
+}
+
+
+	break;
+
 default:
 	exit;
 	break;
