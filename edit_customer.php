@@ -422,7 +422,7 @@ while ($row=mysql_fetch_assoc($res)) {
     $categories_value[$row['Category Key']]=$tmp_selected;
 
 }
-
+//print_r($selected_array);
 $smarty->assign('categories',$categories);
 $smarty->assign('categories_value',$categories_value);
 

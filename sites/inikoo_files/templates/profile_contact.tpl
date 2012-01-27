@@ -192,7 +192,6 @@
 <table style="margin:10px">
  
  {foreach from=$categories item=cat key=cat_key name=foo  }
-{$other_field=''}
  <tr>
  
  <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
@@ -202,18 +201,18 @@
         {if $smarty.foreach.foo2.first}
 
         {/if}
-	{if $sub_cat->get('Category Name')=='Other'}
-{assign var="other_field" value="<tr style='display:none' id='`$sub_cat_key`_tr'><td></td><td colspan='2'><textarea rows='2' cols='20' id='type_of_`$sub_cat_key`'> </textarea></tr>"}
 
-		
-	{/if}
         <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
     {/foreach}
   </select>
   
  </td>   
 </tr>
-{$other_field}
+<tbody id="other_tbody_{$cat_key}" style="display:none">
+<tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}"></textarea></td></tr>
+<tr><td></td><td><button onClick="save_other_{$cat_key}(this)">Save<button></td></tr>
+</tbody>
+
 {/foreach}
 
 
