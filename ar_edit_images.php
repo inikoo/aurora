@@ -75,7 +75,10 @@ function update_image($data) {
         include_once('class.Part.php');
         $scope=new Part($data['scope_key']);
         break;
-
+    case 'customer_profile':
+        include_once('class.User.php');
+        $scope=new User($data['scope_key']);
+        break;
     default:
         $response=array('state'=>404,'resp'=>'Operation not found');
         echo json_encode($response);
@@ -179,7 +182,10 @@ function upload_image($data) {
                 include_once('class.Part.php');
                 $scope=new Part($data['scope_key']);
                 break;
-
+            case 'customer_profile':
+                include_once('class.User.php');
+                $scope=new User($data['scope_key']);
+                break;
             default:
                 $response=array('state'=>404,'resp'=>'Operation not found');
                 echo json_encode($response);
