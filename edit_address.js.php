@@ -1283,40 +1283,37 @@ var countries_highlightMatch = function(full, snippet, matchindex) {
 
 
 function show_countries_list(o,prefix){
+	//alert(tables.table100.prefix);return;
+	tables.table100.prefix=prefix
+
+	region1 = Dom.getRegion(o); 
+	region2 = Dom.getRegion('dialog_country_list'); 
+
+	var pos =[region1.right-region2.width+20,region1.bottom]
+
+	Dom.setXY('dialog_country_list', pos);
 
 
-//alert(tables.table100.prefix);return;
-tables.table100.prefix=prefix
-  
-    
-    
-      region1 = Dom.getRegion(o); 
-    region2 = Dom.getRegion('dialog_country_list'); 
-
- var pos =[region1.right-region2.width+20,region1.bottom]
-
-    Dom.setXY('dialog_country_list', pos);
-    
-    
-dialog_country_list.show();
+	dialog_country_list.show();
 }
 
 
 
 
 function init_address(){
-dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", { visible : false,close:true,underlay: "none",draggable:false});
-  dialog_country_list.render();
-Event.addListener('clean_table_filter_show100', "click",show_filter,100);
-Event.addListener('clean_table_filter_hide100', "click",hide_filter,100);
+	dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", { visible : false,close:true,underlay: "none",draggable:false});
+	dialog_country_list.render();
+	Event.addListener('clean_table_filter_show100', "click",show_filter,100);
+	Event.addListener('clean_table_filter_hide100', "click",hide_filter,100);
 
- var oACDS100 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS100.queryMatchContains = true;
- oACDS100.table_id=100;
- var oAutoComp100 = new YAHOO.widget.AutoComplete("f_input100","f_container100", oACDS100);
- oAutoComp100.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show100', "click",show_filter,100);
- YAHOO.util.Event.addListener('clean_table_filter_hide100', "click",hide_filter,100);
+	var oACDS100 = new YAHOO.util.FunctionDataSource(mygetTerms);
+	oACDS100.queryMatchContains = true;
+	oACDS100.table_id=100;
+	var oAutoComp100 = new YAHOO.widget.AutoComplete("f_input100","f_container100", oACDS100);
+	oAutoComp100.minQueryLength = 0; 
+	YAHOO.util.Event.addListener('clean_table_filter_show100', "click",show_filter,100);
+	YAHOO.util.Event.addListener('clean_table_filter_hide100', "click",hide_filter,100);
+
 
 }
 YAHOO.util.Event.onDOMReady(init_address);
