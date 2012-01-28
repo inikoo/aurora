@@ -19,6 +19,10 @@ var Dom = YAHOO.util.Dom;
 
 var period='period_<?php echo$_SESSION['state']['store']['departments']['period']?>';
 var avg='avg_<?php echo$_SESSION['state']['store']['departments']['avg']?>';
+var dialog_change_families_display;
+var dialog_change_products_display;
+var dialog_change_departments_display;
+
 
 function change_elements(){
 
@@ -609,7 +613,79 @@ request=request+'&'+ids[i]+'=0'
 
 }
 
+function change_display_mode(parent,name,label){
+    if(name=='percentage'){
+		var request='&percentages=1';
+    }if(name=='value'){
+		var request='&percentages=0&show_default_currency=0';
+    }if(name=='value_default_d2d'){
+		var request='&percentages=0&show_default_currency=1';
+    }
+
+    Dom.get('change_'+parent+'_display_mode').innerHTML=label;
+   
+   if(parent=='products'){
+   var table=tables['table2'];
+    var datasource=tables.dataSource2;
+    dialog_change_products_display.hide();
+
+    }else if(parent=='families'){
+      var table=tables['table1'];
+    var datasource=tables.dataSource1;
+    dialog_change_families_display.hide();
+
+    }else if(parent=='departments'){
+      var table=tables['table0'];
+    var datasource=tables.dataSource0;
+    dialog_change_departments_display.hide();
+
+    }else{
+    return;
+    }
+    
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+
+}
+
+function show_dialog_change_products_display(){
+	region1 = Dom.getRegion('change_products_display_mode'); 
+    region2 = Dom.getRegion('change_products_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_products_display_menu', pos);
+	dialog_change_products_display.show();
+}
+
+function show_dialog_change_families_display(){
+	region1 = Dom.getRegion('change_families_display_mode'); 
+    region2 = Dom.getRegion('change_families_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_families_display_menu', pos);
+	dialog_change_families_display.show();
+}
+
+function show_dialog_change_departments_display(){
+	region1 = Dom.getRegion('change_departments_display_mode'); 
+    region2 = Dom.getRegion('change_departments_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_departments_display_menu', pos);
+	dialog_change_departments_display.show();
+}
+
  function init(){
+ 
+ dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_products_display.render();
+	 YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
+
+dialog_change_families_display = new YAHOO.widget.Dialog("change_families_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_families_display.render();
+	 YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
+
+dialog_change_departments_display = new YAHOO.widget.Dialog("change_departments_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_departments_display.render();
+	 YAHOO.util.Event.addListener("change_departments_display_mode", "click", show_dialog_change_departments_display);
+
+ 
  Event.addListener(['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'], "click",change_elements);
 
  Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'], "click",change_family_elements);

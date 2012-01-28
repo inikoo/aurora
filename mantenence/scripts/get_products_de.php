@@ -60,7 +60,8 @@ $vol_camp=new Deal('code','DE.Vol');
 $bogof_camp=new Deal('code','DE.BOGOF');
 $fam_promo=$fam_promo=new Family('code','Promo_DE',$store_key);
 $fam_promo_key=$fam_promo->id;
-
+$fam_products_no_family=new Family('code','PND_DE',$store_key);
+$fam_products_no_family_key=$fam_products_no_family->id;
 
 $__cols=array();
 $inicio=false;
@@ -162,7 +163,7 @@ foreach ($__cols as $cols) {
 		}
 
 
-/*
+		/*
 
 
 		$deals=array();
@@ -213,7 +214,7 @@ foreach ($__cols as $cols) {
 
 		$code=preg_replace('/L\&P\-/','LLP-',$code);
 
-	//	if (   !preg_match('/alpha/i',$code) ) {continue;}
+		// if (   !preg_match('/alpha/i',$code) ) {continue;}
 
 
 
@@ -338,7 +339,7 @@ foreach ($__cols as $cols) {
 
 		}
 
-/*
+		/*
 		foreach ($deals as $deal_data) {
 			//         print_r($deal_data);
 			//exit;
@@ -448,14 +449,14 @@ foreach ($__cols as $cols) {
 		$product->change_current_key($product->id);
 		$product->update_rrp('Product RRP',$rrp);
 
-$product->update_stage('Normal');
-			if ($set_part_as_available) {
-				set_part_as_available($product);
-			}
+		$product->update_stage('Normal');
+		if ($set_part_as_available) {
+			set_part_as_available($product);
+		}
 
 
 
-		if ($product->data['Product Family Key']==5) {
+		if ($product->data['Product Family Key']==$fam_products_no_family_key) {
 			$product->update_family_key($family->id);
 		}
 
@@ -463,19 +464,19 @@ $product->update_stage('Normal');
 			$product->update_sales_type('Public Sale');
 		}
 
-$sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d and `Product ID`!=%d group by `Product ID`",
-				prepare_mysql($product->code),
-				$product->data['Product Store Key'],
-				$product->pid
-			);
-			$res=mysql_query($sql);
-			//print $sql;
-			$pids=array();
-			while ($row=mysql_fetch_array($res)) {
-				$_product=new Product('pid',$row['Product ID']);
-				$_product->set_as_historic();
-			}
-			$product->update_web_state();
+		$sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d and `Product ID`!=%d group by `Product ID`",
+			prepare_mysql($product->code),
+			$product->data['Product Store Key'],
+			$product->pid
+		);
+		$res=mysql_query($sql);
+		//print $sql;
+		$pids=array();
+		while ($row=mysql_fetch_array($res)) {
+			$_product=new Product('pid',$row['Product ID']);
+			$_product->set_as_historic();
+		}
+		$product->update_web_state();
 
 	}else {
 
@@ -527,12 +528,12 @@ $sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`
 function set_part_as_available($product) {
 
 	$current_part_skus=$product->get_current_part_skus();
-	
-	
-	
 
-	
-	
+
+
+
+
+
 	foreach ($current_part_skus as $_part_sku) {
 		$part=new Part($_part_sku);
 		//$part->update_status('Not In Use');
