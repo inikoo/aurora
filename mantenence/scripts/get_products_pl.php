@@ -68,6 +68,8 @@ $vol_camp=new Deal('code','PL.Vol');
 $bogof_camp=new Deal('code','PL.BOGOF');
 $fam_promo=$fam_promo=new Family('code','Promo_PL',$store_key);
 $fam_promo_key=$fam_promo->id;
+$fam_products_no_family=new Family('code','PND_PL',$store_key);
+$fam_products_no_family_key=$fam_products_no_family->id;
 
 
 
@@ -345,7 +347,7 @@ $is_product=true;
    
     }
 
-
+/*
     foreach($deals as $deal_data){
       //         print_r($deal_data);
       //exit;
@@ -391,7 +393,7 @@ $is_product=true;
 	$bogof_camp->create_deal('[Product Family Code] BOGOF',$data);
       }
     }  
-
+*/
  
 
 
@@ -451,6 +453,35 @@ $product->new_current_part_list(array(),$part_list);
 
     $product->change_current_key($product->id);
       $product->update_rrp('Product RRP',$rrp);
+      		$product->update_stage('Normal');
+		if ($set_part_as_available) {
+			set_part_as_available($product);
+		}
+
+
+
+		if ($product->data['Product Family Key']==$fam_products_no_family_key) {
+			$product->update_family_key($family->id);
+		}
+
+		if ($product->data['Product Sales Type']!='Private Sale') {
+			$product->update_sales_type('Public Sale');
+		}
+
+		$sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d and `Product ID`!=%d group by `Product ID`",
+			prepare_mysql($product->code),
+			$product->data['Product Store Key'],
+			$product->pid
+		);
+		$res=mysql_query($sql);
+		//print $sql;
+		$pids=array();
+		while ($row=mysql_fetch_array($res)) {
+			$_product=new Product('pid',$row['Product ID']);
+			$_product->set_as_historic();
+		}
+		$product->update_web_state();
+      
 
 }else{
 

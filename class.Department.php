@@ -486,7 +486,7 @@ class Department extends DB_Table {
             return number($this->data['Product Department For Public Discontinued Families']);
             break;
         case('For Sale Products'):
-            return number($this->data['Product Department For Sale Products']);
+            return number($this->data['Product Department For Public Sale Products']);
             break;
         case('Families'):
             return number($this->data['Product Department Families']);
@@ -505,11 +505,8 @@ class Department extends DB_Table {
         }
 
     }
-    /*
-       Method: add_product
-       Agrega registros a la tabla Product Department Bridge, actualiza la tabla Product Dimension
-    */
-// JFA
+ 
+ 
     function add_product($product_id,$args=false) {
 
 

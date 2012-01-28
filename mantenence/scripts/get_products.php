@@ -97,6 +97,8 @@ $vol_camp=new Deal('code','UK.Vol');
 $bogof_camp=new Deal('code','UK.BOGOF');
 $fam_promo=$fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
+$fam_products_no_family=new Family('code','PND_UK',$store_key);
+$fam_products_no_family_key=$fam_products_no_family->id;
 
 
 
@@ -624,7 +626,7 @@ foreach ($__cols as $cols) {
 			}
 
 
-			if ($product->data['Product Family Key']==1) {
+			if ($product->data['Product Family Key']==$fam_products_no_family_key) {
 				$product->update_family_key($family->id);
 			}
 
