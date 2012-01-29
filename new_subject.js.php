@@ -182,6 +182,8 @@ function validate_form(){
 	}
 	
     }
+
+
 function display_form_state(){
     
     
@@ -500,6 +502,25 @@ if(scope=='customer'){
 
 }
 
+
+function show_countries_list(o,prefix){
+
+
+//alert(tables.table100.prefix);return;
+tables.table100.prefix=prefix
+  
+    
+    
+      region1 = Dom.getRegion(o); 
+    region2 = Dom.getRegion('dialog_country_list'); 
+
+ var pos =[region1.right-region2.width+20,region1.bottom]
+
+    Dom.setXY('dialog_country_list', pos);
+    
+    
+dialog_country_list.show();
+}
 
 
 function init(){

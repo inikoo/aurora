@@ -439,9 +439,19 @@ $smarty->assign('gold_reward',$gold_reward);
 $smarty->assign('options_box_width','550px');
 $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));
 
-
+$smarty->assign('default_country_2alpha',$store->get('Store Home Country Code 2 Alpha'));
 $smarty->assign('other_email_login_handle',$customer->get_other_email_login_handle());
 
+$tipo_filter100='code';
+$filter_menu100=array(
+                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
+                	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Country Name'),'label'=>_('Name')),
+                 'wregion'=>array('db_key'=>_('wregion'),'menu_label'=>_('World Region Name'),'label'=>_('Region')),
+              );
+$smarty->assign('filter_name100',$filter_menu100[$tipo_filter100]['label']);
+$smarty->assign('filter_menu100',$filter_menu100);
+$smarty->assign('filter100',$tipo_filter100);
+$smarty->assign('filter_value100','');
 
 $smarty->display('customer.tpl');
 

@@ -1834,7 +1834,11 @@ function list_products() {
         $parent=$_REQUEST['parent'];
     else
         $parent='none';
-
+   if (isset( $_REQUEST['parent_key'])){       
+$parent_key=$_REQUEST['parent_key'];
+}else{
+return;
+}
 
     if ($parent=='store') {
         $conf=$_SESSION['state']['store']['products'];
@@ -1857,15 +1861,10 @@ function list_products() {
         exit;
     }
 
-
-
-
-
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
     else
         $view=$conf['view'];
-
 
 
     if (isset( $_REQUEST['sf']))
@@ -2079,16 +2078,13 @@ function list_products() {
 
     switch ($parent) {
     case('store'):
-        $where.=sprintf(' and `Product Store Key`=%d',$_SESSION['state']['products']['store']);
+        $where.=sprintf(' and `Product Store Key`=%d',$parent_key);
         break;
     case('department'):
-        $where.=sprintf('  and `Product Main Department Key`=%d',$_SESSION['state']['department']['id']);
+        $where.=sprintf('  and `Product Main Department Key`=%d',$parent_key);
         break;
     case('family'):
-        if (isset($_REQUEST['parent_key']))
-            $parent_key=$_REQUEST['parent_key'];
-        else
-            $parent_key=$_SESSION['state']['family']['id'];
+       
 
         $where.=sprintf(' and `Product Family Key`=%d',$parent_key);
         break;
@@ -2301,7 +2297,7 @@ function list_products() {
 
 
 
-
+ 
     $sum_total_sales=0;
     $sum_total_profit=0;
     $sum_total_stock_value=0;
@@ -2499,6 +2495,9 @@ function list_products() {
     //  print "P:$period $avg $sql";
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
+
+$currency=$row['Store Currency Code'];
+
         $counter++;
 
 
@@ -2515,9 +2514,11 @@ function list_products() {
         $store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
 
         if ($percentages) {
+        $sold='';
+        $margin='';
             if ($period=='all') {
                 $tsall=percentage($row['Product Total Invoiced Amount'],$sum_total_sales,2);
-
+				 
                 if ($row['Product Total Profit']>=0)
                     $tprofit=percentage($row['Product Total Profit'],$sum_total_profit_plus,2);
                 else
@@ -2551,7 +2552,6 @@ function list_products() {
                 else
                     $tprofit=percentage($row['Product 1 Week Acc Profit'],$sum_total_profit_minus,2);
             }
-// ---------------------------------------start product's for 3Y,YTD,6M,10D------------------------------------
             elseif($period=='three_year') {
                 $tsall=percentage($row['Product 3 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product 3 Year Acc Profit']>=0)
@@ -2580,13 +2580,9 @@ function list_products() {
                 else
                     $tprofit=percentage($row['Product 10 Day Acc Profit'],$sum_total_profit_minus,2);
             }
-// ---------------------------------------end product's for 3Y,YTD,6M,10D------------------------------------
 
-        } else {
-
-
-
-
+        } 
+        else {
 
 
             if ($period=='all') {
@@ -3016,17 +3012,22 @@ function list_products() {
         $sum_sales+=$tsall;
         $sum_profit+=$tprofit;
 
+
         if ($margin=='') {
-            if ($sold==0)
-                $margin=_('ND');
-            else
+            if ($sold=='')
                 $margin=_('NA');
+            else
+                $margin=_('ND');
 
         } else {
             $count_margin++;
             $sum_margin+=$margin;
             $margin=number($margin,1)."%";
         }
+
+if ($sold=='') {
+$sold=_('NA');
+}
 
         $type=$row['Product Sales Type'];
         if ($row['Product Stage']=='In Process')
@@ -3119,8 +3120,8 @@ function list_products() {
                      'gmroi'=>$row['Product GMROI'],
                      'stock_value'=>money($row['Product Stock Value']),
                      'stock'=>$stock,
-                     'sales'=>money($tsall),
-                     'profit'=>money($tprofit),
+                     'sales'=>(is_numeric($tsall)?money($tsall,$currency):$tsall),
+                     'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
                      'margin'=>$margin,
                      'sold'=>(is_numeric($sold)?number($sold):$sold),
                      'state'=>$type,
@@ -4531,6 +4532,7 @@ function list_families() {
     $_SESSION['state'][$conf_table]['families']['f_value']=$f_value;
     $_SESSION['state'][$conf_table]['families']['period']=$period;
     $_SESSION['state'][$conf_table]['families']['avg']=$avg;
+    $_SESSION['state'][$conf_table]['families']['percentages']=$percentages;
 
     $_SESSION['state'][$conf_table]['families']['mode']=$mode;
     $_SESSION['state'][$conf_table]['families']['elements']=$elements;

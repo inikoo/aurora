@@ -1679,7 +1679,7 @@ Event.addListener(['elements_changes','elements_orders','elements_notes','elemen
 Event.addListener(['orders','history','products','details', 'login_stat'], "click",change_view);
 
 
-Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
  Event.addListener('clean_table_filter_show1', "click",show_filter,1);
  Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
@@ -1751,18 +1751,11 @@ Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_orde
 Event.addListener("take_order", "click", take_order , true);
 dialog_export.render();
 
- if(Dom.get('sticky_note_content').innerHTML==''){
- 
-
-                Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
-                
-
-            }else{
-
-             Dom.setStyle('sticky_note_div','display','');
-               
-            }
-
+if(Dom.get('sticky_note_content').innerHTML==''){
+	Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
+}else{
+	Dom.setStyle('sticky_note_div','display','');
+}
 			
 
 	

@@ -13,10 +13,7 @@
 */
 include_once('class.Product.php');
 
-/* class: Family
-   Class to manage the *Product Family Dimension* table
-*/
-// JFA
+
 
 class Family extends DB_Table {
 
@@ -2014,7 +2011,7 @@ class Family extends DB_Table {
 
         }
         else if ($in_process>0) {
-            $record_type='InProcesss';
+            $record_type='InProcess';
         } else {
             $record_type='Nosale';
         }
@@ -2041,7 +2038,7 @@ class Family extends DB_Table {
 
 
         mysql_query($sql);
-        //print "$sql\n";
+       // print "$sql\n";
 
         $this->get_data('id',$this->id);
     }

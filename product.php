@@ -375,5 +375,45 @@ $smarty->assign('paginator_menu2',$paginator_menu);
 $number_parts=$product->get_number_of_parts();
 $smarty->assign('number_parts',$number_parts);
 
+$order=$_SESSION['state']['family']['products']['order'];
+if ($order=='code') {
+    $order='`Product Code File As`';
+    $order_label=_('Code');
+} else {
+     $order='`Product Code File As`';
+    $order_label=_('Code');
+}
+$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d  and %s < %s  order by %s desc  limit 1",
+             $product->data['Product Family Key'],
+             $order,
+             prepare_mysql($product->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $prev['link']='product.php?pid='.$row['id'];
+    $prev['title']=$row['name'];
+    $smarty->assign('prev',$prev);
+}
+mysql_free_result($result);
+
+
+$sql=sprintf(" select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d    and  %s>%s  order by %s   ",
+  $product->data['Product Family Key'],
+             $order,
+             prepare_mysql($product->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $next['link']='product.php?pid='.$row['id'];
+    $next['title']=$row['name'];
+    $smarty->assign('next',$next);
+}
+mysql_free_result($result);
+
 $smarty->display('product.tpl');
 ?>

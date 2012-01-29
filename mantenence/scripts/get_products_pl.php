@@ -46,12 +46,12 @@ $Data_Audit_ETL_Software="$software $version";
 
 //$file_name='/data/plaza/AWorder2009Poland.xls';
 
-
+$set_part_as_available=true;
 $csv_file='/data/plaza/AWorder2009Poland.csv';
-//$csv_file='pl.csv';
+$csv_file='pl.csv';
 
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
-//exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
+exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
 
 //exit;
 
@@ -68,6 +68,8 @@ $vol_camp=new Deal('code','PL.Vol');
 $bogof_camp=new Deal('code','PL.BOGOF');
 $fam_promo=$fam_promo=new Family('code','Promo_PL',$store_key);
 $fam_promo_key=$fam_promo->id;
+$fam_products_no_family=new Family('code','PND_PL',$store_key);
+$fam_products_no_family_key=$fam_products_no_family->id;
 
 
 
@@ -345,7 +347,7 @@ $is_product=true;
    
     }
 
-
+/*
     foreach($deals as $deal_data){
       //         print_r($deal_data);
       //exit;
@@ -391,7 +393,7 @@ $is_product=true;
 	$bogof_camp->create_deal('[Product Family Code] BOGOF',$data);
       }
     }  
-
+*/
  
 
 
@@ -451,6 +453,35 @@ $product->new_current_part_list(array(),$part_list);
 
     $product->change_current_key($product->id);
       $product->update_rrp('Product RRP',$rrp);
+      		$product->update_stage('Normal');
+		if ($set_part_as_available) {
+			set_part_as_available($product);
+		}
+
+
+
+		if ($product->data['Product Family Key']==$fam_products_no_family_key) {
+			$product->update_family_key($family->id);
+		}
+
+		if ($product->data['Product Sales Type']!='Private Sale') {
+			$product->update_sales_type('Public Sale');
+		}
+
+		$sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d and `Product ID`!=%d group by `Product ID`",
+			prepare_mysql($product->code),
+			$product->data['Product Store Key'],
+			$product->pid
+		);
+		$res=mysql_query($sql);
+		//print $sql;
+		$pids=array();
+		while ($row=mysql_fetch_array($res)) {
+			$_product=new Product('pid',$row['Product ID']);
+			$_product->set_as_historic();
+		}
+		$product->update_web_state();
+      
 
 }else{
 
@@ -505,7 +536,46 @@ $product->new_current_part_list(array(),$part_list);
 
 
 
+function set_part_as_available($product) {
 
+	$current_part_skus=$product->get_current_part_skus();
+
+	foreach ($current_part_skus as $_part_sku) {
+		$part=new Part($_part_sku);
+		//$part->update_status('Not In Use');
+
+		//$products_in_part=$part->get_product_ids();
+		//print_r($products_in_part);
+		//$number_products_in_part=count($products_in_part);
+		//print $product->data['Product Code']." $number_products_in_part\n";
+
+
+		$supplier_products=$part->get_supplier_products();
+
+		foreach ($supplier_products as $supplier_product) {
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='In Use' where `Supplier Product Key`=%d",
+				$supplier_product['Supplier Product Key']
+			);
+			mysql_query($sql);
+			//print "$sql\n";
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='Yes' where `Supplier Product Part Key`=%d",
+				$supplier_product['Supplier Product Part Key']
+			);
+			mysql_query($sql);
+			//  print "$sql\n";
+
+		}
+
+		$part->update_availability();
+
+
+		$part->update_status('In Use');
+
+
+
+	}
+
+}
 
 
 ?>

@@ -95,23 +95,7 @@ $smarty->assign('block_view',$block_view);
 
 
 
-$smarty->assign('table_type',$_SESSION['state']['family']['products']['table_type']);
-$general_options_list=array();
 
-
-if ($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'edit_family.php?id='.$family->id,'label'=>_('Edit Family'));
-
-
-//$smarty->assign('general_options_list',$general_options_list);
-$show_only=$_SESSION['state']['family']['products']['show_only'];
-$show_only_labels=array('forsale'=>_('For Sale Only'));
-
-$_SESSION['state']['family']['products']['table']['restrictions']=$show_only;
-//print_r($_SESSION['state']['family']['products']['table']);exit;
-
-$smarty->assign('show_only',$show_only);
-$smarty->assign('show_only_label',$show_only_labels[$show_only]);
 
 
 $css_files=array(
@@ -179,53 +163,6 @@ $smarty->assign('department_period',$department_period);
 $smarty->assign('department_period_title',$department_period_title[$department_period]);
 
 
-
-
-if (isset($_REQUEST['department_id']) and $_REQUEST['department_id']>0) {
-    $department_id=$_REQUEST['department_id'];
-    $order=$_SESSION['state']['department']['families']['order'];
-    if ($order=='per_tsall' or $order=='tsall')
-        $order='total_sales';
-    if ($order=='per_tsm' or $order=='tms')
-        $order='month_sales';
-    if ($order=='code')
-        $order='Product Family Code';
-    if ($order=='name')
-        $order='Product Family Name';
-    if ($order=='active')
-        $order='Product Family For Sale Products';
-    if ($order=='outofstock')
-        $order='Product Family Out Of Stock Products';
-    if ($order=='stockerror')
-        $order='Product Family Unknown Stock Products';
-
-
-
-
-
-    $sql=sprintf("select  F.`Product Family Key` as id, `Product Family Code` as code  from `Product Family Dimension`   F left join `Product Family Department Bridge` FD on (FD.`Product Family Key`=F.`Product Family Key`) where  `%s`<'%s' and `Product Department Key`=%d  order by `%s` desc  ",$order,$family->get($order),$department_id,$order);
-
-
-    $res = mysql_query($sql);
-    if (!$prev=mysql_fetch_array($res, MYSQL_ASSOC))
-        $prev=array('id'=>0,'code'=>'');
-
-    $sql=sprintf("select F.`Product Family Key` as id, `Product Family Code` as code   from `Product Family Dimension`   F left join `Product Family Department Bridge`  FD on (FD.`Product Family Key`=F.`Product Family Key`)  where  `%s`>'%s' and `Product Department Key`=%d order by `%s`   ",$order,$family->get($order),$department_id,$order);
-
-    $res = mysql_query($sql);
-
-    if (!$next=mysql_fetch_array($res, MYSQL_ASSOC))
-        $next=array('id'=>0,'code'=>'');
-
-
-
-
-
-
-    $smarty->assign('prev',$prev);
-    $smarty->assign('next',$next);
-
-}
 
 
 
@@ -396,6 +333,71 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
+
+$mode_options=array(
+	array('mode'=>'percentage','label'=>_('Percentages')),
+	array('mode'=>'value','label'=>_('Sales Amount')),
+);
+if ($_SESSION['state']['family']['products']['percentages']) {
+	$display_mode='percentages';
+	$display_mode_label=_('Percentages');
+}else {
+	$display_mode='value';
+	$display_mode_label=_('Sales Amount');
+}
+$smarty->assign('display_products_mode',$display_mode);
+$smarty->assign('display_products_mode_label',$display_mode_label);
+$smarty->assign('products_mode_options_menu',$mode_options);
+$smarty->assign('products_table_type',$_SESSION['state']['family']['products']['table_type']);
+
+
+$table_type_options=array(
+	'list'=>array('mode'=>'list','label'=>_('List')),
+	'thumbnails'=>array('mode'=>'thumbnails','label'=>_('Thumbnails')),
+);
+$smarty->assign('products_table_type',$_SESSION['state']['family']['products']['table_type']);
+$smarty->assign('products_table_type_label',$table_type_options[$_SESSION['state']['family']['products']['table_type']]['label']);
+$smarty->assign('products_table_type_menu',$table_type_options);
+
+$order=$_SESSION['state']['department']['family']['order'];
+if ($order=='code') {
+    $order='`Product Family Code`';
+    $order_label=_('Code');
+} else {
+     $order='`Product Family Code`';
+    $order_label=_('Code');
+}
+$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select `Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d  and %s < %s  order by %s desc  limit 1",
+             $family->data['Product Family Main Department Key'],
+             $order,
+             prepare_mysql($family->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $prev['link']='family.php?id='.$row['id'];
+    $prev['title']=$row['name'];
+    $smarty->assign('prev',$prev);
+}
+mysql_free_result($result);
+
+
+$sql=sprintf(" select`Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d   and  %s>%s  order by %s   ",
+  $family->data['Product Family Main Department Key'],
+             $order,
+             prepare_mysql($family->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $next['link']='family.php?id='.$row['id'];
+    $next['title']=$row['name'];
+    $smarty->assign('next',$next);
+}
+mysql_free_result($result);
 
 
 $smarty->display('family.tpl');

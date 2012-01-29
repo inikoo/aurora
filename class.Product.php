@@ -1097,7 +1097,7 @@ class product extends DB_Table {
             $res_cat=mysql_query($sql);
             //print "$sql\n";
             while ($row=mysql_fetch_array($res_cat)) {
-                $sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d) ",$row['Category Key'],$this->pid  );
+                $sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d, NULL) ",$row['Category Key'],$this->pid  );
                 mysql_query($sql);
                 if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
             }
@@ -1234,7 +1234,7 @@ class product extends DB_Table {
                          $value['Part SKU'],
                          $value['Parts Per Product'],
                          prepare_mysql($value['Product Part Type'])
-                        );
+                        ); 
 
             $res=mysql_query($sql);
 
@@ -4242,7 +4242,7 @@ class product extends DB_Table {
 
 
             foreach($category_location as $category_location_key) {
-                $sql=sprintf("insert into  `Category Bridge`   values (%d,'Product',%d) ",$category_location_key,$this->pid);
+                $sql=sprintf("insert into  `Category Bridge`   values (%d,'Product',%d, NULL) ",$category_location_key,$this->pid);
                 //print "$sql\n";
                 if (mysql_query($sql)) {
                     if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
@@ -4649,25 +4649,29 @@ class product extends DB_Table {
     function get_current_part_skus() {
 
         $skus=array();
-
         $sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
                      ,$this->pid
                     );
-
-        //print "$sql  **\n";
-
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
-
-
             $skus[$row['Part SKU']]=$row['Part SKU'];
-
-
-
         }
-
         return $skus;
     }
+
+  function get_all_part_skus() {
+
+        $skus=array();
+        $sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d  "
+                     ,$this->pid
+                    );
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $skus[$row['Part SKU']]=$row['Part SKU'];
+        }
+        return $skus;
+    }
+
 
 
     function get_number_of_parts() {

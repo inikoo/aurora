@@ -91,22 +91,35 @@ function validate_company_name(query){ validate_general('invoice','company_name'
 function validate_header(query){ validate_general('invoice','msg_header',unescape(query));}
 function validate_msg(query){ validate_general('invoice','msg',unescape(query));}
 				
-
+function update_page_preview_snapshot(page_key){
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+page_key,{
+  success: function(o) {
+   var r = YAHOO.lang.JSON.parse(o.responseText);
+  }
+  });
+  }
 
 function new_store_page(){
 
 
-var request='tipo=new_store_page&store_key='+store_id+'&site_key='+Dom.get('site_key').value
+var request='tipo=new_store_page&store_key='+Dom.get('store_key').value+'&site_key='+Dom.get('site_key').value
 
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						'ar_edit_sites.php', {
 						    success:function(o) {
-						    //alert(o.responseText)
+						    alert(o.responseText)
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
-								        window.location = "edit_store.php?id=<?php echo$_SESSION['state']['store']['id']?>"
+								       
+								        
+								         var table=tables.table6;
+ var datasource=tables.dataSource6;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+								        update_page_preview_snapshot(r.page_key)
+								        
 							    }else{
 						
                                         alert(r.msg)								
@@ -314,7 +327,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
 
 	  
 	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
@@ -392,6 +406,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
+
 
 		    
 		    
@@ -462,6 +479,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.table_id=tableid;
+     	this.table2.subscribe("renderEvent", myrenderEvent);
+
 
 	    this.table2.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table2.subscribe("cellMouseoutEvent", unhighlightEditableCell);
@@ -533,6 +553,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table3.table_id=tableid;
+     	this.table3.subscribe("renderEvent", myrenderEvent);
+
 
 		    
 		    
@@ -600,6 +623,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table4.table_id=tableid;
+     	this.table4.subscribe("renderEvent", myrenderEvent);
+
 
 		    
 		    
@@ -631,10 +657,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	 
 				       
 				       
-	    //?tipo=customers&tid=0"
-	        this.dataSource6 = new YAHOO.util.DataSource("ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&parent=store&parent_key="+Dom.get('store_id').value+"&tableid=6");
-
-//alert("ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&parent=store&parent_key="+Dom.get('store_id').value+"&tableid=6")
+request="ar_edit_sites.php?tipo=pages&site_key="+Dom.get('site_key').value+"&parent=store&parent_key="+Dom.get('store_key').value+"&tableid=6";
+	        this.dataSource6 = new YAHOO.util.DataSource(request);
+//alert(request)
 	    this.dataSource6.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource6.connXhrMode = "queueRequests";
 	    this.dataSource6.responseSchema = {
@@ -684,6 +709,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table6.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table6.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table6.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table6.table_id=tableid;
+     	this.table6.subscribe("renderEvent", myrenderEvent);
+
 
 
 	    this.table6.subscribe("cellMouseoverEvent", highlightEditableCell);
