@@ -222,6 +222,21 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu3',$paginator_menu);
 
 
+
+$smarty->assign('filter7','code');
+$smarty->assign('filter_value7','');
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Page code starting with  <i>x</i>'),'label'=>_('Code')),
+	'title'=>array('db_key'=>'title','menu_label'=>_('Page title like  <i>x</i>'),'label'=>_('Title')),
+);
+$smarty->assign('filter_menu7',$filter_menu);
+$smarty->assign('filter_name7',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu7',$paginator_menu);
+
+
+
+
 $order=$_SESSION['state']['site']['pages']['order'];
 if ($order=='code') {
     $order='`Page Code`';

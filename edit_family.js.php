@@ -1080,6 +1080,14 @@ alert("todo")
 }
 
 
+function update_page_preview_snapshot(page_key){
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+page_key,{
+  success: function(o) {
+   var r = YAHOO.lang.JSON.parse(o.responseText);
+  }
+  });
+  }
+
 function new_family_page(site_key){
 
 
@@ -1096,6 +1104,8 @@ var request='tipo=new_family_page&family_key='+Dom.get('family_key').value+'&sit
  var datasource=tables.dataSource6;
  var request='';
  datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+ update_page_preview_snapshot(r.page_key);
+ 
 								   //     window.location = "edit_family.php?id="+Dom.get('family_key').value
 							    }else{
 						

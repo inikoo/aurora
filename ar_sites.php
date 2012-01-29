@@ -363,7 +363,7 @@ function list_pages() {
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
 
-    $sql="select `Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql="select `Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 
@@ -477,7 +477,8 @@ function list_pages() {
                     'title'=>$row['Page Store Title'],
                     'type'=>$type,
                     'url'=>$row['Page URL'],
-
+                    'image'=>'image.php?size=small&id='.$row['Page Preview Snapshot Image Key'],
+'type'=>'item'
                     /*
                     'for_sale'=>number($row['Supplier For Sale Products']),
                     'low'=>number($row['Supplier Low Availability Products']),

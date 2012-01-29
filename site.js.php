@@ -78,8 +78,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    
 				     ];
-
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value);
+		request="ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value;
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -125,6 +125,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+   this.table0.request=request;
+  this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 
 
 	    
@@ -136,7 +139,41 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	};
+	get_thumbnails(0)
     });
+
+
+
+function change_table_type(parent,tipo,label){
+
+	if(parent=='pages'){
+		table_id=0
+	}
+	
+	Dom.get('change_pages_table_type').innerHTML=label;
+	
+	if(tipo=='list'){
+		Dom.setStyle('thumbnails'+table_id,'display','none')
+		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','')
+ 	}else{
+		Dom.setStyle('thumbnails'+table_id,'display','')
+		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','none')
+ 	}
+ 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-'+parent+'-table_type&value='+escape(tipo),{});
+ 	dialog_change_pages_table_type.hide();
+
+   
+}
+
+function show_dialog_change_pages_table_type(){
+	region1 = Dom.getRegion('change_pages_table_type'); 
+    region2 = Dom.getRegion('change_pages_table_type_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_pages_table_type_menu', pos);
+	dialog_change_pages_table_type.show();
+}
+
+
 
  function init(){
 
@@ -157,6 +194,10 @@ ids=['elements_other','elements_department_catalogue','elements_family_catalogue
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
+
+dialog_change_pages_table_type = new YAHOO.widget.Dialog("change_pages_table_type_menu", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_change_pages_table_type.render();
+	YAHOO.util.Event.addListener("change_pages_table_type", "click", show_dialog_change_pages_table_type);
 
 
  }

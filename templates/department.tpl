@@ -3,14 +3,19 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<input type="hidden" id="department_key" value="{$department->id}" />
+		<input type="hidden" id="store_key" value="{$store->id}"> 
 		<div class="branch">
 			<span>{if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
+							{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+
 				<button onclick="window.location='edit_department.php?id={$department->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Department{/t}</button> 
 			</div>
 			<div class="buttons" style="float:left">
+							{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
+
 				{if $modify}<button onclick="window.location='store.php?id={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>{/if} 
 			</div>
 			<div style="clear:both">
@@ -47,7 +52,7 @@
 					</tr>
 				</table>
 				<table class="show_info_product">
-				<tr>
+					<tr>
 						<td>{t}Public Sale Products{/t}:</td>
 						<td class="number"> 
 						<div>
@@ -63,7 +68,6 @@
 						</div>
 						</td>
 					</tr>
-					
 					<tr>
 						<td>{t}Web Page{/t}:</td>
 						<td>{$department->get('Web Page Links')}</td>
@@ -256,10 +260,11 @@
 				<div class="table_top_bar">
 				</div>
 				<div class="buttons small clusters">
-				<button class="selected" id="change_products_display_mode">{$display_products_mode_label}</button> <button class="selected" id="change_products_table_type">{if $products_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
-			</div>
-				
-				<div class="clusters">
+					<button class="selected" id="change_products_display_mode">{$display_products_mode_label}</button> <button class="selected" id="change_products_table_type">{$products_table_type_label}</button> 
+					<div style="clear:both">
+					</div>
+				</div>
+				<div class="clusters" id="table_view_menu1" style="{if $products_table_type=='thumbnails'}display:none{/if}">
 					<div class="buttons small left cluster">
 						<button class="table_option {if $product_view=='general'}selected{/if}" id="product_general">{t}Overview{/t}</button> <button class="table_option {if $product_view=='stock'}selected{/if}" id="product_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $product_view=='sales'}selected{/if}" id="product_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> <button class="table_option {if $product_view=='parts'}selected{/if}" id="product_parts" {if !$view_sales}style="display:none" {/if}>{t}Parts{/t}</button> <button class="table_option {if $product_view=='cats'}selected{/if}" id="product_cats" {if !$view_sales}style="display:none" {/if}>{t}Groups{/t}</button> 
 					</div>
@@ -273,7 +278,9 @@
 					</div>
 				</div>
 				{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-				<div id="table1" class="data_table_container dtable btable with_total" style="font-size:85%">
+				<div id="thumbnails1" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $products_table_type!='thumbnails'}display:none{/if}">
+				</div>
+				<div id="table1" class="data_table_container dtable btable with_total " style="{if $products_table_type=='thumbnails'}display:none{/if};font-size:90%">
 				</div>
 			</div>
 		</div>
@@ -391,6 +398,25 @@
 			<td> 
 			<div class="buttons">
 				<button style="float:none;margin:0px auto;min-width:120px" onclick="change_display_mode('products','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
+			</div>
+			</td>
+		</tr>
+		{/foreach} 
+	</table>
+</div>
+<div id="change_products_table_type_menu" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr class="title">
+			<td>{t}View items as{/t}:</td>
+		</tr>
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+		{foreach from=$products_table_type_menu item=menu } 
+		<tr>
+			<td> 
+			<div class="buttons">
+				<button style="float:none;margin:0px auto;min-width:120px" onclick="change_table_type('products','{$menu.mode}','{$menu.label}',0)"> {$menu.label}</button> 
 			</div>
 			</td>
 		</tr>

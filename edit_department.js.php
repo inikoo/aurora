@@ -714,7 +714,13 @@ alert("todo")
 
 }
 
-
+function update_page_preview_snapshot(page_key){
+  YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_preview_snapshot&id='+page_key,{
+  success: function(o) {
+   var r = YAHOO.lang.JSON.parse(o.responseText);
+  }
+  });
+  }
 
 function new_department_page(site_key){
 
@@ -733,6 +739,7 @@ var request='tipo=new_department_page&department_key='+Dom.get('department_key')
  var datasource=tables.dataSource6;
  var request='';
  datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+ update_page_preview_snapshot(r.page_key)
 							    }else{
 						
                                         alert(r.msg)								
@@ -756,6 +763,8 @@ var request='tipo=new_department_page&department_key='+Dom.get('department_key')
 
 
 function init(){
+
+
 
   ids=['page_properties','page_html_head','page_header'];
  YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})

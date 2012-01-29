@@ -1834,7 +1834,11 @@ function list_products() {
         $parent=$_REQUEST['parent'];
     else
         $parent='none';
-
+   if (isset( $_REQUEST['parent_key'])){       
+$parent_key=$_REQUEST['parent_key'];
+}else{
+return;
+}
 
     if ($parent=='store') {
         $conf=$_SESSION['state']['store']['products'];
@@ -2074,16 +2078,13 @@ function list_products() {
 
     switch ($parent) {
     case('store'):
-        $where.=sprintf(' and `Product Store Key`=%d',$_SESSION['state']['products']['store']);
+        $where.=sprintf(' and `Product Store Key`=%d',$parent_key);
         break;
     case('department'):
-        $where.=sprintf('  and `Product Main Department Key`=%d',$_SESSION['state']['department']['id']);
+        $where.=sprintf('  and `Product Main Department Key`=%d',$parent_key);
         break;
     case('family'):
-        if (isset($_REQUEST['parent_key']))
-            $parent_key=$_REQUEST['parent_key'];
-        else
-            $parent_key=$_SESSION['state']['family']['id'];
+       
 
         $where.=sprintf(' and `Product Family Key`=%d',$parent_key);
         break;

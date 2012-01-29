@@ -1873,6 +1873,16 @@ class Department extends DB_Table {
     }
 
 
+  function get_pages_keys() {
+        $page_keys=array();
+        $sql=sprintf("Select `Page Key` from `Page Store Dimension` where `Page Store Section`='Department Catalogue' and  `Page Parent Key`=%d",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $page_keys[]=$row['Page Key'];
+        }
+        return $page_keys;
+    }
+
 }
 
 ?>

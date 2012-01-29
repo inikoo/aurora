@@ -158,6 +158,15 @@ $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['site']['pages']['elements']);
 
 
+$table_type_options=array(
+	'list'=>array('mode'=>'list','label'=>_('List')),
+	'thumbnails'=>array('mode'=>'thumbnails','label'=>_('Thumbnails')),
+);
+$smarty->assign('pages_table_type',$_SESSION['state']['site']['pages']['table_type']);
+$smarty->assign('pages_table_type_label',$table_type_options[$_SESSION['state']['site']['pages']['table_type']]['label']);
+$smarty->assign('pages_table_type_menu',$table_type_options);
+
+
 $smarty->display('site.tpl');
 
 ?>

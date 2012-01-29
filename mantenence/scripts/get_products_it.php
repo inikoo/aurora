@@ -45,9 +45,10 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
+$set_part_as_available=true;
 $file_name='/data/plaza/Mauro/AW-ITALYOF.xls';
 $csv_file='it.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -71,7 +72,12 @@ $__cols=array();
 $inicio=false;
 while (($_cols = fgetcsv($handle_csv))!== false) {
 
+//print_r($_cols);
 
+if(count($_cols)<7){
+//print_r($_cols);
+continue;
+}
 	$code=$_cols[3];
 
 
@@ -90,7 +96,7 @@ while (($_cols = fgetcsv($handle_csv))!== false) {
 		$__cols[]=$c;
 
 	}
-	elseif (preg_match('/First Order Bonus/',$_cols[6])) {
+	elseif (preg_match('/Bonus del primo ordine/',$_cols[6])) {
 		break;
 	}
 
@@ -116,7 +122,9 @@ foreach ($__cols as $cols) {
 	$units=$cols[5];
 
 
-
+if(count($cols)<19){
+print_r($cols);
+}
 	$rrp=$cols[18];
 	$supplier_code=_trim($cols[23]);
 	$w=$cols[31];
@@ -537,7 +545,46 @@ foreach ($__cols as $cols) {
 
 
 
+function set_part_as_available($product) {
 
+	$current_part_skus=$product->get_current_part_skus();
+
+	foreach ($current_part_skus as $_part_sku) {
+		$part=new Part($_part_sku);
+		//$part->update_status('Not In Use');
+
+		//$products_in_part=$part->get_product_ids();
+		//print_r($products_in_part);
+		//$number_products_in_part=count($products_in_part);
+		//print $product->data['Product Code']." $number_products_in_part\n";
+
+
+		$supplier_products=$part->get_supplier_products();
+
+		foreach ($supplier_products as $supplier_product) {
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='In Use' where `Supplier Product Key`=%d",
+				$supplier_product['Supplier Product Key']
+			);
+			mysql_query($sql);
+			//print "$sql\n";
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='Yes' where `Supplier Product Part Key`=%d",
+				$supplier_product['Supplier Product Part Key']
+			);
+			mysql_query($sql);
+			//  print "$sql\n";
+
+		}
+
+		$part->update_availability();
+
+
+		$part->update_status('In Use');
+
+
+
+	}
+
+}
 
 
 ?>

@@ -46,12 +46,12 @@ $Data_Audit_ETL_Software="$software $version";
 
 //$file_name='/data/plaza/AWorder2009Poland.xls';
 
-
+$set_part_as_available=true;
 $csv_file='/data/plaza/AWorder2009Poland.csv';
-//$csv_file='pl.csv';
+$csv_file='pl.csv';
 
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
-//exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
+exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
 
 //exit;
 
@@ -536,7 +536,46 @@ $product->new_current_part_list(array(),$part_list);
 
 
 
+function set_part_as_available($product) {
 
+	$current_part_skus=$product->get_current_part_skus();
+
+	foreach ($current_part_skus as $_part_sku) {
+		$part=new Part($_part_sku);
+		//$part->update_status('Not In Use');
+
+		//$products_in_part=$part->get_product_ids();
+		//print_r($products_in_part);
+		//$number_products_in_part=count($products_in_part);
+		//print $product->data['Product Code']." $number_products_in_part\n";
+
+
+		$supplier_products=$part->get_supplier_products();
+
+		foreach ($supplier_products as $supplier_product) {
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='In Use' where `Supplier Product Key`=%d",
+				$supplier_product['Supplier Product Key']
+			);
+			mysql_query($sql);
+			//print "$sql\n";
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='Yes' where `Supplier Product Part Key`=%d",
+				$supplier_product['Supplier Product Part Key']
+			);
+			mysql_query($sql);
+			//  print "$sql\n";
+
+		}
+
+		$part->update_availability();
+
+
+		$part->update_status('In Use');
+
+
+
+	}
+
+}
 
 
 ?>

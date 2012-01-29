@@ -204,7 +204,14 @@ case('new_department_page'):
 
     new_department_page($data);
     break;
+case('new_store_page'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'store_key'=>array('type'=>'key')
+                         ));
 
+    new_store_page($data);
+    break;
 case('update_see_also_quantity'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -414,21 +421,52 @@ function edit_page_layout() {
 }
 
 
+function new_store_page($data) {
+//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'
+
+    include_once('class.Department.php');
+    $site=new Site($data['site_key']);
+    $store=new Store($site->data['Site Store Key']);
+    $page_data=array();
+   
+  
+   
+    
+    
+    
+       
+    
+    
+    $site->add_store_page($page_data);
+
+    if ($site->new_page) {
+        $response= array('state'=>200,'action'=>'created','page_key'=>$site->new_page_key);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    }
+    echo json_encode($response);
+}
+
+
 function new_department_page($data) {
     include_once('class.Department.php');
     $site=new Site($data['site_key']);
-    $department=new Department($data['department_key']);
-    $page_data=array();
+   
+    /*
     $page_data['Page Parent Key']=$department->id;
     $page_data['Page Store Slogan']='';
     $page_data['Page Store Resume']='';
     $page_data['Page Store Section']='Department Catalogue';
     $page_data['Showcases Layout']='Splited';
-    $page_data['Page URL']='www.ancientwisdom.biz/'.strtolower($department->data['Product Department Code']);
-    $site->add_department_page($page_data);
+    $page_data['Page URL']=$site->data['Site URL'].'/'.strtolower($department->data['Product Department Code']);
+    */
+    $page_data=array();
+    $site->add_department_page($data['department_key'],$page_data);
 
     if ($site->new_page) {
-        $response= array('state'=>200,'action'=>'created');
+        $response= array('state'=>200,'action'=>'created','page_key'=>$site->new_page_key);
 
     } else {
         $response= array('state'=>400,'msg'=>$site->msg);
@@ -440,18 +478,20 @@ function new_department_page($data) {
 function new_family_page($data) {
     include_once('class.Family.php');
     $site=new Site($data['site_key']);
-    $family=new Family($data['family_key']);
+ 
     $page_data=array();
-    $page_data['Page Parent Key']=$family->id;
+   /*
+   $page_data['Page Parent Key']=$family->id;
     $page_data['Page Store Slogan']='';
     $page_data['Page Store Resume']='';
     $page_data['Page Store Section']='Family Catalogue';
     $page_data['Showcases Layout']='Splited';
-    $page_data['Page URL']='www.ancientwisdom.biz/forms/'.strtolower($family->data['Product Family Code']);
-    $site->add_family_page($page_data);
+    $page_data['Page URL']=$site->data['Site URL'].'/'.strtolower($family->data['Product Family Code']);
+   */
+   $site->add_family_page($data['family_key'],$page_data);
 
     if ($site->new_page) {
-        $response= array('state'=>200,'action'=>'created');
+        $response= array('state'=>200,'action'=>'created','page_key'=>$site->new_page_key);
 
     } else {
         $response= array('state'=>400,'msg'=>$site->msg);
@@ -463,18 +503,8 @@ function new_family_page($data) {
 
 function list_pages_for_edition() {
 
-
-
-
-
-
     $parent= $_REQUEST['parent'];
     $parent_key=$_REQUEST['parent_key'];
-
-
-
-
-
 
     $conf=$_SESSION['state'][$parent]['edit_pages'];
 
@@ -536,7 +566,7 @@ function list_pages_for_edition() {
         $where=sprintf(' where `Page Type`="Store" and `Page Site Key`=%d ',$parent_key);
 
     } else if ($parent=='store')
-        $where.sprintf("and `Page Store Section`  not in ('Department Catalogue','Product Description','Family Catalogue') and `Page Store Key`=%d ",$parent_key);
+        $where=sprintf("where  `Page Store Section`  not in ('Department Catalogue','Product Description','Family Catalogue') and `Page Store Key`=%d ",$parent_key);
     else if ($parent=='family')
         $where=sprintf("where `Page Store Section`='Family Catalogue'   and `Page Parent Key`=%d ",$parent_key);
     else if ($parent=='department')
@@ -641,7 +671,7 @@ function list_pages_for_edition() {
                      'page_description'=>$row['Page Store Resume'],
 
 
-                     'go'=>sprintf("<a href='edit_page.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key'],$parent,$parent_key),
+                     'go'=>sprintf("<a href='edit_page.php?id=%d&referral=%s&referral_key=%s&content_view=overview'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key'],$parent,$parent_key),
 
                      'delete'=>"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />"
 
@@ -698,12 +728,18 @@ function add_found_in_page($data) {
 
     $page_key=$data['id'];
     $found_in_key=$data['found_in_key'];
-    $sql=sprintf("insert into `Page Store Found In Bridge` values (%d,%d)  ",
-                 $page_key,
-                 $found_in_key);
-
-    mysql_query($sql);
+    
+    
+    $page=new Page($page_key);
+    $page->add_parent($found_in_key);
+    
+  if($page->updated){
     $response= array('state'=>200,'action'=>'created','page_key'=>$page_key);
+    }else{
+        $response= array('state'=>400,'msg'=>$page->msg);
+
+    }
+    
     echo json_encode($response);
 
 }
