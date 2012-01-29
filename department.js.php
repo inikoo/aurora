@@ -18,6 +18,8 @@ var Event   = YAHOO.util.Event;
 
 var current_store_period='<?php echo$_SESSION['state']['store']['departments']['period']?>';
 
+var dialog_change_families_display;
+var dialog_change_products_display;
 
 function change_block(){
 ids=['details','families','products','categories','deals','web'];
@@ -31,6 +33,34 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-block_view&value='+this.id ,{});
 }
 
+function change_display_mode(parent,name,label){
+    if(name=='percentage'){
+		var request='&percentages=1';
+    }if(name=='value'){
+		var request='&percentages=0&show_default_currency=0';
+    }if(name=='value_default_d2d'){
+		var request='&percentages=0&show_default_currency=1';
+    }
+
+    Dom.get('change_'+parent+'_display_mode').innerHTML=label;
+   
+   if(parent=='products'){
+   var table=tables['table1'];
+    var datasource=tables.dataSource1;
+    dialog_change_products_display.hide();
+
+    }else if(parent=='families'){
+      var table=tables['table0'];
+    var datasource=tables.dataSource0;
+    dialog_change_families_display.hide();
+
+    }else{
+    return;
+    }
+    
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+
+}
 
 function change_elements(){
 
@@ -236,17 +266,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				    //,{key:"dept", label:"<?php echo _('Main Department')?>",width:200,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"expcode", label:"<?php echo _('Tariff Code')?>",width:160,<?php echo($_SESSION['state']['department']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-			      
-			      
-			      
-			      
-			      
-			      
-
 			       ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=department&tableid=1");
+request="ar_assets.php?tipo=products&parent=department&tableid=1&parent_key="+Dom.get('department_key').value+'&sf=0';
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -297,6 +320,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['department']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['products']['f_value']?>'};
 this.table1.table_id=tableid;
+this.table1.request=request;
+
+
+
+
      this.table1.subscribe("renderEvent", myrenderEvent);
 
 
@@ -374,6 +402,7 @@ this.table1.table_id=tableid;
 
 
 	};
+	get_thumbnails(1)
     });
 
 
@@ -467,8 +496,70 @@ request=request+'&'+ids[i]+'=0'
 }
 
 
+function show_dialog_change_products_display(){
+	region1 = Dom.getRegion('change_products_display_mode'); 
+    region2 = Dom.getRegion('change_products_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_products_display_menu', pos);
+	dialog_change_products_display.show();
+}
 
- function init(){
+function change_table_type(parent,tipo,label){
+
+	if(parent=='products'){
+		table_id=1
+	}else{
+	return;
+	}
+	
+	Dom.get('change_products_table_type').innerHTML=label;
+	
+	if(tipo=='list'){
+		Dom.setStyle('thumbnails'+table_id,'display','none')
+		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','')
+ 	}else{
+		Dom.setStyle('thumbnails'+table_id,'display','')
+		Dom.setStyle(['table'+table_id,'list_options'+table_id,'table_view_menu'+table_id],'display','none')
+ 	}
+ 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-'+parent+'-table_type&value='+escape(tipo),{});
+ 	dialog_change_products_table_type.hide();
+
+   
+}
+
+
+function show_dialog_change_families_display(){
+	region1 = Dom.getRegion('change_families_display_mode'); 
+    region2 = Dom.getRegion('change_families_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_families_display_menu', pos);
+	dialog_change_families_display.show();
+}
+
+function show_dialog_change_products_table_type(){
+	region1 = Dom.getRegion('change_products_table_type'); 
+    region2 = Dom.getRegion('change_products_table_type_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_products_table_type_menu', pos);
+	dialog_change_products_table_type.show();
+}
+
+
+function init(){
+
+	dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_change_products_display.render();
+	YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
+
+	dialog_change_families_display = new YAHOO.widget.Dialog("change_families_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_change_families_display.render();
+	YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
+
+dialog_change_products_table_type = new YAHOO.widget.Dialog("change_products_table_type_menu", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_change_products_table_type.render();
+	YAHOO.util.Event.addListener("change_products_table_type", "click", show_dialog_change_products_table_type);
+
+
 
 Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'], "click",change_family_elements);
  Event.addListener(['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'], "click",change_elements);
@@ -494,7 +585,8 @@ Event.addListener(['elements_family_discontinued','elements_family_discontinuing
  YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
  YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
      
- get_thumbnails({tipo:'families',parent:'department'});
+ //get_thumbnails({tipo:'families',parent:'department',parent_key:Dom.get('department_key').value});
+ //   get_thumbnails({tipo:'products',parent:'department',parent_key:Dom.get('department_key').value,table_id:1});
 
  
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -539,7 +631,6 @@ YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 
 YAHOO.util.Event.addListener('details', "click",change_details,'store');
 
- YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'department');
 
 
  ids=['table_type_thumbnail','table_type_list'];

@@ -141,7 +141,7 @@ function get_tipo_order($ltipo,$header){
     $tipo=1;
   }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE/i',$ltipo)){
     $tipo=2;
-  }elseif(preg_match('/ANNULER|cancel/i',$ltipo)){
+  }elseif(preg_match('/ANNULER|cancel|annule/i',$ltipo)){
     $tipo=3;
     $header['notes2']=preg_replace('/^ANNULER?$/i','',$header['notes2']);
 

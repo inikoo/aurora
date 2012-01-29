@@ -131,17 +131,15 @@ $smarty->assign('site',$site);
 $smarty->assign('parent','products');
 $smarty->assign('title', $site->data['Site Name']);
 
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['site']['pages']['f_field']:'code');
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['site']['pages']['f_value']:addslashes($q)));
-$filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
-                 'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
 
+$tipo_filter=($_SESSION['state']['site']['pages']['f_field']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['site']['pages']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Page code starting with  <i>x</i>'),'label'=>_('Code')),
+                 'title'=>array('db_key'=>'title','menu_label'=>_('Page title like  <i>x</i>'),'label'=>_('Title')),
              );
 $smarty->assign('filter_menu0',$filter_menu);
-//$smarty->assign('departments',$site->data['Site Departments']);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);

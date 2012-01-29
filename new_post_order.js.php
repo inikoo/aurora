@@ -390,7 +390,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=post_transactions_to_process&tid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=post_transactions_to_process&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

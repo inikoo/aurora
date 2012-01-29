@@ -348,6 +348,64 @@ $smarty->assign('elements',$_SESSION['state']['store']['products']['elements']);
 $number_sites=$store->get_number_sites();
 $smarty->assign('number_sites',$number_sites);
 
+$mode_options=array(
+	array('mode'=>'percentage','label'=>_('Percentages')),
+	array('mode'=>'value','label'=>_('Sales Amount')),
+
+);
+
+if ($_SESSION['state']['store']['departments']['percentages']) {
+	$display_mode='percentages';
+	$display_mode_label=_('Percentages');
+}else {
+	$display_mode='value';
+	$display_mode_label=_('Sales Amount');
+}
+$smarty->assign('display_departments_mode',$display_mode);
+$smarty->assign('display_departments_mode_label',$display_mode_label);
+$smarty->assign('departments_mode_options_menu',$mode_options);
+$smarty->assign('departments_table_type',$_SESSION['state']['store']['departments']['table_type']);
+
+if ($_SESSION['state']['store']['families']['percentages']) {
+	$display_mode='percentages';
+	$display_mode_label=_('Percentages');
+}else {
+	$display_mode='value';
+	$display_mode_label=_('Sales Amount');
+}
+$smarty->assign('display_families_mode',$display_mode);
+$smarty->assign('display_families_mode_label',$display_mode_label);
+$smarty->assign('families_mode_options_menu',$mode_options);
+$smarty->assign('families_table_type',$_SESSION['state']['store']['families']['table_type']);
+
+
+if ($_SESSION['state']['store']['products']['percentages']) {
+	$display_mode='percentages';
+	$display_mode_label=_('Percentages');
+}else {
+	$display_mode='value';
+	$display_mode_label=_('Sales Amount');
+}
+$smarty->assign('display_products_mode',$display_mode);
+$smarty->assign('display_products_mode_label',$display_mode_label);
+$smarty->assign('products_mode_options_menu',$mode_options);
+$smarty->assign('products_table_type',$_SESSION['state']['store']['products']['table_type']);
+
+
+$tipo_filter=($_SESSION['state']['store']['pages']['f_field']);
+$smarty->assign('filter4',$tipo_filter);
+$smarty->assign('filter_value4',$_SESSION['state']['store']['pages']['f_value']);
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Page code starting with  <i>x</i>'),'label'=>_('Code')),
+	'title'=>array('db_key'=>'title','menu_label'=>_('Page title like  <i>x</i>'),'label'=>_('Title')),
+);
+$smarty->assign('filter_menu4',$filter_menu);
+$smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu4',$paginator_menu);
+$smarty->assign('sites_table_type',$_SESSION['state']['store']['pages']['table_type']);
+
+
 
 $smarty->display('store.tpl');
 

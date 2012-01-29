@@ -66,7 +66,7 @@ $js_files=array(
 		//'new_contact.js.php?scope=staff'
 		);
 
-$smarty->assign('sp_key',$_REQUEST['id']);
+$smarty->assign('part_id',$_REQUEST['id']);
 
 
 $tipo_filter2='code';
@@ -89,7 +89,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','suppliers');
-$smarty->assign('title','New Supplier Product');
+$smarty->assign('title','Associate New Product');
 $smarty->display('associate_product.tpl');
 
 

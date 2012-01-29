@@ -64,8 +64,9 @@ case('edit_product_description'):
   edit_supplier_product($data);
   break;  
 case('edit_supplier'):
+case('edit_supplier_quick'):
   edit_supplier();
-  break;
+	break;
 case('edit_supplier_product'):
 
 			     $data=prepare_values($_REQUEST,array(
@@ -719,8 +720,8 @@ foreach($data['values'] as $key=>$value){
 }
 
 $supplier_data['editor']=$editor;
-//print_r($supplier_data);
-//return;
+//print_r($supplier_data);exit;
+
 
   $supplier=new Supplier('find',$supplier_data,'create');
   if($supplier->new){

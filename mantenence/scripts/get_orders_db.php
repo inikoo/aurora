@@ -1528,8 +1528,8 @@ if (preg_match('/Ashoke/i',$transaction['supplier_code'])) {
 
             $order=create_order($data);
 
-            if (strtotime('today -1 month')>strtotime($date_order)) {
-                $order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +1 month")));
+            if (strtotime('today -3 month')>strtotime($date_order)) {
+                $order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +3 month")));
             }
             if (strtotime('today -6 month')>strtotime($date_order)) {
 

@@ -10,11 +10,6 @@ var category_labels={'stock':'<?php echo _('Stock Keeping Units')?>','value':'<?
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		
-		  
-
-
-
-
 		    var tableid=0;
 		    var tableDivEL="table"+tableid;
 

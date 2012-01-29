@@ -49,6 +49,8 @@ class Warehouse extends DB_Table{
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->id=$this->data['Warehouse Key'];
+      $this->code=$this->data['Warehouse Code'];
+
     }
       
 

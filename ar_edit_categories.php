@@ -1062,7 +1062,7 @@ function disassociate_subject_to_category_radio($data) {
 
 
 function associate_subject_to_category($data) {
-    $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+    $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d, NULL)",
                  $data['category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
@@ -1084,6 +1084,12 @@ function associate_subject_to_category($data) {
 
 
 function associate_subject_to_category_radio($data) {
+
+if(isset($_REQUEST['other'])){
+	$other=$_REQUEST['other'];
+}
+else
+	$other=NULL;
 
 
     $found=false;
@@ -1119,6 +1125,7 @@ function associate_subject_to_category_radio($data) {
     }
 
 
+
     $sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
                  $data['parent_category_key'],
                  prepare_mysql($data['subject']),
@@ -1131,24 +1138,22 @@ function associate_subject_to_category_radio($data) {
         $old_category->update_number_of_subjects();
     $old_category->update_subjects_data();
 
-    $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+    $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,%s)",
                  $data['category_key'],
                  prepare_mysql($data['subject']),
-                 $data['subject_key']
+                 $data['subject_key'],
+		 prepare_mysql($other)
+		
                 );
     mysql_query($sql);
 
+print $sql;
+
     if (mysql_affected_rows()>0) {
-
-
 
         $category=new Category($data['category_key']);
         $category->update_number_of_subjects();
         $category->update_subjects_data();
-
-
-
-
 
         $response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key'],'msg'=>_('Saved'));
         echo json_encode($response);

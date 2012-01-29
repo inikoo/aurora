@@ -323,16 +323,33 @@ $default_state=array(
 
 	),
 
-	'dashboard'=>array(
-		'table'=>array(
-			'nr'=>5,
-			'order'=>'id',
+	'dashboards'=>array(
+		'active_widgets'=>array(
+			'nr'=>20,
+			'sf'=>0,
+			'order'=>'name',
 			'order_dir'=>'desc',
-			'f_field'=>'customer_name',
+			'f_field'=>'description',
+			'f_value'=>''
+		),'widgets'=>array(
+			'nr'=>20,
+			'sf'=>0,
+			'order'=>'name',
+			'order_dir'=>'desc',
+			'f_field'=>'description',
 			'f_value'=>''
 		)
 	),
-
+	'dashboard'=>array(
+		'active_widgets'=>array(
+			'nr'=>20,
+			'sf'=>0,
+			'order'=>'name',
+			'order_dir'=>'desc',
+			'f_field'=>'description',
+			'f_value'=>''
+		)
+	),
 	'orders'=>array(
 		'details'=>false,
 		'store'=>'1',
@@ -2375,6 +2392,7 @@ $default_state=array(
 			)
 		),
 		'pages'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -2401,6 +2419,7 @@ $default_state=array(
 		),
 
 		'sites'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'name',
 			'f_value'=>'',
@@ -2419,6 +2438,7 @@ $default_state=array(
 
 		),
 		'departments'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -2462,6 +2482,7 @@ $default_state=array(
 		),
 
 		'families'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -2506,6 +2527,7 @@ $default_state=array(
 
 		),
 		'products'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -2685,6 +2707,7 @@ $default_state=array(
 
 		),
 		'pages'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -2907,6 +2930,7 @@ $default_state=array(
 		),
 
 		'families'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -2921,7 +2945,7 @@ $default_state=array(
 			'mode'=>'all',
 			'avg'=>'totals',
 
-			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0),
+			'elements'=>array('NoSale'=>0,'Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0),
 
 			'csv_export'=>array(
 				'code'=>true,
@@ -2952,6 +2976,7 @@ $default_state=array(
 
 		),
 		'products'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -3020,6 +3045,7 @@ $default_state=array(
 			'nr'=>25,
 		),
 		'pages'=>array(
+	'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -3070,6 +3096,7 @@ $default_state=array(
 		),
 
 		'products'=>array(
+		'table_type'=>'list',
 			'percentages'=>false,
 			'view'=>'general',
 
@@ -3568,14 +3595,23 @@ $default_state=array(
 
 		),
 		'departments'=>array(
+			'percentages'=>false,
+			'view'=>'general',
+			'period'=>'year',
+			'mode'=>'all',
+			'avg'=>'totals',
+			'exchange_type'=>'day2day',
+			'exchange_value'=>1,
+			'show_default_currency'=>false,
 			'where'=>'where true',
 			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'percentages'=>false,
+		
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
@@ -3610,21 +3646,30 @@ $default_state=array(
 
 		),
 		'families'=>array(
+					'percentages'=>false,
+			'view'=>'general',
+			'period'=>'year',
+			'mode'=>'all',
+			'avg'=>'totals',
+			'exchange_type'=>'day2day',
+			'exchange_value'=>1,
+			'show_default_currency'=>false,
 			'where'=>'where true',
 			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'percentages'=>false,
+			
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
 			'mode'=>'all',
 			'avg'=>'totals',
 			'restrictions'=>'',
-			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0),
+			'elements'=>array('NoSale'=>0,'Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0),
 
 			'csv_export'=>array(
 				'code'=>true,
@@ -3655,14 +3700,23 @@ $default_state=array(
 
 		),
 		'products'=>array(
+					'percentages'=>false,
+			'view'=>'general',
+			'period'=>'year',
+			'mode'=>'all',
+			'avg'=>'totals',
+			'exchange_type'=>'day2day',
+			'exchange_value'=>1,
+			'show_default_currency'=>false,
 			'where'=>'where true',
 			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			'percentages'=>false,
+			
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
@@ -3919,6 +3973,25 @@ $default_state=array(
 
 
 			)
+		),
+			'sites'=>array(
+			'table_type'=>'list',
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'percentages'=>false,
+			'view'=>'general',
+			'period'=>'day',
+			'percentage'=>0,
+			'mode'=>'all',
+			'avg'=>'totals'
+
+
 		)
 
 	),

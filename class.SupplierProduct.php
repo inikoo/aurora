@@ -601,19 +601,18 @@ class supplierproduct extends DB_Table {
         }
         function update_valid_dates_code($date) {
             $affected=0;
-            $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s where  `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Valid From`>%s   "
-                         ,prepare_mysql($this->code)
+            $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s where  `Supplier Product Key`=%d and `Supplier Product Valid From`>%s   "
+                         
                          ,prepare_mysql($date)
-                         ,$this->supplier_key
+                         ,$this->pid
                          ,prepare_mysql($date)
 
                         );
             mysql_query($sql);
             $affected+=mysql_affected_rows();
-            $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where  `Supplier Product Code`=%s and `Supplier Key`=%d  and `Supplier Product Valid To`<%s   "
-                         ,prepare_mysql($date)
-                         ,prepare_mysql($this->code)
-                         ,$this->supplier_key
+            $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where `Supplier Product Key`=%d and `Supplier Product Valid To`<%s   "
+                        ,prepare_mysql($date)
+                         ,$this->pid
                          ,prepare_mysql($date)
 
                         );

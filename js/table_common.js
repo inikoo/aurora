@@ -140,16 +140,6 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
 
 
-function myrenderEvent(){
-
-
-ostate=this.getState();
-paginator=ostate.pagination
-
-if(paginator.totalRecords<=paginator.rowsPerPage){
-Dom.setStyle('paginator'+this.table_id,'display','none')
-}
-}
 
 
 
@@ -174,6 +164,7 @@ var dir=oState.sortedBy.dir;
     "&sf=" + startIndex +
     "&nr=" + results;
 //alert(oState.sortedBy.dir)
+get_thumbnails(oSelf.table_id,request)
 
     return request;
 };
@@ -198,8 +189,7 @@ var dir=oState.sortedBy.dir;
     "&od=" + dir +
     "&sf=" + startIndex +
     "&nr=" + results;
-
-
+get_thumbnails(oSelf.table_id,request)
     return request;
 };
 
@@ -286,38 +276,107 @@ Dom.get('list_options'+table_id).style.display='none'
 }
 
 
-function get_thumbnails(data) {
-    parent=data.parent;
-    tipo=data.tipo;
-    var table_id=0;
-    var request='ar_assets.php?tipo='+tipo+'&parent='+parent;
-    if (data.parent_key!= undefined) {
-        request+='&parent_key='+data.parent_key
-             }
-YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
+function myrenderEvent(){
+
+
+ostate=this.getState();
+paginator=ostate.pagination
+
+if(paginator.totalRecords<=paginator.rowsPerPage){
+Dom.setStyle('paginator'+this.table_id,'display','none')
+}
+}
+
+
+
+function get_thumbnails(table_id,extra_arguments) {
+
+
+
+if(extra_arguments==undefined)
+extra_arguments='';
+if(Dom.get('thumbnails'+table_id)==undefined)
+return;
+
+table=tables['table'+table_id];
+
+    if(table.request==undefined)
+    return;
+//    parent=data.parent;
+  //  tipo=data.tipo;
+    
+   // if (data.table_id!= undefined) {
+   // var table_id=data.table_id;
+   // }else{
+   // var table_id=0;
+   // }
+    
+   // var request='ar_assets.php?tipo='+tipo+'&parent='+parent;
+   // if (data.parent_key!= undefined) {
+    //    request+='&parent_key='+data.parent_key
+     //        }
+//     alert(table.request+extra_arguments)
+YAHOO.util.Connect.asyncRequest('POST',table.request+extra_arguments , {success:function(o) {
 //alert(o.responseText)
         var r =  YAHOO.lang.JSON.parse(o.responseText);
         if (r.resultset.state==200) {
             var container=Dom.get('thumbnails'+table_id);
+            container.innerHTML='';
+            var counter=0;
             for (x in r.resultset.data) {
                 if (r.resultset.data[x].type=='item') {
-                    var img = new YAHOO.util.Element(document.createElement('img'));
+                
+               
+                   //var div1 = new YAHOO.util.Element(document.createElement('div'));
+                    //Dom.addClass(div1,'image_container');
+                    //var img = new YAHOO.util.Element(document.createElement('img'));
+                    //img.set('src', r.resultset.data[x].image);
+                    //img.set('alt', r.resultset.data[x].image);
+                    //var div = new YAHOO.util.Element(document.createElement('div'));
+                    //Dom.addClass(div,'item_container');
+                    //img.appendTo(div1);
+					//	div1.appendTo(div);
+
+                    //var p = new YAHOO.util.Element(document.createElement('p'));
+                    //p.set('innerHTML', r.resultset.data[x].code);
+                    // Dom.addClass(p,'item_caption');
+					//p.appendTo(div);
+					  //div.appendTo(container);
+					
+					var table = new YAHOO.util.Element(document.createElement('table'));
+					
+					Dom.addClass(table,'item_container');
+					var tr = new YAHOO.util.Element(document.createElement('tr'));
+					var td = new YAHOO.util.Element(document.createElement('td'));
+					Dom.addClass(td,'image_container');
+					var img = new YAHOO.util.Element(document.createElement('img'));
                     img.set('src', r.resultset.data[x].image);
                     img.set('alt', r.resultset.data[x].image);
-                    var internal_span = new YAHOO.util.Element(document.createElement('span'));
-                    internal_span.set('innerHTML', r.resultset.data[x].code);
+					img.appendTo(td);
+					td.appendTo(tr);
+					tr.appendTo(table);
+					
+					var tr = new YAHOO.util.Element(document.createElement('tr'));
+					var td = new YAHOO.util.Element(document.createElement('td'));
+										Dom.addClass(td,'item_caption');
 
-                    var div = new YAHOO.util.Element(document.createElement('div'));
-                    Dom.addClass(div,'product_container');
-                    img.appendTo(div);
-                    internal_span.appendTo(div);
+					
+					td.appendTo(tr);
+					 td.set('innerHTML', r.resultset.data[x].code);
+					tr.appendTo(table);
+					
+					table.appendTo(container);
 
-
-
-                    div.appendTo(container);
+					
+                  
+                    counter++
                 }
-
+					
             }
+            var div = new YAHOO.util.Element(document.createElement('div'));
+					Dom.setStyle(div,'clear','both')
+										div.appendTo(container);
+
 
         }
 

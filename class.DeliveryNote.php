@@ -1060,13 +1060,13 @@ class DeliveryNote extends DB_Table {
 	}
 
 
-	
+
 	private function handle_to_customer($data) {
 
 		//   print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
 		if (!array_key_exists('Delivery Note Date',$data) or !$data['Delivery Note Date'] ) {
-			$data['Delivery Note Date']=date('Y-m-d H:i:s');
+			$data['Delivery Note Date']=    gmdate('Y-m-d H:i:s');
 		}
 
 
@@ -1154,13 +1154,21 @@ class DeliveryNote extends DB_Table {
 		);
 		mysql_query($sql);
 
-$this->update_xhtml_state();
+		$this->update_xhtml_state();
 		foreach ($this->get_orders_objects() as $key=>$order) {
-			$order->update_dispatch_state();
+
+
+
+			if (in_array($this->data['Delivery Note Type'],array('Replacement & Shortages','Replacement','Shortages'))) {
+
+				$order->set_order_post_actions_as_dispatched($data['Delivery Note Date']);
+
+			}else {
+				$order->set_order_as_dispatched($data['Delivery Note Date']);
+			}
+
 
 		}
-
-
 	}
 
 	function dispatch($data) {
@@ -1223,11 +1231,11 @@ $this->update_xhtml_state();
 
 		// print "Dispatching\n";
 
-		foreach ($this->get_orders_objects() as $order) {
-			// print_r($order->data);
-			$order->update_dispatch_state();
+		// foreach ($this->get_orders_objects() as $order) {
+		// print_r($order->data);
+		//  $order->set_order_as_dispatched();
 
-		}
+		//  }
 
 
 
@@ -1941,8 +1949,8 @@ $this->update_xhtml_state();
 			}
 		else if ($this->data['Delivery Note State']=='Cancelled') {
 				$state=_('Cancelled');
-			}	
-			
+			}
+
 		else {
 
 
@@ -2017,7 +2025,7 @@ $this->update_xhtml_state();
 	function approved_for_shipping($date=false) {
 
 
-//print "-->> approve shipping\n";
+		//print "-->> approve shipping\n";
 
 		$this->data['Delivery Note Approved To Dispatch']="Yes";
 
@@ -2034,7 +2042,7 @@ $this->update_xhtml_state();
 		);
 		mysql_query($sql);
 
-$this->update_xhtml_state();
+		$this->update_xhtml_state();
 		foreach ($this->get_orders_objects() as $order) {
 			// $order->update_shipping($this->id);
 			//  $order->update_charges($this->id);

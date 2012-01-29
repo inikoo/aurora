@@ -16,27 +16,41 @@
 			<div style="clear:both">
 			</div>
 		</div>
+<h1  style="padding-bottom:0px">
+<span id="customer_name_heading" style="padding:2px 7px;border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')" >
+<span id="customer_name">{$supplier->get('Supplier Name')}</span> <span class="id">({$supplier->get('Supplier Code')})</span> <img onMouseover="Dom.setStyle('customer_name_heading','border-color','#ccc')"  onMouseout="Dom.setStyle('customer_name_heading','border-color','#fff')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span></h1>
 		
-			<h1>
-				{$supplier->get('Supplier Name')} <span class="id">({$supplier->get('Supplier Code')})</span>
-			</h1>
 			<table style="width:500px">
 				<tr>
-					<td valign="top">{$company->get('Company Main XHTML Address')}</td>
+<td id="main_address_td" style="border:1px dotted #fff"  onMouseover="Dom.setStyle('quick_edit_main_address','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_address','visibility','hidden')">
+            <img onMouseover="Dom.setStyle('main_address_td','border-color','#ccc')"  onMouseout="Dom.setStyle('main_address_td','border-color','#fff')" id="quick_edit_main_address" style="float:right;cursor:pointer;visibility:hidden" src="art/icons/edit.gif">
+
+					<div  id="main_address" >{$company->get('Company Main XHTML Address')}</div>
+ </td>
+
 					<td valign="top"> 
 					<table border="0" style="padding:0">
-						<tr>
-							<td colspan="2">{$company->get('Company Main Contact Name')}</td>
-						</tr>
-						<tr>
-							<td colspan="2">{$company->get('Company Main XHTML Email')}</td>
-						</tr>
-						<tr>
-							<td colspan="2">{$company->get('Company Main XHTML Telephone')}</td>
-						</tr>
-						<tr>
-							<td colspan="2">{$company->get('Company Main XHTML FAX')}</td>
-						</tr>
+						  <tr id="main_contact_name_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
+                    <td id="main_contact_name" colspan=2  class="aright">{$company->get('Company Main Contact Name')}</td>
+ <td><img  alt="{t}Name{/t}" title="{t}Name{/t}"  src="art/icons/user_suit.png"/></td>
+                    <td  ><img onMouseover="Dom.setStyle('main_contact_name_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_contact_name_tr','border-color','#fff')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+                </tr>
+						<tr id="main_email_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_email','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">
+                <td id="main_email" colspan=2  class="aright">{$company->get('Company Main XHTML Email')}</td>
+<td><img alt="{t}Email{/t}" title="{t}Email{/t}"   src="art/icons/email.png"/></td>
+<td><img onMouseover="Dom.setStyle('main_email_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_email_tr','border-color','#fff')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>           	
+                </tr>
+					
+<tr id="main_telephone_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_telephone','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_telephone','visibility','hidden')">
+<td id="main_telephone" colspan=2 class="aright"  >{$company->get('Company Main XHTML Telephone')}</td >
+<td><img alt="{t}Main Telephone{/t}" title="{t}Main Telephone{/t}" src="art/icons/telephone.png"/></td>
+
+<td><img onMouseover="Dom.setStyle('main_telephone_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_telephone_tr','border-color','#fff')" id="quick_edit_main_telephone" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
+						
+<tr id="main_fax_tr" style="border:1px dotted #fff" onMouseover="Dom.setStyle('quick_edit_main_fax','visibility','visible')"  onMouseout="Dom.setStyle('quick_edit_main_fax','visibility','hidden')">
+<td id="main_fax" colspan=2 class="aright">{$company->get('Company Main XHTML FAX')}</td >
+<td><img alt="{t}Fax{/t}" title="{t}Fax{/t}"  src="art/icons/printer.png"/></td>
+<td><img onMouseover="Dom.setStyle('main_fax_tr','border-color','#ccc')"  onMouseout="Dom.setStyle('main_fax_tr','border-color','#fff')" id="quick_edit_main_fax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td></tr>
 					</table>
 					</td>
 				</tr>
@@ -215,4 +229,155 @@
 		</ul>
 	</div>
 </div>
+
+
+
 {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="supplier-table-csv_export" export_options=$csv_export_options } {include file='footer.tpl'} 
+
+
+
+
+
+
+<div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
+	<table style="margin:10px">
+	
+	<tr>
+	<td>{t}Customer Name:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_Main_Contact_Name" value="{$company->get('Company Main Contact Name')}" ovalue="{$company->get('Company Main Contact Name')}" valid="0">
+	<div id="Customer_Main_Contact_Name_Container"  ></div>
+	</div>	
+	</td>
+
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Contact_Name_msg" ></span>
+	<button class="positive" id="save_quick_edit_main_contact_name">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_main_contact_name">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
+	</table>
+
+</div>
+
+<div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
+	<table style="margin:10px">
+	<tr>
+	<td>{t}Contact Email:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Email" value="{$company->get('Company Main Plain Email')}" ovalue="{$company->get('Company Main Plain Email')}" valid="0">
+		<div id="Customer_Main_Email_Container"  ></div>
+	</div>	
+	</td>
+	</tr>
+	
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Email_msg" ></span>
+	<button class="positive" id="save_quick_edit_email">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
+	</table>
+
+</div>
+
+
+
+<div id="dialog_quick_edit_Customer_Main_Telephone" style="padding:10px">
+	<table style="margin:10px">
+
+	<tr>
+	<td>{t}Telephone:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_Telephone" value="{$company->get('Company Main XHTML Telephone')}" ovalue="{$company->get('Company Main XHTML Telephone')}" valid="0">
+	<div id="Customer_Main_Telephone_Container"></div>
+	</div>	
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_Telephone_msg" ></span>
+	<button class="positive" id="save_quick_edit_telephone">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_telephone">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
+	</table>
+
+</div>
+
+<div id="dialog_quick_edit_Customer_Main_FAX" style="padding:10px">
+	<table style="margin:10px">
+	<tr>
+	<td>{t}Fax:{/t}</td>
+	<td>
+	<div style="width:200px">
+	<input type="text" id="Customer_Main_FAX" value="{$company->get('Company Main XHTML FAX')}" ovalue="{$company->get('Company Main XHTML FAX')}" valid="0">
+	<div id="Customer_Main_FAX_Container"></div>
+	</div>	
+	</td></tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Main_FAX_msg" ></span>
+	<button class="positive" id="save_quick_edit_fax">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_fax">{t}Cancel{/t}</button>
+	</div>
+	</td>
+	</tr>
+	</table>
+
+</div>
+			
+<div id="dialog_quick_edit_Customer_Name" style="padding:10px">
+	<table style="margin:10px">
+
+	<tr>
+	<td>{t}Customer Name:{/t}</td>
+	<td>
+	<div style="width:220px">
+	<input type="text" id="Customer_Name" value="{$supplier->get('Supplier Name')}" ovalue="{$supplier->get('Supplier Name')}" valid="0">
+	<div id="Customer_Name_Container"  ></div>
+	</div>	
+	</td>
+
+	</tr>
+	<tr><td colspan=2>
+	<div class="buttons" style="margin-top:10px">
+	<span id="Customer_Name_msg" ></span>
+	<button class="positive" id="save_quick_edit_name">{t}Save{/t}</button>
+	<button class="negative" id="close_quick_edit_name">{t}Cancel{/t}</button>
+
+	</div>
+	</td></tr>
+	</table>
+
+</div>
+
+
+<div id="dialog_quick_edit_Customer_Main_Address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;padding-bottom:50px">
+
+<table border=0 style="margin:10px; width:100%">
+{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  show_components=true}
+</table>
+<div style="display:none" id='contact_current_address' ></div>
+<div style="display:none" id='contact_address_display{$supplier->get("Supplier Main Address Key")}' ></div>
+</div>
+
+
+<div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
+    <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+        <div id="the_table" class="data_table" >
+            <span class="clean_table_title">{t}Country List{/t}</span>
+            
+            {include file='table_splinter.tpl' table_id=100 filter_name=$filter_name100 filter_value=$filter_value100}
+            <div  id="table100"   class="data_table_container dtable btable "> </div>
+        </div>
+    </div>
+ </div>

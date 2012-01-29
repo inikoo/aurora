@@ -195,6 +195,8 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_porders.php';    
      else if (column.object=='family_page_properties' || column.object=='page_product_list' || column.object=='store_page_properties'  || column.object=='department_page_properties'  || column.object=='site_page_properties'  )
         ar_file='ar_edit_sites.php';    
+     else if (column.object=='widget')
+        ar_file='ar_edit_dashboard.php';         
     
     
     
@@ -207,12 +209,13 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-//  alert(ar_file+'?'+request);//return;
+ // alert(ar_file+'?'+request);
+  //return;
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-            //    alert(o.responseText);
+               // alert(o.responseText);
 
             var r = YAHOO.lang.JSON.parse(o.responseText)
 
@@ -268,8 +271,8 @@ if(delete_type== undefined)
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
                 if (column.object=='company' || column.object=='company_area' || column.object=='customer_history' || column.object=='customer_list')
                     ar_file='ar_edit_contacts.php';
-		else if(column.object=='widget_list' )
-			ar_file='ar_dashboard.php';
+		else if(column.object=='widget_in_dashboard' )
+			ar_file='ar_edit_dashboard.php';
                 else if (column.object=='warehouse_area' || column.object=='location')
                     ar_file='ar_edit_warehousrecordIndexe.php';
                 else if (column.object=='position')
@@ -291,7 +294,7 @@ if(delete_type== undefined)
 
 
 
-          //alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record));return;
+        
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
@@ -543,7 +546,7 @@ function validate_scope_new(branch) {
     if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
-	//alert('save_new_'+branch)
+	alert('save_new_'+branch)
         Dom.removeClass('save_new_'+branch,'disabled');
     }
 }
@@ -895,6 +898,7 @@ return;
  //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
  var data_to_update=new Object;
     for (items in validate_scope_data[branch]) {
+	//alert(validate_scope_data[branch][items].name +':'+validate_scope_data[branch][items].changed+':'+validate_scope_data[branch][items].validated)
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input=Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
@@ -927,7 +931,7 @@ return;
 var request=scope_edit_ar_file
 
 var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request+'?'+postData);return;
+//alert(request+'?'+postData);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {
   //alert(o.responseText);

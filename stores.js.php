@@ -8,10 +8,14 @@ var Event  =YAHOO.util.Event;
 
 var csvMenu;
 
+var dialog_change_stores_display;
+var dialog_change_departments_display;
+var dialog_change_families_display;
+var dialog_change_products_display;
 
 function change_block(){
-ids=['details','stores','departments','families','products','deals'];
-block_ids=['block_details','block_stores','block_departments','block_families','block_products','block_categories'];
+ids=['details','stores','departments','families','products','deals','sites'];
+block_ids=['block_details','block_stores','block_departments','block_families','block_products','block_categories','block_sites'];
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
@@ -19,6 +23,7 @@ Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-block_view&value='+this.id ,{});
+dialog_change_stores_display.hide();
 }
 
 
@@ -439,10 +444,34 @@ function change_display_mode(parent,name,label){
 	var request='&percentages=0&show_default_currency=1';
     }
 
-    Dom.get('change_'+parent+'_display_mode').innerHTML=label;
-    var table=tables['table0'];
+  Dom.get('change_'+parent+'_display_mode').innerHTML=label;
+ if(parent=='products'){
+   var table=tables['table3'];
+    var datasource=tables.dataSource3;
+    dialog_change_products_display.hide();
+
+    }else if(parent=='families'){
+      var table=tables['table2'];
+    var datasource=tables.dataSource2;
+    dialog_change_families_display.hide();
+
+    }else if(parent=='departments'){
+      var table=tables['table1'];
+    var datasource=tables.dataSource1;
+    dialog_change_departments_display.hide();
+
+    }else if(parent=='store'){
+      var table=tables['table0'];
     var datasource=tables.dataSource0;
+    dialog_change_stores_display.hide();
+
+    }else{
+    return;
+    }
     
+
+  
+   
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
 
 }
@@ -491,12 +520,64 @@ request=request+'&'+ids[i]+'=0'
 
 }
 
+
+function show_dialog_change_stores_display(){
+region1 = Dom.getRegion('change_stores_display_mode'); 
+    region2 = Dom.getRegion('change_stores_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_stores_display_menu', pos);
+
+dialog_change_stores_display.show();
+
+}
+
+function show_dialog_change_products_display(){
+	region1 = Dom.getRegion('change_products_display_mode'); 
+    region2 = Dom.getRegion('change_products_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_products_display_menu', pos);
+	dialog_change_products_display.show();
+}
+
+function show_dialog_change_families_display(){
+	region1 = Dom.getRegion('change_families_display_mode'); 
+    region2 = Dom.getRegion('change_families_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_families_display_menu', pos);
+	dialog_change_families_display.show();
+}
+
+function show_dialog_change_departments_display(){
+	region1 = Dom.getRegion('change_departments_display_mode'); 
+    region2 = Dom.getRegion('change_departments_display_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_departments_display_menu', pos);
+	dialog_change_departments_display.show();
+}
+
 function init(){
+
+
+dialog_change_stores_display = new YAHOO.widget.Dialog("change_stores_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_stores_display.render();
+	 YAHOO.util.Event.addListener("change_stores_display_mode", "click", show_dialog_change_stores_display);
+ dialog_change_products_display = new YAHOO.widget.Dialog("change_products_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_products_display.render();
+	 YAHOO.util.Event.addListener("change_products_display_mode", "click", show_dialog_change_products_display);
+
+dialog_change_families_display = new YAHOO.widget.Dialog("change_families_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_families_display.render();
+	 YAHOO.util.Event.addListener("change_families_display_mode", "click", show_dialog_change_families_display);
+
+dialog_change_departments_display = new YAHOO.widget.Dialog("change_departments_display_menu", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_departments_display.render();
+	 YAHOO.util.Event.addListener("change_departments_display_mode", "click", show_dialog_change_departments_display);
+
 
  Event.addListener(['elements_family_discontinued','elements_family_discontinuing','elements_family_normal','elements_family_inprocess','elements_family_nosale'], "click",change_family_elements);
 
 
-    ids=['details','stores','departments','families','products','deals'];
+    ids=['details','stores','departments','families','products','deals','sites'];
     Event.addListener(ids, "click",change_block);
     
     YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'stores');
@@ -617,10 +698,5 @@ YAHOO.util.Event.onContentReady("filtermenu3", function () {
     
     
 
-YAHOO.util.Event.onContentReady("change_stores_display_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("change_stores_display_menu", { context:["change_stores_display_mode","tr", "br"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("change_stores_display_mode", "click", oMenu.show, null, oMenu);
   
-    });
+  
