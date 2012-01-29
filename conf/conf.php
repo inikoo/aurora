@@ -2707,6 +2707,7 @@ $default_state=array(
 
 		),
 		'pages'=>array(
+		'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',

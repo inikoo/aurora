@@ -299,7 +299,7 @@ if(delete_type== undefined)
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
                 success: function (o) {
-                    alert(o.responseText);
+                    //alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 
@@ -931,10 +931,10 @@ return;
 var request=scope_edit_ar_file
 
 var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-alert(request+'?'+postData);//return;
+//alert(request+'?'+postData);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {
-  alert(o.responseText);
+  //alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         

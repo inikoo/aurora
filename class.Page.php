@@ -214,6 +214,7 @@ class Page extends DB_Table {
 
     function create($raw_data) {
 
+
         $this->new=false;
         if (!isset($raw_data['Page Code']) or  $raw_data['Page Code']=='') {
 
@@ -343,7 +344,8 @@ class Page extends DB_Table {
         $data['Page Store Product Layouts']=serialize($data['Page Store Product Layouts']);
 
         $keys='(';
-        $values='values(';
+  
+   $values='values(';
         foreach($data as $key=>$value) {
             $keys.="`$key`,";
             if ($key=='Page Source Template')
@@ -903,7 +905,7 @@ class Page extends DB_Table {
     function delete() {
     
     
-    
+    include_once('class.PageDeleted.php');
         $this->deleted=false;
 
         $site=new Site($this->data['Page Site Key']);
@@ -951,6 +953,9 @@ $this->new_value=$deleted_page->id;
             return;
 
         $max_links=$this->data['Number See Also Links'];
+        
+      
+        
         $min_sales_correlation_samples=20;
         $correlation_upper_limit=1/($min_sales_correlation_samples);
         $see_also=array();
@@ -961,27 +966,11 @@ $this->new_value=$deleted_page->id;
         case 'Family Catalogue':
 
             $family=new Family($this->data['Page Parent Key']);
-            /*
-            $store_key=$family->data['Product Family Store Key'];
-
-            $sql=sprintf("select avg(`Correlation`) avg_correlation,avg(`Samples`) avg_samples, std(`Correlation`) std_correlation,std(`Samples`) std_samples  from `Product Family Sales Correlation` left join `Product Family Dimension` F on (`Product Family Key`=`Family A Key`) where `Product Family Store Key` and `Samples`>=20",
-                         $this->data['Page Parent Key'],
-                         $store_key
-                        );
-            $res=mysql_query($sql);
-            if ($row=mysql_fetch_assoc($res)) {
-
-                $correlation_upper_limit=$row['avg_correlation']/3;
-
-
-            }
-            */
-            //print "Family: ".$family->data['Product Family Code']."\n";
-
+   
             $sql=sprintf("select * from `Product Family Sales Correlation` where `Family A Key`=%d order by `Correlation` desc limit 200",
                          $this->data['Page Parent Key']);
             $res=mysql_query($sql);
-            // print "$sql\n";
+           
             while ($row=mysql_fetch_assoc($res)) {
                 //    print_r($row);
 
@@ -1041,7 +1030,7 @@ $this->new_value=$deleted_page->id;
             // }
 
 
-            //    print_r($see_also);
+             
 
             break;
         default:
@@ -1066,7 +1055,7 @@ $this->new_value=$deleted_page->id;
                          $see_also_data['value']
                         );
             mysql_query($sql);
-            //    print "$sql\n";
+                //print "$sql\n";
         }
 
     }
@@ -2206,7 +2195,7 @@ $this->new_value=$deleted_page->id;
 
     function update_preview_snapshot() {
 
-        global $inikoo_public_url;
+      
 
 
 
@@ -2352,7 +2341,17 @@ $this->new_value=$deleted_page->id;
         if ($this->data['Page Preview Snapshot Last Update']!='')
             return strftime("%c", strtotime($this->data['Page Preview Snapshot Last Update'].' UTC')) ;
     }
+    
+    function add_parent($parent_key){
+    
+    
+     $sql=sprintf("insert into `Page Store Found In Bridge` values (%d,%d)  ",
+                 $this->id,
+                 $parent_key);
 
+    mysql_query($sql);
+    $this->updated=true;
+}
 }
 
 

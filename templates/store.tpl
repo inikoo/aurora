@@ -2,6 +2,7 @@
 <div id="bd" style="padding:0px">
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
+		<input type="hidden" id="store_key" value="{$store->id}">
 		<div class="branch">
 			<span>{if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span> 
 		</div>

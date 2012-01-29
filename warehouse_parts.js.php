@@ -113,10 +113,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehou
 
 var change_parts_view=function(e){
       
-      
-      
-      
-      var tipo=this.getAttribute('name');
+        var tipo=this.getAttribute('name');
       
       
       var table=tables['table2'];

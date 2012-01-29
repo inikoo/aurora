@@ -324,7 +324,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 			       ];
 
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=store&tableid=2");
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=store&tableid=2&parent_key="+Dom.get('store_key').value);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {
