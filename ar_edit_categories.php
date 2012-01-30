@@ -1085,25 +1085,30 @@ function associate_subject_to_category($data) {
 
 function associate_subject_to_category_radio($data) {
 
-if(isset($_REQUEST['other'])){
-	$other=$_REQUEST['other'];
-}
-else
-	$other=NULL;
-
-
+    
     $found=false;
     $sql=sprintf("select count(*) as num from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
                  $data['category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
-                );
+                 );
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
         if ($row['num']>0)
             $found=true;
-
+        
     }
+    
+    
+if(isset($_REQUEST['other'])){
+	$other=$_REQUEST['other'];
+    $found=false;
+}
+else
+	$other=NULL;
+
+
+
 
 
     if ($found) {
@@ -1147,7 +1152,7 @@ else
                 );
     mysql_query($sql);
 
-print $sql;
+//print $sql;
 
     if (mysql_affected_rows()>0) {
 

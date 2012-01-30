@@ -350,10 +350,45 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
 	}
 
+
 	$smarty->assign('categories',$categories);
 	$smarty->assign('categories_value',$categories_value);
-//print_r($categories);
+                 
+$enable_other_1=false;
+$enable_other_2=false;
+                 
+                 $other_value=array();
+                 foreach($categories_value as $key=>$value){
+                 if($value==38 || $value==16){
+                 if($key==1){
+                 
+                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $value, $customer->id);
+                 }
+                 elseif($key==2){
+                 
+                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $value, $customer->id);
+                 }
+                 }
+                 
+                 $result=mysql_query($sql);
+                 $row=mysql_fetch_assoc($result);
+                 if($row['Category Key']==38){
+                 $enable_other_1=true;
+                 $other_value[1]=$row['Customer Other Note'];
+                 }
+                 elseif($row['Category Key']==16){
+                 $enable_other_2=true;
+                 $other_value[2]=$row['Customer Other Note'];
+                 }
 
+                 }
+                 
+                 //print_r($other_value);
+  
+$smarty->assign('other_value',$other_value);
+$smarty->assign('enable_other_1',$enable_other_1);
+$smarty->assign('enable_other_2',$enable_other_2);
+                 
     for ($i = 0; $i < 16; $i++) {
         $rnd .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
 mt_rand(0, 63), 1);
@@ -440,7 +475,7 @@ if ($page->data['Page Store Content Display Type']=='Source') {
     $css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
     $js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
 }
-
+//
 //$customer=new Customer(73257);
 $page->customer=$customer;
 //print_r($order);
