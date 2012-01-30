@@ -1183,7 +1183,7 @@ class Store extends DB_Table {
 
 		);
 		$result=mysql_query($sql);
-		//print "$sql\n";
+		//print "$interval \n$sql\n";
 		$number_samples=0;
 		$sum_interval=0;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

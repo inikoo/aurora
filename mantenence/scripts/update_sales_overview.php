@@ -49,6 +49,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
     $store->update_customer_activity_interval();
     $store->update_interval_sales();
     $store->update_last_period_sales();
+    
+    $store->update_up_today_dispatch_times();
+$store->update_last_period_dispatch_times();
+$store->update_interval_dispatch_times();
 
 }
 
