@@ -350,7 +350,7 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
 	}
 
-
+                 //print_r($categories);
 	$smarty->assign('categories',$categories);
 	$smarty->assign('categories_value',$categories_value);
                  
