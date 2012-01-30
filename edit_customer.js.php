@@ -925,24 +925,14 @@ function save_category(o) {
     var subject='Customer';
     var subject_key=Dom.get('customer_key').value;
     
-    
-    Dom.get('parent_category_key').value=parent_category_key;    
-    Dom.get('category_key').value=category_key;    
+    var category_object=o.options[o.selectedIndex];
     
     
-    if(parent_category_key==1 && category_key==38){
-        Dom.get('other_tbody_1').style.display='';
+    if(Dom.get(category_object).getAttribute('other')==true){
+        Dom.get('other_tbody_'+parent_category_key).style.display='';
         return;
     }
-    else if(parent_category_key==1 )
-        Dom.get('other_tbody_1').style.display='none';
     
-    if(parent_category_key==2 && category_key==16){
-        Dom.get('other_tbody_2').style.display='';
-        return;
-    }
-    else if(parent_category_key==2 )
-        Dom.get('other_tbody_2').style.display='none';
     
     if(category_key==''){
         
@@ -974,13 +964,20 @@ function save_category(o) {
     
 }
 
-function save_other_1(o){
-    var parent_category_key=1;//Dom.get('parent_category_key').value;
-    var category_key=38;//Dom.get('category_key').value;
+
+<?php
+    $category=new Category(0);
+    foreach($category->get_other_categories() as $key=>$value){
+    ?>
+
+
+function save_other_<?php echo $key ?>(o){
+    var parent_category_key=<?php echo $key ?>;
+    var category_key=<?php echo $value ?>;
     var subject='Customer';
     var subject_key=Dom.get('customer_key').value;
     
-    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_1').value
+    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_<?php echo $key ?>').value
     //alert(request); //return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
                                     success:function(o) {
@@ -996,30 +993,9 @@ function save_other_1(o){
                                     });
     
 }
-
-function save_other_2(o){
-    var parent_category_key=2;//Dom.get('parent_category_key').value;
-    var category_key=16;//Dom.get('category_key').value;
-    var subject='Customer';
-    var subject_key=Dom.get('customer_key').value;
-    
-    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat2&other="+Dom.get('other_textarea_2').value
-    
-    //alert(request); 
-    //return;
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-                                    success:function(o) {
-                                    //alert(o.responseText);
-                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
-                                    if(r.state==200){
-                                    window.location.reload();
-                                    }
-                                    
-                                    
-                                    
-                                    }
-                                    });
-}
+<?php
+    }
+    ?>
 		
 
 
@@ -1636,17 +1612,18 @@ var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer
 
 function init(){
 
-    if(Dom.get('enable_other_1').value==true){
-        Dom.get('other_tbody_1').style.display='';
-        Dom.get('other_textarea_1').value=Dom.get('other_value_1').value;
-    }
+    <?php
+    $category=new Category(1);
+    foreach($category->get_other_categories() as $key=>$value){
+        ?>
+        
+        if(Dom.get('enable_other_<?php echo $key ?>').value==true){
+            Dom.get('other_tbody_<?php echo $key ?>').style.display='';
+            Dom.get('other_textarea_<?php echo $key ?>').value=Dom.get('other_value_<?php echo $key ?>').value;
+        }
+        <?php }?>
     
-    if(Dom.get('enable_other_2').value==true){
-        Dom.get('other_tbody_2').style.display='';
-        Dom.get('other_textarea_2').value=Dom.get('other_value_2').value;
-    }
-    
-    
+
     
 if(Dom.hasClass('delete_customer','disabled'))
 tt1 = new YAHOO.widget.Tooltip("tt1", { context:"delete_customer",'text':Dom.get('delete_button_tooltip').value }); 

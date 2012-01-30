@@ -350,44 +350,36 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
 	}
 
-                 //print_r($categories);
+
 	$smarty->assign('categories',$categories);
 	$smarty->assign('categories_value',$categories_value);
                  
-$enable_other_1=false;
-$enable_other_2=false;
+                 $enable_other=array();
                  
                  $other_value=array();
                  foreach($categories_value as $key=>$value){
-                 if($value==38 || $value==16){
-                 if($key==1){
+                 $category=new Category($value);
+
+                 if($category->data['Is Category Field Other'] == 'Yes'){
                  
-                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $value, $customer->id);
-                 }
-                 elseif($key==2){
+                    $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $category->id, $customer->id);
+                    $result=mysql_query($sql);
+                    $row=mysql_fetch_assoc($result);
+                    $enable_other[$category->data['Category Parent Key']]=true;
+                    $other_value[$category->data['Category Parent Key']]=$row['Customer Other Note'];
                  
-                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $value, $customer->id);
-                 }
+                 }else{
+                    $enable_other[$category->data['Category Parent Key']]=false;
                  }
                  
-                 $result=mysql_query($sql);
-                 $row=mysql_fetch_assoc($result);
-                 if($row['Category Key']==38){
-                 $enable_other_1=true;
-                 $other_value[1]=$row['Customer Other Note'];
-                 }
-                 elseif($row['Category Key']==16){
-                 $enable_other_2=true;
-                 $other_value[2]=$row['Customer Other Note'];
-                 }
 
                  }
                  
                  //print_r($other_value);
   
 $smarty->assign('other_value',$other_value);
-$smarty->assign('enable_other_1',$enable_other_1);
-$smarty->assign('enable_other_2',$enable_other_2);
+$smarty->assign('enable_other',$enable_other);
+
                  
     for ($i = 0; $i < 16; $i++) {
         $rnd .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",

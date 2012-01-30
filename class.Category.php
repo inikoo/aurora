@@ -307,7 +307,7 @@ class Category extends DB_Table {
         while ($row=mysql_fetch_assoc($res)) {
             $children_keys[$row['Category Key']]=new Category($row['Category Key']);
         }
-        print_r($children_keys);
+        
         return $children_keys;
 
     }
@@ -1536,6 +1536,17 @@ class Category extends DB_Table {
 
 
     }
+                     
+                     function get_other_categories(){
+                     $sql=sprintf("select * from `Category Dimension` where `Is Category Field Other`='Yes' and `Category Subject`='Customer'");
+                     $result=mysql_query($sql);
+                     while($row=mysql_fetch_assoc($result)){
+                           $other_data[$row['Category Parent Key']]=$row['Category Key'];
+                           
+                        }
+             
+                           return $other_data;
+                     }
 
 
 
