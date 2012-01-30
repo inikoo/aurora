@@ -149,18 +149,66 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 $smarty->assign('new_subject',$new_subject);
 
 
-$categories=array();
-$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$store_key);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$tmp=new Category($row['Category Key']);
-
-
-
-	$categories[$row['Category Key']]=$tmp;
-
-}
-$smarty->assign('categories',$categories);
+	$categories=array();
+	$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Name` in
+                 ('Type of Business','Referrer') and `Category Subject`='Customer' and `Category Deep`=1 and
+                 `Category Store Key`=%d",$customer->data['Customer Store Key']);
+                 $res=mysql_query($sql);
+                 while ($row=mysql_fetch_assoc($res)) {
+                 $tmp=new Category($row['Category Key']);
+                 $selected_array=$tmp->sub_category_selected_by_subject($customer->id);
+                 
+                 
+                 if (count($selected_array)==0) {
+                 $tmp_selected='';
+                 } else {
+                 $tmp_selected=array_pop($selected_array);
+                 }
+                 
+                 $categories[$row['Category Key']]=$tmp;
+                 $categories_value[$row['Category Key']]=$tmp_selected;
+                 
+                 }
+                 
+                 
+                 $smarty->assign('categories',$categories);
+                 $smarty->assign('categories_value',$categories_value);
+                 
+                 $enable_other_1=false;
+                 $enable_other_2=false;
+                 
+                 $other_value=array();
+                 foreach($categories_value as $key=>$value){
+                 if($value==38 || $value==16){
+                 if($key==1){
+                 
+                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $value, $customer->id);
+                 }
+                 elseif($key==2){
+                 
+                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $value, $customer->id);
+                 }
+                 }
+                 
+                 $result=mysql_query($sql);
+                 $row=mysql_fetch_assoc($result);
+                 if($row['Category Key']==38){
+                 $enable_other_1=true;
+                 $other_value[1]=$row['Customer Other Note'];
+                 }
+                 elseif($row['Category Key']==16){
+                 $enable_other_2=true;
+                 $other_value[2]=$row['Customer Other Note'];
+                 }
+                 
+                 }
+                 
+                 //print_r($other_value);
+                 
+                 $smarty->assign('other_value',$other_value);
+                 $smarty->assign('enable_other_1',$enable_other_1);
+                 $smarty->assign('enable_other_2',$enable_other_2);
+                 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

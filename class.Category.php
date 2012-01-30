@@ -307,6 +307,7 @@ class Category extends DB_Table {
         while ($row=mysql_fetch_assoc($res)) {
             $children_keys[$row['Category Key']]=new Category($row['Category Key']);
         }
+        print_r($children_keys);
         return $children_keys;
 
     }

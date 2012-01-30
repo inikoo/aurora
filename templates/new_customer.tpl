@@ -192,20 +192,31 @@
 					<tr class="title" style="height:30px">
 						<td colspan="3">{t}Other Info{/t}</td>
 					</tr>
-					{foreach from=$categories item=cat key=cat_key name=foo } 
-					<tr>
-						<td class="label">{t}{$cat->get('Category Label')}{/t}:</td>
-						<td> 
-						<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="update_category(this)">
-							{foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
-							<option value="">{t}Unknown{/t}</option>
-							{/if} 
-							<option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
-							{/foreach} 
-						</select>
-						</td>
-					</tr>
-					{/foreach} 
+
+                    {foreach from=$categories item=cat key=cat_key name=foo  }
+                    <tr>
+                        
+                        <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
+                        <td>
+                            <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
+                                {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
+                                {if $smarty.foreach.foo2.first}
+                                
+                                {/if}
+                                
+                                <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+                                {/foreach}
+                            </select>
+                            
+                        </td>   
+                    </tr>
+                    <tbody id="other_tbody_{$cat_key}" style="display:none">
+                        <tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}"></textarea></td></tr>
+                        <tr><td></td><td><button onClick="save_other_{$cat_key}(this)">Save<button></td></tr>
+                    </tbody>
+                    
+                    {/foreach}
+                    
 					<tr>
 						<td class="label" style="width:200px;font-size:90%">{t}Send Newsletter{/t}:</td>
 						<input type="hidden" value="Yes" id="allow_newsletter" />
