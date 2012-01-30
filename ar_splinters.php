@@ -187,9 +187,9 @@ function invoice_categories_sales_overview() {
         $sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
 	$invoice=number($row['invoices']);
-        $category="<a href='report_sales.php?invoice_category_key=".$row['Category Key']."'>".$row['Category Label'].'</a>';
+        $category="<a target='_parent' href='report_sales.php?invoice_category_key=".$row['Category Key']."'>".$row['Category Label'].'</a>';
 		//$invoices=sprintf('<a href="orders.php?view=invoices&invoice_type=invoices&splinter=1&cat_key=%d">%s</a>',$row['Category Key'], $invoice); 
-		$invoices=sprintf('<a href="new_invoices_list.php?store=%d&period=%s&auto=1&cat_key=%d">%s</a>',$row['Category Store Key'],$period,$row['Category Key'],$invoice);
+		$invoices=sprintf('<a target="_parent" href="new_invoices_list.php?store=%d&period=%s&auto=1&cat_key=%d">%s</a>',$row['Category Store Key'],$period,$row['Category Key'],$invoice);
         $adata[]=array(
 
                      'store'=>$category,
