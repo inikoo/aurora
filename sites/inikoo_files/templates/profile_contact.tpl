@@ -2,6 +2,14 @@
 <input type="hidden" id="store_key" value="{$store->id}" />
 <input type="hidden" id="site_key" value="{$site->id}" />
 <input type="hidden" id="customer_key"  value="{$page->customer->id}"/>
+<input type="hidden" id="parent_category_key"  value="0"/>
+<input type="hidden" id="category_key"  value="0"/>
+<input type="hidden" id="enable_other_1"  value="{$enable_other_1}"/>
+<input type="hidden" id="enable_other_2"  value="{$enable_other_2}"/>
+{foreach from=$other_value item=other key=key}
+<input type="hidden" id="other_value_{$key}"  value="{$other}"/>
+{/foreach}
+
 
 <div class="top_page_menu" style="padding:0px 20px 5px 20px">
 <div class="buttons" style="float:left">

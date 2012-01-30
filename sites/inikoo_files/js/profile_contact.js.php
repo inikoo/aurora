@@ -264,6 +264,10 @@ var subject='Customer';
 var subject_key=Dom.get('customer_key').value;
 
 
+    Dom.get('parent_category_key').value=parent_category_key;    
+        Dom.get('category_key').value=category_key;    
+    
+    
 if(parent_category_key==1 && category_key==38){
 	Dom.get('other_tbody_1').style.display='';
 	return;
@@ -296,6 +300,7 @@ if(category_key==''){
 			//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
+                   window.location.reload();                         
 				}
 
 
@@ -308,18 +313,19 @@ if(category_key==''){
 }
 
 function save_other_1(o){
-var parent_category_key=o.getAttribute('cat_key');
-var category_key=o.options[o.selectedIndex].value;
+    var parent_category_key=1;//Dom.get('parent_category_key').value;
+    var category_key=38;//Dom.get('category_key').value;
 var subject='Customer';
 var subject_key=Dom.get('customer_key').value;
 
-var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id+"&other="+Dom.get('other_textarea_2').value
-alert(request)
+var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_1').value
+    //alert(request); //return;
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
 			//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
+                                            window.location.reload();
 				}
 
 
@@ -330,19 +336,21 @@ alert(request)
 }
 
 function save_other_2(o){
-var parent_category_key=o.getAttribute('cat_key');
-var category_key=o.options[o.selectedIndex].value;
+    var parent_category_key=2;//Dom.get('parent_category_key').value;
+    var category_key=16;//Dom.get('category_key').value;
 var subject='Customer';
 var subject_key=Dom.get('customer_key').value;
 
-var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id+"&other="+Dom.get('other_textarea_2').value
+var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat2&other="+Dom.get('other_textarea_2').value
 
-alert(request)
+    //alert(request); 
+    //return;
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
 			//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
+                    window.location.reload();
 				}
 
 
@@ -353,6 +361,17 @@ alert(request)
 
 function init(){
 
+    if(Dom.get('enable_other_1').value==true){
+        Dom.get('other_tbody_1').style.display='';
+        Dom.get('other_textarea_1').value=Dom.get('other_value_1').value;
+    }
+    
+    if(Dom.get('enable_other_2').value==true){
+        Dom.get('other_tbody_2').style.display='';
+        Dom.get('other_textarea_2').value=Dom.get('other_value_2').value;
+    }
+    
+    
 scope_key=Dom.get('user_key').value;
 
 var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";

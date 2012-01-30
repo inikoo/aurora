@@ -919,46 +919,108 @@ var request='ar_edit_categories.php?tipo='+operation_type+'&category_key=' + cat
 }
 
 function save_category(o) {
-
-var parent_category_key=o.getAttribute('cat_key');
-var category_key=o.options[o.selectedIndex].value;
-var subject='Customer';
-var subject_key=Dom.get('customer_key').value;
-
-//if(Dom.hasClass(o,'selected'))
-//    var operation_type='disassociate_subject_to_category_radio';
-//else
-
-
-if(category_key==''){
-var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
-
-}else{
-var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
-
-
-}
-
-
-	alert(request);
-	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-			alert(o.responseText);
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-				}
-
-
+    
+    var parent_category_key=o.getAttribute('cat_key');
+    var category_key=o.options[o.selectedIndex].value;
+    var subject='Customer';
+    var subject_key=Dom.get('customer_key').value;
+    
+    
+    Dom.get('parent_category_key').value=parent_category_key;    
+    Dom.get('category_key').value=category_key;    
+    
+    
+    if(parent_category_key==1 && category_key==38){
+        Dom.get('other_tbody_1').style.display='';
+        return;
+    }
+    else if(parent_category_key==1 )
+        Dom.get('other_tbody_1').style.display='none';
+    
+    if(parent_category_key==2 && category_key==16){
+        Dom.get('other_tbody_2').style.display='';
+        return;
+    }
+    else if(parent_category_key==2 )
+        Dom.get('other_tbody_2').style.display='none';
+    
+    if(category_key==''){
+        
+		var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
+        
+    }else{
+		var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
+        
         
     }
-                                                                 });
-
-
-
+    
+    
+	//alert(request);
+	
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+                                    success:function(o) {
+                                    //alert(o.responseText);
+                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+                                    if(r.state==200){
+                                    window.location.reload();                         
+                                    }
+                                    
+                                    
+                                    
+                                    }
+                                    });
+    
+    
+    
 }
- 
-			
+
+function save_other_1(o){
+    var parent_category_key=1;//Dom.get('parent_category_key').value;
+    var category_key=38;//Dom.get('category_key').value;
+    var subject='Customer';
+    var subject_key=Dom.get('customer_key').value;
+    
+    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_1').value
+    //alert(request); //return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+                                    success:function(o) {
+                                    //alert(o.responseText);
+                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+                                    if(r.state==200){
+                                    window.location.reload();
+                                    }
+                                    
+                                    
+                                    
+                                    }
+                                    });
+    
+}
+
+function save_other_2(o){
+    var parent_category_key=2;//Dom.get('parent_category_key').value;
+    var category_key=16;//Dom.get('category_key').value;
+    var subject='Customer';
+    var subject_key=Dom.get('customer_key').value;
+    
+    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat2&other="+Dom.get('other_textarea_2').value
+    
+    //alert(request); 
+    //return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+                                    success:function(o) {
+                                    //alert(o.responseText);
+                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+                                    if(r.state==200){
+                                    window.location.reload();
+                                    }
+                                    
+                                    
+                                    
+                                    }
+                                    });
+}
+		
 
 
 
@@ -1574,7 +1636,18 @@ var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer
 
 function init(){
 
-
+    if(Dom.get('enable_other_1').value==true){
+        Dom.get('other_tbody_1').style.display='';
+        Dom.get('other_textarea_1').value=Dom.get('other_value_1').value;
+    }
+    
+    if(Dom.get('enable_other_2').value==true){
+        Dom.get('other_tbody_2').style.display='';
+        Dom.get('other_textarea_2').value=Dom.get('other_value_2').value;
+    }
+    
+    
+    
 if(Dom.hasClass('delete_customer','disabled'))
 tt1 = new YAHOO.widget.Tooltip("tt1", { context:"delete_customer",'text':Dom.get('delete_button_tooltip').value }); 
 
