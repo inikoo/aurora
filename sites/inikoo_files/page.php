@@ -371,7 +371,7 @@ mt_rand(0, 63), 1);
     $css_files[]='css/inikoo.css';
     $css_files[]='css/inikoo_table.css';
     $js_files[]='address_data.js.php';
-    $js_files[]='profile_contact.js.php';
+    $js_files[]='js/profile_contact.js.php';
 }
 
 $smarty->assign('logged',$logged_in);
