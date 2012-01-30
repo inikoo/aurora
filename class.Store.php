@@ -1193,10 +1193,10 @@ class Store extends DB_Table {
 				$interval=strtotime($row['Order Dispatched Date'])-strtotime($row['Order Date']);
 
 				//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
-			}else if (!in_array($row['Order Current Dispatch State'],array('In Process by Customer','Unknown','Packing','Cancelled','Suspended'))) {
-					$interval=strtotime(gmdate('Y-m-d H:i:s'))-strtotime($row['Order Date']);
-
-				}
+			}
+			//else if (!in_array($row['Order Current Dispatch State'],array('In Process by Customer','Unknown','Packing','Cancelled','Suspended'))) {
+			//		$interval=strtotime(gmdate('Y-m-d H:i:s'))-strtotime($row['Order Date']);
+			//	}
 
 			if ($interval>0) {
 				$sum_interval+=$interval;
