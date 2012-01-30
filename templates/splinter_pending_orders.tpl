@@ -23,7 +23,7 @@
 <div id="block_table">
 
 <div  id="title" class="title" style="height:22px">
-<img id="configuration" style="cursor:pointer;position:relative;top:3px;float:right" src="art/icons/cog.png"/>
+<img id="configuration" style="display:none;cursor:pointer;position:relative;top:3px;float:right" src="art/icons/cog.png"/>
 <h1 style="padding:3px 0px ;font-size:90%">{t}Pending Orders{/t}: <span  id="stores_title">{$store_title}</span></h1>
 
 </div>
