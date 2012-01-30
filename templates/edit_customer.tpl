@@ -10,8 +10,11 @@
     
     <input type="hidden" id="parent_category_key"  value="0"/>
     <input type="hidden" id="category_key"  value="0"/>
-    <input type="hidden" id="enable_other_1"  value="{$enable_other_1}"/>
-    <input type="hidden" id="enable_other_2"  value="{$enable_other_2}"/>
+
+    {foreach from=$enable_other item=other key=key}
+    <input type="hidden" id="enable_other_{$key}"  value="{$other}"/>
+    {/foreach}
+    
     {foreach from=$other_value item=other key=key}
     <input type="hidden" id="other_value_{$key}"  value="{$other}"/>
     {/foreach}
@@ -238,29 +241,30 @@
 				</tr>
 
                     
-                    {foreach from=$categories item=cat key=cat_key name=foo  }
-                    <tr>
-                        
-                        <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
-                        <td>
-                            <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
-                                {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
-                                {if $smarty.foreach.foo2.first}
-                                
-                                {/if}
-                                
-                                <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
-                                {/foreach}
-                            </select>
-                            
-                        </td>   
-                    </tr>
-                    <tbody id="other_tbody_{$cat_key}" style="display:none">
-                        <tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}"></textarea></td></tr>
-                        <tr><td></td><td><button onClick="save_other_{$cat_key}(this)">Save<button></td></tr>
-                    </tbody>
+                {foreach from=$categories item=cat key=cat_key name=foo  }
+                <tr>
                     
-                    {/foreach}
+                    <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
+                    <td>
+                        <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
+                            {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
+                            {if $smarty.foreach.foo2.first}
+                            
+                            {/if}
+                            
+                            
+                            <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+                            {/foreach}
+                        </select>
+                        
+                    </td>   
+                </tr>
+                <tbody id="other_tbody_{$cat_key}" style="display:none">
+                    <tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}"></textarea></td></tr>
+                    <tr><td></td><td><button onClick="save_other_{$cat_key}(this)">Save<button></td></tr>
+                </tbody>
+                
+                {/foreach}
                     
                     
 

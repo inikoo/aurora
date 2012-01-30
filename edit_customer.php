@@ -404,7 +404,6 @@ $js_files[]=sprintf('edit_customer.js.php?id=%d&forgot_count=%d&register_count=%
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 //$delivery_addresses=$customer->get_address_objects();
-
 	$categories=array();
 	$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Name` in
                  ('Type of Business','Referrer') and `Category Subject`='Customer' and `Category Deep`=1 and
@@ -430,43 +429,33 @@ $smarty->assign('js_files',$js_files);
                  $smarty->assign('categories',$categories);
                  $smarty->assign('categories_value',$categories_value);
                  
-                 $enable_other_1=false;
-                 $enable_other_2=false;
+                 $enable_other=array();
                  
                  $other_value=array();
                  foreach($categories_value as $key=>$value){
-                 if($value==38 || $value==16){
-                 if($key==1){
+                 $category=new Category($value);
                  
-                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $value, $customer->id);
-                 }
-                 elseif($key==2){
+                 if($category->data['Is Category Field Other'] == 'Yes'){
                  
-                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $value, $customer->id);
-                 }
-                 }
-                 
+                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $category->id, $customer->id);
                  $result=mysql_query($sql);
                  $row=mysql_fetch_assoc($result);
-                 if($row['Category Key']==38){
-                 $enable_other_1=true;
-                 $other_value[1]=$row['Customer Other Note'];
+                 $enable_other[$category->data['Category Parent Key']]=true;
+                 $other_value[$category->data['Category Parent Key']]=$row['Customer Other Note'];
+                 
+                 }else{
+                 $enable_other[$category->data['Category Parent Key']]=false;
                  }
-                 elseif($row['Category Key']==16){
-                 $enable_other_2=true;
-                 $other_value[2]=$row['Customer Other Note'];
-                 }
+                 
                  
                  }
                  
                  //print_r($other_value);
                  
                  $smarty->assign('other_value',$other_value);
-                 $smarty->assign('enable_other_1',$enable_other_1);
-                 $smarty->assign('enable_other_2',$enable_other_2);
-                 
-                 
+                 $smarty->assign('enable_other',$enable_other);
 
+                 
 
 $main_email_warning=false;
 $main_email_warnings='';
