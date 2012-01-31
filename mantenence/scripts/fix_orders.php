@@ -29,7 +29,16 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('UTC');
 
-
+$sql="select replace(`Invoice Metadata`,'U','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=1  ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+$sql=sprintf("update orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$row['id']);
+//print "$sql\n";
+mysql_query($sql);
+  print $row['id']."\r";
+ }
+ 
+ exit;
 
 $sql="select replace(`Invoice Metadata`,'D','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=3  ";
 $result=mysql_query($sql);
