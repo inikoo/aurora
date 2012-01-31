@@ -4,6 +4,7 @@
 include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.Company.php');
+include_once('class.Category.php');
 
 $scope='customer';
 $action_after_create='continue';
@@ -27,6 +28,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var can_add_subject=false;
+
+var categories_other_data ={}
 
 var subject_data={
     "Customer Name":""
@@ -52,8 +55,15 @@ var subject_data={
     ,"Customer Address Country Forth Division":""
     ,"Customer Address Country Fifth Division":""
 	<?php
-	foreach($custom_values_data as $data_x)
+	foreach($custom_values_data as $data_x){
 		echo ",\"".$data_x['field_name']."\":\"".$data_x['default']."\"";
+	}
+
+//$category=new Category(0);
+//foreach($category->get_other_categories() as $key=>$value){
+//echo ",\"Cat".$key."_Other_Value\":\"\"";
+//}
+
 	?>
     
 };  
@@ -89,6 +99,7 @@ var changes_address=0;
 var saved_details=0;
 var error_details=0;
 var values=new Object;
+var other_true=false;
 
 subject_found_email_other_store=false;
 
@@ -96,6 +107,20 @@ function update_category(o){
     var parent_category_key=o.getAttribute('cat_key');
     var category_key=o.options[o.selectedIndex].value;
     subject_data['Cat'+parent_category_key]=category_key;
+//alert('Cat'+parent_category_key+' : '+category_key)
+    var category_object=o.options[o.selectedIndex];
+    
+    
+    if(Dom.get(category_object).getAttribute('other')=='true'){
+   
+        Dom.get('other_tbody_'+parent_category_key).style.display='';
+	categories_other_data [parent_category_key]=parent_category_key;
+        return;
+    }
+    else{
+	Dom.get('other_tbody_'+parent_category_key).style.display='none';
+	delete categories_other_data [parent_category_key]
+    }
 }
 
 function get_custom_data(){
@@ -108,6 +133,11 @@ function get_custom_data(){
 ?>
 }
 
+function get_custom_data(){
+//	alert('yy');return;	
+}
+
+
 function save_new_customer(e){
    
  
@@ -116,8 +146,8 @@ function save_new_customer(e){
     }
 
 
-
     get_data();
+    get_category_other_value_data();
  Dom.setStyle("creating_message",'display','');
 Dom.setStyle(["new_Customer_buttons"],'display','none');
  
@@ -136,7 +166,7 @@ Dom.setStyle(["new_Customer_buttons"],'display','none');
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		//alert(o.responseText);
-
+		
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    if(action_after_create=='add_another'){
@@ -329,6 +359,7 @@ function get_subject_data(){
     subject_data[Subject+' Name']=Dom.get('Company_Name').value;
         subject_data[Subject+' Tax Number']=Dom.get('Company_Tax_Number').value;
         subject_data[Subject+' Registration Number']=Dom.get('Company_Registration_Number').value;
+     
 
 }
 function get_contact_data(){
@@ -339,7 +370,12 @@ function get_contact_data(){
 subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 
 }
-
+function get_category_other_value_data(){
+for ( category_key in categories_other_data)
+  {
+  	subject_data['Cat'+category_key+'_Other_Value']=Dom.get('category_other_value_textarea_'+category_key).value;
+  }
+}
 
 function update_save_button(){
 	//	alert(subject_found);

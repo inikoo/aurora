@@ -434,8 +434,8 @@ class Site extends DB_Table {
 		$page_data['Page Store Section']='Information';
 		$page_data['Showcases Layout']='Splited';
 		$page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
-$page_data['Page Code']=$this->get_unique_store_page_code($store);
-$page_data['Page URL']=$this->data['Site URL'].'/'.strtolower($page_data['Page Code']);
+		$page_data['Page Code']=$this->get_unique_store_page_code($store);
+		$page_data['Page URL']=$this->data['Site URL'].'/'.strtolower($page_data['Page Code']);
 
 
 
@@ -458,7 +458,7 @@ $page_data['Page URL']=$this->data['Site URL'].'/'.strtolower($page_data['Page C
 		$page=new Page('find',$page_data,'create');
 
 		$this->new_page=$page->new;
-			$this->new_page_key=$page->id;
+		$this->new_page_key=$page->id;
 		$this->msg=$page->msg;
 		$this->error=$page->error;
 
@@ -562,12 +562,12 @@ $page_data['Page URL']=$this->data['Site URL'].'/'.strtolower($page_data['Page C
 
 
 		$page=new Page('find',$page_data,'create');
-		if($page->new){
-		$page->update_see_also();
+		if ($page->new) {
+			$page->update_see_also();
 		}
-		
+
 		$this->new_page=$page->new;
-			$this->new_page_key=$page->id;
+		$this->new_page_key=$page->id;
 		$this->msg=$page->msg;
 		$this->error=$page->error;
 		//print_r($page);
@@ -686,7 +686,7 @@ $index_page=$this->get_page_object('index');
 
 		$page=new Page('find',$page_data,'create');
 		if ($page->new) {
-			include_once('class.Department.php');
+			include_once 'class.Department.php';
 			$department=new Department($family->data['Product Family Main Department Key']);
 			if ($department->id) {
 				$parent_pages_keys=$department->get_pages_keys();
@@ -699,7 +699,7 @@ $index_page=$this->get_page_object('index');
 		}
 
 		$this->new_page=$page->new;
-			$this->new_page_key=$page->id;
+		$this->new_page_key=$page->id;
 		$this->msg=$page->msg;
 		$this->error=$page->error;
 
@@ -891,7 +891,18 @@ $index_page=$this->get_page_object('index');
 
 	}
 
-	function update_headers($new_header_key=false) {
+	function update_headers($new_header_key) {
+
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Header Type`='SiteDefault' and `Page Site Key`=%d",$this->id);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_array($res)) {
+			$sql=sprintf("update  `Page Store Dimension` set `Page Header Key`=%d where `Page Key`=%d ",$new_header_key,$row['Page Key']);
+			//  print "$sql<br>";
+			mysql_query($sql);
+		}
+
+
 
 	}
 
@@ -904,15 +915,8 @@ $index_page=$this->get_page_object('index');
 
 		if ($this->updated) {
 
+			$this->update_headers($new_header_key);
 
-			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Header Type`='SiteDefault' and `Page Site Key`=%d",$this->id);
-			$res=mysql_query($sql);
-
-			while ($row=mysql_fetch_array($res)) {
-				$sql=sprintf("update  `Page Store Dimension` set `Page Header Key`=%d where `Page Key`=%d ",$new_header_key,$row['Page Key']);
-				//  print "$sql<br>";
-				mysql_query($sql);
-			}
 			$old_header=new PageHeader($old_header_key);
 			$new_header=new PageHeader($new_header_key);
 			$old_header->update_number_pages();
@@ -931,8 +935,14 @@ $index_page=$this->get_page_object('index');
 
 	}
 
-	function update_footers($new_footer_key=false) {
-
+	function update_footers($new_footer_key) {
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Footer Type`='SiteDefault' and `Page Site Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$sql=sprintf("update  `Page Store Dimension` set `Page Footer Key`=%d where `Page Key`=%d ",$new_footer_key,$row['Page Key']);
+			//  print "$sql<br>";
+			mysql_query($sql);
+		}
 	}
 
 	function set_default_footer($new_footer_key) {
@@ -945,14 +955,7 @@ $index_page=$this->get_page_object('index');
 		if ($this->updated) {
 
 
-			$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Footer Type`='SiteDefault' and `Page Site Key`=%d",$this->id);
-			$res=mysql_query($sql);
-
-			while ($row=mysql_fetch_array($res)) {
-				$sql=sprintf("update  `Page Store Dimension` set `Page Footer Key`=%d where `Page Key`=%d ",$new_footer_key,$row['Page Key']);
-				//  print "$sql<br>";
-				mysql_query($sql);
-			}
+			$this->update_footers($new_footer_key);
 			$old_footer=new PageFooter($old_footer_key);
 			$new_footer=new PageFooter($new_footer_key);
 			$old_footer->update_number_pages();

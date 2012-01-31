@@ -1250,6 +1250,9 @@ class Invoice extends DB_Table {
 
             return money($this->data['Invoice '.$key],$this->data['Invoice Currency']);
             break;
+            case('Date'):
+			return strftime('%x',strtotime($this->data['Invoice Date']));
+			break;
         case('Payment Method'):
 
             switch ($this->data['Invoice Main Payment Method']) {
@@ -1515,16 +1518,22 @@ class Invoice extends DB_Table {
         } else {
 
         }
+        
+       
         foreach($this->get_orders_objects() as $key=>$order) {
             $order->update_payment_state();
-        }
-
-        foreach($this->get_orders_objects() as $order) {
-
-            $order->update_no_normal_totals();
+             $order->update_no_normal_totals();
             $order-> update_full_search();
+             	if($this->data['Invoice Title']=='Refund'){
+             	$customer=New Customer($this->data['Invoice Customer Key']);
+				$customer->add_history_order_refunded($this);       	
+       		
+       	}
+
+            
         }
 
+      
     }
 
 
@@ -1601,10 +1610,17 @@ class Invoice extends DB_Table {
         $this->update_refund_totals();
     }
 
-    function add_refund_no_product_transaction($refund_transaction_data) {
 
-        $sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Refund Key`,`Refund Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   values (%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+
+
+
+    function add_orphan_refund_no_product_transaction($refund_transaction_data) {
+
+
+
+        $sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Affected Order Key`,`Refund Key`,`Refund Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
                      prepare_mysql($refund_transaction_data['Order Key']),
+                      prepare_mysql($refund_transaction_data['Affected Order Key']),
                      $this->id,
                      prepare_mysql($this->data['Invoice Date']),
                      prepare_mysql('Refund'),
@@ -1619,6 +1635,7 @@ class Invoice extends DB_Table {
                      prepare_mysql($this->data['Invoice Metadata'])
                     );
         mysql_query($sql);
+       // print $sql;
         $this->update_refund_totals();
     }
 

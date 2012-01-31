@@ -359,7 +359,7 @@ $smarty->assign('products_table_type',$_SESSION['state']['family']['products']['
 $smarty->assign('products_table_type_label',$table_type_options[$_SESSION['state']['family']['products']['table_type']]['label']);
 $smarty->assign('products_table_type_menu',$table_type_options);
 
-$order=$_SESSION['state']['department']['family']['order'];
+$order=$_SESSION['state']['department']['families']['order'];
 if ($order=='code') {
     $order='`Product Family Code`';
     $order_label=_('Code');

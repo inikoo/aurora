@@ -4850,6 +4850,60 @@ class Customer extends DB_Table {
 
     }
 
+
+function add_history_order_refunded($refund){
+  date_default_timezone_set(TIMEZONE) ;
+        $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $refund->data ['Invoice Date']." +00:00" ) );
+    //    $tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+       date_default_timezone_set('GMT') ;
+
+        if (!isset($_SESSION ['lang']))
+            $lang=0;
+        else
+            $lang=$_SESSION ['lang'];
+
+        switch ($lang) {
+        default :
+        
+        
+        
+        $note=$refund->data['Invoice XHTML Orders'].' '._('refunded for').' '.money(-1*$refund->data['Invoice Total Amount'],$refund->data['Invoice Currency']);
+                $details=_('Date refunded').": $tz_date";
+
+         
+
+
+
+        }
+
+       
+          $history_data=array(
+                          'History Abstract'=>$note,
+                          'History Details'=>$details,
+                          'Action'=>'created',
+                          'Direct Object'=>'Invoice',
+                           'Direct Object Key'=>$refund->id,
+                          'Prepostion'=>'on',
+                          // 'Indirect Object'=>'User'
+                          //'Indirect Object Key'=>0,
+                          'Date'=>$refund->data ['Invoice Date']
+
+
+
+                      );
+
+      
+
+
+//print_r($history_data);
+
+        $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable='No',$type='Orders');
+
+       
+
+}
+
     function update_history_order_in_warehouse($order) {
 
 
@@ -6072,5 +6126,27 @@ function badge_info($badge_key) {
         return $html;
     }
 
+
+	function get_category_data(){
+		$sql=sprintf("select * from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);
+		//print $sql;
+		$category_data=array();
+		$result=mysql_query($sql);
+		while($row=mysql_fetch_assoc($result)){
+
+			$sql=sprintf("select * from `Category Dimension` where `Category Key`=%d", $row['Category Parent Key']);
+			$res=mysql_query($sql);
+			$r=mysql_fetch_assoc($res);
+			if($row['Is Category Field Other']=='Yes'){
+				$value=$row['Customer Other Note'];
+			}
+			else{
+				$value=$row['Category Label'];
+			}
+			$category_data[$r['Category Label']]=array('name'=>$row['Category Label'], 'value'=>$value);
+		}
+		
+		return $category_data;
+	}
 }
 ?>

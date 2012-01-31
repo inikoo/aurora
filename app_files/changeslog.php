@@ -5444,3 +5444,17 @@ ALTER TABLE `Warehouse Dimension` ADD `Warehouse Last Month Acc Average Dispatch
 
 ALTER TABLE `Order Dimension` ADD `Order Dispatched Date` DATETIME NULL DEFAULT NULL AFTER `Order Date` ;
 ALTER TABLE `Order Dimension` ADD `Order Post Transactions Dispatched Date` DATETIME NULL DEFAULT NULL AFTER `Order Dispatched Date`;
+DROP TABLE `Dashboard User Bridge`;
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Store Email Template Header', 'Store Email Postcard', 'Email Image', 'Page', 'Page Header', 'Page Footer', 'Site', 'Page Header Preview', 'Page Footer Preview', 'Page Preview', 'Site Menu', 'Site Search', 'User Profile' ) ;
+ALTER TABLE `User Dimension` ADD `User Main Image Key` MEDIUMINT( 8 ) NULL;
+ALTER TABLE `Category Bridge` ADD `Customer Other Note` VARCHAR( 255 ) NULL;
+ALTER TABLE `Category Dimension` ADD `Is Category Field Other` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+
+
+
+
+ALTER TABLE `Category Dimension` ADD `Category Show New Subject` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Category Key` ,ADD `Category Show Public New Subject` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Category Show New Subject` ,ADD `Category Show Public Edit` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Category Show Public New Subject`;
+ ALTER TABLE `Category Dimension` CHANGE `Category Show Public New Subject` `Category Show Public New Subject` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+ALTER TABLE `Category Dimension` CHANGE `Category Show Public Edit` `Category Show Public Edit` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+
+ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part', 'Site', 'Page', 'Invoice' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;

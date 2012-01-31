@@ -52,6 +52,7 @@ $js_files=array(
                 'js/search.js',
               'js/table_common.js',
                'external_libs/ammap/ammap/swfobject.js',
+               'js/parts_common.js',
               'js/edit_category_common.js'
 
           );
@@ -112,6 +113,10 @@ if (!$category_key) {
 
 
     $smarty->assign('category',$category);
+
+if(isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('subcategories','subjects','subcategories_charts','history'))){
+$_SESSION['state']['part_categories']['block_view']=$_REQUEST['block_view'];
+}
 
     $block_view=$_SESSION['state']['part_categories']['block_view'];
     $smarty->assign('block_view',$block_view);

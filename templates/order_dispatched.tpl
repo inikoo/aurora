@@ -26,7 +26,7 @@
 				{t}Order{/t} {$order->get('Order Public ID')}
 			</h1>
 			<h2 style="padding:0">
-				{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get(" order customer key")}">{$customer->get_formated_id()}</a>)
+				{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get("order customer key")}">{$customer->get_formated_id()}</a>)
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 30px 0 0px;color:#444">
 				<span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br />
@@ -69,7 +69,7 @@
 				</tr>
 				{/if} {if $order->get('Order Invoiced Refund Net Amount')!=0} 
 				<tr>
-					<td class="aright"><i>{t}Other Order Refunds{/t}</i></td>
+					<td class="aright"><i>{t}Refunds (N){/t}</i></td>
 					<td width="100" class="aright">{$order->get('Invoiced Refund Net Amount')}</td>
 				</tr>
 				{/if} {if $order->get('Order Invoiced Total Net Adjust Amount')!=0} 
@@ -77,16 +77,17 @@
 					<td class="aright">{t}Adjusts (N){/t}</td>
 					<td width="100" class="aright">{$order->get('Invoiced Total Net Adjust Amount')}</td>
 				</tr>
-				{/if} {if $order->get('Order Net Refund Amount')!=0} 
-				<tr>
-					<td class="aright">{t}Net{/t}</td>
-					<td width="100" class="aright">{$order->get('Net Refund Amount')}</td>
-				</tr>
 				{/if} 
 				<tr style="border-top:1px solid #bbb">
 					<td class="aright">{t}Total (N){/t}</td>
 					<td width="100" class="aright">{$order->get('Invoiced Total Net Amount')}</td>
 				</tr>
+				{if $order->get('Order Invoiced Refund Tax Amount')!=0} 
+				<tr>
+					<td class="aright"><i>{t}Refunds (Tax){/t}</i></td>
+					<td width="100" class="aright">{$order->get('Invoiced Refund Tax Amount')}</td>
+				</tr>
+				{/if} 
 				<tr>
 					<td class="aright">{t}Tax{/t}</td>
 					<td width="100" class="aright">{$order->get('Invoiced Total Tax Amount')}</td>
@@ -101,6 +102,11 @@
 					<td class="aright">{t}Total{/t}</td>
 					<td width="100" class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td>
 				</tr>
+				
+				
+				
+				
+				
 			</table>
 		</div>
 		<div style="border:0px solid red;width:230px;float:right">
