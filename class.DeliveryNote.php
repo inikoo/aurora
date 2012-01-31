@@ -1063,7 +1063,7 @@ class DeliveryNote extends DB_Table {
 
 	private function handle_to_customer($data) {
 
-		//   print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+		
 
 		if (!array_key_exists('Delivery Note Date',$data) or !$data['Delivery Note Date'] ) {
 			$data['Delivery Note Date']=    gmdate('Y-m-d H:i:s');
