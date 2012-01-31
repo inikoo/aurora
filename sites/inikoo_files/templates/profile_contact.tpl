@@ -220,7 +220,7 @@
                     </td>   
                 </tr>
 
-  <tbody id="show_other_tbody_{$cat_key}" style="{if !$cat->number_of_children_with_other_value('Customer',$page->customer->id)}display:none{/if}">
+  <tbody id="show_other_tbody_{$cat_key}" style="{if !$cat->number_of_children_with_other_value('Customer',$page->customer->id) || !$cat->get_children_key_is_other_value_public_edit()}display:none{/if}">
                     <tr><td><div class="buttons small" ><button onClick="show_save_other({$cat_key})">{t}Edit{/t}</button>
 </div></td><td style="border:1px solid #ccc;">{$cat->get_other_value('Customer',$page->customer->id)}
 				

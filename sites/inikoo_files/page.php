@@ -99,6 +99,20 @@ if ($page->data['Page Code']=='login') {
     $js_files[]='js/aes.js';
     $js_files[]='js/sha256.js';
     $css_files[]='css/inikoo.css';
+
+
+    $categories=array();
+    $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d and `Category Show New Subject`='Yes'",$store_key);
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $tmp=new Category($row['Category Key']);
+        
+        
+        
+        $categories[$row['Category Key']]=$tmp;
+        
+    }
+    $smarty->assign('categories',$categories);
 }
 
 else if ($page->data['Page Code']=='profile') {
