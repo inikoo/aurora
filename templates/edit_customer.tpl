@@ -235,7 +235,7 @@
 		</div>
 
 		<div class="edit_block" style="{if $edit!='categories'}display:none{/if};min-height:260px" id="d_categories">
-			<table class="edit" border=0>
+			<table class="edit" border=0 >
 				<tr class="title">
 					<td colspan="5">{t}Categories{/t}</td>
 				</tr>
