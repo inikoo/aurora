@@ -6126,5 +6126,27 @@ function badge_info($badge_key) {
         return $html;
     }
 
+
+	function get_category_data(){
+		$sql=sprintf("select * from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);
+		//print $sql;
+		$category_data=array();
+		$result=mysql_query($sql);
+		while($row=mysql_fetch_assoc($result)){
+
+			$sql=sprintf("select * from `Category Dimension` where `Category Key`=%d", $row['Category Parent Key']);
+			$res=mysql_query($sql);
+			$r=mysql_fetch_assoc($res);
+			if($row['Is Category Field Other']=='Yes'){
+				$value=$row['Customer Other Note'];
+			}
+			else{
+				$value=$row['Category Label'];
+			}
+			$category_data[$r['Category Label']]=array('name'=>$row['Category Label'], 'value'=>$value);
+		}
+		
+		return $category_data;
+	}
 }
 ?>
