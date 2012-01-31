@@ -269,7 +269,7 @@
 
                 <tbody id="other_tbody_{$cat_key}" style="display:none">
                     <tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}">{$cat->get_other_value('Customer',$customer->id)}</textarea></td></tr>
-                    <tr><td></td><td><div class="buttons left"><button onClick="save_other_{$cat_key}(this)">{t}Save{/t}<button></div></td></tr>
+                    <tr><td></td><td><div class="buttons left"><button onClick="save_category_other_value({$cat->get}$cat->id)">{t}Save{/t}<button></div></td></tr>
                 </tbody>
                 
                 {/foreach}

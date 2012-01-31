@@ -211,7 +211,7 @@
 					</td>
 					</tr>
 					<tbody id="other_tbody_{$cat_key}" style="display:none">
-					<tr><td></td><td><textarea rows='2' cols="20" id="other_textarea_{$cat_key}"></textarea></td></tr>
+					<tr><td></td><td><textarea rows='2' cols="20" id="category_other_value_textarea_{$cat_key}"></textarea></td></tr>
 					
 					</tbody>
 					{/foreach} 

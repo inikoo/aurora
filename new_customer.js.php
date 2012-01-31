@@ -29,6 +29,8 @@ var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var can_add_subject=false;
 
+var categories_other_data ={}
+
 var subject_data={
     "Customer Name":""
     ,"Customer Main Contact Name":""
@@ -57,11 +59,10 @@ var subject_data={
 		echo ",\"".$data_x['field_name']."\":\"".$data_x['default']."\"";
 	}
 
-$category=new Category(0);
-foreach($category->get_other_categories() as $key=>$value){
-echo ",\"Cat".$key."_Other_Value\":\"\"";
-
-}
+//$category=new Category(0);
+//foreach($category->get_other_categories() as $key=>$value){
+//echo ",\"Cat".$key."_Other_Value\":\"\"";
+//}
 
 	?>
     
@@ -111,13 +112,14 @@ function update_category(o){
     
     
     if(Dom.get(category_object).getAttribute('other')=='true'){
+   
         Dom.get('other_tbody_'+parent_category_key).style.display='';
-	other_true=true;
+	categories_other_data [parent_category_key]=parent_category_key;
         return;
     }
     else{
 	Dom.get('other_tbody_'+parent_category_key).style.display='none';
-	other_true|=false;
+	delete categories_other_data [parent_category_key]
     }
 }
 
@@ -132,7 +134,7 @@ function get_custom_data(){
 }
 
 function get_custom_data(){
-	//alert('yy');return;	
+//	alert('yy');return;	
 }
 
 
@@ -143,16 +145,9 @@ function save_new_customer(e){
 	return;
     }
 
-if(other_true){
-    <?php
-    $category=new Category(1);
-    foreach($category->get_other_categories() as $key=>$value){
-        ?>
-        subject_data['Cat<?php echo $key?>_Other_Value']=Dom.get('other_textarea_<?php echo $key ?>').value;
-    <?php }?>
-}
 
     get_data();
+    get_category_other_value_data();
  Dom.setStyle("creating_message",'display','');
 Dom.setStyle(["new_Customer_buttons"],'display','none');
  
@@ -166,7 +161,7 @@ Dom.setStyle(["new_Customer_buttons"],'display','none');
     //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
 	//alert(request);
- // alert(request);return;
+  //alert(request);return;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -364,6 +359,7 @@ function get_subject_data(){
     subject_data[Subject+' Name']=Dom.get('Company_Name').value;
         subject_data[Subject+' Tax Number']=Dom.get('Company_Tax_Number').value;
         subject_data[Subject+' Registration Number']=Dom.get('Company_Registration_Number').value;
+     
 
 }
 function get_contact_data(){
@@ -374,7 +370,12 @@ function get_contact_data(){
 subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 
 }
-
+function get_category_other_value_data(){
+for ( category_key in categories_other_data)
+  {
+  	subject_data['Cat'+category_key+'Other_value']=Dom.get('category_other_value_textarea_'+category_key).value;
+  }
+}
 
 function update_save_button(){
 	//	alert(subject_found);
