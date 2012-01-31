@@ -43,7 +43,7 @@ mysql_query($sql);
 $sql="select replace(`Order Original Metadata`,'D','') as id from `Order Dimension` where `Order Current Dispatch State` in ('Unknown','In Process','Submitted by Customer','Ready to Pick','Cancelled','Suspended')   and `Order Store Key`=3  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-$sql=sprintf("update de_orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$row['id']);
+$sql=sprintf("update de_orders_data.orders set last_transcribed=null where de_orders_data.orders.id =%d",$row['id']);
 print "$sql\n";
 mysql_query($sql);
  // print $row['id']."\r";
@@ -53,7 +53,7 @@ mysql_query($sql);
 $sql="select replace(`Order Original Metadata`,'F','') as id from `Order Dimension` where `Order Current Dispatch State` in ('Unknown','In Process','Submitted by Customer','Ready to Pick','Cancelled','Suspended')   and `Order Store Key`=5  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-$sql=sprintf("update fr_orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$row['id']);
+$sql=sprintf("update fr_orders_data.orders set last_transcribed=null where fr_orders_data.orders.id =%d",$row['id']);
 //print "$sql\n";
 mysql_query($sql);
  // print $row['id']."\r";
@@ -62,7 +62,7 @@ mysql_query($sql);
  $sql="select replace(`Order Original Metadata`,'I','') as id from `Order Dimension` where `Order Current Dispatch State` in ('Unknown','In Process','Submitted by Customer','Ready to Pick','Cancelled','Suspended')   and `Order Store Key`=8  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-$sql=sprintf("update it_orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$row['id']);
+$sql=sprintf("update it_orders_data.orders set last_transcribed=null where it_orders_data.orders.id =%d",$row['id']);
 //print "$sql\n";
 mysql_query($sql);
  // print $row['id']."\r";
@@ -72,7 +72,7 @@ mysql_query($sql);
  $sql="select replace(`Order Original Metadata`,'P','') as id from `Order Dimension` where `Order Current Dispatch State` in ('Unknown','In Process','Submitted by Customer','Ready to Pick','Cancelled','Suspended')   and `Order Store Key`=7  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-$sql=sprintf("update pl_orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$row['id']);
+$sql=sprintf("update pl_orders_data.orders set last_transcribed=null where pl_orders_data.orders.id =%d",$row['id']);
 //print "$sql\n";
 mysql_query($sql);
  // print $row['id']."\r";
