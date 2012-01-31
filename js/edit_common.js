@@ -546,7 +546,7 @@ function validate_scope_new(branch) {
     if (errors) {
         Dom.addClass('save_new_'+branch,'disabled');
     } else {
-	alert('save_new_'+branch)
+	//alert('save_new_'+branch)
         Dom.removeClass('save_new_'+branch,'disabled');
     }
 }
