@@ -312,7 +312,20 @@ class Category extends DB_Table {
 
     }
 
+    function get_children_objects_public_edit() {
+        $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public Edit`='Yes' order by `Category Name` ",
+                       $this->id
+                      );
+        //  print $sql;
+        $res=mysql_query($sql);
+        $children_keys=array();
+        while ($row=mysql_fetch_assoc($res)) {
+            $children_keys[$row['Category Key']]=new Category($row['Category Key']);
+        }
+        
+        return $children_keys;
 
+    }
 
 
 
@@ -1543,8 +1556,7 @@ print "$sql\n\n";
                      $result=mysql_query($sql);
                      while($row=mysql_fetch_assoc($result)){
                            $other_data[$row['Category Parent Key']]=$row['Category Key'];
-                           
-                        }
+                     }
              
                            return $other_data;
                      }

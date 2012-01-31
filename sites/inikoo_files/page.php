@@ -330,9 +330,9 @@ $general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store
 
 
 	$categories=array();
-	$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Name` in
-('Type of Business','Referrer') and `Category Subject`='Customer' and `Category Deep`=1 and
-`Category Store Key`=%d",$customer->data['Customer Store Key']);
+	$categories_value=array();
+	$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d and `Category Show Public Edit`='Yes'",$customer->data['Customer Store Key']);
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 	$tmp=new Category($row['Category Key']);
