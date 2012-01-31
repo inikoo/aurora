@@ -4850,6 +4850,60 @@ class Customer extends DB_Table {
 
     }
 
+
+function add_history_order_refunded($refund){
+  date_default_timezone_set(TIMEZONE) ;
+        $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $refund->data ['Invoice Date']." +00:00" ) );
+    //    $tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+       date_default_timezone_set('GMT') ;
+
+        if (!isset($_SESSION ['lang']))
+            $lang=0;
+        else
+            $lang=$_SESSION ['lang'];
+
+        switch ($lang) {
+        default :
+        
+        
+        
+        $note=$refund->data['Invoice XHTML Orders'].' '._('refunded for').' '.money(-1*$refund->data['Invoice Total Amount'],$refund->data['Invoice Currency']);
+                $details=_('Date refunded').": $tz_date";
+
+         
+
+
+
+        }
+
+       
+          $history_data=array(
+                          'History Abstract'=>$note,
+                          'History Details'=>$details,
+                          'Action'=>'created',
+                          'Direct Object'=>'Invoice',
+                           'Direct Object Key'=>$refund->id,
+                          'Prepostion'=>'on',
+                          // 'Indirect Object'=>'User'
+                          //'Indirect Object Key'=>0,
+                          'Date'=>$refund->data ['Invoice Date']
+
+
+
+                      );
+
+      
+
+
+//print_r($history_data);
+
+        $history_key=$this->add_customer_history($history_data,$force_save=true,$deleteable='No',$type='Orders');
+
+       
+
+}
+
     function update_history_order_in_warehouse($order) {
 
 
