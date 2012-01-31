@@ -18,7 +18,7 @@
 		{include file="string:{$page->get_header_template()}" } 
 	</div>
 	<div id="bd" style="z-index:1;">
-		<div {if $type_content="='string'}id=&quot;content&quot;" class="content" style="position:relative;height:{$page->get('Page Content Height')}px;overflow-x:hidden;overflow-y:auto;clear:both;width:100%;" {else}style="min-height:475px" {/if}>
+		<div {if $type_content=='string'}id=&quot;content&quot;" class="content" style="position:relative;height:{$page->get('Page Content Height')}px;overflow-x:hidden;overflow-y:auto;clear:both;width:100%;" {else}style="min-height:475px" {/if}>
 			{include file="$type_content:$template_string"} 
 		</div>
 	</div>

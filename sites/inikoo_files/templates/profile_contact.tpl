@@ -197,34 +197,44 @@
 
 <div style="padding:0px 20px 20px 20px;float:right">
 <h2>{t}Questionare{/t}</h2>
-<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
+<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px;">
 
 <table style="margin:10px">
  
- {foreach from=$categories item=cat key=cat_key name=foo  }
- <tr>
- 
- <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
- <td>
-  <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
-    {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
-        {if $smarty.foreach.foo2.first}
+                {foreach from=$categories item=cat key=cat_key name=foo  }
+                <tr>
+                    
+                    <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
+                    <td>
+                        <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
+                            {foreach from=$cat->get_children_objects_public_edit() item=sub_cat key=sub_cat_key name=foo2  }
+{if $smarty.foreach.foo2.first} 
+                                <option value="">{t}Unknown{/t}</option>
+                                {/if} 
+                            
+                            
+                            <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+                            {/foreach}
+                        </select>
+                        
+                    </td>   
+                </tr>
 
-        {/if}
+  <tbody id="show_other_tbody_{$cat_key}" style="{if !$cat->number_of_children_with_other_value('Customer',$page->customer->id)}display:none{/if}">
+                    <tr><td><div class="buttons small" ><button onClick="show_save_other({$cat_key})">{t}Edit{/t}</button>
+</div></td><td style="border:1px solid #ccc;">{$cat->get_other_value('Customer',$page->customer->id)}
+				
+</td></tr>
+              
+                </tbody>
 
-      
-      <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
-    {/foreach}
-  </select>
-  
- </td>   
-</tr>
-<tbody id="other_tbody_{$cat_key}" style="display:none">
-<tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}"></textarea></td></tr>
-<tr><td></td><td><button onClick="save_other_{$cat_key}(this)">Save<button></td></tr>
-</tbody>
-
-{/foreach}
+                <tbody id="other_tbody_{$cat_key}" style="display:none">
+                    <tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}">{$cat->get_other_value('Customer',$page->customer->id)}</textarea></td></tr>
+                    <tr><td></td><td><div class="buttons small left">
+                    <button onClick="save_category_other_value({$cat->get_children_key_is_other_value()},{$cat->id})">{t}Save{/t}</button></div></td></tr>
+                </tbody>
+                <tr style="height:15px"><td colspan=2></td></tr>
+                {/foreach}
 
 
 </table>
