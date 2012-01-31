@@ -1463,7 +1463,7 @@ class Category extends DB_Table {
                     );
 
         mysql_query($sql);
-print "$sql\n\n";
+//print "$sql\n\n";
         $sql=sprintf("update `Invoice Category Dimension` set
                      `DC $db_interval Acc Invoiced Discount Amount`=%.2f,
                      `DC $db_interval Acc Invoiced Amount`=%.2f,

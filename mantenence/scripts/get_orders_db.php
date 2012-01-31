@@ -563,9 +563,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
 
             if (preg_match('/Freight|^frc-|Postage|shipping/i',$transaction['code'])) {
-                $shipping_transactions[]=$transaction;
-                $extra_shipping+=$transaction['price'];
-                continue;
+                $transaction['code']='Freight';
+                $transaction['description']='Freight Services';
+                //$shipping_transactions[]=$transaction;
+                //$extra_shipping+=$transaction['price'];
+                //continue;
 
             }
             if (preg_match('/^cxd-|^wsl$|^eye$|^\d$|2009promo/i',$transaction['code']))

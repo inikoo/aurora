@@ -5450,3 +5450,11 @@ ALTER TABLE `User Dimension` ADD `User Main Image Key` MEDIUMINT( 8 ) NULL;
 ALTER TABLE `Category Bridge` ADD `Customer Other Note` VARCHAR( 255 ) NULL;
 ALTER TABLE `Category Dimension` ADD `Is Category Field Other` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
 
+
+
+
+ALTER TABLE `Category Dimension` ADD `Category Show New Subject` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Category Key` ,ADD `Category Show Public New Subject` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Category Show New Subject` ,ADD `Category Show Public Edit` ENUM( 'Yes', 'No' ) NOT NULL AFTER `Category Show Public New Subject`;
+ ALTER TABLE `Category Dimension` CHANGE `Category Show Public New Subject` `Category Show Public New Subject` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+ALTER TABLE `Category Dimension` CHANGE `Category Show Public Edit` `Category Show Public Edit` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+
+

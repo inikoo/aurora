@@ -2248,6 +2248,9 @@ class Order extends DB_Table {
 		);
 		mysql_query($sql);
 
+		$this->update_customer_history();
+			$this->update_full_search();
+
 	}
 
 
@@ -2268,6 +2271,8 @@ class Order extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
+		$this->update_customer_history();
+			$this->update_full_search();
 
 	}
 

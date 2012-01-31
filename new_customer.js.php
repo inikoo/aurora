@@ -373,7 +373,7 @@ subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 function get_category_other_value_data(){
 for ( category_key in categories_other_data)
   {
-  	subject_data['Cat'+category_key+'Other_value']=Dom.get('category_other_value_textarea_'+category_key).value;
+  	subject_data['Cat'+category_key+'_Other_Value']=Dom.get('category_other_value_textarea_'+category_key).value;
   }
 }
 
