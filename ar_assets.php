@@ -316,7 +316,7 @@ function list_departments() {
 
         $conf_table='store';
     }
-    elseif ($parent=='none') {
+    else if ($parent=='none') {
 
         $conf=$_SESSION['state']['stores']['departments'];
 
@@ -474,7 +474,7 @@ function list_departments() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('department with code like')." <b>".$f_value."*</b>";
@@ -508,82 +508,82 @@ function list_departments() {
 
         if ($period=='all')
             $order='`Product Department Total Avg Week Sales Per Product`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product Department 1 Year Acc Avg Week Sales Per Product`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product Department 1 Quarter Acc Avg Week Sales Per Product`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product Department 1 Month Acc Avg Week Sales Per Product`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product Department 1 Week Acc Avg Week Sales Per Product`';
     }
     if ($_order=='awp_p') {
 
         if ($period=='all')
             $order='`Product Department Total Avg Week Profit Per Product`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product Department 1 Year Acc Avg Week Profit Per Product`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product Department 1 Quarter Acc Avg Week Profit Per Product`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product Department 1 Month Acc Avg Week Profit Per Product`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product Department 1 Week Acc Avg Week Profit Per Product`';
     }
 
     if ($_order=='profit') {
         if ($period=='all')
             $order='`Product Department Total Profit`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product Department 1 Year Acc Profit`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product Department 1 Quarter Acc Profit`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product Department 1 Month Acc Profit`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product Department 1 Week Acc Profit`';
     }
-    elseif($_order=='sales') {
+    else if($_order=='sales') {
         if ($period=='all')
             $order='`Product Department Total Invoiced Amount`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product Department 1 Year Acc Invoiced Amount`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product Department 1 Quarter Acc Invoiced Amount`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product Department 1 Month Acc Invoiced Amount`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product Department 1 Week Acc Invoiced Amount`';
 // ----------------------------------------added for 3 year,yeartoday,6 month,10 day-----------------------
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order='`Product Department 3 Year Acc Avg Week Sales Per Product`';
-        elseif($period=='yeartoday')
+        else if($period=='yeartoday')
         $order='`Product Department YearToDay Acc Avg Week Sales Per Product`';
-        elseif($period=='six_month')
+        else if($period=='six_month')
         $order='`Product Department 6 Month Acc Avg Week Sales Per Product`';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order='`Product Department 10 Day Acc Avg Week Sales Per Product`';
 // --------------------------------------------------------------------------------------------------------------------
     }
-    elseif($_order=='name')
+    else if($_order=='name')
     $order='`Product Department Name`';
-    elseif($_order=='code')
+    else if($_order=='code')
     $order='`Product Department Code`';
-    elseif($_order=='active')
+    else if($_order=='active')
     $order='`Product Department For Public Sale Products`';
-    elseif($_order=='outofstock')
+    else if($_order=='outofstock')
     $order='`Product Department Out Of Stock Products`';
-    elseif($_order=='stock_error')
+    else if($_order=='stock_error')
     $order='`Product Department Unknown Stock Products`';
-    elseif($_order=='surplus')
+    else if($_order=='surplus')
     $order='`Product Department Surplus Availability Products`';
-    elseif($_order=='optimal')
+    else if($_order=='optimal')
     $order='`Product Department Optimal Availability Products`';
-    elseif($_order=='low')
+    else if($_order=='low')
     $order='`Product Department Low Availability Products`';
-    elseif($_order=='critical')
+    else if($_order=='critical')
     $order='`Product Department Critical Availability Products`';
-    elseif('descontinued')
+    else if('descontinued')
     $order='`Product Department Discontinued Products`';
 
 
@@ -648,25 +648,25 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department Total Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department Total Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department Total Days On Sale']>0)
                     $factor=7/$row['Product Department Total Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department Total Days Available']>0)
                     $factor=30.4368499/$row['Product Department Total Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department Total Days Available']>0)
                     $factor=7/$row['Product Department Total Days Available'];
                 else
@@ -680,7 +680,7 @@ function list_departments() {
     }
 
 // -----------------------------------------------------start for 3 year----------------------------------------------------------------------
-    elseif($period=='three_year') {
+    else if($period=='three_year') {
         //$aws_p=money($data['Product Department 3 Year Acc Avg Week Sales Per Product']);
         //$awp_p=money($data['Product Department 3 Year Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
@@ -692,31 +692,31 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 3 Year Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 3 Year Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 3 Year Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department 3 Year Acc Days On Sale']>0)
                     $factor=7/$row['Product Department 3 Year Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department 3 Year Acc Days Available']>0)
                     $factor=30.4368499/$row['Product Department 3 Year Acc Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department 3 Year Acc Days Available']>0)
                     $factor=7/$row['Product Department 3 Year Acc Days Available'];
                 else
@@ -734,7 +734,7 @@ function list_departments() {
 
 
 
-    elseif($period=='year') {
+    else if($period=='year') {
         //$aws_p=money($data['Product Department 1 Year Acc Avg Week Sales Per Product']);
         //$awp_p=money($data['Product Department 1 Year Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
@@ -746,31 +746,31 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 1 Year Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 1 Year Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department 1 Year Acc Days On Sale']>0)
                     $factor=7/$row['Product Department 1 Year Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department 1 Year Acc Days Available']>0)
                     $factor=30.4368499/$row['Product Department 1 Year Acc Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department 1 Year Acc Days Available']>0)
                     $factor=7/$row['Product Department 1 Year Acc Days Available'];
                 else
@@ -802,7 +802,7 @@ function list_departments() {
 
 
 // -----------------------------------------------------start for yeartoday----------------------------------------------------------------------
-    elseif($period=='yeartoday') {
+    else if($period=='yeartoday') {
         //$aws_p=money($data['Product Department YearToDay Acc Avg Week Sales Per Product']);
         //$awp_p=money($data['Product Department YearToDay Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
@@ -814,31 +814,31 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department YearToDay Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department YearToDay Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department YearToDay Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department YearToDay Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department YearToDay Acc Days On Sale']>0)
                     $factor=7/$row['Product Department YearToDay Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department YearToDay Acc Days Available']>0)
                     $factor=30.4368499/$row['Product Department YearToDay Acc Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department YearToDay Acc Days Available']>0)
                     $factor=7/$row['Product Department YearToDay Acc Days Available'];
                 else
@@ -856,7 +856,7 @@ function list_departments() {
 
 
 // -----------------------------------------------------start for 6 month----------------------------------------------------------------------
-    elseif($period=='six_month') {
+    else if($period=='six_month') {
         //$aws_p=money($data['Product Department 6 Month Acc Avg Week Sales Per Product']);
         //$awp_p=money($data['Product Department 6 Month Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
@@ -868,31 +868,31 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 6 Month Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 6 Month Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 6 Month Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 6 Month Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department 6 Month Acc Days On Sale']>0)
                     $factor=7/$row['Product Department 6 Month Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department 6 Month Acc Days Available']>0)
                     $factor=30.4368499/$row['Product Department 6 Month Acc Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department 6 Month Acc Days Available']>0)
                     $factor=7/$row['Product Department 6 Month Acc Days Available'];
                 else
@@ -912,7 +912,7 @@ function list_departments() {
 
 
 
-    elseif($period=='quarter') {
+    else if($period=='quarter') {
         // $aws_p=money($row['Product Department 1 Quarter Acc Avg Week Sales Per Product']);
         //$awp_p=money($row['Product Department 1 Quarter Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
@@ -924,31 +924,31 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 1 Quarter Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Quarter Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 1 Quarter Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Quarter Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department 1 Quarter Acc Days On Sale']>0)
                     $factor=7/$row['Product Department 1 Quarter Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department 1 Quarter Acc Days Available']>0)
                     $factor=30.4368499/$row['Product Department 1 Quarter Acc Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department 1 Quarter Acc Days Available']>0)
                     $factor=7/$row['Product Department 1 Quarter Acc Days Available'];
                 else
@@ -970,7 +970,7 @@ function list_departments() {
 
 
 
-    elseif($period=='month') {
+    else if($period=='month') {
         //$aws_p=money($row['Product Department 1 Month Acc Avg Week Sales Per Product']);
         //$awp_p=money($row['Product Department 1 Month Acc Avg Week Profit Per Product']);
 
@@ -984,31 +984,31 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 1 Month Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Month Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 1 Month Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Month Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department 1 Month Acc Days On Sale']>0)
                     $factor=7/$row['Product Department 1 Month Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department 1 Month Acc Days Available']>0)
                     $factor=30.4368499/$row['Product Department 1 Month Acc Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department 1 Month Acc Days Available']>0)
                     $factor=7/$row['Product Department 1 Month Acc Days Available'];
                 else
@@ -1026,7 +1026,7 @@ function list_departments() {
 
 
 // -----------------------------------------------------start for 10 days----------------------------------------------------------------------
-    elseif($period=='ten_day') {
+    else if($period=='ten_day') {
         //$aws_p=money($data['Product Department 10 Day Acc Avg Week Sales Per Product']);
         //$awp_p=money($data['Product Department 10 Day Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
@@ -1038,31 +1038,31 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 10 Day Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 10 Day Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 10 Day Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 10 Day Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department 10 Day Acc Days On Sale']>0)
                     $factor=7/$row['Product Department 10 Day Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department 10 Day Acc Days Available']>0)
                     $factor=30.4368499/$row['Product Department 10 Day Acc Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department 10 Day Acc Days Available']>0)
                     $factor=7/$row['Product Department 10 Day Acc Days Available'];
                 else
@@ -1081,7 +1081,7 @@ function list_departments() {
 
 
 
-    elseif($period=='week') {
+    else if($period=='week') {
         //$aws_p=money($row['Product Department 1 Week Acc Avg Week Sales Per Product']);
         //$awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
@@ -1095,31 +1095,31 @@ function list_departments() {
 
             if ($avg=='totals')
                 $factor=1;
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 1 Week Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Week Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month') {
+            else if($avg=='month') {
                 if ($row['Product Department 1 Week Acc Days On Sale']>0)
                     $factor=30.4368499/$row['Product Department 1 Week Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week') {
+            else if($avg=='week') {
                 if ($row['Product Department 1 Week Acc Days On Sale']>0)
                     $factor=7/$row['Product Department 1 Week Acc Days On Sale'];
                 else
                     $factor=0;
             }
-            elseif($avg=='month_eff') {
+            else if($avg=='month_eff') {
                 if ($row['Product Department 1 Week Acc Days Available']>0)
                     $factor=30.4368499/$row['Product Department 1 Week Acc Days Available'];
                 else
                     $factor=0;
             }
-            elseif($avg=='week_eff') {
+            else if($avg=='week_eff') {
                 if ($row['Product Department 1 Week Acc Days Available']>0)
                     $factor=7/$row['Product Department 1 Week Acc Days Available'];
                 else
@@ -1170,36 +1170,36 @@ function list_departments() {
             $aws_p=money($row['Product Department Total Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department Total Avg Week Profit Per Product']);
         }
-        elseif($period=='year') {
+        else if($period=='year') {
             $aws_p=money($row['Product Department 1 Year Acc Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department 1 Year Acc Avg Week Profit Per Product']);
         }
-        elseif($period=='quarter') {
+        else if($period=='quarter') {
             $aws_p=money($row['Product Department 1 Quarter Acc Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department 1 Quarter Acc Avg Week Profit Per Product']);
         }
-        elseif($period=='month') {
+        else if($period=='month') {
             $aws_p=money($row['Product Department 1 Month Acc Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department 1 Month Acc Avg Week Profit Per Product']);
         }
-        elseif($period=='week') {
+        else if($period=='week') {
             $aws_p=money($row['Product Department 1 Week Acc Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
         }
 // -----------------------------------Added for 3 year, yeartoday, 6 Month, 10 Days-------------------
-        elseif($period=='three_year') {
+        else if($period=='three_year') {
             $aws_p=money($row['Product Department Total Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department Total Avg Week Profit Per Product']);
         }
-        elseif($period=='yeartoday') {
+        else if($period=='yeartoday') {
             $aws_p=money($row['Product Department 1 Year Acc Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department 1 Year Acc Avg Week Profit Per Product']);
         }
-        elseif($period=='six_month') {
+        else if($period=='six_month') {
             $aws_p=money($row['Product Department 1 Quarter Acc Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department 1 Quarter Acc Avg Week Profit Per Product']);
         }
-        elseif($period=='ten_day') {
+        else if($period=='ten_day') {
             $aws_p=money($row['Product Department 1 Week Acc Avg Week Sales Per Product']);
             $awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
         }
@@ -1230,28 +1230,28 @@ function list_departments() {
                 else
                     $tprofit=percentage($row['Product Department Total Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='year') {
+            else if($period=='year') {
                 $tsall=percentage($row['Product Department 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 1 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department 1 Year Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Department 1 Year Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='quarter') {
+            else if($period=='quarter') {
                 $tsall=percentage($row['Product Department 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 1 Quarter Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Department 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='month') {
+            else if($period=='month') {
                 $tsall=percentage($row['Product Department 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 1 Month Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department 1 Month Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Department 1 Month Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='week') {
+            else if($period=='week') {
                 $tsall=percentage($row['Product Department 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 1 Week Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department 1 Week Acc Profit'],$sum_total_profit_plus,2);
@@ -1261,21 +1261,21 @@ function list_departments() {
 
 // --------------------------------------------------Added for 3 year,yeartoday,6 month, 10 days---------------
 
-            elseif($period=='three_year') {
+            else if($period=='three_year') {
                 $tsall=percentage($row['Product Department 3 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 3 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department 3 Year Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Department 3 Year Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='yeartoday') {
+            else if($period=='yeartoday') {
                 $tsall=percentage($row['Product Department YearToDay Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department YearToDay Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department YearToDay Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Department YearToDay Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='six_month') {
+            else if($period=='six_month') {
                 $tsall=percentage($row['Product Department 6 Month Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 6 Month Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department 6 Month Acc Profit'],$sum_total_profit_plus,2);
@@ -1283,7 +1283,7 @@ function list_departments() {
                     $tprofit=percentage($row['Product Department 6 Month Acc Profit'],$sum_total_profit_minus,2);
             }
 
-            elseif($period=='ten_day') {
+            else if($period=='ten_day') {
                 $tsall=percentage($row['Product Department 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department 10 Day Acc Profit']>=0)
                     $tprofit=percentage($row['Product Department 10 Day Acc Profit'],$sum_total_profit_plus,2);
@@ -1299,25 +1299,25 @@ function list_departments() {
                 if ($avg=='totals') {
                     $factor=1;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department Total Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department Total Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department Total Days On Sale']>0)
                         $factor=7/$row['Product Department Total Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department Total Days Available']>0)
                         $factor=30.4368499/$row['Product Department Total Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department Total Days Available']>0)
                         $factor=7/$row['Product Department Total Days Available'];
                     else
@@ -1335,34 +1335,34 @@ function list_departments() {
 
 
 // -------------------------------------------------- start for 3 year--------------------------------------------
-            elseif($period=='three_year') {
+            else if($period=='three_year') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 3 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 3 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 3 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 3 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department 3 Year Acc Days On Sale']>0)
                         $factor=7/$row['Product Department 3 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department 3 Year Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Department 3 Year Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department 3 Year Acc Days Available']>0)
                         $factor=7/$row['Product Department 3 Year Acc Days Available'];
                     else
@@ -1376,36 +1376,36 @@ function list_departments() {
 
 
 
-            elseif($period=='year') {
+            else if($period=='year') {
 
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 1 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 1 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 1 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department 1 Year Acc Days On Sale']>0)
                         $factor=7/$row['Product Department 1 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department 1 Year Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Department 1 Year Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department 1 Year Acc Days Available']>0)
                         $factor=7/$row['Product Department 1 Year Acc Days Available'];
                     else
@@ -1426,34 +1426,34 @@ function list_departments() {
 
 
 // -------------------------------------------------- start for yeartoday--------------------------------------------
-            elseif($period=='yeartoday') {
+            else if($period=='yeartoday') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department YearToDay Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department YearToDay Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department YearToDay Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department YearToDay Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department YearToDay Acc Days On Sale']>0)
                         $factor=7/$row['Product Department YearToDay Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department YearToDay Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Department YearToDay Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department YearToDay Acc Days Available']>0)
                         $factor=7/$row['Product Department YearToDay Acc Days Available'];
                     else
@@ -1464,34 +1464,34 @@ function list_departments() {
             }
 // --------------------------------------------------- end for yeartoday-------------------------------------------
 // -------------------------------------------------- start for 6 month--------------------------------------------
-            elseif($period=='six_month') {
+            else if($period=='six_month') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 6 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 6 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 6 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 6 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department 6 Month Acc Days On Sale']>0)
                         $factor=7/$row['Product Department 6 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department 6 Month Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Department 6 Month Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department 6 Month Acc Days Available']>0)
                         $factor=7/$row['Product Department 6 Month Acc Days Available'];
                     else
@@ -1505,34 +1505,34 @@ function list_departments() {
 
 
 
-            elseif($period=='quarter') {
+            else if($period=='quarter') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 1 Quarter Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 1 Quarter Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 1 Quarter Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 1 Quarter Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department 1 Quarter Acc Days On Sale']>0)
                         $factor=7/$row['Product Department 1 Quarter Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department 1 Quarter Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Department 1 Quarter Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department 1 Quarter Acc Days Available']>0)
                         $factor=7/$row['Product Department 1 Quarter Acc Days Available'];
                     else
@@ -1549,34 +1549,34 @@ function list_departments() {
 
 
 
-            elseif($period=='month') {
+            else if($period=='month') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 1 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 1 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 1 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 1 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department 1 Month Acc Days On Sale']>0)
                         $factor=7/$row['Product Department 1 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department 1 Month Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Department 1 Month Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department 1 Month Acc Days Available']>0)
                         $factor=7/$row['Product Department 1 Month Acc Days Available'];
                     else
@@ -1590,34 +1590,34 @@ function list_departments() {
 
 
 // -------------------------------------------------- start for 10 days--------------------------------------------
-            elseif($period=='ten_day') {
+            else if($period=='ten_day') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 10 Day Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 10 Day Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 10 Day Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 10 Day Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department 10 Day Acc Days On Sale']>0)
                         $factor=7/$row['Product Department 10 Day Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department 10 Day Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Department 10 Day Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department 10 Day Acc Days Available']>0)
                         $factor=7/$row['Product Department 10 Day Acc Days Available'];
                     else
@@ -1632,34 +1632,34 @@ function list_departments() {
 
 
 
-            elseif($period=='week') {
+            else if($period=='week') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 1 Week Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 1 Week Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Department 1 Week Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Department 1 Week Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Department 1 Week Acc Days On Sale']>0)
                         $factor=7/$row['Product Department 1 Week Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Department 1 Week Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Department 1 Week Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Department 1 Week Acc Days Available']>0)
                         $factor=7/$row['Product Department 1 Week Acc Days Available'];
                     else
@@ -1844,15 +1844,15 @@ return;
         $conf=$_SESSION['state']['store']['products'];
         $conf_table='store';
     }
-    elseif ($parent=='department') {
+    else if ($parent=='department') {
         $conf=$_SESSION['state']['department']['products'];
         $conf_table='department';
     }
-    elseif ($parent=='family') {
+    else if ($parent=='family') {
         $conf=$_SESSION['state']['family']['products'];
         $conf_table='family';
     }
-    elseif ($parent=='none') {
+    else if ($parent=='none') {
         $conf=$_SESSION['state']['stores']['products'];
         $conf_table='stores';
     }
@@ -2127,7 +2127,7 @@ return;
     $wheref='';
     if ($f_field=='code' and $f_value!='')
         $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='description' and $f_value!='')
+    else if($f_field=='description' and $f_value!='')
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from $table  $where $wheref";
@@ -2170,7 +2170,7 @@ return;
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b>";
@@ -2200,97 +2200,97 @@ return;
     if ($order=='profit') {
         if ($period=='all')
             $order='`Product Total Profit`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product 1 Year Acc Profit`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product 1 Quarter Acc Profit`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product 1 Month Acc Profit`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product 1 Week Acc Profit`';
     }
-    elseif($order=='sales') {
+    else if($order=='sales') {
         if ($period=='all')
             $order='`Product Total Invoiced Amount`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product 1 Year Acc Invoiced Amount`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product 1 Quarter Acc Invoiced Amount`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product 1 Month Acc Invoiced Amount`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product 1 Week Acc Invoiced Amount`';
 // -----------------------------------------Start Product's 3Y,YTD,6M,10D---------------------------------------------
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order='`Product 3 Year Acc Invoiced Amount`';
-        elseif($period=='yeartoday')
+        else if($period=='yeartoday')
         $order='`Product YearToDay Acc Invoiced Amount`';
-        elseif($period=='six_month')
+        else if($period=='six_month')
         $order='`Product 6 Month Acc Invoiced Amount`';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order='`Product 10 Day Acc Invoiced Amount`';
 // -----------------------------------------End Product's 3Y,YTD,6M,10D---------------------------------------------
     }
-    elseif($order=='margin') {
+    else if($order=='margin') {
         if ($period=='all')
             $order='`Product Total Margin`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product 1 Year Acc Margin`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product 1 Quarter Acc Margin`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product 1 Month Acc Margin`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product 1 Week Acc Margin`';
 
     }
-    elseif($order=='sold') {
+    else if($order=='sold') {
         if ($period=='all')
             $order='`Product Total Quantity Invoiced`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product 1 Year Acc Quantity Invoiced`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product 1 Quarter Acc Quantity Invoiced`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product 1 Month Acc Quantity Invoiced`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product 1 Week Acc Quantity Invoiced`';
 
     }
-    elseif($order=='family') {
+    else if($order=='family') {
         $order='`Product Family`Code';
     }
-    elseif($order=='dept') {
+    else if($order=='dept') {
         $order='`Product Main Department Code`';
     }
-    elseif($order=='expcode') {
+    else if($order=='expcode') {
         $order='`Product Tariff Code`';
     }
-    elseif($order=='parts') {
+    else if($order=='parts') {
         $order='`Product XHTML Parts`';
     }
-    elseif($order=='supplied') {
+    else if($order=='supplied') {
         $order='`Product XHTML Supplied By`';
     }
-    elseif($order=='gmroi') {
+    else if($order=='gmroi') {
         $order='`Product GMROI`';
     }
-    elseif($order=='state') {
+    else if($order=='state') {
         $order='`Product Sales Type`';
     }
-    elseif($order=='web') {
+    else if($order=='web') {
         $order='`Product Web Configuration`';
     }
-    elseif($order=='stock_state') {
+    else if($order=='stock_state') {
         $order='`Product Availability State`';
     }
-    elseif($order=='stock_forecast') {
+    else if($order=='stock_forecast') {
         $order='`Product Available Days Forecast`';
     }
-    elseif($order=='formated_record_type') {
+    else if($order=='formated_record_type') {
         $order='`Product Record Type`';
     }
-    elseif($order=='store') {
+    else if($order=='store') {
         $order='`Store Code`';
     }
 
@@ -2332,7 +2332,7 @@ return;
             }
         }
 // ---------------------------------Start for Product's 3 year------------------------------------------
-        elseif($period=='three_year') {
+        else if($period=='three_year') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 3 Year Acc Profit`<0,`Product 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product 3 Year Acc Profit`>=0,`Product 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Product 3 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -2348,7 +2348,7 @@ return;
             }
         }
 // ---------------------------------End for Product's 3 year------------------------------------------
-        elseif($period=='year') {
+        else if($period=='year') {
 
             $sum_total_sales=0;
             $sum_month_sales=0;
@@ -2365,7 +2365,7 @@ return;
             }
         }
 // ---------------------------------Start for Product's yeartoday------------------------------------------
-        elseif($period=='yeartoday') {
+        else if($period=='yeartoday') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product YearToDay Acc Profit`<0,`Product YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Product YearToDay Acc Profit`>=0,`Product YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Product YearToDay Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -2382,7 +2382,7 @@ return;
         }
 // ---------------------------------End for Product's yeartoday------------------------------------------
 // ---------------------------------Start for Product's 6 month------------------------------------------
-        elseif($period=='six_month') {
+        else if($period=='six_month') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 6 Month Acc Profit`<0,`Product 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product 6 Month Acc Profit`>=0,`Product 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Product 6 Month Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -2398,7 +2398,7 @@ return;
             }
         }
 // ---------------------------------End for Product's 6 month------------------------------------------
-        elseif($period=='quarter') {
+        else if($period=='quarter') {
 
             $sum_total_sales=0;
             $sum_month_sales=0;
@@ -2416,7 +2416,7 @@ return;
         }
 
 
-        elseif($period=='month') {
+        else if($period=='month') {
 
             $sum_total_sales=0;
             $sum_month_sales=0;
@@ -2434,7 +2434,7 @@ return;
         }
 
 // ---------------------------------Start for Product's 10 day------------------------------------------
-        elseif($period=='ten_day') {
+        else if($period=='ten_day') {
             $sum_total_sales=0;
             $sum_month_sales=0;
             $sql="select sum(if(`Product 10 Day Acc Profit`<0,`Product 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Product 10 Day Acc Profit`>=0,`Product 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Product 10 Day Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
@@ -2447,7 +2447,7 @@ return;
             }
         }
 // ---------------------------------End for Product's 10 day------------------------------------------
-        elseif($period=='week') {
+        else if($period=='week') {
             $sum_families=0;
             $sum_total_sales=0;
             $sum_month_sales=0;
@@ -2524,56 +2524,56 @@ $currency=$row['Store Currency Code'];
                 else
                     $tprofit=percentage($row['Product Total Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='year') {
+            else if($period=='year') {
                 $tsall=percentage($row['Product 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product 1 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Product 1 Year Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product 1 Year Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='quarter') {
+            else if($period=='quarter') {
                 $tsall=percentage($row['Product 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product 1 Quarter Acc Profit']>=0)
                     $tprofit=percentage($row['Product 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='month') {
+            else if($period=='month') {
                 $tsall=percentage($row['Product 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product 1 Month Acc Profit']>=0)
                     $tprofit=percentage($row['Product 1 Month Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product 1 Month Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='week') {
+            else if($period=='week') {
                 $tsall=percentage($row['Product 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product 1 Week Acc Profit']>=0)
                     $tprofit=percentage($row['Product 1 Week Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product 1 Week Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='three_year') {
+            else if($period=='three_year') {
                 $tsall=percentage($row['Product 3 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product 3 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Product 3 Year Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product 3 Year Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='yeartoday') {
+            else if($period=='yeartoday') {
                 $tsall=percentage($row['Product YearToDay Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product YearToDay Acc Profit']>=0)
                     $tprofit=percentage($row['Product YearToDay Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product YearToDay Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='six_month') {
+            else if($period=='six_month') {
                 $tsall=percentage($row['Product 6 Month Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product 6 Month Acc Profit']>=0)
                     $tprofit=percentage($row['Product 6 Month Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product 6 Month Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='ten_day') {
+            else if($period=='ten_day') {
                 $tsall=percentage($row['Product 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product 10 Day Acc Profit']>=0)
                     $tprofit=percentage($row['Product 10 Day Acc Profit'],$sum_total_profit_plus,2);
@@ -2590,25 +2590,25 @@ $currency=$row['Store Currency Code'];
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Total Days On Sale']>0)
                         $factor=30.4368499/$row['Product Total Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Total Days On Sale']>0)
                         $factor=7/$row['Product Total Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Total Days Available']>0)
                         $factor=30.4368499/$row['Product Total Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Total Days Available']>0)
                         $factor=7/$row['Product Total Days Available'];
                     else
@@ -2631,36 +2631,36 @@ $currency=$row['Store Currency Code'];
 
 
             }
-            elseif($period=='three_year') {
+            else if($period=='three_year') {
 
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 3 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 3 Year Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 3 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 3 Year Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product 3 Year Acc Days On Sale']>0)
                         $factor=7/$row['Product 3 Year Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product 3 Year Acc Days Available']>0)
                         $factor=30.4368499/$row['Product 3 Year Acc Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product 3 Year Acc Days Available']>0)
                         $factor=7/$row['Product 3 Year Acc Days Available'];
                     else
@@ -2677,36 +2677,36 @@ $currency=$row['Store Currency Code'];
                 }
                 $margin=$row['Product 3 Year Acc Margin'];
             }
-            elseif($period=='year') {
+            else if($period=='year') {
 
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 1 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 1 Year Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 1 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 1 Year Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product 1 Year Acc Days On Sale']>0)
                         $factor=7/$row['Product 1 Year Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product 1 Year Acc Days Available']>0)
                         $factor=30.4368499/$row['Product 1 Year Acc Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product 1 Year Acc Days Available']>0)
                         $factor=7/$row['Product 1 Year Acc Days Available'];
                     else
@@ -2723,36 +2723,36 @@ $currency=$row['Store Currency Code'];
                 }
                 $margin=$row['Product 1 Year Acc Margin'];
             }
-            elseif($period=='yeartoday') {
+            else if($period=='yeartoday') {
 
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product YearToDay Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product YearToDay Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product YearToDay Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product YearToDay Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product YearToDay Acc Days On Sale']>0)
                         $factor=7/$row['Product YearToDay Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product YearToDay Acc Days Available']>0)
                         $factor=30.4368499/$row['Product YearToDay Acc Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product YearToDay Acc Days Available']>0)
                         $factor=7/$row['Product YearToDay Acc Days Available'];
                     else
@@ -2769,36 +2769,36 @@ $currency=$row['Store Currency Code'];
                 }
                 $margin=$row['Product YearToDay Acc Margin'];
             }
-            elseif($period=='six_month') {
+            else if($period=='six_month') {
 
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 6 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 6 Month Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 6 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 6 Month Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product 6 Month Acc Days On Sale']>0)
                         $factor=7/$row['Product 6 Month Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product 6 Month Acc Days Available']>0)
                         $factor=30.4368499/$row['Product 6 Month Acc Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product 6 Month Acc Days Available']>0)
                         $factor=7/$row['Product 6 Month Acc Days Available'];
                     else
@@ -2815,34 +2815,34 @@ $currency=$row['Store Currency Code'];
                 }
                 $margin=$row['Product 6 Month Acc Margin'];
             }
-            elseif($period=='quarter') {
+            else if($period=='quarter') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 1 Quarter Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 1 Quarter Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 1 Quarter Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 1 Quarter Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product 1 Quarter Acc Days On Sale']>0)
                         $factor=7/$row['Product 1 Quarter Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product 1 Quarter Acc Days Available']>0)
                         $factor=30.4368499/$row['Product 1 Quarter Acc Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product 1 Quarter Acc Days Available']>0)
                         $factor=7/$row['Product 1 Quarter Acc Days Available'];
                     else
@@ -2861,34 +2861,34 @@ $currency=$row['Store Currency Code'];
                 $margin=$row['Product 1 Quarter Acc Margin'];
 
             }
-            elseif($period=='month') {
+            else if($period=='month') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 1 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 1 Month Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 1 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 1 Month Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product 1 Month Acc Days On Sale']>0)
                         $factor=7/$row['Product 1 Month Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product 1 Month Acc Days Available']>0)
                         $factor=30.4368499/$row['Product 1 Month Acc Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product 1 Month Acc Days Available']>0)
                         $factor=7/$row['Product 1 Month Acc Days Available'];
                     else
@@ -2906,36 +2906,36 @@ $currency=$row['Store Currency Code'];
                 }
                 $margin=$row['Product 1 Month Acc Margin'];
             }
-            elseif($period=='ten_day') {
+            else if($period=='ten_day') {
 
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 10 Day Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 10 Day Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 10 Day Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 10 Day Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product 10 Day Acc Days On Sale']>0)
                         $factor=7/$row['Product 10 Day Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product 10 Day Acc Days Available']>0)
                         $factor=30.4368499/$row['Product 10 Day Acc Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product 10 Day Acc Days Available']>0)
                         $factor=7/$row['Product 10 Day Acc Days Available'];
                     else
@@ -2952,34 +2952,34 @@ $currency=$row['Store Currency Code'];
                 }
                 $margin=$row['Product 10 Day Acc Margin'];
             }
-            elseif($period=='week') {
+            else if($period=='week') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 1 Week Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 1 Week Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product 1 Week Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product 1 Week Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product 1 Week Acc Days On Sale']>0)
                         $factor=7/$row['Product 1 Week Acc Days On Sale'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product 1 Week Acc Days Available']>0)
                         $factor=30.4368499/$row['Product 1 Week Acc Days Available'];
                     else
                         $factor='ND';
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product 1 Week Acc Days Available']>0)
                         $factor=7/$row['Product 1 Week Acc Days Available'];
                     else
@@ -3127,7 +3127,7 @@ $sold=_('NA');
                      'state'=>$type,
                      'web'=>$formated_web_configuration,
                      'image'=>$row['Product Main Image'],
-                     'type'=>'item',
+                     'item_type'=>'item',
                      'name_only'=>$row['Product Name'],
                      'units'=>$row['Product Units Per Case']."x"
 
@@ -3224,12 +3224,6 @@ global $user;
     else {
         return;
     }
-
-
-
-
-
-
     $conf=$_SESSION['state']['warehouse']['parts'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
@@ -3375,7 +3369,7 @@ global $user;
         $where_type='';
         $where_interval='';
     }
-    elseif ($parent=='list'){
+    else if ($parent=='list'){
 
         $sql=sprintf("select * from `List Dimension` where `List Key`=%d",$parent_key);
         //print $sql;exit;
@@ -3405,9 +3399,9 @@ global $user;
             exit("error");
         }
     }
-    elseif ($parent=='category') {
-        
-        
+    else if ($parent=='category') {
+
+
 
 $category=new Category($parent_key);
 
@@ -3418,12 +3412,13 @@ return;
 $where=sprintf(" where `Subject`='Part' and  `Category Key`=%d",$parent_key);
 $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part SKU`) ';
         $where_type='';
-     
-        
-        
-    }else{
-    
-    
+
+
+
+    }
+    else{
+
+
     }
 
 
@@ -3457,16 +3452,16 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
     $wheref='';
     if ($f_field=='used_in' and $f_value!='')
         $wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
-    elseif($f_field=='description' and $f_value!='')
+    else if($f_field=='description' and $f_value!='')
     $wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
-    elseif($f_field=='supplied_by' and $f_value!='')
+    else if($f_field=='supplied_by' and $f_value!='')
     $wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
-    elseif($f_field=='sku' and $f_value!='')
+    else if($f_field=='sku' and $f_value!='')
     $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
     $sql="select count(*) as total from $table  $where $wheref";
 
-    
+
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -3513,7 +3508,7 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
 
 
         switch ($f_field) {
@@ -3557,158 +3552,158 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
     else if ($order=='margin') {
         if ($period=='all')
             $order=' `Part Total Acc Margin` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc Margin` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc Margin` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc Margin` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc Margin` ';
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order=' `Part 3 Year Acc Margin` ';
-        elseif($period=='yeartoday')
-        $order=' `Part YearToDay Acc Margin` ';
-        elseif($period=='six_month')
+        else if($period=='yeartoday')
+        $order=' `Part Year To Day Acc Margin` ';
+        else if($period=='six_month')
         $order=' `Part 6 Month Acc Margin` ';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order=' `Part 10 Day Acc Margin` ';
 
     } else if ($order=='sold') {
         if ($period=='all')
             $order=' `Part Total Acc Sold` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc Sold` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc Sold` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc Sold` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc Sold` ';
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order=' `Part 3 Year Acc Sold` ';
-        elseif($period=='yeartoday')
-        $order=' `Part YearToDay Acc Sold` ';
-        elseif($period=='six_month')
+        else if($period=='yeartoday')
+        $order=' `Part Year To Day Acc Sold` ';
+        else if($period=='six_month')
         $order=' `Part 6 Month Acc Sold` ';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order=' `Part 10 Day Acc Sold` ';
 
     } else if ($order=='money_in') {
         if ($period=='all')
             $order=' `Part Total Acc Sold Amount` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc Sold Amount` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc Sold Amount` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc Sold Amount` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc Sold Amount` ';
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order=' `Part 3 Year Acc Sold Amount` ';
-        elseif($period=='yeartoday')
-        $order=' `Part YearToDay Acc Sold Amount` ';
-        elseif($period=='six_month')
+        else if($period=='yeartoday')
+        $order=' `Part Year To Day Acc Sold Amount` ';
+        else if($period=='six_month')
         $order=' `Part 6 Month Acc Sold Amount` ';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order=' `Part 10 Day Acc Sold Amount` ';
     } else if ($order=='profit_sold') {
         if ($period=='all')
             $order=' `Part Total Acc Profit` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc Profit` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc Profit` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc Profit` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc Profit` ';
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order=' `Part 3 Year Acc Profit` ';
-        elseif($period=='yeartoday')
-        $order=' `Part YearToDay Acc Profit` ';
-        elseif($period=='six_month')
+        else if($period=='yeartoday')
+        $order=' `Part Year To Day Acc Profit` ';
+        else if($period=='six_month')
         $order=' `Part 6 Month Acc Profit` ';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order=' `Part 10 Day Acc Profit` ';
     } else if ($order=='avg_stock') {
         if ($period=='all')
             $order=' `Part Total Acc AVG Stock` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc AVG Stock` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc AVG Stock` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc AVG Stock` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc AVG Stock` ';
 
     } else if ($order=='avg_stockvalue') {
         if ($period=='all')
             $order=' `Part Total Acc AVG Stock Value` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc AVG Stock Value` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc AVG Stock Value` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc AVG Stock Value` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc AVG Stock Value` ';
 
     } else if ($order=='keep_days') {
         if ($period=='all')
             $order=' `Part Total Acc Keeping Days` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc Keeping Days` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc Keeping Days` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc Keeping Days` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc Keeping Days` ';
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order=' `Part 3 Year Acc Keeping Days` ';
-        elseif($period=='yeartoday')
-        $order=' `Part YearToDay Acc Keeping Days` ';
-        elseif($period=='six_month')
+        else if($period=='yeartoday')
+        $order=' `Part Year To Day Acc Keeping Days` ';
+        else if($period=='six_month')
         $order=' `Part 6 Month Acc Keeping Days` ';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order=' `Part 10 Day Acc Keeping Days` ';
     } else if ($order=='outstock_days') {
         if ($period=='all')
             $order=' `Part Total Acc Out of Stock Days` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc Out of Stock Days` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc Out of Stock Days` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc Out of Stock Days` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc Out of Stock Days` ';
 
     } else if ($order=='unknown_days') {
         if ($period=='all')
             $order=' `Part Total Acc Unknown Stock Days` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Unknown Stock Days` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc Unknown Stock Days` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc Unknown Stock Days` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc Unknown Stock Days` ';
 
     } else if ($order=='gmroi') {
         if ($period=='all')
             $order=' `Part Total Acc GMROI` ';
-        elseif($period=='year')
+        else if($period=='year')
         $order=' `Part 1 Year Acc GMROI` ';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order=' `Part 1 Quarter Acc GMROI` ';
-        elseif($period=='month')
+        else if($period=='month')
         $order=' `Part 1 Month Acc GMROI` ';
-        elseif($period=='week')
+        else if($period=='week')
         $order=' `Part 1 Week Acc GMROI` ';
 
     }
@@ -3717,438 +3712,82 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
 
 
 
-    $sql="select * from $table  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-   
+    $sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+
     $adata=array();
     $result=mysql_query($sql);
 
-    // print "$period $avg";
+  // print "$sql";
 
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-
+		$locations='<table border=0 style="width:150px">';
+		$locations_data=preg_split('/,/',$data['location_data']);
+		//print_r($locations_data);
+		foreach($locations_data as $raw_location_data){
+			if($raw_location_data!=''){
+			//print_r($raw_location_data);
+			$locations.='<tr style="border:none">';
+			$locations_data=preg_split('/\:/',$raw_location_data);
+			
+			$locations.='<td style="0border:1px solid red;"><a href="locations.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
+			$locations.='</tr>';
+			}
+		}
+$locations.='</table>';
+//print $locations;
 
         if ($period=='all') {
-            if ($avg=='totals') {
-                $sold=number($data['Part Total Acc Sold']);
-                $given=number($data['Part Total Acc Given']);
-                $sold_amount=money($data['Part Total Acc Sold Amount']);
-                $abs_profit=money($data['Part Total Acc Profit']);
-                $profit_sold=money($data['Part Total Acc Profit']);
-            } else {
-
-                if ($avg=='month')
-                    $factor=$data['Part Total Acc Keeping Days']/30.4368499;
-                elseif($avg=='month_eff')
-                $factor=($data['Part Total Acc Keeping Days']-$data['Part Total Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part Total Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part Total Acc Keeping Days']-$data['Part Total Acc Out of Stock Days'])/7;
-                else
-                    $factor=1;
-                if ($factor==0) {
-                    $sold=0;
-                    $given=0;
-                    $sold_amount=money(0);
-                    $abs_profit=money(0);
-                    $profit_sold=money(0);
-                } else {
-                    $sold=number($data['Part Total Acc Sold']/$factor);
-                    $given=number($data['Part Total Acc Given']/$factor);
-                    $sold_amount=money($data['Part Total Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part Total Acc Profit']/$factor);
-                    $profit_sold=money($data['Part Total Acc Profit']/$factor);
-                }
-            }
-
-            if ($given!=0)
-                $sold="$sold ($given)";
-            $margin=percentage($data['Part Total Acc Margin'],1);
-            $avg_stock=number($data['Part Total Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part Total Acc AVG Stock Value']);
-            $keep_days=number($data['Part Total Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part Total Acc Out of Stock Days'],$data['Part Total Acc Keeping Days']);
-            $unknown_days=percentage($data['Part Total Acc Unknown Stock Days'],$data['Part Total Acc Keeping Days']);
-            $gmroi=number($data['Part Total Acc GMROI'],0);
-
+        $period_tag='Total';
         }
-        elseif($period=='three_year') {
-
-
-            if ($avg=='totals') {
-                $sold=number($data['Part 3 Year Acc Sold']);
-                $given=number($data['Part 3 Year Acc Given']);
-                $sold_amount=money($data['Part 3 Year Acc Sold Amount']);
-                $abs_profit=money($data['Part 3 Year Acc Profit']);
-                $profit_sold=money($data['Part 3 Year Acc Profit']);
-            } else {
-
-                if ($avg=='month')
-                    $factor=$data['Part 3 Year Acc Keeping Days']/30.4368499;
-                elseif($avg=='month_eff')
-                $factor=($data['Part 3 Year Acc Keeping Days']-$data['Part 3 Year Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part 3 Year Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part 3 Year Acc Keeping Days']-$data['Part 3 Year Acc Out of Stock Days'])/7;
-                else
-                    $factor=1;
-                if ($factor==0) {
-                    $sold=0;
-                    $given=0;
-                    $sold_amount=money(0);
-                    $abs_profit=money(0);
-                    $profit_sold=money(0);
-                } else {
-                    $sold=number($data['Part 3 Year Acc Sold']/$factor);
-                    $given=number($data['Part 3 Year Acc Given']/$factor);
-                    $sold_amount=money($data['Part 3 Year Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 3 Year Acc Profit']/$factor);
-                    $profit_sold=money($data['Part 3 Year Acc Profit']/$factor);
-                }
-            }
-
-            if ($given!=0)
-                $sold="$sold ($given)";
-
-
-            $margin=percentage($data['Part 3 Year Acc Margin'],1);
-            $avg_stock=number($data['Part 3 Year Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part 3 Year Acc AVG Stock Value']);
-            $keep_days=number($data['Part 3 Year Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part 3 Year Acc Out of Stock Days'],$data['Part 3 Year Acc Keeping Days']);
-            $unknown_days=percentage($data['Part 3 Year Acc Unknown Stock Days'],$data['Part 3 Year Acc Keeping Days']);
-            $gmroi=number($data['Part 3 Year Acc GMROI'],0);
-
-
-
+        else if($period=='three_year') {
+$period_tag='3 Year';
+                  }
+        else if($period=='year') {
+$period_tag='1 Year';
         }
-        elseif($period=='year') {
-
-
-            if ($avg=='totals') {
-                $sold=number($data['Part 1 Year Acc Sold']);
-                $given=number($data['Part 1 Year Acc Given']);
-                $sold_amount=money($data['Part 1 Year Acc Sold Amount']);
-                $abs_profit=money($data['Part 1 Year Acc Profit']);
-                $profit_sold=money($data['Part 1 Year Acc Profit']);
-            } else {
-
-                if ($avg=='month')
-                    $factor=$data['Part 1 Year Acc Keeping Days']/30.4368499;
-                elseif($avg=='month_eff')
-                $factor=($data['Part 1 Year Acc Keeping Days']-$data['Part 1 Year Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part 1 Year Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part 1 Year Acc Keeping Days']-$data['Part 1 Year Acc Out of Stock Days'])/7;
-                else
-                    $factor=1;
-                if ($factor==0) {
-                    $sold=0;
-                    $given=0;
-                    $sold_amount=money(0);
-                    $abs_profit=money(0);
-                    $profit_sold=money(0);
-                } else {
-                    $sold=number($data['Part 1 Year Acc Sold']/$factor);
-                    $given=number($data['Part 1 Year Acc Given']/$factor);
-                    $sold_amount=money($data['Part 1 Year Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 1 Year Acc Profit']/$factor);
-                    $profit_sold=money($data['Part 1 Year Acc Profit']/$factor);
-                }
-            }
-
-            if ($given!=0)
-                $sold="$sold ($given)";
-
-
-            $margin=percentage($data['Part 1 Year Acc Margin'],1);
-            $avg_stock=number($data['Part 1 Year Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part 1 Year Acc AVG Stock Value']);
-            $keep_days=number($data['Part 1 Year Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part 1 Year Acc Out of Stock Days'],$data['Part 1 Year Acc Keeping Days']);
-            $unknown_days=percentage($data['Part 1 Year Acc Unknown Stock Days'],$data['Part 1 Year Acc Keeping Days']);
-            $gmroi=number($data['Part 1 Year Acc GMROI'],0);
-
-
-
+        else if($period=='yeartoday') {
+$period_tag='Year To Day';
         }
-        elseif($period=='yeartoday') {
-
-
-            if ($avg=='totals') {
-                $sold=number($data['Part YearToDay Acc Sold']);
-                $given=number($data['Part YearToDay Acc Given']);
-                $sold_amount=money($data['Part YearToDay Acc Sold Amount']);
-                $abs_profit=money($data['Part YearToDay Acc Profit']);
-                $profit_sold=money($data['Part YearToDay Acc Profit']);
-            } else {
-
-                if ($avg=='month')
-                    $factor=$data['Part YearToDay Acc Keeping Days']/30.4368499;
-                elseif($avg=='month_eff')
-                $factor=($data['Part YearToDay Acc Keeping Days']-$data['Part YearToDay Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part YearToDay Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part YearToDay Acc Keeping Days']-$data['Part YearToDay Acc Out of Stock Days'])/7;
-                else
-                    $factor=1;
-                if ($factor==0) {
-                    $sold=0;
-                    $given=0;
-                    $sold_amount=money(0);
-                    $abs_profit=money(0);
-                    $profit_sold=money(0);
-                } else {
-                    $sold=number($data['Part YearToDay Acc Sold']/$factor);
-                    $given=number($data['Part YearToDay Acc Given']/$factor);
-                    $sold_amount=money($data['Part YearToDay Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part YearToDay Acc Profit']/$factor);
-                    $profit_sold=money($data['Part YearToDay Acc Profit']/$factor);
-                }
-            }
-
-            if ($given!=0)
-                $sold="$sold ($given)";
-
-
-            $margin=percentage($data['Part YearToDay Acc Margin'],1);
-            $avg_stock=number($data['Part YearToDay Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part YearToDay Acc AVG Stock Value']);
-            $keep_days=number($data['Part YearToDay Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part YearToDay Acc Out of Stock Days'],$data['Part YearToDay Acc Keeping Days']);
-            $unknown_days=percentage($data['Part YearToDay Acc Unknown Stock Days'],$data['Part YearToDay Acc Keeping Days']);
-            $gmroi=number($data['Part YearToDay Acc GMROI'],0);
-
-
-
+        else if($period=='six_month') {
+$period_tag='6 Month';
         }
-        elseif($period=='six_month') {
-
-
-            if ($avg=='totals') {
-                $sold=number($data['Part 6 Month Acc Sold']);
-                $given=number($data['Part 6 Month Acc Given']);
-                $sold_amount=money($data['Part 6 Month Acc Sold Amount']);
-                $abs_profit=money($data['Part 6 Month Acc Profit']);
-                $profit_sold=money($data['Part 6 Month Acc Profit']);
-            } else {
-
-                if ($avg=='month')
-                    $factor=$data['Part 6 Month Acc Keeping Days']/30.4368499;
-                elseif($avg=='month_eff')
-                $factor=($data['Part 6 Month Acc Keeping Days']-$data['Part 6 Month Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part 6 Month Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part 6 Month Acc Keeping Days']-$data['Part 6 Month Acc Out of Stock Days'])/7;
-                else
-                    $factor=1;
-                if ($factor==0) {
-                    $sold=0;
-                    $given=0;
-                    $sold_amount=money(0);
-                    $abs_profit=money(0);
-                    $profit_sold=money(0);
-                } else {
-                    $sold=number($data['Part 6 Month Acc Sold']/$factor);
-                    $given=number($data['Part 6 Month Acc Given']/$factor);
-                    $sold_amount=money($data['Part 6 Month Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 6 Month Acc Profit']/$factor);
-                    $profit_sold=money($data['Part 6 Month Acc Profit']/$factor);
-                }
-            }
-
-            if ($given!=0)
-                $sold="$sold ($given)";
-
-
-            $margin=percentage($data['Part 6 Month Acc Margin'],1);
-            $avg_stock=number($data['Part 6 Month Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part 6 Month Acc AVG Stock Value']);
-            $keep_days=number($data['Part 6 Month Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part 6 Month Acc Out of Stock Days'],$data['Part 6 Month Acc Keeping Days']);
-            $unknown_days=percentage($data['Part 6 Month Acc Unknown Stock Days'],$data['Part 6 Month Acc Keeping Days']);
-            $gmroi=number($data['Part 6 Month Acc GMROI'],0);
-
-
-
+        else if($period=='quarter') {
+$period_tag='1 Quarter';
         }
-        elseif($period=='quarter') {
-
-
-            if ($avg=='totals') {
-                $sold=number($data['Part 1 Quarter Acc Sold']);
-                $given=number($data['Part 1 Quarter Acc Given']);
-                $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']);
-                $abs_profit=money($data['Part 1 Quarter Acc Profit']);
-                $profit_sold=money($data['Part 1 Quarter Acc Profit']);
-            } else {
-
-                if ($avg=='month')
-                    $factor=$data['Part 1 Quarter Acc Keeping Days']/30.4368499;
-                elseif($avg=='month_eff')
-                $factor=($data['Part 1 Quarter Acc Keeping Days']-$data['Part 1 Quarter Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part 1 Quarter Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part 1 Quarter Acc Keeping Days']-$data['Part 1 Quarter Acc Out of Stock Days'])/7;
-                else
-                    $factor=1;
-                if ($factor==0) {
-                    $sold=0;
-                    $given=0;
-                    $sold_amount=money(0);
-                    $abs_profit=money(0);
-                    $profit_sold=money(0);
-                } else {
-                    $sold=number($data['Part 1 Quarter Acc Sold']/$factor);
-                    $given=number($data['Part 1 Quarter Acc Given']/$factor);
-                    $sold_amount=money($data['Part 1 Quarter Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 1 Quarter Acc Profit']/$factor);
-                    $profit_sold=money($data['Part 1 Quarter Acc Profit']/$factor);
-                }
-            }
-
-
-
-            if ($given!=0)
-                $sold="$sold ($given)";
-            $margin=percentage($data['Part 1 Quarter Acc Margin'],1);
-            $avg_stock=number($data['Part 1 Quarter Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part 1 Quarter Acc AVG Stock Value']);
-            $keep_days=number($data['Part 1 Quarter Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part 1 Quarter Acc Out of Stock Days'],$data['Part 1 Quarter Acc Keeping Days']);
-            $unknown_days=percentage($data['Part 1 Quarter Acc Unknown Stock Days'],$data['Part 1 Quarter Acc Keeping Days']);
-            $gmroi=number($data['Part 1 Quarter Acc GMROI'],0);
-
+        else if($period=='month') {
+$period_tag='1 Month';
         }
-        elseif($period=='month') {
-
-
-
-
-            if ($avg=='totals') {
-                $sold=number($data['Part 1 Month Acc Sold']);
-                $given=number($data['Part 1 Month Acc Given']);
-                $sold_amount=money($data['Part 1 Month Acc Sold Amount']);
-                $abs_profit=money($data['Part 1 Month Acc Profit']);
-                $profit_sold=money($data['Part 1 Month Acc Profit']);
-            } else {
-
-                if ($avg=='month')
-                    $factor=$data['Part 1 Month Acc Keeping Days']/30.4368499;
-                elseif($avg=='month_eff')
-                $factor=($data['Part 1 Month Acc Keeping Days']-$data['Part 1 Month Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part 1 Month Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part 1 Month Acc Keeping Days']-$data['Part 1 Month Acc Out of Stock Days'])/7;
-                else
-                    $factor=1;
-                if ($factor==0) {
-                    $sold=0;
-                    $given=0;
-                    $sold_amount=money(0);
-                    $abs_profit=money(0);
-                    $profit_sold=money(0);
-                } else {
-                    $sold=number($data['Part 1 Month Acc Sold']/$factor);
-                    $given=number($data['Part 1 Month Acc Given']/$factor);
-                    $sold_amount=money($data['Part 1 Month Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 1 Month Acc Profit']/$factor);
-                    $profit_sold=money($data['Part 1 Month Acc Profit']/$factor);
-                }
-            }
-
-
-            if ($given!=0)
-                $sold="$sold ($given)";
-
-            $margin=percentage($data['Part 1 Month Acc Margin'],1);
-
-            $avg_stock=number($data['Part 1 Month Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part 1 Month Acc AVG Stock Value']);
-            $keep_days=number($data['Part 1 Month Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part 1 Month Acc Out of Stock Days'],$data['Part 1 Month Acc Keeping Days']);
-            $unknown_days=percentage($data['Part 1 Month Acc Unknown Stock Days'],$data['Part 1 Month Acc Keeping Days']);
-            $gmroi=number($data['Part 1 Month Acc GMROI'],0);
-
-
+        else if($period=='ten_day') {
+$period_tag='10 Day';
+                 }
+        else if($period=='week') {
+$period_tag='1 Week';
         }
-        elseif($period=='ten_day') {
-
-
-            if ($avg=='totals') {
-                $sold=number($data['Part 10 Day Acc Sold']);
-                $given=number($data['Part 10 Day Acc Given']);
-                $sold_amount=money($data['Part 10 Day Acc Sold Amount']);
-                $abs_profit=money($data['Part 10 Day Acc Profit']);
-                $profit_sold=money($data['Part 10 Day Acc Profit']);
-            } else {
-
-                if ($avg=='month')
-                    $factor=$data['Part 10 Day Acc Keeping Days']/30.4368499;
-                elseif($avg=='month_eff')
-                $factor=($data['Part 10 Day Acc Keeping Days']-$data['Part 10 Day Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part 10 Day Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part 10 Day Acc Keeping Days']-$data['Part 10 Day Acc Out of Stock Days'])/7;
-                else
-                    $factor=1;
-                if ($factor==0) {
-                    $sold=0;
-                    $given=0;
-                    $sold_amount=money(0);
-                    $abs_profit=money(0);
-                    $profit_sold=money(0);
-                } else {
-                    $sold=number($data['Part 10 Day Acc Sold']/$factor);
-                    $given=number($data['Part 10 Day Acc Given']/$factor);
-                    $sold_amount=money($data['Part 10 Day Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 10 Day Acc Profit']/$factor);
-                    $profit_sold=money($data['Part 10 Day Acc Profit']/$factor);
-                }
-            }
-
-            if ($given!=0)
-                $sold="$sold ($given)";
-
-
-            $margin=percentage($data['Part 10 Day Acc Margin'],1);
-            $avg_stock=number($data['Part 10 Day Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part 10 Day Acc AVG Stock Value']);
-            $keep_days=number($data['Part 10 Day Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part 10 Day Acc Out of Stock Days'],$data['Part 10 Day Acc Keeping Days']);
-            $unknown_days=percentage($data['Part 10 Day Acc Unknown Stock Days'],$data['Part 10 Day Acc Keeping Days']);
-            $gmroi=number($data['Part 10 Day Acc GMROI'],0);
-
-
-
+ 		else if($period=='monthtoday') {
+$period_tag='Month To Day';
         }
-        elseif($period=='week') {
-
+  		else if($period=='weektoday') {
+$period_tag='Week To Day';
+        }
+  		else if($period=='today') {
+ $period_tag='Today';
+        }
 
             if ($avg=='totals') {
-                $sold=number($data['Part 1 Week Acc Sold']);
-                $given=number($data['Part 1 Week Acc Given']);
-                $sold_amount=money($data['Part 1 Week Acc Sold Amount']);
-                $abs_profit=money($data['Part 1 Week Acc Profit']);
-                $profit_sold=money($data['Part 1 Week Acc Profit']);
+                $sold=number($data['Part '.$period_tag.' Acc Sold'],0);
+                $given=number($data['Part '.$period_tag.' Acc Given']);
+                $sold_amount=money($data['Part '.$period_tag.' Acc Sold Amount']);
+                $abs_profit=money($data['Part '.$period_tag.' Acc Profit']);
+                $profit_sold=money($data['Part '.$period_tag.' Acc Profit']);
             } else {
-
                 if ($avg=='week')
-                    $factor=$data['Part 1 Week Acc Keeping Days']/30.4368499;
-                elseif($avg=='week_eff')
-                $factor=($data['Part 1 Week Acc Keeping Days']-$data['Part 1 Week Acc Out of Stock Days'])/30.4368499;
-                elseif($avg=='week')
-                $factor=$data['Part 1 Week Acc Keeping Days']/7;
-                elseif($avg=='week_eff')
-                $factor=($data['Part 1 Week Acc Keeping Days']-$data['Part 1 Week Acc Out of Stock Days'])/7;
+                    $factor=$data['Part '.$period_tag.' Acc Keeping Days']/30.4368499;
+                else if($avg=='week_eff')
+                $factor=($data['Part '.$period_tag.' Acc Keeping Days']-$data['Part '.$period_tag.' Acc Out of Stock Days'])/30.4368499;
+                else if($avg=='week')
+                $factor=$data['Part '.$period_tag.' Acc Keeping Days']/7;
+                else if($avg=='week_eff')
+                $factor=($data['Part '.$period_tag.' Acc Keeping Days']-$data['Part '.$period_tag.' Acc Out of Stock Days'])/7;
                 else
                     $factor=1;
                 if ($factor==0) {
@@ -4158,34 +3797,31 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
                     $abs_profit=money(0);
                     $profit_sold=money(0);
                 } else {
-                    $sold=number($data['Part 1 Week Acc Sold']/$factor);
-                    $given=number($data['Part 1 Week Acc Given']/$factor);
-                    $sold_amount=money($data['Part 1 Week Acc Sold Amount']/$factor);
-                    $abs_profit=money($data['Part 1 Week Acc Profit']/$factor);
-                    $profit_sold=money($data['Part 1 Week Acc Profit']/$factor);
+                    $sold=number($data['Part '.$period_tag.' Acc Sold']/$factor);
+                    $given=number($data['Part '.$period_tag.' Acc Given']/$factor);
+                    $sold_amount=money($data['Part '.$period_tag.' Acc Sold Amount']/$factor);
+                    $abs_profit=money($data['Part '.$period_tag.' Acc Profit']/$factor);
+                    $profit_sold=money($data['Part '.$period_tag.' Acc Profit']/$factor);
                 }
             }
-
-
-
             if ($given!=0)
                 $sold="$sold ($given)";
-            $margin=percentage($data['Part 1 Week Acc Margin'],1);
-            $avg_stock=number($data['Part 1 Week Acc AVG Stock']);
-            $avg_stockvalue=money($data['Part 1 Week Acc AVG Stock Value']);
-            $keep_days=number($data['Part 1 Week Acc Keeping Days'],0);
-            $outstock_days=percentage($data['Part 1 Week Acc Out of Stock Days'],$data['Part 1 Week Acc Keeping Days']);
-            $unknown_days=percentage($data['Part 1 Week Acc Unknown Stock Days'],$data['Part 1 Week Acc Keeping Days']);
-            $gmroi=number($data['Part 1 Week Acc GMROI'],0);
+            $margin=percentage($data['Part '.$period_tag.' Acc Margin'],1);
+            $avg_stock=number($data['Part '.$period_tag.' Acc AVG Stock']);
+            $avg_stockvalue=money($data['Part '.$period_tag.' Acc AVG Stock Value']);
+            $keep_days=number($data['Part '.$period_tag.' Acc Keeping Days'],0);
+            $outstock_days=percentage($data['Part '.$period_tag.' Acc Out of Stock Days'],$data['Part '.$period_tag.' Acc Keeping Days']);
+            $unknown_days=percentage($data['Part '.$period_tag.' Acc Unknown Stock Days'],$data['Part '.$period_tag.' Acc Keeping Days']);
+            $gmroi=number($data['Part '.$period_tag.' Acc GMROI'],0);
 
-        }
 
 
 
         $adata[]=array(
-                     'sku'=>sprintf(
-                               '<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
+        'locations'=>$locations,
+                     'sku'=>sprintf('<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
                      'description'=>$data['Part Unit Description'],
+                     
                      'used_in'=>$data['Part XHTML Currently Used In'],
                      'supplied_by'=>$data['Part XHTML Currently Supplied By'],
                      'stock'=>number($data['Part Current Stock']),
@@ -4232,6 +3868,9 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
                    );
     echo json_encode($response);
 }
+
+
+
 
 function list_products_with_same_code() {
     $conf=$_SESSION['state']['product']['server'];
@@ -4392,13 +4031,13 @@ function list_families() {
         $conf_table='department';
 
     }
-    elseif ($parent=='store') {
+    else if ($parent=='store') {
 
         $conf=$_SESSION['state']['store']['families'];
         $conf_table='store';
 
     }
-    elseif ($parent=='none') {
+    else if ($parent=='none') {
 
         $conf=$_SESSION['state']['stores']['families'];
         $conf_table='stores';
@@ -4626,7 +4265,7 @@ function list_families() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('families with code like')." <b>".$f_value."*</b>";
@@ -4650,63 +4289,63 @@ function list_families() {
     if ($order=='profit') {
         if ($period=='all')
             $order='`Product Family Total Profit`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product Family 1 Year Acc Profit`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product Family 1 Quarter Acc Profit`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product Family 1 Month Acc Profit`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product Family 1 Week Acc Profit`';
     }
-    elseif($order=='sales') {
+    else if($order=='sales') {
         if ($period=='all')
             $order='`Product Family Total Invoiced Amount`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product Family 1 Year Acc Invoiced Amount`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product Family 1 Quarter Acc Invoiced Amount`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product Family 1 Month Acc Invoiced Amount`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product Family 1 Week Acc Invoiced Amount`';
 // --------------------------------Start for families' 3Y,YTD,6M,10D------------------------------------------------
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order='`Product Family 3 Year Acc Invoiced Amount`';
-        elseif($period=='yeartoday')
+        else if($period=='yeartoday')
         $order='`Product Family YearToDay Acc Invoiced Amount`';
-        elseif($period=='six_month')
+        else if($period=='six_month')
         $order='`Product Family 6 Month Acc Invoiced Amount`';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order='`Product Family 10 Day Acc Invoiced Amount`';
 // --------------------------------Ends for families' 3Y,YTD,6M,10D------------------------------------------------
     }
-    elseif($order=='code')
+    else if($order=='code')
     $order='`Product Family Code`';
-    elseif($order=='stock_value')
+    else if($order=='stock_value')
     $order='`Product Family Stock Value`';
-    elseif($order=='name')
+    else if($order=='name')
     $order='`Product Family Name`';
-    elseif($order=='active')
+    else if($order=='active')
     $order='`Product Family For Public Sale Products`';
-    elseif($order=='discontinued')
+    else if($order=='discontinued')
     $order='`Product Family Discontinued Products`';
-    elseif($order=='todo')
+    else if($order=='todo')
     $order='`Product Family In Process Products`';
-    elseif($order=='notforsale')
+    else if($order=='notforsale')
     $order='`Product Family Not For Sale Products`';
 
-    elseif($order=='outofstock')
+    else if($order=='outofstock')
     $order='`Product Family Out Of Stock Products`';
-    elseif($order=='stock_error')
+    else if($order=='stock_error')
     $order='`Product Family Unknown Stock Products`';
-    elseif($order=='surplus')
+    else if($order=='surplus')
     $order='`Product Family Surplus Availability Products`';
-    elseif($order=='optimal')
+    else if($order=='optimal')
     $order='`Product Family Optimal Availability Products`';
-    elseif($order=='low')
+    else if($order=='low')
     $order='`Product Family Low Availability Products`';
-    elseif($order=='critical')
+    else if($order=='critical')
     $order='`Product Family Critical Availability Products`';
     else
         $order='`Product Family Code`';
@@ -4745,7 +4384,7 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-    elseif($period=='three_year') {
+    else if($period=='three_year') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Product Family 3 Year Acc Profit`<0,`Product Family 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 3 Year Acc Profit`>=0,`Product Family 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Family 3 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
@@ -4757,7 +4396,7 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-    elseif($period=='yeartoday') {
+    else if($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Product Family YearToDay Acc Profit`<0,`Product Family YearToDay Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family YearToDay Acc Profit`>=0,`Product Family YearToDay Acc Profit`,0)) as total_profit_plus,sum(`Product Family YearToDay Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
@@ -4769,7 +4408,7 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-    elseif($period=='year') {
+    else if($period=='year') {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -4785,7 +4424,7 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-    elseif($period=='six_month') {
+    else if($period=='six_month') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Product Family 6 Month Acc Profit`<0,`Product Family 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 6 Month Acc Profit`>=0,`Product Family 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Family 6 Month Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
@@ -4797,7 +4436,7 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-    elseif($period=='quarter') {
+    else if($period=='quarter') {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -4813,7 +4452,7 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-    elseif($period=='month') {
+    else if($period=='month') {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -4829,7 +4468,7 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-    elseif($period=='ten_day') {
+    else if($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Product Family 10 Day Acc Profit`<0,`Product Family 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Product Family 10 Day Acc Profit`>=0,`Product Family 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Product Family 10 Day Acc Invoiced Amount`) as sum_total_sales  from `Product Family Dimension`  $where $wheref   ";
@@ -4841,7 +4480,7 @@ function list_families() {
             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
         }
     }
-    elseif($period=='week') {
+    else if($period=='week') {
         $sum_families=0;
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -4875,28 +4514,28 @@ function list_families() {
                 else
                     $tprofit=percentage($row['Product Family Total Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='year') {
+            else if($period=='year') {
                 $tsall=percentage($row['Product Family 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Family 1 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Product Family 1 Year Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Family 1 Year Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='quarter') {
+            else if($period=='quarter') {
                 $tsall=percentage($row['Product Family 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Family 1 Quarter Acc Profit']>=0)
                     $tprofit=percentage($row['Product Family 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Family 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='month') {
+            else if($period=='month') {
                 $tsall=percentage($row['Product Family 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Family 1 Month Acc Profit']>=0)
                     $tprofit=percentage($row['Product Family 1 Month Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Family 1 Month Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='week') {
+            else if($period=='week') {
                 $tsall=percentage($row['Product Family 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Family 1 Week Acc Profit']>=0)
                     $tprofit=percentage($row['Product Family 1 Week Acc Profit'],$sum_total_profit_plus,2);
@@ -4917,25 +4556,25 @@ function list_families() {
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family Total Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family Total Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family Total Days On Sale']>0)
                         $factor=7/$row['Product Family Total Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family Total Days Available']>0)
                         $factor=30.4368499/$row['Product Family Total Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family Total Days Available']>0)
                         $factor=7/$row['Product Family Total Days Available'];
                     else
@@ -4951,34 +4590,34 @@ function list_families() {
             }
 
 // ---------------------------------------Start for families 3 year-----------------------------------------
-            elseif($period=='three_year') {
+            else if($period=='three_year') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 3 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 3 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 3 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 3 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family 3 Year Acc Days On Sale']>0)
                         $factor=7/$row['Product Family 3 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family 3 Year Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Family 3 Year Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family 3 Year Acc Days Available']>0)
                         $factor=7/$row['Product Family 3 Year Acc Days Available'];
                     else
@@ -4989,36 +4628,36 @@ function list_families() {
             }
 // ---------------------------------------Ends for families 3 year-------------------------------------------
 
-            elseif($period=='year') {
+            else if($period=='year') {
 
 
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 1 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 1 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 1 Year Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 1 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family 1 Year Acc Days On Sale']>0)
                         $factor=7/$row['Product Family 1 Year Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family 1 Year Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Family 1 Year Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family 1 Year Acc Days Available']>0)
                         $factor=7/$row['Product Family 1 Year Acc Days Available'];
                     else
@@ -5038,34 +4677,34 @@ function list_families() {
             }
 
 // ---------------------------------------Start for families YearToday-----------------------------------------
-            elseif($period=='yeartoday') {
+            else if($period=='yeartoday') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family YearToDay Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family YearToDay Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family YearToDay Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family YearToDay Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family YearToDay Acc Days On Sale']>0)
                         $factor=7/$row['Product Family YearToDay Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family YearToDay Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Family YearToDay Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family YearToDay Acc Days Available']>0)
                         $factor=7/$row['Product Family YearToDay Acc Days Available'];
                     else
@@ -5076,34 +4715,34 @@ function list_families() {
             }
 // ---------------------------------------Ends for families YearToDay-------------------------------------------
 // ---------------------------------------Start for families 6 month-----------------------------------------
-            elseif($period=='six_month') {
+            else if($period=='six_month') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 6 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 6 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 6 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 6 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family 6 Month Acc Days On Sale']>0)
                         $factor=7/$row['Product Family 6 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family 6 Month Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Family 6 Month Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family 6 Month Acc Days Available']>0)
                         $factor=7/$row['Product Family 6 Month Acc Days Available'];
                     else
@@ -5114,34 +4753,34 @@ function list_families() {
             }
 // ---------------------------------------Ends for families 6 month-------------------------------------------
 
-            elseif($period=='quarter') {
+            else if($period=='quarter') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 1 Quarter Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 1 Quarter Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 1 Quarter Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 1 Quarter Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family 1 Quarter Acc Days On Sale']>0)
                         $factor=7/$row['Product Family 1 Quarter Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family 1 Quarter Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Family 1 Quarter Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family 1 Quarter Acc Days Available']>0)
                         $factor=7/$row['Product Family 1 Quarter Acc Days Available'];
                     else
@@ -5155,34 +4794,34 @@ function list_families() {
 
 
 
-            elseif($period=='month') {
+            else if($period=='month') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 1 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 1 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 1 Month Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 1 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family 1 Month Acc Days On Sale']>0)
                         $factor=7/$row['Product Family 1 Month Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family 1 Month Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Family 1 Month Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family 1 Month Acc Days Available']>0)
                         $factor=7/$row['Product Family 1 Month Acc Days Available'];
                     else
@@ -5195,34 +4834,34 @@ function list_families() {
             }
 
 // ---------------------------------------Start for families 10 days-----------------------------------------
-            elseif($period=='ten_day') {
+            else if($period=='ten_day') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 10 Day Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 10 Day Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 10 Day Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 10 Day Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family 10 Day Acc Days On Sale']>0)
                         $factor=7/$row['Product Family 10 Day Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family 10 Day Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Family 10 Day Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family 10 Day Acc Days Available']>0)
                         $factor=7/$row['Product Family 10 Day Acc Days Available'];
                     else
@@ -5234,34 +4873,34 @@ function list_families() {
 // ---------------------------------------Ends for families 10 days-------------------------------------------
 
 
-            elseif($period=='week') {
+            else if($period=='week') {
                 if ($avg=='totals')
                     $factor=1;
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 1 Week Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 1 Week Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month') {
+                else if($avg=='month') {
                     if ($row['Product Family 1 Week Acc Days On Sale']>0)
                         $factor=30.4368499/$row['Product Family 1 Week Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week') {
+                else if($avg=='week') {
                     if ($row['Product Family 1 Week Acc Days On Sale']>0)
                         $factor=7/$row['Product Family 1 Week Acc Days On Sale'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='month_eff') {
+                else if($avg=='month_eff') {
                     if ($row['Product Family 1 Week Acc Days Available']>0)
                         $factor=30.4368499/$row['Product Family 1 Week Acc Days Available'];
                     else
                         $factor=0;
                 }
-                elseif($avg=='week_eff') {
+                else if($avg=='week_eff') {
                     if ($row['Product Family 1 Week Acc Days Available']>0)
                         $factor=7/$row['Product Family 1 Week Acc Days Available'];
                     else
@@ -5512,7 +5151,7 @@ function list_stores() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
@@ -5530,65 +5169,65 @@ function list_stores() {
     $order='`Store Code`';
     if ($order=='families')
         $order='`Store Families`';
-    elseif($order=='departments')
+    else if($order=='departments')
     $order='`Store Departments`';
-    elseif($order=='code')
+    else if($order=='code')
     $order='`Store Code`';
-    elseif($order=='todo')
+    else if($order=='todo')
     $order='`Store In Process Products`';
-    elseif($order=='discontinued')
+    else if($order=='discontinued')
     $order='`Store In Process Products`';
     else if ($order=='profit') {
         if ($period=='all')
             $order='`Store Total Profit`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Store 1 Year Acc Profit`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Store 1 Quarter Acc Profit`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Store 1 Month Acc Profit`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Store 1 Week Acc Profit`';
     }
-    elseif($order=='sales') {
+    else if($order=='sales') {
         if ($period=='all')
             $order='`Store Total Invoiced Amount`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Store 1 Year Acc Invoiced Amount`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Store 1 Quarter Acc Invoiced Amount`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Store 1 Month Acc Invoiced Amount`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Store 1 Week Acc Invoiced Amount`';
-        elseif($period=='yeartoday')
+        else if($period=='yeartoday')
         $order='`Store Year To Day Acc Invoiced Amount`';
-        elseif($period=='three_year')
+        else if($period=='three_year')
         $order='`Store 3 Year Acc Invoiced Amount`';
-        elseif($period=='six_month')
+        else if($period=='six_month')
         $order='`Store 6 Month Acc Invoiced Amount`';
-        elseif($period=='ten_day')
+        else if($period=='ten_day')
         $order='`Store 10 Day Acc Invoiced Amount`';
 
 
     }
-    elseif($order=='name')
+    else if($order=='name')
     $order='`Store Name`';
-    elseif($order=='active')
+    else if($order=='active')
     $order='`Store For Public Sale Products`';
-    elseif($order=='outofstock')
+    else if($order=='outofstock')
     $order='`Store Out Of Stock Products`';
-    elseif($order=='stock_error')
+    else if($order=='stock_error')
     $order='`Store Unknown Stock Products`';
-    elseif($order=='surplus')
+    else if($order=='surplus')
     $order='`Store Surplus Availability Products`';
-    elseif($order=='optimal')
+    else if($order=='optimal')
     $order='`Store Optimal Availability Products`';
-    elseif($order=='low')
+    else if($order=='low')
     $order='`Store Low Availability Products`';
-    elseif($order=='critical')
+    else if($order=='critical')
     $order='`Store Critical Availability Products`';
-    elseif($order=='new')
+    else if($order=='new')
     $order='`Store New Products`';
 
 
@@ -5642,7 +5281,7 @@ function list_stores() {
 
 
     }
-    elseif($period=='year') {
+    else if($period=='year') {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5686,7 +5325,7 @@ function list_stores() {
 
 
     }
-    elseif($period=='quarter') {
+    else if($period=='quarter') {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5704,7 +5343,7 @@ function list_stores() {
         mysql_free_result($result);
 
     }
-    elseif($period=='month') {
+    else if($period=='month') {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5722,7 +5361,7 @@ function list_stores() {
         mysql_free_result($result);
 
     }
-    elseif($period=='week') {
+    else if($period=='week') {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -5740,7 +5379,7 @@ function list_stores() {
         mysql_free_result($result);
 
     }
-    elseif($period=='yeartoday') {
+    else if($period=='yeartoday') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store Year To Day Acc Profit`<0,`Store Year To Day Acc Profit`,0)) as total_profit_minus,sum(if(`Store Year To Day Acc Profit`>=0,`Store Year To Day Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store Year To Day Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -5756,7 +5395,7 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
-    elseif($period=='three_year') {
+    else if($period=='three_year') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 3 Year Acc Profit`<0,`Store 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Store 3 Year Acc Profit`>=0,`Store 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 3 Year Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -5772,7 +5411,7 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
-    elseif($period=='six_month') {
+    else if($period=='six_month') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 6 Month Acc Profit`<0,`Store 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 6 Month Acc Profit`>=0,`Store 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 6 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -5788,7 +5427,7 @@ function list_stores() {
         }
         mysql_free_result($result);
     }
-    elseif($period=='ten_day') {
+    else if($period=='ten_day') {
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select sum(if(`Store 10 Day Acc Profit`<0,`Store 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Store 10 Day Acc Profit`>=0,`Store 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 10 Day Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension` S   $where $wheref  ";
@@ -5843,28 +5482,28 @@ function list_stores() {
                 else
                     $tprofit=percentage($row['Store DC Total Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='year') {
+            else if($period=='year') {
                 $tsall=percentage($row['Store DC 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 1 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 1 Year Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Store DC 1 Year Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='quarter') {
+            else if($period=='quarter') {
                 $tsall=percentage($row['Store DC 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 1 Quarter Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Store DC 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='month') {
+            else if($period=='month') {
                 $tsall=percentage($row['Store DC 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 1 Month Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 1 Month Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Store DC 1 Month Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='week') {
+            else if($period=='week') {
                 $tsall=percentage($row['Store DC 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 1 Week Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 1 Week Acc Profit'],$sum_total_profit_plus,2);
@@ -5873,21 +5512,21 @@ function list_stores() {
             }
 
 
-            elseif($period=='yeartoday') {
+            else if($period=='yeartoday') {
                 $tsall=percentage($row['Store DC YearToDay Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC YearToDay Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC YearToDay Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Store DC YearToDay Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='three_year') {
+            else if($period=='three_year') {
                 $tsall=percentage($row['Store DC 3 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 3 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 3 Year Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Store DC 3 Year Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='six_month') {
+            else if($period=='six_month') {
                 $tsall=percentage($row['Store DC 6 Month Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 6 Month Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 6 Month Acc Profit'],$sum_total_profit_plus,2);
@@ -5895,7 +5534,7 @@ function list_stores() {
                     $tprofit=percentage($row['Store DC 6 Month Acc Profit'],$sum_total_profit_minus,2);
             }
 
-            elseif($period=='ten_day') {
+            else if($period=='ten_day') {
                 $tsall=percentage($row['Store DC 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Store DC 10 Day Acc Profit']>=0)
                     $tprofit=percentage($row['Store DC 10 Day Acc Profit'],$sum_total_profit_plus,2);
@@ -5918,25 +5557,25 @@ function list_stores() {
 
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store Total Days On Sale"]>0)
                         $factor=30.4368499/$row["Store Total Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store Total Days On Sale"]>0)
                         $factor=7/$row["Store Total Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store Total Days Available"]>0)
                         $factor=30.4368499/$row["Store Total Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store Total Days Available"]>0)
                         $factor=7/$row["Store Total Days Available"];
                     else
@@ -5950,36 +5589,36 @@ function list_stores() {
 
 
             }
-            elseif($period=="year") {
+            else if($period=="year") {
 
 
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 1 Year Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 1 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 1 Year Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 1 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store 1 Year Acc Days On Sale"]>0)
                         $factor=7/$row["Store 1 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store 1 Year Acc Days Available"]>0)
                         $factor=30.4368499/$row["Store 1 Year Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store 1 Year Acc Days Available"]>0)
                         $factor=7/$row["Store 1 Year Acc Days Available"];
                     else
@@ -5997,34 +5636,34 @@ function list_stores() {
                 $tsall=($row["Store".$DC_tag." 1 Year Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 1 Year Acc Profit"]*$factor);
             }
-            elseif($period=="quarter") {
+            else if($period=="quarter") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 1 Quarter Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 1 Quarter Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 1 Quarter Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 1 Quarter Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store 1 Quarter Acc Days On Sale"]>0)
                         $factor=7/$row["Store 1 Quarter Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store 1 Quarter Acc Days Available"]>0)
                         $factor=30.4368499/$row["Store 1 Quarter Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store 1 Quarter Acc Days Available"]>0)
                         $factor=7/$row["Store 1 Quarter Acc Days Available"];
                     else
@@ -6035,34 +5674,34 @@ function list_stores() {
                 $tsall=($row["Store".$DC_tag." 1 Quarter Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 1 Quarter Acc Profit"]*$factor);
             }
-            elseif($period=="month") {
+            else if($period=="month") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 1 Month Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 1 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 1 Month Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 1 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store 1 Month Acc Days On Sale"]>0)
                         $factor=7/$row["Store 1 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store 1 Month Acc Days Available"]>0)
                         $factor=30.4368499/$row["Store 1 Month Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store 1 Month Acc Days Available"]>0)
                         $factor=7/$row["Store 1 Month Acc Days Available"];
                     else
@@ -6073,34 +5712,34 @@ function list_stores() {
                 $tsall=($row["Store".$DC_tag." 1 Month Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 1 Month Acc Profit"]*$factor);
             }
-            elseif($period=="week") {
+            else if($period=="week") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 1 Week Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 1 Week Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 1 Week Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 1 Week Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store 1 Week Acc Days On Sale"]>0)
                         $factor=7/$row["Store 1 Week Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store 1 Week Acc Days Available"]>0)
                         $factor=30.4368499/$row["Store 1 Week Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store 1 Week Acc Days Available"]>0)
                         $factor=7/$row["Store 1 Week Acc Days Available"];
                     else
@@ -6113,34 +5752,34 @@ function list_stores() {
             }
 
 
-            elseif($period=="yeartoday") {
+            else if($period=="yeartoday") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store Year To Day Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store Year To Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store Year To Day Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store Year To Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store Year To Day Acc Days On Sale"]>0)
                         $factor=7/$row["Store Year To Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store Year To Day Acc Days Available"]>0)
                         $factor=30.4368499/$row["Store Year To Day Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store Year To Day Acc Days Available"]>0)
                         $factor=7/$row["Store Year To Day Acc Days Available"];
                     else
@@ -6150,34 +5789,34 @@ function list_stores() {
                 $tsall=($row["Store".$DC_tag." Year To Day Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." Year To Day Acc Profit"]*$factor);
             }
-            elseif($period=="three_year") {
+            else if($period=="three_year") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 3 Year Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 3 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 3 Year Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 3 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store 3 Year Acc Days On Sale"]>0)
                         $factor=7/$row["Store 3 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store 3 Year Acc Days Available"]>0)
                         $factor=30.4368499/$row["Store 3 Year Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store 3 Year Acc Days Available"]>0)
                         $factor=7/$row["Store 3 Year Acc Days Available"];
                     else
@@ -6187,34 +5826,34 @@ function list_stores() {
                 $tsall=($row["Store".$DC_tag." 3 Year Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 3 Year Acc Profit"]*$factor);
             }
-            elseif($period=="six_month") {
+            else if($period=="six_month") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 6 Month Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 6 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 6 Month Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 6 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store 6 Month Acc Days On Sale"]>0)
                         $factor=7/$row["Store 6 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store 6 Month Acc Days Available"]>0)
                         $factor=30.4368499/$row["Store 6 Month Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store 6 Month Acc Days Available"]>0)
                         $factor=7/$row["Store 6 Month Acc Days Available"];
                     else
@@ -6224,34 +5863,34 @@ function list_stores() {
                 $tsall=($row["Store".$DC_tag." 6 Month Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Store".$DC_tag." 6 Month Acc Profit"]*$factor);
             }
-            elseif($period=="ten_day") {
+            else if($period=="ten_day") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 10 Day Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 10 Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Store 10 Day Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Store 10 Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Store 10 Day Acc Days On Sale"]>0)
                         $factor=7/$row["Store 10 Day Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Store 10 Day Acc Days Available"]>0)
                         $factor=30.4368499/$row["Store 10 Day Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Store 10 Day Acc Days Available"]>0)
                         $factor=7/$row["Store 10 Day Acc Days Available"];
                     else
@@ -6485,7 +6124,7 @@ function list_charges() {
     $wheref='';
     if ($f_field=='description' and $f_value!='')
         $wheref.=" and  CONCAT(`Charge Description`,' ',`Charge Terms Description`) like '".addslashes($f_value)."%'";
-    elseif($f_field=='name' and $f_value!='')
+    else if($f_field=='name' and $f_value!='')
     $wheref.=" and  `Charge Name` like '".addslashes($f_value)."%'";
 
 
@@ -6535,7 +6174,7 @@ function list_charges() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('name'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with name like')." <b>".$f_value."*</b>";
@@ -6553,7 +6192,7 @@ function list_charges() {
 
     if ($order=='name')
         $order='`Charge Name`';
-    elseif($order=='description')
+    else if($order=='description')
     $order='`Charge Description`,`Charge Terms Description`';
     else
         $order='`Charge Name`';
@@ -6679,7 +6318,7 @@ function list_campaigns() {
     $wheref='';
     if ($f_field=='description' and $f_value!='')
         $wheref.=" and  `Deal Description` like '".addslashes($f_value)."%'";
-    elseif($f_field=='name' and $f_value!='')
+    else if($f_field=='name' and $f_value!='')
     $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from `Deal Dimension`   $where $wheref";
@@ -6722,7 +6361,7 @@ function list_campaigns() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('name'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('campaigns with name like')." <b>".$f_value."*</b>";
@@ -6740,7 +6379,7 @@ function list_campaigns() {
 
     if ($order=='name')
         $order='`Deal Name`';
-    elseif($order=='description')
+    else if($order=='description')
     $order='`Deal Description`';
     else
         $order='`Deal Name`';
@@ -6822,11 +6461,11 @@ function list_deals() {
 
     if ($parent=='store' or $parent=='store_with_children')
         $parent_id=$_REQUEST['parent_key'];
-    elseif($parent=='department')
+    else if($parent=='department')
     $parent_id=$_REQUEST['parent_key'];
-    elseif($parent=='family')
+    else if($parent=='family')
     $parent_id=$_REQUEST['parent_key'];
-    elseif($parent=='product')
+    else if($parent=='product')
     $parent_id=$_REQUEST['parent_key'];
     else
         return;
@@ -6934,7 +6573,7 @@ function list_deals() {
 
     if ($parent=='store')
         $where=sprintf("where  (`Store Key`=%d and `Deal Trigger`='Order')     ",$parent_id);
-    elseif ($parent=='store_with_children') {
+    else if ($parent=='store_with_children') {
         $where=sprintf("where  `Store Key`=%d     ",$parent_id);
 $_elements='';
         foreach($elements as $_key=>$_value) {
@@ -6950,11 +6589,11 @@ $_elements='';
 
 
     }
-    elseif($parent=='department')
+    else if($parent=='department')
     $where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d     ",$parent_id);
-    elseif($parent=='family')
+    else if($parent=='family')
     $where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_id);
-    elseif($parent=='product')
+    else if($parent=='product')
     $where=sprintf("where    `Deal Trigger`='Product' and  `Deal Trigger Key`=%d   ",$parent_id);
     else
         $where=sprintf("where true ");;
@@ -6966,7 +6605,7 @@ $_elements='';
     $wheref='';
     if ($f_field=='description' and $f_value!='')
         $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
-    elseif($f_field=='name' and $f_value!='')
+    else if($f_field=='name' and $f_value!='')
     $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
 
 
@@ -7022,7 +6661,7 @@ $_elements='';
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('name'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with name like')." <b>".$f_value."*</b>";
@@ -7040,11 +6679,11 @@ $_elements='';
 
     if ($order=='code')
         $order='`Deal Code`';
-    elseif($order=='description')
+    else if($order=='description')
     $order='`Deal Name`,`Deal Description`';
-    elseif($order=='orders')
+    else if($order=='orders')
     $order='`Deal Total Acc Used Orders`';
-    elseif($order=='customers')
+    else if($order=='customers')
     $order='`Deal Total Acc Customers`';
     else
         $order='`Deal Name`';
@@ -7265,7 +6904,7 @@ function list_customers_per_store() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
@@ -7284,28 +6923,28 @@ function list_customers_per_store() {
 
     if ($order=='code')
         $order='`Store Code`';
-    elseif($order=='name')
+    else if($order=='name')
     $order='`Store Name`';
-    elseif($order=='contacts')
+    else if($order=='contacts')
     $order='`Store Contacts`';
-    elseif($order=='active_contacts')
+    else if($order=='active_contacts')
     $order='active';
-    elseif($order=='new_contacts')
+    else if($order=='new_contacts')
     $order='`Store New Contacts`';
-    elseif($order=='lost_contacts')
+    else if($order=='lost_contacts')
     $order='`Store Lost Contacts`';
-    elseif($order=='losing_contacts')
+    else if($order=='losing_contacts')
     $order='`Store Losing Contacts`';
 
-    elseif($order=='contacts_with_orders')
+    else if($order=='contacts_with_orders')
     $order='`Store Contacts`';
-    elseif($order=='active_contacts_with_orders')
+    else if($order=='active_contacts_with_orders')
     $order='active';
-    elseif($order=='new_contacts_with_orders')
+    else if($order=='new_contacts_with_orders')
     $order='`Store New Contacts`';
-    elseif($order=='lost_contacts_with_orders')
+    else if($order=='lost_contacts_with_orders')
     $order='`Store Lost Contacts`';
-    elseif($order=='losing_contacts_with_orders')
+    else if($order=='losing_contacts_with_orders')
     $order='`Store Losing Contacts`';
 
     else
@@ -7646,7 +7285,7 @@ function list_marketing_per_store() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
@@ -7665,19 +7304,19 @@ function list_marketing_per_store() {
 
     if ($order=='code')
         $order='`Store Code`';
-    elseif($order=='name')
+    else if($order=='name')
     $order='`Store Name`';
-    elseif($order=='contacts')
+    else if($order=='contacts')
     $order='contacts';
-    elseif($order=='active')
+    else if($order=='active')
     $order='active';
-    elseif($order=='new')
+    else if($order=='new')
     $order='new';
-    elseif($order=='new_contacts')
+    else if($order=='new_contacts')
     $order='new_contacts';
-    elseif($order=='customers')
+    else if($order=='customers')
     $order='customers';
-    elseif($order=='lost')
+    else if($order=='lost')
     $order='lost';
     else
         $order='`Store Code`';
@@ -7906,7 +7545,7 @@ function list_orders_per_store() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
@@ -7925,17 +7564,17 @@ function list_orders_per_store() {
 
     if ($order=='code')
         $order='`Store Code`';
-    elseif($order=='name')
+    else if($order=='name')
     $order='`Store Name`';
-    elseif($order=='orders')
+    else if($order=='orders')
     $order='orders';
-    elseif($order=='cancelled')
+    else if($order=='cancelled')
     $order='cancelled';
-    elseif($order=='unknown')
+    else if($order=='unknown')
     $order='unknown';
-    elseif($order=='paid')
+    else if($order=='paid')
     $order='paid';
-    elseif($order=='pending')
+    else if($order=='pending')
     $order='todo';
     else
 
@@ -8211,7 +7850,7 @@ function list_invoices_per_store() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
@@ -8230,19 +7869,19 @@ function list_invoices_per_store() {
 
     if ($order=='code')
         $order='`Store Code`';
-    elseif($order=='name')
+    else if($order=='name')
     $order='`Store Name`';
-    elseif($order=='invoices')
+    else if($order=='invoices')
     $order='invoices';
-    elseif($order=='invoicess_paid')
+    else if($order=='invoicess_paid')
     $order='invoices_paid';
-    elseif($order=='invoices_to_be_paid')
+    else if($order=='invoices_to_be_paid')
     $order='invoices_to_be_paid';
-    elseif($order=='refunds')
+    else if($order=='refunds')
     $order='refunds';
-    elseif($order=='refundss_paid')
+    else if($order=='refundss_paid')
     $order='refunds_paid';
-    elseif($order=='refunds_to_be_paid')
+    else if($order=='refunds_to_be_paid')
     $order='refunds_to_be_paid';
     else
         $order='`Store Code`';
@@ -8530,7 +8169,7 @@ function list_delivery_notes_per_store() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('code'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('stores with code like')." <b>".$f_value."*</b>";
@@ -8549,7 +8188,7 @@ function list_delivery_notes_per_store() {
 
     if ($order=='code')
         $order='`Store Code`';
-    elseif($order=='name')
+    else if($order=='name')
     $order='`Store Name`';
 
 
@@ -8998,7 +8637,7 @@ function list_product_categories() {
             break;
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
 
         case('name'):
@@ -9014,54 +8653,54 @@ function list_product_categories() {
 
     if ($order=='families')
         $order='`Product Category Families`';
-    elseif($order=='departments')
+    else if($order=='departments')
     $order='`Product Category Departments`';
-    elseif($order=='code')
+    else if($order=='code')
     $order='`Product Category Code`';
-    elseif($order=='todo')
+    else if($order=='todo')
     $order='`Product Category In Process Products`';
-    elseif($order=='discontinued')
+    else if($order=='discontinued')
     $order='`Product Category In Process Products`';
     else if ($order=='profit') {
         if ($period=='all')
             $order='`Product Category Total Profit`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product Category 1 Year Acc Profit`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product Category 1 Quarter Acc Profit`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product Category 1 Month Acc Profit`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product Category 1 Week Acc Profit`';
     }
-    elseif($order=='sales') {
+    else if($order=='sales') {
         if ($period=='all')
             $order='`Product Category Total Invoiced Amount`';
-        elseif($period=='year')
+        else if($period=='year')
         $order='`Product Category 1 Year Acc Invoiced Amount`';
-        elseif($period=='quarter')
+        else if($period=='quarter')
         $order='`Product Category 1 Quarter Acc Invoiced Amount`';
-        elseif($period=='month')
+        else if($period=='month')
         $order='`Product Category 1 Month Acc Invoiced Amount`';
-        elseif($period=='week')
+        else if($period=='week')
         $order='`Product Category 1 Week Acc Invoiced Amount`';
 
     }
-    elseif($order=='name')
+    else if($order=='name')
     $order='`Category Name`';
-    elseif($order=='active')
+    else if($order=='active')
     $order='`Product Category For Public Sale Products`';
-    elseif($order=='outofstock')
+    else if($order=='outofstock')
     $order='`Product Category Out Of Stock Products`';
-    elseif($order=='stock_error')
+    else if($order=='stock_error')
     $order='`Product Category Unknown Stock Products`';
-    elseif($order=='surplus')
+    else if($order=='surplus')
     $order='`Product Category Surplus Availability Products`';
-    elseif($order=='optimal')
+    else if($order=='optimal')
     $order='`Product Category Optimal Availability Products`';
-    elseif($order=='low')
+    else if($order=='low')
     $order='`Product Category Low Availability Products`';
-    elseif($order=='critical')
+    else if($order=='critical')
     $order='`Product Category Critical Availability Products`';
 
 
@@ -9104,28 +8743,28 @@ function list_product_categories() {
                 else
                     $tprofit=percentage($row['Product Category DC Total Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='year') {
+            else if($period=='year') {
                 $tsall=percentage($row['Product Category DC 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Category DC 1 Year Acc Profit']>=0)
                     $tprofit=percentage($row['Product Category DC 1 Year Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Category DC 1 Year Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='quarter') {
+            else if($period=='quarter') {
                 $tsall=percentage($row['Product Category DC 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Category DC 1 Quarter Acc Profit']>=0)
                     $tprofit=percentage($row['Product Category DC 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Category DC 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='month') {
+            else if($period=='month') {
                 $tsall=percentage($row['Product Category DC 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Category DC 1 Month Acc Profit']>=0)
                     $tprofit=percentage($row['Product Category DC 1 Month Acc Profit'],$sum_total_profit_plus,2);
                 else
                     $tprofit=percentage($row['Product Category DC 1 Month Acc Profit'],$sum_total_profit_minus,2);
             }
-            elseif($period=='week') {
+            else if($period=='week') {
                 $tsall=percentage($row['Product Category DC 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Category DC 1 Week Acc Profit']>=0)
                     $tprofit=percentage($row['Product Category DC 1 Week Acc Profit'],$sum_total_profit_plus,2);
@@ -9146,25 +8785,25 @@ function list_product_categories() {
 
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." Total Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." Total Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Product Category".$DC_tag." Total Days On Sale"]>0)
                         $factor=7/$row["Product Category".$DC_tag." Total Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Product Category".$DC_tag." Total Days Available"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." Total Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Product Category".$DC_tag." Total Days Available"]>0)
                         $factor=7/$row["Product Category".$DC_tag." Total Days Available"];
                     else
@@ -9178,36 +8817,36 @@ function list_product_categories() {
 
 
             }
-            elseif($period=="year") {
+            else if($period=="year") {
 
 
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." 1 Year Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." 1 Year Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Product Category".$DC_tag." 1 Year Acc Days On Sale"]>0)
                         $factor=7/$row["Product Category".$DC_tag." 1 Year Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Product Category".$DC_tag." 1 Year Acc Days Available"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Year Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Product Category".$DC_tag." 1 Year Acc Days Available"]>0)
                         $factor=7/$row["Product Category".$DC_tag." 1 Year Acc Days Available"];
                     else
@@ -9225,34 +8864,34 @@ function list_product_categories() {
                 $tsall=($row["Product Category".$DC_tag." 1 Year Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Product Category".$DC_tag." 1 Year Acc Profit"]*$factor);
             }
-            elseif($period=="quarter") {
+            else if($period=="quarter") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." 1 Quarter Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Quarter Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." 1 Quarter Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Quarter Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Product Category".$DC_tag." 1 Quarter Acc Days On Sale"]>0)
                         $factor=7/$row["Product Category".$DC_tag." 1 Quarter Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Product Category".$DC_tag." 1 Quarter Acc Days Available"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Quarter Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Product Category".$DC_tag." 1 Quarter Acc Days Available"]>0)
                         $factor=7/$row["Product Category".$DC_tag." 1 Quarter Acc Days Available"];
                     else
@@ -9263,34 +8902,34 @@ function list_product_categories() {
                 $tsall=($row["Product Category".$DC_tag." 1 Quarter Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Product Category".$DC_tag." 1 Quarter Acc Profit"]*$factor);
             }
-            elseif($period=="month") {
+            else if($period=="month") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." 1 Month Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." 1 Month Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Product Category".$DC_tag." 1 Month Acc Days On Sale"]>0)
                         $factor=7/$row["Product Category".$DC_tag." 1 Month Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Product Category".$DC_tag." 1 Month Acc Days Available"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Month Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Product Category".$DC_tag." 1 Month Acc Days Available"]>0)
                         $factor=7/$row["Product Category".$DC_tag." 1 Month Acc Days Available"];
                     else
@@ -9301,34 +8940,34 @@ function list_product_categories() {
                 $tsall=($row["Product Category".$DC_tag." 1 Month Acc Invoiced Amount"]*$factor);
                 $tprofit=($row["Product Category".$DC_tag." 1 Month Acc Profit"]*$factor);
             }
-            elseif($period=="week") {
+            else if($period=="week") {
                 if ($avg=="totals")
                     $factor=1;
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." 1 Week Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Week Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month") {
+                else if($avg=="month") {
                     if ($row["Product Category".$DC_tag." 1 Week Acc Days On Sale"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Week Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week") {
+                else if($avg=="week") {
                     if ($row["Product Category".$DC_tag." 1 Week Acc Days On Sale"]>0)
                         $factor=7/$row["Product Category".$DC_tag." 1 Week Acc Days On Sale"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="month_eff") {
+                else if($avg=="month_eff") {
                     if ($row["Product Category".$DC_tag." 1 Week Acc Days Available"]>0)
                         $factor=30.4368499/$row["Product Category".$DC_tag." 1 Week Acc Days Available"];
                     else
                         $factor=0;
                 }
-                elseif($avg=="week_eff") {
+                else if($avg=="week_eff") {
                     if ($row["Product Category".$DC_tag." 1 Week Acc Days Available"]>0)
                         $factor=7/$row["Product Category".$DC_tag." 1 Week Acc Days Available"];
                     else
@@ -10095,7 +9734,7 @@ function part_transactions() {
 
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('note'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total "._('notes with')." <b>".$f_value."*</b>";
@@ -10126,7 +9765,7 @@ function part_transactions() {
         if ($qty>0) {
             $qty='+'.$qty;
         }
-        elseif($qty==0) {
+        else if($qty==0) {
             $qty='';
         }
 
@@ -10719,9 +10358,9 @@ function list_products_lists() {
 
     if ($order=='name')
         $order='`List Name`';
-    elseif($order=='creation_date')
+    else if($order=='creation_date')
     $order='`List Creation Date`';
-    elseif($order=='product_list_type')
+    else if($order=='product_list_type')
     $order='`List Type`';
 
     else
@@ -10909,9 +10548,9 @@ function list_parts_lists() {
 
     if ($order=='name')
         $order='`List Name`';
-    elseif($order=='creation_date')
+    else if($order=='creation_date')
     $order='`List Creation Date`';
-    elseif($order=='product_list_type')
+    else if($order=='product_list_type')
     $order='`List Type`';
 
     else
@@ -11219,9 +10858,9 @@ function list_customers_who_order_product() {
         $where=$where.sprintf(" and OTF.`Product Code`=%s ",prepare_mysql($tag));
 
     }
-    elseif($mode=='pid')
+    else if($mode=='pid')
     $where=$where.sprintf(" and OTF.`Product ID`=%d ",$tag);
-    elseif($mode=='key')
+    else if($mode=='key')
     $where=$where.sprintf(" and OTF.`Product Key`=%d ",$tag);
 
 
@@ -11312,7 +10951,7 @@ function list_customers_who_order_product() {
 
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('name'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
@@ -11349,15 +10988,15 @@ function list_customers_who_order_product() {
 
     if ($order=='dispatched')
         $order='dispatched';
-    elseif($order=='orders')
+    else if($order=='orders')
     $order='orders';
-    elseif($order=='charged')
+    else if($order=='charged')
     $order='charged';
-    elseif($order=='to_dispatch')
+    else if($order=='to_dispatch')
     $order='to_dispatch';
-    elseif($order=='dispatched')
+    else if($order=='dispatched')
     $order='dispatched';
-    elseif($order=='nodispatched')
+    else if($order=='nodispatched')
     $order='nodispatched';
     else
         $order='`Customer Name`';
@@ -11552,7 +11191,7 @@ $where=sprintf(" where `Deal Key`=%d and `Used`='Yes' ",$deal_key);
 
         }
     }
-    elseif($filtered>0) {
+    else if($filtered>0) {
         switch ($f_field) {
         case('name'):
             $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";

@@ -711,6 +711,10 @@ function send_order($data,$data_dn_transactions) {
 	if (!isset($dn)) {
 
 		print "Error no transactions in this invoice\n";
+		// ok lets do 
+		
+		
+		
 		return;
 	}
 
@@ -887,7 +891,6 @@ function send_order($data,$data_dn_transactions) {
 		if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
 
 			$invoice=$dn->create_invoice($date_inv);
-
 			// print_r($invoice);
 			//exit("----\n");
 			foreach ($credits as $credit) {
@@ -902,8 +905,6 @@ function send_order($data,$data_dn_transactions) {
 				);
 				$invoice->add_credit_no_product_transaction($credit_data);
 			}
-
-
 			$_invoice_data=  array(
 				'Invoice Metadata'=>$store_code.$order_data_id,
 				'Invoice Shipping Net Amount'=>array(
@@ -919,14 +920,7 @@ function send_order($data,$data_dn_transactions) {
 			);
 
 			$invoice->update($_invoice_data);
-
-
-
 			$invoice->update_totals();
-
-
-
-
 			adjust_invoice($invoice,$order);
 
 

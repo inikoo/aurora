@@ -5466,10 +5466,20 @@ class product extends DB_Table {
         }
 
         $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
-        if (!mysql_query($sql))
-            exit("$sql can no update stock prod product.php l 1311\n");
-        if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+        mysql_query($sql);
+        
+      //	if( mysql_affected_rows()){
+      		$family=new Family($this->data['Product Family Key']);
+      		$family->update_product_data();
+      		$department=new Department($this->data['Product Main Department Key']);
+      		$department->update_product_data();
+      		$store=new Store($this->data['Product Store Key']);
+      		$store->update_product_data();
+    //  	}
+      
 
+
+		
 
     }
 

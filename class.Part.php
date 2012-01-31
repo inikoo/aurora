@@ -1513,7 +1513,7 @@ class part extends DB_Table {
 		$this->data["Part $db_interval Acc Margin"]=0;
 
 
-		$sql=sprintf("select sum(`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
+		$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
                      from `Inventory Transaction Fact` ITF  where `Part SKU`=%d and `Date`>=%s %s" ,
 			$this->sku,
 			prepare_mysql($from_date),
@@ -1523,7 +1523,7 @@ class part extends DB_Table {
 		$result=mysql_query($sql);
 		//  print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$this->data["Part $db_interval Acc Profit"]=-1.0*$row['profit'];
+			$this->data["Part $db_interval Acc Profit"]=$row['profit'];
 			$this->data["Part $db_interval Acc Profit After Storing"]=$this->data["Part $db_interval Acc Profit"]-$row['cost_storing'];
 
 		}
@@ -1546,7 +1546,7 @@ class part extends DB_Table {
 		}
 
 
-		$sql=sprintf("select sum(`Inventory Transaction Amount`) as sold_amount,
+		$sql=sprintf("select sum(`Amount In`) as sold_amount,
                      sum(`Inventory Transaction Quantity`) as dispatched,
                      sum(`Required`) as required,
                      sum(`Given`) as given,
@@ -1562,7 +1562,7 @@ class part extends DB_Table {
 		//print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-			$this->data["Part $db_interval Acc Sold Amount"]=-1.0*$row['sold_amount'];
+			$this->data["Part $db_interval Acc Sold Amount"]=$row['sold_amount'];
 			$this->data["Part $db_interval Acc Sold"]=$row['sold'];
 			$this->data["Part $db_interval Acc Provided"]=-1.0*$row['dispatched'];
 			$this->data["Part $db_interval Acc Required"]=$row['required'];

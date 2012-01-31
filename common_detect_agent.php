@@ -5,6 +5,8 @@ function ip() {
     global $HTTP_X_FORWARDED_FOR, $HTTP_X_FORWARDED, $HTTP_FORWARDED_FOR, $HTTP_FORWARDED;
     global $HTTP_VIA, $HTTP_X_COMING_FROM, $HTTP_COMING_FROM;
     // Get some server/environment variables values
+    
+    $direct_ip='';
     if (empty($REMOTE_ADDR)) {
         if (!empty($_SERVER) && isset($_SERVER['REMOTE_ADDR'])) {
             $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];

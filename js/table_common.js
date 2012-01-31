@@ -324,7 +324,7 @@ YAHOO.util.Connect.asyncRequest('POST',table.request+extra_arguments , {success:
             container.innerHTML='';
             var counter=0;
             for (x in r.resultset.data) {
-                if (r.resultset.data[x].type=='item') {
+                if (r.resultset.data[x].item_type=='item') {
                 
                
                    //var div1 = new YAHOO.util.Element(document.createElement('div'));

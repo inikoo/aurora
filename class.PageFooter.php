@@ -169,7 +169,7 @@ class PageFooter extends DB_Table {
             $this->get_data('id',$this->id);
 
             $site=new Site ($this->data['Site Key']);
-            $site->update_footers($this->id);
+            //$site->update_footers($this->id);
 
 
 
