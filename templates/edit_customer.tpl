@@ -261,17 +261,19 @@
                 </tr>
 
   <tbody id="show_other_tbody_{$cat_key}" style="{if !$cat->number_of_children_with_other_value('Customer',$customer->id)}display:none{/if}">
-                    <tr><td></td><td style="border:1px solid #ccc;">{$cat->get_other_value('Customer',$customer->id)}
-<div class="buttons left small" style="margin:10px 0"><button onClick="show_save_other_{$cat_key}(this)">{t}Edit{/t}<button></div>
+                    <tr><td><div class="buttons small" ><button onClick="show_save_other({$cat_key})">{t}Edit{/t}</button>
+</div></td><td style="border:1px solid #ccc;">{$cat->get_other_value('Customer',$customer->id)}
+				
 </td></tr>
               
                 </tbody>
 
                 <tbody id="other_tbody_{$cat_key}" style="display:none">
                     <tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}">{$cat->get_other_value('Customer',$customer->id)}</textarea></td></tr>
-                    <tr><td></td><td><div class="buttons left"><button onClick="save_category_other_value({$cat->get}$cat->id)">{t}Save{/t}<button></div></td></tr>
+                    <tr><td></td><td><div class="buttons small left">
+                    <button onClick="save_category_other_value({$cat->get_children_key_is_other_value()},{$cat->id})">{t}Save{/t}</button></div></td></tr>
                 </tbody>
-                
+                <tr style="height:15px"><td colspan=2></td></tr>
                 {/foreach}
                     
                     
