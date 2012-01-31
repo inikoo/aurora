@@ -206,6 +206,19 @@
    </div>
 	</td></tr>
 {/if}
+
+
+<tr><td>{t}Categories{/t}</td></tr>
+
+
+{foreach from=$customer->get_category_data() item=item key=key}
+	<tr>
+	<td>{$key}</td>
+
+	<td>{$item.value}</td>
+	</tr>
+{/foreach}
+
   </table>
 
 </div>
