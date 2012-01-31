@@ -7,6 +7,19 @@
 	<input type="hidden" value="{$customer->id}" id="customer_key" />
 	<input type="hidden" value="{$registered_email}" id="registered_email" />
 	<input type="hidden" value="{$store_id}" id="store_key" />
+    
+    <input type="hidden" id="parent_category_key"  value="0"/>
+    <input type="hidden" id="category_key"  value="0"/>
+
+    {foreach from=$enable_other item=other key=key}
+    <input type="hidden" id="enable_other_{$key}"  value="{$other}"/>
+    {/foreach}
+    
+    {foreach from=$other_value item=other key=key}
+    <input type="hidden" id="other_value_{$key}"  value="{$other}"/>
+    {/foreach}
+    
+    
 	<div class="top_page_menu">
 		{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if} {if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 		<div class="buttons">
@@ -220,27 +233,56 @@
 				{/foreach} {*} 
 			</table>
 		</div>
+
 		<div class="edit_block" style="{if $edit!='categories'}display:none{/if};min-height:260px" id="d_categories">
-			<table class="edit">
+			<table class="edit" border=0 >
 				<tr class="title">
 					<td colspan="5">{t}Categories{/t}</td>
 				</tr>
-				{foreach from=$categories item=cat key=cat_key name=foo } 
-				<tr>
-					<td class="label">{t}{$cat->get('Category Name')}{/t}:</td>
-					<td> {$categories_value[$cat_key]}
-					<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="save_category(this)">
-						{foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
-						<option selected="{if $categories_value[$cat_key]=='' }selected{/if}" value="">{t}Unknown{/t}</option>
-						{/if} 
-						<option selected="{if $categories_value[$cat_key]==$sub_cat_key }selected{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}{$sub_cat_key}</option>
-						{/foreach} 
-					</select>
-					</td>
-				</tr>
-				{/foreach} 
+
+                    
+                {foreach from=$categories item=cat key=cat_key name=foo  }
+                <tr>
+                    
+                    <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
+                    <td>
+                        <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
+                            {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
+{if $smarty.foreach.foo2.first} 
+                                <option value="">{t}Unknown{/t}</option>
+                                {/if} 
+                            
+                            
+                            <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+                            {/foreach}
+                        </select>
+                        
+                    </td>   
+                </tr>
+
+  <tbody id="show_other_tbody_{$cat_key}" style="{if !$cat->number_of_children_with_other_value('Customer',$customer->id)}display:none{/if}">
+                    <tr><td><div class="buttons small" ><button onClick="show_save_other({$cat_key})">{t}Edit{/t}</button>
+</div></td><td style="border:1px solid #ccc;">{$cat->get_other_value('Customer',$customer->id)}
+				
+</td></tr>
+              
+                </tbody>
+
+                <tbody id="other_tbody_{$cat_key}" style="display:none">
+                    <tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}">{$cat->get_other_value('Customer',$customer->id)}</textarea></td></tr>
+                    <tr><td></td><td><div class="buttons small left">
+                    <button onClick="save_category_other_value({$cat->get_children_key_is_other_value()},{$cat->id})">{t}Save{/t}</button></div></td></tr>
+                </tbody>
+                <tr style="height:15px"><td colspan=2></td></tr>
+                {/foreach}
+                    
+                    
+
+
 			</table>
 		</div>
+
+
 		<div class="edit_block" style="{if $edit!='delivery'}display:none{/if};min-height:260px" id="d_delivery">
 			{include file='edit_delivery_address_splinter.tpl' return_to_order=false} 
 		</div>

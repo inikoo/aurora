@@ -478,7 +478,7 @@ function list_pages() {
                     'type'=>$type,
                     'url'=>$row['Page URL'],
                     'image'=>'image.php?size=small&id='.$row['Page Preview Snapshot Image Key'],
-'type'=>'item'
+'item_type'=>'item'
                     /*
                     'for_sale'=>number($row['Supplier For Sale Products']),
                     'low'=>number($row['Supplier Low Availability Products']),

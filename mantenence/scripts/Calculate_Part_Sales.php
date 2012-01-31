@@ -31,7 +31,7 @@ date_default_timezone_set('UTC');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension` ";
+$sql="select * from `Part Dimension` order by `Part Total Acc Sold Amount`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);

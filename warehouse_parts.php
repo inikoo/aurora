@@ -86,6 +86,7 @@ $js_files=array(
 		'js/table_common.js',
 		'js/dropdown.js',
 		'js/search.js',
+		'js/parts_common.js',
 		'warehouse_parts.js.php'
 		);
 

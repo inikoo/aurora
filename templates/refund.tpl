@@ -48,11 +48,11 @@
       </div>
 
  <div style="border:0px solid #ddd;width:290px;float:right">
-       {if $note}<div class="notes">{$note}</div>{/if}
+      {if isset($note)}<div class="notes">{$note}</div>{/if}
 
 
 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:20px;margin:0 30px;float:right" >
-<tr><td>{t}Refund Date{/t}:</td><td class="aright">{$invoice->get('Invoice Date')}</td></tr>
+<tr><td>{t}Refund Date{/t}:</td><td class="aright">{$invoice->get('Date')}</td></tr>
 <tr><td>{t}Order{/t}:</td><td class="aright">{$invoice->get('Invoice XHTML Orders')}</td></tr>
 </table>
 
@@ -69,12 +69,7 @@
 
 	    
     </div>
-{if $items_out_of_stock}
-<div style="clear:both;margin:30px 0" >
-<h2>{t}Items Out of Stock{/t}</h2>
-<div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
-</div>
-{/if}
+
   </div>
 </div>
 </div> 

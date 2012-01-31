@@ -39,9 +39,9 @@ $store->update_up_today_dispatch_times();
 $store->update_last_period_dispatch_times();
 $store->update_interval_dispatch_times();
 
-  //$store->update_customers_data();
-  //$store->update_orders();
-  //$store->load('products_info');
+  $store->update_customers_data();
+  $store->update_orders();
+  $store->update_product_data();
   print $store->id."\n";
  }
 mysql_free_result($result);

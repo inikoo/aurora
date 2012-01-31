@@ -113,37 +113,58 @@ function add_customer($data) {
         $customer->update_activity();
         $store->update_customers_data();
 
-        // print_r($data);
+        
 
 
         foreach($data as $data_key=>$data_value) {
 
-            if (preg_match('/^cat\d+$/i',$data_key)) {
-                //  print"$data_key\n";
-                $category_key=preg_replace('/^cat/i','',$data_key);
-                //  print"$category_key\n";
+            if (preg_match('/^Cat\d+$/i',$data_key)) {
+               //   print"$data_key\n";
+                $parent_category_key=preg_replace('/^cat/i','',$data_key);
+                // print"$category_key\n";
+		$category_key=$data_value;
 
-                if (!is_numeric($data_value)) {
-                    $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Parent Key`=%d and `Category Name`=%s ",
-                                 $category_key,
-                                 prepare_mysql($data_value)
+		  if (is_numeric( $category_key)) {
+			$sql=sprintf("select `Category Key`,`Is Category Field Other` from `Category Dimension` where `Category Key`=%d  ",
+                                 $category_key
+                                
                                 );
-                    //print $sql;
+           
                     $res=mysql_query($sql);
                     if ($row=mysql_fetch_assoc($res)) {
-                        $data_value=$row['Category Key'];
+                       
+			$data_category_other=$row['Is Category Field Other'];
+
+			if($data_category_other=='Yes' and array_key_exists('Cat'.$parent_category_key.'_Other_Value',$data)){
+
+				$sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d, %s)",
+				$category_key,
+
+				$customer->id,
+				prepare_mysql($data['Cat'.$parent_category_key.'_Other_Value'])
+				);
+				
+                   
+			}else{
+				$sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d, NULL)",
+				$category_key,
+
+				$customer->id
+
+				);
+				
+
+			}
+			
+			mysql_query($sql);
+	
+
                     }
-                }
+              
 
-                if ($data_value) {
-                    $sql=sprintf("insert into `Category Bridge` values (%d,'Customer',%d, NULL)",
-                                 $data_value,
-
-                                 $customer->id
-                                );
-                    mysql_query($sql);
-                    // print($sql);
-                }
+             
+		}
+               
             }
         }
         $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);

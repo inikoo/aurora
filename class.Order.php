@@ -1862,6 +1862,8 @@ class Order extends DB_Table {
 
 	function update_no_normal_totals($args='') {
 
+
+
 		$this->data['Order Balance Net Amount']=0;
 		$this->data['Order Balance Tax Amount']=0;
 		$this->data['Order Balance Total Amount']=0;
@@ -1915,6 +1917,10 @@ class Order extends DB_Table {
 			$this->data['Order Invoiced Charges Amount']=$row['inv_charges'];
 			$this->data['Order Invoiced Net Amount']=$row['inv_net'];
 			$this->data['Order Invoiced Tax Amount']=$row['inv_tax'];
+			$this->data['Order Invoiced Refund Net Amount']=$row['ref_net'];
+			$this->data['Order Invoiced Refund Tax Amount']=$row['ref_tax'];
+			
+			
 			$this->data['Order Out of Stock Net Amount']=$row['out_of_stock_net'];
 			$this->data['Order Out of Stock Tax Amount']=$row['out_of_stock_tax'];
 
@@ -2010,7 +2016,7 @@ class Order extends DB_Table {
 			$this->id
 		);
 
-		// print "$sql\n";
+	//	 print "$sql\n";
 		if (!mysql_query($sql))
 			exit("ERROR $sql\n");
 
@@ -2248,6 +2254,9 @@ class Order extends DB_Table {
 		);
 		mysql_query($sql);
 
+		$this->update_customer_history();
+			$this->update_full_search();
+
 	}
 
 
@@ -2268,6 +2277,8 @@ class Order extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
+		$this->update_customer_history();
+			$this->update_full_search();
 
 	}
 

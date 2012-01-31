@@ -124,7 +124,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/137117.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/139627.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -563,9 +563,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
 
             if (preg_match('/Freight|^frc-|Postage|shipping/i',$transaction['code'])) {
-                $shipping_transactions[]=$transaction;
-                $extra_shipping+=$transaction['price'];
-                continue;
+                $transaction['code']='Freight';
+                $transaction['description']='Freight Services';
+                //$shipping_transactions[]=$transaction;
+                //$extra_shipping+=$transaction['price'];
+                //continue;
 
             }
             if (preg_match('/^cxd-|^wsl$|^eye$|^\d$|2009promo/i',$transaction['code']))

@@ -192,20 +192,30 @@
 					<tr class="title" style="height:30px">
 						<td colspan="3">{t}Other Info{/t}</td>
 					</tr>
+
 					{foreach from=$categories item=cat key=cat_key name=foo } 
 					<tr>
-						<td class="label">{t}{$cat->get('Category Label')}{/t}:</td>
-						<td> 
-						<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="update_category(this)">
-							{foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
-							<option value="">{t}Unknown{/t}</option>
-							{/if} 
-							<option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
-							{/foreach} 
-						</select>
-						</td>
-					</tr>
+					<td class="label">{t}{$cat->get('Category Label')}{/t}:</td>
+					<td> 
+					<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="update_category(this)">
+
+					{foreach from=$cat->get_children_objects_new_subject() item=sub_cat key=sub_cat_key name=foo2 }
+{if $smarty.foreach.foo2.first} 
+                                <option value="">{t}Unknown{/t}</option>
+                                {/if} 
+`	
+					<option other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+
 					{/foreach} 
+					</select>
+					</td>
+					</tr>
+					<tbody id="other_tbody_{$cat_key}" style="display:none">
+					<tr><td></td><td><textarea rows='2' cols="20" id="category_other_value_textarea_{$cat_key}"></textarea></td></tr>
+					
+					</tbody>
+					{/foreach} 
+                    
 					<tr>
 						<td class="label" style="width:200px;font-size:90%">{t}Send Newsletter{/t}:</td>
 						<input type="hidden" value="Yes" id="allow_newsletter" />

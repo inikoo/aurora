@@ -307,14 +307,56 @@ class Category extends DB_Table {
         while ($row=mysql_fetch_assoc($res)) {
             $children_keys[$row['Category Key']]=new Category($row['Category Key']);
         }
+        
+        return $children_keys;
+
+    }
+
+    function get_children_objects_new_subject() {
+        $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show New Subject`='Yes' order by `Category Name` ",
+                       $this->id
+                      );
+        //  print $sql;
+        $res=mysql_query($sql);
+        $children_keys=array();
+        while ($row=mysql_fetch_assoc($res)) {
+            $children_keys[$row['Category Key']]=new Category($row['Category Key']);
+        }
+        
+        return $children_keys;
+
+    }
+
+    function get_children_objects_public_edit() {
+        $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public Edit`='Yes' order by `Category Name` ",
+                       $this->id
+                      );
+        //  print $sql;
+        $res=mysql_query($sql);
+        $children_keys=array();
+        while ($row=mysql_fetch_assoc($res)) {
+            $children_keys[$row['Category Key']]=new Category($row['Category Key']);
+        }
+        
         return $children_keys;
 
     }
 
 
+    function get_children_objects_public_new_subject() {
+        $sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public New Subject`='Yes' order by `Category Name` ",
+                       $this->id
+                      );
+        //  print $sql;
+        $res=mysql_query($sql);
+        $children_keys=array();
+        while ($row=mysql_fetch_assoc($res)) {
+            $children_keys[$row['Category Key']]=new Category($row['Category Key']);
+        }
+        
+        return $children_keys;
 
-
-
+    }
 
 
 
@@ -1437,6 +1479,7 @@ class Category extends DB_Table {
                     );
         $result=mysql_query($sql);
 
+//print "$sql\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $invoice_category_data["$db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
             $invoice_category_data["$db_interval Acc Invoiced Amount"]=$row["net"];
@@ -1535,7 +1578,76 @@ class Category extends DB_Table {
 
 
     }
+                     
+                     function get_other_categories(){
+                     $sql=sprintf("select * from `Category Dimension` where `Is Category Field Other`='Yes' and `Category Subject`='Customer'");
+                     $result=mysql_query($sql);
+                     while($row=mysql_fetch_assoc($result)){
+                           $other_data[$row['Category Parent Key']]=$row['Category Key'];
+                     }
+             
+                           return $other_data;
+                     }
+
+function get_other_value($subject,$subject_key){
+	$other_values='';
+	$sql=sprintf("select ifnull(group_concat(Distinct `Customer Other Note`),'') as other_value from `Category Bridge` B left join  `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  where `Subject`=%s and `Subject Key`=%d and `Customer Other Note`!='' and  `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
+prepare_mysql($subject),
+$subject_key,
+$this->id
+);
+//print $sql;
+	$result=mysql_query($sql);
+        if($row=mysql_fetch_assoc($result)){
+		$other_value=$row['other_value'];	
+	}
+return $other_value;
+}
+
+function number_of_children_with_other_value($subject,$subject_key){
+
+	$number_of_children=0;	
+
+	$sql=sprintf(" select  count(Distinct C.`Category Key`) as number_of_children    from `Category Dimension` C left join  `Category Bridge` B on (C.`Category Key`=B.`Category Key`)  where  `Subject`=%s and `Subject Key`=%d and `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
+prepare_mysql($subject),
+$subject_key,
+$this->id);
+//print $sql;
+	$result=mysql_query($sql);
+        if($row=mysql_fetch_assoc($result)){
+		$number_of_children=$row['number_of_children'];	
+	}
+return $number_of_children;
+}
+
+function get_children_key_is_other_value(){
+	$children_key_is_other_value=0;	
+
+	$sql=sprintf(" select `Category Key`    from `Category Dimension` C  where   `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
 
 
+$this->id);
+//print $sql;
+	$result=mysql_query($sql);
+        if($row=mysql_fetch_assoc($result)){
+		$children_key_is_other_value=$row['Category Key'];	
+	}
+return $children_key_is_other_value;
+}
+
+function get_children_key_is_other_value_public_edit(){
+	$children_key_is_other_value=0;	
+
+	$sql=sprintf(" select `Category Key`    from `Category Dimension` C  where   `Is Category Field Other`='Yes' and `Category Parent Key`=%d and `Category Show Public Edit`='Yes'",
+
+
+$this->id);
+//print $sql;
+	$result=mysql_query($sql);
+        if($row=mysql_fetch_assoc($result)){
+		$children_key_is_other_value=$row['Category Key'];	
+	}
+return $children_key_is_other_value;
+}
 
 }

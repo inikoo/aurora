@@ -196,6 +196,9 @@ class Auth {
                      prepare_mysql(date('Y-m-d H:i:s'))
 
                     );
+                    
+                  
+                    
         if ($same_ip) {
 
             $sql.=sprintf(" and `IP`=%s",
@@ -203,7 +206,8 @@ class Auth {
                          );
         }
 
-
+// print $sql;
+//exit;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
 

@@ -136,6 +136,9 @@ $smarty->assign('customer',$customer);
 
 $smarty->assign('default_country_2alpha',$store->get('Store Home Country Code 2 Alpha'));
 
+    
+    
+    
 
 $other_email=$customer->get_other_emails_data();
 
@@ -401,34 +404,58 @@ $js_files[]=sprintf('edit_customer.js.php?id=%d&forgot_count=%d&register_count=%
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 //$delivery_addresses=$customer->get_address_objects();
+	$categories=array();
+	$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Name` in
+                 ('Type of Business','Referrer') and `Category Subject`='Customer' and `Category Deep`=1 and
+                 `Category Store Key`=%d",$customer->data['Customer Store Key']);
+                 $res=mysql_query($sql);
+                 while ($row=mysql_fetch_assoc($res)) {
+                 $tmp=new Category($row['Category Key']);
+                 $selected_array=$tmp->sub_category_selected_by_subject($customer->id);
+                 
+                 
+                 if (count($selected_array)==0) {
+                 $tmp_selected='';
+                 } else {
+                 $tmp_selected=array_pop($selected_array);
+                 }
+                 
+                 $categories[$row['Category Key']]=$tmp;
+                 $categories_value[$row['Category Key']]=$tmp_selected;
+                 
+                 }
+                 
+                 
+                 $smarty->assign('categories',$categories);
+                 $smarty->assign('categories_value',$categories_value);
+                 
+                 $enable_other=array();
+                 
+                 $other_value=array();
+                 foreach($categories_value as $key=>$value){
+                 $category=new Category($value);
+                 
+                 if($category->data['Is Category Field Other'] == 'Yes'){
+                 
+                 $sql=sprintf("select * from `Category Bridge` where `Category Key`=%d and `Subject`='Customer' and `Subject Key`=%d", $category->id, $customer->id);
+                 $result=mysql_query($sql);
+                 $row=mysql_fetch_assoc($result);
+                 $enable_other[$category->data['Category Parent Key']]=true;
+                 $other_value[$category->data['Category Parent Key']]=$row['Customer Other Note'];
+                 
+                 }else{
+                 $enable_other[$category->data['Category Parent Key']]=false;
+                 }
+                 
+                 
+                 }
+                 
+                 //print_r($other_value);
+                 
+                 $smarty->assign('other_value',$other_value);
+                 $smarty->assign('enable_other',$enable_other);
 
-
-$categories_value=array();
-$categories=array();
-$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$customer->data['Customer Store Key']);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    $tmp=new Category($row['Category Key']);
-    $selected_array=$tmp->sub_category_selected_by_subject($customer->id);
-
-
-    if (count($selected_array)==0) {
-        $tmp_selected='';
-    } else {
-        $tmp_selected=array_pop($selected_array);
-    }
-
-    $categories[$row['Category Key']]=$tmp;
-    $categories_value[$row['Category Key']]=$tmp_selected;
-
-}
-//print_r($selected_array);
-$smarty->assign('categories',$categories);
-$smarty->assign('categories_value',$categories_value);
-
-
-
-
+                 
 
 $main_email_warning=false;
 $main_email_warnings='';

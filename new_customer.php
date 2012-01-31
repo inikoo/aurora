@@ -148,20 +148,20 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 $smarty->assign('new_subject',$new_subject);
 
-
-$categories=array();
-$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d",$store_key);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$tmp=new Category($row['Category Key']);
-
-
-
-	$categories[$row['Category Key']]=$tmp;
-
-}
-$smarty->assign('categories',$categories);
-
+    $categories=array();
+    $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d and `Category Show New Subject`='Yes'",$store_key);
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $tmp=new Category($row['Category Key']);
+        
+        
+        
+        $categories[$row['Category Key']]=$tmp;
+        
+    }
+    $smarty->assign('categories',$categories);
+                 
+                 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');

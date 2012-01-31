@@ -6,6 +6,8 @@ var validate_scope_data;
 var dialog_quick_edit_Customer_Contact;
 var dialog_quick_edit_Customer_Telephone;
 var scope='customer_profile';
+var number_of_categories=2;
+
 var scope_key='';
 <?php
 
@@ -263,21 +265,15 @@ var category_key=o.options[o.selectedIndex].value;
 var subject='Customer';
 var subject_key=Dom.get('customer_key').value;
 
+var category_object=o.options[o.selectedIndex];
+    
 
-if(parent_category_key==1 && category_key==38){
-	Dom.get('other_tbody_1').style.display='';
-	return;
-}
-else if(parent_category_key==1 )
-	Dom.get('other_tbody_1').style.display='none';
-
-if(parent_category_key==2 && category_key==16){
-	Dom.get('other_tbody_2').style.display='';
-	return;
-}
-else if(parent_category_key==2 )
-	Dom.get('other_tbody_2').style.display='none';
-
+    if(Dom.get(category_object).getAttribute('other')==true){
+        Dom.get('other_tbody_'+parent_category_key).style.display='';
+        return;
+    }
+ 
+    
 if(category_key==''){
 
 		var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
@@ -296,6 +292,7 @@ if(category_key==''){
 			//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
+                   window.location.reload();                         
 				}
 
 
@@ -307,52 +304,38 @@ if(category_key==''){
 
 }
 
-function save_other_1(o){
-var parent_category_key=o.getAttribute('cat_key');
-var category_key=o.options[o.selectedIndex].value;
-var subject='Customer';
-var subject_key=Dom.get('customer_key').value;
-
-var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id+"&other="+Dom.get('other_textarea_2').value
-alert(request)
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-			//alert(o.responseText);
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-				}
+function save_category_other_value(category_key,parent_category_key){
 
 
-        
-    }
-                                                                 });
-
+ 
+    var subject='Customer';
+    var subject_key=Dom.get('customer_key').value;
+    
+    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_'+parent_category_key).value
+    //alert(request); //return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+                                    success:function(o) {
+                                    //alert(o.responseText);
+                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+                                    if(r.state==200){
+                                    window.location.reload();
+                                    }
+                                    
+                                    
+                                    
+                                    }
+                                    });
+    
 }
 
-function save_other_2(o){
-var parent_category_key=o.getAttribute('cat_key');
-var category_key=o.options[o.selectedIndex].value;
-var subject='Customer';
-var subject_key=Dom.get('customer_key').value;
-
-var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id+"&other="+Dom.get('other_textarea_2').value
-
-alert(request)
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-			//alert(o.responseText);
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-				}
-
-
-        
-    }
-                                                                 });
+function show_save_other(parent_category_key){
+Dom.get('show_other_tbody_'+parent_category_key).style.display='none';
+Dom.get('other_tbody_'+parent_category_key).style.display='';
 }
 
 function init(){
 
+    
 scope_key=Dom.get('user_key').value;
 
 var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";
