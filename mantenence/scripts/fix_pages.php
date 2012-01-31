@@ -129,7 +129,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	$page->update_see_also();
-	$page->update_preview_snapshot('aw');
+	//$page->update_preview_snapshot('aw');
 	print $page->id."\n";
 }
 
