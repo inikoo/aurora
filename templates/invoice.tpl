@@ -66,7 +66,7 @@
 
 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:20px;margin-right:30px;float:right" >
 
-<tr><td>{t}Invoice Date{/t}:</td><td class="aright">{$invoice->get('Invoice Date')}</td></tr>
+<tr><td>{t}Invoice Date{/t}:</td><td class="aright">{$invoice->get('Date')}</td></tr>
 
 <tr><td>{t}Order{/t}:</td><td class="aright">{$invoice->get('Invoice XHTML Orders')}</td></tr>
 <tr><td>{t}Delivery Notes{/t}:</td><td class="aright">{$invoice->get('Invoice XHTML Delivery Notes')}</td></tr>

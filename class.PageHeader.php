@@ -169,7 +169,7 @@ class PageHeader extends DB_Table {
             $this->get_data('id',$this->id);
 
             $site=new Site ($this->data['Site Key']);
-            $site->update_headers($this->id);
+            //$site->update_headers($this->id);
 
 
 

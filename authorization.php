@@ -81,6 +81,7 @@ else
 
 
 if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
+
     $auth->authenticate_from_masterkey($_REQUEST['mk']);
    
 }

@@ -5444,3 +5444,9 @@ ALTER TABLE `Warehouse Dimension` ADD `Warehouse Last Month Acc Average Dispatch
 
 ALTER TABLE `Order Dimension` ADD `Order Dispatched Date` DATETIME NULL DEFAULT NULL AFTER `Order Date` ;
 ALTER TABLE `Order Dimension` ADD `Order Post Transactions Dispatched Date` DATETIME NULL DEFAULT NULL AFTER `Order Dispatched Date`;
+DROP TABLE `Dashboard User Bridge`;
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Store Email Template Header', 'Store Email Postcard', 'Email Image', 'Page', 'Page Header', 'Page Footer', 'Site', 'Page Header Preview', 'Page Footer Preview', 'Page Preview', 'Site Menu', 'Site Search', 'User Profile' ) ;
+ALTER TABLE `User Dimension` ADD `User Main Image Key` MEDIUMINT( 8 ) NULL;
+ALTER TABLE `Category Bridge` ADD `Customer Other Note` VARCHAR( 255 ) NULL;
+ALTER TABLE `Category Dimension` ADD `Is Category Field Other` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+

@@ -26,7 +26,7 @@
 				{t}Order{/t} {$order->get('Order Public ID')}
 			</h1>
 			<h2 style="padding:0">
-				{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get(" order customer key")}">{$customer->get_formated_id()}</a>)
+				{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get("order customer key")}">{$customer->get_formated_id()}</a>)
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 30px 0 0px;color:#444">
 				<span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br />

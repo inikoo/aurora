@@ -1438,6 +1438,7 @@ class Category extends DB_Table {
                     );
         $result=mysql_query($sql);
 
+//print "$sql\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $invoice_category_data["$db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
             $invoice_category_data["$db_interval Acc Invoiced Amount"]=$row["net"];
@@ -1462,7 +1463,7 @@ class Category extends DB_Table {
                     );
 
         mysql_query($sql);
-//print "$sql\n\n";
+print "$sql\n\n";
         $sql=sprintf("update `Invoice Category Dimension` set
                      `DC $db_interval Acc Invoiced Discount Amount`=%.2f,
                      `DC $db_interval Acc Invoiced Amount`=%.2f,

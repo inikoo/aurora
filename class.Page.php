@@ -883,7 +883,7 @@ class Page extends DB_Table {
 
 
                 $see_also[]=array(
-                                'link'=>'<a href="'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>',
+                                'link'=>'<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>',
                                 'see_also_label'=>$see_also_page->data['Page Short Title'],
                                 'see_also_url'=>$see_also_page->data['Page URL'],
                                 'see_also_key'=>$see_also_page->id,
@@ -1004,7 +1004,7 @@ $this->new_value=$deleted_page->id;
                              $max_links
                             );
                 $res=mysql_query($sql);
-                // print "$sql\n";
+               // print "$sql\n";
                 while ($row=mysql_fetch_assoc($res)) {
                     if (!array_key_exists($row['Family B Key'], $see_also)) {
                         $family=new Family($row['Family B Key']);
@@ -1025,7 +1025,7 @@ $this->new_value=$deleted_page->id;
 
             }
             // if ($number_links==0) {
-            // print_r($see_also);
+            /// print_r($see_also);
             // exit("error\n");
             // }
 
@@ -1055,7 +1055,7 @@ $this->new_value=$deleted_page->id;
                          $see_also_data['value']
                         );
             mysql_query($sql);
-                //print "$sql\n";
+              //  print "$sql\n";
         }
 
     }
@@ -2193,11 +2193,15 @@ $this->new_value=$deleted_page->id;
     }
 
 
-    function update_preview_snapshot() {
+    function update_preview_snapshot($dirname=false) {
 
       
+    if ($this->data['Page Type']!='Store' )
+            return;
 
-
+if(!$dirname){
+$dirname=dirname($_SERVER['PHP_SELF']);
+}
 
 
         $r = join('',unpack('v*', fread(fopen('/dev/urandom', 'r'),25)));
@@ -2207,7 +2211,7 @@ $this->new_value=$deleted_page->id;
                      ,1
                      ,prepare_mysql($pwd)
                      ,prepare_mysql(date("Y-m-d H:i:s",strtotime("now +5 minute")))
-                     ,prepare_mysql(ip())
+                     ,prepare_mysql(ip(),false)
                     );
 
 //print $sql;
@@ -2224,7 +2228,7 @@ $this->new_value=$deleted_page->id;
         $height=$this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+10;
 //ar_edit_sites.php?tipo=update_page_snapshot&id=1951;
 
-        $url="http://localhost/".dirname($_SERVER['PHP_SELF'])."/authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
+        $url="http://localhost/".$dirname."/authorization.php?url=".urlencode("page_preview.php?header=0&id=".$this->id).'\&mk='.$pwd;
 
         ob_start();
         system("uname");
@@ -2344,6 +2348,11 @@ $this->new_value=$deleted_page->id;
     
     function add_parent($parent_key){
     
+    if($this->id==$parent_key){
+    	$this->error=true;
+    	$this->msg='same page key';
+    	return;
+    }
     
      $sql=sprintf("insert into `Page Store Found In Bridge` values (%d,%d)  ",
                  $this->id,
