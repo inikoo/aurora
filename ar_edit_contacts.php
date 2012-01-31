@@ -2612,12 +2612,15 @@ function new_customer($data) {
     include_once('edit_customers_functions.php');
 
     global $editor,$user;
-
+/*
     if (!in_array($data['values']['Customer Store Key'],$user->stores)) {
         $response= array('state'=>400,'action'=>'error','msg'=>_('Forbidden operation'));
         echo json_encode($response);
         return;
     }
+*/
+
+
 
     if ($data['values']['Customer Address Country Code']=='')
         $data['values']['Customer Address Country Code']='UNK';

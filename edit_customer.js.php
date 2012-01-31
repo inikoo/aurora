@@ -993,6 +993,13 @@ function save_other_<?php echo $key ?>(o){
                                     });
     
 }
+
+
+function show_save_other_<?php echo $key ?>(o){
+Dom.get('show_other_tbody_<?php echo $key ?>').style.display='none';
+Dom.get('other_tbody_<?php echo $key ?>').style.display='';
+}
+
 <?php
     }
     ?>
@@ -1611,18 +1618,6 @@ var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer
 
 
 function init(){
-
-    <?php
-    $category=new Category(1);
-    foreach($category->get_other_categories() as $key=>$value){
-        ?>
-        
-        if(Dom.get('enable_other_<?php echo $key ?>').value==true){
-            Dom.get('other_tbody_<?php echo $key ?>').style.display='';
-            Dom.get('other_textarea_<?php echo $key ?>').value=Dom.get('other_value_<?php echo $key ?>').value;
-        }
-        <?php }?>
-    
 
     
 if(Dom.hasClass('delete_customer','disabled'))

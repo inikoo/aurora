@@ -4,6 +4,7 @@
 include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.Company.php');
+include_once('class.Category.php');
 
 $scope='customer';
 $action_after_create='continue';
@@ -52,8 +53,16 @@ var subject_data={
     ,"Customer Address Country Forth Division":""
     ,"Customer Address Country Fifth Division":""
 	<?php
-	foreach($custom_values_data as $data_x)
+	foreach($custom_values_data as $data_x){
 		echo ",\"".$data_x['field_name']."\":\"".$data_x['default']."\"";
+	}
+
+$category=new Category(0);
+foreach($category->get_other_categories() as $key=>$value){
+echo ",\"Cat".$key."_Other_Value\":\"\"";
+
+}
+
 	?>
     
 };  
@@ -89,6 +98,7 @@ var changes_address=0;
 var saved_details=0;
 var error_details=0;
 var values=new Object;
+var other_true=false;
 
 subject_found_email_other_store=false;
 
@@ -96,6 +106,19 @@ function update_category(o){
     var parent_category_key=o.getAttribute('cat_key');
     var category_key=o.options[o.selectedIndex].value;
     subject_data['Cat'+parent_category_key]=category_key;
+//alert('Cat'+parent_category_key+' : '+category_key)
+    var category_object=o.options[o.selectedIndex];
+    
+    
+    if(Dom.get(category_object).getAttribute('other')=='true'){
+        Dom.get('other_tbody_'+parent_category_key).style.display='';
+	other_true=true;
+        return;
+    }
+    else{
+	Dom.get('other_tbody_'+parent_category_key).style.display='none';
+	other_true|=false;
+    }
 }
 
 function get_custom_data(){
@@ -108,6 +131,11 @@ function get_custom_data(){
 ?>
 }
 
+function get_custom_data(){
+	//alert('yy');return;	
+}
+
+
 function save_new_customer(e){
    
  
@@ -115,7 +143,14 @@ function save_new_customer(e){
 	return;
     }
 
-
+if(other_true){
+    <?php
+    $category=new Category(1);
+    foreach($category->get_other_categories() as $key=>$value){
+        ?>
+        subject_data['Cat<?php echo $key?>_Other_Value']=Dom.get('other_textarea_<?php echo $key ?>').value;
+    <?php }?>
+}
 
     get_data();
  Dom.setStyle("creating_message",'display','');
@@ -131,12 +166,12 @@ Dom.setStyle(["new_Customer_buttons"],'display','none');
     //var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + json_value; 
 	//alert(request);
-  //alert(request);return;
+ // alert(request);return;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		//alert(o.responseText);
-
+		
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    if(action_after_create=='add_another'){
