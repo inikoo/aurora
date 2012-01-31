@@ -1548,6 +1548,35 @@ class Category extends DB_Table {
                            return $other_data;
                      }
 
+function get_other_value($subject,$subject_key){
+	$other_values='';
+	$sql=sprintf("select ifnull(group_concat(Distinct `Customer Other Note`),'') as other_value from `Category Bridge` B left join  `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  where `Subject`=%s and `Subject Key`=%d and `Customer Other Note`!='' and  `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
+prepare_mysql($subject),
+$subject_key,
+$this->id
+);
+//print $sql;
+	$result=mysql_query($sql);
+        if($row=mysql_fetch_assoc($result)){
+		$other_value=$row['other_value'];	
+	}
+return $other_value;
+}
 
+function number_of_children_with_other_value($subject,$subject_key){
+
+	$number_of_children=0;	
+
+	$sql=sprintf(" select  count(Distinct C.`Category Key`) as number_of_children    from `Category Dimension` C left join  `Category Bridge` B on (C.`Category Key`=B.`Category Key`)  where  `Subject`=%s and `Subject Key`=%d and `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
+prepare_mysql($subject),
+$subject_key,
+$this->id);
+//print $sql;
+	$result=mysql_query($sql);
+        if($row=mysql_fetch_assoc($result)){
+		$number_of_children=$row['number_of_children'];	
+	}
+return $number_of_children;
+}
 
 }
