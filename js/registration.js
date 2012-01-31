@@ -2,6 +2,7 @@
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 
+var categories_other_data ={}
 
 var data={ 
     "Customer Type":''
@@ -32,6 +33,34 @@ var data={
     ,"Customer Send Email Marketing":"Yes"
     ,"Customer Send Postal Marketing":"Yes"
     };
+
+function get_category_other_value_data(){
+	for ( category_key in categories_other_data)
+	{
+		data['Cat'+category_key+'_Other_Value']=Dom.get('category_other_value_textarea_'+category_key).value;
+	}
+}
+
+function update_category(o){
+    var parent_category_key=o.getAttribute('cat_key');
+    var category_key=o.options[o.selectedIndex].value;
+    data['Cat'+parent_category_key]=category_key;
+//alert('Cat'+parent_category_key+' : '+category_key)
+    var category_object=o.options[o.selectedIndex];
+    
+    
+    if(Dom.get(category_object).getAttribute('other')=='true'){
+   
+        Dom.get('other_tbody_'+parent_category_key).style.display='';
+	categories_other_data [parent_category_key]=parent_category_key;
+        return;
+    }
+    else{
+	Dom.get('other_tbody_'+parent_category_key).style.display='none';
+	delete categories_other_data [parent_category_key]
+    }
+}
+
 
 function isValidEmail(email){
     var RegExp = /^((([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+(\.([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+)*)@((((([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.))*([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.)[\w]{2,4}|(((([0-9]){1,3}\.){3}([0-9]){1,3}))|(\[((([0-9]){1,3}\.){3}([0-9]){1,3})\])))$/i
@@ -145,6 +174,7 @@ data['Customer Address Country 2 Alpha Code']=Dom.get('register_address_country_
 data['Customer Store Key']=Dom.get('store_key').value;
 data['captcha_code']=Dom.get('captcha_code').value;
 
+get_category_other_value_data();
 
 data['ep']=AESEncryptCtr(sha256_digest(Dom.get('register_password1').value),Dom.get('epw2').value,256);
   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 

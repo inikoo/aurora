@@ -199,7 +199,7 @@
 					<td> 
 					<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="update_category(this)">
 
-					{foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2 }
+					{foreach from=$cat->get_children_objects_new_subject() item=sub_cat key=sub_cat_key name=foo2 }
 {if $smarty.foreach.foo2.first} 
                                 <option value="">{t}Unknown{/t}</option>
                                 {/if} 
