@@ -964,20 +964,14 @@ function save_category(o) {
     
 }
 
-
-<?php
-    $category=new Category(0);
-    foreach($category->get_other_categories() as $key=>$value){
-    ?>
+function save_category_other_value(category_key,parent_category_key){
 
 
-function save_other_<?php echo $key ?>(o){
-    var parent_category_key=<?php echo $key ?>;
-    var category_key=<?php echo $value ?>;
+ 
     var subject='Customer';
     var subject_key=Dom.get('customer_key').value;
     
-    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_<?php echo $key ?>').value
+    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_'+parent_category_key).value
     //alert(request); //return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
                                     success:function(o) {
@@ -995,15 +989,12 @@ function save_other_<?php echo $key ?>(o){
 }
 
 
-function show_save_other_<?php echo $key ?>(o){
-Dom.get('show_other_tbody_<?php echo $key ?>').style.display='none';
-Dom.get('other_tbody_<?php echo $key ?>').style.display='';
+
+function show_save_other(parent_category_key){
+Dom.get('show_other_tbody_'+parent_category_key).style.display='none';
+Dom.get('other_tbody_'+parent_category_key).style.display='';
 }
 
-<?php
-    }
-    ?>
-		
 
 
 
@@ -1687,6 +1678,8 @@ dialog_comment.render();
 	
 
 ?>
+
+
 
 	//var ids_show = ["show_register_block_0", ""];
 
