@@ -1580,4 +1580,19 @@ $this->id);
 return $number_of_children;
 }
 
+function get_children_key_is_other_value(){
+	$children_key_is_other_value=0;	
+
+	$sql=sprintf(" select `Category Key`    from `Category Dimension` C  where   `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
+
+
+$this->id);
+//print $sql;
+	$result=mysql_query($sql);
+        if($row=mysql_fetch_assoc($result)){
+		$children_key_is_other_value=$row['Category Key'];	
+	}
+return $children_key_is_other_value;
+}
+
 }
