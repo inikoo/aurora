@@ -340,17 +340,6 @@ function save_other_<?php echo $key ?>(o){
 
 function init(){
 
-    <?php
-    $category=new Category(0);
-    foreach($category->get_other_categories() as $key=>$value){
-    ?>
-        
-    if(Dom.get('enable_other_<?php echo $key ?>').value==true){
-        Dom.get('other_tbody_<?php echo $key ?>').style.display='';
-        Dom.get('other_textarea_<?php echo $key ?>').value=Dom.get('other_value_<?php echo $key ?>').value;
-    }
-        <?php }?>
-    
     
 scope_key=Dom.get('user_key').value;
 
