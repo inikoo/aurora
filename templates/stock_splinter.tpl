@@ -11,7 +11,9 @@
       <tr style="height:10px"><td colspan=2></td></tr>
       <tr ><td>{t}Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_audit" /></td></tr>
      <tr><td>{t}Notes{/t}:</td><td><input type="text" id="note_audit" /></td></tr>
-    <tr><td colspan=2><div class="buttons">
+       <tr style="display:none" id="Editor_audit_wait" ><td colspan=2 style="text-align:right"><img src="art/loading.gif" alt=""> {t}Processing Request{/t}</td></tr>
+
+ <tr id="Editor_audit_buttons"><td colspan=2><div class="buttons">
       <button onclick="save_audit();" class="positive">{t}Save{/t}</button>
       <button onclick="close_audit_dialog()" class="negative" >{t}Cancel{/t}</button>
     </div></td></tr>

@@ -5458,3 +5458,14 @@ ALTER TABLE `Category Dimension` ADD `Category Show New Subject` ENUM( 'Yes', 'N
 ALTER TABLE `Category Dimension` CHANGE `Category Show Public Edit` `Category Show Public Edit` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
 
 ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part', 'Site', 'Page', 'Invoice' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+CREATE TABLE `Email Credentials Site Bridge` (
+`Email Credentials Key` MEDIUMINT( 8 ) NOT NULL ,
+`Site Key` MEDIUMINT( 8 ) NOT NULL
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Email Credentials Dimension` CHANGE `Email Address` `Email Address` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Login` `Login` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Password` `Password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Incoming Mail Server` `Incoming Mail Server` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Outgoing Mail Sever` `Outgoing Mail Server` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Page Store Dimension` ADD `Number Found In Links` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Number See Also Links` ;

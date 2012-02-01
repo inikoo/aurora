@@ -351,6 +351,9 @@ function save_audit() {
     var json_value = YAHOO.lang.JSON.stringify(data);
     var request='ar_edit_warehouse.php?tipo=audit_stock&values=' + my_encodeURIComponent(json_value);
 
+Dom.setStyle('Editor_audit_buttons','display','none')
+Dom.setStyle('Editor_audit_wait','display','')
+
    YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
             //alert(o.responseText);
@@ -402,6 +405,8 @@ table_id=1
                 alert(r.msg);
                 callback();
             }
+            Dom.setStyle('Editor_audit_buttons','display','')
+Dom.setStyle('Editor_audit_wait','display','none')
         },
 failure:function(o) {
             alert(o.statusText);
@@ -412,7 +417,7 @@ scope:this
     request
 
     );
-
+4864831141302328
 }
 function close_audit_dialog() {
     Dom.get('qty_audit').value='';

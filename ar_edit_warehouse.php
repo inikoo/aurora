@@ -6,6 +6,10 @@ require_once 'class.WarehouseArea.php';
 require_once 'class.PartLocation.php';
 require_once 'class.ShelfType.php';
 require_once 'class.Location.php';
+require_once 'class.Product.php';
+require_once 'class.Department.php';
+require_once 'class.Family.php';
+
 require_once 'ar_edit_common.php';
 
 
