@@ -6084,9 +6084,9 @@ class product extends DB_Table {
                      ,$this->pid
                     );
         mysql_query($sql);
+		$this->data['Product Web Configuration']=$web_state;
 
-
-
+	$this->update_web_state();
 
 
         //if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
