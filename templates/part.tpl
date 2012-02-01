@@ -7,9 +7,11 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
 				{if $modify} <button onclick="window.location='edit_part.php?id={$part->sku}'"><img src="art/icons/cog.png" alt=""> {t}Edit Part{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
 				<button onclick="window.location='warehouse_parts.php?warehouse_id={$warehouse->id}'"><img src="art/icons/house.png" alt=""> {t}Inventory{/t}</button> 
 			</div>
 			<div style="clear:both">
@@ -90,10 +92,10 @@
 					</tr>
 				</table>
 				{t}Locations{/t}: 
-				<table border="0" id="part_locations" class="show_info_product" style="width:260px;margin-top:0px">
+				<table border="1" id="part_locations" class="show_info_product" style="width:260px;margin-top:0px">
 					{foreach from=$part->get_locations(true) item=location name=foo } 
 					<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
-						<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode} </a> <img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}" onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)" can_pick="{if $location.canpick=='Yes'}No{else}Yes{/if}" src="{if $location.canpick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}" src="art/icons/basket.png" alt="{t}can_pick{/t}" onclick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /> </td>
+						<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode} </a> <img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"  can_pick="{if $location.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}"  alt="can_pick" onclick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /> </td>
 						<td class="quantity" id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}">{$location.FormatedQuantityOnHand}</td>
 						<td class="button"><img style="cursor:pointer" id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onclick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
 						<td class="button"> <img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_add_stock_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/lorry.png" title="{t}add stock{/t}" alt="{t}add stock{/t}" onclick="add_stock_part_location({$location.PartSKU},{$location.LocationKey})" /></td>
