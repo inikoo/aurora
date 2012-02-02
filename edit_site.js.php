@@ -45,16 +45,30 @@ var validate_scope_data=
 		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search HTML','name':'site_search_html','ar':false}
 		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search CSS','name':'site_search_css','ar':false}
 		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search Javascript','name':'site_search_javascript','ar':false}
+},
+'email_credentials':{
+	'email':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'password':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
+	,'incoming_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Incoming_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
+	,'outgoing_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Outgoing_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
+	,'forgot_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Plain Body Text')?>'}]}
+	,'forgot_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email HTML Body Text')?>'}]}
+	,'forgot_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Subject')?>'}]}
+	,'welcome_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Plain Body Text')?>'}]}
+	,'welcome_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email HTML Body Text')?>'}]}
+	,'welcome_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Subject')?>'}]}
+	,'welcome_source':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_source','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Source')?>'}]}
+
 }
 
-
+		
 };
 
 var validate_scope_metadata={
 'site':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'site_menu':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'site_search':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-
+,'email_credentials':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 };
 
 
@@ -63,8 +77,8 @@ var validate_scope_metadata={
 
 
 function change_block(e){
-    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu"]; 
-	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu"]; 
+    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email"]; 
+	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu", "d_email"]; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
@@ -727,14 +741,18 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
  YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
 
 
-    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu"]; 
+    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
  
 	   
 	Event.addListener(["Mals","Inikoo"], "click", change_checkout_method);
 	Event.addListener(["registration_simple","registration_wholesale","registration_none"], "click", change_registration_method);
-   
+
+	Event.addListener(["locale_en_GB","locale_de_DE","locale_fr_FR","locale_es_ES","locale_pl_PL","locale_it_IT"], "click", change_locale_method);
+
+
+
     var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_slogan);
     site_slogan_oACDS.queryMatchContains = true;
     var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Slogan","Site_Slogan_Container", site_slogan_oACDS);
@@ -1067,6 +1085,35 @@ var request='ar_edit_sites.php?tipo=edit_registration_method&site_key=' + site_i
             }
 			else{
 				Dom.addClass(Dom.get('site_registration_method').value,'selected');
+			}
+   			}
+    });
+}
+
+function change_locale_method(){
+types=Dom.getElementsByClassName('site_locale_method', 'button', 'site_locale_method_buttons')
+Dom.removeClass(types,'selected');
+
+Dom.get('site_locale_method').value=this.getAttribute('dbvalue');
+//alert(Dom.get('site_checkout_method').value);
+
+
+site_id=Dom.get('site_key').value;
+store_key=Dom.get('store_key').value;
+var request='ar_edit_sites.php?tipo=edit_locale_method&site_key=' + site_id +'&store_key='+store_key + '&site_locale='+Dom.get('site_locale_method').value
+	           // alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.addClass('locale_'+r.new_value,'selected');
+
+            }
+			else{
+				Dom.addClass(Dom.get('site_locale_method').value,'selected');
 			}
    			}
     });

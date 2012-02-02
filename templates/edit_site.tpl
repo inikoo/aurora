@@ -34,6 +34,7 @@
   <li> <span class="item {if $block_view=='menu'}selected{/if}"  id="menu">  <span> {t}Menu{/t}</span></span></li>
     <li> <span class="item {if $block_view=='website_search'}selected{/if}"  id="website_search">  <span> {t}Search{/t}</span></span></li>
     <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
+	<li> <span class="item {if $block_view=='email'}selected{/if}"  id="email">  <span> {t}Email{/t}</span></span></li>
   
   </ul>
   
@@ -261,6 +262,20 @@
 </tr>	
 
 <tr>
+<td class="label">{t}Select Site Locale{/t}:</td><td>
+<input id="site_locale_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="site_locale_method_buttons" style="float:left">
+<button dbvalue="en_GB"  id="locale_en_GB"  class="site_locale_method {if $site->get('Site Locale')=='en_GB'}selected{/if}"> {t}en_GB{/t}</button>
+<button dbvalue="de_DE" id="locale_de_DE" class="site_locale_method {if $site->get('Site Locale')=='de_DE'}selected{/if}" > {t}de_DE{/t}</button>
+<button dbvalue="fr_FR"  id="locale_fr_FR"  class="site_locale_method {if $site->get('Site Locale')=='fr_FR'}selected{/if}"> {t}fr_FR{/t}</button>
+<button dbvalue="es_ES"  id="locale_es_ES"  class="site_locale_method {if $site->get('Site Locale')=='es_ES'}selected{/if}"> {t}es_ES{/t}</button>
+<button dbvalue="pl_PL"  id="locale_pl_PL"  class="site_locale_method {if $site->get('Site Locale')=='pl_PL'}selected{/if}"> {t}pl_PL{/t}</button>
+<button dbvalue="it_IT"  id="locale_it_IT"  class="site_locale_method {if $site->get('Site Locale')=='it_IT'}selected{/if}"> {t}it_IT{/t}</button>
+</div>
+</td>
+</tr>	
+
+<tr>
 <td  class="label">{t}Website URL{/t}:</td>
 <td  style="text-align:left">
      <div>
@@ -459,6 +474,9 @@ link to edit_site_section.php?id=
 </p>
       </div>
       </div>
+<div  class="edit_block" style="{if $block_view!='email'}display:none{/if}"  id="d_email"> 
+{include file='email_credential_splinter.tpl' site=$site email_credentials=$email_credentials}
+</div>
     <div  class="edit_block" style="{if $block_view!='pages'}display:none{/if}"  id="d_pages"> 
      <div class="general_options" style="float:right">
 	        <span style="margin-right:10px;"   id="new_site_page" class="state_details" >{t}Create Page{/t}</span>

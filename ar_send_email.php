@@ -20,6 +20,7 @@ case 'report_issue':
     report_issue($data);
     break;
 
+
 }
 
 
@@ -42,85 +43,6 @@ function report_issue($data) {
 	$to=$conection_data['email'];
 	
 	$files=array();
-/*
-	global $message_object;
-	
-	$msg="<html>
-					<head>
-					<title>subject</title>
-					<style type=\"text/css\"><!--
-					body { color: black ; font-family: arial, helvetica, sans-serif ; background-color: #A3C5CC }
-					A:link, A:visited, A:active { text-decoration: underline }
-					--></style>
-					</head>
-					<body>
-					<table width=\"100%\">
-					<tr>
-					<td>
-					<center><h1>subject</h1></center>
-					<hr>
-					<P>Hello Test<br><br>
-					This message is just to let you know that the <a href=\"http://www.phpclasses.org/mimemessage\">MIME E-mail message composing and sending PHP class</a> is working as expected.<br><br>
-					Thank you,<br>
-					from_name</p>
-					</td>
-					</tr>
-					</table>
-					</body>
-					</html>";
-
-
-	$files=array();
-	
-	$files[]=array('attachement_type'=>'Text',
-								'Data'=>"This is just a plain text attachment file named attachment.txt .",
-								'Name'=>"attachment.txt",
-								'Content-Type'=>"automatic/name",
-								'Disposition'=>"attachment"	
-						);
-	$files[]=array('attachement_type'=>'Image',
-								'FileName'=>"http://localhost/kaktus/external_libs/mail/mimemessage.gif",
-								'Content-Type'=>"automatic/name",
-								'Disposition'=>"attachment"	
-						);
-		$files=array();				
-	//print_r($files);
-	
-	$data=array(
-		'type'=>'HTML',
-		'subject'=>	$data['values']['summary'],
-		'plain'=>$data['values']['description']."\n\n".$data['values']['metadata'],
-		'email_credentials_key'=>$email_credential_key,
-		'to'=>$to,
-		'bcc'=>'raul@inikoo.com',
-		'html'=>$msg,
-		'attachement'=>$files
-	);
-	
-
-	
-	if(isset($data['plain']) && $data['plain']){
-		$data['plain']=$data['plain'];
-	}
-	else
-		$data['plain']=null;
-	
-	$send_email=new SendEmail();
-	
-	$send_email->smtp('plain', $data);
-
-	$result=$send_email->send();
-
-	//$result=$send_email->retry('plain');
-	
-	//$send_email->smtp('html', $data);
-
-	//$result=$send_email->send();
-	
-	//$result=$send_email->retry('html');
-	
-	$result=$send_email->store_in_queue($result, $files, $data);
-*/
 	$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
 	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
    
