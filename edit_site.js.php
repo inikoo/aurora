@@ -45,6 +45,14 @@ var validate_scope_data=
 		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search HTML','name':'site_search_html','ar':false}
 		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search CSS','name':'site_search_css','ar':false}
 		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search Javascript','name':'site_search_javascript','ar':false}
+},
+'email_credentials':{
+	'email':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'password':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
+	,'incoming_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Incoming_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
+	,'outgoing_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Outgoing_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
+	,'forgot_body':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_body','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Body Text')?>'}]}
+	,'welcome_body':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Body Text')?>'}]}
 }
 
 
@@ -54,7 +62,7 @@ var validate_scope_metadata={
 'site':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'site_menu':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'site_search':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
-
+,'email_credentials':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 };
 
 
@@ -63,8 +71,8 @@ var validate_scope_metadata={
 
 
 function change_block(e){
-    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu"]; 
-	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu"]; 
+    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email"]; 
+	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu", "d_email"]; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
@@ -727,7 +735,7 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
  YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
 
 
-    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu"]; 
+    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
  
