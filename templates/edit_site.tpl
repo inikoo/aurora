@@ -384,7 +384,7 @@
 <td  class="label">{t}Website FTP Password{/t}:</td>
 <td  style="text-align:left">
      <div>
-       <input style="text-align:left;width:100%" id="Site_FTP_Password" value="{$site->get('Site FTP Password')}" ovalue="{$site->get('Site FTP Password')}" >
+       <input type="password" style="text-align:left;width:100%" id="Site_FTP_Password" value="{$site->get('Site FTP Password')}" ovalue="{$site->get('Site FTP Password')}" >
        <div id="Site_FTP_Password_Container"  ></div>
      </div>
 </td>
