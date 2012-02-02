@@ -18,7 +18,7 @@ $page=new Page($page_key);
 
 if ($page->data['Page Site Key']!=$site->id) {
 //    header('Location: index.php');
-    exit("No site found");
+    exit("No site/page not match");
 }
 
 if (!$page->id) {
