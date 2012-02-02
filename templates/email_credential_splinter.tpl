@@ -10,10 +10,11 @@
 <td colspan=2>
 
  <div class="buttons">
+		<button  style="display:{if !$site->get_site_email_credentials()}none{/if}"  id="test_email_credentials" class="positive">{t}Test{/t}</button>
 		<button  style="display:{if !$site->get_site_email_credentials()}none{/if}"  id="delete_email_credentials" class="negative">{t}Delete{/t}</button>
 	        <button  style="visibility:hidden"  id="save_edit_email_credentials" class="positive">{t}Save{/t}</button>
 	        <button style="visibility:hidden" id="reset_edit_email_credentials" class="negative">{t}Reset{/t}</button>
-		<button  style="display:{if !$site->get_site_email_credentials()}none{/if}"  id="test_email_credentials" class="positive">{t}Test{/t}</button>
+		
  </div>
 </td>
 </tr>
@@ -152,6 +153,18 @@
 
 </td>
 <td id="forgot_password_body_html_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td class="label">{t}Welcome Source{/t}:</td>
+<td  style="text-align:left">
+     <div style="height:50px">
+        <textarea rows='2' cols="20"  id="welcome_source" value="{$site->get('Site Welcome Source')}" ovalue="{$site->get('Site Welcome Source')}" valid="0">{$site->get('Site Welcome Source')}</textarea>
+       <div id="welcome_source_Container"  ></div>
+     </div>
+
+</td>
+<td id="welcome_source_msg" class="edit_td_alert"></td>
 </tr>
 
 </table>

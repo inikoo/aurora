@@ -3,6 +3,7 @@ require_once'common_splinter.php';
 require_once 'class.Customer.php';
 require_once 'class.User.php';
 require_once 'class.SendEmail.php';
+require_once 'class.Site.php';
 
 require_once 'ar_edit_common.php';
 
@@ -397,14 +398,14 @@ $welcome_email_plain=$site->data['Site Welcome Email Plain Body'];
 $welcome_email_html=$site->data['Site Welcome Email HTML Body'];
 
             $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
-
+$credentials=$site->get_site_email_credentials();
 
             $message_data['method']='smtp';
             $message_data['type']='html';
             $message_data['to']=$handle;
             $message_data['subject']=$welcome_email_subject;
             $message_data['html']=$welcome_email_html;
-            $message_data['email_credentials_key']=1;
+            $message_data['email_credentials_key']=$credentials['Email Credentials Key'];
             $message_data['email_matter']='Registration';
             $message_data['email_matter_key']=$email_mailing_list_key;
             $message_data['email_matter_parent_key']=$email_mailing_list_key;
@@ -450,7 +451,7 @@ function forgot_password($data) {
     $login_handle=$data['values']['login_handle'];
     $url=$data['values']['url'];
     include_once 'external_libs/securimage/securimage.php';
-
+$site=new Site($site_key);
 
 //print_r($data['values']);
 //print_r($_SESSION);
@@ -531,13 +532,14 @@ function forgot_password($data) {
 	$html_message=$site->data['Site Forgot Password Email HTML Body'];
 	$forgot_password_subject=$site->data['Site Forgot Password Email Subject'];
 
+$credentials=$site->get_site_email_credentials();
 
         $message_data['method']='smtp';
         $message_data['type']='html';
         $message_data['to']=$login_handle;
         $message_data['subject']=$forgot_password_subject;
         $message_data['html']=$html_message;
-        $message_data['email_credentials_key']=1;
+        $message_data['email_credentials_key']=$credentials['Email Credentials Key'];
         $message_data['email_matter']='Password Reminder';
         $message_data['email_matter_key']=$email_mailing_list_key;
         $message_data['email_matter_parent_key']=$email_mailing_list_key;
