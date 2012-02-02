@@ -249,7 +249,7 @@
 <tr><td style="width:180px" class="label">{t}Units Type{/t}:</td>
 <td  style="text-align:left">
 
-<select   id="Product_Unit_Type"   >
+<select   id="Product_Unit_Type"  onChange="change_unit_type(this)" >
 {foreach from=$unit_type_options key=value item=label}
    <option label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
 
