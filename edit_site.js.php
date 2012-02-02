@@ -1142,14 +1142,18 @@ Dom.removeClass(types,'selected');
 Dom.get('ftp_protocol_method').value=this.getAttribute('dbvalue');
 
 if(Dom.get('ftp_protocol_method').value=='FTP' || Dom.get('ftp_protocol_method').value=='FTPS'){
-	Dom.get('ftp_port').value=21;
-	auto_fill_port();
-	Dom.setStyle('tbody_ftp_passive','display','');
+	if(Dom.get('ftp_port').value==''){
+		Dom.get('ftp_port').value=21;
+		auto_fill_port();
+		Dom.setStyle('tbody_ftp_passive','display','');
+	}
 }
 else{
-	Dom.get('ftp_port').value=22;
-	auto_fill_port();
-	Dom.setStyle('tbody_ftp_passive','display','none');
+	if(Dom.get('ftp_port').value==''){
+		Dom.get('ftp_port').value=22;
+		auto_fill_port();
+		Dom.setStyle('tbody_ftp_passive','display','none');
+	}
 }
 //alert(Dom.get('site_checkout_method').value);
 
