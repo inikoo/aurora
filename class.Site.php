@@ -270,7 +270,13 @@ class Site extends DB_Table {
 		case 'mals_url_multi':
 			$this->update_mals_data('url_multi',$value);
 			break;
-
+		case 'Email Address':
+		case 'Login':
+		case 'Password':
+		case 'Incoming Mail Server':	
+		case 'Outgoing Mail Server':
+			$this->update_site_email_credential($field, $value);
+			break;
 		default:
 			$base_data=$this->base_data();
 
@@ -989,5 +995,51 @@ $index_page=$this->get_page_object('index');
 
 	}
 
+	function get_site_email_credentials(){
+		$sql=sprintf("select * from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d", $this->id);
+
+
+		$result=mysql_query($sql);
+		if($row=mysql_fetch_assoc($result)){
+			$email_credentials=$row;
+		}
+		else{	
+			//$email_credentials=array('Email'=>'', 'Password'=>'', 'Outgoing_Server'=>'', 'Incoming_Server'=>'');
+			$email_credentials=false;
+		}
+
+		return $email_credentials;
+	}
+
+
+	function update_site_email_credential($field, $value){
+		if($credential=$this->get_site_email_credentials()){
+			$sql=sprintf("update `Email Credentials Dimension` set `%s`=%s where `Email Credentials Key`=%d", $field, prepare_mysql($value), $credential['Email Credentials Key']);
+			
+		}
+		else{
+			$sql=sprintf("insert into `Email Credentials Dimension` (`$field`) values (%s)", prepare_mysql($value));
+			mysql_query($sql);
+			$email_credential_key=mysql_insert_id();
+		
+			$sql=sprintf("insert into `Email Credentials Site Bridge` values ($email_credential_key, $this->id)");
+			mysql_query($sql);
+
+			$sql=sprintf("insert into `Email Credentials Scope Bridge` values ($email_credential_key, 'Site Registration')");
+			mysql_query($sql);
+
+
+		}
+		//print $sql;
+
+		if(mysql_query($sql)){
+			$this->updated=true;
+			$this->msg='Updated';
+			$this->newvalue=$value;
+		}
+		else{
+			$this->msg='Error updating';
+		}
+	}
 }
 ?>

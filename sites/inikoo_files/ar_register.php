@@ -3,6 +3,7 @@ require_once'common_splinter.php';
 require_once 'class.Customer.php';
 require_once 'class.User.php';
 require_once 'class.SendEmail.php';
+require_once 'class.Site.php';
 
 require_once 'ar_edit_common.php';
 
@@ -48,12 +49,12 @@ case('send_lost_password_email'):
     $email=$_REQUEST['email'];
     send_lost_password_email($email);
     break;
-case('register_customer'):
+case('register_customer_old'):
     $data=prepare_values($_REQUEST,array(
                              'values'=>array('type'=>'json array')
 
                          ));
-    register_customer($data);
+    register_customer_old($data);
     break;
 case('check_email'):
 
@@ -76,7 +77,7 @@ default:
 
 }
 
-function register_customer($data) {
+function register_customer_old($data) {
     global $store_key;
 
     if ($data['values']['customer_is_company']) {
@@ -348,7 +349,7 @@ function generate_password($length=9, $strength=0) {
 }
 
 function create_customer_user($handle,$customer_key,$site_key,$password, $send_email_flag=true) {
-    //$handle='migara@inikoo.com';
+    $handle='migara@inikoo.com';
 
     global $site,$store;
 
@@ -382,7 +383,7 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 
             //print $send_key;exit;
 
-
+/*
             $email_credential_key=$store->get_email_credential_key('Site Registration');
             //print $email_credential_key;exit;
 
@@ -390,47 +391,21 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
 
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
+*/
 
-            //$welcome_email_html=sprintf("Test Email with image <br/> <img src='%s/track.php?sendkey=%s'>", $track_path, $send_key);
-            //print $welcome_email_html;exit;
+$welcome_email_subject=$site->data['Site Welcome Email Subject'];
+$welcome_email_plain=$site->data['Site Welcome Email Plain Body'];
+$welcome_email_html=$site->data['Site Welcome Email HTML Body'];
 
-            /*
-            $data=array('email_type'=>'Registration',
-            		  'recipient_type'=>'User',
-            		  'recipient_key'=>$user->id);
-            $send_email=new SendEmail($data);
-
-
-            //print_r($data);exit;
-            if($send_email_flag){
-            	//$welcome_email_html=$send_email->track_sent_email($welcome_email_html);
-
-
-            	$data=array(
-
-            			  'subject'=>$welcome_email_subject,
-            			  'plain'=>$welcome_email_plain,
-            			  'email_credentials_key'=>$email_credential_key,
-            			  'to'=>$handle,
-            			  'html'=>$welcome_email_html,
-            			  'email_type'=>'Registration',
-            			  'recipient_type'=>'User',
-            			  'recipient_key'=>$user->id
-            		  );
-            //$send_email=new SendEmail();
-            $send_email->smtp('HTML', $data);
-            $result=$send_email->send();
-            }
-            */
             $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
-
+$credentials=$site->get_site_email_credentials();
 
             $message_data['method']='smtp';
             $message_data['type']='html';
             $message_data['to']=$handle;
             $message_data['subject']=$welcome_email_subject;
             $message_data['html']=$welcome_email_html;
-            $message_data['email_credentials_key']=1;
+            $message_data['email_credentials_key']=$credentials['Email Credentials Key'];
             $message_data['email_matter']='Registration';
             $message_data['email_matter_key']=$email_mailing_list_key;
             $message_data['email_matter_parent_key']=$email_mailing_list_key;
@@ -476,7 +451,7 @@ function forgot_password($data) {
     $login_handle=$data['values']['login_handle'];
     $url=$data['values']['url'];
     include_once 'external_libs/securimage/securimage.php';
-
+$site=new Site($site_key);
 
 //print_r($data['values']);
 //print_r($_SESSION);
@@ -535,7 +510,7 @@ function forgot_password($data) {
 
 
         $formated_url=preg_replace('/^http\:\\/\\//','',$url);
-
+/*
         $plain_message=$customer->get_greetings()."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$formated_url."?p=".$encrypted_secret_data."\n\n Once you have returned to our website, you will be asked to choose a new password.\n\nThank you \n\n".$signature_name."\n".$signature_company;
 
 
@@ -550,15 +525,21 @@ function forgot_password($data) {
                       If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
                       <br><br>
                       Thank you";
+*/
         $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
 
+	$plain_message=$site->data['Site Forgot Password Email Plain Body'];
+	$html_message=$site->data['Site Forgot Password Email HTML Body'];
+	$forgot_password_subject=$site->data['Site Forgot Password Email Subject'];
+
+$credentials=$site->get_site_email_credentials();
 
         $message_data['method']='smtp';
         $message_data['type']='html';
         $message_data['to']=$login_handle;
-        $message_data['subject']='Reset your password';
+        $message_data['subject']=$forgot_password_subject;
         $message_data['html']=$html_message;
-        $message_data['email_credentials_key']=1;
+        $message_data['email_credentials_key']=$credentials['Email Credentials Key'];
         $message_data['email_matter']='Password Reminder';
         $message_data['email_matter_key']=$email_mailing_list_key;
         $message_data['email_matter_parent_key']=$email_mailing_list_key;

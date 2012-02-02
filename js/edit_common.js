@@ -934,7 +934,7 @@ var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+br
 //alert(request+'?'+postData);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {
-  //alert(o.responseText);
+ // alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
