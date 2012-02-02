@@ -200,6 +200,19 @@ case('edit_ftp_method'):
 
 
     break;
+
+case('edit_ftp_passive'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'store_key'=>array('type'=>'key'),
+                             'site_passive'=>array('type'=>'string'),
+
+                         ));
+
+    edit_ftp_passive($data);
+
+
+    break;
 case('delete_see_also_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -918,6 +931,37 @@ function edit_locale($data) {
     echo json_encode($response);
 }
 
+
+function edit_ftp_passive($data) {
+    $site = new Site($data['site_key']);
+    if (!$site) {
+        $response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
+        echo json_encode($response);
+
+        exit;
+    }
+
+
+
+
+
+    if (!in_array($data['site_passive'],array("No","Yes"))) {
+        $response= array('state'=>400,'msg'=>'wrong value '.$data['site_passive'],'key'=>$data['site_key']);
+        echo json_encode($response);
+
+        exit;
+
+    }
+
+
+    $response=$site->update(array('Site FTP Passive'=>$data['site_passive']));
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>($site->new_value));
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    echo json_encode($response);
+}
 
 function edit_ftp_method($data) {
     $site = new Site($data['site_key']);
