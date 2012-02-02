@@ -78,6 +78,9 @@ Dom.setStyle('content','height',altura+'px');
 footer_height=Dom.getRegion('ft').height
 header_height=Dom.getRegion('hd').height
 content_height=Dom.getRegion('bd').height
+
+//alert(Dom.get('page_key'))
+
 //alert('ar_edit_sites.php?tipo=update_page_height&id='+Dom.get('page_key').value+'&footer='+footer_height+'&header='+header_height+'&content='+content_height)
 YAHOO.util.Connect.asyncRequest('POST','ar_edit_sites.php?tipo=update_page_height&id='+Dom.get('page_key').value+'&footer='+footer_height+'&header='+header_height+'&content='+content_height ,
 {
