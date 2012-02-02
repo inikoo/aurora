@@ -5469,3 +5469,17 @@ CHANGE `Password` `Password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_gene
 CHANGE `Incoming Mail Server` `Incoming Mail Server` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 CHANGE `Outgoing Mail Sever` `Outgoing Mail Server` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `Page Store Dimension` ADD `Number Found In Links` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Number See Also Links` ;
+
+
+ALTER TABLE `Site Dimension` ADD `Site Welcome Email Body` LONGTEXT NULL ,ADD `Site Forgot Password Email Body` LONGTEXT NULL;
+ALTER TABLE `Site Dimension` CHANGE `Site Welcome Email Body` `Site Welcome Email Plain Body` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `Site Dimension` ADD `Site Welcome Email Subject` VARCHAR( 255 ) NULL AFTER `Site FTP Passive`;
+ ALTER TABLE `Site Dimension` ADD `Site Welcome Email HTML Body` LONGTEXT NULL AFTER `Site Welcome Email Plain Body`;
+ALTER TABLE `Site Dimension` CHANGE `Site Forgot Password Email Body` `Site Forgot Password Email Plain Body` LONGTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `Site Dimension` ADD `Site Forgot Password Email Subject` VARCHAR( 255 ) NULL AFTER `Site Welcome Email HTML Body`;
+ ALTER TABLE `Site Dimension` ADD `Site Forgot Password Email HTML Body` LONGTEXT NULL;
+ALTER TABLE `Site Dimension` ADD `Site Welcome Source` LONGTEXT NULL;
+ALTER TABLE `Site Dimension` ADD `Site FTP Protocol` ENUM( 'SFTP', 'FTP', 'FTPS' ) NOT NULL DEFAULT 'FTP' AFTER `Site FTP Passive`;
+
+ALTER TABLE `Site Dimension` CHANGE `Site FTP Protocol` `Site FTP Protocol` ENUM( 'SFTP', 'FTP', 'FTPS' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FTPS';
+ALTER TABLE `Site Dimension` CHANGE `Site FTP Port` `Site FTP Port` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
