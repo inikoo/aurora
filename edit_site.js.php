@@ -1145,15 +1145,17 @@ if(Dom.get('ftp_protocol_method').value=='FTP' || Dom.get('ftp_protocol_method')
 	if(Dom.get('ftp_port').value==''){
 		Dom.get('ftp_port').value=21;
 		auto_fill_port();
-		Dom.setStyle('tbody_ftp_passive','display','');
+		
 	}
+Dom.setStyle('tbody_ftp_passive','display','');
 }
 else{
 	if(Dom.get('ftp_port').value==''){
 		Dom.get('ftp_port').value=22;
 		auto_fill_port();
-		Dom.setStyle('tbody_ftp_passive','display','none');
+		
 	}
+Dom.setStyle('tbody_ftp_passive','display','none');
 }
 //alert(Dom.get('site_checkout_method').value);
 
