@@ -3531,212 +3531,7 @@ $table=' `Category Bridge` left join  `Part Dimension` P on (`Subject Key`=`Part
         $filter_msg='';
 
 
-
-
-    $_order=$order;
-    $_order_dir=$order_dir;
-
-    if ($order=='stock')
-        $order='`Part Current Stock`';
-    if ($order=='sku')
-        $order='`Part SKU`';
-    else if ($order=='description')
-        $order='`Part Unit Description`';
-    else if ($order=='available_for')
-        $order='`Part Available Days Forecast`';
-    else if ($order=='supplied_by')
-        $order='`Part XHTML Currently Supplied By`';
-    else if ($order=='used_in')
-        $order='`Part XHTML Currently Used In`';
-
-    else if ($order=='margin') {
-        if ($period=='all')
-            $order=' `Part Total Acc Margin` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc Margin` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc Margin` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc Margin` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc Margin` ';
-        else if($period=='three_year')
-        $order=' `Part 3 Year Acc Margin` ';
-        else if($period=='yeartoday')
-        $order=' `Part Year To Day Acc Margin` ';
-        else if($period=='six_month')
-        $order=' `Part 6 Month Acc Margin` ';
-        else if($period=='ten_day')
-        $order=' `Part 10 Day Acc Margin` ';
-
-    } else if ($order=='sold') {
-        if ($period=='all')
-            $order=' `Part Total Acc Sold` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc Sold` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc Sold` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc Sold` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc Sold` ';
-        else if($period=='three_year')
-        $order=' `Part 3 Year Acc Sold` ';
-        else if($period=='yeartoday')
-        $order=' `Part Year To Day Acc Sold` ';
-        else if($period=='six_month')
-        $order=' `Part 6 Month Acc Sold` ';
-        else if($period=='ten_day')
-        $order=' `Part 10 Day Acc Sold` ';
-
-    } else if ($order=='money_in') {
-        if ($period=='all')
-            $order=' `Part Total Acc Sold Amount` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc Sold Amount` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc Sold Amount` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc Sold Amount` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc Sold Amount` ';
-        else if($period=='three_year')
-        $order=' `Part 3 Year Acc Sold Amount` ';
-        else if($period=='yeartoday')
-        $order=' `Part Year To Day Acc Sold Amount` ';
-        else if($period=='six_month')
-        $order=' `Part 6 Month Acc Sold Amount` ';
-        else if($period=='ten_day')
-        $order=' `Part 10 Day Acc Sold Amount` ';
-    } else if ($order=='profit_sold') {
-        if ($period=='all')
-            $order=' `Part Total Acc Profit` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc Profit` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc Profit` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc Profit` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc Profit` ';
-        else if($period=='three_year')
-        $order=' `Part 3 Year Acc Profit` ';
-        else if($period=='yeartoday')
-        $order=' `Part Year To Day Acc Profit` ';
-        else if($period=='six_month')
-        $order=' `Part 6 Month Acc Profit` ';
-        else if($period=='ten_day')
-        $order=' `Part 10 Day Acc Profit` ';
-    } else if ($order=='avg_stock') {
-        if ($period=='all')
-            $order=' `Part Total Acc AVG Stock` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc AVG Stock` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc AVG Stock` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc AVG Stock` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc AVG Stock` ';
-
-    } else if ($order=='avg_stockvalue') {
-        if ($period=='all')
-            $order=' `Part Total Acc AVG Stock Value` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc AVG Stock Value` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc AVG Stock Value` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc AVG Stock Value` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc AVG Stock Value` ';
-
-    } else if ($order=='keep_days') {
-        if ($period=='all')
-            $order=' `Part Total Acc Keeping Days` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc Keeping Days` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc Keeping Days` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc Keeping Days` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc Keeping Days` ';
-        else if($period=='three_year')
-        $order=' `Part 3 Year Acc Keeping Days` ';
-        else if($period=='yeartoday')
-        $order=' `Part Year To Day Acc Keeping Days` ';
-        else if($period=='six_month')
-        $order=' `Part 6 Month Acc Keeping Days` ';
-        else if($period=='ten_day')
-        $order=' `Part 10 Day Acc Keeping Days` ';
-    } else if ($order=='outstock_days') {
-        if ($period=='all')
-            $order=' `Part Total Acc Out of Stock Days` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc Out of Stock Days` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc Out of Stock Days` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc Out of Stock Days` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc Out of Stock Days` ';
-
-    } else if ($order=='unknown_days') {
-        if ($period=='all')
-            $order=' `Part Total Acc Unknown Stock Days` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Unknown Stock Days` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc Unknown Stock Days` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc Unknown Stock Days` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc Unknown Stock Days` ';
-
-    } else if ($order=='gmroi') {
-        if ($period=='all')
-            $order=' `Part Total Acc GMROI` ';
-        else if($period=='year')
-        $order=' `Part 1 Year Acc GMROI` ';
-        else if($period=='quarter')
-        $order=' `Part 1 Quarter Acc GMROI` ';
-        else if($period=='month')
-        $order=' `Part 1 Month Acc GMROI` ';
-        else if($period=='week')
-        $order=' `Part 1 Week Acc GMROI` ';
-
-    }
-
-    $order='P.'.$order;
-
-
-
-    $sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-
-    $adata=array();
-    $result=mysql_query($sql);
-
-  // print "$sql";
-
-    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-		$locations='<table border=0 style="width:150px">';
-		$locations_data=preg_split('/,/',$data['location_data']);
-		//print_r($locations_data);
-		foreach($locations_data as $raw_location_data){
-			if($raw_location_data!=''){
-			//print_r($raw_location_data);
-			$locations.='<tr style="border:none">';
-			$locations_data=preg_split('/\:/',$raw_location_data);
-			
-			$locations.='<td style="0border:1px solid red;"><a href="locations.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
-			$locations.='</tr>';
-			}
-		}
-$locations.='</table>';
-//print $locations;
-
-        if ($period=='all') {
+if ($period=='all') {
         $period_tag='Total';
         }
         else if($period=='three_year') {
@@ -3772,6 +3567,99 @@ $period_tag='Week To Day';
   		else if($period=='today') {
  $period_tag='Today';
         }
+
+
+    $_order=$order;
+    $_order_dir=$order_dir;
+
+    if ($order=='stock')
+        $order='`Part Current Stock`';
+    elseif ($order=='sku')
+        $order='`Part SKU`';
+    else if ($order=='description')
+        $order='`Part Unit Description`';
+    else if ($order=='available_for')
+        $order='`Part Available Days Forecast`';
+    else if ($order=='supplied_by')
+        $order='`Part XHTML Currently Supplied By`';
+    else if ($order=='used_in')
+        $order='`Part XHTML Currently Used In`';
+
+    else if ($order=='margin') {
+      $order=' `Part '.$period_tag.' Acc Margin` ';
+      
+    } else if ($order=='sold') {
+        
+            $order=' `Part '.$period_tag.' Acc Sold` ';
+     
+    } else if ($order=='money_in') {
+    
+      
+            $order=' `Part '.$period_tag.' Acc Sold Amount` ';
+               
+    } else if ($order=='profit_sold') {
+       
+            $order=' `Part '.$period_tag.' Acc Profit` ';
+} else if ($order=='avg_stock') {
+     
+            $order=' `Part '.$period_tag.' Acc AVG Stock` ';
+      
+      
+    } else if ($order=='avg_stockvalue') {
+     
+            $order=' `Part '.$period_tag.' Acc AVG Stock Value` ';
+
+    } else if ($order=='keep_days') {
+
+            $order=' `Part '.$period_tag.' Acc Keeping Days` ';
+        } else if ($order=='outstock_days') {
+       
+            $order=' `Part '.$period_tag.' Acc Out of Stock Days` ';
+       
+    } else if ($order=='unknown_days') {
+      
+            $order=' `Part '.$period_tag.' Acc Unknown Stock Days` ';
+      
+    } else if ($order=='gmroi') {
+     
+            $order=' `Part '.$period_tag.' Acc GMROI` ';
+      
+    }else{
+   
+        $order='`Part SKU`';
+    }
+
+    $order='P.'.$order;
+
+
+
+    $sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+
+    $adata=array();
+    $result=mysql_query($sql);
+
+ // print "$sql";
+
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		$locations='<table border=0 style="width:150px">';
+		$locations_data=preg_split('/,/',$data['location_data']);
+		//print_r($locations_data);
+		foreach($locations_data as $raw_location_data){
+			if($raw_location_data!=''){
+			//print_r($raw_location_data);
+			$locations.='<tr style="border:none">';
+			$locations_data=preg_split('/\:/',$raw_location_data);
+			
+			$locations.='<td style="0border:1px solid red;"><a href="locations.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
+			$locations.='</tr>';
+			}
+		}
+$locations.='</table>';
+//print $locations;
+
+        
+
+
 
             if ($avg=='totals') {
                 $sold=number($data['Part '.$period_tag.' Acc Sold'],0);

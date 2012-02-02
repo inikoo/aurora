@@ -34,11 +34,7 @@ $date=strtotime($start_date);
 //print "$date ". strtotime($end_date)."\n";
 while($date<strtotime($end_date)){
   $i++;
-  
-
-
-
-  if(date('W',$date)==1)
+    if(date('W',$date)==1)
     $__y=date('Y',strtotime(date('Y-m-d',$date).' +6 days'));
   else
     $__y=date('Y',strtotime(date('Y-m-d',$date).' +0 days'));
