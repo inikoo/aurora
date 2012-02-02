@@ -157,11 +157,11 @@ function change_unit_type(o){
 var value=o.options[o.selectedIndex].value;
 
 	var request = 'ar_edit_assets.php?tipo=edit_product_units&key=unit_type&okey=unit_type' + '&newvalue=' + value+ '&pid=' + product_pid
-	 alert(request);
+	 //alert(request);
 
 	YAHOO.util.Connect.asyncRequest('POST', request, {
 		success: function(o) {
-			alert(o.responseText);
+			//alert(o.responseText);
 			var r = YAHOO.lang.JSON.parse(o.responseText);
 			if (r.state == 200) {				
 				//Dom.get('current_family_code').innerHTML=r.newdata['code'];

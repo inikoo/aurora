@@ -204,10 +204,8 @@ foreach($units_types as $units_type ){
   $unit_type_options[$units_type]=$units_type;
 }
 
-$smarty->assign('unit_type_options',$unit_type_options
-                                );
+$smarty->assign('unit_type_options',$unit_type_options);
 $smarty->assign('unit_type',$product->data['Product Unit Type']);
-
 
 
 $tipo_filter=$_SESSION['state']['product']['history']['f_field'];
