@@ -15,6 +15,8 @@
 <body class="yui-skin-sam inikoo">
 <input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
 <input type="hidden" id="update_heights" value="{$update_heights}" />
+<input type="hidden" id="page_key" value="{$page->id}" />
+
 <div id="doc4">
 
 	<div id="hd" style="position: relative ;padding:0;margin:0;z-index:3">
