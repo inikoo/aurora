@@ -513,10 +513,10 @@ $site=new Site($site_key);
 /*
         $plain_message=$customer->get_greetings()."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$formated_url."?p=".$encrypted_secret_data."\n\n Once you have returned to our website, you will be asked to choose a new password.\n\nThank you \n\n".$signature_name."\n".$signature_company;
 
+*/
+$html_message=$site->data['Site Forgot Password Email HTML Body'];
 
-
-
-        $html_message=$customer->get_greetings()."<br/>We received request to reset the password associated with this email account.<br><br>
+        $html_message.=$customer->get_greetings()."<br/>We received request to reset the password associated with this email account.<br><br>
                       If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
                       <b>Click the link below to reset your password</b>
                       <br><br>
@@ -525,11 +525,11 @@ $site=new Site($site_key);
                       If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
                       <br><br>
                       Thank you";
-*/
+
         $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
 
 	$plain_message=$site->data['Site Forgot Password Email Plain Body'];
-	$html_message=$site->data['Site Forgot Password Email HTML Body'];
+	
 	$forgot_password_subject=$site->data['Site Forgot Password Email Subject'];
 
 $credentials=$site->get_site_email_credentials();

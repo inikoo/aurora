@@ -34,7 +34,7 @@
   <li> <span class="item {if $block_view=='menu'}selected{/if}"  id="menu">  <span> {t}Menu{/t}</span></span></li>
     <li> <span class="item {if $block_view=='website_search'}selected{/if}"  id="website_search">  <span> {t}Search{/t}</span></span></li>
     <li> <span class="item {if $block_view=='pages'}selected{/if}"  id="pages">  <span> {t}Pages{/t}</span></span></li>
-	<li> <span class="item {if $block_view=='email'}selected{/if}"  id="email">  <span> {t}Email{/t}</span></span></li>
+	<li> <span class="item {if $block_view=='email'}selected{/if}"  id="email">  <span> {t}Registration{/t}</span></span></li>
   
   </ul>
   
@@ -264,16 +264,16 @@
 <tr>
 <td class="label">{t}Select Site Locale{/t}:</td><td>
 <input id="site_locale_method" value="sidebar" type="hidden"   />
-<div class="buttons" id="site_locale_method_buttons" style="float:left">
-<button dbvalue="en_GB"  id="locale_en_GB"  class="site_locale_method {if $site->get('Site Locale')=='en_GB'}selected{/if}"> {t}en_GB{/t}</button>
-<button dbvalue="de_DE" id="locale_de_DE" class="site_locale_method {if $site->get('Site Locale')=='de_DE'}selected{/if}" > {t}de_DE{/t}</button>
-<button dbvalue="fr_FR"  id="locale_fr_FR"  class="site_locale_method {if $site->get('Site Locale')=='fr_FR'}selected{/if}"> {t}fr_FR{/t}</button>
-<button dbvalue="es_ES"  id="locale_es_ES"  class="site_locale_method {if $site->get('Site Locale')=='es_ES'}selected{/if}"> {t}es_ES{/t}</button>
-<button dbvalue="pl_PL"  id="locale_pl_PL"  class="site_locale_method {if $site->get('Site Locale')=='pl_PL'}selected{/if}"> {t}pl_PL{/t}</button>
-<button dbvalue="it_IT"  id="locale_it_IT"  class="site_locale_method {if $site->get('Site Locale')=='it_IT'}selected{/if}"> {t}it_IT{/t}</button>
-</div>
+<select class="buttons" id="site_locale_method_buttons" onChange="change_locale_method(this)" style="float:left">
+<option value="en_GB"  id="locale_en_GB" {if $site->get('Site Locale')=='en_GB'}selected{/if}> {t}en_GB{/t}</option>
+<option value="de_DE"  id="locale_de_DE" {if $site->get('Site Locale')=='de_DE'}selected{/if}> {t}de_DE{/t}</option>
+<option value="fr_FR"  id="locale_fr_FR" {if $site->get('Site Locale')=='fr_FR'}selected{/if}> {t}fr_FR{/t}</option>
+<option value="es_ES"  id="locale_es_ES" {if $site->get('Site Locale')=='es_ES'}selected{/if}> {t}es_ES{/t}</option>
+<option value="pl_PL"  id="locale_pl_PL" {if $site->get('Site Locale')=='pl_PL'}selected{/if}> {t}pl_PL{/t}</option>
+<option value="it_IT"  id="locale_it_IT" {if $site->get('Site Locale')=='it_IT'}selected{/if}> {t}it_IT{/t}</option>
+</select>
 </td>
-</tr>	
+</tr>
 
 <tr>
 <td  class="label">{t}Website URL{/t}:</td>
@@ -334,6 +334,29 @@
 	 </tr>
 	  
 	  
+<tr>
+<td class="label">{t}Website FTP Protocol{/t}:</td><td>
+<input id="ftp_protocol_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="ftp_protocol_method_buttons" style="float:left">
+<button dbvalue="SFTP"  id="ftp_protocol_SFTP"  class="ftp_protocol_method {if $site->get('Site FTP Protocol')=='SFTP'}selected{/if}"> {t}SFTP{/t}</button>
+<button dbvalue="FTP" id="ftp_protocol_FTP" class="ftp_protocol_method {if $site->get('Site FTP Protocol')=='FTP'}selected{/if}" > {t}FTP{/t}</button>
+<button dbvalue="FTPS"  id="ftp_protocol_FTPS"  class="ftp_protocol_method {if $site->get('Site FTP Protocol')=='FTPS'}selected{/if}"> {t}FTPS{/t}</button>
+</div>
+</td>
+</tr>	
+
+<tbody id="tbody_ftp_passive" style="display:{if $site->get('Site FTP Protocol')=='SFTP'}none{/if}">
+<tr>
+<td class="label">{t}Website FTP Passive{/t}:</td><td>
+<input id="ftp_passive_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="ftp_passive_method_buttons" style="float:left">
+<button dbvalue="Yes"  id="ftp_passive_Yes"  class="ftp_passive_method {if $site->get('Site FTP Passive')=='Yes'}selected{/if}"> {t}Yes{/t}</button>
+<button dbvalue="No" id="ftp_passive_No" class="ftp_passive_method {if $site->get('Site FTP Passive')=='No'}selected{/if}" > {t}No{/t}</button>
+</div>
+</td>
+</tr>	
+</tbody>
+
 
 <tr >
 <td  class="label">{t}Website FTP Server{/t}:</td>
@@ -379,6 +402,16 @@
 <td id="Site_FTP_Directory_msg" class="edit_td_alert"></td>
 </tr>
 
+<tr >
+<td  class="label">{t}Website FTP Port{/t}:</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="ftp_port" value="{$site->get('Site FTP Port')}" ovalue="{$site->get('Site FTP Port')}" >
+       <div id="ftp_port_Container"  ></div>
+     </div>
+</td>
+<td id="ftp_port_msg" class="edit_td_alert"></td>
+</tr>
 
 
 </table>	

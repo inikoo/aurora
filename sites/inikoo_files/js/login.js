@@ -21,14 +21,14 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 
 
      var request='ar_register.php?tipo=forgot_password&values='+json_value;
- alert(request);
+ //alert(request);
   Dom.setStyle('message_forgot_password_buttons','display','none');
     Dom.setStyle('message_forgot_password_wait','display','');
 
   
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			Dom.removeClass('captcha_code2','error');

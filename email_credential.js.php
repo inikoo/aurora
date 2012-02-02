@@ -1,6 +1,6 @@
 var dialog_test_email_credentials;
 
-function change_checkout_method(){
+function change_email_method(){
 	types=Dom.getElementsByClassName('site_email_server', 'button', 'site_email_servers')
 	Dom.removeClass(types,'selected');
 	Dom.addClass(this.id,'selected');
@@ -207,7 +207,7 @@ function init(){
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
 
-	Event.addListener(["gmail","other"], "click", change_checkout_method);
+	Event.addListener(["gmail","other"], "click", change_email_method);
 
 
 	Event.addListener('save_edit_email_credentials', "click", save_edit_email_credentials);
