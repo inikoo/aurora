@@ -31,7 +31,7 @@
 		</div>
 	</div>
 
-<iframe src="page_store.php?id={$page->id}&logged={$logged}" style="width:100%;height:{$page->get_page_height()}px" frameborder=0></iframe>
+<iframe src="page_store.php?id={$page->id}&logged={$logged}&update_heights={$update_heights}&take_snapshot={$take_snapshot}" style="width:100%;height:{$page->get_page_height()}px" frameborder=0></iframe>
 </div>
 </body>
 </html>
