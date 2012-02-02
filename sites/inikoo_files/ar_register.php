@@ -48,12 +48,12 @@ case('send_lost_password_email'):
     $email=$_REQUEST['email'];
     send_lost_password_email($email);
     break;
-case('register_customer'):
+case('register_customer_old'):
     $data=prepare_values($_REQUEST,array(
                              'values'=>array('type'=>'json array')
 
                          ));
-    register_customer($data);
+    register_customer_old($data);
     break;
 case('check_email'):
 
@@ -76,7 +76,7 @@ default:
 
 }
 
-function register_customer($data) {
+function register_customer_old($data) {
     global $store_key;
 
     if ($data['values']['customer_is_company']) {
@@ -391,37 +391,7 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
 
-            //$welcome_email_html=sprintf("Test Email with image <br/> <img src='%s/track.php?sendkey=%s'>", $track_path, $send_key);
-            //print $welcome_email_html;exit;
 
-            /*
-            $data=array('email_type'=>'Registration',
-            		  'recipient_type'=>'User',
-            		  'recipient_key'=>$user->id);
-            $send_email=new SendEmail($data);
-
-
-            //print_r($data);exit;
-            if($send_email_flag){
-            	//$welcome_email_html=$send_email->track_sent_email($welcome_email_html);
-
-
-            	$data=array(
-
-            			  'subject'=>$welcome_email_subject,
-            			  'plain'=>$welcome_email_plain,
-            			  'email_credentials_key'=>$email_credential_key,
-            			  'to'=>$handle,
-            			  'html'=>$welcome_email_html,
-            			  'email_type'=>'Registration',
-            			  'recipient_type'=>'User',
-            			  'recipient_key'=>$user->id
-            		  );
-            //$send_email=new SendEmail();
-            $send_email->smtp('HTML', $data);
-            $result=$send_email->send();
-            }
-            */
             $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
 
 
