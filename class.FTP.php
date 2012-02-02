@@ -21,7 +21,7 @@ class FTP {
 	var $protocol;
 	var $passive;
 	// SET THE CONNECTION VARIABLES
-	function FTP($host,$user="anonymous",$password="nobody@nobody.com",$protocol='sFTP',$port=false,$passive=true) {
+	function FTP($host,$user="anonymous",$password="nobody@nobody.com",$protocol='SFTP',$port=false,$passive=true) {
 		$this->port = $port;
 		$this->protocol = $protocol;
 		$this->host = $host;
@@ -34,8 +34,6 @@ class FTP {
 
 
 	}
-
-
 
 
 	function connect() {
@@ -57,7 +55,7 @@ class FTP {
 		default:
 			$this->connection=false;
 			$this->error=true;
-			$this->msg='Unknown protocol';
+			$this->msg='Unknown protocol: '.$this->protocol;
 			return;
 		}
 
@@ -78,7 +76,7 @@ class FTP {
 	function login() {
 
 		switch ($this->protocol) {
-		case 'FTPs':
+		case 'FTPS':
 		case 'FTP':
 
 			$this->logged = ftp_login($this->connection, $this->user, $this->password);
@@ -117,17 +115,23 @@ class FTP {
 		case"image/gif":
 		case"image/png":
 		case"image/jpeg":
-			//$this->mode = FTP_BINARY;
+			$this->mode = FTP_BINARY;
 			break;
 		default:
-			//$this->mode = FTP_ASCII;
+			$this->mode = FTP_ASCII;
 		}
 
 	
-		$this->put = ftp_put($this->connection, $this->destination, $this->source);
+	    $contents = ftp_nlist($this->connection, ".");
+	    
+	    // output $contents
+	    var_dump($contents);
+	    
+		$this->put = ftp_put($this->connection, $this->destination, $this->source,$this->mode);
 
 		if (!$this->put) {
-			$this->error("ERROR FTP->PUT [$this->connection:$this->source:$this->mode]");
+			$this->error=true;
+		    $this->msg=_('Can not upload file').' '.$this->source.' -> '.$this->destination;
 		}
 
 
