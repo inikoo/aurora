@@ -334,6 +334,16 @@
 	 </tr>
 	  
 	  
+<tr>
+<td class="label">{t}Website FTP Protocol{/t}:</td><td>
+<input id="ftp_protocol_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="ftp_protocol_method_buttons" style="float:left">
+<button dbvalue="SFTP"  id="ftp_protocol_SFTP"  class="ftp_protocol_method {if $site->get('Site FTP Protocol')=='SFTP'}selected{/if}"> {t}SFTP{/t}</button>
+<button dbvalue="FTP" id="ftp_protocol_FTP" class="ftp_protocol_method {if $site->get('Site FTP Protocol')=='FTP'}selected{/if}" > {t}FTP{/t}</button>
+<button dbvalue="FTPS"  id="ftp_protocol_FTPS"  class="ftp_protocol_method {if $site->get('Site FTP Protocol')=='FTPS'}selected{/if}"> {t}FTPS{/t}</button>
+</div>
+</td>
+</tr>	
 
 <tr >
 <td  class="label">{t}Website FTP Server{/t}:</td>
