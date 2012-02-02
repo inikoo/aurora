@@ -348,7 +348,7 @@ function generate_password($length=9, $strength=0) {
 }
 
 function create_customer_user($handle,$customer_key,$site_key,$password, $send_email_flag=true) {
-    //$handle='migara@inikoo.com';
+    $handle='migara@inikoo.com';
 
     global $site,$store;
 
@@ -382,7 +382,7 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 
             //print $send_key;exit;
 
-
+/*
             $email_credential_key=$store->get_email_credential_key('Site Registration');
             //print $email_credential_key;exit;
 
@@ -390,7 +390,11 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
             $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
 
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
+*/
 
+$welcome_email_subject=$site->data['Site Welcome Email Subject'];
+$welcome_email_plain=$site->data['Site Welcome Email Plain Body'];
+$welcome_email_html=$site->data['Site Welcome Email HTML Body'];
 
             $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
 
@@ -505,7 +509,7 @@ function forgot_password($data) {
 
 
         $formated_url=preg_replace('/^http\:\\/\\//','',$url);
-
+/*
         $plain_message=$customer->get_greetings()."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$formated_url."?p=".$encrypted_secret_data."\n\n Once you have returned to our website, you will be asked to choose a new password.\n\nThank you \n\n".$signature_name."\n".$signature_company;
 
 
@@ -520,13 +524,18 @@ function forgot_password($data) {
                       If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
                       <br><br>
                       Thank you";
+*/
         $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+
+	$plain_message=$site->data['Site Forgot Password Email Plain Body'];
+	$html_message=$site->data['Site Forgot Password Email HTML Body'];
+	$forgot_password_subject=$site->data['Site Forgot Password Email Subject'];
 
 
         $message_data['method']='smtp';
         $message_data['type']='html';
         $message_data['to']=$login_handle;
-        $message_data['subject']='Reset your password';
+        $message_data['subject']=$forgot_password_subject;
         $message_data['html']=$html_message;
         $message_data['email_credentials_key']=1;
         $message_data['email_matter']='Password Reminder';

@@ -51,11 +51,15 @@ var validate_scope_data=
 	,'password':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
 	,'incoming_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Incoming_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
 	,'outgoing_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Outgoing_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
-	,'forgot_body':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_body','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Body Text')?>'}]}
-	,'welcome_body':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Body Text')?>'}]}
+	,'forgot_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Plain Body Text')?>'}]}
+	,'forgot_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email HTML Body Text')?>'}]}
+	,'forgot_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Subject')?>'}]}
+	,'welcome_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Plain Body Text')?>'}]}
+	,'welcome_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email HTML Body Text')?>'}]}
+	,'welcome_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Subject')?>'}]}
 }
 
-
+		
 };
 
 var validate_scope_metadata={
