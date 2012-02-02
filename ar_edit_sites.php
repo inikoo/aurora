@@ -175,6 +175,19 @@ case('edit_registration_method'):
 
 
     break;
+case('edit_locale_method'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'store_key'=>array('type'=>'key'),
+                             'site_locale'=>array('type'=>'string'),
+
+                         ));
+
+    edit_locale($data);
+
+
+    break;
+
 case('delete_see_also_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -856,6 +869,37 @@ function edit_registration_method($data) {
     $response=$site->update(array('Site Registration Method'=>$data['site_registration_method']));
     if ($site->updated) {
         $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    echo json_encode($response);
+}
+
+function edit_locale($data) {
+    $site = new Site($data['site_key']);
+    if (!$site) {
+        $response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
+        echo json_encode($response);
+
+        exit;
+    }
+
+
+
+
+
+    if (!in_array($data['site_locale'],array("en_GB","de_DE","fr_FR","es_ES","pl_PL","it_IT"))) {
+        $response= array('state'=>400,'msg'=>'wrong value '.$data['site_locale'],'key'=>$data['site_key']);
+        echo json_encode($response);
+
+        exit;
+
+    }
+
+
+    $response=$site->update(array('Site Locale'=>$data['site_locale']));
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>($site->new_value));
     } else
         $response= array('state'=>400,'msg'=>$site->msg);
 
@@ -2158,7 +2202,8 @@ function edit_email_credentials($data){
 			'welcome_body_plain'=>'Site Welcome Email Plain Body',
 			'forgot_subject'=>'Site Forgot Password Email Subject',
 			'forgot_body_html'=>'Site Forgot Password Email HTML Body',
-			'forgot_body_plain'=>'Site Forgot Password Email Plain Body'
+			'forgot_body_plain'=>'Site Forgot Password Email Plain Body',
+			'welcome_source'=>'Site Welcome Source'
 		);
 
 		if (array_key_exists($key,$key_dic))

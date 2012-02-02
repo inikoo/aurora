@@ -262,6 +262,20 @@
 </tr>	
 
 <tr>
+<td class="label">{t}Select Site Locale{/t}:</td><td>
+<input id="site_locale_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="site_locale_method_buttons" style="float:left">
+<button dbvalue="en_GB"  id="locale_en_GB"  class="site_locale_method {if $site->get('Site Locale')=='en_GB'}selected{/if}"> {t}en_GB{/t}</button>
+<button dbvalue="de_DE" id="locale_de_DE" class="site_locale_method {if $site->get('Site Locale')=='de_DE'}selected{/if}" > {t}de_DE{/t}</button>
+<button dbvalue="fr_FR"  id="locale_fr_FR"  class="site_locale_method {if $site->get('Site Locale')=='fr_FR'}selected{/if}"> {t}fr_FR{/t}</button>
+<button dbvalue="es_ES"  id="locale_es_ES"  class="site_locale_method {if $site->get('Site Locale')=='es_ES'}selected{/if}"> {t}es_ES{/t}</button>
+<button dbvalue="pl_PL"  id="locale_pl_PL"  class="site_locale_method {if $site->get('Site Locale')=='pl_PL'}selected{/if}"> {t}pl_PL{/t}</button>
+<button dbvalue="it_IT"  id="locale_it_IT"  class="site_locale_method {if $site->get('Site Locale')=='it_IT'}selected{/if}"> {t}it_IT{/t}</button>
+</div>
+</td>
+</tr>	
+
+<tr>
 <td  class="label">{t}Website URL{/t}:</td>
 <td  style="text-align:left">
      <div>

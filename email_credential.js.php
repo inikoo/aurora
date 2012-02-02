@@ -63,6 +63,9 @@ function validate_welcome_body_html(query){
 function validate_welcome_subject(query){
  validate_general('email_credentials','welcome_subject',unescape(query));
 }
+function validate_welcome_source(query){
+ validate_general('email_credentials','welcome_source',unescape(query));
+}
 
 	
 
@@ -198,6 +201,11 @@ function init(){
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
 
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_source);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_source","welcome_source_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
 
 	Event.addListener(["gmail","other"], "click", change_checkout_method);
 
