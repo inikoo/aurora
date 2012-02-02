@@ -2151,8 +2151,12 @@ function edit_email_credentials($data){
 			'password'=>'Password',
 			'incoming_server'=>'Incoming Mail Server',
 			'outgoing_server'=>'Outgoing Mail Server',
-			'welcome_body'=>'Site Welcome Email Body',
-			'forgot_body'=>'Site Forgot Password Email Body'
+			'welcome_subject'=>'Site Welcome Email Subject',
+			'welcome_body_html'=>'Site Welcome Email HTML Body',
+			'welcome_body_plain'=>'Site Welcome Email Plain Body',
+			'forgot_subject'=>'Site Forgot Password Email Subject',
+			'forgot_body_html'=>'Site Forgot Password Email HTML Body',
+			'forgot_body_plain'=>'Site Forgot Password Email Plain Body'
 		);
 
 		if (array_key_exists($key,$key_dic))

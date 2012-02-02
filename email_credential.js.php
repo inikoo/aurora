@@ -45,12 +45,28 @@ function validate_incoming_server(query){
 function validate_outgoing_server(query){
  validate_general('email_credentials','outgoing_server',unescape(query));
 }
-function validate_forgot_body(query){
- validate_general('email_credentials','forgot_body',unescape(query));
+function validate_forgot_body_plain(query){
+ validate_general('email_credentials','forgot_body_plain',unescape(query));
 }
-function validate_welcome_body(query){
- validate_general('email_credentials','welcome_body',unescape(query));
+function validate_forgot_body_html(query){
+ validate_general('email_credentials','forgot_body_html',unescape(query));
 }
+function validate_forgot_subject(query){
+ validate_general('email_credentials','forgot_subject',unescape(query));
+}
+function validate_welcome_body_plain(query){
+ validate_general('email_credentials','welcome_body_plain',unescape(query));
+}
+function validate_welcome_body_html(query){
+ validate_general('email_credentials','welcome_body_html',unescape(query));
+}
+function validate_welcome_subject(query){
+ validate_general('email_credentials','welcome_subject',unescape(query));
+}
+
+	
+
+
 function save_edit_email_credentials(){
     save_edit_general('email_credentials');
 }
@@ -146,17 +162,41 @@ function init(){
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
 
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body);
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_plain);
 	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body","welcome_body_Container", site_slogan_oACDS);
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_plain","welcome_body_plain_Container", site_slogan_oACDS);
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
 
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body);
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_html);
 	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_body","forgot_body_Container", site_slogan_oACDS);
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_html","welcome_body_html_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_subject);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_subject","welcome_subject_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_plain);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_plain","forgot_password_body_plain_Container", site_slogan_oACDS);
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_html);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_html","forgot_password_body_html_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_subject);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_subject","forgot_password_subject_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
 
 
 	Event.addListener(["gmail","other"], "click", change_checkout_method);

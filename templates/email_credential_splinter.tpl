@@ -111,24 +111,47 @@
 <td  style="text-align:left">
      <div style="height:50px">
        <textarea rows='2' cols="20"  id="welcome_body_html" value="{$site->get('Site Welcome Email HTML Body')}" ovalue="{$site->get('Site Welcome Email HTML Body')}" valid="0">{$site->get('Site Welcome Email HTML Body')}</textarea>
-       <div id=welcome_body_html_Container"  ></div>
+       <div id="welcome_body_html_Container"  ></div>
      </div>
 
 </td>
 <td id="welcome_body_html_msg" class="edit_td_alert"></td>
 </tr>
 
-
 <tr>
-<td class="label">{t}Forgot Password Email Body Text{/t}:</td>
+<td class="label">{t}Forgot Password Email Subject{/t}:</td>
 <td  style="text-align:left">
-     <div style="height:50px">
-        <textarea rows='2' cols="20"  id="forgot_body" value="{$site->get('Site Forgot Password Email Body')}" ovalue="{$site->get('Site Forgot Password Email Body')}" valid="0">{$site->get('Site Forgot Password Email Body')}</textarea>
-       <div id="forgot_body_Container"  ></div>
+     <div>
+       <input style="text-align:left;width:100%" id="forgot_password_subject" value="{$site->get('Site Forgot Password Email Subject')}" ovalue="{$site->get('Site Forgot Password Email Subject')}" valid="0">
+       <div id="forgot_password_subject_Container"  ></div>
      </div>
 
 </td>
-<td id="forgot_body_msg" class="edit_td_alert"></td>
+<td id="forgot_password_subject_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td class="label">{t}Forgot Password Email Body Plain Text{/t}:</td>
+<td  style="text-align:left">
+     <div style="height:50px">
+       <textarea rows='2' cols="20"  id="forgot_password_body_plain" value="{$site->get('Site Forgot Password Email Plain Body')}" ovalue="{$site->get('Site Forgot Password Email Plain Body')}" valid="0">{$site->get('Site Forgot Password Email Plain Body')}</textarea>
+       <div id="forgot_password_body_plain_Container"  ></div>
+     </div>
+
+</td>
+<td id="forgot_password_body_plain_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td class="label">{t}Forgot Password Email Body HTML{/t}:</td>
+<td  style="text-align:left">
+     <div style="height:50px">
+        <textarea rows='2' cols="20"  id="forgot_password_body_html" value="{$site->get('Site Forgot Password Email HTML Body')}" ovalue="{$site->get('Site Forgot Password Email HTML Body')}" valid="0">{$site->get('Site Forgot Password Email HTML Body')}</textarea>
+       <div id="forgot_password_body_html_Container"  ></div>
+     </div>
+
+</td>
+<td id="forgot_password_body_html_msg" class="edit_td_alert"></td>
 </tr>
 
 </table>
