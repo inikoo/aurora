@@ -105,7 +105,7 @@ $css_files[]='css/edit.css';
 $js_files[]='js/edit_common.js';
 $js_files[]='country_select.js.php';
 $js_files[]='edit_site.js.php';
-
+$js_files[]='email_credential.js.php';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -212,6 +212,15 @@ $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['site']['edit_pages']['elements']);
 
 
+
+$credentials=array();
+if($site->get_site_email_credentials()){
+foreach($site->get_site_email_credentials() as $key=>$value){
+	$key=preg_replace('/\s/', '_', $key);
+	$credentials[$key]=$value;
+}
+}
+$smarty->assign('email_credentials',$credentials);
 
 $smarty->display('edit_site.tpl');
 
