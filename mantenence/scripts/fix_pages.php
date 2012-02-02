@@ -57,7 +57,7 @@ $site->update_headers($site->data['Site Default Header Key']);
 
 $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where PS.`Page Key`=4917  ";
 
-//$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -109,7 +109,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if ($department->id) {
 				$parent_pages_keys=$department->get_pages_keys();
 				foreach ($parent_pages_keys as $parent_page_key) {
-					$page->add_parent($parent_page_key);
+					$page->add_found_in_link($parent_page_key);
 					break;
 				}
 			}
@@ -129,6 +129,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	$page->update_see_also();
+	$page->update_number_found_in();
 	//$page->update_preview_snapshot('aw');
 	print $page->id."\n";
 }

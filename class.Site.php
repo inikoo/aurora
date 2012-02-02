@@ -697,7 +697,7 @@ $index_page=$this->get_page_object('index');
 			if ($department->id) {
 				$parent_pages_keys=$department->get_pages_keys();
 				foreach ($parent_pages_keys as $parent_page_key) {
-					$page->add_parent($parent_page_key);
+					$page->add_found_in_link($parent_page_key);
 					break;
 				}
 			}

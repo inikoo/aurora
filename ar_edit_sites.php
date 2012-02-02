@@ -749,16 +749,13 @@ function add_found_in_page($data) {
 
     $page_key=$data['id'];
     $found_in_key=$data['found_in_key'];
-    
-    
     $page=new Page($page_key);
-    $page->add_parent($found_in_key);
+    $page->add_found_in_link($found_in_key);
     
   if($page->updated){
     $response= array('state'=>200,'action'=>'created','page_key'=>$page_key);
     }else{
         $response= array('state'=>400,'msg'=>$page->msg);
-
     }
     
     echo json_encode($response);
@@ -768,14 +765,19 @@ function add_found_in_page($data) {
 
 function delete_found_in_page($data) {
 
-    $page_key=$data['id'];
+  $page_key=$data['id'];
     $found_in_key=$data['found_in_key'];
-    $sql=sprintf("delete from  `Page Store Found In Bridge` where `Page Store Key`=%d and `Page Store Found In Key`=%d   ",
-                 $page_key,
-                 $found_in_key);
-    mysql_query($sql);
+    $page=new Page($page_key);
+    $page->remove_found_in_link($found_in_key);
+    
+  if($page->updated){
     $response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
+    }else{
+        $response= array('state'=>400,'msg'=>$page->msg);
+    }
+    
     echo json_encode($response);
+
 
 }
 
