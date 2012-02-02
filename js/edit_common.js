@@ -683,7 +683,7 @@ function validate_general_new(branch,items,query) {
 
 function validate_general_edit(branch,items,query) {
 
-//alert(branch+' I:'+items+' q:'+query);
+alert(branch+' I:'+items+' q:'+query);
 
 
     var data= validate_scope_data[branch][items];

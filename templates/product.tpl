@@ -9,7 +9,7 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 					{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
-					<button onclick="window.location='edit_family.php?id={$family->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Family{/t}</button> 
+					
 
 				<button onclick="window.location='edit_product.php?pid={$product->pid}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Product{/t}</button> 
 			</div>
@@ -17,7 +17,7 @@
 							{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
 							{if $modify}<button onclick="window.location='store.php?id={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>{/if} 
 
-				{if $modify}<button onclick="window.location='store.php?id={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>{/if} 
+			
 			</div>
 			<div style="clear:both">
 			</div>
