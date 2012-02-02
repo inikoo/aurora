@@ -27,11 +27,15 @@ $site=new Site($site_id);
 
 
 
+
+
 $ftp_connection=$site->create_ftp_connection();
 if($ftp_connection->error){
 	print $ftp_connection->msg;
 }else{
-$ftp_connection->upload('caca.html','caca.html');
+    
+    $ftp_connection->upload('./caca.html','./caca.html');
+    print_r($ftp_connection);
 }
 
 exit;
