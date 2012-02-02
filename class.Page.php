@@ -1447,7 +1447,7 @@ class Page extends DB_Table {
 		$number_records=count($products);
 		$out_of_stock=_('Out of Stock');
 		$discontinued=_('Discontinued');
-		$register=_('Please <span onclick="show_login_dialog()">login</span> or <span onclick="show_register_dialog()">register</span> to see wholesale prices');
+		$register=_('Please').' '.'<span onclick="show_login_dialog()">'._('login').'</span> '._('or').' <span onclick="show_register_dialog()">'._('register').'</span> '._('to see wholesale prices');
 
 
 
@@ -2394,6 +2394,10 @@ class Page extends DB_Table {
 
 
 
+	}
+
+	function get_page_height(){
+		return $this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+22;
 	}
 
 }
