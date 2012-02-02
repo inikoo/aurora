@@ -184,7 +184,7 @@ case('edit_product_advanced'):
     break;
 case('edit_product_price'):
 case('edit_product_weight'):
-
+case('edit_product_units'):
 case('edit_product_description'):
 case('edit_product'):
     edit_product();
@@ -611,8 +611,9 @@ function edit_product() {
                     'sales_type'=>'Product Sales Type',
                     'unit_weight'=>'Product Net Weight Per Unit',
                     'outer_weight'=>'Product Gross Weight',
-                    'family_key'=>'Product Family Key'
-
+                    'family_key'=>'Product Family Key',
+		    'units_per_case'=>'Product Units Per Case',
+		    'unit_type'=>'Product Unit Type'
                 );
 
     if (array_key_exists($key,$translator))
