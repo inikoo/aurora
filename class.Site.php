@@ -998,7 +998,6 @@ $index_page=$this->get_page_object('index');
 	function get_site_email_credentials(){
 		$sql=sprintf("select * from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d", $this->id);
 
-
 		$result=mysql_query($sql);
 		if($row=mysql_fetch_assoc($result)){
 			$email_credentials=$row;
@@ -1040,6 +1039,14 @@ $index_page=$this->get_page_object('index');
 		else{
 			$this->msg='Error updating';
 		}
+	}
+	
+	function create_ftp_connection(){
+		include_once('class.FTP.php');
+
+		$ftp_connection=new FTP($this->data['Site FTP Server'],$this->data['Site FTP User'],$this->data['Site FTP Password'],$this->data['Site FTP Protocol'],$this->data['Site FTP Port'],$this->data['Site FTP Passive']);
+		return 	$ftp_connection;	
+	
 	}
 }
 ?>

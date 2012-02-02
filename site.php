@@ -43,6 +43,7 @@ if (!$site->id) {
 }
 
 
+
 $_SESSION['state']['site']['id']=$site->id;
 
 $store=new Store($site->data['Site Store Key']);
