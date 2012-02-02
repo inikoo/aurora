@@ -314,7 +314,7 @@ class SendEmail extends DB_Table {
                     /* SMTP server address, probably your ISP address,
                      * or smtp.gmail.com for Gmail
                      * or smtp.live.com for Hotmail */
-                    $this->message_object->smtp_host=$row['Outgoing Mail Sever'];
+                    $this->message_object->smtp_host=$row['Outgoing Mail Server'];
 
                     /* SMTP server port, usually 25 but can be 465 for Gmail */
                     $this->message_object->smtp_port=465;

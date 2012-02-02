@@ -12,7 +12,7 @@ require_once 'common.php';
 require_once 'class.Site.php';
 require_once 'class.PageHeader.php';
 require_once 'class.PageFooter.php';
-
+include_once('class.SendEmail.php');
 require_once 'ar_edit_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
@@ -25,7 +25,28 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('edit_email_credentials'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'newvalue'=>array('type'=>'string'),
+			     'key'=>array('type'=>'string'),	
+                         ));
 
+    edit_email_credentials($data);
+    break;
+case('test_email_credentials'):
+    $data=prepare_values($_REQUEST,array(
+			'site_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+                         ));
+    test_email_credentials($data);
+    break;
+case('delete_email_credentials'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key')
+                         ));
+    delete_email_credentials($data);
+    break;
 case('delete_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key')
@@ -154,6 +175,19 @@ case('edit_registration_method'):
 
 
     break;
+case('edit_locale_method'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                             'store_key'=>array('type'=>'key'),
+                             'site_locale'=>array('type'=>'string'),
+
+                         ));
+
+    edit_locale($data);
+
+
+    break;
+
 case('delete_see_also_page'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key'),
@@ -835,6 +869,37 @@ function edit_registration_method($data) {
     $response=$site->update(array('Site Registration Method'=>$data['site_registration_method']));
     if ($site->updated) {
         $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>strtolower($site->new_value));
+    } else
+        $response= array('state'=>400,'msg'=>$site->msg);
+
+    echo json_encode($response);
+}
+
+function edit_locale($data) {
+    $site = new Site($data['site_key']);
+    if (!$site) {
+        $response= array('state'=>400,'msg'=>'Site not found','key'=>$data['site_key']);
+        echo json_encode($response);
+
+        exit;
+    }
+
+
+
+
+
+    if (!in_array($data['site_locale'],array("en_GB","de_DE","fr_FR","es_ES","pl_PL","it_IT"))) {
+        $response= array('state'=>400,'msg'=>'wrong value '.$data['site_locale'],'key'=>$data['site_key']);
+        echo json_encode($response);
+
+        exit;
+
+    }
+
+
+    $response=$site->update(array('Site Locale'=>$data['site_locale']));
+    if ($site->updated) {
+        $response= array('state'=>200,'action'=>'updated','msg'=>$site->msg, 'new_value'=>($site->new_value));
     } else
         $response= array('state'=>400,'msg'=>$site->msg);
 
@@ -2115,8 +2180,126 @@ function update_page_height($data) {
     echo json_encode($response);
 }
 
+function edit_email_credentials($data){
+	$key=$data['key'];
+	$okey=$key;
+	$value=$data['newvalue'];
+
+	$site=new Site($data['site_key']);
 
 
+		global $editor;
+		$site->editor=$editor;
+
+		$key_dic=array(
+			'email'=>'Email Address',
+			//'name'=>'Login',
+			'password'=>'Password',
+			'incoming_server'=>'Incoming Mail Server',
+			'outgoing_server'=>'Outgoing Mail Server',
+			'welcome_subject'=>'Site Welcome Email Subject',
+			'welcome_body_html'=>'Site Welcome Email HTML Body',
+			'welcome_body_plain'=>'Site Welcome Email Plain Body',
+			'forgot_subject'=>'Site Forgot Password Email Subject',
+			'forgot_body_html'=>'Site Forgot Password Email HTML Body',
+			'forgot_body_plain'=>'Site Forgot Password Email Plain Body',
+			'welcome_source'=>'Site Welcome Source'
+		);
+
+		if (array_key_exists($key,$key_dic))
+			$key=$key_dic[$key];
+
+		$the_new_value=_trim($value);
+
+		$site->update(array($key=>$the_new_value));		
+		if($key=='Email Address'){
+			$_key='Login';
+			$site->update(array($_key=>$the_new_value));
+		}
 
 
+		if($site->updated){
+			$response= array('state'=>200, 'msg'=>$site->msg, 'key'=>$okey, 'newvalue'=>$value);
+		}
+		else{
+			$response= array('state'=>400, 'msg'=>$site->msg);
+		}
+		echo json_encode($response);
+		return;
+
+}
+
+function delete_email_credentials($data){
+	//print_r($data);
+	$site=new Site($data['site_key']);
+
+	if(!$site->get_site_email_credentials()){
+		$response= array('state'=>400, 'msg'=>'No Credentials Exist');
+		echo json_encode($response);
+		return;	
+	}
+	$credentials=$site->get_site_email_credentials();
+	$sql=sprintf("delete from `Email Credentials Dimension` where `Email Credentials Key`=%d", $credentials['Email Credentials Key']);
+	mysql_query($sql);
+
+	$sql=sprintf("delete from `Email Credentials Scope Bridge` where `Email Credentials Key`=%d", $credentials['Email Credentials Key']);
+	mysql_query($sql);
+
+	$sql=sprintf("delete from `Email Credentials Site Bridge` where `Email Credentials Key`=%d", $credentials['Email Credentials Key']);
+	mysql_query($sql);	
+	
+	$response= array('state'=>200, 'msg'=>'Deleted');
+	echo json_encode($response);
+	return;	
+
+}
+
+function test_email_credentials($data) {
+
+	if($data['values']['test_message']==''){
+	$response=array('state'=>400,'msg'=>_('You must specify a test message.'));
+	echo json_encode($response);
+	exit;
+	}
+
+	$site=new Site($data['site_key']);
+	$credentials=$site->get_site_email_credentials();
+	require("app_files/keys/bugs_key.php");
+	//$to=$conection_data['email'];
+	$to=$credentials['Email Address'];
+	
+
+	$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
+   
+		$message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$to;
+		$message_data['subject']=$data['values']['test_message'];
+		$message_data['html']=$data['values']['test_message'];
+		$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
+		$message_data['email_matter']='Test Email';
+		$message_data['email_matter_parent_key']=0;
+		$message_data['email_matter_key']=0;
+		$message_data['recipient_type']='Other';
+		$message_data['recipient_key']=0;
+		$message_data['email_key']=0;
+		if(isset($message_data['plain']) && $message_data['plain']){
+			$message_data['plain']=$message_data['plain'];
+		}
+		else
+			$message_data['plain']=null;
+
+	 //print_r($message_data);
+	$send_email=new SendEmail();
+
+	$send_email->track=false;
+
+
+	$send_result=$send_email->send($message_data);	
+
+	//print_r($send_result);
+    echo json_encode($send_result);
+
+}
 ?>
