@@ -1,5 +1,5 @@
 <?php
-include_once('conf/dns.php');
+require_once 'app_files/db/dns.php';
 
  
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
