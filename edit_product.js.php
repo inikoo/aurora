@@ -39,7 +39,7 @@ function validate_product_name(query){
 }
 
 function validate_product_units(query){
- validate_general('product_units','units',unescape(query));
+ validate_general('product_units','units_per_case',unescape(query));
 }
 
 
@@ -144,6 +144,33 @@ function save_edit_weight(){
 function reset_edit_weight(){
     reset_edit_general('product_weight')
 }
+
+function save_edit_product_units(){
+    save_edit_general('product_units');
+}
+function reset_edit_product_units(){
+    reset_edit_general('product_units')
+}
+
+function change_unit_type(o){
+//ar_edit_assets.php?tipo=edit_product_units&okey=units_per_case&key=units_per_case&newvalue=13d&pid=6539
+var value=o.options[o.selectedIndex].value;
+
+	var request = 'ar_edit_assets.php?tipo=edit_product_units&key=unit_type&okey=unit_type' + '&newvalue=' + value+ '&pid=' + product_pid
+	 //alert(request);
+
+	YAHOO.util.Connect.asyncRequest('POST', request, {
+		success: function(o) {
+			//alert(o.responseText);
+			var r = YAHOO.lang.JSON.parse(o.responseText);
+			if (r.state == 200) {				
+				//Dom.get('current_family_code').innerHTML=r.newdata['code'];
+			} else {
+				}
+		}
+	});	
+}
+
 
 function select_family(oArgs){
 
@@ -436,16 +463,11 @@ function init(){
 
 validate_scope_data=
 {
-
-    'product_units':{
-	'units':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Per_Case','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid number')?>'}]}
-	//,'units_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
-}
-    ,'product_description':{
+    'product_description':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'special_characteristic':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
     	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
-}
+	}
     , 'product_price':{
 	'price':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Price','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
 	,'rrp':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_RRP','ar':false,'validation':[{'regexp':money_regex,'invalid_msg':'<?php echo _('Invalid Price')?>'}]}
@@ -459,7 +481,7 @@ validate_scope_data=
 
  , 'product_units':{
 	'units_per_case':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Per_Case','ar':false,'validation':[{'regexp':"\\d",'invalid_msg':'<?php echo _('Invalid Number')?>'}]}
-	,'units_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Type','ar':false,'validation':[{'regexp':"\\.+",'invalid_msg':'<?php echo _('Invalid Unit Type')?>'}]}	
+	//,'units_type':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Units_Type','ar':false,'validation':[{'regexp':"\\.+",'invalid_msg':'<?php echo _('Invalid Unit Type')?>'}]}	
 
 	}
 
@@ -527,6 +549,8 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     Event.addListener('save_edit_product_weight', "click", save_edit_weight);
     Event.addListener('reset_edit_product_weight', "click", reset_edit_weight);
 
+    Event.addListener('save_edit_product_units', "click", save_edit_product_units);
+    Event.addListener('reset_edit_product_units', "click", reset_edit_product_units);
  
     dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list",  {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_part_list.render();
