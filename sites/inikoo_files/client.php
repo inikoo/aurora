@@ -12,7 +12,7 @@
  Version 2.0
 */
 
-include_once('common_splinter.php');
+include_once('common.php');
 include_once('class.Customer.php');
 include_once('class.Category.php');
 

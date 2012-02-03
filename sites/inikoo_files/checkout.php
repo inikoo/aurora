@@ -1,6 +1,6 @@
 <?php
 
-include_once('common_splinter.php');
+include_once('common.php');
 include_once('class.LightCustomer.php');
 include_once('class.Customer.php');
 include_once('class.Store.php');

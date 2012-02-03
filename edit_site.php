@@ -220,6 +220,13 @@ foreach($site->get_site_email_credentials() as $key=>$value){
 	$credentials[$key]=$value;
 }
 }
+else{
+	$credentials['Email_Address']='';
+	$credentials['Password']='';
+	$credentials['Incoming_Mail_Server']='';
+	$credentials['Outgoing_Mail_Server']='';
+}
+
 $smarty->assign('email_credentials',$credentials);
 
 $smarty->display('edit_site.tpl');
