@@ -811,6 +811,7 @@ $index_page=$this->get_page_object('index');
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
+		//print $sql;
 		return $page_key;
 	}
 
