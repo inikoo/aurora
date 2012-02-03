@@ -139,13 +139,11 @@
 
 <input id="v_cost" value="{$product->get_cost_supplier()}" type="hidden"/>
 
-<div class="general_options" style="float:right">
-	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_price" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_price" class="state_details">{t}Reset{/t}</span>
-	
-      </div>
 
+ <div class="buttons" style="float:right">
+	<button  style="visibility:hidden" class="positive" id="save_edit_product_price" class="state_details" >{t}Save{/t}</button>
+	<button style="visibility:hidden" class="negative" id="reset_edit_product_price" class="state_details" >{t}Reset{/t}</button>
+</div>
 
 <table class="edit" border=0>
  <tr class="title"><td colspan=5>{t}Price{/t}</td></tr>
@@ -182,10 +180,9 @@
 </div>
 <div class="edit_block" {if $edit!="dimat"}style="display:none"{/if}  id="d_dimat">
 
-
-<div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_weight" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_weight" class="state_details">{t}Reset{/t}</span>
+ <div class="buttons" style="float:right">
+	<button  style="visibility:hidden" class="positive" id="save_edit_product_weight" class="state_details" >{t}Save{/t}</button>
+	<button style="visibility:hidden" class="negative" id="reset_edit_product_weight" class="state_details" >{t}Reset{/t}</button>
 </div>
 
 <table class="edit" >
@@ -193,7 +190,7 @@
  <td colspan=3>{t}Weight{/t}</td>
  </tr>
 <tr class="first"><td  class="label">{t}Unit Weight{/t}:</td>
-   <td  style="text-align:left;">
+   <td  style="text-align:left;width:450px">
      <div   >
        <input style="text-align:left;" id="Product_Unit_Weight" value="{$product->get('Net Weight Per Unit')}" ovalue="{$product->get('Net Weight Per Unit')}" valid="0"> 
        <div id="Product_Unit_Weight_Container"  ></div>
@@ -230,10 +227,10 @@
 <table class="edit" style="width:100%">
  <tr class="title"><td colspan=5>{t}Units{/t}</td>
  <td>
- <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_units" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_units" class="state_details">{t}Reset{/t}</span>
-</div>
+`
+
+
+
 
  </td>
  </tr>
@@ -271,10 +268,12 @@
 <table class="edit" style="width:100%">
  <tr class="title"><td colspan=2>{t}Name / Description{/t}</td>
  <td>
- <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_description" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span>
+
+ <div class="buttons" style="float:right">
+	<button  style="visibility:hidden" class="positive" id="save_edit_product_description" class="state_details" >{t}Save{/t}</button>
+	<button style="visibility:hidden" class="negative" id="reset_edit_product_description" class="state_details" >{t}Reset{/t}</button>
 </div>
+
  </td>
  </tr>
 <tr class="first"><td style="width:180px" class="label">{t}Product Name{/t}:</td>
