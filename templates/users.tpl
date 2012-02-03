@@ -108,7 +108,7 @@
 <table>
 <tr><td style="width:90px">{t}Site{/t}</td><td class="aright" style="width:70px">{t}Users{/t}</td><tr>
 {foreach from=$sites item=site}
-<tr><td>{$site->get('Site Code')}</td><td class="aright"><a href="users_site.php?site_key={$site->id}">{$sites->get('Total Users')}</a></td><tr>
+<tr><td>{$site->get('Site Code')}</td><td class="aright"><a href="users_site.php?site_key={$site->id}">{$site->get('Total Users')}</a></td><tr>
 {/foreach}
 
 </table>

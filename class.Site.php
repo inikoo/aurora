@@ -222,7 +222,8 @@ class Site extends DB_Table {
 
 
 		switch ($key) {
-	case()
+		case('Total Users'):
+			return number($this->data['Site Total Users']);
 		default:
 			if (isset($this->data[$key]))
 				return $this->data[$key];
@@ -273,7 +274,7 @@ class Site extends DB_Table {
 		case 'Email Address':
 		case 'Login':
 		case 'Password':
-		case 'Incoming Mail Server':	
+		case 'Incoming Mail Server':
 		case 'Outgoing Mail Server':
 			$this->update_site_email_credential($field, $value);
 			break;
@@ -1010,14 +1011,14 @@ $index_page=$this->get_page_object('index');
 
 	}
 
-	function get_site_email_credentials(){
+	function get_site_email_credentials() {
 		$sql=sprintf("select * from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d", $this->id);
 
 		$result=mysql_query($sql);
-		if($row=mysql_fetch_assoc($result)){
+		if ($row=mysql_fetch_assoc($result)) {
 			$email_credentials=$row;
 		}
-		else{	
+		else {
 			//$email_credentials=array('Email'=>'', 'Password'=>'', 'Outgoing_Server'=>'', 'Incoming_Server'=>'');
 			$email_credentials=false;
 		}
@@ -1026,16 +1027,15 @@ $index_page=$this->get_page_object('index');
 	}
 
 
-	function update_site_email_credential($field, $value){
-		if($credential=$this->get_site_email_credentials()){
-			$sql=sprintf("update `Email Credentials Dimension` set `%s`=%s where `Email Credentials Key`=%d", $field, prepare_mysql($value), $credential['Email Credentials Key']);
-			
+	function update_site_email_credential($field, $value) {
+		if ($credential=$this->get_site_email_credentials()) {
+
 		}
-		else{
+		else {
 			$sql=sprintf("insert into `Email Credentials Dimension` (`$field`) values (%s)", prepare_mysql($value));
 			mysql_query($sql);
 			$email_credential_key=mysql_insert_id();
-		
+
 			$sql=sprintf("insert into `Email Credentials Site Bridge` values ($email_credential_key, $this->id)");
 			mysql_query($sql);
 
@@ -1046,22 +1046,36 @@ $index_page=$this->get_page_object('index');
 		}
 		//print $sql;
 
-		if(mysql_query($sql)){
+		if (mysql_query($sql)) {
 			$this->updated=true;
 			$this->msg='Updated';
 			$this->newvalue=$value;
 		}
-		else{
+		else {
 			$this->msg='Error updating';
 		}
 	}
-	
-	function create_ftp_connection(){
-		include_once('class.FTP.php');
+
+	function create_ftp_connection() {
+		include_once 'class.FTP.php';
 
 		$ftp_connection=new FTP($this->data['Site FTP Server'],$this->data['Site FTP User'],$this->data['Site FTP Password'],$this->data['Site FTP Protocol'],$this->data['Site FTP Port'],$this->data['Site FTP Passive']);
-		return 	$ftp_connection;	
-	
+		return  $ftp_connection;
+
 	}
+
+	function update_customer_data() {
+		$sql=sprintf("select count(*) as num    from `User Dimension` where `User Active`='Yes' and  `User Type`='Customer'  and `User Site Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Site Total Users']=$row['num'];
+		}
+		$sql=sprintf("update `Site Dimension` set `Site Total Users`=%d where `Site Key`=%d",
+			$this->data['Site Total Users'],
+			$this->id
+		);
+		mysql_query($sql);
+	}
+
 }
 ?>
