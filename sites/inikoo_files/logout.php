@@ -1,5 +1,5 @@
 <?php
-require_once 'conf/dns.php';
+require_once 'app_files/db/dns.php';
 include_once('conf/key.php');
 require_once 'class.Session.php';
 require_once 'class.Auth.php';

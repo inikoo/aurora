@@ -1,5 +1,5 @@
 <?php
-include('common_splinter.php');
+include('common.php');
 
 //print_r($_SESSION);
 

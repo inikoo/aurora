@@ -1,6 +1,6 @@
 <?php
 
-include_once('common_splinter.php');
+include_once('common.php');
 
 if (!isset($_REQUEST['qty'])) {
   

@@ -1,7 +1,7 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-include_once('common_splinter.php');
+include_once('common.php');
 ?>
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;

@@ -1,7 +1,7 @@
 <?php
 include_once('conf/key.php');
 include_once('aes.php');
-require_once 'conf/dns.php';
+require_once 'app_files/db/dns.php';
 require_once("conf/checkout.php");
 require_once 'common_functions.php';
 require_once 'common_store_functions.php';

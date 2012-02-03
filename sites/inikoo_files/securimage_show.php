@@ -1,6 +1,6 @@
 <?php
 
-require_once'common_splinter.php';
+require_once'common.php';
 
 include 'external_libs/securimage/securimage.php';
 
