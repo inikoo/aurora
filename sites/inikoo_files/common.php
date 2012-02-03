@@ -87,6 +87,17 @@ if (!$site->id) {
     exit ("Site data not found");
 }
 
+
+putenv('LC_ALL='.$site->data['Site Locale']);
+setlocale(LC_ALL,$site->data['Site Locale']);
+
+// Specify location of translation tables
+ bindtextdomain("inikoo_sites", "./locale");
+
+// Choose domain
+textdomain("inikoo_sites");
+
+
 $checkout_method=$site->data['Site Checkout Method'];
 
 //global $registration_method;
