@@ -68,14 +68,17 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$url=preg_replace('|^http\:\/\/|','',$url);
 	$url=preg_replace('/^www.ancientwisdom.biz/','',$url);
+$url=preg_replace('/^www.aw-geschenke.com/','',$url);
 
 	if (! (preg_match('/\.(php|html)$/',$url) or preg_match('/\.php/',$url) ) ) {
 		$url=$url.'/index.php';
 	}
 
 	if (!preg_match('/^www/',$url)) {
-		$url=$site->data['Site URL'].'/'.$url;
+		//$url=$site->data['Site URL'].'/'.$url;
 	}
+$url=preg_replace('|^\/|','',$url);
+
 	$url=str_replace('//','/',$url);
 	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
 	//print "$sql\n";

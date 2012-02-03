@@ -53,7 +53,7 @@ class Site extends DB_Table {
 		$result =mysql_query($sql);
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->id=$this->data['Site Key'];
-
+//print_r($this->data);
 			if ($this->data['Site Logo Data']!='')
 				$this->data['Site Logo Data']=unserialize($this->data['Site Logo Data']);
 			if ($this->data['Site Header Data']!='')
@@ -819,7 +819,7 @@ $index_page=$this->get_page_object('index');
 
 		$url=preg_replace('http://', '', $url);
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page URL`=%s ",$this->id,prepare_mysql($url));
+		$sql=sprintf("select `Page Key` from `Page Dimension` where `Page URL`=%s ",prepare_mysql($url));
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
