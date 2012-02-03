@@ -804,7 +804,7 @@ $index_page=$this->get_page_object('index');
 		return $this->data['Site Welcome Source'];
 	}
 
-	function get_page_key($code) {
+	function get_page_key_from_code($code) {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Code`=%s ",$this->id,prepare_mysql($code));
 		$res=mysql_query($sql);
@@ -813,6 +813,20 @@ $index_page=$this->get_page_object('index');
 		}
 		return $page_key;
 	}
+
+	function get_page_key_from_url($url) {
+
+		$url=preg_replace('http://', '', $url);
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page URL`=%s ",$this->id,prepare_mysql($url));
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
+
+
 
 	function get_unique_store_page_code($store) {
 
