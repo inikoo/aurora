@@ -9,30 +9,27 @@ if (!isset($page_key) and isset($_REQUEST['id'])) {
 
 if (!isset($page_key)) {
 
-    header('Location: index.php');
+    header('Location: index.php?no_page_key');
     exit;
 }
 
 $page=new Page($page_key);
 
-
-
-if ($page->data['Page Site Key']!=$site->id) {
-    header('Location: index.php');
-//    exit("No site/page not match");
-}
-
-
-
 if (!$page->id) {
-    header('Location: index.php');
+    header('Location: index.php?no_page');
     exit;
 }
 
+
 if ($page->data['Page Site Key']!=$site->id) {
-    header('Location: index.php');
-    exit;
+    header('Location: index.php?site_page_not_match');
+//    exit("No site/page not match");
+exit;
 }
+
+
+
+
 
 
 $css_files=array(
