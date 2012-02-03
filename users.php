@@ -11,6 +11,7 @@
 
 include_once('common.php');
 include_once('class.Store.php');
+include_once('class.Site.php');
 
 $general_options_list=array();
 $smarty->assign('general_options_list',$general_options_list);
@@ -75,17 +76,17 @@ $smarty->assign('number_users',$number_users);
 
 
 
-$sql=sprintf("select `Store Key` from `Store Dimension`");
+$sql=sprintf("select `Site Key` from `Site Dimension`");
 $res=mysql_query($sql);
-$stores=array();
-$number_stores=0;
+$sites=array();
+$number_sites=0;
 while($row=mysql_fetch_assoc($res)){
-$number_stores++;
-$stores[]=new Store($row['Store Key']);
+$number_sites++;
+$sites[]=new site($row['Site Key']);
 }
 
-$smarty->assign('number_stores',$number_stores);
-$smarty->assign('stores',$stores);
+$smarty->assign('number_sites',$number_sites);
+$smarty->assign('sites',$sites);
 
 
 $sql=sprintf("select count(*) as num  from `Supplier Dimension`");
