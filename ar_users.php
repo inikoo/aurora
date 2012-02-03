@@ -1467,6 +1467,13 @@ function list_supplier_users() {
 }
 function list_customer_users() {
     global $myconf;
+    
+    if(isset($_REQUEST['parent_key'])){
+    	$parent_key=$_REQUEST['parent_key'];
+    }else{
+    	return;
+    }
+    
     $conf=$_SESSION['state']['users']['customer'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -1527,7 +1534,7 @@ function list_customer_users() {
         $wheref.=sprintf(" and  $f_field=%d ",$f_value);
 
     $where.=" and `User Key` IS NOT NULL  ";
-    $where.=sprintf(" and `User Type`='Customer' and `User Site Key`=%d", $_REQUEST['store_key']);
+    $where.=sprintf(" and `User Type`='Customer' and `User Site Key`=%d", $parent_key);
     $sql="select count(*) as total from `Customer Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Customer Key`) $where $wheref";
 
 

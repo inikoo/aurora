@@ -10,7 +10,7 @@
 
 {else}
 <div id="dialog_check_email"  class="dialog_inikoo" >
-<h2>Registration</h2>
+<h2>{t}Registration{/t}</h2>
 <div style="border:1px solid #ccc;padding:20px;width:500px;float:left">
 <table  border=0 >
 <tr>
@@ -101,7 +101,7 @@
 </tr>
 </tbody>
 <tr class="title" >
-<td colspan="3">Contact Info: </td>
+<td colspan="3">{t}Contact Info{/t}: </td>
 </tr>
 <tr>
 <td class="label">{t}Contact Name{/t}: </td><td><input id="register_contact_name"></td>

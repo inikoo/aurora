@@ -222,7 +222,7 @@ class Site extends DB_Table {
 
 
 		switch ($key) {
-
+	case()
 		default:
 			if (isset($this->data[$key]))
 				return $this->data[$key];

@@ -99,17 +99,16 @@
 </table>
 </div>
 <div id="customers_column" class="col" style="margin-right:0px">
-<h2>{t}Customers{/t}</h2>
+<h2>{t}Website users{/t}</h2>
 <table>
-<tr><td>{t}Online Stores{/t}:</td><td><a href="stores.php">{$number_stores}</a></td><tr>
-<tr><td>{t}Total Customers{/t}:</td><td>{$number_customers}</td><tr>
+<tr><td>{t}Online sites{/t}:</td><td><a href="sites.php">{$number_sites}</a></td><tr>
 <tr><td>{t}Users{/t}:</td><td>{$number_users.Customer}</td><tr>
 </table>
-{if $number_stores>1}
+{if $number_sites>1}
 <table>
-<tr><td style="width:90px">{t}Store{/t}</td><td class="aright" style="width:70px">{t}Customers{/t}</td><td class="aright" style="width:70px">{t}Users{/t}</td><tr>
-{foreach from=$stores item=store}
-<tr><td>{$store->get('Store Code')}</td><td class="aright">{$store->get('Store Contacts')}</td><td class="aright"><a href="users_customer.php?store_key={$store->get('Store Key')}">{$store->get('Total Users')}</a></td><tr>
+<tr><td style="width:90px">{t}Site{/t}</td><td class="aright" style="width:70px">{t}Users{/t}</td><tr>
+{foreach from=$sites item=site}
+<tr><td>{$site->get('Site Code')}</td><td class="aright"><a href="users_site.php?site_key={$site->id}">{$sites->get('Total Users')}</a></td><tr>
 {/foreach}
 
 </table>

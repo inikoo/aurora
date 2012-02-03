@@ -155,7 +155,7 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_users&tableid=0&store_key="+Dom.get('store_key').value);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_users&tableid=0&parent_key="+Dom.get('site_key').value);
 		//alert("ar_users.php?tipo=customer_users&tableid=0&store_key="+Dom.get('store_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
