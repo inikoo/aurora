@@ -5491,4 +5491,5 @@ ALTER TABLE `Email Credentials Dimension` ADD `Email Provider` ENUM( 'Gmail', 'O
 ALTER TABLE `Email Credentials Site Bridge` ADD PRIMARY KEY ( `Email Credentials Key` , `Site Key` ) ;
 ALTER TABLE `User Click Dimension` ADD `OS` VARCHAR( 64 ) NULL DEFAULT NULL ,ADD `Browser` VARCHAR( 64 ) NULL DEFAULT NULL ;
 ALTER TABLE `Page Dimension` ADD `Page Published` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
+ALTER TABLE `Site Dimension` ADD `Link Type` ENUM( 'Absolute', 'Relative' ) NOT NULL DEFAULT 'Absolute';
 

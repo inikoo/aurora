@@ -824,7 +824,7 @@ class Page extends DB_Table {
 
 
 
-	function get_found_in() {
+	function get_found_in($site_url=false) {
 
 		$found_in=array();
 		$sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
@@ -835,8 +835,17 @@ class Page extends DB_Table {
 		while ($row=mysql_fetch_assoc($res)) {
 			$found_in_page=new Page($row['Page Store Found In Key']);
 			if ($found_in_page->id) {
+
+				if ($site_url) {
+					$link='<a href="http://'.$site_url.'/'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
+
+				}else {
+					$link='<a href="'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
+
+				}
+
 				$found_in[]=array(
-					'link'=>'<a href="'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>',
+					'link'=>$link,
 					'found_in_label'=>$found_in_page->data['Page Short Title'],
 					'found_in_url'=>$found_in_page->data['Page URL'],
 					'found_in_key'=>$found_in_page->id,
@@ -851,7 +860,7 @@ class Page extends DB_Table {
 
 
 
-	function get_see_also() {
+	function get_see_also($site_url=false) {
 
 		$see_also=array();
 		$sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d order by `Correlation Value` desc ",
@@ -881,19 +890,23 @@ class Page extends DB_Table {
 					$formated_correlation_type=$row['Correlation Type'];
 					break;
 				}
+				if ($site_url)
+					$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
+					else
+						$link='<a href="'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
-				$see_also[]=array(
-					'link'=>'<a href="http://'.$site->data['Site URL'].$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>',
-					'see_also_label'=>$see_also_page->data['Page Short Title'],
-					'see_also_url'=>$see_also_page->data['Page URL'],
-					'see_also_key'=>$see_also_page->id,
-					'see_also_code'=>$see_also_page->data['Page Code'],
-					'see_also_correlation_type'=>$row['Correlation Type'],
-					'see_also_correlation_formated'=>$formated_correlation_type,
-					'see_also_correlation_value'=>$row['Correlation Value'],
-					'see_also_correlation_formated_value'=>$formated_correlation_value,
-				);
+					$see_also[]=array(
+						'link'=>$link,
+						'see_also_label'=>$see_also_page->data['Page Short Title'],
+						'see_also_url'=>$see_also_page->data['Page URL'],
+						'see_also_key'=>$see_also_page->id,
+						'see_also_code'=>$see_also_page->data['Page Code'],
+						'see_also_correlation_type'=>$row['Correlation Type'],
+						'see_also_correlation_formated'=>$formated_correlation_type,
+						'see_also_correlation_value'=>$row['Correlation Value'],
+						'see_also_correlation_formated_value'=>$formated_correlation_value,
+					);
 			}
 
 		}
@@ -2363,15 +2376,15 @@ class Page extends DB_Table {
 		$this->update_number_found_in();
 		$this->updated=true;
 	}
-	
-		function remove_found_in_link($parent_key) {
 
-	
+	function remove_found_in_link($parent_key) {
+
+
 
 		$sql=sprintf("delete from  `Page Store Found In Bridge` where `Page Store Key`=%d and `Page Store Found In Key`=%d   ",
-               $this->id,
-                 $parent_key);
-    
+			$this->id,
+			$parent_key);
+
 		mysql_query($sql);
 		$this->update_number_found_in();
 		$this->updated=true;
@@ -2396,7 +2409,7 @@ class Page extends DB_Table {
 
 	}
 
-	function get_page_height(){
+	function get_page_height() {
 		return $this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+22;
 	}
 

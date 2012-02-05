@@ -101,7 +101,7 @@
 					<td style="width:140px">{t}Parent Pages{/t}:</td>
 					<td> 
 					<table>
-						{foreach from=$page->get_found_in() item=found_in_page} 
+						{foreach from=$page->get_found_in($site->get('Site URL')) item=found_in_page} 
 						<tr>
 							<td style="padding:0">{$found_in_page.found_in_label} <span class="id">(<a href="page.php?id={$found_in_page.found_in_key}">{$found_in_page.found_in_code}</a>)</span></td>
 						</tr>
@@ -113,7 +113,7 @@
 					<td>{t}Related Pages{/t}:</td>
 					<td> 
 					<table>
-						{foreach from=$page->get_see_also() item=see_also_page} 
+						{foreach from=$page->get_see_also($site->get('Site URL')) item=see_also_page} 
 						<tr>
 							<td style="padding:0">{$see_also_page.see_also_label} <span class="id">(<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</span></td>
 							<td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>

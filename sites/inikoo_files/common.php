@@ -400,7 +400,7 @@ function log_visit($session_key,$user_log_key,$user) {
 		prepare_mysql(get_user_os($_SERVER['HTTP_USER_AGENT']))
 	);
 
-	print($sql1);
+	//print($sql1);
 	mysql_query($sql1);
 	$user_click_key= mysql_insert_id();
 
