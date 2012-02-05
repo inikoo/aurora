@@ -884,7 +884,7 @@ class Page extends DB_Table {
 
 
 				$see_also[]=array(
-					'link'=>'<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>',
+					'link'=>'<a href="http://'.$site->data['Site URL'].$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>',
 					'see_also_label'=>$see_also_page->data['Page Short Title'],
 					'see_also_url'=>$see_also_page->data['Page URL'],
 					'see_also_key'=>$see_also_page->id,
