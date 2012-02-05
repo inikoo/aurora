@@ -1474,7 +1474,7 @@ function list_site_users() {
 		return;
 	}
 
-	$conf=$_SESSION['state']['users']['customer'];
+	$conf=$_SESSION['state']['users']['site'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1522,11 +1522,11 @@ function list_site_users() {
 
 
 
-	$_SESSION['state']['users']['customer']['orders']=$order;
-	$_SESSION['state']['users']['customer']['order_dir']=$order_direction;
-	$_SESSION['state']['users']['customer']['nr']=$number_results;
-	$_SESSION['state']['users']['customer']['f_field']=$f_field;
-	$_SESSION['state']['users']['customer']['f_value']=$f_value;
+	$_SESSION['state']['users']['site']['orders']=$order;
+	$_SESSION['state']['users']['site']['order_dir']=$order_direction;
+	$_SESSION['state']['users']['site']['nr']=$number_results;
+	$_SESSION['state']['users']['site']['f_field']=$f_field;
+	$_SESSION['state']['users']['site']['f_value']=$f_value;
 
 
 
@@ -1596,8 +1596,8 @@ $filter_msg='';
 	$_order=$order;
 	if ($order=='name')
 		$order='`Customer Main Contact Name`';
-	elseif ($order=='position')
-		$order='position';
+	elseif ($order=='handle')
+		$order='`User Handle`';
 	else
 		$order='`Customer Main Contact Name`';
 	//$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where  $wheref and `User Type`='Staff' order by $order $order_direction limit $start_from,$number_results";
@@ -1636,7 +1636,7 @@ $filter_msg='';
 		$adata[]=array(
 			'id'=>$data['User Key'],
 			'customer_id'=>$data['Customer Key'],
-			'alias'=>$alias,
+			'handle'=>$alias,
 			'name'=>$customer,
 			'login'=>$data['User Last Login'],
 			'count'=>$data['User Login Count'],
