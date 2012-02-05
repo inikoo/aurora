@@ -3,7 +3,7 @@
 
     $url=$_SERVER['REQUEST_URI'];
     $url=preg_replace('/^\//', '', $url);
-    $url=preg_replace('/\/$/', '', $url);    
+    //$url=preg_replace('/\/$/', '', $url);    
 
     $slashes=explode("/", $url);
 
@@ -13,23 +13,35 @@
         $path.='../';
     }
     
+    preg_match_all('/\//', $url, $matches);
+    
+    print_r($matches);exit;
+    
+    print $path.$url;
+    
     
     $found=false;
     
     if($page_key=$site->get_page_key_from_url($url)){
-        header("Location: {$path}page.php?id=".$page_key);          
+        print $url;
+        //header("Location: {$path}page.php?id=".$page_key);          
+        exit;
     }
     
     $url_2=$url;
     $url.='/index.php';
     
     if($page_key=$site->get_page_key_from_url($url)){
-        header("Location: {$path}page.php?id=".$page_key);          
+        print $url;exit;
+        header("Location: {$path}page.php?id=".$page_key);     
+        exit;
     }
     
     $url_2.='/index.html';
     if($page_key=$site->get_page_key_from_url($url_2)){
-        header("Location: {$path}page.php?id=".$page_key);          
+        print $url_2;
+        //header("Location: {$path}page.php?id=".$page_key);          
+        exit;
     }
     
     /*
