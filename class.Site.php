@@ -818,10 +818,11 @@ $index_page=$this->get_page_object('index');
 
 	function get_page_key_from_url($url) {
 
-		$url=preg_replace('http://', '', $url);
+		//$url=preg_replace('http:\/\/', '', $url);
 		$page_key=0;
+        //        print "url: ".$url;
 		$sql=sprintf("select `Page Key` from `Page Dimension` where `Page URL`=%s ",prepare_mysql($url));
-		print $sql;
+		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
