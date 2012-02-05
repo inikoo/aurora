@@ -12,8 +12,27 @@
     foreach($slashes as $i){
         $path.='../';
     }
+    
+    
     $found=false;
     
+    if($page_key=$site->get_page_key_from_url($url)){
+        header("Location: {$path}page.php?id=".$page_key);          
+    }
+    
+    $url_2=$url;
+    $url.='/index.php';
+    
+    if($page_key=$site->get_page_key_from_url($url)){
+        header("Location: {$path}page.php?id=".$page_key);          
+    }
+    
+    $url_2.='/index.html';
+    if($page_key=$site->get_page_key_from_url($url_2)){
+        header("Location: {$path}page.php?id=".$page_key);          
+    }
+    
+    /*
     
     $links=array();
     $ext=array('', 'html', 'php');
@@ -38,22 +57,9 @@
 
     
     
+    */
     
-    
-    if($page_key=$site->get_page_key_from_url($url)){
-        header("Location: {$path}page.php?id=".$page_key);          
-    }
-    $url_2=$url;
-    $url.='/index.php';
-    
-    if($page_key=$site->get_page_key_from_url($url)){
-        header("Location: {$path}page.php?id=".$page_key);          
-    }
-    
-    $url_2.='/index.html';
-    if($page_key=$site->get_page_key_from_url($url)){
-        header("Location: {$path}page.php?id=".$page_key);          
-    }
+
     
 
     
