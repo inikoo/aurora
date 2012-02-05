@@ -138,7 +138,7 @@ var active=function(el, oRecord, oColumn, oData){
 			
 			
 			      {key:"isactive",label:"<?php echo _('Active')?>" ,hidden:true,className:'aright',width:45  }
-			     ,{key:"alias", label:"<?php echo _('Login')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     ,{key:"handle", label:"<?php echo _('Handle')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                				 ,{key:"name", label:"<?php echo _('Customer')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
                ,{key:"login", label:"<?php echo _('Last Login')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -174,7 +174,7 @@ var active=function(el, oRecord, oColumn, oData){
 		
 		
 		fields: [
-			 "id","isactive","name","login","email","telephone","lang","tipo","active","alias","count"
+			 "id","isactive","name","login","email","telephone","lang","tipo","active","handle","count"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -182,7 +182,7 @@ var active=function(el, oRecord, oColumn, oData){
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['users']['customer']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['users']['site']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -192,8 +192,8 @@ var active=function(el, oRecord, oColumn, oData){
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['customer']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['customer']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['users']['site']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['users']['site']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -207,7 +207,7 @@ var active=function(el, oRecord, oColumn, oData){
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['customer']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['customer']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['site']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['site']['f_value']?>'};
 	    //
 	
 

@@ -153,13 +153,13 @@ $smarty->assign('newuser_groups',$newuser_groups);
 
 
 
-$tipo_filter=$_SESSION['state']['users']['customer']['f_field'];
+$tipo_filter=$_SESSION['state']['users']['site']['f_field'];
 
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['users']['customer']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['users']['site']['f_value']);
 $filter_menu=array(
 	// 'alias'=>array('db_key'=>'alias','menu_label'=>'Alias like  <i>x</i>','label'=>'Alias'),
-	'name'=>array('db_key'=>'name','menu_label'=>'Name Like <i>x</i>','label'=>'Name'),
+	'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle like <i>x</i>'),'label'=>_('Handle')),
 );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);

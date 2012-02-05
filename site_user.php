@@ -37,9 +37,11 @@ if (isset($_REQUEST['id'])) {
 	exit;
 }
 
+$store=new Store($site->data['Site Store Key']);
 
 $customer=new Customer($site_user->data['User Parent Key']);
 $smarty->assign('customer',$customer);
+$smarty->assign('store',$store);
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -98,7 +100,7 @@ $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['site_user']['login_history']['f_value']);
 $filter_menu=array(
 	// 'alias'=>array('db_key'=>'alias','menu_label'=>'Alias like  <i>x</i>','label'=>'Alias'),
-	'user'=>array('db_key'=>'handle','menu_label'=>'Handle Like <i>x</i>','label'=>'Handle'),
+	'ip'=>array('db_key'=>'ip','menu_label'=>_('IP address ike <i>x</i>'),'label'=>'IP'),
 );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
