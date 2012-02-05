@@ -3720,11 +3720,31 @@ class Customer extends DB_Table {
         return $comment;
     }
 
+function get_main_email_user_key(){
+$user_key=0;
+  $sql=sprintf("select `User Key` from  `User Dimension` where `User Handle`=%s and `User Type`='Customer' and `User Parent Key`=%d "
+       
+                     ,prepare_mysql($this->data['Customer Main Plain Email'])
+                      ,$this->id
+                     );
+  $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $user_key=$row['User Key'];
+        }
+return $user_key;
+}
 
     function get_other_emails_data() {
 
-        $sql=sprintf("select B.`Email Key`,`Email`,`Email Description` from `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`) where  `Subject Type`='Customer' and `Subject Key`=%d "
-                     ,$this->id );
+
+
+        $sql=sprintf("select B.`Email Key`,`Email`,`Email Description`,`User Key` from 
+        `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`) 
+        left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Customer' and `User Parent Key`=%d )
+        where  `Subject Type`='Customer' and `Subject Key`=%d "
+                     ,$this->id
+                      ,$this->id
+                     );
 
         $email_keys=array();
         $result=mysql_query($sql);
@@ -3733,7 +3753,8 @@ class Customer extends DB_Table {
                 $email_keys[$row['Email Key']]= array(
                                                     'email'=>$row['Email'],
                                                     'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
-                                                    'label'=>$row['Email Description']
+                                                    'label'=>$row['Email Description'],
+                                                    'user_key'=>$row['User Key']
                                                 );
         }
         return $email_keys;

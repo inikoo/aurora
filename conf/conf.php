@@ -2224,7 +2224,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>50,
 			'where'=>'where true',
-			'f_field'=>'handle',
+			'f_field'=>'ip',
 			'f_value'=>''
 		),
 	),
@@ -2273,14 +2273,14 @@ $default_state=array(
 			'f_field'=>'name',
 			'f_value'=>''
 		),
-		'customer'=>array(
+		'site'=>array(
 			'display'=>'all',
-			'order'=>'name',
+			'order'=>'handle',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
 			'where'=>'where true',
-			'f_field'=>'name',
+			'f_field'=>'handle',
 			'f_value'=>''
 		),
 		'login_history'=>array(

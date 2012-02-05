@@ -5488,5 +5488,7 @@ ALTER TABLE `Site Dimension` CHANGE `Site FTP Port` `Site FTP Port` MEDIUMINT( 8
 ALTER TABLE `Site Dimension` ADD `Site Total Users` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `User Dimension` DROP INDEX `User Handle` ,ADD UNIQUE `User Handle` ( `User Handle` , `User Type` , `User Site Key` ) ;
 ALTER TABLE `Email Credentials Dimension` ADD `Email Provider` ENUM( 'Gmail', 'Other' ) NOT NULL DEFAULT 'Other' AFTER `Email Credentials Key` ;
-ALTER TABLE `dw`.`Email Credentials Site Bridge` ADD PRIMARY KEY ( `Email Credentials Key` , `Site Key` ) ;
+ALTER TABLE `Email Credentials Site Bridge` ADD PRIMARY KEY ( `Email Credentials Key` , `Site Key` ) ;
+ALTER TABLE `User Click Dimension` ADD `OS` VARCHAR( 64 ) NULL DEFAULT NULL ,ADD `Browser` VARCHAR( 64 ) NULL DEFAULT NULL ;
+ALTER TABLE `Page Dimension` ADD `Page Published` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
 
