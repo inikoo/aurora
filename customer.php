@@ -161,8 +161,8 @@ if($customer_type){
 	}
 }
 
-$smarty->assign('login_stat',$_login_stat);
-$smarty->assign('customer_type',$customer_type);
+//$smarty->assign('login_stat',$_login_stat);
+//$smarty->assign('customer_type',$customer_type);
 
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');

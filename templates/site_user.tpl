@@ -23,16 +23,16 @@
 		</h1>
 		<div style="clear:both">
 		</div>
-		<div style="width:230px;margin-top:0px;float:left">
+		<div style="width:270px;margin-top:0px;float:left">
 			<table class="show_info_product">
 				<td class="aright"> 
 				<tr>
 					<td>{t}Site{/t}:</td>
-					<td><a href="site.php?id={$site->id}">{$site->get('Site Code')}</a></td>
+					<td><a href="site.php?id={$site->id}">{$site->get('Site Code')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>)</td>
 				</tr>
 				<tr>
 					<td>{t}Customer{/t}:</td>
-					<td>{$customer->get('Customer Name')}</td>
+					<td><a href="customer.php?id={$customer->id}">{$customer->get('Customer Name')}</a></td>
 				</tr>
 			</table>
 		</div>

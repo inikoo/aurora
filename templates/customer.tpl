@@ -48,19 +48,18 @@
 							<td><img alt="{t}Name{/t}" title="{t}Name{/t}" src="art/icons/user_suit.png" /></td>
 							<td><img onmouseover="Dom.addClass('main_contact_name_tr','edit_over')" onmouseout="Dom.removeClass('main_contact_name_tr','edit_over')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
-						{/if} {if $customer->get('Customer Main Email Key')!=''} 
+						{/if} 
+						{if $customer->get('Customer Main Email Key')!=''} 
 						<tr id="main_email_tr" onmouseover="Dom.setStyle('quick_edit_email','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">
-							<td id="main_email" colspan="2" class="aright">{if $customer->get('Customer Main Plain Email') == $login_stat.UserHandle}<img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}User Login{/t}">{/if} {$customer->get('Customer Main XHTML email')}</td>
+							<td id="main_email" colspan="2" class="aright">{if $customer->get_main_email_user_key()}<a href="site_user.php?id={$customer->get_main_email_user_key()}" ><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if} {$customer->get('Customer Main XHTML email')}</td>
 							<td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png" /></td>
 							<td id="email_label{$customer->get('Customer Main Email Key')}" style="color:#777;font-size:80%">{$customer->get_principal_email_comment()} <img onmouseover="Dom.addClass('main_email_tr','edit_over')" onmouseout="Dom.removeClass('main_email_tr','edit_over')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} {foreach from=$customer->get_other_emails_data() item=other_email key=key} 
 						<tr id="other_email_tr" onmouseover="Dom.setStyle('quick_edit_other_email{$key}','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_other_email{$key}','visibility','hidden')">
-							<td id="email{$key}" colspan="2" class="aright">{$other_email.xhtml}</td>
+							<td id="email{$key}" colspan="2" class="aright">{if $other_email.user_key}<a href="site_user.php?id={$other_email.user_key}" ><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if}  {$other_email.xhtml}</td>
 							<td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png" /></td>
-							{*} {if $other_email_login_handle[$other_email.email] == $other_email.email} 
-							<td><img src="art/icons/user_go.png" /></td>
-							{/if} {/*} 
+							
 							<td id="email_label{$key}" style="color:#777;font-size:80%">{$other_email.label} <img onmouseover="Dom.addClass('other_email_tr','edit_over')" onmouseout="Dom.removeClass('other_email_tr','edit_over')" id="quick_edit_other_email{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/foreach} {if $customer->get('Customer Main Telephone Key')} 
@@ -210,7 +209,7 @@
 			</div>
 		
 		
-		{*} 
+		
 		<h2 style="clear:both">
 			{t}Custom Fields{/t} 
 		</h2>
@@ -272,8 +271,28 @@
 		</div>
 		<div style="clear:both">
 		</div>
-		{if $customer_type} 
-		<h2 style="clear:both">
+		
+		
+		
+		<div style="clear:both">
+		</div>
+	</div>
+	<div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		<span class="clean_table_title">{t}History/Notes{/t}</span> 
+		<div id="table_type" class="table_type">
+			<div style="font-size:90%" id="transaction_chooser">
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_notes_number">{$elements_number.Emails}</span>)</span> 
+			</div>
+		</div>
+		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
+		</div>
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
+		<div id="table0" class="data_table_container dtable btable ">
+		</div>
+	</div>
+	<div id="block_login_stat" class="data_table" style="{if $view!='login_stat'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	
+	<h2 style="clear:both">
 			{t}Login Details{/t} 
 		</h2>
 		<div style="float:left;width:450px">
@@ -304,25 +323,8 @@
 				</tr>
 			</table>
 		</div>
-		{/if} {*} 
-		<div style="clear:both">
-		</div>
-	</div>
-	<div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<span class="clean_table_title">{t}History/Notes{/t}</span> 
-		<div id="table_type" class="table_type">
-			<div style="font-size:90%" id="transaction_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_notes_number">{$elements_number.Emails}</span>)</span> 
-			</div>
-		</div>
-		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
-		</div>
-		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table0" class="data_table_container dtable btable ">
-		</div>
-	</div>
-	<div id="block_login_stat" class="data_table" style="{if $view!='login_stat'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
+	
+	{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
 		<div id="table3" class="data_table_container dtable btable ">
 		</div>
 	</div>
