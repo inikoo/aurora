@@ -10,13 +10,13 @@ class Dummy_Page {
     }
 
 
-    function get_found_in() {
+    function get_found_in($dummy) {
 
         return array(array('link'=>'Parent Page'));
 
     }
 
-    function get_see_also() {
+    function get_see_also($dummy) {
         return array(array('link'=>'<a href="#">Link 1</a>'),array('link'=>'<a href="#">Link 2</a>'),array('link'=>'<a href="#">Link 3</a>'),array('link'=>'<a href="#">Link 4</a>'));
     }
 

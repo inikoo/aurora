@@ -346,7 +346,7 @@
 							<button id="add_other_found_in_page" class="positive">Add page</button> 
 						</div>
 						<table>
-							{foreach from=$page->get_found_in() item=found_in_page} 
+							{foreach from=$page->get_found_in($site->get('Site URL')) item=found_in_page} 
 							<tr>
 								<td style="padding:0">{$found_in_page.found_in_label}</td>
 								<td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}" /></td>
@@ -366,7 +366,7 @@
 							<button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} class="positive">{t}Add page{/t}</button> <button id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} class="positive">+</button> <button id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} class="negative">-</button> 
 						</div>
 						<table>
-							{foreach from=$page->get_see_also() item=see_also_page} 
+							{foreach from=$page->get_see_also($site->get('Site URL')) item=see_also_page} 
 							<tr>
 								<td style="padding:0">{$see_also_page.see_also_label} (<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</td>
 								<td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
