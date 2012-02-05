@@ -2786,7 +2786,7 @@ function edit_customer($data) {
 
     }
 
-//print_r($values);
+
     $responses=array();
     foreach($values as $key=>$values_data) {
         $responses[]=edit_customer_field($customer->id,$key,$values_data);

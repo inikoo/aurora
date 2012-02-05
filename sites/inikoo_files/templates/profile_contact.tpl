@@ -13,7 +13,7 @@
 {/foreach}
 
 
-<div class="top_page_menu" style="padding:0px 20px 5px 20px">
+<div class="top_page_menu" style="padding:10px 20px 5px 20px">
 <div class="buttons" style="float:left">
 <button onclick="window.location='profile.php?view=change_password'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Change Password{/t}</button>
 <button onclick="window.location='profile.php?view=address_book'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Address Book{/t}</button>
@@ -93,7 +93,8 @@
 
 </div>
 </div>
-<div style="padding:0px 20px;float:right">
+
+<div style="padding:0px 20px;float:right;display:none">
 <h2>{t}Notes{/t}</h2>
 <div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px"></div>
 </div>
@@ -102,14 +103,14 @@
 <h2>{t}Communication{/t}</h2>
 <div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
 	
-	<table>
-	 <tr class="title"><td colspan=5>{t}Emails{/t}</td></tr>
+	<table class="edit" style="width:390px">
+	 <tr class="title"><td colspan=5>{t}Marketing Emails{/t}</td></tr>
 
 	 <tr>
-	 <td class="label" style="width:200px">{t}Send Newsletter{/t}:</td>
+	 <td class="label" style="width:200px">{t}Receive Newsletter{/t}:</td>
 	 <td>
 
-	   <div   class="buttons" >
+	   <div   class="buttons small" >
 	   <button class="{if $page->customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button>
 	   <button class="{if $page->customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button>
 
@@ -117,22 +118,22 @@
 	 </td>
 	 </tr>
 	  <tr>
-	 <td class="label" style="width:200px">{t}Send Marketing Emails{/t}:</td>
+	 <td class="label" style="width:200px">{t}Receive Marketing Emails{/t}:</td>
 	 <td>
-	   <div class="buttons" >
+	   <div class="buttons small" >
 	   <button class="{if $page->customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button>
 	   <button class="{if $page->customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button>
 	   </div>
 	 </td>
 	 </tr>
-
+<tr style="height:20px"><td colspan=3></td></tr>
 	  <tr class="title"><td colspan=5>{t}Post{/t}</td></tr>
 
 
 	  <tr>
 	 <td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
 	 <td>
-	   <div  class="buttons" >
+	   <div  class="buttons small" >
 	   <button class="{if $page->customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> 
 	   <button class="{if $page->customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button>
 	   </div>
@@ -146,7 +147,7 @@
 	 <tr>
 	 <td class="label" style="width:200px">{t}Add Customer To Send Post{/t}:</td>
 	 <td>
-	   <div    class="buttons" >
+	   <div    class="buttons small" >
 	   <button class="{if $page->customer->get('Send Post Status')=='To Send'}selected{/if} positive" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_To Send">{t}Yes{/t}</button>
 	   <button class="{if $page->customer->get('Send Post Status')=='Cancelled'}selected{/if} negative" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_Cancelled">{t}No{/t}</button>
 	   </div>
@@ -155,18 +156,21 @@
 	<tr>
 	 <td class="label" style="width:200px">{t}Post Type{/t}:</td>
 	 <td>
-	   <div  class="buttons">
+	   <div  class="buttons small">
 	   <button class="{if $page->customer->get('Post Type')=='Letter'}selected{/if} positive" onclick="save_comunications_send_post('Post Type','Letter')" id="Post Type_Letter">{t}Letter{/t}</button>
 	   <button class="{if $page->customer->get('Post Type')=='Catalogue'}selected{/if} negative" onclick="save_comunications_send_post('Post Type','Catalogue')" id="Post Type_Catalogue">{t}Catalogue{/t}</button>
 	   </div>
 	 </td>
 	 </tr>
 	 </tbody>
+	 <tr style="height:20px"><td colspan=3></td></tr>
+ <tr class="title"><td colspan=5>{t}Social Media{/t}</td></tr>
 
+	 <tr>
 	<tr>
 	 <td class="label" style="width:200px">{t}Follower on Twitter{/t}:</td>
 	 <td>
-	   <div  class="buttons">
+	   <div  class="buttons small">
 	   <button class="{if $page->customer->get('Customer Follower On Twitter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Follower On Twitter','Yes')" id="Customer Follower On Twitter_Yes">{t}Yes{/t}</button>
 	   <button class="{if $page->customer->get('Customer Follower On Twitter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Follower On Twitter','No')" id="Customer Follower On Twitter_No">{t}No{/t}</button>
 	   </div>
@@ -176,7 +180,7 @@
 	<tr>
 	 <td class="label" style="width:200px">{t}Friend on Facebook{/t}:</td>
 	 <td>
-	   <div  class="buttons">
+	   <div  class="buttons small">
 	   <button class="{if $page->customer->get('Customer Friend On Facebook')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Friend On Facebook','Yes')" id="Customer Friend On Facebook_Yes">{t}Yes{/t}</button>
 	   <button class="{if $page->customer->get('Customer Friend On Facebook')=='No'}selected{/if} negative" onclick="save_comunications('Customer Friend On Facebook','No')" id="Customer Friend On Facebook_No">{t}No{/t}</button>
 	   </div>
@@ -195,7 +199,7 @@
 
 
 
-<div style="padding:0px 20px 20px 20px;float:right">
+<div style="padding:0px 20px 20px 20px;float:left">
 <h2>{t}Questionare{/t}</h2>
 <div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px;">
 

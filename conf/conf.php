@@ -2214,6 +2214,20 @@ $default_state=array(
 		)
 	),
 
+'site_user'=>array(
+		'block_view'=>'login_history',
+		'login_history'=>array(
+			'display'=>'all',
+			'order'=>'login_date',
+			'order_dir'=>'',
+			'type'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'handle',
+			'f_value'=>''
+		),
+	),
 
 
 	'staff_user'=>array(

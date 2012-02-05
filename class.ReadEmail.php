@@ -462,7 +462,7 @@ class ReadEmail extends DB_Table {
 
 
     function read_mailbox($process_type,$mail_box='',$ServerName, $UserName,$PassWord,$email_credentials_key) {
-        $mbox = imap_open($ServerName.$mail_box, $UserName,$PassWord);
+        $mbox = imap_open('{'.$ServerName.'}'.$mail_box, $UserName,$PassWord);
        
       // $list = imap_getmailboxes($mbox, $ServerName, "*");
       // print_r($list);

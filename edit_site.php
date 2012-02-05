@@ -214,8 +214,8 @@ $smarty->assign('elements',$_SESSION['state']['site']['edit_pages']['elements'])
 
 
 $credentials=array();
-if($site->get_site_email_credentials()){
-foreach($site->get_site_email_credentials() as $key=>$value){
+if($site->get_email_credentials()){
+foreach($site->get_email_credentials() as $key=>$value){
 	$key=preg_replace('/\s/', '_', $key);
 	$credentials[$key]=$value;
 }
@@ -225,6 +225,8 @@ else{
 	$credentials['Password']='';
 	$credentials['Incoming_Mail_Server']='';
 	$credentials['Outgoing_Mail_Server']='';
+	$credentials['Login']='';
+	$credentials['Email_Provider']='Other';
 }
 
 $smarty->assign('email_credentials',$credentials);

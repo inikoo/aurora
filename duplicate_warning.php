@@ -81,10 +81,10 @@ function check_duplicates($customer, $telecom_type='Telephone', $customer_type='
     //print 'xx';
     //$main_telephone_warning=false;
     foreach($warning_message_keys as $key=>$val) {
-        $main_telephone_warning[$val['key']]=false;
+        $main_telephone_warning[$val['key']]='';
     }
     //print_r($main_telephone_warning);
-    if ($warning_message_keys) {
+   
         foreach($warning_message_keys as $key=>$warning_message_key) {
             $sql=sprintf("select `Subject Key`,`Subject Type` from `Telecom Bridge` where `Telecom Key`=%d  and `Subject Type` in ('Customer','Supplier')  ", $warning_message_key['duplicate_key']);
             //print $sql;
@@ -94,9 +94,14 @@ function check_duplicates($customer, $telecom_type='Telephone', $customer_type='
 
                 switch ($row['Subject Type']) {
                 case 'Customer':
+                    if($customer->id==$row['Subject Key']){
+                    $main_telephone_warning[$warning_message_key['key']].=sprintf(", %s",_('Customer has a duplicate number'));
+
+                    }else{
                     $subject= new Customer($row['Subject Key']);
                     $store=new Store($subject->data['Customer Store Key']);
-                    $main_telephone_warning[$warning_message_key['key']].=sprintf(", %s (%s) <a href=\"customer.php?id=%d\">%s</a> %s",_('Customer'),$store->data['Store Code'],$subject->id, $subject->get_formated_id(),$subject->data['Customer Name']);
+                    $main_telephone_warning[$warning_message_key['key']].=sprintf(", %s (%s) <a href=\"customer_split_view.php?id_a=%d&id_b=%d\">%s</a> %s",_('Customer'),$store->data['Store Code'],$customer->id,$subject->id, $subject->get_formated_id(),$subject->data['Customer Name']);
+                    }
                     break;
                 case 'Supplier':
                      $subject= new Supplier($row['Subject Key']);
@@ -110,19 +115,19 @@ function check_duplicates($customer, $telecom_type='Telephone', $customer_type='
                 }
 
             }
-        }
+       
 
 
-        if ($main_telephone_warning) {
+       
             foreach($main_telephone_warning as $key=>$msg) {
                 $_message=$main_telephone_warning[$key];
                 $_message=preg_replace('/^, /','',$_message);
                 if($_message!='')
-                    $main_telephone_warning[$key]='<img style="cursor:pointer" title="Other Customers/Supplier has this telephone" src="art/icons/error.png" alt="warning"/> '.$_message;
+                    $main_telephone_warning[$key]='<img style="cursor:pointer" title="Other Customers/Supplier has this telephone" src="art/icons/error.png" alt="warning"/> '.$_message.', ('._('same number').')';
                 else
                     $main_telephone_warning[$key]='';
             }
-        }
+    
 
         //print_r($main_telephone_warning);
         return $main_telephone_warning;
@@ -135,7 +140,7 @@ function get_all_warnings($customer) {
     foreach($telecom_types as $telecom_type) {
         $all_warnings[$telecom_type]=check_duplicates($customer, $telecom_type);
     }
-
+//print_r($all_warnings);
     return ($all_warnings);
 }
 

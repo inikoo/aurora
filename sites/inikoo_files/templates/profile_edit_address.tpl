@@ -5,7 +5,7 @@
 <input type="hidden" id="prefix"  value="{$address_identifier}"/>
 <input type="hidden" id="customer_key"  value="{$page->customer->id}"/>
 
-<div class="top_page_menu" style="padding:0px 20px 5px 20px">
+<div class="top_page_menu" style="padding:10px 20px 5px 20px">
 <div class="buttons" style="float:left">
 <button  onclick="window.location='profile.php?view=change_password'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Change Password{/t}</button>
 <button class="selected" onclick="window.location='profile.php?view=address_book'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Address Book{/t}</button>

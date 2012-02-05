@@ -120,11 +120,11 @@ function show_email_in_db_dialog(){
 
 Dom.get('captcha3').src = 'securimage_show.php?height=40&' + Math.random();
 
-Dom.get('email_in_db').innerHTML=Dom.get('register_email').value;
-Dom.get('register_email').value='';
+Dom.get('email_in_db').innerHTML=Dom.get('check_email').value;
+Dom.get('check_email').value='';
 
 Dom.setStyle('dialog_email_in_db',  'display','block');
-Dom.setStyle(['dialog_register','tr_forgot_password_wait2','tr_forgot_password_send2','tr_forgot_password_error2'],'display','none');
+Dom.setStyle(['dialog_check_email','dialog_register','tr_forgot_password_wait2','tr_forgot_password_send2','tr_forgot_password_error2'],'display','none');
 
 
     Dom.setStyle(['tr_email_in_db_buttons','email_in_db_instructions','tr_email_in_db_captcha'],'display','');
@@ -137,7 +137,7 @@ Dom.get('captcha_code3').focus();
 
 
 
-var submit_register_form_on_enter=function(e){
+var submit_check_email_on_enter=function(e){
      var key;     
      if(window.event)
          Key = window.event.keyCode; //IE
@@ -145,7 +145,7 @@ var submit_register_form_on_enter=function(e){
          Key = e.which; //firefox     
 
      if (Key == 13){
-	 submit_check_email();
+	 check_email();
 	 
 	 }
 };
@@ -322,6 +322,9 @@ submit_register()
 
 function submit_check_email(){
 
+
+
+
     var login_handle=Dom.get('check_email').value;
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
@@ -415,6 +418,122 @@ Dom.setStyle(['message_check_email_fields_missing','message_check_email_wrong_em
 function remove_register_message_blocks(){
 Dom.setStyle(['processing_register','message_register_fields_missing','register_error_password_not_march','register_error_password_too_short','message_register_error_captcha'],'display','none');
 }
+
+function submit_forgot_password_from_email_in_db(){
+
+var error=false;
+
+
+if( Dom.get('captcha_code3').value==''){
+Dom.addClass(['captcha_code3'],'error');
+Dom.setStyle('message_email_in_db_missing_captcha','display','')
+error=true;
+}else{
+Dom.removeClass(['captcha_code3'],'error');
+Dom.setStyle('message_email_in_db_missing_captcha','display','none')
+
+}
+
+
+if(error){
+return;
+}
+
+
+    var login_handle=Dom.get('email_in_db').innerHTML;
+    var store_key=Dom.get('store_key').value;
+    var site_key=Dom.get('site_key').value;
+	var captcha_code=Dom.get('captcha_code3').value;
+
+var url =window.location.host + window.location.pathname;
+
+var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,'url':url, 'captcha_code':captcha_code}
+
+  var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
+
+
+     var request='ar_register.php?tipo=forgot_password&values='+json_value;
+// alert(request);return;
+  Dom.setStyle('tr_email_in_db_buttons','display','none');
+    Dom.setStyle('tr_forgot_password_wait2','display','');
+
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+	//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state=='200'){
+					            Dom.removeClass('captcha_code3','error');
+
+		        if(r.result=='send'){
+                        Dom.setStyle(['tr_forgot_password_wait2','email_in_db_instructions','tr_email_in_db_captcha'],'display','none');
+			            Dom.setStyle('tr_forgot_password_send2','display','');
+			            
+    		    }else if(r.result=='handle_not_found'){
+			        
+			            Dom.setStyle('tr_forgot_password_wait2','display','none');
+			            Dom.setStyle('tr_forgot_password_not_found2','display','');
+
+			        
+			        
+		        }else if(r.result=='capture_false'){
+		        
+		            Dom.addClass('captcha_code3','error');
+		              Dom.setStyle('tr_forgot_password_wait2','display','none');
+		               Dom.setStyle('tr_email_in_db_buttons','display','');
+		        
+		        }else{
+		          Dom.setStyle('tr_forgot_password_wait2','display','none');
+			            Dom.setStyle('tr_forgot_password_error2','display','');
+		        }
+		    }else{
+		          Dom.setStyle('tr_forgot_password_wait2','display','none');
+			            Dom.setStyle('tr_forgot_password_error2','display','');
+		    }
+			
+
+		},failure:function(o){
+		  //  alert(o)
+		}
+	    
+	    });
+
+
+}
+
+
+function hide_email_in_db_dialog(){
+
+Dom.get('email_in_db').innerHTML=Dom.get('check_email').value;
+Dom.get('check_email').value='';
+
+Dom.setStyle('dialog_email_in_db',  'display','none');
+Dom.setStyle(['dialog_check_email'],'display','');
+
+
+    Dom.setStyle(['tr_email_in_db_buttons','email_in_db_instructions','tr_email_in_db_captcha'],'display','none');
+
+Dom.get('check_email').focus();
+
+}
+
+function submit_forgot_password_from_email_in_db_on_enter(e){
+Dom.removeClass(['captcha_code3'],'error');
+Dom.setStyle('message_email_in_db_missing_captcha','display','none')
+
+  var key;     
+     if(window.event)
+         Key = window.event.keyCode; //IE
+     else
+         Key = e.which; //firefox     
+
+     if (Key == 13){
+	 submit_forgot_password_from_email_in_db();
+	 
+	 }
+
+}
+
+
 function init(){
 
 //Event.addListener(["hide_email_in_db_dialog"], "click", hide_email_in_db_dialog);
@@ -424,7 +543,16 @@ Event.addListener("cancel_register", "click", cancel_register);
 Event.addListener("submit_register", "click", register);
 
 Event.addListener("submit_check_email", "click", check_email);
-Event.addListener('check_email', "keydown", submit_register_form_on_enter);
+
+
+Event.addListener('check_email', "keydown", submit_check_email_on_enter);
+Event.addListener('captcha_code3', "keydown", submit_forgot_password_from_email_in_db_on_enter);
+
+
+Event.addListener("submit_forgot_password_from_email_in_db", "click", submit_forgot_password_from_email_in_db);
+Event.addListener(["hide_email_in_db_dialog","hide_email_in_db_dialog2"], "click", hide_email_in_db_dialog);
+
+
 Dom.get('check_email').focus()
 }
 Event.onDOMReady(init);

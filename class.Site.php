@@ -53,7 +53,7 @@ class Site extends DB_Table {
 		$result =mysql_query($sql);
 		if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->id=$this->data['Site Key'];
-//print_r($this->data);
+			//print_r($this->data);
 			if ($this->data['Site Logo Data']!='')
 				$this->data['Site Logo Data']=unserialize($this->data['Site Logo Data']);
 			if ($this->data['Site Header Data']!='')
@@ -1012,7 +1012,7 @@ $index_page=$this->get_page_object('index');
 
 	}
 
-	function get_site_email_credentials() {
+	function get_email_credentials() {
 		$sql=sprintf("select * from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d", $this->id);
 
 		$result=mysql_query($sql);
@@ -1027,34 +1027,63 @@ $index_page=$this->get_page_object('index');
 		return $email_credentials;
 	}
 
+	function get_email_credentials_key() {
+		$sql=sprintf("select E.`Email Credentials Key` from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d",
+			$this->id);
 
-	function update_site_email_credential($field, $value) {
-		if ($credential=$this->get_site_email_credentials()) {
-
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$email_credentials_key=$row['Email Credentials Key'];
 		}
 		else {
-			$sql=sprintf("insert into `Email Credentials Dimension` (`$field`) values (%s)", prepare_mysql($value));
-			mysql_query($sql);
-			$email_credential_key=mysql_insert_id();
-
-			$sql=sprintf("insert into `Email Credentials Site Bridge` values ($email_credential_key, $this->id)");
-			mysql_query($sql);
-
-			$sql=sprintf("insert into `Email Credentials Scope Bridge` values ($email_credential_key, 'Site Registration')");
-			mysql_query($sql);
-
-
+			$email_credentials_key=false;
 		}
-		//print $sql;
 
-		if (mysql_query($sql)) {
-			$this->updated=true;
-			$this->msg='Updated';
-			$this->newvalue=$value;
+		return $email_credentials_key;
+	}
+
+
+	function associate_email_credentials($email_credentials_key) {
+
+		if (!$email_credentials_key) {
+		$this->error=true;
+			return;
 		}
-		else {
-			$this->msg='Error updating';
+
+		$current_email_credentials_key=$this->get_email_credentials_key();
+		if ($email_credentials_key==$current_email_credentials_key) {
+			return;
 		}
+		
+		
+	
+
+			$sql=sprintf("delete from `Email Credentials Site Bridge` where `Site Key`=%d w ",
+				$this->id);
+			mysql_query($sql);
+
+			$sql=sprintf("delete from `Email Credentials Scope Bridge` where `Scope`='Site Registration'");
+			mysql_query($sql);
+
+			include_once 'class.EmailCredentials.php';
+
+		$old_email_credentials=new EmailCredentials($current_email_credentials_key);
+		$old_email_credentials->delete();
+
+		$sql=sprintf("insert into `Email Credentials Site Bridge` values (%d,%d)",$email_credentials_key, $this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("insert into `Email Credentials Scope Bridge` values (%d, 'Site Registration')",$email_credentials_key);
+		mysql_query($sql);
+
+
+
+
+		$this->updated=true;
+		$this->msg='Updated';
+		$this->newvalue=$email_credentials_key;
+
+
 	}
 
 	function create_ftp_connection() {

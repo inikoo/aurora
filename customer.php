@@ -95,6 +95,7 @@ $css_files=array(
                'css/customer.css',
                  'css/upload.css',
 				'css/edit.css',
+				
 				'theme.css.php'
            );
 $js_files=array(
@@ -242,7 +243,7 @@ if (isset($_REQUEST['p'])) {
             $order='`Customer File As`';
 
         $_order=preg_replace('/`/','',$order);
-        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key` in (%s)  and %s < %s  order by %s desc  limit 1",join(',',$user->stores),$order,prepare_mysql($customer->get($_order)),$order);
+        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key`=%d  and %s < %s  order by %s desc  limit 1",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
 
         $result=mysql_query($sql);
         if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -250,7 +251,7 @@ if (isset($_REQUEST['p'])) {
         mysql_free_result($result);
 
         $smarty->assign('prev',$prev);
-        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key` in (%s) and  %s>%s  order by %s   ",join(',',$user->stores),$order,prepare_mysql($customer->get($_order)),$order);
+        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key`=%d and  %s>%s  order by %s   ",$store->id,$order,prepare_mysql($customer->get($_order)),$order);
 
         $result=mysql_query($sql);
         if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -452,6 +453,11 @@ $smarty->assign('filter_name100',$filter_menu100[$tipo_filter100]['label']);
 $smarty->assign('filter_menu100',$filter_menu100);
 $smarty->assign('filter100',$tipo_filter100);
 $smarty->assign('filter_value100','');
+
+$categories_data=$customer->get_category_data();
+$number_categories_data=count($categories_data);
+$smarty->assign('categories_data',$categories_data);
+$smarty->assign('number_categories_data',$number_categories_data);
 
 $smarty->display('customer.tpl');
 

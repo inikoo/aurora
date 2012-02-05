@@ -87,9 +87,10 @@ if (!$site->id) {
     exit ("Site data not found");
 }
 
-
-putenv('LC_ALL='.$site->data['Site Locale']);
-setlocale(LC_ALL,$site->data['Site Locale']);
+$locale=$site->data['Site Locale'];
+$locale='en_GB';
+putenv('LC_ALL='.$locale);
+setlocale(LC_ALL,$locale);
 
 // Specify location of translation tables
  bindtextdomain("inikoo_sites", "./locale");
