@@ -841,7 +841,7 @@ return;
 	   
 	 //  alert(item_input.value.length);
 	   
-//alert(scope_edit_ar_file+'?'+postData)
+//alert(scope_edit_ar_file+'?'+postData);return;
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {
@@ -931,7 +931,7 @@ return;
 var request=scope_edit_ar_file
 
 var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request+'?'+postData);//return;
+//alert(request+'?'+postData);return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {
  // alert(o.responseText);

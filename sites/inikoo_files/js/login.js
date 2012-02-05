@@ -13,7 +13,7 @@ function submit_forgot_password(){
 remove_forgot_password_message_blocks()
 			            Dom.setStyle('processing_change_password','display','');
 
-var url ='http://'+ window.location.host + window.location.pathname;
+var url =window.location.host + window.location.pathname;
 
 var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,'url':url, 'captcha_code':captcha_code}
 
@@ -127,6 +127,7 @@ function login(){
 		   }else if(r.result=='no_valid'){
 			  Dom.setStyle('invalid_credentials','display','');
                 Dom.addClass(['login_password','login_handle'],'error');
+                Dom.get('login_handle').focus();
 		      }
 			    }else{
 			window.location='index.php?le';
@@ -187,20 +188,30 @@ Dom.get('captcha2').src ='securimage_show.php?height=40&' + Math.random();
 
 Dom.setStyle('dialog_login','display','none');
 Dom.setStyle('dialog_forgot_password','display','block');
+Dom.get('forgot_password_handle').focus();
 
 }
 function cancel_forgot_password(){
 
-//Dom.setStyle('dialog_login','display','');
-//Dom.setStyle('dialog_forgot_password','display','none');
+Dom.setStyle('dialog_login','display','');
+Dom.setStyle('dialog_forgot_password','display','none');
 	Dom.removeClass(['captcha_code2','forgot_password_handle'],'error');
 Dom.get('captcha2').src ='securimage_show.php?height=40&' + Math.random();
 Dom.get('forgot_password_handle').value='';
 Dom.get('captcha_code2').value='';
-Dom.get('forgot_password_handle').focus();
+Dom.get('login_handle').focus();
 
 
 remove_forgot_password_message_blocks()
+
+
+
+  Dom.removeClass('login_password','error');
+  Dom.removeClass('login_handle','error');
+  Dom.get('login_password').value='';
+remove_login_message_blocks();
+
+
 
 
 
@@ -223,7 +234,7 @@ if(Dom.get('login_password').value==''){
     Dom.addClass('login_password','error');
     
     Dom.setStyle('message_login_fields_missing','display','');
-    
+    Dom.get('login_password').focus();
     error=true;
 }else{
     Dom.removeClass('login_password','error');
@@ -234,12 +245,12 @@ if(Dom.get('login_password').value==''){
 Dom.addClass('login_handle','error');
     
     Dom.setStyle('message_login_fields_missing','display','');
-    
+    Dom.get('login_handle').focus();
     error=true;
 }else if(  !isValidEmail(Dom.get('login_handle').value)){
     Dom.addClass('login_handle','error');
         Dom.setStyle('message_login_wrong_email','display','');
-
+Dom.get('login_handle').focus();
     error=true;
 }else{
 Dom.removeClass('login_handle','error');
@@ -283,9 +294,11 @@ Dom.removeClass(['captcha_code2'],'error');
 if(!error)
 submit_forgot_password()
 }
+
+
 function submit_login_on_enter(e){
     Dom.removeClass('login_password','error');
-
+  Dom.removeClass('login_handle','error');
 remove_login_message_blocks()
 
      var key;     
@@ -299,7 +312,28 @@ remove_login_message_blocks()
 	 
 	 }
 };
-function submit_forgot_password_form_on_enter(e){
+function forgot_password_on_enter(e){
+
+
+Dom.setStyle('message_forgot_password_fields_missing','display','none')
+
+
+if(Dom.get('forgot_password_handle').value!=''){
+
+Dom.removeClass('forgot_password_handle','error');
+Dom.setStyle('message_forgot_password_wrong_email','display','none')
+
+}
+
+
+if( Dom.get('captcha_code2').value!=''){
+
+Dom.removeClass(['captcha_code2'],'error');
+
+}
+
+
+
      var key;     
      if(window.event)
          Key = window.event.keyCode; //IE
@@ -312,10 +346,21 @@ function submit_forgot_password_form_on_enter(e){
 	 }
 };
 
-function handle_changed(){
+function handle_changed(e){
 
     Dom.removeClass('login_handle','error');
 remove_login_message_blocks()
+
+ var key;     
+     if(window.event)
+         Key = window.event.keyCode; //IE
+     else
+         Key = e.which; //firefox     
+
+     if (Key == 13){
+	 submit_login();
+	 
+	 }
 
 }
 
@@ -332,12 +377,16 @@ Event.addListener("submit_login", "click", submit_login);
 Event.addListener("link_forgot_password_from_login", "click", show_forgot_password_dialog);
 Event.addListener(['show_login_dialog3','show_login_dialog2'], "click", show_login_dialog);
 Event.addListener('submit_forgot_password', "click", forgot_password);
-Event.addListener('captcha_code2', "keydown", submit_forgot_password_form_on_enter);
+Event.addListener(['forgot_password_handle','captcha_code2'], "keydown", forgot_password_on_enter);
+
+
+
+//Event.addListener('captcha_code2', "keydown", submit_forgot_password_form_on_enter);
 Event.addListener('cancel_forgot_password', "click", cancel_forgot_password);
 
 
-Event.addListener('login_handle', "keydown", handle_changed);
-Event.addListener('login_password', "keydown", submit_login_on_enter);
+//Event.addListener('login_handle', "keydown", handle_changed);
+Event.addListener(['login_password','login_handle'], "keydown", submit_login_on_enter);
 
 
 

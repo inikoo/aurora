@@ -9,158 +9,158 @@ require_once 'ar_edit_common.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
-    $response=array('state'=>400);
-    echo json_encode($response);
-    exit;
+	$response=array('state'=>400);
+	echo json_encode($response);
+	exit;
 }
 
 switch ($_REQUEST['tipo']) {
 case('register'):
-    $data=prepare_values($_REQUEST,array(
-                             'values'=>array('type'=>'json array'),
-                             'store_key'=>array('type'=>'key'),
-                             'site_key'=>array('type'=>'key'),
-                             // 'ep'=>array('type'=>'string')
-                         ));
-    register($data);
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array'),
+			'store_key'=>array('type'=>'key'),
+			'site_key'=>array('type'=>'key'),
+			// 'ep'=>array('type'=>'string')
+		));
+	register($data);
 
-    break;
+	break;
 case('forgot_password'):
-    $data=prepare_values($_REQUEST,array(
-                             'values'=>array('type'=>'json array'),
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array'),
 
-                         ));
-    forgot_password($data);
+		));
+	forgot_password($data);
 
-    break;
+	break;
 
 
 case('change_password'):
-    //  $password=$_REQUEST['password'];
-    $data=prepare_values($_REQUEST,array(
-                             'values'=>array('type'=>'json array'),
+	//  $password=$_REQUEST['password'];
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array'),
 
-                         ));
+		));
 
 
-    change_password($data);
-    break;
+	change_password($data);
+	break;
 case('send_lost_password_email'):
-    $email=$_REQUEST['email'];
-    send_lost_password_email($email);
-    break;
+	$email=$_REQUEST['email'];
+	send_lost_password_email($email);
+	break;
 case('register_customer_old'):
-    $data=prepare_values($_REQUEST,array(
-                             'values'=>array('type'=>'json array')
+	$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array')
 
-                         ));
-    register_customer_old($data);
-    break;
+		));
+	register_customer_old($data);
+	break;
 case('check_email'):
 
-    $data=prepare_values($_REQUEST,array(
-                             'login_handle'=>array('type'=>'string'),
-                             'store_key'=>array('type'=>'key'),
-                             'site_key'=>array('type'=>'key')
-                         ));
+	$data=prepare_values($_REQUEST,array(
+			'login_handle'=>array('type'=>'string'),
+			'store_key'=>array('type'=>'key'),
+			'site_key'=>array('type'=>'key')
+		));
 
-    check_email($data);
-
-
+	check_email($data);
 
 
-    break;
+
+
+	break;
 default:
-    $response=array('state'=>402);
-    echo json_encode($response);
-    exit;
+	$response=array('state'=>402);
+	echo json_encode($response);
+	exit;
 
 }
 
 
 
 function change_password($data) {
-    global $user;
-//print_r($data);
-//  print_r($data['values']);
-    //  print "\n". $user->id;
+	global $user;
+	//print_r($data);
+	//  print_r($data['values']);
+	//  print "\n". $user->id;
 
-    $_key=$user->id.'insecure_key'.$data['values']['ep2'];
-    $password=AESDecryptCtr($data['values']['ep1'], $_key ,256);
+	$_key=$user->id.'insecure_key'.$data['values']['ep2'];
+	$password=AESDecryptCtr($data['values']['ep1'], $_key ,256);
 
-    // print "Key:$_key\n";
-//	print "Jey:\ $_key nPass:$password\n";
-//   exit($password);
-    $user->change_password($password);
-    if ($user->updated) {
-        $response=array('state'=>200,'result'=>'ok',);
-        echo json_encode($response);
-        exit;
-    } else {
-        $response=array('state'=>200,'result'=>'error','msg'=>$user->msg);
-        echo json_encode($response);
-        exit;
+	// print "Key:$_key\n";
+	// print "Jey:\ $_key nPass:$password\n";
+	//   exit($password);
+	$user->change_password($password);
+	if ($user->updated) {
+		$response=array('state'=>200,'result'=>'ok',);
+		echo json_encode($response);
+		exit;
+	} else {
+		$response=array('state'=>200,'result'=>'error','msg'=>$user->msg);
+		echo json_encode($response);
+		exit;
 
-    }
+	}
 }
 
 function send_lost_password_email($email) {
-    global $secret_key,$store_key;
+	global $secret_key,$store_key;
 
-    $user_key=check_email_users($email,$store_key);
-    if (!$user_key) {
-        $customer_key=check_email_customers($email,$store_key);
-        if ($customer_key) {
-            $customer = new Customer('id',$customer_key);
-            $customer->create_user();
-            if ($customer->user_key) {
-                $user_key=$customer->user_key;
-            } else {
-                $response=array('state'=>200,'result'=>'error','msg'=>$customer->msg);
-                echo json_encode($response);
-                exit;
-            }
+	$user_key=check_email_users($email,$store_key);
+	if (!$user_key) {
+		$customer_key=check_email_customers($email,$store_key);
+		if ($customer_key) {
+			$customer = new Customer('id',$customer_key);
+			$customer->create_user();
+			if ($customer->user_key) {
+				$user_key=$customer->user_key;
+			} else {
+				$response=array('state'=>200,'result'=>'error','msg'=>$customer->msg);
+				echo json_encode($response);
+				exit;
+			}
 
-        }
+		}
 
-    }
-
-
+	}
 
 
-    if ($user_key) {
-        $email_to_send=new EmailSend();
-        $email_to_send->compose_lost_password_email($user_key,array(
-                    'Template'=>'emails/html_email_basic_template.html',
-                    'secret_key'=>$secret_key.$store_key)
-
-                                                   );
-        if ($email_to_send->error) {
-            $response=array('state'=>200,'result'=>'error');
 
 
-        } else {
+	if ($user_key) {
+		$email_to_send=new EmailSend();
+		$email_to_send->compose_lost_password_email($user_key,array(
+				'Template'=>'emails/html_email_basic_template.html',
+				'secret_key'=>$secret_key.$store_key)
 
-            $email_send=$email_to_send->send();
-            if ($email_to_send->error) {
-                $response=array('state'=>200,'result'=>'error');
-            } else {
-                $response=array('state'=>200,'result'=>'send');
+		);
+		if ($email_to_send->error) {
+			$response=array('state'=>200,'result'=>'error');
 
-            }
 
-        }
+		} else {
 
-        echo json_encode($response);
-        exit;
+			$email_send=$email_to_send->send();
+			if ($email_to_send->error) {
+				$response=array('state'=>200,'result'=>'error');
+			} else {
+				$response=array('state'=>200,'result'=>'send');
 
-    } else {
+			}
 
-        $response=array('state'=>200,'result'=>'new');
-        echo json_encode($response);
-        exit;
+		}
 
-    }
+		echo json_encode($response);
+		exit;
+
+	} else {
+
+		$response=array('state'=>200,'result'=>'new');
+		echo json_encode($response);
+		exit;
+
+	}
 
 
 
@@ -171,39 +171,39 @@ function send_lost_password_email($email) {
 function check_email_customers($email,$store_key) {
 
 
-    $sql=sprintf("select `Customer Key` from `Email Bridge` B left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)  left join `Customer Dimension` on (`Customer Key`=`Subject Key`) where  `Subject Type`='Customer' and `Email`=%s and `Customer Store Key`=%d",
-                 prepare_mysql($email),
-                 $store_key
-                );
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res)) {
+	$sql=sprintf("select `Customer Key` from `Email Bridge` B left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)  left join `Customer Dimension` on (`Customer Key`=`Subject Key`) where  `Subject Type`='Customer' and `Email`=%s and `Customer Store Key`=%d",
+		prepare_mysql($email),
+		$store_key
+	);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res)) {
 
 
-        return $row['Customer Key'];
+		return $row['Customer Key'];
 
 
 
-    } else {
+	} else {
 
-        return false;
+		return false;
 
 
-    }
+	}
 }
 
 
 
-function check_email_users($email,$store_key) {
-    $sql=sprintf('select `User Key`,`User Parent Key`, `User Handle` from `User Dimension`  where  `User Type`="Customer" and `User Parent Key`=%d  and `User Handle`=%s',$store_key,prepare_mysql($email));
+function check_email_users($email,$site_key) {
+	$sql=sprintf('select `User Key`,`User Parent Key`, `User Handle` from `User Dimension`  where  `User Type`="Customer" and `User Site Key`=%d  and `User Handle`=%s',$site_key,prepare_mysql($email));
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res)) {
+		return $row['User Key'];
 
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res)) {
-        return $row['User Key'];
 
-
-    } else {
-        return 0;
-    }
+	} else {
+		return 0;
+	}
 }
 
 
@@ -212,71 +212,72 @@ function check_email_users($email,$store_key) {
 
 
 function generate_password($length=9, $strength=0) {
-    $vowels = 'aeuy'.md5(mt_rand());
-    $consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
-    if ($strength & 1) {
-        $consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
-    }
-    if ($strength & 2) {
-        $vowels .= "AEUI";
-    }
-    if ($strength & 4) {
-        $consonants .= '2345678906789$%^&*(';
-    }
-    if ($strength & 8) {
-        $consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
-    }
+	$vowels = 'aeuy'.md5(mt_rand());
+	$consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
+	if ($strength & 1) {
+		$consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
+	}
+	if ($strength & 2) {
+		$vowels .= "AEUI";
+	}
+	if ($strength & 4) {
+		$consonants .= '2345678906789$%^&*(';
+	}
+	if ($strength & 8) {
+		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
+	}
 
-    $password = '';
-    $alt = time() % 2;
-    for ($i = 0; $i < $length; $i++) {
-        if ($alt == 1) {
-            $password .= $consonants[(mt_rand() % strlen($consonants))];
-            $alt = 0;
-        } else {
-            $password .= $vowels[(mt_rand() % strlen($vowels))];
-            $alt = 1;
-        }
-    }
-    return $password;
+	$password = '';
+	$alt = time() % 2;
+	for ($i = 0; $i < $length; $i++) {
+		if ($alt == 1) {
+			$password .= $consonants[(mt_rand() % strlen($consonants))];
+			$alt = 0;
+		} else {
+			$password .= $vowels[(mt_rand() % strlen($vowels))];
+			$alt = 1;
+		}
+	}
+	return $password;
 }
 
 function create_customer_user($handle,$customer_key,$site_key,$password, $send_email_flag=true) {
-  //  $handle='raul@inikoo.com';
+	//  $handle='raul@inikoo.com';
 
-    global $site,$store;
+	global $site,$store;
 
-    include_once('class.User.php');
-
-
-    $sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
-                 $customer_key);
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_assoc($res)) {
+	include_once 'class.User.php';
 
 
+	$sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
+		$customer_key);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
 
-        $data=array(
-                  'User Handle'=>$handle,
-                  'User Type'=>'Customer',
-                  'User Password'=>$password,
-                  'User Parent Key'=>$row['Customer Store Key'],
-                  'User Site Key'=>$site_key,
-                  'User Active'=>'Yes',
-                  'User Alias'=>$row['Customer Name'],
-                  'User Parent Key'=>$customer_key
-              );
 
-        $user=new user('new',$data);
-        if (!$user->id) {
 
-            return array(0,$user->msg);
+		$data=array(
+			'User Handle'=>$handle,
+			'User Type'=>'Customer',
+			'User Password'=>$password,
+			'User Parent Key'=>$row['Customer Store Key'],
+			'User Site Key'=>$site_key,
+			'User Active'=>'Yes',
+			'User Alias'=>$row['Customer Name'],
+			'User Parent Key'=>$customer_key
+		);
 
-        } else {
+		$user=new user('new',$data);
+		//print_r($user);
+		if (!$user->id) {
 
-            //print $send_key;exit;
+			return array(0,$user->msg);
 
-/*
+		} else {
+
+			//print $send_key;exit;
+
+			/*
             $email_credential_key=$store->get_email_credential_key('Site Registration');
             //print $email_credential_key;exit;
 
@@ -285,50 +286,69 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 
             $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
 */
+			if ($send_email_flag) {
+				$welcome_email_subject=$site->data['Site Welcome Email Subject'];
+			
 
-$welcome_email_subject=$site->data['Site Welcome Email Subject'];
-$welcome_email_plain=$site->data['Site Welcome Email Plain Body'];
-$welcome_email_html=$site->data['Site Welcome Email HTML Body'];
 
-            $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
-$credentials=$site->get_site_email_credentials();
- $handle='raul@inikoo.com';
-if(!$credentials){
-	 return array($user->id,$user->msg);
-}
-            $message_data['method']='smtp';
-            $message_data['type']='html';
-            $message_data['to']=$handle;
-            $message_data['subject']=$welcome_email_subject;
-            $message_data['html']=$welcome_email_html;
-            $message_data['email_credentials_key']=$credentials['Email Credentials Key'];
-            $message_data['email_matter']='Registration';
-            $message_data['email_matter_key']=$email_mailing_list_key;
-            $message_data['email_matter_parent_key']=$email_mailing_list_key;
-            $message_data['recipient_type']='User';
-            $message_data['recipient_key']=0;
-            $message_data['email_key']=0;
-            $message_data['plain']=$welcome_email_plain;
-            if (isset($message_data['plain']) && $message_data['plain']) {
-                $message_data['plain']=$message_data['plain'];
-            } else
-                $message_data['plain']=null;
+					$smarty_html_email = new Smarty();
+		$smarty_html_email->compile_dir = 'server_files/smarty/templates_c';
+		$smarty_html_email->cache_dir = 'server_files/smarty/cache';
 
-            //print_r($message_data);
-            $send_email=new SendEmail();
+		$smarty_html_email->assign('grettings', $grettings);
+		$html_message = $smarty_html_email->fetch('string:'.$site->data['Site Welcome Email HTML Body']);
 
-            $send_email->track=true;
+		$smarty_plain_email = new Smarty();
+		$smarty_plain_email->compile_dir = 'server_files/smarty/templates_c';
+		$smarty_plain_email->cache_dir = 'server_files/smarty/cache';
 
-            if ($send_email_flag) {
-                $send_result=$send_email->send($message_data);
-            }
+		$smarty_plain_email->assign('grettings', $grettings);
+		$plain_message = $smarty_plain_email->fetch('string:'.$site->data['Site Welcome Email Plain Body']);
 
-            return array($user->id,$user->msg);
-        }
-    } else {
-        return array(0,'customer not found');
 
-    }
+
+
+
+
+				$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+				$credentials=$site->get_email_credentials();
+				$handle='raul@inikoo.com';
+				if (!$credentials) {
+					return array($user->id,$user->msg);
+				}
+				$message_data['method']='smtp';
+				$message_data['type']='html';
+				$message_data['to']=$handle;
+				$message_data['subject']=$welcome_email_subject;
+				$message_data['html']=$welcome_email_html;
+				$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
+				$message_data['email_matter']='Registration';
+				$message_data['email_matter_key']=$email_mailing_list_key;
+				$message_data['email_matter_parent_key']=$email_mailing_list_key;
+				$message_data['recipient_type']='User';
+				$message_data['recipient_key']=0;
+				$message_data['email_key']=0;
+				$message_data['plain']=$welcome_email_plain;
+				if (isset($message_data['plain']) && $message_data['plain']) {
+					$message_data['plain']=$message_data['plain'];
+				} else
+					$message_data['plain']=null;
+
+				//print_r($message_data);
+				$send_email=new SendEmail();
+
+				$send_email->track=true;
+
+
+				$send_result=$send_email->send($message_data);
+			}
+
+			return array($user->id,$user->msg);
+		}
+	} else {
+		return array(0,'customer not found');
+
+	}
 
 
 }
@@ -340,123 +360,125 @@ if(!$credentials){
 
 
 function forgot_password($data) {
-    global $store;
-
-    global $secret_key,$public_url;
-    $store_key=$data['values']['store_key'];
-    $site_key=$data['values']['site_key'];
-    $login_handle=$data['values']['login_handle'];
-    $url=$data['values']['url'];
-    include_once 'external_libs/securimage/securimage.php';
-$site=new Site($site_key);
-
-//print_r($data['values']);
-//print_r($_SESSION);
-
-    $securimage = new Securimage();
-    if ($securimage->check($data['values']['captcha_code']) == false) {
-
-        $response=array('state'=>200,'result'=>'capture_false');
-        echo json_encode($response);
-        exit;
-    }
-
-    $user_key=check_email_users($login_handle,$store_key);
-    if (!$user_key) {
-        $customer_key=check_email_customers($login_handle,$store_key);
-        if ($customer_key) {
-            list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site_key,generate_password(10,10), false);
-        }
-
-    }
-
-    if ($user_key) {
 
 
-        $user=new User($user_key);
-        $customer=new LightCustomer($user->data['User Parent Key']);
+	//global   $secret_key,$public_url;
+	$site_key=$data['values']['store_key'];
+	$site_key=$data['values']['site_key'];
+	$login_handle=$data['values']['login_handle'];
+	$url=$data['values']['url'];
+	include_once 'external_libs/securimage/securimage.php';
+	$site=new Site($site_key);
+
+	//print_r($data['values']);
+	//print_r($_SESSION);
+
+	$securimage = new Securimage();
+	if ($securimage->check($data['values']['captcha_code']) == false) {
+
+		 $response=array('state'=>200,'result'=>'capture_false');
+		echo json_encode($response);
+		exit;
+	}
+
+	$user_key=check_email_users($login_handle,$site->id);
+	if (!$user_key) {
+		$customer_key=check_email_customers($login_handle,$site->data['Site Store Key']);
+		if ($customer_key) {
+			list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site_key,generate_password(10,10), false);
+		}
+
+	}
+
+	if ($user_key) {
 
 
-
-        $email_credential_key=$store->get_email_credential_key('Site Registration');
-
-        //print $email_credential_key=1;
-//print_r($store);
-        $signature_name='';
-        $signature_company='';
-
-        $master_key=$user_key.generatePassword(2,10);
+		$user=new User($user_key);
+		$customer=new Customer($user->data['User Parent Key']);
 
 
 
+		//$email_credential_key=$site->get_email_credential_key('Site Registration');
+		//$credentials=$site->get_email_credentials();
+		//print $email_credential_key=1;
+		//print_r($site);
+		$signature_name='';
+		$signature_company='';
 
-        $sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
-                     prepare_mysql($master_key),
-                     $user_key,
-                     prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hours"))),
-                     prepare_mysql(ip())
-                    );
-
-        mysql_query($sql);
+		$master_key=$user_key.generatePassword(2,10);
 
 
 
 
+		$sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
+			prepare_mysql($master_key),
+			$user_key,
+			prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hours"))),
+			prepare_mysql(ip())
+		);
 
-        $encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
-
-
-        $formated_url=preg_replace('/^http\:\\/\\//','',$url);
-/*
-        $plain_message=$customer->get_greetings()."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$formated_url."?p=".$encrypted_secret_data."\n\n Once you have returned to our website, you will be asked to choose a new password.\n\nThank you \n\n".$signature_name."\n".$signature_company;
-
-*/
-$html_message=$site->data['Site Forgot Password Email HTML Body'];
-
-        $html_message.=$customer->get_greetings()."<br/>We received request to reset the password associated with this email account.<br><br>
-                      If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
-                      <b>Click the link below to reset your password</b>
-                      <br><br>
-                      <a href=\"".$url."?p=".$encrypted_secret_data."\">".$formated_url."?p=".$encrypted_secret_data."</a>
-                      <br></br>
-                      If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
-                      <br><br>
-                      Thank you";
-
-        $email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
-
-	$plain_message=$site->data['Site Forgot Password Email Plain Body'];
-	
-	$forgot_password_subject=$site->data['Site Forgot Password Email Subject'];
-
-$credentials=$site->get_site_email_credentials();
-
-        $message_data['method']='smtp';
-        $message_data['type']='html';
-        $message_data['to']=$login_handle;
-        $message_data['subject']=$forgot_password_subject;
-        $message_data['html']=$html_message;
-        $message_data['email_credentials_key']=$credentials['Email Credentials Key'];
-        $message_data['email_matter']='Password Reminder';
-        $message_data['email_matter_key']=$email_mailing_list_key;
-        $message_data['email_matter_parent_key']=$email_mailing_list_key;
-        $message_data['recipient_type']='User';
-        $message_data['recipient_key']=0;
-        $message_data['email_key']=0;
-        $message_data['plain']=$plain_message;
-        if (isset($message_data['plain']) && $message_data['plain']) {
-            $message_data['plain']=$message_data['plain'];
-        } else
-            $message_data['plain']=null;
-
-        //print_r($message_data);
-        $send_email=new SendEmail();
-
-        $send_email->track=true;
+		mysql_query($sql);
 
 
-        $result=$send_email->send($message_data);
-        /*
+
+		$secret_key=$site->data['Site Secret Key'];
+
+		$encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
+
+
+
+
+		$masterkey_link=$url."?p=".$encrypted_secret_data;
+		$grettings=$customer->get_greetings();
+
+		$smarty_html_email = new Smarty();
+		$smarty_html_email->compile_dir = 'server_files/smarty/templates_c';
+		$smarty_html_email->cache_dir = 'server_files/smarty/cache';
+
+		$smarty_html_email->assign('grettings', $grettings);
+		$smarty_html_email->assign('masterkey_link', $masterkey_link);
+		$html_message = $smarty_html_email->fetch('string:'.$site->data['Site Forgot Password Email HTML Body']);
+
+		$smarty_plain_email = new Smarty();
+		$smarty_plain_email->compile_dir = 'server_files/smarty/templates_c';
+		$smarty_plain_email->cache_dir = 'server_files/smarty/cache';
+
+		$smarty_plain_email->assign('grettings', $grettings);
+		$smarty_plain_email->assign('masterkey_link', $masterkey_link);
+		$plain_message = $smarty_plain_email->fetch('string:'.$site->data['Site Forgot Password Email Plain Body']);
+
+
+
+		$forgot_password_subject=$site->data['Site Forgot Password Email Subject'];
+
+		$credentials=$site->get_email_credentials();
+		$login_handle='raul@inikoo.com';
+		$message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$login_handle;
+		$message_data['subject']=$forgot_password_subject;
+		$message_data['html']=$html_message;
+		$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
+		$message_data['email_matter']='Password Reminder';
+		$message_data['email_matter_key']=0;
+		$message_data['email_matter_parent_key']=0;
+		$message_data['recipient_type']='User';
+		$message_data['recipient_key']=0;
+		$message_data['email_key']=0;
+		$message_data['plain']=$plain_message;
+		if (isset($message_data['plain']) && $message_data['plain']) {
+			$message_data['plain']=$message_data['plain'];
+		} else
+			$message_data['plain']=null;
+
+		//print_r($message_data);
+		$send_email=new SendEmail();
+
+		$send_email->track=true;
+
+
+		$result=$send_email->send($message_data);
+		/*
         		$data=array('email_type'=>'Password Reminder',
         				  'recipient_type'=>'User',
         				  'recipient_key'=>$user->id);
@@ -490,52 +512,52 @@ $credentials=$site->get_site_email_credentials();
 
         		//print_r($result);
         */
-        if ($result['msg']=='ok') {
-            $response=array('state'=>200,'result'=>'send');
-            echo json_encode($response);
-            exit;
+		if ($result['msg']=='ok') {
+			$response=array('state'=>200,'result'=>'send');
+			echo json_encode($response);
+			exit;
 
-        } else {
-            //print_r($result);
-            $response=array('state'=>200,'result'=>'error '.join(' ',$result));
-            echo json_encode($response);
-            exit;
-        }
+		} else {
+			//print_r($result);
+			$response=array('state'=>200,'result'=>'error '.join(' ',$result));
+			echo json_encode($response);
+			exit;
+		}
 
 
-    } else {
-        $response=array('state'=>200,'result'=>'handle_not_found');
-        echo json_encode($response);
-        exit;
-    }
+	} else {
+		$response=array('state'=>200,'result'=>'handle_not_found');
+		echo json_encode($response);
+		exit;
+	}
 
 }
 
 function check_email($data) {
-    $store_key=$data['store_key'];
-    $site_key=$data['site_key'];
-    $login_handle=_trim($data['login_handle']);
+	$store_key=$data['store_key'];
+	$site_key=$data['site_key'];
+	$login_handle=_trim($data['login_handle']);
 
 
-    if ($login_handle=='') {
+	if ($login_handle=='') {
 
-        $response=array('state'=>200,'result'=>'error');
-        echo json_encode($response);
-        exit;
-    }
+		$response=array('state'=>200,'result'=>'error');
+		echo json_encode($response);
+		exit;
+	}
 
-    $found=check_email_customers($login_handle,$store_key);
+	$found=check_email_customers($login_handle,$store_key);
 
-    if ($found) {
-        $response=array('state'=>200,'result'=>'found');
-        echo json_encode($response);
-        exit;
-    } else {
-        $response=array('state'=>200,'result'=>'not_found','login_handle'=>$login_handle,'epw2'=>md5($login_handle.'x**X'));
-        echo json_encode($response);
-        exit;
+	if ($found) {
+		$response=array('state'=>200,'result'=>'found');
+		echo json_encode($response);
+		exit;
+	} else {
+		$response=array('state'=>200,'result'=>'not_found','login_handle'=>$login_handle,'epw2'=>md5($login_handle.'x**X'));
+		echo json_encode($response);
+		exit;
 
-    }
+	}
 
 
 
@@ -543,126 +565,104 @@ function check_email($data) {
 
 function register($data) {
 
-    include_once 'external_libs/securimage/securimage.php';
+	include_once 'external_libs/securimage/securimage.php';
+	$securimage = new Securimage();
+	if ($securimage->check($data['values']['captcha_code']) == false) {
 
-    $securimage = new Securimage();
+		$response=array('state'=>200,'result'=>'capture_false');
+		echo json_encode($response);
+		exit;
+	}
 
-    //print_r($data);
+	include_once 'edit_customers_functions.php';
+	global $editor;
 
-    //print_r($_SESSION);
+	if ($data['values']['Customer Name']=='') {
 
-    if ($securimage->check($data['values']['captcha_code']) == false) {
-
-        $response=array('state'=>200,'result'=>'capture_false');
-        echo json_encode($response);
-        exit;
-    }
-
-
-    //echo $data['values']['captcha_code'];
-
-
-    include_once('edit_customers_functions.php');
-
-    global $editor;
+		$data['values']['Customer Type']='Person';
+	} else {
+		$data['values']['Customer Type']='Company';
 
 
+	}
+
+	if ($data['values']['Customer Address Country Code']=='')
+		$data['values']['Customer Address Country Code']='UNK';
+
+	$data['values']['editor']=$editor;
+
+	$found=check_email_customers($data['values']['Customer Main Plain Email'],$data['store_key']);
+
+	if ($found) {
+		$response=array('state'=>200,'result'=>'handle_found');
+		echo json_encode($response);
+		exit;
+
+	}
+
+	$response=add_customer($data['values']) ;
+
+	if ($response['state']==200 and $response['action']=='created' ) {
+		// $ep=rawurldecode($data['ep']);
+		$customer=new Customer($response['customer_key']);
+		if ($data['values']['Customer Send Postal Marketing']=='Yes') {
+			$sql=sprintf("insert into `Marketing Post Sent Fact` (`Marketing Post Key`, `Customer Key`, `Store Key`, `Requested Date`) values (%d, %d, %d, NOW())", 1, $customer->id, $customer->get('Customer Store Key'));
+			//print $sql;
+			$result=mysql_query($sql);
+		}
 
 
+		$password=AESDecryptCtr($data['values']['ep'],md5($data['values']['Customer Main Plain Email'].'x**X'),256);
+		list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
+		if ($user_key) {
 
+			$_SESSION['logged_in']=true;
+			$_SESSION['store_key']=$data['store_key'];
+			$_SESSION['site_key']=$data['site_key'];
 
-    if ($data['values']['Customer Name']=='') {
+			$_SESSION['user_key']=$user_key;
+			$_SESSION['customer_key']=$response['customer_key'];
 
-        $data['values']['Customer Type']='Person';
-    } else {
-        $data['values']['Customer Type']='Company';
+			$response=array('state'=>200,'result'=>'logged_in');
+			echo json_encode($response);
+			exit;
 
+		}else {
+			$response=array('state'=>200,'result'=>'error');
+			echo json_encode($response);
+			exit;
 
-    }
+		}
 
-    if ($data['values']['Customer Address Country Code']=='')
-        $data['values']['Customer Address Country Code']='UNK';
-
-    $data['values']['editor']=$editor;
-
-
-
-//print_r($data['values']);
-
-
-    $found=check_email_customers($data['values']['Customer Main Plain Email'],$data['store_key']);
-
-    if ($found) {
-        $response=array('state'=>200,'result'=>'handle_found');
-        echo json_encode($response);
-        exit;
-
-    }
-
-
-    $response=add_customer($data['values']) ;
-
-    if ($response['state']==200 and $response['action']=='created' ) {
-        // $ep=rawurldecode($data['ep']);
-        $customer=new Customer($response['customer_key']);
-        if ($data['values']['Customer Send Postal Marketing']=='Yes') {
-            $sql=sprintf("insert into `Marketing Post Sent Fact` (`Marketing Post Key`, `Customer Key`, `Store Key`, `Requested Date`) values (%d, %d, %d, NOW())", 1, $customer->id, $customer->get('Customer Store Key'));
-            //print $sql;
-            $result=mysql_query($sql);
-        }
-
-
-        $password=AESDecryptCtr($data['values']['ep'],md5($data['values']['Customer Main Plain Email'].'x**X'),256);
-        list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
-        if ($user_key) {
-
-            $_SESSION['logged_in']=true;
-            $_SESSION['store_key']=$data['store_key'];
-            $_SESSION['site_key']=$data['site_key'];
-
-            $_SESSION['user_key']=$user_key;
-            $_SESSION['customer_key']=$response['customer_key'];
-
-            $response=array('state'=>200,'result'=>'logged_in');
-            echo json_encode($response);
-            exit;
-
-        }else{
-         $response=array('state'=>200,'result'=>'error');
-            echo json_encode($response);
-            exit;
-        
-        }
-
-    }
+	}
 
 
 
 
 
 
-    echo json_encode($response);
+	echo json_encode($response);
 }
 
 
 function hasher($info, $encdata = false) {
-    $strength = "08";
-    //if encrypted data is passed, check it against input ($info)
-    if ($encdata) {
-        if (substr($encdata, 0, 60) == crypt($info, "$2a$".$strength."$".substr($encdata, 60))) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        //make a salt and hash it with input, and add salt to end
-        $salt = "";
-        for ($i = 0; $i < 22; $i++) {
-            $salt .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", mt_rand(0, 63), 1);
-        }
-        //return 82 char string (60 char hash & 22 char salt)
-        return crypt($info, "$2a$".$strength."$".$salt).$salt;
-    }
+	$strength = "08";
+	//if encrypted data is passed, check it against input ($info)
+	if ($encdata) {
+		if (substr($encdata, 0, 60) == crypt($info, "$2a$".$strength."$".substr($encdata, 60))) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		//make a salt and hash it with input, and add salt to end
+		$salt = "";
+		for ($i = 0; $i < 22; $i++) {
+			$salt .= substr("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", mt_rand(0, 63), 1);
+		}
+		//return 82 char string (60 char hash & 22 char salt)
+		return crypt($info, "$2a$".$strength."$".$salt).$salt;
+	}
 }
 
 

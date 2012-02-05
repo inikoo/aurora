@@ -509,6 +509,130 @@ link to edit_site_section.php?id=
       </div>
 <div  class="edit_block" style="{if $block_view!='email'}display:none{/if}"  id="d_email"> 
 {include file='email_credential_splinter.tpl' site=$site email_credentials=$email_credentials}
+
+
+<table class="edit" border=0 style="width:100%">
+
+
+<tr class="title"><td colspan=2>{t}Welcome Email{/t}</td>
+<td>
+<div class="buttons">
+	        <button  style="visibility:hidden"  id="save_edit_email_welcome" class="positive">{t}Save{/t}</button>
+	        <button style="visibility:hidden" id="reset_edit_email_welcome" class="negative">{t}Reset{/t}</button>
+		
+ </div>
+</td>
+</tr>
+
+<td class="label" style="width:200px">{t}Subject{/t}:</td>
+<td  style="text-align:left;width:400px">
+     <div>
+       <input style="text-align:left;width:100%" id="welcome_subject" value="{$site->get('Site Welcome Email Subject')|escape}" ovalue="{$site->get('Site Welcome Email Subject')|escape}" valid="0">
+       <div id="welcome_subject_Container"  ></div>
+     </div>
+
+</td>
+<td id="welcome_subject_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td class="label">{t}Body Plain Text{/t}: <span id="welcome_body_plain_msg" ></span></td>
+<td  style="text-align:left" colspan=2>
+     <div style="height:265px">
+       <textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);"   id="welcome_body_plain" value="{$site->get('Site Welcome Email Plain Body')|escape}" ovalue="{$site->get('Site Welcome Email Plain Body')|escape}" valid="0">{$site->get('Site Welcome Email Plain Body')}</textarea>
+       <div id="welcome_body_plain_Container"  ></div>
+     </div>
+
+</td>
+
+</tr>
+
+<tr>
+<td class="label">{t}Body HTML{/t}:</td>
+<td  style="text-align:left">
+     <div style="height:70px">
+       <textarea style="height:65px;width:100%"    id="welcome_body_html" value="{$site->get('Site Welcome Email HTML Body')|escape}" ovalue="{$site->get('Site Welcome Email HTML Body')|escape}" valid="0">{$site->get('Site Welcome Email HTML Body')}</textarea>
+       <div id="welcome_body_html_Container"  ></div>
+     </div>
+
+</td>
+<td id="welcome_body_html_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr class="title"><td colspan=2>{t}Welcome Message{/t}</td>
+<td>
+<div class="buttons">
+	        <button  style="visibility:hidden"  id="save_edit_welcome_message" class="positive">{t}Save{/t}</button>
+	        <button style="visibility:hidden" id="reset_edit_welcome_message" class="negative">{t}Reset{/t}</button>
+		
+ </div>
+</td>
+</tr>
+<tr>
+<td class="label">{t}Message{/t}:</td>
+<td  style="text-align:left">
+     <div style="height:70px">
+        <textarea style="height:65px;width:100%"   id="welcome_source" value="{$site->get('Site Welcome Source')}" ovalue="{$site->get('Site Welcome Source')}" valid="0">{$site->get('Site Welcome Source')}</textarea>
+       <div id="welcome_source_Container"  ></div>
+     </div>
+
+</td>
+<td id="welcome_source_msg" class="edit_td_alert"></td>
+</tr>
+
+
+
+
+<tr class="title"><td colspan=2>{t}Forgot Password Email{/t}</td>
+<td>
+<div class="buttons">
+	        <button  style="visibility:hidden"  id="save_edit_email_forgot" class="positive">{t}Save{/t}</button>
+	        <button style="visibility:hidden" id="reset_edit_email_forgot" class="negative">{t}Reset{/t}</button>
+		
+ </div>
+</td>
+</tr>
+<tr>
+<td class="label">{t}Subject{/t}:</td>
+<td  style="text-align:left">
+     <div>
+       <input style="text-align:left;width:100%" id="forgot_password_subject" value="{$site->get('Site Forgot Password Email Subject')|escape}" ovalue="{$site->get('Site Forgot Password Email Subject')|escape}" valid="0">
+       <div id="forgot_password_subject_Container"  ></div>
+     </div>
+
+</td>
+<td id="forgot_password_subject_msg" class="edit_td_alert"></td>
+</tr>
+
+<tr>
+<td class="label">{t}Body Plain Text{/t}: <span id="forgot_password_body_plain_msg" ></spnn></td>
+<td  style="text-align:left" colspan=2>
+     <div style="height:305px">
+       <textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);"   id="forgot_password_body_plain" value="{$site->get('Site Forgot Password Email Plain Body')|escape}" ovalue="{$site->get('Site Forgot Password Email Plain Body')|escape}" valid="0">{$site->get('Site Forgot Password Email Plain Body')}</textarea>
+       <div id="forgot_password_body_plain_Container"  ></div>
+     </div>
+
+</td>
+
+</tr>
+
+<tr>
+<td class="label">{t}Body HTML{/t}:</td>
+<td  style="text-align:left">
+     <div style="height:305px">
+        <textarea style="height:300px;width:100%"   id="forgot_password_body_html" value="{$site->get('Site Forgot Password Email HTML Body')|escape}" ovalue="{$site->get('Site Forgot Password Email HTML Body')|escape}" valid="0">{$site->get('Site Forgot Password Email HTML Body')}</textarea>
+       <div id="forgot_password_body_html_Container"  ></div>
+     </div>
+
+</td>
+<td id="forgot_password_body_html_msg" class="edit_td_alert"></td>
+</tr>
+
+
+</table>
+
+
+
 </div>
     <div  class="edit_block" style="{if $block_view!='pages'}display:none{/if}"  id="d_pages"> 
      <div class="general_options" style="float:right">

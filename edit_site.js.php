@@ -46,18 +46,27 @@ var validate_scope_data=
 		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search CSS','name':'site_search_css','ar':false}
 		,'javascript':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Search Javascript','name':'site_search_javascript','ar':false}
 },
-'email_credentials':{
-	'email':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
-	,'password':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
-	,'incoming_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Incoming_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
-	,'outgoing_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Outgoing_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
-	,'forgot_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Plain Body Text')?>'}]}
+
+'email_forgot':{
+	'forgot_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Plain Body Text')?>'}]}
 	,'forgot_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email HTML Body Text')?>'}]}
 	,'forgot_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'forgot_password_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Forgot Password Email Subject')?>'}]}
-	,'welcome_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Plain Body Text')?>'}]}
+},
+'email_welcome':{
+	'welcome_body_plain':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_plain','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Plain Body Text')?>'}]}
 	,'welcome_body_html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_body_html','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email HTML Body Text')?>'}]}
 	,'welcome_subject':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_subject','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Email Subject')?>'}]}
-	,'welcome_source':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_source','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Source')?>'}]}
+},
+'welcome_message':{
+	'welcome_source':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'welcome_source','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Welcome Source')?>'}]}
+}, 'email_credentials':{
+	'email':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'login':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Login','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Login')?>'}]}
+
+	,'password':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
+	,'incoming_server':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Incoming_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
+	,'outgoing_server':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Outgoing_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':false,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
 
 }
 
@@ -68,7 +77,11 @@ var validate_scope_metadata={
 'site':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'site_menu':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'site_search':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+,'email_forgot':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+,'email_welcome':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+,'welcome_message':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'email_credentials':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+
 };
 
 
@@ -696,7 +709,14 @@ init_search('site');
     
    
   
+ Event.addListener('save_edit_email_forgot', "click", save_edit_email_forgot);
+ Event.addListener('reset_edit_email_forgot', "click", reset_edit_email_forgot);
 
+ Event.addListener('save_edit_email_welcome', "click", save_edit_email_welcome);
+ Event.addListener('reset_edit_email_welcome', "click", reset_edit_email_welcome);
+
+ Event.addListener('save_edit_welcome_message', "click", save_edit_welcome_message);
+ Event.addListener('reset_edit_welcome_message', "click", reset_edit_welcome_message);
 
 
  Event.addListener('save_edit_site_menu', "click", save_edit_site_menu);
@@ -877,6 +897,52 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
     site_ftp_directory_oAutoComp.queryDelay = 0.1;     
 	
 	
+		var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_plain);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_plain","forgot_password_body_plain_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_html);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_html","forgot_password_body_html_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_subject);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_subject","forgot_password_subject_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_plain);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_plain","welcome_body_plain_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_html);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_html","welcome_body_html_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_subject);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_subject","welcome_subject_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_source);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_source","welcome_source_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
+
+	
+	
 	YAHOO.util.Event.addListener('save_edit_site', "click", save_edit_site);
     YAHOO.util.Event.addListener('reset_edit_site', "click", reset_edit_site);
     
@@ -912,6 +978,31 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
  oAutoComp3.minQueryLength = 0; 
     
 }
+
+function save_edit_email_forgot(){
+    save_edit_general_bulk('email_forgot');
+}
+
+function reset_edit_email_forgot(){
+    reset_edit_general('email_forgot')
+}
+
+function save_edit_email_welcome(){
+    save_edit_general_bulk('email_welcome');
+}
+
+function reset_edit_email_welcome(){
+    reset_edit_general('email_welcome')
+}
+
+function save_edit_welcome_message(){
+    save_edit_general_bulk('welcome_message');
+}
+
+function reset_edit_welcome_message(){
+    reset_edit_general('welcome_message')
+}
+
 
 function save_edit_site(){
     save_edit_general_bulk('site');
@@ -959,6 +1050,32 @@ function validate_site_ftp_directory(query){
 function validate_site_ftp_port(query){
  validate_general('site','ftp_port',unescape(query));
 }
+
+
+function validate_forgot_body_plain(query){
+ validate_general('email_forgot','forgot_body_plain',unescape(query));
+}
+function validate_forgot_body_html(query){
+ validate_general('email_forgot','forgot_body_html',unescape(query));
+}
+function validate_forgot_subject(query){
+ validate_general('email_forgot','forgot_subject',unescape(query));
+}
+function validate_welcome_body_plain(query){
+ validate_general('email_welcome','welcome_body_plain',unescape(query));
+}
+function validate_welcome_body_html(query){
+ validate_general('email_welcome','welcome_body_html',unescape(query));
+}
+function validate_welcome_subject(query){
+ validate_general('email_welcome','welcome_subject',unescape(query));
+}
+function validate_welcome_source(query){
+ validate_general('welcome_message','welcome_source',unescape(query));
+}
+
+
+
 
 
 function validate_site_url(query){

@@ -6,35 +6,50 @@ function change_email_method(){
 	Dom.addClass(this.id,'selected');
 
 	if(this.id=='other'){
-		Dom.setStyle('other_tbody','display','');
-		reset_gmail_settings();	
+		Dom.setStyle(['other_tbody','tr_email_login'],'display','');
+		set_provider_as_other();	
 	}
 	else{
-		Dom.setStyle('other_tbody','display','none');
-		auto_fill_gmail_settings();
+		Dom.setStyle(['other_tbody','tr_email_login'],'display','none');
+		set_provider_as_gmail();
 	}
 }
 
-function auto_fill_gmail_settings(){
-	validate_scope_data['email_credentials']['incoming_server'].validated=true;
+function set_provider_as_gmail(){
+	Dom.get('Email_Login').value='x';
+
+	Dom.get('Incoming_Server').value='x';
+	Dom.get('Outgoing_Server').value='x';
+	Dom.get('Email_Provider').value='Gmail';
+		validate_scope_data['email_credentials']['incoming_server'].validated=true;
 	validate_scope_data['email_credentials']['incoming_server'].changed=true;
 	validate_scope_data['email_credentials']['outgoing_server'].validated=true;
 	validate_scope_data['email_credentials']['outgoing_server'].changed=true;
-	Dom.get('Incoming_Server').value=Dom.get('incoming_server').value;
-	Dom.get('Outgoing_Server').value=Dom.get('outgoing_server').value;
+	validate_scope_data['email_credentials']['login'].validated=true;
+	validate_scope_data['email_credentials']['login'].changed=true;
+	validate_scope('email_credentials')
 }
 
-function reset_gmail_settings(){
+function set_provider_as_other(){
 	validate_scope_data['email_credentials']['incoming_server'].validated=false;
 	validate_scope_data['email_credentials']['incoming_server'].changed=false;
 	validate_scope_data['email_credentials']['outgoing_server'].validated=false;
 	validate_scope_data['email_credentials']['outgoing_server'].changed=false;
+	validate_scope_data['email_credentials']['login'].validated=false;
+	validate_scope_data['email_credentials']['login'].changed=false;
 	Dom.get('Incoming_Server').value='';
 	Dom.get('Outgoing_Server').value='';
+	Dom.get('Email_Login').value='';
+	Dom.get('Email_Provider').value='Other';
+	validate_scope('email_credentials')
+
 }
 
 function validate_email_address(query){
  validate_general('email_credentials','email',unescape(query));
+}
+function validate_login(query){
+ validate_general('email_credentials','login',unescape(query));
 }
 function validate_password(query){
  validate_general('email_credentials','password',unescape(query));
@@ -45,35 +60,16 @@ function validate_incoming_server(query){
 function validate_outgoing_server(query){
  validate_general('email_credentials','outgoing_server',unescape(query));
 }
-function validate_forgot_body_plain(query){
- validate_general('email_credentials','forgot_body_plain',unescape(query));
-}
-function validate_forgot_body_html(query){
- validate_general('email_credentials','forgot_body_html',unescape(query));
-}
-function validate_forgot_subject(query){
- validate_general('email_credentials','forgot_subject',unescape(query));
-}
-function validate_welcome_body_plain(query){
- validate_general('email_credentials','welcome_body_plain',unescape(query));
-}
-function validate_welcome_body_html(query){
- validate_general('email_credentials','welcome_body_html',unescape(query));
-}
-function validate_welcome_subject(query){
- validate_general('email_credentials','welcome_subject',unescape(query));
-}
-function validate_welcome_source(query){
- validate_general('email_credentials','welcome_source',unescape(query));
-}
 
 	
 
 
 function save_edit_email_credentials(){
-    save_edit_general('email_credentials');
+    save_edit_general_bulk('email_credentials');
 }
-
+function reset_edit_email_credentials(){
+    reset_edit_general('email_credentials');
+}
 
 
 function test_email_credentials(){
@@ -138,14 +134,25 @@ success:function(o) {
 }
 
 
-function init(){
-	auto_fill_gmail_settings();
+function init_email_credentials(){
+	//auto_fill_gmail_settings();
+
+
+
+
 
 	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_email_address);
 	site_slogan_oACDS.queryMatchContains = true;
 	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Email_Address","Email_Address_Container", site_slogan_oACDS);
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+
+var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_login);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Email_Login","Email_Login_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+
 
 	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_password);
 	site_slogan_oACDS.queryMatchContains = true;
@@ -165,53 +172,12 @@ function init(){
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
 
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_plain);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_plain","welcome_body_plain_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_html);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_html","welcome_body_html_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_subject);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_subject","welcome_subject_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_plain);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_plain","forgot_password_body_plain_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_body_html);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_body_html","forgot_password_body_html_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_forgot_subject);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("forgot_password_subject","forgot_password_subject_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
-
-	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_source);
-	site_slogan_oACDS.queryMatchContains = true;
-	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_source","welcome_source_Container", site_slogan_oACDS);
-	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
-	customer_Registration_Number_oAutoComp.queryDelay = 0.1; 
 
 	Event.addListener(["gmail","other"], "click", change_email_method);
 
 
 	Event.addListener('save_edit_email_credentials', "click", save_edit_email_credentials);
-	//Event.addListener('reset_edit_email_credentials', "click", reset_edit_email_credentials);
+	Event.addListener('reset_edit_email_credentials', "click", reset_edit_email_credentials);
 
 	Event.addListener('delete_email_credentials', "click", delete_email_credentials);
 	//Event.addListener('test_email_credentials', "click", test_email_credentials);
@@ -221,4 +187,4 @@ function init(){
 	dialog_test_email_credentials.render();
 }
 
-YAHOO.util.Event.onDOMReady(init);
+YAHOO.util.Event.onDOMReady(init_email_credentials);

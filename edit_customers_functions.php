@@ -2,7 +2,8 @@
 function add_customer($data) {
     //Timer::timing_milestone('begin');
 
-
+//print_r($data);
+//exit;
 
 
     if ($data['Customer Type']=='Person') {
@@ -38,7 +39,7 @@ function add_customer($data) {
                 $address_home_data[$_key]=$val;
         }
 
-        $contact->create($contact_data,$address_home_data);
+        $contact->create($contact_data,$address_home_data,$options='','customer',$data['Customer Store Key']);
 
         // print_r($contact_data);
         //exit;
@@ -70,7 +71,8 @@ function add_customer($data) {
             $contact_data[$_key]=$val;
         }
 
-        $contact->create($contact_data);
+        $contact->create($contact_data,$address_home_data='',$options='','customer',$data['Customer Store Key']);
+        //print_r($contact);
         $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
 
         $company_data=array();

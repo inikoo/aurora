@@ -5483,6 +5483,10 @@ ALTER TABLE `Site Dimension` ADD `Site FTP Protocol` ENUM( 'SFTP', 'FTP', 'FTPS'
 ALTER TABLE `Site Dimension` ADD `Site FTP Port` MEDIUMINT( 8 ) NULL AFTER `Site FTP Protocol`
 ALTER TABLE `Site Dimension` CHANGE `Site FTP Protocol` `Site FTP Protocol` ENUM( 'SFTP', 'FTP', 'FTPS' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FTPS';
 ALTER TABLE `Site Dimension` CHANGE `Site FTP Port` `Site FTP Port` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
-//mysql-bin.000001 |      106 |
+//mysql-bin.000001 |      106 |;79911
 
 ALTER TABLE `Site Dimension` ADD `Site Total Users` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `User Dimension` DROP INDEX `User Handle` ,ADD UNIQUE `User Handle` ( `User Handle` , `User Type` , `User Site Key` ) ;
+ALTER TABLE `Email Credentials Dimension` ADD `Email Provider` ENUM( 'Gmail', 'Other' ) NOT NULL DEFAULT 'Other' AFTER `Email Credentials Key` ;
+ALTER TABLE `dw`.`Email Credentials Site Bridge` ADD PRIMARY KEY ( `Email Credentials Key` , `Site Key` ) ;
+

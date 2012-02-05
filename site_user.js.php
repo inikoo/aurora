@@ -61,7 +61,7 @@ print $s;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['login_history']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['site_user']['login_history']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -71,8 +71,8 @@ print $s;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['staff_user']['login_history']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['staff_user']['login_history']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['site_user']['login_history']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['site_user']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -86,7 +86,7 @@ print $s;
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['site_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['site_user']['login_history']['f_value']?>'};
 	   
 	   
 	   
@@ -127,7 +127,7 @@ print $s;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['login_history']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage:<?php echo$_SESSION['state']['site_user']['login_history']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -137,8 +137,8 @@ print $s;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['staff_user']['login_history']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['staff_user']['login_history']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['site_user']['login_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site_user']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -152,7 +152,7 @@ print $s;
 
 
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['site_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['site_user']['login_history']['f_value']?>'};
 
 
 
