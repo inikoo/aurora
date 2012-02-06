@@ -24,7 +24,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 $site=new Site($site_id);
 
-
+//print_r($site);
 
 
 
@@ -34,8 +34,9 @@ if($ftp_connection->error){
 	print $ftp_connection->msg;
 }else{
     
-    $ftp_connection->upload('./caca.html','./caca.html');
+    $ftp_connection->upload_string('aaaaa','./this/that/do.html');
     print_r($ftp_connection);
 }
 
+$ftp_connection->end();
 exit;
