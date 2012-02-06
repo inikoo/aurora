@@ -2438,6 +2438,9 @@ class Page extends DB_Table {
 		
 
 		$site=new Site($this->data['Page Site Key']);
+		print $_source."\n";
+		print $site->data['Site FTP Server']."\n";
+
 		if (strtolower($site->data['Site FTP Server'])==$_source) {
 			$ftp_pass='Yes';
 		}
