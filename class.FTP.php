@@ -20,6 +20,7 @@ class FTP {
 	var $write;
 	var $protocol;
 	var $passive;
+	var $error;
 	// SET THE CONNECTION VARIABLES
 	function FTP($host,$user="anonymous",$password="nobody@nobody.com",$protocol='SFTP',$port=false,$passive=true) {
 		$this->port = $port;
@@ -74,7 +75,6 @@ class FTP {
 
 
 	function login() {
-
 		switch ($this->protocol) {
 		case 'FTPS':
 		case 'FTP':
@@ -99,7 +99,7 @@ class FTP {
 
 		}
 
-
+	
 
 
 	}
@@ -233,6 +233,66 @@ class FTP {
 	// QUICK END COMMAND
 	function end() {
 		$this->close();
+	}
+
+	function upload_string($source_file,$destination_file,$type=""){
+
+		$this->source = $source_file;
+		$this->destination = $destination_file;
+		$this->type = $type;
+
+		switch ($this->type) // MODE = 'FTP_ASCII' or 'FTP_BINARY'
+			{
+		case"image/gif":
+		case"image/png":
+		case"image/jpeg":
+			$this->mode = FTP_BINARY;
+			break;
+		default:
+			$this->mode = FTP_ASCII;
+		}
+
+	
+	    $contents = ftp_nlist($this->connection, ".");
+	    
+	    // output $contents
+	    var_dump($contents);
+		$file_name=explode('/', $destination_file);
+		$file=array_pop($file_name);
+
+		$destination_path=dirname($destination_file);
+
+
+		$folders=explode('/',$destination_path);
+
+		if($folders[0]=='.'){
+			array_shift($folders);
+		}
+
+		foreach($folders as $folder){
+			if(ftp_chdir($this->connection, $folder)){
+				continue;
+			}
+			else{
+				ftp_mkdir($this->connection, $folder);
+				ftp_chdir($this->connection, $folder);
+			}
+		}
+
+		$temp = tmpfile();
+		fwrite($temp, $this->source);
+		fseek($temp, 0);
+		//echo fread($temp, 1024);
+		
+		$this->put = ftp_fput($this->connection, $file, $temp, $this->mode);
+
+		if (!$this->put) {
+			$this->error=true;
+		$this->msg=_('Can not upload file').' '.$this->source.' -> '.$this->destination;
+		}
+
+		fclose($temp);
+		
 	}
 }
 ?>
