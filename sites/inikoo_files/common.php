@@ -58,26 +58,6 @@ $max_session_time=1000000;
 $session = new Session($max_session_time,1,100);
 
 
-/*
-$public_url=$myconf['public_url'];
-if (!isset($_SESSION['basket'])) {
-    if (!isset($_COOKIE['qty']))
-        $_SESSION['basket']=array('items'=>0,'total'=>0);
-    else
-        $_SESSION['basket']=array('items'=>$_COOKIE['qty'],'total'=>$_COOKIE['tot']);
-
-}
-
-if (isset($_REQUEST['qty']) and is_numeric($_REQUEST['qty'])) {
-    $_SESSION['basket']['items']=$_REQUEST['qty'];
-    setcookie('qty', $_SESSION['basket']['items'], time()+60*60*2, "/");
-}
-if (isset($_REQUEST['tot']) and is_numeric($_REQUEST['tot'])) {
-    $_SESSION['basket']['total']=$_REQUEST['tot'];
-    setcookie('tot', $_SESSION['basket']['total'], time()+60*60*2, "/");
-}
-
-*/
 
 $site=new Site($myconf['site_key']);
 
@@ -101,49 +81,21 @@ textdomain("inikoo_sites");
 
 $checkout_method=$site->data['Site Checkout Method'];
 
-//global $registration_method;
-
-//if($site->data['Site Registration Method']=='SideBar')
-// $registration_method=true;
-//else
-// $registration_method=0;
 
 $secret_key=$site->data['Site Secret Key'];
 
 $store_key=$site->data['Site Store Key'];
 $store=new Store($store_key);
 
-//$storetelephone=$store->data['Store Telephone'];
-//  $address=$store->data['Store Address'];
+
 
 $store_code=$store->data['Store Code'];
-//$smarty->assign('store_code',$store_code);
-//$smarty->assign('store_key',$store_key);
 
-//$_client_locale=$store->data['Store Locale'].'.UTF-8';
 setlocale(LC_MONETARY, $site->data['Site Locale']);
-
-
-//$traslated_labels=array();
-
-//if (file_exists($store_code.'/labels.php')) {
-//    require_once $store_code.'/labels.php';
-//} else {
-//    require_once 'conf/labels.php';
-//}
-
-
-
-
-//$_SESSION ['lang']='';
-
 $authentication_type='login';
 
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 
-
-//print "<br> xxx1";
-//print_r($_SESSION);
 
 
 if ($logout) {
@@ -179,21 +131,11 @@ if ($logout) {
 			$params["secure"], $params["httponly"]
 		);
 
-		//print "xxx $resxx xxx";
-
 	}
 
 
 	session_destroy();
-
-
-
-	// include_once 'login.php';
-	// exit;
-
 	$_SESSION['logged_in']=0;
-
-
 	session_regenerate_id();
 
 
@@ -203,18 +145,6 @@ if ($logout) {
 elseif (isset($_REQUEST['p'])) {
 
 	$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
-	// print "$dencrypted_secret_data\n";
-	/*
-	$sql=sprintf("select `User Key` from `Masterkey Dimension` where `Key`='%s'", $dencrypted_secret_data);
-
-	$result=mysql_query($sql);
-	if($row=mysql_fetch_array($result))
-		$user=new User($row['User Key']);
-
-	if(isset($user)){
-		print_r($user);
-		$_SESSION['user_key']=$user->id;
-}*/
 
 	$auth=new Auth(IKEY,SKEY);
 
@@ -225,11 +155,9 @@ elseif (isset($_REQUEST['p'])) {
 		$_SESSION['logged_in']=true;
 		$_SESSION['store_key']=$store_key;
 		$_SESSION['site_key']=$site->id;
-
 		$_SESSION['user_key']=$auth->get_user_key();
 		$_SESSION['customer_key']=$auth->get_user_parent_key();
-
-
+		$_SESSION['user_log_key']=$auth->user_log_key;
 
 		header('location: profile.php?view=change_password');
 		exit;
@@ -237,13 +165,15 @@ elseif (isset($_REQUEST['p'])) {
 	} else {
 
 		$_SESSION['logged_in']=0;
+		unset($_SESSION['user_key']);
+		unset($_SESSION['customer_key']);
+		unset($_SESSION['user_log_key']);
 		$logged_in=false;
 		$St=get_sk();
 	}
 
 
-}
-elseif (isset($_COOKIE['user_handle'])) {
+}elseif (isset($_COOKIE['user_handle'])) {
 
 	//print_r($_COOKIE);
 
@@ -258,23 +188,26 @@ elseif (isset($_COOKIE['user_handle'])) {
 		$_SESSION['logged_in']=true;
 		$_SESSION['store_key']=$store_key;
 		$_SESSION['site_key']=$site->id;
-
 		$_SESSION['user_key']=$auth->get_user_key();
 		$_SESSION['customer_key']=$auth->get_user_parent_key();
-		//echo 'jj';
+		$_SESSION['user_log_key']=$auth->user_log_key;
 	} else {
-
+		unset($_SESSION['user_key']);
+		unset($_SESSION['customer_key']);
+		unset($_SESSION['user_log_key']);
 		$_SESSION['logged_in']=0;
 		$logged_in=false;
 		$St=get_sk();
 	}
 }
 
-//print "<br> xxx2";
-//print_r($_SESSION);
+
 $customer=new Customer(0);
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
-if (!isset($_SESSION['site_key']) or !isset($_SESSION['user_key'])) {
+if (!isset($_SESSION['site_key']) ) {
+	unset($_SESSION['user_key']);
+	unset($_SESSION['customer_key']);
+	unset($_SESSION['user_log_key']);
 	$_SESSION['logged_in']=0;
 	$logged_in=false;
 	$St=get_sk();
@@ -282,6 +215,9 @@ if (!isset($_SESSION['site_key']) or !isset($_SESSION['user_key'])) {
 
 if ($logged_in ) {
 	if ($_SESSION['site_key']!=$site->id) {
+		unset($_SESSION['user_key']);
+		unset($_SESSION['customer_key']);
+		unset($_SESSION['user_log_key']);
 		$_SESSION['logged_in']=0;
 		$logged_in=false;
 		$St=get_sk();
@@ -294,7 +230,9 @@ if ($logged_in ) {
 	}
 
 } else {
-
+	unset($_SESSION['user_key']);
+	unset($_SESSION['customer_key']);
+	unset($_SESSION['user_log_key']);
 	$_SESSION['logged_in']=0;
 	$logged_in=false;
 	$St=get_sk();
@@ -302,13 +240,20 @@ if ($logged_in ) {
 
 
 }
+//print_r($_SESSION);
 
-log_visit($session->id,$user_log_key,$user);
+if (preg_match('|^\/page\.php.+\&url=(.+)$|',$_SERVER['REQUEST_URI'],$match)) {
+	$_url=$match[1];
+}else {
+	$_url=false;
+}
 
-function log_visit($session_key,$user_log_key,$user) {
+$user_click_key=log_visit($session->id,(isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$_url);
+
+function log_visit($session_key,$user_log_key,$user,$current_url=false) {
 
 
-	global $user_click_key, $site, $page_code;
+
 	$user_click_key=0;
 	// $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
 	$file = $_SERVER["PHP_SELF"];
@@ -323,46 +268,38 @@ function log_visit($session_key,$user_log_key,$user) {
 	if (preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)) {
 		return;
 	}
+	//print_r($_SERVER);
+	//print '|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php.+\&url=(.+)$|';
+	$referral=(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');
+	if (preg_match('|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php\?id=(\d+)\&url=(.+)$|',$referral,$match)) {
+		//print_r($match);
+		$prev_page_key=$match[1];
+		$previous_url=$match[2];
+	}else {
+		$previous_url=$referral;
+		if (preg_match('|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php\?id=(\d+)|',$referral,$match)) {
+		$prev_page_key=$match[1];
+		}else{
+		
+		$prev_page_key=0;
+		}
+	}
 
 
 
 
-	$cur_fullurl=slfURL();
-	//print "$cur_fullurl<br>";
-	$break = explode('/', $cur_fullurl);
-	$cur_url = $break[count($break) - 1];
-	//print $cur_url;
 
-	$cur_url = slfURL();
-
-	//echo $file;
-	// print "current file : $cur_file <br>";           //current file name gets stored in $file
-
-	$purl = (isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');        //previous page url
-	$break = explode('/', $purl);
-	$prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
-
-
-	$prev_url =$purl ;
-
-
-	if (isset($user)) {
+	if ($user) {
 		$user_key=$user->id;
 	} else {
 		$user_key=0;
 	}
 
 
-	$page=new Page('site_code',$site->id,$page_code);
-
-	$page_key=$page->id;
 	$date=date("Y-m-d H:i:s");
 
 
-	if (isset($_SESSION['prev_page_key']))
-		$prev_page_key=$_SESSION['prev_page_key'];
-	else
-		$prev_page_key=0;
+
 
 
 	$sql1=sprintf("INSERT INTO `User Click Dimension` (
@@ -376,35 +313,39 @@ function log_visit($session_key,$user_log_key,$user) {
 
                   `Previous Page` ,
                   `Session Key` ,
-                  `Previous Page Key`,`Browser`,`OS`
+                  `Previous Page Key`,`Browser`,`OS`,`IP`
                   )
                   VALUES (
-                  %d,%s,%s,
+                  %d,%d,%s,
 
                   %d,%s,
 
                   %s, %d,%d,
-                  %s,%s
+                  %s,%s,%s
                   );",
 		$user_key,
-		prepare_mysql($user_log_key),
-		prepare_mysql($cur_url),
+		$user_log_key,
+		prepare_mysql($current_url),
 
-		$page_key,
+		0,
 		prepare_mysql($date),
 
-		prepare_mysql($prev_url,false),
+		prepare_mysql($previous_url,false),
 		$session_key,
 		$prev_page_key,
 		prepare_mysql(get_user_browser($_SERVER['HTTP_USER_AGENT'])),
-		prepare_mysql(get_user_os($_SERVER['HTTP_USER_AGENT']))
+		prepare_mysql(get_user_os($_SERVER['HTTP_USER_AGENT'])),
+		prepare_mysql(ip(),false)
 	);
+
+
+
 
 	//print($sql1);
 	mysql_query($sql1);
 	$user_click_key= mysql_insert_id();
 
-
+	return $user_click_key;
 
 }
 
@@ -440,8 +381,8 @@ function strleft1($s1, $s2) {
 }
 
 
-function update_page_key_visit_log($page_key) {
-	global $user_click_key;
+function update_page_key_visit_log($page_key,$user_click_key) {
+	$_SESSION['page_key']=$page_key;
 	$sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
 	mysql_query($sql);
 }

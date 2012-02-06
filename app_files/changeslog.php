@@ -5492,4 +5492,6 @@ ALTER TABLE `Email Credentials Site Bridge` ADD PRIMARY KEY ( `Email Credentials
 ALTER TABLE `User Click Dimension` ADD `OS` VARCHAR( 64 ) NULL DEFAULT NULL ,ADD `Browser` VARCHAR( 64 ) NULL DEFAULT NULL ;
 ALTER TABLE `Page Dimension` ADD `Page Published` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No';
 ALTER TABLE `Site Dimension` ADD `Link Type` ENUM( 'Absolute', 'Relative' ) NOT NULL DEFAULT 'Absolute';
+ALTER TABLE `User Click Dimension` ADD `IP` VARCHAR( 64 ) NOT NULL AFTER `Previous Page Key` ;
+ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Click Key` INT UNSIGNED NOT NULL AUTO_INCREMENT ;
 

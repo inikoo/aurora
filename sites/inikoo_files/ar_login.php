@@ -38,7 +38,7 @@ if ($auth->is_authenticated()) {
     $_SESSION['logged_in']=true;
     $_SESSION['store_key']=$store_key;
     $_SESSION['site_key']=$site->id;
-
+$_SESSION['user_log_key']=$auth->user_log_key;
     $_SESSION['user_key']=$auth->get_user_key();
     $_SESSION['customer_key']=$auth->get_user_parent_key();
 
