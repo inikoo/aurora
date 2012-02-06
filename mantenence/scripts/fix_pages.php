@@ -57,9 +57,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where PS.`Page Key`=4917  ";
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where PS.`Page Key`=2137  ";
 
-$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
+//$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -150,6 +150,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$page->id);
 	mysql_query($sql);
 	$page->get_data('id',$page->id);
+
+print_r($page);
+
 	$page->add_redirect($old_url);
 	if($page->error){
 		
