@@ -45,10 +45,10 @@ chdir('../../');
 $sql="select * from `Site Dimension`   ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-$site=new Site($row['Site Key']);
+	$site=new Site($row['Site Key']);
 
-$site->update_footers($site->data['Site Default Footer Key']);
-$site->update_headers($site->data['Site Default Header Key']);
+	$site->update_footers($site->data['Site Default Footer Key']);
+	$site->update_headers($site->data['Site Default Header Key']);
 
 }
 
@@ -72,8 +72,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$url=preg_replace('/^www.ancientwisdom.biz/','',$url);
 	$url=preg_replace('/^www.aw-geschenke.com/','',$url);
 
-	if(preg_match('/^forms\//',$url)){
-	$url=$site->data['Site URL'].'/'.$url;
+	if (preg_match('/^forms\//',$url)) {
+		$url=$site->data['Site URL'].'/'.$url;
 
 	}
 
@@ -86,7 +86,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	if (!preg_match('/^www/',$url)) {
 		//$url=$site->data['Site URL'].'/'.$url;
 	}
-$url=preg_replace('|^\/|','',$url);
+	$url=preg_replace('|^\/|','',$url);
 
 	$url=str_replace('//','/',$url);
 	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
@@ -116,18 +116,18 @@ $url=preg_replace('|^\/|','',$url);
 			$site->data['Site Default Number See Also Links'],
 			$row['Page Key']);
 		mysql_query($sql);
-		
+
 		$department=new Department($family->data['Product Family Main Department Key']);
-			if ($department->id) {
-				$parent_pages_keys=$department->get_pages_keys();
-				foreach ($parent_pages_keys as $parent_page_key) {
-					$page->add_found_in_link($parent_page_key);
-					break;
-				}
+		if ($department->id) {
+			$parent_pages_keys=$department->get_pages_keys();
+			foreach ($parent_pages_keys as $parent_page_key) {
+				$page->add_found_in_link($parent_page_key);
+				break;
 			}
-		
-		
-		
+		}
+
+
+
 		//print $sql;
 	}else {
 		$sql=sprintf("update `Page Store Dimension` set `Number See Also Links`=%d where `Page Key`=%d",
@@ -137,21 +137,32 @@ $url=preg_replace('|^\/|','',$url);
 
 	}
 
-		
+
 
 
 	$page->update_see_also();
 	$page->update_number_found_in();
 	//$page->update_preview_snapshot('aw');
+
+	$old_url=$page->data['Page URL'];
+	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",
+		prepare_mysql($site->data['Site URL'].'/'.strtolower($page->data['Page Code'])),
+		$page->id);
+	mysql_query($sql);
+	$page->get_data('id',$page->id);
+	$page->add_redirect($old_url);
+	if($page->error){
+		
+		print $page->msg." $old_url ".$this->data['Page URL']." \n";
+		
+		exit;
+	}
 	print $page->id."\n";
+
+
 }
 
-	$sql=sprintf("select * from `Page Dimension` p left join `Page Store Dimension` ps on (p.`Page Key` = ps.`Page Key`)");
-	$result=mysql_query($sql);
 
-	while($row=mysql_fetch_assoc($result)){
-		$page=new Page($row['Page Key']);
-		$page->add_redirect();
-	}
+
 
 ?>

@@ -68,7 +68,7 @@ if (!$site->id) {
 }
 
 $locale=$site->data['Site Locale'];
-$locale='en_GB';
+//$locale='en_GB';
 putenv('LC_ALL='.$locale);
 setlocale(LC_ALL,$locale);
 
@@ -240,17 +240,14 @@ if ($logged_in ) {
 
 
 }
-//print_r($_SESSION);
+//print_r($_SERVER);
 
-if (preg_match('|^\/page\.php.+\&url=(.+)$|',$_SERVER['REQUEST_URI'],$match)) {
-	$_url=$match[1];
-}else {
-	$_url=false;
-}
 
-$user_click_key=log_visit($session->id,(isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$_url);
 
-function log_visit($session_key,$user_log_key,$user,$current_url=false) {
+
+$user_click_key=log_visit($session->id,(isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id);
+
+function log_visit($session_key,$user_log_key,$user,$site_key) {
 
 
 
@@ -270,19 +267,26 @@ function log_visit($session_key,$user_log_key,$user,$current_url=false) {
 	}
 	//print_r($_SERVER);
 	//print '|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php.+\&url=(.+)$|';
-	$referral=(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');
-	if (preg_match('|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php\?id=(\d+)\&url=(.+)$|',$referral,$match)) {
-		//print_r($match);
+	$previous_url=(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');
+
+$prev_page_key=0;
+
+	if (preg_match('|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php\?id=(\d+)|',$previous_url,$match)) {
 		$prev_page_key=$match[1];
-		$previous_url=$match[2];
-	}else {
-		$previous_url=$referral;
-		if (preg_match('|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php\?id=(\d+)|',$referral,$match)) {
-		$prev_page_key=$match[1];
-		}else{
-		
-		$prev_page_key=0;
+	}
+	if (preg_match('|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/(.+)|',$previous_url,$match)) {
+		$prev_page_code=$match[1];
+
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Site Key`=%d and `Page Code`=%s ",
+			$site_key,
+			prepare_mysql($prev_page_code));
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$prev_page_key=$row['Page Key'];
 		}
+
+
 	}
 
 
@@ -299,7 +303,13 @@ function log_visit($session_key,$user_log_key,$user,$current_url=false) {
 	$date=date("Y-m-d H:i:s");
 
 
+	if ($_SERVER['PHP_SELF']=='/process.php') {
+		$current_url=get_current_url_from_process();
+	}else {
+		$current_url=get_current_url();
 
+
+	}
 
 
 	$sql1=sprintf("INSERT INTO `User Click Dimension` (
@@ -341,7 +351,7 @@ function log_visit($session_key,$user_log_key,$user,$current_url=false) {
 
 
 
-	//print($sql1);
+//	 print($sql1);
 	mysql_query($sql1);
 	$user_click_key= mysql_insert_id();
 
@@ -367,13 +377,18 @@ function get_sk() {
 
 
 
-function slfURL() {
+function get_current_url() {
 	$s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
 	$protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
 	$port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
 	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];
 }
-
+function get_current_url_from_process() {
+	$s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+	$protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
+	$port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
+}
 
 
 function strleft1($s1, $s2) {
