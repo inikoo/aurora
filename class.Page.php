@@ -13,6 +13,8 @@
 */
 include_once 'class.DB_Table.php';
 include_once 'class.PageStoreSection.php';
+include_once 'class.Site.php';
+
 class Page extends DB_Table {
 
 	var $new=false;
@@ -2411,6 +2413,26 @@ class Page extends DB_Table {
 
 	function get_page_height() {
 		return $this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+22;
+	}
+
+	function add_redirect(){
+
+		$site=new Site($this->data['Page Site Key']);
+		if($site->data['Site FTP Server']==$this->data['']){
+			$ftp_pass='Yes';
+		}
+		else{
+			$ftp_pass='No';
+		}
+
+		$sql=sprintf("insert into `Page Redirection Dimension` (`Page Source URL`, `Page Target URL`, `Redirect Can Upload`) values (%s, %s, %s)"
+			,prepare_mysql($this->data['Page URL'])
+			,prepare_mysql($this->data['Page Code'])
+			,prepare_mysql($ftp_pass));
+
+		mysql_query($sql);
+
+		
 	}
 
 }
