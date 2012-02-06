@@ -821,7 +821,8 @@ $index_page=$this->get_page_object('index');
 		//$url=preg_replace('http:\/\/', '', $url);
 		$page_key=0;
         //        print "url: ".$url;
-		$sql=sprintf("select `Page Key` from `Page Dimension` where `Page URL`=%s ",prepare_mysql($url));
+		$sql=sprintf("select PS.`Page Key` from `Page Store Dimension` PS left join `Page Dimension` P on (PS.`Page Key`=P.`Page Key`) where `Page Site Key`=%d and `Page URL`=%s ",
+		$this->id,prepare_mysql($url));
 		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {

@@ -29,7 +29,7 @@ if ($page->data['Page Site Key']!=$site->id) {
 
 
 
-
+update_page_key_visit_log($page->id,$user_click_key);
 
 
 $css_files=array(
@@ -59,7 +59,7 @@ $js_files=array(
 	//      'js/table_common.js',
 
 	'js/edit_common.js',
-	'upload_common.js.php',
+	
 	'js/page.js'
 );
 
@@ -124,7 +124,7 @@ if ($page->data['Page Code']=='login') {
 else if ($page->data['Page Code']=='profile') {
 
 
-
+$js_files[]='upload_common.js.php';
 
 		if (!$logged_in) {
 			header('location: login.php');
