@@ -55,6 +55,8 @@ $site->update_headers($site->data['Site Default Header Key']);
 
 
 
+
+
 $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where PS.`Page Key`=4917  ";
 
 $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
@@ -68,7 +70,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$url=preg_replace('|^http\:\/\/|','',$url);
 	$url=preg_replace('/^www.ancientwisdom.biz/','',$url);
-$url=preg_replace('/^www.aw-geschenke.com/','',$url);
+	$url=preg_replace('/^www.aw-geschenke.com/','',$url);
+
+	if(preg_match('/^forms\//',$url)){
+	$url=$site->data['Site URL'].'/'.$url;
+
+	}
+
+
 
 	if (! (preg_match('/\.(php|html)$/',$url) or preg_match('/\.php/',$url) ) ) {
 		$url=$url.'/index.php';
@@ -137,6 +146,12 @@ $url=preg_replace('|^\/|','',$url);
 	print $page->id."\n";
 }
 
+	$sql=sprintf("select * from `Page Dimension` p left join `Page Store Dimension` ps on (p.`Page Key` = ps.`Page Key`)");
+	$result=mysql_query($sql);
 
+	while($row=mysql_fetch_assoc($result)){
+		$page=new Page($row['Page Key']);
+		$page->add_redirect();
+	}
 
 ?>
