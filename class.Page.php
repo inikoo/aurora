@@ -2455,7 +2455,7 @@ class Page extends DB_Table {
 		
 		$redirection_key=mysql_insert_id();
 		
-		return $redirection_key
+		return $redirection_key;
 		//print "$sql\n";
 
 	}
