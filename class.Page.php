@@ -2463,6 +2463,25 @@ class Page extends DB_Table {
 
 	}
 
+	function upload_htaccess($redirect_key){
+		$site=new Site($this->data['Page Site Key']);
+		$ftp_connection=$site->create_ftp_connection();
+
+		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $redirect_key);
+		$result=mysql_query($sql);
+		$row=mysql_fetch_assoc($result);
+		
+
+		$htaccess_rule="redirect 301 /old/old.htm http://www.you.com/new.htm ";
+
+		if($ftp_connection->error){
+			print $ftp_connection->msg;
+		}else{
+			$ftp_connection->upload_string('aaaaa','./this/that/do.html');
+			print_r($ftp_connection);
+		}
+	}
+
 }
 
 
