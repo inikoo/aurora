@@ -5495,3 +5495,15 @@ ALTER TABLE `Site Dimension` ADD `Link Type` ENUM( 'Absolute', 'Relative' ) NOT 
 ALTER TABLE `User Click Dimension` ADD `IP` VARCHAR( 64 ) NOT NULL AFTER `Previous Page Key` ;
 ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Click Key` INT UNSIGNED NOT NULL AUTO_INCREMENT ;
 
+
+CREATE TABLE `Page Redirection Dimension` (
+  `Page Redirection Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Page Source URL` varchar(1024) NOT NULL,
+  `Page Target URL` varchar(1024) NOT NULL,
+  `Page Target Key` mediumint(8) unsigned NOT NULL,
+  `Can Upload` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Redirect Uploaded` enum('Yes','No') NOT NULL DEFAULT 'No',
+  PRIMARY KEY (`Page Redirection Key`),
+  KEY `Page Target Key` (`Page Target Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+

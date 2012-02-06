@@ -826,7 +826,7 @@ class Page extends DB_Table {
 
 
 
-	function get_found_in($site_url=false) {
+	function get_found_in() {
 
 		$found_in=array();
 		$sql=sprintf("select `Page Store Found In Key` from  `Page Store Found In Bridge` where `Page Store Key`=%d",
@@ -838,13 +838,7 @@ class Page extends DB_Table {
 			$found_in_page=new Page($row['Page Store Found In Key']);
 			if ($found_in_page->id) {
 
-				if ($site_url) {
-					$link='<a href="http://'.$site_url.'/'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
-
-				}else {
-					$link='<a href="'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
-
-				}
+								$link='<a href="http://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
 
 				$found_in[]=array(
 					'link'=>$link,
@@ -862,7 +856,7 @@ class Page extends DB_Table {
 
 
 
-	function get_see_also($site_url=false) {
+	function get_see_also() {
 
 		$see_also=array();
 		$sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d order by `Correlation Value` desc ",
@@ -892,23 +886,23 @@ class Page extends DB_Table {
 					$formated_correlation_type=$row['Correlation Type'];
 					break;
 				}
-				if ($site_url)
-					$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+				//if ($site_url)
+					//$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
-					else
-						$link='<a href="'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+				//else
+					$link='<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
-					$see_also[]=array(
-						'link'=>$link,
-						'see_also_label'=>$see_also_page->data['Page Short Title'],
-						'see_also_url'=>$see_also_page->data['Page URL'],
-						'see_also_key'=>$see_also_page->id,
-						'see_also_code'=>$see_also_page->data['Page Code'],
-						'see_also_correlation_type'=>$row['Correlation Type'],
-						'see_also_correlation_formated'=>$formated_correlation_type,
-						'see_also_correlation_value'=>$row['Correlation Value'],
-						'see_also_correlation_formated_value'=>$formated_correlation_value,
-					);
+				$see_also[]=array(
+					'link'=>$link,
+					'see_also_label'=>$see_also_page->data['Page Short Title'],
+					'see_also_url'=>$see_also_page->data['Page URL'],
+					'see_also_key'=>$see_also_page->id,
+					'see_also_code'=>$see_also_page->data['Page Code'],
+					'see_also_correlation_type'=>$row['Correlation Type'],
+					'see_also_correlation_formated'=>$formated_correlation_type,
+					'see_also_correlation_value'=>$row['Correlation Value'],
+					'see_also_correlation_formated_value'=>$formated_correlation_value,
+				);
 			}
 
 		}
@@ -2415,24 +2409,55 @@ class Page extends DB_Table {
 		return $this->data['Page Header Height']+$this->data['Page Content Height']+$this->data['Page Footer Height']+22;
 	}
 
-	function add_redirect(){
+	function add_redirect($source_url='') {
+		
+		if($source_url==''){
+			$this->error=true;
+			$this->msg=_('Wrong URL');
+		
+			return;
+		}
+		
+		
+		$_source=strtolower(preg_replace('/^www\./','',$source_url));
+
+		$target=strtolower($this->data['Page URL']);
+		
+		//print "$source_url -> $target";
+		if(
+		$target==strtolower($source_url) or 
+		$target==$_source
+		
+		){
+			$this->error=true;
+			$this->msg=_('Same URL as the redirect');
+		
+			return;
+		}
+		
+		
 
 		$site=new Site($this->data['Page Site Key']);
-		if($site->data['Site FTP Server']==$this->data['']){
+		if (strtolower($site->data['Site FTP Server'])==$_source) {
 			$ftp_pass='Yes';
 		}
-		else{
+		else {
 			$ftp_pass='No';
 		}
 
-		$sql=sprintf("insert into `Page Redirection Dimension` (`Page Source URL`, `Page Target URL`, `Redirect Can Upload`) values (%s, %s, %s)"
+		$sql=sprintf("insert into `Page Redirection Dimension` (`Page Source URL`, `Page Target URL`,`Page Target Key`, `Can Upload`) values (%s, %s,%d, %s)"
+			,prepare_mysql($source_url)
 			,prepare_mysql($this->data['Page URL'])
-			,prepare_mysql($this->data['Page Code'])
+			,$this->id
 			,prepare_mysql($ftp_pass));
 
 		mysql_query($sql);
-
 		
+		$redirection_key=mysql_insert_id();
+		
+		return $redirection_key
+		//print "$sql\n";
+
 	}
 
 }
