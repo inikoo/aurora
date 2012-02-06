@@ -59,7 +59,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where PS.`Page Key`=2137  ";
 
-//$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -151,14 +151,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	mysql_query($sql);
 	$page->get_data('id',$page->id);
 
-print_r($page);
+//print_r($page);
 
-	$page->add_redirect($old_url);
-	if($page->error){
+	$redirect_key=$page->add_redirect($old_url);
+	if($redirect_key){
 		
-		print $page->msg." $old_url ".$this->data['Page URL']." \n";
 		
-		exit;
+		$page->upload_htaccess($redirect_key);
+
 	}
 	print $page->id."\n";
 
