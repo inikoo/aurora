@@ -151,8 +151,8 @@ var submit_check_email_on_enter=function(e){
 
 
 function submit_register(){
+//alert('xx');
 
-alert('xx');
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
 
@@ -181,7 +181,7 @@ Dom.setStyle('processing_register','display','');
 Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 
      var request='ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
- alert(request);return;
+ //alert(request);return;
  
      
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -235,6 +235,7 @@ Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 
 
 function register(){
+
 
 remove_register_message_blocks()
 
@@ -308,6 +309,8 @@ error=true;
 Dom.removeClass('register_contact_name','error');
 }
 if(!error)
+
+
 submit_register()
 }
 

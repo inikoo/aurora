@@ -5498,7 +5498,9 @@ ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Click Key` INT 
 
 CREATE TABLE `Page Redirection Dimension` (
   `Page Redirection Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Page Source URL` varchar(1024) NOT NULL,
+  `Source Host` varchar(1024) NOT NULL,
+  `Source Path` varchar(1024) NOT NULL,
+  `Source File` varchar(1024) NOT NULL,
   `Page Target URL` varchar(1024) NOT NULL,
   `Page Target Key` mediumint(8) unsigned NOT NULL,
   `Can Upload` enum('Yes','No') NOT NULL DEFAULT 'No',

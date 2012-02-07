@@ -47,6 +47,12 @@
 					<td style="width:140px">{t}URL{/t}:</td>
 					<td>{$page->get('Page URL')}</td>
 				</tr>
+				{foreach from=$page->get_all_redirects_data(true) item=redirect}
+					<tr>
+					<td style="width:140px"></td>
+					<td style="font-size:80%;color:#777">{$redirect.Source} (303)</td>
+				</tr>
+				{/foreach}
 				<tr>
 					<td style="width:140px">{t}Link Label{/t}:</td>
 					<td>{$page->get('Page Short Title')}</td>

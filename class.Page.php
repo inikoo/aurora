@@ -838,7 +838,7 @@ class Page extends DB_Table {
 			$found_in_page=new Page($row['Page Store Found In Key']);
 			if ($found_in_page->id) {
 
-								$link='<a href="http://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
+				$link='<a href="http://'.$found_in_page->data['Page URL'].'">'.$found_in_page->data['Page Short Title'].'</a>';
 
 				$found_in[]=array(
 					'link'=>$link,
@@ -887,10 +887,10 @@ class Page extends DB_Table {
 					break;
 				}
 				//if ($site_url)
-					//$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+				//$link='<a href="http://'.$site_url.'/'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
 				//else
-					$link='<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
+				$link='<a href="http://'.$see_also_page->data['Page URL'].'">'.$see_also_page->data['Page Short Title'].'</a>';
 
 				$see_also[]=array(
 					'link'=>$link,
@@ -2410,57 +2410,57 @@ class Page extends DB_Table {
 	}
 
 	function add_redirect($source_url='') {
-		
-		if($source_url==''){
+
+		if ($source_url=='') {
 			$this->error=true;
 			$this->msg=_('Wrong URL');
-		
+
 			return;
 		}
-		
+
 		$site=new Site($this->data['Page Site Key']);
-		
+
 		$url_array=explode("/", $source_url);
-		if(count($url_array)<3){
+		if (count($url_array)<3) {
 			$this->error=true;
 			$this->msg=_('Wrong URL');
 		}
-		
+
 		$host=array_shift($url_array);
 		$file=array_pop($url_array);
 		$path=join('/',$url_array);
-		
-		if($file==''){
+
+		if ($file=='') {
 			$file='index.html';
 		}
-		if($host==''){
-			
+		if ($host=='') {
+
 			$host=$site->data['Site URL'];
 		}
-		
-		
-		
+
+
+
 		$_source=$host.'/'.$path.'/'.$file;
-		
+
 		$_source_bis=strtolower(preg_replace('/^www\./','',$_source));
 
 		$target=strtolower($this->data['Page URL']);
-		
+
 		//print "$source_url -> $target";
-		if(
-		$target==strtolower($_source_bis) or 
-		$target==$_source
-		
-		){
+		if (
+			$target==strtolower($_source_bis) or
+			$target==$_source
+
+		) {
 			$this->error=true;
 			$this->msg=_('Same URL as the redirect');
-		
+
 			return;
 		}
-		
-		
 
-		
+
+
+
 		//print $_source." --> ".$site->data['Site FTP Server']."\n";
 
 		if (strtolower($site->data['Site FTP Server'])==$host) {
@@ -2470,7 +2470,8 @@ class Page extends DB_Table {
 			$ftp_pass='No';
 		}
 
-		$sql=sprintf("insert into `Page Redirection Dimension` (`Page Source Host`,`Page Source Path`,`Page Source File`, `Page Target URL`,`Page Target Key`, `Can Upload`) values (%s, %s,%d, %s)"
+		$sql=sprintf("insert into `Page Redirection Dimension` (`Source Host`,`Source Path`,`Source File`, `Page Target URL`,`Page Target Key`, `Can Upload`) values
+		(%s,%s,%s, %s,%d, %s)"
 			,prepare_mysql($host)
 			,prepare_mysql($path)
 			,prepare_mysql($file)
@@ -2479,97 +2480,134 @@ class Page extends DB_Table {
 			,prepare_mysql($ftp_pass));
 
 		mysql_query($sql);
-		
+		//print "$sql\n";
 		$redirection_key=mysql_insert_id();
-		
+
 		return $redirection_key;
 
 	}
-	
-	function get_redirect_data($redirect_key){
-	$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirect Key`=%d", $this->id);
-		$result=mysql_query($sql);
-		
-		if($row=mysql_fetch_assoc($result)){
-			return $row;
-		}else
-			return false;
-	}
 
-	function upload_all_htaccess(){
+	function get_all_redirects_data($smarty=false) {
+
+		$data=array();
 		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Target Key`=%d", $this->id);
 		$result=mysql_query($sql);
-		
-		while($row=mysql_fetch_assoc($result)){
-		
+
+		while ($row=mysql_fetch_assoc($result)) {
+			if ($smarty) {
+				$_row=array();
+				foreach ($row as $key=>$value) {
+					$_row[str_replace(' ','',$key)]=$value;
+				}
+				$_row['Source']=$_row['SourceHost'].'/'.$_row['SourcePath'].'/'.$_row['SourceFile'];
+				$data[]=$_row;
+			}else {
+				$row['Source']=$_row['Source Host'].'/'.$_row['Source Path'].'/'.$row['Source File'];
+				$data[]=$row;
+			}
+		}
+
+		return $data;
+	}
+
+	function get_redirect_data($redirect_key,$smarty=false) {
+
+		$data=false;
+		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $redirect_key);
+		$result=mysql_query($sql);
+
+		if ($row=mysql_fetch_assoc($result)) {
+			if ($smarty) {
+				$_row=array();
+				foreach ($row as $key=>$value) {
+					$_row[str_replace(' ','',$key)]=$value;
+				}
+				$_row['Source']=$_row['SourceHost'].'/'.$_row['SourcePath'].'/'.$_row['SourceFile'];
+				$data=$_row;
+			}else {
+				$row['Source']=$row['Source Host'].'/'.$row['Source Path'].'/'.$row['Source File'];
+				$data=$row;
+			}
+		}
+
+		return $data;
+	}
+
+
+	function upload_all_htaccess() {
+		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Target Key`=%d", $this->id);
+		$result=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($result)) {
+
 			$this->upload_htaccess($row['Page Redirection Key']);
 		}
 
-		}
+	}
 
-	function upload_htaccess($redirect_key){
+	function upload_htaccess($redirect_key) {
 
-	
+
 
 		$site=new Site($this->data['Page Site Key']);
 
 		$ftp_connection=$site->create_ftp_connection();
-		
-		if(!$ftp_connection){
+
+		if (!$ftp_connection) {
 			$this->error=true;
 			$this->msg=$site->msg;
-			return;	
-		}	
-		
-
-		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $redirect_key);
-		$result=mysql_query($sql);
-		if($row=mysql_fetch_assoc($result)){
-		
-			if($row['Can Upload']=='No'){
-				return;
-			}
-		
-		
-	print_r($row);
-	
-		$htaccess_rule="redirect 301 /".basename($row['Page Source URL'])." ".$row['Page Target URL'];
-		//print $htaccess_rule."\n";
-		
-
-		$new_path=dirname($row['Page Source URL']);
-
-		
-
-		$_path=explode("/", $new_path);
-		print_r($_path);
-
- 		array_shift($_path);
-//print_r($_path);
-
-		if(count($_path)==0){
-			$this->error=true;
-			$this->msg=_('You can not make a redirect from the root directory');
 			return;
 		}
 
-		$path='./';
-		foreach($_path as $val){
-			$path.=$val.'/';
+
+		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $redirect_key);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+
+			if ($row['Can Upload']=='No') {
+				return;
+			}
+
+
+			//print_r($row);
+
+			$htaccess_rule="redirect 301 /".basename($row['Page Source URL'])." ".$row['Page Target URL'];
+			//print $htaccess_rule."\n";
+
+
+			$new_path=dirname($row['Page Source URL']);
+
+
+
+			$_path=explode("/", $new_path);
+			print_r($_path);
+
+			array_shift($_path);
+			//print_r($_path);
+
+			if (count($_path)==0) {
+				$this->error=true;
+				$this->msg=_('You can not make a redirect from the root directory');
+				return;
+			}
+
+			$path='./';
+			foreach ($_path as $val) {
+				$path.=$val.'/';
+			}
+
+			$path.='.htaccess';
+
+			print "xx".$htaccess_rule.":  path:   ". $path." <<< \n";
+			//return;
+			if ($ftp_connection->error) {
+				print $ftp_connection->msg;
+			}else {
+				$ftp_connection->upload_string($htaccess_rule,$path);
+				//print_r($ftp_connection);
+			}
+
 		}
-
-		$path.='.htaccess';
-
-		print "xx".$htaccess_rule.":  path:   ". $path." <<< \n";
-		//return;
-		if($ftp_connection->error){
-			print $ftp_connection->msg;
-		}else{
-			$ftp_connection->upload_string($htaccess_rule,$path);
-			//print_r($ftp_connection);
-		}
-
-}
 		$ftp_connection->end();
 	}
 
