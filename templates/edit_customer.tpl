@@ -63,7 +63,7 @@
 					<td style="width:300px"> <div class="buttons">
 					<button style="margin-left:10px"  onclick="forget_password(this, '{$customer->get('Customer Main Plain Email')}')">{t}Send an Email to Reset password{/t}</button> 
 					</div></td>
-					<td><button style="margin-left:10px"  onclick="show_change_password_dialog(this, {$user_main_id})">Set Password</button></td>
+					<td> <div class="buttons"><button style="margin-left:10px"  onclick="show_change_password_dialog(this, {$user_main_id})">Set Password</button>	</td>
 					<td> <span id="password_msg" style="display:"></span></td>
 				
 				</tr>
@@ -75,7 +75,7 @@
 						<button style="margin-left:10px" onclick="forget_password(this, '{$email.email}')" email="{$email.email}">{t}Send an Email to Reset password{/t}</button> 
 					</div>
 					</td>
-					<td><span style="cursor:pointer" user_key="{$email.user_key}" onclick="show_change_password_dialog(this,{$email.user_key})">{t}Set Password{/t}</span></td>
+					<td><div class="buttons"><button style="margin-left:10px"  user_key="{$email.user_key}" onclick="show_change_password_dialog(this,{$email.user_key})">{t}Set Password{/t}</button></div></td>
 				</tr>
 				<tr>
 					<td><span id="password_msg_{$key}" style="display:"></span></td>
