@@ -200,6 +200,45 @@ function forgot_password()
 	    
 	    });
 }
+function forget_password(o, email){
+
+//   var pos = Dom.getXY(o);
+//   
+//   pos[0]=pos[0]+500
+// 
+// 
+//     Dom.setXY('password_msg', pos);
+    var store_key=Dom.get('store_key').value;
+    var site_key=1;//Dom.get('site_key').value;
+// email=this.getAttribute('email')
+var customer_id=Dom.get('customer_id').value;
+var url ='http://'+ window.location.host + window.location.pathname;
+var request='ar_register.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_key + '&url='+url + '&email='+email + '&site_key='+site_key
+// Dom.get('password_msg').innerHTML='Sending';
+// Dom.get('password_msg').style.display='';
+	            alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				alert('sent');
+				//Dom.get('password_msg').innerHTML="Email Sent"
+				//Dom.get('password_msg').style.display='';
+				//window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
+
+            }
+			else{
+				alert('error');
+				//Dom.get('password_msg').innerHTML=r.msg;
+				//Dom.get('password_msg').style.display='';
+			}
+   			}
+    });
+} 
+
  function init(){
 
 Event.addListener('forgot_password', "click",forgot_password);

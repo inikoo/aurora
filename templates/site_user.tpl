@@ -4,6 +4,9 @@
 		{include file='users_navigation.tpl'} 
 		<input id="user_key" value="{$site_user->id}" type="hidden" />
 		<input id="site_key" value="{$site->id}" type="hidden" />
+		<input id="store_key" value="{$site->get('Site Store Key')}" type="hidden" />
+		<input id="customer_id" value="{$site_user->get('User Parent Key')}" type="hidden" />
+
 		<input id="forgot_password_handle" value="{$site_user->get('User Handle')}" type="hidden" />
 		<div class="branch">
 			<span><a href="users.php">{t}Users{/t}</a> &rarr; <a href="users_site.php?site_key={$site->id}">{t}Site Users{/t} ({$site->get('Site Code')})</a> &rarr; {$site_user->get('User Handle')}</span> 
@@ -14,6 +17,10 @@
 			</div>
 			<div class="buttons" style="float:left">
 				<button onclick="window.location='users.php'"><img src="art/icons/house.png" alt=""> {t}Users Home{/t}</button> 
+			</div>
+
+			<div class="buttons" style="float:right">
+				<button onclick="forget_password(this, '{$site_user->get('User Handle')}')"><img src="art/icons/house.png" alt=""> {t}Forgot Password{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>

@@ -117,21 +117,17 @@ show_register_dialog();
 
 
 function show_email_in_db_dialog(){
+	Dom.get('captcha3').src = 'securimage_show.php?height=40&' + Math.random();
 
-Dom.get('captcha3').src = 'securimage_show.php?height=40&' + Math.random();
+	Dom.get('email_in_db').innerHTML=Dom.get('check_email').value;
+	Dom.get('check_email').value='';
 
-Dom.get('email_in_db').innerHTML=Dom.get('check_email').value;
-Dom.get('check_email').value='';
+	Dom.setStyle('dialog_email_in_db',  'display','block');
+	Dom.setStyle(['dialog_check_email','dialog_register','tr_forgot_password_wait2','tr_forgot_password_send2','tr_forgot_password_error2'],'display','none');
 
-Dom.setStyle('dialog_email_in_db',  'display','block');
-Dom.setStyle(['dialog_check_email','dialog_register','tr_forgot_password_wait2','tr_forgot_password_send2','tr_forgot_password_error2'],'display','none');
+	Dom.setStyle(['tr_email_in_db_buttons','email_in_db_instructions','tr_email_in_db_captcha'],'display','');
 
-
-    Dom.setStyle(['tr_email_in_db_buttons','email_in_db_instructions','tr_email_in_db_captcha'],'display','');
-
-Dom.get('captcha_code3').focus();
-
-
+	Dom.get('captcha_code3').focus();
 }
 
 
@@ -146,8 +142,7 @@ var submit_check_email_on_enter=function(e){
 
      if (Key == 13){
 	 check_email();
-	 
-	 }
+     }
 };
 
 
