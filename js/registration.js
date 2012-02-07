@@ -157,7 +157,7 @@ var submit_check_email_on_enter=function(e){
 
 function submit_register(){
 
-
+alert('xx');
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
 
@@ -186,7 +186,9 @@ Dom.setStyle('processing_register','display','');
 Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 
      var request='ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
+ alert(request);return;
  
+     
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
