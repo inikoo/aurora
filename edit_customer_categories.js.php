@@ -102,6 +102,7 @@ var table_id=1
 
 
 function post_create_actions(branch){
+
 var table=tables.table1;
  var datasource=tables.dataSource1;
  var request='';
@@ -125,7 +126,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				    ,{key:"go",label:'',width:20,}
 				 
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
+				    ,{key:"name", label:"<?php echo _('Label')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
 				
                                       ,{key:"delete", label:"", width:100,sortable:false,className:"aleft",action:'delete',object:'subcategory'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
@@ -188,7 +189,7 @@ rowsPerPage:"resultset.records_perpage",
 
 
 
-		
+		/*
  var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
@@ -258,7 +259,7 @@ rowsPerPage:"resultset.records_perpage",
 		    
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
 
-
+*/
 	};
     });
 

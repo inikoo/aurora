@@ -356,6 +356,8 @@ function list_pages() {
         $order='`Page URL`';
     else if ($order=='title')
         $order='`Page Store Title`';
+      else if ($order=='link_title')
+        $order='`Page Short Title`';   
     else {
         $order='`Page Code`';
     }
@@ -363,7 +365,7 @@ function list_pages() {
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
 
-    $sql="select `Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql="select `Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 
@@ -475,6 +477,7 @@ function list_pages() {
                     'id'=>$row['Page Key'],
                     'code'=>$code,
                     'title'=>$row['Page Store Title'],
+                     'link_title'=>$row['Page Short Title'],
                     'type'=>$type,
                     'url'=>$row['Page URL'],
                     'image'=>'image.php?size=small&id='.$row['Page Preview Snapshot Image Key'],
