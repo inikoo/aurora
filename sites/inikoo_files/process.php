@@ -23,7 +23,7 @@ include_once('common.php');
 
 }else {
 	//header("Location: 404.php");
-	print "no found";
+	print "no found $url";
 	exit;
 }
 

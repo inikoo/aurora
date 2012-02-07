@@ -1089,6 +1089,12 @@ $index_page=$this->get_page_object('index');
 	}
 
 	function create_ftp_connection() {
+
+if($this->data['Site FTP Server']==''){
+$this->error=true;
+return false;
+}
+
 		include_once 'class.FTP.php';
 
 		$ftp_connection=new FTP($this->data['Site FTP Server'],$this->data['Site FTP User'],$this->data['Site FTP Password'],$this->data['Site FTP Protocol'],$this->data['Site FTP Port'],$this->data['Site FTP Passive']);

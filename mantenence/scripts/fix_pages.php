@@ -57,7 +57,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where PS.`Page Key`=2137  ";
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where PS.`Page Key`=2205  ";
 
 $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
 $result=mysql_query($sql);
@@ -69,8 +69,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$url=$row['Page URL'];
 
 	$url=preg_replace('|^http\:\/\/|','',$url);
-	$url=preg_replace('/^www.ancientwisdom.biz/','',$url);
-	$url=preg_replace('/^www.aw-geschenke.com/','',$url);
+	$url=preg_replace('/ancietwisdom/','ancientwisdom',$url);
+
+
+
+	//$url=preg_replace('/^www.aw-geschenke.com/','',$url);
 
 	if (preg_match('/^forms\//',$url)) {
 		$url=$site->data['Site URL'].'/'.$url;
@@ -91,6 +94,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$url=str_replace('//','/',$url);
 	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
 	//print "$sql\n";
+	
 
 	mysql_query($sql);
 
@@ -138,7 +142,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	}
 
 
-
+$page->get_data('id',$page->id);
 
 	$page->update_see_also();
 	$page->update_number_found_in();
@@ -154,10 +158,40 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 //print_r($page);
 
 	$redirect_key=$page->add_redirect($old_url);
+print "old:::  $url $old_url \n";
+	if($url=preg_match('/^www.aw-geschenke.com/',$old_url)){
+		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
+		print "$sql\n";
+		mysql_query($sql);
+	}
+	if($url=preg_match('/^www.ancientwisdom.biz/',$old_url)){
+		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
+print "$sql\n";
+		mysql_query($sql);
+	}
+	if($url=preg_match('/^www.aw-cadeux.com/',$old_url)){
+		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
+print "$sql\n";
+		mysql_query($sql);
+	}
+	if($url=preg_match('/^www.aw-regali.com/',$old_url)){
+		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
+print "$sql\n";
+		mysql_query($sql);
+	}
+	if($url=preg_match('/^www.aw-podarki.com/',$old_url)){
+		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
+print "$sql\n";
+		mysql_query($sql);
+	}
+
+
 	if($redirect_key){
 		
 		
-		$page->upload_htaccess($redirect_key);
+		//$page->upload_htaccess($redirect_key);
+
+	//sleep ( 1 );
 
 	}
 	print $page->id."\n";
