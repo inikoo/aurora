@@ -6,7 +6,7 @@
 		<input id="site_key" value="{$site->id}" type="hidden" />
 		<input id="forgot_password_handle" value="{$site_user->get('User Handle')}" type="hidden" />
 		<div class="branch">
-			<span><a href="users.php">{t}Users{/t}</a> &rarr; <a href="site_users.php?id={$site->id}">{t}Site Users{/t} ({$site->get('Site Code')})</a> &rarr; {$site_user->get('User Handle')}</span> 
+			<span><a href="users.php">{t}Users{/t}</a> &rarr; <a href="users_site.php?site_key={$site->id}">{t}Site Users{/t} ({$site->get('Site Code')})</a> &rarr; {$site_user->get('User Handle')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
