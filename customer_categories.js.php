@@ -51,8 +51,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				
-				    {key:"name", label:"<?php echo _('Name')?>", width:360,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"subjects", label:"<?php echo _('Customers')?>", width:260,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    {key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   ,{key:"label", label:"<?php echo _('Label')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   ,{key:"subjects", label:"<?php echo _('Customers')?>", width:260,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				
 				     ];
@@ -74,7 +75,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			"name","subjects"
+			"name","subjects","label"
 			 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

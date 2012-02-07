@@ -503,7 +503,8 @@ function list_edit_customer_categories() {
     $adata=array();
     while ($row=mysql_fetch_assoc($res)) {
 
-        $name=$row['Category Label'];
+        $name=$row['Category Name'];
+	$label=$row['Category Label'];
 
         $delete='<img src="art/icons/delete.png"/>';
         $adata[]=array(
@@ -512,7 +513,10 @@ function list_edit_customer_categories() {
                                    $row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
-
+		     'label'=>$label,
+		     'new_subject'=>$row['Category Show New Subject'],
+		     'public_new_subject'=>$row['Category Show Public New Subject'],
+		     'public_edit'=>$row['Category Show Public Edit'],
                      'delete'=>$delete,
                      'delete_type'=>'delete'
 
@@ -921,7 +925,12 @@ function list_edit_supplier_categories() {
 function edit_categories($data) {
     $category=new Category($data['id']);
 
-    $translate_keys=array('id'=>'Category Key','name'=>'Category Label');
+    $translate_keys=array('id'=>'Category Key','name'=>'Category Name'
+				,'label'=>'Category Label'
+				,'new_subject'=>'Category Show New Subject'
+				,'public_new_subject'=>'Category Show Public New Subject'
+				,'public_edit'=>'Category Show Public Edit'
+				);
 
 //if($data['key']=='name'){$data['key']='Category Name';}
     $category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
@@ -935,7 +944,9 @@ function edit_categories($data) {
 
 function edit_category($data) {
     $category=new Category($data['category_key']);
-    $translate_keys=array('category_key'=>'Category Key','name'=>'Category Label');
+    $translate_keys=array('category_key'=>'Category Key','name'=>'Category Name','label'=>'Category Label','Category Show New Subject'=>'Category Show New Subject'
+				,'Category Show Public New Subject'=>'Category Show Public New Subject'
+				,'Category Show Public Edit'=>'Category Show Public Edit');
     $category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
     if ($category->updated) {
         $response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value);

@@ -4850,7 +4850,7 @@ function list_customer_categories() {
 
 
 
-    $sql="select `Category Children`,S.`Category Key`, `Category Label`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Category Children`,S.`Category Key`, `Category Name`, `Category Label`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
     // print $sql;
     $res = mysql_query($sql);
 
@@ -5162,13 +5162,14 @@ function list_customer_categories() {
         */
 
         if ($stores_mode=='grouped')
-            $name=sprintf('<a href="customer_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
+            $name=sprintf('<a href="customer_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
         else
             $name=$row['Category Key'].' '.$row['Category Name']." (".$row['Category Store Key'].")";
         $adata[]=array(
                      //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
+		     'label'=>$row['Category Label'],
                      'subjects'=>number($row['Category Number Subjects']),
                      'subcategories'=>number($row['Category Children']),
 
