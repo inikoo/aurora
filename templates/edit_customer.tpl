@@ -60,14 +60,21 @@
 				</tr>
 				<tr>
 					<td style="width:300px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
-					<td style="width:300px"> <span style="cursor:pointer" onclick="forget_password(this, '{$customer->get('Customer Main Plain Email')}')">{t}Send an Email to Reset password{/t}</span> </td>
-					<td><span style="cursor:pointer" onclick="show_change_password_dialog(this, {$user_main_id})">Set Password</span></td>
+					<td style="width:300px"> <div class="buttons">
+					<button style="margin-left:10px"  onclick="forget_password(this, '{$customer->get('Customer Main Plain Email')}')">{t}Send an Email to Reset password{/t}</button> 
+					</div></td>
+					<td><button style="margin-left:10px"  onclick="show_change_password_dialog(this, {$user_main_id})">Set Password</button></td>
 					<td> <span id="password_msg" style="display:"></span></td>
+				
 				</tr>
 				{foreach from=$registered_email item=email key=key name=foo } 
 				<tr>
 					<td style="width:200px">{t}Send an Email: ({$email.email}){/t}</td>
-					<td style="width:300px"> <span style="cursor:pointer" onclick="forget_password(this, '{$email.email}')" email="{$email.email}">{t}Send an Email to Reset password{/t}</span> </td>
+					<td style="width:300px">
+					<div class="buttons">
+						<button style="margin-left:10px" onclick="forget_password(this, '{$email.email}')" email="{$email.email}">{t}Send an Email to Reset password{/t}</button> 
+					</div>
+					</td>
 					<td><span style="cursor:pointer" user_key="{$email.user_key}" onclick="show_change_password_dialog(this,{$email.user_key})">{t}Set Password{/t}</span></td>
 				</tr>
 				<tr>
@@ -81,8 +88,8 @@
 				<tr>
 					<td style="width:200px">{t}{$email.email}{/t}</td>
 					<td style="width:200px"> 
-					<div>
-						<input type="button" class="button" onclick="register_email(this)" email="{$email.email}" value="Register in Website" />
+					<div class="buttons">
+						<button style="margin-left:10px" onclick="register_email(this)" email="{$email.email}" value="Register in Website" />{t}Register in Website{/t}</button> 
 					</div>
 					</td>
 					<td><span id="register_msg" style="display:"></span></td>

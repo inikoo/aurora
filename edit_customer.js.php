@@ -306,7 +306,7 @@ Dom.get('password_msg').style.display='';
 
 	            success:function(o){
 					
-	            //alert(o.responseText);	
+	            alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
 				Dom.get('password_msg').innerHTML="Email Sent"

@@ -88,7 +88,7 @@ $title=_('Customer User');
 
 $smarty->assign('site_user',$site_user);
 $smarty->assign('site',$site);
-
+//print_r($site);
 $smarty->assign('title', $title);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

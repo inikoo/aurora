@@ -4212,6 +4212,7 @@ function forgot_password($data) {
         $message_data['recipient_type']='User';
         $message_data['recipient_key']=0;
         $message_data['email_key']=0;
+	$message_data['email_matter_parent_key']=0;
         $message_data['plain']=$plain_message;
         if (isset($message_data['plain']) && $message_data['plain']) {
             $message_data['plain']=$message_data['plain'];
@@ -4227,45 +4228,6 @@ function forgot_password($data) {
         $send_result=$send_email->send($message_data);
         //print_r($send_result);
 
-
-
-        /*
-        		$data=array('email_type'=>'Password Reminder',
-        				  'recipient_type'=>'User',
-        				  'recipient_key'=>$user->id);
-
-        		$send_email=new SendEmail($data);
-
-        		$html_message=$send_email->track_sent_email($html_message);
-
-        		$access_key='AKIAJGTHT6POHWCQQNRQ';
-        		$secret_key='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';
-
-                $to=$login_handle;
-                $data=array(
-        				  'type'=>'HTML',
-                          'subject'=>'Reset your password',
-                          'plain'=>$plain_message,
-                          'email_credentials_key'=>$email_credential_key,
-                          'to'=>$to,
-                          'html'=>$html_message,
-        				  'attachement'=>$files,
-        				  'access_key'=>$access_key,
-        				  'secret_key'=>$secret_key
-                      );
-        		if(isset($data['plain']) && $data['plain']){
-        			$data['plain']=$data['plain'];
-        		}
-        		else
-        			$data['plain']=null;
-
-                //$send_email=new SendEmail();
-        		//$send_email->set_method('amazon');
-                $send_email->smtp('html', $data);
-                $result=$send_email->send();
-
-        		//print_r($result);
-        */
         if ($send_result['msg']=='ok') {
             $response=array('state'=>200,'result'=>'send');
             echo json_encode($response);
