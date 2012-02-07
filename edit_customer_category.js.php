@@ -278,8 +278,7 @@ function change_block(){
 	
 	Dom.removeClass(['description','subcategory'],'selected');
 	Dom.addClass(this, 'selected');
-	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=categories_view&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=categories-edit&value='+this.id ,{});
 }
 function cancel_add_category(){
    reset_new_category();
@@ -290,6 +289,7 @@ function cancel_add_subcategory(){
 
 function init(){
 init_search('customers_store');
+
     var ids = ["description","subcategory"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
@@ -339,6 +339,20 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+	 rppmenu.render();
+	 rppmenu.subscribe("show", rppmenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	 rppmenu.render();
 	 rppmenu.subscribe("show", rppmenu.focus);
     });
