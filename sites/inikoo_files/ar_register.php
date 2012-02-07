@@ -241,16 +241,16 @@ function generate_password($length=9, $strength=0) {
 	return $password;
 }
 
-function create_customer_user($handle,$customer_key,$site_key,$password, $send_email_flag=true) {
+function create_customer_user($handle,$customer,$site_key,$password, $send_email_flag=true) {
 	//  $handle='raul@inikoo.com';
 
 	global $site,$store;
 
 	include_once 'class.User.php';
 
-
+$customer_key=$customer->id;
 	$sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
-		$customer_key);
+		$customer->id);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
@@ -264,7 +264,7 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 			'User Site Key'=>$site_key,
 			'User Active'=>'Yes',
 			'User Alias'=>$row['Customer Name'],
-			'User Parent Key'=>$customer_key
+			'User Parent Key'=>$customer->id
 		);
 
 		$user=new user('new',$data);
@@ -294,14 +294,14 @@ function create_customer_user($handle,$customer_key,$site_key,$password, $send_e
 					$smarty_html_email = new Smarty();
 		$smarty_html_email->compile_dir = 'server_files/smarty/templates_c';
 		$smarty_html_email->cache_dir = 'server_files/smarty/cache';
-
+ $grettings=$customer->get_greetings();
 		$smarty_html_email->assign('grettings', $grettings);
 		$html_message = $smarty_html_email->fetch('string:'.$site->data['Site Welcome Email HTML Body']);
 
 		$smarty_plain_email = new Smarty();
 		$smarty_plain_email->compile_dir = 'server_files/smarty/templates_c';
 		$smarty_plain_email->cache_dir = 'server_files/smarty/cache';
-
+			
 		$smarty_plain_email->assign('grettings', $grettings);
 		$plain_message = $smarty_plain_email->fetch('string:'.$site->data['Site Welcome Email Plain Body']);
 
@@ -385,7 +385,10 @@ function forgot_password($data) {
 	if (!$user_key) {
 		$customer_key=check_email_customers($login_handle,$site->data['Site Store Key']);
 		if ($customer_key) {
+			$customer=new Customer($customer_key);
+			if($customer->id){
 			list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site_key,generate_password(10,10), false);
+			}
 		}
 
 	}
@@ -613,7 +616,7 @@ function register($data) {
 
 
 		$password=AESDecryptCtr($data['values']['ep'],md5($data['values']['Customer Main Plain Email'].'x**X'),256);
-		list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$response['customer_key'],$data['site_key'],$password);
+		list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$customer,$data['site_key'],$password);
 		if ($user_key) {
 
 			$_SESSION['logged_in']=true;

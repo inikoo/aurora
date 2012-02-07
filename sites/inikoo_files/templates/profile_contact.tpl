@@ -11,10 +11,13 @@
 {/foreach} {include file='profile_header.tpl'} 
 <div id="contact_block" {if $view!='contact' }style="display:none" {/if}>
 	<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
+		
+		{if $site->get('Show Site Badges')=='Yes'}
 		<div style="float:left;;xborder:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px" id="show_upload_image">
 			<img id="avatar" src="{if $user->get_image_src()}{$user->get_image_src()}{else}art/siluet.jpg{/if}" style="height:100px"> 
 		</div>
-		{include file='customer_badges.tpl' customer=$page->customer} 
+		{include file='customer_badges.tpl' customer=$page->customer} 		
+		{/if}
 		<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px;margin-left:20px">
 			Thank you for trading with us! 
 		</div>
@@ -147,25 +150,25 @@
 				<tr style="height:20px">
 					<td colspan="3"></td>
 				</tr>
-				<tr class="title">
+				<tbody {if $site->get('Site Show Twitter')=='No' && $site->get('Site Show Facebook')=='No'}style="display:none"{/if} class="title">
 					<td colspan="5">{t}Social Media{/t}</td>
-				</tr>
-				<tr>
+				</tbody>
+				<tbody {if $site->get('Site Show Twitter')=='No'}style="display:none"{/if}>
 					<td class="label" style="width:200px">{t}Follower on Twitter{/t}:</td>
 					<td> 
 					<div class="buttons small">
 						<button class="{if $page->customer->get('Customer Follower On Twitter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Follower On Twitter','Yes')" id="Customer Follower On Twitter_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Follower On Twitter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Follower On Twitter','No')" id="Customer Follower On Twitter_No">{t}No{/t}</button> 
 					</div>
 					</td>
-				</tr>
-				<tr>
+				</tbody>
+				<tbody {if $site->get('Site Show Facebook')=='No'}style="display:none"{/if}>
 					<td class="label" style="width:200px">{t}Friend on Facebook{/t}:</td>
 					<td> 
 					<div class="buttons small">
 						<button class="{if $page->customer->get('Customer Friend On Facebook')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Friend On Facebook','Yes')" id="Customer Friend On Facebook_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Friend On Facebook')=='No'}selected{/if} negative" onclick="save_comunications('Customer Friend On Facebook','No')" id="Customer Friend On Facebook_No">{t}No{/t}</button> 
 					</div>
 					</td>
-				</tr>
+				</tbody>
 			</table>
 		</div>
 	</div>

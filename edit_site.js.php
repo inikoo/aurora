@@ -772,6 +772,9 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
 	//Event.addListener(["locale_en_GB","locale_de_DE","locale_fr_FR","locale_es_ES","locale_pl_PL","locale_it_IT"], "click", change_locale_method);
 	Event.addListener(["ftp_protocol_FTPS","ftp_protocol_FTP","ftp_protocol_SFTP"], "click", change_ftp_method);
 	Event.addListener(["ftp_passive_Yes","ftp_passive_No"], "click", change_ftp_passive);
+	Event.addListener(["show_badges_Yes","show_badges_No"], "click", change_show_badges);
+	Event.addListener(["show_facebook_Yes","show_facebook_No"], "click", change_show_facebook);
+	Event.addListener(["show_twitter_Yes","show_twitter_No"], "click", change_show_twitter);
 
 
 
@@ -1320,6 +1323,89 @@ var request='ar_edit_sites.php?tipo=edit_ftp_passive&site_key=' + site_id +'&sto
 			}
 			else{
 				Dom.addClass(Dom.get('ftp_passive_method').value,'selected');
+			}
+   			}
+    });
+}
+
+
+function change_show_badges(){
+types=Dom.getElementsByClassName('show_badges_method', 'button', 'show_badges_method_buttons')
+Dom.removeClass(types,'selected');
+
+Dom.get('show_badges_method').value=this.getAttribute('dbvalue');
+
+site_id=Dom.get('site_key').value;
+store_key=Dom.get('store_key').value;
+var request='ar_edit_sites.php?tipo=edit_show_badges&site_key=' + site_id +'&store_key='+store_key + '&site_badges='+Dom.get('show_badges_method').value
+	           // alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	           // alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.addClass('show_badges_'+r.new_value,'selected');
+
+			}
+			else{
+				Dom.addClass(Dom.get('show_badges_method').value,'selected');
+			}
+   			}
+    });
+}
+
+
+function change_show_facebook(){
+types=Dom.getElementsByClassName('show_facebook_method', 'button', 'show_facebook_method_buttons')
+Dom.removeClass(types,'selected');
+
+Dom.get('show_facebook_method').value=this.getAttribute('dbvalue');
+
+site_id=Dom.get('site_key').value;
+store_key=Dom.get('store_key').value;
+var request='ar_edit_sites.php?tipo=edit_show_facebook&site_key=' + site_id +'&store_key='+store_key + '&site_facebook='+Dom.get('show_facebook_method').value
+	           // alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	          //  alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.addClass('show_facebook_'+r.new_value,'selected');
+
+			}
+			else{
+				Dom.addClass(Dom.get('show_facebook_method').value,'selected');
+			}
+   			}
+    });
+}
+
+function change_show_twitter(){
+types=Dom.getElementsByClassName('show_twitter_method', 'button', 'show_twitter_method_buttons')
+Dom.removeClass(types,'selected');
+
+Dom.get('show_twitter_method').value=this.getAttribute('dbvalue');
+
+site_id=Dom.get('site_key').value;
+store_key=Dom.get('store_key').value;
+var request='ar_edit_sites.php?tipo=edit_show_twitter&site_key=' + site_id +'&store_key='+store_key + '&site_twitter='+Dom.get('show_twitter_method').value
+	            //alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	           // alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.addClass('show_twitter_'+r.new_value,'selected');
+
+			}
+			else{
+				Dom.addClass(Dom.get('show_twitter_method').value,'selected');
 			}
    			}
     });
