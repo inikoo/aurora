@@ -9,7 +9,7 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
 				{if isset($parent_category)} <button onclick="window.location='customer_categories.php?store_id={$store->id}&id={$parent_category->id}'"><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Name')}</button> {/if} 
-				<button onclick="window.location='customer_categories.php?store_id={$store->id}&id=0'"><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button> 
+				<button onclick="window.location='customer_categories.php?store={$store->id}&id=0'"><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button> 
 			</div>
 			<div class="buttons" style="float:right">
 				<button onclick="window.location='edit_customer_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> 

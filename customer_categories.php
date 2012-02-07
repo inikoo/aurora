@@ -219,5 +219,6 @@ $smarty->assign('options_box_width','600px');
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
 $smarty->display($tpl_file);
 ?>

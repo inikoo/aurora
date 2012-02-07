@@ -746,8 +746,8 @@ function formater_order  (el, oRecord, oColumn, oData) {
 
 
 function change_block(){
-  var ids = ['properties','page_header','page_footer','content','style','media','setup','products']; 
-block_ids=['d_properties','d_page_header','d_page_footer','d_content','d_style','d_media','d_setup','d_products'];
+  var ids = ['properties','page_header','page_footer','content','style','media','setup','products', 'url']; 
+block_ids=['d_properties','d_page_header','d_page_footer','d_content','d_style','d_media','d_setup','d_products','d_url'];
 
 
 if(this.id=='content'){
@@ -1069,7 +1069,7 @@ dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", { visible : false
 
   init_search('site');
 
-    var ids = ['properties','page_header','page_footer','content','style','media','setup','products']; 
+    var ids = ['properties','page_header','page_footer','content','style','media','setup','products', 'url']; 
     Event.addListener(ids, "click", change_block);
 
  validate_scope_metadata={

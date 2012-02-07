@@ -11,7 +11,7 @@
 		<div class="buttons">
 				<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none;{/if}position:relative;top:2px" /> 
 
-					<button style="margin-left:10px" onclick="window.location='customer_categories.php?id={$category->id}{if $parent_list}&p={$parent_list}{/if}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
+					<button style="margin-left:10px" onclick="window.location='customer_categories.php?id={$category->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
 
 			<button id="new_category"><img src="art/icons/add.png" alt="" /> {t}Add Subcategory{/t}</button> 
 		</div>
@@ -40,16 +40,62 @@
 			</tr>
 			
 				<tr class="first">
+					<td class="label" style="width:200px">{t}Category Label{/t}:</td>
+					<td style="text-align:left"> 
+					<div style="width:15em;position:relative;top:00px">
+						<input style="text-align:left;width:18em" id="Category_Label" value="{$category->get('Category Label')}" ovalue="{$category->get('Category Label')}"> 
+						<div id="Category_Label_Container">
+						</div>
+					</div>
+					</td>
+					<td id="Category_Label_msg" class="edit_td_alert"></td>
+				</tr>
+
+				<tr >
 					<td class="label" style="width:200px">{t}Category Name{/t}:</td>
 					<td style="text-align:left"> 
 					<div style="width:15em;position:relative;top:00px">
-						<input style="text-align:left;width:18em" id="Category_Name" value="{$category->get('Category Label')}" ovalue="{$category->get('Category Label')}"> 
+						<input style="text-align:left;width:18em" id="Category_Name" value="{$category->get('Category Name')}" ovalue="{$category->get('Category Name')}"> 
 						<div id="Category_Name_Container">
 						</div>
 					</div>
 					</td>
 					<td id="Category_Name_msg" class="edit_td_alert"></td>
 				</tr>
+
+				<tr >
+					<td class="label" style="width:200px">{t}New Subject{/t}:</td>
+					<td style="text-align:left"> 
+					<div   class="buttons" style="width:10em;position:relative;top:00px">
+						<button class="{if $category->get('Category Show New Subject')=='Yes'}selected{/if} positive" onclick="save_display_category('Category Show New Subject','Yes', {$category->id})" id="Category Show New Subject Yes">{t}Yes{/t}</button> 
+						<button class="{if $category->get('Category Show New Subject')=='No'}selected{/if} negative"  onclick="save_display_category('Category Show New Subject','No', {$category->id})" id="Category Show New Subject No">{t}No{/t}</button>
+					</div>
+					</td>
+					<td style="width:300px"></td>
+				</tr>
+
+				<tr >
+					<td class="label" style="width:200px">{t}Public New Subject{/t}:</td>
+					<td style="text-align:left"> 
+					<div   class="buttons" style="width:10em;position:relative;top:00px">
+						<button class="{if $category->get('Category Show Public New Subject')=='Yes'}selected{/if} positive" onclick="save_display_category('Category Show Public New Subject','Yes', {$category->id})" id="Category Show Public New Subject Yes">{t}Yes{/t}</button> 
+						<button class="{if $category->get('Category Show Public New Subject')=='No'}selected{/if} negative"  onclick="save_display_category('Category Show Public New Subject','No', {$category->id})" id="Category Show Public New Subject No">{t}No{/t}</button>
+					</div>
+					</td>
+					<td style="width:300px"></td>
+				</tr>
+
+				<tr >
+					<td class="label" style="width:200px">{t}Public Edit{/t}:</td>
+					<td style="text-align:left"> 
+					<div   class="buttons" style="width:10em;position:relative;top:00px">
+						<button class="{if $category->get('Category Show Public Edit')=='Yes'}selected{/if} positive" onclick="save_display_category('Category Show Public Edit','Yes', {$category->id})" id="Category Show Public Edit Yes">{t}Yes{/t}</button> 
+						<button class="{if $category->get('Category Show Public Edit')=='No'}selected{/if} negative"  onclick="save_display_category('Category Show Public Edit','No', {$category->id})" id="Category Show Public Edit No">{t}No{/t}</button>
+					</div>
+					</td>
+					<td style="width:300px"></td>
+				</tr>
+
 			</table>
 		</div>
 		<div class="edit_block" style="{if $edit!="subcategory"}display:none{/if}" id="d_subcategory">

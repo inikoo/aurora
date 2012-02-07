@@ -9,6 +9,8 @@ var Dom   = YAHOO.util.Dom;
 var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
+var category_show_options=['Yes','No'];
+var category_show_name={'Yes':'Yes','No':'No'};
 
 
 var scope='category';
@@ -30,7 +32,12 @@ var validate_scope_data={
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Name')?>'}],'name':'Category_Name'
 	    ,'ar':false,'ar_request':false}
-   }
+	
+	,'label':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Label')?>'}],'name':'Category_Label'
+	    ,'ar':false,'ar_request':false}
+	}
+
   
 };
 
@@ -38,13 +45,13 @@ var validate_scope_data={
 var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_categories.php','key_name':'category_key','key':<?php echo $_REQUEST['key']?>}};
 				
 
-/*function validate_id(query){
- validate_general('company_staff','id',unescape(query));
-}*/
 function validate_name(query){
-//alert("********");alert(query);
  validate_general('category','name',unescape(query));
 }
+function validate_label(query){
+ validate_general('category','label',unescape(query));
+}
+
 function validate_subcategory_name(query){
  validate_general('subcategory','subcategory_name',unescape(query));
 }
@@ -72,6 +79,35 @@ function save_edit_category(){
     save_edit_general('category');
 }*/
 
+
+function save_display_category(key,value, id){
+
+var request='ar_edit_categories.php?tipo=edit_category&okey=' + key+ '&key=' + key+ '&newvalue=' + value +'&category_key=' + id
+	    // ar_edit_categories.php?tipo=edit_category&okey=name&key=name&newvalue=Referrer%20x&category_key=45
+	//alert(request);
+//return;
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+//alert(o.responseText)
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				
+             
+				if(r.state==200){
+			
+                        
+ Dom.removeClass([r.key+' Yes',r.key+' No'],'selected');
+
+               Dom.addClass(r.key+' '+r.newvalue,'selected');
+
+            }else{
+                alert(r.msg)
+          
+            
+        }
+    }
+    });
+
+}
 
 
 
@@ -118,6 +154,11 @@ var table=tables.table1;
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
+function category_show_formatter(el, oRecord, oColumn, oData){
+el.innerHTML =category_show_name[oData];
+}
+
+
     tables = new function() {
   var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -125,8 +166,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				    ,{key:"go",label:'',width:20,}
 				 
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
-				
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
+				    ,{key:"label", label:"<?php echo _('Label')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
+				,{key:"new_subject",formatter:category_show_formatter,label:"<?php echo _('New Subject')?>",className:"aleft"
+				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:category_show_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'subcategory'}
+,{key:"public_new_subject",formatter:category_show_formatter,label:"<?php echo _('Public New Subject')?>",className:"aleft"
+				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:category_show_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'subcategory'}
+,{key:"public_edit",formatter:category_show_formatter,label:"<?php echo _('Public Edit')?>",className:"aleft"
+				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:category_show_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'subcategory'}
                                       ,{key:"delete", label:"", width:100,sortable:false,className:"aleft",action:'delete',object:'subcategory'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
@@ -148,7 +195,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','name','delete','delete_type','go'
+			 'id','name','delete','delete_type','go','label','new_subject','public_edit','public_new_subject'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -311,6 +358,11 @@ init_search('customers_store');
     category_name_oAutoComp.minQueryLength = 0; 
     category_name_oAutoComp.queryDelay = 0.1;
 
+     var category_name_oACDS = new YAHOO.util.FunctionDataSource(validate_label);
+    category_name_oACDS.queryMatchContains = true;
+    var category_name_oAutoComp = new YAHOO.widget.AutoComplete("Category_Label","Category_Label_Container", category_name_oACDS);
+    category_name_oAutoComp.minQueryLength = 0; 
+    category_name_oAutoComp.queryDelay = 0.1;
 
 //  YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
     YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);
