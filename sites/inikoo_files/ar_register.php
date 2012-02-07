@@ -568,6 +568,8 @@ function check_email($data) {
 
 function register($data) {
 
+
+
 	include_once 'external_libs/securimage/securimage.php';
 	$securimage = new Securimage();
 	if ($securimage->check($data['values']['captcha_code']) == false) {
@@ -577,6 +579,13 @@ function register($data) {
 		exit;
 	}
 
+
+$sql=sprintf("select `Country Code` from kbase.`Country Dimension` where `Country 2 Alpha Code`=%s",
+prepare_mysql($data['values']['Customer Address Country 2 Alpha Code']));
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$data['values']['Customer Address Country Code']=$row['Country Code'];
+}
 	include_once 'edit_customers_functions.php';
 	global $editor;
 
