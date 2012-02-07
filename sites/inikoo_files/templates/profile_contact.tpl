@@ -17,10 +17,12 @@
 			<img id="avatar" src="{if $user->get_image_src()}{$user->get_image_src()}{else}art/siluet.jpg{/if}" style="height:100px"> 
 		</div>
 		{include file='customer_badges.tpl' customer=$page->customer} 		
-		{/if}
 		<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px;margin-left:20px">
 			Thank you for trading with us! 
 		</div>
+
+		{/if}
+		
 		<div style="clear:both">
 		</div>
 	</div>
