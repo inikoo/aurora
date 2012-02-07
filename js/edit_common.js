@@ -841,7 +841,8 @@ return;
 	   
 	 //  alert(item_input.value.length);
 	   
-//alert(scope_edit_ar_file+'?'+postData);return;
+//alert(scope_edit_ar_file+'?'+postData);
+//return;
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {
