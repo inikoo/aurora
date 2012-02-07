@@ -20,7 +20,7 @@
 			</div>
 
 			<div class="buttons" style="float:right">
-				<button onclick="forget_password(this, '{$site_user->get('User Handle')}')"><img src="art/icons/house.png" alt=""> {t}Forgot Password{/t}</button> 
+				<button onclick="forget_password(this, '{$site_user->get('User Handle')}')"><img src="art/icons/email_go.png" alt=""> {t}Email Reset Password{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
