@@ -2418,14 +2418,37 @@ class Page extends DB_Table {
 			return;
 		}
 		
+		$site=new Site($this->data['Page Site Key']);
 		
-		$_source=strtolower(preg_replace('/^www\./','',$source_url));
+		$url_array=explode("/", $source_url);
+		if(count($url_array)<3){
+			$this->error=true;
+			$this->msg=_('Wrong URL');
+		}
+		
+		$host=array_shift($url_array);
+		$file=array_pop($url_array);
+		$path=join('/',$url_array);
+		
+		if($file==''){
+			$file='index.html';
+		}
+		if($host==''){
+			
+			$host=$site->data['Site URL'];
+		}
+		
+		
+		
+		$_source=$host.'/'.$path.'/'.$file;
+		
+		$_source_bis=strtolower(preg_replace('/^www\./','',$_source));
 
 		$target=strtolower($this->data['Page URL']);
 		
 		//print "$source_url -> $target";
 		if(
-		$target==strtolower($source_url) or 
+		$target==strtolower($_source_bis) or 
 		$target==$_source
 		
 		){
@@ -2437,18 +2460,20 @@ class Page extends DB_Table {
 		
 		
 
-		$site=new Site($this->data['Page Site Key']);
+		
 		//print $_source." --> ".$site->data['Site FTP Server']."\n";
 
-		if (strtolower($site->data['Site FTP Server'])==$_source) {
+		if (strtolower($site->data['Site FTP Server'])==$host) {
 			$ftp_pass='Yes';
 		}
 		else {
 			$ftp_pass='No';
 		}
 
-		$sql=sprintf("insert into `Page Redirection Dimension` (`Page Source URL`, `Page Target URL`,`Page Target Key`, `Can Upload`) values (%s, %s,%d, %s)"
-			,prepare_mysql($source_url)
+		$sql=sprintf("insert into `Page Redirection Dimension` (`Page Source Host`,`Page Source Path`,`Page Source File`, `Page Target URL`,`Page Target Key`, `Can Upload`) values (%s, %s,%d, %s)"
+			,prepare_mysql($host)
+			,prepare_mysql($path)
+			,prepare_mysql($file)
 			,prepare_mysql($this->data['Page URL'])
 			,$this->id
 			,prepare_mysql($ftp_pass));
@@ -2459,6 +2484,16 @@ class Page extends DB_Table {
 		
 		return $redirection_key;
 
+	}
+	
+	function get_redirect_data($redirect_key){
+	$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirect Key`=%d", $this->id);
+		$result=mysql_query($sql);
+		
+		if($row=mysql_fetch_assoc($result)){
+			return $row;
+		}else
+			return false;
 	}
 
 	function upload_all_htaccess(){
