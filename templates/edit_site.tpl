@@ -413,7 +413,35 @@
 <td id="ftp_port_msg" class="edit_td_alert"></td>
 </tr>
 
+<tr>
+<td class="label">{t}Show Badges{/t}:</td><td>
+<input id="show_badges_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="show_badges_method_buttons" style="float:left">
+<button dbvalue="Yes"  id="show_badges_Yes"  class="show_badges_method {if $site->get('Show Site Badges')=='Yes'}selected{/if}"> {t}Yes{/t}</button>
+<button dbvalue="No" id="show_badges_No" class="show_badges_method {if $site->get('Show Site Badges')=='No'}selected{/if}" > {t}No{/t}</button>
+</div>
+</td>
+</tr>	
 
+<tr>
+<td class="label">{t}Show Facebook{/t}:</td><td>
+<input id="show_facebook_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="show_facebook_method_buttons" style="float:left">
+<button dbvalue="Yes"  id="show_facebook_Yes"  class="show_facebook_method {if $site->get('Site Show Facebook')=='Yes'}selected{/if}"> {t}Yes{/t}</button>
+<button dbvalue="No" id="show_facebook_No" class="show_facebook_method {if $site->get('Site Show Facebook')=='No'}selected{/if}" > {t}No{/t}</button>
+</div>
+</td>
+</tr>	
+
+<tr>
+<td class="label">{t}Show Twitter{/t}:</td><td>
+<input id="show_twitter_method" value="sidebar" type="hidden"   />
+<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+<button dbvalue="Yes"  id="show_twitter_Yes"  class="show_twitter_method {if $site->get('Site Show Twitter')=='Yes'}selected{/if}"> {t}Yes{/t}</button>
+<button dbvalue="No" id="show_twitter_No" class="show_twitter_method {if $site->get('Site Show Twitter')=='No'}selected{/if}" > {t}No{/t}</button>
+</div>
+</td>
+</tr>	
 </table>	
      
 	 
