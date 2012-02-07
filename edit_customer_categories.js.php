@@ -9,7 +9,8 @@ var Dom   = YAHOO.util.Dom;
 var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
-
+var category_show_options=['Yes','No'];
+var category_show_name={'Yes':'Yes','No':'No'};
 
 var scope='category';
 var scope_edit_ar_file='ar_edit_categories.php';
@@ -119,6 +120,9 @@ var table=tables.table1;
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
+function category_show_formatter(el, oRecord, oColumn, oData){
+el.innerHTML =category_show_name[oData];
+}
     tables = new function() {
   var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -126,8 +130,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				    ,{key:"go",label:'',width:20,}
 				 
-				    ,{key:"name", label:"<?php echo _('Label')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
-				
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
+				    ,{key:"label", label:"<?php echo _('Label')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
+				,{key:"new_subject",formatter:category_show_formatter,label:"<?php echo _('New Subject')?>",className:"aleft"
+				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:category_show_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'subcategory'}
+,{key:"public_new_subject",formatter:category_show_formatter,label:"<?php echo _('Public New Subject')?>",className:"aleft"
+				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:category_show_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'subcategory'}
+,{key:"public_edit",formatter:category_show_formatter,label:"<?php echo _('Public Edit')?>",className:"aleft"
+				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:category_show_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'subcategory'}
                                       ,{key:"delete", label:"", width:100,sortable:false,className:"aleft",action:'delete',object:'subcategory'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
@@ -148,7 +158,7 @@ rowsPerPage:"resultset.records_perpage",
 		    totalRecords: "resultset.total_records"		},
 		
 		fields: [
-			 'id','name','delete','delete_type','go'
+			 'id','name','delete','delete_type','go','label','new_subject','public_edit','public_new_subject'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

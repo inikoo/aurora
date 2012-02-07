@@ -36,9 +36,15 @@
 			<li style="display:none"> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='style'}selected{/if}" id="style"><span> {t}Style{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='media'}selected{/if}" id="media"><span> {t}Media{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='url'}selected{/if}" id="url"><span>{t}URL{/t}</span></span></li>
 		</ul>
 	</div>
 	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;margin:0px {if $block_view=='content'}0px{else}20px{/if}">
+		<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
+		</div>
+
+
+
 		<div class="edit_block" style="{if $block_view!='setup' }display:none{/if}" id="d_setup">
 			<table class="edit" border="0" id="edit_family_page" style="width:880px;clear:both;margin-left:20px;margin-top:0px" page_key="{$page->id}">
 				<tr>
