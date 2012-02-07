@@ -33,7 +33,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var OrdersColumnDefs = [ 
 				
 				    {key:"name", label:"<?php echo _('Name')?>", width:360,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //	,{key:"subjects", label:"<?php echo _('Customers')?>", width:260,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    	,{key:"subcategories", label:"<?php echo _('Subcategories')?>", width:260,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				
 				     ];
@@ -55,7 +55,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			"name","subjects"
+			"name","subcategories"
 			 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -89,7 +89,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['customer_categories']['subcategories']['f_field']?>',value:'<?php echo$_SESSION['state']['customer_categories']['subcategories']['f_value']?>'};
 
 		
-
+/*
 
  var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -101,8 +101,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=base_customer_category&parent_key="+Dom.get('store_id').value+"&tableid=2");
+	    request="ar_history.php?tipo=history&type=base_customer_category&parent_key="+Dom.get('store_id').value+"&tableid=2";
+	    //alert(request)
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {
@@ -163,7 +164,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['customer_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['customer_categories']['history']['f_value']?>'};
 
 
-
+*/
 
 
 	};
@@ -175,7 +176,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
  function init(){
- 
+
   ids=['subcategories','history'];
   Event.addListener(ids, "click",change_block);
 

@@ -124,7 +124,7 @@ if ($page->data['Page Code']=='login') {
 else if ($page->data['Page Code']=='profile') {
 
 
-$js_files[]='upload_common.js.php';
+//$js_files[]='upload_common.js.php';
 
 		if (!$logged_in) {
 			header('location: login.php');
@@ -256,8 +256,7 @@ $js_files[]='upload_common.js.php';
 				$smarty->assign('filter',$tipo_filter);
 				$smarty->assign('filter_value',$_SESSION['state']['order']['products']['f_value']);
 				$filter_menu=array(
-					'code'=>array('db_key'=>'code','menu_label'=>'Code starting with
-<i>x</i>','label'=>'Code'),
+					'code'=>array('db_key'=>'code','menu_label'=>'Code starting with <i>x</i>','label'=>'Code'),
 					'family'=>array('db_key'=>'family','menu_label'=>'Family starting with
 <i>x</i>','label'=>'Code'),
 					'name'=>array('db_key'=>'name','menu_label'=>'Name starting with
@@ -419,7 +418,7 @@ $js_files[]='upload_common.js.php';
 		$css_files[]='css/inikoo.css';
 		$css_files[]='css/inikoo_table.css';
 		$js_files[]='address_data.js.php';
-		$js_files[]='js/profile_contact.js.php';
+		$js_files[]='profile_contact.js.php';
 	}
 
 $smarty->assign('logged',$logged_in);

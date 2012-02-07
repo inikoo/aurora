@@ -51,7 +51,7 @@ $js_files=array(
 	'js/table_common.js',
 	'search.js',
 	'js/edit_common.js',
-	'js/dropdown.js',
+	'js/search.js',
 	'js/edit_category_common.js'
 );
 $smarty->assign('css_files',$css_files);

@@ -190,20 +190,7 @@
 					</div>
 					</td>
 				</tr>
-				<tr>
-					<td width:120px class="label">{t}URL{/t}:</td>
-					<td style="width:400px"> 
-					<div>
-						<input style="width:100%" id="page_properties_url" value="{$page->get('Page URL')}" ovalue="{$page->get('Page URL')}" />
-						<div id="page_properties_url_Container">
-						</div>
-					</div>
-					</td>
-					<td> 
-					<div id="page_properties_url_msg">
-					</div>
-					</td>
-				</tr>
+				
 				<tr>
 					<td style="width:120px" class="label">{t}Link Label{/t}:</td>
 					<td style="width:400px"> 

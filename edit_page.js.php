@@ -788,7 +788,6 @@ function validate_page_content_presentation_template_data(query){validate_genera
 function validate_page_header_store_title(query){validate_general('page_header','store_title',unescape(query));}
 
 function validate_page_html_head_resume(query){validate_general('page_properties','resume',unescape(query));}
-function validate_page_properties_url(query){validate_general('page_properties','url',unescape(query));}
 function validate_page_properties_link_title(query){validate_general('page_properties','link_title',unescape(query));}
 function validate_page_properties_page_code(query){validate_general('page_properties','page_code',unescape(query));}
 function validate_page_html_head_title(query){validate_general('page_properties','title',unescape(query));}
@@ -1085,11 +1084,7 @@ dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", { visible : false
  
  
     'page_properties':{
-	'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
-		 ,'name':'page_properties_url','ar':false
-		 
-	},
+
 	'page_code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Code')?>'}]
 		 ,'name':'page_properties_page_code'
@@ -1157,11 +1152,7 @@ YAHOO.util.Event.addListener('reset_edit_page_content', "click", reset_edit_page
     page_properties_page_code_oAutoComp.queryDelay = 0.1;
 
 
- var page_properties_url_oACDS = new YAHOO.util.FunctionDataSource(validate_page_properties_url);
-    page_properties_url_oACDS.queryMatchContains = true;
-    var page_properties_url_oAutoComp = new YAHOO.widget.AutoComplete("page_properties_url","page_properties_url_Container", page_properties_url_oACDS);
-    page_properties_url_oAutoComp.minQueryLength = 0; 
-    page_properties_url_oAutoComp.queryDelay = 0.1;
+ 
     
     
      var page_properties_link_title_oACDS = new YAHOO.util.FunctionDataSource(validate_page_properties_link_title);
