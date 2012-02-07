@@ -6,6 +6,7 @@
 		<input id="site_key" value="{$site->id}" type="hidden" />
 		<input id="store_key" value="{$site->get('Site Store Key')}" type="hidden" />
 		<input id="customer_id" value="{$site_user->get('User Parent Key')}" type="hidden" />
+		<input id="site_url" value="{$site->get('Site URL')}" type="hidden" />
 
 		<input id="forgot_password_handle" value="{$site_user->get('User Handle')}" type="hidden" />
 		<div class="branch">

@@ -201,21 +201,16 @@ function forgot_password()
 	    });
 }
 function forget_password(o, email){
+ var data_to_update=new Object;
+data_to_update['store_key']=Dom.get('store_key').value;
+data_to_update['site_key']=Dom.get('site_key').value;
+data_to_update['login_handle']=email;
+data_to_update['main']=true;
+//data_to_update['customer_id=Dom.get('customer_id').value;
+data_to_update['url'] ='http://'+ Dom.get('site_url').value + '/register.php';
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+var request='ar_register.php?tipo=forgot_password&values='+jsonificated_values
 
-//   var pos = Dom.getXY(o);
-//   
-//   pos[0]=pos[0]+500
-// 
-// 
-//     Dom.setXY('password_msg', pos);
-    var store_key=Dom.get('store_key').value;
-    var site_key=1;//Dom.get('site_key').value;
-// email=this.getAttribute('email')
-var customer_id=Dom.get('customer_id').value;
-var url ='http://'+ window.location.host + window.location.pathname;
-var request='ar_register.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_key + '&url='+url + '&email='+email + '&site_key='+site_key
-// Dom.get('password_msg').innerHTML='Sending';
-// Dom.get('password_msg').style.display='';
 	            alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 
@@ -225,17 +220,11 @@ var request='ar_register.php?tipo=forgot_password&customer_key=' + customer_id +
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
 				alert('sent');
-				//Dom.get('password_msg').innerHTML="Email Sent"
-				//Dom.get('password_msg').style.display='';
-				//window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
-
-            }
+			}
 			else{
 				alert('error');
-				//Dom.get('password_msg').innerHTML=r.msg;
-				//Dom.get('password_msg').style.display='';
 			}
-   			}
+   		}
     });
 } 
 

@@ -363,10 +363,13 @@ function forgot_password($data) {
 
 
 	//global   $secret_key,$public_url;
-	$site_key=$data['values']['store_key'];
+	//$site_key=$data['values']['store_key'];
 	$site_key=$data['values']['site_key'];
 	$login_handle=$data['values']['login_handle'];
 	$url=$data['values']['url'];
+
+
+
 	include_once 'external_libs/securimage/securimage.php';
 	$site=new Site($site_key);
 
