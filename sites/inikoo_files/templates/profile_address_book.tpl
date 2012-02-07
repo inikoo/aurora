@@ -2,19 +2,7 @@
 <input type="hidden" id="store_key" value="{$store->id}" />
 <input type="hidden" id="site_key" value="{$site->id}" />
 
-<div class="top_page_menu" style="padding:10px 20px 5px 20px">
-<div class="buttons" style="float:left">
-    <button  onclick="window.location='profile.php?view=change_password'" ><img src="art/icons/cog_edit.png" alt=""> {t}Change Password{/t}</button>
-    <button  class="selected" onclick="window.location='profile.php?view=address_book'" ><img src="art/icons/book_addresses.png" alt=""> {t}Address Book{/t}</button>
-    <button  onclick="window.location='profile.php?view=orders'" ><img src="art/icons/table.png" alt=""> {t}Orders{/t}</button>
-    <button  onclick="window.location='profile.php?view=contact'" ><img src="art/icons/user.png" alt=""> {t}My Account{/t}</button>
-</div>
-
-
-<div style="clear:both">
-
-</div>
-</div>
+{include file='profile_header.tpl' select='address_book'} 
 
 
 

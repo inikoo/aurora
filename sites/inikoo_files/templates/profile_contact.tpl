@@ -8,7 +8,7 @@
 <input type="hidden" id="other_value_{$key}" value="{$other}" />
 {/foreach} {foreach from=$enable_other item=other key=key} 
 <input type="hidden" id="enable_other_{$key}" value="{$other}" />
-{/foreach} {include file='profile_header.tpl'} 
+{/foreach} {include file='profile_header.tpl' select='contact'} 
 <div id="contact_block" {if $view!='contact' }style="display:none" {/if}>
 	<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
 		
