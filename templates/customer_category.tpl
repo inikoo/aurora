@@ -4,7 +4,7 @@
 		{include file='contacts_navigation.tpl'} 
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<div class="branch">
-			<span>{if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer_categories.php?store_id={$store->id}&id=0">{t}Categories{/t}</a> &rarr; {$category->get_smarty_tree('customer_categories.php')}</span> 
+			<span>{if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer_categories.php?store={$store->id}&id=0">{t}Categories{/t}</a> &rarr; {$category->get_smarty_tree('customer_categories.php')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
@@ -46,11 +46,11 @@
 			</div>
 			<table style="float:left;margin:0 0 0 0px ;padding:0" class="options">
 				<tr>
-					<td {if $block_view="='general'}class=&quot;selected&quot;{/if}" id="general">{t}General{/t}</td>
-					<td {if $block_view="='contact'}class=&quot;selected&quot;{/if}" id="contact">{t}Contact{/t}</td>
-					<td {if $block_view="='address'}class=&quot;selected&quot;{/if}" id="address">{t}Address{/t}</td>
-					<td {if $block_view="='balance'}class=&quot;selected&quot;{/if}" id="balance">{t}Balance{/t}</td>
-					<td {if $block_view="='rank'}class=&quot;selected&quot;{/if}" id="rank">{t}Ranking{/t}</td>
+					<td class="{if $block_view=='general'}selected{/if}" id="general">{t}General{/t}</td>
+					<td class={if $block_view=='contact'}selected{/if}" id="contact">{t}Contact{/t}</td>
+					<td class={if $block_view=='address'}selected{/if}" id="address">{t}Address{/t}</td>
+					<td class={if $block_view=='balance'}selected{/if}" id="balance">{t}Balance{/t}</td>
+					<td class={if $block_view=='rank'}selected{/if}" id="rank">{t}Ranking{/t}</td>
 				</tr>
 			</table>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 

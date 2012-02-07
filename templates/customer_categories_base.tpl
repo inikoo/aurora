@@ -26,7 +26,7 @@
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='subcategories'}selected{/if}"  id="subcategories">  <span> {t}Categories{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='history'}selected{/if}"  id="history">  <span> {t}History{/t}</span></span></li>
+  {*}  <li> <span class="item {if $block_view=='history'}selected{/if}"  id="history">  <span> {t}History{/t}</span></span></li>{*}
 </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 <div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
@@ -37,6 +37,7 @@
 
        <div  id="table1"   class="data_table_container dtable btable "> </div>		
 </div>
+{*}
 <div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
   <span class="clean_table_title" >{t}History{/t}</span>
@@ -44,7 +45,7 @@
   <div  id="table2"   class="data_table_container dtable btable "> </div>
 
 </div>
-  
+ {*} 
 </div> 
 {include file='footer.tpl'}
 {include file='new_category_splinter.tpl'}

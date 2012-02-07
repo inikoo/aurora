@@ -624,76 +624,98 @@ $staff_id=$_REQUEST['parent_key'];
 
 function list_history($asset_type) {
 
+	$where_tipo='default';
+
     $id_key='id';
     if ($asset_type=='product') {
         $asset='Product';
         $id_key='tag';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='family') {
         $asset='Family';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='part') {
         $asset='Part';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
         //  $id_key='sku';
     }
     elseif($asset_type=='company_area') {
         $asset='Company Area';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='edit_each_staff') {
         $asset='Company Staff';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='company_position') {
         $asset='Company Position';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
 
     elseif($asset_type=='department') {
         $asset='Department';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='store') {
         $asset='Store';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='contact') {
         $asset='Contact';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='company') {
         $asset='Company';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
    elseif($asset_type=='site') {
         $asset='Site';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
   elseif($asset_type=='page') {
         $asset='Page';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='company_department') {
         $asset='Company Department';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
 
     elseif($asset_type=='position') {
         $asset='Position';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='supplier') {
         $asset='Supplier';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='supplier_product') {
         $asset='Supplier Product';
         $id_key='pid';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='product_categories') {
         $asset='Category';
         $id_key='parent_key';
         $asset_type='categories';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='customer_categories') {
         $asset='Category';
         $id_key='parent_key';
         $asset_type='categories';
+         $asset_id=$_SESSION['state'][$asset_type][$id_key];
     }
     elseif($asset_type=='supplier_categories') {
         $asset='Category';
         $id_key='parent_key';
         $asset_type='categories';
-    }
+        $where_tipo='category_base';
+                 $asset_id=$_SESSION['state'][$asset_type][$id_key];
 
+    }
 
 
 
@@ -704,7 +726,7 @@ function list_history($asset_type) {
 
 
 
-    $asset_id=$_SESSION['state'][$asset_type][$id_key];
+   
 
     //if (isset( $_REQUEST['elements']))
     //     $elements=$_REQUEST['elements'];
@@ -785,12 +807,12 @@ function list_history($asset_type) {
     $_dir=$order_direction;
     $filter_msg='';
 
+$wheref='';
+  
 
-    $where='where true';
+    
 
-    $wheref='';
-
-    $where=$where.sprintf(" and  ( (`Direct Object`='%s' and `Direct Object Key`=%d) or (`Indirect Object`='%s' and `Indirect Object Key`=%d)  )    "
+    $where=sprintf(" where  ( (`Direct Object`='%s' and `Direct Object Key`=%d) or (`Indirect Object`='%s' and `Indirect Object Key`=%d)  )    "
                           ,$asset
                           ,$asset_id
                           ,$asset

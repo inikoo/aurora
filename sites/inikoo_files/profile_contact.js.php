@@ -11,7 +11,7 @@ var number_of_categories=2;
 var scope_key='';
 <?php
 
-include_once('../common.php');
+include_once('common.php');
 
 $custom_fields=array();
 $sql=sprintf("show columns from `Customer Custom Field Dimension`");
@@ -289,10 +289,10 @@ if(category_key==''){
 	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-			//alert(o.responseText);
+		//	alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
-                   window.location.reload();                         
+            //       window.location.reload();                         
 				}
 
 

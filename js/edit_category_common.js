@@ -41,24 +41,22 @@ var ar_file='ar_edit_categories.php';
 					   
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
+							/*
+							table_id=1;
+							var table=tables['table'+table_id];
+    						var datasource=tables['dataSource'+table_id];
+    						var request='&table_id='+table_id;
+    						datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 					
-					
-					table_id=1;
-					var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-    var request='&table_id='+table_id;
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
-					
-					table_id=2;
-					var table=tables['table'+table_id];
-					if(table!= undefined){
-					
-    var datasource=tables['dataSource'+table_id];
-    var request='&table_id=_history';
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
-    
-					}
-					cancel_new_category()
+							table_id=2;
+							var table=tables['table'+table_id];
+							if(table!= undefined){
+								var datasource=tables['dataSource'+table_id];
+    							var request='&table_id=_history';
+    							datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+							*/
+							post_create_actions()
+							cancel_new_category()
 				
 				}
 						
