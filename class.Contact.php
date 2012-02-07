@@ -1578,6 +1578,9 @@ class Contact extends DB_Table {
 				$email=new Email('find create',$email_data);
 				if ($email->id) {
 
+			//	print "hola $scope :) ";
+
+
 					if ($scope=='customer') {
 						$sql=sprintf("select `Customer Key` from `Email Bridge`  left join `Customer Dimension` on (`Customer Key`=`Subject Key`) where  `Subject Type`='Customer' and `Email Key`=%s and `Customer Store Key`=%d",
 							$email->id,
@@ -1587,6 +1590,8 @@ class Contact extends DB_Table {
 						if ($row=mysql_fetch_array($res)) {
 							$this->error=true;
 							$this->msg='Email already in store';
+						}else{
+						$this->associate_email($email->id);
 						}
 
 					}else {

@@ -158,7 +158,21 @@ $page->get_data('id',$page->id);
 //print_r($page);
 
 	$redirect_key=$page->add_redirect($old_url);
-print "old:::  $url $old_url \n";
+	if($redirect_key){
+	$redirect_data=$page->get_redirect_data($redirect_key);
+	//print_r($redirect_data);
+	//print $redirect_data['Source File'];
+	if(preg_match('/\.html$/',$redirect_data['Source File'])){
+		$_source=preg_replace('/\.html$/','.php',$redirect_data['Source']);
+		$page->add_redirect($_source);
+	}elseif(preg_match('/\.php$/',$redirect_data['Source File'])){
+		$_source=preg_replace('/\.php$/','.html',$redirect_data['Source']);
+		$page->add_redirect($_source);
+	}
+	}
+	/*
+	
+//print "old:::  $url $old_url \n";
 	if($url=preg_match('/^www.aw-geschenke.com/',$old_url)){
 		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
 		print "$sql\n";
@@ -166,26 +180,26 @@ print "old:::  $url $old_url \n";
 	}
 	if($url=preg_match('/^www.ancientwisdom.biz/',$old_url)){
 		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
-print "$sql\n";
+//print "$sql\n";
 		mysql_query($sql);
 	}
 	if($url=preg_match('/^www.aw-cadeux.com/',$old_url)){
 		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
-print "$sql\n";
+//print "$sql\n";
 		mysql_query($sql);
 	}
 	if($url=preg_match('/^www.aw-regali.com/',$old_url)){
 		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
-print "$sql\n";
+//print "$sql\n";
 		mysql_query($sql);
 	}
 	if($url=preg_match('/^www.aw-podarki.com/',$old_url)){
 		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
-print "$sql\n";
+//print "$sql\n";
 		mysql_query($sql);
 	}
 
-
+*/
 	if($redirect_key){
 		
 		
