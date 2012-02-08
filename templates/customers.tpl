@@ -185,14 +185,11 @@
 
 <div id="dialog_new_customer" style="padding:20px 20px 10px 20px ">
   <div id="new_customer_msg"></div>
-  
   <div class="buttons">
   <button  class="positive"  onClick="new_customer()" >{t}Manually{/t}</button>
   <button  class="positive" onClick="new_customer_from_file()" >{t}Import from file{/t}</button>
     <button class="negative" id="close_dialog_new_customer" >{t}Cancel{/t}</button>
-
   </div>
-
 </div>
 
 {*}

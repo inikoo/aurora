@@ -7,7 +7,6 @@
 		<input id="store_key" value="{$site->get('Site Store Key')}" type="hidden" />
 		<input id="customer_id" value="{$site_user->get('User Parent Key')}" type="hidden" />
 		<input id="site_url" value="{$site->get('Site URL')}" type="hidden" />
-
 		<input id="forgot_password_handle" value="{$site_user->get('User Handle')}" type="hidden" />
 		<div class="branch">
 			<span><a href="users.php">{t}Users{/t}</a> &rarr; <a href="users_site.php?site_key={$site->id}">{t}Site Users{/t} ({$site->get('Site Code')})</a> &rarr; {$site_user->get('User Handle')}</span> 
@@ -19,9 +18,8 @@
 			<div class="buttons" style="float:left">
 				<button onclick="window.location='users.php'"><img src="art/icons/house.png" alt=""> {t}Users Home{/t}</button> 
 			</div>
-
 			<div class="buttons" style="float:right">
-				<button onclick="forget_password(this, '{$site_user->get('User Handle')}')"><img src="art/icons/email_go.png" alt=""> {t}Email Reset Password{/t}</button> 
+				<button id="show_dialog_change_password"><img src="art/icons/key.png" alt=""> {t}Modify Password{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -87,5 +85,62 @@
 		<div id="block_access" style="{if $block_view!='access'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 		</div>
 	</div>
+</div>
+<div id="dialog_change_password" style="width:300px;padding:20px 20px 10px 20px ">
+	<table style="margin: 0px auto">
+		<tr id="dialog_change_password_buttons">
+			<td> 
+			<div class="buttons">
+				<button class="positive" id="send_reset_password">{t}Send Email{/t}</button> <button class="positive" id="change_password">{t}Set Password{/t}</button> <button class="negative" id="close_dialog_change_password">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr style="height:22px" id="dialog_change_password_wait">
+			<td class="aright" style="padding-right:10px"> <img src="art/loading.gif" /> {t}Processing Request{/t} </td>
+		</tr>
+		<tr style="height:22px" id="dialog_change_password_response">
+			<td class="aright" style="padding-right:10px" id="dialog_change_password_response_msg"> </td>
+		</tr>
+	</table>
+</div>
+<div id="dialog_set_password" style="width:300px;padding:20px 20px 10px 20px ">
+	<table border="0" class="edit" style="width:100%" >
+		<tr class="title">
+			<td colspan="2">{t}Change Password{/t} </td>
+		</tr>
+		<tr>
+			<td style="width:120px" class="label">{t}Password{/t}: </td>
+			<td> 
+			<input type="password" id="change_password_password1"></td>
+		</tr>
+		<tr>
+			<td style="width:120px" class="label">{t}Confirm{/t}: </td>
+			<td> 
+			<input type="password" id="change_password_password2"></td>
+		</tr>
+		<input id="epwcp1" value="" type="hidden" />
+		<input id="epwcp2" value="" type="hidden" />
+		<tr style="height:10px">
+			<td colspan="2"> 
+			
+			</td>
+		</tr>
+		<tr id="tr_change_password_buttons" class="button space">
+			<td colspan="2"> 
+			<div class="buttons">
+				<button id="submit_change_password" class="positive">{t}Change Password{/t}</button> <button id="cancel_change_password" class="negative">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr id="tr_change_password_messages">
+			<td colspan="2" style="text-align:right;padding-right:10px"><span style="display:none" id="change_password_error_no_password">{t}Write new password{/t}</span><span style="display:none" id="change_password_error_password_not_march">{t}Passwords don't match{/t}</span><span style="display:none" id="change_password_error_password_too_short">{t}Password is too short{/t}</span><span> </span> </td>
+		</tr>
+		<tr id="tr_change_password_error_message" style="display:none">
+			<td colspan="2" style="text-align:right;padding-right:10px" id="change_password_error_message"></td>
+		</tr>
+		<tr id="tr_change_password_wait" style="display:none" class="button">
+			<td colspan="2" class="aright"><img style="weight:24px" src="art/loading.gif"> <span style="position:relative;top:-5px">{t}Submitting changes{/t}</span></td>
+		</tr>
+	</table>
 </div>
 {include file='footer.tpl'} 

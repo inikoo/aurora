@@ -71,8 +71,7 @@ var Dom   = YAHOO.util.Dom;
 var editing='<?php echo $_SESSION['state']['customer']['edit']?>';
 var dialog_other_field_label;
 var dialog_comment;
-var dialog_set_password_main;
-var dialog_set_password_;
+var dialog_set_password;
 var dialog_convert_to_person;
 var  dialog_delete_customer;
 var dialog_convert_to_company;
@@ -286,41 +285,42 @@ Dom.addClass('delivery','selected');
 
 }
 
-function forget_password(o, email){
-
-  var pos = Dom.getXY(o);
-  
-  pos[0]=pos[0]+500
 
 
-    Dom.setXY('password_msg', pos);
-	var store_key=Dom.get('store_key').value;
-    var site_key=1;//Dom.get('site_key').value;
-//email=this.getAttribute('email')
-var url ='http://'+ window.location.host + window.location.pathname;
-var request='ar_edit_contacts.php?tipo=forgot_password&customer_key=' + customer_id +'&store_key='+store_key + '&url='+url + '&email='+email + '&site_key='+site_key
-Dom.get('password_msg').innerHTML='Sending';
-Dom.get('password_msg').style.display='';
-	            alert(request);	
+function send_reset_password(o,user_key,site_key,site_url){
+Dom.get(o.parentNode.parentNode).id='send_reset_password_msg';
+
+Dom.get(o.parentNode.parentNode).innerHTML='<img src="art/loading.gif">';
+
+ var data_to_update=new Object;
+data_to_update['site_key']=site_key;
+data_to_update['user_key']=user_key;
+data_to_update['url'] ='http://'+ site_url + '/register.php';
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+
+var request='ar_register.php?tipo=send_reset_password&values='+jsonificated_values
+
+	       
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 
 	            success:function(o){
 					
-	            alert(o.responseText);	
+	        
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
-				Dom.get('password_msg').innerHTML="Email Sent"
-				Dom.get('password_msg').style.display='';
-				window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
-
-            }
-			else{
-				Dom.get('password_msg').innerHTML=r.msg;
-				Dom.get('password_msg').style.display='';
+				
 			}
-   			}
+			else{
+				
+			}
+			Dom.get('send_reset_password_msg').innerHTML=r.msg;
+		
+   		}
     });
-}
+} 
+
+
+
 
 function validate_customer_tax_number(query){
   original_query= query;
@@ -526,62 +526,7 @@ function validate_customer_mobile(query){
     }
 }
 
-function submit_change_password_(){
-Dom.setStyle('dialog_set_password_','display','');
-user_key=Dom.get('user_key_in_change_password_form').value;
-var error=false;
 
-
-	if(  Dom.get('change_password_password1_').value=='' &&  Dom.get('change_password_password1_').value==Dom.get('change_password_password2_').value ){
-		Dom.addClass(['change_password_password1_','change_password_password2_'],'error');
-		error=true;
-		Dom.setStyle('change_password_error_no_password_','display','')
-
-	}else{
-	Dom.removeClass(['change_password_password1_','change_password_password2_'],'error');
-	Dom.setStyle('change_password_error_no_password_','display','none')
-
-	}
-
-
-
-	if(!error){
-		if( Dom.get('change_password_password1_').value!=Dom.get('change_password_password2_').value ){
-			Dom.addClass(['change_password_password1_','change_password_password2_'],'error');
-			if(!error)
-				Dom.setStyle('change_password_error_password_not_march_','display','')
-				error=true;
-
-		}else{
-			Dom.removeClass(['change_password_password1_','change_password_password2_'],'error');
-			Dom.setStyle('change_password_error_password_not_march_','display','none')
-
-		}
-	}
-	if(!error){
-		if(!error &&   Dom.get('change_password_password1_').value.length<6){
-			Dom.addClass(['change_password_password1_'],'error');
-
-			if(!error)
-				Dom.setStyle('change_password_error_password_too_short_','display','')
-
-			
-			error=true;
-		}else{
-			Dom.removeClass(['change_password_password1_'],'error');
-			Dom.setStyle('change_password_error_password_too_short_','display','none')
-
-		}
-	}
-
-
-
-	if(!error){
-	change_password_(user_key)
-	Dom.get('change_password_password1_').value='';
-	Dom.get('change_password_password2_').value='';
-	}
-}
 
 function submit_change_password(){
 Dom.setStyle('dialog_set_password_main','display','');
@@ -636,133 +581,9 @@ var error=false;
 	change_password()
 }
 
-function change_password_(user_key){
-Dom.setStyle('dialog_set_password_','display','none');
-//alert('change');//return;
-//user_key=Dom.get(o).getAttribute('user');
-
-    //var user_key=Dom.get('user_key_'+user).value;
-	//alert(user_key);return;
-	
-
-    //var store_key=Dom.get('store_key').value;
-    //var site_key=Dom.get('site_key').value;
-	
-	//ep1=AESEncryptCtr(sha256_digest(Dom.get('change_password_password1').value),Dom.get('epwcp1').value,256);
-	
-	ep1=sha256_digest(Dom.get('change_password_password1_').value);
-  //   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
-    ep2=Dom.get('epwcp2').value;
-	
-//alert(ep1)	
-	
-//	njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
-    //njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
-//var url ='http://'+ window.location.host + window.location.pathname;
-
-var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
-
-  var json_value = encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
-
-
-     var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
-//alert(request);//return;
-  Dom.setStyle('tr_email_in_db_buttons','display','none');
-    Dom.setStyle('tr_forgot_password_wait2','display','');
-
-    	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.state=='200'){
-
-             
-
-
-		        if(r.result=='ok'){
-				//alert('Password changed!');
-                //Dom.setStyle('change_password_ok','display','');
-                
-				window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
-    		    }else{
-		      //  Dom.setStyle('change_password_ok','display','none');
-                //Dom.setStyle('change_password_form','display','');
-		        }
-		    }else{
-		        //  Dom.setStyle('change_password_ok','display','none');
-               // Dom.setStyle('change_password_form','display','');
-		    }
-			
-
-		},failure:function(o){
-		  //  alert(o)
-		}
-	    
-	    });
 
 
 
-}
-
-function change_password(o){
-//alert('change');//return;
-    var user_key=Dom.get('user_key').value;
-	
-
-    //var store_key=Dom.get('store_key').value;
-    //var site_key=Dom.get('site_key').value;
-	
-	//ep1=AESEncryptCtr(sha256_digest(Dom.get('change_password_password1').value),Dom.get('epwcp1').value,256);
-	ep1=sha256_digest(Dom.get('change_password_password1').value);
-  //   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
-    ep2=Dom.get('epwcp2').value;
-	
-//alert(ep1)	
-	
-//	njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
-    //njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
-//var url ='http://'+ window.location.host + window.location.pathname;
-
-var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
-
-  var json_value = encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
-
-
-     var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
-alert(request);//return;
-  Dom.setStyle('tr_email_in_db_buttons','display','none');
-    Dom.setStyle('tr_forgot_password_wait2','display','');
-
-    	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.state=='200'){
-
-             
-
-
-		        if(r.result=='ok'){
-				alert('Password changed!');
-                //Dom.setStyle('change_password_ok','display','');
-                Dom.setStyle('dialog_set_password_main','display','none');
-    		    }else{
-		      //  Dom.setStyle('change_password_ok','display','none');
-                //Dom.setStyle('change_password_form','display','');
-		        }
-		    }else{
-		        //  Dom.setStyle('change_password_ok','display','none');
-               // Dom.setStyle('change_password_form','display','');
-		    }
-			
-
-		},failure:function(o){
-		  //  alert(o)
-		}
-	    
-	    });
-
-
-
-}
 
 
 <?php
@@ -1505,32 +1326,17 @@ Dom.setStyle('display_add_other_mobile','display','none');
 Dom.setStyle('tr_add_other_mobile','display','');
 }
 
-function register_email(o){
-	  var pos = Dom.getXY(o);
-  
-  pos[0]=pos[0]+300
+function register_email(email_key,site_key){
 
-
-    Dom.setXY('register_msg', pos);
 	
-	email=Dom.get(o).getAttribute('email');
-	//alert(email);
-	var url ='http://'+ window.location.host + window.location.pathname;
-password='xxxxxxxxxxxxxx';
 
-	data['Email']=Dom.get(o).getAttribute('email');
-	data['customer_id']=customer_id;
-	data['store_id']=store_id;
-	data['password']=password;
-	data['send_email']=true;
-	data['url']=url;
-
-	var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
   
   
   
-var request='ar_edit_users.php?tipo=create_user&values=' + json_value 
-Dom.get('register_msg').innerHTML="Registering in the system"
+var request='ar_register.php?tipo=create_customer_user&email_key='+email_key+'&customer_key='+Dom.get('customer_key').value +'&site_key='+site_key+'&password='
+alert(request);
+return;
+//Dom.get('register_msg').innerHTML="Registering in the system"
 				Dom.get('register_msg').style.display='';
 	            alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -1538,8 +1344,8 @@ Dom.get('register_msg').innerHTML="Registering in the system"
 	            success:function(o){
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state=='200'){
-					Dom.get('register_msg').style.display='none';
-					window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
+					//Dom.get('register_msg').style.display='none';
+					//window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 
 				
 				}
@@ -1555,21 +1361,25 @@ Dom.get('register_msg').innerHTML="Registering in the system"
 
 
 function show_change_password_dialog(o,user_key){
-Dom.get('user_key_in_change_password_form').value=user_key;
+Dom.get('user_key').value=user_key;
 
-
+region1 = Dom.getRegion(o); 
+    region2 = Dom.getRegion('dialog_set_password'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_set_password', pos);
+	
+	Dom.get('dialog_set_password').focus();
+	
   var pos = Dom.getXY(o);
-  
-  pos[0]=pos[0]-300
- Dom.get('change_password_password1_').focus();
+ 
 
-    Dom.setXY('dialog_set_password_', pos);
+dialog_set_password.show();
 
+	Dom.get('change_password_password1').value='';
+	Dom.get('change_password_password2').value='';
+		
 
-
-dialog_set_password_.show();
-//submit_change_password_(user_key);
-
+Dom.get('change_password_password1').focus();
 
 }
 
@@ -1606,85 +1416,124 @@ var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer
 
 }
 
+function change_password(o){
+
+    var user_key=Dom.get('user_key').value;
+	
+
+    //var store_key=Dom.get('store_key').value;
+    //var site_key=Dom.get('site_key').value;
+	
+	//ep1=AESEncryptCtr(sha256_digest(Dom.get('change_password_password1').value),Dom.get('epwcp1').value,256);
+	ep1=sha256_digest(Dom.get('change_password_password1').value);
+  //   var json_value = my_encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
+    ep2=Dom.get('epwcp2').value;
+	
+//alert(ep1)	
+	
+//	njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
+    //njZJTjk5OTmzOnIBTJwt8i0K1bb//h4HnojRs+CN0ZmYHxR6F0DQpw8YUCg051J8fj/saZOj+70jYLIuh7OmqjkamiYef5y7
+//var url ='http://'+ window.location.host + window.location.pathname;
+
+var data={'user_key':user_key,'ep1':ep1, 'ep2':ep2}
+
+  var json_value = encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
+
+
+     var request=' ar_edit_users.php?tipo=change_passwd&user_id='+user_key+'&ep1='+ep1+'&ep2='+ep2;
+//alert(request);//return;
+  Dom.setStyle('tr_email_in_db_buttons','display','none');
+    Dom.setStyle('tr_forgot_password_wait2','display','');
+
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state=='200'){
+
+             
+
+
+		   
+		        
+		        dialog_set_password.hide();
+		       
+		      
+		    }else{
+		    Dom.setStyle('tr_change_password_error_message','display','')
+                Dom.get('change_password_error_message').innerHTML=r.msg;
+		      
+		    }
+			
+
+		},failure:function(o){
+		  //  alert(o)
+		}
+	    
+	    });
+
+
+
+}
+
+
+function clear_change_password_messages(){
+			Dom.setStyle(['change_password_error_password_too_short','change_password_error_password_not_march','change_password_error_no_password'],'display','none')
+Dom.removeClass(['change_password_password1','change_password_password2'],'error');
+Dom.setStyle('tr_change_password_error_message','display','none');
+}
+
+
+function change_password_changed(e){
+clear_change_password_messages();
+  var key;     
+     if(window.event)
+         Key = window.event.keyCode; //IE
+     else
+         Key = e.which; //firefox     
+
+     if (Key == 13){
+	 submit_change_password();
+	 
+	 }
+}
 
 
 function init(){
 
-    
-if(Dom.hasClass('delete_customer','disabled'))
-tt1 = new YAHOO.widget.Tooltip("tt1", { context:"delete_customer",'text':Dom.get('delete_button_tooltip').value }); 
+    if(Dom.hasClass('delete_customer','disabled'))
+		tt1 = new YAHOO.widget.Tooltip("tt1", { context:"delete_customer",'text':Dom.get('delete_button_tooltip').value }); 
 
-
-  init_search('customers_store');
-
-
-dialog_delete_customer = new YAHOO.widget.Dialog("dialog_delete_customer", {context:["delete_customer","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_delete_customer.render();
-  Event.addListener("delete_customer", "click", dialog_delete_customer.show,dialog_delete_customer, true);
-   YAHOO.util.Event.addListener('cancel_delete_customer', "click", cancel_delete_customer);
-        YAHOO.util.Event.addListener('save_delete_customer', "click", save_delete_customer);
-
-dialog_convert_to_person = new YAHOO.widget.Dialog("dialog_convert_to_person", {context:["convert_to_person","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_convert_to_person.render();
-
-
-
- 
-     Event.addListener("convert_to_person", "click", dialog_convert_to_person.show, dialog_convert_to_person, true);
-        YAHOO.util.Event.addListener('cancel_convert_to_person', "click", cancel_convert_to_person);
+	init_search('customers_store');
+	dialog_delete_customer = new YAHOO.widget.Dialog("dialog_delete_customer", {context:["delete_customer","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_delete_customer.render();
+  	Event.addListener("delete_customer", "click", dialog_delete_customer.show,dialog_delete_customer, true);
+   	YAHOO.util.Event.addListener('cancel_delete_customer', "click", cancel_delete_customer);
+    YAHOO.util.Event.addListener('save_delete_customer', "click", save_delete_customer);
+	dialog_convert_to_person = new YAHOO.widget.Dialog("dialog_convert_to_person", {context:["convert_to_person","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_convert_to_person.render();
+	Event.addListener("convert_to_person", "click", dialog_convert_to_person.show, dialog_convert_to_person, true);
+    YAHOO.util.Event.addListener('cancel_convert_to_person', "click", cancel_convert_to_person);
     YAHOO.util.Event.addListener('save_convert_to_person', "click", save_convert_to_person);
     
-     
-
-dialog_convert_to_company = new YAHOO.widget.Dialog("dialog_convert_to_company", {context:["convert_to_company","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_convert_to_company.render();
-   YAHOO.util.Event.addListener('convert_to_company', "click", show_convert_to_company);
-
-   YAHOO.util.Event.addListener('cancel_convert_to_company', "click", cancel_convert_to_company);
+    dialog_convert_to_company = new YAHOO.widget.Dialog("dialog_convert_to_company", {context:["convert_to_company","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_convert_to_company.render();
+   	YAHOO.util.Event.addListener('convert_to_company', "click", show_convert_to_company);
+   	YAHOO.util.Event.addListener('cancel_convert_to_company', "click", cancel_convert_to_company);
     YAHOO.util.Event.addListener('save_convert_to_company', "click", save_convert_to_company);
  
- 
-dialog_other_field_label = new YAHOO.widget.Dialog("dialog_other_field_label", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_other_field_label.render();
+ 	dialog_other_field_label = new YAHOO.widget.Dialog("dialog_other_field_label", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_other_field_label.render();
 
-
-dialog_comment = new YAHOO.widget.Dialog("dialog_comment", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_comment.render();
+	dialog_comment = new YAHOO.widget.Dialog("dialog_comment", {visible : false,close:true,underlay: "none",draggable:false});
+	dialog_comment.render();
 
     Event.addListener("display_add_other_email", "click", display_add_other_email , true);
-
     Event.addListener("display_add_other_telephone", "click", display_add_other_telephone , true);
     Event.addListener("display_add_other_mobile", "click", display_add_other_mobile , true);
     Event.addListener("display_add_other_fax", "click", display_add_other_fax , true);
 	
-<?php 
-	echo 'var ids = ["forget_password_main"';
-	for($i=0; $i<$_REQUEST['forgot_count']; $i++){
-		echo ', "forget_password_'.$i.'"';
-	}
-	echo '];';
-	
 
-?>
-	Event.addListener(ids, "click", forget_password );
-	/*
-<?php 
-
-	echo 'var ids_show = [';
-	for($i=0; $i<$_REQUEST['register_count']; $i++){
-		echo ' "register_'.$i.'",';
-	}
-	echo '];';
-	
-
-?>
-
-
-
-	//var ids_show = ["show_register_block_0", ""];
-
-	Event.addListener(ids_show, "click", register , true);
-	*/
 	
  var customer_merge_oACDS = new YAHOO.util.FunctionDataSource(merge);
     customer_merge_oACDS.queryMatchContains = true;
@@ -1954,43 +1803,21 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
     customer_merge_oAutoComp.minQueryLength = 0; 
     customer_merge_oAutoComp.queryDelay = 0.1;
 
-		dialog_set_password_main = new YAHOO.widget.Dialog("dialog_set_password_main", {context:["set_password_main","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_set_password_main.render();
-	
-	dialog_set_password_ = new YAHOO.widget.Dialog("dialog_set_password_", { visible : false,close:true,underlay: "none",draggable:false});
-    dialog_set_password_.render();
-/*	
-	<?php
-	for($i=0; $i<$_REQUEST['forgot_count']; $i++){
-	printf("dialog_set_password_%s = new YAHOO.widget.Dialog(\"dialog_set_password_%s\", {context:[\"set_password_%s\",\"tr\",\"tl\"]  ,visible : false,close:true,underlay: \"none\",draggable:false});
-    dialog_set_password_%s.render();
-	", $i,$i, $i, $i);
-	}
-	?>
+		
+	dialog_set_password = new YAHOO.widget.Dialog("dialog_set_password", { visible : false,close:true,underlay: "none",draggable:false});
+    dialog_set_password.render();
+Event.addListener("cancel_change_password", "click", dialog_set_password.hide,dialog_set_password , true);
+Event.addListener(['change_password_password1','change_password_password2'], "keyup",change_password_changed);
+Event.addListener(['change_password_password1','change_password_password2'], "keydown",change_password_changed);
+ Event.addListener('submit_change_password', "click",submit_change_password);
 
-	/*
-<?php
-for($i=0; $i<$_REQUEST['forgot_count']; $i++){
-printf("Event.addListener(\"set_password_%s\", \"click\", dialog_set_password_%s.show,dialog_set_password_%s , true);", $i, $i, $i);
-}
-?>	
-*/
-<?php 
-	//echo 'var ids = ["set_password_main__"';
-	for($i=0; $i<$_REQUEST['forgot_count']; $i++){
-		//echo ', "set_password_'.$i.'"';
-	
-	//echo '];';
-	//echo 'Event.addListener("set_password_'.$i.'", "click", dialog_set_password_.show,dialog_set_password_ ,'.$i.');';
-	}
-?>
-//alert(ids)
-Event.addListener("set_password_main", "click", dialog_set_password_main.show,dialog_set_password_main , true);
+
+//Event.addListener("set_password_main", "click", dialog_set_password_main.show,dialog_set_password_main , true);
 
 //Event.addListener(ids, "click", dialog_set_password_.show,dialog_set_password_ , true);
 
-Event.addListener("submit_change_password", "click",submit_change_password);
-Event.addListener("submit_change_password_", "click",submit_change_password_, true);
+//Event.addListener("submit_change_password", "click",submit_change_password);
+//Event.addListener("submit_change_password", "click",submit_change_password, true);
 }
 
 YAHOO.util.Event.onDOMReady(init);

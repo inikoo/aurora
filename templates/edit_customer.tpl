@@ -7,19 +7,13 @@
 	<input type="hidden" value="{$customer->id}" id="customer_key" />
 	<input type="hidden" value="{$registered_email}" id="registered_email" />
 	<input type="hidden" value="{$store_id}" id="store_key" />
-    
-    <input type="hidden" id="parent_category_key"  value="0"/>
-    <input type="hidden" id="category_key"  value="0"/>
-
-    {foreach from=$enable_other item=other key=key}
-    <input type="hidden" id="enable_other_{$key}"  value="{$other}"/>
-    {/foreach}
-    
-    {foreach from=$other_value item=other key=key}
-    <input type="hidden" id="other_value_{$key}"  value="{$other}"/>
-    {/foreach}
-    
-    
+	<input type="hidden" id="parent_category_key" value="0" />
+	<input type="hidden" id="category_key" value="0" />
+	{foreach from=$enable_other item=other key=key} 
+	<input type="hidden" id="enable_other_{$key}" value="{$other}" />
+	{/foreach} {foreach from=$other_value item=other key=key} 
+	<input type="hidden" id="other_value_{$key}" value="{$other}" />
+	{/foreach} 
 	<div class="top_page_menu">
 		{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if} {if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 		<div class="buttons">
@@ -49,55 +43,68 @@
 		{/if} 
 	</ul>
 	<div class="tabbed_container">
-		{if $site_customer} 
 		<div class="edit_block" style="{if $edit!='password'}display:none{/if};min-height:260px" id="d_password">
-			<div class="todo">
-				No of sites: {$no_of_sites} {t}To Do{/t} 
-			</div>
+			{foreach from=$store->get_sites_data(true) item=site} 
 			<table class="edit" border="0" style="width:100%">
 				<tr class="title">
-					<td colspan="5">{t}Reset Password{/t}</td>
+					<td colspan="5">{t}Site{/t}: {$site.SiteName}</td>
 				</tr>
-				<tr>
-					<td style="width:300px">{t}Send an Email: ({$customer->get('Customer Main Plain Email')}){/t}</td>
-					<td style="width:300px"> <div class="buttons">
-					<button style="margin-left:10px"  onclick="forget_password(this, '{$customer->get('Customer Main Plain Email')}')">{t}Send an Email to Reset password{/t}</button> 
-					</div></td>
-					<td> <div class="buttons"><button style="margin-left:10px"  onclick="show_change_password_dialog(this, {$user_main_id})">Set Password</button>	</td>
-					<td> <span id="password_msg" style="display:"></span></td>
+				<tr style="height:5px">
+					<td colspan="5"></td>
+				</tr>
+				<tr style="{if !$customer->get('Customer Main Email Key')}display:none{/if}">
+					<td>{$customer->get('Customer Main Plain Email')}</td>
+					<td style="{if $customer->get_main_email_user_key()}visibility:hidden{/if}"> 
+					<div class="buttons">
+						<button style="margin-left:10px" onclick="register_email({$customer->get('Customer Main Plain Key')},{$site.SiteKey} )">{t}Create Website User{/t}</button> 
+					</div>
+					</td>
+					<td style="{if !$customer->get_main_email_user_key()}visibility:hidden{/if}"> 
+					<div class="buttons">
+						<button style="margin-left:10px" onclick="send_reset_password(this,{$customer->get_main_email_user_key()},{$site.SiteKey},'{$site.SiteURL}')">{t}Send Reset Password Email{/t}</button> 
+					</div>
+					</td>
+					<td style="{if !$customer->get_main_email_user_key()}visibility:hidden{/if}"> 
+					<div class="buttons">
+						<button style="margin-left:10px" onclick="show_change_password_dialog(this, {$customer->get_main_email_user_key()})">{t}Set Password{/t}</button> 
+					</div>
+					</td>
+					
+				</tr>
 				
+				{foreach from=$customer->get_other_emails_data() item=other_email key=key} 
+				<tr style="height:5px" >
+					<td colspan="5"></td>
 				</tr>
-				{foreach from=$registered_email item=email key=key name=foo } 
-				<tr>
-					<td style="width:200px">{t}Send an Email: ({$email.email}){/t}</td>
-					<td style="width:300px">
+				<tr style="height:5px" class="top">
+					<td colspan="2"></td>
+				</tr>
+				
+				<tr >
+					<td>{if $other_email.user_key}<a href="site_user.php?id={$other_email.user_key}"><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if} {$other_email.xhtml}</td>
+					<td style="{if $other_email.user_key}visibility:hidden{/if}"> 
 					<div class="buttons">
-						<button style="margin-left:10px" onclick="forget_password(this, '{$email.email}')" email="{$email.email}">{t}Send an Email to Reset password{/t}</button> 
+						<button style="margin-left:10px" onclick="register_email({$other_email.key},{$site.SiteKey})">{t}Create Website User{/t}</button> 
 					</div>
 					</td>
-					<td><div class="buttons"><button style="margin-left:10px"  user_key="{$email.user_key}" onclick="show_change_password_dialog(this,{$email.user_key})">{t}Set Password{/t}</button></div></td>
-				</tr>
-				<tr>
-					<td><span id="password_msg_{$key}" style="display:"></span></td>
-				</tr>
-				{/foreach} {if $unregistered_count>0} 
-				<tr class="title">
-					<td colspan="5">{t}Unregistered Emails{/t}</td>
-				</tr>
-				{foreach from=$unregistered_email item=email key=key name=foo } 
-				<tr>
-					<td style="width:200px">{t}{$email.email}{/t}</td>
-					<td style="width:200px"> 
+					<td style="{if !$other_email.user_key}visibility:hidden{/if}"> 
 					<div class="buttons">
-						<button style="margin-left:10px" onclick="register_email(this)" email="{$email.email}" value="Register in Website" />{t}Register in Website{/t}</button> 
+						<button style="margin-left:10px" onclick="send_reset_password(this,{$other_email.user_key},{$site.SiteKey},'{$site.SiteURL}')">{t}Send Reset Password Email{/t}</button> 
 					</div>
 					</td>
-					<td><span id="register_msg" style="display:"></span></td>
+					<td style="{if !$other_email.user_key}visibility:hidden{/if}"> 
+					<div class="buttons">
+						<button style="margin-left:10px" onclick="show_change_password_dialog({$other_email.user_key})">{t}Set Password{/t}</button> 
+					</div>
+					</td>
 				</tr>
-				{/foreach} {/if} 
+			
+				{/foreach} 
+				
+				
 			</table>
+			{/foreach} 
 		</div>
-		{/if} 
 		<div class="edit_block" style="{if $edit!='merge'}display:none{/if};min-height:260px" id="d_merge">
 			<table class="edit" border="0" style="width:700px">
 				<tr>
@@ -240,56 +247,58 @@
 				{/foreach} {*} 
 			</table>
 		</div>
-
 		<div class="edit_block" style="{if $edit!='categories'}display:none{/if};min-height:260px" id="d_categories">
-			<table class="edit" border=0 >
+			<table class="edit" border="0">
 				<tr class="title">
 					<td colspan="5">{t}Categories{/t}</td>
 				</tr>
-
-                    
-                {foreach from=$categories item=cat key=cat_key name=foo  }
-                <tr>
-                    
-                    <td class="label"><div style="width:150px">{t}{$cat->get('Category Name')}{/t}:</div></td>
-                    <td>
-                        <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="save_category(this)">
-                            {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
-{if $smarty.foreach.foo2.first} 
-                                <option value="">{t}Unknown{/t}</option>
-                                {/if} 
-                            
-                            
-                            <option {if $categories_value[$cat_key]==$sub_cat_key }selected="selected"{/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
-                            {/foreach}
-                        </select>
-                        
-                    </td>   
-                </tr>
-
-  <tbody id="show_other_tbody_{$cat_key}" style="{if !$cat->number_of_children_with_other_value('Customer',$customer->id)}display:none{/if}">
-                    <tr><td><div class="buttons small" ><button onClick="show_save_other({$cat_key})">{t}Edit{/t}</button>
-</div></td><td style="border:1px solid #ccc;">{$cat->get_other_value('Customer',$customer->id)}
-				
-</td></tr>
-              
-                </tbody>
-
-                <tbody id="other_tbody_{$cat_key}" style="display:none">
-                    <tr><td></td><td ><textarea rows='2' cols="20" id="other_textarea_{$cat_key}">{$cat->get_other_value('Customer',$customer->id)}</textarea></td></tr>
-                    <tr><td></td><td><div class="buttons small left">
-                    <button onClick="save_category_other_value({$cat->get_children_key_is_other_value()},{$cat->id})">{t}Save{/t}</button></div></td></tr>
-                </tbody>
-                <tr style="height:15px"><td colspan=2></td></tr>
-                {/foreach}
-                    
-                    
-
-
+				{foreach from=$categories item=cat key=cat_key name=foo } 
+				<tr>
+					<td class="label">
+					<div style="width:150px">
+						{t}{$cat->get('Category Name')}{/t}:
+					</div>
+					</td>
+					<td> 
+					<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="save_category(this)">
+						{foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
+						<option value="">{t}Unknown{/t}</option>
+						{/if} 
+						<option {if $categories_value[$cat_key]="=$sub_cat_key" }selected="selected" {/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+						{/foreach} 
+					</select>
+					</td>
+				</tr>
+				<tbody id="show_other_tbody_{$cat_key}" style="{if !$cat->number_of_children_with_other_value('Customer',$customer->id)}display:none{/if}">
+					<tr>
+						<td>
+						<div class="buttons small">
+							<button onclick="show_save_other({$cat_key})">{t}Edit{/t}</button> 
+						</div>
+						</td>
+						<td style="border:1px solid #ccc;">{$cat->get_other_value('Customer',$customer->id)} </td>
+					</tr>
+				</tbody>
+				<tbody id="other_tbody_{$cat_key}" style="display:none">
+					<tr>
+						<td></td>
+						<td><textarea rows='2' cols="20" id="other_textarea_{$cat_key}">{$cat->get_other_value('Customer',$customer->id)}</textarea></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+						<div class="buttons small left">
+							<button onclick="save_category_other_value({$cat->get_children_key_is_other_value()},{$cat->id})">{t}Save{/t}</button>
+						</div>
+						</td>
+					</tr>
+				</tbody>
+				<tr style="height:15px">
+					<td colspan="2"></td>
+				</tr>
+				{/foreach} 
 			</table>
 		</div>
-
-
 		<div class="edit_block" style="{if $edit!='delivery'}display:none{/if};min-height:260px" id="d_delivery">
 			{include file='edit_delivery_address_splinter.tpl' return_to_order=false} 
 		</div>
@@ -601,62 +610,9 @@
 		</tr>
 	</table>
 </div>
-<div id="dialog_set_password_main">
-	{t}Change Password{/t} 
-	<table border="0" id="change_password_form">
-		<tr style="display:none;width:120px">
-			<td class="label">{t}Current Password{/t}: </td>
-			<td> 
-			<input type="password" id="current_password_password1"></td>
-		</tr>
-		<tr>
-			<td style="width:120px" class="label">{t}New Password{/t}: </td>
-			<td> 
-			<input type="password" id="change_password_password1"></td>
-		</tr>
-		<tr>
-			<td style="width:120px" class="label">{t}Confirm Password{/t}: </td>
-			<td> 
-			<input type="password" id="change_password_password2"></td>
-		</tr>
-		<input id="epwcp1" value="{$main_email.epwcp1}" type="hidden" />
-		<input id="epwcp2" value="{$main_email.epwcp2}" type="hidden" />
-		<input id="user_key" value="{$main_email.user_key}" type="hidden" />
-		<tr id="tr_change_password_buttons" class="button space">
-			<td colspan="2"><span style="display:none" id="change_password_error_no_password">{t}Write new password{/t}</span><span style="display:none" id="change_password_error_password_not_march">{t}Passwords don't match{/t}</span><span style="display:none" id="change_password_error_password_too_short">{t}Password is too short{/t}</span><span> </span><button id="submit_change_password">{t}Change Password{/t}</button> </td>
-		</tr>
-		<tr id="tr_change_password_wait" style="display:none" class="button">
-			<td colspan="2"><img style="weight:24px" src="art/loading.gif"> <span style="position:relative;top:-5px">{t}Submitting changes{/t}</span></td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_set_password_">
-	{t}Change Password{/t} 
-	<table border="0" id="change_password_form_">
-		<tr style="display:none;width:120px">
-			<td class="label">{t}Current Password{/t}: </td>
-			<td> 
-			<input type="password" id="current_password_password1_"></td>
-		</tr>
-		<tr>
-			<td style="width:120px" class="label">{t}New Password{/t}: </td>
-			<td> 
-			<input type="password" id="change_password_password1_"></td>
-		</tr>
-		<tr>
-			<td style="width:120px" class="label">{t}Confirm Password{/t}: </td>
-			<td> 
-			<input type="password" id="change_password_password2_"></td>
-		</tr>
-		<input id="user_key_in_change_password_form" value="" type="hidden" />
-		<tr id="tr_change_password_buttons_" class="button space">
-			<td colspan="2"><span style="display:none" id="change_password_error_no_password_">{t}Write new password{/t}</span><span style="display:none" id="change_password_error_password_not_march_">{t}Passwords don't match{/t}</span><span style="display:none" id="change_password_error_password_too_short_">{t}Password is too short{/t}</span><span> </span><button id="submit_change_password_" user=''>{t}Change Password{/t}</button> </td>
-		</tr>
-		<tr id="tr_change_password_wait_" style="display:none" class="button">
-			<td colspan="2"><img style="weight:24px" src="art/loading.gif"> <span style="position:relative;top:-5px">{t}Submitting changes{/t}</span></td>
-		</tr>
-	</table>
-</div>
+
+
+
 <div id="dialog_delete_customer" style="padding:20px 10px 10px 10px;">
 	<h2 style="padding-top:0px">
 		{t}Delete Customer{/t} 
@@ -706,6 +662,48 @@
 				<span id="convert_to_company_processing" style="display:none;float:right"><img src="art/loading.gif" /> {t}Processing your request{/t}</span> 
 			</div>
 			</td>
+		</tr>
+	</table>
+</div>
+<input id="user_key" value="" type="hidden" />
+<div id="dialog_set_password" style="width:300px;padding:20px 20px 10px 20px ">
+	<table border="0" class="edit" style="width:100%" >
+		<tr class="title">
+			<td colspan="2">{t}Change Password{/t} </td>
+		</tr>
+		<tr>
+			<td style="width:120px" class="label">{t}Password{/t}: </td>
+			<td> 
+			<input type="password" id="change_password_password1"></td>
+		</tr>
+		<tr>
+			<td style="width:120px" class="label">{t}Confirm{/t}: </td>
+			<td> 
+			<input type="password" id="change_password_password2"></td>
+		</tr>
+		<input id="epwcp1" value="" type="hidden" />
+		<input id="epwcp2" value="" type="hidden" />
+		
+		<tr style="height:10px">
+			<td colspan="2"> 
+			
+			</td>
+		</tr>
+		<tr id="tr_change_password_buttons" class="button space">
+			<td colspan="2"> 
+			<div class="buttons">
+				<button id="submit_change_password" class="positive">{t}Change Password{/t}</button> <button id="cancel_change_password" class="negative">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr id="tr_change_password_messages">
+			<td colspan="2" style="text-align:right;padding-right:10px"><span style="display:none" id="change_password_error_no_password">{t}Write new password{/t}</span><span style="display:none" id="change_password_error_password_not_march">{t}Passwords don't match{/t}</span><span style="display:none" id="change_password_error_password_too_short">{t}Password is too short{/t}</span><span> </span> </td>
+		</tr>
+		<tr id="tr_change_password_error_message" style="display:none">
+			<td colspan="2" style="text-align:right;padding-right:10px" id="change_password_error_message"></td>
+		</tr>
+		<tr id="tr_change_password_wait" style="display:none" class="button">
+			<td colspan="2" class="aright"><img style="weight:24px" src="art/loading.gif"> <span style="position:relative;top:-5px">{t}Submitting changes{/t}</span></td>
 		</tr>
 	</table>
 </div>
