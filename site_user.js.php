@@ -224,7 +224,7 @@ Dom.get('change_password_password1').focus();
 
 function submit_change_password(){
 
-Dom.setStyle('dialog_set_password_main','display','');
+//Dom.setStyle('dialog_set_password_main','display','');
 var error=false;
 
 

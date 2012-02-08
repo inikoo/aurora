@@ -66,7 +66,7 @@ var validate_scope_data=
 	,'password':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Password')?>'}]}
 	,'incoming_server':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Incoming_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
 	,'outgoing_server':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Outgoing_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
-	,'email_provider':{'changed':true,'validated':true,'required':false,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+	,'email_provider':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
 
 }
 
@@ -1574,3 +1574,10 @@ YAHOO.util.Event.onContentReady("filtermenu3", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });    
+    
+    
+    function post_item_updated_actions(branch,r){
+
+
+
+}

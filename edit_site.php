@@ -44,6 +44,8 @@ $smarty->assign('store_key',$store->id);
 
 
 
+
+
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product departments');

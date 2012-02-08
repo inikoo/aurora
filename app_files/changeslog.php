@@ -5509,3 +5509,5 @@ CREATE TABLE `Page Redirection Dimension` (
   KEY `Page Target Key` (`Page Target Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+ALTER TABLE `Email Credentials Dimension` CHANGE `Password` `Password` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+

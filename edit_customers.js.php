@@ -45,7 +45,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    //?tipo=customers&tid=0"
 	    
 	    request="ar_edit_contacts.php?tipo=edit_customers"
-	    if(Dom.get('list_key').value){
+	    if(Dom.get('list_key').value>0){
 	    request=request+'&list_key='+Dom.get('list_key').value;
 	    }
 	    

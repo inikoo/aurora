@@ -1,6 +1,5 @@
 <?php
 include_once('common_functions.php');
-
 include_once('app_files/db/key.php');
 
 include_once('aes.php');
