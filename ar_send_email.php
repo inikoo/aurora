@@ -39,7 +39,11 @@ function report_issue($data) {
 	
 
 	
-	require("app_files/keys/bugs_key.php");
+	
+	// TODO!!!!
+	
+	
+	
 	$to=$conection_data['email'];
 	
 	$files=array();

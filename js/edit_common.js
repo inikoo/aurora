@@ -841,12 +841,12 @@ return;
 	   
 	 //  alert(item_input.value.length);
 	   
-alert(scope_edit_ar_file+'?'+postData);
+//alert(scope_edit_ar_file+'?'+postData);
 //return;
             YAHOO.util.Connect.asyncRequest('POST',scope_edit_ar_file , 
             {
             success:function(o) {
-alert(o.responseText);
+//alert(o.responseText);
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
            
@@ -899,7 +899,7 @@ return;
  //alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
  var data_to_update=new Object;
     for (items in validate_scope_data[branch]) {
-	//alert(validate_scope_data[branch][items].name +':'+validate_scope_data[branch][items].changed+':'+validate_scope_data[branch][items].validated)
+//	alert(validate_scope_data[branch][items].name +':'+validate_scope_data[branch][items].changed+':'+validate_scope_data[branch][items].validated)
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input=Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
@@ -911,7 +911,7 @@ return;
             } else {
                 item_name=items;
             }
-          
+          //	alert("to update "+items+" : "+item_input.id)
             data_to_update[item_name]={'okey':items,'value':item_input.value}
         }
 		else if(!validate_scope_data[branch][items].changed){
@@ -926,6 +926,13 @@ return;
 			//change_comment();
 			//save_comment();
 		}
+		//alert(branch)
+		if(branch=='email_credentials'){
+var item_input=Dom.get(validate_scope_data[branch]['email_provider'].name);
+			
+		 data_to_update['email_provider']={'okey':'email_provider','value':item_input.value}
+		}
+		
     }
 
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
@@ -935,15 +942,15 @@ var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+br
 //alert(request+'?'+postData);return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {
- // alert(o.responseText);
+ alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
             count=ra.length;
 			i=0;
             for (x in ra){
-			if(count<=i++)
-			break;
+				if(count<=i++)
+					break;
 			
               r=ra[x];
 

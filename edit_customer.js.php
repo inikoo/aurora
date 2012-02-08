@@ -1326,28 +1326,36 @@ Dom.setStyle('display_add_other_mobile','display','none');
 Dom.setStyle('tr_add_other_mobile','display','');
 }
 
-function register_email(email_key,site_key){
+function register_email(o,email_key,site_key){
 
 	
 
-  
+ Dom.get(o.parentNode.parentNode).id='send_reset_password_msg';
+
+Dom.get(o.parentNode.parentNode).innerHTML='<img src="art/loading.gif">';
   
   
 var request='ar_register.php?tipo=create_customer_user&email_key='+email_key+'&customer_key='+Dom.get('customer_key').value +'&site_key='+site_key+'&password='
-alert(request);
-return;
+//alert(request);
+//return;
 //Dom.get('register_msg').innerHTML="Registering in the system"
-				Dom.get('register_msg').style.display='';
-	            alert(request);	
+			//	Dom.get('register_msg').style.display='';
+	           // alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 				
 	            success:function(o){
+	            alert(o.responseText)
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state=='200'){
-					//Dom.get('register_msg').style.display='none';
+				
+					window.location.reload()
+				//Dom.get('register_msg').style.display='none';
 					//window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 
 				
+				}else{
+				
+				 Dom.get('send_reset_password_msg').innerHTML=r.msg;
 				}
 
 

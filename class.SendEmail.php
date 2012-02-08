@@ -7,6 +7,7 @@ require_once("external_libs/mail/smtp.php");
 /* Uncomment when using SASL authentication mechanisms */
 require("external_libs/mail/sasl.php");
 require_once("class.EmailSend.php");
+require_once 'class.EmailCredentials.php';
 
 
 class SendEmail extends DB_Table {
@@ -71,12 +72,14 @@ class SendEmail extends DB_Table {
             case 'Plain':
             case 'plain':
                 $this->type='Plain';
-                $sql=sprintf("select * from `Email Credentials Dimension` where `Email Credentials Key`=%d", $data['email_credentials_key']);
-                $result=mysql_query($sql);
-                if ($row=mysql_fetch_array($result)) {
+                
+                $email_credentials=new EmailCredentials($data['email_credentials_key']);
+                
+          
+                if ( $email_credentials->id) {
 
-                    $this->from_name=getenv("USERNAME");
-                    $this->from_address=$row['Email Address'];
+                  $this->from_name=$data['from_name'];
+                    $this->from_address=$email_credentials->data['Email Address'];
                     $this->sender_line=__LINE__;
 
                     $this->reply_name=$this->from_name;
@@ -103,7 +106,7 @@ class SendEmail extends DB_Table {
                     /* SMTP server address, probably your ISP address,
                      * or smtp.gmail.com for Gmail
                      * or smtp.live.com for Hotmail */
-                    $this->message_object->smtp_host=$row['Outgoing Mail Sever'];
+                    $this->message_object->smtp_host=$email_credentials->data['Outgoing Mail Sever'];
 
                     /* SMTP server port, usually 25 but can be 465 for Gmail */
                     $this->message_object->smtp_port=465;
@@ -144,10 +147,10 @@ class SendEmail extends DB_Table {
                     */
 
                     /* authentication user name */
-                    $this->message_object->smtp_user=$row['Login'];
+                    $this->message_object->smtp_user=$email_credentials->data['Login'];
 
                     /* authentication password */
-                    $this->message_object->smtp_password=$row['Password'];
+                    $this->message_object->smtp_password=$email_credentials->get_password($this->secret_key);
 
                     /* if you need POP3 authetntication before SMTP delivery,
                      * specify the host name here. The smtp_user and smtp_password above
@@ -281,13 +284,13 @@ class SendEmail extends DB_Table {
                 	);
                 */
 
-                $sql=sprintf("select * from `Email Credentials Dimension` where `Email Credentials Key`=%d", $data['email_credentials_key']);
+                $email_credentials=new EmailCredentials($data['email_credentials_key']);
+                
+          
+                if ( $email_credentials->id) {
 
-                $result=mysql_query($sql);
-                if ($row=mysql_fetch_array($result)) {
-
-                    $this->from_name=getenv("USERNAME");
-                    $this->from_address=$row['Email Address'];
+                    $this->from_name=$data['from_name'];
+                    $this->from_address=$email_credentials->data['Email Address'];
                     $this->sender_line=__LINE__;
 
                     $this->reply_name=$this->from_name;
@@ -314,7 +317,7 @@ class SendEmail extends DB_Table {
                     /* SMTP server address, probably your ISP address,
                      * or smtp.gmail.com for Gmail
                      * or smtp.live.com for Hotmail */
-                    $this->message_object->smtp_host=$row['Outgoing Mail Server'];
+                    $this->message_object->smtp_host=$email_credentials->data['Outgoing Mail Server'];
 
                     /* SMTP server port, usually 25 but can be 465 for Gmail */
                     $this->message_object->smtp_port=465;
@@ -355,10 +358,10 @@ class SendEmail extends DB_Table {
                     */
 
                     /* authentication user name */
-                    $this->message_object->smtp_user=$row['Login'];
+                    $this->message_object->smtp_user=$email_credentials->data['Login'];
 
                     /* authentication password */
-                    $this->message_object->smtp_password=$row['Password'];
+                    $this->message_object->smtp_password=$email_credentials->get_password($this->secret_key);
 
                     /* if you need POP3 authetntication before SMTP delivery,
                      * specify the host name here. The smtp_user and smtp_password above

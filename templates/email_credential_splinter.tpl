@@ -1,5 +1,6 @@
+
 <input type="hidden" value="{$site->id}" id="site_id" />
-<input type="hidden" value="" id="Email_Provider" value="{$email_credentials.Email_Provider}" />
+<input type="hidden" id="Email_Provider" value="{$email_credentials.Email_Provider}" ovalue="{$email_credentials.Email_Provider}"  />
 <table class="edit" border="0" style="width:100%">
 	<tr class="title">
 		<td colspan="2">{t}Email Credentials{/t}</td>
