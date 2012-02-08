@@ -67,6 +67,8 @@ $other_langs=array();
 //textdomain('inikoo');
 //print_r($_SESSION['text_locale']);
 $text_locale=$_SESSION['text_locale'];
+
+print $text_locale;
 putenv('LC_MESSAGES='.$text_locale);
 
 if (defined('LC_MESSAGES'))
