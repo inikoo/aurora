@@ -73,10 +73,10 @@ putenv('LC_ALL='.$locale);
 setlocale(LC_ALL,$locale);
 
 // Specify location of translation tables
-bindtextdomain("inikoo_sites", "./locale");
+bindtextdomain("inikoosites", "./locale");
 
 // Choose domain
-textdomain("inikoo_sites");
+textdomain("inikoosites");
 
 
 $checkout_method=$site->data['Site Checkout Method'];
