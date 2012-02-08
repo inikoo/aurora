@@ -24,8 +24,8 @@ $page=new Page($page_key);
 
 $site=new Site($page->data['Page Site Key']);
 
-putenv('LC_ALL='.$site->data['Site Locale']);
-setlocale(LC_ALL,$site->data['Site Locale']);
+putenv('LC_ALL='.$site->data['Site Locale'].'.UTF-8');
+setlocale(LC_ALL,$site->data['Site Locale'].'.UTF-8');
 
 
 
