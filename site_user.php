@@ -50,6 +50,7 @@ $css_files=array(
 	$yui_path.'calendar/assets/skins/sam/calendar.css',
 	'common.css',
 	'css/container.css',
+	'css/edit.css',
 	'button.css',
 	'table.css',
 	'theme.css.php'
@@ -68,6 +69,7 @@ $js_files=array(
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
+	'js/sha256.js',
 	'site_user.js.php'
 );
 

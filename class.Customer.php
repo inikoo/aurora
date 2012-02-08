@@ -3752,6 +3752,7 @@ class Customer extends DB_Table {
 			if ($row['Email Key']!=$this->data['Customer Main Email Key'])
 				$email_keys[$row['Email Key']]= array(
 					'email'=>$row['Email'],
+					'key'=>$row['Email Key'],
 					'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
 					'label'=>$row['Email Description'],
 					'user_key'=>$row['User Key']

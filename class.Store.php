@@ -960,7 +960,7 @@ class Store extends DB_Table {
 
 
 	function update_up_today_dispatch_times() {
-	$this->update_dispatch_times('Total');
+		$this->update_dispatch_times('Total');
 		$this->update_dispatch_times('Today');
 		$this->update_dispatch_times('Week To Day');
 		$this->update_dispatch_times('Month To Day');
@@ -986,13 +986,13 @@ class Store extends DB_Table {
 	}
 
 
-	function get_formated_dispatch_time($interval){
-	
-		if($interval!='Total'){
+	function get_formated_dispatch_time($interval) {
+
+		if ($interval!='Total') {
 			$interval=$interval.' Acc';
 		}
 		$interval=addslashes($interval);
-		
+
 		return number(($this->data["Store $interval Average Dispatch Time"]/3600));
 	}
 
@@ -1061,7 +1061,7 @@ class Store extends DB_Table {
 			$from_date_1yb=false;
 
 			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-		
+
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$from_date=$row['First Day'].' 00:00:00';
@@ -1198,8 +1198,8 @@ class Store extends DB_Table {
 				//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 			}
 			//else if (!in_array($row['Order Current Dispatch State'],array('In Process by Customer','Unknown','Packing','Cancelled','Suspended'))) {
-			//		$interval=strtotime(gmdate('Y-m-d H:i:s'))-strtotime($row['Order Date']);
-			//	}
+			//  $interval=strtotime(gmdate('Y-m-d H:i:s'))-strtotime($row['Order Date']);
+			// }
 
 			if ($interval>0) {
 				$sum_interval+=$interval;
@@ -1487,7 +1487,24 @@ class Store extends DB_Table {
 	}
 
 
+	function get_sites_data($smarty=false) {
+		$data=array();
+		$sql=sprintf("select  `Site Key`,`Site URL`,`Site Name` from `Site Dimension` where `Site Store Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			if ($smarty) {
+				$_row=array();
+				foreach ($row as $key=>$value) {
+					$_row[str_replace(' ','',$key)]=$value;
+				}
 
+				$data[]=$_row;
+			}else {
+				$data[]=$row;
+			}
+		}
+		return $data;
+	}
 
 
 

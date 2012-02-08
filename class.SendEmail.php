@@ -810,7 +810,7 @@ class SendEmail extends DB_Table {
         $public_path='http://localhost/dw/';
 
         $code=sprintf('<img src="%s/track.php?s=%s" />', $public_path, $this->send_key);
-
+	$code='';
         return $code;
     }
 

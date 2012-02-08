@@ -492,7 +492,7 @@ function edit_staff_user() {
 }
 
 function change_user_passwd() {
-//print_r($_REQUEST);
+
 
 	$id=$_REQUEST['user_id'];
 
@@ -508,7 +508,7 @@ function change_user_passwd() {
     if ($user->id) {
         $user->change_password($value);
         if (!$user->error)
-            $response=array('state'=>200,'result'=>'ok');
+            $response=array('state'=>200);
         else
             $response=array('state'=>400,'msg'=>$user->msg);
 
