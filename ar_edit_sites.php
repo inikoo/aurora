@@ -26,6 +26,15 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('delete_redirect'):
+	$data=prepare_values($_REQUEST,array(
+			'id'=>array('type'=>'key'),
+			'site_key'=>array('type'=>'key'),
+		));
+
+	delete_redirect($data);
+	break;
 case('edit_email_credentials'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -885,6 +894,31 @@ function delete_see_also_page($data) {
 	echo json_encode($response);
 
 }
+function delete_redirect($data) {
+
+	$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $data['id']);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($result)) {
+
+
+		$sql=sprintf("delete from  `Page Redirection Dimension` where `Page Redirection Key`=%d",
+			$data['id']);
+		print $sql;
+		mysql_query($sql);
+		$site=new Site($data['site_key']);
+		$site->upload_redirections($row['Source Host'],$row['Source Path']);
+
+		$response= array('state'=>200,'action'=>'deleted');
+		echo json_encode($response);
+
+	}
+
+
+
+
+
+}
+
 
 function edit_checkout_method($data) {
 	//print_r($data);
@@ -2530,8 +2564,8 @@ function test_email_credentials($data) {
 	$site=new Site($data['site_key']);
 	$credentials=$site->get_email_credentials();
 	$from_name=$site->data['Site Name'];
-	
-	
+
+
 	$to=$credentials['Email Address'];
 
 
@@ -2543,7 +2577,7 @@ function test_email_credentials($data) {
 	$message_data['to']=$data['values']['to'];
 	$message_data['subject']=_('Test');
 	$message_data['html']=_('Test Message');
-		$message_data['from_name']=$from_name;
+	$message_data['from_name']=$from_name;
 
 	$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
 	$message_data['email_matter']='Test Email';

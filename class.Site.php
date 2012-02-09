@@ -820,9 +820,9 @@ $index_page=$this->get_page_object('index');
 
 		//$url=preg_replace('http:\/\/', '', $url);
 		$page_key=0;
-        //        print "url: ".$url;
+		//        print "url: ".$url;
 		$sql=sprintf("select PS.`Page Key` from `Page Store Dimension` PS left join `Page Dimension` P on (PS.`Page Key`=P.`Page Key`) where `Page Site Key`=%d and `Page URL`=%s ",
-		$this->id,prepare_mysql($url));
+			$this->id,prepare_mysql($url));
 		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -1048,7 +1048,7 @@ $index_page=$this->get_page_object('index');
 	function associate_email_credentials($email_credentials_key) {
 
 		if (!$email_credentials_key) {
-		$this->error=true;
+			$this->error=true;
 			return;
 		}
 
@@ -1056,18 +1056,18 @@ $index_page=$this->get_page_object('index');
 		if ($email_credentials_key==$current_email_credentials_key) {
 			return;
 		}
-		
-		
-	
 
-			$sql=sprintf("delete from `Email Credentials Site Bridge` where `Site Key`=%d w ",
-				$this->id);
-			mysql_query($sql);
 
-			$sql=sprintf("delete from `Email Credentials Scope Bridge` where `Scope`='Site Registration'");
-			mysql_query($sql);
 
-			include_once 'class.EmailCredentials.php';
+
+		$sql=sprintf("delete from `Email Credentials Site Bridge` where `Site Key`=%d w ",
+			$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Email Credentials Scope Bridge` where `Scope`='Site Registration'");
+		mysql_query($sql);
+
+		include_once 'class.EmailCredentials.php';
 
 		$old_email_credentials=new EmailCredentials($current_email_credentials_key);
 		$old_email_credentials->delete();
@@ -1090,10 +1090,10 @@ $index_page=$this->get_page_object('index');
 
 	function create_ftp_connection() {
 
-if($this->data['Site FTP Server']==''){
-$this->error=true;
-return false;
-}
+		if ($this->data['Site FTP Server']=='') {
+			$this->error=true;
+			return false;
+		}
 
 		include_once 'class.FTP.php';
 
@@ -1113,6 +1113,62 @@ return false;
 			$this->id
 		);
 		mysql_query($sql);
+	}
+
+	function get_redirections_htaccess($host,$path) {
+		$htaccess='';
+		$redirect_lines=array();
+		$host_bis=strtolower(preg_replace('/^www\./','',$host));
+		$ftp_sever=strtolower($this->data['Site FTP Server']);
+		if ($ftp_sever==strtolower($host) or $ftp_sever==$host_bis) {
+			$sql=sprintf("select * from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s",
+				prepare_mysql($host),
+				prepare_mysql($path)
+			);
+			$result=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($result)) {
+				$redirect_line='/'.$row['Source Path'].'/'.$row['Source File'].' '.$row['Page Target URL'];
+				$redirect_lines[$redirect_line]=1;
+			}
+		}
+		foreach ($redirect_lines as $redirect_line=>$tmp) {
+			$htaccess.="Redirect 301 $redirect_line\n";
+
+		}
+		return $htaccess;
+
+	}
+
+	function upload_redirections($host,$path) {
+
+
+		$htaccess=$this->get_redirections_htaccess($host,$path);
+
+		if ($htaccess!='') {
+			$ftp_connection=$this->create_ftp_connection();
+			if (!$ftp_connection) {
+				$this->error=true;
+				$this->msg=$site->msg;
+				return;
+			}
+
+
+			if ($ftp_connection->error) {
+
+				$this->error=true;
+				$this->msg=$ftp_connection->msg;
+				return;
+			}else {
+				$ftp_connection->upload_string($htaccess,$path);
+				$ftp_connection->end();
+			}
+
+
+		}
+
+
+
+
 	}
 
 }

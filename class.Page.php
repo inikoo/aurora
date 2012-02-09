@@ -2502,7 +2502,7 @@ class Page extends DB_Table {
 				$_row['Source']=$_row['SourceHost'].'/'.$_row['SourcePath'].'/'.$_row['SourceFile'];
 				$data[]=$_row;
 			}else {
-				$row['Source']=$_row['Source Host'].'/'.$_row['Source Path'].'/'.$row['Source File'];
+				$row['Source']=$row['Source Host'].'/'.$row['Source Path'].'/'.$row['Source File'];
 				$data[]=$row;
 			}
 		}
@@ -2534,82 +2534,10 @@ class Page extends DB_Table {
 	}
 
 
-	function upload_all_htaccess() {
-		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Target Key`=%d", $this->id);
-		$result=mysql_query($sql);
-
-		while ($row=mysql_fetch_assoc($result)) {
-
-			$this->upload_htaccess($row['Page Redirection Key']);
-		}
-
-	}
-
-	function upload_htaccess($redirect_key) {
+	
 
 
-
-		$site=new Site($this->data['Page Site Key']);
-
-		$ftp_connection=$site->create_ftp_connection();
-
-		if (!$ftp_connection) {
-			$this->error=true;
-			$this->msg=$site->msg;
-			return;
-		}
-
-
-		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $redirect_key);
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-
-			if ($row['Can Upload']=='No') {
-				return;
-			}
-
-
-			//print_r($row);
-
-			$htaccess_rule="redirect 301 /".basename($row['Page Source URL'])." ".$row['Page Target URL'];
-			//print $htaccess_rule."\n";
-
-
-			$new_path=dirname($row['Page Source URL']);
-
-
-
-			$_path=explode("/", $new_path);
-			print_r($_path);
-
-			array_shift($_path);
-			//print_r($_path);
-
-			if (count($_path)==0) {
-				$this->error=true;
-				$this->msg=_('You can not make a redirect from the root directory');
-				return;
-			}
-
-			$path='./';
-			foreach ($_path as $val) {
-				$path.=$val.'/';
-			}
-
-			$path.='.htaccess';
-
-			print "xx".$htaccess_rule.":  path:   ". $path." <<< \n";
-			//return;
-			if ($ftp_connection->error) {
-				print $ftp_connection->msg;
-			}else {
-				$ftp_connection->upload_string($htaccess_rule,$path);
-				//print_r($ftp_connection);
-			}
-
-		}
-		$ftp_connection->end();
-	}
+	
 
 }
 
