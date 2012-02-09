@@ -15,43 +15,7 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 switch ($_REQUEST['tipo']) {
-case('create_customer_user'):
 
-	$data=prepare_values($_REQUEST,array(
-			'email_key'=>array('type'=>'key'),
-			'customer_key'=>array('type'=>'key'),
-			'site_key'=>array('type'=>'key'),
-			'password'=>array('type'=>'string'),
-		));
-
-	$password=($data['password']==''?generate_password(64,10):$data['password']);
-	$customer=new Customer($data['customer_key']);
-	$site=new Site($data['site_key']);
-	$email=new Email($data['email_key']);
-	$handle=$email->get('Email');
-
-	if (!$customer->id or !$email->id or !$site->id) {
-		$response=array('state'=>400,'msg'=>'Error');
-		echo json_encode($response);
-		exit;
-	}
-
-	list($user_key,$msg)=create_customer_user($handle,$customer,$site,$password, $send_email_flag=true,CKEY);
-
-	if ($user_key) {
-		$response=array('state'=>200);
-		echo json_encode($response);
-		exit;
-
-	}else {
-		$response=array('state'=>400,'msg'=>$msg);
-		echo json_encode($response);
-		exit;
-
-	}
-
-
-	break;
 case('register'):
 	$data=prepare_values($_REQUEST,array(
 			'values'=>array('type'=>'json array'),
@@ -62,14 +26,7 @@ case('register'):
 	register($data,CKEY);
 
 	break;
-case('send_reset_password'):
-	$data=prepare_values($_REQUEST,array(
-			'values'=>array('type'=>'json array'),
 
-		));
-	send_reset_password($data,CKEY);
-
-	break;
 case('forgot_password'):
 	$data=prepare_values($_REQUEST,array(
 			'values'=>array('type'=>'json array'),
@@ -81,12 +38,14 @@ case('forgot_password'):
 
 
 case('change_password'):
-	//  $password=$_REQUEST['password'];
+
+	if (!$logged_in) {
+		return;
+	}
+
 	$data=prepare_values($_REQUEST,array(
 			'values'=>array('type'=>'json array'),
-
 		));
-
 
 	change_password($data);
 	break;
@@ -124,7 +83,7 @@ function change_password($data) {
 	$password=AESDecryptCtr($data['values']['ep1'], $_key ,256);
 
 	// print "Key:$_key\n";
-	print "Jey:\ $_key nPass:$password\n";
+	//print "Jey:\ $_key nPass:$password\n";
 	//   exit($password);
 	$user->change_password($password);
 	if ($user->updated) {
@@ -215,11 +174,7 @@ function generate_password($length=9, $strength=0) {
 }
 
 function create_customer_user($handle,$customer,$site,$password, $send_email_flag=true,$secret_key) {
-	//  $handle='raul@inikoo.com';
-
-
-
-
+	// Note this function is also present in ar_edit_users.php
 
 	include_once 'class.User.php';
 
@@ -243,9 +198,9 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 		);
 
 		$user=new user('new',$data);
-		
+
 		$site->update_customer_data();
-		
+
 		//print_r($user);
 		if (!$user->id) {
 
@@ -332,11 +287,6 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 }
 
 
-
-
-
-
-
 function forgot_password($data,$secret_key) {
 
 
@@ -387,8 +337,8 @@ function forgot_password($data,$secret_key) {
 
 }
 
-function send_reset_password($data,$secret_key) {
-
+function send_reset_password($data,$CKEY) {
+	// notr this functions also present in ar_edit_users
 	$user_key=$data['values']['user_key'];
 	$site_key=$data['values']['site_key'];
 	$url=$data['values']['url'];
@@ -469,7 +419,7 @@ function send_reset_password($data,$secret_key) {
 	$send_email=new SendEmail();
 
 	$send_email->track=false;
-	$send_email->secret_key=$secret_key;
+	$send_email->secret_key=$CKEY;
 
 	$result=$send_email->send($message_data);
 

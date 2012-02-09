@@ -52,7 +52,8 @@ $page_data=array(
   'Page Code'=>'profile',
   'Page URL'=>'profile.php',
   'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'profile'
+  'Page Store Content Template Filename'=>'profile',
+  'Number See Also Links'=>0
 
  );
 $site->add_store_page($page_data);
@@ -66,7 +67,8 @@ $site->add_store_page($page_data);
   'Page Code'=>'registration',
   'Page URL'=>'registration.php',
   'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'registration'
+  'Page Store Content Template Filename'=>'registration',
+    'Number See Also Links'=>0
 
  );
 $site->add_store_page($page_data);
@@ -78,7 +80,8 @@ $site->add_store_page($page_data);
   'Page Code'=>'login',
   'Page URL'=>'login.php',
   'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'login'
+  'Page Store Content Template Filename'=>'login',
+    'Number See Also Links'=>0
 
  );
 $site->add_store_page($page_data);

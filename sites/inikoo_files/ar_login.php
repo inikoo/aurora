@@ -1,5 +1,5 @@
 <?php
-include('common.php');
+include 'common.php';
 
 //print_r($_SESSION);
 
@@ -16,33 +16,33 @@ $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
 
 
 
-if($remember){
+if ($remember) {
 	$auth->set_cookies($handle,rawurldecode($sk),'customer',$site->id);
 }
-else{
+else {
 	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
 }
 //print $_REQUEST['user_handle'];
 if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
-    $auth->authenticate_from_masterkey($_REQUEST['mk']);
+	$auth->authenticate_from_masterkey($_REQUEST['mk']);
 }
-elseif($handle) {
-//  print urldecode($sk)."\n\n";
+elseif ($handle) {
+	//  print urldecode($sk)."\n\n";
 
-    $auth->authenticate($handle,rawurldecode($sk),'customer',$site->id);
+	$auth->authenticate($handle,rawurldecode($sk),'customer',$site->id);
 }
 
 
 //print $_COOKIE['user_handle'];
 if ($auth->is_authenticated()) {
-    $_SESSION['logged_in']=true;
-    $_SESSION['store_key']=$store_key;
-    $_SESSION['site_key']=$site->id;
-$_SESSION['user_log_key']=$auth->user_log_key;
-    $_SESSION['user_key']=$auth->get_user_key();
-    $_SESSION['customer_key']=$auth->get_user_parent_key();
+	$_SESSION['logged_in']=true;
+	$_SESSION['store_key']=$store_key;
+	$_SESSION['site_key']=$site->id;
+	$_SESSION['user_log_key']=$auth->user_log_key;
+	$_SESSION['user_key']=$auth->get_user_key();
+	$_SESSION['customer_key']=$auth->get_user_parent_key();
 
-/*
+	/*
 
     $sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' ",$_SESSION['customer_key']);
     $res=mysql_query($sql);
@@ -73,15 +73,15 @@ $_SESSION['user_log_key']=$auth->user_log_key;
 */
 
 
-    $response=array('state'=>200,'result'=>'ok');
-    echo json_encode($response);
-    exit;
+	$response=array('state'=>200,'result'=>'ok');
+	echo json_encode($response);
+	exit;
 
 
 } else {
-    $response=array('state'=>200,'result'=>'no_valid');
-    echo json_encode($response);
-    exit;
+	$response=array('state'=>200,'result'=>'no_valid');
+	echo json_encode($response);
+	exit;
 
 
 }

@@ -2536,7 +2536,9 @@ class Page extends DB_Table {
 
 	
 
+function display_vertical_menu(){
 
+}
 	
 
 }
