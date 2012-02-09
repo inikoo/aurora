@@ -334,7 +334,7 @@ function submit_check_email(){
 	//alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r=YAHOO.lang.JSON.parse(o.responseText);
 	
 		    if(r.state=='200'){
@@ -445,7 +445,7 @@ return;
     var site_key=Dom.get('site_key').value;
 	var captcha_code=Dom.get('captcha_code3').value;
 
-var url =window.location.host + window.location.pathname;
+var url ='http://'+window.location.host + window.location.pathname;
 
 var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,'url':url, 'captcha_code':captcha_code}
 

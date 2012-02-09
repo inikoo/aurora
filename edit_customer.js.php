@@ -295,17 +295,17 @@ Dom.get(o.parentNode.parentNode).innerHTML='<img src="art/loading.gif">';
  var data_to_update=new Object;
 data_to_update['site_key']=site_key;
 data_to_update['user_key']=user_key;
-data_to_update['url'] ='http://'+ site_url + '/register.php';
+data_to_update['url'] ='http://'+ site_url + '/registration.php';
  jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
 
-var request='ar_register.php?tipo=send_reset_password&values='+jsonificated_values
+var request='ar_edit_users.php?tipo=send_reset_password&values='+jsonificated_values
 
-	       
+	    // alert(request)  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 
 	            success:function(o){
 					
-	        
+	       // alert(o.responseText)
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
 				
@@ -1335,7 +1335,7 @@ function register_email(o,email_key,site_key){
 Dom.get(o.parentNode.parentNode).innerHTML='<img src="art/loading.gif">';
   
   
-var request='ar_register.php?tipo=create_customer_user&email_key='+email_key+'&customer_key='+Dom.get('customer_key').value +'&site_key='+site_key+'&password='
+var request='ar_edit_users.php?tipo=create_customer_user&email_key='+email_key+'&customer_key='+Dom.get('customer_key').value +'&site_key='+site_key+'&password='
 //alert(request);
 //return;
 //Dom.get('register_msg').innerHTML="Registering in the system"

@@ -13,7 +13,7 @@ function submit_forgot_password(){
 remove_forgot_password_message_blocks()
 			            Dom.setStyle('processing_change_password','display','');
 
-var url =window.location.host + window.location.pathname;
+var url ='http://'+window.location.host + window.location.pathname;
 
 var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,'url':url, 'captcha_code':captcha_code}
 
