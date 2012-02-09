@@ -1153,7 +1153,7 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Offline') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Not for Sale').'</span>';
+			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Discontinued') {
 			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
@@ -1174,7 +1174,7 @@ class Page extends DB_Table {
 				$product->data['Product Name'],
 				$this->data['Page URL'],
 				$product->data['Product Price'],
-				_('Order')
+				_('Order Product')
 
 
 			);
@@ -1488,9 +1488,9 @@ class Page extends DB_Table {
 							$print_rrp=false;
 						}
 						elseif ($row['avg']==$row['min'])
-							$rrp_label='<br/>RRP: '.$rrp;
+							$rrp_label='<br/>'._('RRP').': '.$rrp;
 						else
-							$rrp_label='<br/>RRP from '.$rrp;
+							$rrp_label='<br/>'._('RRP from').' '.$rrp;
 
 
 
@@ -1503,7 +1503,7 @@ class Page extends DB_Table {
 			}
 
 
-			$form.='<tr class="list_info" ><td colspan="4"><p>FAMILY NAME'.$rrp_label.'</p></td><td>';
+			$form.='<tr class="list_info" ><td colspan="4"><p>'.$rrp_label.'</p></td><td>';
 			if ($print_register and $number_records>10)
 				$form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
 
@@ -1862,8 +1862,8 @@ class Page extends DB_Table {
 
 		$form.=sprintf('<tr class="space"><td colspan="4">
                        <input type="hidden" name="return" value="%s">
-                       <input class="button" name="Submit" type="submit"  value="Order">
-                       <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
+                       <input class="button" name="Submit" type="submit"  value="'._('Order').'">
+                       <input class="button" name="Reset" type="reset"  id="Reset" value="'._('Reset').'"></td></tr></form></table>
                        '
 			,$this->data['Page URL']);
 		return $form;
@@ -2513,7 +2513,7 @@ class Page extends DB_Table {
 	function get_redirect_data($redirect_key,$smarty=false) {
 
 		$data=false;
-		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $redirect_key);
+		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Target Key`=%d and `Page Redirection Key`=%d", $this->id,$redirect_key);
 		$result=mysql_query($sql);
 
 		if ($row=mysql_fetch_assoc($result)) {

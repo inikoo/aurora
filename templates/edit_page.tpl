@@ -49,13 +49,15 @@
 					<td style="width:120px" class="label">{t}301 Rederections{/t}:</td>
 					<td style="width:500px"> 
 					<div class="buttons small">
-						<button id="add_redirection" class="positive">Add Redirection</button> 
+						<button id="show_dialog_add_redirection" class="positive">Add Redirection</button> 
 					</div>
 					<table>
 						{foreach from=$page->get_all_redirects_data(true) item=redirect} 
 						<tr>
 							<td style="padding:0">{$redirect.Source}</td>
 							<td style="padding:0;padding-left:10px"> <img onclick="delete_redirect({$redirect.PageRedirectionKey})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}" /> </td>
+							<td style="padding:0;padding-left:10px;"><a href="htaccess.php?page_key={$page->id}&redirection_key={$redirect.PageRedirectionKey}"> <img src="art/icons/page_gear.png" alt="{t}.htaccess file{/t}" title="{t}.htacces file{/t}" /></a> </td>
+
 							<td style="padding:0;padding-left:10px;{if $redirect.CanUpload=='Yes'}display:none{/if}"> <img src="art/icons/error.png" alt="{t}Can't update .htaccess{/t}" title="{t}Can't update .htacces{/t}" /> </td>
 						</tr>
 						{/foreach} 
@@ -446,16 +448,21 @@
 		<div class="edit_block" style="{if $block_view!='products' }display:none{/if}padding:20px;" id="d_products">
 		</div>
 	</div>
-	<div id="the_table1" class="data_table" style="margin:20px 20px 40px 20px; clear:both;padding-top:10px">
+	
+	<div id="display_history_div" style="clear:both;margin-top:20;padding:10px 20px" class="buttons left small">
+		<button id="display_history">{t}Display Change Log{/t}</button>
+	
+	</div>
+	<div id="the_table1" class="data_table" style="margin:10px 20px 40px 20px; clear:both;padding-top:0px;display:none;">
 		<span class="clean_table_title">{t}Change log{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable ">
+		<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 		</div>
 	</div>
-	<div style="clear:both">
+	<div style="clear:both;height:20px">
 	</div>
 </div>
 
-<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px;position:absolute;top:-2000px;">
+<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px;">
 	<table style="margin:0 auto">
 		<form enctype="multipart/form-data" method="post" id="upload_page_content_form">
 			<input type="hidden" name="parent_key" value="{$page->id}" />
@@ -477,18 +484,21 @@
 		</tr>
 	</table>
 </div>
-<div id="dialog_add_redirection" style="padding:30px 10px 10px 10px;width:320px;position:absolute;top:-2000px;">
-	<table style="margin:0 auto">
+<div id="dialog_add_redirection" style="padding:30px 20px 10px 10px;width:350px;position:absolute;top:-2000px;">
+	<table style="margin:0 auto;width:100%"  border=0 >
 		<tr>
 			<td>{t}URL{/t}:</td>
 			<td> 
-			<input id="add_redirect_source" style="border:1px solid #ddd;" type="text" name="file" />
+			<input id="add_redirect_source" style="border:1px solid #ddd;width:100%" type="text" name="file" />
 			</td>
+		</tr>
+		<tr style="height:10px">
+			<td colspan="2" > </td>
 		</tr>
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
-				<button class="positive" id="upload_page_content">{t}Upload{/t}</button> <button id="cancel_upload_page_content" class="negative">{t}Cancel{/t}</button> 
+				<button class="positive" id="save_add_redirection">{t}Add{/t}</button> <button id="cancel_add_redirection" class="negative">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -557,7 +567,7 @@
 	</div>
 </div>
 
-<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights={$update_heights}" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px"> 
+<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px"> 
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>
