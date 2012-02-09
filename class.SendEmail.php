@@ -90,7 +90,7 @@ class SendEmail extends DB_Table {
                     $this->to_name=$data['to'];
                     $this->to_address=$data['to'];
                     $this->recipient_line=__LINE__;
-                    $this->subject=$data['subject'];
+                    $this->subject= mb_convert_encoding($data['subject'], 'ISO-8859-1');
                     $this->message=$data['plain'];
 
                     if (strlen($this->from_address)==0)
@@ -301,7 +301,7 @@ class SendEmail extends DB_Table {
                     $this->to_name=$data['to'];
                     $this->to_address=$data['to'];
                     $this->recipient_line=__LINE__;
-                    $this->subject=$data['subject'];
+                    $this->subject= mb_convert_encoding($data['subject'], 'ISO-8859-1');;//$data['subject'];
                     $this->message=$data['plain'];
 
                     if (strlen($this->from_address)==0)
@@ -426,23 +426,11 @@ class SendEmail extends DB_Table {
 
 //print  $this->html_message;
 
-                    /*
-                     *  It is strongly recommended that when you send HTML messages,
-                     *  also provide an alternative text version of HTML page,
-                     *  even if it is just to say that the message is in HTML,
-                     *  because more and more people tend to delete HTML only
-                     *  messages assuming that HTML messages are spam.
-                     */
+           
                     $this->text_message=$this->message;
 
                     $this->message_object->CreateQuotedPrintableTextPart($this->message_object->WrapText($this->text_message),"",$this->text_part);
 
-                    /*
-                     *  Multiple alternative parts are gathered in multipart/alternative parts.
-                     *  It is important that the fanciest part, in this case the HTML part,
-                     *  is specified as the last part because that is the way that HTML capable
-                     *  mail programs will show that part and not the text version part.
-                     */
                     $this->alternative_parts=array(
 
                                                  $this->text_part,

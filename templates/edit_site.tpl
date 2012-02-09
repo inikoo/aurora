@@ -58,10 +58,10 @@
 
 
  
-	      <tr style="height:87px"><td class="label" style="width:120px">{t}Search HTML{/t}:</td>
+	      <tr style="height:207px"><td class="label" style="width:120px">{t}Search HTML{/t}:</td>
 	       <td style="width:400px">
 		 <div >
-		   <textarea  id="site_search_html"  style="width:100%;height:80px" value="{$site->get('Site Search HTML')|escape}" ovalue="{$site->get('Site Search HTML')|escape}"  >{$site->get('Site Search HTML')}</textarea>
+		   <textarea  id="site_search_html"  style="width:100%;height:200px" value="{$site->get('Site Search HTML')|escape}" ovalue="{$site->get('Site Search HTML')|escape}"  >{$site->get('Site Search HTML')}</textarea>
 		   
 		   <div id="site_search_html_Container"  ></div>
 		 </div>
@@ -70,10 +70,10 @@
 	     </tr>
 	 
 	  
-	    <tr style="height:87px"><td class="label" style="width:120px">{t}Search CSS{/t}:</td>
+	    <tr style="height:207px"><td class="label" style="width:120px">{t}Search CSS{/t}:</td>
 	       <td style="width:400px">
 		 <div >
-		   <textarea  id="site_search_css"  style="width:100%;height:80px" value="{$site->get('Site Search CSS')|escape}" ovalue="{$site->get('Site Search CSS')|escape}"  >{$site->get('Site Search CSS')}</textarea>
+		   <textarea  id="site_search_css"  style="width:100%;height:200px" value="{$site->get('Site Search CSS')|escape}" ovalue="{$site->get('Site Search CSS')|escape}"  >{$site->get('Site Search CSS')}</textarea>
 		   <div id="site_search_css_Container"  ></div>
 		 </div>
 		 
@@ -82,10 +82,10 @@
 	     </tr>
 	 
 	  
-	    <tr style="height:87px"><td class="label" style="width:120px">{t}Search Javascript{/t}:</td>
+	    <tr style="height:207px"><td class="label" style="width:120px">{t}Search Javascript{/t}:</td>
 	       <td style="width:400px">
 		 <div >
-		   <textarea  id="site_search_javascript"  style="width:100%;height:80px"  value="{$site->get('Site Search Javascript')|escape}" ovalue="{$site->get('Site Search Javascript'|escape)}"  >{$site->get('Site Search Javascript')}</textarea>
+		   <textarea  id="site_search_javascript"  style="width:100%;height:200px"  value="{$site->get('Site Search Javascript')|escape}" ovalue="{$site->get('Site Search Javascript'|escape)}"  >{$site->get('Site Search Javascript')}</textarea>
 		   <div id="site_search_javascript_Container"  ></div>
 		 </div>
 	     </td>
@@ -663,7 +663,8 @@ link to edit_site_section.php?id=
 
 </div>
     <div  class="edit_block" style="{if $block_view!='pages'}display:none{/if}"  id="d_pages"> 
-     <div class="general_options" style="float:right">
+     <div class="general_options" style="float:right;display:none">
+     TODO create page dialog from here
 	        <span style="margin-right:10px;"   id="new_site_page" class="state_details" >{t}Create Page{/t}</span>
 	    </div>
 		
