@@ -600,7 +600,7 @@ link to edit_site_section.php?id=
 <td class="label">{t}Message{/t}:</td>
 <td  style="text-align:left">
      <div style="height:70px">
-        <textarea style="height:65px;width:100%"   id="welcome_source" value="{$site->get('Site Welcome Source')}" ovalue="{$site->get('Site Welcome Source')}" valid="0">{$site->get('Site Welcome Source')}</textarea>
+        <textarea style="height:65px;width:100%"   id="welcome_source" value="{$site->get('Site Welcome Source')|escape}" ovalue="{$site->get('Site Welcome Source')|escape}" valid="0">{$site->get('Site Welcome Source')}</textarea>
        <div id="welcome_source_Container"  ></div>
      </div>
 
