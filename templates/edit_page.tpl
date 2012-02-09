@@ -1,6 +1,6 @@
 {include file='header.tpl'} 
-<div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
-</div>
+
+
 <div id="bd" style="padding:0">
 	<input type="hidden" id="site_key" value="{$site->id}" />
 	<input type="hidden" id="site_id" value="{$site->id}" />
@@ -36,20 +36,40 @@
 			<li style="display:none"> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='style'}selected{/if}" id="style"><span> {t}Style{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='media'}selected{/if}" id="media"><span> {t}Media{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='url'}selected{/if}" id="url"><span>{t}URL{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='url'}selected{/if}" id="url"><span>{t}Redirections{/t}</span></span></li>
 		</ul>
 	</div>
 	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;margin:0px {if $block_view=='content'}0px{else}20px{/if}">
 		<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
+		<table class="edit" style="width:880px;clear:both;margin-left:20px;margin-top:20px">
+				<tr class="title">
+					<td colspan="3">{t}Redirections{/t}</td>
+				</tr>
+				<tr>
+					<td style="width:120px" class="label">{t}301 Rederections{/t}:</td>
+					<td style="width:500px"> 
+					<div class="buttons small">
+						<button id="add_redirection" class="positive">Add Redirection</button> 
+					</div>
+					<table>
+						{foreach from=$page->get_all_redirects_data(true) item=redirect} 
+						<tr>
+							<td style="padding:0">{$redirect.Source}</td>
+							<td style="padding:0;padding-left:10px"> <img onclick="delete_redirect({$redirect.PageRedirectionKey})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}" /> </td>
+							<td style="padding:0;padding-left:10px;{if $redirect.CanUpload=='Yes'}display:none{/if}"> <img src="art/icons/error.png" alt="{t}Can't update .htaccess{/t}" title="{t}Can't update .htacces{/t}" /> </td>
+						</tr>
+						{/foreach} 
+					</table>
+					</td>
+					<td></td>
+				</tr>
+			</table>
 		</div>
-
-
-
 		<div class="edit_block" style="{if $block_view!='setup' }display:none{/if}" id="d_setup">
 			<table class="edit" border="0" id="edit_family_page" style="width:880px;clear:both;margin-left:20px;margin-top:0px" page_key="{$page->id}">
 				<tr>
 					<td colspan="3"> 
-					<div class="buttons left">
+					<div class="buttons left small">
 						<button id="show_more_configuration">{t}Show Advanced Configuration{/t}</button> <button style="display:none" id="hide_more_configuration">{t}Hide Advanced Configuration{/t}</button> 
 					</div>
 					<div class="buttons">
@@ -178,19 +198,6 @@
 					</div>
 					</td>
 				</tr>
-				<tr style="height:87px">
-					<td class="label" style="width:120px">{t}Description{/t}:</td>
-					<td style="width:400px"> 
-					<div>
-<textarea id="page_html_head_resume" style="width:100%;height:80px" maxlength="24" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
-						<div id="page_html_head_resume_msg">
-						</div>
-						<div id="page_html_head_resume_Container">
-						</div>
-					</div>
-					</td>
-				</tr>
-				
 				<tr>
 					<td style="width:120px" class="label">{t}Link Label{/t}:</td>
 					<td style="width:400px"> 
@@ -205,7 +212,20 @@
 					</div>
 					</td>
 				</tr>
+				<tr style="height:87px">
+					<td class="label" style="width:120px">{t}Description{/t}:</td>
+					<td style="width:400px"> 
+					<div>
+<textarea id="page_html_head_resume" style="width:100%;height:80px" maxlength="24" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
+						<div id="page_html_head_resume_msg">
+						</div>
+						<div id="page_html_head_resume_Container">
+						</div>
+					</div>
+					</td>
+				</tr>
 			</table>
+			
 		</div>
 		<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
 			<table class="edit" border="0" id="properties_edit_table" style="width:100%">
@@ -339,7 +359,7 @@
 							<button id="add_other_found_in_page" class="positive">Add page</button> 
 						</div>
 						<table>
-							{foreach from=$page->get_found_in($site->get('Site URL')) item=found_in_page} 
+							{foreach from=$page->get_found_in() item=found_in_page} 
 							<tr>
 								<td style="padding:0">{$found_in_page.found_in_label}</td>
 								<td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}" /></td>
@@ -421,9 +441,9 @@
 		</div>
 		<div class="edit_block" style="{if $block_view!='style' }display:none{/if}" id="d_style">
 		</div>
-		<div class="edit_block"  style="{if $block_view!='media' }display:none{/if}" id="d_media">
+		<div class="edit_block" style="{if $block_view!='media' }display:none{/if}" id="d_media">
 		</div>
-		<div class="edit_block"  style="{if $block_view!='products' }display:none{/if}padding:20px;" id="d_products">
+		<div class="edit_block" style="{if $block_view!='products' }display:none{/if}padding:20px;" id="d_products">
 		</div>
 	</div>
 	<div id="the_table1" class="data_table" style="margin:20px 20px 40px 20px; clear:both;padding-top:10px">
@@ -434,8 +454,8 @@
 	<div style="clear:both">
 	</div>
 </div>
-</div>
-<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px">
+
+<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px;position:absolute;top:-2000px;">
 	<table style="margin:0 auto">
 		<form enctype="multipart/form-data" method="post" id="upload_page_content_form">
 			<input type="hidden" name="parent_key" value="{$page->id}" />
@@ -457,7 +477,30 @@
 		</tr>
 	</table>
 </div>
-<div id="dialog_upload_page_content_files" style="padding:30px 10px 10px 10px;width:420px">
+<div id="dialog_add_redirection" style="padding:30px 10px 10px 10px;width:320px;position:absolute;top:-2000px;">
+	<table style="margin:0 auto">
+		<tr>
+			<td>{t}URL{/t}:</td>
+			<td> 
+			<input id="add_redirect_source" style="border:1px solid #ddd;" type="text" name="file" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons">
+				<button class="positive" id="upload_page_content">{t}Upload{/t}</button> <button id="cancel_upload_page_content" class="negative">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr id="add_redirect_wait">
+			<td colspan="2"> <span style="float:right;display:none"><img src="art/loading.gif" alt=""> {t}Processing{/t}</span> </td>
+		</tr>
+		<tr>
+			<td colspan="2" id="add_redirect_msg"> </td>
+		</tr>
+	</table>
+</div>
+<div id="dialog_upload_page_content_files" style="padding:30px 10px 10px 10px;width:420px;position:absolute;top:-2000px;">
 	<table style="margin:0 auto">
 		<tr>
 			<td> 
@@ -481,7 +524,7 @@
 		</tr>
 	</table>
 </div>
-<div id="dialog_delete_page" style="padding:20px 10px 10px 10px;text-align:left">
+<div id="dialog_delete_page" style="padding:20px 10px 10px 10px;text-align:left;position:absolute;top:-2000px;width:320px">
 	<h2 style="padding-top:0px">
 		{t}Delete Page{/t} 
 	</h2>
@@ -495,7 +538,7 @@
 		<button id="save_delete_page" class="positive">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_page" class="negative">{t}No i dont want to delete it{/t}</button> 
 	</div>
 </div>
-<div id="dialog_family_list">
+<div id="dialog_family_list" style="position:absolute;top:-2000px;"  >
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
@@ -504,8 +547,7 @@
 		</div>
 	</div>
 </div>
-{include file='footer.tpl'} 
-<div id="dialog_page_list">
+<div id="dialog_page_list"  style="position:absolute;top:-2000px;" >
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Page List{/t}</span> {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7} 
@@ -514,8 +556,11 @@
 		</div>
 	</div>
 </div>
-<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights={$update_heights}" frameborder="1" style="position:absolute;top:-2000px;left:200px;width:1x;height:1px;"> 
+
+<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights={$update_heights}" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px;display:none"> 
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>
+
 </iframe>
+{include file='footer.tpl'} 
