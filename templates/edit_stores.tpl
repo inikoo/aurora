@@ -2,7 +2,7 @@
 <div id="bd" >
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
-  <span>{t}Stores{/t}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {t}Stores{/t}</span>
 </div>
 <div class="top_page_menu">
     <div class="buttons left" style="float:left">

@@ -2383,6 +2383,72 @@ $default_state=array(
 
 
 	),
+	'sites'=>array(
+	'block_view'=>'sites',
+	
+	'sites'=>array(
+		'table_type'=>'list',
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'percentages'=>false,
+			'view'=>'general',
+			'period'=>'year',
+			'percentage'=>0,
+			'mode'=>'all',
+			'avg'=>'totals',
+			'type'=>'list',
+			
+
+
+		),
+	'pages'=>array(
+		'table_type'=>'list',
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'percentages'=>false,
+			'view'=>'general',
+			'period'=>'year',
+			'percentage'=>0,
+			'mode'=>'all',
+			'avg'=>'totals',
+			'type'=>'list',
+			'elements'=>array(
+				'ProductDescription'=>1,
+				'FamilyCatalogue'=>1,
+				'DepartmentCatalogue'=>1,
+				'Other'=>1,
+
+			)
+
+
+		),
+		'history'=>array(
+			'where'=>'where true',
+			'f_field'=>'abstract',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>''
+		)
+
+	),
+	
 	'store'=>array(
 		'block_view'=>'departments',
 		'plot'=>'store',

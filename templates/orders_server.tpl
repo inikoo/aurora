@@ -3,7 +3,7 @@
 <div style="padding:0 20px">
  {include file='orders_navigation.tpl'}
 <div class="branch"> 
-  <span >{t}Orders{/t}</span>
+  <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {t}Orders{/t}</span>
 </div>
  
     <h1>{t}Orders Corporate Overview{/t}</h1>

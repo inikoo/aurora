@@ -5,10 +5,7 @@
 <input type="hidden" id="warehouse_area_key" value="{$warehouse_area->id}"   />
 
  <div class="branch" > 
- 
- <span >
- {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$warehouse_area->get('Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if} <a href="warehouse.php?id={$warehouse_area->get('Warehouse Key')}">{t}Locations{/t}</a>  &rarr; {$warehouse_area->get('Warehouse Area Name')} 
- </span>
+ <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$warehouse_area->get('Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if} <a href="warehouse.php?id={$warehouse_area->get('Warehouse Key')}">{t}Locations{/t}</a>  &rarr; {$warehouse_area->get('Warehouse Area Name')} </span>
 
 </div>
  

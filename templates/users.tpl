@@ -2,7 +2,7 @@
 <div id="bd" >
 {include file='users_navigation.tpl'}
 <div class="branch"> 
-  <span>{t}Users{/t}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {t}Users{/t}</span>
 </div>
 
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">

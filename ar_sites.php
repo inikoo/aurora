@@ -365,14 +365,14 @@ function list_pages() {
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
 
-    $sql="select `Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql="select `Site Code`,`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` on (`Site Key`=`Page Site Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
 
 
     $result=mysql_query($sql);
     $data=array();
-    // print $sql;
+   
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
         $code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
@@ -471,7 +471,7 @@ function list_pages() {
             $type=_('Other');
             break;
         }
-
+$site="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
 
         $data[]=array(
                     'id'=>$row['Page Key'],
@@ -480,6 +480,7 @@ function list_pages() {
                      'link_title'=>$row['Page Short Title'],
                     'type'=>$type,
                     'url'=>$row['Page URL'],
+                    'site'=>$site,
                     'image'=>'image.php?size=small&id='.$row['Page Preview Snapshot Image Key'],
 'item_type'=>'item'
                     /*
@@ -525,7 +526,7 @@ function list_pages() {
 }
 
 function list_sites() {
-
+global $user;
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
     else
@@ -627,18 +628,25 @@ function list_sites() {
 
 
 
-    $where='where true ';
+  
 
-
+if(count($user->websites)==0){
+ $where='where false ';
+}else{
+  $where='where true ';
+}
 
     switch ($parent) {
     case('store'):
-        $where.=sprintf(' and `Site Store Key`=%d',$parent_key);
+        $where.=sprintf(' and `Site Store Key`=%d and `Site Key` in (%s)',$parent_key,join(',',$user->websites));
 
 
         break;
     default:
+ $where.=sprintf(' and `Site Key` in (%s)',join(',',$user->websites));
 
+
+        break;
 
     }
 
@@ -708,7 +716,8 @@ function list_sites() {
     elseif($order=='url')
     $order='`Site URL`';
 
-
+elseif($order=='code')
+    $order='`Site Code`';
     elseif($order=='sales') {
 
         switch ($period) {
@@ -920,20 +929,24 @@ function list_sites() {
             break;
         }
     }
+    else{
+    $order=`Site Code`;
+    }	
+    
     //print $order;
 //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Sold As';
 
-    $sql="select `Site Name`,`Site Key`,`Site URL`   from `Site Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql="select `Site Code`,`Site Name`,`Site Key`,`Site URL`   from `Site Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-
+//print $sql;
 
     $result=mysql_query($sql);
     $data=array();
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
 
         $name="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Name']."</a>";
-
+ $code="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
         /*
                 switch ($period) {
                 case 'three_year':
@@ -1022,7 +1035,7 @@ function list_sites() {
         $data[]=array(
                     'id'=>$row['Site Key'],
                     'name'=>$name,
-
+                    'code'=>$code,
                     'url'=>$row['Site URL'],
 
                     /*

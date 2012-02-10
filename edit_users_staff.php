@@ -25,13 +25,11 @@ $css_files=array(
                'button.css',
                'table.css',
                  'css/edit.css',
-               'theme.css.php'
-		
+               'theme.css.php',
+		'theme.css.php',
 		
 		 );
 
-
-$css_files[]='theme.css.php';
 
 
 $js_files=array(
@@ -47,6 +45,7 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/edit_common.js',
+		'js/search.js',
 		'sha256.js.php',
 		'passwordmeter.js.php',
 		'edit_users_staff.js.php'

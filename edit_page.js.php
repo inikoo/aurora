@@ -1008,24 +1008,40 @@ region1 = Dom.getRegion('edit_parent_family');
  var pos =[region1.right-region2.width+200,region1.bottom+2]
 
     Dom.setXY('dialog_family_list', pos);
-    dialog_family_list.show(); 
+    dialog_family_list.show();
 }
 
 function save_add_redirection(){
 url=Dom.get('add_redirect_source').value;
 var request='ar_edit_sites.php?tipo=add_redirect&url='+escape(url)+'&page_key='+Dom.get('page_key').value;
-alert(request)
+//alert(request)
 YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o){
-	                            alert(o.responseText);	
+	                            //alert(o.responseText);	
 			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			                    if(r.state==200){
-                                  //  location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
+                                    location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
                                 }else{
-                                
+                                Dom.get('add_redirect_msg').innerHTML=r.msg
                                 }
    			}
     });
+}
+
+function dialog_add_redirection_chenged(e){
+ Dom.get('add_redirect_msg').innerHTML='';
+
+ var key;     
+     if(window.event)
+         Key = window.event.keyCode; //IE
+     else
+         Key = e.which; //firefox     
+
+     if (Key == 13){
+	 save_add_redirection();
+	 
+	 }
+
 }
 
 function show_dialog_add_redirection(){
@@ -1036,11 +1052,11 @@ function show_dialog_add_redirection(){
     
     dialog_add_redirection.show();
     Dom.get('add_redirect_source').value='';
-
+ Dom.get('add_redirect_msg').innerHTML='';
 Dom.get('add_redirect_source').focus();
 }
 
-function delete_redirection(){
+function delete_redirect(rediect_key){
 var request='ar_edit_sites.php?tipo=delete_redirect&id='+rediect_key+'&site_key='+Dom.get('site_key').value;
 
 YAHOO.util.Connect.asyncRequest('POST',request ,{

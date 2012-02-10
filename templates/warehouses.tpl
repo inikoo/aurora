@@ -3,7 +3,7 @@
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
 <div class="branch"> 
-  <span>{t}Warehouses{/t}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {t}Warehouses{/t}</span>
 </div>
  <h1 style="clear:left">{t}Warehouses{/t}</h1>
  </div>

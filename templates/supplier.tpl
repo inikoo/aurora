@@ -3,7 +3,7 @@
 	<div style="padding:0px 20px;">
 		{include file='suppliers_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
