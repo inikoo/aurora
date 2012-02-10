@@ -25,6 +25,7 @@ print $s;
 ?>
 var  store_name=new Object;
 var  warehouse_name=new Object;
+var  website_name=new Object;
 
 <?php
   // todo: only list active stores
@@ -46,7 +47,14 @@ while($row=mysql_fetch_array($res)){
 mysql_free_result($res);
 print $s;
 
-
+ $s='';
+$sql="select `Site Key`,`Site Code` from `Site Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="website_name[".$row['Site Key']."]='".$row['Site Code']."';";
+}
+mysql_free_result($res);
+print $s;
 
 ?>
      var Dom   = YAHOO.util.Dom; 
@@ -122,7 +130,9 @@ var edit_active=function (callback, newValue) {
 		datatable = this.getDataTable();
 		//		for( x in record)
 		user_id=record.getData('id');
+		
 		var request='ar_edit_users.php?tipo=edit_staff_user&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)
+		//alert(request)
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						request, {
@@ -133,7 +143,7 @@ var edit_active=function (callback, newValue) {
 							   
 							    
 							} else {
-							    alert(r.msg);
+							   // alert(r.msg);
 							    callback();
 							}
 						    },
@@ -212,6 +222,24 @@ var edit_active=function (callback, newValue) {
 		
 	       };
 
+ var websites=function(el, oRecord, oColumn, oData){
+		//  var tmp = oData.split(',');
+		if(oData==''){
+		      el.innerHTML ='';
+		      return;
+		}
+		var tmp=oData;
+		
+		var swebsites='';
+		  for(x in tmp){
+		      if(swebsites=='')
+			  swebsites=website_name[tmp[x]];
+		      else
+			  swebsites=swebsites+', '+website_name[tmp[x]]
+			      }
+		el.innerHTML =swebsites;
+		
+	       };
 
 	   
 	    var ColumnDefs = [
@@ -222,7 +250,7 @@ var edit_active=function (callback, newValue) {
 			      ,{key:"isactive",label:"<?php echo _('State')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
 			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:170,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"
 				, editor: new YAHOO.widget.CheckboxCellEditor({
 					asyncSubmitter:edit_group,checkboxOptions:[
@@ -233,7 +261,7 @@ var edit_active=function (callback, newValue) {
 										   while($row=mysql_fetch_array($res)){
 										       $key=$row['User Group Key'];
 										       $name=$row['User Group Name'];
-										       $g.="{label:'$name<br>', value:$key},";
+										       $g.="{label:'$name<br/>', value:$key},";
 										   }
 										   
 										   
@@ -254,17 +282,35 @@ var edit_active=function (callback, newValue) {
 										       $code=$row['Store Code'];
 										       $key=$row['Store Key'];
 										       $name=$row['Store Name'];
-										       $s.="{label:'$code<br>', value:$key},";
+										       $s.="{label:'$code<br/>', value:$key},";
 										   }
 										   mysql_free_result($res);
 										   preg_replace('/,$/','',$s);
 										   print $s;
 										   ?>
 										   ]
-				    })  
-				 
-			      
-	     } ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"
+				    })} 
+				     ,{key:"websites",formatter:stores, label:"<?php echo _('Websites')?>",sortable:true,className:"aleft"
+				 	, editor: new YAHOO.widget.CheckboxCellEditor({
+					asyncSubmitter:edit_group,checkboxOptions:[
+										   <?php
+										   $s='';
+										   $sql="select `Site Key`,`Site Code`,`Site Name` from `Site Dimension`  ";
+										   $res=mysql_query($sql);
+										   while($row=mysql_fetch_array($res)){
+										       $code=$row['Site Code'];
+										       $key=$row['Site Key'];
+										       $name=$row['Site Name'];
+										       $s.="{label:'$code<br/>', value:$key},";
+										   }
+										   mysql_free_result($res);
+										   preg_replace('/,$/','',$s);
+										   print $s;
+										   ?>
+										   ]
+				    })} 
+				    
+				    ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"
 				 	, editor: new YAHOO.widget.CheckboxCellEditor({
 					asyncSubmitter:edit_group,checkboxOptions:[
 										   <?php
@@ -308,7 +354,7 @@ var edit_active=function (callback, newValue) {
 		
 		
 		fields: [
-			 "id","isactive","alias","name","email","lang","groups","tipo","active","password","stores","warehouses","staff_id"
+			 "id","isactive","alias","name","email","lang","groups","tipo","active","password","stores","warehouses","staff_id","websites"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -449,6 +495,7 @@ var change_passwd=function(o){
     var user_name=o.getAttribute('user_name');
     Dom.get("change_staff_password_alias").setAttribute('user_id',user_id);
     Dom.get("change_staff_password_alias").innerHTML=user_name;
+    user_defined_pwd("change_staff")
     change_staff_password.show();
     
 }
@@ -460,8 +507,9 @@ function close_change_password_dialog(){
 	Dom.get('change_staff_password_meter_bar').style.visibility='hidden';
 	Dom.get('change_staff_password_meter_bar').innerHTML='&nbsp;';
 	Dom.get('change_staff_password_meter_str').innerHTML='';
-
-	Dom.get('change_staff_save').style.visibility='hidden';
+	
+	Dom.addClass('change_staff_save','disabled')
+	
 	change_staff_password.hide();
 
     }
@@ -473,23 +521,24 @@ var auto_pwd=function(prefix){
     Dom.get(prefix+"_passwd").innerHTML= pwd;
     Dom.get(prefix+"_passwd1").value= pwd;
 
-    Dom.get(prefix+'_save').style.visibility='visible';
+    Dom.removeClass(prefix+'_save','disabled')
     Dom.get(prefix+"_passwd").style.display='';
-    Dom.get(prefix+"_user_defined_pwd_but").className='tab  but_unselected unselectable_text';
-    Dom.get(prefix+"_auto_pwd_but").className='tab selected unselectable_text';
+    //Dom.get(prefix+"_user_defined_pwd_but").className='tab  but_unselected unselectable_text';
+    //Dom.get(prefix+"_auto_pwd_but").className='tab selected unselectable_text';
 
 }
 var user_defined_pwd=function(prefix){
     Dom.get(prefix+"_auto_dialog").style.display='none';
     Dom.get(prefix+"_user_defined_dialog").style.display='';
-    Dom.get(prefix+"_save").style.visibility='hidden';
+    Dom.addClass(prefix+'_save','disabled')
+    
     Dom.get(prefix+"_passwd").style.display='none';
     Dom.get(prefix+"_passwd2").value='';
     Dom.get(prefix+"_passwd1").value='';
     Dom.get(prefix+'_password_meter_bar').style.visibility='hidden';
     Dom.get(prefix+'_password_meter_bar').style.width="0%";
-    Dom.get(prefix+"_user_defined_pwd_but").className='tab  selected unselectable_text';
-    Dom.get(prefix+"_auto_pwd_but").className='tab unselectable_text';
+    //Dom.get(prefix+"_user_defined_pwd_but").className='tab  selected unselectable_text';
+    //Dom.get(prefix+"_auto_pwd_but").className='tab unselectable_text';
 }
 var match_passwd=function(p2,p1,tipo){
     
@@ -523,7 +572,7 @@ var change_staff_pwd=function(){
 		    change_staff_password.cfg.setProperty("visible", false);
 		    Dom.get('change_staff_password_alias').setAttribute('user_id','');
 		    Dom.get('change_staff_password_alias').innerHTML='';
-		    Dom.get('change_staff_save').style.visibility='hidden';
+		    Dom.addClass('change_staff_save','disabled')
 		    Dom.get('change_staff_password_meter_bar').style.visibility='hidden';
 		    Dom.get('change_staff_password_meter_str').innerHTML='';
 
@@ -579,11 +628,11 @@ var change_meter=function(pwd,prefix){
 	if(value>6){
 
 	    Dom.get(prefix+"_passwd").value=pwd;
-	    Dom.get(prefix+"_save").style.visibility='visible';
+	    Dom.removeClass(prefix+'_save','disabled')
 	    Dom.get(prefix+"_passwd2").value='';
 	    Dom.get(prefix+"_error_passwd2").style.visibility='visible';
 	}else{
-	    Dom.get(prefix+"_save").style.visibility='hidden';
+	    Dom.addClass(prefix+'_save','disabled')
 	    Dom.get(prefix+"_passwd2").value='';
 	    Dom.get(prefix+"_error_passwd2").style.visibility='hidden';
 	}

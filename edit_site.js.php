@@ -1366,7 +1366,7 @@ Dom.get('show_facebook_method').value=this.getAttribute('dbvalue');
 site_id=Dom.get('site_key').value;
 store_key=Dom.get('store_key').value;
 var request='ar_edit_sites.php?tipo=edit_show_facebook&site_key=' + site_id +'&store_key='+store_key + '&site_facebook='+Dom.get('show_facebook_method').value
-	           // alert(request);	
+	    //       alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 
 	            success:function(o){

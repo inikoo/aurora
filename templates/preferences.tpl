@@ -2,7 +2,7 @@
 <div id="bd" >
 <input id="user_key" value="{$user->id}" type="hidden"  />
 <div class="branch"> 
-  <span>Preferences</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  Preferences</span>
 </div>
 
 

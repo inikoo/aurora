@@ -1,8 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='suppliers_navigation.tpl'}
-<div> 
-  <span   class="branch"><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span>
+<div class="branch"> 
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span>
 </div>
 
 		<div class="top_page_menu">

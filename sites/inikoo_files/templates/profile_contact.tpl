@@ -9,176 +9,176 @@
 {/foreach} {foreach from=$enable_other item=other key=key} 
 <input type="hidden" id="enable_other_{$key}" value="{$other}" />
 {/foreach} {include file='profile_header.tpl' select='contact'} 
-<div id="contact_block" {if $view!='contact' }style="display:none" {/if}>
-	<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
-		
-		{if $site->get('Show Site Badges')=='Yes'}
-		<div style="float:left;;xborder:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px" id="show_upload_image">
-			<img id="avatar" src="{if $user->get_image_src()}{$user->get_image_src()}{else}art/siluet.jpg{/if}" style="height:100px"> 
-		</div>
-		{include file='customer_badges.tpl' customer=$page->customer} 		
-		<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px;margin-left:20px">
-			Thank you for trading with us! 
-		</div>
 
-		{/if}
-		
-		<div style="clear:both">
-		</div>
+{if $site->get('Show Site Badges')=='Yes'} 
+<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
+	<div style="float:left;;xborder:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px" id="show_upload_image">
+		<img id="avatar" src="{if $user->get_image_src()}{$user->get_image_src()}{else}art/siluet.jpg{/if}" style="height:100px"> 
+	</div>
+	{include file='customer_badges.tpl' customer=$page->customer} 
+	<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px;margin-left:20px">
+		Thank you for trading with us! 
 	</div>
 	<div style="clear:both">
 	</div>
-	<div style="padding:0px 20px;float:left">
-		<h2>
-			{t}Contact Details{/t} 
-		</h2>
-		<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
-			<h3>
-				{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()}) 
-			</h3>
-			<table id="customer_data" border="0" style="width:100%;margin-top:20px">
-				<tr>
-					<td>{t}Company{/t}:</td>
-					<td><img id="show_edit_name" style="cursor:pointer" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
-					<td class="aright">{$page->customer->get('Customer Company Name')}</td>
-				</tr>
-				<tr>
-					<td>{t}Name{/t}:</td>
-					<td><img style="cursor:pointer" id="show_edit_contact" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
-					<td class="aright">{$page->customer->get('Customer Main Contact Name')}</td>
-				</tr>
-				{if $page->customer->get('Customer Main Email Key')} 
-				<tr id="main_email_tr">
-					<td>{t}Email{/t}:</td>
-					<td><img src="art/lock.png"></td>
-					<td id="main_email" class="aright">{$page->customer->get('Customer Main Plain Email')}</td>
-				</tr>
-				{/if} {foreach from=$page->customer->get_other_emails_data() item=other_email key=key name=foo} 
-				<tr id="other_email_tr">
-					<td>{t}Email{/t}:</td>
-					<td><img src="art/lock.png"></td>
-					<td id="email{$key}" class="aright">{$other_email.email}</td>
-				</tr>
-				{/foreach} 
-				<tr>
-					<td>{t}Telephone{/t}:</td>
-					<td><img src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}" /></td>
-					<td class="aright">{$page->customer->get('Customer Main Plain Telephone')}</td>
-				</tr>
-				{foreach from=$custom_fields item=custom_field key=key} 
-				<tr>
-					<td>{$custom_field.name}:</td>
-					<td><img src="art/edit.gif" id="show_edit_{$custom_field.name}" alt="{t}Edit{/t}" /></td>
-					<td class="aright">{$custom_field.value}</td>
-				</tr>
-				{/foreach} 
-				<tr>
-					<td> 
-					<div class="buttons">
-						<button style="display:none" onclick="window.location='client.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Edit Profile{/t}</button> 
-					</div>
-					</td>
-				</tr>
-			</table>
-		</div>
+</div>
+{/if} 
+
+<div style="padding:0px 20px;float:left">
+	<h2 style="padding-top:10px">
+		{t}Contact Details{/t} 
+	</h2>
+	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
+		<h3>
+			{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()}) 
+		</h3>
+		<table id="customer_data" border="0" style="width:100%;margin-top:20px">
+			<tr>
+				<td>{t}Company{/t}:</td>
+				<td><img id="show_edit_name" style="cursor:pointer" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
+				<td class="aright">{$page->customer->get('Customer Company Name')}</td>
+			</tr>
+			<tr>
+				<td>{t}Name{/t}:</td>
+				<td><img style="cursor:pointer" id="show_edit_contact" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
+				<td class="aright">{$page->customer->get('Customer Main Contact Name')}</td>
+			</tr>
+			{if $page->customer->get('Customer Main Email Key')} 
+			<tr id="main_email_tr">
+				<td>{t}Email{/t}:</td>
+				<td><img src="art/lock.png"></td>
+				<td id="main_email" class="aright">{$page->customer->get('Customer Main Plain Email')}</td>
+			</tr>
+			{/if} {foreach from=$page->customer->get_other_emails_data() item=other_email key=key name=foo} 
+			<tr id="other_email_tr">
+				<td>{t}Email{/t}:</td>
+				<td><img src="art/lock.png"></td>
+				<td id="email{$key}" class="aright">{$other_email.email}</td>
+			</tr>
+			{/foreach} 
+			<tr>
+				<td>{t}Telephone{/t}:</td>
+				<td><img src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}" /></td>
+				<td class="aright">{$page->customer->get('Customer Main Plain Telephone')}</td>
+			</tr>
+			{foreach from=$custom_fields item=custom_field key=key} 
+			<tr>
+				<td>{$custom_field.name}:</td>
+				<td><img src="art/edit.gif" id="show_edit_{$custom_field.name}" alt="{t}Edit{/t}" /></td>
+				<td class="aright">{$custom_field.value}</td>
+			</tr>
+			{/foreach} 
+			<tr>
+				<td> 
+				<div class="buttons">
+					<button style="display:none" onclick="window.location='client.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Edit Profile{/t}</button> 
+				</div>
+				</td>
+			</tr>
+		</table>
 	</div>
-	<div style="padding:0px 20px;float:right;display:none">
-		<h2>
-			{t}Notes{/t} 
-		</h2>
-		<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
-		</div>
+</div>
+<div style="padding:0px 20px;float:right;display:none">
+	<h2 style="padding-top:10px">
+		{t}Notes{/t} 
+	</h2>
+	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
 	</div>
-	<div style="padding:0px 20px;float:right">
-		<h2>
-			{t}Communication{/t} 
-		</h2>
-		<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
-			<table class="edit" style="width:390px">
+</div>
+<div style="padding:0px 20px;float:right">
+	<h2 style="padding-top:10px">
+		{t}Communication{/t} 
+	</h2>
+	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
+		<table class="edit" style="width:390px" border="0">
+			<tr class="title">
+				<td colspan="5">{t}Marketing Emails{/t}</td>
+			</tr>
+			<tr style="height:10px">
+				<td colspan="3"></td>
+			</tr>
+			<tr style="height:30px;">
+				<td class="label" style="width:200px">{t}Receive Newsletter{/t}:</td>
+				<td> 
+				<div class="buttons small">
+					<button class="{if $page->customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button> 
+				</div>
+				</td>
+			</tr>
+			<tr style="height:30px;">
+				<td class="label" style="width:200px">{t}Receive Marketing Emails{/t}:</td>
+				<td> 
+				<div class="buttons small">
+					<button class="{if $page->customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button> 
+				</div>
+				</td>
+			</tr>
+			<tr class="title">
+				<td colspan="5">{t}Post{/t}</td>
+			</tr>
+			<tr style="height:10px">
+				<td colspan="3"></td>
+			</tr>
+			<tr style="height:30px;">
+				<td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
+				<td> 
+				<div class="buttons small">
+					<button class="{if $page->customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button> 
+				</div>
+				</td>
+			</tr>
+			<tbody id="add_to_post_cue" style="display:none">
 				<tr class="title">
-					<td colspan="5">{t}Marketing Emails{/t}</td>
+					<td colspan="5">{t}Send Post {/t}</td>
 				</tr>
 				<tr>
-					<td class="label" style="width:200px">{t}Receive Newsletter{/t}:</td>
+					<td class="label" style="width:200px">{t}Add Customer To Send Post{/t}:</td>
 					<td> 
 					<div class="buttons small">
-						<button class="{if $page->customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button> 
+						<button class="{if $page->customer->get('Send Post Status')=='To Send'}selected{/if} positive" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_To Send">{t}Yes{/t}</button> <button class="{if $page->customer->get('Send Post Status')=='Cancelled'}selected{/if} negative" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_Cancelled">{t}No{/t}</button> 
 					</div>
 					</td>
 				</tr>
 				<tr>
-					<td class="label" style="width:200px">{t}Receive Marketing Emails{/t}:</td>
+					<td class="label" style="width:200px">{t}Post Type{/t}:</td>
 					<td> 
 					<div class="buttons small">
-						<button class="{if $page->customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button> 
+						<button class="{if $page->customer->get('Post Type')=='Letter'}selected{/if} positive" onclick="save_comunications_send_post('Post Type','Letter')" id="Post Type_Letter">{t}Letter{/t}</button> <button class="{if $page->customer->get('Post Type')=='Catalogue'}selected{/if} negative" onclick="save_comunications_send_post('Post Type','Catalogue')" id="Post Type_Catalogue">{t}Catalogue{/t}</button> 
 					</div>
 					</td>
 				</tr>
-				<tr style="height:20px">
-					<td colspan="3"></td>
-				</tr>
+			</tbody>
+			<tbody id="social_media" style="{if $site->get('Site Show Twitter')=='No' && $site->get('Site Show Facebook')=='No'}display:none{/if}">
 				<tr class="title">
-					<td colspan="5">{t}Post{/t}</td>
-				</tr>
-				<tr>
-					<td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
-					<td> 
-					<div class="buttons small">
-						<button class="{if $page->customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button> 
-					</div>
-					</td>
-				</tr>
-				<tbody id="add_to_post_cue" style="display:none">
-					<tr class="title">
-						<td colspan="5">{t}Send Post {/t}</td>
-					</tr>
-					<tr>
-						<td class="label" style="width:200px">{t}Add Customer To Send Post{/t}:</td>
-						<td> 
-						<div class="buttons small">
-							<button class="{if $page->customer->get('Send Post Status')=='To Send'}selected{/if} positive" onclick="save_comunications_send_post('Send Post Status','To Send')" id="Send Post Status_To Send">{t}Yes{/t}</button> <button class="{if $page->customer->get('Send Post Status')=='Cancelled'}selected{/if} negative" onclick="save_comunications_send_post('Send Post Status','Cancelled')" id="Send Post Status_Cancelled">{t}No{/t}</button> 
-						</div>
-						</td>
-					</tr>
-					<tr>
-						<td class="label" style="width:200px">{t}Post Type{/t}:</td>
-						<td> 
-						<div class="buttons small">
-							<button class="{if $page->customer->get('Post Type')=='Letter'}selected{/if} positive" onclick="save_comunications_send_post('Post Type','Letter')" id="Post Type_Letter">{t}Letter{/t}</button> <button class="{if $page->customer->get('Post Type')=='Catalogue'}selected{/if} negative" onclick="save_comunications_send_post('Post Type','Catalogue')" id="Post Type_Catalogue">{t}Catalogue{/t}</button> 
-						</div>
-						</td>
-					</tr>
-				</tbody>
-				<tr style="height:20px">
-					<td colspan="3"></td>
-				</tr>
-				<tbody {if $site->get('Site Show Twitter')=='No' && $site->get('Site Show Facebook')=='No'}style="display:none"{/if} class="title">
 					<td colspan="5">{t}Social Media{/t}</td>
-				</tbody>
-				<tbody {if $site->get('Site Show Twitter')=='No'}style="display:none"{/if}>
+				</tr>
+				<tr style="height:10px">
+					<td colspan="3"></td>
+				</tr>
+				<tr style="height:30px;{if $site->get('Site Show Twitter')=='No'}display:none{/if}">
 					<td class="label" style="width:200px">{t}Follower on Twitter{/t}:</td>
 					<td> 
 					<div class="buttons small">
 						<button class="{if $page->customer->get('Customer Follower On Twitter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Follower On Twitter','Yes')" id="Customer Follower On Twitter_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Follower On Twitter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Follower On Twitter','No')" id="Customer Follower On Twitter_No">{t}No{/t}</button> 
 					</div>
 					</td>
-				</tbody>
-				<tbody {if $site->get('Site Show Facebook')=='No'}style="display:none"{/if}>
+				</tr>
+				<tr style="height:30px;{if $site->get('Site Show Facebook')=='No'}display:none{/if}">
 					<td class="label" style="width:200px">{t}Friend on Facebook{/t}:</td>
 					<td> 
 					<div class="buttons small">
 						<button class="{if $page->customer->get('Customer Friend On Facebook')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Friend On Facebook','Yes')" id="Customer Friend On Facebook_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Friend On Facebook')=='No'}selected{/if} negative" onclick="save_comunications('Customer Friend On Facebook','No')" id="Customer Friend On Facebook_No">{t}No{/t}</button> 
 					</div>
 					</td>
-				</tbody>
-			</table>
-		</div>
-	</div>
-	<div style="clear:both">
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </div>
+<div style="clear:both">
+</div>
 <div style="padding:0px 20px 20px 20px;float:left">
-	<h2>
+	<h2 style="padding-top:10px">
 		{t}Questionare{/t} 
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px;">
@@ -231,12 +231,19 @@
 		</table>
 	</div>
 </div>
+
+<div style="clear:both;margin-bottom:25px">
+</div>
+
+
 <div style="top:180px;left:490px;position:absolute;display:none;background-image:url('art/background_badge_info.jpg');width:200px;height:223px;" id="gold_reward_badge_info">
 	<p style="padding:40px 20px;font-size:20px;margin:20px auto">
 		bla bla bla <br />
 		<a href="">More Info</a> 
 	</p>
 </div>
+
+
 <div id="dialog_quick_edit_Customer_Name" style="padding:10px">
 	<table style="margin:10px">
 		<tr>

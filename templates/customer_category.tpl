@@ -4,7 +4,7 @@
 		{include file='contacts_navigation.tpl'} 
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<div class="branch">
-			<span>{if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer_categories.php?store={$store->id}&id=0">{t}Categories{/t}</a> &rarr; {$category->get_smarty_tree('customer_categories.php')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer_categories.php?store={$store->id}&id=0">{t}Categories{/t}</a> &rarr; {$category->get_smarty_tree('customer_categories.php')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">

@@ -6,14 +6,15 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span>{if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a> &rarr; <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; 
+			{if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a>  &rarr; {/if}
+			<img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')} (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>)</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 				{if $modify} <button onclick="window.location='edit_site.php?id={$site->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Site{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
-				<button onclick="window.location='store.php?store={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Store{/t}</button> {if $store->get('Store Websites')>1} <button onclick="window.location='sites.php?store={$store->id}'"><img src="art/icons/world.png" alt=""> {t}Websites{/t}</button> {/if} 
 			</div>
 			<div style="clear:both">
 			</div>

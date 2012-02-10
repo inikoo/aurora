@@ -180,6 +180,7 @@ $smarty->assign('user',$user);
 $user->read_groups();
 $user->read_rights();
 $user->read_stores();
+$user->read_websites();
 $user->read_warehouses();
 if ($user->data['User Type']=='Supplier') {
     $user->read_suppliers();
@@ -258,15 +259,22 @@ if ($user->can_view('marketing')) {
 if ($user->can_view('stores')) {
     if (count($user->stores)==1) {
         $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
-    } else
+    } elseif(count($user->stores)>1)
         $nav_menu[] = array(_('Products'), 'stores.php','products');
+}
+
+if ($user->can_view('sites')) {
+    if (count($user->websites)==1) {
+        $nav_menu[] = array(_('Website'), 'site.php?id='.$user->websites[0],'websites');
+    } elseif(count($user->websites)>1)
+        $nav_menu[] = array(_('Websites'), 'sites.php','websites');
 }
 
 if ($user->can_view('orders')) {
 
     if (count($user->stores)==1) {
         $nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->stores[0],'orders');
-    } else
+    } elseif(count($user->stores)>1)
         $nav_menu[] = array(_('Orders'), 'orders_server.php','orders');
 
 }
@@ -275,7 +283,7 @@ if ($user->can_view('customers')) {
 
     if (count($user->stores)==1) {
         $nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->stores[0],'customers');
-    } else
+    } elseif(count($user->stores)>1)
         $nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
 
 }
@@ -292,8 +300,8 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
-else
-    $nav_menu[] = array(_('Dashboard'), 'index.php','home');
+//else
+ //   $nav_menu[] = array(_('Dashboard'), 'index.php','home');
 
 $smarty->assign('nav_menu',$nav_menu);
 $smarty->assign('theme',$myconf['theme']);

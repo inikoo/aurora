@@ -347,9 +347,6 @@ class User extends DB_Table {
 	function update_stores($value) {
 		$this->updated=false;
 
-
-
-
 		if ($this->data['User Type']!='Staff')
 			return;
 		$stores=preg_split('/,/',$value);
@@ -376,6 +373,34 @@ class User extends DB_Table {
 		}
 	}
 
+function update_websites($value) {
+		$this->updated=false;
+
+		if ($this->data['User Type']!='Staff')
+			return;
+		$websites=preg_split('/,/',$value);
+		foreach ($websites as $key=>$value) {
+			if (!is_numeric($value) )
+				unset($websites[$key]);
+		}
+		$this->read_websites();
+		$old_websites=$this->websites;
+		$to_delete = array_diff($old_websites, $websites);
+		$to_add = array_diff($websites, $old_websites);
+		$changed=0;
+
+		if (count($to_delete)>0) {
+			$changed+=$this->delete_website($to_delete);
+		}
+		if (count($to_add)>0) {
+			$changed+=$this->add_website($to_add);
+		}
+		$this->read_websites();
+		if ($changed>0) {
+			$this->updated=true;
+			$this->new_value=$this->websites;
+		}
+	}
 
 
 
@@ -435,7 +460,9 @@ class User extends DB_Table {
 		case('stores'):
 			$this->update_stores($data['value']);
 			break;
-
+		case('websites'):
+			$this->update_websites($data['value']);
+			break;
 		case('warehouses'):
 			$this->update_warehouses($data['value']);
 			break;
@@ -633,6 +660,56 @@ class User extends DB_Table {
 		return $changed;
 	}
 
+	function add_website($to_add,$history=true) {
+		$changed=0;
+		foreach ($to_add as $scope_id) {
+
+			$website=new Site($scope_id);
+			if (!$website->id)
+				continue;
+			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Website',%d) ",$this->id,$scope_id);
+			mysql_query($sql);
+			if (mysql_affected_rows()>0) {
+				$changed++;
+				$history_data=array(
+					'History Abstract'=>_('User Rights Associated with Store')
+					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$website->data['Site Name'])
+					,'Action'=>'associate'
+					,'Indirect Object'=>'Site'
+					,'Indirect Object Key'=>$website->id
+				);
+				$this->add_history($history_data);
+			}
+		}
+		return $changed;
+
+	}
+
+
+	function delete_website($to_delete,$history=true) {
+		$changed=0;
+		foreach ($to_delete as $scope_id) {
+			$website=new Site($scope_id);
+			if (!$website->id)
+				continue;
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Website' ",$this->id,$scope_id);
+			mysql_query($sql);
+		}
+		if (mysql_affected_rows()>0) {
+			$changed++;
+			$history_data=array(
+				'History Abstract'=>_('User Rights Disassociated with Website')
+				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$website->data['Site Name'])
+				,'Action'=>'disassociate'
+				,'Indirect Object'=>'Site'
+				,'Indirect Object Key'=>$website->id
+			);
+			$this->add_history($history_data);
+
+		}
+		return $changed;
+	}
+
 
 	function add_warehouse($to_add,$history=true) {
 		$changed=0;
@@ -725,6 +802,9 @@ class User extends DB_Table {
 	}
 	function get_number_stores() {
 		return count($this->stores);
+	}
+	function get_number_websites() {
+		return count($this->websites);
 	}
 
 	function is($tag='') {
@@ -837,19 +917,23 @@ class User extends DB_Table {
 		while ($row=mysql_fetch_array($res)) {
 			$this->warehouses[]=$row['Scope Key'];
 		}
-		$this->warehouse_righs='none';
-		if ($this->data['User Type']=='Staff') {
-			$sql="select count(*) as num_warehouses from `Warehouse Dimension`";
-			$res=mysql_query($sql);
-			$row=mysql_fetch_array($res);
-			$num_warehouses=$row['num_warehouses'];
-			$num_warehouses=count($this->warehouses);
-			if ($num_warehouses==$num_warehouses)
-				$this->warehouse_rights='all';
-			else
-				$this->warehouse_righs='some';
-		}
+
 	}
+
+
+	function read_websites() {
+
+		$this->websites=array();
+		$sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Website' "
+			, $this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$this->websites[]=$row['Scope Key'];
+		}
+		
+
+	}
+
 
 	function read_stores() {
 
@@ -860,18 +944,7 @@ class User extends DB_Table {
 		while ($row=mysql_fetch_array($res)) {
 			$this->stores[]=$row['Scope Key'];
 		}
-		$this->store_righs='none';
-		if ($this->data['User Type']=='Staff') {
-			$sql="select count(*) as num_stores from `Store Dimension`";
-			$res=mysql_query($sql);
-			$row=mysql_fetch_array($res);
-			$num_stores=$row['num_stores'];
-			$num_stores=count($this->stores);
-			if ($num_stores==$num_stores)
-				$this->store_rights='all';
-			else
-				$this->store_righs='some';
-		}
+
 	}
 
 	function read_suppliers() {

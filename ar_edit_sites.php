@@ -26,7 +26,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('add_redirect'):
+	$data=prepare_values($_REQUEST,array(
+			'url'=>array('type'=>'string'),
+			'page_key'=>array('type'=>'key'),
+		));
 
+	add_redirect($data);
+	break;
 case('delete_redirect'):
 	$data=prepare_values($_REQUEST,array(
 			'id'=>array('type'=>'key'),
@@ -903,7 +910,7 @@ function delete_redirect($data) {
 
 		$sql=sprintf("delete from  `Page Redirection Dimension` where `Page Redirection Key`=%d",
 			$data['id']);
-		print $sql;
+	//	print $sql;
 		mysql_query($sql);
 		$site=new Site($data['site_key']);
 		$site->upload_redirections($row['Source Host'],$row['Source Path']);
@@ -912,13 +919,21 @@ function delete_redirect($data) {
 		echo json_encode($response);
 
 	}
+}
+function add_redirect($data){
 
-
-
-
+	$page=new Page($data['page_key']);
+	$page->add_redirect($data['url']);
+	if($page->error){
+	$response= array('state'=>400,'msg'=>$page->msg);
+		echo json_encode($response);
+	
+	}else{
+	$response= array('state'=>200);
+		echo json_encode($response);
+	}
 
 }
-
 
 function edit_checkout_method($data) {
 	//print_r($data);

@@ -80,11 +80,10 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/csv_common.js',
-              'js/dropdown.js'
+              'js/search.js'
           );
 
 
-$js_files[]='js/search.js';
 $js_files[]='common_plot.js.php?page='.'site';
 
 $js_files[]='page_deleted.js.php';

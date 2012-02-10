@@ -1,8 +1,8 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0 20px">
 	{include file='contacts_navigation.tpl'} 
-	<div>
-		<span class="branch">{if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Adding Customer{/t}</span> 
+	<div class="branch">
+		<span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Adding Customer{/t}</span> 
 	</div>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 		<div class="buttons" style="float:left">

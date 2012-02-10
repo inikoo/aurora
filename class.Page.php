@@ -2421,7 +2421,9 @@ class Page extends DB_Table {
 		$site=new Site($this->data['Page Site Key']);
 
 		$url_array=explode("/", $source_url);
-		if (count($url_array)<3) {
+		//print_r($url_array);
+		
+		if (count($url_array)<2) {
 			$this->error=true;
 			$this->msg=_('Wrong URL');
 		}
@@ -2473,7 +2475,7 @@ class Page extends DB_Table {
 		$sql=sprintf("insert into `Page Redirection Dimension` (`Source Host`,`Source Path`,`Source File`, `Page Target URL`,`Page Target Key`, `Can Upload`) values
 		(%s,%s,%s, %s,%d, %s)"
 			,prepare_mysql($host)
-			,prepare_mysql($path)
+			,prepare_mysql($path,false)
 			,prepare_mysql($file)
 			,prepare_mysql($this->data['Page URL'])
 			,$this->id
@@ -2499,10 +2501,10 @@ class Page extends DB_Table {
 				foreach ($row as $key=>$value) {
 					$_row[str_replace(' ','',$key)]=$value;
 				}
-				$_row['Source']=$_row['SourceHost'].'/'.$_row['SourcePath'].'/'.$_row['SourceFile'];
+				$_row['Source']=$_row['SourceHost'].'/'.($_row['SourcePath']?$_row['SourcePath'].'/':'').$_row['SourceFile'];
 				$data[]=$_row;
 			}else {
-				$row['Source']=$row['Source Host'].'/'.$row['Source Path'].'/'.$row['Source File'];
+				$row['Source']=$row['Source Host'].'/'.($row['Source Path']?$row['Source Path'].'/':'').$row['Source File'];
 				$data[]=$row;
 			}
 		}
@@ -2522,10 +2524,10 @@ class Page extends DB_Table {
 				foreach ($row as $key=>$value) {
 					$_row[str_replace(' ','',$key)]=$value;
 				}
-				$_row['Source']=$_row['SourceHost'].'/'.$_row['SourcePath'].'/'.$_row['SourceFile'];
+				$_row['Source']=$_row['SourceHost'].'/'.($_row['SourcePath']?$_row['SourcePath'].'/':'').$_row['SourceFile'];
 				$data=$_row;
 			}else {
-				$row['Source']=$row['Source Host'].'/'.$row['Source Path'].'/'.$row['Source File'];
+				$row['Source']=$row['Source Host'].'/'.($row['Source Path']?$row['Source Path'].'/':'').$row['Source File'];
 				$data=$row;
 			}
 		}

@@ -10,7 +10,7 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span>{if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a> &rarr; <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a>  &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
@@ -47,7 +47,7 @@
 				</tr>
 				<tr>
 					<td style="width:120px" class="label">{t}301 Rederections{/t}:</td>
-					<td style="width:500px"> 
+					<td style="width:700px"> 
 					<div class="buttons small">
 						<button id="show_dialog_add_redirection" class="positive">Add Redirection</button> 
 					</div>
@@ -487,7 +487,7 @@
 <div id="dialog_add_redirection" style="padding:30px 20px 10px 10px;width:350px;position:absolute;top:-2000px;">
 	<table style="margin:0 auto;width:100%"  border=0 >
 		<tr>
-			<td>{t}URL{/t}:</td>
+			<td>{t}File{/t}:</td>
 			<td> 
 			<input id="add_redirect_source" style="border:1px solid #ddd;width:100%" type="text" name="file" />
 			</td>

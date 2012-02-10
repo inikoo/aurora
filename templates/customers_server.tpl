@@ -3,7 +3,7 @@
  <div style="padding:0 20px">
 {include file='contacts_navigation.tpl'}
 <div class="branch"> 
-  <span >{t}Customers{/t}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {t}Customers{/t}</span>
 </div>
 <div class="top_page_menu">
 <div class="buttons" style="float:right">
