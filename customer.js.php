@@ -1391,6 +1391,10 @@ function save_quick_edit_tax_number(){
 }
 
 function save_quick_edit_email(){
+	Dom.setStyle('save_quick_edit_email','display','none')
+	Dom.setStyle('close_quick_edit_email','display','none')
+		Dom.setStyle('Customer_Main_Email_wait','display','')
+
     save_edit_general_bulk('customer_quick');
 
 }
@@ -2248,6 +2252,7 @@ function validate_customer_main_contact_name(query){
 function validate_customer_tax_number(query){
  validate_general('billing_quick','tax_number',unescape(query));
 }
+
 
 function validate_email_comment(query){
 //alert(query)

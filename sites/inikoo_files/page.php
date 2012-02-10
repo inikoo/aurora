@@ -101,7 +101,8 @@ if ($page->data['Page Code']=='login') {
 
 
 		$smarty->assign('welcome',$welcome);
-
+		$smarty->assign('customer',$customer);
+		
 		$js_files[]='js/aes.js';
 		$js_files[]='js/sha256.js';
 		$css_files[]='css/inikoo.css';

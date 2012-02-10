@@ -156,6 +156,7 @@ function submit_register(){
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
 
+data['Customer Registration Number']=Dom.get('register_registration_number').value;
 
 data['Customer Name']=Dom.get('register_company_name').value;
 data['Customer Main Contact Name']=Dom.get('register_contact_name').value;

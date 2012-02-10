@@ -36,10 +36,17 @@
 					{/if} 
 					<td valign="top"> 
 					<table class="customer_show_data">
+						{if $customer->get('Customer Registration Number')} 
+						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_registration_number','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_registration_number','visibility','hidden')">
+							<td id="main_name" colspan="2" class="aright">{$customer->get('Customer Registration Number')}</td>
+							<td><img id="quick_edit_name" alt="{t}Registration Number{/t}" title="{t}Registration Number{/t}" src="art/icons/flag_purple.png" /></td>
+							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_registration_number" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+						</tr>
+						{/if}
 						{if $customer->get('Customer Tax Number')} 
 						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_tax','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_tax','visibility','hidden')">
 							<td id="main_name" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
-							<td><img id="quick_edit_name" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" src="art/icons/pill.png" /></td>
+							<td><img id="quick_edit_name" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" src="art/icons/flag_orange.png" /></td>
 							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} {if $customer->get('Customer Main Contact Key')} 
@@ -660,8 +667,8 @@
 </div>
 <div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
 	<table style="margin:10px">
-		{if $customer->get_principal_email_comment()} 
-		<tr>
+		 
+		<tr style="{if !$customer->get_principal_email_comment()}display:none{/if}">
 			<td>{t}Comment:{/t}</td>
 			<td> 
 			<div style="width:200px">
@@ -671,7 +678,7 @@
 			</div>
 			</td>
 		</tr>
-		{/if} 
+		
 		<tr>
 			<td>{t}Contact Email:{/t}</td>
 			<td> 
@@ -682,13 +689,16 @@
 			</div>
 			</td>
 		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Main_Email_msg"></span> <button class="positive" id="save_quick_edit_email">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button> 
+		<tr >
+			<td colspan="2" style="text-align:right"> 
+			
+			<div class="buttons" style="margin-top:10px" id="Customer_Main_Email_buttons">
+				 <span style="display:none" id="Customer_Main_Email_wait"><span id="Customer_Main_Email_msg"></span>{t}Processing request{/t}</span> <button class="positive" id="save_quick_edit_email">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
+	
+		
 	</table>
 </div>
 {foreach from=$customer->get_other_emails_data() item=other_email key=key} 

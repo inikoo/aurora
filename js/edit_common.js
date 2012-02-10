@@ -939,10 +939,10 @@ var item_input=Dom.get(validate_scope_data[branch]['email_provider'].name);
 var request=scope_edit_ar_file
 
 var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
-//alert(request+'?'+postData);//return;
+alert(request+'?'+postData);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {
-// alert(o.responseText);
+ alert(o.responseText);
 
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
