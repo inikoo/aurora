@@ -290,7 +290,7 @@ var edit_active=function (callback, newValue) {
 										   ?>
 										   ]
 				    })} 
-				     ,{key:"websites",formatter:stores, label:"<?php echo _('Websites')?>",sortable:true,className:"aleft"
+				     ,{key:"websites",formatter:websites, label:"<?php echo _('Websites')?>",sortable:true,className:"aleft"
 				 	, editor: new YAHOO.widget.CheckboxCellEditor({
 					asyncSubmitter:edit_group,checkboxOptions:[
 										   <?php
