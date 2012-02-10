@@ -19,23 +19,29 @@ var id=<?php echo$_SESSION['state']['site']['id']?>;
 
 var validate_scope_data=
 {
-    'site':{
+    'site_properties':{
 	'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Slogan','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Slogan')?>'}]}
 	,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
 	,'url':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Site_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
 	
-	,'ftp_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Server','name':'Site_FTP_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Server')?>'}]}
+	
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Contact Telephone','name':'telephone','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'address','dbname':'Site Contact Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
+},
+ 'site_checkout':{
+	'mals_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+	,'mals_url_multi':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL_Multi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+	,'mals_id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_ID','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid ID')?>'}]}
+},
+ 'site_ftp':{
+	'ftp_server':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Server','name':'Site_FTP_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Server')?>'}]}
 	,'ftp_user':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP User','name':'Site_FTP_User','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP User')?>'}]}
 	,'ftp_password':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Password','name':'Site_FTP_Password','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Password')?>'}]}
 	,'ftp_directory':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Directory','name':'Site_FTP_Directory','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Directory')?>'}]}
 	,'ftp_port':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site FTP Port','name':'ftp_port','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'<?php echo _('Invalid FTP Port')?>'}]}
-	
-	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Contact Telephone','name':'telephone','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-	,'address':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'address','dbname':'Site Contact Address','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Name')?>'}]}
-	,'mals_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-	,'mals_url_multi':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_URL_Multi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
-	,'mals_id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Site_Mals_ID','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid ID')?>'}]}
 },
+
+
 'site_menu':{
 		'html':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu HTML','name':'site_menu_html','ar':false}
 		,'css':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'dbname':'Site Menu CSS','name':'site_menu_css','ar':false}
@@ -74,7 +80,9 @@ var validate_scope_data=
 };
 
 var validate_scope_metadata={
-'site':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+'site_properties':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+,'site_ftp':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+,'site_checkout':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'site_menu':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'site_search':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'email_forgot':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
@@ -946,8 +954,12 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
 
 	
 	
-	YAHOO.util.Event.addListener('save_edit_site', "click", save_edit_site);
-    YAHOO.util.Event.addListener('reset_edit_site', "click", reset_edit_site);
+	YAHOO.util.Event.addListener('save_edit_site_checkout', "click", save_edit_site_checkout);
+    YAHOO.util.Event.addListener('reset_edit_site_checkout', "click", reset_edit_site_checkout);
+    YAHOO.util.Event.addListener('save_edit_site_properties', "click", save_edit_site_properties);
+    YAHOO.util.Event.addListener('reset_edit_site_properties', "click", reset_edit_site_properties);
+    YAHOO.util.Event.addListener('save_edit_site_ftp', "click", save_edit_site_ftp);
+    YAHOO.util.Event.addListener('reset_edit_site_ftp', "click", reset_edit_site_ftp);
     
     
      YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
@@ -1007,12 +1019,25 @@ function reset_edit_welcome_message(){
 }
 
 
-function save_edit_site(){
-    save_edit_general_bulk('site');
+function save_edit_site_properties(){
+    save_edit_general_bulk('site_properties');
+}
+function reset_edit_site_properties(){
+    reset_edit_general('site_properties')
 }
 
-function reset_edit_site(){
-    reset_edit_general('site')
+function save_edit_site_ftp(){
+    save_edit_general_bulk('site_ftp');
+}
+function reset_edit_site_ftp(){
+    reset_edit_general('site_ftp')
+}
+
+function save_edit_site_checkout(){
+    save_edit_general_bulk('site_checkout');
+}
+function reset_edit_site_checkout(){
+    reset_edit_general('site_checkout')
 }
 
 
@@ -1039,19 +1064,19 @@ function reset_edit_site_search(){
 
 
 function validate_site_ftp_server(query){
- validate_general('site','ftp_server',unescape(query));
+ validate_general('site_ftp','ftp_server',unescape(query));
 }
 function validate_site_ftp_user(query){
- validate_general('site','ftp_user',unescape(query));
+ validate_general('site_ftp','ftp_user',unescape(query));
 }
 function validate_site_ftp_password(query){
- validate_general('site','ftp_password',unescape(query));
+ validate_general('site_ftp','ftp_password',unescape(query));
 }
 function validate_site_ftp_directory(query){
- validate_general('site','ftp_directory',unescape(query));
+ validate_general('site_ftp','ftp_directory',unescape(query));
 }
 function validate_site_ftp_port(query){
- validate_general('site','ftp_port',unescape(query));
+ validate_general('site_ftp','ftp_port',unescape(query));
 }
 
 
@@ -1085,47 +1110,111 @@ function validate_site_url(query){
   original_query= query;
 query=query.replace(/[^A-Z0-9]/i, "");
  //alert(query)
- validate_general('site','url',unescape(query));
+ validate_general('site_properties','url',unescape(query));
 
  if(original_query==''){
     
-     validate_scope_data.site.url.validated=true;
-     validate_scope('site'); 
+     validate_scope_data.site_properties.url.validated=true;
+     validate_scope('site_properties'); 
  }
 
 }
-
 function validate_site_name(query){
   original_query= query;
 query=query.replace(/[^A-Z0-9]/i, "");
  //alert(query)
- validate_general('site','name',unescape(query));
+ validate_general('site_properties','name',unescape(query));
 
  if(original_query==''){
     
-     validate_scope_data.site.name.validated=true;
-     validate_scope('site'); 
+     validate_scope_data.site_properties.name.validated=true;
+     validate_scope('site_properties'); 
+ }
+
+}
+function validate_site_address(query){
+ validate_general('site_properties','address',unescape(query));
+}
+function validate_site_telephone(query){
+ validate_general('site_properties','telephone',unescape(query));
+}
+function validate_site_slogan(query){
+  original_query= query;
+query=query.replace(/[^A-Z0-9]/i, "");
+ //alert(query)
+ validate_general('site_properties','slogan',unescape(query));
+
+ if(original_query==''){
+    
+     validate_scope_data.site_properties.slogan.validated=true;
+     validate_scope('site_properties'); 
  }
 
 }
 
 function validate_site_mals_id(query){
- validate_general('site','mals_id',unescape(query));
+ validate_general('site_checkout','mals_id',unescape(query));
 }
 function validate_site_mals_url(query){
- validate_general('site','mals_url',unescape(query));
+ validate_general('site_checkout','mals_url',unescape(query));
 }
 function validate_site_mals_url_multi(query){
- validate_general('site','mals_url_multi',unescape(query));
+ validate_general('site_checkout','mals_url_multi',unescape(query));
+}
+function change_checkout_method(){
+
+types=Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
+Dom.removeClass(types,'selected');
+
+Dom.get('site_checkout_method').value=this.id;
+//alert(Dom.get('site_checkout_method').value);
+
+
+site_id=Dom.get('site_key').value;
+store_key=Dom.get('store_key').value;
+var request='ar_edit_sites.php?tipo=edit_checkout_method&site_key=' + site_id +'&store_key='+store_key + '&site_checkout_method='+Dom.get('site_checkout_method').value
+	          //  alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	        
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				Dom.addClass(r.new_value,'selected');
+				
+				if(r.new_value=='Mals'){
+				Dom.setStyle(['mals_id_tr','mals_url1_tr','mals_url2_tr'],'display','');
+				
+				}else{
+				
+				Dom.setStyle(['mals_id_tr','mals_url1_tr','mals_url2_tr'],'display','none');
+				
+				Dom.get('Site_Mals_ID').value=Dom.get('Site_Mals_ID').getAttribute('ovalue');
+				Dom.get('Site_Mals_URL').value=Dom.get('Site_Mals_URL').getAttribute('ovalue');
+				Dom.get('Site_Mals_URL_Multi').value=Dom.get('Site_Mals_URL_Multi').getAttribute('ovalue');
+validate_scope_data.site.mals_id.validated=true;
+validate_scope_data.site.mals_id.changed=false;
+validate_scope_data.site.mals_url.validated=true;
+validate_scope_data.site.mals_url.changed=false;
+validate_scope_data.site.mals_url_multi.validated=true;
+validate_scope_data.site.mals_url_multi.changed=false;
+								validate_scope('site')
+
+
+				}
+				
+
+            }
+			else{
+				Dom.addClass(Dom.get('site_checkout_method').value,'selected');
+			}
+   			}
+    });
+
+
 }
 
-function validate_site_address(query){
- validate_general('site','address',unescape(query));
-}
-
-function validate_site_telephone(query){
- validate_general('site','telephone',unescape(query));
-}
 
 function validate_site_search_html(query){
  validate_general('site_search','html',unescape(query));
@@ -1175,19 +1264,7 @@ function validate_site_menu_javascript(query){
 
 
 
-function validate_site_slogan(query){
-  original_query= query;
-query=query.replace(/[^A-Z0-9]/i, "");
- //alert(query)
- validate_general('site','slogan',unescape(query));
 
- if(original_query==''){
-    
-     validate_scope_data.site.slogan.validated=true;
-     validate_scope('site'); 
- }
-
-}
 
 function change_registration_method(){
 types=Dom.getElementsByClassName('site_registration_method', 'button', 'site_registration_method_buttons')
@@ -1411,59 +1488,7 @@ var request='ar_edit_sites.php?tipo=edit_show_twitter&site_key=' + site_id +'&st
     });
 }
 
-function change_checkout_method(){
 
-types=Dom.getElementsByClassName('site_checkout_method', 'button', 'site_checkout_method_buttons')
-Dom.removeClass(types,'selected');
-
-Dom.get('site_checkout_method').value=this.id;
-//alert(Dom.get('site_checkout_method').value);
-
-
-site_id=Dom.get('site_key').value;
-store_key=Dom.get('store_key').value;
-var request='ar_edit_sites.php?tipo=edit_checkout_method&site_key=' + site_id +'&store_key='+store_key + '&site_checkout_method='+Dom.get('site_checkout_method').value
-	          //  alert(request);	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-
-	            success:function(o){
-					
-	        
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				Dom.addClass(r.new_value,'selected');
-				
-				if(r.new_value=='Mals'){
-				Dom.setStyle('mals_tbody','display','');
-				
-				}else{
-				
-				Dom.setStyle('mals_tbody','display','none');
-				
-				Dom.get('Site_Mals_ID').value=Dom.get('Site_Mals_ID').getAttribute('ovalue');
-				Dom.get('Site_Mals_URL').value=Dom.get('Site_Mals_URL').getAttribute('ovalue');
-				Dom.get('Site_Mals_URL_Multi').value=Dom.get('Site_Mals_URL_Multi').getAttribute('ovalue');
-validate_scope_data.site.mals_id.validated=true;
-validate_scope_data.site.mals_id.changed=false;
-validate_scope_data.site.mals_url.validated=true;
-validate_scope_data.site.mals_url.changed=false;
-validate_scope_data.site.mals_url_multi.validated=true;
-validate_scope_data.site.mals_url_multi.changed=false;
-								validate_scope('site')
-
-
-				}
-				
-
-            }
-			else{
-				Dom.addClass(Dom.get('site_checkout_method').value,'selected');
-			}
-   			}
-    });
-
-
-}
 
 function set_default_header(header_key){
 

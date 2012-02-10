@@ -1148,7 +1148,7 @@ class Customer extends DB_Table {
 
 	function update_field_switcher($field,$value,$options='') {
 
-//print ": $field,$value";
+		//print ": $field,$value";
 
 
 		if (is_string($value))
@@ -1294,7 +1294,7 @@ class Customer extends DB_Table {
 				$customers_with_this_email=$email->get_customer_keys();
 
 				if (in_array($this->id,$customers_with_this_email)) {
-					$this->msg=_('The customer already has this email');
+					$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('The customer already has this email');
 					$this->error=true;
 
 					return;
@@ -1325,7 +1325,6 @@ class Customer extends DB_Table {
 
 				if ($this->data['Customer Company Key']) {
 					$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
-
 				}
 				$contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
 
@@ -1334,122 +1333,83 @@ class Customer extends DB_Table {
 			break;
 		case('Customer Main Plain Email'):
 
-
-			if ($value=='') {// remove it
+			$old_value=$this->data['Customer Main Plain Email'];
+			if ($old_value!=$value) {
 				$this->remove_principal_email();
-				return;
+				if ($value!='') {
 
-			} else {//update email
-				$contact=new Contact($this->data['Customer Main Contact Key']);
-				$email=new Email('email',$value);
+					$email = new Email('email',$value);
+					if ($email->id) {
 
 
-				$contact_email_keys=$contact->get_email_keys();
+						$customers_with_this_email=$email->get_customer_keys();
+						// Check if email already in this customer an return
+						if (in_array($this->id,$customers_with_this_email)) {
 
-				if ($email->id) {
+							$this->error=true;
+							$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('The customer already has this email');
 
-					if (in_array($email->id,$contact_email_keys)) {
-						
-						$this->msg=_('No Change');
-						$this->new_value=$value;
-						$email->update_Email($value);
-						//print_r($email);
-						$this->updated=$email->updated;
-						if ($this->updated) {
-							$this->msg=_('Email updated');
-							$this->new_value=$value;
+							return;
+
 						}
 
-						if ($this->data['Customer Main Email Key']!=$email->id) {
-						
-							$contact->associate_email_to_parents('Customer',$this->id,$email->id);
-							$email->update_parents();
-							$this->updated=true;
-							$this->msg=_('Email updated');
-							$this->new_value=$value;
-						}
-						
-						
-						return;
 
-					}
-
-					$error_customer_in_the_same_store=false;
-					$customers_with_this_email=$email->get_customer_keys();
-					$warning_same_email_in_another_store=false;
-
-
-					unset($customers_with_this_email[$this->id]);
-
-					if (count($customers_with_this_email)>0) {
-						$customer_with_this_email=0;
-						$customer_name_with_this_email='';
-
-
+						// Check if email already in this store an return
 						foreach ($customers_with_this_email as $customer_with_this_email) {
 							$other_customer_with_this_email=new Customer($customer_with_this_email);
 							if ($other_customer_with_this_email->data['Customer Store Key']==$this->data['Customer Store Key']) {
 								$error_customer_in_the_same_store=$customer_with_this_email;
 								$customer_name_with_this_email=$other_customer_with_this_email->data['Customer Name'];
-							} else {
-								$warning_same_email_in_another_store=true;
+								$this->error=true;
+								$this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
 
+								return;
 							}
 						}
 
 
-						if ($error_customer_in_the_same_store) {
-							$this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
-							$this->error=true;
-							return;
-						}
-
-
-
-
 					}
 
-
-					if ( $warning_same_email_in_another_store) {
-						$this->remove_principal_email();
+				
+					$contact=new Contact($this->data['Customer Main Contact Key']);
+					$contact-> update_field_switcher('Add Other Email',$value);
+					$new_princial_key=$contact->other_email_key;
+					$email=new Email($new_princial_key);
+					if ($email->id) {
+						
+						$contact->associate_email_to_parents('Customer',$this->id,$email->id);
+										if ($this->data['Customer Company Key']) {
+					$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email->id,false);
+				}
+						$email->update_parents();
+						$this->updated=1;
+					$this->msg=_('Email removed');
+					$this->new_value=$value;
+						
+						
+					}else{
+					$this->error=1;
+					$this->msg='unknown error';
+					$this->new_value='';
+					
 					}
 
-					$contact->editor=$this->editor;
+				}
+				else {
 
-					$contact->update(array('Contact Main Plain Email'=>$value));
-					$this->updated=$contact->updated;
-					$this->msg=$contact->msg;
-					$this->new_value=$contact->new_value;
-				} else {
-				//new email address not found
-
-					$principal_email=new Email($this->data['Customer Main Email Key']);
-					if ($principal_email->id) {
-						$customers_with_this_email=$principal_email->get_customer_keys();
-						unset($customers_with_this_email[$this->id]);
-
-						if (count($customers_with_this_email)>0) {
-							$this->remove_principal_email();
-						}
-
-
-
-
-					}
-
-					$contact->editor=$this->editor;
-
-					$contact->update(array('Contact Main Plain Email'=>$value));
-					$this->updated=$contact->updated;
-					$this->msg=$contact->msg;
-					$this->new_value=$contact->new_value;
-
-
+					$this->updated=1;
+					$this->msg=_('Email removed');
+					$this->new_value='';
 				}
 
 
 
+
 			}
+
+
+
+
 
 
 
@@ -5146,7 +5106,9 @@ class Customer extends DB_Table {
 			$this->msg='Error, main email not found';
 		}
 
-
+		
+		$email_to_delete_handle=$email->data['Email'];
+		
 		$email_customer_keys=$email->get_parent_keys('Customer');
 		unset($email_customer_keys[$this->id]);
 		$email_contacts_keys=$email->get_parent_keys('Contact');
@@ -5195,17 +5157,28 @@ class Customer extends DB_Table {
 				$email->delete();
 			}
 
-			$this->updated=true;
-			$this->msg=_('Email Removed from Customer');;
-			$this->new_value='';
-			return;
+		
+		}
+
+		
+
+
+
+		$sql=sprintf("select `User Key` from  `User Dimension` where `User Handle`=%s and `User Type`='Customer' and `User Parent Key`=%d  and `User Active`='Yes' "
+
+			,prepare_mysql($email_to_delete_handle)
+			,$this->id
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$user_key=$row['User Key'];
+			$_user=new user($user_key);
+			$_user->deactivate();
 		}
 
 
-
-
 		$this->updated=true;
-		$this->msg='';
+		$this->msg=_('Email Removed from Customer');;
 		$this->new_value='';
 		return;
 
