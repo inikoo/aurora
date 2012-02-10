@@ -5514,3 +5514,4 @@ ALTER TABLE `Email Credentials Dimension` CHANGE `Password` `Password` VARCHAR( 
 ALTER TABLE `User Dimension` ADD `User Inactive Note` VARCHAR( 1024 ) NOT NULL DEFAULT '';
 ALTER TABLE `Site Dimension` ADD `Site Show Facebook` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',ADD `Site Show Twitter` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
 ALTER TABLE `Site Dimension` ADD `Show Site Badges` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
+ALTER TABLE `User Right Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Store', 'Warehouse', 'Supplier', 'Website' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Store';
