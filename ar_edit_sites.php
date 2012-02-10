@@ -159,8 +159,9 @@ case('edit_site_search'):
 case('edit_email_forgot'):
 case('edit_email_welcome'):
 case('edit_welcome_message'):
-case('edit_site'):
-
+case('edit_site_ftp'):
+case('edit_site_properties'):
+case('edit_site_checkout'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')

@@ -482,7 +482,7 @@ function edit_staff_user() {
 			'value'=>$_REQUEST['newvalue'],
 		);
 
-		
+
 		$user->update($_REQUEST['key'],$data);
 		if ($user->updated)
 			$response=array('state'=>200,'data'=>$user->new_value,'new'=>false);
@@ -1299,110 +1299,95 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 	include_once 'class.User.php';
 
-	$customer_key=$customer->id;
-	$sql=sprintf("select `Customer Store Key`,`Customer Name` from `Customer Dimension` where `Customer Key`=%d",
-		$customer->id);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
 
 
 
-		$data=array(
-			'User Handle'=>$handle,
-			'User Type'=>'Customer',
-			'User Password'=>$password,
-			'User Parent Key'=>$row['Customer Store Key'],
-			'User Site Key'=>$site->id,
-			'User Active'=>'Yes',
-			'User Alias'=>$row['Customer Name'],
-			'User Parent Key'=>$customer->id
-		);
 
-		$user=new user('new',$data);
+	$data=array(
+		'User Handle'=>$handle,
+		'User Type'=>'Customer',
+		'User Password'=>$password,
+		'User Parent Key'=>$customer->data['Customer Store Key'],
+		'User Site Key'=>$site->id,
+		'User Active'=>'Yes',
+		'User Alias'=>$customer->data['Customer Name'],
+		'User Parent Key'=>$customer->id
+	);
+	
+	$_user=new user('find',$data,'create');
 
-		$site->update_customer_data();
+	$site->update_customer_data();
 
-		//print_r($user);
-		if (!$user->id) {
+	//print_r($_user);
+	if (!$_user->id) 
+	{
 
-			return array(0,$user->msg);
+		return array(0,$_user->msg);
 
-		} else {
+	}elseif ($_user->new and $send_email_flag) 
+	{
 
-			//print $send_key;exit;
-
-			/*
-            $email_credential_key=$store->get_email_credential_key('Site Registration');
-            //print $email_credential_key;exit;
-
-            $welcome_email_subject="Thank you for your registration with ".$site->data['Site Name'];
-            $welcome_email_plain="Thank you for your registration with ".$site->data['Site Name']."\nYou will now be able to see our wholesale prices and order from our big range of products.\n";
-
-            $welcome_email_html="Thank you for your registration with ".$site->data['Site Name']."<br/>You will now be able to see our wholesale prices and order from our big range of products<br/>";
-*/
-			if ($send_email_flag) {
-				$welcome_email_subject=$site->data['Site Welcome Email Subject'];
+		$welcome_email_subject=$site->data['Site Welcome Email Subject'];
 
 
 
-				$smarty_html_email = new Smarty();
-				$smarty_html_email->compile_dir = 'server_files/smarty/templates_c';
-				$smarty_html_email->cache_dir = 'server_files/smarty/cache';
-				$greetings=$customer->get_greetings();
-				$smarty_html_email->assign('greetings', $greetings);
-				$html_message = $smarty_html_email->fetch('string:'.$site->data['Site Welcome Email HTML Body']);
+		$smarty_html_email = new Smarty();
+		$smarty_html_email->compile_dir = 'server_files/smarty/templates_c';
+		$smarty_html_email->cache_dir = 'server_files/smarty/cache';
+		$greetings=$customer->get_greetings();
+		$smarty_html_email->assign('greetings', $greetings);
+		$html_message = $smarty_html_email->fetch('string:'.$site->data['Site Welcome Email HTML Body']);
 
-				$smarty_plain_email = new Smarty();
-				$smarty_plain_email->compile_dir = 'server_files/smarty/templates_c';
-				$smarty_plain_email->cache_dir = 'server_files/smarty/cache';
+		$smarty_plain_email = new Smarty();
+		$smarty_plain_email->compile_dir = 'server_files/smarty/templates_c';
+		$smarty_plain_email->cache_dir = 'server_files/smarty/cache';
 
-				$smarty_plain_email->assign('greetings', $greetings);
-				$plain_message = $smarty_plain_email->fetch('string:'.$site->data['Site Welcome Email Plain Body']);
+		$smarty_plain_email->assign('greetings', $greetings);
+		$plain_message = $smarty_plain_email->fetch('string:'.$site->data['Site Welcome Email Plain Body']);
 
 
 
 
 
-				$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
-				$credentials=$site->get_email_credentials();
-				$handle='rulovico@gmail.com';
-				if (!$credentials) {
-					return array($user->id,$user->msg);
-				}
-				$message_data['from_name']=$site->data['Site Name'];
-				$message_data['method']='smtp';
-				$message_data['type']='html';
-				$message_data['to']=$handle;
-				$message_data['subject']=$welcome_email_subject;
-				$message_data['html']=$html_message;
-				$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
-				$message_data['email_matter']='Registration';
-				$message_data['email_matter_key']=$email_mailing_list_key;
-				$message_data['email_matter_parent_key']=$email_mailing_list_key;
-				$message_data['recipient_type']='User';
-				$message_data['recipient_key']=0;
-				$message_data['email_key']=0;
-				$message_data['plain']=$plain_message;
-				if (isset($message_data['plain']) && $message_data['plain']) {
-					$message_data['plain']=$message_data['plain'];
-				} else
-					$message_data['plain']=null;
-
-				//print_r($message_data);
-				$send_email=new SendEmail();
-
-				$send_email->track=false;
-				$send_email->secret_key=$secret_key;
-
-				$send_result=$send_email->send($message_data);
-			}
-
-			return array($user->id,$user->msg);
+		$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
+		$credentials=$site->get_email_credentials();
+		$handle='rulovico@gmail.com';
+		if (!$credentials) {
+			return array($_user->id,$_user->msg);
 		}
-	} else {
-		return array(0,'customer not found');
+		$message_data['from_name']=$site->data['Site Name'];
+		$message_data['method']='smtp';
+		$message_data['type']='html';
+		$message_data['to']=$handle;
+		$message_data['subject']=$welcome_email_subject;
+		$message_data['html']=$html_message;
+		$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
+		$message_data['email_matter']='Registration';
+		$message_data['email_matter_key']=$email_mailing_list_key;
+		$message_data['email_matter_parent_key']=$email_mailing_list_key;
+		$message_data['recipient_type']='User';
+		$message_data['recipient_key']=0;
+		$message_data['email_key']=0;
+		$message_data['plain']=$plain_message;
+		if (isset($message_data['plain']) && $message_data['plain']) {
+			$message_data['plain']=$message_data['plain'];
+		} else
+			$message_data['plain']=null;
+
+		//print_r($message_data);
+		$send_email=new SendEmail();
+
+		$send_email->track=false;
+		$send_email->secret_key=$secret_key;
+
+
+
+		return array($_user->id,$_user->msg);
+	}else {
+		return array($_user->id,$_user->msg);
 
 	}
+
 
 
 }

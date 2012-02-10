@@ -62,7 +62,7 @@ class User extends DB_Table {
 
 			}
 		}
-		$base_data=$this->base_data();
+
 		if (preg_match('/create/i',$options)) {
 			$create='create';
 		}
@@ -79,15 +79,15 @@ class User extends DB_Table {
 			}
 		}
 
-		if ($base_data['User Type']=='Customer') {
-			$where_site=sprintf(" and `User Site Key`=%d",$base_data['User Site Key']);
+		if ($data['User Type']=='Customer') {
+			$where_site=sprintf(" and `User Site Key`=%d",$data['User Site Key']);
 		}else {
 			$where_site='';
 		}
 
 		$sql=sprintf("select `User Key` from `User Dimension` where `User Type`=%s and `User Handle`=%s %s",
-			prepare_mysql($base_data['User Type']),
-			prepare_mysql($base_data['User Handle']),
+			prepare_mysql($data['User Type']),
+			prepare_mysql($data['User Handle']),
 			$where_site
 		);
 
@@ -101,16 +101,18 @@ class User extends DB_Table {
 
 		}
 
-		if (!$this->found and $base_data['User Type']=='Customer') {
-			$sql=sprintf("select `User Key` from `User Dimension` where `User Type`='Customer' and  `User Active`='No' and `User Parent Key`=%d `User Inactive Note`=%s ",
-				$base_data['User Parent Key'],
-				prepare_mysql($base_data['User Handle'])
+
+
+		if (!$this->found and $data['User Type']=='Customer') {
+			$sql=sprintf("select `User Key` from `User Dimension` where `User Type`='Customer' and  `User Active`='No' and `User Parent Key`=%d and `User Inactive Note`=%s ",
+				$data['User Parent Key'],
+				prepare_mysql($data['User Handle'])
 			);
 
 			$result2 = mysql_query($sql);
 
 			if ($row2 = mysql_fetch_array($result2, MYSQL_ASSOC)) {
-				$this->reactivate($row2['User Key'],$base_data['User Handle']);
+				$this->reactivate($row2['User Key'],$data['User Handle']);
 				$this->found=true;
 				$this->found_key=$row2['User Key'];
 
@@ -208,10 +210,10 @@ class User extends DB_Table {
 		$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
-			if($key=='User Inactive Note')
-			$values.=prepare_mysql($value,false).",";
+			if ($key=='User Inactive Note')
+				$values.=prepare_mysql($value,false).",";
 			else
-			$values.=prepare_mysql($value).",";
+				$values.=prepare_mysql($value).",";
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
@@ -373,7 +375,7 @@ class User extends DB_Table {
 		}
 	}
 
-function update_websites($value) {
+	function update_websites($value) {
 		$this->updated=false;
 
 		if ($this->data['User Type']!='Staff')
@@ -930,7 +932,7 @@ function update_websites($value) {
 		while ($row=mysql_fetch_array($res)) {
 			$this->websites[]=$row['Scope Key'];
 		}
-		
+
 
 	}
 
@@ -1372,17 +1374,13 @@ function update_websites($value) {
 
 	function reactivate($user_key,$handle) {
 
-		switch ($this->data['User Type']) {
-		case 'Customer';
 
-			$sql=sprintf("update `User Dimension` set `User Handle`=%s,`User Inactive Note`='', `User Active`='Yes' where `User Key`=%d  "     ,
-				
-				prepare_mysql($handle),
-				$user_key
-			);
-			mysql_query($sql);
-			break;
-		}
+		$sql=sprintf("update `User Dimension` set `User Handle`=%s,`User Inactive Note`='', `User Active`='Yes' where `User Key`=%d  "     ,
+
+			prepare_mysql($handle),
+			$user_key
+		);
+		mysql_query($sql);
 
 	}
 

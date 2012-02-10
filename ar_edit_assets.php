@@ -396,13 +396,16 @@ function create_family($data) {
        ) {
         $department_key=$data['parent_key'];
 
+		$department=new Department($department_key);
+
         $family=new Family('create',array(
 
                                'Product Family Code'=>$data['values']['Product Family Code'],
                                'Product Family Name'=>$data['values']['Product Family Name'],
                                'Product Family Description'=>$data['values']['Product Family Description'],
                                'Product Family Special Characteristic'=>$data['values']['Product Family Special Characteristic'],
-                               'Product Family Main Department Key'=>$department_key,
+                               'Product Family Main Department Key'=>$department->id,
+                               'Product Family Store Key'=>$department->data['Product Department Store Key'],
                                'editor'=>$editor
                            ));
         if (!$family->new) {

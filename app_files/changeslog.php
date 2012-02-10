@@ -5515,3 +5515,4 @@ ALTER TABLE `User Dimension` ADD `User Inactive Note` VARCHAR( 1024 ) NOT NULL D
 ALTER TABLE `Site Dimension` ADD `Site Show Facebook` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',ADD `Site Show Twitter` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
 ALTER TABLE `Site Dimension` ADD `Show Site Badges` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
 ALTER TABLE `User Right Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Store', 'Warehouse', 'Supplier', 'Website' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Store';
+ALTER TABLE `Product Family Dimension` CHANGE `Product Family Store Key` `Product Family Store Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;

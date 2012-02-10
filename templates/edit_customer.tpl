@@ -354,7 +354,7 @@
 					<td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{if $customer->get('Customer Main Plain Email') == $login_stat.UserHandle}{/if}<img id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onclick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+					<td class="label">{if $customer->get_main_email_user_key()}<img  src="art/icons/world.png" alt="{t}Registered User{/t}" title="{t}Registered User{/t}"  > {/if}<img id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onclick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0"> 
@@ -366,7 +366,7 @@
 				</tr>
 				{foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email } 
 				<tr id="tr_other_email{$other_email_key}">
-					<td class="label"> <img src="art/icons/edit.gif" style="cursor:pointer" onclick="change_other_field_label(this,'email',{$other_email_key})"> <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:</span> </td>
+					<td class="label"> {if $other_email.user_key}<img  src="art/icons/world.png" alt="{t}Registered User{/t}" title="{t}Registered User{/t}"  > {/if}<img src="art/icons/edit.gif" style="cursor:pointer" onclick="change_other_field_label(this,'email',{$other_email_key})"> <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:</span> </td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Email{$other_email_key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0"> 

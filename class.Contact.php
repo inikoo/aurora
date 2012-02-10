@@ -3119,61 +3119,23 @@ class Contact extends DB_Table {
 
 			$main_email_key=$this->get_principal_email_key();
 
-			if ($value=='') {
-				if ($main_email_key) {
+			if ($value=='' and $main_email_key) {
+				
 					$email=new Email($main_email_key);
 					$email->delete();
 					$this->updated=true;
 					$this->new_value='';
-				}
-			} else {
+				
+			} 
+			
+			else {
 				$email_data['Email']=$value;
 				$email_data['Email Contact Name']=$this->display('name');
 				$email_data['editor']=$this->editor;
-				$email=new Email('find',$email_data);
+				//$email=new Email('find',$email_data);
 				$email=new Email('email',$value);
 
-				//print_r($email_data);
-				//print_r($email);
-
-				//         if ($email->found) {
-
-
-
-				//  $this->update_principal_email($email->id);
-				//         return;
-
-				/*
-                    $email_contacts_keys=$email->get_parent_keys('Contact');
-
-                    $number_contact_keys=count($email_contacts_keys);
-                    if ($number_contact_keys==1) {
-
-                        $contact_data=array_pop($email_contacts_keys);
-
-                        if ($contact_data['Subject Key']!=$this->id) {
-                            $this->error=true;
-                            $this->msg=_('Email belongs to other contact');
-                            $contact=new Contact($contact_data['Subject Key']);
-                            $this->msg=_('Email belongs to contact').' <a href="contact.php?id='.$contact->id.'">'.$contact->display('name').'</a>';
-                            return;
-                        } else {
-                            // print "updating principal email\n";
-                            $this->update_principal_email($email->id);
-                            return;
-                        }
-
-
-                    }
-                    elseif($number_contact_keys>1) {
-                      $this->error=true;
-                            $this->msg=_('Error an email bellows to more than one contacts');
-                            return;
-
-                    }
-
-                    */
-				//  }
+		
 
 
 
@@ -4702,8 +4664,6 @@ class Contact extends DB_Table {
 	}
 
 	function associate_email($email_key) {
-
-
 		if (!$email_key) {
 			$this->error=true;
 			$this->msg='Wrong email key';
@@ -4722,6 +4682,8 @@ class Contact extends DB_Table {
 
 
 	}
+
+
 
 
 
