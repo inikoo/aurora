@@ -1091,7 +1091,7 @@ class Address extends DB_Table {
         }
         //  print "XXXXXXXXXXX\n";
         //print_r($data);
-        //print"+++++++++++++\n";
+        //print"+++++".$this->updated."++++++++\n";
 
 
 
@@ -1109,6 +1109,8 @@ class Address extends DB_Table {
         // print_r($data);exit;
         // }
         $base_data=$this->base_data();
+
+		unset($data['Address Data Last Update']);
 
         foreach($data as $key=>$value) {
 //print "*** $key $value \n";
@@ -1137,12 +1139,15 @@ class Address extends DB_Table {
                 $this->update_field_switcher($key,$value,$options);
             }
 
-
+//print"+++++".$this->updated."++++++++\n";
 
         }
         if (!$this->updated)
             $this->msg.=' '._('Nothing to be updated')."\n";
         else {
+        
+        	$sql=sprintf("update `Address Dimension` set `Address Data Last Update`=NOW where `Address Key`=%d",$this->id);
+        	mysql_query($sql);
             $this->get_data('id',$this->id);
 
             list($fuzzy,$fuzzy_type)=$this->get_fuzzines($this->data);

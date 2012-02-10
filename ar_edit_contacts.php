@@ -1788,8 +1788,9 @@ function edit_address($data) {
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
 
                 if ($address->id==$proposed_address->id) {
-                    //  print_r($update_data);
+                   
                     $address->update($update_data,'cascade');
+                 //   print_r($address);
                     if ($address->updated) {
                         $response=address_response($address->id,$subject,$subject_object,$warning);
                         echo json_encode($response);
@@ -1839,7 +1840,8 @@ function edit_address($data) {
                     return;
                 }
             }
-        } else if ($subject=='Supplier') {
+        }
+        else if ($subject=='Supplier') {
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
                 $subject_object->update_principal_address($proposed_address->id);
 
