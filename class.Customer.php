@@ -1148,7 +1148,7 @@ class Customer extends DB_Table {
 
 	function update_field_switcher($field,$value,$options='') {
 
-
+//print ": $field,$value";
 
 
 		if (is_string($value))
@@ -1349,10 +1349,11 @@ class Customer extends DB_Table {
 				if ($email->id) {
 
 					if (in_array($email->id,$contact_email_keys)) {
-
+						
 						$this->msg=_('No Change');
 						$this->new_value=$value;
 						$email->update_Email($value);
+						//print_r($email);
 						$this->updated=$email->updated;
 						if ($this->updated) {
 							$this->msg=_('Email updated');
@@ -1360,12 +1361,15 @@ class Customer extends DB_Table {
 						}
 
 						if ($this->data['Customer Main Email Key']!=$email->id) {
+						
 							$contact->associate_email_to_parents('Customer',$this->id,$email->id);
 							$email->update_parents();
 							$this->updated=true;
 							$this->msg=_('Email updated');
 							$this->new_value=$value;
 						}
+						
+						
 						return;
 
 					}
@@ -1416,7 +1420,8 @@ class Customer extends DB_Table {
 					$this->updated=$contact->updated;
 					$this->msg=$contact->msg;
 					$this->new_value=$contact->new_value;
-				} else {//new email address not found
+				} else {
+				//new email address not found
 
 					$principal_email=new Email($this->data['Customer Main Email Key']);
 					if ($principal_email->id) {
