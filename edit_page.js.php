@@ -151,7 +151,7 @@ function change_number_auto_see_also(e,operation){
 	var request='ar_edit_sites.php?tipo=update_see_also_quantity&id='+Dom.get('page_key').value +'&operation='+operation
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o){
-	                            alert(o.responseText);	
+	                           // alert(o.responseText);	
 			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			                    if(r.state==200){
 			                    update_page_preview_snapshot();
@@ -282,7 +282,7 @@ family_key=tables.table4.getRecord(oArgs.target).getData('key');
  dialog_family_list.hide();
 
 	var request = 'ar_edit_sites.php?tipo=edit_page&key=' + 'family_key' + '&newvalue=' + family_key+ '&id=' + Dom.get('page_key').value
-	 alert(request);
+	// alert(request);
 
 	YAHOO.util.Connect.asyncRequest('POST', request, {
 		success: function(o) {
@@ -1061,7 +1061,7 @@ var request='ar_edit_sites.php?tipo=delete_redirect&id='+rediect_key+'&site_key=
 
 YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o){
-	                            alert(o.responseText);	
+	                            //alert(o.responseText);	
 			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			                    if(r.state==200){
                                     location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
