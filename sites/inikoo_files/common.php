@@ -258,11 +258,9 @@ function log_visit($session_key,$user_log_key,$user,$site_key) {
 
 	$break = explode('/', $file);
 	$cur_file = $break[count($break) - 1];
-	if (preg_match('/^ar\_/',$cur_file)) {
-		return;
-	}
+	
 
-	if (preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)) {
+	if (preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file) or preg_match('/securimage_show/',$cur_file)) {
 		return;
 	}
 	//print_r($_SERVER);
@@ -312,7 +310,7 @@ $prev_page_key=0;
 	}
 
 
-	$sql1=sprintf("INSERT INTO `User Click Dimension` (
+	$sql1=sprintf("INSERT INTO `User Request Dimension` (
 
                   `User Key` ,
                   `User Log Key`,
@@ -398,7 +396,7 @@ function strleft1($s1, $s2) {
 
 function update_page_key_visit_log($page_key,$user_click_key) {
 	$_SESSION['page_key']=$page_key;
-	$sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
+	$sql=sprintf("update `User Request Dimension`  set `Page Key`=%d where `User Request Key`=%d",$page_key,$user_click_key);
 	mysql_query($sql);
 }
 

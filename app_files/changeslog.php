@@ -5516,3 +5516,6 @@ ALTER TABLE `Site Dimension` ADD `Site Show Facebook` ENUM( 'Yes', 'No' ) NOT NU
 ALTER TABLE `Site Dimension` ADD `Show Site Badges` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
 ALTER TABLE `User Right Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Store', 'Warehouse', 'Supplier', 'Website' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Store';
 ALTER TABLE `Product Family Dimension` CHANGE `Product Family Store Key` `Product Family Store Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
+
+ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Request Key` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ;
+RENAME TABLE `User Click Dimension` TO `dw`.`User Request Dimension` ;
