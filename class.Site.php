@@ -1123,11 +1123,12 @@ $index_page=$this->get_page_object('index');
 		if ($ftp_sever==strtolower($host) or $ftp_sever==$host_bis) {
 			$sql=sprintf("select * from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s",
 				prepare_mysql($host),
-				prepare_mysql($path)
+				prepare_mysql($path,false)
 			);
 			$result=mysql_query($sql);
+		//	print $sql;
 			while ($row=mysql_fetch_assoc($result)) {
-				$redirect_line='/'.$row['Source Path'].'/'.$row['Source File'].' '.$row['Page Target URL'];
+				$redirect_line='/'.($row['Source Path']?$row['Source Path'].'/':'').$row['Source File'].' '.$row['Page Target URL'];
 				$redirect_lines[$redirect_line]=1;
 			}
 		}
@@ -1135,6 +1136,13 @@ $index_page=$this->get_page_object('index');
 			$htaccess.="Redirect 301 $redirect_line\n";
 
 		}
+		if($path==''){
+		$_htaccess_redirections=$htaccess;
+		
+		$htaccess="Options +FollowSymLinks\nRedirect 301 /index.html ".$this->data['Site URL']."/index.php\n$_htaccess_redirections\nRewriteEngine On\nRewriteCond %{SCRIPT_FILENAME} !-d\nRewriteCond %{SCRIPT_FILENAME} !-f\nRewriteRule ^.*$ ./process.php";
+
+		}
+		
 		return $htaccess;
 
 	}
