@@ -58,7 +58,7 @@ $page_data=array(
  );
 $site->add_store_page($page_data);
 
-
+//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'
 
  $page_data=array(
  'Page Store Section'=>'Registration',

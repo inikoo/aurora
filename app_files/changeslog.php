@@ -5518,7 +5518,7 @@ ALTER TABLE `User Right Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Store', 'War
 ALTER TABLE `Product Family Dimension` CHANGE `Product Family Store Key` `Product Family Store Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
 
 ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Request Key` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ;
-RENAME TABLE `User Click Dimension` TO `dw`.`User Request Dimension` ;
+RENAME TABLE `User Click Dimension` TO `User Request Dimension` ;
 ALTER TABLE `User Request Dimension` ADD `User Agent Key` BIGINT NULL DEFAULT NULL AFTER `Previous Page Key` ,ADD INDEX ( `User Agent Key` ) ;
 CREATE TABLE `User Visitor Dimension` (
   `User Visitor Key` mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -5549,3 +5549,5 @@ ALTER TABLE `User Request Dimension` ADD `User Visitor Key` MEDIUMINT NULL DEFAU
 ALTER TABLE `User Visitor Dimension` ADD `User Visitor Site Key` MEDIUMINT UNSIGNED NOT NULL , ADD INDEX ( `User Visitor Site Key` ) ;
 ALTER TABLE `User Session Dimension` ADD `User Session Visitor Key` MEDIUMINT UNSIGNED NOT NULL AFTER `User Session Key` ,ADD INDEX ( `User Session Visitor Key` ) ;
 ALTER TABLE `User Session Dimension` ADD `User Session Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `User Session Key` ,ADD INDEX ( `User Session Site Key` );
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Description', 'Information', 'Category Catalogue', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out', 'Login', 'Welcome' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Description', 'Information', 'Category Catalogue', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out', 'Login', 'Welcome', 'Not Found' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
