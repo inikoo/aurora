@@ -245,7 +245,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 				$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
 				$credentials=$site->get_email_credentials();
-				$handle='rulovico@gmail.com';
+				//$handle='rulovico@gmail.com';
 				if (!$credentials) {
 					return array($user->id,$user->msg);
 				}
@@ -329,6 +329,7 @@ function forgot_password($data,$secret_key) {
 		$_data['values']['user_key']=$user_key;
 		$_data['values']['site_key']=$site->id;
 		$_data['values']['url']=$url;
+		$_data['values']['login_handle']=$login_handle;
 		send_reset_password($_data,$secret_key);
 	} else {
 		$response=array('state'=>200,'result'=>'handle_not_found');
@@ -343,7 +344,7 @@ function send_reset_password($data,$CKEY) {
 	$user_key=$data['values']['user_key'];
 	$site_key=$data['values']['site_key'];
 	$url=$data['values']['url'];
-
+	$login_handle=$data['values']['login_handle'];
 	$site=new Site($site_key);
 
 
@@ -396,7 +397,7 @@ function send_reset_password($data,$CKEY) {
 	$forgot_password_subject=$site->data['Site Forgot Password Email Subject'];
 
 	$credentials=$site->get_email_credentials();
-	$login_handle='raul@inikoo.com';
+	//$login_handle='raul@inikoo.com';
 	$message_data['method']='smtp';
 	$message_data['from_name']=$site->data['Site Name'];
 	$message_data['type']='html';
