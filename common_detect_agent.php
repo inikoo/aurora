@@ -123,7 +123,30 @@ function ip() {
 
 
 
+function get_useragent_key($useragent) {
+
+	//$useragent_name=get_useragent_name($useragent);
+
+	$sql=sprintf("select `User Agent Key` from kbase.`User Agent Dimension` where `User Agent String`=%s  ",prepare_mysql($useragent));
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+	$useragent_key=$row['User Agent Key'];
+	}else{
+
+	$sql=sprintf("insert into kbase.`User Agent Dimension` (`User Agent String`) values (%s) ",prepare_mysql($useragent));
+	mysql_query($sql);
+	$useragent_key=mysql_insert_id();
+	
+	}
+	
+	return $useragent_key;
+}
+
+
+
 function get_user_browser($useragent) {
+
+
 
 if (strpos($useragent,"MSIE") !== false && strpos($useragent,"Opera") === false && strpos($useragent,"Netscape") === false) {
     //deal with IE
@@ -200,7 +223,7 @@ elseif (strpos($useragent,"Netscape") !== false) {
 }
 else {
     //unrecognized, this should be less than 1% of browsers (not counting bots like google etc)!
-    return false;
+    return 'Unknown';
 }
 }
 function get_user_os($useragent){        

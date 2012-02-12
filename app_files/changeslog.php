@@ -5519,3 +5519,33 @@ ALTER TABLE `Product Family Dimension` CHANGE `Product Family Store Key` `Produc
 
 ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Request Key` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ;
 RENAME TABLE `User Click Dimension` TO `dw`.`User Request Dimension` ;
+ALTER TABLE `User Request Dimension` ADD `User Agent Key` BIGINT NULL DEFAULT NULL AFTER `Previous Page Key` ,ADD INDEX ( `User Agent Key` ) ;
+CREATE TABLE `User Visitor Dimension` (
+  `User Visitor Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`User Visitor Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE kbase.`User Agent Dimension` (
+  `User Agent Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `User Agent Name` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
+  `User Agent String` text CHARACTER SET utf8 NOT NULL,
+  `User Agent Description` text CHARACTER SET utf8,
+  `User Agent Type` enum('Browser','Bot','Spam','Proxy','Other') CHARACTER SET utf8 DEFAULT NULL,
+  `User Agent Family` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`User Agent Key`),
+  UNIQUE KEY `User Agent String_2` (`User Agent String`(300)),
+  KEY `User Agent String` (`User Agent String`(64)),
+  KEY `User Agent Type` (`User Agent Type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `User Session Dimension` (
+  `User Session Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `User Session Start Date` datetime NOT NULL,
+  `User Session Last Request Date` datetime NOT NULL,
+  PRIMARY KEY (`User Session Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `User Request Dimension` ADD `User Visitor Key` MEDIUMINT NULL DEFAULT NULL AFTER `User Log Key` , ADD `User Session Key` MEDIUMINT NULL DEFAULT NULL AFTER `User Visitor Key` ;
+ALTER TABLE `User Visitor Dimension` ADD `User Visitor Site Key` MEDIUMINT UNSIGNED NOT NULL , ADD INDEX ( `User Visitor Site Key` ) ;
+ALTER TABLE `User Session Dimension` ADD `User Session Visitor Key` MEDIUMINT UNSIGNED NOT NULL AFTER `User Session Key` ,ADD INDEX ( `User Session Visitor Key` ) ;
+ALTER TABLE `User Session Dimension` ADD `User Session Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `User Session Key` ,ADD INDEX ( `User Session Site Key` );

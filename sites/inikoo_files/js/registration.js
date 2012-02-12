@@ -151,7 +151,7 @@ var submit_check_email_on_enter=function(e){
 
 
 function submit_register(){
-//alert('xx');
+
 
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
@@ -182,14 +182,14 @@ Dom.setStyle('processing_register','display','');
 Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 
      var request='ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
- alert(request);//return;
+// alert(request);//return;
  
      
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 	Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
 
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.result=='logged_in'){
@@ -535,7 +535,7 @@ Dom.setStyle('message_email_in_db_missing_captcha','display','none')
 
 
 function init(){
-
+//alert("xx")
 //Event.addListener(["hide_email_in_db_dialog"], "click", hide_email_in_db_dialog);
 
 Event.addListener("cancel_register", "click", cancel_register);

@@ -19,7 +19,8 @@ class Auth {
     private $use_cookies=false;
     var $authentication_type=false;
     var $user_log_key=0;
-    function Auth($ikey,$skey,$options='') {
+    
+    function Auth($ikey=false,$skey=false,$options='') {
         if (preg_match('/use( |\_)cookies?/i',$options))
             $this->use_cookies=true;
         $this->ikey=$ikey;

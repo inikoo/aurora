@@ -4,6 +4,7 @@ require_once 'class.Customer.php';
 require_once 'class.User.php';
 require_once 'class.SendEmail.php';
 require_once 'class.Site.php';
+require_once 'class.Auth.php';
 
 require_once 'ar_edit_common.php';
 
@@ -539,7 +540,12 @@ function register($data,$CKEY) {
 
 			$_SESSION['user_key']=$user_key;
 			$_SESSION['customer_key']=$response['customer_key'];
-
+			
+			$auth=new Auth();
+			$auth->use_key=$user_key;
+			$auth->create_user_log();
+			$_SESSION['user_log_key']=$auth->user_log_key;
+			
 			$response=array('state'=>200,'result'=>'logged_in');
 			echo json_encode($response);
 			exit;

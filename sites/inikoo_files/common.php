@@ -1,8 +1,9 @@
 <?php
-include_once 'conf/key.php';
+include_once 'app_files/key.php';
+
 include_once 'aes.php';
 require_once 'app_files/db/dns.php';
-require_once "conf/checkout.php";
+//require_once "conf/checkout.php";
 require_once 'common_functions.php';
 require_once 'common_store_functions.php';
 require_once 'common_detect_agent.php';
@@ -251,6 +252,62 @@ function log_visit($session_key,$user_log_key,$user,$site_key) {
 
 
 
+	$visitor_key=0;
+	if (isset($_COOKIE['v'.$site_key])) {
+		//print_r($_COOKIE['v'.$site_key]);
+
+		$visitor_key=AESDEcryptCtr(base64_decode($_COOKIE['v'.$site_key]),$site_key.VKEY, 256);
+		if (!is_numeric($visitor_key))
+			$visitor_key=0;
+
+	}
+
+
+	if (!$visitor_key) {
+
+		$sql=sprintf("insert into `User Visitor Dimension` (`User Visitor Site Key`) values (%d) ",$site_key);
+		mysql_query($sql);
+		$visitor_key=mysql_insert_id();
+		$encrypted_visitor_key=base64_encode(AESEncryptCtr($visitor_key,$site_key.VKEY, 256));
+
+		setcookie('v'.$site_key, $encrypted_visitor_key, time()+63072000, "/");
+
+	}
+	
+	
+	$user_session_key=0;
+	if (isset($_COOKIE['us'.$site_key])) {
+	//	print_r($_COOKIE['us'.$site_key]);
+
+		$user_session_key=AESDEcryptCtr(base64_decode($_COOKIE['us'.$site_key]),$site_key.VKEY, 256);
+		//print "$user_session_key";
+		if (!is_numeric($user_session_key))
+			$user_session_key=0;
+		else{
+				$encrypted_user_session_key=base64_encode(AESEncryptCtr($user_session_key,$site_key.VKEY, 256));
+
+				setcookie('us'.$site_key, $encrypted_user_session_key, time()+1800, "/");
+				$sql=sprintf("update `User Session Dimension` set `User Session Last Request Date`=NOW() where `User Session Key`=%d",$user_session_key);
+				mysql_query($sql);
+	}
+
+	}
+
+	if (!$user_session_key) {
+
+		$sql=sprintf("insert into `User Session Dimension` (`User Session Visitor Key`,`User Session Site Key`,`User Session Last Request Date`,`User Session Start Date`) values (%d,%d,NOW(),NOW()) ",
+		$visitor_key,$site_key);
+		//print $sql;
+		mysql_query($sql);
+		$user_session_key=mysql_insert_id();
+		$encrypted_user_session_key=base64_encode(AESEncryptCtr($user_session_key,$site_key.VKEY, 256));
+
+		setcookie('us'.$site_key, $encrypted_user_session_key, time()+1800, "/");
+
+	}
+
+
+
 	$user_click_key=0;
 	// $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
 	$file = $_SERVER["PHP_SELF"];
@@ -258,7 +315,7 @@ function log_visit($session_key,$user_log_key,$user,$site_key) {
 
 	$break = explode('/', $file);
 	$cur_file = $break[count($break) - 1];
-	
+
 
 	if (preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file) or preg_match('/securimage_show/',$cur_file)) {
 		return;
@@ -267,7 +324,7 @@ function log_visit($session_key,$user_log_key,$user,$site_key) {
 	//print '|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php.+\&url=(.+)$|';
 	$previous_url=(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');
 
-$prev_page_key=0;
+	$prev_page_key=0;
 
 	if (preg_match('|^http\:\/\/'.$_SERVER['SERVER_NAME'].'\/page\.php\?id=(\d+)|',$previous_url,$match)) {
 		$prev_page_key=$match[1];
@@ -321,7 +378,7 @@ $prev_page_key=0;
 
                   `Previous Page` ,
                   `Session Key` ,
-                  `Previous Page Key`,`Browser`,`OS`,`IP`
+                  `Previous Page Key`,`User Agent Key`,`OS`,`IP`,`User Visitor Key`,`User Session Key`
                   )
                   VALUES (
                   %d,%d,%s,
@@ -329,7 +386,8 @@ $prev_page_key=0;
                   %d,%s,
 
                   %s, %d,%d,
-                  %s,%s,%s
+                  %d,%s,%s,
+                  %d,%d
                   );",
 		$user_key,
 		$user_log_key,
@@ -341,15 +399,17 @@ $prev_page_key=0;
 		prepare_mysql($previous_url,false),
 		$session_key,
 		$prev_page_key,
-		prepare_mysql(get_user_browser($_SERVER['HTTP_USER_AGENT'])),
+		get_useragent_key($_SERVER['HTTP_USER_AGENT']),
 		prepare_mysql(get_user_os($_SERVER['HTTP_USER_AGENT'])),
-		prepare_mysql(ip(),false)
+		prepare_mysql(ip(),false),
+		$visitor_key,
+		$user_session_key
 	);
 
 
 
 
-//	 print($sql1);
+	//  print($sql1);
 	mysql_query($sql1);
 	$user_click_key= mysql_insert_id();
 
