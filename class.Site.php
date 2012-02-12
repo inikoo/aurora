@@ -1147,6 +1147,10 @@ $index_page=$this->get_page_object('index');
 
 	}
 
+
+
+
+
 	function upload_redirections($host,$path) {
 
 
@@ -1167,7 +1171,7 @@ $index_page=$this->get_page_object('index');
 				$this->msg=$ftp_connection->msg;
 				return;
 			}else {
-				$ftp_connection->upload_string($htaccess,$path);
+				$ftp_connection->upload_string($htaccess,$path."/.htaccess");
 				$ftp_connection->end();
 			}
 
