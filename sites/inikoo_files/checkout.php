@@ -1,5 +1,5 @@
 <?php
-
+exit;
 include_once('common.php');
 include_once('class.LightCustomer.php');
 include_once('class.Customer.php');
