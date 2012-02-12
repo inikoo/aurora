@@ -194,9 +194,9 @@ Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 		    if(r.state=='200'){
 		       if(r.result=='logged_in'){
 		       
-		            remove_register_message_blocks()
+		           // remove_register_message_blocks()
 		       
-				window.location ='http://'+ window.location.host + window.location.pathname+'?welcome=1';
+				window.location ='http://'+ window.location.host + '/welcome.php';
 
 		       }
 		        else if(r.result=='error'){
