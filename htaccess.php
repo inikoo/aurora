@@ -44,6 +44,7 @@ $host=$redirection_data['Source Host'];
 $path=$redirection_data['Source Path'];
 $site=new Site($page->data['Page Site Key']);
 
+
 $htaccess=$site->get_redirections_htaccess($host,$path);
 //header("Content-Type: text/plain");
  // header('Content-Disposition: attachment; filename=.htaccess');
