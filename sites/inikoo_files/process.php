@@ -16,6 +16,11 @@ $site_key=$myconf['site_key'];
 
 $url=$_SERVER['REQUEST_URI'];
 $url=preg_replace('/^\//', '', $url);
+$url=preg_replace('/\?.*$/', '', $url);
+
+
+
+
 if ($page_key=get_page_key_from_code($site_key,$url)) {
 include_once('common.php');
 	include_once 'page.php';

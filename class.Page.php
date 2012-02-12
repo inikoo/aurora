@@ -1167,7 +1167,7 @@ class Page extends DB_Table {
                              <input type='hidden' name='price' value='%s'>
                              <input type='text' size='2' class='qty' name='qty' value=''>
                              <input type='Submit' value='%s'></form></div>",
-				$this->site->get_mals_data('url'),
+				'http://'.$this->site->get_mals_data('url').'/cf/add.cfm',
 				$this->site->get_mals_data('id'),
 				$product->data['Product Code'],
 				$product->data['Product Units Per Case'],
@@ -1243,7 +1243,7 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
 		}
 		else {
-			$message=sprintf('<br/><span style="color:green;font-style:italic;">In stock, please <a style="color:green;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:green;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
+			$message=sprintf('<br/><span style="color:green;font-style:italic;">'._('In stock').'. <a style="color:green;" href="login.php" >'._('login').'</a> '._('or').' <a style="color:green;" href="registration.php">'._('register').'</a></span>');
 		}
 
 		$form=sprintf('<div  class="ind_form">
@@ -1456,7 +1456,7 @@ class Page extends DB_Table {
 		$number_records=count($products);
 		$out_of_stock=_('Out of Stock');
 		$discontinued=_('Discontinued');
-		$register=_('Please').' '.'<span onclick="show_login_dialog()">'._('login').'</span> '._('or').' <span onclick="show_register_dialog()">'._('register').'</span> '._('to see wholesale prices');
+		$register=_('Please').' '.'<a href="login.php">'._('login').'</a> '._('or').' <a href="register.php">'._('register').'</a> '._('to see wholesale prices');
 
 
 
@@ -1753,7 +1753,7 @@ class Page extends DB_Table {
                       <form action="%s" method="post">
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nnocart"> '
-			,$this->site->get_mals_data('url_multi')
+			,'http://'.$this->site->get_mals_data('url').'/cf/addmulti.cfm'
 			,$this->site->get_mals_data('id')
 
 		);
@@ -1862,12 +1862,15 @@ class Page extends DB_Table {
 
 		$form.=sprintf('<tr class="space"><td colspan="4">
                        <input type="hidden" name="return" value="%s">
-                       <input class="button" name="Submit" type="submit"  value="'._('Order').'">
+                       <input class="button" name="Submit" type="submit"  value="'._('Order Product').'">
                        <input class="button" name="Reset" type="reset"  id="Reset" value="'._('Reset').'"></td></tr></form></table>
                        '
 			,$this->data['Page URL']);
 		return $form;
 	}
+
+//http://ww12.aitsafe.com/cf/review.cfm?userid=E5171143
+//http://ww4.aitsafe.com/cf/review.cfm?userid=E5171143
 
 
 	function get_list_price_header_auto($products) {
@@ -1997,7 +2000,7 @@ class Page extends DB_Table {
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
-				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://ww4.aitsafe.com/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_mals_data('url').'/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			default:
 				$basket='';

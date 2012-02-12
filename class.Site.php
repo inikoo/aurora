@@ -1185,54 +1185,59 @@ $index_page=$this->get_page_object('index');
 
 	function get_home_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Front Page Store' and `Site Key`=%d ",$this-id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Front Page Store' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
+
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
-
+	return $page_key;
 	}
 
 	function get_registration_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Registration' and `Site Key`=%d ",$this-id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Registration' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
-
+return $page_key;
 	}
 	function get_login_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Login' and `Site Key`=%d ",$this-id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Login' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
+		return $page_key;
 	}
 	function get_profile_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Client Section' and `Site Key`=%d ",$this-id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Client Section' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
+		return $page_key;
 	}
 	function get_welcome_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Welcome' and `Site Key`=%d ",$this-id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Welcome' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
+		return $page_key;
 	}
 	function get_not_found_page_key() {
 		$page_key=0;
-		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Not Found' and `Site Key`=%d ",$this-id);
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Not Found' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
+		return $page_key;
 	}
 }
 ?>
