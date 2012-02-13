@@ -1250,31 +1250,31 @@ $index_page=$this->get_page_object('index');
 
 
 	function update_up_today_requests() {
-		$this->update_requests('Today');
-		$this->update_requests('Week To Day');
-		$this->update_requests('Month To Day');
-		$this->update_requests('Year To Day');
+		//$this->update_requests('Today');
+		//$this->update_requests('Week To Day');
+		//$this->update_requests('Month To Day');
+		//$this->update_requests('Year To Day');
 	}
 
 	function update_last_period_requests() {
 
-		$this->update_requests('Yesterday');
-		$this->update_requests('Last Week');
-		$this->update_requests('Last Month');
+		//$this->update_requests('Yesterday');
+		//$this->update_requests('Last Week');
+		//$this->update_requests('Last Month');
 	}
 
 
 	function update_interval_requests() {
-	$this->update_requests('Total');
-		$this->update_requests('3 Year');
-		$this->update_requests('1 Year');
-		$this->update_requests('6 Month');
-		$this->update_requests('1 Quarter');
-		$this->update_requests('1 Month');
-		$this->update_requests('10 Day');
-		$this->update_requests('1 Week');
+	//$this->update_requests('Total');
+	//	$this->update_requests('3 Year');
+	//	$this->update_requests('1 Year');
+	//	$this->update_requests('6 Month');
+	//	$this->update_requests('1 Quarter');
+	//	$this->update_requests('1 Month');
+	//	$this->update_requests('10 Day');
+	//	$this->update_requests('1 Week');
 		$this->update_requests('1 Day');
-		$this->update_requests('1 Hour');
+	//	$this->update_requests('1 Hour');
 	}
 
 
@@ -1335,7 +1335,7 @@ $index_page=$this->get_page_object('index');
 			$this->id
 		);
 		mysql_query($sql);
-		//print "$sql\n";
+		print "$sql\n";
 	}
 
 
