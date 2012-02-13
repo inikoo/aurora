@@ -173,6 +173,9 @@ class EmailCredentials extends DB_Table{
 		$password=preg_replace('/^\_Hello \:\)/','',$password);
 		return $password;
 	}
+	
+
+	
 
 	 function update_field_switcher($field,$value,$options='') {
 
@@ -181,7 +184,6 @@ class EmailCredentials extends DB_Table{
 		
 		if($field=='Password'){
 			$salt='_Hello :)';
-			
 			$value=base64_encode(AESEncryptCtr($salt.$value,$options,256));
 		
 		}
@@ -207,7 +209,7 @@ class EmailCredentials extends DB_Table{
 			if(array_key_exists('Email Address',$data))
 			$data['Login']=$data['Email Address'];
 			break;
-			defaut:
+			default:
 		}
 		return $data;
 

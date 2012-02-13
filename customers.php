@@ -327,5 +327,20 @@ while ($row=mysql_fetch_assoc($res)) {
 $smarty->assign('elements_number_contacts_with_orders',$elements_number_contacts_with_orders);
 $smarty->assign('elements_contacts_with_orders',$_SESSION['state']['customers']['table']['elements']['contacts_with_orders']);
 
+
+$tipo_filter=$_SESSION['state']['users']['site']['f_field'];
+
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['users']['site']['f_value']);
+$filter_menu=array(
+	// 'alias'=>array('db_key'=>'alias','menu_label'=>'Alias like  <i>x</i>','label'=>'Alias'),
+	'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle like <i>x</i>'),'label'=>_('Handle')),
+);
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
+
 $smarty->display('customers.tpl');
 ?>

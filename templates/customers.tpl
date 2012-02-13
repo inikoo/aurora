@@ -45,6 +45,7 @@
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='contacts_with_orders'}selected{/if}"  id="contacts_with_orders">  <span> {t}Contacts with Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='all_contacts'}selected{/if}"  id="all_contacts">  <span> {t}All Contacts{/t}</span></span></li>
+    <li> <span class="item {if $block_view=='users'}selected{/if}"  id="users">  <span> {t}Users{/t}</span></span></li>
 
   </ul>
 
@@ -59,7 +60,7 @@
 
 
 
-  <div style="padding:15px 0 30px 0"> 
+  <div style="padding:15px 0 30px 0;{if !($block_view=='contacts_with_orders' or $block_view=='all_contacts')  }display:none{/if}" id="customer_list"  > 
   
   
   
@@ -109,7 +110,7 @@
 </div>
 <div style="clear:both"></div>
 </div>
-  
+   
   
  <div style="clear:both"> 
       <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
@@ -152,7 +153,18 @@
  
  
 </div>
-  
+   <div style="padding:15px 0 30px 0;{if !($block_view=='users')  }display:none{/if}" id="user_list"  >
+   
+   	<div class="data_table" style="margin-top:15px">
+			<span class="clean_table_title">{t}Users{/t}</span> 
+			  <div class="table_top_bar" style="margin-bottom:15px"></div>
+
+         {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+			<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
+			</div>
+		</div>
+   
+   </div>
 
 
 
