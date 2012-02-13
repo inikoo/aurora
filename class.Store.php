@@ -1506,7 +1506,23 @@ class Store extends DB_Table {
 		return $data;
 	}
 
+	function get_site_keys() {
 
+		$site_keys=array();
+
+
+		$sql=sprintf("select  `Site Key` from `Site Dimension` where `Site Store Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$site_keys[$row['Site Key']]=$row['Site Key'];
+
+		}
+
+
+		return $site_keys;
+
+	}
 
 	function get_site_key() {
 

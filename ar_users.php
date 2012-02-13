@@ -1474,6 +1474,13 @@ function list_site_users() {
 		return;
 	}
 
+	if (isset($_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	}else {
+		$parent='site';
+	}
+
+
 	$conf=$_SESSION['state']['users']['site'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -1500,10 +1507,6 @@ function list_site_users() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
 
 
 
@@ -1529,15 +1532,37 @@ function list_site_users() {
 	$_SESSION['state']['users']['site']['f_value']=$f_value;
 
 
+	$where=" where  `User Key` IS NOT NULL and `User Type`='Customer'  ";
+
 
 	$wheref='';
-	if ($f_field=='name' and $f_value!=''  )
+	if ($f_field=='name' and $f_value!=''  ) {
 		$wheref.=" and  name like '%".addslashes($f_value)."%'    ";
-	else if ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
+	}else if ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) ) {
 			$wheref.=sprintf(" and  $f_field=%d ",$f_value);
+		}
 
-		$where.=" and `User Key` IS NOT NULL  ";
-	$where.=sprintf(" and `User Type`='Customer' and `User Site Key`=%d", $parent_key);
+	if ($parent=='site') {
+
+		$where.=sprintf("  and `User Site Key`=%d", $parent_key);
+
+	}elseif ($parent=='store') {
+
+		$store=new Store($parent_key);
+
+		$sites=$store->get_site_keys();
+
+		if (count($sites)==0)
+			$where.=sprintf("  and false");
+
+		else
+			$where.=sprintf("  and `User Site Key` in (%s)", join(',',$sites));
+
+	}else {
+	return "error";
+	}
+	
+	//print $parent;
 
 	$sql="select count(*) as total from `Customer Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Customer Key`) $where $wheref";
 
@@ -1568,7 +1593,7 @@ function list_site_users() {
 		$rtext_rpp=_("Showing all");
 
 
-$filter_msg='';
+	$filter_msg='';
 	switch ($f_field) {
 	case('name'):
 		if ($total==0 and $filtered>0)
@@ -1588,9 +1613,9 @@ $filter_msg='';
 		elseif ($filtered>0)
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('customer with position')." <b>".$f_value."</b>)";
 		break;
-	
-	
-		
+
+
+
 	}
 
 	$_order=$order;
@@ -1635,6 +1660,7 @@ $filter_msg='';
 
 		$adata[]=array(
 			'id'=>$data['User Key'],
+			'site'=>$data['User Site Key'],
 			'customer_id'=>$data['Customer Key'],
 			'handle'=>$alias,
 			'name'=>$customer,

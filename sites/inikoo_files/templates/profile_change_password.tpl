@@ -10,6 +10,10 @@
 
 <div id="dialog_change_password"    class="dialog_inikoo logged"  >
 <h2>{t}Change Password{/t}</h2>
+
+
+
+
 <div style="border:1px solid #ccc;padding:20px;width:400px;float:left">
 
 

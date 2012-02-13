@@ -78,7 +78,7 @@ bindtextdomain("inikoosites", "./locale");
 
 // Choose domain
 textdomain("inikoosites");
-
+bind_textdomain_codeset("inikoosites", 'UTF-8');
 
 $checkout_method=$site->data['Site Checkout Method'];
 
@@ -95,59 +95,16 @@ $store_code=$store->data['Store Code'];
 setlocale(LC_MONETARY, $site->data['Site Locale']);
 $authentication_type='login';
 
-$logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 
 
 
-if ($logout) {
-	$auth=new Auth(IKEY,SKEY);
-
-	//$auth->unset_cookies();
-	$sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
-	mysql_query($sql);
 
 
-	//session_regenerate_id();
-	//session_destroy();
-	//unset($_SESSION);
-
-
-
-	$_SESSION = array();
-
-
-	if (ini_get("session.use_cookies")) {
-		$params = session_get_cookie_params();
-
-		setcookie('sk', '', time() - 42000,
-			$params["path"], $params["domain"],
-			$params["secure"], $params["httponly"]
-		);
-		setcookie('page_key', '', time() - 42000,
-			$params["path"], $params["domain"],
-			$params["secure"], $params["httponly"]
-		);
-		$resxx=setcookie('user_handle', '', time() - 42000,
-			$params["path"], $params["domain"],
-			$params["secure"], $params["httponly"]
-		);
-
-	}
-
-
-	session_destroy();
-	$_SESSION['logged_in']=0;
-	session_regenerate_id();
-
-
-	$logged_in=false;
-	$St=get_sk();
-}
-elseif (isset($_REQUEST['p'])) {
+if (isset($_REQUEST['p'])) {
 
 	$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
 
-	$auth=new Auth(IKEY,SKEY);
+	$auth=new Auth(IKEY,SKEY,'use_cookies');
 
 	$auth->authenticate_from_masterkey($dencrypted_secret_data);
 
@@ -156,16 +113,26 @@ elseif (isset($_REQUEST['p'])) {
 		$_SESSION['logged_in']=true;
 		$_SESSION['store_key']=$store_key;
 		$_SESSION['site_key']=$site->id;
+		$_SESSION['_state']='a';
 		$_SESSION['user_key']=$auth->get_user_key();
 		$_SESSION['customer_key']=$auth->get_user_parent_key();
 		$_SESSION['user_log_key']=$auth->user_log_key;
-
+		
+		
+		//$St=get_sk();
+		//AESEncryptCtr($St,$auth->password,256);
+		
+		//$auth->set_cookies($handle,$_sk,'customer',$site->id);
+		
+//$nano = time_nanosleep(0, 250000);
+//header('location: profile.php?view=change_password');
 		header('location: profile.php?view=change_password');
 		exit;
 
 	} else {
 
 		$_SESSION['logged_in']=0;
+		$_SESSION['_state']='b';
 		unset($_SESSION['user_key']);
 		unset($_SESSION['customer_key']);
 		unset($_SESSION['user_log_key']);
@@ -174,7 +141,8 @@ elseif (isset($_REQUEST['p'])) {
 	}
 
 
-}elseif (isset($_COOKIE['user_handle'])) {
+}
+elseif (isset($_COOKIE['user_handle'])) {
 
 	//print_r($_COOKIE);
 
@@ -205,6 +173,7 @@ elseif (isset($_REQUEST['p'])) {
 
 $customer=new Customer(0);
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
+
 if (!isset($_SESSION['site_key']) ) {
 	unset($_SESSION['user_key']);
 	unset($_SESSION['customer_key']);
@@ -220,6 +189,7 @@ if ($logged_in ) {
 		unset($_SESSION['customer_key']);
 		unset($_SESSION['user_log_key']);
 		$_SESSION['logged_in']=0;
+		$_SESSION['_state']='c';
 		$logged_in=false;
 		$St=get_sk();
 	} else {
@@ -235,6 +205,7 @@ if ($logged_in ) {
 	unset($_SESSION['customer_key']);
 	unset($_SESSION['user_log_key']);
 	$_SESSION['logged_in']=0;
+	$_SESSION['_state']='d';
 	$logged_in=false;
 	$St=get_sk();
 

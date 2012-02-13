@@ -1456,7 +1456,7 @@ class Page extends DB_Table {
 		$number_records=count($products);
 		$out_of_stock=_('Out of Stock');
 		$discontinued=_('Discontinued');
-		$register=_('Please').' '.'<a href="login.php">'._('login').'</a> '._('or').' <a href="register.php">'._('register').'</a> '._('to see wholesale prices');
+		$register=_('Please').' '.'<a href="login.php">'._('login').'</a> '._('or').' <a href="registration.php">'._('register').'</a>';
 
 
 
@@ -1837,7 +1837,7 @@ class Page extends DB_Table {
 				$tr_class,
 
 				$counter,$product['Product Price'],
-				$counter,$product['Product Code'],$product['description'],
+				$counter,$product['Product Code'],clean_accents($product['description']),
 
 				$product['Product Code'],
 				$price,

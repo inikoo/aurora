@@ -1,5 +1,7 @@
 <?php
-require_once'common.php';
+require_once 'common.php';
+
+
 require_once 'class.Customer.php';
 require_once 'class.User.php';
 require_once 'class.SendEmail.php';
@@ -38,18 +40,6 @@ case('forgot_password'):
 	break;
 
 
-case('change_password'):
-
-	if (!$logged_in) {
-		return;
-	}
-
-	$data=prepare_values($_REQUEST,array(
-			'values'=>array('type'=>'json array'),
-		));
-
-	change_password($data);
-	break;
 
 case('check_email'):
 
@@ -72,32 +62,6 @@ default:
 
 }
 
-
-
-function change_password($data) {
-	global $user;
-	//print_r($data);
-	//  print_r($data['values']);
-	//  print "\n". $user->id;
-
-	$_key=$user->id.'insecure_key'.$data['values']['ep2'];
-	$password=AESDecryptCtr($data['values']['ep1'], $_key ,256);
-
-	// print "Key:$_key\n";
-	//print "Jey:\ $_key nPass:$password\n";
-	//   exit($password);
-	$user->change_password($password);
-	if ($user->updated) {
-		$response=array('state'=>200,'result'=>'ok',);
-		echo json_encode($response);
-		exit;
-	} else {
-		$response=array('state'=>200,'result'=>'error','msg'=>$user->msg);
-		echo json_encode($response);
-		exit;
-
-	}
-}
 
 
 
@@ -319,7 +283,7 @@ function forgot_password($data,$secret_key) {
 		if ($customer_key) {
 			$customer=new Customer($customer_key);
 			if ($customer->id) {
-				list($user_key,$msg)=create_customer_user($login_handle,$customer_key,$site,generate_password(10,10), false,false);
+				list($user_key,$msg)=create_customer_user($login_handle,$customer,$site,generate_password(10,10), false,false);
 			}
 		}
 
@@ -332,7 +296,7 @@ function forgot_password($data,$secret_key) {
 		$_data['values']['login_handle']=$login_handle;
 		send_reset_password($_data,$secret_key);
 	} else {
-		$response=array('state'=>200,'result'=>'handle_not_found');
+		$response=array('state'=>200,'result'=>'handle_not_found','msg'=>$customer_key.' '.$msg);
 		echo json_encode($response);
 		exit;
 	}

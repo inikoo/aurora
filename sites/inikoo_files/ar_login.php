@@ -16,17 +16,13 @@ $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
 
 
 
-if ($remember) {
-	$auth->set_cookies($handle,rawurldecode($sk),'customer',$site->id);
-}
-else {
-	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
-}
+
 //print $_REQUEST['user_handle'];
-if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
-	$auth->authenticate_from_masterkey($_REQUEST['mk']);
-}
-elseif ($handle) {
+//if (!$sk and array_key_exists('mk', $_REQUEST)    ) {
+//	$auth->authenticate_from_masterkey($_REQUEST['mk']);
+//}
+
+if ($handle) {
 	//  print urldecode($sk)."\n\n";
 
 	$auth->authenticate($handle,rawurldecode($sk),'customer',$site->id);
@@ -41,6 +37,17 @@ if ($auth->is_authenticated()) {
 	$_SESSION['user_log_key']=$auth->user_log_key;
 	$_SESSION['user_key']=$auth->get_user_key();
 	$_SESSION['customer_key']=$auth->get_user_parent_key();
+	
+	
+	
+	if ($remember) {
+	   $auth->set_cookies($handle,rawurldecode($sk),'customer',$site->id);
+    }
+//else {
+//	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
+//}
+	
+	
 
 	/*
 

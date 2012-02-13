@@ -192,7 +192,7 @@ class Auth {
         $this->authentication_type='masterkey';
 
 
-        $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s  ",
+        $sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Handle`,`User Parent Key` from `MasterKey Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s  ",
                      prepare_mysql($data),
                      prepare_mysql(date('Y-m-d H:i:s'))
 
@@ -216,11 +216,12 @@ class Auth {
 
             $this->status=true;
             $this->user_key=$row['User Key'];
+            $this->user_handle=$row['User Handle'];
             $this->user_parent_key=$row['User Parent Key'];
             $this->create_user_log();
 
             $sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   " ,$row['MasterKey Key']);
-           mysql_query($sql);
+         //  mysql_query($sql);
             // print $sql;
             // exit;
 

@@ -47,7 +47,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 			   
 			   
 			   
-			   
+			   alert(r.msg)
 			   
 			   			Dom.addClass('forgot_password_handle','error');
 

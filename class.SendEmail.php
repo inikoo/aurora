@@ -91,7 +91,7 @@ class SendEmail extends DB_Table {
                     $this->to_address=$data['to'];
                     $this->recipient_line=__LINE__;
                     $this->subject= mb_convert_encoding($data['subject'], 'ISO-8859-1');
-                    $this->message=$data['plain'];
+                    $this->message=mb_convert_encoding($data['plain'], 'ISO-8859-1');
 
                     if (strlen($this->from_address)==0)
                         die("Please set the messages sender address in line ".$this->sender_line." of the script ".basename(__FILE__)."\n");
@@ -302,7 +302,7 @@ class SendEmail extends DB_Table {
                     $this->to_address=$data['to'];
                     $this->recipient_line=__LINE__;
                     $this->subject= mb_convert_encoding($data['subject'], 'ISO-8859-1');;//$data['subject'];
-                    $this->message=$data['plain'];
+                    $this->message=mb_convert_encoding($data['plain'], 'ISO-8859-1');
 
                     if (strlen($this->from_address)==0)
                         die("Please set the messages sender address in line ".$this->sender_line." of the script ".basename(__FILE__)."\n");
@@ -414,7 +414,7 @@ class SendEmail extends DB_Table {
 
 
                     if (isset($data['html']) and $data['html'])
-                        $html_msg=$data['html'];
+                        $html_msg=mb_convert_encoding($data['html'], 'ISO-8859-1');
                     else
                         $html_msg='';
 
