@@ -3917,4 +3917,185 @@ function sentence_similarity($a,$b) {
 }
 
 
+function calculate_inteval_dates($interval) {
+		switch ($interval) {
+
+
+		case 'Total':
+
+			$db_interval='Total';
+			$from_date=false;
+			$to_date=false;
+
+			$from_date_1yb=false;
+			$to_1yb=false;
+			break;
+
+		case 'Last Month':
+		case 'last_m':
+			$db_interval='Last Month';
+			$from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
+			$to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
+
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+			break;
+
+		case 'Last Week':
+		case 'last_w':
+			$db_interval='Last Week';
+
+
+			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
+				$to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+
+			} else {
+				return;
+			}
+
+
+
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+			break;
+
+		case 'Yesterday':
+		case 'yesterday':
+			$db_interval='Yesterday';
+			$from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
+			$to_date=date('Y-m-d 00:00:00',strtotime('today'));
+
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+			break;
+
+		case 'Week To Day':
+		case 'wtd':
+			$db_interval='Week To Day';
+
+			$from_date=false;
+			$from_date_1yb=false;
+
+			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$from_date=$row['First Day'].' 00:00:00';
+				$lapsed_seconds=strtotime('now')-strtotime($from_date);
+
+			} else {
+				return;
+			}
+
+			$sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$from_date_1yb=$row['First Day'].' 00:00:00';
+			}
+
+
+			$to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+
+
+
+			break;
+		case 'Today':
+		case 'today':
+			$db_interval='Today';
+			$from_date=date('Y-m-d 00:00:00');
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+
+
+		case 'Month To Day':
+		case 'mtd':
+			$db_interval='Month To Day';
+			$from_date=date('Y-m-01 00:00:00');
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+		case 'Year To Day':
+		case 'ytd':
+			$db_interval='Year To Day';
+			$from_date=date('Y-01-01 00:00:00');
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+			break;
+		case '3 Year':
+		case '3y':
+			$db_interval='3 Year';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
+			$from_date_1yb=false;
+			$to_1yb=false;
+			break;
+		case '1 Year':
+		case '1y':
+			$db_interval='1 Year';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+		case '6 Month':
+			$db_interval='6 Month';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+		case '1 Quarter':
+		case '1q':
+			$db_interval='1 Quarter';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+		case '1 Month':
+		case '1m':
+			$db_interval='1 Month';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+		case '10 Day':
+		case '10d':
+			$db_interval='10 Day';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+		case '1 Week':
+		case '1w':
+			$db_interval='1 Week';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+	case '1 Day':
+		case '1d':
+			$db_interval='1 Day';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -1 day"));
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+				case '1 Hour':
+		case '1h':
+			$db_interval='1 Hour';
+			$from_date=date('Y-m-d H:i:s',strtotime("now -1 hour"));
+			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+			break;
+		default:
+			return;
+			break;
+		}
+
+		return array($db_interval,$from_date,$from_date_1yb,$to_1yb);
+
+	}
+
 ?>

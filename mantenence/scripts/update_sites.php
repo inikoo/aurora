@@ -32,12 +32,26 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
+
+$sql="select * from `User Dimension` ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $user=new User($row['User Key']);
+
+$user->update_request_data();
+  
+  
+}
+
+
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select * from `Site Dimension` ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $site=new Site($row['Site Key']);
-
+$site->update_up_today_requests();
+$site->update_last_period_requests();
+$site->update_interval_requests();
 $site->update_customer_data();
   
   

@@ -159,13 +159,14 @@ this.table0.table_id=tableid;
 	    var ColumnDefs = [
 			
 			
-			      {key:"isactive",label:"<?php echo _('Active')?>" ,hidden:true,className:'aright',width:45  }
-			     ,{key:"handle", label:"<?php echo _('Handle')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-               				 ,{key:"name", label:"<?php echo _('Customer')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     {key:"handle", label:"<?php echo _('Handle')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+               				 ,{key:"customer_name", label:"<?php echo _('Customer')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-               ,{key:"login", label:"<?php echo _('Last Login')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 ,{key:"count", label:"<?php echo _('Logins')?>",width:130,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 //,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+               ,{key:"last_request", label:"<?php echo _('Last Visit')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 ,{key:"sessions", label:"<?php echo _('Visits')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+							 ,{key:"requests", label:"<?php echo _('Views')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+			//,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 //,{key:"telephone", label:"<?php echo _('Telephone')?>",width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 
@@ -197,7 +198,7 @@ this.table0.table_id=tableid;
 		
 		
 		fields: [
-			 "id","isactive","name","login","email","telephone","lang","tipo","active","handle","count"
+			 "id","last_request","name","sessions","requests","customer_name","customer_formated_id","handle"
 			 ]};
 
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -205,7 +206,7 @@ this.table0.table_id=tableid;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['users']['site']['nr']?>,containers : 'paginator2', 
+									      rowsPerPage:<?php echo$_SESSION['state']['customers']['users']['nr']?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -215,8 +216,8 @@ this.table0.table_id=tableid;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['site']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['site']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['customers']['users']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customers']['users']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -230,7 +231,7 @@ this.table0.table_id=tableid;
 
 
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['users']['site']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['site']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['customers']['users']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['users']['f_value']?>'};
 	    //
 	
 
@@ -250,7 +251,7 @@ function change_block_view(){
     Dom.setStyle('table_type_'+this.id,'display','');
 
   
-    Dom.removeClass(['all_contacts','contacts_with_orders'],'selected');
+    Dom.removeClass(['all_contacts','contacts_with_orders','users'],'selected');
  
   Dom.addClass(this.id,'selected');
 if(this.id=='users'){

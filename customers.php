@@ -328,13 +328,13 @@ $smarty->assign('elements_number_contacts_with_orders',$elements_number_contacts
 $smarty->assign('elements_contacts_with_orders',$_SESSION['state']['customers']['table']['elements']['contacts_with_orders']);
 
 
-$tipo_filter=$_SESSION['state']['users']['site']['f_field'];
+$tipo_filter=$_SESSION['state']['customers']['users']['f_field'];
 
 $smarty->assign('filter2',$tipo_filter);
-$smarty->assign('filter_value2',$_SESSION['state']['users']['site']['f_value']);
+$smarty->assign('filter_value2',$_SESSION['state']['customers']['users']['f_value']);
 $filter_menu=array(
 	// 'alias'=>array('db_key'=>'alias','menu_label'=>'Alias like  <i>x</i>','label'=>'Alias'),
-	'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle like <i>x</i>'),'label'=>_('Handle')),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name like <i>x</i>'),'label'=>_('Name')),
 );
 $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);

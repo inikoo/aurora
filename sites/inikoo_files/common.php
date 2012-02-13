@@ -117,15 +117,15 @@ if (isset($_REQUEST['p'])) {
 		$_SESSION['user_key']=$auth->get_user_key();
 		$_SESSION['customer_key']=$auth->get_user_parent_key();
 		$_SESSION['user_log_key']=$auth->user_log_key;
-		
-		
+
+
 		//$St=get_sk();
 		//AESEncryptCtr($St,$auth->password,256);
-		
+
 		//$auth->set_cookies($handle,$_sk,'customer',$site->id);
-		
-//$nano = time_nanosleep(0, 250000);
-//header('location: profile.php?view=change_password');
+
+		//$nano = time_nanosleep(0, 250000);
+		//header('location: profile.php?view=change_password');
 		header('location: profile.php?view=change_password');
 		exit;
 
@@ -244,30 +244,30 @@ function log_visit($session_key,$user_log_key,$user,$site_key) {
 		setcookie('v'.$site_key, $encrypted_visitor_key, time()+63072000, "/");
 
 	}
-	
-	
+
+
 	$user_session_key=0;
 	if (isset($_COOKIE['us'.$site_key])) {
-	//	print_r($_COOKIE['us'.$site_key]);
+		// print_r($_COOKIE['us'.$site_key]);
 
 		$user_session_key=AESDEcryptCtr(base64_decode($_COOKIE['us'.$site_key]),$site_key.VKEY, 256);
 		//print "$user_session_key";
 		if (!is_numeric($user_session_key))
 			$user_session_key=0;
-		else{
-				$encrypted_user_session_key=base64_encode(AESEncryptCtr($user_session_key,$site_key.VKEY, 256));
+		else {
+			$encrypted_user_session_key=base64_encode(AESEncryptCtr($user_session_key,$site_key.VKEY, 256));
 
-				setcookie('us'.$site_key, $encrypted_user_session_key, time()+1800, "/");
-				$sql=sprintf("update `User Session Dimension` set `User Session Last Request Date`=NOW() where `User Session Key`=%d",$user_session_key);
-				mysql_query($sql);
-	}
+			setcookie('us'.$site_key, $encrypted_user_session_key, time()+1800, "/");
+			$sql=sprintf("update `User Session Dimension` set `User Session Last Request Date`=NOW() where `User Session Key`=%d",$user_session_key);
+			mysql_query($sql);
+		}
 
 	}
 
 	if (!$user_session_key) {
 
 		$sql=sprintf("insert into `User Session Dimension` (`User Session Visitor Key`,`User Session Site Key`,`User Session Last Request Date`,`User Session Start Date`) values (%d,%d,NOW(),NOW()) ",
-		$visitor_key,$site_key);
+			$visitor_key,$site_key);
 		//print $sql;
 		mysql_query($sql);
 		$user_session_key=mysql_insert_id();
@@ -377,12 +377,40 @@ function log_visit($session_key,$user_log_key,$user,$site_key) {
 		$user_session_key
 	);
 
-
-
-
-	//  print($sql1);
 	mysql_query($sql1);
 	$user_click_key= mysql_insert_id();
+
+
+	if ($user_key) {
+		$number_requests=0;
+		$number_sessions=0;
+		$sql=sprintf("select count(*) as num_request, count(distinct `User Session Key`) as num_sessions  from `User Request Dimension` where  `User Key`=%d",$user_key);
+		$res=mysql_query($sql);
+		//print "$sql\n";
+
+		if ($row=mysql_fetch_assoc($res)) {
+
+			$number_requests=$row['num_request'];
+			$number_sessions=$row['num_sessions'];
+
+
+		}
+
+
+		$sql=sprintf("update `User Dimension` set `User Requests Count`=%d,`User Sessions Count`=%d, `User Last Request`=NOW() where `User Key`=%d  "     ,
+			$number_requests,
+			$number_sessions,
+
+
+			$user_key
+		);
+		mysql_query($sql);
+		//print $sql;
+
+	}
+
+
+
 
 	return $user_click_key;
 

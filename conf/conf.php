@@ -1693,6 +1693,17 @@ $default_state=array(
 			'where'=>'',
 			'f_field'=>'name_a',
 			'f_value'=>''),
+	'users'=>array(
+			'display'=>'all',
+			'order'=>'last_request',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			
+			'f_field'=>'customer_name',
+			'f_value'=>''
+		),
+
 
 		'table'=>array(
 			'order'=>'id',
