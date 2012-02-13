@@ -6,9 +6,7 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; 
-			{if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a>  &rarr; {/if}
-			<img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')} (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>)</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr; {/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> {$site->get('Site URL')} (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>)</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
@@ -20,7 +18,7 @@
 			</div>
 		</div>
 		<h1>
-			{$site->get('Site Name')} ({$site->get('Site URL')})
+			{$site->get('Site Name')} ({$site->get('Site URL')}) 
 		</h1>
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
@@ -47,55 +45,60 @@
 				<table class="show_info_product">
 					<tr>
 						<td>{t}Number Pages{/t}:</td>
-						<td class="number">
+						<td class="number"> 
 						<div>
-							{$site->get('Number Pages')}
+							{$site->get('Number Pages')} 
 						</div>
 						</td>
 					</tr>
 				</table>
 			</div>
-			<div style="margin-left:20px;width:350px;float:left">
-				<table class="show_info_product">
+			<div style="margin-left:20px;width:350px;float:left;position:relative;top:-21px">
+				<table border="0" style="width:100%;margin:0px;height:20">
 					<tr>
-						<td>{t}Total Hits{/t}:</td>
-						<td class="number">
-						<div>
-							{$site->get('Visits')}
-						</div>
-						</td>
-					</tr>
-					<tr>
-						<td>{t}Unique Visitors{/t}:</td>
-						<td class="number">
-						<div>
-							{$site->get('Unique Visitors')}
-						</div>
-						</td>
+						<td style="width:150px"></td>
+						<td class="aright" style="width:100px">{t}All{/t}</td>
+						<td class="aright" style="width:100px">{t}Users{/t}</td>
 					</tr>
 				</table>
-				<table class="show_info_product">
+				<table border="0" class="show_info_product">
 					<tr>
-						<td>{t}Last 24h Hits{/t}:</td>
-						<td class="number">
-						<div>
-							{$site->get('1 Day Visits')}
-						</div>
-						</td>
+						<td style="width:150px">{t}Page Hits{/t}:</td>
+						<td style="width:100px" class="number aright">{$site->get('Total Acc Requests')}</td>
+						<td style="width:100px" class="number aright">{$site->get('Total Acc Users Requests')}</td>
+					</tr>
+					<tr>
+						<td>{t}Sessions{/t}:</td>
+						<td class="number aright">{$site->get('Total Acc Sessions')}</td>
+						<td class="number aright">{$site->get('Total Acc Users Sessions')}</td>
+					</tr>
+					<tr>
+						<td>{t}Visitors{/t}:</td>
+						<td class="number aright">{$site->get('Total Acc Visitors')}</td>
+						<td class="number aright">{$site->get('Total Acc Users')}</td>
+					</tr>
+				</table>
+				<table border="0" class="show_info_product">
+					<tr>
+						<td style="width:150px">{t}Last 24h Hits{/t}:</td>
+						<td style="width:100px" class="number aright"> {$site->get('1 Day Acc Requests')} </td>
+						<td style="width:100px" class="number aright">{$site->get('1 Day Acc Users Requests')}</td>
+					</tr>
+					<tr>
+						<td>{t}Last 24h Sessions{/t}:</td>
+						<td class="number aright"> {$site->get('1 Day Acc Sessions')} </td>
+						<td class="number aright"> {$site->get('1 Day Acc Users Sessions')} </td>
 					</tr>
 					<tr>
 						<td>{t}Last 24h Visitors{/t}:</td>
-						<td class="number">
-						<div>
-							{$site->get('1 Day Unique Visitors')}
-						</div>
-						</td>
+						<td class="number aright"> {$site->get('1 Day Acc Visitors')} </td>
+						<td class="number aright">{$site->get('1 Day Acc Users')}</td>
 					</tr>
 					<tr>
 						<td>{t}Current Visitors{/t}:</td>
-						<td class="number">
+						<td class="number aright"> 
 						<div>
-							{$site->get('Current Visitors')}
+							{$site->get('Current Visitors')} 
 						</div>
 						</td>
 					</tr>
@@ -112,26 +115,23 @@
 			<div class="table_top_bar">
 			</div>
 			<div class="buttons small clusters">
-					<button class="selected" id="change_pages_table_type">{$pages_table_type_label}</button> 
+				<button class="selected" id="change_pages_table_type">{$pages_table_type_label}</button> 
 				<div style="clear:both">
-					</div>
 				</div>
-			
-			
+			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
-				<div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $pages_table_type!='thumbnails'}display:none{/if}">
-				</div>
-				<div id="table0"  class="data_table_container dtable btable" style="{if $pages_table_type=='thumbnails'}display:none{/if};font-size:85%">
-				</div>
-
+			<div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $pages_table_type!='thumbnails'}display:none{/if}">
+			</div>
+			<div id="table0" class="data_table_container dtable btable" style="{if $pages_table_type=='thumbnails'}display:none{/if};font-size:85%">
 			</div>
 		</div>
-		<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-			<div id="plot1" style="clear:both;border:1px solid #ccc">
-				<div id="single_data_set">
-					<strong>You need to upgrade your Flash Player</strong> 
-				</div>
+	</div>
+	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="plot1" style="clear:both;border:1px solid #ccc">
+			<div id="single_data_set">
+				<strong>You need to upgrade your Flash Player</strong> 
 			</div>
+		</div>
 <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
@@ -141,13 +141,13 @@
 		so.write("plot1");
 		// ]]>
 	</script> 
-		</div>
-		<div id="block_visitors" style="{if $block_view!='visitors'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-			<div id="plot2" style="clear:both;border:1px solid #ccc">
-				<div id="single_data_set">
-					<strong>You need to upgrade your Flash Player</strong> 
-				</div>
+	</div>
+	<div id="block_visitors" style="{if $block_view!='visitors'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+		<div id="plot2" style="clear:both;border:1px solid #ccc">
+			<div id="single_data_set">
+				<strong>You need to upgrade your Flash Player</strong> 
 			</div>
+		</div>
 <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
@@ -157,8 +157,8 @@
 		so.write("plot2");
 		// ]]>
 	</script> 
-		</div>
 	</div>
+</div>
 </div>
 <div id="change_pages_table_type_menu" style="padding:10px 20px 0px 10px">
 	<table class="edit" border="0" style="width:200px">

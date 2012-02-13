@@ -1400,6 +1400,42 @@ class User extends DB_Table {
 		}
 
 	}
+
+	function update_request_data() {
+		switch ($this->data['User Type']) {
+		case 'Customer';
+
+			$number_requests=0;
+			$number_sessions=0;
+			$last_request='';
+
+			$sql=sprintf("select count(*) as num_request, count(distinct `User Session Key`) as num_sessions , max(`Date`) as date from `User Request Dimension` where  `User Key`=%d",$this->id);
+			$res=mysql_query($sql);
+//print "$sql\n";
+
+			if ($row=mysql_fetch_assoc($res)) {
+
+				$number_requests=$row['num_request'];
+				$number_sessions=$row['num_sessions'];
+				$last_request=$row['date'];
+
+			}
+
+
+			$sql=sprintf("update `User Dimension` set `User Requests Count`=%d,`User Sessions Count`=%d, `User Last Request`=%s where `User Key`=%d  "     ,
+				$number_requests,
+				$number_sessions,
+				prepare_mysql($last_request),
+
+				$this->id
+			);
+			mysql_query($sql);
+			break;
+		}
+
+
+	}
+
 }
 
 ?>

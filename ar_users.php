@@ -1480,8 +1480,15 @@ function list_site_users() {
 		$parent='site';
 	}
 
-
+if($parent=='site'){
 	$conf=$_SESSION['state']['users']['site'];
+}elseif($parent=='store'){
+	$conf=$_SESSION['state']['customers']['users'];
+}else{
+	return;
+}
+
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1523,13 +1530,20 @@ function list_site_users() {
 	$_dir=$order_direction;
 
 
-
-
-	$_SESSION['state']['users']['site']['orders']=$order;
+if($parent=='site'){
+		$_SESSION['state']['users']['site']['order']=$order;
 	$_SESSION['state']['users']['site']['order_dir']=$order_direction;
 	$_SESSION['state']['users']['site']['nr']=$number_results;
 	$_SESSION['state']['users']['site']['f_field']=$f_field;
 	$_SESSION['state']['users']['site']['f_value']=$f_value;
+}elseif($parent=='store'){
+
+		$_SESSION['state']['customers']['users']['order']=$order;
+	$_SESSION['state']['customers']['users']['order_dir']=$order_direction;
+	$_SESSION['state']['customers']['users']['nr']=$number_results;
+	$_SESSION['state']['customers']['users']['f_field']=$f_field;
+	$_SESSION['state']['customers']['users']['f_value']=$f_value;
+}
 
 
 	$where=" where  `User Key` IS NOT NULL and `User Type`='Customer'  ";
@@ -1559,9 +1573,9 @@ function list_site_users() {
 			$where.=sprintf("  and `User Site Key` in (%s)", join(',',$sites));
 
 	}else {
-	return "error";
+		return "error";
 	}
-	
+
 	//print $parent;
 
 	$sql="select count(*) as total from `Customer Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Customer Key`) $where $wheref";
@@ -1619,54 +1633,57 @@ function list_site_users() {
 	}
 
 	$_order=$order;
-	if ($order=='name')
-		$order='`Customer Main Contact Name`';
+	if ($order=='name' or $order=='customer_name' )
+		$order='`Customer Name`';
 	elseif ($order=='handle')
 		$order='`User Handle`';
+	elseif ($order=='id')
+		$order='`User Key`';
+	elseif ($order=='site')
+		$order='`User Site Key`';
+	elseif ($order=='customer_formated_id')
+		$order='`User Parent Key`';
+	elseif ($order=='count')
+		$order='`User Login Count`';
+	elseif ($order=='login')
+		$order='`User Last Login`';	
+	elseif ($order=='last_request')
+		$order='`User Last Request`';	
+	elseif ($order=='sessions')
+		$order='`User Requests Count`';		
+	elseif ($order=='requests')
+		$order='`User Requests Count`';		
 	else
-		$order='`Customer Main Contact Name`';
-	//$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where  $wheref and `User Type`='Staff' order by $order $order_direction limit $start_from,$number_results";
+		$order='`Customer Name`';
 
-	//  $sql="select `User Alias`,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` and `Scope`='Store'  ) as Stores,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`Supplier Active`, `Supplier Key`,`Supplier Name` from `Supplier Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Supplier Key`) $where  $wheref and (`User Type`='Supplier' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
-
+	$sql="select *   from `Customer Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Customer Key`) left join `Site Dimension` on (`User Site Key`=`Site Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-	$sql="select *   from `Customer Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Customer Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-	//print $sql;
 	//print($sql);
 
 	$adata=array();
 	$res=mysql_query($sql);
 	while ($data=mysql_fetch_array($res)) {
 
-		// $groups=preg_split('/,/',$data['Groups']);
-		//      $stores=preg_split('/,/',$data['Stores']);
-		//     $warehouses=preg_split('/,/',$data['Warehouses']);
 
-		//   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
-		//  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
-		$is_active='No';
-
-		if ($data['User Active']=='Yes')
-			$is_active='Yes';
-
-		//$password='';
-		//  if ($data['User Key']){
-		//  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
-		// }
 		$alias=sprintf('<a href="site_user.php?id=%d">%s</a>',$data['User Key'],$data['User Handle']);
 		$customer=sprintf('%s (<a href="customer.php?id=%d">%5d</a>)',$data['Customer Name'],$data['User Parent Key'],$data['User Parent Key']);
+		$customer_name=sprintf('<a href="customer.php?id=%d">%s</a>',$data['Customer Key'],$data['Customer Name']);
+		$customer_formated_id=sprintf('<a href="customer.php?id=%d">%5d</a>',$data['User Parent Key'],$data['User Parent Key']);
 
 		$adata[]=array(
 			'id'=>$data['User Key'],
 			'site'=>$data['User Site Key'],
 			'customer_id'=>$data['Customer Key'],
+			'customer_name'=>$customer_name,
+			'customer_formated_id'=>$customer_formated_id,
 			'handle'=>$alias,
 			'name'=>$customer,
 			'login'=>$data['User Last Login'],
-			'count'=>$data['User Login Count'],
-			'isactive'=>$is_active
+			'count'=>number($data['User Login Count']),
+			'sessions'=>number($data['User Sessions Count']),
+			'requests'=>number($data['User Requests Count']),
+'last_request'=>($data['User Last Request']==''?'':strftime("%x %X %Z", strtotime($data['User Last Request'].' UTC'))),
 		);
 
 

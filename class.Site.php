@@ -221,13 +221,30 @@ class Site extends DB_Table {
 
 
 
+
 		switch ($key) {
 		case('Total Users'):
 			return number($this->data['Site Total Users']);
 		default:
+		
+		
+		
+		
 			if (isset($this->data[$key]))
 				return $this->data[$key];
 		}
+		
+		if (preg_match('/ Acc /',$key)) {
+
+			$amount='Site '.$key;
+
+			return number($this->data[$amount]);
+		}
+
+		
+		
+		
+		
 		return false;
 	}
 
@@ -1102,18 +1119,9 @@ $index_page=$this->get_page_object('index');
 
 	}
 
-	function update_customer_data() {
-		$sql=sprintf("select count(*) as num    from `User Dimension` where `User Active`='Yes' and  `User Type`='Customer'  and `User Site Key`=%d",$this->id);
-		$res=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($res)) {
-			$this->data['Site Total Users']=$row['num'];
-		}
-		$sql=sprintf("update `Site Dimension` set `Site Total Users`=%d where `Site Key`=%d",
-			$this->data['Site Total Users'],
-			$this->id
-		);
-		mysql_query($sql);
-	}
+
+
+
 
 	function get_redirections_htaccess($host,$path) {
 		$htaccess='';
@@ -1126,7 +1134,7 @@ $index_page=$this->get_page_object('index');
 				prepare_mysql($path,false)
 			);
 			$result=mysql_query($sql);
-		//	print $sql;
+			// print $sql;
 			while ($row=mysql_fetch_assoc($result)) {
 				$redirect_line='/'.($row['Source Path']?$row['Source Path'].'/':'').$row['Source File'].' '.$row['Page Target URL'];
 				$redirect_lines[$redirect_line]=1;
@@ -1136,13 +1144,13 @@ $index_page=$this->get_page_object('index');
 			$htaccess.="Redirect 301 $redirect_line\n";
 
 		}
-		if($path==''){
-		$_htaccess_redirections=$htaccess;
-		
-		$htaccess="Options +FollowSymLinks\nRedirect 301 /index.html ".$this->data['Site URL']."/index.php\n$_htaccess_redirections\nRewriteEngine On\nRewriteCond %{SCRIPT_FILENAME} !-d\nRewriteCond %{SCRIPT_FILENAME} !-f\nRewriteRule ^.*$ ./process.php";
+		if ($path=='') {
+			$_htaccess_redirections=$htaccess;
+
+			$htaccess="Options +FollowSymLinks\nRedirect 301 /index.html ".$this->data['Site URL']."/index.php\n$_htaccess_redirections\nRewriteEngine On\nRewriteCond %{SCRIPT_FILENAME} !-d\nRewriteCond %{SCRIPT_FILENAME} !-f\nRewriteRule ^.*$ ./process.php";
 
 		}
-		
+
 		return $htaccess;
 
 	}
@@ -1191,7 +1199,7 @@ $index_page=$this->get_page_object('index');
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
-	return $page_key;
+		return $page_key;
 	}
 
 	function get_registration_page_key() {
@@ -1201,7 +1209,7 @@ $index_page=$this->get_page_object('index');
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
-return $page_key;
+		return $page_key;
 	}
 	function get_login_page_key() {
 		$page_key=0;
@@ -1239,5 +1247,114 @@ return $page_key;
 		}
 		return $page_key;
 	}
+
+
+	function update_up_today_requests() {
+		$this->update_requests('Today');
+		$this->update_requests('Week To Day');
+		$this->update_requests('Month To Day');
+		$this->update_requests('Year To Day');
+	}
+
+	function update_last_period_requests() {
+
+		$this->update_requests('Yesterday');
+		$this->update_requests('Last Week');
+		$this->update_requests('Last Month');
+	}
+
+
+	function update_interval_requests() {
+	$this->update_requests('Total');
+		$this->update_requests('3 Year');
+		$this->update_requests('1 Year');
+		$this->update_requests('6 Month');
+		$this->update_requests('1 Quarter');
+		$this->update_requests('1 Month');
+		$this->update_requests('10 Day');
+		$this->update_requests('1 Week');
+		$this->update_requests('1 Day');
+		$this->update_requests('1 Hour');
+	}
+
+
+
+	function update_requests($interval) {
+		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`  R  left join   `Page Store Dimension` P on (R.`Page Key`=P.`Page Key`) where   `Page Site Key`=%d  %s",
+			$this->id,
+			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
+
+
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Site '.$db_interval.' Acc Requests']=$row['num_requests'];
+			$this->data['Site '.$db_interval.' Acc Sessions']=$row['num_sessions'];
+			$this->data['Site '.$db_interval.' Acc Visitors']=$row['num_visitors'];
+		}else {
+			$this->data['Site '.$db_interval.' Acc Requests']=0;
+			$this->data['Site '.$db_interval.' Acc Sessions']=0;
+			$this->data['Site '.$db_interval.' Acc Visitors']=0;
+
+		}
+
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  R  left join   `Page Store Dimension` P on (R.`Page Key`=P.`Page Key`) where  `User Key`>0 and `Page Site Key`=%d  %s",
+			$this->id,
+			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
+
+
+		);
+		$res=mysql_query($sql);
+		//print "$sql\n\n\n\n";
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Site '.$db_interval.' Acc Users Requests']=$row['num_requests'];
+			$this->data['Site '.$db_interval.' Acc Users Sessions']=$row['num_sessions'];
+			$this->data['Site '.$db_interval.' Acc Users']=$row['num_users'];
+		}else {
+			$this->data['Site '.$db_interval.' Acc Users Requests']=0;
+			$this->data['Site '.$db_interval.' Acc Users Sessions']=0;
+			$this->data['Site '.$db_interval.' Acc Users']=0;
+		}
+
+		$sql=sprintf('update `Site Dimension` set `Site '.$db_interval.' Acc Requests`=%d,
+	`Site '.$db_interval.' Acc Sessions`=%d,
+	`Site '.$db_interval.' Acc Visitors`=%d,
+	`Site '.$db_interval.' Acc Users Requests`=%d,
+	`Site '.$db_interval.' Acc Users Sessions`=%d,
+	`Site '.$db_interval.' Acc Users`=%d
+	where `Site Key`=%d',
+			$this->data['Site '.$db_interval.' Acc Requests'],
+			$this->data['Site '.$db_interval.' Acc Sessions'],
+			$this->data['Site '.$db_interval.' Acc Visitors'],
+			$this->data['Site '.$db_interval.' Acc Users Requests'],
+			$this->data['Site '.$db_interval.' Acc Users Sessions'],
+			$this->data['Site '.$db_interval.' Acc Users'],
+
+			$this->id
+		);
+		mysql_query($sql);
+		//print "$sql\n";
+	}
+
+
+	function update_customer_data() {
+		$sql=sprintf("select count(*) as num    from `User Dimension` where `User Active`='Yes' and  `User Type`='Customer'  and `User Site Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Site Total Users']=$row['num'];
+		}
+		$sql=sprintf("update `Site Dimension` set `Site Total Users`=%d where `Site Key`=%d",
+			$this->data['Site Total Users'],
+			$this->id
+		);
+		mysql_query($sql);
+	}
+
+
+
+
+
 }
 ?>
