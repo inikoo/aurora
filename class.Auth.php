@@ -157,7 +157,9 @@ class Auth {
             $this->status=true;
             $this->user_key=$row['User Key'];
             $this->user_parent_key=$row['User Parent Key'];
-            $this->create_user_log();
+            $this->get_last_log();
+            
+            //$this->create_user_log();
         } else {
             $this->log_failed_login();
         }
@@ -165,6 +167,41 @@ class Auth {
         date_default_timezone_set(TIMEZONE) ;
 
     }
+
+
+	function get_last_log(){
+		
+		$sql=sprintf("select `User Log Key` from `User Log Dimension`  where `Logout Date` is null  and `User Key`=%d ",$this->user_key);
+	//	print $sql;
+		$res=mysql_query($sql);
+		if($row=mysql_fetch_assoc($res)){
+			
+			
+			 date_default_timezone_set('UTC');
+        $ip=ip();
+        $date=date('Y-m-d H:i:s');
+     
+
+        $this->user_log_key=$row['User Log Key'];
+
+     
+        $sql=sprintf("update `User Dimension` set `Session ID`=%s ,`User Last Login IP`=%s,`User Last Login`=%s where `User Key`=%d",
+                prepare_mysql(session_id()),
+                     prepare_mysql($ip),
+                     prepare_mysql($date),
+                     $this->user_key
+                    );
+        mysql_query($sql);
+
+        date_default_timezone_set(TIMEZONE) ;
+			
+			
+			
+		}else{
+			$this->create_user_log();
+		}
+	
+	}
 
     function set_cookies($handle=false,$sk=false,$page=false,$page_key=false) {
         //setcookie('test2', 'yyyyyy', time()+60*60*24*365);
