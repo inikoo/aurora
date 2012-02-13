@@ -1335,7 +1335,7 @@ $index_page=$this->get_page_object('index');
 			$this->id
 		);
 		mysql_query($sql);
-		print "$sql\n";
+		//print "$sql\n";
 	}
 
 
