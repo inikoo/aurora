@@ -60,7 +60,7 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$number_parts=count($part_list);
 
 		if ($number_parts==0) {
-			print "shit no parts ".$product->data['Product Store Key'].' '.$product->data['Product Store Code']."\n";
+			print "shit no parts ".$product->data['Product Store Key'].' '.$product->data['Product Code']."\n";
 		}elseif ($number_parts==1) {
 			$tmp=array_pop($part_list);
 			$part=new Part($tmp);
