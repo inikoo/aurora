@@ -403,9 +403,6 @@ class Page extends DB_Table {
 	}
 
 	function get($key) {
-
-
-
 		switch ($key) {
 		case('link'):
 			return $this->display();
@@ -414,6 +411,14 @@ class Page extends DB_Table {
 			if (isset($this->data[$key]))
 				return $this->data[$key];
 		}
+
+		if (preg_match('/ Acc /',$key)) {
+
+			$amount='Page Store '.$key;
+
+			return number($this->data[$amount]);
+		}
+
 		return false;
 	}
 
@@ -1869,8 +1874,8 @@ class Page extends DB_Table {
 		return $form;
 	}
 
-//http://ww12.aitsafe.com/cf/review.cfm?userid=E5171143
-//http://ww4.aitsafe.com/cf/review.cfm?userid=E5171143
+	//http://ww12.aitsafe.com/cf/review.cfm?userid=E5171143
+	//http://ww4.aitsafe.com/cf/review.cfm?userid=E5171143
 
 
 	function get_list_price_header_auto($products) {
@@ -2425,7 +2430,7 @@ class Page extends DB_Table {
 
 		$url_array=explode("/", $source_url);
 		//print_r($url_array);
-		
+
 		if (count($url_array)<2) {
 			$this->error=true;
 			$this->msg=_('Wrong URL');
@@ -2539,12 +2544,110 @@ class Page extends DB_Table {
 	}
 
 
-	
 
-function display_vertical_menu(){
 
-}
-	
+	function display_vertical_menu() {
+
+	}
+
+
+	function update_up_today_requests() {
+		$this->update_requests('Today');
+		$this->update_requests('Week To Day');
+		$this->update_requests('Month To Day');
+		$this->update_requests('Year To Day');
+	}
+
+	function update_last_period_requests() {
+
+		$this->update_requests('Yesterday');
+		$this->update_requests('Last Week');
+		$this->update_requests('Last Month');
+	}
+
+
+	function update_interval_requests() {
+		$this->update_requests('Total');
+		$this->update_requests('3 Year');
+		$this->update_requests('1 Year');
+		$this->update_requests('6 Month');
+		$this->update_requests('1 Quarter');
+		$this->update_requests('1 Month');
+		$this->update_requests('10 Day');
+		$this->update_requests('1 Week');
+		$this->update_requests('1 Day');
+		$this->update_requests('1 Hour');
+	}
+
+
+
+	function update_requests($interval) {
+
+		if ($this->data['Page Type']!='Store' )
+			return;
+
+
+
+		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`   where `Page Key`=%d  %s",
+			$this->id,
+			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
+
+
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Page Store '.$db_interval.' Acc Requests']=$row['num_requests'];
+			$this->data['Page Store '.$db_interval.' Acc Sessions']=$row['num_sessions'];
+			$this->data['Page Store '.$db_interval.' Acc Visitors']=$row['num_visitors'];
+		}else {
+			$this->data['Page Store '.$db_interval.' Acc Requests']=0;
+			$this->data['Page Store '.$db_interval.' Acc Sessions']=0;
+			$this->data['Page Store '.$db_interval.' Acc Visitors']=0;
+
+		}
+
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  where  `User Key`>0 and `Page Key`=%d  %s",
+			$this->id,
+			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
+
+
+		);
+		$res=mysql_query($sql);
+		//print "$sql\n\n\n\n";
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Page Store '.$db_interval.' Acc Users Requests']=$row['num_requests'];
+			$this->data['Page Store '.$db_interval.' Acc Users Sessions']=$row['num_sessions'];
+			$this->data['Page Store '.$db_interval.' Acc Users']=$row['num_users'];
+		}else {
+			$this->data['Page Store '.$db_interval.' Acc Users Requests']=0;
+			$this->data['Page Store '.$db_interval.' Acc Users Sessions']=0;
+			$this->data['Page Store '.$db_interval.' Acc Users']=0;
+		}
+
+		$sql=sprintf('update `Page Store Dimension` set `Page Store '.$db_interval.' Acc Requests`=%d,
+	`Page Store '.$db_interval.' Acc Sessions`=%d,
+	`Page Store '.$db_interval.' Acc Visitors`=%d,
+	`Page Store '.$db_interval.' Acc Users Requests`=%d,
+	`Page Store '.$db_interval.' Acc Users Sessions`=%d,
+	`Page Store '.$db_interval.' Acc Users`=%d
+	where `Page Key`=%d',
+			$this->data['Page Store '.$db_interval.' Acc Requests'],
+			$this->data['Page Store '.$db_interval.' Acc Sessions'],
+			$this->data['Page Store '.$db_interval.' Acc Visitors'],
+			$this->data['Page Store '.$db_interval.' Acc Users Requests'],
+			$this->data['Page Store '.$db_interval.' Acc Users Sessions'],
+			$this->data['Page Store '.$db_interval.' Acc Users'],
+
+			$this->id
+		);
+		mysql_query($sql);
+		//print "$sql\n";
+	}
+
+
+
 
 }
 
