@@ -59,7 +59,9 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$part_list=$product->get_all_part_skus();
 		$number_parts=count($part_list);
 
-		if ($number_parts==1) {
+		if($number_parts==0){
+			print "shit no parts ".$product->data['Product Store Key'].' '.$product->data['Product Store Code']."\n";
+		}if ($number_parts==1) {
 			$tmp=array_pop($part_list);
 			$part=new Part($tmp);
 			$products_in_part=$part->get_all_product_ids();

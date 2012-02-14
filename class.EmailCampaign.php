@@ -216,10 +216,10 @@ switch ($this->data['Email Campaign Type']) {
        $store->update_email_campaign_data();
         break;
   case 'Newsletter':
-        update_newsletter_data()
+        update_newsletter_data();
         break;
    case 'Reminder':
-        update_newsletter_data()
+        update_newsletter_data();
         break;
 }
 
