@@ -48,7 +48,7 @@ require_once '../../conf/conf.php';
 $change=false;
 
 //$sql=sprintf("select *  from  `Product Dimension` where `Product Store Key`!=1   and `Product Code` like 'alpha-03' ");
-$sql=sprintf("select *  from  `Product Dimension` where `Product Store Key`!=1  ");
+$sql=sprintf("select *  from  `Product Dimension` where `Product Store Key`!=1   ");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -60,7 +60,36 @@ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$number_parts=count($part_list);
 
 		if ($number_parts==0) {
-			print "shit no parts ".$product->data['Product Store Key'].' '.$product->data['Product Code']."\n";
+			print "====================shit no parts ".$product->data['Product Store Key'].' '.$product->data['Product Code']."\n";
+
+			$_uk_product=new Product('code_store',$product->data['Product Code'],1);
+			if ($_uk_product->id) {
+				$_uk_parts=$_uk_product->get_current_part_skus();
+				
+				if (count($_uk_parts)>0) {
+					$sku_from_uk=array_pop($_uk_parts);
+					$part_list[]=array(
+						'Product ID'=>$product->get('Product ID'),
+						'Part SKU'=>$sku_from_uk,
+						'Product Part Id'=>1,
+						'requiered'=>'Yes',
+						'Parts Per Product'=>1,
+						'Product Part Type'=>'Simple Pick'
+					);
+					
+					$product->new_current_part_list(array(),$part_list);
+					//$product->update_parts();
+					$__part =new Part('sku',$sku_from_uk);
+					$__part->update_used_in();
+				}
+			}else{
+							print "shit no parts and NO UK PRODUCT ".$product->data['Product Store Key'].' '.$product->data['Product Code']."\n";
+
+			
+			}
+
+
+
 		}elseif ($number_parts==1) {
 			$tmp=array_pop($part_list);
 			$part=new Part($tmp);
