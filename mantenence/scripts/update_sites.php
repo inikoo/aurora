@@ -57,7 +57,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$page->update_up_today_requests();
 	$page->update_last_period_requests();
 	$page->update_interval_requests();
-	print $page->id."\r";
+	//print $page->id."\r";
 }
 
 
