@@ -530,13 +530,12 @@ searched=true;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
-var submit_search_on_enter=function(e,tipo){
+function submit_search_on_enter(e,tipo){
      var key;     
      if(window.event)
           key = window.event.keyCode; //IE
      else
           key = e.which; //firefox     
-
      if (key == 13)
 	 submit_search(e,tipo);
 };

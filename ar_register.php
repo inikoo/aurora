@@ -510,7 +510,7 @@ function register($data,$CKEY) {
 			$auth->use_key=$user_key;
 			$auth->create_user_log();
 			$_SESSION['user_log_key']=$auth->user_log_key;
-			
+		//	print_r($_SESSION);
 			$response=array('state'=>200,'result'=>'logged_in');
 			echo json_encode($response);
 			exit;

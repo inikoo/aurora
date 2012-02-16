@@ -72,8 +72,8 @@ if (isset($_REQUEST['new']) ) {
 
 
 	$order=new Order('new',$order_data);
-	
-	
+
+
 	if ($order->error)
 		exit('error');
 
@@ -136,6 +136,7 @@ if (isset($_REQUEST['pick_aid'])) {
 
 	case('In Process'):
 
+
 		$js_files[]='js/edit_common.js';
 
 
@@ -144,7 +145,7 @@ if (isset($_REQUEST['pick_aid'])) {
 
 		$js_files[]='edit_delivery_address_common.js.php';
 		$js_files[]='order_in_process.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
-					$js_files[]='js/common_order_not_dispatched.js';
+		$js_files[]='js/common_order_not_dispatched.js';
 
 		$css_files[]='css/edit.css';
 		$css_files[]='css/edit_address.css';
@@ -158,9 +159,9 @@ if (isset($_REQUEST['pick_aid'])) {
 
 
 		$products_display_type='ordered_products';
-			//	$products_display_type='all_products';
+		// $products_display_type='all_products';
 
-		
+
 		$_SESSION['state']['order']['products']['display']=$products_display_type;
 
 		$products_display_type=$_SESSION['state']['order']['products']['display'];
@@ -195,8 +196,8 @@ if (isset($_REQUEST['pick_aid'])) {
 		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 		break;
-		
-			case('Ready to Pick'):
+
+	case('Ready to Pick'):
 	case('Picking & Packing'):
 	case('Packed'):
 		$js_files[]='js/edit_common.js';
@@ -207,15 +208,22 @@ if (isset($_REQUEST['pick_aid'])) {
 
 		$js_files[]='edit_delivery_address_common.js.php';
 		$js_files[]='order_in_warehouse.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
-			$js_files[]='js/common_order_not_dispatched.js';
-		
-		
+		$js_files[]='js/common_order_not_dispatched.js';
+
+
 		$css_files[]='css/edit.css';
 		$css_files[]='css/edit_address.css';
 
 
 		$template='order_in_warehouse.tpl';
 
+		if(isset($_REQUEST['amend']) and $_REQUEST['amend']){
+			$amend=true;
+		}else{
+			$amend=false;
+		}
+		
+		$smarty->assign('amend',$amend);
 
 
 		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
@@ -256,8 +264,8 @@ if (isset($_REQUEST['pick_aid'])) {
 		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 		break;
-		
-		
+
+
 	case('Dispatched'):
 
 
@@ -292,7 +300,7 @@ if (isset($_REQUEST['pick_aid'])) {
 	case('Unknown'):
 		$css_files[]='css/edit.css';
 		$js_files[]='order_unknown.js.php';
-	
+
 
 		$products_display_type='ordered_products';
 		$_SESSION['state']['order']['products']['display']=$products_display_type;
@@ -326,9 +334,9 @@ if (isset($_REQUEST['pick_aid'])) {
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 
-		
-			$template='order_unknown.tpl';
-		
+
+		$template='order_unknown.tpl';
+
 		break;
 	case('Ready to Ship'):
 		$js_files[]='order_ready_to_ship.js.php';

@@ -25,7 +25,7 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-
+/*
 $sql=sprintf('select `Product ID` from `Product Dimension` order by `Product ID` ');
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -34,7 +34,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$product->update_web_configuration('Online Auto');
 	print $product->pid."\r";
 }
-
+*/
 
 $sql=sprintf("select id,code,stock,condicion,web_tipo  from aw_old.product order by code  ");
 $result2a=mysql_query($sql);

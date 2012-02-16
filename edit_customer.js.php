@@ -148,7 +148,47 @@ $custom_value['lable']
 };
 
 
+function display_add_other(r){
+	switch(r.key){
+		case 'telephone': 
+		case 'mobile':
+		case 'fax':
+		Dom.setStyle('display_add_other_'+r.key,'display','')
+		break;
+		default: break;
+	}
 
+	if(r.action.match(/deleted/gi)){
+		if(r.key.match(/email/gi)){
+			var email_id=r.key.split('email');
+			Dom.setStyle('tr_other_email'+email_id[1],'display','none');
+			
+		}
+		else if(r.key.match(/telephone/gi)){
+
+			var telephone_id=r.key.split('telephone');
+			
+			Dom.setStyle('tr_other_telephone'+telephone_id[1],'display','none');
+			
+		}
+		else if(r.key.match(/fax/gi)){
+
+			var fax_id=r.key.split('fax');
+			Dom.setStyle('tr_other_fax'+fax_id[1],'display','none');
+			
+			
+		}
+		else if(r.key.match(/mobile/gi)){
+			var mobile_id=r.key.split('mobile');
+			Dom.setStyle('tr_other_mobile'+mobile_id[1],'display','none');
+			
+		}
+		
+	}
+	if(r.action.match(/updated/gi)){
+		window.location.reload();
+	}
+}
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -1344,7 +1384,7 @@ var request='ar_edit_users.php?tipo=create_customer_user&email_key='+email_key+'
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 				
 	            success:function(o){
-	            alert(o.responseText)
+	            //alert(o.responseText)
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state=='200'){
 				
@@ -1506,25 +1546,41 @@ clear_change_password_messages();
 	 }
 }
 
+function show_dialog_convert_to_person(){
 
+region1 = Dom.getRegion('convert_to_person'); 
+    region2 = Dom.getRegion('dialog_convert_to_person'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_convert_to_person', pos);
+dialog_convert_to_person.show();
+}
+
+function show_dialog_delete_customer(){
+
+region1 = Dom.getRegion('delete_customer'); 
+    region2 = Dom.getRegion('dialog_delete_customer'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_delete_customer', pos);
+dialog_delete_customer.show();
+}
 function init(){
 
     if(Dom.hasClass('delete_customer','disabled'))
 		tt1 = new YAHOO.widget.Tooltip("tt1", { context:"delete_customer",'text':Dom.get('delete_button_tooltip').value }); 
 
 	init_search('customers_store');
-	dialog_delete_customer = new YAHOO.widget.Dialog("dialog_delete_customer", {context:["delete_customer","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_delete_customer = new YAHOO.widget.Dialog("dialog_delete_customer", {visible : false,close:true,underlay: "none",draggable:false});
 	dialog_delete_customer.render();
-  	Event.addListener("delete_customer", "click", dialog_delete_customer.show,dialog_delete_customer, true);
+  	Event.addListener("delete_customer", "click", show_dialog_delete_customer);
    	YAHOO.util.Event.addListener('cancel_delete_customer', "click", cancel_delete_customer);
     YAHOO.util.Event.addListener('save_delete_customer', "click", save_delete_customer);
-	dialog_convert_to_person = new YAHOO.widget.Dialog("dialog_convert_to_person", {context:["convert_to_person","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_convert_to_person = new YAHOO.widget.Dialog("dialog_convert_to_person", { visible : false,close:true,underlay: "none",draggable:false});
 	dialog_convert_to_person.render();
-	Event.addListener("convert_to_person", "click", dialog_convert_to_person.show, dialog_convert_to_person, true);
+	Event.addListener("convert_to_person", "click", show_dialog_convert_to_person);
     YAHOO.util.Event.addListener('cancel_convert_to_person', "click", cancel_convert_to_person);
     YAHOO.util.Event.addListener('save_convert_to_person', "click", save_convert_to_person);
     
-    dialog_convert_to_company = new YAHOO.widget.Dialog("dialog_convert_to_company", {context:["convert_to_company","tl","bl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_convert_to_company = new YAHOO.widget.Dialog("dialog_convert_to_company", {visible : false,close:true,underlay: "none",draggable:false});
 	dialog_convert_to_company.render();
    	YAHOO.util.Event.addListener('convert_to_company', "click", show_convert_to_company);
    	YAHOO.util.Event.addListener('cancel_convert_to_company', "click", cancel_convert_to_company);

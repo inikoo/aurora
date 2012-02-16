@@ -104,7 +104,7 @@ class User extends DB_Table {
 
 
 		if (!$this->found and $data['User Type']=='Customer') {
-			$sql=sprintf("select `User Key` from `User Dimension` where `User Type`='Customer' and  `User Active`='No' and `User Parent Key`=%d and `User Inactive Note`=%s ",
+			$sql=sprintf("select `User Key`,`User Site Key` from `User Dimension` where `User Type`='Customer' and  `User Active`='No' and `User Parent Key`=%d and `User Inactive Note`=%s ",
 				$data['User Parent Key'],
 				prepare_mysql($data['User Handle'])
 			);
@@ -112,9 +112,16 @@ class User extends DB_Table {
 			$result2 = mysql_query($sql);
 
 			if ($row2 = mysql_fetch_array($result2, MYSQL_ASSOC)) {
-				$this->reactivate($row2['User Key'],$data['User Handle']);
-				$this->found=true;
-				$this->found_key=$row2['User Key'];
+
+
+				if ($this->reactivate($row2['User Key'],$data['User Handle'],$row2['User Site Key'])) {
+
+
+
+					$this->found=true;
+					$this->found_key=$row2['User Key'];
+
+				}
 
 			}
 
@@ -1372,20 +1379,44 @@ class User extends DB_Table {
 
 	}
 
-	function reactivate($user_key,$handle) {
+	function reactivate($user_key,$handle,$site_key) {
 
 
-		$sql=sprintf("update `User Dimension` set `User Handle`=%s,`User Inactive Note`='', `User Active`='Yes' where `User Key`=%d  "     ,
+		$num_handles=0;
+		$sql=sprintf("select count(*) as num_handles  from `User Dimension` where `User Type`='Customer' and `User Site Key`=%d and   `User Handle`=%s",$site_key,prepare_mysql($handle));
+		$res=mysql_query($sql);
 
-			prepare_mysql($handle),
-			$user_key
-		);
-		mysql_query($sql);
+
+
+
+		if ($row=mysql_fetch_assoc($res)) {
+			$num_handles=$row['num_handles'];
+		}
+
+
+		if (!$num_handles) {
+
+			$sql=sprintf("update `User Dimension` set `User Handle`=%s,`User Inactive Note`='', `User Active`='Yes' where `User Key`=%d  "     ,
+
+				prepare_mysql($handle),
+				$user_key
+			);
+			mysql_query($sql);
+
+			return true;
+		}else {
+			return false;
+
+		}
 
 	}
 
 
 	function deactivate() {
+
+		if ($this->data['User Active']=='No') {
+			return;
+		}
 
 		switch ($this->data['User Type']) {
 		case 'Customer';
@@ -1396,6 +1427,9 @@ class User extends DB_Table {
 				$this->id
 			);
 			mysql_query($sql);
+			$this->data['User Active']='No';
+			$this->data['User Inactive Note']=$this->data['User Handle'];
+			$this->data['User Handle']=$this->id;
 			break;
 		}
 
@@ -1411,7 +1445,7 @@ class User extends DB_Table {
 
 			$sql=sprintf("select count(*) as num_request, count(distinct `User Session Key`) as num_sessions , max(`Date`) as date from `User Request Dimension` where  `User Key`=%d",$this->id);
 			$res=mysql_query($sql);
-//print "$sql\n";
+			//print "$sql\n";
 
 			if ($row=mysql_fetch_assoc($res)) {
 

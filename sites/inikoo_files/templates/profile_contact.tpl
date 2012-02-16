@@ -33,7 +33,7 @@
 			{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()}) 
 		</h3>
 		<table id="customer_data" border="0" style="width:100%;margin-top:20px">
-			<tr>
+			<tr style="{if !($page->customer->get('Customer Type')=='Company')}display:none{/if}">
 				<td>{t}Company{/t}:</td>
 				<td><img id="show_edit_name" style="cursor:pointer" src="art/edit.gif" alt="{t}Edit{/t}" /></td>
 				<td class="aright">{$page->customer->get('Customer Company Name')}</td>
