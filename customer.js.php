@@ -1822,7 +1822,6 @@ dialog_export.render();
 if(Dom.get('sticky_note_content').innerHTML==''){
 	Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
 }else{
-alert('x'+Dom.get('sticky_note_content').innerHTML+'x')
 	Dom.setStyle('sticky_note_div','display','');
 }
 			
