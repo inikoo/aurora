@@ -93,7 +93,7 @@ Dom.setStyle('processing_change_password','display','none')
 
 
 		        if(r.result=='ok'){
-             window.location = 'http://'+ window.location.host+'/logout.php'
+           //  window.location = 'http://'+ window.location.host+'/logout.php'
                 
                cancel_change_password()
    Dom.setStyle('change_password_ok','display','');

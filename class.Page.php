@@ -1178,7 +1178,7 @@ class Page extends DB_Table {
 				$product->data['Product Units Per Case'],
 				$product->data['Product Name'],
 				$this->data['Page URL'],
-				$product->data['Product Price'],
+				 number_format($product->data['Product Price'],2,'.',''),
 				_('Order Product')
 
 
@@ -1187,6 +1187,8 @@ class Page extends DB_Table {
 
 		$data=array(
 			'Product Price'=>$product->data['Product Price'],
+			
+			
 			'Product Units Per Case'=>$product->data['Product Units Per Case'],
 			'Product Currency'=>$product->get('Product Currency'),
 			'Product Unit Type'=>$product->data['Product Unit Type'],
@@ -1830,7 +1832,7 @@ class Page extends DB_Table {
 
 
 			$form.=sprintf('<tr %s >
-                           <input type="hidden" name="price%s" value="%.2f"  >
+                           <input type="hidden" name="price%s" value="%s"  >
                            <input type="hidden" name="product%s"  value="%s %s" >
                            <td class="code">%s</td>
                            <td class="price">%s</td>
@@ -1841,7 +1843,8 @@ class Page extends DB_Table {
                            </tr>'."\n",
 				$tr_class,
 
-				$counter,$product['Product Price'],
+				$counter,
+				number_format($product['Product Price'],2,'.',''),
 				$counter,$product['Product Code'],clean_accents($product['description']),
 
 				$product['Product Code'],
@@ -2590,7 +2593,7 @@ class Page extends DB_Table {
 
 		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
-		$sql=sprintf("select count(*) as num_requests ,count(distinct `Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`   where `Page Key`=%d  %s",
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`   where `Page Key`=%d  %s",
 			$this->id,
 			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
 
@@ -2608,7 +2611,7 @@ class Page extends DB_Table {
 
 		}
 
-		$sql=sprintf("select count(*) as num_requests ,count(distinct `Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  where  `User Key`>0 and `Page Key`=%d  %s",
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  where  `User Key`>0 and `Page Key`=%d  %s",
 			$this->id,
 			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
 

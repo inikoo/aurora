@@ -43,9 +43,9 @@ if ($auth->is_authenticated()) {
 	if ($remember) {
 	   $auth->set_cookies($handle,rawurldecode($sk),'customer',$site->id);
     }
-//else {
-//	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
-//}
+else {
+	$auth->unset_cookies($handle,rawurldecode($sk),'customer',$site->id);
+}
 	
 	
 

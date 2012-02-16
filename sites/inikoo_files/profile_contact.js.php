@@ -190,6 +190,7 @@ print "validate_general('customer_quick','custom_field_customer_{$field}',unesca
 ?>
 
 function post_item_updated_actions(branch,r){
+
 	window.location.reload()
 }
 
@@ -534,3 +535,7 @@ function delete_image(o){
 
 
 }
+
+
+
+

@@ -121,7 +121,11 @@
 				<td> 
 				<input id="register_registration_number"></td>
 			</tr>
-			
+	<tr>
+				<td class="label">{t}Tax Number{/t}: </td>
+				<td> 
+				<input id="register_tax_number"></td>
+			</tr>		
 			<tr>
 				<td class="label">{t}Telephone{/t}: </td>
 				<td> 

@@ -1282,7 +1282,7 @@ $index_page=$this->get_page_object('index');
 	function update_requests($interval) {
 		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
-		$sql=sprintf("select count(*) as num_requests ,count(distinct `Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`  R  left join   `Page Store Dimension` P on (R.`Page Key`=P.`Page Key`) where   `Page Site Key`=%d  %s",
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`  R  left join   `Page Store Dimension` P on (R.`Page Key`=P.`Page Key`) where   `Page Site Key`=%d  %s",
 			$this->id,
 			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
 
@@ -1300,7 +1300,7 @@ $index_page=$this->get_page_object('index');
 
 		}
 
-		$sql=sprintf("select count(*) as num_requests ,count(distinct `Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  R  left join   `Page Store Dimension` P on (R.`Page Key`=P.`Page Key`) where  `User Key`>0 and `Page Site Key`=%d  %s",
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  R  left join   `Page Store Dimension` P on (R.`Page Key`=P.`Page Key`) where  `User Key`>0 and `Page Site Key`=%d  %s",
 			$this->id,
 			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
 

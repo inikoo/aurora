@@ -1171,11 +1171,13 @@ class Address extends DB_Table {
 
                         );
             mysql_query($sql);
-            $this->get_data('id',$this->id);
-            $this->update_parents();
+           
 
 
         }
+         $this->get_data('id',$this->id);
+            $this->update_parents();
+        
     }
 
 
@@ -5014,6 +5016,9 @@ class Address extends DB_Table {
                         );
             mysql_query($sql);
             $this->updated=true;
+            
+        
+            
             if (!$this->get_principal_telecom_key($type)) {
                 $this->update_principal_telecom($telecom_key,$type);
             }

@@ -1856,7 +1856,8 @@ function edit_address($data) {
                 return;
             }
         }
-    } else {// address not found inside customer
+    }
+    else {// address not found inside customer
         $proposed_address=new Address("find complete ",$update_data);
 
         if ($proposed_address->id) {
@@ -2944,12 +2945,12 @@ function edit_customer_field($customer_key,$key,$value_data) {
     elseif ($key=='Customer Fiscal Name') {
         $customer->update_fiscal_name($the_new_value );
     }
-    elseif ($key=='Customer Tax Number') {
-        $customer->update_tax_number($the_new_value);
-    }
-    elseif ($key=='Customer Registration Number') {
-        $customer->update_registration_number($the_new_value);
-    }
+   // elseif ($key=='Customer Tax Number') {
+   //     $customer->update_tax_number($the_new_value);
+   // }
+   // elseif ($key=='Customer Registration Number') {
+    //    $customer->update_registration_number($the_new_value);
+   // }
     elseif (preg_match('/^custom_field_customer/i',$key)) {
         $custom_id=preg_replace('/^custom_field_/','',$key);
         //print $key;
@@ -2957,7 +2958,7 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
     }
     else {
-        //  print "$customer_key,$key,$value_data ***";
+       //   print "$customer_key,$key,$value_data ***";
 
 
         

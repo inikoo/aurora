@@ -20,6 +20,15 @@ if (!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('check_european_tax_number'):
+$data=prepare_values($_REQUEST,array(
+                             'country_2alpha_code'=>array('type'=>'string'),
+                             'tax_number'=>array('type'=>'string')));
+    check_european_tax_number($data);
+    break;
+
+break;
 case('can_merge_customer'):
 
 
@@ -6044,5 +6053,22 @@ function can_merge_customer($data) {
 
 }
 
+function check_european_tax_number($data){
+$country_code=$data['country_2alpha_code'];
+$tax_number=$data['tax_number'];
+
+$client = new SoapClient("http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl");
+$result = $client->checkVat(array('countryCode'=>$country_code,'vatNumber'=>$tax_number));
+//print_r($result);
+
+ $response=array('state'=>200,'result'=>$result);
+    echo json_encode($response);
+    exit;
+
+
+
+
+
+}
 
 ?>

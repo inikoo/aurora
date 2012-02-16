@@ -37,16 +37,16 @@
 					<td valign="top"> 
 					<table class="customer_show_data">
 						{if $customer->get('Customer Registration Number')} 
-						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_registration_number','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_registration_number','visibility','hidden')">
-							<td id="main_name" colspan="2" class="aright">{$customer->get('Customer Registration Number')}</td>
-							<td><img id="quick_edit_name" alt="{t}Registration Number{/t}" title="{t}Registration Number{/t}" src="art/icons/flag_purple.png" /></td>
-							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_registration_number" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+						<tr id="registration_number_tr" onmouseover="Dom.setStyle('quick_edit_registration_number','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_registration_number','visibility','hidden')">
+							<td id="registration_number" colspan="2" class="aright">{$customer->get('Customer Registration Number')}</td>
+							<td><img  alt="{t}Registration Number{/t}" title="{t}Registration Number{/t}" src="art/icons/certificate.png" /></td>
+							<td><img onmouseover="Dom.addClass('registration_number_tr','edit_over')" onmouseout="Dom.removeClass('registration_number_tr','edit_over')" id="quick_edit_registration_number" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if}
 						{if $customer->get('Customer Tax Number')} 
 						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_tax','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_tax','visibility','hidden')">
-							<td id="main_name" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
-							<td><img id="quick_edit_name" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" src="art/icons/flag_orange.png" /></td>
+							<td id="tax" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
+							<td><img  id="check_tax_number"  onClick="check_tax_number" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" src="art/icons/taxation.png" /></td>
 							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} {if $customer->get('Customer Main Contact Key')} 
@@ -136,11 +136,9 @@
 			</table>
 			
 		</div>
-		<div id="sticky_note_div" class="sticky_note" style="margin-top:3px;width:370px">
+		<div id="sticky_note_div" class="sticky_note" style="margin-top:3px;width:370px;">
 			<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
-			<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
-				{$customer->get('Sticky Note')} 
-			</div>
+			<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 		</div>
 		<div style="clear:both">
 		</div>
@@ -601,11 +599,54 @@
 		</ul>
 	</div>
 </div>
-<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
-	<input type="hidden" value="" id="Customer_Fiscal_Name"> 
+
+<div id="dialog_check_tax_number" style="padding:10px">
 	<table style="margin:10px">
 		<tr>
-			<td>{t}Contact Name:{/t}</td>
+			<td>{t}Tax Number:{/t}</td>
+			<td> 
+			{$customer->get('Customer Tax Number')}
+			</td>
+		</tr>
+
+			<td colspan=2 id="check_tax_number_result"> 
+				
+			</td>
+		</tr>
+		
+		<tr>
+			<td>{t}Name:{/t}</td>
+			<td id="check_tax_number_name"> 
+				
+			</td>
+		</tr>
+		<tr>
+			<td>{t}Address:{/t}</td>
+			<td id="check_tax_number_address"> 
+				
+			</td>
+		</tr>
+		
+		<tr id="check_tax_number_wait">
+			<td colspan="2"> 
+			<img src="art/loading.gif" alt=""> {t}Processing Request{/t}
+			</td>
+		</tr>
+		
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<button  id="save_tax_details_match">{t}Ok{/t}</button> <button  id="save_tax_details_not_match">{t}Details not match{/t}</button>
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
+	<table style="margin:10px">
+		<tr>
+			<td>{t}Tax Number:{/t}</td>
 			<td> 
 			<div style="width:220px">
 				<input type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
@@ -623,6 +664,31 @@
 		</tr>
 	</table>
 </div>
+
+<div id="dialog_quick_edit_Customer_Registration_Number" style="padding:10px">
+	<input type="hidden" value="" id="Customer_Fiscal_Name"> 
+	<table style="margin:10px">
+		<tr>
+			<td>{t}Registration Number:{/t}</td>
+			<td> 
+			<div style="width:220px">
+				<input type="text" id="Customer_Registration_Number" value="{$customer->get('Customer Registration Number')}" ovalue="{$customer->get('Customer Registration Number')}" valid="0"> 
+				<div id="Customer_Registration_Number_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<span id="Customer_Registration_Number_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_registration_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_registration_number">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
 <div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
 	<table style="margin:10px">
 		<tr>

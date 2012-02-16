@@ -1959,7 +1959,9 @@ class Contact extends DB_Table {
 
 	function associate_mobile_to_parents($parent,$parent_key,$mobile_key,$set_as_main=true) {
 
-
+	//	print "a1";
+		
+		
 		if ($parent=='Customer') {
 			$parent_object=new Customer($parent_key);
 			$parent_label=_('Customer');
@@ -3209,6 +3211,10 @@ class Contact extends DB_Table {
 					$mobile->editor=$this->editor;
 					$mobile->update_number($value,$this->data['Contact Main Country Code']);
 					$this->updated=$mobile->updated;
+					
+					$this->update_parents_principal_mobile_keys();
+					$mobile->update_parents($mobile->updated);
+				
 				}
 
 			} else {
@@ -4649,7 +4655,10 @@ class Contact extends DB_Table {
 
 
 	function associate_mobile($mobile_key) {
-
+if (!$mobile_key) {
+			$this->error=true;
+			$this->msg='Wrong telecom key';
+		}
 		$mobile_keys=$this->get_mobile_keys();
 
 		if (!array_key_exists($mobile_key,$mobile_keys)) {
@@ -4669,15 +4678,10 @@ class Contact extends DB_Table {
 			$this->msg='Wrong email key';
 
 		}
-
 		$email_keys=$this->get_email_keys();
 
 		if (!array_key_exists($email_key,$email_keys)) {
 			$this->create_email_bridge($email_key);
-
-
-
-
 		}
 
 

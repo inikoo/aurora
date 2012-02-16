@@ -157,6 +157,7 @@ function submit_register(){
     var site_key=Dom.get('site_key').value;
 
 data['Customer Registration Number']=Dom.get('register_registration_number').value;
+data['Customer Tax Number']=Dom.get('register_tax_number').value;
 
 data['Customer Name']=Dom.get('register_company_name').value;
 data['Customer Main Contact Name']=Dom.get('register_contact_name').value;
@@ -189,7 +190,7 @@ Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 		success:function(o) {
 	Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
 
-		//alert(o.responseText)
+	//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.result=='logged_in'){

@@ -551,7 +551,7 @@ $correlation_msg='';
        
         $msg=preg_replace('/^,/','',$msg);
         if ($msg!='') {
-            $correlation_msg='<p>'._('Customer recently merged with').': '.$msg.'</p>';
+            $correlation_msg='<div style="clear:both">'._('Customer recently merged with').': '.$msg.'</div>';
 
         }
 $smarty->assign('recent_merges',$correlation_msg);

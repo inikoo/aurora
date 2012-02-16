@@ -58,7 +58,7 @@ $yui_path="external_libs/yui/2.9/build/";
 $max_session_time=1000000;
 $session = new Session($max_session_time,1,100);
 
-
+//print_r($_SESSION);
 
 $site=new Site($myconf['site_key']);
 
@@ -98,7 +98,7 @@ $authentication_type='login';
 
 
 
-
+if(!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ){
 
 if (isset($_REQUEST['p'])) {
 
@@ -170,6 +170,7 @@ elseif (isset($_COOKIE['user_handle'])) {
 	}
 }
 
+}
 
 $customer=new Customer(0);
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);

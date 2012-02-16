@@ -61,6 +61,7 @@ function hide_new_delivery_address(){
 
 function post_create_delivery_address_function(r){
     hide_new_delivery_address();
+    window.location.reload()
 }
 
 

@@ -35,6 +35,7 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
 
 	$product=new Product('code_store',$row2a['code'],1);
+	print $product->data['Product Code']."\r";
 	if ($product->id) {
 		$current_part_skus=$product->get_current_part_skus();
 
