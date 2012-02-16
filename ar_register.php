@@ -337,7 +337,7 @@ function send_reset_password($data,$CKEY) {
 
 
 
-	$masterkey_link=$url."?p=".$encrypted_secret_data;
+	$masterkey_link='http://'.$site->data['Site URL']."/registration.php?p=".$encrypted_secret_data;
 	$greetings=$customer->get_greetings();
 
 	$smarty_html_email = new Smarty();
