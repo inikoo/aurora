@@ -5634,3 +5634,6 @@ ALTER TABLE `Page Store Dimension` ADD `Page Store Yesterday Acc Users Requests`
 ALTER TABLE `User Request Dimension` ADD INDEX ( `Date` ) ;
 ALTER TABLE `User Request Dimension` ADD INDEX ( `Page Key` ) ;
 ALTER TABLE `User Request Dimension` ADD INDEX ( `Page Key` ) ;
+
+
+ALTER TABLE `Customer Dimension` ADD `Customer Tax Number Valid` ENUM( 'Yes', 'No', 'Unknown' ) NOT NULL DEFAULT 'Unknown',ADD `Customer Tax Number Details Match` ENUM( 'Yes', 'No', 'Unknown' ) NOT NULL DEFAULT 'Unknown', ADD `Customer Tax Number Validation Date` DATETIME NULL DEFAULT NULL ;

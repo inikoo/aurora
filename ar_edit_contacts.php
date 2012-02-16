@@ -22,6 +22,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case('update_tax_number_match'):
+$data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                             'value'=>array('type'=>'value'),
+                         ));
+    update_tax_number_match($data);
+    break;
+
 case('delete_all_customers_in_list'):
 
     $data=prepare_values($_REQUEST,array(
@@ -4403,7 +4412,28 @@ function delete_all_customers_in_list($data) {
 
 
 
+function update_tax_number_match($data){
 
+if($data['value']=='Yes'){
+$match=true;
+}else if($data['value']=='No'){
+$match=false;
+}else{
+ $response= array('state'=>400,'msg'=>'Wrong value');
+        echo json_encode($response);
+        return;
+}
+
+$customer= new Customer($data['customer_key']);
+$customer->update(array('Customer Tax Number Details Match'=>$data['value']));	
+
+
+   $response= array('state'=>200,'match'=>$match);
+        echo json_encode($response);
+        return;
+
+
+}
 
 
 

@@ -1,6 +1,8 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 	<div style="padding:0px 20px;">
+	<input type="hidden" id="customer_key" value="{$customer->id}">
+
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
@@ -46,7 +48,11 @@
 						{if $customer->get('Customer Tax Number')} 
 						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_tax','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_tax','visibility','hidden')">
 							<td id="tax" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
-							<td><img  id="check_tax_number"  onClick="check_tax_number" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" src="art/icons/taxation.png" /></td>
+							<td>
+							
+							<img  id="check_tax_number"  onClick="check_tax_number" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" src="{if $customer->get('Customer Tax Number Valid')=='No'}art/icons/taxation_error.png{elseif $customer->get('Customer Tax Number Valid')=='Yes' and $customer->get('Customer Tax Number Details Match')=='No' }art/icons/taxation_yellow.png{elseif $customer->get('Customer Tax Number Valid')=='Yes'}art/icons/taxation_green.png{else}art/icons/taxation.png{/if}" />
+							
+							</td>
 							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} {if $customer->get('Customer Main Contact Key')} 
@@ -600,27 +606,26 @@
 	</div>
 </div>
 
-<div id="dialog_check_tax_number" style="padding:10px">
-	<table style="margin:10px">
-		<tr>
-			<td>{t}Tax Number:{/t}</td>
-			<td> 
+<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
+	<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
+		<tr class="title">
+			<td colspan=2>{t}Tax Number:{/t}
 			{$customer->get('Customer Tax Number')}
 			</td>
 		</tr>
-
+			<tr id="check_tax_number_result_tr" style="display:none">
 			<td colspan=2 id="check_tax_number_result"> 
 				
 			</td>
 		</tr>
 		
-		<tr>
+		<tr id="check_tax_number_name_tr" style="display:none">
 			<td>{t}Name:{/t}</td>
 			<td id="check_tax_number_name"> 
 				
 			</td>
 		</tr>
-		<tr>
+		<tr id="check_tax_number_address_tr" style="display:none">
 			<td>{t}Address:{/t}</td>
 			<td id="check_tax_number_address"> 
 				
@@ -633,10 +638,10 @@
 			</td>
 		</tr>
 		
-		<tr>
+		<tr id="check_tax_number_buttons" style="display:none">
 			<td colspan="2"> 
 			<div class="buttons" style="margin-top:10px">
-				<button  id="save_tax_details_match">{t}Ok{/t}</button> <button  id="save_tax_details_not_match">{t}Details not match{/t}</button>
+				<button  id="save_tax_details_match">{t}Details Match{/t}</button> <button  id="save_tax_details_not_match">{t}Details not match{/t}</button> <button  id="close_check_tax_number">{t}Close{/t}</button>
 			</div>
 			</td>
 		</tr>
