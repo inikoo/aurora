@@ -2954,9 +2954,9 @@ function edit_customer_field($customer_key,$key,$value_data) {
     elseif ($key=='Customer Fiscal Name') {
         $customer->update_fiscal_name($the_new_value );
     }
-   // elseif ($key=='Customer Tax Number') {
-   //     $customer->update_tax_number($the_new_value);
-   // }
+    elseif ($key=='Customer Tax Number') {
+        $customer->update_tax_number($the_new_value);
+    }
    // elseif ($key=='Customer Registration Number') {
     //    $customer->update_registration_number($the_new_value);
    // }
