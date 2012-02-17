@@ -405,6 +405,8 @@ class Site extends DB_Table {
 			$showcases_layout=$data['Showcases Layout'];
 		else
 			$showcases_layout='';
+			
+			
 		$page_data=array(
 			'Page Site Key'=>$this->id,
 			'Page Code'=>'SD_'.$store->data['Store Code'],
@@ -445,6 +447,8 @@ class Site extends DB_Table {
 
 		$store=new Store($this->data['Site Store Key']);
 
+		$page_code=$this->get_unique_store_page_code($store);
+
 		$page_data['Page Store Key']=$this->data['Site Store Key'];
 		$page_data['Page Parent Key']=$this->data['Site Store Key'];
 		$page_data['Page Site Key']=$this->id;
@@ -457,9 +461,9 @@ class Site extends DB_Table {
 		$page_data['Page Short Title']=$store->data['Store Code'];
 		$page_data['Page Store Section']='Information';
 		$page_data['Showcases Layout']='Splited';
-		$page_data['Number See Also Links']=$this->data['Site Default Number See Also Links'];
-		$page_data['Page Code']=$this->get_unique_store_page_code($store);
-		$page_data['Page URL']=$this->data['Site URL'].'/'.strtolower($page_data['Page Code']);
+		$page_data['Number See Also Links']=0;
+		$page_data['Page Code']=$page_code;
+		$page_data['Page URL']=$this->data['Site URL'].'/'.strtolower($page_code);
 
 
 
@@ -549,11 +553,12 @@ class Site extends DB_Table {
 		else
 			$showcases_layout=$data['Showcases Layout'];
 */
+$page_code=$this->get_unique_department_page_code($department);
 		$page_data=array(
-			'Page Code'=>$this->get_unique_department_page_code($department),
+			'Page Code'=>$page_code,
 			'Page Site Key'=>$this->id,
 			'Page Source Template'=>'',
-			'Page URL'=>$this->data['Site URL'].'/department.php?code='.strtolower($department->data['Product Department Code']),
+			'Page URL'=>$this->data['Site URL'].'/'.strtolower($page_code),
 			'Page Source Template'=>'pages/'.$store->data['Store Code'].'/department.tpl',
 			'Page Description'=>'Department Showcase Page',
 			'Page Title'=>$department->data['Product Department Name'],
@@ -666,13 +671,13 @@ $index_page=$this->get_page_object('index');
 */
 
 
-
+$page_code=$this->get_unique_family_page_code($family);
 
 		$page_data=array(
-			'Page Code'=>$this->get_unique_family_page_code($family),
+			'Page Code'=>$page_code,
 			'Page Source Template'=>'',
 			'Page Site Key'=>$this->id,
-			'Page URL'=>$this->data['Site URL'].'/family.php?code='.strtolower($family->data['Product Family Code']),
+			'Page URL'=>$this->data['Site URL'].'/'.strtolower($page_code),
 			'Page Source Template'=>'pages/'.$store->data['Store Code'].'/family.tpl',
 			'Page Description'=>'Family Showcase Page',
 			'Page Title'=>$family->data['Product Family Name'],

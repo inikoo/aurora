@@ -3071,24 +3071,21 @@ class Customer extends DB_Table {
 		$this->new_value=$subject->new_value;
 	}
 
-	function update_tax_number_old($value) {
-		if ($this->data['Customer Type']=='Person') {
-			$subject=new Contact($this->data['Customer Main Contact Key']);
-			$subject->editor=$this->editor;
+	function update_tax_number($value) {
+	
+	$this->update_field('Customer Tax Number',$value);
+	if($this->updated){
+		$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
+		$this->id
+		);
+		mysql_query($sql);
+		
+	$this->new_value=$value;
+	}
+	
 
-			$subject->update(array('Contact Tax Number'=>$value));
 
-		} else {
-			$subject=new Company($this->data['Customer Company Key']);
-			$subject->editor=$this->editor;
-
-			$subject->update(array('Company Tax Number'=>$value));
-
-		}
-		$this->updated=$subject->updated;
-		$this->msg=$subject->msg;
-		$this->error=$subject->error;
-		$this->new_value=$subject->new_value;
+		
 	}
 
 

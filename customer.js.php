@@ -1129,6 +1129,7 @@ if(r.key=='registration_number'){
 		Dom.get('Customer_Tax_Number').setAttribute('ovalue',r.newvalue);
 		Dom.get('Customer_Tax_Number_msg').innerHTML='';
 		Dom.get('tax').innerHTML=r.newvalue;
+		Dom.get('check_tax_number').src='art/icons/taxation.png';
 	}
 	else if(r.key=='contact'){
 		dialog_quick_edit_Customer_Main_Contact_Name.hide();
