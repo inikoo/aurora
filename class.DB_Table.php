@@ -172,9 +172,8 @@ abstract class DB_Table {
 		$key_field=$this->table_name." Key";
 
 
-
-
 		if ($this->table_name=='Supplier Product')
+
 			$key_field='Supplier Product Current Key';
 		else if ($this->table_name=='Part')
 				$key_field='Part SKU';

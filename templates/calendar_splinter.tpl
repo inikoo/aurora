@@ -1,6 +1,5 @@
-<div style="width:620px;float:right">
+<div class="branch" id="period_navigation" style="clear:none;width:620px;float:right;text-align:right;font-style:normal">
 
-<div style="text-align:right;font-size:90%">
  <span id="other"  class="state_details {if  $quick_period=='other'}selected{/if}" style="margin-left:10px">{t}Other{/t}</span>
  <span id="ytd"  class="state_details {if  $quick_period=='ytd'}selected{/if}" style="margin-left:10px">{t}YTD{/t}</span>
  <span id="mtd" class="state_details {if  $quick_period=='mtd'}selected{/if}" style="margin-left:10px">{t}MTD{/t}</span>
@@ -16,7 +15,7 @@
  <span id="1y" class="state_details {if  $quick_period=='1y'}selected{/if}" style="margin-left:10px">{t}1y{/t}</span>
  <span id="3y" class="state_details {if  $quick_period=='3y'}selected{/if}" style="margin-left:10px">{t}3y{/t}</span>
  <span id="all" class="state_details {if  $quick_period=='all'}selected{/if}" style="margin-left:10px">{t}All{/t}</span>
-</div>
+
 </div>
 
 

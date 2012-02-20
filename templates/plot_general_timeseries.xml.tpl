@@ -74,7 +74,7 @@
 	  <decimal_separator>{$locale_data.decimal_point}</decimal_separator>
 	  
 	
-	  <thousand_separator>{$locale_data.thousand_sep}</thousand_separator>
+	  <thousand_separator>{$locale_data.thousands_sep}</thousand_separator>
 	  
     <!-- defines how many numbers should be left after comma --> 	  
 	  <digits_after_decimal>
