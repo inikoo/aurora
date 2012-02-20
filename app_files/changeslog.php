@@ -5632,8 +5632,16 @@ ALTER TABLE `Page Store Dimension` ADD `Page Store Yesterday Acc Users Requests`
 
 
 ALTER TABLE `User Request Dimension` ADD INDEX ( `Date` ) ;
+
 ALTER TABLE `User Request Dimension` ADD INDEX ( `Page Key` ) ;
 ALTER TABLE `User Request Dimension` ADD INDEX ( `Page Key` ) ;
 
 
 ALTER TABLE `Customer Dimension` ADD `Customer Tax Number Valid` ENUM( 'Yes', 'No', 'Unknown' ) NOT NULL DEFAULT 'Unknown',ADD `Customer Tax Number Details Match` ENUM( 'Yes', 'No', 'Unknown' ) NOT NULL DEFAULT 'Unknown', ADD `Customer Tax Number Validation Date` DATETIME NULL DEFAULT NULL ;
+ALTER TABLE `Image Dimension` ADD `Last Modify Date` DATETIME NULL DEFAULT NULL ;
+update `Image Dimension` set `Last Modify Date`=NOW();
+
+INSERT INTO `Page Dimension` (`Page Key`, `Page Type`, `Page Section`, `Page Title`, `Page Short Title`, `Page Description`, `Page Keywords`, `Page URL`, `Page Javascript Files`, `Page CSS Files`, `Page Snapshot Image Key`, `Page Snapshot Last Update`, `Page Valid URL`, `Page Working URL`, `Page Published`) VALUES (NULL, 'Internal', 'Reports', 'Intrastat', 'Intrastat', 'Intrastat is the system for collecting information and producing statistics on the trade in goods between countries of the European Union (EU). ', '', 'reports_intrastat.php', '', '', NULL, NULL, 'Yes', 'Yes', 'Yes');
+
+
+

@@ -557,7 +557,7 @@ function store_sales($data) {
                  $dates,
                  join(',',$stores_keys)
                 );
-    // print $sql;
+     
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $graph_data[$row['date']]['vol']=$row['invoices'];

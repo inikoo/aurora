@@ -195,7 +195,7 @@
    </td>
    <td id="Part_Package_MOV_msg" class="edit_td_alert"></td>
  </tr> 
-  <tr><td style="width:200px" class="label">{t}Tariff Code{/t}:</td>
+  <tr><td style="width:200px" class="label">{t}Commodity Code{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Part_Tariff_Code" value="{$part->get('Part Tariff Code')}" ovalue="{$part->get('Part Tariff Code')}" valid="0">

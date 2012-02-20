@@ -63,7 +63,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 $tmp= 'Last-Modified: '.gmdate('D, d M Y H:i:s', $row['image_time']).' GMT';
 
-    header($tmp, true, 304);
+   // header($tmp, true, 304);
 
 	header('Content-type: image/'.$row['Image File Format']);
 	header('Content-Disposition: inline; filename='.$row['Image Original Filename']);

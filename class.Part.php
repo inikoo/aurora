@@ -195,29 +195,46 @@ class part extends DB_Table {
 		case('Part Status'):
 			$this->update_status($value,$options);
 			break;
+				case('Part Tariff Code'):
+			$this->update_tariff_code($value,$options);
+			break;	
+		default:
+			$base_data=$this->base_data();
 
-		}
+			if (array_key_exists($field,$base_data)) {
 
-		$base_data=$this->base_data();
-		// print_r($base_data);
-		//print $field;
-		if (array_key_exists($field,$base_data)) {
+				if ($value!=$this->data[$field]) {
 
-			if ($value!=$this->data[$field]) {
+					if ($field=='Part General Description' or $field=='Part Health And Safety')
+						$options.=' nohistory';
+					$this->update_field($field,$value,$options);
+					
+					
+					
 
-				if ($field=='Part General Description' or $field=='Part Health And Safety')
-					$options.=' nohistory';
-				$this->update_field($field,$value,$options);
-
+				}
 			}
+			elseif (preg_match('/^custom_field_part/i',$field)) {
+				$this->update_field($field,$value,$options);
+			}
+
 		}
-		elseif (preg_match('/^custom_field_part/i',$field)) {
-			$this->update_field($field,$value,$options);
-		}
+
 
 
 
 	}
+	
+	function update_tariff_code($value,$options=''){
+		$this->update_field('Part Tariff Code',$value,$options);
+		$product_ids=$this->get_product_ids();	
+		
+		foreach($product_ids as $product_id){
+			$product=new Product('pid',$product_id);
+			$product->update_field('Product Tariff Code',$value,$options);
+		}
+	}
+	
 
 	function load($data_to_be_read,$args='') {
 		switch ($data_to_be_read) {
@@ -976,7 +993,7 @@ class part extends DB_Table {
 		$supplier_products=array();
 		$sql=sprintf("
 
-                     select  SPPD.`Supplier Product Key` 
+                     select  SPPD.`Supplier Product Key`
                      from `Supplier Product Part List` SPPL
                      left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
                      where `Part SKU`=%d ;
@@ -2832,9 +2849,9 @@ class part extends DB_Table {
 
 	}
 
-function delete(){
+	function delete() {
 
 
-}
+	}
 
 }

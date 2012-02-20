@@ -186,7 +186,7 @@
 					<td>{$part->get('Volume')}</td>
 				</tr>
 				<tr>
-					<td>{t}Export Code{/t}:</td>
+					<td>{t}Commodity Code{/t}:</td>
 					<td>{$part->get('Part Tariff Code')}</td>
 				</tr>
 			</table>

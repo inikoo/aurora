@@ -175,6 +175,9 @@
 			<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 				<div style="width:300px">
 					<table class="show_info_product">
+					<tr>
+							<td>{t}Commodity Code{/t}:</td>
+							<td>{$product->get('Product Tariff Code')}</td>
 						<tr>
 							<td>{t}Categories{/t}:</td>
 							<td></td>
