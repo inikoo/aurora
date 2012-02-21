@@ -940,9 +940,9 @@ $default_state=array(
 		'w'=>date('W')
 	),
 
-
 	'report_sales'=>array(
-		'tipo'=>'m',
+		'tipo'=>'mtd',
+		
 		'y'=>date('Y'),
 		'm'=>date('m'),
 		'd'=>date('d'),
@@ -963,6 +963,12 @@ $default_state=array(
 		'plot_data'=>array(
 		),
 	),
+	'report_intrastad'=>array(
+		'tipo'=>'last_m',
+		
+		
+		
+		),
 	'report_sales_week'=>array(
 		'store'=>'',
 		'invoices'=> array(

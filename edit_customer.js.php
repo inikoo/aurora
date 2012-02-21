@@ -919,6 +919,13 @@ Dom.get('""New_Company_Name').value='';
 }
 function show_convert_to_company(){
 
+
+
+region1 = Dom.getRegion('convert_to_company'); 
+    region2 = Dom.getRegion('dialog_convert_to_company'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_convert_to_company', pos);
+
 Dom.get('New_Company_Name').focus();
 dialog_convert_to_company.show();
 

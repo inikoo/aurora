@@ -1,8 +1,12 @@
 {include file='header.tpl'} 
 <div id="bd">
-	{include file='reports_navigation.tpl'} {include file='calendar_splinter.tpl'} 
-	<h1 style="clear:left">
-		{$title} <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.gif" />
+	<div class="branch" style="width:280px;float:left;margin:0"> 
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a  href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales{/t}
+</div>
+	{include file='calendar_splinter.tpl'} 
+	<div style="clear:both"></div>
+	<h1 style="margin-top:10px">
+		{$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" />
 	</h1>
 	<table class="report_sales1" id="report_sales_invoices" style="width:900px;{if $view!='invoices'}display:none{/if}">
 		<tr style="border-bottom:1px solid #ccc;margin-bottom:5px">
