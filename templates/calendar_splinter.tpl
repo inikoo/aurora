@@ -68,7 +68,7 @@
 
       {if $up}<a class="prev" href="{$report_url}?{$up.url}" ><img src="art/icons/up.png" alt="&uarr;" title="{$up.title}"  /></a>{/if}
 
-<span>{$tipo_title}</span> <span id="period">{$period}</span>
+{if isset($tipo_title)}<span>{$tipo_title}</span>{/if} <span id="period">{$period}</span>
       {if $prev}<a class="prev" href="{$report_url}?{$prev.url}" ><img src="art/icons/previous.png" alt="<" title="{$prev.title}"  /></a>{/if}
       {if $next}<a class="next" href="{$report_url}?{$next.url}" ><img src="art/icons/next.png" alt=">" title="{$next.title}"  /></a>{/if}
 

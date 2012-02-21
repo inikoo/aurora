@@ -29,7 +29,7 @@ $smarty->template_dir = 'templates';
 $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
-//$smarty->error_reporting = E_STRICT;
+$smarty->error_reporting = E_STRICT;
 
 $user=false;
 

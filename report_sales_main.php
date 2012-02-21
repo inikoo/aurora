@@ -12,6 +12,7 @@ $css_files=array(
 	'css/container.css',
 	'button.css',
 	'table.css',
+	'css/calendar.css',
 	'theme.css.php'
 );
 
@@ -40,6 +41,7 @@ $js_files=array(
 );
 
 $root_title=_('Sales Report');
+$title=_('Sales Report');
 
 include_once 'reports_list.php';
 
@@ -126,6 +128,8 @@ global $myconf;
 $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
 
+
+
 $store_data=array();
 $store_data_profit=array();
 
@@ -181,6 +185,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				,'_eq_net'=>$row2['eq_net']
 				,'_eq_tax'=>$row2['eq_tax']
 				,'currency_code'=>$row['Store Currency Code']
+					,'last_yr_invoices'=>'&#8734;%'
+		,'last_yr_net'=>'&#8734;%'
 			);
 
 			$store_data_profit[$row['Store Key'].'.'.$row2['Category Name']]=array(
@@ -190,7 +196,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				,'net'=>money($row2['net'],$row['Store Currency Code'])
 				,'profit'=>money($row2['profit'],$row['Store Currency Code'])
 				,'eq_net'=>''
-		,'eq_profit'=>''
+				,'eq_profit'=>''
 				,'margin'=>percentage($row2['profit'],$row2['net'])
 
 			);
