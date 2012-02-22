@@ -59,6 +59,7 @@ function hide_new_billing_address(){
 
 function post_create_billing_address_function(r){
     hide_new_billing_address();
+     window.location.reload();
 }
 
 

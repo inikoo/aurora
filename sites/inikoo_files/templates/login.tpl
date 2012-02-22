@@ -27,7 +27,7 @@
 				<tr>
 					<td class="label">{t}Remember Me{/t}: </td>
 					<td style="text-align:left;">
-					<input style="width:20px;border:none" type="checkbox" name="remember_me" id="remember_me" value="0" />
+					<input style="width:20px;border:none" type="checkbox"  name="remember_me" id="remember_me" value="0" />
 					</td>
 				</tr>
 				<tr class="button space" style="">

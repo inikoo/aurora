@@ -398,6 +398,7 @@ $smarty->assign('filter_value4',$_SESSION['state']['store']['pages']['f_value'])
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Page code starting with  <i>x</i>'),'label'=>_('Code')),
 	'title'=>array('db_key'=>'title','menu_label'=>_('Page title like  <i>x</i>'),'label'=>_('Title')),
+
 );
 $smarty->assign('filter_menu4',$filter_menu);
 $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);

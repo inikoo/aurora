@@ -27,6 +27,7 @@ class Customer extends DB_Table {
 	var $fuzzy=false;
 	var $tax_number_read=false;
 	var $warning_messages=array();
+	var $warning=false;
 	function __construct($arg1=false,$arg2=false) {
 
 		$this->table_name='Customer';
@@ -502,13 +503,6 @@ class Customer extends DB_Table {
 			);
 			mysql_query($sql);
 		}
-
-
-
-
-
-
-
 	}
 
 	function get_name() {
@@ -523,15 +517,12 @@ class Customer extends DB_Table {
 				$unknown_name='A quien corresponda';
 				$greeting_prefix='Estimado';
 			} else {
-				$unknown_name='To whom it corresponds';
-				$greeting_prefix='Dear';
+				$unknown_name=_('To whom it corresponds');
+				$greeting_prefix=_('Dear');
 			}
-
-
-
 		} else {
-			$unknown_name='To whom it corresponds';
-			$greeting_prefix='Dear';
+			$unknown_name=_('To whom it corresponds');
+			$greeting_prefix=_('Dear');
 		}
 		if ($this->data['Customer Name']=='' and $this->data['Customer Main Contact Name']=='')
 			return $unknown_name;
@@ -928,6 +919,7 @@ class Customer extends DB_Table {
 			$data['Customer First Contacted Date']=$raw_data['Customer First Contacted Date'];
 		else
 			$data['Customer First Contacted Date']=date("Y-m-d H:i:s");
+
 		$data['Customer Main Country Code']=$anon_address->data['Address Country Code'];
 		$data['Customer Main Country 2 Alpha Code']=$anon_address->data['Address Country 2 Alpha Code'];
 		$data['Customer Main Location']=$anon_address->data['Address Location'];
@@ -936,9 +928,6 @@ class Customer extends DB_Table {
 		$data['Customer Main Country First Division']=$anon_address->data['Address Country First Division'];
 		$data['Customer Main XHTML Address']=$anon_address->display('html');
 		$data['Customer Main Plain Address']=$anon_address->display('plain');
-
-
-
 
 		$data['Customer Staff Key']=0;
 		$data['Customer Main Contact Key']=$contact->id;
@@ -983,20 +972,12 @@ class Customer extends DB_Table {
 			$this->new=true;
 
 		}
-
-
-
-
 	}
-
-
 
 	function associate_ship_to_key($ship_to_key,$date,$current_ship_to=false) {
 
-
 		if ($current_ship_to) {
 			$principal='No';
-
 		} else {
 			$principal='Yes';
 			$current_ship_to=$ship_to_key;
@@ -1044,14 +1025,10 @@ class Customer extends DB_Table {
 
 	function update_ship_to($data) {
 
-
 		$ship_to_key=$data['Ship To Key'];
 		$current_ship_to=$data['Current Ship To Is Other Key'];
 
 		$this->associate_ship_to_key($ship_to_key,$data['Date'],$current_ship_to);
-
-
-
 		$sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%d where `Customer Key`=%d",
 			$current_ship_to,
 			$this->id
@@ -1148,7 +1125,7 @@ class Customer extends DB_Table {
 
 	function update_field_switcher($field,$value,$options='') {
 
-
+		//print ": $field,$value";
 
 
 		if (is_string($value))
@@ -1193,86 +1170,163 @@ class Customer extends DB_Table {
 		case('Customer Main Plain Telephone'):
 		case('Customer Main Plain FAX'):
 
-			if ($field=='Customer Main Plain Telephone')
-				$type='Telephone';
-			else
-				$type='FAX';
 
-			$telephone_data=array();
-			$telephone_data['editor']=$this->editor;
-			$telephone_data['Telecom Raw Number']=$value;
-			$telephone_data['Telecom Type']=$type;
-			$telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-			//$telephone=new Telecom('new',$telephone_data);
-			if ($telephone->id) {
-				$customers_with_this_telephone=$telephone->get_customer_keys();
+			$old_value=$this->data[$field];
+			if ($old_value!=$value) {
 
-				if (in_array($this->id,$customers_with_this_telephone)) {
-					$this->msg=_('The customer already has this number');
-					//$this->error=true;
-
-					//return;
-					$this->warning_messages[]=$this->msg;
+				if ($field=='Customer Main Plain Telephone') {
+					$type='Telephone';
+					$this->remove_principal_telephone();
+				}else {
+					$this->remove_principal_fax();
+					$type='FAX';
 				}
+
+
+				$telephone_data=array();
+				$telephone_data['editor']=$this->editor;
+				$telephone_data['Telecom Raw Number']=$value;
+				$telephone_data['Telecom Type']=$type;
+				$telephone=new Telecom("find fast create",$telephone_data);
+
+
+
+				//$telephone=new Telecom('new',$telephone_data);
+				//print_r($telephone);
+				if ($telephone->id) {
+					$customers_with_this_telephone=$telephone->get_customer_keys();
+					//print_r($customers_with_this_telephone);
+					//exit;
+					if (in_array($this->id,$customers_with_this_telephone)) {
+						$this->msg=_('The customer already has this number');
+						$this->error=true;
+						$this->warning_messages[]=$this->msg;
+						return;
+
+					}
+
+
+					$address=new Address($this->data['Customer Main Address Key']);
+					$address->associate_telecom($telephone->id,$type);
+
+
+
+
+					$address->associate_telecom_to_parents($type,'Customer',$this->id,$telephone->id);
+					$address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telephone->id);
+
+
+					if ($this->data['Customer Company Key']) {
+						// print "x3";
+						$address->associate_telecom_to_parents($type,'Company',$this->data['Customer Company Key'],$telephone->id);
+
+					}
+					// print "x4";
+					$telephone->update_parents();
+
+
+
+					$this->updated=1;
+
+					$this->new_value=$value;
+
+
+				}
+
+
+
+
+
+
+
+
+
 			}
-
-
-
-
-
-			if ($this->data['Customer Type']=='Person') {
-				$subject=new Contact($this->data['Customer Main Contact Key']);
-				$subject_type='Contact';
-			} else {
-				$subject=new Company($this->data['Customer Company Key']);
-				$subject_type='Company';
-
-			}
-
-
-
-			$subject->editor=$this->editor;
-
-			$subject->update(array($subject_type.' Main Plain '.$type=>$value));
-			//$address= new Address ($this->data['Customer Main Address Key']);
-			//$address->update_parents_principal_telecom_keys($type,array('Customer'));
-
-			//$telecom= new Telecom($this->data['Customer Main '.$type.' Key']);
-			//$telecom->update_parents();
-			$this->updated=$subject->updated;
-			$this->msg=$subject->msg;
-			$this->new_value=$subject->new_value;
-
 
 			break;
 		case('Customer Main Plain Mobile'):
 
-			$type='Mobile';
-			$telephone_data=array();
-			$telephone_data['editor']=$this->editor;
-			$telephone_data['Telecom Raw Number']=$value;
-			$telephone_data['Telecom Type']=$type;
-			$proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
-			//$proposed_telephone=new Telecom('new',$telephone_data);
-			if ($proposed_telephone->id) {
-				$customers_with_this_telephone=$proposed_telephone->get_customer_keys();
 
-				if (in_array($this->id,$customers_with_this_telephone)) {
-					$this->msg=_('The customer already has this number');
-					//$this->error=true;
+			$old_value=$this->data['Customer Main Plain Mobile'];
+			if ($old_value!=$value) {
+				$this->remove_principal_mobile();
+				if ($value!='') {
 
-					//return;
-					$this->warning_messages[]=$this->msg;
+					$type='Mobile';
+					$telephone_data=array();
+					$telephone_data['editor']=$this->editor;
+					$telephone_data['Telecom Raw Number']=$value;
+					$telephone_data['Telecom Type']=$type;
+					$proposed_telephone=new Telecom("find complete country code ".$this->data['Customer Main Country Code'],$telephone_data);
+
+					if ($proposed_telephone->id) {
+
+
+						$customers_with_this_number=$proposed_telephone->get_customer_keys();
+						// Check if email already in this customer an return
+
+						// print_r($customers_with_this_number);
+
+
+						if (in_array($this->id,$customers_with_this_number)) {
+
+							$this->error=true;
+							$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('These customer already has this number');
+
+							return;
+
+						}
+
+
+						// Check if email already in this store an return
+						foreach ($customers_with_this_number as $customer_with_this_number ) {
+							$other_customer_with_this_number=new Customer($customer_with_this_number);
+							if ($other_customer_with_this_number->data['Customer Store Key']==$this->data['Customer Store Key']) {
+								$error_customer_in_the_same_store=$other_customer_with_this_number;
+								$customer_name_with_this_number=$other_customer_with_this_number->data['Customer Name'];
+								//$this->error=true;
+								$this->warning=true;
+								$this->msg=_('Warning number also associated with customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
+
+								//return;
+							}
+						}
+					}
+					$contact=new Contact($this->data['Customer Main Contact Key']);
+					$contact-> update_field_switcher('Add Other Mobile',$value);
+					$new_princial_key=$contact->other_mobile_key;
+					$telecom=new Telecom($new_princial_key);
+
+
+					if ($telecom->id) {
+						//print "x1";
+						$contact->associate_mobile_to_parents('Customer',$this->id,$telecom->id);
+						// print "x2";
+						if ($this->data['Customer Company Key']) {
+							// print "x3";
+							$contact->associate_mobile_to_parents('Company',$this->data['Customer Company Key'],$telecom->id,false);
+						}
+						// print "x4";
+						$telecom->update_parents();
+						//  print "x5";
+						$this->updated=1;
+						//$this->msg=_('Mo removed');
+						$this->new_value=$value;
+
+					}else {
+						$this->error=1;
+						$this->msg='unknown error';
+						$this->new_value='';
+					}
+				}
+				else {
+					$this->updated=1;
+					$this->msg=_('Mobile removed');
+					$this->new_value='';
 				}
 			}
-			$contact=new Contact($this->data['Customer Main Contact Key']);
-			//$contact=new Contact($this->data['Customer Main Mobile Key']);
-			$contact->editor=$this->editor;
-			$contact->update(array('Contact Main Plain Mobile'=>$value));
-			$this->updated=$contact->updated;
-			$this->msg=$contact->msg;
-			$this->new_value=$contact->new_value;
 			break;
+
 
 		case('Add Other Mobile'):
 			$this->add_other_telecom('Mobile',$value);
@@ -1294,7 +1348,7 @@ class Customer extends DB_Table {
 				$customers_with_this_email=$email->get_customer_keys();
 
 				if (in_array($this->id,$customers_with_this_email)) {
-					$this->msg=_('The customer already has this email');
+					$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('The customer already has this email');
 					$this->error=true;
 
 					return;
@@ -1325,7 +1379,6 @@ class Customer extends DB_Table {
 
 				if ($this->data['Customer Company Key']) {
 					$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email_key,false);
-
 				}
 				$contact->associate_email_to_parents('Customer',$this->id,$email_key,false);
 
@@ -1334,121 +1387,75 @@ class Customer extends DB_Table {
 			break;
 		case('Customer Main Plain Email'):
 
-
-			if ($value=='') {// remove it
+			$old_value=$this->data['Customer Main Plain Email'];
+			if ($old_value!=$value) {
 				$this->remove_principal_email();
-				return;
+				if ($value!='') {
 
-			} else {//update email
-				$contact=new Contact($this->data['Customer Main Contact Key']);
-				$email=new Email('email',$value);
+					$email = new Email('email',$value);
+					if ($email->id) {
 
 
-				$contact_email_keys=$contact->get_email_keys();
+						$customers_with_this_email=$email->get_customer_keys();
+						// Check if email already in this customer an return
+						if (in_array($this->id,$customers_with_this_email)) {
 
-				if ($email->id) {
+							$this->error=true;
+							$this->msg='<img art="art/icons/error.png" alt="'._('Error').'"/> '._('The customer already has this email');
 
-					if (in_array($email->id,$contact_email_keys)) {
+							return;
 
-						$this->msg=_('No Change');
-						$this->new_value=$value;
-						$email->update_Email($value);
-						$this->updated=$email->updated;
-						if ($this->updated) {
-							$this->msg=_('Email updated');
-							$this->new_value=$value;
 						}
 
-						if ($this->data['Customer Main Email Key']!=$email->id) {
-							$contact->associate_email_to_parents('Customer',$this->id,$email->id);
-							$email->update_parents();
-							$this->updated=true;
-							$this->msg=_('Email updated');
-							$this->new_value=$value;
-						}
-						return;
 
-					}
-
-					$error_customer_in_the_same_store=false;
-					$customers_with_this_email=$email->get_customer_keys();
-					$warning_same_email_in_another_store=false;
-
-
-					unset($customers_with_this_email[$this->id]);
-
-					if (count($customers_with_this_email)>0) {
-						$customer_with_this_email=0;
-						$customer_name_with_this_email='';
-
-
+						// Check if email already in this store an return
 						foreach ($customers_with_this_email as $customer_with_this_email) {
 							$other_customer_with_this_email=new Customer($customer_with_this_email);
 							if ($other_customer_with_this_email->data['Customer Store Key']==$this->data['Customer Store Key']) {
 								$error_customer_in_the_same_store=$customer_with_this_email;
 								$customer_name_with_this_email=$other_customer_with_this_email->data['Customer Name'];
-							} else {
-								$warning_same_email_in_another_store=true;
+								$this->error=true;
+								$this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
 
+								return;
 							}
 						}
 
 
-						if ($error_customer_in_the_same_store) {
-							$this->msg=_('Email could not be updated, it belongs to customer').' <a href="customer.php?id='.$error_customer_in_the_same_store.'">'.$customer_name_with_this_email.'</a>';
-							$this->error=true;
-							return;
+					}
+
+
+					$contact=new Contact($this->data['Customer Main Contact Key']);
+					$contact-> update_field_switcher('Add Other Email',$value);
+					$new_princial_key=$contact->other_email_key;
+					$email=new Email($new_princial_key);
+					if ($email->id) {
+
+						$contact->associate_email_to_parents('Customer',$this->id,$email->id);
+						if ($this->data['Customer Company Key']) {
+							$contact->associate_email_to_parents('Company',$this->data['Customer Company Key'],$email->id,false);
 						}
+						$email->update_parents();
+						$this->updated=1;
+						$this->msg=_('Email removed');
+						$this->new_value=$value;
 
 
-
-
-					}
-
-
-					if ( $warning_same_email_in_another_store) {
-						$this->remove_principal_email();
-					}
-
-					$contact->editor=$this->editor;
-
-					$contact->update(array('Contact Main Plain Email'=>$value));
-					$this->updated=$contact->updated;
-					$this->msg=$contact->msg;
-					$this->new_value=$contact->new_value;
-				} else {//new email address not found
-
-					$principal_email=new Email($this->data['Customer Main Email Key']);
-					if ($principal_email->id) {
-						$customers_with_this_email=$principal_email->get_customer_keys();
-						unset($customers_with_this_email[$this->id]);
-
-						if (count($customers_with_this_email)>0) {
-							$this->remove_principal_email();
-						}
-
-
-
+					}else {
+						$this->error=1;
+						$this->msg='unknown error';
+						$this->new_value='';
 
 					}
-
-					$contact->editor=$this->editor;
-
-					$contact->update(array('Contact Main Plain Email'=>$value));
-					$this->updated=$contact->updated;
-					$this->msg=$contact->msg;
-					$this->new_value=$contact->new_value;
-
 
 				}
+				else {
 
-
-
+					$this->updated=1;
+					$this->msg=_('Email removed');
+					$this->new_value='';
+				}
 			}
-
-
-
-
 
 			break;
 		default:
@@ -1648,11 +1655,13 @@ class Customer extends DB_Table {
 			$customers_with_this_telephone=$proposed_telephone->get_customer_keys();
 
 			if (in_array($this->id,$customers_with_this_telephone)) {
-				$this->msg=_('The customer already has this number');
-				//$this->error=true;
+				$this->msg=_('This customer already has this number');
+				$this->error=true;
 
-				// return;
+
 				$this->warning_messages[]=$this->msg;
+				return;
+
 			}
 			unset($customers_with_this_telephone[$this->id]);
 
@@ -1660,17 +1669,11 @@ class Customer extends DB_Table {
 			foreach ($customers_with_this_telephone as $customer_with_this_telephone) {
 				$other_customer_with_this_telephone=new Customer($customer_with_this_telephone);
 				if ($other_customer_with_this_telephone->data['Customer Store Key']==$this->data['Customer Store Key']) {
+					$this->msg=_('Warning number also found in customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
 
-					if ($type=='Telephone')
-						$this->msg=_('Telephone could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
-					else if ($type=='Mobile')
-							$this->msg=_('Mobile could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
-						else
-							$this->msg=_('Fax could not be added, it belongs to customer').' <a href="customer.php?id='.$other_customer_with_this_telephone->id.'">'.$other_customer_with_this_telephone->data['Customer Name'].'</a>';
 
-						//$this->error=true;
 
-						// return;
+					// return;
 				}
 
 			}
@@ -1693,9 +1696,13 @@ class Customer extends DB_Table {
 				// $contact->associate_mobile_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
 
 			}
-		} else {
+		}
+		else {
 
 			$address=new Address($this->data['Customer Main Address Key']);
+			//print "aa:".$address->get_principal_telecom_key($type);
+			//exit;
+
 			$address->update_field_switcher('Add Other '.$type,$value);
 			$this->updated=$address->updated;
 			$this->msg=$address->msg;
@@ -1710,6 +1717,8 @@ class Customer extends DB_Table {
 				$address->associate_telecom_to_parents($type,'Contact',$this->data['Customer Main Contact Key'],$telecom_key,false);
 
 			}
+
+
 		}
 		if ($type=='Telephone')
 			$this->new_telephone_key=$telecom_key;
@@ -2181,12 +2190,7 @@ class Customer extends DB_Table {
 	}
 
 
-
-
-
 	public function update_activity() {
-
-
 
 
 		$this->data['Customer Lost Date']='';
@@ -2240,11 +2244,6 @@ class Customer extends DB_Table {
 			);
 
 		}
-
-
-
-
-
 
 		$sql=sprintf("update `Customer Dimension` set `Customer Active`=%s,`Customer Type by Activity`=%s , `Customer Lost Date`=%s where `Customer Key`=%d"
 			,prepare_mysql($this->data['Customer Active'])
@@ -3073,27 +3072,24 @@ class Customer extends DB_Table {
 	}
 
 	function update_tax_number($value) {
-		if ($this->data['Customer Type']=='Person') {
-			$subject=new Contact($this->data['Customer Main Contact Key']);
-			$subject->editor=$this->editor;
+	
+	$this->update_field('Customer Tax Number',$value);
+	if($this->updated){
+		$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
+		$this->id
+		);
+		mysql_query($sql);
+		
+	$this->new_value=$value;
+	}
+	
 
-			$subject->update(array('Contact Tax Number'=>$value));
 
-		} else {
-			$subject=new Company($this->data['Customer Company Key']);
-			$subject->editor=$this->editor;
-
-			$subject->update(array('Company Tax Number'=>$value));
-
-		}
-		$this->updated=$subject->updated;
-		$this->msg=$subject->msg;
-		$this->error=$subject->error;
-		$this->new_value=$subject->new_value;
+		
 	}
 
 
-	function update_registration_number($value) {
+	function update_registration_number_old($value) {
 		if ($this->data['Customer Type']=='Person') {
 			$subject=new Contact($this->data['Customer Main Contact Key']);
 			$subject->editor=$this->editor;
@@ -3719,6 +3715,25 @@ class Customer extends DB_Table {
 
 		return $comment;
 	}
+
+	function get_users_keys() {
+		$user_keys=array();
+		$sql=sprintf("select `User Key` from`Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
+        left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Customer' and `User Parent Key`=%d )
+        where  `Subject Type`='Customer' and `Subject Key`=%d "
+			,$this->id
+			,$this->id
+		);
+
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			$user_keys[$row['User Key']]=$row['User Key'];
+		}
+
+		return $user_keys;
+	}
+
 
 	function get_main_email_user_key() {
 		$user_key=0;
@@ -4443,8 +4458,15 @@ class Customer extends DB_Table {
 				$contact=sprintf('<span class="name">%s %s</span><br/>',$contact_label,$this->data['Customer Main Contact Name']);
 
 
-			if ($this->data['Customer Main XHTML Email'])
-				$email=sprintf('<span class="email">%s</span><br/>',$this->data['Customer Main XHTML Email']);
+			if ($this->data['Customer Main XHTML Email']) {
+				$main_email_user_key=$this->get_main_email_user_key();
+				if ($main_email_user_key) {
+					$user_icon='<a href="site_user.php?id='.$main_email_user_key.'"><img src="art/icons/world_bw.jpg" style="height:11px;position:relative;top:-1px" alt="*"/></a> ';
+				}else {
+					$user_icon='';
+				}
+				$email=$user_icon.sprintf('<span class="email">%s</span><br/>',$this->data['Customer Main XHTML Email']);
+			}
 			if ($this->data['Customer Main XHTML Telephone'])
 				$tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Customer Main XHTML Telephone']);
 			if ($this->data['Customer Main XHTML Mobile'])
@@ -5133,6 +5155,18 @@ class Customer extends DB_Table {
 		$this->remove_email($this->data['Customer Main Email Key']);
 	}
 
+	function remove_principal_mobile() {
+		$this->remove_telecom('Mobile',$this->data['Customer Main Mobile Key']);
+	}
+
+	function remove_principal_telephone() {
+		$this->remove_telecom('Telephone',$this->data['Customer Main Telephone Key']);
+	}
+
+	function remove_principal_fax() {
+		$this->remove_telecom('Fax',$this->data['Customer Main FAX Key']);
+	}
+
 	function remove_email($email_key) {
 
 		$email=new Email($email_key);
@@ -5141,6 +5175,8 @@ class Customer extends DB_Table {
 			$this->msg='Error, main email not found';
 		}
 
+
+		$email_to_delete_handle=$email->data['Email'];
 
 		$email_customer_keys=$email->get_parent_keys('Customer');
 		unset($email_customer_keys[$this->id]);
@@ -5190,17 +5226,24 @@ class Customer extends DB_Table {
 				$email->delete();
 			}
 
-			$this->updated=true;
-			$this->msg=_('Email Removed from Customer');;
-			$this->new_value='';
-			return;
+
+		}
+
+		$sql=sprintf("select `User Key` from  `User Dimension` where `User Handle`=%s and `User Type`='Customer' and `User Parent Key`=%d  and `User Active`='Yes' "
+
+			,prepare_mysql($email_to_delete_handle)
+			,$this->id
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$user_key=$row['User Key'];
+			$_user=new user($user_key);
+			$_user->deactivate();
 		}
 
 
-
-
 		$this->updated=true;
-		$this->msg='';
+		$this->msg=_('Email Removed from Customer');;
 		$this->new_value='';
 		return;
 
@@ -5302,14 +5345,9 @@ class Customer extends DB_Table {
 			return;
 		}
 
-
-
-
-
 		$address_to_delete=$this->get_address_keys();
 		$emails_to_delete=$this->get_email_keys();
 		$telecom_to_delete=$this->get_telecom_keys();
-
 
 		$history_data=array(
 			'History Abstract'=>_('Customer Deleted'),
@@ -5362,19 +5400,28 @@ class Customer extends DB_Table {
 		mysql_query($sql);
 
 
-		$sql=sprintf("select `User Key` from `User Dimension`  where `User Type`='Customer' and `User Parent Key`=%d ",$this->id);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			$sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d",$row['User Key']);
-			mysql_query($sql);
-			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d",$row['User Key']);
-			mysql_query($sql);
-			$sql=sprintf("delete from `User Rights Bridge` where `User Key`=%d",$row['User Key']);
-			mysql_query($sql);
-		}
-		$sql=sprintf("delete from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",$this->id);
-		mysql_query($sql);
+		//$sql=sprintf("select `User Key` from `User Dimension`  where `User Type`='Customer' and `User Parent Key`=%d ",$this->id);
+		//$res=mysql_query($sql);
+		//while ($row=mysql_fetch_assoc($res)) {
+		// $sql=sprintf("delete from `User Group User Bridge` where `User Key`=%d",$row['User Key']);
+		// mysql_query($sql);
+		// $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d",$row['User Key']);
+		// mysql_query($sql);
+		// $sql=sprintf("delete from `User Rights Bridge` where `User Key`=%d",$row['User Key']);
+		// mysql_query($sql);
+		//}
 
+		//$sql=sprintf("delete from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",$this->id);
+		//mysql_query($sql);
+
+
+		$users_to_desactivate=$this->get_users_keys();
+		foreach ($users_to_desactivate as $_user_key) {
+			$_user=new User($_user_key);
+			if ($_user->id) {
+				$_user->deactivate();
+			}
+		}
 
 
 
@@ -5542,6 +5589,29 @@ class Customer extends DB_Table {
 			return;
 		}
 
+		// Deactivate to_marge_users & change the customer key
+
+		$users_to_desactivate=$customer_to_merge->get_users_keys();
+		foreach ($users_to_desactivate as $_user_key) {
+			$_user=new User($_user_key);
+			if ($_user->id) {
+				$_user->deactivate();
+			}
+		}
+
+		foreach ($users_to_desactivate as $_user_key) {
+
+			$sql=sprintf("update `User Dimension` set `User Parent Key`=%d where `User Key`=%d  "     ,
+				$this->id,
+				$_user_key
+			);
+			mysql_query($sql);
+		}
+
+
+
+
+
 		$sql=sprintf("select `History Key` from `Customer History Bridge` where `Type` in ('Orders','Notes') and `Customer Key`=%d ",$customer_to_merge->id);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
@@ -5593,6 +5663,16 @@ class Customer extends DB_Table {
 
 		}
 
+
+
+
+
+
+
+
+
+
+
 		$history_data=array(
 			'History Abstract'=>_('Customer').' '.$customer_to_merge->get_formated_id_link($customer_id_prefix).' '._('merged'),
 			'History Details'=>_('Orders Transfered').':'.$customer_to_merge->get('Orders').'<br/>'._('Notes Transfered').':'.$customer_to_merge->get('Notes').'<br/>',
@@ -5616,16 +5696,7 @@ class Customer extends DB_Table {
 		$this->update_activity();
 		$this->update_is_new();
 
-
-
-
-
-
-
 		$customer_to_merge->delete('',$customer_id_prefix);
-
-
-
 
 
 		$sql=sprintf("update `Customer Merge Bridge` set `Customer Key`=%d,`Date Merged`=%s where `Customer Key`=%d ",$this->id,prepare_mysql($this->editor['Date']),$customer_to_merge->id);

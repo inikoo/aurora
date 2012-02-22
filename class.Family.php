@@ -2895,7 +2895,7 @@ class Family extends DB_Table {
                                <td class="code">%s</td>
                                <td class="price">%s</td>
                                <td class="input"><input  id="qty%s"  type="text" value="%s" class="%s"  %s ></td>
-                               <td><img src="%sinikoo_files/art/icons/basket_add.png" onClick="order_single_product(%d)" style="display:%s"/></td>
+                               <td><img src="art/icons/basket_add.png" onClick="order_single_product(%d)" style="display:%s"/></td>
                                <td class="description">%s %s</td><td class="rrp">%s</td>
                                <td><span id="loading%d"></span></td>
                                </tr>'."\n",

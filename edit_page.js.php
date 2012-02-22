@@ -11,7 +11,7 @@ var dialog_upload_page_content;
 var dialog_upload_page_content_files;
 var dialog_delete_page;
 var dialog_family_list;
-
+var dialog_add_redirection;
 
 var CellEdit = function (callback, newValue) {
 
@@ -151,7 +151,7 @@ function change_number_auto_see_also(e,operation){
 	var request='ar_edit_sites.php?tipo=update_see_also_quantity&id='+Dom.get('page_key').value +'&operation='+operation
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o){
-	                            alert(o.responseText);	
+	                           // alert(o.responseText);	
 			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			                    if(r.state==200){
 			                    update_page_preview_snapshot();
@@ -282,7 +282,7 @@ family_key=tables.table4.getRecord(oArgs.target).getData('key');
  dialog_family_list.hide();
 
 	var request = 'ar_edit_sites.php?tipo=edit_page&key=' + 'family_key' + '&newvalue=' + family_key+ '&id=' + Dom.get('page_key').value
-	 alert(request);
+	// alert(request);
 
 	YAHOO.util.Connect.asyncRequest('POST', request, {
 		success: function(o) {
@@ -298,6 +298,7 @@ family_key=tables.table4.getRecord(oArgs.target).getData('key');
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
+    
     tables = new function() {
 
    
@@ -759,6 +760,7 @@ Dom.setStyle('tabbed_container','margin','0px 20px')
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('d_'+this.id,'display','');
+Dom.setStyle('d_'+this.id,'height','420px');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
@@ -1006,10 +1008,83 @@ region1 = Dom.getRegion('edit_parent_family');
  var pos =[region1.right-region2.width+200,region1.bottom+2]
 
     Dom.setXY('dialog_family_list', pos);
-    dialog_family_list.show(); 
+    dialog_family_list.show();
 }
 
+function save_add_redirection(){
+url=Dom.get('add_redirect_source').value;
+var request='ar_edit_sites.php?tipo=add_redirect&url='+escape(url)+'&page_key='+Dom.get('page_key').value;
+//alert(request)
+YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o){
+	                            //alert(o.responseText);	
+			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+			                    if(r.state==200){
+                                    location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
+                                }else{
+                                Dom.get('add_redirect_msg').innerHTML=r.msg
+                                }
+   			}
+    });
+}
+
+function dialog_add_redirection_chenged(e){
+ Dom.get('add_redirect_msg').innerHTML='';
+
+ var key;     
+     if(window.event)
+         Key = window.event.keyCode; //IE
+     else
+         Key = e.which; //firefox     
+
+     if (Key == 13){
+	 save_add_redirection();
+	 
+	 }
+
+}
+
+function show_dialog_add_redirection(){
+	region1 = Dom.getRegion('show_dialog_add_redirection'); 
+    region2 = Dom.getRegion('dialog_add_redirection'); 
+ var pos =[region1.right-region2.width,region1.bottom+2]
+    Dom.setXY('dialog_add_redirection', pos);
+    
+    dialog_add_redirection.show();
+    Dom.get('add_redirect_source').value='';
+ Dom.get('add_redirect_msg').innerHTML='';
+Dom.get('add_redirect_source').focus();
+}
+
+function delete_redirect(rediect_key){
+var request='ar_edit_sites.php?tipo=delete_redirect&id='+rediect_key+'&site_key='+Dom.get('site_key').value;
+
+YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o){
+	                            alert(o.responseText);	
+			                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+			                    if(r.state==200){
+                                    location.href='edit_page.php?id='+r.page_key+'&content_view=header';;
+                                }else{
+                                
+                                }
+   			}
+    });
+}
+
+function cancel_add_redirection(){
+    dialog_add_redirection.hide();
+
+}
+
+function display_history(){
+Dom.setStyle('the_table1','display','')
+Dom.setStyle('display_history_div','display','none')
+}
+
+
 function init(){
+
 
 
   dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {visible : false,close:true,underlay: "none",draggable:false});
@@ -1024,6 +1099,7 @@ function init(){
 
     Event.addListener('delete_page', "click", show_delete_page);
 
+ 
    Event.addListener('add_auto_see_also_page', "click", change_number_auto_see_also,'add');
    Event.addListener('remove_auto_see_also_page', "click", change_number_auto_see_also,'remove');
 
@@ -1041,6 +1117,7 @@ function init(){
   Event.addListener('show_more_configuration', "click", show_more_configuration);
   Event.addListener('hide_more_configuration', "click", hide_more_configuration);
 
+  Event.addListener('display_history', "click", display_history);
 
  
 
@@ -1065,6 +1142,15 @@ dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", { visible : false
      Event.addListener("add_other_found_in_page", "click", show_dialog_page_list,'found_in', true);
   Event.addListener("add_other_see_also_page", "click", show_dialog_page_list,'see_also' , true);
   
+
+dialog_add_redirection = new YAHOO.widget.Dialog("dialog_add_redirection", {visible : false,close:true,underlay: "none",draggable:false});
+
+    dialog_add_redirection.render();
+      Event.addListener('show_dialog_add_redirection', "click", show_dialog_add_redirection);
+      Event.addListener('save_add_redirection', "click", save_add_redirection);
+      Event.addListener('cancel_add_redirection', "click", cancel_add_redirection);
+
+
 
 
   init_search('site');

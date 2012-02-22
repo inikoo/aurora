@@ -418,7 +418,8 @@ foreach ($__cols as $cols) {
 		//     print_r($cols);
 
 		if ($uk_product->id)
-			$parts=$uk_product->get('Parts SKU');
+			
+			$parts=$uk_product->get_current_part_skus();
 		else {
 			print("product not found in uk: ".$code."\n");
 			continue;
@@ -426,10 +427,11 @@ foreach ($__cols as $cols) {
 		$product=new Product('find',$data,'create');
 		if ($product->new) {
 			$product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
-			if (isset($parts[0])) {
+			if (count($parts)>0) {
+				$part_sku_from_uk=array_pop($parts);
 				$part_list[]=array(
 					'Product ID'=>$product->get('Product ID'),
-					'Part SKU'=>$parts[0],
+					'Part SKU'=>$part_sku_from_uk,
 					'Product Part Id'=>1,
 					'requiered'=>'Yes',
 					'Parts Per Product'=>1,
@@ -438,12 +440,9 @@ foreach ($__cols as $cols) {
 
 				$product->new_current_part_list(array(),$part_list);
 				$product->update_parts();
-				$part =new Part('sku',$parts[0]);
+				$part =new Part('sku',part_sku_from_uk);
 				$part->update_used_in();
 			}
-
-
-
 		}
 		//print "rrp: $rrp <-\n";
 		$product->change_current_key($product->id);

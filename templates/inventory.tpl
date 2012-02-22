@@ -3,7 +3,7 @@
 <input type='hidden' id="warehouse_id" value="{$warehouse_id}">
 <span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_inventory.php{if $warehouse_id}?warehouse={$warehouse_id}{/if}">{t}here{/t}</a>.</span>
 <div class="branch"> 
-  <span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{$warehouse->get('Warehouse Name')} {t}Inventory{/t}</span>
 </div>
 
 

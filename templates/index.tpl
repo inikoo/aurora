@@ -1,9 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px 0px">
-	<div style="padding:0px 20px">
-		<div class="branch" style="clear:left;">
-			<span>{t}Dashboard{/t}</span> 
-		</div>
+	<div style="padding:0px 20px;margin-top:5px">
+		
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
     {if $number_of_dashboards> 1}<img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Dashboard{/t} {$prev.name}" onclick="window.location='index.php?dashboard_id={$prev.id}'"  src="art/previous_button.png" alt="<"  style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if}
 <div class="buttons" style="float:left">

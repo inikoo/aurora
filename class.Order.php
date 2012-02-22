@@ -233,6 +233,7 @@ class Order extends DB_Table {
 
 	function send_to_warehouse($date=false,$extra_data=false) {
 
+
 		if (!$date)
 			$date=date('Y-m-d H:i:s');
 
@@ -260,13 +261,14 @@ class Order extends DB_Table {
 
 		);
 
+
 		$dn=new DeliveryNote('create',$data_dn,$this);
 		$dn->create_inventory_transaction_fact($this->id,$extra_data);
 		$this->update_delivery_notes('save');
 		$this->data['Order Current Dispatch State']='Ready to Pick';
 		$this->data['Order Current XHTML Dispatch State']=_('Ready to Pick');
 		$this->data['Order Current XHTML State']=$this->calculate_state();
-		$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`,=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+		$sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
 			,prepare_mysql($this->data['Order Current Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML Dispatch State'])
 			,prepare_mysql($this->data['Order Current XHTML State'])
@@ -1919,8 +1921,8 @@ class Order extends DB_Table {
 			$this->data['Order Invoiced Tax Amount']=$row['inv_tax'];
 			$this->data['Order Invoiced Refund Net Amount']=$row['ref_net'];
 			$this->data['Order Invoiced Refund Tax Amount']=$row['ref_tax'];
-			
-			
+
+
 			$this->data['Order Out of Stock Net Amount']=$row['out_of_stock_net'];
 			$this->data['Order Out of Stock Tax Amount']=$row['out_of_stock_tax'];
 
@@ -2016,7 +2018,7 @@ class Order extends DB_Table {
 			$this->id
 		);
 
-	//	 print "$sql\n";
+		//  print "$sql\n";
 		if (!mysql_query($sql))
 			exit("ERROR $sql\n");
 
@@ -2255,7 +2257,7 @@ class Order extends DB_Table {
 		mysql_query($sql);
 
 		$this->update_customer_history();
-			$this->update_full_search();
+		$this->update_full_search();
 
 	}
 
@@ -2278,7 +2280,7 @@ class Order extends DB_Table {
 		);
 		mysql_query($sql);
 		$this->update_customer_history();
-			$this->update_full_search();
+		$this->update_full_search();
 
 	}
 
@@ -2431,10 +2433,6 @@ class Order extends DB_Table {
 			$this->update_item_totals_from_order_transactions();
 			$this->get_items_totals_by_adding_transactions();
 			$this->update_no_normal_totals('save');
-
-
-
-
 			$this->update_totals_from_order_transactions();
 
 		}
@@ -2445,47 +2443,44 @@ class Order extends DB_Table {
 
 
 
-	function update_charges_amount($data) {
-		$value=sprintf("%.2f",$data[0]['Charge Net Amount']);;
+	function update_charges_amount($charge_data) {
+	
+	
+	
+		if ($charge_data['Charge Net Amount']!=$this->data['Order Charges Net Amount']) {
 
-		if ($value!=$this->data['Order Charges Net Amount']) {
-
-			$this->data['Order Charges Net Amount']=$value;
+			$this->data['Order Charges Net Amount']=$charge_data['Charge Net Amount'];
 
 			$sql=sprintf('delete from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`="Charges" and `Delivery Note Key` IS NULL and `Invoice Key` IS NULL',
 				$this->id
 			);
 			mysql_query($sql);
 			// print "$sql\n";
-			$charges_array=$data;
 
-			$total_charges_net=0;
-			$total_charges_tax=0;
-			foreach ($charges_array as $charge_data) {
-				$total_charges_net+=$charge_data['Charge Net Amount'];
-				$total_charges_tax+=$charge_data['Charge Tax Amount'];
-				if ($charge_data['Charge Tax Amount']!=0 or $charge_data['Charge Net Amount']!=0) {
-					$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
-						$this->id,
-						prepare_mysql($this->data['Order Date']),
-						prepare_mysql('Charges'),
-						$charge_data['Charge Key'],
-						prepare_mysql($charge_data['Charge Description']),
-						$charge_data['Charge Net Amount'],
-						prepare_mysql($this->data['Order Tax Code']),
-						$charge_data['Charge Tax Amount'],
-						$charge_data['Charge Net Amount'],
-						$charge_data['Charge Tax Amount'],
-						prepare_mysql($this->data['Order Currency']),
-						$this->data['Order Currency Exchange'],
-						prepare_mysql($this->data['Order Original Metadata'])
-					);
+			$total_charges_net=$charge_data['Charge Net Amount'];
+			$total_charges_tax=$charge_data['Charge Tax Amount'];
+			if ($charge_data['Charge Tax Amount']!=0 or $charge_data['Charge Net Amount']!=0) {
+				$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+					$this->id,
+					prepare_mysql($this->data['Order Date']),
+					prepare_mysql('Charges'),
+					$charge_data['Charge Key'],
+					prepare_mysql($charge_data['Charge Description']),
+					$charge_data['Charge Net Amount'],
+					prepare_mysql($this->data['Order Tax Code']),
+					$charge_data['Charge Tax Amount'],
+					$charge_data['Charge Net Amount'],
+					$charge_data['Charge Tax Amount'],
+					prepare_mysql($this->data['Order Currency']),
+					$this->data['Order Currency Exchange'],
+					prepare_mysql($this->data['Order Original Metadata'])
+				);
 
-					//print ("$sql\n");
-					mysql_query($sql);
-				}
-
+				//print ("$sql\n");
+				mysql_query($sql);
 			}
+
+
 
 
 			$this->data['Order Charges Net Amount']=$total_charges_net;
@@ -2501,16 +2496,24 @@ class Order extends DB_Table {
 			//print "*a $sql\n";
 
 			// exit;
+
+	$this->updated=true;
+			$this->new_value=$this->data['Order Charges Net Amount'];
+
+			$this->update_item_totals_from_order_transactions();
+			$this->get_items_totals_by_adding_transactions();
+			$this->update_no_normal_totals('save');
 			$this->update_totals_from_order_transactions();
+
 
 
 
 		}
 
+
+
+
 	}
-
-
-
 
 
 
@@ -3435,6 +3438,7 @@ class Order extends DB_Table {
 	}
 
 	function update_deals_usage() {
+
 		$sql=sprintf("select `Deal Key` from  `Order Deal Bridge` where `Order Key`=%d",$this->id);
 		// exit("$sql\n");
 		$res=mysql_query($sql);

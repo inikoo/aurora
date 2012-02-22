@@ -1,3 +1,4 @@
+<?php exit(); ?>
 var order_key="<?php echo $_REQUEST['order_key']?>"
 
 var data={ 

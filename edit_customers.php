@@ -48,10 +48,12 @@ if (isset($_REQUEST['list_key'])  and is_numeric($_REQUEST['list_key']) ) {
 
 } else if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
     $store_id=$_REQUEST['store'];
-
+  $smarty->assign('customer_list_name','');
+    $smarty->assign('customer_list_id',0);
 } else {
     $store_id=$_SESSION['state']['customers']['store'];
-
+$smarty->assign('customer_list_name','');
+    $smarty->assign('customer_list_id',0);
 }
 
 
@@ -78,6 +80,7 @@ $smarty->assign('store',$store);
 
 $_SESSION['state']['customers']['store']=$store_id;
 
+$smarty->assign('store_id',$store->id);
 
 
 
@@ -119,8 +122,8 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);
 
 $filter_menu=array(
                  'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>'Customer Name','label'=>'Name'),

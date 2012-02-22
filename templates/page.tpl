@@ -7,7 +7,8 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span>{if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a> &rarr; <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a>  &rarr; {/if}<img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
+		
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
@@ -58,41 +59,53 @@
 					<td>{$page->get('Page Short Title')}</td>
 				</tr>
 			</table>
+			<table border="0" style="width:100%;margin:0px;height:20">
+					<tr>
+						<td style="width:150px"></td>
+						<td class="aright" style="width:100px">{t}All{/t}</td>
+						<td class="aright" style="width:100px">{t}Users{/t}</td>
+						<td style="width:40px"></td>
+					</tr>
+				</table>
 			<table border="0" id="table_total_visitors" class="show_info_product">
-				<tr>
-					<td style="width:140px">{t}Total Hits{/t}:</td>
-					<td class="number">
-					<div>
-						{$page->get('Visits')}
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<td style="width:140px">{t}Unique Visitors{/t}:</td>
-					<td class="number">
-					<div>
-						{$page->get('Unique Visitors')}
-					</div>
-					</td>
-				</tr>
+					<tr>
+						<td style="width:150px">{t}Page Hits{/t}:</td>
+						<td style="width:100px" class="number aright">{$page->get('Total Acc Requests')}</td>
+						<td style="width:100px" class="number aright">{$page->get('Total Acc Users Requests')}</td>
+						<td style="width:40px"></td>
+					</tr>
+					<tr>
+						<td>{t}Sessions{/t}:</td>
+						<td class="number aright">{$page->get('Total Acc Sessions')}</td>
+						<td class="number aright">{$page->get('Total Acc Users Sessions')}</td>
+						<td style="width:40px"></td>
+					</tr>
+					<tr>
+						<td>{t}Visitors{/t}:</td>
+						<td class="number aright">{$page->get('Total Acc Visitors')}</td>
+						<td class="number aright">{$page->get('Total Acc Users')}</td>
+						<td style="width:40px"></td>
+					</tr>
 			</table>
 			<table border="0" id="table_1day_visitors" class="show_info_product">
 				<tr>
-					<td style="width:140px">{t}Last 24h Hits{/t}:</td>
-					<td class="number">
-					<div>
-						{$page->get('1 Day Visits')}
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<td style="width:140px">{t}Last 24h Visitors{/t}:</td>
-					<td class="number">
-					<div>
-						{$page->get('1 Day Unique Visitors')}
-					</div>
-					</td>
-				</tr>
+						<td style="width:150px">{t}Last 24h Hits{/t}:</td>
+						<td style="width:100px" class="number aright"> {$page->get('1 Day Acc Requests')} </td>
+						<td style="width:100px" class="number aright">{$page->get('1 Day Acc Users Requests')}</td>
+						<td style="width:40px"></td>
+					</tr>
+					<tr>
+						<td>{t}Last 24h Sessions{/t}:</td>
+						<td class="number aright"> {$page->get('1 Day Acc Sessions')} </td>
+						<td class="number aright"> {$page->get('1 Day Acc Users Sessions')} </td>
+						<td style="width:40px"></td>
+					</tr>
+					<tr>
+						<td>{t}Last 24h Visitors{/t}:</td>
+						<td class="number aright"> {$page->get('1 Day Acc Visitors')} </td>
+						<td class="number aright">{$page->get('1 Day Acc Users')}</td>
+						<td style="width:40px"></td>
+					</tr>
 				<tr>
 					<td style="width:140px">{t}Current Visitors{/t}:</td>
 					<td class="number">
@@ -104,9 +117,9 @@
 			</table>
 			<table class="show_info_product">
 				<tr>
-					<td style="width:140px">{t}Parent Pages{/t}:</td>
+					<td style="width:100px">{t}Parent Pages{/t}:</td>
 					<td> 
-					<table>
+					<table >
 						{foreach from=$page->get_found_in($site->get('Site URL')) item=found_in_page} 
 						<tr>
 							<td style="padding:0">{$found_in_page.found_in_label} <span class="id">(<a href="page.php?id={$found_in_page.found_in_key}">{$found_in_page.found_in_code}</a>)</span></td>
@@ -118,11 +131,11 @@
 				<tr>
 					<td>{t}Related Pages{/t}:</td>
 					<td> 
-					<table>
+					<table style="font-size:80%">
 						{foreach from=$page->get_see_also($site->get('Site URL')) item=see_also_page} 
 						<tr>
 							<td style="padding:0">{$see_also_page.see_also_label} <span class="id">(<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</span></td>
-							<td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
+							<td style="padding-left:10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
 						</tr>
 						{/foreach} 
 					</table>

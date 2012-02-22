@@ -16,7 +16,8 @@ class EmailCredentials extends DB_Table{
 
 	var $areas=false;
 	var $locations=false;
-
+	var $updated_data=array();
+	
 	function EmailCredentials($a1=false,$a2=false,$a3=false) {
 
 		$this->table_name='Email Credentials';
@@ -151,23 +152,64 @@ class EmailCredentials extends DB_Table{
 				$value=_trim($value);
 
 			$this->update_field_switcher($key,$value,$options);
+			if ( $this->updated==true) {
+				$this->updated_data[]=array('key'=>$key,'new_value'=>$this->new_value);
+			}
+			$this->updated=false;
+
 
 
 		}
 
-		if (!$this->updated and $this->msg=='')
+		if (count($this->updated_data)==0 and $this->msg=='')
 			$this->msg.=_('Nothing to be updated')."\n";
 
 	}
+
+
+	function get_password($key){
+		
+		$password=AESDecryptCtr(base64_decode($this->data['Password']),$key,256);
+		$password=preg_replace('/^\_Hello \:\)/','',$password);
+		return $password;
+	}
+	
+
+	
+
+	 function update_field_switcher($field,$value,$options='') {
+
+
+		$base_data=$this->base_data();
+		
+		if($field=='Password'){
+			$salt='_Hello :)';
+			$value=base64_encode(AESEncryptCtr($salt.$value,$options,256));
+		
+		}
+
+
+
+		if (array_key_exists($field,$base_data)) {
+
+			if ($value!=$this->data[$field]) {
+				$this->update_field($field,$value,$options);
+
+			}
+		}
+		
+	}
+
 
 	function cure_data($data) {
 		switch ($data['Email Provider']) {
 		case('Gmail'):
 			$data['Incoming Mail Server']='imap.gmail.com:993/imap/ssl/novalidate-cert';
 			$data['Outgoing Mail Server']='smtp.gmail.com';
+			if(array_key_exists('Email Address',$data))
 			$data['Login']=$data['Email Address'];
 			break;
-			defaut:
+			default:
 		}
 		return $data;
 
@@ -228,6 +270,8 @@ class EmailCredentials extends DB_Table{
 		$sql=sprintf("delete from `Email Credentials Dimension` where `Email Credentials Key`=%d",$this->id);
 		mysql_query($sql);
 	}
+	
+	
 
 }
 

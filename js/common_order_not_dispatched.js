@@ -1,9 +1,10 @@
+var dialog_sending_to_warehouse;
 
 function save_use_calculated_shipping(){
 var ar_file='ar_edit_orders.php'; 
     	var request='tipo=use_calculated_shipping&order_key='+order_key;
 
-alert(request);
+//alert(request);
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
@@ -37,7 +38,10 @@ function save_set_shipping(){
 value=Dom.get("shipping_amount").value;
 var ar_file='ar_edit_orders.php'; 
     	var request='tipo=set_order_shipping&value='+value+'&order_key='+order_key;
+Dom.setStyle('save_set_shipping_wait','display','');
+Dom.setStyle('save_set_shipping','display','none');
 
+//return;
 //alert(request);
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
@@ -46,7 +50,8 @@ var ar_file='ar_edit_orders.php';
 						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-					
+					Dom.setStyle('save_set_shipping_wait','display','none');
+Dom.setStyle('save_set_shipping','display','');
 					for(x in r.data){
 
 						    Dom.get(x).innerHTML=r.data[x];
@@ -73,7 +78,48 @@ dialog_edit_shipping.hide();
 }
 
 
+function save_set_items_charges(){
+value=Dom.get("items_charges_amount").value;
+var ar_file='ar_edit_orders.php'; 
+    	var request='tipo=set_order_items_charges&value='+value+'&order_key='+order_key;
+Dom.setStyle('save_set_items_charges_wait','display','');
+Dom.setStyle('save_set_items_charges','display','none');
 
+
+//alert(request);return;
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+					//	alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+					Dom.setStyle('save_set_items_charges_wait','display','none');
+Dom.setStyle('save_set_items_charges','display','');
+					for(x in r.data){
+//alert(x+' '+r.data[x])
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+					         //  Dom.get('order_items_charges_method').innerHTML=r.order_items_charges_method;
+					            Dom.get('items_charges_amount').value=r.items_charges_amount
+						}
+						reset_set_items_charges()
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
+}
+
+function reset_set_items_charges(){
+dialog_edit_items_charges.hide();
+}
 
 
 function close_edit_delivery_address_dialog(){
@@ -201,10 +247,10 @@ function change_discount(o,transaction_key,record_key,value){
 	var pos =[region1.right-region2.width,region1.bottom]
 	Dom.setXY('change_staff_discount', pos);
 	change_staff_discount.show()
+	Dom.get('change_discount_transaction_key').value=transaction_key;
+    Dom.get('change_discount_record_key').value= record_key;
+	Dom.get('change_discount_value').value=value;
 	
-		Dom.get('change_discount_transaction_key').value=transaction_key;
-     Dom.get('change_discount_record_key').value= record_key;
-Dom.get('change_discount_value').value=value;
 	Dom.get('change_discount_value').focus();
 }
 function cancel_change_discount(){
@@ -216,6 +262,56 @@ function cancel_change_discount(){
 	change_staff_discount.hide();
 
     }
+
+
+function create_delivery_note(){
+	var ar_file='ar_edit_orders.php'; 
+    var request='tipo=send_to_warehouse&order_key='+order_key;
+
+	Dom.addClass(['cancel','done','import_transactions_mals_e'],'disabled');
+
+Dom.setStyle('sending_to_warehouse_waiting','display','')
+Dom.setStyle('sending_to_warehouse_msg','display','none')
+
+dialog_sending_to_warehouse.show();
+
+
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+							//		alert(o.responseText);
+
+						//return;
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+								
+								if(Dom.get('referral').value=='store_pending_orders'){
+								window.location="customers_pending_orders.php?store="+Dom.get('store_key').value;
+								}else{
+								window.location="customer.php?id="+Dom.get('customer_key').value;
+								}
+						}else{
+						Dom.removeClass(['cancel','done','import_transactions_mals_e'],'disabled');
+						Dom.setStyle('sending_to_warehouse_waiting','display','none')
+						Dom.setStyle('sending_to_warehouse_msg','display','')
+						Dom.get('sending_to_warehouse_msg').innerHTML=r.msg;
+						}
+						
+						
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
+
+}
 
 
 function save_change_discount(){
@@ -272,11 +368,14 @@ var ar_file='ar_edit_orders.php';
 						datatable.updateCell(record,'quantity',r.quantity);
 						datatable.updateCell(record,'to_charge',r.to_charge);
 						datatable.updateCell(record,'description',r.description);
+											datatable.updateCell(record,'discount_percentage',r.discount_percentage);
+
+					
 					
 change_staff_discount.hide();
 Dom.setStyle('change_staff_discount_waiting','display','none')
 Dom.setStyle('change_staff_discount_buttons','display','')
-
+//Dom.get('change_discount_value').value=value;
 						
 						
 						
@@ -299,9 +398,456 @@ Dom.setStyle('change_staff_discount_buttons','display','')
 }
 }
 
+function show_dialog_edit_items_charges(){
+dialog_edit_items_charges.show();
+Dom.get('items_charges_amount').focus();
+}
+
+function submit_edit_items_charges(e){
+     var key;     
+     if(window.event) key = window.event.keyCode; 
+     else key = e.which; 
+     if (key == 13)save_set_items_charges();
+};
+
+function submit_edit_shipping(e){
+     var key;     
+     if(window.event) key = window.event.keyCode; 
+     else key = e.which; 
+     if (key == 13)save_set_shipping();
+};
+
+
+function show_dialog_edit_shipping(){
+dialog_edit_shipping.show();
+Dom.get('shipping_amount').focus();
+}
+
+
+function save(tipo){
+    //alert(tipo)
+    switch(tipo){
+    case('cancel'):
+    
+    if(Dom.hasClass('cancel_save','disabled')){
+    	return;
+    }
+    Dom.setStyle('cancel_buttons','display','none')
+    Dom.setStyle('cancel_wait','display','')
+	var value=encodeURIComponent(Dom.get("cancel_input").value);
+	var ar_file='ar_edit_orders.php'; 
+	var request='tipo=cancel&note='+value;
+	//alert('R:'+request);
+	
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						//alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						
+						window.location.reload();
+						}else{
+						alert(r.msg)
+						Dom.setStyle('cancel_buttons','display','')
+                        Dom.setStyle('cancel_wait','display','none')
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+    
+    
+    break;
+    }
+
+}
+
+function open_cancel_dialog(){
+
+
+	Dom.get("cancel_input").value='';
+	 Dom.addClass('cancel_save','disabled')
+
+    dialog_cancel.show();
+    Dom.get('cancel_input').focus();
+}
+
+function show_only_ordered_products(){
+ 
+
+
+ Dom.removeClass('all_products','selected')
+   Dom.addClass('ordered_products','selected')
+
+   var table=tables['table0'];
+   var datasource=tables['dataSource0'];
+   var request='&display=ordered_products';
+    Dom.get('products_display_type').value='ordered_products';
+
+   datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+}
+
+function show_all_products(){
+  Dom.removeClass('ordered_products','selected')
+   Dom.addClass('all_products','selected')
+
+   var table=tables['table0'];
+   var datasource=tables['dataSource0'];
+   var request='&display=all_products';
+  Dom.get('products_display_type').value='all_products';
+  
+  
+  
+   datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+}
+
+function show_edit_button(e,data){
+
+Dom.setStyle('edit_button_'+data.name,'visibility','visible')
+
+}
+
+function hide_edit_button(e,data){
+
+if(data.name=='shipping' && Dom.get('order_shipping_method').value=='On Demand'){
+    return
+}    
+    
+Dom.setStyle('edit_button_'+data.name,'visibility','hidden')
+
+}
+
+function show_dialog_import_transactions_mals_e(){
+Dom.get('transactions_mals_e').value='';
+dialog_import_transactions_mals_e.show();
+}
+
+function save_import_transactions_mals_e(){
+
+ var values=new Object();
+values['data']=Dom.get('transactions_mals_e').value;
+
+jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(values));
+
+
+var ar_file='ar_edit_orders.php'; 
+	var request='tipo=import_transactions_mals_e&order_key='+Dom.get('order_key').value+'&values='+jsonificated_values;
+	//alert('R:'+request);
+	//alert(request);
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						window.location.reload();
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
+}
+
+var myonCellClick = function(oArgs) {
+
+
+    var target = oArgs.target,
+    column = this.getColumn(target),
+    record = this.getRecord(target);
+
+
+    
+    datatable = this;
+    var records=this.getRecordSet();
+    //alert(records.getLength())
+   
+
+    //return;
+
+  
+    var recordIndex = this.getRecordIndex(record);
+
+		
+    switch (column.action) {
+    case('add_object'):
+    case('remove_object'):
+	var data = record.getData();
+
+	if(column.action=='add_object')
+	    var new_qty=parseFloat(data['quantity'])+1;
+	else{
+	    qty=parseFloat(data['quantity'])
+	    if(qty==0){
+	        return;
+	    }
+	    var new_qty=qty-1;
+
+        }
+
+ var ar_file='ar_edit_orders.php';
+	request='tipo=edit_new_order&id='+order_key+'&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&pid='+ data['pid'];
+//alert(request)
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					   // alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						for(x in r.data){
+
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+						Dom.get('ordered_products_number').value=r.data['ordered_products_number'];
+						if(r.discounts){
+						    Dom.get('tr_order_items_gross').style.display='';
+						    Dom.get('tr_order_items_discounts').style.display='';
+
+						}else{
+						    Dom.get('tr_order_items_gross').style.display='none';
+						    Dom.get('tr_order_items_discounts').style.display='none';
+
+						}
+						
+						/*
+							if(r.charges){
+						    Dom.get('tr_order_items_charges').style.display='';
+
+						}else{
+						    Dom.get('tr_order_items_charges').style.display='none';
+
+						}
+						*/
+					
+						datatable.updateCell(record,'quantity',r.quantity);
+						datatable.updateCell(record,'to_charge',r.to_charge);
+					
+
+
+						for(var i=0; i<records.getLength(); i++) {
+						    var rec=records.getRecord(i);
+						    if(r.discount_data[rec.getData('pid')]!=undefined){
+						    datatable.updateCell(rec,'to_charge',r.discount_data[rec.getData('pid')].to_charge);
+						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
+						    }
+						}
+
+				        if(r.quantity==0){
+				       
+				            datatable.updateCell(record,'description',r.description);
+				            
+                            if(Dom.get('products_display_type').value=='ordered_products'){
+                            
+                            this.deleteRow(target);
+				            }
+				        }
+				
+				
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+	
+	break;
+   
+   case('edit_object'):
+  
+		    change_discount(this.getCell(target),record.getData('otf_key'),record.getId(),record.getData('discount_percentage'))
+  
+	break;	    
+    default:
+		    
+	this.onEventShowCellEditor(oArgs);
+	break;
+    }
+};   
+
+function change(e,o,tipo){
+    switch(tipo){
+    case('cancel'):
+    
+   
+	if(o.value!=''){
+	    enable_save(tipo);
+
+	    if(window.event)
+		key = window.event.keyCode; //IE
+	    else
+		key = e.which; //firefox     
+	    
+	    if (key == 13)
+		save(tipo);
+
+
+	}else
+	    disable_save(tipo);
+	break;
+    }
+};
+
+function enable_save(tipo){
+    switch(tipo){
+    case('cancel'):
+    
+    Dom.removeClass(tipo+'_save','disabled')
+	
+	break;
+    }
+};
+
+function disable_save(tipo){
+    switch(tipo){
+    case('cancel'):
+	 Dom.addClass(tipo+'_save','disabled')
+	break;
+    }
+};
+
+
+function close_dialog(tipo){
+    switch(tipo){
+
+    
+    case('cancel'):
+
+	
+	dialog_cancel.hide();
+
+	break;
+    }
+};
+
+var CellEdit = function (callback, newValue) {
+      
+    var record = this.getRecord(),
+    column = this.getColumn(),
+    oldValue = this.value,
+    datatable = this.getDataTable();
+    var records=datatable.getRecordSet();
+    var ar_file='ar_edit_orders.php';
+    
+    var request='tipo=edit_'+column.object+'&id='+order_key+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
+    //alert('R:'+request);
+
+    YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					 //   alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						for(x in r.data){
+
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+					      Dom.get('ordered_products_number').value=r.data['ordered_products_number'];
+                 if(r.discounts){
+						    Dom.get('tr_order_items_gross').style.display='';
+						}else{
+						    Dom.get('tr_order_items_gross').style.display='none';
+
+						}
+
+		           if(r.charges){
+						    Dom.get('tr_order_items_charges').style.display='';
+
+						}else{
+						    Dom.get('tr_order_items_charges').style.display='none';
+
+						}
+						
+
+						datatable.updateCell(record,'quantity',r.quantity);
+						datatable.updateCell(record,'to_charge',r.to_charge);
+					
+
+
+						for(var i=0; i<records.getLength(); i++) {
+						    var rec=records.getRecord(i);
+						    if(r.discount_data[rec.getData('pid')]!=undefined){
+						    datatable.updateCell(rec,'to_charge',r.discount_data[rec.getData('pid')].to_charge);
+						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
+						    }
+						}
+						callback(true,r.quantity);
+						
+
+					    } 
+					    
+					    else {
+						alert(r.msg);
+						callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+  };
+
+
+var mygetTerms =function (query) {
+
+
+
+
+    if(this.table_id==undefined)
+	var table_id=0;
+    else
+	var table_id=this.table_id;
+
+    var Dom   = YAHOO.util.Dom;
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+    table.filter.value=Dom.get('f_input'+table_id).value;
+    var request='&tableid='+table_id+'&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value+'&display='+Dom.get('products_display_type').value;
+ 
+  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+};
+
+
 function init_common_order_not_dispatched(){
+Event.addListener("ordered_products", "click", show_only_ordered_products);
+Event.addListener("all_products", "click", show_all_products);
+
 Event.addListener("tr_order_shipping", "mouseover", show_edit_button,{'name':'shipping'});
 Event.addListener("tr_order_shipping", "mouseout", hide_edit_button,{'name':'shipping'});
+Event.addListener("tr_order_items_charges", "mouseover", show_edit_button,{'name':'items_charges'});
+Event.addListener("tr_order_items_charges", "mouseout", hide_edit_button,{'name':'items_charges'});
+
+
 Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
 edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", 
 			{ 
@@ -316,22 +862,36 @@ YAHOO.util.Event.addListener("change_delivery_address", "click",change_delivery_
  change_staff_discount.render();
  
 YAHOO.util.Event.addListener(["set_for_collection","set_for_shipping"], "click",change_shipping_type);
-
-
-  dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {context:["cancel","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {context:["cancel","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_cancel.render();
-  YAHOO.util.Event.addListener("cancel", "click",open_cancel_dialog );
+YAHOO.util.Event.addListener("cancel", "click",open_cancel_dialog );
 
 dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {context:["edit_button_shipping","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_edit_shipping.render();
-Event.addListener("edit_button_shipping", "click", dialog_edit_shipping.show,dialog_edit_shipping , true);
-
+Event.addListener("edit_button_shipping", "click", show_dialog_edit_shipping);
 Event.addListener("save_set_shipping", "click", save_set_shipping);
 Event.addListener("reset_set_shipping", "click", reset_set_shipping);
+Event.addListener("shipping_amount", "keydown", submit_edit_shipping);
 
+dialog_edit_items_charges = new YAHOO.widget.Dialog("dialog_edit_items_charges", {context:["edit_button_items_charges","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_edit_items_charges.render();
+Event.addListener("edit_button_items_charges", "click", show_dialog_edit_items_charges);
+Event.addListener("save_set_items_charges", "click", save_set_items_charges);
+Event.addListener("reset_set_items_charges", "click", reset_set_items_charges);
+Event.addListener("items_charges_amount", "keydown", submit_edit_items_charges);
+
+dialog_sending_to_warehouse = new YAHOO.widget.Dialog("dialog_sending_to_warehouse", {context:["done","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_sending_to_warehouse.render();
 
 Event.addListener("change_discount_save", "click", save_change_discount);
 Event.addListener("change_discount_cancel", "click", cancel_change_discount);
+
+dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {context:["import_transactions_mals_e","tl","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_import_transactions_mals_e.render();
+Event.addListener("import_transactions_mals_e", "click", show_dialog_import_transactions_mals_e,true);
+
+Event.addListener("save_import_transactions_mals_e", "click", save_import_transactions_mals_e,true);
+
 
 }
 

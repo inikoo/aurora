@@ -13,38 +13,24 @@ include_once('class.Store.php');
 
 include_once('assets_header_functions.php');
 
-if (!($user->can_view('stores')    ) ) {
+if (!($user->can_view('sites')    ) ) {
     header('Location: index.php');
     exit;
 }
 
-if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
-    $store_id=$_REQUEST['store'];
 
-} else {
-    header('Location: stores.php?error=no_store_key');
-}
+$number_sites=count($user->websites);
 
-
-$store=new Store($store_id);
-if (!$store->id) {
-    header('Location: stores.php?error=no_store');
+if ($number_sites==0) {
+    header('Location: index.php');
+    exit;
+} else if ($number_sites==1) {
+    
+    header('Location: site.php?id='.array_pop($user->websites));
     exit;
 }
 
 
-
-if ($store->data['Store Websites']==0) {
-    header('Location: stores.php');
-    exit;
-} else if ($store->data['Store Websites']==1) {
-    $site_key=$store->get_active_sites_keys();
-    header('Location: site.php?id='.array_pop($site_key));
-    exit;
-}
-
-$smarty->assign('store',$store);
-$smarty->assign('store_key',$store->id);
 
 $create=$user->can_create('sites');
 
@@ -57,15 +43,8 @@ $smarty->assign('modify',$modify);
 
 
 
-$general_options_list=array();
-
-//if ($modify)
-$general_options_list[]=array('tipo'=>'url','url'=>'edit_site.php?id='.$site->id,'label'=>_('Edit Site'));
-
-
-//$smarty->assign('general_options_list',$general_options_list);
-$smarty->assign('search_label',_('Products'));
-$smarty->assign('search_scope','products');
+$smarty->assign('search_label',_('Website'));
+$smarty->assign('search_scope','site');
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -93,14 +72,13 @@ $js_files=array(
               'js/table_common.js',
               'js/edit_common.js',
               'js/csv_common.js',
-              'js/dropdown.js'
+              'js/search.js'
           );
 
 
-$js_files[]='js/search.js';
 $js_files[]='common_plot.js.php?page='.'site';
 
-$js_files[]='site.js.php';
+$js_files[]='sites.js.php';
 
 
 
@@ -110,31 +88,40 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$_SESSION['state']['assets']['page']='site';
 if (isset($_REQUEST['view'])) {
-    $valid_views=array('sales','general','stoke');
+    $valid_views=array('sites','pages');
     if (in_array($_REQUEST['view'], $valid_views))
-        $_SESSION['state']['site']['view']=$_REQUEST['view'];
+        $_SESSION['state']['sites']['block_view']=$_REQUEST['view'];
 
 }
-$smarty->assign('block_view',$_SESSION['state']['site']['view']);
+
+$smarty->assign('block_view',$_SESSION['state']['sites']['block_view']);
 
 
 
 
 
-$subject_id=$site_id;
+
+$smarty->assign('parent','websites');
+$smarty->assign('title', _('Websites'));
+
+$tipo_filter=($_SESSION['state']['sites']['sites']['f_field']);
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['sites']['sites']['f_value']);
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>_('Website code starting with  <i>x</i>'),'label'=>_('Code')),
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Website title like  <i>x</i>'),'label'=>_('Name')),
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
 
-$smarty->assign('site',$site);
 
-$smarty->assign('parent','products');
-$smarty->assign('title', $site->data['Site Name']);
-
-
-$tipo_filter=($_SESSION['state']['site']['pages']['f_field']);
+$tipo_filter=($_SESSION['state']['sites']['pages']['f_field']);
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['site']['pages']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['sites']['pages']['f_value']);
 $filter_menu=array(
                  'code'=>array('db_key'=>'code','menu_label'=>_('Page code starting with  <i>x</i>'),'label'=>_('Code')),
                  'title'=>array('db_key'=>'title','menu_label'=>_('Page title like  <i>x</i>'),'label'=>_('Title')),
@@ -146,6 +133,6 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 
-$smarty->display('site.tpl');
+$smarty->display('sites.tpl');
 
 ?>

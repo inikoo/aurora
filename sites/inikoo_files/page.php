@@ -85,7 +85,8 @@ if ($page->data['Page Code']=='login') {
 	$js_files[]='js/sha256.js';
 	$css_files[]='css/inikoo.css';
 
-} else if ($page->data['Page Code']=='registration') {
+} 
+else if ($page->data['Page Code']=='registration') {
 		$welcome=false;
 		if ($logged_in) {
 
@@ -101,7 +102,8 @@ if ($page->data['Page Code']=='login') {
 
 
 		$smarty->assign('welcome',$welcome);
-
+		$smarty->assign('customer',$customer);
+		
 		$js_files[]='js/aes.js';
 		$js_files[]='js/sha256.js';
 		$css_files[]='css/inikoo.css';
@@ -139,6 +141,7 @@ else if ($page->data['Page Code']=='profile') {
 		} else {
 			$view='contact';
 		}
+		
 		$smarty->assign('user',$user);
 
 		if (isset($_REQUEST['view']) && $_REQUEST['view']=='delivery_notes') {
@@ -322,7 +325,10 @@ else if ($page->data['Page Code']=='profile') {
 
 		$smarty->assign('user',$user);
 		$rnd='';
+//$js_files[]='address_data.js.php';
 
+		if($view=='contact')
+		$js_files[]='profile_contact.js.php';
 
 		if (isset($_REQUEST['type'])) {
 			$smarty->assign('address_identifier',$_REQUEST['type']);
@@ -412,13 +418,12 @@ else if ($page->data['Page Code']=='profile') {
 		$js_files[]='js/aes.js';
 		$js_files[]='js/sha256.js';
 		$js_files[]='js/table_common.js';
-		$js_files[]='js/edit_common.js';
+		
 		$css_files[]='css/container.css';
 		$css_files[]='css/edit.css';
 		$css_files[]='css/inikoo.css';
 		$css_files[]='css/inikoo_table.css';
-		$js_files[]='address_data.js.php';
-		$js_files[]='profile_contact.js.php';
+		
 	}
 
 $smarty->assign('logged',$logged_in);
@@ -481,7 +486,8 @@ while ($row=mysql_fetch_assoc($res)) {
 if ($page->data['Page Store Content Display Type']=='Source') {
 	$smarty->assign('type_content','string');
 	$smarty->assign('template_string',$page->data['Page Store Source']);
-} else {
+}
+else {
 	$smarty->assign('type_content','file');
 	$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';

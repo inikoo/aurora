@@ -77,14 +77,14 @@ var data={'user_key':user_key,'store_key':store_key,'site_key':site_key,'ep1':ep
   var json_value = encodeURIComponent(YAHOO.lang.JSON.stringify(data)); 
 
 
-     var request='ar_register.php?tipo=change_password&values='+json_value;
+     var request='ar_profile.php?tipo=change_password&values='+json_value;
 //alert(request);
   Dom.setStyle('tr_email_in_db_buttons','display','none');
     Dom.setStyle('tr_forgot_password_wait2','display','');
 
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-	//	alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 
@@ -93,7 +93,7 @@ Dom.setStyle('processing_change_password','display','none')
 
 
 		        if(r.result=='ok'){
-             
+           //  window.location = 'http://'+ window.location.host+'/logout.php'
                 
                cancel_change_password()
    Dom.setStyle('change_password_ok','display','');

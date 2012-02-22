@@ -345,7 +345,9 @@ if (isset($_REQUEST['p'])) {
             $order='`Customer File As`';
 
         $_order=preg_replace('/`/','',$order);
-        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key` in (%s)  and %s < %s  order by %s desc  limit 1",join(',',$user->stores),$order,prepare_mysql($customer->get($_order)),$order);
+        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  `Customer Store Key`=%d  and %s < %s  order by %s desc  limit 1",
+         $store->id,
+        $order,prepare_mysql($customer->get($_order)),$order);
 
         $result=mysql_query($sql);
         if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -353,7 +355,9 @@ if (isset($_REQUEST['p'])) {
         mysql_free_result($result);
 
         $smarty->assign('prev',$prev);
-        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key` in (%s) and  %s>%s  order by %s   ",join(',',$user->stores),$order,prepare_mysql($customer->get($_order)),$order);
+        $sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where `Customer Store Key`=%d and  %s>%s  order by %s   ",
+        $store->id,
+        $order,prepare_mysql($customer->get($_order)),$order);
 
         $result=mysql_query($sql);
         if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
@@ -547,7 +551,7 @@ $correlation_msg='';
        
         $msg=preg_replace('/^,/','',$msg);
         if ($msg!='') {
-            $correlation_msg='<p>'._('Customer recently merged with').': '.$msg.'</p>';
+            $correlation_msg='<div style="clear:both">'._('Customer recently merged with').': '.$msg.'</div>';
 
         }
 $smarty->assign('recent_merges',$correlation_msg);

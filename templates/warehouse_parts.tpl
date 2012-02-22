@@ -3,7 +3,7 @@
 	<div style="padding:0 20px">
 		{include file='locations_navigation.tpl'} 
 		<div class="branch">
-			<span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">

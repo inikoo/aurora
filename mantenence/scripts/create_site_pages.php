@@ -52,12 +52,13 @@ $page_data=array(
   'Page Code'=>'profile',
   'Page URL'=>'profile.php',
   'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'profile'
+  'Page Store Content Template Filename'=>'profile',
+  'Number See Also Links'=>0
 
  );
 $site->add_store_page($page_data);
 
-
+//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'
 
  $page_data=array(
  'Page Store Section'=>'Registration',
@@ -66,7 +67,8 @@ $site->add_store_page($page_data);
   'Page Code'=>'registration',
   'Page URL'=>'registration.php',
   'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'registration'
+  'Page Store Content Template Filename'=>'registration',
+    'Number See Also Links'=>0
 
  );
 $site->add_store_page($page_data);
@@ -78,7 +80,8 @@ $site->add_store_page($page_data);
   'Page Code'=>'login',
   'Page URL'=>'login.php',
   'Page Store Content Display Type'=>'Template',
-  'Page Store Content Template Filename'=>'login'
+  'Page Store Content Template Filename'=>'login',
+    'Number See Also Links'=>0
 
  );
 $site->add_store_page($page_data);

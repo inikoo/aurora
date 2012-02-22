@@ -42,11 +42,18 @@ class FTP {
 		switch ($this->protocol) {
 		case 'FTPS':
 			if (!$this->port)$this->port=21;
+			if (!function_exists('ftp_ssl_connect')) {
+				$this->error=true;
+				$this->msg=_('FTP not supported by server');
+				return;
+
+			}
+
 			$this->connection = ftp_ssl_connect($this->host,$this->port);
 			break;
 		case 'FTP':
 			if (!$this->port)$this->port=21;
-			
+
 			$this->connection = ftp_connect($this->host,$this->port);
 			break;
 		case 'SFTP':
@@ -99,7 +106,7 @@ class FTP {
 
 		}
 
-	
+
 
 
 	}
@@ -121,17 +128,17 @@ class FTP {
 			$this->mode = FTP_ASCII;
 		}
 
-	
-	    $contents = ftp_nlist($this->connection, ".");
-	    
-	    // output $contents
-	    var_dump($contents);
-	    
+
+		$contents = ftp_nlist($this->connection, ".");
+
+		// output $contents
+		var_dump($contents);
+
 		$this->put = ftp_put($this->connection, $this->destination, $this->source,$this->mode);
 
 		if (!$this->put) {
 			$this->error=true;
-		    $this->msg=_('Can not upload file').' '.$this->source.' -> '.$this->destination;
+			$this->msg=_('Can not upload file').' '.$this->source.' -> '.$this->destination;
 		}
 
 
@@ -235,7 +242,7 @@ class FTP {
 		$this->close();
 	}
 
-	function upload_string($source_file,$destination_file,$type=""){
+	function upload_string($source_file,$destination_file,$type="") {
 
 		$this->source = $source_file;
 		$this->destination = $destination_file;
@@ -252,11 +259,11 @@ class FTP {
 			$this->mode = FTP_ASCII;
 		}
 
-	
-	    $contents = ftp_nlist($this->connection, ".");
-	    
-	    // output $contents
-	    var_dump($contents);
+
+		$contents = ftp_nlist($this->connection, ".");
+
+		// output $contents
+		var_dump($contents);
 		$file_name=explode('/', $destination_file);
 		$file=array_pop($file_name);
 
@@ -265,15 +272,15 @@ class FTP {
 
 		$folders=explode('/',$destination_path);
 
-		if($folders[0]=='.'){
+		if ($folders[0]=='.') {
 			array_shift($folders);
 		}
 
-		foreach($folders as $folder){
-			if(ftp_chdir($this->connection, $folder)){
+		foreach ($folders as $folder) {
+			if (ftp_chdir($this->connection, $folder)) {
 				continue;
 			}
-			else{
+			else {
 				ftp_mkdir($this->connection, $folder);
 				ftp_chdir($this->connection, $folder);
 			}
@@ -283,16 +290,16 @@ class FTP {
 		fwrite($temp, $this->source);
 		fseek($temp, 0);
 		//echo fread($temp, 1024);
-		
+
 		$this->put = ftp_fput($this->connection, $file, $temp, $this->mode);
 
 		if (!$this->put) {
 			$this->error=true;
-		$this->msg=_('Can not upload file').' '.$this->source.' -> '.$this->destination;
+			$this->msg=_('Can not upload file').' '.$this->source.' -> '.$this->destination;
 		}
 
 		fclose($temp);
-		
+
 	}
 }
 ?>

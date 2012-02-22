@@ -208,7 +208,18 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 $smarty->assign('title', _('Editing').': '.$department->get('Product Department Code'));
 
-
+$tipo_filter=$_SESSION['state']['department']['families']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['department']['families']['f_value']);
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Family code starting with <i>x</i>'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Family name containing <i>x</i>'),'label'=>_('Name'))
+);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('families',$department->data['Product Department Families']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 
 $tipo_filter=$_SESSION['state']['department']['history']['f_field'];

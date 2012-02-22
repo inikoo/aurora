@@ -62,7 +62,7 @@ class User extends DB_Table {
 
 			}
 		}
-		$base_data=$this->base_data();
+
 		if (preg_match('/create/i',$options)) {
 			$create='create';
 		}
@@ -79,15 +79,15 @@ class User extends DB_Table {
 			}
 		}
 
-		if ($base_data['User Type']=='Customer') {
-			$where_site=sprintf(" and `User Site Key`=%d",$base_data['User Site Key']);
+		if ($data['User Type']=='Customer') {
+			$where_site=sprintf(" and `User Site Key`=%d",$data['User Site Key']);
 		}else {
 			$where_site='';
 		}
 
 		$sql=sprintf("select `User Key` from `User Dimension` where `User Type`=%s and `User Handle`=%s %s",
-			prepare_mysql($base_data['User Type']),
-			prepare_mysql($base_data['User Handle']),
+			prepare_mysql($data['User Type']),
+			prepare_mysql($data['User Handle']),
 			$where_site
 		);
 
@@ -100,6 +100,33 @@ class User extends DB_Table {
 			$this->found_key=$row['User Key'];
 
 		}
+
+
+
+		if (!$this->found and $data['User Type']=='Customer') {
+			$sql=sprintf("select `User Key`,`User Site Key` from `User Dimension` where `User Type`='Customer' and  `User Active`='No' and `User Parent Key`=%d and `User Inactive Note`=%s ",
+				$data['User Parent Key'],
+				prepare_mysql($data['User Handle'])
+			);
+
+			$result2 = mysql_query($sql);
+
+			if ($row2 = mysql_fetch_array($result2, MYSQL_ASSOC)) {
+
+
+				if ($this->reactivate($row2['User Key'],$data['User Handle'],$row2['User Site Key'])) {
+
+
+
+					$this->found=true;
+					$this->found_key=$row2['User Key'];
+
+				}
+
+			}
+
+		}
+
 
 		if ($this->found) {
 			$this->get_data('id',$this->found_key);
@@ -190,7 +217,10 @@ class User extends DB_Table {
 		$values='values(';
 		foreach ($base_data as $key=>$value) {
 			$keys.="`$key`,";
-			$values.=prepare_mysql($value).",";
+			if ($key=='User Inactive Note')
+				$values.=prepare_mysql($value,false).",";
+			else
+				$values.=prepare_mysql($value).",";
 		}
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
@@ -215,8 +245,8 @@ class User extends DB_Table {
 		}
 
 		$this->get_data('id',$user_id);
-		
-		
+
+
 
 	}
 
@@ -326,9 +356,6 @@ class User extends DB_Table {
 	function update_stores($value) {
 		$this->updated=false;
 
-
-
-
 		if ($this->data['User Type']!='Staff')
 			return;
 		$stores=preg_split('/,/',$value);
@@ -355,6 +382,34 @@ class User extends DB_Table {
 		}
 	}
 
+	function update_websites($value) {
+		$this->updated=false;
+
+		if ($this->data['User Type']!='Staff')
+			return;
+		$websites=preg_split('/,/',$value);
+		foreach ($websites as $key=>$value) {
+			if (!is_numeric($value) )
+				unset($websites[$key]);
+		}
+		$this->read_websites();
+		$old_websites=$this->websites;
+		$to_delete = array_diff($old_websites, $websites);
+		$to_add = array_diff($websites, $old_websites);
+		$changed=0;
+
+		if (count($to_delete)>0) {
+			$changed+=$this->delete_website($to_delete);
+		}
+		if (count($to_add)>0) {
+			$changed+=$this->add_website($to_add);
+		}
+		$this->read_websites();
+		if ($changed>0) {
+			$this->updated=true;
+			$this->new_value=$this->websites;
+		}
+	}
 
 
 
@@ -414,7 +469,9 @@ class User extends DB_Table {
 		case('stores'):
 			$this->update_stores($data['value']);
 			break;
-
+		case('websites'):
+			$this->update_websites($data['value']);
+			break;
 		case('warehouses'):
 			$this->update_warehouses($data['value']);
 			break;
@@ -612,6 +669,56 @@ class User extends DB_Table {
 		return $changed;
 	}
 
+	function add_website($to_add,$history=true) {
+		$changed=0;
+		foreach ($to_add as $scope_id) {
+
+			$website=new Site($scope_id);
+			if (!$website->id)
+				continue;
+			$sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Website',%d) ",$this->id,$scope_id);
+			mysql_query($sql);
+			if (mysql_affected_rows()>0) {
+				$changed++;
+				$history_data=array(
+					'History Abstract'=>_('User Rights Associated with Store')
+					,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$website->data['Site Name'])
+					,'Action'=>'associate'
+					,'Indirect Object'=>'Site'
+					,'Indirect Object Key'=>$website->id
+				);
+				$this->add_history($history_data);
+			}
+		}
+		return $changed;
+
+	}
+
+
+	function delete_website($to_delete,$history=true) {
+		$changed=0;
+		foreach ($to_delete as $scope_id) {
+			$website=new Site($scope_id);
+			if (!$website->id)
+				continue;
+			$sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Website' ",$this->id,$scope_id);
+			mysql_query($sql);
+		}
+		if (mysql_affected_rows()>0) {
+			$changed++;
+			$history_data=array(
+				'History Abstract'=>_('User Rights Disassociated with Website')
+				,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$website->data['Site Name'])
+				,'Action'=>'disassociate'
+				,'Indirect Object'=>'Site'
+				,'Indirect Object Key'=>$website->id
+			);
+			$this->add_history($history_data);
+
+		}
+		return $changed;
+	}
+
 
 	function add_warehouse($to_add,$history=true) {
 		$changed=0;
@@ -704,6 +811,9 @@ class User extends DB_Table {
 	}
 	function get_number_stores() {
 		return count($this->stores);
+	}
+	function get_number_websites() {
+		return count($this->websites);
 	}
 
 	function is($tag='') {
@@ -816,19 +926,23 @@ class User extends DB_Table {
 		while ($row=mysql_fetch_array($res)) {
 			$this->warehouses[]=$row['Scope Key'];
 		}
-		$this->warehouse_righs='none';
-		if ($this->data['User Type']=='Staff') {
-			$sql="select count(*) as num_warehouses from `Warehouse Dimension`";
-			$res=mysql_query($sql);
-			$row=mysql_fetch_array($res);
-			$num_warehouses=$row['num_warehouses'];
-			$num_warehouses=count($this->warehouses);
-			if ($num_warehouses==$num_warehouses)
-				$this->warehouse_rights='all';
-			else
-				$this->warehouse_righs='some';
-		}
+
 	}
+
+
+	function read_websites() {
+
+		$this->websites=array();
+		$sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Website' "
+			, $this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$this->websites[]=$row['Scope Key'];
+		}
+
+
+	}
+
 
 	function read_stores() {
 
@@ -839,18 +953,7 @@ class User extends DB_Table {
 		while ($row=mysql_fetch_array($res)) {
 			$this->stores[]=$row['Scope Key'];
 		}
-		$this->store_righs='none';
-		if ($this->data['User Type']=='Staff') {
-			$sql="select count(*) as num_stores from `Store Dimension`";
-			$res=mysql_query($sql);
-			$row=mysql_fetch_array($res);
-			$num_stores=$row['num_stores'];
-			$num_stores=count($this->stores);
-			if ($num_stores==$num_stores)
-				$this->store_rights='all';
-			else
-				$this->store_righs='some';
-		}
+
 	}
 
 	function read_suppliers() {
@@ -1274,11 +1377,99 @@ class User extends DB_Table {
 
 		}
 
+	}
+
+	function reactivate($user_key,$handle,$site_key) {
 
 
+		$num_handles=0;
+		$sql=sprintf("select count(*) as num_handles  from `User Dimension` where `User Type`='Customer' and `User Site Key`=%d and   `User Handle`=%s",$site_key,prepare_mysql($handle));
+		$res=mysql_query($sql);
+
+
+
+
+		if ($row=mysql_fetch_assoc($res)) {
+			$num_handles=$row['num_handles'];
+		}
+
+
+		if (!$num_handles) {
+
+			$sql=sprintf("update `User Dimension` set `User Handle`=%s,`User Inactive Note`='', `User Active`='Yes' where `User Key`=%d  "     ,
+
+				prepare_mysql($handle),
+				$user_key
+			);
+			mysql_query($sql);
+
+			return true;
+		}else {
+			return false;
+
+		}
+
+	}
+
+
+	function deactivate() {
+
+		if ($this->data['User Active']=='No') {
+			return;
+		}
+
+		switch ($this->data['User Type']) {
+		case 'Customer';
+
+			$sql=sprintf("update `User Dimension` set `User Handle`=%s,`User Inactive Note`=%s, `User Active`='No' where `User Key`=%d  "     ,
+				prepare_mysql($this->id),
+				prepare_mysql($this->data['User Handle']),
+				$this->id
+			);
+			mysql_query($sql);
+			$this->data['User Active']='No';
+			$this->data['User Inactive Note']=$this->data['User Handle'];
+			$this->data['User Handle']=$this->id;
+			break;
+		}
+
+	}
+
+	function update_request_data() {
+		switch ($this->data['User Type']) {
+		case 'Customer';
+
+			$number_requests=0;
+			$number_sessions=0;
+			$last_request='';
+
+			$sql=sprintf("select count(*) as num_request, count(distinct `User Session Key`) as num_sessions , max(`Date`) as date from `User Request Dimension` where  `User Key`=%d",$this->id);
+			$res=mysql_query($sql);
+			//print "$sql\n";
+
+			if ($row=mysql_fetch_assoc($res)) {
+
+				$number_requests=$row['num_request'];
+				$number_sessions=$row['num_sessions'];
+				$last_request=$row['date'];
+
+			}
+
+
+			$sql=sprintf("update `User Dimension` set `User Requests Count`=%d,`User Sessions Count`=%d, `User Last Request`=%s where `User Key`=%d  "     ,
+				$number_requests,
+				$number_sessions,
+				prepare_mysql($last_request),
+
+				$this->id
+			);
+			mysql_query($sql);
+			break;
+		}
 
 
 	}
+
 }
 
 ?>
