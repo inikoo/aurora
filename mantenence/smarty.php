@@ -752,9 +752,6 @@ gettext("Customers");
 gettext("Previous Customer");
 
 /* ../templates/customer.tpl */
-gettext("Customers");
-
-/* ../templates/customer.tpl */
 gettext("Next Customer");
 
 /* ../templates/customer.tpl */
@@ -1118,7 +1115,37 @@ gettext("Rows per Page");
 gettext("Rows per Page");
 
 /* ../templates/customer.tpl */
-gettext("Contact Name:");
+gettext("Tax Number:");
+
+/* ../templates/customer.tpl */
+gettext("Name:");
+
+/* ../templates/customer.tpl */
+gettext("Address:");
+
+/* ../templates/customer.tpl */
+gettext("Processing Request");
+
+/* ../templates/customer.tpl */
+gettext("Details Match");
+
+/* ../templates/customer.tpl */
+gettext("Details not match");
+
+/* ../templates/customer.tpl */
+gettext("Close");
+
+/* ../templates/customer.tpl */
+gettext("Tax Number:");
+
+/* ../templates/customer.tpl */
+gettext("Save");
+
+/* ../templates/customer.tpl */
+gettext("Cancel");
+
+/* ../templates/customer.tpl */
+gettext("Registration Number:");
 
 /* ../templates/customer.tpl */
 gettext("Save");
@@ -1634,6 +1661,9 @@ gettext("Categories");
 gettext("Customers");
 
 /* ../templates/customers.tpl */
+gettext("Dashboard");
+
+/* ../templates/customers.tpl */
 gettext("Contacts with Orders");
 
 /* ../templates/customers.tpl */
@@ -1656,15 +1686,6 @@ gettext("Lost Customers");
 
 /* ../templates/customers.tpl */
 gettext("Potential Customers");
-
-/* ../templates/customers.tpl */
-gettext("Total Contacts");
-
-/* ../templates/customers.tpl */
-gettext("Active Customers");
-
-/* ../templates/customers.tpl */
-gettext("Lost Customers");
 
 /* ../templates/customers.tpl */
 gettext("Customers List");
@@ -2091,9 +2112,6 @@ gettext("Edit Department");
 
 /* ../templates/department.tpl */
 gettext("Previous");
-
-/* ../templates/department.tpl */
-gettext("Store");
 
 /* ../templates/department.tpl */
 gettext("Department");
@@ -5222,7 +5240,7 @@ gettext("Package Volume");
 gettext("Package MOV");
 
 /* ../templates/edit_part.tpl */
-gettext("Tariff Code");
+gettext("Commodity Code");
 
 /* ../templates/edit_part.tpl */
 gettext("General Description");
@@ -11254,48 +11272,6 @@ gettext("Rows per Page");
 /* ../templates/order_in_warehouse.tpl */
 gettext("Filter options");
 
-/* ../templates/order_in_warehouse.tpl */
-gettext("Cancel Order");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Reason of cancellation");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Continue");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Go Back");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Use calculated value");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Set Shipping");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Save");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Copy and paste the Emals-e email here");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Import");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Select Discount");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Discount");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Cancel");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Save");
-
-/* ../templates/order_in_warehouse.tpl */
-gettext("Close");
-
 /* ../templates/order_not_dispatched_dialogs_splinter.tpl */
 gettext("Cancel Order");
 
@@ -11400,9 +11376,6 @@ gettext("Pending Orders");
 
 /* ../templates/order_pick_aid.tpl */
 gettext("Pick Aid");
-
-/* ../templates/order_pick_aid.tpl */
-gettext("Pending Orders");
 
 /* ../templates/order_pick_aid.tpl */
 gettext("Set all as Picked");
@@ -12200,9 +12173,6 @@ gettext("Edit Part");
 gettext("Previous");
 
 /* ../templates/part.tpl */
-gettext("Inventory");
-
-/* ../templates/part.tpl */
 gettext("Sold as");
 
 /* ../templates/part.tpl */
@@ -12341,7 +12311,7 @@ gettext("Weight");
 gettext("Volume");
 
 /* ../templates/part.tpl */
-gettext("Export Code");
+gettext("Commodity Code");
 
 /* ../templates/part.tpl */
 gettext("Custom Fields");
@@ -13697,6 +13667,9 @@ gettext("History");
 gettext("Web Site");
 
 /* ../templates/product.tpl */
+gettext("Commodity Code");
+
+/* ../templates/product.tpl */
 gettext("Categories");
 
 /* ../templates/product.tpl */
@@ -14470,6 +14443,12 @@ gettext("Rows per Page");
 /* ../templates/report_geo_sales_wregion.tpl */
 gettext("Filter options");
 
+/* ../templates/report_intrastad.tpl */
+gettext("Reports");
+
+/* ../templates/report_intrastad.tpl */
+gettext("Sales");
+
 /* ../templates/report_issue.tpl */
 gettext("Report Problem");
 
@@ -14864,6 +14843,12 @@ gettext("Period");
 gettext("compare");
 
 /* ../templates/report_sales_main.tpl */
+gettext("Reports");
+
+/* ../templates/report_sales_main.tpl */
+gettext("Sales");
+
+/* ../templates/report_sales_main.tpl */
 gettext("Profit");
 
 /* ../templates/report_sales_main.tpl */
@@ -15088,11 +15073,8 @@ gettext("Year");
 /* ../templates/report_tax_ES1.tpl */
 gettext("Export (CSV)");
 
-/* ../templates/reports_navigation.tpl */
+/* ../templates/reports.tpl */
 gettext("Reports");
-
-/* ../templates/reports_navigation.tpl */
-gettext("Sales Reports");
 
 /* ../templates/search.tpl */
 gettext("Search");
@@ -18761,6 +18743,9 @@ gettext("Warehouses");
 gettext("Locations");
 
 /* ../templates/warehouse.tpl */
+gettext("Areas");
+
+/* ../templates/warehouse.tpl */
 gettext("Edit Warehouse");
 
 /* ../templates/warehouse.tpl */
@@ -18816,6 +18801,9 @@ gettext("Inventory");
 
 /* ../templates/warehouse_area.tpl */
 gettext("Locations");
+
+/* ../templates/warehouse_area.tpl */
+gettext("Areas");
 
 /* ../templates/warehouse_area.tpl */
 gettext("Edit Warehouse Area");

@@ -5,7 +5,7 @@
 <div class="branch"> 
   <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Statistics{/t}</span>
 </div>
- <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
+ <div style="display:none;clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
     <div class="buttons" style="float:left">
         <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
     </div>
@@ -15,12 +15,12 @@
 
 
 
-<h2 style="clear:left">{t}Customers Statistics{/t} <span class="id">{$store->get('Store Code')}</span></h2>
+<h2 style="clear:left;clear:both;margin-top:10px">{t}Customers Statistics{/t} <span class="id">{$store->get('Store Code')}</span></h2>
 
 
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
     <li> <span class="item {if $view=='population'}selected{/if}"  id="population">  <span> {t}Contacts{/t}</span></span></li>
     <li> <span class="item {if $view=='customers'}selected{/if}"  id="customers">  <span> {t}Customers{/t}</span></span></li>
     <li> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>

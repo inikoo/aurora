@@ -301,9 +301,9 @@ function change_block(e){
 	Dom.get('description_block').style.display='none';
 	Dom.get('areas_block').style.display='none';
 	Dom.get('locations_block').style.display='none';
-	Dom.get('shelfs_block').style.display='none';
-	Dom.get('shelf_types_block').style.display='none';
-	Dom.get('location_types_block').style.display='none';	
+	//Dom.get('shelfs_block').style.display='none';
+//	Dom.get('shelf_types_block').style.display='none';
+//	Dom.get('location_types_block').style.display='none';	
 	
 	Dom.get(this.id+'_block').style.display='';
 
@@ -514,13 +514,13 @@ function save_edit_warehouse(){
      YAHOO.util.Event.addListener(ids, "click", change_block);
      var ids = ["add_area","add_area_here"]; 
      YAHOO.util.Event.addListener(ids, "click", show_add_area_dialog);
-     var ids = ["add_shelf"]; 
-     YAHOO.util.Event.addListener(ids, "click", show_add_shelf_dialog);
-      var ids = ["close_add_shelf"]; 
-     YAHOO.util.Event.addListener(ids, "click", hide_add_shelf_dialog);
+     //var ids = ["add_shelf"]; 
+     //YAHOO.util.Event.addListener(ids, "click", show_add_shelf_dialog);
+     // var ids = ["close_add_shelf"]; 
+     //YAHOO.util.Event.addListener(ids, "click", hide_add_shelf_dialog);
 
 
-     YAHOO.util.Event.addListener('save_shelf', "click", add_shelf);
+     //YAHOO.util.Event.addListener('save_shelf', "click", add_shelf);
 
 
      YAHOO.util.Event.addListener('save_area', "click", add_area);
