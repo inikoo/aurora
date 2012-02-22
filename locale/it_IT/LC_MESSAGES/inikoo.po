@@ -1,24 +1,25 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Kaktus\n"
+"Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-22 15:13+0100\n"
-"PO-Revision-Date: 2012-02-22 15:13+0100\n"
+"POT-Creation-Date: 2012-02-22 15:17+0100\n"
+"PO-Revision-Date: 2012-02-22 15:17+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
-"Language-Team: \n"
+"Language-Team: Inikoo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
-"X-Poedit-Country: FRANCE\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: /Users/raul/po_inikoo_sources\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: /Users/raul/po_inikoo_sources/\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: ar_address.php:6
 msgid "Forbidden"
-msgstr "Interdit"
+msgstr ""
 
 #: ar_address.php:13
 #: ar_assets.php:30
@@ -31,9 +32,8 @@ msgstr "Interdit"
 #: ar_edit_company.php:13
 #: ar_edit_contacts.php:17
 #: ar_edit_dashboard.php:7
-#, fuzzy
 msgid "Non acceptable request"
-msgstr "Le client non maître %s:%d a refusé la requête maître."
+msgstr ""
 
 #: ar_assets.php:89
 msgid "You have entered unexisting family"
@@ -54,7 +54,7 @@ msgstr ""
 #: ar_edit_assets.php:247
 #: ar_edit_company.php:29
 msgid "Operation not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_assets.php:276
 msgid "Unknown"
@@ -418,15 +418,13 @@ msgstr ""
 #: ar_edit_assets.php:1120
 #: ar_edit_assets.php:1139
 #: ar_edit_assets.php:1171
-#, fuzzy
 msgid "ND"
-msgstr "nd"
+msgstr ""
 
 #: ar_assets.php:3018
 #: ar_assets.php:3029
-#, fuzzy
 msgid "NA"
-msgstr "No&m :"
+msgstr ""
 
 #: ar_assets.php:3040
 msgid "Historic"
@@ -458,9 +456,8 @@ msgid "Online"
 msgstr ""
 
 #: ar_assets.php:3071
-#, fuzzy
 msgid "auto"
-msgstr "Déconnecter"
+msgstr ""
 
 #: ar_assets.php:3073
 #: ar_edit_assets.php:1250
@@ -1021,11 +1018,10 @@ msgstr ""
 
 #: ar_campaign_list.php:124
 #: ar_contacts.php:1438
-#, fuzzy
 msgid "record"
 msgid_plural "records"
-msgstr[0] "secondes"
-msgstr[1] "secondes"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_campaign_list.php:128
 msgid "Showing all records"
@@ -1180,9 +1176,8 @@ msgid "Same as Billing"
 msgstr ""
 
 #: ar_contacts.php:2305
-#, fuzzy
 msgid "Lost"
-msgstr "Déconnecter"
+msgstr ""
 
 #: ar_contacts.php:2308
 #: ar_edit_assets.php:2148
@@ -1291,20 +1286,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ar_contacts.php:5378
-#, fuzzy
 msgid "Record"
 msgid_plural "Records"
-msgstr[0] "secondes"
-msgstr[1] "secondes"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_contacts.php:5382
 msgid "Showing all Records"
 msgstr ""
 
 #: ar_contacts.php:5634
-#, fuzzy
 msgid "Add Emails"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: ar_contacts.php:5822
 msgid "correlation"
@@ -1323,9 +1316,8 @@ msgstr ""
 #: ar_contacts.php:6022
 #: ar_edit_contacts.php:2555
 #: ar_edit_contacts.php:3925
-#, fuzzy
 msgid "Forbidden operation"
-msgstr "Interdit"
+msgstr ""
 
 #: ar_contacts.php:6088
 #: ar_contacts.php:6123
@@ -1348,11 +1340,10 @@ msgstr ""
 
 #: ar_dashboard.php:115
 #: ar_edit_dashboard.php:275
-#, fuzzy
 msgid "widget"
 msgid_plural "widgets"
-msgstr[0] "Identifiant "
-msgstr[1] "Identifiant "
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_dashboard.php:124
 #: ar_edit_dashboard.php:284
@@ -1521,9 +1512,8 @@ msgid "product with description like"
 msgstr ""
 
 #: ar_edit_assets.php:3413
-#, fuzzy
 msgid "Part already selected"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: ar_edit_assets.php:3423
 msgid "Adding part to list"
@@ -1576,14 +1566,12 @@ msgid "Area added to Warehouse"
 msgstr ""
 
 #: ar_edit_contacts.php:538
-#, fuzzy
 msgid "Contact not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_edit_contacts.php:638
-#, fuzzy
 msgid "Company not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_edit_contacts.php:676
 msgid "Key not in Company"
@@ -1600,9 +1588,8 @@ msgid "Email updated"
 msgstr ""
 
 #: ar_edit_contacts.php:768
-#, fuzzy
 msgid "Email created"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: ar_edit_contacts.php:910
 #: ar_edit_contacts.php:1038
@@ -1713,14 +1700,12 @@ msgid "customers with name like"
 msgstr ""
 
 #: ar_edit_contacts.php:3720
-#, fuzzy
 msgid "Company Area not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_edit_contacts.php:3894
-#, fuzzy
 msgid "Forbidden Operation"
-msgstr "Interdit"
+msgstr ""
 
 #: ar_edit_contacts.php:3989
 msgid "No customer match this criteria"
@@ -1742,11 +1727,10 @@ msgstr ""
 #: ar_edit_dashboard.php:339
 #: ar_edit_dashboard.php:342
 #: ar_edit_dashboard.php:345
-#, fuzzy
 msgid "Column"
 msgid_plural "Columns"
-msgstr[0] "Dossier"
-msgstr[1] "Dossier"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_edit_dashboard.php:404
 msgid "Dashboard Selected"
@@ -1781,9 +1765,8 @@ msgid "Save caption"
 msgstr ""
 
 #: ar_edit_marketing.php:293
-#, fuzzy
 msgid "Operation forbidden"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_edit_marketing.php:436
 msgid "Please give us the email campaign name"
@@ -1853,9 +1836,8 @@ msgid "Buy"
 msgstr ""
 
 #: ar_edit_marketing.php:1079
-#, fuzzy
 msgid "Use"
-msgstr "Utilisateur"
+msgstr ""
 
 #: ar_edit_marketing.php:1088
 msgid "Visit"
@@ -1924,15 +1906,13 @@ msgstr ""
 
 #: ar_edit_orders.php:990
 #: ar_edit_orders.php:1324
-#, fuzzy
 msgid "Hide"
-msgstr "Identifiant "
+msgstr ""
 
 #: ar_edit_orders.php:993
 #: ar_edit_orders.php:1327
-#, fuzzy
 msgid "Sale"
-msgstr "Identifiant "
+msgstr ""
 
 #: ar_edit_orders.php:1007
 msgid "In Process by Customer"
@@ -2055,9 +2035,8 @@ msgid "days orders"
 msgstr ""
 
 #: ar_edit_orders.php:1553
-#, fuzzy
 msgid "Edit Order"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: ar_edit_orders.php:1558
 #: ar_edit_orders.php:1563
@@ -2198,9 +2177,8 @@ msgstr ""
 
 #: ar_edit_preferences.php:48
 #: ar_edit_users.php:327
-#, fuzzy
 msgid "Sub-operation not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_edit_sites.php:727
 msgid "page"
@@ -2280,7 +2258,7 @@ msgstr ""
 #: ar_edit_sites.php:1957
 #: ar_edit_sites.php:2393
 msgid "Name"
-msgstr "Nom"
+msgstr ""
 
 #: ar_edit_sites.php:1960
 #: ar_edit_sites.php:2396
@@ -2332,9 +2310,9 @@ msgid "<i>units</i> x <i>description</i> RRP"
 msgstr ""
 
 #: ar_edit_sites.php:2001
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Items"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: ar_edit_sites.php:2007
 msgid "Custom"
@@ -2376,9 +2354,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ar_edit_suppliers.php:280
-#, fuzzy
 msgid "Supplier not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_edit_suppliers.php:316
 msgid "Key not in Supplier"
@@ -2456,11 +2433,10 @@ msgstr ""
 
 #: ar_edit_users.php:409
 #: ar_edit_users.php:669
-#, fuzzy
 msgid "user"
 msgid_plural "users"
-msgstr[0] "Utilisateur"
-msgstr[1] "Utilisateur"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_edit_users.php:527
 #: ar_edit_users.php:558
@@ -2468,9 +2444,8 @@ msgid "User don't exist"
 msgstr ""
 
 #: ar_edit_users.php:1282
-#, fuzzy
 msgid "Email send"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: ar_edit_warehouse.php:764
 msgid "area"
@@ -2761,9 +2736,8 @@ msgstr ""
 
 #: ar_orders.php:2928
 #: ar_orders.php:3069
-#, fuzzy
 msgid "Resend"
-msgstr "secondes"
+msgstr ""
 
 #: ar_orders.php:2994
 msgid "Replacement"
@@ -3194,11 +3168,10 @@ msgid "Other"
 msgstr ""
 
 #: ar_quick_tables.php:2022
-#, fuzzy
 msgid "`Staff Member"
 msgid_plural "`Staff Members"
-msgstr[0] "Utilisateurs"
-msgstr[1] "Utilisateurs"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ar_quick_tables.php:2034
 msgid "There isn't any staff with code"
@@ -3306,9 +3279,8 @@ msgstr ""
 
 #: ar_suppliers.php:1254
 #: ar_suppliers.php:1297
-#, fuzzy
 msgid "Suboperation not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_suppliers.php:1324
 msgid "Error: Another supplier has the same code"
@@ -3332,28 +3304,24 @@ msgid "no HTML/PHP file found"
 msgstr ""
 
 #: ar_upload_page_content.php:475
-#, fuzzy
 msgid "Header not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_upload_page_content.php:576
-#, fuzzy
 msgid "Footer not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_upload_page_content.php:726
 msgid "Page content uploaded"
 msgstr ""
 
 #: ar_upload_page_content.php:980
-#, fuzzy
 msgid "Menu not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_upload_page_content.php:1021
-#, fuzzy
 msgid "Search not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_users.php:987
 msgid "work group"
@@ -3386,9 +3354,8 @@ msgid "customer with position"
 msgstr ""
 
 #: ar_warehouse.php:94
-#, fuzzy
 msgid "Operation not found ha ha"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: ar_warehouse.php:361
 msgid "L"
@@ -3488,9 +3455,8 @@ msgstr ""
 
 #: associate_product.php:75
 #: associate_product_part.php:78
-#, fuzzy
 msgid "name"
-msgstr "Nom"
+msgstr ""
 
 #: associate_product_part.js.php:163
 msgid "Used In"
@@ -3609,9 +3575,8 @@ msgstr ""
 
 #: class.Company.php:755
 #: class.Contact.php:1562
-#, fuzzy
 msgid "created"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: class.Company.php:1138
 msgid "Company Name can not be updated"
@@ -3759,9 +3724,8 @@ msgstr ""
 
 #: class.CompanyArea.php:160
 #: class.CompanyArea.php:288
-#, fuzzy
 msgid "created in"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: class.CompanyArea.php:262
 msgid "department Code already in the Company"
@@ -3908,7 +3872,7 @@ msgstr ""
 
 #: class.Contact.php:3942
 msgid "Hello"
-msgstr "Bonjour"
+msgstr ""
 
 #: class.Contact.php:3964
 msgid "Dear"
@@ -4090,9 +4054,8 @@ msgstr ""
 
 #: class.Customer.old.php:2683
 #: class.Customer.php:2677
-#, fuzzy
 msgid "Email not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: class.Customer.old.php:2791
 #: class.Customer.php:2785
@@ -4140,9 +4103,8 @@ msgstr ""
 
 #: class.Customer.old.php:4898
 #: class.Customer.php:4915
-#, fuzzy
 msgid "refunded for"
-msgstr "Utilisateur"
+msgstr ""
 
 #: class.Customer.old.php:4899
 #: class.Customer.php:4916
@@ -4228,9 +4190,8 @@ msgstr ""
 
 #: class.Customer.php:1440
 #: class.Customer.php:1455
-#, fuzzy
 msgid "Email removed"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: class.Customer.php:1658
 msgid "This customer already has this number"
@@ -4366,9 +4327,8 @@ msgstr ""
 #: class.DeliveryNote.php:1496
 #: class.DeliveryNote.php:1545
 #: class.DeliveryNote.php:1610
-#, fuzzy
 msgid "Staff not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: class.DeliveryNote.php:1463
 #: class.DeliveryNote.php:1580
@@ -4513,9 +4473,8 @@ msgid "No change"
 msgstr ""
 
 #: class.Department.php:1829
-#, fuzzy
 msgid "Image already uploaded"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: class.Department.php:1872
 msgid "image added"
@@ -4539,9 +4498,8 @@ msgid "Wrong email"
 msgstr ""
 
 #: class.Email.php:339
-#, fuzzy
 msgid "New Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: class.Email.php:342
 msgid "Email Created"
@@ -4551,7 +4509,7 @@ msgstr ""
 #: class.Email.php:877
 #: class.Email.php:942
 msgid "Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: class.Email.php:365
 msgid "Error can not create email"
@@ -4642,9 +4600,8 @@ msgid "Campaign already send"
 msgstr ""
 
 #: class.EmailCredentials.php:242
-#, fuzzy
 msgid "Email Credentials Added"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: class.EmailCredentials.php:249
 msgid " Error can not create email credentials"
@@ -4659,9 +4616,8 @@ msgid " Error can not create email to be send"
 msgstr ""
 
 #: class.Family.php:189
-#, fuzzy
 msgid "is already created"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: class.Family.php:254
 msgid "Family Added"
@@ -4736,14 +4692,12 @@ msgid "FTP not supported by server"
 msgstr ""
 
 #: class.FTP.php:73
-#, fuzzy
 msgid "Can not connect"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: class.FTP.php:92
-#, fuzzy
 msgid "Can not login"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: class.FTP.php:99
 msgid "Server do not support passive mode"
@@ -5128,9 +5082,9 @@ msgstr ""
 
 #: class.Page.php:1253
 #: class.Page.php:1466
-#, fuzzy, php-format
+#, php-format
 msgid "login"
-msgstr "Connecter"
+msgstr ""
 
 #: class.Page.php:1253
 #: class.Page.php:1466
@@ -5167,9 +5121,8 @@ msgid "Basket & Checkout"
 msgstr ""
 
 #: class.Page.php:2019
-#, fuzzy
 msgid "Log Out"
-msgstr "Déconnecter"
+msgstr ""
 
 #: class.Page.php:2019
 msgid "Profile"
@@ -5181,7 +5134,7 @@ msgstr ""
 
 #: class.Page.php:2021
 msgid "Log in"
-msgstr "Connecter"
+msgstr ""
 
 #: class.Page.php:2427
 #: class.Page.php:2439
@@ -5193,9 +5146,8 @@ msgid "Same URL as the redirect"
 msgstr ""
 
 #: class.Part.php:114
-#, fuzzy
 msgid "Part Created"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: class.Part.php:115
 #: class.Part.php:2377
@@ -5245,9 +5197,8 @@ msgid "Unknown Supplier"
 msgstr ""
 
 #: class.PartLocation.php:115
-#, fuzzy
 msgid "Part not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: class.PartLocation.php:287
 msgid "Quantity On Hand should be a number"
@@ -5270,9 +5221,8 @@ msgid "Part added to location"
 msgstr ""
 
 #: class.PartLocation.php:1055
-#, fuzzy
 msgid "Unknown error"
-msgstr "Une erreur inconnue s'est produite"
+msgstr ""
 
 #: class.PartLocation.php:1067
 msgid "Unknown stock in this location"
@@ -5319,9 +5269,8 @@ msgid "move in to"
 msgstr ""
 
 #: class.PartLocation.php:1243
-#, fuzzy
 msgid "received in"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: class.PartLocation.php:1287
 msgid "There is still stock in this location"
@@ -5681,9 +5630,8 @@ msgid "Site default footer changed"
 msgstr ""
 
 #: class.Staff.php:87
-#, fuzzy
 msgid "Volunteer"
-msgstr "Dossier"
+msgstr ""
 
 #: class.Staff.php:90
 msgid "Contractor"
@@ -6134,7 +6082,7 @@ msgstr ""
 #: class.User.php:737
 #: class.User.php:763
 msgid "User"
-msgstr "Utilisateur"
+msgstr ""
 
 #: class.User.php:306
 msgid "activated"
@@ -6219,7 +6167,7 @@ msgstr ""
 
 #: common.php:213
 msgid "Users"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: common.php:227
 msgid "Reports"
@@ -6417,11 +6365,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: common_natural_language.php:37
-#, fuzzy, php-format
+#, php-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] "secondes"
-msgstr[1] "secondes"
+msgstr[0] ""
+msgstr[1] ""
 
 #: companies.js.php:81
 msgid "ID"
@@ -6598,14 +6546,12 @@ msgid "IP Address"
 msgstr ""
 
 #: customer.js.php:839
-#, fuzzy
 msgid "Login Date"
-msgstr "Connecter"
+msgstr ""
 
 #: customer.js.php:840
-#, fuzzy
 msgid "Logout Date"
-msgstr "Déconnecter"
+msgstr ""
 
 #: customer.js.php:1517
 #: customer.js.php:2546
@@ -6864,9 +6810,8 @@ msgid "Correlation"
 msgstr ""
 
 #: customers.js.php:10
-#, fuzzy
 msgid "Number"
-msgstr "Nom"
+msgstr ""
 
 #: customers.js.php:10
 msgid "Growth"
@@ -6902,17 +6847,15 @@ msgstr ""
 
 #: customers.js.php:162
 msgid "Handle"
-msgstr "Identifiant "
+msgstr ""
 
 #: customers.js.php:165
-#, fuzzy
 msgid "Last Visit"
-msgstr "Connecter"
+msgstr ""
 
 #: customers.js.php:166
-#, fuzzy
 msgid "Visits"
-msgstr "Droits"
+msgstr ""
 
 #: customers.js.php:167
 msgid "Views"
@@ -6956,9 +6899,8 @@ msgid "Customer Static List"
 msgstr ""
 
 #: customers_lists.js.php:43
-#, fuzzy
 msgid "List Name"
-msgstr "Nom"
+msgstr ""
 
 #: customers_lists.js.php:44
 msgid "List Created"
@@ -6977,18 +6919,16 @@ msgid "Conatact"
 msgstr ""
 
 #: customers_pending_orders.js.php:264
-#, fuzzy
 msgid "Weight"
-msgstr "Droits"
+msgstr ""
 
 #: customers_pending_orders.js.php:265
 msgid "Picks"
 msgstr ""
 
 #: customers_pending_orders.js.php:268
-#, fuzzy
 msgid "Actions"
-msgstr "secondes"
+msgstr ""
 
 #: customers_pending_orders.php:70
 msgid "Pending Orders"
@@ -7106,9 +7046,8 @@ msgid "Duration"
 msgstr ""
 
 #: deal.js.php:178
-#, fuzzy
 msgid "Used"
-msgstr "Utilisateur"
+msgstr ""
 
 #: deal.php:115
 msgid "Order Number"
@@ -7181,9 +7120,8 @@ msgid "All"
 msgstr ""
 
 #: department.js.php:146
-#, fuzzy
 msgid "Code/Name"
-msgstr "Nom"
+msgstr ""
 
 #: department.js.php:150
 msgid "To do"
@@ -7453,9 +7391,8 @@ msgid "Cancel Edit Contact"
 msgstr ""
 
 #: edit_customer.js.php:1294
-#, fuzzy
 msgid "Other Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: edit_customer.js.php:1296
 msgid "Other Telephone"
@@ -7535,9 +7472,8 @@ msgstr ""
 #: edit_dashboard.js.php:114
 #: edit_dashboard.js.php:206
 #: edit_dashboards.js.php:86
-#, fuzzy
 msgid "Widget Name"
-msgstr "Nom"
+msgstr ""
 
 #: edit_dashboard.js.php:115
 #: edit_dashboards.js.php:87
@@ -7560,9 +7496,8 @@ msgid "Columns"
 msgstr ""
 
 #: edit_dashboard.js.php:204
-#, fuzzy
 msgid "Height"
-msgstr "Droits"
+msgstr ""
 
 #: edit_dashboard.php:71
 #: edit_dashboards.php:81
@@ -7626,9 +7561,8 @@ msgstr ""
 #: edit_department.php:250
 #: edit_family.php:307
 #: edit_family.php:322
-#, fuzzy
 msgid "Header"
-msgstr "Identifiant "
+msgstr ""
 
 #: edit_each_staff.js.php:34
 #: edit_hr.js.php:25
@@ -7689,9 +7623,8 @@ msgid "Valid Until"
 msgstr ""
 
 #: edit_family.js.php:841
-#, fuzzy
 msgid "Part Name"
-msgstr "Nom"
+msgstr ""
 
 #: edit_family.js.php:842
 msgid "Notes for picker"
@@ -7800,9 +7733,8 @@ msgid "Storing"
 msgstr ""
 
 #: edit_location.php:61
-#, fuzzy
 msgid "Loading"
-msgstr "Connecter"
+msgstr ""
 
 #: edit_location.php:62
 msgid "Displaying"
@@ -7841,9 +7773,8 @@ msgid "<i>units</i> x name RRP"
 msgstr ""
 
 #: edit_page.js.php:507
-#, fuzzy
 msgid "Range"
-msgstr "Langage"
+msgstr ""
 
 #: edit_page.js.php:508
 msgid "Limit"
@@ -8054,9 +7985,8 @@ msgid "Invalid FTP User"
 msgstr ""
 
 #: edit_site.js.old.php:29
-#, fuzzy
 msgid "Invalid FTP Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: edit_site.js.old.php:30
 msgid "Invalid FTP Directory"
@@ -8080,9 +8010,8 @@ msgid "Invalid Email Address"
 msgstr ""
 
 #: edit_site.js.old.php:51
-#, fuzzy
 msgid "Invalid Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: edit_site.js.old.php:52
 msgid "Invalid Incoming Server"
@@ -8126,9 +8055,8 @@ msgid "Preview"
 msgstr ""
 
 #: edit_site.js.php:70
-#, fuzzy
 msgid "Invalid Login"
-msgstr "Connecter"
+msgstr ""
 
 #: edit_staff.js.php:24
 #: edit_staff.js.php:25
@@ -8229,9 +8157,8 @@ msgid "Unit"
 msgstr ""
 
 #: edit_supplier.js.php:230
-#, fuzzy
 msgid "U/Case"
-msgstr "Utilisateur"
+msgstr ""
 
 #: edit_supplier.js.php:231
 msgid "Cost/u"
@@ -8249,15 +8176,14 @@ msgstr ""
 #: edit_users_customer.js.php:224
 #: edit_users_staff.js.php:252
 #: edit_users_supplier.js.php:224
-#, fuzzy
 msgid "Login"
-msgstr "Connecter"
+msgstr ""
 
 #: edit_user_password.js.php:226
 #: edit_users_staff.js.php:254
 #: edit_users_supplier.js.php:226
 msgid "Groups"
-msgstr "Groupes"
+msgstr ""
 
 #: edit_user_password.js.php:267
 #: edit_users_staff.js.php:313
@@ -8271,9 +8197,8 @@ msgstr ""
 
 #: edit_warehouse.js.php:90
 #: edit_warehouse_area.js.php:93
-#, fuzzy
 msgid "Used for"
-msgstr "Utilisateur"
+msgstr ""
 
 #: edit_warehouse.js.php:96
 #: edit_warehouse.js.php:236
@@ -8353,9 +8278,8 @@ msgid "No. Of Customer"
 msgstr ""
 
 #: email_campaign_in_process.js.php:204
-#, fuzzy
 msgid "Emails"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: email_campaign_in_process.js.php:207
 msgid "Create Campaign"
@@ -8368,9 +8292,8 @@ msgstr ""
 #: email_campaign_in_process.js.php:573
 #: email_campaign_in_process.js.php:648
 #: email_campaign_in_process.js.php:724
-#, fuzzy
 msgid "In Use"
-msgstr "Utilisateur"
+msgstr ""
 
 #: email_campaign_in_process.js.php:647
 #: email_campaign_in_process.js.php:723
@@ -8383,7 +8306,7 @@ msgstr ""
 
 #: email_campaign_in_process.js.php:1657
 msgid "seconds"
-msgstr "secondes"
+msgstr ""
 
 #: export.php:15
 #: export.php:16
@@ -9035,22 +8958,20 @@ msgstr ""
 
 #: index.php:233
 msgid "Home"
-msgstr "Dossier"
+msgstr ""
 
 #: invoice.js.php:29
 #: invoice.pdf.php:369
 #: invoice_in_process.js.php:25
-#, fuzzy
 msgid "Gross"
-msgstr "Groupes"
+msgstr ""
 
 #: invoice.js.php:30
 #: invoice.pdf.php:261
 #: invoice.pdf.php:370
 #: invoice_in_process.js.php:26
-#, fuzzy
 msgid "Discounts"
-msgstr "secondes"
+msgstr ""
 
 #: invoice.js.php:31
 #: invoice_in_process.js.php:27
@@ -9092,9 +9013,8 @@ msgid "Items Net"
 msgstr ""
 
 #: invoice.php:18
-#, fuzzy
 msgid "Error, invoice not found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: invoices_list.php:39
 msgid "Invoices Lists"
@@ -9157,9 +9077,8 @@ msgid "Out of stock"
 msgstr ""
 
 #: locale.php:24
-#, fuzzy
 msgid "Hidden"
-msgstr "Interdit"
+msgstr ""
 
 #: locale.php:27
 msgid "Picking Area"
@@ -9237,11 +9156,11 @@ msgstr ""
 
 #: login_supplier.php:74
 msgid "Welcome"
-msgstr "Bienvenue"
+msgstr ""
 
 #: login_supplier.php:76
 msgid "Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: map_data_world_countries.xml.php:51
 msgid "Number of Contacts"
@@ -9305,9 +9224,8 @@ msgstr ""
 #: new_customers_list.js.php:767
 #: new_delivery_notes_list.js.php:716
 #: new_invoices_list.js.php:713
-#, fuzzy
 msgid "City Name"
-msgstr "Nom"
+msgstr ""
 
 #: new_customers_list.js.php:1316
 #: new_customers_list.js.php:1330
@@ -9341,9 +9259,8 @@ msgstr ""
 
 #: new_customers_list.php:93
 #: new_customers_list.php:95
-#, fuzzy
 msgid "Losing"
-msgstr "Connecter"
+msgstr ""
 
 #: new_customers_list.php:149
 #: new_delivery_notes_list.php:78
@@ -9352,9 +9269,8 @@ msgstr ""
 
 #: new_customers_list.php:150
 #: new_delivery_notes_list.php:79
-#, fuzzy
 msgid "Equal"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: new_customers_list.php:151
 #: new_delivery_notes_list.php:80
@@ -9443,9 +9359,8 @@ msgid "Shortages"
 msgstr ""
 
 #: new_delivery_notes_list.php:90
-#, fuzzy
 msgid "Sample"
-msgstr "Nom"
+msgstr ""
 
 #: new_delivery_notes_list.php:91
 msgid "Donation"
@@ -9578,9 +9493,8 @@ msgid "Able"
 msgstr ""
 
 #: new_post_order.js.php:387
-#, fuzzy
 msgid "Operation"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: new_post_order.js.php:387
 msgid "Credit"
@@ -9623,9 +9537,8 @@ msgid "Area Code"
 msgstr ""
 
 #: new_warehouse_area.js.php:15
-#, fuzzy
 msgid "Area Name"
-msgstr "Nom"
+msgstr ""
 
 #: new_warehouse_area.js.php:16
 msgid "Area Description"
@@ -9883,9 +9796,8 @@ msgid "Net Item Sales"
 msgstr ""
 
 #: plot.inc.php:92
-#, fuzzy
 msgid "Daily"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: plot.inc.php:119
 msgid "1 month"
@@ -9965,9 +9877,8 @@ msgstr ""
 #: plot.php:436
 #: plot.php:852
 #: plot.php:1171
-#, fuzzy
 msgid "Tails"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: plot.php:431
 msgid "Total Net Sales per Month"
@@ -10393,9 +10304,8 @@ msgstr ""
 
 #: report_sales.php:208
 #: report_sales.php:217
-#, fuzzy
 msgid "and"
-msgstr "Identifiant "
+msgstr ""
 
 #: report_sales.php:210
 msgid " less"
@@ -10556,9 +10466,8 @@ msgid "Link Label"
 msgstr ""
 
 #: site_user.php:83
-#, fuzzy
 msgid "Forgot Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: site_user.php:89
 msgid "Customer User"
@@ -10678,9 +10587,8 @@ msgstr ""
 
 #: smarty.php:122
 #: smarty.php:167
-#, fuzzy
 msgid "Product Weight"
-msgstr "Droits"
+msgstr ""
 
 #: smarty.php:125
 #: smarty.php:170
@@ -10689,9 +10597,8 @@ msgstr ""
 
 #: smarty.php:137
 #: smarty.php:182
-#, fuzzy
 msgid "Store List"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:140
 #: smarty.php:4697
@@ -11234,9 +11141,8 @@ msgstr ""
 
 #: smarty.php:293
 #: smarty.php:437
-#, fuzzy
 msgid "Long Note"
-msgstr "Déconnecter"
+msgstr ""
 
 #: smarty.php:296
 #: smarty.php:440
@@ -11459,9 +11365,8 @@ msgid "Add Telephone"
 msgstr ""
 
 #: smarty.php:545
-#, fuzzy
 msgid "Add Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:551
 msgid "Add Web Site"
@@ -11480,9 +11385,8 @@ msgid "First Name"
 msgstr ""
 
 #: smarty.php:563
-#, fuzzy
 msgid "Last Name"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:566
 msgid "Suffix"
@@ -11592,9 +11496,8 @@ msgstr ""
 
 #: smarty.php:725
 #: smarty.php:14192
-#, fuzzy
 msgid "Languages"
-msgstr "Langage"
+msgstr ""
 
 #: smarty.php:728
 #: smarty.php:14195
@@ -11665,9 +11568,8 @@ msgstr ""
 #: smarty.php:812
 #: smarty.php:3740
 #: smarty.php:3743
-#, fuzzy
 msgid "Register User"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:821
 #: smarty.php:824
@@ -11843,9 +11745,8 @@ msgstr ""
 #: smarty.php:18554
 #: smarty.php:18593
 #: smarty.php:18611
-#, fuzzy
 msgid "Last Login"
-msgstr "Connecter"
+msgstr ""
 
 #: smarty.php:992
 msgid "User Login Count"
@@ -11977,14 +11878,12 @@ msgstr ""
 
 #: smarty.php:1118
 #: smarty.php:1139
-#, fuzzy
 msgid "Tax Number:"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:1121
-#, fuzzy
 msgid "Name:"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:1124
 msgid "Address:"
@@ -12209,9 +12108,8 @@ msgstr ""
 #: smarty.php:3998
 #: smarty.php:4517
 #: smarty.php:5129
-#, fuzzy
 msgid "This operation cannot be undone"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:1472
 #: smarty.php:1475
@@ -12256,18 +12154,16 @@ msgid "Default Value"
 msgstr ""
 
 #: smarty.php:1523
-#, fuzzy
 msgid "Value Type"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:1526
 msgid "Short Text"
 msgstr ""
 
 #: smarty.php:1529
-#, fuzzy
 msgid "Long Text"
-msgstr "Déconnecter"
+msgstr ""
 
 #: smarty.php:1535
 msgid "Yes/No"
@@ -12286,9 +12182,8 @@ msgid "customer showcase"
 msgstr ""
 
 #: smarty.php:1559
-#, fuzzy
 msgid "registration form"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:1568
 msgid "customer profile"
@@ -12372,9 +12267,8 @@ msgid "Print"
 msgstr ""
 
 #: smarty.php:1862
-#, fuzzy
 msgid "In Website"
-msgstr "Utilisateur"
+msgstr ""
 
 #: smarty.php:1949
 msgid "Customers per Store"
@@ -13359,9 +13253,8 @@ msgstr ""
 #: smarty.php:9656
 #: smarty.php:10748
 #: smarty.php:15104
-#, fuzzy
 msgid "Male"
-msgstr "Identifiant "
+msgstr ""
 
 #: smarty.php:3164
 #: smarty.php:3434
@@ -13439,9 +13332,8 @@ msgstr ""
 
 #: smarty.php:3206
 #: smarty.php:3479
-#, fuzzy
 msgid "Email Type"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:3209
 #: smarty.php:3482
@@ -13471,9 +13363,8 @@ msgstr ""
 #: smarty.php:9686
 #: smarty.php:10778
 #: smarty.php:15134
-#, fuzzy
 msgid "NAC"
-msgstr "No&m :"
+msgstr ""
 
 #: smarty.php:3239
 #: smarty.php:3512
@@ -13565,9 +13456,8 @@ msgid "Associate with a company"
 msgstr ""
 
 #: smarty.php:3653
-#, fuzzy
 msgid "Work Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:3656
 msgid "Work Telephone"
@@ -13596,9 +13486,8 @@ msgid "Communications"
 msgstr ""
 
 #: smarty.php:3725
-#, fuzzy
 msgid "Website User"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:3731
 #: smarty.php:3746
@@ -13607,16 +13496,14 @@ msgstr ""
 
 #: smarty.php:3734
 #: smarty.php:3749
-#, fuzzy
 msgid "Send Reset Password Email"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:3737
 #: smarty.php:3752
 #: smarty.php:15371
-#, fuzzy
 msgid "Set Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:3755
 msgid "Merge with: (Customer ID)"
@@ -13671,9 +13558,8 @@ msgstr ""
 
 #: smarty.php:3851
 #: smarty.php:9134
-#, fuzzy
 msgid "false"
-msgstr "Identifiant "
+msgstr ""
 
 #: smarty.php:3860
 #: smarty.php:3995
@@ -13777,15 +13663,13 @@ msgstr ""
 #: smarty.php:4043
 #: smarty.php:15380
 #: smarty.php:15389
-#, fuzzy
 msgid "Change Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:4040
 #: smarty.php:15386
-#, fuzzy
 msgid "Confirm"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:4049
 #: smarty.php:15395
@@ -13852,9 +13736,8 @@ msgid "Delete all customers without orders"
 msgstr ""
 
 #: smarty.php:4229
-#, fuzzy
 msgid "This operation can not be undone"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:4238
 msgid "Wait please, i will take a couple of seconds to delete each customer"
@@ -13939,9 +13822,8 @@ msgstr ""
 #: smarty.php:4868
 #: smarty.php:5918
 #: smarty.php:6182
-#, fuzzy
 msgid "Page Properties"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: smarty.php:4430
 #: smarty.php:4577
@@ -13992,9 +13874,8 @@ msgstr ""
 
 #: smarty.php:4559
 #: smarty.php:6245
-#, fuzzy
 msgid "Deal Name"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:4562
 #: smarty.php:6248
@@ -14141,9 +14022,8 @@ msgstr ""
 
 #: smarty.php:4862
 #: smarty.php:12005
-#, fuzzy
 msgid "View Page"
-msgstr "Dossier"
+msgstr ""
 
 #: smarty.php:4871
 msgid "HTML Setup"
@@ -14166,9 +14046,8 @@ msgstr ""
 
 #: smarty.php:4892
 #: smarty.php:4895
-#, fuzzy
 msgid "Redirections"
-msgstr "secondes"
+msgstr ""
 
 #: smarty.php:4898
 msgid "301 Rederections"
@@ -14250,29 +14129,24 @@ msgid "Related Pages"
 msgstr ""
 
 #: smarty.php:5048
-#, fuzzy
 msgid "Add page"
-msgstr "Utilisateur"
+msgstr ""
 
 #: smarty.php:5051
-#, fuzzy
 msgid "Add Page"
-msgstr "Utilisateur"
+msgstr ""
 
 #: smarty.php:5054
-#, fuzzy
 msgid "Remove Page"
-msgstr "Dossier"
+msgstr ""
 
 #: smarty.php:5057
-#, fuzzy
 msgid "See also"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:5075
-#, fuzzy
 msgid "List Items"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:5081
 #: smarty.php:7736
@@ -14293,9 +14167,8 @@ msgstr ""
 #: smarty.php:5969
 #: smarty.php:5981
 #: smarty.php:5993
-#, fuzzy
 msgid "Processing"
-msgstr "Connecter"
+msgstr ""
 
 #: smarty.php:5120
 #: smarty.php:6002
@@ -14306,9 +14179,8 @@ msgid "Multiple files found, please select one"
 msgstr ""
 
 #: smarty.php:5126
-#, fuzzy
 msgid "Delete Page"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:5135
 msgid "Deleting page, wait please"
@@ -14503,20 +14375,17 @@ msgstr ""
 
 #: smarty.php:5624
 #: smarty.php:10691
-#, fuzzy
 msgid "Layout"
-msgstr "Déconnecter"
+msgstr ""
 
 #: smarty.php:5630
-#, fuzzy
 msgid "Sections"
-msgstr "secondes"
+msgstr ""
 
 #: smarty.php:5633
 #: smarty.php:5693
-#, fuzzy
 msgid "Headers"
-msgstr "Identifiant "
+msgstr ""
 
 #: smarty.php:5636
 msgid "Footers"
@@ -14558,18 +14427,16 @@ msgid "Menu Javascript"
 msgstr ""
 
 #: smarty.php:5687
-#, fuzzy
 msgid "New Header"
-msgstr "Identifiant "
+msgstr ""
 
 #: smarty.php:5696
 msgid "New Footer"
 msgstr ""
 
 #: smarty.php:5705
-#, fuzzy
 msgid "Website Properties"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: smarty.php:5714
 msgid "Select Site Locale"
@@ -14700,9 +14567,8 @@ msgid "Website FTP User"
 msgstr ""
 
 #: smarty.php:5855
-#, fuzzy
 msgid "Website FTP Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:5858
 msgid "Website FTP Directory"
@@ -14713,9 +14579,8 @@ msgid "Website FTP Port"
 msgstr ""
 
 #: smarty.php:5864
-#, fuzzy
 msgid "Welcome Email"
-msgstr "Bienvenue"
+msgstr ""
 
 #: smarty.php:5876
 #: smarty.php:5906
@@ -14728,9 +14593,8 @@ msgid "Body HTML"
 msgstr ""
 
 #: smarty.php:5882
-#, fuzzy
 msgid "Welcome Message"
-msgstr "Bienvenue"
+msgstr ""
 
 #: smarty.php:5891
 #: smarty.php:6173
@@ -14738,9 +14602,8 @@ msgid "Message"
 msgstr ""
 
 #: smarty.php:5894
-#, fuzzy
 msgid "Forgot Password Email"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:6062
 #: smarty.php:8975
@@ -14749,9 +14612,8 @@ msgstr ""
 
 #: smarty.php:6071
 #: smarty.php:8984
-#, fuzzy
 msgid "Staff Supervisor"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:6080
 #: smarty.php:8993
@@ -14766,19 +14628,16 @@ msgstr ""
 
 #: smarty.php:6098
 #: smarty.php:9011
-#, fuzzy
 msgid "Staff Position"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:6107
-#, fuzzy
 msgid "Staff PIN"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:6110
-#, fuzzy
 msgid "Confirm PIN"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:6119
 msgid "Editing Store"
@@ -14820,9 +14679,8 @@ msgid "Store Company Name"
 msgstr ""
 
 #: smarty.php:6170
-#, fuzzy
 msgid "Message Header"
-msgstr "Identifiant "
+msgstr ""
 
 #: smarty.php:6191
 msgid "Store Details"
@@ -14837,9 +14695,8 @@ msgid "Store Contact"
 msgstr ""
 
 #: smarty.php:6212
-#, fuzzy
 msgid "Store Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:6215
 msgid "Store Telephone"
@@ -14862,9 +14719,8 @@ msgid "Short Marketing Description"
 msgstr ""
 
 #: smarty.php:6230
-#, fuzzy
 msgid "Logo"
-msgstr "Déconnecter"
+msgstr ""
 
 #: smarty.php:6233
 msgid "Add Deal"
@@ -14904,9 +14760,8 @@ msgid "Charge Description"
 msgstr ""
 
 #: smarty.php:6293
-#, fuzzy
 msgid "Full Name"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:6311
 msgid "General Messages"
@@ -15017,9 +14872,8 @@ msgid "Minimun Orthogonal Volume"
 msgstr ""
 
 #: smarty.php:6632
-#, fuzzy
 msgid "Cases"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:6638
 msgid "Case Weight"
@@ -15093,9 +14947,8 @@ msgstr ""
 #: smarty.php:6854
 #: smarty.php:15782
 #: smarty.php:18266
-#, fuzzy
 msgid "Repeat Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:6770
 #: smarty.php:6782
@@ -15104,14 +14957,12 @@ msgstr "Mot de passe"
 #: smarty.php:18680
 #: smarty.php:18689
 #: smarty.php:18725
-#, fuzzy
 msgid "Staff Users"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:6773
-#, fuzzy
 msgid "Editing Staff Users"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:6785
 #: smarty.php:18704
@@ -15134,9 +14985,8 @@ msgid "Active Working"
 msgstr ""
 
 #: smarty.php:6815
-#, fuzzy
 msgid "Random Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:6824
 #: smarty.php:18575
@@ -15198,9 +15048,8 @@ msgid "Warehouse Area Code"
 msgstr ""
 
 #: smarty.php:7043
-#, fuzzy
 msgid "Warehouse Area Name"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:7055
 msgid "Click to change image"
@@ -15308,9 +15157,8 @@ msgid "Objectives"
 msgstr ""
 
 #: smarty.php:7205
-#, fuzzy
 msgid "Plain Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:7208
 #: smarty.php:7220
@@ -15471,9 +15319,8 @@ msgstr ""
 #: smarty.php:7430
 #: smarty.php:7508
 #: smarty.php:8684
-#, fuzzy
 msgid "HTML Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:7442
 #: smarty.php:7613
@@ -15498,9 +15345,8 @@ msgstr ""
 
 #: smarty.php:7502
 #: smarty.php:8678
-#, fuzzy
 msgid "Text Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:7523
 msgid "Send Now"
@@ -15543,18 +15389,16 @@ msgid "Return to Email Campaign"
 msgstr ""
 
 #: smarty.php:7634
-#, fuzzy
 msgid "Email Credentials"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: smarty.php:7649
 msgid "Select Mail Server"
 msgstr ""
 
 #: smarty.php:7655
-#, fuzzy
 msgid "Gmail"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:7673
 msgid "Sending test email to "
@@ -15612,14 +15456,12 @@ msgid "Create Super User"
 msgstr ""
 
 #: smarty.php:8009
-#, fuzzy
 msgid "User Handle"
-msgstr "Identifiant "
+msgstr ""
 
 #: smarty.php:8012
-#, fuzzy
 msgid "User Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:8015
 #: smarty.php:8876
@@ -15651,9 +15493,8 @@ msgid "Request a feature"
 msgstr ""
 
 #: smarty.php:8039
-#, fuzzy
 msgid "Powered by Inikoo"
-msgstr "Propulsé par Kaktus"
+msgstr ""
 
 #: smarty.php:8045
 #: smarty.php:10913
@@ -15673,13 +15514,12 @@ msgid "File Download From Server"
 msgstr ""
 
 #: smarty.php:8057
-#, fuzzy
 msgid "Help"
-msgstr "Bonjour"
+msgstr ""
 
 #: smarty.php:8063
 msgid "Logout"
-msgstr "Déconnecter"
+msgstr ""
 
 #: smarty.php:8069
 msgid "Help File"
@@ -15703,9 +15543,8 @@ msgid "Not Working"
 msgstr ""
 
 #: smarty.php:8108
-#, fuzzy
 msgid "Working"
-msgstr "Connecter"
+msgstr ""
 
 #: smarty.php:8150
 #: smarty.php:8171
@@ -15771,9 +15610,8 @@ msgid "Previous Dashboard"
 msgstr ""
 
 #: smarty.php:8225
-#, fuzzy
 msgid "Next Dashboard"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:8228
 msgid "Configure Dashboard"
@@ -15829,9 +15667,8 @@ msgstr ""
 #: smarty.php:8453
 #: smarty.php:10388
 #: smarty.php:10655
-#, fuzzy
 msgid "with Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:8456
 #: smarty.php:10391
@@ -15866,14 +15703,12 @@ msgid "Inikoo Login"
 msgstr ""
 
 #: smarty.php:8585
-#, fuzzy
 msgid "Staff Login"
-msgstr "Connecter"
+msgstr ""
 
 #: smarty.php:8588
-#, fuzzy
 msgid "Suppliers Login"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:8600
 msgid "Supplier Login"
@@ -16021,18 +15856,16 @@ msgid "Valid"
 msgstr ""
 
 #: smarty.php:8966
-#, fuzzy
 msgid "Staff Info"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:9014
 msgid "Staff Department"
 msgstr ""
 
 #: smarty.php:9017
-#, fuzzy
 msgid "Staff Area"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:9035
 msgid "Adding Customer"
@@ -16432,41 +16265,36 @@ msgid "Orders ..."
 msgstr ""
 
 #: smarty.php:10091
-#, fuzzy
 msgid "created between"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: smarty.php:10124
 msgid "with"
 msgstr ""
 
 #: smarty.php:10241
-#, fuzzy
 msgid "New Part"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:10244
-#, fuzzy
 msgid "Part Info"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:10247
 msgid "Part Description"
 msgstr ""
 
 #: smarty.php:10250
-#, fuzzy
 msgid "Part Weight"
-msgstr "Droits"
+msgstr ""
 
 #: smarty.php:10259
 msgid "New Parts List"
 msgstr ""
 
 #: smarty.php:10268
-#, fuzzy
 msgid "Parts created between"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: smarty.php:10271
 msgid "Destination country"
@@ -16575,9 +16403,8 @@ msgid "Credits Value"
 msgstr ""
 
 #: smarty.php:10469
-#, fuzzy
 msgid "Create Refund"
-msgstr "<b>Formulaires dans la page</b>"
+msgstr ""
 
 #: smarty.php:10472
 msgid "Refund Value"
@@ -16653,15 +16480,13 @@ msgid "Adding new supplier"
 msgstr ""
 
 #: smarty.php:10718
-#, fuzzy
 msgid "Supplier Info"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:10811
 #: smarty.php:10823
-#, fuzzy
 msgid "Edit the Supplier found"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:10814
 msgid "Creating this supplier is likely to produce duplicate contacts."
@@ -16689,18 +16514,16 @@ msgid "New Supplier Product"
 msgstr ""
 
 #: smarty.php:10847
-#, fuzzy
 msgid "Supplier Product Info"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:10853
 msgid "Units per case"
 msgstr ""
 
 #: smarty.php:10856
-#, fuzzy
 msgid "Case Cost"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:10919
 #: smarty.php:11564
@@ -16826,9 +16649,8 @@ msgid "Set Charges"
 msgstr ""
 
 #: smarty.php:11312
-#, fuzzy
 msgid "Product Discount"
-msgstr "secondes"
+msgstr ""
 
 #: smarty.php:11339
 msgid "Pack Aid"
@@ -16868,9 +16690,8 @@ msgid "Set all as Picked"
 msgstr ""
 
 #: smarty.php:11384
-#, fuzzy
 msgid "Update Locations"
-msgstr "Opération non trouvée"
+msgstr ""
 
 #: smarty.php:11387
 msgid "Start Packing"
@@ -16968,9 +16789,8 @@ msgstr ""
 #: smarty.php:12020
 #: smarty.php:12104
 #: smarty.php:15260
-#, fuzzy
 msgid "Hits"
-msgstr "Droits"
+msgstr ""
 
 #: smarty.php:12023
 #: smarty.php:12050
@@ -16982,15 +16802,13 @@ msgstr ""
 
 #: smarty.php:12044
 #: smarty.php:15281
-#, fuzzy
 msgid "Page Hits"
-msgstr "Droits"
+msgstr ""
 
 #: smarty.php:12047
 #: smarty.php:15284
-#, fuzzy
 msgid "Sessions"
-msgstr "secondes"
+msgstr ""
 
 #: smarty.php:12053
 #: smarty.php:15290
@@ -17126,9 +16944,8 @@ msgid "Monthly"
 msgstr ""
 
 #: smarty.php:12311
-#, fuzzy
 msgid "Volume"
-msgstr "Dossier"
+msgstr ""
 
 #: smarty.php:12359
 #: smarty.php:12866
@@ -17249,9 +17066,8 @@ msgstr ""
 
 #: smarty.php:13028
 #: smarty.php:18896
-#, fuzzy
 msgid "Part Movements"
-msgstr "Nom"
+msgstr ""
 
 #: smarty.php:13040
 msgid "Show also"
@@ -17629,9 +17445,8 @@ msgid "Track the progress of ongoing issues"
 msgstr ""
 
 #: smarty.php:14480
-#, fuzzy
 msgid "password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:14483
 #: smarty.php:16394
@@ -17855,9 +17670,8 @@ msgid "No orders has been placed in this period"
 msgstr ""
 
 #: smarty.php:14837
-#, fuzzy
 msgid "sales"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:14843
 msgid "compare"
@@ -17999,9 +17813,8 @@ msgid "Edit Site"
 msgstr ""
 
 #: smarty.php:15269
-#, fuzzy
 msgid "Home Page"
-msgstr "Dossier"
+msgstr ""
 
 #: smarty.php:15272
 msgid "Number Pages"
@@ -18017,32 +17830,27 @@ msgstr ""
 
 #: smarty.php:15329
 #: smarty.php:18671
-#, fuzzy
 msgid "Site Users"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:15332
-#, fuzzy
 msgid "Edit User"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:15335
 #: smarty.php:18668
 #: smarty.php:18686
 #: smarty.php:18731
-#, fuzzy
 msgid "Users Home"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:15338
-#, fuzzy
 msgid "Modify Password"
-msgstr "Mot de passe"
+msgstr ""
 
 #: smarty.php:15341
-#, fuzzy
 msgid "Site User"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:15350
 #: smarty.php:15743
@@ -18050,9 +17858,8 @@ msgstr "Utilisateurs"
 #: smarty.php:18551
 #: smarty.php:18590
 #: smarty.php:18608
-#, fuzzy
 msgid "Login Count"
-msgstr "Déconnecter"
+msgstr ""
 
 #: smarty.php:15356
 #: smarty.php:15749
@@ -18081,14 +17888,12 @@ msgid "Login History"
 msgstr ""
 
 #: smarty.php:15368
-#, fuzzy
 msgid "Send Email"
-msgstr "Adresse électronique"
+msgstr ""
 
 #: smarty.php:15419
-#, fuzzy
 msgid "Website List"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:15452
 msgid "Average Dispatch Time"
@@ -18631,9 +18436,8 @@ msgid "Supplier Invoices"
 msgstr ""
 
 #: smarty.php:18449
-#, fuzzy
 msgid "Wellcome to"
-msgstr "Bienvenue"
+msgstr ""
 
 #: smarty.php:18452
 msgid "supplier's page"
@@ -18725,31 +18529,27 @@ msgid "Warehouse Account"
 msgstr ""
 
 #: smarty.php:18638
-#, fuzzy
 msgid "Website users"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:18641
 msgid "Online sites"
 msgstr ""
 
 #: smarty.php:18653
-#, fuzzy
 msgid "User Login History"
-msgstr "Connecter"
+msgstr ""
 
 #: smarty.php:18665
 #: smarty.php:18683
 #: smarty.php:18728
-#, fuzzy
 msgid "Edit Users"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:18692
 #: smarty.php:18701
-#, fuzzy
 msgid "Users List"
-msgstr "Utilisateurs"
+msgstr ""
 
 #: smarty.php:18719
 msgid "Staff User Login History"
@@ -18932,9 +18732,8 @@ msgid "P POs"
 msgstr ""
 
 #: supplier_categories.js.php:198
-#, fuzzy
 msgid "High"
-msgstr "Droits"
+msgstr ""
 
 #: supplier_categories.js.php:207
 msgid "PaS"
@@ -19109,9 +18908,8 @@ msgstr ""
 #: users_site.js.php:145
 #: users_staff.js.php:142
 #: users_supplier.js.php:142
-#, fuzzy
 msgid "Logins"
-msgstr "Connecter"
+msgstr ""
 
 #: users_site.php:162
 msgid "Handle like <i>x</i>"
@@ -19128,9 +18926,8 @@ msgid "Last Fail Login"
 msgstr ""
 
 #: users_staff.js.php:218
-#, fuzzy
 msgid "Group"
-msgstr "Groupes"
+msgstr ""
 
 #: warehouse_orders.js.php:82
 msgid "Size"
@@ -19166,48 +18963,10 @@ msgid "Parts Details"
 msgstr ""
 
 #: widgets.php:61
-#, fuzzy
 msgid "Widgets"
-msgstr "Droits"
+msgstr ""
 
 #: wregion.js.php:40
 msgid "Last Update"
 msgstr ""
 
-#~ msgid "An unknown error occurred"
-#~ msgstr "Une erreur inconnue s'est produite"
-
-#, fuzzy
-#~ msgid "Nickname:"
-#~ msgstr "Nom"
-
-#, fuzzy
-#~ msgid "User Site"
-#~ msgstr "Utilisateur"
-
-#, fuzzy
-#~ msgid "Current Password"
-#~ msgstr "Mot de passe"
-
-#, fuzzy
-#~ msgid "Handmade:"
-#~ msgstr "Identifiant "
-
-#, fuzzy
-#~ msgid "MainPage"
-#~ msgstr "Langage"
-
-#, fuzzy
-#~ msgid "Sign in"
-#~ msgstr "Connecter"
-
-#, fuzzy
-#~ msgid "Email:"
-#~ msgstr "Adresse électronique"
-
-#, fuzzy
-#~ msgid "Handing"
-#~ msgstr "Identifiant "
-
-#~ msgid "Remember me"
-#~ msgstr "Souvien de moi"

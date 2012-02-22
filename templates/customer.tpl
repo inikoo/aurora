@@ -10,7 +10,6 @@
 		<div id="top_page_menu" class="top_page_menu">
 			{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 			<div class="buttons" style="float:left">
-				<button onclick="window.location='customers.php?store={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button> 
 			</div>
 			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 			<div class="buttons" style="float:right">

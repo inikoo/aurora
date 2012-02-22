@@ -29,6 +29,7 @@ if ( !$dn->id ) {
 
 if ( isset( $_REQUEST['refresh'] ) ) {
 	$dn->actualize_inventory_transaction_facts();
+	
 }
 
 $dn->update_packing_percentage();

@@ -65,6 +65,8 @@ while ($row=mysql_fetch_array($res)) {
 
 	$res2=mysql_query($sql);
 	$num_rows = mysql_num_rows($res2);
+	
+	
 	if ($num_rows) {
 
 		while ($row2=mysql_fetch_array($res2)) {
@@ -75,8 +77,9 @@ while ($row=mysql_fetch_array($res)) {
 
 		}
 	} else {//no part location;
-		print_r($part);
-		exit;
+		continue;
+		//print "Part with no PL ".$part->sku."\n";
+		//exit;
 	}
 
 	$products=$part->get_all_product_ids();

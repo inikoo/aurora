@@ -5,7 +5,7 @@
 <div class="branch"> 
   <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {t}Customers{/t}</span>
 </div>
-<div class="top_page_menu">
+<div class="top_page_menu" style="display:none">
 <div class="buttons" style="float:right">
 </div>
 <div class="buttons" style="float:left">

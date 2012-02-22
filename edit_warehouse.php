@@ -119,6 +119,8 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 
 
 $smarty->assign('warehouse',$warehouse);
+$smarty->assign('warehouse_id',$warehouse->id);
+
 //print_r($warehouse->get('areas'));
 
 $smarty->assign('paginator_menu0',$paginator_menu);
