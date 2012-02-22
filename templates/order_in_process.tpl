@@ -10,7 +10,7 @@
 	<input type="hidden" value="{$referral}" id="referral" />
 	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
 	<div class="branch ">
-		<span>{if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="orders_server.php">{t}Orders{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=orders">{$store->get('Store Code')} {t}Orders{/t}</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
@@ -78,7 +78,8 @@
 					<td width="100" class="aright" id="order_credits">{$order->get('Net Credited Amount')}</td>
 				</tr>
 				<tr id="tr_order_items_charges">
-					<td class="aright">{t}Charges{/t}</td>
+					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
+
 					<td id="order_charges" width="100" class="aright">{$order->get('Charges Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_shipping">
@@ -129,9 +130,8 @@
 				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='all_products'}selected{/if} label_all_products" id="all_products">{t}Products for sale{/t} (<span id="all_products_number">{$store->get_formated_products_for_sale()}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $products_display_type=='ordered_products'}selected{/if} label_ordered_products" id="ordered_products">{t}Ordered Products{/t} (<span id="ordered_products_number">{$order->get('Number Items')}</span>)</span> 
 			</div>
 		</div>
-		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999">
-		</div>
-		<div id="list_options0">
+		 <div class="table_top_bar" style="margin-bottom:15px"></div>
+		<div id="list_options0" style="display:none">
 			<table style="float:left;margin:0 0 5px 0px ;padding:0" class="options">
 				<tr>
 					<td class="{if $view=='general'}selected{/if}" id="general">{t}General{/t}</td>

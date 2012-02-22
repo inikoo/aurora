@@ -4,7 +4,7 @@
 {include file='assets_navigation.tpl'}
 <input type="hidden" value="{$deal->id}" id="deal_key"/>
 <div class="branch"> 
-  <span   >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="store_deals.php?store=$store->id">{t}Offers{/t}</a> &rarr; {$deal->get('Deal Code')}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="store_deals.php?store=$store->id">{t}Offers{/t}</a> &rarr; {$deal->get('Deal Code')}</span>
 </div>
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 

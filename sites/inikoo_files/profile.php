@@ -1,6 +1,6 @@
 <?php
-
 include_once('common.php');
-$page_key=$site->get_page_key_from_code('profile');
+
+$page_key=$site->get_profile_page_key();
 include_once('page.php');
 ?>

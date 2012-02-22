@@ -22,6 +22,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+
+case('update_tax_number_match'):
+$data=prepare_values($_REQUEST,array(
+                             'customer_key'=>array('type'=>'key'),
+                             'value'=>array('type'=>'value'),
+                         ));
+    update_tax_number_match($data);
+    break;
+
 case('delete_all_customers_in_list'):
 
     $data=prepare_values($_REQUEST,array(
@@ -1788,8 +1797,9 @@ function edit_address($data) {
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
 
                 if ($address->id==$proposed_address->id) {
-                    //  print_r($update_data);
+                   
                     $address->update($update_data,'cascade');
+                 //   print_r($address);
                     if ($address->updated) {
                         $response=address_response($address->id,$subject,$subject_object,$warning);
                         echo json_encode($response);
@@ -1839,7 +1849,8 @@ function edit_address($data) {
                     return;
                 }
             }
-        } else if ($subject=='Supplier') {
+        }
+        else if ($subject=='Supplier') {
             if (preg_match('/^contact$/i',$_REQUEST['key'])) {
                 $subject_object->update_principal_address($proposed_address->id);
 
@@ -1854,7 +1865,8 @@ function edit_address($data) {
                 return;
             }
         }
-    } else {// address not found inside customer
+    }
+    else {// address not found inside customer
         $proposed_address=new Address("find complete ",$update_data);
 
         if ($proposed_address->id) {
@@ -2789,6 +2801,7 @@ function edit_customer($data) {
 
     $responses=array();
     foreach($values as $key=>$values_data) {
+
         $responses[]=edit_customer_field($customer->id,$key,$values_data);
     }
 
@@ -2803,7 +2816,7 @@ function edit_customer($data) {
 function edit_customer_field($customer_key,$key,$value_data) {
 
     //print_r($value_data);
-   // print "$customer_key,$key,$value_data ***";
+    //print "$customer_key,$key,$value_data ***";
     $customer=new customer($customer_key);
     $other_email_deleted=false;
     $other_email_added=false;
@@ -2944,9 +2957,9 @@ function edit_customer_field($customer_key,$key,$value_data) {
     elseif ($key=='Customer Tax Number') {
         $customer->update_tax_number($the_new_value);
     }
-    elseif ($key=='Customer Registration Number') {
-        $customer->update_registration_number($the_new_value);
-    }
+   // elseif ($key=='Customer Registration Number') {
+    //    $customer->update_registration_number($the_new_value);
+   // }
     elseif (preg_match('/^custom_field_customer/i',$key)) {
         $custom_id=preg_replace('/^custom_field_/','',$key);
         //print $key;
@@ -2954,10 +2967,10 @@ function edit_customer_field($customer_key,$key,$value_data) {
 
     }
     else {
-        //  print "$customer_key,$key,$value_data ***";
+       //   print "$customer_key,$key,$value_data ***";
 
 
-      //      print "$key  $the_new_value";
+        
 
         $customer->update(array($key=>$the_new_value));
     }
@@ -3011,7 +3024,11 @@ function edit_customer_field($customer_key,$key,$value_data) {
             $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'scope_key'=>$other_label_scope_key,'scope'=>$other_label_scope,'warning_msg'=>$customer->warning_messages);
         }
         else {
+        	if($customer->updated)
             $response= array('state'=>200,'action'=>'updated','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'warning_msg'=>$customer->warning_messages,'warning_msg'=>$customer->warning_messages);
+        	else
+              $response= array('state'=>200,'action'=>'nochange','newvalue'=>$customer->new_value,'key'=>$value_data['okey'],'warning_msg'=>$customer->warning_messages,'warning_msg'=>$customer->warning_messages);
+      	
         }
     } else {
 
@@ -4395,7 +4412,28 @@ function delete_all_customers_in_list($data) {
 
 
 
+function update_tax_number_match($data){
 
+if($data['value']=='Yes'){
+$match=true;
+}else if($data['value']=='No'){
+$match=false;
+}else{
+ $response= array('state'=>400,'msg'=>'Wrong value');
+        echo json_encode($response);
+        return;
+}
+
+$customer= new Customer($data['customer_key']);
+$customer->update(array('Customer Tax Number Details Match'=>$data['value']));	
+
+
+   $response= array('state'=>200,'match'=>$match);
+        echo json_encode($response);
+        return;
+
+
+}
 
 
 

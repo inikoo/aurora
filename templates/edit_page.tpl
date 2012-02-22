@@ -1,6 +1,6 @@
 {include file='header.tpl'} 
-<div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container">
-</div>
+
+
 <div id="bd" style="padding:0">
 	<input type="hidden" id="site_key" value="{$site->id}" />
 	<input type="hidden" id="site_id" value="{$site->id}" />
@@ -10,11 +10,11 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span>{if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; <a href="store.php?id={$store->id}">{/if}{$store->get('Store Name')}</a> &rarr; <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a>  &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
 			</div>
 			<div class="buttons left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
@@ -36,20 +36,51 @@
 			<li style="display:none"> <span class="item {if $block_view=='products'}selected{/if}" id="products"><span> {t}Products{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='style'}selected{/if}" id="style"><span> {t}Style{/t}</span></span></li>
 			<li style="display:none"> <span class="item {if $block_view=='media'}selected{/if}" id="media"><span> {t}Media{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='url'}selected{/if}" id="url"><span>{t}URL{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='url'}selected{/if}" id="url"><span>{t}Redirections{/t}</span></span></li>
 		</ul>
 	</div>
 	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;margin:0px {if $block_view=='content'}0px{else}20px{/if}">
 		<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
+		<table class="edit" style="width:880px;clear:both;margin-left:20px;margin-top:20px">
+				<tr class="title">
+					<td colspan="1">{t}Redirections{/t}</td>
+					<td colspan="2">
+					<div class="buttons ">
+						<button id="show_dialog_add_redirection" >Add Redirection</button> 
+					</div>
+					</td>
+				</tr>
+				<tr style="height:10px">
+					<td colspan="3"></td>
+				</tr>
+				<tr>
+					<td style="width:120px" class="label">{t}301 Rederections{/t}:</td>
+					<td style="width:700px"> 
+					
+					<table>
+						{foreach from=$page->get_all_redirects_data(true) item=redirect} 
+						<tr style="height:20px">
+							<td style="padding:0">{$redirect.Source}</td>
+							<td style="padding:0;padding-left:10px"> <img onclick="delete_redirect({$redirect.PageRedirectionKey})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}" /> </td>
+							<td style="padding:0;padding-left:10px;"><a href="htaccess.php?page_key={$page->id}&redirection_key={$redirect.PageRedirectionKey}"> <img src="art/icons/page_white_h.png" alt="{t}.htaccess file{/t}" title="{t}.htacces file{/t}" /></a> </td>
+
+							<td style="padding:0;padding-left:10px;"> 
+							<img style="{if $redirect.CanUpload=='Yes'}display:none{/if}" src="art/icons/error.png" alt="{t}Can't update .htaccess{/t}" title="{t}Can't update .htacces{/t}" />
+							<img style="{if $redirect.CanUpload=='No'}display:none{/if};cursor:pointer" src="art/icons/ftp_up.png" alt="{t}Upload .htaccess{/t}" title="{t}Upload .htacces{/t}" />
+							</td>
+						</tr>
+						{/foreach} 
+					</table>
+					</td>
+					<td></td>
+				</tr>
+			</table>
 		</div>
-
-
-
 		<div class="edit_block" style="{if $block_view!='setup' }display:none{/if}" id="d_setup">
 			<table class="edit" border="0" id="edit_family_page" style="width:880px;clear:both;margin-left:20px;margin-top:0px" page_key="{$page->id}">
 				<tr>
 					<td colspan="3"> 
-					<div class="buttons left">
+					<div class="buttons left small">
 						<button id="show_more_configuration">{t}Show Advanced Configuration{/t}</button> <button style="display:none" id="hide_more_configuration">{t}Hide Advanced Configuration{/t}</button> 
 					</div>
 					<div class="buttons">
@@ -178,19 +209,6 @@
 					</div>
 					</td>
 				</tr>
-				<tr style="height:87px">
-					<td class="label" style="width:120px">{t}Description{/t}:</td>
-					<td style="width:400px"> 
-					<div>
-<textarea id="page_html_head_resume" style="width:100%;height:80px" maxlength="24" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
-						<div id="page_html_head_resume_msg">
-						</div>
-						<div id="page_html_head_resume_Container">
-						</div>
-					</div>
-					</td>
-				</tr>
-				
 				<tr>
 					<td style="width:120px" class="label">{t}Link Label{/t}:</td>
 					<td style="width:400px"> 
@@ -205,7 +223,20 @@
 					</div>
 					</td>
 				</tr>
+				<tr style="height:87px">
+					<td class="label" style="width:120px">{t}Description{/t}:</td>
+					<td style="width:400px"> 
+					<div>
+<textarea id="page_html_head_resume" style="width:100%;height:80px" maxlength="24" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
+						<div id="page_html_head_resume_msg">
+						</div>
+						<div id="page_html_head_resume_Container">
+						</div>
+					</div>
+					</td>
+				</tr>
 			</table>
+			
 		</div>
 		<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
 			<table class="edit" border="0" id="properties_edit_table" style="width:100%">
@@ -223,78 +254,7 @@
 		<div class="edit_block" style="{if $block_view!='page_footer' }display:none{/if}" id="d_page_footer">
 		</div>
 		<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px" id="d_content">
-			{if $page->get('Page Code')=='register'} 
-			<div class="general_options" style="float:right">
-				<span style="margin-right:10px;visibility:hidden" id="save_edit_register_form" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;visibility:hidden" id="reset_edit_register_form" class="state_details">{t}Reset{/t}</span> 
-			</div>
-			<table class="edit" id="register_form_edit_table">
-				<tr class="title">
-					<td colspan="2">{t}Registration Form{/t} </td>
-				</tr>
-				<tr>
-					<td class="label">{t}Form Type{/t}:</td>
-					<td class="image_radio"> 
-					<div class="{if $options.form_type=='Steps'}selected{/if}">
-						<img src="art/form_show_all{if $options.Form_Type!='Steps'}_bw{/if}.png" /><br>{t}Show all fields{/t} 
-					</div>
-					<div class="{if $options.form_type=='Show all'}selected{/if}" style="margin-left:20px;">
-						<img src="art/form_show_in_steps{if $options.Form_Type!='Show All'}_bw{/if}.png" /><br>{t}Show by steps{/t} 
-					</div>
-					</td>
-				</tr>
-				<tr style="display:none">
-					<td class="label">{t}No Configurable Fields{/t}:</td>
-					<td>{t}Email{/t}, {t}Password{/t}, {t}Type of business{/t}, [{t}Company Name{/t}/{t}Contact Name{/t}] ({t}at least one should be given{/t})</td>
-				</tr>
-				<tr>
-					<td class="label">{t}Configurable Fields{/t}:</td>
-					<td> 
-					<table class="list_options">
-						<tr>
-							<td>{t}Tax Number{/t}</td>
-							<td onclick="change_field_show(this)" value="{$options.Fields.Tax_Number.show}" class="option" id="option_Customer_Tax_Number">{if $options.Fields.Tax_Number.show}{t}Displayed{/t}{else}Hidden{/if}</td>
-							<td onclick="change_field_required(this)" value="{$options.Fields.Tax_Number.show}" class="option" style="{if !$options.Fields.Tax_Number.show}visibility:hidden{/if}">{if $options.Fields.Tax_Number.required}{t}Required{/t}{else}Optional{/if}</td>
-						</tr>
-						<tr>
-							<td>{t}Address{/t}</td>
-							<td onclick="change_field_show(this)" value="{$options.Fields.Address.show}" class="option" id="option_Address">{if $options.Fields.Address.show}{t}Displayed{/t}{else}Hidden{/if}</td>
-							<td onclick="change_field_required(this)" value="{$options.Fields.Address.show}" class="option" style="{if !$options.Fields.Address.show}visibility:hidden{/if}">{if $options.Fields.Address.required}{t}Required{/t}{else}Optional{/if}</td>
-						</tr>
-						<tr>
-							<td>{t}Telephone{/t}</td>
-							<td onclick="change_field_show(this)" value="{$options.Fields.Telephone.show}" class="option" id="option_Telephone">{if $options.Fields.Telephone.show}{t}Displayed{/t}{else}Hidden{/if}</td>
-							<td onclick="change_field_required(this)" value="{$options.Fields.Telephone.show}" class="option" style="{if !$options.Fields.Telephone.show}visibility:hidden{/if}">{if $options.Fields.Telephone.required}{t}Required{/t}{else}Optional{/if}</td>
-						</tr>
-						<tr>
-							<td>{t}Fax{/t}</td>
-							<td onclick="change_field_show(this)" value="{$options.Fields.Fax.show}" class="option" id="option_Fax">{if $options.Fields.Fax.show}{t}Displayed{/t}{else}Hidden{/if}</td>
-							<td onclick="change_field_required(this)" value="{$options.Fields.Fax.show}" class="option" style="{if !$options.Fields.Fax.show}visibility:hidden{/if}">{if $options.Fields.Fax.required}{t}Required{/t}{else}Optional{/if}</td>
-						</tr>
-						<tr>
-							<td>{t}Where Found Us{/t}</td>
-							<td onclick="change_field_show(this)" value="{$options.Fields.Where_Found_Us.show}" class="option" id="option_Customer_Where_Found_Us">{if $options.Fields.Where_Found_Us.show}{t}Displayed{/t}{else}Hidden{/if}</td>
-							<td onclick="change_field_required(this)" value="{$options.Fields.Where_Found_Us.show}" class="option" style="{if !$options.Fields.Where_Found_Us.show}visibility:hidden{/if}">{if $options.Fields.Where_Found_Us.required}{t}Required{/t}{else}Optional{/if}</td>
-						</tr>
-						<tr>
-							<td>{t}Newsletter{/t}</td>
-							<td onclick="change_field_show(this)" value="{$options.Fields.Newsletter.show}" class="option" id="option_Customer_Newsletter">{if $options.Fields.Newsletter.show}{t}Displayed{/t}{else}Hidden{/if}</td>
-							<td onclick="change_field_required(this)" value="{$options.Fields.Newsletter.show}" class="option" style="{if !$options.Fields.Newsletter.show}visibility:hidden{/if}">{if $options.Fields.Newsletter.required}{t}Required{/t}{else}Optional{/if}</td>
-						</tr>
-						<tr>
-							<td>{t}E-marketing{/t}</td>
-							<td onclick="change_field_show(this)" value="{$options.Fields.Emarketing.show}" class="option" id="option_Customer_Emarketing">{if $options.Fields.Emarketing.show}{t}Displayed{/t}{else}Hidden{/if}</td>
-							<td onclick="change_field_required(this)" value="{$options.Fields.Emarketing.show}" class="option" style="{if !$options.Fields.Emarketing.show}visibility:hidden{/if}">{if $options.Fields.Emarketing.required}{t}Required{/t}{else}Optional{/if}</td>
-						</tr>
-						<tr>
-							<td>{t}Catalogue{/t}</td>
-							<td onclick="change_field_show(this)" value="{$options.Fields.Catalogue.show}" class="option" id="option_Customer_Catalogue">{if $options.Fields.Catalogue.show}{t}Displayed{/t}{else}Hidden{/if}</td>
-							<td onclick="change_field_required(this)" value="{$options.Fields.Catalogue.show}" class="option" style="{if !$options.Fields.Catalogue.show}visibility:hidden{/if}">{if $options.Fields.Catalogue.required}{t}Required{/t}{else}Optional{/if}</td>
-						</tr>
-					</table>
-					</td>
-				</tr>
-			</table>
-			{else} 
+			
 			<div style="border-bottom:1px dotted #ddd;padding-bottom:5px;margin:0 20px">
 				<div class="buttons">
 					<button style="{if $content_view=='overview'}display:none{/if}" id="show_page_content_overview_block"><img src="art/icons/layout.png" alt="" /> {t}Content Overview{/t}</button> 
@@ -310,12 +270,16 @@
 			</div>
 			<div style="{if $content_view!='header'}display:none{/if};margin:10px 20px" id="page_header_block">
 				<table class="edit" border="0" id="header_edit_table" style="width:100%">
-					<tr>
-						<td colspan="3"> 
+					<tr class="title">
+					<td>Title</td>
+						<td colspan="2"> 
 						<div class="buttons">
 							<button style="visibility:hidden" id="save_edit_page_header" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_page_header" class="negative">{t}Reset{/t}</button> 
 						</div>
 						</td>
+					</tr>
+					<tr style="height:10px">
+						<td colspan="3"></td>
 					</tr>
 					<tr>
 						<td class="label" style="width:120px">{t}Header Title{/t}:</td>
@@ -329,18 +293,28 @@
 						</div>
 						</td>
 					</tr>
+					<tr style="height:20px">
+						<td colspan="3"></td>
+					</tr>
+					
+					<tr class="title">
+					<td colspan="2">{t}Parent Pages{/t}</td>
+						<td>
+						<div class="buttons">
+							<button id="add_other_found_in_page" >Add page</button> 
+						</div>
+						</td>
+					</tr>
 					<tr style="height:10px">
 						<td colspan="3"></td>
 					</tr>
 					<tr>
-						<td style="width:120px" class="label">{t}Parent Pages{/t}:</td>
+						<td style="width:120px" class="label">{t}Found in{/t}:</td>
 						<td style="width:500px"> 
-						<div class="buttons small">
-							<button id="add_other_found_in_page" class="positive">Add page</button> 
-						</div>
+						
 						<table>
-							{foreach from=$page->get_found_in($site->get('Site URL')) item=found_in_page} 
-							<tr>
+							{foreach from=$page->get_found_in() item=found_in_page} 
+							<tr style="Height:20px">
 								<td style="padding:0">{$found_in_page.found_in_label}</td>
 								<td style="padding:0;padding-left:10px"><img onclick="delete_found_in_page({$found_in_page.found_in_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}" /></td>
 							</tr>
@@ -349,18 +323,42 @@
 						</td>
 						<td></td>
 					</tr>
+					<tr style="height:10px">
+						<td colspan="3"></td>
+					</tr>
+					
+					
+					<tr class="title">
+					<td colspan="2">{t}Related Pages{/t}</td>
+						<td>
+						<div  class="buttons">
+							<button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} >{t}Add page{/t}</button> <button id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} >{t}Add Page{/t}</button> <button id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} >{t}Remove Page{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr style="height:10px">
+						<td colspan="3"></td>
+					</tr>
 					<tr>
-						<td style="width:120px" class="label">{t}Related Pages{/t}:</td>
+						<td style="width:120px" class="label">{t}See also{/t}:</td>
 						<td style="width:500px"> 
 						<div id="see_also_type" default_cat="" class="buttons left">
 							<button class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</button> <button class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</button> 
 						</div>
-						<div style="margin-top:40px;clear:right;" class="buttons small">
-							<button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} class="positive">{t}Add page{/t}</button> <button id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} class="positive">+</button> <button id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} class="negative">-</button> 
-						</div>
+						</td>
+						</tr>
+						
+						<tr style="height:10px">
+						<td colspan="3"></td>
+					</tr>
+						
+						<tr>
+						<td></td>
+						<td>
+						
 						<table>
 							{foreach from=$page->get_see_also($site->get('Site URL')) item=see_also_page} 
-							<tr>
+							<tr style="Height:20px">
 								<td style="padding:0">{$see_also_page.see_also_label} (<a href="page.php?id={$see_also_page.see_also_key}">{$see_also_page.see_also_code}</a>)</td>
 								<td style="padding:0 10px;font-style:italic;color:#777">{$see_also_page.see_also_correlation_formated} {$see_also_page.see_also_correlation_formated_value}</td>
 								<td style="padding:0;padding-left:10px;{if $page->get('Page Store See Also Type')=='Auto'}display:none{/if}"><img onclick="delete_see_also_page({$see_also_page.see_also_key})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}" /></td>
@@ -417,25 +415,30 @@
 					</tr>
 				</table>
 			</div>
-			{/if} 
+			
 		</div>
 		<div class="edit_block" style="{if $block_view!='style' }display:none{/if}" id="d_style">
 		</div>
-		<div class="edit_block"  style="{if $block_view!='media' }display:none{/if}" id="d_media">
+		<div class="edit_block" style="{if $block_view!='media' }display:none{/if}" id="d_media">
 		</div>
-		<div class="edit_block"  style="{if $block_view!='products' }display:none{/if}padding:20px;" id="d_products">
+		<div class="edit_block" style="{if $block_view!='products' }display:none{/if}padding:20px;" id="d_products">
 		</div>
 	</div>
-	<div id="the_table1" class="data_table" style="margin:20px 20px 40px 20px; clear:both;padding-top:10px">
+	
+	<div id="display_history_div" style="clear:both;margin-top:20;padding:10px 20px" class="buttons left small">
+		<button id="display_history">{t}Display Change Log{/t}</button>
+	
+	</div>
+	<div id="the_table1" class="data_table" style="margin:10px 20px 40px 20px; clear:both;padding-top:0px;display:none;">
 		<span class="clean_table_title">{t}Change log{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable ">
+		<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
 		</div>
 	</div>
-	<div style="clear:both">
+	<div style="clear:both;height:20px">
 	</div>
 </div>
-</div>
-<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px">
+
+<div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px;">
 	<table style="margin:0 auto">
 		<form enctype="multipart/form-data" method="post" id="upload_page_content_form">
 			<input type="hidden" name="parent_key" value="{$page->id}" />
@@ -457,7 +460,33 @@
 		</tr>
 	</table>
 </div>
-<div id="dialog_upload_page_content_files" style="padding:30px 10px 10px 10px;width:420px">
+<div id="dialog_add_redirection" style="padding:30px 20px 10px 10px;width:350px;position:absolute;top:-2000px;">
+	<table style="margin:0 auto;width:100%"  border=0 >
+		<tr>
+			<td>{t}File{/t}:</td>
+			<td> 
+			<input id="add_redirect_source" style="border:1px solid #ddd;width:100%" type="text" name="file" />
+			</td>
+		</tr>
+		<tr style="height:10px">
+			<td colspan="2" > </td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons">
+				<button class="positive" id="save_add_redirection">{t}Add{/t}</button> <button id="cancel_add_redirection" class="negative">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr id="add_redirect_wait">
+			<td colspan="2"> <span style="float:right;display:none"><img src="art/loading.gif" alt=""> {t}Processing{/t}</span> </td>
+		</tr>
+		<tr>
+			<td colspan="2" id="add_redirect_msg"> </td>
+		</tr>
+	</table>
+</div>
+<div id="dialog_upload_page_content_files" style="padding:30px 10px 10px 10px;width:420px;position:absolute;top:-2000px;">
 	<table style="margin:0 auto">
 		<tr>
 			<td> 
@@ -481,7 +510,7 @@
 		</tr>
 	</table>
 </div>
-<div id="dialog_delete_page" style="padding:20px 10px 10px 10px;text-align:left">
+<div id="dialog_delete_page" style="padding:20px 10px 10px 10px;text-align:left;position:absolute;top:-2000px;width:320px">
 	<h2 style="padding-top:0px">
 		{t}Delete Page{/t} 
 	</h2>
@@ -495,7 +524,7 @@
 		<button id="save_delete_page" class="positive">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_page" class="negative">{t}No i dont want to delete it{/t}</button> 
 	</div>
 </div>
-<div id="dialog_family_list">
+<div id="dialog_family_list" style="position:absolute;top:-2000px;"  >
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
@@ -504,8 +533,7 @@
 		</div>
 	</div>
 </div>
-{include file='footer.tpl'} 
-<div id="dialog_page_list">
+<div id="dialog_page_list"  style="position:absolute;top:-2000px;" >
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Page List{/t}</span> {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7} 
@@ -514,8 +542,11 @@
 		</div>
 	</div>
 </div>
-<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights={$update_heights}" frameborder="1" style="position:absolute;top:-2000px;left:200px;width:1x;height:1px;"> 
+
+<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px"> 
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>
+
 </iframe>
+{include file='footer.tpl'} 

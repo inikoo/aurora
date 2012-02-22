@@ -2,7 +2,7 @@
 <div id="bd">
 	{include file='contacts_navigation.tpl'} 
 	<div class="branch">
-		<span>{if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span> 
 	</div>
 	<input type="hidden" value="{$customer->id}" id="customer_key" />
 	<input type="hidden" value="{$registered_email}" id="registered_email" />
@@ -15,7 +15,7 @@
 	<input type="hidden" id="other_value_{$key}" value="{$other}" />
 	{/foreach} 
 	<div class="top_page_menu">
-		{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if} {if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
+		{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if} {if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 		<div class="buttons">
 			<button style="margin-left:10px" onclick="window.location='customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
 		</div>
@@ -38,8 +38,8 @@
 		<li> <span class="item {if $edit=='categories'}selected{/if}" id="categories"> <span> {t}Categories{/t}</span></span></li>
 		<li> <span class="item {if $edit=='communications'}selected{/if}" id="communications"> <span> {t}Communications{/t}</span></span></li>
 		<li> <span class="item {if $edit=='merge'}selected{/if}" id="merge"> <span> {t}Merge{/t}</span></span></li>
-		{if $site_customer && $no_of_sites>0} 
-		<li> <span class="item {if $edit=='password'}selected{/if}" id="password" style="display:"> <span> {t}User Site{/t}</span></span></li>
+		{if $no_of_sites>0} 
+		<li> <span class="item {if $edit=='password'}selected{/if}" id="password" style="display:"> <span> {t}Website User{/t}</span></span></li>
 		{/if} 
 	</ul>
 	<div class="tabbed_container">
@@ -56,7 +56,7 @@
 					<td>{$customer->get('Customer Main Plain Email')}</td>
 					<td style="{if $customer->get_main_email_user_key()}visibility:hidden{/if}"> 
 					<div class="buttons">
-						<button style="margin-left:10px" onclick="register_email({$customer->get('Customer Main Plain Key')},{$site.SiteKey} )">{t}Create Website User{/t}</button> 
+						<button style="margin-left:10px" onclick="register_email(this,{$customer->get('Customer Main Email Key')},{$site.SiteKey} )">{t}Create Website User{/t}</button> 
 					</div>
 					</td>
 					<td style="{if !$customer->get_main_email_user_key()}visibility:hidden{/if}"> 
@@ -84,7 +84,7 @@
 					<td>{if $other_email.user_key}<a href="site_user.php?id={$other_email.user_key}"><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if} {$other_email.xhtml}</td>
 					<td style="{if $other_email.user_key}visibility:hidden{/if}"> 
 					<div class="buttons">
-						<button style="margin-left:10px" onclick="register_email({$other_email.key},{$site.SiteKey})">{t}Create Website User{/t}</button> 
+						<button style="margin-left:10px" onclick="register_email(this,{$other_email.key},{$site.SiteKey})">{t}Create Website User{/t}</button> 
 					</div>
 					</td>
 					<td style="{if !$other_email.user_key}visibility:hidden{/if}"> 
@@ -354,7 +354,7 @@
 					<td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr>
-					<td class="label">{if $customer->get('Customer Main Plain Email') == $login_stat.UserHandle}{/if}<img id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onclick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
+					<td class="label">{if $customer->get_main_email_user_key()}<img  src="art/icons/world.png" alt="{t}Registered User{/t}" title="{t}Registered User{/t}"  > {/if}<img id="comment_icon_email" src="{if $customer->get_principal_email_comment()==''}art/icons/comment.gif{else}art/icons/comment_filled.gif{/if}" style="cursor:pointer;{if $customer->get('Customer Main Email Key')==''}display:none{/if}" onclick="change_comment(this,'email',{$customer->get('Customer Main Email Key')})"> {t}Contact Email{/t}:</td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Main_Email" value="{$customer->get('Customer Main Plain Email')}" ovalue="{$customer->get('Customer Main Plain Email')}" valid="0"> 
@@ -366,7 +366,7 @@
 				</tr>
 				{foreach from=$customer->get_other_emails_data() key=other_email_key item=other_email } 
 				<tr id="tr_other_email{$other_email_key}">
-					<td class="label"> <img src="art/icons/edit.gif" style="cursor:pointer" onclick="change_other_field_label(this,'email',{$other_email_key})"> <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:</span> </td>
+					<td class="label"> {if $other_email.user_key}<img  src="art/icons/world.png" alt="{t}Registered User{/t}" title="{t}Registered User{/t}"  > {/if}<img src="art/icons/edit.gif" style="cursor:pointer" onclick="change_other_field_label(this,'email',{$other_email_key})"> <span id="tr_other_email_label{$other_email_key}">{if $other_email.label==''}{t}Other Email{/t}{else}{$other_email.label} (Email){/if}:</span> </td>
 					<td style="text-align:left"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Email{$other_email_key}" value="{$other_email.email}" ovalue="{$other_email.email}" valid="0"> 

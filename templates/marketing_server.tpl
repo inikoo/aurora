@@ -3,7 +3,7 @@
  
 {include file='contacts_navigation.tpl'}
 <div class="branch"> 
-  <span>{t}Marketing{/t}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {t}Marketing{/t}</span>
 </div>
 <div class="top_page_menu">
 <div class="buttons" style="float:right">

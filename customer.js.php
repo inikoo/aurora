@@ -13,6 +13,8 @@ var dialog_attach;
 var dialog_make_order;
 var dialog_quick_edit_Customer_Main_Contact_Name;
 var dialog_quick_edit_Customer_Tax_Number;
+var dialog_quick_edit_Customer_Registration_Number;
+
 var dialog_quick_edit_Customer_Name;
 var dialog_quick_edit_Customer_Main_Email;
 var dialog_quick_edit_Customer_Main_Address;
@@ -178,7 +180,8 @@ var validate_scope_data=
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
 	,'email':{'ar':false,'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
-	
+		,'registration_number':{'ar':false,'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Registration_Number','validation':false}
+
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':regex_valid_tel,'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
 	,'mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
 	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_FAX','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
@@ -667,8 +670,8 @@ Event.addListener(window, "load", function() {
 	        this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	        this.table0.subscribe("cellClickEvent", onCellClick);            
-this.table0.table_id=tableid;
-     this.table0.subscribe("renderEvent", myrenderEvent);
+			this.table0.table_id=tableid;
+     		this.table0.subscribe("renderEvent", myrenderEvent);
 
 
 	    //   Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
@@ -1110,17 +1113,25 @@ function post_comment_update(r){
 }
 
 function post_item_updated_actions(branch,r){
-//alert(branch);
-if(branch=='customer_quick' || branch=='billing_quick'){
-eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
-}
-	if(r.key=='tax_number'){
+
+//alert(branch+' '+r.key)
+
+
+
+if(r.key=='registration_number'){
+		Dom.get('Customer_Registration_Number').value=r.newvalue;
+		Dom.get('Customer_Registration_Number').setAttribute('ovalue',r.newvalue);
+		Dom.get('Customer_Registration_Number_msg').innerHTML='';
+		Dom.get('registration_number').innerHTML=r.newvalue;
+	}
+	else if(r.key=='tax_number'){
 		Dom.get('Customer_Tax_Number').value=r.newvalue;
 		Dom.get('Customer_Tax_Number').setAttribute('ovalue',r.newvalue);
 		Dom.get('Customer_Tax_Number_msg').innerHTML='';
-		Dom.get('main_name').innerHTML=r.newvalue;
+		Dom.get('tax').innerHTML=r.newvalue;
+		Dom.get('check_tax_number').src='art/icons/taxation.png';
 	}
-	if(r.key=='contact'){
+	else if(r.key=='contact'){
 		dialog_quick_edit_Customer_Main_Contact_Name.hide();
 		Dom.get('main_contact_name').innerHTML=r.newvalue;
 		Dom.get('Customer_Main_Contact_Name').value=r.newvalue;
@@ -1134,8 +1145,7 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 		    Dom.get('Customer_Name_msg').innerHTML='';
 			
 		}	
-	}
-	if(r.key=='name'){
+	}else if(r.key=='name'){
 		dialog_quick_edit_Customer_Name.hide();
 		Dom.get('customer_name').innerHTML=r.newvalue;
 		Dom.get('Customer_Name').value=r.newvalue;
@@ -1151,7 +1161,38 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 
 			
 		}	
+	}else{
+	
+		window.location.reload();
 	}
+	
+	
+	
+//	if(branch=='customer_quick' || branch=='billing_quick'){
+eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
+//}
+	
+	/*
+	else if(r.key=='telephone'){
+	
+	
+	
+	//	change_comment('telephone', <?php echo (($customer->get('Customer Main Telephone Key'))?$customer->get('Customer Main Telephone Key'):'0')?>);
+	//	save_comment();
+		//if(r.state!=200) return;
+		
+		//dialog_quick_edit_Customer_Main_Telephone.hide();
+		//Dom.get('main_telephone').innerHTML=r.newvalue;
+		//Dom.get('Customer_Main_Telephone').innerHTML=r.newvalue;
+		//Dom.get('contact_telephone_id').innerHTML=r.newvalue;
+		D//om.get('Customer_Main_Telephone_msg').innerHTML='';
+		
+	}
+	
+	
+	
+	
+	
 	if(r.key=='mobile'){
 		//alert('in_mob')
 		change_comment('mobile', <?php echo (($customer->get('Customer Main Mobile Key'))?$customer->get('Customer Main Mobile Key'):'0')?>);
@@ -1264,6 +1305,14 @@ eval('dialog_quick_edit_'+validate_scope_data[branch][r.key].name).hide();
 	}
 	//else
 		//alert('non');
+		
+		
+		*/
+		
+}
+
+function post_edit_address(){
+window.location.reload();
 }
 
 function save_quick_edit_name(){
@@ -1387,10 +1436,22 @@ save_edit_general_bulk('customer_quick');
 
 
 function save_quick_edit_tax_number(){
+
+
+
 	save_edit_general_bulk('billing_quick');
 }
 
+function save_quick_edit_registration_number(){
+
+	save_edit_general_bulk('customer_quick');
+}
+
 function save_quick_edit_email(){
+	Dom.setStyle('save_quick_edit_email','display','none')
+	Dom.setStyle('close_quick_edit_email','display','none')
+		Dom.setStyle('Customer_Main_Email_wait','display','')
+
     save_edit_general_bulk('customer_quick');
 
 }
@@ -1635,8 +1696,133 @@ function show_sticky_note(){
 	Dom.get('sticky_note_input').focus();
 }
 
+function save_tax_details_match(e,value){
+
+   Dom.setStyle('check_tax_number_wait','display','');
+         Dom.setStyle('check_tax_number_buttons','display','none');
+         
+               Dom.setStyle('check_tax_number_result_tr','display','none');
+    
+    	   var request='ar_edit_contacts.php?tipo=update_tax_number_match&customer_key='+Dom.get('customer_key').value+'&value='+value
 
 
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+	Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
+
+	//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state=='200'){
+		     
+		     	if(r.match){
+		     	Dom.get('check_tax_number').src='art/icons/taxation_green.png';
+		     	}else{
+		     	Dom.get('check_tax_number').src='art/icons/taxation_yellow.png';
+		     	
+		     	}
+		     
+		     	dialog_check_tax_number.hide();
+			}
+
+		},failure:function(o){
+		    alert(o)
+		}
+	    
+	    });
+               
+         
+}
+
+
+function show_dialog_check_tax_number(){
+
+	region1 = Dom.getRegion('check_tax_number'); 
+    region2 = Dom.getRegion('dialog_check_tax_number'); 
+	var pos =[region1.right+5,region1.top]
+	Dom.setXY('dialog_check_tax_number', pos);
+	
+	Dom.get('check_tax_number_result').innerHTML='';
+		      Dom.setStyle('check_tax_number_result_tr','display','none');
+		      		      Dom.setStyle('check_tax_number_buttons','display','none');
+		      		      Dom.setStyle('check_tax_number_wait','display','');
+	Dom.setStyle('save_tax_details_not_match','display','none')
+					Dom.setStyle('save_tax_details_match','display','none')	      		      
+		      		      Dom.setStyle('close_check_tax_number','display','none')	    
+							      		        				Dom.setStyle('check_tax_number_name_tr','display','none')
+						      		        				Dom.setStyle('check_tax_number_address_tr','display','none')
+
+	
+	dialog_check_tax_number.show()
+	
+	 Dom.get('check_tax_number_result').innerHTML='';
+	
+	   var request='ar_contacts.php?tipo=check_tax_number&customer_key='+Dom.get('customer_key').value
+
+ 
+     
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+	Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
+
+		//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		 Dom.get('check_tax_number_result').innerHTML=r.msg;
+		      Dom.setStyle('check_tax_number_result_tr','display','');
+		      		      Dom.setStyle('check_tax_number_buttons','display','');
+		      		      Dom.setStyle('check_tax_number_wait','display','none');
+		    if(r.state=='200'){
+		     
+
+				if(r.result.valid){
+					Dom.get('check_tax_number').src='art/icons/taxation_green.png';
+					
+				
+				}else{
+				Dom.get('check_tax_number').src='art/icons/taxation_error.png';
+				
+				}
+				
+				if(r.result.name!= undefined || r.result.address!= undefined){
+						      		        
+						      		        if(r.result.name!= undefined){
+						      		        				Dom.setStyle('check_tax_number_name_tr','display','')
+						      		        				Dom.get('check_tax_number_name').innerHTML=r.result.name
+
+						      		        }
+						      		            if(r.result.address!= undefined){
+						      		        				Dom.setStyle('check_tax_number_address_tr','display','')
+						      		        				Dom.get('check_tax_number_address').innerHTML=r.result.address
+
+						      		        }
+
+				Dom.setStyle('save_tax_details_not_match','display','')
+					Dom.setStyle('save_tax_details_match','display','')	      		     
+				}else{
+					
+				  Dom.setStyle('close_check_tax_number','display','')	
+				}
+	
+			        
+			        
+		    }else{
+		  
+		      Dom.setStyle('close_check_tax_number','display','')
+		    }
+		 
+			
+
+		},failure:function(o){
+		    alert(o)
+		}
+	    
+	    });
+	
+	
+}
+
+function close_dialog_check_tax_number(){
+	dialog_check_tax_number.hide()
+}
 
 function show_dialog_note(){
 dialog_note.show();
@@ -1653,6 +1839,8 @@ list_of_dialogs=["dialog_quick_edit_Customer_Name",
 "dialog_quick_edit_Customer_Name",
 "dialog_quick_edit_Customer_Main_Address",
 "dialog_quick_edit_Customer_Tax_Number",
+"dialog_quick_edit_Customer_Registration_Number",
+
 "dialog_quick_edit_Customer_Main_Contact_Name",
 "dialog_quick_edit_Customer_Main_Email",
 "dialog_quick_edit_Customer_Main_Telephone",
@@ -1723,6 +1911,14 @@ dialog_note.render();
 dialog_edit_note = new YAHOO.widget.Dialog("dialog_edit_note", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_edit_note.render();
 
+
+
+dialog_check_tax_number = new YAHOO.widget.Dialog("dialog_check_tax_number", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_check_tax_number.render();
+Event.addListener("check_tax_number", "click", show_dialog_check_tax_number);
+Event.addListener(["close_check_tax_number"], "click", close_dialog_check_tax_number);
+Event.addListener(["save_tax_details_not_match"], "click", save_tax_details_match,'No');
+Event.addListener(["save_tax_details_match"], "click", save_tax_details_match,'Yes');
 
 
 
@@ -1803,6 +1999,8 @@ dialog_quick_edit_Customer_Main_Contact_Name.render();
 dialog_quick_edit_Customer_Tax_Number = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Tax_Number", {context:["quick_edit_tax","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Tax_Number.render();
 
+dialog_quick_edit_Customer_Registration_Number = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Registration_Number", {context:["quick_edit_registration_number","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Registration_Number.render();
 
 dialog_quick_edit_Customer_Main_Email = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Email", {context:["quick_edit_email","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Main_Email.render();
@@ -1849,6 +2047,7 @@ Event.addListener('quick_edit_main_contact_name_edit', "click", show_edit_main_c
 Event.addListener('quick_edit_name_edit', "click", show_edit_name);
 
 Event.addListener('quick_edit_tax', "click", show_edit_tax);
+Event.addListener('quick_edit_registration_number', "click", show_edit_registration_number);
 
 
 Event.addListener('quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email_);
@@ -1864,31 +2063,27 @@ Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Mai
 	printf("Event.addListener('close_quick_edit_email%d', \"click\", dialog_quick_edit_Customer_Email%d.hide,dialog_quick_edit_Customer_Email%d , true);", $key, $key, $key);	
 	//Event.addListener('close_quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email.hide,dialog_quick_edit_Customer_Main_Email , true);
 	}
-?>
-
-<?php
 
 	foreach($customer->get_other_telephones_data() as $key=>$value){
 	printf("Event.addListener('quick_edit_other_telephone%d', \"click\", dialog_quick_edit_Customer_Telephone%d_);", $key, $key);	
 	printf("Event.addListener('close_quick_edit_telephone%d', \"click\", dialog_quick_edit_Customer_Telephone%d.hide,dialog_quick_edit_Customer_Telephone%d , true);", $key, $key, $key);	
 	}
-?>
 
-<?php
 
 	foreach($customer->get_other_mobiles_data() as $key=>$value){
 	printf("Event.addListener('quick_edit_other_mobile%d', \"click\", dialog_quick_edit_Customer_Mobile%d_);", $key, $key);	
 	printf("Event.addListener('close_quick_edit_other_mobile%d', \"click\", dialog_quick_edit_Customer_Mobile%d.hide,dialog_quick_edit_Customer_Mobile%d , true);", $key, $key, $key);	
 	}
-?>
 
-<?php
 
 	foreach($customer->get_other_faxes_data() as $key=>$value){
 	printf("Event.addListener('quick_edit_other_fax%d', \"click\", dialog_quick_edit_Customer_FAX%d_);", $key, $key);	
 	printf("Event.addListener('close_quick_edit_other_fax%d', \"click\", dialog_quick_edit_Customer_FAX%d.hide,dialog_quick_edit_Customer_FAX%d , true);", $key, $key, $key);	
 	}
 ?>
+
+
+
 	
 /*
 	<?php print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);?>
@@ -1919,6 +2114,10 @@ Event.addListener('close_quick_edit_main_contact_name', "click", dialog_quick_ed
 Event.addListener('save_quick_edit_tax_number', "click", save_quick_edit_tax_number, true);
 Event.addListener('close_quick_edit_tax_number', "click", dialog_quick_edit_Customer_Tax_Number.hide,dialog_quick_edit_Customer_Tax_Number , true);
 
+Event.addListener('save_quick_edit_registration_number', "click", save_quick_edit_registration_number, true);
+Event.addListener('close_quick_edit_registration_number', "click", dialog_quick_edit_Customer_Registration_Number.hide,dialog_quick_edit_Customer_Registration_Number , true);
+
+
 Event.addListener('save_quick_edit_name', "click", save_quick_edit_name, true);
 Event.addListener('close_quick_edit_name', "click", dialog_quick_edit_Customer_Name.hide,dialog_quick_edit_Customer_Name , true);
 
@@ -1933,6 +2132,7 @@ Event.addListener('close_quick_edit_mobile', "click", dialog_quick_edit_Customer
 
 Event.addListener('save_quick_edit_fax', "click", save_quick_edit_fax, true);
 Event.addListener('close_quick_edit_fax', "click", dialog_quick_edit_Customer_Main_FAX.hide,dialog_quick_edit_Customer_Main_FAX , true);
+
 
 	var customer_email_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_email);
     customer_email_oACDS.queryMatchContains = true;
@@ -2070,7 +2270,6 @@ $mobile_key
 }
 ?>
 
-
 	var customer_main_contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_main_contact_name);
     customer_main_contact_name_oACDS.queryMatchContains = true;
     var customer_main_contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Contact_Name","Customer_Main_Contact_Name_Container", customer_main_contact_name_oACDS);
@@ -2082,6 +2281,14 @@ $mobile_key
     var customer_tax_number_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Tax_Number","Customer_Tax_Number_Container", customer_tax_number_oACDS);
     customer_tax_number_oAutoComp.minQueryLength = 0; 
     customer_tax_number_oAutoComp.queryDelay = 0.1;
+    
+    
+    	var customer_registration_number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_registration_number);
+    customer_registration_number_oACDS.queryMatchContains = true;
+    var customer_registration_number_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Registration_Number","Customer_Registration_Number_Container", customer_registration_number_oACDS);
+    customer_registration_number_oAutoComp.minQueryLength = 0; 
+    customer_registration_number_oAutoComp.queryDelay = 0.1;
+    
 	
 	var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_name);
     customer_name_oACDS.queryMatchContains = true;
@@ -2157,6 +2364,9 @@ for(i=0; i<other_email_count; i++)
 
 
 //End quick edit
+
+
+
 }
 
 
@@ -2179,6 +2389,14 @@ hide_all_dialogs();
 Dom.get('Customer_Tax_Number').value=Dom.get('Customer_Tax_Number').getAttribute('ovalue')
 dialog_quick_edit_Customer_Tax_Number.show();
 }
+
+function show_edit_registration_number(){
+hide_all_dialogs();
+
+Dom.get('Customer_Registration_Number').value=Dom.get('Customer_Registration_Number').getAttribute('ovalue')
+dialog_quick_edit_Customer_Registration_Number.show();
+}
+
 
 function show_edit_name(){
 hide_all_dialogs();
@@ -2246,7 +2464,12 @@ function validate_customer_main_contact_name(query){
 }
 
 function validate_customer_tax_number(query){
+
  validate_general('billing_quick','tax_number',unescape(query));
+}
+
+function validate_customer_registration_number(query){
+ validate_general('customer_quick','registration_number',unescape(query));
 }
 
 function validate_email_comment(query){

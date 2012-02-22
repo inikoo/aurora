@@ -396,13 +396,16 @@ function create_family($data) {
        ) {
         $department_key=$data['parent_key'];
 
+		$department=new Department($department_key);
+
         $family=new Family('create',array(
 
                                'Product Family Code'=>$data['values']['Product Family Code'],
                                'Product Family Name'=>$data['values']['Product Family Name'],
                                'Product Family Description'=>$data['values']['Product Family Description'],
                                'Product Family Special Characteristic'=>$data['values']['Product Family Special Characteristic'],
-                               'Product Family Main Department Key'=>$department_key,
+                               'Product Family Main Department Key'=>$department->id,
+                               'Product Family Store Key'=>$department->data['Product Department Store Key'],
                                'editor'=>$editor
                            ));
         if (!$family->new) {
@@ -1858,7 +1861,8 @@ function list_departments_for_edition() {
 
 
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                'state'=>200,
                                       'data'=>$adata,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
@@ -2661,17 +2665,22 @@ function list_deals_for_edition() {
 //   $total_records=ceil($total_records/$number_results)+$total_records;
 
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                   'state'=>200,
                                       'data'=>$adata,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$start_from+$total,
+                                      'records_perpage'=>$number_results,
                                       'rtext'=>$rtext,
                                       'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
                                      )
                    );
     echo json_encode($response);

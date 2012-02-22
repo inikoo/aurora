@@ -3,13 +3,7 @@
 //Copyright (c) 2009 LW
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-var department_id=<?php echo$_SESSION['state']['department']['id']?>;
 
-var can_add_department=false;
-
-var scope_key=<?php echo$_SESSION['state']['department']['id']?>;
-var scope='department';
-var store_key=<?php echo$_SESSION['state']['store']['id']?>;
 
 
 
@@ -419,8 +413,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
                     ,{key:"sales_type", label:"<?php echo _('Sale Type')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'family',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Public Sale')?>",value:'Public Sale'},{label:"<?php echo _('Private Sale')?>",value:'Private Sale'},{label:"<?php echo _('Not For Sale')?>",value:'Not For Sale'}],disableBtns:true})}
 
 				     ];
-
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_families&parent=department&tableid=0");
+		request="ar_edit_assets.php?tipo=edit_families&parent=department&tableid=0&parent_key="+Dom.get('department_key').value;
+		
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -772,25 +767,25 @@ function init(){
 
 init_search('products_store');
  validate_scope_metadata={
-    'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>},
-    'family':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'department_id','key':<?php echo$_SESSION['state']['department']['id']?>}
+    'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':Dom.get('department_key').value},
+    'family':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'department_id','key':Dom.get('department_key').value}
 };
 
  validate_scope_data={
     'department':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Name')?>'}],'name':'name'
-		,'ar':'find','ar_request':'ar_assets.php?tipo=is_department_name&store_key='+store_key+'&query='}
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_department_name&store_key='+Dom.get('store_key').value+'&query='}
 	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Code')?>'}]
-		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+store_key+'&query='}},
+		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+Dom.get('store_key').value+'&query='}},
 	'family':{
 	'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Name'
 		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'family_name'
-		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+Dom.get('store_key').value+'&query='}
 	,'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Code'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
-		 ,'name':'family_code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
+		 ,'name':'family_code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+Dom.get('store_key').value+'&query='}
 	,'special_char':{'changed':false,'validated':false,'required':false,'group':1,'type':'item','dbname':'Product Family Special Characteristic'
 		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}],'name':'family_special_char'
 		,'ar':false,'ar_request':false}

@@ -1,6 +1,6 @@
 <?php
 require_once 'app_files/db/dns.php';
-include_once('conf/key.php');
+include_once('app_files/key.php');
 require_once 'class.Session.php';
 require_once 'class.Auth.php';
 require_once 'common_functions.php';
@@ -23,10 +23,6 @@ $session = new Session($max_session_time,1,100);
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
-if(!$logged_in){
-header('location: login.php');
-exit;
-}
 
 
 $auth=new Auth(IKEY,SKEY);
@@ -79,10 +75,53 @@ $_SESSION['logged_in']=0;
 session_regenerate_id();
 
 
-header('location: login.php?logged_out');
+header('location: login.php');
 exit;
+/*
+if ($logout) {
+	$auth=new Auth(IKEY,SKEY);
+
+	//$auth->unset_cookies();
+	$sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+	mysql_query($sql);
+
+
+	//session_regenerate_id();
+	//session_destroy();
+	//unset($_SESSION);
 
 
 
+	$_SESSION = array();
+
+
+	if (ini_get("session.use_cookies")) {
+		$params = session_get_cookie_params();
+
+		setcookie('sk', '', time() - 42000,
+			$params["path"], $params["domain"],
+			$params["secure"], $params["httponly"]
+		);
+		setcookie('page_key', '', time() - 42000,
+			$params["path"], $params["domain"],
+			$params["secure"], $params["httponly"]
+		);
+		$resxx=setcookie('user_handle', '', time() - 42000,
+			$params["path"], $params["domain"],
+			$params["secure"], $params["httponly"]
+		);
+
+	}
+
+
+	session_destroy();
+	$_SESSION['logged_in']=0;
+	session_regenerate_id();
+
+
+	$logged_in=false;
+	$St=get_sk();
+}
+*/
 
 ?>

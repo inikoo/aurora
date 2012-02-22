@@ -36,6 +36,10 @@ class Dummy_Page {
     function display_menu() {
         print $this->site->display_menu();
     }
+    
+    function display_vertical_menu(){
+
+}
 
 }
 ?>

@@ -1,3 +1,6 @@
+<?php 
+include_once('common.php');
+?>
 var Event = YAHOO.util.Event;
 var Dom = YAHOO.util.Dom;
 var dialog_quick_edit_Customer_Name;
@@ -11,7 +14,7 @@ var number_of_categories=2;
 var scope_key='';
 <?php
 
-include_once('common.php');
+
 
 $custom_fields=array();
 $sql=sprintf("show columns from `Customer Custom Field Dimension`");
@@ -187,6 +190,7 @@ print "validate_general('customer_quick','custom_field_customer_{$field}',unesca
 ?>
 
 function post_item_updated_actions(branch,r){
+
 	window.location.reload()
 }
 
@@ -531,3 +535,7 @@ function delete_image(o){
 
 
 }
+
+
+
+

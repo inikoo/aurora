@@ -1959,7 +1959,9 @@ class Contact extends DB_Table {
 
 	function associate_mobile_to_parents($parent,$parent_key,$mobile_key,$set_as_main=true) {
 
-
+	//	print "a1";
+		
+		
 		if ($parent=='Customer') {
 			$parent_object=new Customer($parent_key);
 			$parent_label=_('Customer');
@@ -3119,61 +3121,23 @@ class Contact extends DB_Table {
 
 			$main_email_key=$this->get_principal_email_key();
 
-			if ($value=='') {
-				if ($main_email_key) {
+			if ($value=='' and $main_email_key) {
+				
 					$email=new Email($main_email_key);
 					$email->delete();
 					$this->updated=true;
 					$this->new_value='';
-				}
-			} else {
+				
+			} 
+			
+			else {
 				$email_data['Email']=$value;
 				$email_data['Email Contact Name']=$this->display('name');
 				$email_data['editor']=$this->editor;
-				$email=new Email('find',$email_data);
+				//$email=new Email('find',$email_data);
 				$email=new Email('email',$value);
 
-				//print_r($email_data);
-				//print_r($email);
-
-				//         if ($email->found) {
-
-
-
-				//  $this->update_principal_email($email->id);
-				//         return;
-
-				/*
-                    $email_contacts_keys=$email->get_parent_keys('Contact');
-
-                    $number_contact_keys=count($email_contacts_keys);
-                    if ($number_contact_keys==1) {
-
-                        $contact_data=array_pop($email_contacts_keys);
-
-                        if ($contact_data['Subject Key']!=$this->id) {
-                            $this->error=true;
-                            $this->msg=_('Email belongs to other contact');
-                            $contact=new Contact($contact_data['Subject Key']);
-                            $this->msg=_('Email belongs to contact').' <a href="contact.php?id='.$contact->id.'">'.$contact->display('name').'</a>';
-                            return;
-                        } else {
-                            // print "updating principal email\n";
-                            $this->update_principal_email($email->id);
-                            return;
-                        }
-
-
-                    }
-                    elseif($number_contact_keys>1) {
-                      $this->error=true;
-                            $this->msg=_('Error an email bellows to more than one contacts');
-                            return;
-
-                    }
-
-                    */
-				//  }
+		
 
 
 
@@ -3247,6 +3211,10 @@ class Contact extends DB_Table {
 					$mobile->editor=$this->editor;
 					$mobile->update_number($value,$this->data['Contact Main Country Code']);
 					$this->updated=$mobile->updated;
+					
+					$this->update_parents_principal_mobile_keys();
+					$mobile->update_parents($mobile->updated);
+				
 				}
 
 			} else {
@@ -4687,7 +4655,10 @@ class Contact extends DB_Table {
 
 
 	function associate_mobile($mobile_key) {
-
+if (!$mobile_key) {
+			$this->error=true;
+			$this->msg='Wrong telecom key';
+		}
 		$mobile_keys=$this->get_mobile_keys();
 
 		if (!array_key_exists($mobile_key,$mobile_keys)) {
@@ -4702,26 +4673,21 @@ class Contact extends DB_Table {
 	}
 
 	function associate_email($email_key) {
-
-
 		if (!$email_key) {
 			$this->error=true;
 			$this->msg='Wrong email key';
 
 		}
-
 		$email_keys=$this->get_email_keys();
 
 		if (!array_key_exists($email_key,$email_keys)) {
 			$this->create_email_bridge($email_key);
-
-
-
-
 		}
 
 
 	}
+
+
 
 
 

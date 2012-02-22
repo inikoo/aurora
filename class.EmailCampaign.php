@@ -216,10 +216,10 @@ switch ($this->data['Email Campaign Type']) {
        $store->update_email_campaign_data();
         break;
   case 'Newsletter':
-        update_newsletter_data()
+        update_newsletter_data();
         break;
    case 'Reminder':
-        update_newsletter_data()
+        update_newsletter_data();
         break;
 }
 
@@ -854,6 +854,9 @@ switch ($this->data['Email Campaign Type']) {
         $css_files=$html_data['css_files'];
         $js_files=$html_data['js_files'];
         $output_type=$html_data['output_type'];
+        
+        $inikoo_public_path='';
+        if(array_key_exists('inikoo_public_path',$html_data))
         $inikoo_public_path=$html_data['inikoo_public_path'];
         
         

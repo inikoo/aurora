@@ -206,7 +206,7 @@ case('create_invoice'):
 	create_invoice();
 	break;
 case('assign_picker'):
-	if($_REQUEST['staff_key']=='' || $_REQUEST['pin']==''){
+	if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
 		$response=array(
 			'state'=>400,
 			'msg'=>'Required fields missing'
@@ -224,7 +224,7 @@ case('assign_picker'):
 	break;
 case('pick_it'):
 
-	if($_REQUEST['staff_key']=='' || $_REQUEST['pin']==''){
+	if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
 		$response=array(
 			'state'=>400,
 			'msg'=>'Required fields missing'
@@ -241,7 +241,7 @@ case('pick_it'):
 	start_picking($data);
 	break;
 case('pack_it'):
-	if($_REQUEST['staff_key']=='' || $_REQUEST['pin']==''){
+	if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
 		$response=array(
 			'state'=>400,
 			'msg'=>'Required fields missing'
@@ -305,16 +305,26 @@ case('set_order_shipping'):
 			'order_key'=>array('type'=>'key'),
 			'value'=>array('type'=>'string')
 		));
-
 	set_order_shipping($data);
 	break;
-
 case('use_calculated_shipping'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 		));
-
 	use_calculated_shipping($data);
+	break;
+case('set_order_items_charges'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+			'value'=>array('type'=>'string')
+		));
+	set_order_items_charges($data);
+	break;
+case('use_calculated_items_charges'):
+	$data=prepare_values($_REQUEST,array(
+			'order_key'=>array('type'=>'key'),
+		));
+	use_calculated_items_charges($data);
 	break;
 case('update_order'):
 
@@ -329,6 +339,8 @@ default:
 
 
 function cancel_order() {
+	include_once 'class.Deal.php';
+
 	global $editor;
 	$order_key=$_SESSION['state']['order']['id'];
 
@@ -447,15 +459,11 @@ function use_calculated_shipping($data) {
 function set_order_shipping($data) {
 
 	$order_key=$data['order_key'];
-
 	$value=$data['value'];
-
 	$order=new Order($order_key);
 	if ($order->id) {
 		$order->update_shipping_amount($value);
 		if ($order->updated) {
-
-
 			$updated_data=array(
 				'order_items_gross'=>$order->get('Items Gross Amount'),
 				'order_items_discount'=>$order->get('Items Discount Amount'),
@@ -469,23 +477,56 @@ function set_order_shipping($data) {
 
 			);
 			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping_amount'=>$order->data['Order Shipping Net Amount'],'shipping'=>money($order->new_value),'order_shipping_method'=>$order->data['Order Shipping Method']);
-
-
-
-
-
-
 		} else {
 			$response=array('state'=>200,'result'=>'no_change');
-
 		}
-
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg);
-
 	}
 	echo json_encode($response);
+}
 
+
+function set_order_items_charges($data) {
+
+	$order_key=$data['order_key'];
+	$value=$data['value'];
+	$order=new Order($order_key);
+	if ($order->id) {
+
+		$tax_category_object=new TaxCategory($order->data['Order Tax Code']);
+
+		$charges_data=array(
+			'Charge Net Amount'=>$value,
+			'Charge Tax Amount'=>$value*$tax_category_object->data['Tax Category Rate'],
+			'Charge Key'=>0,
+			'Charge Description'=>'Charge'
+		);
+
+
+
+		$order->update_charges_amount($charges_data);
+		if ($order->updated) {
+			$updated_data=array(
+				'order_items_gross'=>$order->get('Items Gross Amount'),
+				'order_items_discount'=>$order->get('Items Discount Amount'),
+				'order_items_net'=>$order->get('Items Net Amount'),
+				'order_net'=>$order->get('Total Net Amount'),
+				'order_tax'=>$order->get('Total Tax Amount'),
+				'order_charges'=>$order->get('Charges Net Amount'),
+				'order_credits'=>$order->get('Net Credited Amount'),
+				'order_shipping'=>$order->get('Shipping Net Amount'),
+				'order_total'=>$order->get('Total Amount')
+
+			);
+			$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'items_charges_amount'=>$order->data['Order Charges Net Amount'],'items_charges'=>money($order->new_value));
+		} else {
+			$response=array('state'=>200,'result'=>'no_change');
+		}
+	} else {
+		$response=array('state'=>400,'msg'=>$order->msg);
+	}
+	echo json_encode($response);
 }
 
 function is_order_exist() {
@@ -1266,7 +1307,7 @@ function post_transactions_to_process() {
 		else
 			$stock='?';
 		$type=$row['Product Record Type'];
-		
+
 		switch ($row['Product Web Configuration']) {
 		case('Online Force Out of Stock'):
 			$web_state=_('Out of Stock');
@@ -1931,7 +1972,7 @@ function start_picking($data) {
 		echo json_encode($response);
 		exit;
 	}
-/*
+	/*
 
 */
 	//print_r($data);exit;
@@ -3193,12 +3234,12 @@ function update_percentage_discount($data) {
 
 
 	$transaction_data=$order->update_transaction_discount_percentage($data['order_transaction_key'],$data['percentage']);
-if($order->error){
+	if ($order->error) {
 
-$response= array('state'=>400,'msg'=>$order->msg);
+		$response= array('state'=>400,'msg'=>$order->msg);
 		echo json_encode($response);
 		return;
-}
+	}
 
 
 
@@ -3223,6 +3264,8 @@ $response= array('state'=>400,'msg'=>$order->msg);
 		'state'=>200,
 		'quantity'=>$transaction_data['qty'],
 		'description'=>$transaction_data['description'],
+		'discount_percentage'=>$transaction_data['discount_percentage'],
+
 		// 'key'=>$_REQUEST['id'],
 		'data'=>$updated_data,
 		'to_charge'=>$transaction_data['to_charge'],

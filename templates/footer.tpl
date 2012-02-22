@@ -1,7 +1,7 @@
 <div id="footer">
-<a style="margin-left:10px" href="terms_use.php">{t}Terms of use{/t}</a>
-<a style="margin-left:10px" href="report_issue.php?t=bug">{t}Report a problem{/t}</a>
-<a style="margin-left:10px" href="report_issue.php?t=feature">{t}Request a feature{/t}</a>
+<a style="margin-left:0px" href="terms_use.php">{t}Terms of use{/t}</a>
+<a style="margin-left:10px;display:none" href="report_issue.php?t=bug">{t}Report a problem{/t}</a>
+<a style="margin-left:10px;display:none" href="report_issue.php?t=feature">{t}Request a feature{/t}</a>
 
 <div class='adv' style="margin-top:2px">{t}Powered by Inikoo{/t}</div>
 </div> 

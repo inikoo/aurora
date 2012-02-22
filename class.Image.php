@@ -13,10 +13,6 @@
 */
 
 
-/* class: image
-   Class to manage the *Image Dimension* table
-*/
-// JFA
 
 
 class Image  {
@@ -243,7 +239,11 @@ class Image  {
             $this->id=mysql_insert_id();
             $this->new=true;
             $this->get_data('id',$this->id);
-
+            
+            
+            
+            
+			/*
             global $dns_db;
 
             $sql=sprintf("insert into kimage.`Image Data Dimension` values ('%s',%d,%s,%d,%s,'%s')
@@ -261,6 +261,8 @@ class Image  {
 
                         );
             mysql_query($sql);
+            
+            */
         } else {
             $this->error=true;
             $this->msg='Can not insert the image '.mysql_error();
@@ -275,6 +277,10 @@ class Image  {
         $this->create_thumbnail();
         $this->create_small();
         $this->create_large();
+        
+        
+          $sql=sprintf("update `Image Dimension` set `Last Modify Date`=NOW() where `Image Key`=%d ",$this->id);
+        mysql_query($sql);
 
 
     }

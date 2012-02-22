@@ -3,7 +3,7 @@
 	{include file='assets_navigation.tpl'}
 	<input type="hidden" id="store_key" value="{$store->id}">
 	<div class="branch">
-		<span>{if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons">

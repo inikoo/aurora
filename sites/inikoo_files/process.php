@@ -1,6 +1,9 @@
 <?php
 require_once 'app_files/db/dns.php';
 require_once 'conf/timezone.php';
+
+
+
 date_default_timezone_set(TIMEZONE) ;
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$default_DB_link) {
@@ -16,14 +19,66 @@ $site_key=$myconf['site_key'];
 
 $url=$_SERVER['REQUEST_URI'];
 $url=preg_replace('/^\//', '', $url);
+$url=preg_replace('/\?.*$/', '', $url);
+
+
+
+
 if ($page_key=get_page_key_from_code($site_key,$url)) {
-include_once('common.php');
+	include_once 'common.php';
 	include_once 'page.php';
 
 
 }else {
-	//header("Location: 404.php");
-	print "no found $url";
+
+
+
+	$sql=sprintf("select `Site URL` from `Site Dimension` where `Site Key`=%d ",
+		$site_key
+	);
+	//print "$sql\n";
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$site_url=$row['Site URL'];
+	}else {
+		exit();
+	}
+
+$path='';
+$file='';
+	$url_array=explode("/", $url);
+	//print_r($url_array);
+
+	$file=array_pop($url_array);
+	if (preg_match('/\.(php|html)$/',$file)) {
+		$path=join('/',$url_array);
+	}else {
+		$file='index.php';
+		$path=$url;
+
+	}
+
+$path=preg_replace('/\/$/','',$path);
+
+
+
+
+	$sql=sprintf("select `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",_prepare_mysql($site_url),_prepare_mysql($path,false),_prepare_mysql($file));
+
+//print $sql;
+//exit;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$target=$row['Page Target URL'];
+		header("Location: http://".$target);
+	}else {
+		header("Location: http://".$site_url."/404.php?p=$path&f=$file&url=$url");
+	}
+
+
+
+	
+
 	exit;
 }
 

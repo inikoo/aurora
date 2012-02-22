@@ -9,7 +9,7 @@
 		<input id="site_url" value="{$site->get('Site URL')}" type="hidden" />
 		<input id="forgot_password_handle" value="{$site_user->get('User Handle')}" type="hidden" />
 		<div class="branch">
-			<span><a href="users.php">{t}Users{/t}</a> &rarr; <a href="users_site.php?site_key={$site->id}">{t}Site Users{/t} ({$site->get('Site Code')})</a> &rarr; {$site_user->get('User Handle')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a href="users.php">{t}Users{/t}</a>  ({$store->get('Store Code')}) &rarr; <a href="users_site.php?site_key={$site->id}">{t}Site Users{/t} ({$site->get('Site Code')})</a> &rarr; {$site_user->get('User Handle')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">

@@ -13,24 +13,44 @@ function change_email_method(){
 		Dom.setStyle(['other_tbody','tr_email_login'],'display','none');
 		set_provider_as_gmail();
 	}
+	
 }
 
 function set_provider_as_gmail(){
+
+
+	if(Dom.get('Email_Provider').value=='Gmail'){
+	return;
+	}
+
 	Dom.get('Email_Login').value='x';
 
 	Dom.get('Incoming_Server').value='x';
 	Dom.get('Outgoing_Server').value='x';
 	Dom.get('Email_Provider').value='Gmail';
+	
+	
+	validate_scope_data['email_credentials']['email_provider'].validated=true;
+	validate_scope_data['email_credentials']['email_provider'].changed=true;
+	
+	
+	
+	
 		validate_scope_data['email_credentials']['incoming_server'].validated=true;
 	validate_scope_data['email_credentials']['incoming_server'].changed=true;
 	validate_scope_data['email_credentials']['outgoing_server'].validated=true;
 	validate_scope_data['email_credentials']['outgoing_server'].changed=true;
 	validate_scope_data['email_credentials']['login'].validated=true;
 	validate_scope_data['email_credentials']['login'].changed=true;
+	
 	validate_scope('email_credentials')
+	
 }
 
 function set_provider_as_other(){
+	if(Dom.get('Email_Provider').value=='Other'){
+	return;
+	}
 	validate_scope_data['email_credentials']['incoming_server'].validated=false;
 	validate_scope_data['email_credentials']['incoming_server'].changed=false;
 	validate_scope_data['email_credentials']['outgoing_server'].validated=false;
@@ -44,6 +64,8 @@ function set_provider_as_other(){
 	validate_scope('email_credentials')
 
 }
+
+
 
 function validate_email_address(query){
  validate_general('email_credentials','email',unescape(query));

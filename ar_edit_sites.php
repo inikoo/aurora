@@ -9,6 +9,7 @@
 */
 
 require_once 'common.php';
+
 require_once 'class.Site.php';
 require_once 'class.PageHeader.php';
 require_once 'class.PageFooter.php';
@@ -25,6 +26,22 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('add_redirect'):
+	$data=prepare_values($_REQUEST,array(
+			'url'=>array('type'=>'string'),
+			'page_key'=>array('type'=>'key'),
+		));
+
+	add_redirect($data);
+	break;
+case('delete_redirect'):
+	$data=prepare_values($_REQUEST,array(
+			'id'=>array('type'=>'key'),
+			'site_key'=>array('type'=>'key'),
+		));
+
+	delete_redirect($data);
+	break;
 case('edit_email_credentials'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -32,7 +49,7 @@ case('edit_email_credentials'):
 
 		));
 
-	edit_email_credentials($data);
+	edit_email_credentials($data,CKEY);
 	break;
 case('test_email_credentials'):
 	$data=prepare_values($_REQUEST,array(
@@ -142,8 +159,9 @@ case('edit_site_search'):
 case('edit_email_forgot'):
 case('edit_email_welcome'):
 case('edit_welcome_message'):
-case('edit_site'):
-
+case('edit_site_ftp'):
+case('edit_site_properties'):
+case('edit_site_checkout'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')
@@ -882,6 +900,39 @@ function delete_see_also_page($data) {
 	mysql_query($sql);
 	$response= array('state'=>200,'action'=>'deleted','page_key'=>$page_key);
 	echo json_encode($response);
+
+}
+function delete_redirect($data) {
+
+	$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $data['id']);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($result)) {
+
+
+		$sql=sprintf("delete from  `Page Redirection Dimension` where `Page Redirection Key`=%d",
+			$data['id']);
+	//	print $sql;
+		mysql_query($sql);
+		$site=new Site($data['site_key']);
+		$site->upload_redirections($row['Source Host'],$row['Source Path']);
+
+		$response= array('state'=>200,'action'=>'deleted');
+		echo json_encode($response);
+
+	}
+}
+function add_redirect($data){
+
+	$page=new Page($data['page_key']);
+	$page->add_redirect($data['url']);
+	if($page->error){
+	$response= array('state'=>400,'msg'=>$page->msg);
+		echo json_encode($response);
+	
+	}else{
+	$response= array('state'=>200);
+		echo json_encode($response);
+	}
 
 }
 
@@ -2407,11 +2458,11 @@ function update_page_height($data) {
 	echo json_encode($response);
 }
 
-function edit_email_credentials($data) {
+function edit_email_credentials($data,$CKEY) {
 
 
 
-	
+
 
 	$site=new Site($data['site_key']);
 
@@ -2427,6 +2478,14 @@ function edit_email_credentials($data) {
 		'incoming_server'=>'Incoming Mail Server',
 		'outgoing_server'=>'Outgoing Mail Server',
 	);
+	$inv_key_dic=array(
+		'Email Provider'=>'email_provider',
+		'Email Address'=>'email',
+		'Login'=>'login',
+		'Password'=>'password',
+		'Incoming Mail Server'=>'incoming_server',
+		'Outgoing Mail Server'=>'outgoing_server',
+	);
 
 	$email_credential_data=array();
 	foreach ($data['values'] as $key=>$value) {
@@ -2438,35 +2497,52 @@ function edit_email_credentials($data) {
 
 
 	//$the_new_value=_trim($value);
-	print_r($email_credential_data);
+	// print_r($email_credential_data);
 	include_once 'class.EmailCredentials.php';
 	$site_email_credentials_key=$site->get_email_credentials_key();
 	if (!$site_email_credentials_key) {
 		$email_credentials=new EmailCredentials();
-		$email_credentials->create($email_credential_data);
+		$email_credentials->create($email_credential_data,$CKEY);
 		$site->associate_email_credentials($email_credentials->id);
+
+		$responses=array();
+		$credentials_data=$site->get_email_credentials();
+		if ($credentials_data) {
+			foreach ($credentials_data as $_key=>$_value) {
+
+				if (array_key_exists($_key,$inv_key_dic)) {
+
+					$responses[]=array('state'=>200, 'newvalue'=>$_value,'key'=>$inv_key_dic[$_key],'action'=>'');
+				}
+
+
+			}
+		}
+		echo json_encode($responses);
+		return;
+
 	}else {
 		$email_credentials=new EmailCredentials($site_email_credentials_key);
-		$email_credentials->update($email_credential_data);
+		$email_credentials->update($email_credential_data,$CKEY);
+		$updated_data=$email_credentials->updated_data;
+		//print_r($updated_data);
+		foreach ($updated_data as $_value) {
+
+			if (array_key_exists($_value['key'],$inv_key_dic)) {
+
+				$responses[]=array('state'=>200, 'newvalue'=>$_value['new_value'],'key'=>$inv_key_dic[$_value['key']],'action'=>'');
+			}
+
+
+		}
+		echo json_encode($responses);
+		return;
+
 	}
-	
-	
-	
-	
-	  $responses=array();
-    foreach($values as $key=>$values_data) {
-        $responses[]=edit_customer_field($customer->id,$key,$values_data);
-    }
-
-  
-
-    echo json_encode($responses);
-	
-
-
-	return;
 
 }
+
+
 
 function delete_email_credentials($data) {
 	//print_r($data);
@@ -2495,16 +2571,17 @@ function delete_email_credentials($data) {
 
 function test_email_credentials($data) {
 
-	if ($data['values']['test_message']=='') {
-		$response=array('state'=>400,'msg'=>_('You must specify a test message.'));
+	if ($data['values']['to']=='') {
+		$response=array('state'=>400,'msg'=>_('You must specify the receiver email'));
 		echo json_encode($response);
 		exit;
 	}
 
 	$site=new Site($data['site_key']);
 	$credentials=$site->get_email_credentials();
-	require "app_files/keys/bugs_key.php";
-	//$to=$conection_data['email'];
+	$from_name=$site->data['Site Name'];
+
+
 	$to=$credentials['Email Address'];
 
 
@@ -2513,9 +2590,11 @@ function test_email_credentials($data) {
 
 	$message_data['method']='smtp';
 	$message_data['type']='html';
-	$message_data['to']=$to;
-	$message_data['subject']=$data['values']['test_message'];
-	$message_data['html']=$data['values']['test_message'];
+	$message_data['to']=$data['values']['to'];
+	$message_data['subject']=_('Test');
+	$message_data['html']=_('Test Message');
+	$message_data['from_name']=$from_name;
+
 	$message_data['email_credentials_key']=$credentials['Email Credentials Key'];
 	$message_data['email_matter']='Test Email';
 	$message_data['email_matter_parent_key']=0;

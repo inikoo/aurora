@@ -1,9 +1,11 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 	<div style="padding:0px 20px;">
+	<input type="hidden" id="customer_key" value="{$customer->id}">
+
 		{include file='contacts_navigation.tpl'} 
 		<div class="branch">
-			<span>{if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
 		</div>
 		<div id="top_page_menu" class="top_page_menu">
 			{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
@@ -36,10 +38,21 @@
 					{/if} 
 					<td valign="top"> 
 					<table class="customer_show_data">
+						{if $customer->get('Customer Registration Number')} 
+						<tr id="registration_number_tr" onmouseover="Dom.setStyle('quick_edit_registration_number','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_registration_number','visibility','hidden')">
+							<td id="registration_number" colspan="2" class="aright">{$customer->get('Customer Registration Number')}</td>
+							<td><img  alt="{t}Registration Number{/t}" title="{t}Registration Number{/t}" src="art/icons/certificate.png" /></td>
+							<td><img onmouseover="Dom.addClass('registration_number_tr','edit_over')" onmouseout="Dom.removeClass('registration_number_tr','edit_over')" id="quick_edit_registration_number" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+						</tr>
+						{/if}
 						{if $customer->get('Customer Tax Number')} 
 						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_tax','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_tax','visibility','hidden')">
-							<td id="main_name" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
-							<td><img id="quick_edit_name" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" src="art/icons/pill.png" /></td>
+							<td id="tax" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
+							<td>
+							
+							<img  id="check_tax_number"  onClick="check_tax_number" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" src="{if $customer->get('Customer Tax Number Valid')=='No'}art/icons/taxation_error.png{elseif $customer->get('Customer Tax Number Valid')=='Yes' and $customer->get('Customer Tax Number Details Match')=='No' }art/icons/taxation_yellow.png{elseif $customer->get('Customer Tax Number Valid')=='Yes'}art/icons/taxation_green.png{else}art/icons/taxation.png{/if}" />
+							
+							</td>
 							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} {if $customer->get('Customer Main Contact Key')} 
@@ -129,11 +142,9 @@
 			</table>
 			
 		</div>
-		<div id="sticky_note_div" class="sticky_note" style="margin-top:3px;width:370px">
+		<div id="sticky_note_div" class="sticky_note" style="margin-top:3px;width:370px;">
 			<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
-			<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
-				{$customer->get('Sticky Note')} 
-			</div>
+			<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 		</div>
 		<div style="clear:both">
 		</div>
@@ -594,11 +605,53 @@
 		</ul>
 	</div>
 </div>
+
+<div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
+	<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
+		<tr class="title">
+			<td colspan=2>{t}Tax Number:{/t}
+			{$customer->get('Customer Tax Number')}
+			</td>
+		</tr>
+			<tr id="check_tax_number_result_tr" style="display:none">
+			<td colspan=2 id="check_tax_number_result"> 
+				
+			</td>
+		</tr>
+		
+		<tr id="check_tax_number_name_tr" style="display:none">
+			<td>{t}Name:{/t}</td>
+			<td id="check_tax_number_name"> 
+				
+			</td>
+		</tr>
+		<tr id="check_tax_number_address_tr" style="display:none">
+			<td>{t}Address:{/t}</td>
+			<td id="check_tax_number_address"> 
+				
+			</td>
+		</tr>
+		
+		<tr id="check_tax_number_wait">
+			<td colspan="2"> 
+			<img src="art/loading.gif" alt=""> {t}Processing Request{/t}
+			</td>
+		</tr>
+		
+		<tr id="check_tax_number_buttons" style="display:none">
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<button  id="save_tax_details_match">{t}Details Match{/t}</button> <button  id="save_tax_details_not_match">{t}Details not match{/t}</button> <button  id="close_check_tax_number">{t}Close{/t}</button>
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
 <div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
-	<input type="hidden" value="" id="Customer_Fiscal_Name"> 
 	<table style="margin:10px">
 		<tr>
-			<td>{t}Contact Name:{/t}</td>
+			<td>{t}Tax Number:{/t}</td>
 			<td> 
 			<div style="width:220px">
 				<input type="text" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0"> 
@@ -616,6 +669,31 @@
 		</tr>
 	</table>
 </div>
+
+<div id="dialog_quick_edit_Customer_Registration_Number" style="padding:10px">
+	<input type="hidden" value="" id="Customer_Fiscal_Name"> 
+	<table style="margin:10px">
+		<tr>
+			<td>{t}Registration Number:{/t}</td>
+			<td> 
+			<div style="width:220px">
+				<input type="text" id="Customer_Registration_Number" value="{$customer->get('Customer Registration Number')}" ovalue="{$customer->get('Customer Registration Number')}" valid="0"> 
+				<div id="Customer_Registration_Number_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<span id="Customer_Registration_Number_msg" class="edit_td_alert"></span> <button class="positive" id="save_quick_edit_registration_number">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_registration_number">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
 <div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
 	<table style="margin:10px">
 		<tr>
@@ -660,8 +738,8 @@
 </div>
 <div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
 	<table style="margin:10px">
-		{if $customer->get_principal_email_comment()} 
-		<tr>
+		 
+		<tr style="{if !$customer->get_principal_email_comment()}display:none{/if}">
 			<td>{t}Comment:{/t}</td>
 			<td> 
 			<div style="width:200px">
@@ -671,7 +749,7 @@
 			</div>
 			</td>
 		</tr>
-		{/if} 
+		
 		<tr>
 			<td>{t}Contact Email:{/t}</td>
 			<td> 
@@ -682,13 +760,16 @@
 			</div>
 			</td>
 		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons" style="margin-top:10px">
-				<span id="Customer_Main_Email_msg"></span> <button class="positive" id="save_quick_edit_email">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button> 
+		<tr >
+			<td colspan="2" style="text-align:right"> 
+			
+			<div class="buttons" style="margin-top:10px" id="Customer_Main_Email_buttons">
+				 <span style="display:none" id="Customer_Main_Email_wait"><span id="Customer_Main_Email_msg"></span>{t}Processing request{/t}</span> <button class="positive" id="save_quick_edit_email">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
+	
+		
 	</table>
 </div>
 {foreach from=$customer->get_other_emails_data() item=other_email key=key} 

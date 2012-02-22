@@ -5483,8 +5483,8 @@ ALTER TABLE `Site Dimension` ADD `Site FTP Protocol` ENUM( 'SFTP', 'FTP', 'FTPS'
 ALTER TABLE `Site Dimension` ADD `Site FTP Port` MEDIUMINT( 8 ) NULL AFTER `Site FTP Protocol`
 ALTER TABLE `Site Dimension` CHANGE `Site FTP Protocol` `Site FTP Protocol` ENUM( 'SFTP', 'FTP', 'FTPS' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'FTPS';
 ALTER TABLE `Site Dimension` CHANGE `Site FTP Port` `Site FTP Port` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
-//mysql-bin.000001 |      106 |;79911
-
+//mysql-bin.000001 |      106 |;79911//http://31.221.24.230
+//mysql-bin.000026 |      106 | dw,kbase,de_orders
 ALTER TABLE `Site Dimension` ADD `Site Total Users` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `User Dimension` DROP INDEX `User Handle` ,ADD UNIQUE `User Handle` ( `User Handle` , `User Type` , `User Site Key` ) ;
 ALTER TABLE `Email Credentials Dimension` ADD `Email Provider` ENUM( 'Gmail', 'Other' ) NOT NULL DEFAULT 'Other' AFTER `Email Credentials Key` ;
@@ -5508,4 +5508,140 @@ CREATE TABLE `Page Redirection Dimension` (
   PRIMARY KEY (`Page Redirection Key`),
   KEY `Page Target Key` (`Page Target Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `Email Credentials Dimension` CHANGE `Password` `Password` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+//==============
+ALTER TABLE `User Dimension` ADD `User Inactive Note` VARCHAR( 1024 ) NOT NULL DEFAULT '';
+ALTER TABLE `Site Dimension` ADD `Site Show Facebook` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes',ADD `Site Show Twitter` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
+ALTER TABLE `Site Dimension` ADD `Show Site Badges` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
+ALTER TABLE `User Right Scope Bridge` CHANGE `Scope` `Scope` ENUM( 'Store', 'Warehouse', 'Supplier', 'Website' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Store';
+ALTER TABLE `Product Family Dimension` CHANGE `Product Family Store Key` `Product Family Store Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
+
+ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Request Key` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ;
+RENAME TABLE `User Click Dimension` TO `User Request Dimension` ;
+ALTER TABLE `User Request Dimension` ADD `User Agent Key` BIGINT NULL DEFAULT NULL AFTER `Previous Page Key` ,ADD INDEX ( `User Agent Key` ) ;
+CREATE TABLE `User Visitor Dimension` (
+  `User Visitor Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`User Visitor Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE kbase.`User Agent Dimension` (
+  `User Agent Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `User Agent Name` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
+  `User Agent String` text CHARACTER SET utf8 NOT NULL,
+  `User Agent Description` text CHARACTER SET utf8,
+  `User Agent Type` enum('Browser','Bot','Spam','Proxy','Other') CHARACTER SET utf8 DEFAULT NULL,
+  `User Agent Family` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`User Agent Key`),
+  UNIQUE KEY `User Agent String_2` (`User Agent String`(300)),
+  KEY `User Agent String` (`User Agent String`(64)),
+  KEY `User Agent Type` (`User Agent Type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+CREATE TABLE `User Session Dimension` (
+  `User Session Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `User Session Start Date` datetime NOT NULL,
+  `User Session Last Request Date` datetime NOT NULL,
+  PRIMARY KEY (`User Session Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE `User Request Dimension` ADD `User Visitor Key` MEDIUMINT NULL DEFAULT NULL AFTER `User Log Key` , ADD `User Session Key` MEDIUMINT NULL DEFAULT NULL AFTER `User Visitor Key` ;
+ALTER TABLE `User Visitor Dimension` ADD `User Visitor Site Key` MEDIUMINT UNSIGNED NOT NULL , ADD INDEX ( `User Visitor Site Key` ) ;
+ALTER TABLE `User Session Dimension` ADD `User Session Visitor Key` MEDIUMINT UNSIGNED NOT NULL AFTER `User Session Key` ,ADD INDEX ( `User Session Visitor Key` ) ;
+ALTER TABLE `User Session Dimension` ADD `User Session Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `User Session Key` ,ADD INDEX ( `User Session Site Key` );
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Description', 'Information', 'Category Catalogue', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out', 'Login', 'Welcome' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Description', 'Information', 'Category Catalogue', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out', 'Login', 'Welcome', 'Not Found' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+
+ALTER TABLE `User Dimension` ADD `User Sessions Count` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `User Last Failed Login` ,ADD `User Requests Count` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `User Sessions Count` ,ADD `User Last Request` DATETIME NULL DEFAULT NULL AFTER `User Requests Count` ;
+
+
+ALTER TABLE `Site Dimension` ADD `Site Total Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Total Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Total Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Total Acc Sessions` , ADD `Site Total Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Total Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 3 Year Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 3 Year Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 3 Year Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 3 Year Acc Sessions` , ADD `Site 3 Year Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 3 Year Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Year Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Year Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Year Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Year Acc Sessions` , ADD `Site 1 Year Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Year Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 6 Month Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 6 Month Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 6 Month Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 6 Month Acc Sessions` , ADD `Site 6 Month Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 6 Month Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Quarter Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Quarter Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Quarter Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Quarter Acc Sessions` , ADD `Site 1 Quarter Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Quarter Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Month Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Month Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Month Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Month Acc Sessions` , ADD `Site 1 Month Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Month Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 10 Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 10 Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 10 Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 10 Day Acc Sessions` , ADD `Site 10 Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 10 Day Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Week Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Week Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Week Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Week Acc Sessions` , ADD `Site 1 Week Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Week Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Day Acc Sessions` , ADD `Site 1 Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Day Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Hour Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Hour Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Hour Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Hour Acc Sessions` , ADD `Site 1 Hour Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site 1 Hour Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site Today Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Today Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Today Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Today Acc Sessions` , ADD `Site Today Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Today Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site Year To Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Year To Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Year To Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Year To Day Acc Sessions` , ADD `Site Year To Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Year To Day Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site Month To Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Month To Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Month To Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Month To Day Acc Sessions` , ADD `Site Month To Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Month To Day Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site Week To Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Week To Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Week To Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Week To Day Acc Sessions` , ADD `Site Week To Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Week To Day Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site Last Month Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Last Month Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Last Month Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Last Month Acc Sessions` , ADD `Site Last Month Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Last Month Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site Last Week Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Last Week Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Last Week Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Last Week Acc Sessions` , ADD `Site Last Week Month Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Last Week Acc Requests` ;
+ALTER TABLE `Site Dimension` ADD `Site Yesterday Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Yesterday Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Yesterday Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Yesterday Acc Sessions` , ADD `Site Yesterday Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Site Yesterday Acc Requests` ;
+
+
+ALTER TABLE `Site Dimension` ADD `Site Total Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Total Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ;
+ALTER TABLE `Site Dimension` ADD `Site 3 Year Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 3 Year Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Year Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Year Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site 6 Month Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 6 Month Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Quarter Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Quarter Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Month Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Month Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site 10 Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 10 Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Week Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Week Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site 1 Hour Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site 1 Hour Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0'; 
+ALTER TABLE `Site Dimension` ADD `Site Today Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Today Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site Year To Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Year To Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site Month To Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Month To Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site Week To Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Week To Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0'; 
+ALTER TABLE `Site Dimension` ADD `Site Last Month Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Last Month Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ; 
+ALTER TABLE `Site Dimension` ADD `Site Last Week Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Last Week Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Site Dimension` ADD `Site Yesterday Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Site Yesterday Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+
+
+ALTER TABLE `Page Store Dimension` ADD `Page Store Total Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Total Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Total Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Total Acc Sessions` , ADD `Page Store Total Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Total Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 3 Year Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 3 Year Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 3 Year Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 3 Year Acc Sessions` , ADD `Page Store 3 Year Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 3 Year Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Year Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Year Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Year Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Year Acc Sessions` , ADD `Page Store 1 Year Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Year Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 6 Month Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 6 Month Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 6 Month Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 6 Month Acc Sessions` , ADD `Page Store 6 Month Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 6 Month Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Quarter Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Quarter Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Quarter Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Quarter Acc Sessions` , ADD `Page Store 1 Quarter Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Quarter Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Month Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Month Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Month Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Month Acc Sessions` , ADD `Page Store 1 Month Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Month Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 10 Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 10 Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 10 Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 10 Day Acc Sessions` , ADD `Page Store 10 Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 10 Day Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Week Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Week Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Week Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Week Acc Sessions` , ADD `Page Store 1 Week Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Week Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Day Acc Sessions` , ADD `Page Store 1 Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Day Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Hour Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Hour Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Hour Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Hour Acc Sessions` , ADD `Page Store 1 Hour Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store 1 Hour Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Today Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Today Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Today Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Today Acc Sessions` , ADD `Page Store Today Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Today Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Year To Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Year To Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Year To Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Year To Day Acc Sessions` , ADD `Page Store Year To Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Year To Day Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Month To Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Month To Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Month To Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Month To Day Acc Sessions` , ADD `Page Store Month To Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Month To Day Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Week To Day Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Week To Day Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Week To Day Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Week To Day Acc Sessions` , ADD `Page Store Week To Day Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Week To Day Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Last Month Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Last Month Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Last Month Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Last Month Acc Sessions` , ADD `Page Store Last Month Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Last Month Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Last Week Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Last Week Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Last Week Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Last Week Acc Sessions` , ADD `Page Store Last Week Month Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Last Week Acc Requests` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Yesterday Acc Visitors` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Yesterday Acc Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Yesterday Acc Requests` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Yesterday Acc Sessions` , ADD `Page Store Yesterday Acc Users` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Page Store Yesterday Acc Requests` ;
+
+
+ALTER TABLE `Page Store Dimension` ADD `Page Store Total Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Total Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 3 Year Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 3 Year Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Year Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Year Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 6 Month Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 6 Month Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Quarter Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Quarter Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Month Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Month Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 10 Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 10 Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0'  ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Week Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Week Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store 1 Hour Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store 1 Hour Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0'; 
+ALTER TABLE `Page Store Dimension` ADD `Page Store Today Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Today Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Year To Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Year To Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Month To Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Month To Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Week To Day Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Week To Day Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0'; 
+ALTER TABLE `Page Store Dimension` ADD `Page Store Last Month Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Last Month Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ; 
+ALTER TABLE `Page Store Dimension` ADD `Page Store Last Week Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Last Week Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Yesterday Acc Users Requests` MEDIUMINT NOT NULL DEFAULT '0'  ,ADD `Page Store Yesterday Acc Users Sessions` MEDIUMINT NOT NULL DEFAULT '0' ;
+
+
+ALTER TABLE `User Request Dimension` ADD INDEX ( `Date` ) ;
+
+ALTER TABLE `User Request Dimension` ADD INDEX ( `Page Key` ) ;
+ALTER TABLE `User Request Dimension` ADD INDEX ( `Page Key` ) ;
+
+
+ALTER TABLE `Customer Dimension` ADD `Customer Tax Number Valid` ENUM( 'Yes', 'No', 'Unknown' ) NOT NULL DEFAULT 'Unknown',ADD `Customer Tax Number Details Match` ENUM( 'Yes', 'No', 'Unknown' ) NOT NULL DEFAULT 'Unknown', ADD `Customer Tax Number Validation Date` DATETIME NULL DEFAULT NULL ;
+ALTER TABLE `Image Dimension` ADD `Last Modify Date` DATETIME NULL DEFAULT NULL ;
+update `Image Dimension` set `Last Modify Date`=NOW();
+
+INSERT INTO `Page Dimension` (`Page Key`, `Page Type`, `Page Section`, `Page Title`, `Page Short Title`, `Page Description`, `Page Keywords`, `Page URL`, `Page Javascript Files`, `Page CSS Files`, `Page Snapshot Image Key`, `Page Snapshot Last Update`, `Page Valid URL`, `Page Working URL`, `Page Published`) VALUES (NULL, 'Internal', 'Reports', 'Intrastat', 'Intrastat', 'Intrastat is the system for collecting information and producing statistics on the trade in goods between countries of the European Union (EU). ', '', 'reports_intrastat.php', '', '', NULL, NULL, 'Yes', 'Yes', 'Yes');
+
+
 

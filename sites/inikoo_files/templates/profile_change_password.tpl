@@ -10,6 +10,10 @@
 
 <div id="dialog_change_password"    class="dialog_inikoo logged"  >
 <h2>{t}Change Password{/t}</h2>
+
+
+
+
 <div style="border:1px solid #ccc;padding:20px;width:400px;float:left">
 
 
@@ -29,8 +33,8 @@
 <td colspan=2>
 
 <div class="buttons" id="change_password_buttons" >
-<button id="submit_change_password" class="negative">{t}Submit Changes{/t}</button> 
-<button  id="cancel_change_password" class="positive">{t}Cancel{/t}</button>
+<button id="submit_change_password" class="positive">{t}Submit Changes{/t}</button> 
+<button  id="cancel_change_password" class="negative">{t}Cancel{/t}</button>
 </div>
 </td></tr>
 <tr id="tr_change_password_wait"  style="display:none" class="button" ><td colspan=2><img style="weight:24px" src="art/loading.gif"> <span style="position:relative;top:-5px">{t}Submitting changes{/t}</span></td></tr>

@@ -4,7 +4,7 @@
 <input type="hidden" value="{$store->id}" id="store_key" />
 {include file='marketing_navigation.tpl'}
 <div  class="branch"> 
-  <span>{if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} {$store->get('Store Code')} {t}Marketing{/t}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} {$store->get('Store Code')} {t}Marketing{/t}</span>
 </div>
 <div class="top_page_menu">
 

@@ -403,9 +403,6 @@ class Page extends DB_Table {
 	}
 
 	function get($key) {
-
-
-
 		switch ($key) {
 		case('link'):
 			return $this->display();
@@ -414,6 +411,14 @@ class Page extends DB_Table {
 			if (isset($this->data[$key]))
 				return $this->data[$key];
 		}
+
+		if (preg_match('/ Acc /',$key)) {
+
+			$amount='Page Store '.$key;
+
+			return number($this->data[$amount]);
+		}
+
 		return false;
 	}
 
@@ -1153,7 +1158,7 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Offline') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Not for Sale').'</span>';
+			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Discontinued') {
 			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
@@ -1167,14 +1172,14 @@ class Page extends DB_Table {
                              <input type='hidden' name='price' value='%s'>
                              <input type='text' size='2' class='qty' name='qty' value=''>
                              <input type='Submit' value='%s'></form></div>",
-				$this->site->get_mals_data('url'),
+				'http://'.$this->site->get_mals_data('url').'/cf/add.cfm',
 				$this->site->get_mals_data('id'),
 				$product->data['Product Code'],
 				$product->data['Product Units Per Case'],
 				$product->data['Product Name'],
 				$this->data['Page URL'],
-				$product->data['Product Price'],
-				_('Order')
+				 number_format($product->data['Product Price'],2,'.',''),
+				_('Order Product')
 
 
 			);
@@ -1182,6 +1187,8 @@ class Page extends DB_Table {
 
 		$data=array(
 			'Product Price'=>$product->data['Product Price'],
+			
+			
 			'Product Units Per Case'=>$product->data['Product Units Per Case'],
 			'Product Currency'=>$product->get('Product Currency'),
 			'Product Unit Type'=>$product->data['Product Unit Type'],
@@ -1243,7 +1250,7 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
 		}
 		else {
-			$message=sprintf('<br/><span style="color:green;font-style:italic;">In stock, please <a style="color:green;" href="#" onclick="show_login_dialog()">login</a> or <a style="color:green;" href="#" onclick="show_register_dialog()">register</a> to see wholesale prices</span>');
+			$message=sprintf('<br/><span style="color:green;font-style:italic;">'._('In stock').'. <a style="color:green;" href="login.php" >'._('login').'</a> '._('or').' <a style="color:green;" href="registration.php">'._('register').'</a></span>');
 		}
 
 		$form=sprintf('<div  class="ind_form">
@@ -1456,7 +1463,7 @@ class Page extends DB_Table {
 		$number_records=count($products);
 		$out_of_stock=_('Out of Stock');
 		$discontinued=_('Discontinued');
-		$register=_('Please').' '.'<span onclick="show_login_dialog()">'._('login').'</span> '._('or').' <span onclick="show_register_dialog()">'._('register').'</span> '._('to see wholesale prices');
+		$register=_('Please').' '.'<a href="login.php">'._('login').'</a> '._('or').' <a href="registration.php">'._('register').'</a>';
 
 
 
@@ -1488,9 +1495,9 @@ class Page extends DB_Table {
 							$print_rrp=false;
 						}
 						elseif ($row['avg']==$row['min'])
-							$rrp_label='<br/>RRP: '.$rrp;
+							$rrp_label='<br/>'._('RRP').': '.$rrp;
 						else
-							$rrp_label='<br/>RRP from '.$rrp;
+							$rrp_label='<br/>'._('RRP from').' '.$rrp;
 
 
 
@@ -1503,7 +1510,7 @@ class Page extends DB_Table {
 			}
 
 
-			$form.='<tr class="list_info" ><td colspan="4"><p>FAMILY NAME'.$rrp_label.'</p></td><td>';
+			$form.='<tr class="list_info" ><td colspan="4"><p>'.$rrp_label.'</p></td><td>';
 			if ($print_register and $number_records>10)
 				$form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
 
@@ -1753,7 +1760,7 @@ class Page extends DB_Table {
                       <form action="%s" method="post">
                       <input type="hidden" name="userid" value="%s">
                       <input type="hidden" name="nnocart"> '
-			,$this->site->get_mals_data('url_multi')
+			,'http://'.$this->site->get_mals_data('url').'/cf/addmulti.cfm'
 			,$this->site->get_mals_data('id')
 
 		);
@@ -1825,7 +1832,7 @@ class Page extends DB_Table {
 
 
 			$form.=sprintf('<tr %s >
-                           <input type="hidden" name="price%s" value="%.2f"  >
+                           <input type="hidden" name="price%s" value="%s"  >
                            <input type="hidden" name="product%s"  value="%s %s" >
                            <td class="code">%s</td>
                            <td class="price">%s</td>
@@ -1836,8 +1843,9 @@ class Page extends DB_Table {
                            </tr>'."\n",
 				$tr_class,
 
-				$counter,$product['Product Price'],
-				$counter,$product['Product Code'],$product['description'],
+				$counter,
+				number_format($product['Product Price'],2,'.',''),
+				$counter,$product['Product Code'],clean_accents($product['description']),
 
 				$product['Product Code'],
 				$price,
@@ -1862,12 +1870,15 @@ class Page extends DB_Table {
 
 		$form.=sprintf('<tr class="space"><td colspan="4">
                        <input type="hidden" name="return" value="%s">
-                       <input class="button" name="Submit" type="submit"  value="Order">
-                       <input class="button" name="Reset" type="reset"  id="Reset" value="Reset"></td></tr></form></table>
+                       <input class="button" name="Submit" type="submit"  value="'._('Order Product').'">
+                       <input class="button" name="Reset" type="reset"  id="Reset" value="'._('Reset').'"></td></tr></form></table>
                        '
 			,$this->data['Page URL']);
 		return $form;
 	}
+
+	//http://ww12.aitsafe.com/cf/review.cfm?userid=E5171143
+	//http://ww4.aitsafe.com/cf/review.cfm?userid=E5171143
 
 
 	function get_list_price_header_auto($products) {
@@ -1997,7 +2008,7 @@ class Page extends DB_Table {
 			//$ecommerce_checkout
 			switch ($this->site->data['Site Checkout Method']) {
 			case 'Mals':
-				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://ww4.aitsafe.com/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_mals_data('url').'/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			default:
 				$basket='';
@@ -2421,7 +2432,9 @@ class Page extends DB_Table {
 		$site=new Site($this->data['Page Site Key']);
 
 		$url_array=explode("/", $source_url);
-		if (count($url_array)<3) {
+		//print_r($url_array);
+
+		if (count($url_array)<2) {
 			$this->error=true;
 			$this->msg=_('Wrong URL');
 		}
@@ -2473,7 +2486,7 @@ class Page extends DB_Table {
 		$sql=sprintf("insert into `Page Redirection Dimension` (`Source Host`,`Source Path`,`Source File`, `Page Target URL`,`Page Target Key`, `Can Upload`) values
 		(%s,%s,%s, %s,%d, %s)"
 			,prepare_mysql($host)
-			,prepare_mysql($path)
+			,prepare_mysql($path,false)
 			,prepare_mysql($file)
 			,prepare_mysql($this->data['Page URL'])
 			,$this->id
@@ -2499,10 +2512,10 @@ class Page extends DB_Table {
 				foreach ($row as $key=>$value) {
 					$_row[str_replace(' ','',$key)]=$value;
 				}
-				$_row['Source']=$_row['SourceHost'].'/'.$_row['SourcePath'].'/'.$_row['SourceFile'];
+				$_row['Source']=$_row['SourceHost'].'/'.($_row['SourcePath']?$_row['SourcePath'].'/':'').$_row['SourceFile'];
 				$data[]=$_row;
 			}else {
-				$row['Source']=$_row['Source Host'].'/'.$_row['Source Path'].'/'.$row['Source File'];
+				$row['Source']=$row['Source Host'].'/'.($row['Source Path']?$row['Source Path'].'/':'').$row['Source File'];
 				$data[]=$row;
 			}
 		}
@@ -2513,7 +2526,7 @@ class Page extends DB_Table {
 	function get_redirect_data($redirect_key,$smarty=false) {
 
 		$data=false;
-		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $redirect_key);
+		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Target Key`=%d and `Page Redirection Key`=%d", $this->id,$redirect_key);
 		$result=mysql_query($sql);
 
 		if ($row=mysql_fetch_assoc($result)) {
@@ -2522,10 +2535,10 @@ class Page extends DB_Table {
 				foreach ($row as $key=>$value) {
 					$_row[str_replace(' ','',$key)]=$value;
 				}
-				$_row['Source']=$_row['SourceHost'].'/'.$_row['SourcePath'].'/'.$_row['SourceFile'];
+				$_row['Source']=$_row['SourceHost'].'/'.($_row['SourcePath']?$_row['SourcePath'].'/':'').$_row['SourceFile'];
 				$data=$_row;
 			}else {
-				$row['Source']=$row['Source Host'].'/'.$row['Source Path'].'/'.$row['Source File'];
+				$row['Source']=$row['Source Host'].'/'.($row['Source Path']?$row['Source Path'].'/':'').$row['Source File'];
 				$data=$row;
 			}
 		}
@@ -2534,82 +2547,110 @@ class Page extends DB_Table {
 	}
 
 
-	function upload_all_htaccess() {
-		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Target Key`=%d", $this->id);
-		$result=mysql_query($sql);
 
-		while ($row=mysql_fetch_assoc($result)) {
 
-			$this->upload_htaccess($row['Page Redirection Key']);
-		}
+	function display_vertical_menu() {
 
 	}
 
-	function upload_htaccess($redirect_key) {
+
+	function update_up_today_requests() {
+		$this->update_requests('Today');
+		$this->update_requests('Week To Day');
+		$this->update_requests('Month To Day');
+		$this->update_requests('Year To Day');
+	}
+
+	function update_last_period_requests() {
+
+		$this->update_requests('Yesterday');
+		$this->update_requests('Last Week');
+		$this->update_requests('Last Month');
+	}
+
+
+	function update_interval_requests() {
+		$this->update_requests('Total');
+		$this->update_requests('3 Year');
+		$this->update_requests('1 Year');
+		$this->update_requests('6 Month');
+		$this->update_requests('1 Quarter');
+		$this->update_requests('1 Month');
+		$this->update_requests('10 Day');
+		$this->update_requests('1 Week');
+		$this->update_requests('1 Day');
+		$this->update_requests('1 Hour');
+	}
 
 
 
-		$site=new Site($this->data['Page Site Key']);
+	function update_requests($interval) {
 
-		$ftp_connection=$site->create_ftp_connection();
-
-		if (!$ftp_connection) {
-			$this->error=true;
-			$this->msg=$site->msg;
+		if ($this->data['Page Type']!='Store' )
 			return;
-		}
-
-
-		$sql=sprintf("select * from `Page Redirection Dimension` where `Page Redirection Key`=%d", $redirect_key);
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-
-			if ($row['Can Upload']=='No') {
-				return;
-			}
-
-
-			//print_r($row);
-
-			$htaccess_rule="redirect 301 /".basename($row['Page Source URL'])." ".$row['Page Target URL'];
-			//print $htaccess_rule."\n";
-
-
-			$new_path=dirname($row['Page Source URL']);
 
 
 
-			$_path=explode("/", $new_path);
-			print_r($_path);
+		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
-			array_shift($_path);
-			//print_r($_path);
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Visitor Key`) as num_visitors   from  `User Request Dimension`   where `Page Key`=%d  %s",
+			$this->id,
+			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
 
-			if (count($_path)==0) {
-				$this->error=true;
-				$this->msg=_('You can not make a redirect from the root directory');
-				return;
-			}
 
-			$path='./';
-			foreach ($_path as $val) {
-				$path.=$val.'/';
-			}
-
-			$path.='.htaccess';
-
-			print "xx".$htaccess_rule.":  path:   ". $path." <<< \n";
-			//return;
-			if ($ftp_connection->error) {
-				print $ftp_connection->msg;
-			}else {
-				$ftp_connection->upload_string($htaccess_rule,$path);
-				//print_r($ftp_connection);
-			}
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Page Store '.$db_interval.' Acc Requests']=$row['num_requests'];
+			$this->data['Page Store '.$db_interval.' Acc Sessions']=$row['num_sessions'];
+			$this->data['Page Store '.$db_interval.' Acc Visitors']=$row['num_visitors'];
+		}else {
+			$this->data['Page Store '.$db_interval.' Acc Requests']=0;
+			$this->data['Page Store '.$db_interval.' Acc Sessions']=0;
+			$this->data['Page Store '.$db_interval.' Acc Visitors']=0;
 
 		}
-		$ftp_connection->end();
+
+		$sql=sprintf("select count(*) as num_requests ,count(distinct `User Session Key`) num_sessions ,count(Distinct `User Key`) as num_users   from  `User Request Dimension`  where  `User Key`>0 and `Page Key`=%d  %s",
+			$this->id,
+			($from_date?' and `Date`>='.prepare_mysql($from_date):'')
+
+
+		);
+		$res=mysql_query($sql);
+		//print "$sql\n\n\n\n";
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->data['Page Store '.$db_interval.' Acc Users Requests']=$row['num_requests'];
+			$this->data['Page Store '.$db_interval.' Acc Users Sessions']=$row['num_sessions'];
+			$this->data['Page Store '.$db_interval.' Acc Users']=$row['num_users'];
+		}else {
+			$this->data['Page Store '.$db_interval.' Acc Users Requests']=0;
+			$this->data['Page Store '.$db_interval.' Acc Users Sessions']=0;
+			$this->data['Page Store '.$db_interval.' Acc Users']=0;
+		}
+
+		$sql=sprintf('update `Page Store Dimension` set `Page Store '.$db_interval.' Acc Requests`=%d,
+	`Page Store '.$db_interval.' Acc Sessions`=%d,
+	`Page Store '.$db_interval.' Acc Visitors`=%d,
+	`Page Store '.$db_interval.' Acc Users Requests`=%d,
+	`Page Store '.$db_interval.' Acc Users Sessions`=%d,
+	`Page Store '.$db_interval.' Acc Users`=%d
+	where `Page Key`=%d',
+			$this->data['Page Store '.$db_interval.' Acc Requests'],
+			$this->data['Page Store '.$db_interval.' Acc Sessions'],
+			$this->data['Page Store '.$db_interval.' Acc Visitors'],
+			$this->data['Page Store '.$db_interval.' Acc Users Requests'],
+			$this->data['Page Store '.$db_interval.' Acc Users Sessions'],
+			$this->data['Page Store '.$db_interval.' Acc Users'],
+
+			$this->id
+		);
+		mysql_query($sql);
+		//print "$sql\n";
 	}
+
+
+
 
 }
 

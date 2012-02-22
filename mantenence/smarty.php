@@ -779,7 +779,16 @@ gettext("QO Data");
 gettext("Address");
 
 /* ../templates/customer.tpl */
-gettext("Name");
+gettext("Registration Number");
+
+/* ../templates/customer.tpl */
+gettext("Registration Number");
+
+/* ../templates/customer.tpl */
+gettext("Tax Number");
+
+/* ../templates/customer.tpl */
+gettext("Tax Number");
 
 /* ../templates/customer.tpl */
 gettext("Name");
@@ -788,7 +797,10 @@ gettext("Name");
 gettext("Name");
 
 /* ../templates/customer.tpl */
-gettext("Name");
+gettext("Register User");
+
+/* ../templates/customer.tpl */
+gettext("Register User");
 
 /* ../templates/customer.tpl */
 gettext("Email");
@@ -797,10 +809,10 @@ gettext("Email");
 gettext("Email");
 
 /* ../templates/customer.tpl */
-gettext("User Login");
+gettext("Register User");
 
 /* ../templates/customer.tpl */
-gettext("User Login");
+gettext("Register User");
 
 /* ../templates/customer.tpl */
 gettext("Email");
@@ -851,7 +863,7 @@ gettext("Billing");
 gettext("Delivery");
 
 /* ../templates/customer.tpl */
-gettext("Billing Address Same as contact address");
+gettext("Same as contact address");
 
 /* ../templates/customer.tpl */
 gettext("Same as contact address");
@@ -860,7 +872,22 @@ gettext("Same as contact address");
 gettext("Same as billing address");
 
 /* ../templates/customer.tpl */
-gettext("Contact Overview");
+gettext("Details");
+
+/* ../templates/customer.tpl */
+gettext("History, Notes");
+
+/* ../templates/customer.tpl */
+gettext("Login Status");
+
+/* ../templates/customer.tpl */
+gettext("Products Ordered");
+
+/* ../templates/customer.tpl */
+gettext("Order Details");
+
+/* ../templates/customer.tpl */
+gettext("Customer Overview");
 
 /* ../templates/customer.tpl */
 gettext("Lost Customer");
@@ -885,9 +912,6 @@ gettext("Attention");
 
 /* ../templates/customer.tpl */
 gettext("Don't send marketing by post");
-
-/* ../templates/customer.tpl */
-gettext("Categories");
 
 /* ../templates/customer.tpl */
 gettext("Orders Overview");
@@ -917,21 +941,6 @@ gettext("per order");
 gettext("This customer usually places an order every");
 
 /* ../templates/customer.tpl */
-gettext("Details");
-
-/* ../templates/customer.tpl */
-gettext("History, Notes");
-
-/* ../templates/customer.tpl */
-gettext("Login Status");
-
-/* ../templates/customer.tpl */
-gettext("Products Ordered");
-
-/* ../templates/customer.tpl */
-gettext("Order Details");
-
-/* ../templates/customer.tpl */
 gettext("Custom Fields");
 
 /* ../templates/customer.tpl */
@@ -959,6 +968,24 @@ gettext("Delivery Address");
 gettext("Delivery Address");
 
 /* ../templates/customer.tpl */
+gettext("History/Notes");
+
+/* ../templates/customer.tpl */
+gettext("Changes History");
+
+/* ../templates/customer.tpl */
+gettext("Order History");
+
+/* ../templates/customer.tpl */
+gettext("Staff Notes");
+
+/* ../templates/customer.tpl */
+gettext("Attachments");
+
+/* ../templates/customer.tpl */
+gettext("Emails");
+
+/* ../templates/customer.tpl */
 gettext("Login Details");
 
 /* ../templates/customer.tpl */
@@ -978,24 +1005,6 @@ gettext("User Last Failed Login IP");
 
 /* ../templates/customer.tpl */
 gettext("User Last Failed Login");
-
-/* ../templates/customer.tpl */
-gettext("History/Notes");
-
-/* ../templates/customer.tpl */
-gettext("Changes History");
-
-/* ../templates/customer.tpl */
-gettext("Order History");
-
-/* ../templates/customer.tpl */
-gettext("Staff Notes");
-
-/* ../templates/customer.tpl */
-gettext("Attachments");
-
-/* ../templates/customer.tpl */
-gettext("Emails");
 
 /* ../templates/customer.tpl */
 gettext("Product Families Ordered");
@@ -1140,6 +1149,9 @@ gettext("Comment:");
 
 /* ../templates/customer.tpl */
 gettext("Contact Email:");
+
+/* ../templates/customer.tpl */
+gettext("Processing request");
 
 /* ../templates/customer.tpl */
 gettext("Save");
@@ -1591,66 +1603,6 @@ gettext("Incoming Mail Server");
 /* ../templates/customer_store_configuration.tpl */
 gettext("Outgoing Mail Server");
 
-/* ../templates/customer_user.tpl */
-gettext("Staff User");
-
-/* ../templates/customer_user.tpl */
-gettext("Login");
-
-/* ../templates/customer_user.tpl */
-gettext("Alias");
-
-/* ../templates/customer_user.tpl */
-gettext("Login Count");
-
-/* ../templates/customer_user.tpl */
-gettext("Last Login");
-
-/* ../templates/customer_user.tpl */
-gettext("Failed Login Count");
-
-/* ../templates/customer_user.tpl */
-gettext("Failed Last Login");
-
-/* ../templates/customer_user.tpl */
-gettext("Login History");
-
-/* ../templates/customer_user.tpl */
-gettext("System Permissions");
-
-/* ../templates/customer_user.tpl */
-gettext("Email Account");
-
-/* ../templates/customer_user.tpl */
-gettext("Login History");
-
-/* ../templates/customer_user.tpl */
-gettext("Customer communication email accounts");
-
-/* ../templates/customer_user.tpl */
-gettext("Change Password for");
-
-/* ../templates/customer_user.tpl */
-gettext("Change (Random)");
-
-/* ../templates/customer_user.tpl */
-gettext("Change (User Defined)");
-
-/* ../templates/customer_user.tpl */
-gettext("Password");
-
-/* ../templates/customer_user.tpl */
-gettext("Password");
-
-/* ../templates/customer_user.tpl */
-gettext("Repeat Password");
-
-/* ../templates/customer_user.tpl */
-gettext("Cancel");
-
-/* ../templates/customer_user.tpl */
-gettext("Save");
-
 /* ../templates/customers.tpl */
 gettext("Customers");
 
@@ -1686,6 +1638,9 @@ gettext("Contacts with Orders");
 
 /* ../templates/customers.tpl */
 gettext("All Contacts");
+
+/* ../templates/customers.tpl */
+gettext("Users");
 
 /* ../templates/customers.tpl */
 gettext("Total Contacts");
@@ -1752,6 +1707,9 @@ gettext("Balance");
 
 /* ../templates/customers.tpl */
 gettext("Ranking");
+
+/* ../templates/customers.tpl */
+gettext("Users");
 
 /* ../templates/customers.tpl */
 gettext("Filter options");
@@ -3746,25 +3704,34 @@ gettext("Communications");
 gettext("Merge");
 
 /* ../templates/edit_customer.tpl */
-gettext("User Site");
+gettext("Website User");
 
 /* ../templates/edit_customer.tpl */
-gettext("To Do");
+gettext("Site");
 
 /* ../templates/edit_customer.tpl */
-gettext("Reset Password");
+gettext("Create Website User");
 
 /* ../templates/edit_customer.tpl */
-gettext("Send an Email to Reset password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Send an Email to Reset password");
+gettext("Send Reset Password Email");
 
 /* ../templates/edit_customer.tpl */
 gettext("Set Password");
 
 /* ../templates/edit_customer.tpl */
-gettext("Unregistered Emails");
+gettext("Register User");
+
+/* ../templates/edit_customer.tpl */
+gettext("Register User");
+
+/* ../templates/edit_customer.tpl */
+gettext("Create Website User");
+
+/* ../templates/edit_customer.tpl */
+gettext("Send Reset Password Email");
+
+/* ../templates/edit_customer.tpl */
+gettext("Set Password");
 
 /* ../templates/edit_customer.tpl */
 gettext("Merge with: (Customer ID)");
@@ -3899,10 +3866,22 @@ gettext("Identification Number");
 gettext("Contact Name");
 
 /* ../templates/edit_customer.tpl */
+gettext("Registered User");
+
+/* ../templates/edit_customer.tpl */
+gettext("Registered User");
+
+/* ../templates/edit_customer.tpl */
 gettext("Contact Email");
 
 /* ../templates/edit_customer.tpl */
 gettext("Add other Email");
+
+/* ../templates/edit_customer.tpl */
+gettext("Registered User");
+
+/* ../templates/edit_customer.tpl */
+gettext("Registered User");
 
 /* ../templates/edit_customer.tpl */
 gettext("Other Email");
@@ -3995,60 +3974,6 @@ gettext("Save");
 gettext("Cancel");
 
 /* ../templates/edit_customer.tpl */
-gettext("Change Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Current Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("New Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Confirm Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Write new password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Passwords don't match");
-
-/* ../templates/edit_customer.tpl */
-gettext("Password is too short");
-
-/* ../templates/edit_customer.tpl */
-gettext("Change Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Submitting changes");
-
-/* ../templates/edit_customer.tpl */
-gettext("Change Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Current Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("New Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Confirm Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Write new password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Passwords don't match");
-
-/* ../templates/edit_customer.tpl */
-gettext("Password is too short");
-
-/* ../templates/edit_customer.tpl */
-gettext("Change Password");
-
-/* ../templates/edit_customer.tpl */
-gettext("Submitting changes");
-
-/* ../templates/edit_customer.tpl */
 gettext("Delete Customer");
 
 /* ../templates/edit_customer.tpl */
@@ -4086,6 +4011,33 @@ gettext("Cancel");
 
 /* ../templates/edit_customer.tpl */
 gettext("Processing your request");
+
+/* ../templates/edit_customer.tpl */
+gettext("Change Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Confirm");
+
+/* ../templates/edit_customer.tpl */
+gettext("Change Password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_customer.tpl */
+gettext("Write new password");
+
+/* ../templates/edit_customer.tpl */
+gettext("Passwords don't match");
+
+/* ../templates/edit_customer.tpl */
+gettext("Password is too short");
+
+/* ../templates/edit_customer.tpl */
+gettext("Submitting changes");
 
 /* ../templates/edit_customer_categories.tpl */
 gettext("Customers");
@@ -4145,13 +4097,13 @@ gettext("Editing Category");
 gettext("Previous Customer");
 
 /* ../templates/edit_customer_category.tpl */
+gettext("Next Customer");
+
+/* ../templates/edit_customer_category.tpl */
 gettext("Exit Edit");
 
 /* ../templates/edit_customer_category.tpl */
 gettext("Add Subcategory");
-
-/* ../templates/edit_customer_category.tpl */
-gettext("Next Customer");
 
 /* ../templates/edit_customer_category.tpl */
 gettext("Editing Category");
@@ -4169,13 +4121,49 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/edit_customer_category.tpl */
+gettext("Category Label");
+
+/* ../templates/edit_customer_category.tpl */
 gettext("Category Name");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("New Subject");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Yes");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("No");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Public New Subject");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Yes");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("No");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Public Edit");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Yes");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("No");
 
 /* ../templates/edit_customer_category.tpl */
 gettext("Subcategories");
 
 /* ../templates/edit_customer_category.tpl */
 gettext("History");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Filter options");
+
+/* ../templates/edit_customer_category.tpl */
+gettext("Rows per Page");
 
 /* ../templates/edit_customer_category.tpl */
 gettext("Filter options");
@@ -4214,7 +4202,10 @@ gettext("Delete All Customers");
 gettext("Editing Customers");
 
 /* ../templates/edit_customers.tpl */
-gettext("Delete all customers with out orders in the list below");
+gettext("Delete all customers without orders in the list below");
+
+/* ../templates/edit_customers.tpl */
+gettext("Delete all customers without orders");
 
 /* ../templates/edit_customers.tpl */
 gettext("This operation can not be undone");
@@ -4835,7 +4826,7 @@ gettext("Area List");
 gettext("Marketing");
 
 /* ../templates/edit_page.tpl */
-gettext("Stores");
+gettext("Websites");
 
 /* ../templates/edit_page.tpl */
 gettext("Next");
@@ -4878,6 +4869,39 @@ gettext("Style");
 
 /* ../templates/edit_page.tpl */
 gettext("Media");
+
+/* ../templates/edit_page.tpl */
+gettext("Redirections");
+
+/* ../templates/edit_page.tpl */
+gettext("Redirections");
+
+/* ../templates/edit_page.tpl */
+gettext("301 Rederections");
+
+/* ../templates/edit_page.tpl */
+gettext("Remove");
+
+/* ../templates/edit_page.tpl */
+gettext("Remove");
+
+/* ../templates/edit_page.tpl */
+gettext(".htaccess file");
+
+/* ../templates/edit_page.tpl */
+gettext(".htacces file");
+
+/* ../templates/edit_page.tpl */
+gettext("Can't update .htaccess");
+
+/* ../templates/edit_page.tpl */
+gettext("Can't update .htacces");
+
+/* ../templates/edit_page.tpl */
+gettext("Upload .htaccess");
+
+/* ../templates/edit_page.tpl */
+gettext("Upload .htacces");
 
 /* ../templates/edit_page.tpl */
 gettext("Show Advanced Configuration");
@@ -4946,133 +4970,16 @@ gettext("Page Keywords");
 gettext("Page Code");
 
 /* ../templates/edit_page.tpl */
-gettext("Description");
-
-/* ../templates/edit_page.tpl */
-gettext("URL");
-
-/* ../templates/edit_page.tpl */
 gettext("Link Label");
 
 /* ../templates/edit_page.tpl */
-gettext("Save");
-
-/* ../templates/edit_page.tpl */
-gettext("Reset");
+gettext("Description");
 
 /* ../templates/edit_page.tpl */
 gettext("Save");
 
 /* ../templates/edit_page.tpl */
 gettext("Reset");
-
-/* ../templates/edit_page.tpl */
-gettext("Registration Form");
-
-/* ../templates/edit_page.tpl */
-gettext("Form Type");
-
-/* ../templates/edit_page.tpl */
-gettext("Show all fields");
-
-/* ../templates/edit_page.tpl */
-gettext("Show by steps");
-
-/* ../templates/edit_page.tpl */
-gettext("No Configurable Fields");
-
-/* ../templates/edit_page.tpl */
-gettext("Email");
-
-/* ../templates/edit_page.tpl */
-gettext("Password");
-
-/* ../templates/edit_page.tpl */
-gettext("Type of business");
-
-/* ../templates/edit_page.tpl */
-gettext("Company Name");
-
-/* ../templates/edit_page.tpl */
-gettext("Contact Name");
-
-/* ../templates/edit_page.tpl */
-gettext("at least one should be given");
-
-/* ../templates/edit_page.tpl */
-gettext("Configurable Fields");
-
-/* ../templates/edit_page.tpl */
-gettext("Tax Number");
-
-/* ../templates/edit_page.tpl */
-gettext("Displayed");
-
-/* ../templates/edit_page.tpl */
-gettext("Required");
-
-/* ../templates/edit_page.tpl */
-gettext("Address");
-
-/* ../templates/edit_page.tpl */
-gettext("Displayed");
-
-/* ../templates/edit_page.tpl */
-gettext("Required");
-
-/* ../templates/edit_page.tpl */
-gettext("Telephone");
-
-/* ../templates/edit_page.tpl */
-gettext("Displayed");
-
-/* ../templates/edit_page.tpl */
-gettext("Required");
-
-/* ../templates/edit_page.tpl */
-gettext("Fax");
-
-/* ../templates/edit_page.tpl */
-gettext("Displayed");
-
-/* ../templates/edit_page.tpl */
-gettext("Required");
-
-/* ../templates/edit_page.tpl */
-gettext("Where Found Us");
-
-/* ../templates/edit_page.tpl */
-gettext("Displayed");
-
-/* ../templates/edit_page.tpl */
-gettext("Required");
-
-/* ../templates/edit_page.tpl */
-gettext("Newsletter");
-
-/* ../templates/edit_page.tpl */
-gettext("Displayed");
-
-/* ../templates/edit_page.tpl */
-gettext("Required");
-
-/* ../templates/edit_page.tpl */
-gettext("E-marketing");
-
-/* ../templates/edit_page.tpl */
-gettext("Displayed");
-
-/* ../templates/edit_page.tpl */
-gettext("Required");
-
-/* ../templates/edit_page.tpl */
-gettext("Catalogue");
-
-/* ../templates/edit_page.tpl */
-gettext("Displayed");
-
-/* ../templates/edit_page.tpl */
-gettext("Required");
 
 /* ../templates/edit_page.tpl */
 gettext("Content Overview");
@@ -5108,6 +5015,9 @@ gettext("Header Title");
 gettext("Parent Pages");
 
 /* ../templates/edit_page.tpl */
+gettext("Found in");
+
+/* ../templates/edit_page.tpl */
 gettext("Remove");
 
 /* ../templates/edit_page.tpl */
@@ -5117,13 +5027,22 @@ gettext("Remove");
 gettext("Related Pages");
 
 /* ../templates/edit_page.tpl */
+gettext("Add page");
+
+/* ../templates/edit_page.tpl */
+gettext("Add Page");
+
+/* ../templates/edit_page.tpl */
+gettext("Remove Page");
+
+/* ../templates/edit_page.tpl */
+gettext("See also");
+
+/* ../templates/edit_page.tpl */
 gettext("Auto");
 
 /* ../templates/edit_page.tpl */
 gettext("Manual");
-
-/* ../templates/edit_page.tpl */
-gettext("Add page");
 
 /* ../templates/edit_page.tpl */
 gettext("Remove");
@@ -5150,6 +5069,9 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/edit_page.tpl */
+gettext("Display Change Log");
+
+/* ../templates/edit_page.tpl */
 gettext("Change log");
 
 /* ../templates/edit_page.tpl */
@@ -5163,6 +5085,18 @@ gettext("Upload");
 
 /* ../templates/edit_page.tpl */
 gettext("Cancel");
+
+/* ../templates/edit_page.tpl */
+gettext("File");
+
+/* ../templates/edit_page.tpl */
+gettext("Add");
+
+/* ../templates/edit_page.tpl */
+gettext("Cancel");
+
+/* ../templates/edit_page.tpl */
+gettext("Processing");
 
 /* ../templates/edit_page.tpl */
 gettext("Multiple files found, please select one");
@@ -5564,12 +5498,6 @@ gettext("Outer Weight");
 gettext("Units");
 
 /* ../templates/edit_product.tpl */
-gettext("Save");
-
-/* ../templates/edit_product.tpl */
-gettext("Reset");
-
-/* ../templates/edit_product.tpl */
 gettext("Units Per Outer");
 
 /* ../templates/edit_product.tpl */
@@ -5663,7 +5591,7 @@ gettext("Filter options");
 gettext("Rows per Page");
 
 /* ../templates/edit_site.tpl */
-gettext("Stores");
+gettext("Websites");
 
 /* ../templates/edit_site.tpl */
 gettext("Exit Edit");
@@ -5697,6 +5625,9 @@ gettext("Search");
 
 /* ../templates/edit_site.tpl */
 gettext("Pages");
+
+/* ../templates/edit_site.tpl */
+gettext("Registration");
 
 /* ../templates/edit_site.tpl */
 gettext("Import From Sources");
@@ -5753,6 +5684,96 @@ gettext("Import From Sources");
 gettext("Footer");
 
 /* ../templates/edit_site.tpl */
+gettext("Website Properties");
+
+/* ../templates/edit_site.tpl */
+gettext("Save");
+
+/* ../templates/edit_site.tpl */
+gettext("Reset");
+
+/* ../templates/edit_site.tpl */
+gettext("Select Site Locale");
+
+/* ../templates/edit_site.tpl */
+gettext("en_GB");
+
+/* ../templates/edit_site.tpl */
+gettext("de_DE");
+
+/* ../templates/edit_site.tpl */
+gettext("fr_FR");
+
+/* ../templates/edit_site.tpl */
+gettext("es_ES");
+
+/* ../templates/edit_site.tpl */
+gettext("pl_PL");
+
+/* ../templates/edit_site.tpl */
+gettext("it_IT");
+
+/* ../templates/edit_site.tpl */
+gettext("Website URL");
+
+/* ../templates/edit_site.tpl */
+gettext("Website Name");
+
+/* ../templates/edit_site.tpl */
+gettext("Website Slogan");
+
+/* ../templates/edit_site.tpl */
+gettext("Website Telephone");
+
+/* ../templates/edit_site.tpl */
+gettext("Website Address");
+
+/* ../templates/edit_site.tpl */
+gettext("Client Area");
+
+/* ../templates/edit_site.tpl */
+gettext("Registration Method");
+
+/* ../templates/edit_site.tpl */
+gettext("Wholesale");
+
+/* ../templates/edit_site.tpl */
+gettext("Simple");
+
+/* ../templates/edit_site.tpl */
+gettext("None");
+
+/* ../templates/edit_site.tpl */
+gettext("Show Badges");
+
+/* ../templates/edit_site.tpl */
+gettext("Yes");
+
+/* ../templates/edit_site.tpl */
+gettext("No");
+
+/* ../templates/edit_site.tpl */
+gettext("Show Facebook");
+
+/* ../templates/edit_site.tpl */
+gettext("Yes");
+
+/* ../templates/edit_site.tpl */
+gettext("No");
+
+/* ../templates/edit_site.tpl */
+gettext("Show Twitter");
+
+/* ../templates/edit_site.tpl */
+gettext("Yes");
+
+/* ../templates/edit_site.tpl */
+gettext("No");
+
+/* ../templates/edit_site.tpl */
+gettext("Checkout");
+
+/* ../templates/edit_site.tpl */
 gettext("Save");
 
 /* ../templates/edit_site.tpl */
@@ -5777,31 +5798,34 @@ gettext("E-Mals Commerce URL");
 gettext("E-Mals Commerce URL (Multi)");
 
 /* ../templates/edit_site.tpl */
-gettext("Select Registration Method");
+gettext("Website Ftp Credentials");
 
 /* ../templates/edit_site.tpl */
-gettext("Wholesale");
+gettext("Save");
 
 /* ../templates/edit_site.tpl */
-gettext("Simple");
+gettext("Reset");
 
 /* ../templates/edit_site.tpl */
-gettext("None");
+gettext("Website FTP Protocol");
 
 /* ../templates/edit_site.tpl */
-gettext("Website URL");
+gettext("SFTP");
 
 /* ../templates/edit_site.tpl */
-gettext("Website Name");
+gettext("FTP");
 
 /* ../templates/edit_site.tpl */
-gettext("Website Slogan");
+gettext("FTPS");
 
 /* ../templates/edit_site.tpl */
-gettext("Website Telephone");
+gettext("Website FTP Passive");
 
 /* ../templates/edit_site.tpl */
-gettext("Website Address");
+gettext("Yes");
+
+/* ../templates/edit_site.tpl */
+gettext("No");
 
 /* ../templates/edit_site.tpl */
 gettext("Website FTP Server");
@@ -5814,6 +5838,57 @@ gettext("Website FTP Password");
 
 /* ../templates/edit_site.tpl */
 gettext("Website FTP Directory");
+
+/* ../templates/edit_site.tpl */
+gettext("Website FTP Port");
+
+/* ../templates/edit_site.tpl */
+gettext("Welcome Email");
+
+/* ../templates/edit_site.tpl */
+gettext("Save");
+
+/* ../templates/edit_site.tpl */
+gettext("Reset");
+
+/* ../templates/edit_site.tpl */
+gettext("Subject");
+
+/* ../templates/edit_site.tpl */
+gettext("Body Plain Text");
+
+/* ../templates/edit_site.tpl */
+gettext("Body HTML");
+
+/* ../templates/edit_site.tpl */
+gettext("Welcome Message");
+
+/* ../templates/edit_site.tpl */
+gettext("Save");
+
+/* ../templates/edit_site.tpl */
+gettext("Reset");
+
+/* ../templates/edit_site.tpl */
+gettext("Message");
+
+/* ../templates/edit_site.tpl */
+gettext("Forgot Password Email");
+
+/* ../templates/edit_site.tpl */
+gettext("Save");
+
+/* ../templates/edit_site.tpl */
+gettext("Reset");
+
+/* ../templates/edit_site.tpl */
+gettext("Subject");
+
+/* ../templates/edit_site.tpl */
+gettext("Body Plain Text");
+
+/* ../templates/edit_site.tpl */
+gettext("Body HTML");
 
 /* ../templates/edit_site.tpl */
 gettext("Create Page");
@@ -6704,13 +6779,10 @@ gettext("Active Working");
 gettext("Change Password for");
 
 /* ../templates/edit_users_staff.tpl */
-gettext("Change (Random)");
-
-/* ../templates/edit_users_staff.tpl */
-gettext("Change (User Defined)");
-
-/* ../templates/edit_users_staff.tpl */
 gettext("Password");
+
+/* ../templates/edit_users_staff.tpl */
+gettext("Close");
 
 /* ../templates/edit_users_staff.tpl */
 gettext("Password");
@@ -6719,10 +6791,13 @@ gettext("Password");
 gettext("Repeat Password");
 
 /* ../templates/edit_users_staff.tpl */
-gettext("Cancel");
+gettext("Save");
 
 /* ../templates/edit_users_staff.tpl */
-gettext("Save");
+gettext("Random Password");
+
+/* ../templates/edit_users_staff.tpl */
+gettext("Cancel");
 
 /* ../templates/edit_users_supplier.tpl */
 gettext("Exit Edit");
@@ -7537,6 +7612,54 @@ gettext("Customer Lists");
 /* ../templates/email_campaign_mailing_list.tpl */
 gettext("Create List");
 
+/* ../templates/email_credential_splinter.tpl */
+gettext("Email Credentials");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Test");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Delete");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Save");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Reset");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Select Mail Server");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Other");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Gmail");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Email Address");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Login");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Password");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Incoming Mail Server");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Outgoing Mail Server");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Sending test email to ");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Test Message");
+
+/* ../templates/email_credential_splinter.tpl */
+gettext("Send");
+
 /* ../templates/email_postcard.tpl */
 gettext("Move paragraph here");
 
@@ -7921,6 +8044,9 @@ gettext("Hello");
 /* ../templates/header.tpl */
 gettext("Logout");
 
+/* ../templates/header.tpl */
+gettext("Dashboard");
+
 /* ../templates/help.tpl */
 gettext("Help File");
 
@@ -8073,9 +8199,6 @@ gettext("Import from vCard file");
 
 /* ../templates/import_data.tpl */
 gettext("vCard is a file format standard for electronic business cards used by Apple Address Book and many other applications");
-
-/* ../templates/index.tpl */
-gettext("Dashboard");
 
 /* ../templates/index.tpl */
 gettext("Previous Dashboard");
@@ -8556,18 +8679,6 @@ gettext("Rows per Page");
 
 /* ../templates/marketing.tpl */
 gettext("Filter options");
-
-/* ../templates/marketing_navigation.tpl */
-gettext("Create List");
-
-/* ../templates/marketing_navigation.tpl */
-gettext("View List");
-
-/* ../templates/marketing_navigation.tpl */
-gettext("Create Campaign");
-
-/* ../templates/marketing_navigation.tpl */
-gettext("View Campaign");
 
 /* ../templates/marketing_server.tpl */
 gettext("Marketing");
@@ -11198,13 +11309,28 @@ gettext("Continue");
 gettext("Go Back");
 
 /* ../templates/order_not_dispatched_dialogs_splinter.tpl */
-gettext("Use calculated value");
+gettext("Processig Request");
+
+/* ../templates/order_not_dispatched_dialogs_splinter.tpl */
+gettext("Use auto value");
 
 /* ../templates/order_not_dispatched_dialogs_splinter.tpl */
 gettext("Set Shipping");
 
 /* ../templates/order_not_dispatched_dialogs_splinter.tpl */
 gettext("Save");
+
+/* ../templates/order_not_dispatched_dialogs_splinter.tpl */
+gettext("Use auto value");
+
+/* ../templates/order_not_dispatched_dialogs_splinter.tpl */
+gettext("Set Charges");
+
+/* ../templates/order_not_dispatched_dialogs_splinter.tpl */
+gettext("Save");
+
+/* ../templates/order_not_dispatched_dialogs_splinter.tpl */
+gettext("Processing Request");
 
 /* ../templates/order_not_dispatched_dialogs_splinter.tpl */
 gettext("Product Discount");
@@ -11894,7 +12020,7 @@ gettext("Filter options");
 gettext("Rows per Page");
 
 /* ../templates/page.tpl */
-gettext("Stores");
+gettext("Websites");
 
 /* ../templates/page.tpl */
 gettext("Next");
@@ -11904,6 +12030,9 @@ gettext("Edit Page");
 
 /* ../templates/page.tpl */
 gettext("View Page");
+
+/* ../templates/page.tpl */
+gettext("Export");
 
 /* ../templates/page.tpl */
 gettext("Previous");
@@ -11933,13 +12062,25 @@ gettext("URL");
 gettext("Link Label");
 
 /* ../templates/page.tpl */
-gettext("Total Hits");
+gettext("All");
 
 /* ../templates/page.tpl */
-gettext("Unique Visitors");
+gettext("Users");
+
+/* ../templates/page.tpl */
+gettext("Page Hits");
+
+/* ../templates/page.tpl */
+gettext("Sessions");
+
+/* ../templates/page.tpl */
+gettext("Visitors");
 
 /* ../templates/page.tpl */
 gettext("Last 24h Hits");
+
+/* ../templates/page.tpl */
+gettext("Last 24h Sessions");
 
 /* ../templates/page.tpl */
 gettext("Last 24h Visitors");
@@ -11966,7 +12107,7 @@ gettext("Rows per Page");
 gettext("Filter options");
 
 /* ../templates/page_deleted.tpl */
-gettext("Stores");
+gettext("Websites");
 
 /* ../templates/page_deleted.tpl */
 gettext("Deleted");
@@ -13469,16 +13610,10 @@ gettext("Stores");
 gettext("Next");
 
 /* ../templates/product.tpl */
-gettext("Edit Family");
-
-/* ../templates/product.tpl */
 gettext("Edit Product");
 
 /* ../templates/product.tpl */
 gettext("Previous");
-
-/* ../templates/product.tpl */
-gettext("Store");
 
 /* ../templates/product.tpl */
 gettext("Store");
@@ -13950,873 +14085,6 @@ gettext("Items");
 
 /* ../templates/refund_in_process.tpl */
 gettext("Items Out of Stock");
-
-/* ../templates/registration.tpl */
-gettext("Email");
-
-/* ../templates/registration.tpl */
-gettext("Continue");
-
-/* ../templates/registration.tpl */
-gettext("We need your email address");
-
-/* ../templates/registration.tpl */
-gettext("Email address invalid");
-
-/* ../templates/registration.tpl */
-gettext("Email already in our Database");
-
-/* ../templates/registration.tpl */
-gettext("is already in our records, fill the anti-spam field and we will send you an email with instructions of how to access your account");
-
-/* ../templates/registration.tpl */
-gettext("Different Image");
-
-/* ../templates/registration.tpl */
-gettext("input the letters shown on the left");
-
-/* ../templates/registration.tpl */
-gettext("Send Instructions");
-
-/* ../templates/registration.tpl */
-gettext("Cancel");
-
-/* ../templates/registration.tpl */
-gettext("Registration");
-
-/* ../templates/registration.tpl */
-gettext("Login info");
-
-/* ../templates/registration.tpl */
-gettext("Email");
-
-/* ../templates/registration.tpl */
-gettext("Password");
-
-/* ../templates/registration.tpl */
-gettext("Confirm pwd");
-
-/* ../templates/registration.tpl */
-gettext("Contact Name");
-
-/* ../templates/registration.tpl */
-gettext("Company");
-
-/* ../templates/registration.tpl */
-gettext("Telephone");
-
-/* ../templates/registration.tpl */
-gettext("Address");
-
-/* ../templates/registration.tpl */
-gettext("Line 1");
-
-/* ../templates/registration.tpl */
-gettext("Line 2");
-
-/* ../templates/registration.tpl */
-gettext("Town");
-
-/* ../templates/registration.tpl */
-gettext("Postal Code");
-
-/* ../templates/registration.tpl */
-gettext("Country");
-
-/* ../templates/registration.tpl */
-gettext("Select One");
-
-/* ../templates/registration.tpl */
-gettext("United Kingdom");
-
-/* ../templates/registration.tpl */
-gettext("Afghanistan");
-
-/* ../templates/registration.tpl */
-gettext("Albania");
-
-/* ../templates/registration.tpl */
-gettext("Algeria");
-
-/* ../templates/registration.tpl */
-gettext("American Samoa");
-
-/* ../templates/registration.tpl */
-gettext("Andorra");
-
-/* ../templates/registration.tpl */
-gettext("Angola");
-
-/* ../templates/registration.tpl */
-gettext("Anguilla");
-
-/* ../templates/registration.tpl */
-gettext("Antarctica");
-
-/* ../templates/registration.tpl */
-gettext("Antigua and Barbuda");
-
-/* ../templates/registration.tpl */
-gettext("Argentina");
-
-/* ../templates/registration.tpl */
-gettext("Armenia");
-
-/* ../templates/registration.tpl */
-gettext("Aruba");
-
-/* ../templates/registration.tpl */
-gettext("Australia");
-
-/* ../templates/registration.tpl */
-gettext("Austria");
-
-/* ../templates/registration.tpl */
-gettext("Azerbaidjan");
-
-/* ../templates/registration.tpl */
-gettext("Bahamas");
-
-/* ../templates/registration.tpl */
-gettext("Bahrain");
-
-/* ../templates/registration.tpl */
-gettext("Bangladesh");
-
-/* ../templates/registration.tpl */
-gettext("Barbados");
-
-/* ../templates/registration.tpl */
-gettext("Belarus");
-
-/* ../templates/registration.tpl */
-gettext("Belgium");
-
-/* ../templates/registration.tpl */
-gettext("Belize");
-
-/* ../templates/registration.tpl */
-gettext("Benin");
-
-/* ../templates/registration.tpl */
-gettext("Bermuda");
-
-/* ../templates/registration.tpl */
-gettext("Bhutan");
-
-/* ../templates/registration.tpl */
-gettext("Bolivia");
-
-/* ../templates/registration.tpl */
-gettext("Bosnia-Herzegovina");
-
-/* ../templates/registration.tpl */
-gettext("Botswana");
-
-/* ../templates/registration.tpl */
-gettext("Bouvet Island");
-
-/* ../templates/registration.tpl */
-gettext("Brazil");
-
-/* ../templates/registration.tpl */
-gettext("British Indian Ocean Territory");
-
-/* ../templates/registration.tpl */
-gettext("Brunei Darussalam");
-
-/* ../templates/registration.tpl */
-gettext("Bulgaria");
-
-/* ../templates/registration.tpl */
-gettext("Burkina Faso");
-
-/* ../templates/registration.tpl */
-gettext("Burundi");
-
-/* ../templates/registration.tpl */
-gettext("Cambodia");
-
-/* ../templates/registration.tpl */
-gettext("Cameroon");
-
-/* ../templates/registration.tpl */
-gettext("Canada");
-
-/* ../templates/registration.tpl */
-gettext("Cape Verde");
-
-/* ../templates/registration.tpl */
-gettext("Cayman Islands");
-
-/* ../templates/registration.tpl */
-gettext("Central African Republic");
-
-/* ../templates/registration.tpl */
-gettext("Chad");
-
-/* ../templates/registration.tpl */
-gettext("Chile");
-
-/* ../templates/registration.tpl */
-gettext("China");
-
-/* ../templates/registration.tpl */
-gettext("Christmas Island");
-
-/* ../templates/registration.tpl */
-gettext("Cocos (Keeling) Islands");
-
-/* ../templates/registration.tpl */
-gettext("Colombia");
-
-/* ../templates/registration.tpl */
-gettext("Comoros");
-
-/* ../templates/registration.tpl */
-gettext("Congo");
-
-/* ../templates/registration.tpl */
-gettext("Cook Islands");
-
-/* ../templates/registration.tpl */
-gettext("Costa Rica");
-
-/* ../templates/registration.tpl */
-gettext("Croatia");
-
-/* ../templates/registration.tpl */
-gettext("Cuba");
-
-/* ../templates/registration.tpl */
-gettext("Cyprus");
-
-/* ../templates/registration.tpl */
-gettext("Czech Republic");
-
-/* ../templates/registration.tpl */
-gettext("Denmark");
-
-/* ../templates/registration.tpl */
-gettext("Djibouti");
-
-/* ../templates/registration.tpl */
-gettext("Dominica");
-
-/* ../templates/registration.tpl */
-gettext("Dominican Republic");
-
-/* ../templates/registration.tpl */
-gettext("East Timor");
-
-/* ../templates/registration.tpl */
-gettext("Ecuador");
-
-/* ../templates/registration.tpl */
-gettext("Egypt");
-
-/* ../templates/registration.tpl */
-gettext("El Salvador");
-
-/* ../templates/registration.tpl */
-gettext("Equatorial Guinea");
-
-/* ../templates/registration.tpl */
-gettext("Eritrea");
-
-/* ../templates/registration.tpl */
-gettext("Estonia");
-
-/* ../templates/registration.tpl */
-gettext("Ethiopia");
-
-/* ../templates/registration.tpl */
-gettext("Falkland Islands");
-
-/* ../templates/registration.tpl */
-gettext("Faroe Islands");
-
-/* ../templates/registration.tpl */
-gettext("Fiji");
-
-/* ../templates/registration.tpl */
-gettext("Finland");
-
-/* ../templates/registration.tpl */
-gettext("Former Czechoslovakia");
-
-/* ../templates/registration.tpl */
-gettext("Former USSR");
-
-/* ../templates/registration.tpl */
-gettext("France");
-
-/* ../templates/registration.tpl */
-gettext("France (European Territory)");
-
-/* ../templates/registration.tpl */
-gettext("French Guyana");
-
-/* ../templates/registration.tpl */
-gettext("French Southern Territories");
-
-/* ../templates/registration.tpl */
-gettext("Gabon");
-
-/* ../templates/registration.tpl */
-gettext("Gambia");
-
-/* ../templates/registration.tpl */
-gettext("Georgia");
-
-/* ../templates/registration.tpl */
-gettext("Germany");
-
-/* ../templates/registration.tpl */
-gettext("Ghana");
-
-/* ../templates/registration.tpl */
-gettext("Gibraltar");
-
-/* ../templates/registration.tpl */
-gettext("Great Britain");
-
-/* ../templates/registration.tpl */
-gettext("Greece");
-
-/* ../templates/registration.tpl */
-gettext("Greenland");
-
-/* ../templates/registration.tpl */
-gettext("Grenada");
-
-/* ../templates/registration.tpl */
-gettext("Guadeloupe (French)");
-
-/* ../templates/registration.tpl */
-gettext("Guam (USA)");
-
-/* ../templates/registration.tpl */
-gettext("Guatemala");
-
-/* ../templates/registration.tpl */
-gettext("Guinea");
-
-/* ../templates/registration.tpl */
-gettext("Guinea Bissau");
-
-/* ../templates/registration.tpl */
-gettext("Guyana");
-
-/* ../templates/registration.tpl */
-gettext("Haiti");
-
-/* ../templates/registration.tpl */
-gettext("Heard and McDonald Islands");
-
-/* ../templates/registration.tpl */
-gettext("Honduras");
-
-/* ../templates/registration.tpl */
-gettext("Hong Kong");
-
-/* ../templates/registration.tpl */
-gettext("Hungary");
-
-/* ../templates/registration.tpl */
-gettext("Iceland");
-
-/* ../templates/registration.tpl */
-gettext("India");
-
-/* ../templates/registration.tpl */
-gettext("Indonesia");
-
-/* ../templates/registration.tpl */
-gettext("International");
-
-/* ../templates/registration.tpl */
-gettext("Iran");
-
-/* ../templates/registration.tpl */
-gettext("Iraq");
-
-/* ../templates/registration.tpl */
-gettext("Ireland");
-
-/* ../templates/registration.tpl */
-gettext("Israel");
-
-/* ../templates/registration.tpl */
-gettext("Italy");
-
-/* ../templates/registration.tpl */
-gettext("Ivory Coast (Cote D&#39;Ivoire)");
-
-/* ../templates/registration.tpl */
-gettext("Jamaica");
-
-/* ../templates/registration.tpl */
-gettext("Japan");
-
-/* ../templates/registration.tpl */
-gettext("Jordan");
-
-/* ../templates/registration.tpl */
-gettext("Kazakhstan");
-
-/* ../templates/registration.tpl */
-gettext("Kenya");
-
-/* ../templates/registration.tpl */
-gettext("Kiribati");
-
-/* ../templates/registration.tpl */
-gettext("Kuwait");
-
-/* ../templates/registration.tpl */
-gettext("Kyrgyzstan");
-
-/* ../templates/registration.tpl */
-gettext("Laos");
-
-/* ../templates/registration.tpl */
-gettext("Latvia");
-
-/* ../templates/registration.tpl */
-gettext("Lebanon");
-
-/* ../templates/registration.tpl */
-gettext("Lesotho");
-
-/* ../templates/registration.tpl */
-gettext("Liberia");
-
-/* ../templates/registration.tpl */
-gettext("Libya");
-
-/* ../templates/registration.tpl */
-gettext("Liechtenstein");
-
-/* ../templates/registration.tpl */
-gettext("Lithuania");
-
-/* ../templates/registration.tpl */
-gettext("Luxembourg");
-
-/* ../templates/registration.tpl */
-gettext("Macau");
-
-/* ../templates/registration.tpl */
-gettext("Macedonia");
-
-/* ../templates/registration.tpl */
-gettext("Madagascar");
-
-/* ../templates/registration.tpl */
-gettext("Malawi");
-
-/* ../templates/registration.tpl */
-gettext("Malaysia");
-
-/* ../templates/registration.tpl */
-gettext("Maldives");
-
-/* ../templates/registration.tpl */
-gettext("Mali");
-
-/* ../templates/registration.tpl */
-gettext("Malta");
-
-/* ../templates/registration.tpl */
-gettext("Marshall Islands");
-
-/* ../templates/registration.tpl */
-gettext("Martinique (French)");
-
-/* ../templates/registration.tpl */
-gettext("Mauritania");
-
-/* ../templates/registration.tpl */
-gettext("Mauritius");
-
-/* ../templates/registration.tpl */
-gettext("Mayotte");
-
-/* ../templates/registration.tpl */
-gettext("Mexico");
-
-/* ../templates/registration.tpl */
-gettext("Micronesia");
-
-/* ../templates/registration.tpl */
-gettext("Moldavia");
-
-/* ../templates/registration.tpl */
-gettext("Monaco");
-
-/* ../templates/registration.tpl */
-gettext("Mongolia");
-
-/* ../templates/registration.tpl */
-gettext("Montserrat");
-
-/* ../templates/registration.tpl */
-gettext("Morocco");
-
-/* ../templates/registration.tpl */
-gettext("Mozambique");
-
-/* ../templates/registration.tpl */
-gettext("Myanmar");
-
-/* ../templates/registration.tpl */
-gettext("Namibia");
-
-/* ../templates/registration.tpl */
-gettext("Nauru");
-
-/* ../templates/registration.tpl */
-gettext("Nepal");
-
-/* ../templates/registration.tpl */
-gettext("Netherlands");
-
-/* ../templates/registration.tpl */
-gettext("Netherlands Antilles");
-
-/* ../templates/registration.tpl */
-gettext("Neutral Zone");
-
-/* ../templates/registration.tpl */
-gettext("New Caledonia (French)");
-
-/* ../templates/registration.tpl */
-gettext("New Zealand");
-
-/* ../templates/registration.tpl */
-gettext("Nicaragua");
-
-/* ../templates/registration.tpl */
-gettext("Niger");
-
-/* ../templates/registration.tpl */
-gettext("Nigeria");
-
-/* ../templates/registration.tpl */
-gettext("Niue");
-
-/* ../templates/registration.tpl */
-gettext("Norfolk Island");
-
-/* ../templates/registration.tpl */
-gettext("North Korea");
-
-/* ../templates/registration.tpl */
-gettext("Northern Mariana Islands");
-
-/* ../templates/registration.tpl */
-gettext("Norway");
-
-/* ../templates/registration.tpl */
-gettext("Oman");
-
-/* ../templates/registration.tpl */
-gettext("Pakistan");
-
-/* ../templates/registration.tpl */
-gettext("Palau");
-
-/* ../templates/registration.tpl */
-gettext("Panama");
-
-/* ../templates/registration.tpl */
-gettext("Papua New Guinea");
-
-/* ../templates/registration.tpl */
-gettext("Paraguay");
-
-/* ../templates/registration.tpl */
-gettext("Peru");
-
-/* ../templates/registration.tpl */
-gettext("Philippines");
-
-/* ../templates/registration.tpl */
-gettext("Pitcairn Island");
-
-/* ../templates/registration.tpl */
-gettext("Poland");
-
-/* ../templates/registration.tpl */
-gettext("Polynesia (French)");
-
-/* ../templates/registration.tpl */
-gettext("Portugal");
-
-/* ../templates/registration.tpl */
-gettext("Puerto Rico");
-
-/* ../templates/registration.tpl */
-gettext("Qatar");
-
-/* ../templates/registration.tpl */
-gettext("Reunion (French)");
-
-/* ../templates/registration.tpl */
-gettext("Romania");
-
-/* ../templates/registration.tpl */
-gettext("Russian Federation");
-
-/* ../templates/registration.tpl */
-gettext("Rwanda");
-
-/* ../templates/registration.tpl */
-gettext("S. Georgia & S. Sandwich I.");
-
-/* ../templates/registration.tpl */
-gettext("Saint Helena");
-
-/* ../templates/registration.tpl */
-gettext("Saint Kitts & Nevis Anguilla");
-
-/* ../templates/registration.tpl */
-gettext("Saint Lucia");
-
-/* ../templates/registration.tpl */
-gettext("St Pierre and Miquelon");
-
-/* ../templates/registration.tpl */
-gettext("St Tome & Principe");
-
-/* ../templates/registration.tpl */
-gettext("St Vincent & Grenadines");
-
-/* ../templates/registration.tpl */
-gettext("Samoa");
-
-/* ../templates/registration.tpl */
-gettext("San Marino");
-
-/* ../templates/registration.tpl */
-gettext("Saudi Arabia");
-
-/* ../templates/registration.tpl */
-gettext("Senegal");
-
-/* ../templates/registration.tpl */
-gettext("Seychelles");
-
-/* ../templates/registration.tpl */
-gettext("Sierra Leone");
-
-/* ../templates/registration.tpl */
-gettext("Singapore");
-
-/* ../templates/registration.tpl */
-gettext("Slovak Republic");
-
-/* ../templates/registration.tpl */
-gettext("Slovenia");
-
-/* ../templates/registration.tpl */
-gettext("Solomon Islands");
-
-/* ../templates/registration.tpl */
-gettext("Somalia");
-
-/* ../templates/registration.tpl */
-gettext("South Africa");
-
-/* ../templates/registration.tpl */
-gettext("South Korea");
-
-/* ../templates/registration.tpl */
-gettext("Spain");
-
-/* ../templates/registration.tpl */
-gettext("Sri Lanka");
-
-/* ../templates/registration.tpl */
-gettext("Sudan");
-
-/* ../templates/registration.tpl */
-gettext("Suriname");
-
-/* ../templates/registration.tpl */
-gettext("Svalbard and Jan Mayen I.");
-
-/* ../templates/registration.tpl */
-gettext("Swaziland");
-
-/* ../templates/registration.tpl */
-gettext("Sweden");
-
-/* ../templates/registration.tpl */
-gettext("Switzerland");
-
-/* ../templates/registration.tpl */
-gettext("Syria");
-
-/* ../templates/registration.tpl */
-gettext("Tadjikistan");
-
-/* ../templates/registration.tpl */
-gettext("Taiwan");
-
-/* ../templates/registration.tpl */
-gettext("Tanzania");
-
-/* ../templates/registration.tpl */
-gettext("Thailand");
-
-/* ../templates/registration.tpl */
-gettext("Togo");
-
-/* ../templates/registration.tpl */
-gettext("Tokelau");
-
-/* ../templates/registration.tpl */
-gettext("Tonga");
-
-/* ../templates/registration.tpl */
-gettext("Trinidad and Tobago");
-
-/* ../templates/registration.tpl */
-gettext("Tunisia");
-
-/* ../templates/registration.tpl */
-gettext("Turkey");
-
-/* ../templates/registration.tpl */
-gettext("Turkmenistan");
-
-/* ../templates/registration.tpl */
-gettext("Turks and Caicos Islands");
-
-/* ../templates/registration.tpl */
-gettext("Tuvalu");
-
-/* ../templates/registration.tpl */
-gettext("Uganda");
-
-/* ../templates/registration.tpl */
-gettext("Ukraine");
-
-/* ../templates/registration.tpl */
-gettext("United Arab Emirates");
-
-/* ../templates/registration.tpl */
-gettext("United Kingdom");
-
-/* ../templates/registration.tpl */
-gettext("United States");
-
-/* ../templates/registration.tpl */
-gettext("Uruguay");
-
-/* ../templates/registration.tpl */
-gettext("USA Minor Outlying Islands");
-
-/* ../templates/registration.tpl */
-gettext("Uzbekistan");
-
-/* ../templates/registration.tpl */
-gettext("Vanuatu");
-
-/* ../templates/registration.tpl */
-gettext("Vatican City State");
-
-/* ../templates/registration.tpl */
-gettext("Venezuela");
-
-/* ../templates/registration.tpl */
-gettext("Vietnam");
-
-/* ../templates/registration.tpl */
-gettext("Virgin Islands (British)");
-
-/* ../templates/registration.tpl */
-gettext("Virgin Islands (USA)");
-
-/* ../templates/registration.tpl */
-gettext("Wallis and Futuna Islands");
-
-/* ../templates/registration.tpl */
-gettext("Western Sahara");
-
-/* ../templates/registration.tpl */
-gettext("Yemen");
-
-/* ../templates/registration.tpl */
-gettext("Yugoslavia");
-
-/* ../templates/registration.tpl */
-gettext("Zaire");
-
-/* ../templates/registration.tpl */
-gettext("Zambia");
-
-/* ../templates/registration.tpl */
-gettext("Zimbabwe");
-
-/* ../templates/registration.tpl */
-gettext("Unknown");
-
-/* ../templates/registration.tpl */
-gettext("true");
-
-/* ../templates/registration.tpl */
-gettext("false");
-
-/* ../templates/registration.tpl */
-gettext("Catalogue (post)");
-
-/* ../templates/registration.tpl */
-gettext("Yes");
-
-/* ../templates/registration.tpl */
-gettext("No");
-
-/* ../templates/registration.tpl */
-gettext("Offers by email & e-Newsletter");
-
-/* ../templates/registration.tpl */
-gettext("Yes");
-
-/* ../templates/registration.tpl */
-gettext("No");
-
-/* ../templates/registration.tpl */
-gettext("Different Image");
-
-/* ../templates/registration.tpl */
-gettext("Register");
-
-/* ../templates/registration.tpl */
-gettext("Cancel");
-
-/* ../templates/registration.tpl */
-gettext("Creating your account");
-
-/* ../templates/registration.tpl */
-gettext("Fill all fields please");
-
-/* ../templates/registration.tpl */
-gettext("Passwords don't match");
-
-/* ../templates/registration.tpl */
-gettext("Password is too short");
-
-/* ../templates/registration.tpl */
-gettext("The Captcha field is incorrect");
-
-/* ../templates/registration.tpl */
-gettext("Creating your account");
-
-/* ../templates/registration.tpl */
-gettext("An error incurred during your registration please try again later");
 
 /* ../templates/report_customers.tpl */
 gettext("Top");
@@ -15995,16 +15263,10 @@ gettext("Filter options");
 gettext("Rows per Page");
 
 /* ../templates/site.tpl */
-gettext("Stores");
+gettext("Websites");
 
 /* ../templates/site.tpl */
 gettext("Edit Site");
-
-/* ../templates/site.tpl */
-gettext("Store");
-
-/* ../templates/site.tpl */
-gettext("Websites");
 
 /* ../templates/site.tpl */
 gettext("Overview");
@@ -16028,13 +15290,25 @@ gettext("Home Page");
 gettext("Number Pages");
 
 /* ../templates/site.tpl */
-gettext("Total Hits");
+gettext("All");
 
 /* ../templates/site.tpl */
-gettext("Unique Visitors");
+gettext("Users");
+
+/* ../templates/site.tpl */
+gettext("Page Hits");
+
+/* ../templates/site.tpl */
+gettext("Sessions");
+
+/* ../templates/site.tpl */
+gettext("Visitors");
 
 /* ../templates/site.tpl */
 gettext("Last 24h Hits");
+
+/* ../templates/site.tpl */
+gettext("Last 24h Sessions");
 
 /* ../templates/site.tpl */
 gettext("Last 24h Visitors");
@@ -16066,47 +15340,101 @@ gettext("Rows per Page");
 /* ../templates/site.tpl */
 gettext("Filter options");
 
-/* ../templates/sites.tpl */
-gettext("Stores");
+/* ../templates/site_user.tpl */
+gettext("Users");
+
+/* ../templates/site_user.tpl */
+gettext("Site Users");
+
+/* ../templates/site_user.tpl */
+gettext("Edit User");
+
+/* ../templates/site_user.tpl */
+gettext("Users Home");
+
+/* ../templates/site_user.tpl */
+gettext("Modify Password");
+
+/* ../templates/site_user.tpl */
+gettext("Site User");
+
+/* ../templates/site_user.tpl */
+gettext("Site");
+
+/* ../templates/site_user.tpl */
+gettext("Customer");
+
+/* ../templates/site_user.tpl */
+gettext("Login Count");
+
+/* ../templates/site_user.tpl */
+gettext("Last Login");
+
+/* ../templates/site_user.tpl */
+gettext("Failed Login Count");
+
+/* ../templates/site_user.tpl */
+gettext("Failed Last Login");
+
+/* ../templates/site_user.tpl */
+gettext("Login History");
+
+/* ../templates/site_user.tpl */
+gettext("Login History");
+
+/* ../templates/site_user.tpl */
+gettext("Send Email");
+
+/* ../templates/site_user.tpl */
+gettext("Set Password");
+
+/* ../templates/site_user.tpl */
+gettext("Cancel");
+
+/* ../templates/site_user.tpl */
+gettext("Processing Request");
+
+/* ../templates/site_user.tpl */
+gettext("Change Password");
+
+/* ../templates/site_user.tpl */
+gettext("Password");
+
+/* ../templates/site_user.tpl */
+gettext("Confirm");
+
+/* ../templates/site_user.tpl */
+gettext("Change Password");
+
+/* ../templates/site_user.tpl */
+gettext("Cancel");
+
+/* ../templates/site_user.tpl */
+gettext("Write new password");
+
+/* ../templates/site_user.tpl */
+gettext("Passwords don't match");
+
+/* ../templates/site_user.tpl */
+gettext("Password is too short");
+
+/* ../templates/site_user.tpl */
+gettext("Submitting changes");
 
 /* ../templates/sites.tpl */
-gettext("Website");
+gettext("Websites");
 
 /* ../templates/sites.tpl */
-gettext("Overview");
+gettext("Websites");
+
+/* ../templates/sites.tpl */
+gettext("Websites");
 
 /* ../templates/sites.tpl */
 gettext("Pages");
 
 /* ../templates/sites.tpl */
-gettext("Hits");
-
-/* ../templates/sites.tpl */
-gettext("Visitors");
-
-/* ../templates/sites.tpl */
-gettext("Name");
-
-/* ../templates/sites.tpl */
-gettext("Home Page");
-
-/* ../templates/sites.tpl */
-gettext("Number Pages");
-
-/* ../templates/sites.tpl */
-gettext("Total Hits");
-
-/* ../templates/sites.tpl */
-gettext("Unique Visitors");
-
-/* ../templates/sites.tpl */
-gettext("Last 24h Hits");
-
-/* ../templates/sites.tpl */
-gettext("Last 24h Visitors");
-
-/* ../templates/sites.tpl */
-gettext("Current Visitors");
+gettext("Website List");
 
 /* ../templates/sites.tpl */
 gettext("Pages");
@@ -19325,34 +18653,43 @@ gettext("Suppliers");
 gettext("Users");
 
 /* ../templates/users.tpl */
-gettext("Customers");
+gettext("Website users");
 
 /* ../templates/users.tpl */
-gettext("Online Stores");
-
-/* ../templates/users.tpl */
-gettext("Total Customers");
+gettext("Online sites");
 
 /* ../templates/users.tpl */
 gettext("Users");
 
 /* ../templates/users.tpl */
-gettext("Store");
-
-/* ../templates/users.tpl */
-gettext("Customers");
+gettext("Site");
 
 /* ../templates/users.tpl */
 gettext("Users");
-
-/* ../templates/users_customer.tpl */
-gettext("Customer Users");
 
 /* ../templates/users_login_history.tpl */
 gettext("User Login History");
 
 /* ../templates/users_navigation.tpl */
 gettext("No results found, try te a more comprensive search");
+
+/* ../templates/users_site.tpl */
+gettext("Users");
+
+/* ../templates/users_site.tpl */
+gettext("Staff Users");
+
+/* ../templates/users_site.tpl */
+gettext("Edit Users");
+
+/* ../templates/users_site.tpl */
+gettext("Users Home");
+
+/* ../templates/users_site.tpl */
+gettext("Site Users");
+
+/* ../templates/users_site.tpl */
+gettext("Users");
 
 /* ../templates/users_staff.tpl */
 gettext("Users");
