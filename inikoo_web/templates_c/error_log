@@ -1,0 +1,46 @@
+[21-Feb-2012 00:11:07] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%07^075^075E7909%%product_info.tpl.php on line 3
+[21-Feb-2012 00:29:36] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%0E^0E4^0E407559%%footer.tpl.php on line 5
+[21-Feb-2012 00:48:05] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%45^45E^45E480CD%%index.tpl.php on line 3
+[21-Feb-2012 01:02:41] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6A^6A8^6A87E8C0%%info_general.tpl.php on line 3
+[21-Feb-2012 01:17:40] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6D^6DB^6DB28CFA%%about.tpl.php on line 3
+[21-Feb-2012 01:36:09] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%90^90B^90B9990D%%portfolio.tpl.php on line 3
+[21-Feb-2012 01:54:38] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%93^931^9318E5F1%%services.tpl.php on line 3
+[21-Feb-2012 02:13:07] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%CC^CCE^CCEE139E%%info.tpl.php on line 3
+[21-Feb-2012 05:54:08] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%DC^DC2^DC2C5962%%vertical_menu.tpl.php on line 5
+[21-Feb-2012 06:08:51] PHP Warning:  require_once(SMARTY_CORE_DIRcore.load_plugins.php) [<a href='function.require-once.html'>function.require-once.html</a>]: failed to open stream: No such file or directory in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[21-Feb-2012 06:08:51] PHP Fatal error:  require_once() [<a href='function.require.html'>function.require.html</a>]: Failed opening required 'SMARTY_CORE_DIRcore.load_plugins.php' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[21-Feb-2012 06:25:05] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%F7^F7F^F7F34188%%header.tpl.php on line 8
+[21-Feb-2012 07:32:08] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%07^075^075E7909%%product_info.tpl.php on line 3
+[21-Feb-2012 07:50:37] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%45^45E^45E480CD%%index.tpl.php on line 3
+[21-Feb-2012 08:09:07] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6A^6A8^6A87E8C0%%info_general.tpl.php on line 3
+[21-Feb-2012 08:27:38] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6D^6DB^6DB28CFA%%about.tpl.php on line 3
+[21-Feb-2012 08:46:07] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%90^90B^90B9990D%%portfolio.tpl.php on line 3
+[21-Feb-2012 09:48:02] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%93^931^9318E5F1%%services.tpl.php on line 3
+[21-Feb-2012 10:03:36] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%CC^CCE^CCEE139E%%info.tpl.php on line 3
+[21-Feb-2012 13:18:53] PHP Warning:  require_once(SMARTY_CORE_DIRcore.load_plugins.php) [<a href='function.require-once.html'>function.require-once.html</a>]: failed to open stream: No such file or directory in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[21-Feb-2012 13:18:53] PHP Fatal error:  require_once() [<a href='function.require.html'>function.require.html</a>]: Failed opening required 'SMARTY_CORE_DIRcore.load_plugins.php' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[21-Feb-2012 13:22:31] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%07^075^075E7909%%product_info.tpl.php on line 3
+[21-Feb-2012 15:50:58] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%45^45E^45E480CD%%index.tpl.php on line 3
+[21-Feb-2012 16:02:04] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6A^6A8^6A87E8C0%%info_general.tpl.php on line 3
+[21-Feb-2012 16:09:16] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6D^6DB^6DB28CFA%%about.tpl.php on line 3
+[21-Feb-2012 16:21:09] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%90^90B^90B9990D%%portfolio.tpl.php on line 3
+[21-Feb-2012 16:33:03] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%93^931^9318E5F1%%services.tpl.php on line 3
+[21-Feb-2012 16:44:57] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%CC^CCE^CCEE139E%%info.tpl.php on line 3
+[21-Feb-2012 19:16:55] PHP Warning:  require_once(SMARTY_CORE_DIRcore.load_plugins.php) [<a href='function.require-once.html'>function.require-once.html</a>]: failed to open stream: No such file or directory in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[21-Feb-2012 19:16:55] PHP Fatal error:  require_once() [<a href='function.require.html'>function.require.html</a>]: Failed opening required 'SMARTY_CORE_DIRcore.load_plugins.php' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[21-Feb-2012 19:27:40] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%07^075^075E7909%%product_info.tpl.php on line 3
+[21-Feb-2012 21:31:42] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%45^45E^45E480CD%%index.tpl.php on line 3
+[21-Feb-2012 21:49:35] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6A^6A8^6A87E8C0%%info_general.tpl.php on line 3
+[21-Feb-2012 21:57:13] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6D^6DB^6DB28CFA%%about.tpl.php on line 3
+[21-Feb-2012 22:06:44] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%90^90B^90B9990D%%portfolio.tpl.php on line 3
+[21-Feb-2012 22:19:58] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%6D^6DB^6DB28CFA%%about.tpl.php on line 3
+[21-Feb-2012 22:31:54] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%90^90B^90B9990D%%portfolio.tpl.php on line 3
+[22-Feb-2012 01:37:04] PHP Warning:  require_once(SMARTY_CORE_DIRcore.load_plugins.php) [<a href='function.require-once.html'>function.require-once.html</a>]: failed to open stream: No such file or directory in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[22-Feb-2012 01:37:04] PHP Fatal error:  require_once() [<a href='function.require.html'>function.require.html</a>]: Failed opening required 'SMARTY_CORE_DIRcore.load_plugins.php' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[22-Feb-2012 01:48:03] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%07^075^075E7909%%product_info.tpl.php on line 3
+[22-Feb-2012 01:58:39] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%CC^CCE^CCEE139E%%info.tpl.php on line 3
+[22-Feb-2012 02:12:12] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%93^931^9318E5F1%%services.tpl.php on line 3
+[22-Feb-2012 07:18:43] PHP Warning:  require_once(SMARTY_CORE_DIRcore.load_plugins.php) [<a href='function.require-once.html'>function.require-once.html</a>]: failed to open stream: No such file or directory in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[22-Feb-2012 07:18:43] PHP Fatal error:  require_once() [<a href='function.require.html'>function.require.html</a>]: Failed opening required 'SMARTY_CORE_DIRcore.load_plugins.php' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/inikoo/public_html/templates_c/%%E9^E93^E93BEBDA%%contact.tpl.php on line 3
+[22-Feb-2012 11:06:19] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%83^83F^83F27284%%careers.tpl.php on line 3
+[22-Feb-2012 11:12:31] PHP Fatal error:  Using $this when not in object context in /home/inikoo/public_html/templates_c/%%0B^0B2^0B236D0D%%inikoo_crm.tpl.php on line 3

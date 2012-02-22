@@ -1,0 +1,5 @@
+IndexIgnore .htaccess */.??* *~ *# */HEADER* */README* */_vti*
+
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^inikoo.com$ [NC]
+RewriteRule ^(.*)$ http://www.inikoo.com/$1 [L,R=301]

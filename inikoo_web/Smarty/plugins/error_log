@@ -1,0 +1,5 @@
+[20-Feb-2012 23:55:28] PHP Fatal error:  Call to a member function _get_plugin_filepath() on a non-object in /home/inikoo/public_html/Smarty/plugins/modifier.date_format.php on line 11
+[21-Feb-2012 07:18:19] PHP Fatal error:  Call to a member function _get_plugin_filepath() on a non-object in /home/inikoo/public_html/Smarty/plugins/modifier.date_format.php on line 11
+[21-Feb-2012 13:09:50] PHP Fatal error:  Call to a member function _get_plugin_filepath() on a non-object in /home/inikoo/public_html/Smarty/plugins/modifier.date_format.php on line 11
+[21-Feb-2012 19:06:57] PHP Fatal error:  Call to a member function _get_plugin_filepath() on a non-object in /home/inikoo/public_html/Smarty/plugins/modifier.date_format.php on line 11
+[22-Feb-2012 01:21:31] PHP Fatal error:  Call to a member function _get_plugin_filepath() on a non-object in /home/inikoo/public_html/Smarty/plugins/modifier.date_format.php on line 11

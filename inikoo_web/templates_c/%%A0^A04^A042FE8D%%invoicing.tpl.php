@@ -1,0 +1,3 @@
+<?php /* Smarty version 2.6.22, created on 2011-07-18 14:48:46
+         compiled from invoicing.tpl */ ?>
+Order management consists of several critical business processes, including order, shipment, and invoice processing. These processes spawn important business metrics, such as volume and invoice revenue, that are key performance indicators for amy organization that sells products or services to others.
