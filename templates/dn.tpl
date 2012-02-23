@@ -1,5 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd">
+<input type="hidden" id="dn_key" value="{$dn->id}" />
+
 	<div class="buttons">
 		<button onclick="window.location='delivery_notes.pdf.php?id={$dn->id}'">PDF Delivery Note</button> 
 	</div>

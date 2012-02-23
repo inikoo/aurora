@@ -337,19 +337,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"location",label:"<?php echo _('Location')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				  // ,{key:"quantity",label:"<?php echo _('Qty')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
                 
-                ,{key:"picked",label:"<?php echo _('Picked')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
-										,{key:"check_mark",label:"", width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
+                
+                ,{key:"picked",label:"<?php echo _('Picked')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
+										,{key:"check_mark",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'check_all_object',object:'pick_aid'}
 
-					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pick_aid'}
-					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pick_aid'}
-					,{key:"formated_todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					,{key:"add",label:"", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:3,sortable:false,action:'add_object',object:'pick_aid'}
+					,{key:"remove",label:"",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:3,sortable:false,action:'remove_object',object:'pick_aid'}
+					,{key:"formated_todo",label:"<?php echo _('Pending')?>",hidden:(Dom.get('method').value=='Inikoo'?false:true), width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
 					,{key:"notes",label:"<?php echo _('Notes')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
 					,{key:"out_of_stock",label:"", width:1,hidden:true}
 					,{key:"not_found",label:"", width:1,hidden:true}
 					,{key:"no_picked_other",label:"", width:1,hidden:true}
 					,{key:"packed",label:"", width:1,hidden:true}
+									   ,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
 				   ];
 
 

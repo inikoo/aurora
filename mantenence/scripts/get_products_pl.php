@@ -46,7 +46,7 @@ $Data_Audit_ETL_Software="$software $version";
 
 //$file_name='/data/plaza/AWorder2009Poland.xls';
 
-$set_part_as_available=true;
+$set_part_as_available=false;
 $csv_file='/data/plaza/AWorder2009Poland.csv';
 //$csv_file='pl.csv';
 //exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
