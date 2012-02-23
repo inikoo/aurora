@@ -1093,7 +1093,7 @@ class part extends DB_Table {
 		$this->associated_location_on_date=array();
 
 		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  `Date`=%s  group by `Location Key`  ",$this->data['Part SKU'],$date);
-		//  print $sql;
+		// print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$this->all_historic_associated_locations[]=$row['Location Key'];
@@ -1111,76 +1111,14 @@ class part extends DB_Table {
 		}
 
 	}
-
-	function get_picking_location_historic($date,$qty) {
-
-
-		$locations=array();
-		$was_associated=array();
-		$sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d  and  ITF.`Location Key`>0 and `Location Mainly Used For` in ('Picking','Storing') group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);
-		// print $sql;
-
-		$result=mysql_query($sql);
-		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-
-			if ($part_location->is_associated($date)) {
-				list($stock,$value)=$part_location->get_stock($date);
-				$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock,'used_for'=>$row['Location Mainly Used For']);
-			}
-		}
-
-		$number_associated_locations=count($was_associated);
-
-		if ($number_associated_locations==0) {
-			$locations[]= array('location_key'=>1,'qty'=>$qty);
-		}
-		elseif ($number_associated_locations==1 or $qty<=0) {
-			$locations[]= array('location_key'=>$was_associated[0]['location_key'],'qty'=>$qty);
-		}
-		else {
-
-
-			foreach ($was_associated as $location_data) {
-
-				if ($qty>0) {
-					if ($location_data['stock']>=$qty) {
-						$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
-						$qty=0;
-					}
-					elseif ($location_data['stock']>0) {
-						$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$location_data['stock']);
-						$qty=$qty-$location_data['stock'];
-					}
-				}
-
-
-
-			}
-
-			if ($qty>0) {
-				$locations[0]['qty']=$locations[0]['qty']+$qty;
-
-			}
-
-
-
-		}
-
-
-
-		return $locations;
-
-
-	}
-
+	
 	function get_picking_location_key($date=false,$qty=1) {
 		if ($date) {
 			return $this->get_picking_location_historic($date,$qty);
 		}
 		$locations=array();
-		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s)  ORDER BY `Can Pick` IN ('Yes','No')   ",$this->sku);
-
+		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) ORDER BY FIELD(`Can Pick`,'Yes','No')  ",$this->sku);
+//print $sql;
 		$res=mysql_query($sql);
 		$locations_data=array();
 		while ($row=mysql_fetch_assoc($res)) {
@@ -1243,6 +1181,72 @@ class part extends DB_Table {
 		return $locations;
 
 	}
+	
+
+	function get_picking_location_historic($date,$qty) {
+
+
+		$locations=array();
+		$was_associated=array();
+		$sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d  and  ITF.`Location Key`>0 and `Location Mainly Used For` in ('Picking','Storing') group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);
+		// print $sql;
+
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+
+			if ($part_location->is_associated($date)) {
+				list($stock,$value)=$part_location->get_stock($date);
+				$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock,'used_for'=>$row['Location Mainly Used For']);
+			}
+		}
+
+
+		$number_associated_locations=count($was_associated);
+
+		if ($number_associated_locations==0) {
+			$locations[]= array('location_key'=>1,'qty'=>$qty);
+		}
+		elseif ($number_associated_locations==1 or $qty<=0) {
+			$locations[]= array('location_key'=>$was_associated[0]['location_key'],'qty'=>$qty);
+		}
+		else {
+
+
+			foreach ($was_associated as $location_data) {
+
+				if ($qty>0) {
+					if ($location_data['stock']>=$qty) {
+						$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
+						$qty=0;
+					}
+					elseif ($location_data['stock']>0) {
+						$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$location_data['stock']);
+						$qty=$qty-$location_data['stock'];
+					}
+				}
+
+
+
+			}
+
+			if ($qty>0) {
+				$locations[0]['qty']=$locations[0]['qty']+$qty;
+
+			}
+
+
+
+		}
+
+
+
+		return $locations;
+
+
+	}
+
+	
 
 	function get_locations($for_smarty=false) {
 

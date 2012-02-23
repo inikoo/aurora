@@ -16,7 +16,6 @@
 			<div class="buttons" style="float:left">
 							{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
 
-				{if $modify}<button onclick="window.location='store.php?id={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>{/if} 
 			</div>
 			<div style="clear:both">
 			</div>

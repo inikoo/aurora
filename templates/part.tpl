@@ -12,7 +12,7 @@
 			</div>
 			<div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
-				<button onclick="window.location='warehouse_parts.php?warehouse_id={$warehouse->id}'"><img src="art/icons/house.png" alt=""> {t}Inventory{/t}</button> 
+				
 			</div>
 			<div style="clear:both">
 			</div>

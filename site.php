@@ -124,7 +124,7 @@ $subject_id=$site_id;
 
 $smarty->assign('site',$site);
 
-$smarty->assign('parent','products');
+$smarty->assign('parent','websites');
 $smarty->assign('title', $site->data['Site Name']);
 
 

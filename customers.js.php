@@ -246,17 +246,21 @@ function change_block_view(){
 
 
 //alert(this.id)
-  Dom.setStyle(['overview_all_contacts','overview_contacts_with_orders','table_type_contacts_with_orders','table_type_all_contacts'],'display','none');
-    Dom.setStyle('overview_'+this.id,'display','');
+  Dom.setStyle(['table_type_contacts_with_orders','table_type_all_contacts'],'display','none');
+   // Dom.setStyle('overview_'+this.id,'display','');
     Dom.setStyle('table_type_'+this.id,'display','');
 
-  
-    Dom.removeClass(['all_contacts','contacts_with_orders','users'],'selected');
+      Dom.setStyle(['customer_list','user_list','dashboard_block'],'display','none');
+
+    Dom.removeClass(['all_contacts','contacts_with_orders','users','dashboard'],'selected');
  
   Dom.addClass(this.id,'selected');
-if(this.id=='users'){
+if(this.id=='dashboard'){
 
-    Dom.setStyle('customer_list','display','none');
+    Dom.setStyle('dashboard_block','display','');
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
+
+}else if(this.id=='users'){
 
     Dom.setStyle('user_list','display','');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
@@ -265,7 +269,6 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=custome
 
     Dom.setStyle('customer_list','display','');
 
-    Dom.setStyle('user_list','display','none');
     Dom.setStyle('table_type_'+this.id,'display','');
 
 
@@ -363,7 +366,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
-var ids=['all_contacts','contacts_with_orders','users'];
+var ids=['all_contacts','contacts_with_orders','users','dashboard'];
 YAHOO.util.Event.addListener(ids, "click",change_block_view);
 
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);

@@ -7,7 +7,6 @@
 	</div>
 	<div id="top_page_menu" class="top_page_menu">
 		<div class="buttons" style="float:left">
-			<button onclick="window.location='warehouse_orders.php?id={$warehouse->id}'"><img src="art/icons/house.png" alt=""> {t}Pending Orders{/t}</button> 
 		</div>
 		<div class="buttons" style="float:right">
 			<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> <button id="pick_all" style="height:24px;{if $delivery_note->get('Delivery Note Faction Picked')==1}display:none{/if}"><img src="art/icons/accept.png" alt="" /> {t}Set all as Picked{/t}</button> <a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Faction Picked')==1}display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> <button id="start_packing" style="height:24px;{if $delivery_note->get('Delivery Note Faction Picked')==0 or $delivery_note->get('Delivery Note Assigned Packer Key')}display:none{/if}"><img src="art/icons/package.png" alt="" /> {t}Start Packing{/t}</button> <a style="height:14px;{if $delivery_note->get('Delivery Note Faction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key')}display:none{/if}" href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 

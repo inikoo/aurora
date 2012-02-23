@@ -121,7 +121,7 @@
    </div>
    
    <div id="shelfs_block" style="{if $edit!='shelfs'}display:none{/if}" >
-
+{*}
      <div class="general_options" style="float:right">
        <span style="margin-right:10px"  id="add_shelf" class="state_details" >Add Shelf</span>
        <span style="margin-right:10px;display:none"  id="save_shelf" class="state_details disabled">{t}Save{/t}</span>
@@ -144,9 +144,10 @@
 
        <div  id="table2"   class="data_table_container dtable btable "> </div>
      </div>
-
+{*}
 
 </div>
+{*}
    <div id="shelf_types_block" style="{if $edit!='shelf_types'}display:none{/if}" >
     <div class="general_options" style="float:right">
       <span   style="margin-right:10px"  id="add_shelf_type" class="state_details" >Create Type</span>
@@ -198,8 +199,9 @@
        <div  id="table3"   class="data_table_container dtable btable "> </div>
      </div>
    </div>
-   <div id="location_types_block" style="{if $edit!='location_types'}display:none{/if}" >
 
+   <div id="location_types_block" style="{if $edit!='location_types'}display:none{/if}" >
+{*}
 
 </div>
 
@@ -230,6 +232,7 @@
 </div>
 
 <div id="area_dialog" style="width:300px;">
+{*}
 <div class="options" style="width:300px;padding:10px;text-align:center" >
 
    <table border=1 style="margin:auto" id="pack_it_buttons">
@@ -245,6 +248,7 @@
 
 
 </div>
+{*}
 <table class="edit">
 <input type="hidden" id="area_key">
 <input type="hidden" id="warehouse_key" value="$warehouse->id">

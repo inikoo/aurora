@@ -137,8 +137,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function change_block(){
-ids=['locations','areas','shelfs','map','stats','movements','parts']
-block_ids=['block_locations','block_areas','block_shelfs','block_map','block_stats','block_movements','block_parts']
+ids=['locations','areas']
+block_ids=['block_locations','block_areas']
+
+if(this.id=='areas'){
+Dom.setStyle('areas_view','display','')
+}else{
+Dom.setStyle('areas_view','display','none')
+
+}
+
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
