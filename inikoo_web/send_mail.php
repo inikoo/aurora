@@ -8,7 +8,7 @@ $email='Email: '.$_REQUEST['email']."\n";
 $msg='Message: '.$_REQUEST['details']."\n";
 
 
-$handle="migara@inikoo.com";
+$handle="raul@inikoo.com";
 $welcome_email_subject=$_REQUEST['title'];//'Hello';
 $html_message=$phone.$email.$msg;
 $email_mailing_list_key=0;
