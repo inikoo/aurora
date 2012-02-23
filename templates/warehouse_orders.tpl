@@ -1,6 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd">
-	{include file='orders_navigation.tpl'} 
+	{include file='orders_navigation.tpl'}
+	<input type="hidden" id="method" value="{$warehouse->get('Warehouse Picking Aid Type')}">
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {t}Pending Orders{/t}</span> 
 	</div>
