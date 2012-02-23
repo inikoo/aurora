@@ -27,7 +27,7 @@
 
  <p><strong>{t}Office{/t}: Unit 15, 1st Floor<br/>Parkwood Business Park<br/>75 Parkwood Road<br/>Sheffield,UK<br/>S3 8AL</strong></p>
  <p><strong>{t}Company Number{/t}: 7618223</strong></p>
- <p><strong>{t}Vat Number{/t}: 114 660 28</strong></p>
+ <p><strong>{t}Vat Number{/t}: 114 6660 28</strong></p>
  <p><strong>{t}Telephone{/t}:(+44) 114 299 8401</strong></p>
 <p><strong><a href="mailto:sales@inikoo.com"><span>{t}Email{/t}: sales@inikoo.com</span></a></strong></p>
 
@@ -36,7 +36,7 @@
 
 <a onclick="target='_blank';" href="http://www.facebook.com/home.inikoo"><img src="images/facebook.png" alt="facebook"/></a>
 <a onclick="target='_blank';" href="http://www.twitter.com/inikoo_devel"><img src="images/twitter.png" alt="twitter"/></a>
-<a onclick="target='_blank';" href=""><img src="images/linkedin.png" alt="linkedin"/></a>
+<a style="display:none;" onclick="target='_blank';" href=""><img src="images/linkedin.png" alt="linkedin"/></a>
 						</div>
 			
 					</div>

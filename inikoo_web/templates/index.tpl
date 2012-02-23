@@ -5,13 +5,13 @@
 <div id="wowslider-container1">
 	<div class="ws_images">
 		<span><img src="images/banner.png" alt="banner" title="" id="wows0"/></span>
-		<span><img src="images/banner.png" alt="banner" title="" id="wows1"/></span>
+		<span><img src="images/offer_1_banner.png" alt="Offer" title="" id="wows1"/></span>
 
 	</div>
 	<div class="ws_bullets">
 		<div>
 		<a href="#wows0" title="banner"><img src="images/tooltips/banner.png" alt="banner"/>1</a>
-		<a href="#wows1" title="banner"><img src="images/tooltips/banner.png" alt="banner"/>1</a>
+		<a href="#wows1" title="Offer"><img src="images/tooltips/offer_1_banner_thumb.png" alt="banner"/>1</a>
 		</div>
 	</div>
 	<div class="ws_shadow"></div>
@@ -40,6 +40,16 @@
 <h2>You're at the right place !</h2>
 
 <strong>Tough problem? Need a solid solution? <br/><a href="contact.php">Contact Us</a><br/>Call us on: (+44) 114 299 8401</strong>
+</div>
+
+<div style="clear:both"></div>
+
+<div style="float:left; margin:0px 0px 20px 20px;  border: 1px solid #BDC3D9; padding: 10px 10px 10px 10px; width:915px; height:180px">
+<h2>Inikoo Offer</h2>
+
+<strong>
+We have introduced the best web design 
+</strong>
 </div>
 
 <div style="clear:both"></div>

@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2012-02-20 17:43:10
+<?php /* Smarty version 2.6.22, created on 2012-02-23 11:46:10
          compiled from index.tpl */ ?>
 <?php $_smarty_tpl_vars = $this->_tpl_vars;
 $this->_smarty_include(array('smarty_include_tpl_file' => "header.tpl", 'smarty_include_vars' => array()));
@@ -11,13 +11,13 @@ unset($_smarty_tpl_vars);
 <div id="wowslider-container1">
 	<div class="ws_images">
 		<span><img src="images/banner.png" alt="banner" title="" id="wows0"/></span>
-		<span><img src="images/banner.png" alt="banner" title="" id="wows1"/></span>
+		<span><img src="images/offer_1_banner.png" alt="Offer" title="" id="wows1"/></span>
 
 	</div>
 	<div class="ws_bullets">
 		<div>
 		<a href="#wows0" title="banner"><img src="images/tooltips/banner.png" alt="banner"/>1</a>
-		<a href="#wows1" title="banner"><img src="images/tooltips/banner.png" alt="banner"/>1</a>
+		<a href="#wows1" title="Offer"><img src="images/tooltips/offer_1_banner_thumb.png" alt="banner"/>1</a>
 		</div>
 	</div>
 	<div class="ws_shadow"></div>
@@ -47,6 +47,14 @@ unset($_smarty_tpl_vars);
 <h2>You're at the right place !</h2>
 
 <strong>Tough problem? Need a solid solution? <br/><a href="contact.php">Contact Us</a><br/>Call us on: (+44) 114 299 8401</strong>
+</div>
+
+<div style="clear:both"></div>
+
+<div style="float:left; margin:0px 0px 20px 20px;  border: 1px solid #BDC3D9; padding: 10px 10px 10px 10px; width:915px; height:180px">
+<h2>Wondering who we are ?</h2>
+
+<strong>We solve your problems with you! We are a UK based company specialised in CRM systems and providing web solutions. Our aim is to provide you with the best solution for your problem.  &gt;&gt; <a href="about.php">Learn More..</a></strong>
 </div>
 
 <div style="clear:both"></div>
