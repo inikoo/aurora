@@ -291,7 +291,7 @@ $smarty->assign('parent_title',$parent_title);
 
 
 
-$smarty->assign('parent','products');
+$smarty->assign('parent','websites');
 $smarty->assign('title','Editing Page:'.$page->get('Page Short Title'));
 $smarty->display('edit_page.tpl');
 ?>
