@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2012-02-20 16:30:44
+<?php /* Smarty version 2.6.22, created on 2012-02-23 11:58:33
          compiled from contact.tpl */ ?>
 <?php require_once(SMARTY_CORE_DIR . 'core.load_plugins.php');
 smarty_core_load_plugins(array('plugins' => array(array('block', 't', 'contact.tpl', 28, false),)), $this); ?>
@@ -35,7 +35,7 @@ unset($_smarty_tpl_vars);
 
  <p><strong><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Office<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>: Unit 15, 1st Floor<br/>Parkwood Business Park<br/>75 Parkwood Road<br/>Sheffield,UK<br/>S3 8AL</strong></p>
  <p><strong><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Company Number<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>: 7618223</strong></p>
- <p><strong><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Vat Number<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>: 114 660 28</strong></p>
+ <p><strong><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Vat Number<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>: 114 6660 28</strong></p>
  <p><strong><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Telephone<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>:(+44) 114 299 8401</strong></p>
 <p><strong><a href="mailto:sales@inikoo.com"><span><?php $this->_tag_stack[] = array('t', array()); $_block_repeat=true;smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], null, $this, $_block_repeat);while ($_block_repeat) { ob_start(); ?>Email<?php $_block_content = ob_get_contents(); ob_end_clean(); $_block_repeat=false;echo smarty_block_t($this->_tag_stack[count($this->_tag_stack)-1][1], $_block_content, $this, $_block_repeat); }  array_pop($this->_tag_stack); ?>: sales@inikoo.com</span></a></strong></p>
 
@@ -44,7 +44,7 @@ unset($_smarty_tpl_vars);
 
 <a onclick="target='_blank';" href="http://www.facebook.com/home.inikoo"><img src="images/facebook.png" alt="facebook"/></a>
 <a onclick="target='_blank';" href="http://www.twitter.com/inikoo_devel"><img src="images/twitter.png" alt="twitter"/></a>
-<a onclick="target='_blank';" href=""><img src="images/linkedin.png" alt="linkedin"/></a>
+<a style="display:none;" onclick="target='_blank';" href=""><img src="images/linkedin.png" alt="linkedin"/></a>
 						</div>
 			
 					</div>

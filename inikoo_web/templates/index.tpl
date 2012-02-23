@@ -5,13 +5,13 @@
 <div id="wowslider-container1">
 	<div class="ws_images">
 		<span><img src="images/banner.png" alt="banner" title="" id="wows0"/></span>
-		<span><img src="images/banner.png" alt="banner" title="" id="wows1"/></span>
+		<span><img src="images/offer_1_banner.png" alt="Offer" title="" id="wows1"/></span>
 
 	</div>
 	<div class="ws_bullets">
 		<div>
 		<a href="#wows0" title="banner"><img src="images/tooltips/banner.png" alt="banner"/>1</a>
-		<a href="#wows1" title="banner"><img src="images/tooltips/banner.png" alt="banner"/>1</a>
+		<a href="#wows1" title="Offer"><img src="images/tooltips/offer_1_banner_thumb.png" alt="banner"/>1</a>
 		</div>
 	</div>
 	<div class="ws_shadow"></div>
@@ -44,8 +44,26 @@
 
 <div style="clear:both"></div>
 
+<div style="float:left; margin:0px 0px 20px 20px;  border: 1px solid #BDC3D9; padding: 10px 10px 10px 10px; width:915px; height:280px">
+<h2>Inikoo Offer !</h2>
+
+<strong>
+We have introduced the best website design deal in the city. Now you can build your website with us just for £499.99. Hurry Up! Take your business online with your new website today! <br/>This is a bundled package with:
+<ul>
+<li>Free domain name</li>
+<li>Free hosting for 1 year</li>
+<li>1 year comprehensive support</li>
+<li>Templates to select from</li>
+</ul>
+<a style="text-decoration:none;" href="contact.php">Tell us your requirement and get a quote today! Customise as you wish!</a><br/><br/>
+<a style="text-decoration:none;" href="web_design.php"><span style="font-size: 10px;">* Terms and Conditions apply</span></a>
+</strong>
+</div>
+
+<div style="clear:both"></div>
+
 <div style="float:left; margin:0 120px;  border: 1px solid #BDC3D9;">
-<iframe src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fhome.inikoo&amp;width=292&amp;height=290&amp;colorscheme=light&amp;show_faces=true&amp;border_color=%23ffffff&amp;stream=false&amp;header=true" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:290px;" allowTransparency="true"></iframe>
+<iframe  src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fhome.inikoo&amp;width=292&amp;height=290&amp;colorscheme=light&amp;show_faces=true&amp;border_color=%23ffffff&amp;stream=false&amp;header=true" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:290px;" allowTransparency="true"></iframe>
 
 </div>
 

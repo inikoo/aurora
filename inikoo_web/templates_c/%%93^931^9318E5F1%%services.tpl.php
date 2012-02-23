@@ -1,4 +1,4 @@
-<?php /* Smarty version 2.6.22, created on 2012-02-20 12:30:51
+<?php /* Smarty version 2.6.22, created on 2012-02-23 12:41:30
          compiled from services.tpl */ ?>
 <?php $_smarty_tpl_vars = $this->_tpl_vars;
 $this->_smarty_include(array('smarty_include_tpl_file' => "header.tpl", 'smarty_include_vars' => array()));
@@ -12,8 +12,10 @@ unset($_smarty_tpl_vars);
 <div class="page-full">
 
 <ul>
+
 <li><h3 class="sprite-title web-design-title">Web Designing and Programming</h3><br />
-<img class="xicon" title="inikoo" src="images/web_design.png" alt="inikoo Services" width="228" height="228" />“Looking for someone to build your business. Finally you have reached the right place” - We design, develop and maintain websites from the scratch or on top of your existing website according to your requirements. Our programmers are specialised in latest technologies and you will be ensured that your website is up to the standards with up to date technology.</li>
+<img class="xicon" title="inikoo" src="images/web_design.png" alt="inikoo Services" width="228" height="228" />“Looking for someone to build your business. Finally you have reached the right place” - We design, develop and maintain websites from the scratch or on top of your existing website according to your requirements. Our programmers are specialised in latest technologies and you will be ensured that your website is up to the standards with up to date technology.<a href="web_design.php" style="text-decoration: none;"><img src="images/offer_icon.png" alt="offer_icon" width="100px" style="float:right;"/></a></li>
+
 <li><h3 class="sprite-title web-application-title">Secure Payment Gateways</h3><br />
 <img class="xicon" title="web-design-and-application" src="images/secure_payment.png" alt="web design and application Services" width="228" height="228" />“Looking for online business and still worried about secure transactions” - We have experience in integrating secure payment gateways to your existing website. You can pick from a range of service based on your specification and you are ready to launch your e-business website with confidence.</li>
         
