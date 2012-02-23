@@ -5642,6 +5642,6 @@ ALTER TABLE `Image Dimension` ADD `Last Modify Date` DATETIME NULL DEFAULT NULL 
 update `Image Dimension` set `Last Modify Date`=NOW();
 
 INSERT INTO `Page Dimension` (`Page Key`, `Page Type`, `Page Section`, `Page Title`, `Page Short Title`, `Page Description`, `Page Keywords`, `Page URL`, `Page Javascript Files`, `Page CSS Files`, `Page Snapshot Image Key`, `Page Snapshot Last Update`, `Page Valid URL`, `Page Working URL`, `Page Published`) VALUES (NULL, 'Internal', 'Reports', 'Intrastat', 'Intrastat', 'Intrastat is the system for collecting information and producing statistics on the trade in goods between countries of the European Union (EU). ', '', 'reports_intrastat.php', '', '', NULL, NULL, 'Yes', 'Yes', 'Yes');
-
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Picking Aid Type` ENUM( 'Inikoo', 'Static' ) NOT NULL DEFAULT 'Inikoo';
 
 

@@ -30,7 +30,7 @@ function close_dialog(dialog_name) {
     
         Dom.get('pick_it_Staff_Name').value='';
         Dom.get('pick_it_staff_key').value='';
-        Dom.setStyle('pick_it_pin_tr','visibility','hidden');
+        Dom.setStyle('pick_it_pin_tr','display','none');
         Dom.get("pick_it_pin_alias").innerHTML='';
         Dom.removeClass(Dom.getElementsByClassName('pick_it_button', 'td', 'assign_picker_buttons'),'selected');
         Dom.get('pick_it_password').value='';
@@ -103,13 +103,13 @@ Dom.get('pick_it_pin_tr').style.display='';
 Dom.get('pick_it_Staff_Name').value=staff_alias;
 Dom.get('pick_it_staff_key').value=staff_key;
 
-Dom.setStyle('pick_it_pin_tr','visibility','visible');
+Dom.setStyle('pick_it_pin_tr','display','');
 Dom.get("pick_it_pin_alias").innerHTML=staff_alias;
 Dom.get('pick_it_password').focus();
 }
 
 function assign_picker_save(){
-
+Dom.get('pick_it_msg').innerHTML='';
 var staff_key=Dom.get('assign_picker_staff_key').value;
  var sup_pwd=   Dom.get('assign_picker_sup_password').value;
 var dn_key=Dom.get('assign_picker_dn_key').value;
@@ -130,14 +130,15 @@ var dn_key=Dom.get('assign_picker_dn_key').value;
 		    close_dialog('assign_picker_dialog');
 
 		}else{
-		   alert(r.msg);
+		//Dom.get('pick_it_msg').innerHTML=r.msg
+		  
 	    }
 	    }
 	});    
 
 }
 function pick_it_save(){
-
+Dom.get('pick_it_msg').innerHTML='';
 var staff_key=Dom.get('pick_it_staff_key').value;
 var sup_pwd=   Dom.get('pick_it_password').value;
 var dn_key=Dom.get('pick_it_dn_key').value;
@@ -156,19 +157,22 @@ var dn_key=Dom.get('pick_it_dn_key').value;
 		    close_dialog('pick_it_dialog');
 
 		}else{
-		  alert(r.msg);
+		Dom.get('pick_it_msg').innerHTML=r.msg
+		
 	    }
 	    }
 	});    
 
 }
 function assign_picker(o,dn_key){
-    var y=(Dom.getY(o))
-    var x=(Dom.getX(o))
-    x=x-120;
-    y=y+18;
-    Dom.setX('assign_picker_dialog', x)
-    Dom.setY('assign_picker_dialog', y)
+
+region1 = Dom.getRegion(o); 
+    region2 = Dom.getRegion('assign_picker_dialog'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('assign_picker_dialog', pos);
+
+
+
    Dom.get('Assign_Picker_Staff_Name').focus();
    Dom.get('assign_picker_dn_key').value=dn_key;
 
@@ -180,18 +184,19 @@ function pick_it(o,dn_key){
 
 var staff_alias='';
 var staff_key='';
+Dom.get('pick_it_msg').innerHTML='';
+Dom.setStyle('pick_it_pin_tr','display','none');
 
 Dom.get('pick_it_Staff_Name').value=staff_alias;
 Dom.get('pick_it_staff_key').value=staff_key;
 Dom.get("pick_it_pin_alias").innerHTML=staff_alias;
 
+region1 = Dom.getRegion(o); 
+    region2 = Dom.getRegion('pick_it_dialog'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('pick_it_dialog', pos);
 
-    var y=(Dom.getY(o))
-    var x=(Dom.getX(o))
-    x=x-120;
-    y=y+18;
-    Dom.setX('pick_it_dialog', x)
-    Dom.setY('pick_it_dialog', y)
+
    Dom.get('pick_it_Staff_Name').focus();
    Dom.get('pick_it_dn_key').value=dn_key;
 Dom.get('staff_list_parent_dialog').value='pick_it';
@@ -350,7 +355,7 @@ case 'pick_it':
 	Dom.get('pick_it_Staff_Name').value=staff_alias;
 	Dom.get('pick_it_staff_key').value=staff_key;
 
-	Dom.setStyle('pick_it_pin_tr','visibility','visible');
+	Dom.setStyle('pick_it_pin_tr','display','');
 	Dom.get("pick_it_pin_alias").innerHTML=staff_alias;
 	Dom.get('pick_it_password').focus();
 	break;
@@ -382,4 +387,7 @@ case 'assign_packer':
 
 dialog_other_staff.hide();
 }
+
+
+
 
