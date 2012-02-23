@@ -41,6 +41,22 @@ chdir('../../');
 //}
 //exit;
 
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$site=new Site($row['Page Site Key']);
+	$page=new Page($row['Page Key']);
+
+	$url=$row['Page URL'];
+
+	
+	$url=preg_replace('/aw-cadeux/','aw-cadeaux',$url);
+	
+	
+}	
+
+exit;
 
 $sql="select * from `Site Dimension`   ";
 $result=mysql_query($sql);

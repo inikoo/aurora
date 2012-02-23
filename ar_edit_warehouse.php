@@ -915,6 +915,7 @@ if( !isset($_REQUEST['values']) ){
      $response=array(
 		     'state'=>200
 		     ,'action'=>'created'
+		      ,'warehouse_area_key'=>$warehouse->new_area_key
 		     ,'msg'=>_('Area added to Warehouse')
 		     );
      echo json_encode($response);

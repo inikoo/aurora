@@ -248,9 +248,10 @@ function create($data){
     $data['Warehouse Key']=$this->id;
     $area= new WarehouseArea('find',$data,'create');
     $this->new_area_msg=$area->msg;
-    if($area->new)
+    if($area->new){
       $this->new_area=true;
-
+      $this->new_area_key=$area->id;
+	}
   }
   
     function update_children(){

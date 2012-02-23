@@ -110,7 +110,7 @@ $smarty->assign('block_view',$_SESSION['state']['page']['view']);
 $subject_id=$page_key;
 $smarty->assign('site',$site);
 
-$smarty->assign('parent','products');
+$smarty->assign('parent','websites');
 $smarty->assign('title', $page->data['Page Store Title']);
 
 

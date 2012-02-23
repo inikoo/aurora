@@ -4,7 +4,7 @@ table.edit input.number{ padding-right:4px;text-align:right; }
 table.edit input{ padding-left:4px;text-align:left; }
 
 
-table.edit td.label{ text-align:right;}
+table.edit td.label{ text-align:right}
 table.edit td.left{ text-align:left }
 table.edit tr.no_validated td.label { background:url('../art/icons/exclamation.png') no-repeat;;background-position:5px 3px;color:#720000  }
 table.edit tr.no_validated  input{color:red}
