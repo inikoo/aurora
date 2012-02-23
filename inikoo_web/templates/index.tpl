@@ -44,7 +44,7 @@
 
 <div style="clear:both"></div>
 
-<div style="float:left; margin:0px 0px 20px 20px;  border: 1px solid #BDC3D9; padding: 10px 10px 10px 10px; width:915px; height:350px">
+<div style="float:left; margin:0px 0px 20px 20px;  border: 1px solid #BDC3D9; padding: 10px 10px 10px 10px; width:915px; height:280px">
 <h2>Inikoo Offer !</h2>
 
 <strong>
@@ -56,14 +56,14 @@ We have introduced the best website design deal in the city. Now you can build y
 <li>Templates to select from</li>
 </ul>
 <a style="text-decoration:none;" href="contact.php">Tell us your requirement and get a quote today! Customise as you wish!</a><br/><br/>
-<span style="font-size: 10px;">* Inikoo Limited may, without notice, withdraw or restrict any services and/or access rights which Inikoo Limited reasonably believe are being used for illegal, abusive, unethical, pornographic or immoral purposes including, but not limited to, the transmission of illegal, abusive, unethical, pornographic or immoral material or the sale of illegal, abusive, unethical, pornographic or immoral goods or services. Inikoo Limited will not and can not be held liable for any illegal use of its services. Inikoo Limited reserves the right to determine what material, products, services or other website content is and is not abusive, unethical, pornographic or immoral.</span>
+<a style="text-decoration:none;" href="web_design.php"><span style="font-size: 10px;">* Terms and Conditions apply</span></a>
 </strong>
 </div>
 
 <div style="clear:both"></div>
 
 <div style="float:left; margin:0 120px;  border: 1px solid #BDC3D9;">
-<iframe src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fhome.inikoo&amp;width=292&amp;height=290&amp;colorscheme=light&amp;show_faces=true&amp;border_color=%23ffffff&amp;stream=false&amp;header=true" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:290px;" allowTransparency="true"></iframe>
+<iframe  src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fhome.inikoo&amp;width=292&amp;height=290&amp;colorscheme=light&amp;show_faces=true&amp;border_color=%23ffffff&amp;stream=false&amp;header=true" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:290px;" allowTransparency="true"></iframe>
 
 </div>
 
