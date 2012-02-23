@@ -69,8 +69,6 @@ case 'assign_packer':
 dialog_other_staff.hide();
 }
 
-
-
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 	    var tableid=0; // Change if you have more the 1 table
@@ -80,15 +78,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   {key:"date", label:"<?php echo _('Date')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				  
 				  {key:"points", label:"<?php echo _('Size')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				   {key:"status",label:"<?php echo _('Status')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				   {key:"status",label:"<?php echo _('Status')?>", width:120,hidden:(Dom.get('method').value=='Inikoo'?false:true),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 
 				    //   {key:"weight", label:"<?php echo _('Weight')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				      // {key:"picks", label:"<?php echo _('Picks')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      {key:"operations", label:"<?php echo _('Actions')?>", width:170,hidden:false,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      // {key:"see_link", label:"",sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-
+				      {key:"operations", label:"<?php echo _('Actions')?>", width:170,hidden:(Dom.get('method').value=='Inikoo'?false:true),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"see_link", label:"",sortable:false,hidden:(Dom.get('method').value!='Inikoo'?false:true),className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				];
-
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=ready_to_pick_orders");
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;

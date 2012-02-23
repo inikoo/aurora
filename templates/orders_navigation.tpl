@@ -19,17 +19,5 @@
 <table id="{$search_scope}_search_results_table"></table>
 </div>
 
-{if isset($general_options_list)}
-<div style="clear:both;margin-top:0px;margin-right:0px;width:{if $options_box_width}{$options_box_width}{else}450px{/if};float:right;margin-bottom:10px" class="right_box">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-    {if $options.tipo=="url"}
-    <span class="{$options.class}" onclick="window.location.href='{$options.url}'">{$options.label}</span>
-    {else}
-    <span  class="{$options.class}" id="{$options.id}" state="{$options.state}">{$options.label}</span>
-    {/if}
-    {/foreach}
-  </div>
-</div>
-{/if}
+
 
