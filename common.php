@@ -48,6 +48,7 @@ if (!$db_selected) {
 
 
 
+
 //print_r($_REQUEST);
 
 mysql_query("SET NAMES 'utf8'");
