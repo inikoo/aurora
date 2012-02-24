@@ -21,7 +21,7 @@
             <li>
 		<h4>What we look for?</h4>
 		<p>
-			Are you passionate about technology and love to explore new technologies? Do you need a career to challenge yourself? The you might be the right person for us. 
+			Are you passionate about technology and love to explore new technologies? Do you need a career to challenge yourself? Then you might be the right person for us. 
 		</p>
 		</li>
 
