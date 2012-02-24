@@ -2233,7 +2233,7 @@ function picking_aid_sheet() {
 		}
 		//$notes=preg_replace('/^\,/', '', $notes);
 
-
+//print_r($row);exit;
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
 		$data[]=array(
 			'itf_key'=>$row['Inventory Transaction Key'],
@@ -2241,7 +2241,7 @@ function picking_aid_sheet() {
 			'description'=>$row['Part Unit Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':'').' '.$row['Inventory Transaction Key'],
 			'used_in'=>$row['Part XHTML Currently Used In'],
 			'quantity'=>number($row['Required']+$row['Given']),
-			'location'=>$row['Location Code'],
+			'location'=>$row['Location Code'].' <img src="art/icons/info_bw.png" onClick="get_locations($row['Part SKU'])">',
 			'check_mark'=>(!$todo?'&#x2713;':'<span style="color:#ccc">&#x2713;</span>'),
 			'add'=>($todo?'+':'<span style="color:#ccc">+</span>'),
 			'remove'=>(($row['Picked']-$row['Packed'])?'-':'<span style="color:#ccc">-</span>'),

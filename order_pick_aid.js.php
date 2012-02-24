@@ -354,7 +354,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				   ];
 
-
+		alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
 	    this.pick_aidDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
 	    //alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
 	   
@@ -625,6 +625,17 @@ function start_packing(){
 pack_it_dialog.show()
 Dom.get('pack_it_Staff_Name').focus();
     
+}
+
+function get_locations(sku){
+
+
+	var x =Dom.getX(this.getCell(target))-Dom.get('Editor_audit').offsetWidth+this.getCell(target).offsetWidth;
+	var y =Dom.getY(this.getCell(target));
+
+	Dom.setX('Editor_audit', x);
+	Dom.setY('Editor_audit', y);
+	audit_dialog.show();
 }
 
 

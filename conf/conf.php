@@ -4536,6 +4536,9 @@ $default_state=array(
 		)
 
 
+	),
+	'part_movements'=>array(
+		'view'=>'movements'
 	)
 
 );
