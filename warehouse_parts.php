@@ -112,7 +112,7 @@ $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
-
+/*
 $elements_number=array('InUse'=>0,'NotInUse'=>0);
 $sql=sprintf("select count(*) as num , `Part Status` from  `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where `Warehouse Key`=%d group by `Part Status`",$warehouse->id);
 
@@ -130,6 +130,7 @@ foreach($_SESSION['state']['warehouse']['parts']['elements'] as $key=>$value){
 }
 
 $smarty->assign('elements',$_elements);
+*/
 
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);
