@@ -417,7 +417,7 @@ scope:this
     request
 
     );
-4864831141302328
+
 }
 function close_audit_dialog() {
     Dom.get('qty_audit').value='';
@@ -500,6 +500,10 @@ function create_part_location_tr(tag,r) {
 }
 
 function save_can_pick(sku,location_key){
+
+if(!Dom.get('modify_stock').value){
+	return;
+}
 
    ar_file='ar_edit_warehouse.php';
    
