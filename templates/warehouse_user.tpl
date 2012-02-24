@@ -4,7 +4,7 @@
 		{include file='users_navigation.tpl'} 
 		<input id="user_key" value="{$user_class->id}" type="hidden" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="users.php">{t}Users{/t}</a>   &rarr; {t}Administrative User{/t} ({$user_class->get('User Alias')})</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="users.php">{t}Users{/t}</a>  &rarr; {t}Warehouse User{/t} ({$user_class->get('User Alias')})</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
@@ -19,7 +19,7 @@
 			</div>
 		</div>
 		<h1>
-			{t}Administrative User{/t}
+			{t}Warehouse User{/t}
 		</h1>
 		<div style="clear:both">
 		</div>

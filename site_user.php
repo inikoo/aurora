@@ -70,6 +70,8 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/sha256.js',
+		'js/change_password.js',
+
 	'site_user.js.php'
 );
 
