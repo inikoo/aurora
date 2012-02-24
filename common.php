@@ -214,7 +214,9 @@ $nav_menu[] = array(_('Profile'), 'user.php','users');
 
 if ($user->data['User Type']=='Warehouse') {
 
-    $nav_menu[] = array(_('Orders'), 'warehouse_orders.php','orders');
+   // $nav_menu[] = array(_('Orders'), 'warehouse_orders.php','orders');
+
+
 }
 
 
