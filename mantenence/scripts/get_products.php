@@ -46,7 +46,7 @@ $version='V 1.1';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$set_part_as_available=true;
+$set_part_as_available=false;
 
 
 $_argv=$_SERVER['argv'];
