@@ -804,7 +804,7 @@ function list_staff_user_login_history() {
 	$_SESSION['state']['staff_user']['login_history']['f_value']=$f_value;
 
 	$where=sprintf('where true ');
-	$where.=" and `User Type`='Staff'";
+	$where.=" and `User Type` in ('Staff','Administrator','Warehouse')";
 
 
 	$where.=" and UL.`User Key`=".$id;

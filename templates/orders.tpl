@@ -4,7 +4,7 @@
 {include file='orders_navigation.tpl'}
 <div  class="branch"> 
   <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}  <a href="orders_server.php?view=dn"  id="branch_type_dn" style="{if $block_view!='dn'}display:none{/if}" >&#8704; {t}Delivery Notes{/t}</a> <a href="orders_server.php?view=invoices" id="branch_type_invoices" style="{if $block_view!='invoices'}display:none{/if}" >&#8704; {t}Invoices{/t}</a> <a  href="orders_server.php?view=orders" id="branch_type_orders" style="{if $block_view!='orders'}display:none{/if}" >&#8704; {t}Orders{/t}</a>    &rarr; {/if}
-  {$store->get('Store Code')}   <span id="branch_type2_dn" style="{if $block_view!='dn'}display:none{/if}" >{t}Delivery Notes{/t}</span> <span id="branch_type2_invoices" style="{if $block_view!='invoices'}display:none{/if}" >{t}Invoices{/t}</span> <span id="branch_type2_orders" style="{if $block_view!='orders'}display:none{/if}" >{t}Orders{/t}</span></span>
+    <span id="branch_type2_dn" style="{if $block_view!='dn'}display:none{/if}" >{t}Delivery Notes{/t}</span> <span id="branch_type2_invoices" style="{if $block_view!='invoices'}display:none{/if}" >{t}Invoices{/t}</span> <span id="branch_type2_orders" style="{if $block_view!='orders'}display:none{/if}" >{t}Orders{/t}</span> ({$store->get('Store Code')})</span>
 </div>
  <div class="top_page_menu">
 

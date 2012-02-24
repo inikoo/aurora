@@ -507,10 +507,14 @@ Event.addListener(ids, "click", change_dn_type);
 	   
 	   ids=['orders','invoices','dn'];
 block_ids=['block_orders','block_invoices','block_dn'];
+branch_type_ids=['branch_type_orders','branch_type_invoices','branch_type_dn','branch_type2_orders','branch_type2_invoices','branch_type2_dn'];
+Dom.setStyle(branch_type_ids,'display','none');
+
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
+Dom.setStyle(['branch_type_'+this.id,'branch_type2_'+this.id],'display','')
 
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-view&value='+this.id ,{});
 	   

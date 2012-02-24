@@ -13,7 +13,6 @@
         {/if}
     </div>
     <div class="buttons" style="float:left">
-        <button  onclick="window.location='users.php'" ><img src="art/icons/house.png" alt=""> {t}Users Home{/t}</button>
         </div>
     <div style="clear:both"></div>
 </div>

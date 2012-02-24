@@ -5644,4 +5644,8 @@ update `Image Dimension` set `Last Modify Date`=NOW();
 INSERT INTO `Page Dimension` (`Page Key`, `Page Type`, `Page Section`, `Page Title`, `Page Short Title`, `Page Description`, `Page Keywords`, `Page URL`, `Page Javascript Files`, `Page CSS Files`, `Page Snapshot Image Key`, `Page Snapshot Last Update`, `Page Valid URL`, `Page Working URL`, `Page Published`) VALUES (NULL, 'Internal', 'Reports', 'Intrastat', 'Intrastat', 'Intrastat is the system for collecting information and producing statistics on the trade in goods between countries of the European Union (EU). ', '', 'reports_intrastat.php', '', '', NULL, NULL, 'Yes', 'Yes', 'Yes');
 ALTER TABLE `Warehouse Dimension` ADD `Warehouse Picking Aid Type` ENUM( 'Inikoo', 'Static' ) NOT NULL DEFAULT 'Inikoo';
 
+INSERT INTO `User Dimension` (`User Key`, `User Handle`, `User Password`, `User Active`, `User Alias`, `User Type`, `User Staff Type`, `User Site Key`, `User Parent Key`, `User Preferred Locale`, `User Login Count`, `User Last Login`, `User Last Login IP`, `User Failed Login Count`, `User Last Failed Login IP`, `User Last Failed Login`, `User Sessions Count`, `User Requests Count`, `User Last Request`, `User Created`, `User Dashboard Key`, `User Theme Key`, `User Theme Background Key`, `User Verified`, `User Main Image Key`, `User Inactive Note`) VALUES (NULL, 'warehouse', NULL, 'Yes', 'Warehouse', 'Warehouse', NULL, '0', NULL, 'en_GB.UTF-8', '0', NULL, NULL, '0', NULL, NULL, '0', '0', NULL, '2012-02-24 09:40:00', NULL, NULL, NULL, 'No', NULL, '');
+
+
+
 
