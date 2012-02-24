@@ -2,6 +2,7 @@
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
 {include file='locations_navigation.tpl'}
+<input type="hidden" value="{$warehouse->id}" id="warehouse_id"/>
 <div class="branch"> 
   <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; Part Movements</span>
 </div>
@@ -33,7 +34,6 @@
 
 
 <div id="block_movements" style="{if $view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-
 
  <div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
     <span class="clean_table_title">{t}Part Movements{/t}</span>

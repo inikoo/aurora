@@ -9451,8 +9451,35 @@ function is_family_special_char($data) {
 }
 
 function part_transactions() {
-	$conf=$_SESSION['state']['part']['transactions'];
-	$part_sku=$_SESSION['state']['part']['sku'];
+
+
+
+if (isset( $_REQUEST['parent'])){
+$parent=$_REQUEST['parent'];
+}else{
+return;
+}
+
+
+if (isset( $_REQUEST['parent_key'])){
+$parent_key=$_REQUEST['parent_key'];
+}else{
+return;
+}
+
+
+if($parent=='part'){
+$conf=$_SESSION['state']['part']['transactions'];
+
+}elseif($parent=='warehouse'){
+$conf=$_SESSION['state']['warehouse']['transactions'];
+}else{
+return;
+}
+
+
+
+	
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
 	else
@@ -9513,25 +9540,52 @@ function part_transactions() {
 	if ($error) {
 		list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
 	} else {
-		$_SESSION['state']['part']['transactions']['from']=$from;
-		$_SESSION['state']['part']['transactions']['to']=$to;
+
+
+		if($parent=='part'){
+			$_SESSION['state']['part']['transactions']['from']=$from;
+			$_SESSION['state']['part']['transactions']['to']=$to;
+
+		}elseif($parent=='warehouse'){
+			$_SESSION['state']['warehouse']['transactions']['from']=$from;
+			$_SESSION['state']['warehouse']['transactions']['to']=$to;
+		}
 	}
 
-	$_SESSION['state']['part']['transactions']=
-		array(
-		'view'=>$view,
-		'order'=>$order,
-		'order_dir'=>$order_direction,
-		'nr'=>$number_results,
-		'sf'=>$start_from,
-		'where'=>$where,
-		'f_field'=>$f_field,
-		'f_value'=>$f_value,
-		'from'=>$from,
-		'to'=>$to,
-		'elements'=>$elements,
-		'f_show'=>$_SESSION['state']['part']['transactions']['f_show']
-	);
+	if($parent=='part'){
+		$_SESSION['state']['part']['transactions']=
+			array(
+			'view'=>$view,
+			'order'=>$order,
+			'order_dir'=>$order_direction,
+			'nr'=>$number_results,
+			'sf'=>$start_from,
+			'where'=>$where,
+			'f_field'=>$f_field,
+			'f_value'=>$f_value,
+			'from'=>$from,
+			'to'=>$to,
+			'elements'=>$elements,
+			'f_show'=>$_SESSION['state']['part']['transactions']['f_show']
+		);
+	}elseif($parent=='warehouse'){
+		$_SESSION['state']['warehouse']['transactions']=
+			array(
+			'view'=>$view,
+			'order'=>$order,
+			'order_dir'=>$order_direction,
+			'nr'=>$number_results,
+			'sf'=>$start_from,
+			'where'=>$where,
+			'f_field'=>$f_field,
+			'f_value'=>$f_value,
+			'from'=>$from,
+			'to'=>$to,
+			'elements'=>$elements,
+			'f_show'=>$_SESSION['state']['warehouse']['transactions']['f_show']
+		);
+	}
+
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
@@ -9544,7 +9598,12 @@ function part_transactions() {
 
 	}
 
-	$where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
+	if($parent=='part'){
+		$where=$where.sprintf(" and `Part SKU`=%d ",$parent_key);
+	}else if($parent=='warehouse'){
+		$where=$where.sprintf(" and `Warehouse Key`=%d ",$parent_key);
+	}
+
 
 	switch ($view) {
 	case 'oip_transactions':
@@ -9571,6 +9630,8 @@ function part_transactions() {
 
 
 	$sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
+//print $sql;exit;
+
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -9638,10 +9699,15 @@ function part_transactions() {
 	$order=' `Date` desc , `Inventory Transaction Key` desc ';
 	$order_direction=' ';
 
-	$sql="select  `Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+	if($parent=='part'){
+		$sql="select  `Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+	}
+	else if($parent=='warehouse'){
+		$sql="select  `Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref limit $start_from,$number_results ";
+	}
 
 
-	//print $sql;
+	//print $sql;exit;
 	$result=mysql_query($sql);
 	$adata=array();
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
