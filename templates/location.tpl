@@ -3,6 +3,8 @@
 <div id="bd" style="padding:0">
 <div style="padding:0 20px">
 <input type="hidden" id="location_key" value="{$location->id}" />
+	<input type="hidden" id="modify_stock" value="{$modify_stock}"/>
+
 {include file='locations_navigation.tpl'}
 <div class="branch"> 
   <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if}<a href="warehouse.php?id={$location->get('Location Warehouse Key')}">{t}Locations{/t}</a>  &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')} {t}Area{/t}</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {$location->get('Location Code')}</span>
@@ -19,7 +21,6 @@
     {/if}
     </div>
     <div class="buttons" style="float:left">
-              <button  onclick="  window.location='warehouse.php?id={$location->get('Location Warehouse Key')}'" ><img src="art/icons/house.png" alt=""> {t}Locations{/t}</button>
 
 
  </div>
@@ -34,7 +35,7 @@
 
 
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
     <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
     <li> <span class="item {if $view=='parts'}selected{/if}"  id="parts">  <span> {t}Parts{/t}</span></span></li>
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}Stock History{/t}</span></span></li>
