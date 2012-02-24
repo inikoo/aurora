@@ -3,7 +3,7 @@
 <div style="padding:0 20px">
  {include file='orders_navigation.tpl'}
 <div class="branch"> 
-  <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {t}Orders{/t}</span>
+  <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; &#8704; <span id="branch_type_dn" style="{if $block_view!='dn'}display:none{/if}" >{t}Delivery Notes{/t}</span> <span id="branch_type_invoices" style="{if $block_view!='invoices'}display:none{/if}" >{t}Invoices{/t}</span> <span id="branch_type_orders" style="{if $block_view!='orders'}display:none{/if}" >{t}Orders{/t}</span></span>
 </div>
  
     <h1>{t}Orders Corporate Overview{/t}</h1>
@@ -115,8 +115,5 @@
     </ul>
   </div>
 </div>
-{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols0 session_address="orders-table-csv_export0" export_options=$csv_export_options0 }
-{include file='export_csv_menu_splinter.tpl' id=1 cols=$export_csv_table_cols1 session_address="orders-table-csv_export1" export_options=$csv_export_options1 }
-{include file='export_csv_menu_splinter.tpl' id=2 cols=$export_csv_table_cols2 session_address="orders-table-csv_export2" export_options=$csv_export_options2 }
 
 {include file='footer.tpl'}

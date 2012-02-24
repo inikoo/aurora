@@ -63,11 +63,13 @@ if (!($user->can_view('stores') and in_array($dn->data['Delivery Note Store Key'
 
 $customer=new Customer($dn->get('Delivery Note Customer Key'));
 $store=new Store($dn->get('Delivery Note Store Key'));
+$warehouse=new Warehouse($dn->data['Delivery Note Warehouse Key']);
 
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
 
 $smarty->assign('store_id',$store->id);
+$smarty->assign('warehouse',$warehouse);
 
 
 if ($dn->data['Delivery Note State']=='Dispatched') {
