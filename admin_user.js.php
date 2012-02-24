@@ -34,7 +34,6 @@ print $s;
 			    ,{key:"login_date", label:"<?php echo _('Login Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
 			];
-			       
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_login_history&user_key="+Dom.get('user_key').value+"&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
