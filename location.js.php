@@ -447,13 +447,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       //,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
 					,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"formated_qty", label:"<?php echo _('Qty')?>", width:50,className:"aright",action:'audit'}
-				      ,{key:"qty",label:"", width:30,hidden:true}
+				   
+				   
+				   		,{key:"qty",label:"", width:30,hidden:true}
 
-				      ,{key:"move",label:"<?php echo _('Move')?>", width:30,className:"aright",action:'move'}
-				       ,{key:"lost", label:"<?php echo _('Lost')?>", width:30,className:"aright",action:'lost'}
-				       				       ,{key:"add", label:"<?php echo _('Add')?>", width:30,className:"aright",action:'add'}
+				      ,{key:"move",label:"<?php echo _('Move')?>", width:30,className:"aright",action:'move',hidden:(Dom.get('modify_stock').value?false:true)  }
+				       ,{key:"lost", label:"<?php echo _('Lost')?>", width:30,className:"aright",action:'lost',hidden:(Dom.get('modify_stock').value?false:true)  }
+				       				       ,{key:"add", label:"<?php echo _('Add')?>", width:30,className:"aright",action:'add',hidden:(Dom.get('modify_stock').value?false:true)  }
 
-				       ,{key:"delete", label:"", width:30,className:"aright",object:'part_location',action:'delete'}
+				       ,{key:"delete", label:"", width:30,className:"aright",object:'part_location',action:'delete',hidden:(Dom.get('modify_stock').value?false:true)  }
 				     
 				       ];
 	    //?tipo=customers&tid=0"
@@ -520,12 +522,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		
 
-
+if(Dom.get('modify_stock').value){
 		    
 	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table1.subscribe("cellClickEvent", onCellClick);
-
+}
 
 
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['location']['parts']['f_field']?>',value:'<?php echo$_SESSION['state']['location']['parts']['f_value']?>'};

@@ -134,12 +134,12 @@ class part extends DB_Table {
 			if ($this->data['Part Available']=='Yes') {
 				$this->data['Part Main State']='Keeping';
 			} else {
-				$this->data['Part Main State']='Last Stock';
+				$this->data['Part Main State']='LastStock';
 			}
 
 		} else {
 			if ($this->data['Part Available']=='Yes') {
-				$this->data['Part Main State']='Not Keeping';
+				$this->data['Part Main State']='NotKeeping';
 			} else {
 				$this->data['Part Main State']='Discontinued';
 			}
