@@ -3,12 +3,26 @@ include_once('common.php');
 
 ?>
 var Dom   = YAHOO.util.Dom;
+var add_user_dialog_others;
+var add_user_dialog;
 
-var dialog_change_password;
-var dialog_set_password;
+
 var  group_name=new Object;
 
+<?php
 
+$s='';
+$sql="select * from `User Group Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="group_name[".$row['User Group Key']."]='".$row['User Group Name']."';";
+}
+mysql_free_result($res);
+print $s;
+
+   
+?>
+    
     YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -20,9 +34,7 @@ var  group_name=new Object;
 			    ,{key:"login_date", label:"<?php echo _('Login Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			,{key:"logout_date", label:"<?php echo _('Logout Date')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}	
 			];
-			       
-	    this.dataSource0= new YAHOO.util.DataSource("ar_users.php?tipo=customer_user_login_history&tableid=0&customer_user=1&user_key="+Dom.get('user_key').value);
-		//alert("ar_users.php?tipo=customer_user_login_history&tableid=0&user_key="+Dom.get('user_key').value)
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_user_login_history&user_key="+Dom.get('user_key').value+"&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -47,7 +59,7 @@ var  group_name=new Object;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['site_user']['login_history']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['login_history']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -57,8 +69,8 @@ var  group_name=new Object;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['site_user']['login_history']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['site_user']['login_history']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['staff_user']['login_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['staff_user']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -72,10 +84,7 @@ var  group_name=new Object;
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['site_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['site_user']['login_history']['f_value']?>'};
-	   
-	   
-	   
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
 	
 
 	    var tableid=1; // Change if you have more the 1 table
@@ -113,7 +122,7 @@ var  group_name=new Object;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['site_user']['login_history']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage:<?php echo$_SESSION['state']['staff_user']['login_history']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -123,8 +132,8 @@ var  group_name=new Object;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['site_user']['login_history']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['site_user']['login_history']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['staff_user']['login_history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['staff_user']['login_history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -135,10 +144,11 @@ var  group_name=new Object;
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
-
+   		this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
 
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['site_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['site_user']['login_history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
 
 
 
@@ -153,29 +163,18 @@ Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=user-block_view&value='+this.id ,{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=staff_user-block_view&value='+this.id ,{});
 }
-
 
 
 
 
  function init(){
 
- ids=['login_history'];
- YAHOO.util.Event.addListener(ids, "click",change_block)
-
- init_search('users');
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
-
 dialog_change_password = new YAHOO.widget.Dialog("dialog_change_password", { visible : false,close:true,underlay: "none",draggable:false});
 dialog_change_password.render();
 Event.addListener("show_dialog_change_password", "click", show_dialog_change_password);
 Event.addListener("close_dialog_change_password", "click", dialog_change_password.hide,dialog_change_password , true);
-Event.addListener('send_reset_password', "click",send_reset_password);
 
  
  dialog_set_password = new YAHOO.widget.Dialog("dialog_set_password", { visible : false,close:true,underlay: "none",draggable:false});
@@ -187,7 +186,30 @@ Event.addListener("cancel_change_password", "click", dialog_set_password.hide,di
 Event.addListener(['change_password_password1','change_password_password2'], "keyup",change_password_changed);
 Event.addListener(['change_password_password1','change_password_password2'], "keydown",change_password_changed);
 
- 
+
+ init_search('users');
+ ids=['login_history','access','email'];
+ YAHOO.util.Event.addListener(ids, "click",change_block)
+
+ init_search('users');
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+
+
+//       add_user_dialog = new YAHOO.widget.Menu("add_user_dialog", {context:["add_user","tr", "br","beforeShow"]  });
+//       add_user_dialog.render();
+//       add_user_dialog.subscribe("show", add_user_dialog.focus);
+//       YAHOO.util.Event.addListener("add_user", "click", add_user_dialog.show, null, add_user_dialog); 
+
+//       add_user_dialog_others = new YAHOO.widget.Menu("add_user_other", {context:["add_user","tr", "br","beforeShow"]  });
+//       add_user_dialog_others.render();
+//      add_user_dialog_others.subscribe("show", add_user_dialog_others.focus);
+//       add_user_dialog_staff = new YAHOO.widget.Menu("add_user_staff", {context:["add_user","tr", "br","beforeShow"]  });
+//       add_user_dialog_staff.render();
+//       add_user_dialog_staff.subscribe("show", add_user_dialog_staff.focus);
+      
  }
 
  YAHOO.util.Event.onDOMReady(init);

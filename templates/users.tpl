@@ -54,7 +54,7 @@
     <th style="width:200px">{t}Last Failed Login{/t}</th>
 </tr>
 <tr>
-    <td style="text-align:center"><a href='user.php?id={$root->id}'>{$root->get('User Handle')}</a></td>
+    <td style="text-align:center"><a href='admin_user.php'>{$root->get('User Handle')}</a></td>
     <td style="text-align:center">{$root->get('Login Count')}</td>
     <td>{$root->get('Last Login')}</td>
     <td style="text-align:center">{$root->get('Failed Login Count')}</td>
@@ -73,7 +73,7 @@
     <th style="width:200px">{t}Last Failed Login{/t}</th>
 </tr>
 <tr>
-    <td style="text-align:center"><a href='user.php?id={$warehouse_user->id}'>{$warehouse_user->get('User Handle')}</a></td>
+    <td style="text-align:center"><a href='warehouse_user.php'>{$warehouse_user->get('User Handle')}</a></td>
     <td style="text-align:center">{$warehouse_user->get('Login Count')}</td>
     <td>{$warehouse_user->get('Last Login')}</td>
     <td style="text-align:center">{$warehouse_user->get('Failed Login Count')}</td>

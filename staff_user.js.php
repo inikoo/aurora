@@ -145,7 +145,8 @@ print $s;
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
-
+   		this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
 
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['staff_user']['login_history']['f_value']?>'};
@@ -166,7 +167,26 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=staff_user-block_view&value='+this.id ,{});
 }
 
+
+
+
  function init(){
+
+dialog_change_password = new YAHOO.widget.Dialog("dialog_change_password", { visible : false,close:true,underlay: "none",draggable:false});
+dialog_change_password.render();
+Event.addListener("show_dialog_change_password", "click", show_dialog_change_password);
+Event.addListener("close_dialog_change_password", "click", dialog_change_password.hide,dialog_change_password , true);
+
+ 
+ dialog_set_password = new YAHOO.widget.Dialog("dialog_set_password", { visible : false,close:true,underlay: "none",draggable:false});
+dialog_set_password.render();
+ 
+ Event.addListener('change_password', "click",show_dialog_set_password);
+Event.addListener("cancel_change_password", "click", dialog_set_password.hide,dialog_set_password , true);
+ Event.addListener('submit_change_password', "click",submit_change_password);
+Event.addListener(['change_password_password1','change_password_password2'], "keyup",change_password_changed);
+Event.addListener(['change_password_password1','change_password_password2'], "keydown",change_password_changed);
+
 
  init_search('users');
  ids=['login_history','access','email'];

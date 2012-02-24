@@ -2257,7 +2257,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>50,
 			'where'=>'where true',
-			'f_field'=>'user',
+			'f_field'=>'ip',
 			'f_value'=>''
 		),
 	),

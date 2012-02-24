@@ -92,6 +92,12 @@ var CellEdit = function (callback, newValue) {
                              	// alert(r.newdata['web_configuration'])   
 								callback(true, r.newdata['web_configuration']);
 								
+							    }
+							    else if(column.key=='available'){
+							    								 datatable.updateCell(record,'available_state',r.available_state);
+
+								callback(true, r.newvalue);
+
 							    }else{
 							
 								callback(true, r.newvalue);
