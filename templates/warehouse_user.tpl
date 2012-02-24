@@ -2,14 +2,9 @@
 <div id="bd" style="padding:0">
 	<div style="padding:0 20px">
 		{include file='users_navigation.tpl'} 
-		<input id="user_key" value="{$site_user->id}" type="hidden" />
-		<input id="site_key" value="{$site->id}" type="hidden" />
-		<input id="store_key" value="{$site->get('Site Store Key')}" type="hidden" />
-		<input id="customer_id" value="{$site_user->get('User Parent Key')}" type="hidden" />
-		<input id="site_url" value="{$site->get('Site URL')}" type="hidden" />
-		<input id="forgot_password_handle" value="{$site_user->get('User Handle')}" type="hidden" />
+		<input id="user_key" value="{$user_class->id}" type="hidden" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a href="users.php">{t}Users{/t}</a> &rarr; <a href="users_site.php?site_key={$site->id}">{t}Site Users{/t} ({$site->get('Site Code')})</a> &rarr; {$site_user->get('User Handle')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a> &rarr; <a href="users.php">{t}Users{/t}</a>  &rarr; {t}Warehouse User{/t} ({$user_class->get('User Alias')})</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
@@ -24,20 +19,20 @@
 			</div>
 		</div>
 		<h1>
-			{t}Site User{/t}: {$site_user->get('User Handle')} 
+			{t}Warehouse User{/t}
 		</h1>
 		<div style="clear:both">
 		</div>
-		<div style="width:270px;margin-top:0px;float:left">
+		<div style="width:230px;margin-top:0px;float:left">
 			<table class="show_info_product">
 				<td class="aright"> 
 				<tr>
-					<td>{t}Site{/t}:</td>
-					<td><a href="site.php?id={$site->id}">{$site->get('Site Code')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>)</td>
+					<td>{t}Login{/t}:</td>
+					<td>{$user_class->get('User Handle')}</td>
 				</tr>
 				<tr>
-					<td>{t}Customer{/t}:</td>
-					<td><a href="customer.php?id={$customer->id}">{$customer->get('Customer Name')}</a></td>
+					<td>{t}Alias{/t}:</td>
+					<td>{$user_class->get('User Alias')}</td>
 				</tr>
 			</table>
 		</div>
@@ -46,11 +41,11 @@
 				<td class="aright"> 
 				<tr>
 					<td>{t}Login Count{/t}:</td>
-					<td>{$site_user->get('Login Count')}</td>
+					<td>{$user_class->get('Login Count')}</td>
 				</tr>
 				<tr>
 					<td>{t}Last Login{/t}:</td>
-					<td>{$site_user->get('Last Login')}</td>
+					<td>{$user_class->get('Last Login')}</td>
 				</tr>
 			</table>
 		</div>
@@ -59,17 +54,21 @@
 				<td class="aright"> 
 				<tr>
 					<td>{t}Failed Login Count{/t}:</td>
-					<td>{$site_user->get('Failed Login Count')}</td>
+					<td>{$user_class->get('Failed Login Count')}</td>
 				</tr>
-				<tr>
+				<tr style="{if $user_class->get('Failed Login Count')==0}visibility:hidden{/if}">
 					<td>{t}Failed Last Login{/t}:</td>
-					<td>{$site_user->get('Last Failed Login')}</td>
+					<td>{$user_class->get('Last Failed Login')}</td>
 				</tr>
 			</table>
 		</div>
+		<div style="clear:both">
+		</div>
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:0px">
 		<li> <span class="item {if $block_view=='login_history'}selected{/if}" id="login_history"> <span> {t}Login History{/t}</span></span></li>
+		<li style="display:none"> <span class="item {if $block_view=='access'}selected{/if}" id="access"> <span> {t}System Permissions{/t}</span></span></li>
+		<li style="display:none"> <span class="item {if $block_view=='email'}selected{/if}" id="email"> <span> {t}Email Account{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -83,14 +82,17 @@
 		</div>
 		<div id="block_access" style="{if $block_view!='access'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 		</div>
+		<div id="block_email" style="{if $block_view!='email'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		</div>
 	</div>
 </div>
+{include file='footer.tpl'} 
 <div id="dialog_change_password" style="width:300px;padding:20px 20px 10px 20px ">
 	<table style="margin: 0px auto">
 		<tr id="dialog_change_password_buttons">
 			<td> 
 			<div class="buttons">
-				<button class="positive" id="send_reset_password">{t}Send Email{/t}</button> <button class="positive" id="change_password">{t}Set Password{/t}</button> <button class="negative" id="close_dialog_change_password">{t}Cancel{/t}</button> 
+				<button style="display:none" class="positive" id="send_reset_password">{t}Send Email{/t}</button> <button class="positive" id="change_password">{t}Set Password{/t}</button> <button class="negative" id="close_dialog_change_password">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -103,7 +105,7 @@
 	</table>
 </div>
 <div id="dialog_set_password" style="width:300px;padding:20px 20px 10px 20px ">
-	<table border="0" class="edit" style="width:100%" >
+	<table border="0" class="edit" style="width:100%">
 		<tr class="title">
 			<td colspan="2">{t}Change Password{/t} </td>
 		</tr>
@@ -120,9 +122,7 @@
 		<input id="epwcp1" value="" type="hidden" />
 		<input id="epwcp2" value="" type="hidden" />
 		<tr style="height:10px">
-			<td colspan="2"> 
-			
-			</td>
+			<td colspan="2"> </td>
 		</tr>
 		<tr id="tr_change_password_buttons" class="button space">
 			<td colspan="2"> 
@@ -142,4 +142,6 @@
 		</tr>
 	</table>
 </div>
-{include file='footer.tpl'} 
+
+
+

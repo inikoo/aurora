@@ -26,23 +26,15 @@ if (!$view_parts) {
 }
 
 
-$view_sales=false;
-$view_stock=false;
-$view_orders=false;
-$create=false;
 $modify=$user->can_edit('parts');
-
 $modify_stock=false;
+
+$modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
-$view_suppliers=false;
-$view_cust=false;
-$smarty->assign('view_suppliers',$view_suppliers);
-$smarty->assign('view_sales',$view_sales);
-$smarty->assign('view_stock',$view_stock);
-$smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
-$smarty->assign('view_orders',$view_orders);
-$smarty->assign('view_customers',$view_cust);
+
+
+
 
 $page='part';
 $smarty->assign('page',$page);

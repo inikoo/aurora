@@ -5,9 +5,6 @@ if (DEBUG) {
     error_reporting(E_ALL);
 }
 
-
-
-//$path = 'classes';set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 require_once 'app_files/key.php';
 
 require_once 'app_files/db/dns.php';
@@ -74,7 +71,7 @@ $smarty->template_dir = 'templates';
 $smarty->compile_dir = 'server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
-$smarty->error_reporting = E_STRICT;
+//$smarty->error_reporting = E_STRICT;
 
 if (isset($_REQUEST['log_as']) and $_REQUEST['log_as']=='supplier')
     $log_as="supplier";
@@ -217,7 +214,9 @@ $nav_menu[] = array(_('Profile'), 'user.php','users');
 
 if ($user->data['User Type']=='Warehouse') {
 
-    $nav_menu[] = array(_('Orders'), 'warehouse_orders.php','orders');
+   // $nav_menu[] = array(_('Orders'), 'warehouse_orders.php','orders');
+
+
 }
 
 
