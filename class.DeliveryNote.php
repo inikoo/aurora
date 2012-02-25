@@ -44,6 +44,8 @@ class DeliveryNote extends DB_Table {
 
 
     */
+    var $update_stock=true;	
+    
 	function DeliveryNote($arg1=false,$arg2=false,$arg3=false,$arg4=false) {
 
 		$this->table_name='Delivery Note';
@@ -1078,11 +1080,12 @@ class DeliveryNote extends DB_Table {
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
 					mysql_query($sql);
+					if($this->update_stock){
+					
+					
 					$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
-					
-					
 					$part_location->update_stock();
-					
+					}
 					//print "$sql\n";
 					$location_index++;
 				}
@@ -1157,9 +1160,10 @@ class DeliveryNote extends DB_Table {
 
 				mysql_query($sql);
 			}
-			
+			if($this->update_stock){
 			$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
 					$part_location->update_stock();
+					}
 
 		}
 
@@ -2289,10 +2293,10 @@ class DeliveryNote extends DB_Table {
 				,$itf_key
 			);
 			mysql_query($sql);
-
+if($this->update_stock){
 $part_location=new PartLocation($sku.'_'.$location_key);
 					$part_location->update_stock();
-
+}
 			$otf_key=$row['Map To Order Transaction Fact Key'];
 
 
