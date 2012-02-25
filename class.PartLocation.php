@@ -1028,7 +1028,7 @@ class PartLocation extends DB_Table {
 
 	function get_stock($date='') {
 		if (!$date)
-			$date=date('Y-m-d H:i:s');
+			$date=gmdate('Y-m-d H:i:s');
 
 
 

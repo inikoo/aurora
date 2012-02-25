@@ -258,7 +258,7 @@ function delete_old_data() {
 
 	$sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 
-	
+
 	$result_test=mysql_query($sql);
 	while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
 
@@ -275,10 +275,10 @@ function delete_old_data() {
 
 		$sql=sprintf("delete from `Order Deal Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
 		mysql_query($sql);
-		
+
 		$sql=sprintf("delete from `Order Transaction Deal Bridge`  where   `Order Key`=%d",$row_test['Order Key']);
 		mysql_query($sql);
-		
+
 
 
 		$sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
@@ -309,8 +309,8 @@ function delete_old_data() {
 
 		$sql=sprintf("delete from `Invoice Delivery Note Bridge` where `Invoice Key`=%d   ",$row_test['Invoice Key']);
 		mysql_query($sql)  ;
-		
-			$sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Invoice' and `Direct Object Key`=%d",$row_test['Invoice Key']);
+
+		$sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Invoice' and `Direct Object Key`=%d",$row_test['Invoice Key']);
 		mysql_query($sql);
 
 	};
@@ -399,10 +399,28 @@ function delete_old_data() {
 	$sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s and `Order Key` IS NULL or `Order Key`=0",prepare_mysql($store_code.$order_data_id));
 	mysql_query($sql);
 
+
+	$parts_to_update_stock=array();
+	$sql=sprintf("select `Part SKU`,`Location Key` from  `Inventory Transaction Fact` where `Metadata`=%s   ",prepare_mysql($store_code.$order_data_id));
+	$res_q=mysql_query($sql);
+	while ($row_q=mysql_fetch_assoc($res_q)) {
+$parts_to_update_stock[]=$row_q['Part SKU'].'_'.$row_q['Location Key'];
+	}
+
+
 	$sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s   ",prepare_mysql($store_code.$order_data_id));
 	// print "$sql\n";
 	if (!mysql_query($sql))
 		print "$sql Warning can no delete old inv";
+
+	foreach ($parts_to_update_stock as $part_to_update_stock) {
+			$part_location=new PartLocation($part_to_update_stock);
+					$part_location->update_stock();
+	}
+
+
+
+
 	$sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
 	if (!mysql_query($sql))
 		print "$sql Warning can no delete oldhidt nio prod";
@@ -550,7 +568,7 @@ function create_order($data) {
 	//    $order_data['Order Ship To Key']=$data['Order Ship To Key'];
 
 
-//print "creating order\n";
+	//print "creating order\n";
 
 	$order=new Order('new',$order_data);
 
@@ -681,15 +699,15 @@ function create_order($data) {
 	$order->categorize();
 	$order->update_shipping_amount($shipping_net);
 	$charges_data=array(
-			'Charge Net Amount'=>$charges_net,
-			'Charge Tax Amount'=>$charges_net*$tax_category_object->data['Tax Category Rate'],
-			'Charge Key'=>0,
-			'Charge Description'=>'Charge'
-		);
+		'Charge Net Amount'=>$charges_net,
+		'Charge Tax Amount'=>$charges_net*$tax_category_object->data['Tax Category Rate'],
+		'Charge Key'=>0,
+		'Charge Description'=>'Charge'
+	);
 	$order->update_charges_amount($charges_data);
 
 
-//print "sending to warehouse\n";
+	//print "sending to warehouse\n";
 
 	if (count($data_dn_transactions)>0) {
 		$dn=$order->send_to_warehouse($date_order);
@@ -713,10 +731,10 @@ function send_order($data,$data_dn_transactions) {
 	if (!isset($dn)) {
 
 		print "Error no transactions in this invoice\n";
-		// ok lets do 
-		
-		
-		
+		// ok lets do
+
+
+
 		return;
 	}
 
@@ -887,7 +905,7 @@ function send_order($data,$data_dn_transactions) {
 
 
 
-//print "----- rea ship\n";
+	//print "----- rea ship\n";
 
 	if (!($tipo_order==6 or $tipo_order==7)) {
 		if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
@@ -1200,8 +1218,8 @@ function create_refund($data,$header_data,$data_dn_transactions) {
 	global $packer_data,$picker_data,$parcels,$tipo_order,$parent_order_id,$customer,$shipping_transactions,$data_invoice_transactions,$shipping_transactions,$tax_category_object;
 	global $tax_category_object,$credits,$shipping_net,$charges_net;
 
-	
-//$charges_net*$tax_category_object->data['Tax Category Rate']
+
+	//$charges_net*$tax_category_object->data['Tax Category Rate']
 
 	$data['Order Type']='Refund';
 
@@ -1320,46 +1338,46 @@ function create_refund($data,$header_data,$data_dn_transactions) {
 		}
 	}
 
-	if($shipping_net!=0){
+	if ($shipping_net!=0) {
 		//print "adding the shipping to the refund";
-	
-	$net=$factor*(-$shipping_net);
-				$tax=$net*$tax_category_object->data['Tax Category Rate'];
-				$refund_transaction_data=array(
-					'Order Key'=>$parent_order->id,
-					'Affected Order Key'=>$parent_order->id,
-					'Transaction Description'=>'Refund Shipping',
-					'Transaction Invoice Net Amount'=>-1*$net,
-					'Transaction Invoice Tax Amount'=>-1*$tax,
-					'Metadata'=>$store_code.$order_data_id,
-					'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
-				);
-				
-				
-				$refund->add_orphan_refund_no_product_transaction($refund_transaction_data);
-	
+
+		$net=$factor*(-$shipping_net);
+		$tax=$net*$tax_category_object->data['Tax Category Rate'];
+		$refund_transaction_data=array(
+			'Order Key'=>$parent_order->id,
+			'Affected Order Key'=>$parent_order->id,
+			'Transaction Description'=>'Refund Shipping',
+			'Transaction Invoice Net Amount'=>-1*$net,
+			'Transaction Invoice Tax Amount'=>-1*$tax,
+			'Metadata'=>$store_code.$order_data_id,
+			'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
+		);
+
+
+		$refund->add_orphan_refund_no_product_transaction($refund_transaction_data);
+
 	}
-	
-		if($charges_net!=0){
+
+	if ($charges_net!=0) {
 		//print "adding the shipping to the refund";
-	
-	$net=$factor*(-$charges_net);
-				$tax=$net*$tax_category_object->data['Tax Category Rate'];
-				$refund_transaction_data=array(
-					'Order Key'=>$parent_order->id,
-					'Affected Order Key'=>$parent_order->id,
-					'Transaction Description'=>'Refund Charges',
-					'Transaction Invoice Net Amount'=>-1*$net,
-					'Transaction Invoice Tax Amount'=>-1*$tax,
-					'Metadata'=>$store_code.$order_data_id,
-					'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
-				);
-				
-				
-				$refund->add_orphan_refund_no_product_transaction($refund_transaction_data);
-	
+
+		$net=$factor*(-$charges_net);
+		$tax=$net*$tax_category_object->data['Tax Category Rate'];
+		$refund_transaction_data=array(
+			'Order Key'=>$parent_order->id,
+			'Affected Order Key'=>$parent_order->id,
+			'Transaction Description'=>'Refund Charges',
+			'Transaction Invoice Net Amount'=>-1*$net,
+			'Transaction Invoice Tax Amount'=>-1*$tax,
+			'Metadata'=>$store_code.$order_data_id,
+			'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
+		);
+
+
+		$refund->add_orphan_refund_no_product_transaction($refund_transaction_data);
+
 	}
-	
+
 
 	foreach ($refund->get_delivery_notes_objects() as $key=>$_dn) {
 		$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)" ,$refund->id ,$key);
@@ -1389,7 +1407,7 @@ function create_refund($data,$header_data,$data_dn_transactions) {
 			'Metadata'=>$store_code.$order_data_id,
 			'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
 		);
-		
+
 		$refund->add_orphan_refund_no_product_transaction($refund_transaction_data);
 
 

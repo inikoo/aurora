@@ -630,9 +630,12 @@ class DeliveryNote extends DB_Table {
 					);
 					mysql_query($sql);
 					$location_index++;
-
+					
+					$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
+					$part_location->update_stock();
 				}
 				$part_index++;
+				$part->update_stock();
 			}
 		}
 	}
@@ -738,8 +741,11 @@ class DeliveryNote extends DB_Table {
 					);
 					mysql_query($sql);
 					$location_index++;
+				$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
+					$part_location->update_stock();
 				}
 				$part_index++;
+				
 			}
 		}
 
@@ -747,13 +753,13 @@ class DeliveryNote extends DB_Table {
 
 
 	function actualize_inventory_transaction_facts() {
-	
-	
+
+
 		$last_used_index=0;
 		$sql=sprintf("select * from `Inventory Transaction Fact` where `Delivery Note Key`=%d  ",$this->id);
 		$res=mysql_query($sql);
 		$inventory_to_actualize=array();
-		// print $sql; 
+		// print $sql;
 		while ($row=mysql_fetch_assoc($res)) {
 			//print_r($row);
 
@@ -762,7 +768,7 @@ class DeliveryNote extends DB_Table {
 
 			$to_pick=$row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
 			$metadata=preg_split('/;/',$row['Map To Order Transaction Fact Metadata']);
-//print "xxx $to_pick   xxx<br>";
+			//print "xxx $to_pick   xxx<br>";
 
 
 
@@ -776,6 +782,9 @@ class DeliveryNote extends DB_Table {
 				} else {
 				$sql=sprintf("delete from `Inventory Transaction Fact`  where `Inventory Transaction Key`=%d ",$row['Inventory Transaction Key']);
 				mysql_query($sql);
+			
+				$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+					$part_location->update_stock();
 
 			}
 			//print "$sql\n";
@@ -813,7 +822,7 @@ class DeliveryNote extends DB_Table {
 		}
 
 
-		   //    print_r($inventory_to_actualize);
+		//    print_r($inventory_to_actualize);
 
 		foreach ($inventory_to_actualize as $otf=>$transactions_parts) {
 
@@ -824,8 +833,8 @@ class DeliveryNote extends DB_Table {
 
 
 				$locations=$part->get_picking_location_key(false,$transaction_locations['qty']);
-			//	continue;
-				
+				// continue;
+
 				$product=new Product($transaction_locations['product_key']);
 				$picking_note=$transaction_locations['picking_note'];
 				$map_to_otf_key=$transaction_locations['otf'];
@@ -903,12 +912,16 @@ class DeliveryNote extends DB_Table {
 						$map_to_otf_key,
 						prepare_mysql($part_index.';'.$parts_per_product.';'.$location_index)
 					);
-				mysql_query($sql);
-					        //        print "$sql\n";
+					mysql_query($sql);
+					
+					$part_location=new PartLocation($part->sku.'_'.$location_key);
+					$part_location->update_stock();
+					
+					//        print "$sql\n";
 					$location_index++;
 				}
 
-
+				
 
 
 
@@ -1009,13 +1022,13 @@ class DeliveryNote extends DB_Table {
 
 
 				$location_index=0;
-				
-				if($part->unknown_location_associated){
-								$part->associate_unknown_location_historic($date);
+
+				if ($part->unknown_location_associated) {
+					$part->associate_unknown_location_historic($date);
 				}
-				
+
 				//print_r($locations);
-				
+
 				foreach ($locations as $location_data) {
 
 
@@ -1065,12 +1078,15 @@ class DeliveryNote extends DB_Table {
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
 					mysql_query($sql);
+					$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
+					$part_location->update_stock();
+					
 					//print "$sql\n";
 					$location_index++;
 				}
 
-				
 
+			
 				$part_index++;
 			}
 		}
@@ -1080,7 +1096,7 @@ class DeliveryNote extends DB_Table {
 
 	private function handle_to_customer($data) {
 
-		
+
 
 		if (!array_key_exists('Delivery Note Date',$data) or !$data['Delivery Note Date'] ) {
 			$data['Delivery Note Date']=    gmdate('Y-m-d H:i:s');
@@ -1294,10 +1310,22 @@ class DeliveryNote extends DB_Table {
 	}
 
 	function delete() {
+		$parts_to_update_stock=array();
+		$sql=sprintf("select `Part SKU`,`Location Key` from  `Inventory Transaction Fact` where `Delivery Note Key`=%d  and `Inventory Transaction Type`='Order In Process'  ",
+			$this->id);
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$parts_to_update_stock[]=$row['Part SKU'].'_'.$row['Location Key'];
+		}
+
 		$sql=sprintf("delete from  `Inventory Transaction Fact` where `Delivery Note Key`=%d  and `Inventory Transaction Type`='Order In Process'  ",
 			$this->id);
 		mysql_query($sql);
 
+		foreach ($parts_to_update_stock as $part_to_update_stock) {
+			$part_location=new PartLocation($part_to_update_stock);
+					$part_location->update_stock();
+		}
 
 		$orders=$this->get_orders_objects();
 		$invoices=$this->get_invoices_objects();
