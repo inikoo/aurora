@@ -3549,6 +3549,19 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array()
 		),
+		'delivery_notes'=>array(
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'where'=>'where true',
+			'f_field'=>'public_id',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array()
+		)
 
 	),
 

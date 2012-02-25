@@ -2252,7 +2252,7 @@ function picking_aid_sheet() {
 			'used_in'=>$row['Part XHTML Currently Used In'],
 			'quantity'=>number($row['Required']+$row['Given']),
 			//'location'=>sprintf($row['Location Code'].'<img src="art/icons/info_bw.png" onClick="get_locations(this,{$_id})">'),
-			'location'=>sprintf("%s <img src='art/icons/info_bw.png' onClick='get_locations(this,%d)'>", $row['Location Code'], $_id),
+			'location'=>sprintf(" <img width='12px' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> %s", $_id, $row['Location Code']),
 			'check_mark'=>(!$todo?'&#x2713;':'<span style="color:#ccc">&#x2713;</span>'),
 			'add'=>($todo?'+':'<span style="color:#ccc">+</span>'),
 			'remove'=>(($row['Picked']-$row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
@@ -3310,7 +3310,7 @@ $result.=sprintf('<td><a href="location.php?id=%s">%s </a>
 						<td style="%s" class="button"> <img style="cursor:pointer" sku_formated="%s" location="%s" id="part_location_add_stock_%s_%s" src="art/icons/lorry.png" title="add stock" alt="add stock" onclick="add_stock_part_location(%s,%s)" /></td>
 						<td style="%s" class="button"> <img style="%s cursor:pointer" sku_formated="%s" location="%s" id="part_location_delete_%s_%s" src="art/icons/cross_bw.png" title="delete" alt="delete" onclick="delete_part_location(%s,%s)" /><img style="%s cursor:pointer" id="part_location_lost_items_%s_%s" src="art/icons/package_delete.png" title="lost" alt="lost" onclick="lost(%s,%s)" /></td>
 						<td style="%s" class="button"><img style="cursor:pointer" sku_formated="%s" location="%s" id="part_location_move_items_%s_%s" src="art/icons/package_go.png" title="move" alt="move" onclick="move(%s,%s)" /></td>
-						<tr style="%s"><td colspan="6"><div id="add_location_button" class="buttons small left"><button onclick="add_location(%s)">Add Location</button></div></td></tr>'
+						'
 						,$location['LocationKey']
 						,$location['LocationCode']
 						,$part->get_sku()
@@ -3329,12 +3329,13 @@ $result.=sprintf('<td><a href="location.php?id=%s">%s </a>
 						,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
 						,(!$modify_stock)?_('display:none'):'',($location['QuantityOnHand']!=0)?_('display:none;'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'], $location['LocationKey'], $location['PartSKU'],$location['LocationKey'],($location['QuantityOnHand']==0)?_('display:none;'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
 						,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'], $location['PartSKU'],$location['LocationKey'],$location['PartSKU'], $location['LocationKey']
-						,(!$modify_stock)?_('display:none'):'',$location['PartSKU']);
+						);
 
 
 $result.='</tr>';
 }
-$result.='</table>';
+$result.=sprintf('<tr style="%s"><td colspan="6"><div id="add_location_button" class="buttons small left"><button onclick="add_location(%s)">Add Location</button></div></td></tr></table>'
+		,(!$modify_stock)?_('display:none'):'',$location['PartSKU']);
 
 $response= array(
 		'state'=>200,
