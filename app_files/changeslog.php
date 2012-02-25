@@ -5648,4 +5648,5 @@ INSERT INTO `User Dimension` (`User Key`, `User Handle`, `User Password`, `User 
 
 
 
-
+ALTER TABLE `Search Full Text Dimension` ADD INDEX ( `Subject Key` ) ;
+ALTER TABLE `Inventory Transaction Fact` ORDER BY `Date` DESC;

@@ -36,7 +36,7 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
-$set_part_as_available=false;
+$set_part_as_available=true;
 $software='Get_Products.php';
 $version='V 1.0';
 
