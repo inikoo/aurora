@@ -127,6 +127,7 @@
 		<li><span class="item {if $view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
 		<li><span class="item {if $view=='transactions'}selected{/if}" id="transactions"> <span> {t}Stock Transactions{/t}</span></span></li>
 		<li><span class="item {if $view=='history'}selected{/if}" id="history"> <span> {t}Stock History{/t}</span></span></li>
+		<li><span class="item {if $view=='delivery_notes'}selected{/if}" id="delivery_notes"> <span> {t}Delivery Notes{/t}</span></span></li>
 		<li><span class="item {if $view=='purchase_orders'}selected{/if}" id="purchase_orders"> <span> {t}Purchase Orders{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
@@ -861,7 +862,18 @@
 			</div>
 		</div>
 	</div>
-	<div id="block_purchase_orders" class="block data_table" style="{if $view!='purchase_orders'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+<div id="block_purchase_orders" class="block data_table" style="{if $view!='puchase_orders'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+</div>
+	<div id="block_delivery_notes" class="block data_table" style="{if $view!='delivery_notes'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=2 } 
+		<div class="clean_table_controls">
+			<div>
+				<span style="margin:0 5px" id="paginator2"></span> 
+			</div>
+		</div>
+		<div id="table2" style="font-size:85%" class="data_table_container dtable btable ">
+		</div>
+
 	</div>
 </div>
 </div>
