@@ -5650,3 +5650,5 @@ INSERT INTO `User Dimension` (`User Key`, `User Handle`, `User Password`, `User 
 
 ALTER TABLE `Search Full Text Dimension` ADD INDEX ( `Subject Key` ) ;
 ALTER TABLE `Inventory Transaction Fact` ORDER BY `Date` DESC;
+ALTER TABLE `Part Dimension` ADD `Part Current Stock In Process` FLOAT NOT NULL DEFAULT '0' AFTER `Part Current On Hand Stock` ,ADD `Part Current Stock Picked` FLOAT NOT NULL DEFAULT '0' AFTER `Part Current Stock In Process` ;
+ALTER TABLE `Part Location Dimension` ADD `Quantity In Process` FLOAT NOT NULL DEFAULT '0' AFTER `Quantity On Hand` ;

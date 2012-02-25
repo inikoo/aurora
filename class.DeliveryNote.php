@@ -1079,6 +1079,8 @@ class DeliveryNote extends DB_Table {
 					);
 					mysql_query($sql);
 					$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
+					
+					
 					$part_location->update_stock();
 					
 					//print "$sql\n";
@@ -1144,7 +1146,8 @@ class DeliveryNote extends DB_Table {
 
 				mysql_query($sql);
 
-			} else {
+			} 
+			else {
 
 				$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='Sale' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
 					$this->id,
@@ -1154,6 +1157,9 @@ class DeliveryNote extends DB_Table {
 
 				mysql_query($sql);
 			}
+			
+			$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+					$part_location->update_stock();
 
 		}
 
@@ -2284,7 +2290,8 @@ class DeliveryNote extends DB_Table {
 			);
 			mysql_query($sql);
 
-
+$part_location=new PartLocation($sku.'_'.$location_key);
+					$part_location->update_stock();
 
 			$otf_key=$row['Map To Order Transaction Fact Key'];
 

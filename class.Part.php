@@ -588,6 +588,10 @@ class part extends DB_Table {
 
 		switch ($key) {
 
+		case('Current Stock Available'):
+
+	return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process']);
+
 		case('Cost'):
 			global $corporate_currency;
 			return money($this->data['Part Current Stock Cost Per Unit'],$corporate_currency);
@@ -722,17 +726,20 @@ class part extends DB_Table {
 	function get_current_stock() {
 		$stock=0;
 		$value=0;
-		$sql=sprintf("select sum(`Quantity On Hand`) as stock ,sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
+		$in_process=0;
+		$sql=sprintf("select sum(`Quantity On Hand`) as stock ,sum(`Quantity In Process`) as in_process ,sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
 		$res=mysql_query($sql);
 		//print $sql;
 		if ($row=mysql_fetch_array($res)) {
 			$stock=round($row['stock'],3);
+			$in_process=round($row['in_process'],3);
 			$value=$row['value'];
+			
 		}
 
 
 
-		return array($stock,$value);
+		return array($stock,$value,$in_process);
 
 	}
 
@@ -746,7 +753,6 @@ class part extends DB_Table {
 		if ($row=mysql_fetch_array($res)) {
 			$stock=$row['stock'];
 			$value=$row['value'];
-
 		}
 		return array($stock,$value);
 	}
@@ -836,18 +842,34 @@ class part extends DB_Table {
 	
 	
 	
-		
 	
-	
-		//print_r($this->get_current_stock());
-		list($stock,$value)=$this->get_current_stock();
+
+		$sql=sprintf("select sum(ifnull(`Picked`,0)) as picked from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Order In Process'"
+			,$this->id
+		);
+		$res=mysql_query($sql);
+		$picked=0;
+		if ($row=mysql_fetch_array($res)) {
+			$picked=round($row['picked'],3);
+		}
+
+
+		list($stock,$value,$in_process)=$this->get_current_stock();
 
 		$this->data['Part Current Stock']=$stock;
 		$this->data['Part Current Value']=$value;
-
-		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f where  `Part SKU`=%d   "
+		$this->data['Part Current Stock In Process']=$in_process;
+		$this->data['Part Current Stock Picked']=$picked;
+		$this->data['Part Current On Hand Stock']=$stock-$picked;
+		
+		
+		
+		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f,`Part Current Stock In Process`=%f,`Part Current Stock Picked`=%f,`Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
 			,$stock
 			,$value
+			,$in_process
+			,$picked
+			,$stock-$picked
 			,$this->id
 		);
 		mysql_query($sql);
@@ -1130,7 +1152,7 @@ class part extends DB_Table {
 		$locations_data=array();
 		while ($row=mysql_fetch_assoc($res)) {
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-			list($stock,$value)=$part_location->get_stock();
+			list($stock,$value,$in_process)=$part_location->get_stock();
 			$locations_data[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
 
 		}
@@ -1256,7 +1278,7 @@ $date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
 
 			if ($part_location->is_associated($date)) {
-				list($stock,$value)=$part_location->get_stock($date);
+				list($stock,$value,$in_process)=$part_location->get_stock($date);
 				$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
 
 			}
