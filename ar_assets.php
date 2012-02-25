@@ -214,6 +214,12 @@ case('invoices_per_store'):
 case('delivery_notes_per_store'):
 	list_delivery_notes_per_store();
 	break;
+case('delivery_notes_per_part'):
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'key')
+		));
+	list_delivery_notes_per_part($data);
+	break;
 case('product_code_timeline'):
 	product_code_timeline();
 	break;
@@ -11232,6 +11238,261 @@ function list_customers_who_use_deal() {
 		)
 	);
 	echo json_encode($response);
+}
+
+function list_delivery_notes_per_part($data){
+
+if (isset( $_REQUEST['parent_key'])){
+$parent_key=$_REQUEST['parent_key'];
+}else{
+return;
+}
+
+$conf=$_SESSION['state']['part']['delivery_notes'];
+
+	if (isset( $_REQUEST['elements']))
+		$elements=$_REQUEST['elements'];
+	else
+		$elements=$conf['elements'];
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$conf['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$conf['to'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['view']))
+		$view=$_REQUEST['view'];
+	else
+		$view='';//$conf['view'];
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+	list($date_interval,$error)=prepare_mysql_dates($from,$to);
+	if ($error) {
+		list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+	} else {
+		$_SESSION['state']['part']['delivery_notes']['from']=$from;
+		$_SESSION['state']['part']['delivery_notes']['to']=$to;
+	}
+
+
+		$_SESSION['state']['part']['delivery_notes']=
+			array(
+			'view'=>$view,
+			'order'=>$order,
+			'order_dir'=>$order_direction,
+			'nr'=>$number_results,
+			'sf'=>$start_from,
+			'where'=>$where,
+			'f_field'=>$f_field,
+			'f_value'=>$f_value,
+			'from'=>$from,
+			'to'=>$to,
+			'elements'=>$elements,
+			'f_show'=>$_SESSION['state']['part']['delivery_notes']['f_show']
+		);
+	
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+	$wheref='';
+
+	if ($f_field=='note' and $f_value!='') {
+		// $wheref.=" and  `Note` like '%".addslashes($f_value)."%'  or  `Note` REGEXP '[[:<:]]".$f_value."'  ";
+		$wheref.=" and  `Note` like '".addslashes($f_value)."%'  ";
+	}
+
+
+		$where=$where.sprintf(" and `Part SKU`=%d ",$parent_key);
+
+
+
+
+
+
+
+	$sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref group by `Delivery Note Key`";
+//print $sql;exit;
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Inventory Transaction Fact`   $where group by `Delivery Note Key` ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+
+
+	$rtext=$total.' '.ngettext('delivery note','delivery notes',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+
+
+	if ($total_records==0) {
+		$rtext=_('No delivery notes');
+		$rtext_rpp='';
+	}
+
+
+
+
+	$rtext=$total_records." ".ngettext('delivery note','delivery notes',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('note'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("There isn't any delivery note like")." <b>".$f_value."*</b> ";
+			break;
+
+		}
+	}
+	else if ($filtered>0) {
+			switch ($f_field) {
+			case('note'):
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total "._('delivery notes with')." <b>".$f_value."*</b>";
+				break;
+
+			}
+		}
+	else
+		$filter_msg='';
+
+
+
+	$order=' `Date` desc , `Inventory Transaction Key` desc ';
+	$order_direction=' ';
+
+
+	$sql="select * from `Inventory Transaction Fact` ITF left join `Delivery Note Dimension` DN on (ITF.`Delivery Note Key`=DN.`Delivery Note Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+
+
+
+
+	//print $sql;exit;
+	$result=mysql_query($sql);
+	$adata=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+				$order_id=sprintf('<a href="dn.php?id=%d">%s</a>',$row['Delivery Note Key'],$row['Delivery Note ID']);
+				$customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Delivery Note Customer Key'],$row['Delivery Note Customer Name']);
+
+
+				$type=$row['Delivery Note Type'];
+
+				switch ($row['Delivery Note Parcel Type']) {
+				case('Pallet'):
+					$parcel_type='P';
+					break;
+				case('Envelope'):
+					$parcel_type='e';
+					break;
+				default:
+					$parcel_type='b';
+
+				}
+
+				if ($row['Delivery Note Number Parcels']=='') {
+					$parcels='?';
+				}
+				elseif ($row['Delivery Note Parcel Type']=='Pallet' and $row['Delivery Note Number Boxes']) {
+					$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type.' ('.$row['Delivery Note Number Boxes'].' b)';
+				}
+				else {
+					$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type;
+				}
+				if ($row['Delivery Note State']=='Dispatched')
+					$date=strftime("%e %b %y", strtotime($row['Delivery Note Date']));
+				else
+					$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
+				$adata[]=array(
+					'id'=>$order_id
+					,'customer'=>$customer
+					,'date'=>$date
+					,'type'=>$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
+					,'orders'=>$row['Delivery Note XHTML Orders']
+					,'invoices'=>$row['Delivery Note XHTML Invoices']
+					,'weight'=>number($row['Delivery Note Weight'],1,true).' Kg'
+					,'parcels'=>$parcels
+
+
+				);
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records-$filtered,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);	
 }
 
 ?>
