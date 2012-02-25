@@ -36,6 +36,7 @@ class MYPDF extends TCPDF {
             } else {
                 $this->x = $this->original_lMargin;
             }
+
             if (($headerdata['logo']) AND ($headerdata['logo'] != K_BLANK_IMAGE)) {
                 $imgtype = $this->getImageFileType(K_PATH_IMAGES.$headerdata['logo']);
                 if (($imgtype == 'eps') OR ($imgtype == 'ai')) {
@@ -56,13 +57,14 @@ class MYPDF extends TCPDF {
             if ($this->getRTL()) {
                 $header_x = $this->original_rMargin + ($headerdata['logo_width'] * 1.1);
             } else {
-                $header_x = $this->original_lMargin + ($headerdata['logo_width'] * 1.1);
+                $header_x = $this->original_lMargin ;
             }
-            $cw = $this->w - $this->original_lMargin - $this->original_rMargin - ($headerdata['logo_width'] * 1.1) -20;
+            $cw = $this->w - $this->original_lMargin - $this->original_rMargin - ($headerdata['logo_width'] * 1.1)+20;
             $this->SetTextColor(0, 0, 0);
             // header title
             $this->SetFont($headerfont[0], 'B', $headerfont[2] + 1);
             $this->SetX($header_x);
+	    //$this->SetY(15);
             $this->Cell($cw, $cell_height, $headerdata['title'], 0, 1, '', 0, '', 0);
             // header string
             $this->SetFont($headerfont[0], $headerfont[1], $headerfont[2]);
@@ -110,6 +112,8 @@ class MYPDF extends TCPDF {
             // reset header xobject template at each page
             $this->header_xobjid = -1;
         }
+//$file, $x='', $y='', $w=0, $h=0, $type='', $link='', $align='', $resize=false, $dpi=300, $palign='', $ismask=false, $imgmask=false, $border=0, $fitbox=false, $hidden=false, $fitonpage=false, $alt=false, $altimgs=array()) {
+//$this->Image('./art/scs.jpg', 10, 15, 30.4, 8.6, 'JPG', 'http://www.inikoo.com', '', true, 500, '', false, false, 0, false, false, false);
     }
 
 
@@ -122,7 +126,7 @@ class MYPDF extends TCPDF {
         $number_columns=count($columns);
         $i=1;
         foreach($columns as $column) {
-            $this->MultiCell($column['w'], 0, $column['txt'],$column['border'] , $column['align'], 0, ($i==$number_columns?1:2), ($i==1?'':$this->GetX()), ($i==1?'':$y_start), true, 0);
+		$this->MultiCell($column['w'], 0, $column['txt'],$column['border'], $column['align'], 0, ($i==$number_columns?1:2), ($i==1?'':$this->GetX()), ($i==1?'':$y_start), true, 0);
             $page_end[]=$this->getPage();
             $y_end[]= $this->GetY();
 
@@ -152,7 +156,16 @@ class MYPDF extends TCPDF {
         $this->SetXY($this->GetX(),max($y_end));
     }
 
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-15);
+        // Set font
+        $this->SetFont('helvetica', 'I', 8);
+        // Page number
+	$this->Cell(0, 10, 'Powered by Inikoo ®', 0, false, 'L', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 
+    }
 
 }
 
@@ -170,7 +183,7 @@ $pdf->SetSubject(_('Order Picking Aid'));
 
 $header_text=$dn->data['Delivery Note Customer Name'];
 
-$pdf->SetHeaderData(false, 0, $dn->data['Delivery Note ID'], $header_text);
+$pdf->SetHeaderData('../../../art/scs.jpg', 30.4, $dn->data['Delivery Note ID'], $header_text);
 
 // set header and footer fonts
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -199,7 +212,7 @@ $pdf->setLanguageArray($l);
 $pdf->setFontSubsetting(true);
 
 
-$pdf->SetFont('helvetica', '', 6, '', true);
+$pdf->SetFont('helvetica', '', 9, '', true);
 
 
 $pdf->setCellPaddings(1,0.5,1,0.5);
@@ -210,14 +223,12 @@ $pdf->AddPage();
 // Set some content to print
 $pdf->ln(3);
 $columns=array(
-             array('w'=>15,'txt'=>'SKU','border'=>'TB','align'=>'L'),
-             array('w'=>50,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
-             array('w'=>55,'txt'=>_('Notes'),'border'=>'TB','align'=>'L'),
-             array('w'=>35,'txt'=>_('Location'),'border'=>'TB','align'=>'L'),
-             array('w'=>8,'txt'=>'Q','border'=>'TB','align'=>'R'),
-             array('w'=>0,'txt'=>_('Observations'),'border'=>'TB','align'=>'L'),
-
-
+		array('w'=>30,'txt'=>_('Code'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+		array('w'=>40,'txt'=>_('Location'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+		array('w'=>20,'txt'=>'Order','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
+		//  array('w'=>15,'txt'=>'SKU','border'=>'TB','align'=>'L'),
+		array('w'=>100,'txt'=>_('Product'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
+		// array('w'=>0,'txt'=>_('Observations'),'border'=>'TB','align'=>'L'),
          );
 
 $pdf->MultiRow($columns);
@@ -233,12 +244,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
     $sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
-                 array('w'=>15,'txt'=>$sku,'border'=>'T','align'=>'L'),
-                 array('w'=>50,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>55,'txt'=> strip_tags($row['Picking Note']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>35,'txt'=>$row['Location Code'],'border'=>'T','align'=>'L'),
-                 array('w'=>8,'txt'=>$row['Required'],'border'=>'T','align'=>'R'),
-                 array('w'=>0,'txt'=>'','border'=>'T','align'=>'L')
+		array('w'=>30,'txt'=> strip_tags($row['Picking Note']) ,'border'=>array('B' => array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		array('w'=>40,'txt'=>$row['Location Code'],'border'=>array('B' => array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		array('w'=>20,'txt'=>$row['Required'],'border'=>array('B' => array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
+		//  array('w'=>15,'txt'=>$sku,'border'=>'T','align'=>'L'),
+		array('w'=>100,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>array('B' => array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		// array('w'=>0,'txt'=>'','border'=>'T','align'=>'L')
 
 
              );
