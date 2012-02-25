@@ -424,6 +424,8 @@ $parts_to_update_stock[]=$row_q['Part SKU'].'_'.$row_q['Location Key'];
 	$sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
 	if (!mysql_query($sql))
 		print "$sql Warning can no delete oldhidt nio prod";
+		
+	
 }
 
 
@@ -709,6 +711,8 @@ function create_order($data) {
 
 	//print "sending to warehouse\n";
 
+	$order->update_stock=false;	
+	
 	if (count($data_dn_transactions)>0) {
 		$dn=$order->send_to_warehouse($date_order);
 

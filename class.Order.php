@@ -35,6 +35,7 @@ class Order extends DB_Table {
 
 
 	var $ghost_order=false;
+	var $update_stock=true;	
 	public $skip_update_product_sales=false;
 	var $skip_update_after_individual_transaction=true;
 	function __construct($arg1 = false, $arg2 = false) {
@@ -263,6 +264,7 @@ class Order extends DB_Table {
 
 
 		$dn=new DeliveryNote('create',$data_dn,$this);
+		$dn->update_stock=$this->update_stock;
 		$dn->create_inventory_transaction_fact($this->id,$extra_data);
 		$this->update_delivery_notes('save');
 		$this->data['Order Current Dispatch State']='Ready to Pick';

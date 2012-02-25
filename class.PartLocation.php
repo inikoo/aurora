@@ -1032,23 +1032,26 @@ class PartLocation extends DB_Table {
 
 
 
-		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,sum(ifnull(`Required`-`Picked`,0)) as in_process ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
+		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock,sum(ifnull(`Required`,0)) as required ,sum(ifnull(`Picked`,0)) as picked ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
 			,prepare_mysql($date)
 			,$this->part_sku
 			,$this->location_key
 		);
+		
+	
+		
 		$res=mysql_query($sql);
 		//print "$sql\n\n";;
 		//exit;
 		$stock=0;
 		$value=0;
-		
+	
 		$in_process=0;
 		if ($row=mysql_fetch_array($res)) {
 			$stock=round($row['stock'],3);
 			$value=$row['value'];
 			
-			$in_process=round($row['in_process'],3);
+			$in_process=round(($row['required']-$row['picked']),3);
 		
 		}
 

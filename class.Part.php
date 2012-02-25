@@ -590,7 +590,7 @@ class part extends DB_Table {
 
 		case('Current Stock Available'):
 
-	return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process']);
+			return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process']);
 
 		case('Cost'):
 			global $corporate_currency;
@@ -734,7 +734,7 @@ class part extends DB_Table {
 			$stock=round($row['stock'],3);
 			$in_process=round($row['in_process'],3);
 			$value=$row['value'];
-			
+
 		}
 
 
@@ -839,10 +839,10 @@ class part extends DB_Table {
 	}
 
 	function update_stock() {
-	
-	
-	
-	
+
+
+
+
 
 		$sql=sprintf("select sum(ifnull(`Picked`,0)) as picked from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Order In Process'"
 			,$this->id
@@ -861,9 +861,9 @@ class part extends DB_Table {
 		$this->data['Part Current Stock In Process']=$in_process;
 		$this->data['Part Current Stock Picked']=$picked;
 		$this->data['Part Current On Hand Stock']=$stock-$picked;
-		
-		
-		
+
+
+
 		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f,`Part Current Stock In Process`=%f,`Part Current Stock Picked`=%f,`Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
 			,$stock
 			,$value
@@ -1207,7 +1207,7 @@ class part extends DB_Table {
 		if (!$date) {
 			$date=gmdate("Y-m-d H:i:s");
 		}
-$date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
+		$date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
 		$location_key=1;
 
 
@@ -1242,7 +1242,7 @@ $date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
 			$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type`='Disassociate' and `Date`>%s order by `Date`  ",$this->sku,$location_key,prepare_mysql($date));
 
 			$res2=mysql_query($sql);
-		//	print $sql;
+			// print $sql;
 			if ($row2=mysql_fetch_array($res2)) {
 
 			}else {
@@ -1270,19 +1270,33 @@ $date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
 
 		$locations=array();
 		$was_associated=array();
-		$sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d   and `Location Mainly Used For`='Picking' group by ITF.`Location Key` order by  ITF.`Location Key` desc  ",$this->sku);
+		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d    ",$this->sku);
 		// print $sql;
 
 		$result=mysql_query($sql);
+		$_locations=array();
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-
-			if ($part_location->is_associated($date)) {
-				list($stock,$value,$in_process)=$part_location->get_stock($date);
-				$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
-
+			if(in_array($row['Location Key'],$_locations)){
+				continue;
+			}else{
+				$_locations[]=$row['Location Key'];
 			}
+		
+			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+			if ($part_location->location->data['Location Mainly Used For']='Picking') {
+
+
+
+				if ($part_location->is_associated($date)) {
+					list($stock,$value,$in_process)=$part_location->get_stock($date);
+					$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
+
+				}
+			}
+
 		}
+
+
 
 
 		//print "------------------".$this->sku."\n";
@@ -1298,6 +1312,10 @@ $date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
 			$locations[]= array('location_key'=>1,'qty'=>$qty);
 			$qty=0;
 		}else {
+			//foreach ($was_associated as $key => $row) {
+			//	$_location_key[$key]  = $row['location_key'];
+			//}
+			//array_multisort($_location_key, SORT_DESC, $was_associated);
 
 			foreach ($was_associated as $location_data) {
 				if ($qty>0) {
