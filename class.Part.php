@@ -195,9 +195,9 @@ class part extends DB_Table {
 		case('Part Status'):
 			$this->update_status($value,$options);
 			break;
-				case('Part Tariff Code'):
+		case('Part Tariff Code'):
 			$this->update_tariff_code($value,$options);
-			break;	
+			break;
 		default:
 			$base_data=$this->base_data();
 
@@ -208,9 +208,9 @@ class part extends DB_Table {
 					if ($field=='Part General Description' or $field=='Part Health And Safety')
 						$options.=' nohistory';
 					$this->update_field($field,$value,$options);
-					
-					
-					
+
+
+
 
 				}
 			}
@@ -224,17 +224,17 @@ class part extends DB_Table {
 
 
 	}
-	
-	function update_tariff_code($value,$options=''){
+
+	function update_tariff_code($value,$options='') {
 		$this->update_field('Part Tariff Code',$value,$options);
-		$product_ids=$this->get_product_ids();	
-		
-		foreach($product_ids as $product_id){
+		$product_ids=$this->get_product_ids();
+
+		foreach ($product_ids as $product_id) {
 			$product=new Product('pid',$product_id);
 			$product->update_field('Product Tariff Code',$value,$options);
 		}
 	}
-	
+
 
 	function load($data_to_be_read,$args='') {
 		switch ($data_to_be_read) {
@@ -1111,50 +1111,40 @@ class part extends DB_Table {
 		}
 
 	}
-	
+
 	function get_picking_location_key($date=false,$qty=1) {
 		if ($date) {
 			return $this->get_picking_location_historic($date,$qty);
 		}
+		$this->unknown_location_associated=false;
 		$locations=array();
-		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) ORDER BY FIELD(`Can Pick`,'Yes','No')  ",$this->sku);
-//print $sql;
+		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and `Can Pick`='Yes'  ",$this->sku);
+		//print "$sql\n";
 		$res=mysql_query($sql);
 		$locations_data=array();
 		while ($row=mysql_fetch_assoc($res)) {
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-
-
 			list($stock,$value)=$part_location->get_stock();
 			$locations_data[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
 
 		}
-		//print "===== $qty ================\n";
-		//print_r($locations_data);
+
+
 		$number_associated_locations=count($locations_data);
 
-		if ($number_associated_locations==0)
-			$locations[]=array('location_key'=>1,'qty'=>$qty);
-		elseif ($number_associated_locations==1 or $qty<=0) {
-			$locations[]=array('location_key'=>$locations_data[0]['location_key'],'qty'=>$qty);
-		}
-		else {
-			//print "===== $qty ================\n";
-			//print_r($locations_data);
-			//print_r($locations);
-			foreach ($locations_data as $location_data) {
+		if ($number_associated_locations==0) {
+			$this->unknown_location_associated=true;
+			$locations[]= array('location_key'=>1,'qty'=>$qty);
+			$qty=0;
+		}else {
 
+			foreach ($locations_data as $location_data) {
 				if ($qty>0) {
-					//                  print "caca $qty \n ";
-					//   print_r($location_data);
 					if ($location_data['stock']>=$qty) {
 						$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
-						//                     print "xxxcaca $qty \n ";
 						$qty=0;
 					}
 					elseif ($location_data['stock']>0) {
-						//                print "yyycaca $qty \n ";
-
 						$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$location_data['stock']);
 						$qty=$qty-$location_data['stock'];
 					}
@@ -1163,32 +1153,96 @@ class part extends DB_Table {
 
 
 			}
+			//print_r($locations);
+			//print "--- $qty\n";
 
-			if ($qty>0) {
+			if (count($locations)==0) {
 
-				if (count($locations))
-					$locations[0]['qty']=$locations[0]['qty']+$qty;
-				else
-					$locations[]=array('location_key'=>1,'qty'=>$qty);
-
+				$locations[]= array('location_key'=>$locations_data[0]['location_key'],'qty'=>$qty);
+				$qty=0;
 			}
-
+			if ($qty>0) {
+				$locations[0]['qty']=$locations[0]['qty']+$qty;
+			}
 
 
 		}
 
-
+		//print_r($locations);
 		return $locations;
 
 	}
-	
+
+
+	function associate_unknown_location_historic($date=false) {
+
+		if (!$date) {
+			$date=gmdate("Y-m-d H:i:s");
+		}
+$date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
+		$location_key=1;
+
+
+		$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type`='Associate' and `Date`>%s order by `Date`  ",$this->sku,$location_key,prepare_mysql($date));
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+			$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+				,$row['Inventory Transaction Key']
+			);
+			// print "$sql\n";
+			mysql_query($sql);
+
+			$details=_('Part')." SKU".sprintf("%05d",$this->sku)." "._('associated with unknown location');
+			$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+				,$this->sku
+				,$location_key
+				,"'Associate'"
+				,0
+				,0
+				,0
+				,prepare_mysql($details)
+				,prepare_mysql($date)
+
+			);
+			mysql_query($sql);
+
+		}
+
+		else {
+
+			$sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Inventory Transaction Type`='Disassociate' and `Date`>%s order by `Date`  ",$this->sku,$location_key,prepare_mysql($date));
+
+			$res2=mysql_query($sql);
+		//	print $sql;
+			if ($row2=mysql_fetch_array($res2)) {
+
+			}else {
+
+
+
+				$pl_data=array(
+					'Part SKU'=>$this->sku,
+					'Location Key'=>$location_key,
+					'Date'=>$date);
+				//print_r($pl_data);
+				$part_location=new PartLocation('find',$pl_data,'create');
+			}
+
+			//print_r($part_location);
+		}
+
+
+	}
 
 	function get_picking_location_historic($date,$qty) {
+
+		$this->unknown_location_associated=false;
 
 
 		$locations=array();
 		$was_associated=array();
-		$sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d  and  ITF.`Location Key`>0 and `Location Mainly Used For` in ('Picking','Storing') group by ITF.`Location Key` ORDER BY `Location Mainly Used For` IN ('Picking','Storing') ",$this->sku);
+		$sql=sprintf("select ITF.`Location Key` ,`Location Mainly Used For` from `Inventory Transaction Fact` ITF  left join `Location Dimension`  L on (ITF.`Location Key`=L.`Location Key`)    where `Part SKU`=%d   and `Location Mainly Used For`='Picking' group by ITF.`Location Key` order by  ITF.`Location Key` desc  ",$this->sku);
 		// print $sql;
 
 		$result=mysql_query($sql);
@@ -1197,24 +1251,27 @@ class part extends DB_Table {
 
 			if ($part_location->is_associated($date)) {
 				list($stock,$value)=$part_location->get_stock($date);
-				$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock,'used_for'=>$row['Location Mainly Used For']);
+				$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
+
 			}
 		}
+
+
+		//print "------------------".$this->sku."\n";
+		//print_r($was_associated);
+
+		//print "==================\n";
 
 
 		$number_associated_locations=count($was_associated);
 
 		if ($number_associated_locations==0) {
+			$this->unknown_location_associated=true;
 			$locations[]= array('location_key'=>1,'qty'=>$qty);
-		}
-		elseif ($number_associated_locations==1 or $qty<=0) {
-			$locations[]= array('location_key'=>$was_associated[0]['location_key'],'qty'=>$qty);
-		}
-		else {
-
+			$qty=0;
+		}else {
 
 			foreach ($was_associated as $location_data) {
-
 				if ($qty>0) {
 					if ($location_data['stock']>=$qty) {
 						$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
@@ -1229,24 +1286,33 @@ class part extends DB_Table {
 
 
 			}
+			//print_r($locations);
+			//print "--- $qty\n";
 
+			if (count($locations)==0) {
+
+				$locations[]= array('location_key'=>$was_associated[0]['location_key'],'qty'=>$qty);
+				$qty=0;
+			}
 			if ($qty>0) {
 				$locations[0]['qty']=$locations[0]['qty']+$qty;
-
 			}
 
 
-
 		}
+		if ($this->unknown_location_associated)
+			print "\n".$this->sku." unknown location addes\n";
 
 
+		//print_r($locations);
+		//print "`~~~~~~~~~~~~~~~\n";
 
 		return $locations;
 
 
 	}
 
-	
+
 
 	function get_locations($for_smarty=false) {
 
