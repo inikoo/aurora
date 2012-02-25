@@ -226,6 +226,7 @@ $columns=array(
 		array('w'=>30,'txt'=>_('Code'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
 		array('w'=>40,'txt'=>_('Location'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
 		array('w'=>20,'txt'=>'Order','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
+array('w'=>15,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'R'),
 		//  array('w'=>15,'txt'=>'SKU','border'=>'TB','align'=>'L'),
 		array('w'=>100,'txt'=>_('Product'),'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0))),'align'=>'L'),
 		// array('w'=>0,'txt'=>_('Observations'),'border'=>'TB','align'=>'L'),
@@ -244,11 +245,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
     $sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
-		array('w'=>30,'txt'=> strip_tags($row['Picking Note']) ,'border'=>array('B' => array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
-		array('w'=>40,'txt'=>$row['Location Code'],'border'=>array('B' => array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
-		array('w'=>20,'txt'=>$row['Required'],'border'=>array('B' => array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
+		array('w'=>30,'txt'=> strip_tags($row['Picking Note']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		array('w'=>40,'txt'=>$row['Location Code'],'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		array('w'=>20,'txt'=>$row['Required'],'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
+array('w'=>15,'txt'=>'','border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'R'),
 		//  array('w'=>15,'txt'=>$sku,'border'=>'T','align'=>'L'),
-		array('w'=>100,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>array('B' => array('width' => 0, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
+		array('w'=>100,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>array('B' => array('width' => 0.2, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(192, 192, 192))),'align'=>'L'),
 		// array('w'=>0,'txt'=>'','border'=>'T','align'=>'L')
 
 
