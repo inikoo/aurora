@@ -199,6 +199,15 @@ case('cancel_post_transactions'):
 case('picking_aid_sheet'):
 	picking_aid_sheet();
 	break;
+case('get_locations'):
+
+$data=prepare_values($_REQUEST,array(
+
+			'part_sku'=>array('type'=>'key')
+		));
+
+	get_locations($data);
+	break;
 case('packing_aid_sheet'):
 	packing_aid_sheet();
 	break;
@@ -2235,13 +2244,15 @@ function picking_aid_sheet() {
 
 //print_r($row);exit;
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
+		$_id=$row['Part SKU'];
 		$data[]=array(
 			'itf_key'=>$row['Inventory Transaction Key'],
 			'sku'=>$sku,
 			'description'=>$row['Part Unit Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':'').' '.$row['Inventory Transaction Key'],
 			'used_in'=>$row['Part XHTML Currently Used In'],
 			'quantity'=>number($row['Required']+$row['Given']),
-			'location'=>$row['Location Code'].' <img src="art/icons/info_bw.png" onClick="get_locations($row['Part SKU'])">',
+			//'location'=>sprintf($row['Location Code'].'<img src="art/icons/info_bw.png" onClick="get_locations(this,{$_id})">'),
+			'location'=>sprintf("%s <img src='art/icons/info_bw.png' onClick='get_locations(this,%d)'>", $row['Location Code'], $_id),
 			'check_mark'=>(!$todo?'&#x2713;':'<span style="color:#ccc">&#x2713;</span>'),
 			'add'=>($todo?'+':'<span style="color:#ccc">+</span>'),
 			'remove'=>(($row['Picked']-$row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
@@ -3276,5 +3287,63 @@ function update_percentage_discount($data) {
 	echo json_encode($response);
 
 }
+
+function get_locations($data){
+	//$part_sku=$_REQUEST['part_sku'];
+	//print $part_sku;
+
+	//$sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d", $part_sku);
+	//print $sql;
+
+$part= new part('sku',$data['part_sku']);
+$user=$data['user'];
+$modify_stock=$user->can_edit('product stock');
+
+$result='<table border="0" id="part_locations" class="show_info_product" style="width:260px;margin-top:10px">';
+foreach($part->get_locations(true) as $location){
+//print_r($location);
+$result.=sprintf('<tr id="part_location_tr_%s_%s">', $location['PartSKU'], $location['LocationKey']);
+$result.=sprintf('<td><a href="location.php?id=%s">%s </a> 
+						<img style="cursor:pointer;" sku_formated="%s" location="%s" id="part_location_can_pick_%s_%s"  can_pick="%s" src="%s"  alt="can_pick" onclick="save_can_pick(%s,%s)" /> </td>
+						<td class="quantity" id="part_location_quantity_%s_%s" quantity="%s">%s</td>
+						<td style="%s" class="button"><img style="cursor:pointer" id="part_location_audit_%s_%s" src="art/icons/note_edit.png" title="audit" alt="audit" onclick="audit(%s,%s)" /></td>
+						<td style="%s" class="button"> <img style="cursor:pointer" sku_formated="%s" location="%s" id="part_location_add_stock_%s_%s" src="art/icons/lorry.png" title="add stock" alt="add stock" onclick="add_stock_part_location(%s,%s)" /></td>
+						<td style="%s" class="button"> <img style="%s cursor:pointer" sku_formated="%s" location="%s" id="part_location_delete_%s_%s" src="art/icons/cross_bw.png" title="delete" alt="delete" onclick="delete_part_location(%s,%s)" /><img style="%s cursor:pointer" id="part_location_lost_items_%s_%s" src="art/icons/package_delete.png" title="lost" alt="lost" onclick="lost(%s,%s)" /></td>
+						<td style="%s" class="button"><img style="cursor:pointer" sku_formated="%s" location="%s" id="part_location_move_items_%s_%s" src="art/icons/package_go.png" title="move" alt="move" onclick="move(%s,%s)" /></td>
+						<tr style="%s"><td colspan="6"><div id="add_location_button" class="buttons small left"><button onclick="add_location(%s)">Add Location</button></div></td></tr>'
+						,$location['LocationKey']
+						,$location['LocationCode']
+						,$part->get_sku()
+						,$location['LocationCode']
+						,$location['PartSKU']
+						,$location['LocationKey']
+						,($location['CanPick']=='Yes')?_('No'):_('Yes')
+						,($location['CanPick']=='Yes')?_('art/icons/basket.png'):_('art/icons/box.png')
+						,$location['PartSKU']
+						,$location['LocationKey']
+						,$location['PartSKU']
+						,$location['LocationKey']
+						,$location['QuantityOnHand']
+						,$location['FormatedQuantityOnHand']
+						,(!$modify_stock)?_('display:none'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+						,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+						,(!$modify_stock)?_('display:none'):'',($location['QuantityOnHand']!=0)?_('display:none;'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'], $location['LocationKey'], $location['PartSKU'],$location['LocationKey'],($location['QuantityOnHand']==0)?_('display:none;'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+						,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'], $location['PartSKU'],$location['LocationKey'],$location['PartSKU'], $location['LocationKey']
+						,(!$modify_stock)?_('display:none'):'',$location['PartSKU']);
+
+
+$result.='</tr>';
+}
+$result.='</table>';
+
+$response= array(
+		'state'=>200,
+		'result'=>$result
+	);
+echo json_encode($response);
+
+}
+
+
 
 ?>

@@ -12,6 +12,8 @@ YAHOO.namespace ("invoice");
 var updating_record;
 var no_dispatchable_editor_dialog;
 var pack_it_dialog;
+var dialog_locations;
+
 
 var myonCellClick = function(oArgs) {
 
@@ -354,7 +356,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				   ];
 
-		alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
+		//alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
 	    this.pick_aidDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
 	    //alert("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0&dn_key="+Dom.get('dn_key').value);
 	   
@@ -627,15 +629,36 @@ Dom.get('pack_it_Staff_Name').focus();
     
 }
 
-function get_locations(sku){
+function get_locations(e, part_sku){
+//alert(sku);
+
+    var request='ar_edit_orders.php?tipo=get_locations&part_sku='+part_sku;
+   //alert(request);  
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		    Dom.get('location_content').innerHTML=r.result;
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
 
 
-	var x =Dom.getX(this.getCell(target))-Dom.get('Editor_audit').offsetWidth+this.getCell(target).offsetWidth;
-	var y =Dom.getY(this.getCell(target));
+	region1 = Dom.getRegion(e); 
+	region2 = Dom.getRegion('dialog_locations'); 
 
-	Dom.setX('Editor_audit', x);
-	Dom.setY('Editor_audit', y);
-	audit_dialog.show();
+	var pos =[region1.right,region1.top]
+
+	Dom.setXY('dialog_locations', pos);
+
+	dialog_locations.show();
+
+
 }
 
 
@@ -652,6 +675,10 @@ Event.addListener('pick_all', "click",set_pending_as_picked);
  pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {visible : false,close:true,underlay: "none",draggable:false});
  pack_it_dialog.render();    
  Event.addListener('start_packing', "click",start_packing);
+
+
+dialog_locations = new YAHOO.widget.Dialog("dialog_locations", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_locations.render();
 
 
 }

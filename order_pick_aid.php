@@ -86,7 +86,8 @@ $js_files=array(
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
-	'order_pick_aid.js.php?dn_key='.$dn->id
+	'order_pick_aid.js.php?dn_key='.$dn->id,
+	'edit_stock.js.php'
 );
 
 $warehouse_area=new CompanyArea('code','WAH');
@@ -137,7 +138,8 @@ $smarty->assign( 'filter_name0', $filter_menu[$tipo_filter]['label'] );
 $paginator_menu=array( 10, 25, 50, 100, 500 );
 $smarty->assign( 'paginator_menu0', $paginator_menu );
 
-
+$modify_stock=$user->can_edit('product stock');
+$smarty->assign('modify_stock',$modify_stock);
 
 
 $smarty->display( $template );
