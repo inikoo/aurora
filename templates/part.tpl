@@ -1,6 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd" class="{if $part->get('Part Available')=='No' or $part->get('Part Status')=='Not In Use' }discontinued{/if}" style="padding:0;">
 	<input type="hidden" id="part_sku" value="{$part->sku}"/>
+	<input type="hidden" id="page_name" value="part"/>
 	<div style="padding: 0 20px;">
 	<input type="hidden" id="modify_stock" value="{$modify_stock}"/>
 		{include file='locations_navigation.tpl'} 

@@ -2227,7 +2227,7 @@ $data['location_key']
 //print $sql;
 
 $res=mysql_query($sql);
-$location_data=array();
+$locations_data=array();
 while($row=mysql_fetch_assoc($res)){
 $locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
 }

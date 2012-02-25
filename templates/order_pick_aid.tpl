@@ -2,7 +2,9 @@
 <div id="bd">
 	{include file='locations_navigation.tpl'}
 		<input type="hidden" id="method" value="{$warehouse->get('Warehouse Picking Aid Type')}">
-
+<input type="hidden" id="modify_stock" value="{$modify_stock}"/>
+<input type="hidden" id="stock" value=""/>
+<input type="hidden" id="page_name" value="pick_aid"/>
 	<input value="{$delivery_note->id}" id="dn_key" type="hidden" />
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pick Aid{/t})</span> 
@@ -168,4 +170,16 @@
 		</tr>
 	</table>
 </div>
+
+
+<div id="dialog_locations" style="padding:10px">
+<!--	<table style="margin:10px">
+		<tr>
+			<td>{t}Contact Name:{/t}</td>
+		</tr>
+
+	</table>-->
+<span id="location_content"></span>
+</div>
+{include file='stock_splinter.tpl'} 
 {include file='footer.tpl'} 

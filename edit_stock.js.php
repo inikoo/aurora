@@ -108,6 +108,7 @@ table_id=1
     var datasource=tables['dataSource'+table_id];
 
     var request='&tableid='+table_id;
+ if(Dom.get('page_name').value=='part')
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 
@@ -218,7 +219,7 @@ function move(sku,location_key) {
 
 	 Dom.get('location_move_other_locations').innerHTML='';
     var request='ar_warehouse.php?tipo=other_locations_quick_buttons&sku=' + sku+'&location_key='+location_key ;
-
+//alert(request);
    YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
   //alert(o.responseText);
@@ -316,6 +317,8 @@ table_id=1
     var datasource=tables['dataSource'+table_id];
 
     var request='&tableid='+table_id;
+
+    if(Dom.get('page_name').value=='part')
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 
@@ -397,6 +400,8 @@ table_id=1
     var datasource=tables['dataSource'+table_id];
 
     var request='&tableid='+table_id;
+
+ if(Dom.get('page_name').value=='part')
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 
@@ -640,6 +645,7 @@ table_id=1
     var datasource=tables['dataSource'+table_id];
 
     var request='&tableid='+table_id;
+ if(Dom.get('page_name').value=='part')
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 

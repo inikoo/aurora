@@ -85,6 +85,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      {key:"operations", label:"<?php echo _('Actions')?>", width:170,hidden:(Dom.get('method').value=='Inikoo'?false:true),sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"see_link", label:"",sortable:false,hidden:(Dom.get('method').value!='Inikoo'?false:true),className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				];
+		alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=ready_to_pick_orders");
 		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
