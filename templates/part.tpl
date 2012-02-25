@@ -78,9 +78,13 @@
 			<div style="width:280px;float:left;margin-left:20px">
 				<table class="show_info_product" style="width:260px">
 					<tr>
-						<td>{t}Stock{/t}:<br>({$part->get_unit($part->get('Part Current Stock'))})</td>
-						<td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
+						<td>{t}Stock{/t}: <span>({$part->get_unit($part->get('Part Current On Hand Stock'))})</span></td>
+						<td class="stock aright" id="stock">{$part->get('Part Current On Hand Stock')}</td>
 					</tr>
+					<tr>
+						<td class="aright" colspan=2 style="padding-top:0;color:#777;font-size:90%"><b>{$part->get('Part Current Stock')}</b><b>-[{$part->get('Part Current Stock Picked')}]</b> -({$part->get('Part Current Stock In Process')}) 	&rarr; {$part->get('Current Stock Available')}</td>
+					</tr>
+					
 					<tr>
 						<td style="{if $part->get('Part XHTML Available For Forecast')==''}display:none{/if}">{t}Available for{/t}:</td>
 						<td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>

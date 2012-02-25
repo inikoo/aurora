@@ -907,8 +907,8 @@ class PartLocation extends DB_Table {
 
 
 
-		list($stock,$stock_value)=$this->get_stock($date);
-		print "";
+		list($stock,$stock_value,$in_process)=$this->get_stock($date);
+		
 		if ($stock!=0) {
 			$data_inventory_audit=array(
 				'Inventory Audit Date'=>$base_data['Date'],
@@ -1002,7 +1002,7 @@ class PartLocation extends DB_Table {
 
 		$day_before_date = date("Y-m-d", strtotime($date."-1 day", strtotime($date)));
 
-		list ($open,$open_value)=$this->get_stock($day_before_date." 23:59:59");
+		list ($open,$open_value,$in_process)=$this->get_stock($day_before_date." 23:59:59");
 
 		$high=$open;
 		$low=$open;
@@ -1032,7 +1032,7 @@ class PartLocation extends DB_Table {
 
 
 
-		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
+		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,sum(ifnull(`Required`-`Picked`,0)) as in_process ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
 			,prepare_mysql($date)
 			,$this->part_sku
 			,$this->location_key
@@ -1042,15 +1042,20 @@ class PartLocation extends DB_Table {
 		//exit;
 		$stock=0;
 		$value=0;
+		
+		$in_process=0;
 		if ($row=mysql_fetch_array($res)) {
 			$stock=round($row['stock'],3);
 			$value=$row['value'];
+			
+			$in_process=round($row['in_process'],3);
+		
 		}
 
 		//print "$stock \n";
 
 
-		return array($stock,$value);
+		return array($stock,$value,$in_process);
 
 	}
 
@@ -1122,16 +1127,17 @@ class PartLocation extends DB_Table {
 
 	function update_stock() {
 
-		list($stock,$value)=$this->get_stock();
+		list($stock,$value,$in_process)=$this->get_stock();
 
-		$sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f where `Part SKU`=%d and `Location Key`=%d"
+		$sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Quantity In Process`=%f,`Stock Value`=%f where `Part SKU`=%d and `Location Key`=%d"
 			,$stock
+			,$in_process
 			,$value
 			,$this->part_sku
 			,$this->location_key
 		);
 		mysql_query($sql);
-		//  print "$sql\n";
+		 //print "$sql\n";
 		$this->part->update_stock();
 	}
 
@@ -1245,7 +1251,7 @@ class PartLocation extends DB_Table {
 		//print $this->part_sku." ".$this->location_key." $from $to \n";
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-			list($stock,$value)=$this->get_stock($row['Date'].' 23:59:59');
+			list($stock,$value,$in_process)=$this->get_stock($row['Date'].' 23:59:59');
 			list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
 			list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
 			list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');

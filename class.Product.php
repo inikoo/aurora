@@ -5438,7 +5438,7 @@ protected function update_field($field,$value,$options='') {
 		$stock_tipo_method='basic1';
 
 		// get parts;
-		$sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
+		$sql=sprintf(" select `Part Current On Hand Stock`-`Part Current Stock In Process` as stock,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPD.`Product ID`=%d  and PPD.`Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
 		//print "$sql\n";
 
 		$result=mysql_query($sql);
@@ -5446,8 +5446,8 @@ protected function update_field($field,$value,$options='') {
 		$change=false;
 		$stock_error=false;
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			if (is_numeric($row['Part Current Stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
-				$_stock=$row['Part Current Stock']/$row['Parts Per Product'];
+			if (is_numeric($row['stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
+				$_stock=$row['stock']/$row['Parts Per Product'];
 				if ($stock>$_stock) {
 					$stock=$_stock;
 					$change=true;
