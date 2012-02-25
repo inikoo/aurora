@@ -2,7 +2,7 @@
 include_once('common.php');?>
   var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
-
+var dialog_qty;
 var category_labels={'stock':'<?php echo _('Stock Keeping Units')?>','value':'<?php echo _('Stock value')?>'};
 
 
@@ -292,6 +292,48 @@ Dom.setStyle(['show_stock_history_chart'],'display','none')
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-show_stock_history_chart&value=1' ,{});
 }
 
+function show_qty(e, location_key, min ,max){
+	region1 = Dom.getRegion(e); 
+	region2 = Dom.getRegion('dialog_qty'); 
+
+	var pos =[region1.right,region1.top]
+
+	Dom.setXY('dialog_qty', pos);
+	
+	Dom.get('min_qty').value=min;
+	Dom.get('max_qty').value=max;
+	Dom.get('part_location').value=location_key;
+	dialog_qty.show();
+}
+
+function save_qty(){
+//alert(sku);
+//alert(Dom.get('part_location').value + ':'+Dom.get('part_sku').value);//return;
+
+//ar_edit_warehouse.php?tipo=edit_part_location&key=min&newvalue=4&oldvalue=null&location_key=&part_sku=7
+    var request='ar_edit_warehouse.php?tipo=update_max_min&newvalue_min='+Dom.get('min_qty').value+'&newvalue_max='+Dom.get('max_qty').value+'&location_key='+Dom.get('part_location').value+'&part_sku='+Dom.get('part_sku').value
+   //alert(request);  
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		   dialog_qty.hide();
+		   window.location.reload();
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+
+
+
+
+
+}
+
 function init(){
 
 init_search('parts');
@@ -320,6 +362,12 @@ Event.addListener(ids, "click", change_snapshot_granularity);
 
    YAHOO.util.Event.addListener('hide_stock_history_chart', "click",hide_stock_history_chart);
    YAHOO.util.Event.addListener('show_stock_history_chart', "click",show_stock_history_chart);
+
+
+dialog_qty = new YAHOO.widget.Dialog("dialog_qty", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_qty.render();
+
+Event.addListener('close_qty', "click", dialog_qty.hide,dialog_qty , true);
 
 }
  YAHOO.util.Event.onDOMReady(init);

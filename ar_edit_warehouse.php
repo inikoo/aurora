@@ -26,6 +26,7 @@ if(!isset($_REQUEST['tipo']))
 $tipo=$_REQUEST['tipo'];
 
 switch($tipo){
+
 case('part_location_update_can_pick'):
 $data=prepare_values($_REQUEST,array(
 			     'sku'=>array('type'=>'key'),
@@ -55,7 +56,9 @@ case('save_description'):
 case('add_part_to_location'):
   add_part_to_location();
   break;
-
+case('update_max_min'):
+  update_max_min();
+  break;
 case('new_area'):
   new_warehouse_area();
   break;
@@ -417,6 +420,75 @@ function add_stock($data) {
     }
 
 }
+
+function update_max_min(){
+global $editor;
+
+   if(
+     !isset($_REQUEST['location_key'])
+     or !isset($_REQUEST['part_sku'])
+     or !isset($_REQUEST['newvalue_max'])
+     or !isset($_REQUEST['newvalue_min'])
+     ){
+    $response=array('state'=>400,'action'=>'error','msg'=>'');
+    echo json_encode($response);
+     return;
+  }
+  //print_r($editor);
+
+  $part_sku=$_REQUEST['part_sku'];
+  $location_key=$_REQUEST['location_key'];
+  $new_value_min=stripslashes(urldecode($_REQUEST['newvalue_min']));
+  $new_value_max=stripslashes(urldecode($_REQUEST['newvalue_max']));
+/*
+  $traslator=array(
+		   'qty'=>'Quantity On Hand',
+		   'can_pick'=>'Can Pick',
+		   'min'=>'Minimum Quantity',
+		   'max'=>'Maximum Quantity'
+		   );
+  if(array_key_exists($_REQUEST['key'],$traslator)){
+    $key=$traslator[$_REQUEST['key']];
+  }else{
+    $response=array('state'=>400,'action'=>'error','msg'=>'Unknown key '.$_REQUEST['key']);
+    echo json_encode($response);
+    return;
+  }    
+  */
+
+
+  $part_location=new PartLocation($part_sku,$location_key);
+
+ $part_location->editor=$editor;
+  if(!$part_location->ok){
+    $response=array('state'=>400,'action'=>'error','msg'=>'');
+    echo json_encode($response);
+    return;
+  }
+  $data=array('Minimum Quantity'=>$new_value_min);
+  $part_location->editor=$editor;
+  $part_location->update($data);
+  
+
+
+  $data=array('Maximum Quantity'=>$new_value_max);
+  $part_location->editor=$editor;
+  $part_location->update($data);
+
+
+  if($part_location->updated){
+    $response=array('state'=>200,'action'=>'updated');
+     echo json_encode($response);
+     return;
+  }else{
+    $response=array('state'=>400,'action'=>'nochange','msg'=>$part_location->msg);
+    echo json_encode($response);
+     return;
+
+  }
+
+}
+
 
 function update_part_location(){
   global $editor;
