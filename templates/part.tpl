@@ -2,6 +2,7 @@
 <div id="bd" class="{if $part->get('Part Available')=='No' or $part->get('Part Status')=='Not In Use' }discontinued{/if}" style="padding:0;">
 	<input type="hidden" id="part_sku" value="{$part->sku}"/>
 	<input type="hidden" id="page_name" value="part"/>
+	<input type="hidden" id="part_location" value=""/>
 	<div style="padding: 0 20px;">
 	<input type="hidden" id="modify_stock" value="{$modify_stock}"/>
 		{include file='locations_navigation.tpl'} 
@@ -100,6 +101,7 @@
 					<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
 						<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode} </a> 
 						<img style="{if $modify_stock}cursor:pointer{/if}"  sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"  can_pick="{if $location.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}"  alt="can_pick" onclick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /> </td>
+						<td onClick="show_qty(this, {$location.LocationKey}, {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}0{/if}, {if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}0{/if})" style="cursor:pointer; color:#808080">{literal}{{/literal}{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if},{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}{literal}}{/literal}</td>
 						<td class="quantity" id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}">{$location.FormatedQuantityOnHand}</td>
 						<td style="{if !$modify_stock}display:none{/if}" class="button"><img style="cursor:pointer" id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onclick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
 						<td style="{if !$modify_stock}display:none{/if}" class="button"> <img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_add_stock_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/lorry.png" title="{t}add stock{/t}" alt="{t}add stock{/t}" onclick="add_stock_part_location({$location.PartSKU},{$location.LocationKey})" /></td>
@@ -865,7 +867,7 @@
 <div id="block_purchase_orders" class="block data_table" style="{if $view!='puchase_orders'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
 </div>
 	<div id="block_delivery_notes" class="block data_table" style="{if $view!='delivery_notes'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
-		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=2 } 
+		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=5 } 
 		<div class="clean_table_controls">
 			<div>
 				<span style="margin:0 5px" id="paginator2"></span> 
@@ -918,4 +920,22 @@
 			{/foreach} 
 		</ul>
 	</div>
+</div>
+<div id="dialog_qty" style="padding:10px">
+	<table style="margin:10px">
+		<tr>
+			<td>{t}Min Qty:{/t}</td><td><input type="text" value="" id="min_qty"/></td>
+		</tr><tr>
+			<td>{t}Max Qty:{/t}</td><td><input type="text" value="" id="max_qty"/></td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<button class="positive" onclick="save_qty()">{t}Save{/t}</button> <button class="negative" id="close_qty">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>	
+
+	</table>
+
 </div>

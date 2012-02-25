@@ -220,11 +220,20 @@ class PartLocation extends DB_Table {
 		);
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($result)) {
-			if ($row['Quantity On Hand'] < $value) {
-				$this->updated=false;
-				$this->msg='Minimum Qty cannot be greater than Qty in hand';
-				return;
+/*
+			if(!is_null($row['Quantity On Hand'])){
+				if ($row['Quantity On Hand'] < $value ) {
+					
+					$this->updated=false;
+					$this->msg='Minimum Qty cannot be greater than Qty in hand';
+					return;
+				}
 			}
+			if ($row['Minimum Quantity'] < $value && !is_null($row['Minimum Quantity'])) {
+				$this->updated=false;
+				$this->msg='Minimum Qty has to be lower than Maximum Qty';
+				return;
+			}*/
 		}
 
 		$sql=sprintf("update `Part Location Dimension` set `Minimum Quantity`=%d where `Part SKU`=%d and `Location Key`=%d "
@@ -250,17 +259,17 @@ class PartLocation extends DB_Table {
 			,$this->location_key
 		);
 		$result=mysql_query($sql);
-		if ($row=mysql_fetch_assoc($result)) {
-			if ($row['Minimum Quantity'] > $value) {
+		if ($row=mysql_fetch_assoc($result)) {/*
+			if ($row['Minimum Quantity'] > $value && !is_null($row['Minimum Quantity'])) {
 				$this->updated=false;
 				$this->msg='Maximum Qty has to be greater than Minimum Qty';
 				return;
 			}
-			if ($row['Quantity On Hand'] < $value) {
+			if ($row['Quantity On Hand'] < $value  && !is_null($row['Quantity On Hand'])) {
 				$this->updated=false;
 				$this->msg='Maximum Qty cannot be greater than Qty in hand';
 				return;
-			}
+			}*/
 		}
 
 		$sql=sprintf("update `Part Location Dimension` set `Maximum Quantity`=%d where `Part SKU`=%d and `Location Key`=%d "
