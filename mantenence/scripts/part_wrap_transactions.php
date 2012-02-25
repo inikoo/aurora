@@ -54,8 +54,6 @@ while ($row=mysql_fetch_array($res)) {
 	mysql_query($sql);
 
 	//print "$sql\n";
-
-
 	$part->wrap_transactions();
 	$count++;
 	print percentage($count,$total)." ".$part->sku."  \r";

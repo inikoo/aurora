@@ -833,6 +833,12 @@ class part extends DB_Table {
 	}
 
 	function update_stock() {
+	
+	
+	
+		
+	
+	
 		//print_r($this->get_current_stock());
 		list($stock,$value)=$this->get_current_stock();
 
@@ -2458,7 +2464,7 @@ $date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
 
 
 
-			if ($this->data['Part Status']=='Discontinued') {
+			if ($this->data['Part Status']=='Not In Use') {
 
 				$sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date` desc' ,$this->sku,$location_key);
 				$last_audit_date='none';
