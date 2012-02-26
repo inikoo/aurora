@@ -844,13 +844,15 @@ class part extends DB_Table {
 
 
 
-		$sql=sprintf("select sum(ifnull(`Picked`,0)) as picked from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Order In Process'"
+		$sql=sprintf("select sum(ifnull(`Picked`,0)) as picked, sum(ifnull(`Required`,0)) as required from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Order In Process'"
 			,$this->id
 		);
 		$res=mysql_query($sql);
 		$picked=0;
+		$required=0;
 		if ($row=mysql_fetch_array($res)) {
 			$picked=round($row['picked'],3);
+			$required=round($row['required'],3);
 		}
 
 
@@ -867,7 +869,7 @@ class part extends DB_Table {
 		$sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f,`Part Current Stock In Process`=%f,`Part Current Stock Picked`=%f,`Part Current On Hand Stock`=%f where  `Part SKU`=%d   "
 			,$stock
 			,$value
-			,$in_process
+			,$required
 			,$picked
 			,$stock-$picked
 			,$this->id
@@ -1270,7 +1272,7 @@ class part extends DB_Table {
 
 		$locations=array();
 		$was_associated=array();
-		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d    ",$this->sku);
+		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
 		// print $sql;
 
 		$result=mysql_query($sql);

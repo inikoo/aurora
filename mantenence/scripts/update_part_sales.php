@@ -30,6 +30,8 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
+
+
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select * from `Part Dimension` order by `Part Total Acc Sold Amount`";
 $result=mysql_query($sql);
@@ -72,6 +74,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part->update_supplied_by();
   
   $part->update_picking_location();
+  
   $part->update_main_state();
 //$part->update_up_today_sales();
 //$part->update_interval_sales();
