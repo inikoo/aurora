@@ -396,7 +396,9 @@ function delete_old_data() {
 	$sql=sprintf("update `Order Transaction Fact`  `Invoice Transaction Net Refund Amount`=0,`Invoice Transaction Tax Refund Amount`=0,`Invoice Transaction Outstanding Refund Net Balance`=0 ,`Invoice Transaction Outstanding Refund Tax Balance`=0,`Refund Key`=NULL,`Refund Metadata`='' where `Refund Metadata`=%s   and `Order Key`>0  "
 		,prepare_mysql($store_code.$order_data_id));
 	mysql_query($sql);
-	$sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s and `Order Key` IS NULL or `Order Key`=0",prepare_mysql($store_code.$order_data_id));
+	$sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s and `Order Key` IS NULL",prepare_mysql($store_code.$order_data_id));
+	mysql_query($sql);
+$sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s and  `Order Key`=0",prepare_mysql($store_code.$order_data_id));
 	mysql_query($sql);
 
 
@@ -711,7 +713,7 @@ function create_order($data) {
 
 	//print "sending to warehouse\n";
 
-	$order->update_stock=false;	
+	//$order->update_stock=false;	
 	
 	if (count($data_dn_transactions)>0) {
 		$dn=$order->send_to_warehouse($date_order);
@@ -819,7 +821,7 @@ function send_order($data,$data_dn_transactions) {
 
 
 	}
-
+$dn->update_stock=false;
 	foreach ($_picked_qty as $itf=>$_qty) {
 		$dn->set_as_picked($itf,$_qty,$date_order);
 	}
@@ -907,7 +909,7 @@ function send_order($data,$data_dn_transactions) {
 
 	$dn->set_parcels($parcels,$parcel_type);
 
-
+$dn->update_stock=true;
 
 	//print "----- rea ship\n";
 

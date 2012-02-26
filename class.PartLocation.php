@@ -1031,8 +1031,16 @@ class PartLocation extends DB_Table {
 			$date=gmdate('Y-m-d H:i:s');
 
 
+/*
+$sql=sprintf("select `Inventory Audit Date`,`Inventory Audit Quantity` from `Inventory Audit Dimension` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
+,prepare_mysql($date)
+			,$this->part_sku
+			,$this->location_key
+		);
+*/		
+		
 
-		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock,sum(ifnull(`Required`,0)) as required ,sum(ifnull(`Picked`,0)) as picked ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
+		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
 			,prepare_mysql($date)
 			,$this->part_sku
 			,$this->location_key
@@ -1046,19 +1054,17 @@ class PartLocation extends DB_Table {
 		$stock=0;
 		$value=0;
 	
-		$in_process=0;
 		if ($row=mysql_fetch_array($res)) {
 			$stock=round($row['stock'],3);
 			$value=$row['value'];
 			
-			$in_process=round(($row['required']-$row['picked']),3);
 		
 		}
 
 		//print "$stock \n";
 
 
-		return array($stock,$value,$in_process);
+		return array($stock,$value,0);
 
 	}
 

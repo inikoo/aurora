@@ -2294,6 +2294,8 @@ class DeliveryNote extends DB_Table {
 			);
 			mysql_query($sql);
 if($this->update_stock){
+
+
 $part_location=new PartLocation($sku.'_'.$location_key);
 					$part_location->update_stock();
 }
