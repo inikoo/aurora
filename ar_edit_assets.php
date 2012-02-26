@@ -3334,7 +3334,11 @@ function list_supplier_products_in_part() {
 		$order='`Part SKU`';
 
 
-		$sql="select `Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key` from `Supplier Product Part List` L  left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) left join `Supplier Product Dimension` P on (P.`Supplier Product Key`=PP.`Supplier Product Key`)left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+		$sql="select `Supplier Product Part Most Recent`,`Supplier Product Part Valid To`,`Supplier Product Part Valid From`,P.`Supplier Product Key`,`Supplier Product Part List Key`,`Supplier Product Part In Use`,`Supplier Product Name`,`Supplier Product Units Per Part`,`Part SKU`,`Supplier Product Code` ,S.`Supplier Code`,S.`Supplier Key` 
+		from `Supplier Product Part List` L  
+		left join `Supplier Product Part Dimension` PP on (L.`Supplier Product Part Key`=PP.`Supplier Product Part Key`) 
+		left join `Supplier Product Dimension` P on (P.`Supplier Product Key`=PP.`Supplier Product Key`)
+		left join `Supplier Dimension` S on (P.`Supplier Key`=S.`Supplier Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
 		// print $sql;
 		$res = mysql_query($sql);
 		$total=mysql_num_rows($res);
@@ -3353,9 +3357,9 @@ function list_supplier_products_in_part() {
 				'sppl_key'=>$row['Supplier Product Part List Key'],
 				'sku'=>$row['Part SKU'],
 				'relation'=>$relation,
-				'code'=>$row['Supplier Product Code'],
-				'name'=>$row['Supplier Product Name'],
-				'supplier'=>$row['Supplier Code'],
+				'code'=>'<a href="supplier_product.php?pid='.$row['Supplier Product Key'].'">'.$row['Supplier Product Code'].' ('.$row['Supplier Product Key'].')'.'</a>',
+				'name'=>$row['Supplier Product Name'].'<br>'.$row['Supplier Product Part Valid From'].' &rarr; '.$row['Supplier Product Part Valid To'].' '.($row['Supplier Product Part Most Recent']=='Yes'?'*':''),
+				'supplier'=>'<a href="supplier.php?id='.$row['Supplier Key'].'">'.$row['Supplier Code'].'</a>',
 				'available'=>$row['Supplier Product Part In Use'],
 				'available_state'=>$available_state
 			);

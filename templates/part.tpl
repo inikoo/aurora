@@ -11,17 +11,19 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
-				{if $modify} <button onclick="window.location='edit_part.php?id={$part->sku}'"><img src="art/icons/cog.png" alt=""> {t}Edit Part{/t}</button> {/if} 
+				{if isset($next) }<img  class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+				{if $modify } <button onclick="window.location='edit_part.php?id={$part->sku}'"><img src="art/icons/cog.png" alt=""> {t}Edit Part{/t}</button> {/if} 
 			</div>
-			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
+			<div class="buttons" style="float:left;">
+				{if isset($prev)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
 				
+				<span style="font-size:140%;width:600px;position:relative;bottom:-5px;left:-5px"><span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part Unit Description')} </span>
+			
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="clear:left">
+		<div style="display:none;clear:left">
 			<h1 style="padding:10px 0 0 0 ;font-size:140%">
 				<span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part Unit Description')} 
 			</h1>
@@ -33,7 +35,8 @@
 			<div id="photo_container" style="float:left">
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-						<img src="{$part->get('Part Main Image')}" style="vertical-align:middle;display:block;;width:190px" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
+						
+						<img id="main_image" src="{$part->get('Part Main Image')}" style="vertical-align:middle;display:block;;width:190px;;margin:0px auto" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
 					</div>
 				</div>
 				<div style="width:160px;margin:auto;padding-top:5px">
@@ -43,11 +46,11 @@
 			<div style="width:340px;float:left;margin-left:10px;">
 				<table class="show_info_product">
 					<td class="aright"> 
-					<tr>
+					<tr style="display:none">
 						<td>{t}Status{/t}:</td>
 						<td>{$part->get('Part Status')}</td>
 					</tr>
-					<tr>
+					<tr style="display:none">
 						<td>{t}Availability{/t}:</td>
 						<td>{$part->get('Part Available')}</td>
 					</tr>
@@ -59,6 +62,15 @@
 						<td>{t}Sold as{/t}:</td>
 						<td>{$part->get('Part XHTML Currently Used In')}</td>
 					</tr>
+					
+						{if $part->get('Part Available')=='No'} 
+								<tr class="discontinued">
+									<td colspan=2 style="font-weight:800;font-size:160%;text-align:center">{t}Can't restock{/t}</td>
+								</tr>
+						
+							
+						
+					{else}
 					<tr>
 						<td>{t}Supplied by{/t}:</td>
 						<td>{$part->get('Part XHTML Currently Supplied By')}</td>
@@ -67,6 +79,8 @@
 						<td>{t}Cost{/t}:</td>
 						<td>{$part->get('Cost')}</td>
 					</tr>
+					{/if}		
+					
 					{foreach from=$show_case key=name item=value} 
 					<tr>
 						<td>{$name}:</td>
@@ -74,7 +88,11 @@
 					</tr>
 					{/foreach} 
 				</table>
+			
 			</div>
+			
+			{if $part->get('Part Status')=='In Use'}
+			
 			<div style="width:280px;float:left;margin-left:20px">
 				<table class="show_info_product" style="width:260px">
 					<tr>
@@ -122,6 +140,17 @@
 					</tr>
 				</table>
 			</div>
+			{else}
+			<div style="width:280px;float:left;margin-left:20px">
+			<table class="show_info_product discontinued" style="margin:0;padding:5px 10px;width:100%;">
+								<tr>
+									<td style="font-weight:800;font-size:160%;text-align:center">{t}No longer keeped in Warehouse{/t}</td>
+								</tr>
+							</table>
+			</div>
+			
+			{/if}
+			
 			<div style="clear:both">
 			</div>
 		</div>

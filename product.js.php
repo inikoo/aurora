@@ -305,6 +305,15 @@ var manual_check=function(){
 
 
 function init(){
+
+image_region=Dom.getRegion('main_image')
+if(image_region.height>160){
+Dom.setStyle('main_image','height','160px')
+Dom.setStyle('main_image','width','')
+
+}
+
+
  init_search('products_store');
 
 

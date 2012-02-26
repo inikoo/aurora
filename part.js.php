@@ -336,6 +336,14 @@ function save_qty(){
 
 function init(){
 
+image_region=Dom.getRegion('main_image')
+if(image_region.height>160){
+Dom.setStyle('main_image','height','160px')
+Dom.setStyle('main_image','width','')
+
+}
+
+
 init_search('parts');
 Event.addListener(['description','sales','transactions','history','purchase_orders', 'delivery_notes'], "click",change_block);
 
