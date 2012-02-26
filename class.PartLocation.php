@@ -653,11 +653,11 @@ class PartLocation extends DB_Table {
 			return;
 		}
 
-		if ($this->data['Quantity On Hand']==0) {
-			$this->error=true;
-			$this->msg=_('No stock on the location');
-			return;
-		}
+	//	if ($this->data['Quantity On Hand']==0) {
+	//		$this->error=true;
+	//		$this->msg=_('No stock on the location');
+	//		return;
+	//	}
 
 
 
@@ -668,6 +668,8 @@ class PartLocation extends DB_Table {
 		}
 
 		$destination_data=array('Location Key'=>$data['Destination Key'],'Part SKU'=>$this->part_sku,'editor'=>$this->editor);
+		
+		
 		$destination=new PartLocation('find',$destination_data,'create');
 
 		if (!is_numeric($destination->data['Quantity On Hand'])) {
@@ -677,6 +679,7 @@ class PartLocation extends DB_Table {
 		}
 
 
+		if($data['Quantity To Move']!=0){
 		$this->stock_transfer(array(
 				'Quantity'=>-$data['Quantity To Move'],
 				'Transaction Type'=>'Move Out',
@@ -694,13 +697,11 @@ class PartLocation extends DB_Table {
 
 			));
 
-
+		}
 
 		if ($this->location_key==1) {
 			$data_disasociate=array(
 				'Note'=>_('Location now known'),
-
-
 			);
 			$this->disassociate($data_disasociate);
 		}
@@ -1229,7 +1230,7 @@ $sql=sprintf("select `Inventory Audit Date`,`Inventory Audit Quantity` from `Inv
 
 	function update_stock_history_date($date) {
 
-		if ($this->exist_on_date()) {
+		if ($this->exist_on_date($date)) {
 			$this->update_stock_history_interval($date,$date);
 		}else {
 			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);

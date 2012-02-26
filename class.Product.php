@@ -5434,6 +5434,9 @@ protected function update_field($field,$value,$options='') {
 
 
 	function update_availability() {
+	
+	
+	
 		$stock_forecast_method='basic1';
 		$stock_tipo_method='basic1';
 

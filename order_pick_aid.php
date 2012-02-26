@@ -1,6 +1,7 @@
 <?php
 include_once 'common.php';
 include_once 'class.CurrencyExchange.php';
+include_once 'class.Department.php';
 
 include_once 'class.Order.php';
 include_once 'class.PartLocation.php';

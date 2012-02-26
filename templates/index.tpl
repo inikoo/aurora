@@ -7,6 +7,8 @@
 <div class="buttons" style="float:left">
 			</div>
 
+
+
     {if  $number_of_dashboards> 1}<img onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{t}Next Dashboard{/t} {$next.name}"  onclick="window.location='index.php?dashboard_id={$next.id}'"   src="art/next_button.png" alt=">"  style="float:right;height:22px;cursor:pointer;position:relative;top:2px"/ >{/if}
 
 			<div class="buttons" style="float:right">
@@ -17,6 +19,13 @@
 			</div>
 		</div>
 	</div>
+	{if $user->get('User Type')=='Warehouse'}
+	<div style="margin:20px;border:1px solid #ccc;padding:20px">
+	<table>
+	<tr><td>{t}Order Picking Aid{/t}: <input id="search_order_picking_aid" value="" style="width:200px"></td><td><div class="buttons small"><button>{t}Search{/t}</button></div></td>
+	</table>
+	</div>
+	{/if}
 	<div class="dashboard_blocks" style="margin-top:20px">
 		{foreach from=$blocks key=key item=block} 
 		<div class="{$block.class}" style="margin-bottom:30px">

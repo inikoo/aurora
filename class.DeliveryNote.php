@@ -785,8 +785,8 @@ class DeliveryNote extends DB_Table {
 				$sql=sprintf("delete from `Inventory Transaction Fact`  where `Inventory Transaction Key`=%d ",$row['Inventory Transaction Key']);
 				mysql_query($sql);
 			
-				$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
-					$part_location->update_stock();
+				//$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+					//$part_location->update_stock();
 
 			}
 			//print "$sql\n";
@@ -916,8 +916,8 @@ class DeliveryNote extends DB_Table {
 					);
 					mysql_query($sql);
 					
-					$part_location=new PartLocation($part->sku.'_'.$location_key);
-					$part_location->update_stock();
+					//$part_location=new PartLocation($part->sku.'_'.$location_key);
+					//$part_location->update_stock();
 					
 					//        print "$sql\n";
 					$location_index++;

@@ -4,7 +4,7 @@
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; {$product->get('Product Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; <a href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Code')}</a> &rarr; {$product->get('Product Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
@@ -15,26 +15,20 @@
 			</div>
 			<div class="buttons" style="float:left">
 							{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
-							{if $modify}<button onclick="window.location='store.php?id={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>{/if} 
 
-			
+						<span style="font-size:150%;position:relative;bottom:-2.5px"><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </span> {if $product->get('Product Record Type')=='Historic'} {t}Historic Product{/t}{/if}
+
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<h1>
-			<span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} 
-		</h1>
-		{if $product->get('Product Record Type')=='Historic'}
-		<h2>
-			{t}Historic Product{/t}
-		</h2>
-		{/if} 
+		
+	<div style="clear:both;margin-bottom:10px"></div>
 		<div id="block_info" style="width:890px;position:relative">
 			<div id="photo_container" style="margin-top:0px;float:left">
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-						<img src="{$product->get('Product Main Image')}" style="vertical-align:middle;display:block;" width="190px" valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
+						<img id="main_image" src="{$product->get('Product Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px"  valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
 					</div>
 				</div>
 				<div style="width:160px;margin:auto;padding-top:5px">
@@ -84,7 +78,7 @@
 						</div>
 						<div style="width:250px;float:left">
 							{if $product->get('Product Main Type')=='Discontinued'} 
-							<table style="margin:0;padding:5px 10px;border-top:1px solid #574017;width:100%;background:#deceb2">
+							<table class="discontinued" style="margin:0;padding:5px 10px;width:100%;">
 								<tr>
 									<td style="font-weight:800;font-size:160%;text-align:center">{t}Discontinued{/t}</td>
 								</tr>

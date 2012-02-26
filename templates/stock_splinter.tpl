@@ -84,7 +84,7 @@
 	    <input type="hidden" id="move_sku" value=0 >
 	    <input type="hidden" id="move_record_index" value=0 >
 	    <input type="hidden" id="move_other_location_key" value=0 >
-	    <input type="hidden" id="move_this_location_key" value="{$location->id}" >
+	    <input type="hidden" id="move_this_location_key" value="{if isset($location)}{$location->id}{/if}" >
 
 	 
 	    <tr><td colspan="3" id="location_move_other_locations" ></td></tr>

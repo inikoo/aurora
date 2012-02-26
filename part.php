@@ -215,6 +215,19 @@ $smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['v
 
 
 
+$tipo_filter=$_SESSION['state']['part']['stock_history']['f_field'];
+$smarty->assign('filter_show0',$_SESSION['state']['part']['stock_history']['f_show']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['part']['stock_history']['f_value']);
+$filter_menu=array(
+                 'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
+             );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
 $tipo_filter=$_SESSION['state']['part']['transactions']['f_field'];
 $smarty->assign('filter_show1',$_SESSION['state']['part']['transactions']['f_show']);
 $smarty->assign('filter1',$tipo_filter);
@@ -228,7 +241,6 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
-// include_once('class.PartLocation.php');$part->update_stock_history();
 
 
 
