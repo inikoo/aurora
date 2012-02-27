@@ -2158,6 +2158,7 @@ class supplierproduct extends DB_Table {
                              );
             $_base_data=array(
                             'Supplier Product Key'=>$this->pid,
+                            'Supplier Product Historic Key'=>$this->id,
                             'Supplier Product Part Type'=>'Simple',
                             'Supplier Product Part Metadata'=>'',
                             'Supplier Product Part Valid From'=>date('Y-m-d H:i:s'),
