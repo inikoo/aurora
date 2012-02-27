@@ -2216,7 +2216,7 @@ $order='`Location Code`';
 $order_dir='';
 
 	$data=array();
-	$sql="select `Packed`,`Given`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) $where order by  $order $order_dir  ";
+	$sql="select  Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Packed`,`Given`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) $where order by  $order $order_dir  ";
 	//   print $sql;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2246,8 +2246,8 @@ $order_dir='';
 		}
 		//$notes=preg_replace('/^\,/', '', $notes);
 
-$stock_in_picking=0;
-$total_stock=0;
+$stock_in_picking=$row['stock_in_picking'];
+$total_stock=$row['total_stock'];
 
 //print_r($row);exit;
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
@@ -2255,11 +2255,11 @@ $total_stock=0;
 		$data[]=array(
 			'itf_key'=>$row['Inventory Transaction Key'],
 			'sku'=>$sku,
-			'description'=>$row['Part Unit Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':'').' '.$row['Inventory Transaction Key'],
+			'description'=>$row['Part Unit Description'],
 			'used_in'=>$row['Part XHTML Currently Used In'],
 			'quantity'=>number($row['Required']+$row['Given']),
 			//'location'=>sprintf($row['Location Code'].'<img src="art/icons/info_bw.png" onClick="get_locations(this,{$_id})">'),
-			'location'=>sprintf(" <img width='12px' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> %s <span style='color:#ccc;margin-left:5px'>[%d,%d]</span>", $_id, $row['Location Code'],$stock_in_picking,$total_stock),
+			'location'=>sprintf(" <img width='12px' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> %s <span style='color:#777;margin-left:5px'>[<b>%d</b>,%d]</span>", $_id, $row['Location Code'],$stock_in_picking,$total_stock),
 			'check_mark'=>(!$todo?'&#x2713;':'<span style="color:#ccc">&#x2713;</span>'),
 			'add'=>($todo?'+':'<span style="color:#ccc">+</span>'),
 			'remove'=>(($row['Picked']-$row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
