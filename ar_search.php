@@ -1394,10 +1394,16 @@ function search_parts($data) {
     }
     */
 
-	$sql=sprintf('select `Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 20',addslashes($q));
+
+    
+   
+
+	$sql=sprintf('select `Part Currently Used In`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 20',addslashes($q));
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
+
+	
 
 		if ($row['Part Status']=='In Use') {
 			$candidates[$row['Part SKU']]=100;
@@ -1408,6 +1414,16 @@ function search_parts($data) {
 
 	}
 
+
+  	$sql=sprintf('select `Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In`=%s limit 5',prepare_mysql($q));
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res)) {
+
+		$candidates[$row['Part SKU']]=150;
+		$part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+
+	}
+    
 
 	$sql=sprintf('select `Category Key` ,`Category Name`, `Category Label` from `Category Dimension`   where `Category Subject`="Part" and `Category Name` like "%s%%" limit 20',addslashes($q));
 
