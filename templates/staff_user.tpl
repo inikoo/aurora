@@ -11,6 +11,7 @@
 				{if $modify} <button style="display:none" onclick="window.location='edit_site_user.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit User{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
+			 <span class="main_title">{t}Staff User{/t}: {$user_class->get('User Alias')}</span>
 			</div>
 			<div class="buttons" style="float:right">
 				<button id="show_dialog_change_password"><img src="art/icons/key.png" alt=""> {t}Modify Password{/t}</button> 
@@ -18,10 +19,8 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<h1>
-			{t}Staff User{/t}: {$user_class->get('User Alias')}
-		</h1>
-		<div style="clear:both">
+		
+		<div style="clear:both;margin-top:10px;">
 		</div>
 		<div style="width:230px;margin-top:0px;float:left">
 			<table class="show_info_product">

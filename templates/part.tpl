@@ -93,8 +93,8 @@
 			
 			{if $part->get('Part Status')=='In Use'}
 			
-			<div style="width:280px;float:left;margin-left:20px">
-				<table class="show_info_product" style="width:260px">
+			<div style="width:290px;float:left;margin-left:20px">
+				<table class="show_info_product" style="width:270px">
 					<tr>
 						<td>{t}Stock{/t}: <span>({$part->get_unit($part->get('Part Current On Hand Stock'))})</span></td>
 						<td class="stock aright" id="stock">{$part->get('Part Current On Hand Stock')}</td>
@@ -118,14 +118,14 @@
 					</tr>
 				</table>
 				{t}Locations{/t}: 
-				<table border="0" id="part_locations" class="show_info_product" style="width:260px;margin-top:0px">
+				<table border="0" id="part_locations" class="show_info_product" style="width:270px;margin-top:0px">
 					{foreach from=$part->get_locations(true) item=location name=foo } 
 					<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
 						<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode} </a> 
 						<img style="{if $modify_stock}cursor:pointer{/if}"  sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"  can_pick="{if $location.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}"  alt="can_pick" onclick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /> </td>
 						<td 
 						onClick="show_picking_limit_quantities(this, {$location.LocationKey}, {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}0{/if}, {if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}0{/if})" style="cursor:pointer; color:#808080">
-						{literal}{{/literal} {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if},{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}{literal}}{/literal}
+						{literal}{{/literal}{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if},{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}{literal}}{/literal}
 						</td>
 						
 						<td class="quantity" id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}">{$location.FormatedQuantityOnHand}</td>
@@ -136,7 +136,7 @@
 					</tr>
 					{/foreach} 
 					<tr style="{if !$modify_stock}display:none{/if}">
-						<td colspan="6"> 
+						<td colspan="7"> 
 						<div id="add_location_button" class="buttons small left">
 							<button onclick="add_location({$part->sku})">{t}Add Location{/t}</button> 
 						</div>

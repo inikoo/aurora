@@ -9460,32 +9460,29 @@ function part_transactions() {
 
 
 
-if (isset( $_REQUEST['parent'])){
-$parent=$_REQUEST['parent'];
-}else{
-return;
-}
+	if (isset( $_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	}else {
+		return;
+	}
 
 
-if (isset( $_REQUEST['parent_key'])){
-$parent_key=$_REQUEST['parent_key'];
-}else{
-return;
-}
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		return;
+	}
 
 
-if($parent=='part'){
-$conf=$_SESSION['state']['part']['transactions'];
+	if ($parent=='part') {
+		$conf=$_SESSION['state']['part']['transactions'];
 
-}elseif($parent=='warehouse'){
-$conf=$_SESSION['state']['warehouse']['transactions'];
-}else{
-return;
-}
+	}elseif ($parent=='warehouse') {
+		$conf=$_SESSION['state']['warehouse']['transactions'];
+	}else {
+		return;
+	}
 
-
-
-	
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
 	else
@@ -9548,17 +9545,17 @@ return;
 	} else {
 
 
-		if($parent=='part'){
+		if ($parent=='part') {
 			$_SESSION['state']['part']['transactions']['from']=$from;
 			$_SESSION['state']['part']['transactions']['to']=$to;
 
-		}elseif($parent=='warehouse'){
+		}elseif ($parent=='warehouse') {
 			$_SESSION['state']['warehouse']['transactions']['from']=$from;
 			$_SESSION['state']['warehouse']['transactions']['to']=$to;
 		}
 	}
 
-	if($parent=='part'){
+	if ($parent=='part') {
 		$_SESSION['state']['part']['transactions']=
 			array(
 			'view'=>$view,
@@ -9574,7 +9571,7 @@ return;
 			'elements'=>$elements,
 			'f_show'=>$_SESSION['state']['part']['transactions']['f_show']
 		);
-	}elseif($parent=='warehouse'){
+	}elseif ($parent=='warehouse') {
 		$_SESSION['state']['warehouse']['transactions']=
 			array(
 			'view'=>$view,
@@ -9604,11 +9601,11 @@ return;
 
 	}
 
-	if($parent=='part'){
+	if ($parent=='part') {
 		$where=$where.sprintf(" and `Part SKU`=%d ",$parent_key);
-	}else if($parent=='warehouse'){
-		$where=$where.sprintf(" and `Warehouse Key`=%d ",$parent_key);
-	}
+	}else if ($parent=='warehouse') {
+			$where=$where.sprintf(" and `Warehouse Key`=%d ",$parent_key);
+		}
 
 
 	switch ($view) {
@@ -9636,7 +9633,7 @@ return;
 
 
 	$sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
-//print $sql;exit;
+	//print $sql;exit;
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -9705,12 +9702,12 @@ return;
 	$order=' `Date` desc , `Inventory Transaction Key` desc ';
 	$order_direction=' ';
 
-	if($parent=='part'){
-		$sql="select  `Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+	if ($parent=='part') {
+		$sql="select `User Alias`, ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
 	}
-	else if($parent=='warehouse'){
-		$sql="select  `Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref limit $start_from,$number_results ";
-	}
+	else if ($parent=='warehouse') {
+			$sql="select  `User Alias`,ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)   $where $wheref limit $start_from,$number_results ";
+		}
 
 
 	//print $sql;exit;
@@ -9747,7 +9744,8 @@ return;
 			'change'=>$qty,
 			'date'=>strftime("%c", strtotime($data['Date'])),
 			'note'=>$data['Note'],
-			'location'=>$location
+			'location'=>$location,
+			'user'=>$data['User Alias']
 
 		);
 	}
@@ -11240,15 +11238,15 @@ function list_customers_who_use_deal() {
 	echo json_encode($response);
 }
 
-function list_delivery_notes_per_part($data){
+function list_delivery_notes_per_part($data) {
 
-if (isset( $_REQUEST['parent_key'])){
-$parent_key=$_REQUEST['parent_key'];
-}else{
-return;
-}
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		return;
+	}
 
-$conf=$_SESSION['state']['part']['delivery_notes'];
+	$conf=$_SESSION['state']['part']['delivery_notes'];
 
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
@@ -11315,22 +11313,22 @@ $conf=$_SESSION['state']['part']['delivery_notes'];
 	}
 
 
-		$_SESSION['state']['part']['delivery_notes']=
-			array(
-			'view'=>$view,
-			'order'=>$order,
-			'order_dir'=>$order_direction,
-			'nr'=>$number_results,
-			'sf'=>$start_from,
-			'where'=>$where,
-			'f_field'=>$f_field,
-			'f_value'=>$f_value,
-			'from'=>$from,
-			'to'=>$to,
-			'elements'=>$elements,
-			'f_show'=>$_SESSION['state']['part']['delivery_notes']['f_show']
-		);
-	
+	$_SESSION['state']['part']['delivery_notes']=
+		array(
+		'view'=>$view,
+		'order'=>$order,
+		'order_dir'=>$order_direction,
+		'nr'=>$number_results,
+		'sf'=>$start_from,
+		'where'=>$where,
+		'f_field'=>$f_field,
+		'f_value'=>$f_value,
+		'from'=>$from,
+		'to'=>$to,
+		'elements'=>$elements,
+		'f_show'=>$_SESSION['state']['part']['delivery_notes']['f_show']
+	);
+
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -11344,7 +11342,7 @@ $conf=$_SESSION['state']['part']['delivery_notes'];
 	}
 
 
-		$where=$where.sprintf(" and `Part SKU`=%d ",$parent_key);
+	$where=$where.sprintf(" and `Part SKU`=%d ",$parent_key);
 
 
 
@@ -11353,7 +11351,7 @@ $conf=$_SESSION['state']['part']['delivery_notes'];
 
 
 	$sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref group by `Delivery Note Key`";
-//print $sql;exit;
+	//print $sql;exit;
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -11433,49 +11431,49 @@ $conf=$_SESSION['state']['part']['delivery_notes'];
 	$adata=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$order_id=sprintf('<a href="dn.php?id=%d">%s</a>',$row['Delivery Note Key'],$row['Delivery Note ID']);
-				$customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Delivery Note Customer Key'],$row['Delivery Note Customer Name']);
+		$order_id=sprintf('<a href="dn.php?id=%d">%s</a>',$row['Delivery Note Key'],$row['Delivery Note ID']);
+		$customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Delivery Note Customer Key'],$row['Delivery Note Customer Name']);
 
 
-				$type=$row['Delivery Note Type'];
+		$type=$row['Delivery Note Type'];
 
-				switch ($row['Delivery Note Parcel Type']) {
-				case('Pallet'):
-					$parcel_type='P';
-					break;
-				case('Envelope'):
-					$parcel_type='e';
-					break;
-				default:
-					$parcel_type='b';
+		switch ($row['Delivery Note Parcel Type']) {
+		case('Pallet'):
+			$parcel_type='P';
+			break;
+		case('Envelope'):
+			$parcel_type='e';
+			break;
+		default:
+			$parcel_type='b';
 
-				}
+		}
 
-				if ($row['Delivery Note Number Parcels']=='') {
-					$parcels='?';
-				}
-				elseif ($row['Delivery Note Parcel Type']=='Pallet' and $row['Delivery Note Number Boxes']) {
-					$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type.' ('.$row['Delivery Note Number Boxes'].' b)';
-				}
-				else {
-					$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type;
-				}
-				if ($row['Delivery Note State']=='Dispatched')
-					$date=strftime("%e %b %y", strtotime($row['Delivery Note Date']));
-				else
-					$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
-				$adata[]=array(
-					'id'=>$order_id
-					,'customer'=>$customer
-					,'date'=>$date
-					,'type'=>$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
-					,'orders'=>$row['Delivery Note XHTML Orders']
-					,'invoices'=>$row['Delivery Note XHTML Invoices']
-					,'weight'=>number($row['Delivery Note Weight'],1,true).' Kg'
-					,'parcels'=>$parcels
+		if ($row['Delivery Note Number Parcels']=='') {
+			$parcels='?';
+		}
+		elseif ($row['Delivery Note Parcel Type']=='Pallet' and $row['Delivery Note Number Boxes']) {
+			$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type.' ('.$row['Delivery Note Number Boxes'].' b)';
+		}
+		else {
+			$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type;
+		}
+		if ($row['Delivery Note State']=='Dispatched')
+			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date']));
+		else
+			$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
+		$adata[]=array(
+			'id'=>$order_id
+			,'customer'=>$customer
+			,'date'=>$date
+			,'type'=>$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
+			,'orders'=>$row['Delivery Note XHTML Orders']
+			,'invoices'=>$row['Delivery Note XHTML Invoices']
+			,'weight'=>number($row['Delivery Note Weight'],1,true).' Kg'
+			,'parcels'=>$parcels
 
 
-				);
+		);
 	}
 
 	$response=array('resultset'=>
@@ -11492,7 +11490,7 @@ $conf=$_SESSION['state']['part']['delivery_notes'];
 			'records_perpage'=>$number_results,
 		)
 	);
-	echo json_encode($response);	
+	echo json_encode($response);
 }
 
 ?>

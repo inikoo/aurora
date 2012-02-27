@@ -9,21 +9,21 @@
     <div class="buttons" style="float:right">
         {if $modify}
         <button  onclick="window.location='edit_warehouse.php?id={$warehouse->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Warehouse{/t}</button>
+
         {/if}
-    </div>
-    <div class="buttons" style="float:left">
-        <button  onclick="window.location='warehouse_stats.php?id={$warehouse->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+              <button  onclick="window.location='warehouse_stats.php?id={$warehouse->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
          <button  onclick="window.location='warehouse_map.php?id={$warehouse->id}'" ><img src="art/icons/application_view_gallery.png" alt=""> {t}Map{/t}</button>
 
+    </div>
+    <div class="buttons" style="float:left">
+  <span class="main_title">{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</span>
  </div>
     <div style="clear:both"></div>
 </div>
 
 
 
- <div style="clear:left;margin:0 0px">
-    <h1>{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</h1>
-  </div>
+
 
 </div>
 

@@ -472,27 +472,33 @@ function create_part_location_tr(tag,r) {
     var oTD= oTR.insertCell(0);
     oTD.innerHTML=  '<a href="location.php?id='+location_key+'">'+location_code+'</a>  <img style="cursor:pointer" sku_formated="'+sku+'" location="'+location_code+'" id="part_location_can_pick_'+sku+'_'+location_key+'"   onmouseover="over_can_pick(this)" onmouseout="out_can_pick(this)"  can_pick="Yes"   src="art/icons/box.png" title="<?php echo _('Can pick')?>"  alt="<?php echo _('Can Pick')?>"   onClick="save_can_pick('+sku+','+location_key+')" /> ';
 
+ var oTD= oTR.insertCell(1);
+    //Dom.addClass(oTD,'quantity');
+    oTD.id='part_location_limits_'+sku+'_'+location_key;
+    //oTD.setAttribute('quantity',qty);
+    oTD.innerHTML=r.limits;
 
-    var oTD= oTR.insertCell(1);
+
+    var oTD= oTR.insertCell(2);
     Dom.addClass(oTD,'quantity');
     oTD.id='part_location_quantity_'+sku+'_'+location_key;
     oTD.setAttribute('quantity',qty);
     oTD.innerHTML=formated_qty;
 
-    var oTD= oTR.insertCell(2);
+    var oTD= oTR.insertCell(3);
     Dom.addClass(oTD,'button');
     oTD.innerHTML='<img  id="part_location_audit_'+sku+'_'+location_key+'" src="art/icons/note_edit.png"  title="<?php echo _('audit')?>" alt="<?php echo _('audit')?>" onClick="audit('+sku+','+location_key+')" />';
 
-   var oTD= oTR.insertCell(3);
+   var oTD= oTR.insertCell(4);
     Dom.addClass(oTD,'button');
     oTD.innerHTML='<img  sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_add_stock_'+sku+'_'+location_key+'"  src="art/icons/lorry.png" title="<?php echo _('add stock')?>"  alt="<?php echo _('add stock')?>" onClick="add_stock_part_location('+sku+','+location_key+')" />';
 
 
-    var oTD= oTR.insertCell(4);
+    var oTD= oTR.insertCell(5);
     Dom.addClass(oTD,'button');
     oTD.innerHTML='<img  sku_formated="'+formated_sku+'" location="'+location_code+'"   id="part_location_delete_'+sku+'_'+location_key+'" src="art/icons/cross_bw.png" title="<?php echo _('delete')?>"  alt="<?php echo _('delete')?>" onClick="delete_part_location('+sku+','+location_key+')" /><img id="part_location_lost_items_'+sku+'_'+location_key+'" src="art/icons/package_delete.png" alt="{t}lost{/t}" onClick="lost('+sku+','+location_key+')" />';
 
-    var oTD= oTR.insertCell(5);
+    var oTD= oTR.insertCell(6);
     Dom.addClass(oTD,'button');
     oTD.innerHTML='<img sku_formated="'+formated_sku+'" location="'+location_code+'" id="part_location_move_items_'+sku+'_'+location_key+'"  src="art/icons/package_go.png" alt="{t}move{/t}" onClick="move('+sku+','+location_key+')" />';
 

@@ -150,7 +150,7 @@ class part extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-
+//print "$sql\n";
 
 	}
 
@@ -898,6 +898,11 @@ class part extends DB_Table {
 		//   $availability='Yes';
 		// }
 
+
+
+
+//print_r($supplier_products);
+
 		//TODO meka it work if you have more that 2 suppliers, for now all parts are 1-1 (1-n,n-1) are treated as production
 
 		foreach ($supplier_products as $supplier_product) {
@@ -909,11 +914,11 @@ class part extends DB_Table {
 
 		$sql=sprintf("update `Part Dimension`  set `Part Available`=%s where  `Part SKU`=%d   "
 			,prepare_mysql($availability)
-			,$this->id
+			,$this->sku
 		);
 		mysql_query($sql);
 
-
+//print "$sql\n";
 		$this->update_main_state();
 
 
