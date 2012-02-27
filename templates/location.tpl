@@ -21,6 +21,7 @@
     {/if}
     </div>
     <div class="buttons" style="float:left">
+			 <span class="main_title">{t}Location{/t}: {$location->get('Location Code')}</span>
 
 
  </div>
@@ -28,9 +29,7 @@
 </div>
  
 
- <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
-    <h1>{t}Location{/t}: {$location->get('Location Code')} </h1>
-  </div>
+
 </div>
 
 

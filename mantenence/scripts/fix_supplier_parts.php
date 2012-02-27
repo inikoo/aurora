@@ -28,7 +28,7 @@ require_once '../../conf/conf.php';
 
 
 $sql="select * from `Supplier Product Part Dimension` where `Supplier Product Historic Key`=0";
-//print $sql;
+
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 

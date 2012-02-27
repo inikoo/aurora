@@ -15,26 +15,25 @@
         <button  onclick="window.location='edit_suppliers.php'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Suppliers{/t}</button>
 
        {/if}
-    </div>
-    <div class="buttons" style="float:left">
-          <button  onclick="window.location='suppliers_stats.php?'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+            <button  onclick="window.location='suppliers_stats.php?'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
         <button  onclick="window.location='suppliers_lists.php?'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
         <button  onclick="window.location='supplier_categories.php?id=0'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button>
 
+    </div>
+    <div class="buttons" style="float:left">
+      <span class="main_title">{t}Suppliers{/t}</span>
  </div>
     <div style="clear:both"></div>
 </div>
 
 
 
-<div style="clear:left;">
-  <h1>{t}Suppliers{/t}</h1>
-</div>
+
 </div>
 
 
 <div style="padding:0px">
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
     <li> <span class="item {if $block_view=='suppliers'}selected{/if}"  id="suppliers">  <span> {t}Suppliers{/t}</span></span></li>
        <li> <span class="item {if $block_view=='sproducts'}selected{/if}"  id="sproducts">  <span> {t}Supplier Products{/t}</span></span></li>
 
