@@ -7,7 +7,7 @@ include_once 'class.Order.php';
 include_once 'class.PartLocation.php';
 include_once('class.CompanyArea.php');
 
-if ( !$user->can_view( 'orders' ) ) {
+if ( !$user->can_view( 'parts' ) ) {
 	header( 'Location: index.php' );
 	exit;
 }

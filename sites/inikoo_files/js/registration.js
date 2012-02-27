@@ -543,8 +543,6 @@ Event.addListener("cancel_register", "click", cancel_register);
 Event.addListener("submit_register", "click", register);
 
 Event.addListener("submit_check_email", "click", check_email);
-
-
 Event.addListener('check_email', "keydown", submit_check_email_on_enter);
 Event.addListener('captcha_code3', "keydown", submit_forgot_password_from_email_in_db_on_enter);
 

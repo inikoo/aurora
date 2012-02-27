@@ -13,7 +13,8 @@
 
 			<div class="buttons" style="float:right">
 				<button onclick="window.location='edit_dashboard.php?id={$dashboard_key}'"><img src="art/icons/cog.png" alt=""> {t}Configure Dashboard{/t}</button> 
-			</div>
+		{if $user->get('User Type')=='Warehouse' and isset($warehouse_key)}<button onclick="window.location='warehouse_orders.php?id={$warehouse_key}'"><img src="art/icons/basket_put.png" alt=""> {t}Orders to Process{/t}</button>{/if}
+		</div>
 			
 			<div style="clear:both">
 			</div>
@@ -22,7 +23,8 @@
 	{if $user->get('User Type')=='Warehouse'}
 	<div style="margin:20px;border:1px solid #ccc;padding:20px">
 	<table>
-	<tr><td>{t}Order Picking Aid{/t}: <input id="search_order_picking_aid" value="" style="width:200px"></td><td><div class="buttons small"><button>{t}Search{/t}</button></div></td>
+	<tr><td>{t}Order Picking Aid{/t}: <input id="order_picking_aid" value="" style="width:200px"></td><td><div class="buttons small"><button id="search_order_picking_aid">{t}Search{/t}</button></div></td>
+	<td><span style="display:none" id="order_picking_aid_waiting"><img src="art/loading.gif" alt=""/>{t}Processig Request{/t}</span><span id="order_picking_aid_msg"></span></td>
 	</table>
 	</div>
 	{/if}

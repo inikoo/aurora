@@ -292,11 +292,14 @@ Dom.setStyle(['show_stock_history_chart'],'display','none')
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-show_stock_history_chart&value=1' ,{});
 }
 
-function show_qty(e, location_key, min ,max){
+function show_picking_limit_quantities(e, location_key, min ,max){
+
+if(!Dom.get('modify_stock').value)return;
+
 	region1 = Dom.getRegion(e); 
 	region2 = Dom.getRegion('dialog_qty'); 
 
-	var pos =[region1.right,region1.top]
+	var pos =[region1.right-region2.width,region1.bottom]
 
 	Dom.setXY('dialog_qty', pos);
 	

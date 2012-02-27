@@ -17,6 +17,12 @@ $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 
+case('search_order_picking_aid'):
+	$data=prepare_values($_REQUEST,array(
+			'public_id'=>array('type'=>'string')
+		));
+	search_order_picking_aid($data);
+	break;
 case('all'):
 	$data=prepare_values($_REQUEST,array(
 			'q'=>array('type'=>'string')
@@ -1392,10 +1398,10 @@ function search_parts($data) {
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
-		
-		if($row['Part Status']=='In Use'){
-		$candidates[$row['Part SKU']]=100;
-		}else{
+
+		if ($row['Part Status']=='In Use') {
+			$candidates[$row['Part SKU']]=100;
+		}else {
 			$candidates[$row['Part SKU']]=50;
 		}
 		$part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
@@ -2383,4 +2389,26 @@ function search_site($data) {
 	echo json_encode($response);
 }
 
+function search_order_picking_aid($data) {
+
+	$sql=sprintf("select `Delivery Note Key`,`Delivery Note State` from `Delivery Note Dimension` where `Delivery Note ID`=%s ",prepare_mysql($data['public_id']));
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res)) {
+		if ($row['Delivery Note State']=='Dispatched') {
+			$response=array('state'=>400,'msg'=>_('Order already dispatched'));
+		}elseif ($row['Delivery Note State']=='Cancelled') {
+			$response=array('state'=>400,'msg'=>_('Order cancelled'));
+
+		}elseif ($row['Delivery Note State']=='') {
+			$response=array('state'=>400,'msg'=>'Order not found **');
+		}else {
+			$response=array('state'=>200,'id'=>$row['Delivery Note Key']);
+		}
+	}
+	else{
+				$response=array('state'=>400,'msg'=>_('Order not found'));
+
+	}
+	echo json_encode($response);
+}
 ?>
