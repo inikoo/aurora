@@ -2246,6 +2246,9 @@ $order_dir='';
 		}
 		//$notes=preg_replace('/^\,/', '', $notes);
 
+$stock_in_picking=0;
+$total_stock=0;
+
 //print_r($row);exit;
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
 		$_id=$row['Part SKU'];
@@ -2256,7 +2259,7 @@ $order_dir='';
 			'used_in'=>$row['Part XHTML Currently Used In'],
 			'quantity'=>number($row['Required']+$row['Given']),
 			//'location'=>sprintf($row['Location Code'].'<img src="art/icons/info_bw.png" onClick="get_locations(this,{$_id})">'),
-			'location'=>sprintf(" <img width='12px' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> %s", $_id, $row['Location Code']),
+			'location'=>sprintf(" <img width='12px' src='art/icons/info_bw.png' onClick='get_locations(this,%d)'> %s <span style='color:#ccc;margin-left:5px'>[%d,%d]</span>", $_id, $row['Location Code'],$stock_in_picking,$total_stock),
 			'check_mark'=>(!$todo?'&#x2713;':'<span style="color:#ccc">&#x2713;</span>'),
 			'add'=>($todo?'+':'<span style="color:#ccc">+</span>'),
 			'remove'=>(($row['Picked']-$row['Packed'])?'-':'<span style="color:#ccc">-</span>'),
