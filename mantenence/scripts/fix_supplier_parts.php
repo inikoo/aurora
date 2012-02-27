@@ -118,7 +118,7 @@ mysql_query($sql);
 $sql="select `Supplier Product Key`,count(*) as num from `Supplier Product Part Dimension` where `Supplier Product Part Most Recent`='Yes' group by `Supplier Product Key`";
 //print $sql;
 $res=mysql_query($sql);
-while ($row=mysql_fetch_array($res)) {
+if ($row=mysql_fetch_array($res)) {
 	if ($row['num']>1) {
 		print $row['Supplier Product Key'].' '.$row['num']."====\n";
 
@@ -130,9 +130,9 @@ while ($row=mysql_fetch_array($res)) {
 			print_r($row2);
 
 			if ($count>0) {
-			
+
 				$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='No',`Supplier Product Part In Use`='No' where `Supplier Product Part Key`=%d",
-				$row2['Supplier Product Part Key']
+					$row2['Supplier Product Part Key']
 				);
 				mysql_query($sql);
 				//print "$sql\n";
@@ -140,8 +140,11 @@ while ($row=mysql_fetch_array($res)) {
 
 			$count++;
 		}
-		
+
 	}
+}
+else{
+print "xx\n";
 }
 
 exit;
