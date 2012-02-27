@@ -5,7 +5,7 @@ include_once 'class.CompanyArea.php';
 
 
 
-if (!  ($user->can_view('orders') or $user->data['User Type']=='Warehouse'   ) ) {
+if (!  ($user->can_view('parts') or $user->data['User Type']=='Warehouse'   ) ) {
 	header('Location: index.php?cannot_view');
 	exit;
 }
