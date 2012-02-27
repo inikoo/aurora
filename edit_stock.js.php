@@ -199,11 +199,7 @@ scope:this
 
 function add_location(sku){
   Dom.get('add_location_sku').value=sku;
-   
-
-   
-   
-   region1 = Dom.getRegion('add_location_button'); 
+    region1 = Dom.getRegion('add_location_button'); 
     region2 = Dom.getRegion('Editor_add_location'); 
 
  var pos =[region1.right-region2.width-20,region1.bottom]

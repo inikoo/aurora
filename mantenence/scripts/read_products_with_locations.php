@@ -39,7 +39,7 @@ date_default_timezone_set('UTC');
 
 
 
-$sql=sprintf("select * from aw_old.product   where code='sg-g4' order by code  ");
+$sql=sprintf("select * from aw_old.product    order by code  ");
 
 //$sql=sprintf("select * from aw_old.product  order by code   ");
 $result=mysql_query($sql);
@@ -148,10 +148,10 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                               'Destination Key'=>$location->id,
                               'Quantity To Move'=>'all'
                           );
-                    print_r($data);
+                  //  print_r($data);
                    
                     $part_location->move_stock($data);
-                    print "Message:".$part_location->msg."\n";
+                    //print "Message:".$part_location->msg."\n";
                 }
 
 

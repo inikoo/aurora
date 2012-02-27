@@ -28,6 +28,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+
+
 case('orders_lists'):
 	$data=prepare_values($_REQUEST,array(
 			'store'=>array('type'=>'key'),
