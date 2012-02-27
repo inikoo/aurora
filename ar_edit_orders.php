@@ -1868,7 +1868,7 @@ function ready_to_pick_orders() {
 
 		//$packer='';
 
-		$see_link=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
+		$see_link=sprintf("<a href='order_pick_aid.php?id=%d&refresh=1'>%s</a>",$row['Delivery Note Key'],"See Picking Sheet");
 		$data[]=array(
 			'id'=>$row['Delivery Note Key'],
 			'public_id'=>sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']),
@@ -1880,6 +1880,7 @@ function ready_to_pick_orders() {
 			'operations'=>$operations,
 			'status'=>$row['Delivery Note XHTML State'],
 			'see_link'=>$see_link
+			
 		);
 	}
 	mysql_free_result($res);
