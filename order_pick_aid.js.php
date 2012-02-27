@@ -331,18 +331,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var InvoiceColumnDefs = [
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
-				     ,{key:"sku", label:"<?php echo _('Part')?>",width:45,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"sku", label:"<?php echo _('Part')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 						     ,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 												  ,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 								,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-		,{key:"description",label:"<?php echo _('Description')?>", width:438,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+		,{key:"description",label:"<?php echo _('Description')?>", width:390,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				//	,{key:"picking_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				
 				// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:200,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
                 
                 
