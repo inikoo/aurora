@@ -918,6 +918,9 @@ class part extends DB_Table {
 		);
 		mysql_query($sql);
 
+		
+		
+
 //print "$sql\n";
 		$this->update_main_state();
 
