@@ -1528,7 +1528,7 @@ class Telecom extends DB_Table {
 			$mobiles=$parent_object->get_mobiles();
 			//print_r($mobiles);
 			foreach ($mobiles as $mobile) {
-				$parent_object->update_principal_mobil($mobile->id);
+				$parent_object->update_principal_mobile($mobile->id);
 				break;
 			}
 		}
