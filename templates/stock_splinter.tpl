@@ -38,7 +38,7 @@
       <tr><td>{t}Quantity{/t}:</td><td><input style="text-align:right;width:4em" type="text" id="qty_add_stock" /></td></tr>
      <tr><td>{t}Notes{/t}:</td><td><input type="text" id="note_add_stock" /></td></tr>
 		<tr><td colspan=2><div class="buttons">
-      <button onclick="save_add_stock();" class="positive">{t}Save{/t}</button>
+      <button id="add_stock_btn" onclick="save_add_stock();" class="positive">{t}Save{/t}</button>
       <button onclick="close_add_stock_dialog()" class="negative" >{t}Cancel{/t}</button>
     </div></td></tr>
     </table>
@@ -63,7 +63,7 @@
       <tr><td>{t}Why?{/t}:</td><td><input type="text" id="lost_why" /></td></tr>
       <tr><td>{t}Action{/t}:</td><td><input type="text" id="lost_action" /></td></tr>
 	<tr><td colspan=2><div class="buttons">
-      <button onclick="save_lost_items();" class="positive">{t}Save{/t}</button>
+      <button id="save_lost_btn" onclick="save_lost_items();" class="positive">{t}Save{/t}</button>
       <button onclick="close_lost_dialog()" class="negative" >{t}Cancel{/t}</button>
     </div></td></tr>
     </table>
@@ -115,7 +115,7 @@
 	    	      <tr  style="height:5px"><td colspan=3></td></tr>
 
 	    <tr><td colspan=3><div class="buttons">
-      <button onclick="save_move_items();" class="positive">{t}Save{/t}</button>
+      <button id="move_items_btn" onclick="save_move_items();" class="positive">{t}Save{/t}</button>
       <button onclick="close_move_dialog()" class="negative" >{t}Cancel{/t}</button>
     </div></td></tr>
 	  </table>
