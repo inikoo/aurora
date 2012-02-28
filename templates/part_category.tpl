@@ -23,7 +23,7 @@
 		</div>
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
-		<li> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t}</span></span></li>
+		<li style="{if $category->get('Category Children')==0 }display:none{/if}" > <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Category Children')})</span></span></li>
 		<li> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='subcategories_charts'}selected{/if}" id="subcategories_charts"> <span> {t}Charts{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>

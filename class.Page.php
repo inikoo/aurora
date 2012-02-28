@@ -1158,10 +1158,10 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Offline') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Discontinued') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
 		}
 		else {
 			$message=sprintf("<br/><div class='order_but' style='text-align:left'>
@@ -1244,10 +1244,10 @@ class Page extends DB_Table {
 			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Offline') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Not for Sale').'</span>';
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
 		}
 		elseif ($product->data['Product Web State']=='Discontinued') {
-			$message='<br/><span style="color:red;font-weight:800">'._('Discontinued').'</span>';
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
 		}
 		else {
 			$message=sprintf('<br/><span style="color:green;font-style:italic;">'._('In stock').'. <a style="color:green;" href="login.php" >'._('login').'</a> '._('or').' <a style="color:green;" href="registration.php">'._('register').'</a></span>');
@@ -1461,8 +1461,8 @@ class Page extends DB_Table {
 		$print_register=true;
 
 		$number_records=count($products);
-		$out_of_stock=_('Out of Stock');
-		$discontinued=_('Discontinued');
+		$out_of_stock=_('OoS');
+		$discontinued=_('Sold Out');
 		$register=_('Please').' '.'<a href="login.php">'._('login').'</a> '._('or').' <a href="registration.php">'._('register').'</a>';
 
 
@@ -1579,8 +1579,8 @@ class Page extends DB_Table {
 
 		$print_rrp=true;
 		$number_records=count($products);
-		$out_of_stock=_('Out of Stock');
-		$discontinued=_('Discontinued');
+		$out_of_stock=_('OoS');
+		$discontinued=_('Sold Out');
 
 
 		$form=sprintf('<table border=0  class="product_list form" >' );
@@ -1670,9 +1670,7 @@ class Page extends DB_Table {
 
 
 			if ($product['Product Web State']=='Out of Stock') {
-				//        $class_state='out_of_stock';
-
-				//      $state=' <span class="out_of_stock">('._('Out of Stock').')</span>';
+	
 
 				$order_button=sprintf('<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:90%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>',_('Sold Out'));
 
@@ -1680,7 +1678,7 @@ class Page extends DB_Table {
 			}
 			elseif ($product['Product Web State']=='Discontinued') {
 				//    $class_state='discontinued';
-				//  $state=' <span class="discontinued">('._('Discontinued').')</span>';
+				//  $state=' <span class="discontinued">('._('Sold Out').')</span>';
 				$order_button=sprintf('<td colspan=3>%s</td>',_('Sold Out'));
 			}
 			else {
@@ -1801,14 +1799,14 @@ class Page extends DB_Table {
 			if ($product['Product Web State']=='Out of Stock') {
 				$class_state='out_of_stock';
 
-				$input=' <span class="out_of_stock" style="font-size:70%">'._('Out of Stock').'</span>';
+				$input=' <span class="out_of_stock" style="font-size:70%">'._('OoS').'</span>';
 
 
 
 			}
 			elseif ($product['Product Web State']=='Discontinued') {
 				$class_state='discontinued';
-				$input=' <span class="discontinued">('._('Discontinued').')</span>';
+				$input=' <span class="discontinued">('._('Sold Out').')</span>';
 
 			}
 			else {
