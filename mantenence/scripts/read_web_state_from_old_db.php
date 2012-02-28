@@ -76,7 +76,7 @@ foreach ($codes as $code) {
 	$result=mysql_query($sql,$con);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$product=new Product('pid',$row['Product ID']);
-print $product->code."\n";
+//print $product->code."\n";
 //print_r($row['Product ID']);
 //continue;
 		switch ($row2a['web_tipo']) {
