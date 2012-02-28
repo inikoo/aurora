@@ -40,6 +40,9 @@ function set_all_lost() {
     Dom.get('lost_why').focus();
 }
 function save_lost_items() {
+
+Dom.setStyle('save_lost_btn','display','none');
+
     var data=new Object();
     data['qty']=Dom.get('qty_lost').value;
     data['why']=Dom.get('lost_why').value;
@@ -136,6 +139,8 @@ Dom.get('qty_audit').focus();
 }
 function lost(sku,location_key) {
 
+Dom.setStyle('save_lost_btn','display','');
+
     qty=Dom.get('part_location_quantity_'+sku+'_'+location_key).getAttribute('quantity');
     Dom.get('lost_max_value').innerHTML=qty;
     Dom.get('lost_sku').value=sku;
@@ -154,7 +159,7 @@ function lost(sku,location_key) {
 
 function add_stock_part_location(sku,location_key) {
 
-
+Dom.setStyle('add_stock_btn','display','');
 
     Dom.get("add_stock_location_key").value=location_key;
     Dom.get("add_stock_sku").value=sku;
@@ -212,7 +217,7 @@ Dom.setXY('Editor_add_location', pos);
 }
 
 function move(sku,location_key) {
-
+Dom.setStyle('move_items_btn','display','');
 	 Dom.get('location_move_other_locations').innerHTML='';
     var request='ar_warehouse.php?tipo=other_locations_quick_buttons&sku=' + sku+'&location_key='+location_key ;
 //alert(request);
@@ -259,6 +264,8 @@ var r =  YAHOO.lang.JSON.parse(o.responseText);
 }
 
 function save_add_stock() {
+
+Dom.setStyle('add_stock_btn','display','none')
 
 
   var data=new Object();
@@ -515,7 +522,7 @@ if(!Dom.get('modify_stock').value){
    ar_file='ar_edit_warehouse.php';
    
    request=ar_file+'?tipo=part_location_update_can_pick&sku='+sku+'&location_key='+location_key+'&can_pick='+Dom.get('part_location_can_pick_'+sku+'_'+location_key).getAttribute('can_pick');
-  
+
    
     YAHOO.util.Connect.asyncRequest(
         'GET',
@@ -536,7 +543,7 @@ var r =  YAHOO.lang.JSON.parse(o.responseText);
                             Dom.get('part_location_can_pick_'+r.sku+'_'+r.location_key).setAttribute('can_pick','Yes');
 
             }
-            
+            window.location.reload();
             }
            
         },
@@ -555,7 +562,7 @@ function change_move_flow(){
 }
 
 function save_move_items() {
-
+Dom.setStyle('move_items_btn','display','none');
     var data=new Object();
     data['qty']=Dom.get('move_qty').value;
     data['part_sku']=Dom.get('move_sku').value;
@@ -579,10 +586,10 @@ if(data['from_key']<=0 || data['to_key']<=0   || data['qty']<=0){
 
     var json_value = YAHOO.lang.JSON.stringify(data);
     var request='ar_edit_warehouse.php?tipo=move_stock&values=' + encodeURIComponent(json_value);
-//alert(request);
+alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            //alert(o.responseText);
+            alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='ok') {
                 close_lost_dialog();
