@@ -20,6 +20,28 @@ if (!$db) {
 	print "Error can not access the database\n";
 	exit;
 }
+
+
+
+$dns_host='192.168.0.2';
+$dns_db='aw_old';
+$dns_user='raul';
+
+$con2=@mysql_connect($dns_host,$dns_user,$dns_pwd );
+if (!$con2) {
+            print "Error can not connect with database server\n";
+            exit;
+}
+//$dns_db='dw';
+$db2=@mysql_select_db($dns_db, $con2);
+if (!$db2) {
+            print "Error can not access the database\n";
+            exit;
+}
+
+
+
+
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
@@ -37,13 +59,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 */
 
 $sql=sprintf("select id,code,stock,condicion,web_tipo  from aw_old.product order by code  ");
-$result2a=mysql_query($sql);
+$result2a=mysql_query($sql,$con2);
 while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
 		print $row2a['code']."\r";
 
+    
 	$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Code`=%s',prepare_mysql($row2a['code']));
-	$result=mysql_query($sql);
+	$result=mysql_query($sql,$con);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$product=new Product('pid',$row['Product ID']);
 
@@ -74,7 +97,7 @@ while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
 
 $sql=sprintf('select `Product ID` from `Product Dimension` where `Product Code` like "%%-BN" ');
-$result=mysql_query($sql);
+$result=mysql_query($sql,$con);
 //print "$sql\n";
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$product=new Product('pid',$row['Product ID']);
