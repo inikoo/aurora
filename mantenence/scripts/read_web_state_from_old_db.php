@@ -1,5 +1,5 @@
 <?php
-include_once '../../app_files/db/dns.php';
+
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
 include_once '../../class.Product.php';
@@ -9,34 +9,22 @@ include_once '../../class.SupplierProduct.php';
 date_default_timezone_set('UTC');
 
 error_reporting(E_ALL);
-$con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
-if (!$con) {
-	print "Error can not connect with database server\n";
-	exit;
-}
-//$dns_db='dw';
-$db=@mysql_select_db($dns_db, $con);
-if (!$db) {
-	print "Error can not access the database\n";
-	exit;
-}
-
 
 
 $dns_host='192.168.0.2';
 $dns_db='aw_old';
 $dns_user='raul';
-
+$dns_pwd='ajolote11';
 $con2=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con2) {
-            print "Error can not connect with database server\n";
-            exit;
+	print "Error can not connect with database server2\n";
+	exit;
 }
 //$dns_db='dw';
 $db2=@mysql_select_db($dns_db, $con2);
 if (!$db2) {
-            print "Error can not access the database\n";
-            exit;
+	print "Error can not access the database\n";
+	exit;
 }
 
 
@@ -60,17 +48,37 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 $sql=sprintf("select id,code,stock,condicion,web_tipo  from aw_old.product order by code  ");
 $result2a=mysql_query($sql,$con2);
+$codes=array();
 while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
-		print $row2a['code']."\r";
+//	print $row2a['code']."\r";
+	$codes[]=$row2a['code'];
 
-    
-	$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Code`=%s',prepare_mysql($row2a['code']));
+}
+
+include_once '../../app_files/db/dns.php';
+$con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
+if (!$con) {
+	print "Error can not connect with database server\n";
+	exit;
+}
+//$dns_db='dw';
+$db=@mysql_select_db($dns_db, $con);
+if (!$db) {
+	print "Error can not access the database\n";
+	exit;
+}
+
+
+foreach ($codes as $code) {
+
+	$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Code`=%s',prepare_mysql($code));
 	$result=mysql_query($sql,$con);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$product=new Product('pid',$row['Product ID']);
-
-
+print $product->code."\n";
+//print_r($row['Product ID']);
+//continue;
 		switch ($row2a['web_tipo']) {
 		case 'HD':
 			$product->update_web_configuration('Offline');
