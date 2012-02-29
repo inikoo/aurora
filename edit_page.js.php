@@ -841,6 +841,11 @@ function reload_this(page_key){
 
 }
 
+function redirect_to_preview(){
+if(Dom.get('redirect_review').value==1)
+window.location='page_preview.php?id='+Dom.get('page_key').value+'&logged=1&update_heights=1&take_snapshot=1';
+}
+
 
 function upload_page_content(){
 
@@ -860,8 +865,8 @@ Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','non
 	    if(r.state==200){
 //	    update_page_height_and_reload(r.page_key)
   //          Dom.get('page_preview_iframe').src='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
-
-window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=overview';
+//window.location='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
+window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=overview&redirect_review=1&update_heights=1';
 //setTimeout("reload_this("+r.page_key+")", 250);
 	     
 	     
@@ -1411,6 +1416,7 @@ printf("var link = this._getDoc().createElement('link');\nlink.setAttribute('rel
     }, EmailHTMLEditor, true);
     
     EmailHTMLEditor.render();
+
 
 
 }
