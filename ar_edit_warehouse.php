@@ -55,8 +55,18 @@ case('save_description'):
 case('add_part_to_location'):
 	add_part_to_location();
 	break;
-case('update_max_min'):
-	update_max_min();
+case('update_save_picking_location_quantity_limits'):
+	$data=prepare_values($_REQUEST,array(
+			'location_key'=>array('type'=>'key'),
+			'part_sku'=>array('type'=>'key'),
+			'newvalue_max'=>array('type'=>'string'),
+			'newvalue_min'=>array('type'=>'string')
+
+		));
+
+
+
+	update_save_picking_location_quantity_limits($data);
 	break;
 case('new_area'):
 	new_warehouse_area();
@@ -420,25 +430,15 @@ function add_stock($data) {
 
 }
 
-function update_max_min() {
+function update_save_picking_location_quantity_limits($data) {
 	global $editor;
 
-	if (
-		!isset($_REQUEST['location_key'])
-		or !isset($_REQUEST['part_sku'])
-		or !isset($_REQUEST['newvalue_max'])
-		or !isset($_REQUEST['newvalue_min'])
-	) {
-		$response=array('state'=>400,'action'=>'error','msg'=>'');
-		echo json_encode($response);
-		return;
-	}
-	//print_r($editor);
+	
 
-	$part_sku=$_REQUEST['part_sku'];
-	$location_key=$_REQUEST['location_key'];
-	$new_value_min=stripslashes(urldecode($_REQUEST['newvalue_min']));
-	$new_value_max=stripslashes(urldecode($_REQUEST['newvalue_max']));
+	$part_sku=$data['part_sku'];
+	$location_key=$data['location_key'];
+	$new_value_min=stripslashes(urldecode($data['newvalue_min']));
+	$new_value_max=stripslashes(urldecode($data['newvalue_max']));
 	/*
   $traslator=array(
 		   'qty'=>'Quantity On Hand',

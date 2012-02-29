@@ -326,17 +326,18 @@ if(!Dom.get('modify_stock').value)return;
 	dialog_move_qty.show();
 }
 
-function save_qty(){
+
+function save_picking_quantity_limits(){
 //alert(sku);
 //alert(Dom.get('part_location').value + ':'+Dom.get('part_sku').value);//return;
 
 //ar_edit_warehouse.php?tipo=edit_part_location&key=min&newvalue=4&oldvalue=null&location_key=&part_sku=7
-    var request='ar_edit_warehouse.php?tipo=update_max_min&newvalue_min='+Dom.get('min_qty').value+'&newvalue_max='+Dom.get('max_qty').value+'&location_key='+Dom.get('part_location').value+'&part_sku='+Dom.get('part_sku').value
+    var request='ar_edit_warehouse.php?tipo=update_save_picking_location_quantity_limits&newvalue_min='+Dom.get('min_qty').value+'&newvalue_max='+Dom.get('max_qty').value+'&location_key='+Dom.get('part_location').value+'&part_sku='+Dom.get('part_sku').value
   // alert(request);  
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				//alert(o.responseText)
+				alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		   dialog_qty.hide();

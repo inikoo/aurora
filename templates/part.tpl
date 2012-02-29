@@ -93,7 +93,7 @@
 						<img style="{if $modify_stock}cursor:pointer{/if}"  sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"  can_pick="{if $location.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}"  alt="can_pick" onclick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /> </td>
 						{if $location.CanPick =='Yes'}
 						<td 
-						onClick="show_picking_limit_quantities(this, {$location.LocationKey}, {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}0{/if}, {if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}0{/if})" style="cursor:pointer; color:#808080">
+						onClick="show_picking_limit_quantities(this, {$location.LocationKey}, {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}''{/if}, {if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}''{/if})" style="cursor:pointer; color:#808080">
 						{literal}{{/literal}{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if},{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}{literal}}{/literal}
 						</td>
 						{else}
@@ -983,7 +983,7 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons" style="margin-top:10px">
-				<button class="positive" onclick="save_qty()">{t}Save{/t}</button> <button class="negative" id="close_qty">{t}Cancel{/t}</button> 
+				<button class="positive" onclick="save_picking_quantity_limits()">{t}Save{/t}</button> <button class="negative" id="close_qty">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>

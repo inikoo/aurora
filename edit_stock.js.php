@@ -586,10 +586,10 @@ if(data['from_key']<=0 || data['to_key']<=0   || data['qty']<=0){
 
     var json_value = YAHOO.lang.JSON.stringify(data);
     var request='ar_edit_warehouse.php?tipo=move_stock&values=' + encodeURIComponent(json_value);
-alert(request);
+//alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            alert(o.responseText);
+         //   alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='ok') {
                 close_lost_dialog();
