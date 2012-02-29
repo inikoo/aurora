@@ -96,9 +96,9 @@
 						onClick="show_picking_limit_quantities(this, {$location.LocationKey}, {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}''{/if}, {if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}''{/if})" >
 						{literal}{{/literal}{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if},{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}{literal}}{/literal}
 						</td>
-						{else}
-						<td onClick="show_move_quantities(this, {$location.LocationKey}, {if isset($location.MovingQty)}{$location.MovingQty}{else}0{/if})" style="cursor:pointer; color:#808080">[{if isset($location.MovingQty)}{$location.MovingQty}{else}{t}?{/t}{/if}]</td>
-						{/if}
+					
+						<td id="picking_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" style="cursor:pointer; color:#808080" onClick="show_move_quantities(this, {$location.LocationKey}, {if isset($location.MovingQty)}{$location.MovingQty}{else}0{/if})" >[{if isset($location.MovingQty)}{$location.MovingQty}{else}{t}?{/t}{/if}]</td>
+						
 						<td class="quantity" id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}">{$location.FormatedQuantityOnHand}</td>
 						<td style="{if !$modify_stock}display:none{/if}" class="button"><img style="cursor:pointer" id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onclick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
 						<td style="{if !$modify_stock}display:none{/if}" class="button"> <img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_add_stock_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/lorry.png" title="{t}add stock{/t}" alt="{t}add stock{/t}" onclick="add_stock_part_location({$location.PartSKU},{$location.LocationKey})" /></td>
