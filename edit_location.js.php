@@ -11,7 +11,7 @@ var dialog_family_list;
 var dialog_part_list;
 var warehouse_key=<?php echo $_REQUEST['warehouse_key'] ?>;
 var Editor_change_part;
-
+var location_name;
 
 function change_block(e){
    
@@ -240,8 +240,8 @@ this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 
 
 function delete_location(){
-	wa_name='df';
-	if (confirm('Are you sure, you want to delete location '+wa_name+' now?')) {
+	
+	if (confirm('Are you sure, you want to delete location '+location_name+' now?')) {
 		var request='ar_edit_warehouse.php?tipo=delete_location&location_key=' + Dom.get('location_key').value + '&area_key=' + Dom.get('area_key').value
 		//alert(request);//return;
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -336,6 +336,7 @@ function init(){
  var ids = ['description','parts']; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
+location_name=Dom.get('location_name').value;
 
 number_regex="\\d+";
 validate_scope_data=
@@ -521,3 +522,4 @@ var request='ar_edit_assets.php?tipo=edit_location&values='+ jsonificated_values
 
 }
 
+	

@@ -469,6 +469,12 @@ function update_max_min() {
 	$part_location->update($data);
 
 
+	if (!$part_location->updated) {
+		$response=array('state'=>400,'action'=>'nochange','msg'=>$part_location->msg);
+		echo json_encode($response);
+		return;
+
+	}
 
 	$data=array('Maximum Quantity'=>$new_value_max);
 	$part_location->editor=$editor;
@@ -511,7 +517,8 @@ function update_part_location() {
 		'qty'=>'Quantity On Hand',
 		'can_pick'=>'Can Pick',
 		'min'=>'Minimum Quantity',
-		'max'=>'Maximum Quantity'
+		'max'=>'Maximum Quantity',
+		'move_qty'=>'Moving Qty'
 	);
 	if (array_key_exists($_REQUEST['key'],$traslator)) {
 		$key=$traslator[$_REQUEST['key']];
@@ -933,6 +940,8 @@ function new_location($data) {
 			,'action'=>'created'
 			,'location_key'=>$warehouse_area->new_location->id
 			,'msg'=>_('Location added to Warehouse Area')
+			,'min'=>''
+			,'max'=>''
 		);
 		echo json_encode($response);
 		return;
@@ -1064,7 +1073,7 @@ function delete_location() {
 		$response= array('state'=>400,'msg'=>$location->deleted_msg);
 	}
 
-	$unknown_wa=new WarehouseArea($_REQUEST['area_key`']);
+	$unknown_wa=new WarehouseArea($_REQUEST['area_key']);
 	$unknown_wa->update_children();
 
 
@@ -1292,7 +1301,7 @@ function move_stock() {
 		return;
 	}
 	$part_location->editor=$editor;
-	//  print_r($data);
+	// print_r($data);
 	$part_location->move_stock($data);
 	$to_part_location=new PartLocation($raw_data['part_sku'],$data['Destination Key']);
 	if ($part_location->error) {
