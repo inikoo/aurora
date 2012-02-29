@@ -91,9 +91,9 @@
 					<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
 						<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode} </a> 
 						<img style="{if $modify_stock}cursor:pointer{/if}"  sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"  can_pick="{if $location.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}"  alt="can_pick" onclick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /> </td>
-						{if $location.CanPick =='Yes'}
-						<td 
-						onClick="show_picking_limit_quantities(this, {$location.LocationKey}, {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}''{/if}, {if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}''{/if})" style="cursor:pointer; color:#808080">
+						
+						<td id="picking_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" style="cursor:pointer; color:#808080;{if $location.CanPick =='No'}display:none{/if}"
+						onClick="show_picking_limit_quantities(this, {$location.LocationKey}, {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}''{/if}, {if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}''{/if})" >
 						{literal}{{/literal}{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if},{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}{literal}}{/literal}
 						</td>
 						{else}
