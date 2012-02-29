@@ -39,17 +39,19 @@
 				<div style="width:100%;">
 					<div style="width:100%;font-size:90%">
 						<div style="width:350px;float:left;margin-right:20px">
-							<table class="show_info_product">
-								<tr>
-									<td>{$product->get('Product Record Type')}</td>
+							<table class="show_info_product" border=0>
+								<tr style="{if $product->get('Product Record Type')=='Normal'}display:none{/if}">
+									<td colspan="3">{$product->get('Product Record Type')}</td>
 								</tr>
-								<tr>
+								<tr style="{if $product->get('Product Sales Type')=='Public Sale'}display:none{/if}">
 									<td>{t}Sale Type{/t}:</td>
 									<td class="aright">{$product->get_formated_sales_type() }</td>
 								</tr>
 								<tr>
 									<td>{t}Web Status{/t}:</td>
-									<td class="aright">{$product->get_formated_web_state() }</td>
+									<td style="text-align:right;width:50px" id="product_web_state_{$product->get('Product ID')}">{if $product->get('Product Web State')=='For Sale'}<img src="art/icons/world.png"  />{else if $product->get('Product Web State')=='Out of Stock'}<img src="art/icons/no_stock.jpg" />{else}<img src="art/icons/sold_out.gif" />{/if} </td>
+						<td style="text-align:right;width:100px"><span style="cursor:pointer" id="product_web_configuration_{$product->get('Product ID')}" onClick="change_web_configuration(this,{$product->get('Product ID')})">{if $product->get('Product Web Configuration')=='Online Auto'}{t}Automatic{/t}{elseif $product->get('Product Web Configuration')=='Offline'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Offline{/t} {elseif $product->get('Product Web Configuration')=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Out of stock{/t} {elseif $product->get('Product Web Configuration')=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Online{/t} {/if} <span> </td>
+
 								</tr>
 							</table>
 							<table class="show_info_product">
@@ -464,5 +466,16 @@
 			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
 			{/foreach} 
 		</ul>
+	</div>
+</div>
+<div id="dialog_edit_web_state" style="padding:20px 20px 10px 20px ">
+	<div id="new_customer_msg">
+	</div>
+	<input type="hidden" value="" id="product_pid"> 
+	<div id="edit_web_state_wait" style="text-align:right;display:none">
+		<img src="art/loading.gif" /> {t}Processing Request{/t} 
+	</div>
+	<div class="buttons" id="edit_web_state_buttons">
+		<button onclick="set_web_configuration('Offline')">{t}Sold Out{/t}</button> <button onclick="set_web_configuration('Online Force Out of Stock')">{t}Out of Stock{/t}</button> <button onclick="set_web_configuration('Online Force For Sale')">{t}In Stock{/t}</button> <button onclick="set_web_configuration('Online Auto')">{t}Automatic{/t}</button> 
 	</div>
 </div>

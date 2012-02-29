@@ -1370,6 +1370,39 @@ class part extends DB_Table {
 
 
 
+
+	function get_current_products($for_smarty=false) {
+
+
+
+		$sql=sprintf("select  `Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes' "
+			,$this->sku
+		
+		);
+//print $sql;
+		$res=mysql_query($sql);
+		$products=array();
+		while ($row=mysql_fetch_array($res)) {
+			$products[$row['Product ID']]= array(
+				'ProductID'=>$row['Product ID'],
+				'ProductCode'=>$row['Product Code'],
+				'StoreCode'=>$row['Store Code'],
+				'StoreKey'=>$row['Store Key'],
+				'ProductWebConfiguration'=>$row['Product Web Configuration'],
+				'ProductWebState'=>$row['Product Web State'],
+				);
+		}
+
+		return $products;
+
+
+
+
+	}
+
+
+
+
 	function get_locations($for_smarty=false) {
 
 		$sql=sprintf("select * from `Part Location Dimension` where `Part SKU` in (%s)",$this->sku);

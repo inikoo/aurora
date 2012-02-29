@@ -6182,19 +6182,24 @@ protected function update_field($field,$value,$options='') {
 
 		switch ($this->data['Product Web Configuration']) {
 		case('Online Force Out of Stock'):
-			$formated_web_configuration=_('Force out of stock');
+			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:16px;;vertical-align:top" /> '._('Out of stock');
+			$formated_web_configuration=_('Force Out of Stock');
 			break;
 		case('Online Auto'):
-			$formated_web_configuration=_('Auto');
+			$formated_web_configuration_bis=_('Automatic');
+			$formated_web_configuration=_('Automatic');
 			break;
 		case('Offline'):
-			$formated_web_configuration=_('Force offline');
+			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:16px;;vertical-align:top" /> '._('Offline');
+			$formated_web_configuration=_('Force Offline');
 			break;
 		case('Online Force For Sale'):
+			$formated_web_configuration_bis='<img src="art/icons/police_hat.jpg" style="height:16px;;vertical-align:top" /> '._('Online');
 			$formated_web_configuration=_('Force Online');
 			break;
 		default:
 			$formated_web_configuration='';
+			$formated_web_configuration_bis='';
 			break;
 
 		}
@@ -6202,18 +6207,23 @@ protected function update_field($field,$value,$options='') {
 		switch ($this->data['Product Web State']) {
 		case('Out of Stock'):
 			$web_state='<span class=="out_of_stock">['._('Out of Stock').']</span>';
+			$icon='<img src="art/icons/no_stock.jpg" alt="" />';
 			break;
 		case('For Sale'):
 			$web_state='';
+			$icon='<img src="art/icons/world.png" alt="" />';
 			break;
 		case('Discontinued'):
 			$web_state=_('Discontinued');
+			$icon='<img src="art/icons/sold_out.gif" alt="" />';
 		case('Offline'):
 			$web_state=_('Offline');
+			$icon='<img src="art/icons/sold_out.gif" alt="" />';
 			break;
 
 		default:
 			$web_state='';
+			$icon='';
 			break;
 		}
 
@@ -6238,8 +6248,11 @@ protected function update_field($field,$value,$options='') {
 		$description=$this->data['Product XHTML Short Description'].' <span class="stock">'._('Stock').': '.number($this->data['Product Availability']).'</span> <span class="webs_tate">'.$web_state.'</span>';
 		$this->new_data=array(
 			'formated_web_configuration'=>$formated_web_configuration,
+			'formated_web_configuration_bis'=>$formated_web_configuration_bis,
 			'web_configuration'=>$web_configuration,
-			'description'=>$description
+			'description'=>$description,
+			'icon'=>$icon,
+			'pid'=>$this->pid
 		);
 
 		return;
