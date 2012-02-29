@@ -337,12 +337,48 @@ function save_qty(){
 
 }
 
+function change_web_configuration(o,product_pid){
+region1 = Dom.getRegion(o); 
+    region2 = Dom.getRegion('dialog_edit_web_state'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_edit_web_state', pos);
+Dom.get('product_pid').value=product_pid
+dialog_edit_web_state.show()
+
+}
+
+function set_web_configuration(value){
+  var request='ar_edit_assets.php?tipo=edit_product&key=web_configuration&pid='+Dom.get('product_pid').value+'&newvalue='+value
+//   alert(request);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+		//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		  dialog_edit_web_state.hide()
+		  Dom.get('product_web_state_'+r.newdata.pid).innerHTML=r.newdata.icon
+		  Dom.get('product_web_configuration_'+r.newdata.pid).innerHTML=r.newdata.formated_web_configuration_bis
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+}
+
 function init(){
+
+dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_edit_web_state.render();
 
 image_region=Dom.getRegion('main_image')
 if(image_region.height>160){
 Dom.setStyle('main_image','height','160px')
 Dom.setStyle('main_image','width','')
+
+
+
 
 }
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kaktus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-22 15:20+0100\n"
-"PO-Revision-Date: 2012-02-22 15:20+0100\n"
+"POT-Creation-Date: 2012-02-28 16:22+0100\n"
+"PO-Revision-Date: 2012-02-28 16:22+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -443,7 +443,7 @@ msgstr ""
 #: class.Address.php:1652
 #: class.Invoice.php:1278
 #: class.Invoice.php:1322
-#: class.Order.php:1151
+#: class.Order.php:1153
 #: class.Page.php:705
 msgid "Unknown"
 msgstr ""
@@ -1124,174 +1124,171 @@ msgstr ""
 msgid "Buy"
 msgstr ""
 
-#: class.DeliveryNote.php:199
+#: class.DeliveryNote.php:201
 msgid "Collected"
 msgstr ""
 
-#: class.DeliveryNote.php:598
-#: class.DeliveryNote.php:708
-#: class.DeliveryNote.php:1012
-#: class.DeliveryNote.php:2206
+#: class.DeliveryNote.php:600
+#: class.DeliveryNote.php:713
+#: class.DeliveryNote.php:1042
+#: class.DeliveryNote.php:2261
 msgid "Taken from an"
 msgstr ""
 
-#: class.DeliveryNote.php:598
-#: class.DeliveryNote.php:708
-#: class.DeliveryNote.php:861
-#: class.DeliveryNote.php:1012
-#: class.DeliveryNote.php:2209
+#: class.DeliveryNote.php:600
+#: class.DeliveryNote.php:713
+#: class.DeliveryNote.php:880
+#: class.DeliveryNote.php:1042
+#: class.DeliveryNote.php:2264
 msgid "Unknown Location"
 msgstr ""
 
-#: class.DeliveryNote.php:601
-#: class.DeliveryNote.php:711
-#: class.DeliveryNote.php:1015
-#: class.DeliveryNote.php:2214
+#: class.DeliveryNote.php:603
+#: class.DeliveryNote.php:716
+#: class.DeliveryNote.php:1045
+#: class.DeliveryNote.php:2269
 msgid "Taken from"
 msgstr ""
 
-#: class.DeliveryNote.php:861
-#: class.DeliveryNote.php:2204
+#: class.DeliveryNote.php:880
+#: class.DeliveryNote.php:2259
 msgid "To be taken from an"
 msgstr ""
 
-#: class.DeliveryNote.php:864
-#: class.DeliveryNote.php:2212
+#: class.DeliveryNote.php:883
+#: class.DeliveryNote.php:2267
 msgid "To be taken from"
 msgstr ""
 
-#: class.DeliveryNote.php:1080
+#: class.DeliveryNote.php:1118
 #: class.Page.php:1158
 #: class.Page.php:1244
-#: class.Page.php:1464
-#: class.Page.php:1582
-#: class.Page.php:1804
 msgid "Out of Stock"
 msgstr ""
 
-#: class.DeliveryNote.php:1314
+#: class.DeliveryNote.php:1369
 msgid "Delivery Note can not be cancelled,because has already been dispatched"
 msgstr ""
 
-#: class.DeliveryNote.php:1318
-#: class.DeliveryNote.php:1377
-#: class.Order.php:353
+#: class.DeliveryNote.php:1373
+#: class.DeliveryNote.php:1432
+#: class.Order.php:355
 msgid "Order is already cancelled"
 msgstr ""
 
-#: class.DeliveryNote.php:1369
+#: class.DeliveryNote.php:1424
 msgid "Delivery Note can not be suspended,because has already been dispatched"
 msgstr ""
 
-#: class.DeliveryNote.php:1373
-#: class.Order.php:432
+#: class.DeliveryNote.php:1428
+#: class.Order.php:434
 msgid "Order is already suspended"
 msgstr ""
 
-#: class.DeliveryNote.php:1429
-#: class.DeliveryNote.php:1531
+#: class.DeliveryNote.php:1484
+#: class.DeliveryNote.php:1586
 msgid "Delivery Note can not be assigned to a picker,because has already been picked"
 msgstr ""
 
-#: class.DeliveryNote.php:1437
-#: class.DeliveryNote.php:1496
-#: class.DeliveryNote.php:1545
-#: class.DeliveryNote.php:1610
+#: class.DeliveryNote.php:1492
+#: class.DeliveryNote.php:1551
+#: class.DeliveryNote.php:1600
+#: class.DeliveryNote.php:1665
 #, fuzzy
 msgid "Staff not found"
 msgstr "Opération non trouvée"
 
-#: class.DeliveryNote.php:1460
-#: class.DeliveryNote.php:1517
+#: class.DeliveryNote.php:1515
+#: class.DeliveryNote.php:1572
 msgid "pick order"
 msgstr ""
 
-#: class.DeliveryNote.php:1461
-#: class.DeliveryNote.php:1518
+#: class.DeliveryNote.php:1516
+#: class.DeliveryNote.php:1573
 msgid "edit"
 msgstr ""
 
-#: class.DeliveryNote.php:1463
-#: class.DeliveryNote.php:1580
+#: class.DeliveryNote.php:1518
+#: class.DeliveryNote.php:1635
 msgid "Picker Assigned"
 msgstr ""
 
-#: class.DeliveryNote.php:1475
+#: class.DeliveryNote.php:1530
 msgid "Delivery Note can not be assigned to a packer,because has not been picked"
 msgstr ""
 
-#: class.DeliveryNote.php:1480
+#: class.DeliveryNote.php:1535
 msgid "Packer has been already assigned"
 msgstr ""
 
-#: class.DeliveryNote.php:1485
+#: class.DeliveryNote.php:1540
 msgid "Delivery Note has been already packed"
 msgstr ""
 
-#: class.DeliveryNote.php:1520
-#: class.DeliveryNote.php:1643
+#: class.DeliveryNote.php:1575
+#: class.DeliveryNote.php:1698
 msgid "Packer Assigned"
 msgstr ""
 
-#: class.DeliveryNote.php:1577
-#: class.DeliveryNote.php:1962
-#: class.Order.php:2112
+#: class.DeliveryNote.php:1632
+#: class.DeliveryNote.php:2017
+#: class.Order.php:2114
 msgid "Picking"
 msgstr ""
 
-#: class.DeliveryNote.php:1596
+#: class.DeliveryNote.php:1651
 msgid "Delivery Note can not be assigned to a packer,because is been packed"
 msgstr ""
 
-#: class.DeliveryNote.php:1640
-#: class.DeliveryNote.php:1974
-#: class.Order.php:1154
-#: class.Order.php:2122
+#: class.DeliveryNote.php:1695
+#: class.DeliveryNote.php:2029
+#: class.Order.php:1156
+#: class.Order.php:2124
 msgid "Packing"
 msgstr ""
 
-#: class.DeliveryNote.php:1936
+#: class.DeliveryNote.php:1991
 msgid "Ready to be Picked"
 msgstr ""
 
-#: class.DeliveryNote.php:1939
+#: class.DeliveryNote.php:1994
 msgid "Ready to be Dispatched"
 msgstr ""
 
-#: class.DeliveryNote.php:1942
-#: class.Order.php:498
-#: class.Order.php:1148
-#: class.Order.php:2247
-#: class.Order.php:2271
+#: class.DeliveryNote.php:1997
+#: class.Order.php:500
+#: class.Order.php:1150
+#: class.Order.php:2249
+#: class.Order.php:2273
 msgid "Dispatched"
 msgstr ""
 
-#: class.DeliveryNote.php:1945
+#: class.DeliveryNote.php:2000
 msgid "Cancelled to Restock"
 msgstr ""
 
-#: class.DeliveryNote.php:1948
-#: class.Order.php:1145
+#: class.DeliveryNote.php:2003
+#: class.Order.php:1147
 msgid "Ready to Ship"
 msgstr ""
 
-#: class.DeliveryNote.php:1951
-#: class.Order.php:365
-#: class.Order.php:1157
+#: class.DeliveryNote.php:2006
+#: class.Order.php:367
+#: class.Order.php:1159
 msgid "Cancelled"
 msgstr ""
 
-#: class.DeliveryNote.php:1960
-#: class.Order.php:2110
+#: class.DeliveryNote.php:2015
+#: class.Order.php:2112
 msgid "Picked"
 msgstr ""
 
-#: class.DeliveryNote.php:1971
-#: class.Order.php:2120
+#: class.DeliveryNote.php:2026
+#: class.Order.php:2122
 msgid "Packed"
 msgstr ""
 
-#: class.DeliveryNote.php:2316
+#: class.DeliveryNote.php:2374
 msgid "Error,the sum of out of stock and not found units are greater than the number of not picked units"
 msgstr ""
 
@@ -1575,128 +1572,128 @@ msgstr ""
 msgid "Paid in full"
 msgstr ""
 
-#: class.Order.php:258
+#: class.Order.php:259
 msgid "Delivery Note for"
 msgstr ""
 
-#: class.Order.php:269
-#: class.Order.php:1139
+#: class.Order.php:271
+#: class.Order.php:1141
 msgid "Ready to Pick"
 msgstr ""
 
-#: class.Order.php:349
+#: class.Order.php:351
 msgid "Order can not be cancelled, because has already been dispatched"
 msgstr ""
 
-#: class.Order.php:366
+#: class.Order.php:368
 msgid "Order Cancelled"
 msgstr ""
 
-#: class.Order.php:424
+#: class.Order.php:426
 msgid "Order can not be suspended, because has already been dispatched"
 msgstr ""
 
-#: class.Order.php:428
+#: class.Order.php:430
 msgid "Order is cancelled"
 msgstr ""
 
-#: class.Order.php:445
-#: class.Order.php:1160
+#: class.Order.php:447
+#: class.Order.php:1162
 msgid "Suspended"
 msgstr ""
 
-#: class.Order.php:446
+#: class.Order.php:448
 msgid "Order Suspended"
 msgstr ""
 
-#: class.Order.php:829
+#: class.Order.php:831
 msgid "No deal Available"
 msgstr ""
 
-#: class.Order.php:855
+#: class.Order.php:857
 msgid "Not enought products ordered"
 msgstr ""
 
-#: class.Order.php:887
+#: class.Order.php:889
 msgid "No previous orders"
 msgstr ""
 
-#: class.Order.php:889
+#: class.Order.php:891
 msgid "Last order not within"
 msgstr ""
 
-#: class.Order.php:1130
+#: class.Order.php:1132
 msgid "In Process"
 msgstr ""
 
-#: class.Order.php:1133
+#: class.Order.php:1135
 msgid "In Process by Customer"
 msgstr ""
 
-#: class.Order.php:1136
+#: class.Order.php:1138
 msgid "Submitted by Customer"
 msgstr ""
 
-#: class.Order.php:1142
+#: class.Order.php:1144
 msgid "Picking & Packing"
 msgstr ""
 
-#: class.Order.php:1373
+#: class.Order.php:1375
 msgid "wrong date"
 msgstr ""
 
-#: class.Order.php:1375
+#: class.Order.php:1377
 msgid "Order is already submited"
 msgstr ""
 
-#: class.Order.php:1394
+#: class.Order.php:1396
 msgid "Order not submited or already received"
 msgstr ""
 
-#: class.Order.php:1396
-#: class.Order.php:1435
-#: class.Order.php:1471
+#: class.Order.php:1398
+#: class.Order.php:1437
+#: class.Order.php:1473
 msgid "Wrong date"
 msgstr ""
 
-#: class.Order.php:1410
+#: class.Order.php:1412
 msgid "Error, indicate who receive the order"
 msgstr ""
 
-#: class.Order.php:1419
-#: class.Order.php:1457
+#: class.Order.php:1421
+#: class.Order.php:1459
 msgid "Error, staff id not found"
 msgstr ""
 
-#: class.Order.php:1433
+#: class.Order.php:1435
 msgid "Already received"
 msgstr ""
 
-#: class.Order.php:1448
+#: class.Order.php:1450
 msgid "Error, indicate who checked the order"
 msgstr ""
 
-#: class.Order.php:1469
+#: class.Order.php:1471
 msgid "Already checked or not received yet"
 msgstr ""
 
-#: class.Order.php:1482
+#: class.Order.php:1484
 msgid "Error can not be consolidated"
 msgstr ""
 
-#: class.Order.php:1493
+#: class.Order.php:1495
 msgid "Error, order already received"
 msgstr ""
 
-#: class.Order.php:1577
+#: class.Order.php:1579
 msgid "submited"
 msgstr ""
 
-#: class.Order.php:1584
+#: class.Order.php:1586
 msgid "expected"
 msgstr ""
 
-#: class.Order.php:2757
+#: class.Order.php:2759
 msgid "Shipping"
 msgstr ""
 
@@ -1769,15 +1766,18 @@ msgstr ""
 
 #: class.Page.php:1161
 #: class.Page.php:1164
+#: class.Page.php:1247
 #: class.Page.php:1250
 #: class.Page.php:1465
 #: class.Page.php:1583
-#: class.Page.php:1811
-msgid "Discontinued"
+#: class.Page.php:1675
+#: class.Page.php:1682
+#: class.Page.php:1809
+msgid "Sold Out"
 msgstr ""
 
 #: class.Page.php:1182
-#: class.Page.php:1873
+#: class.Page.php:1871
 #, php-format
 msgid "Order Product"
 msgstr ""
@@ -1786,12 +1786,8 @@ msgstr ""
 #: class.Page.php:1385
 #: class.Page.php:1406
 #: class.Page.php:1498
-#: class.Page.php:1952
+#: class.Page.php:1950
 msgid "RRP"
-msgstr ""
-
-#: class.Page.php:1247
-msgid "Not for Sale"
 msgstr ""
 
 #: class.Page.php:1253
@@ -1817,60 +1813,61 @@ msgstr ""
 msgid "register"
 msgstr ""
 
+#: class.Page.php:1464
+#: class.Page.php:1582
+#: class.Page.php:1802
+msgid "OoS"
+msgstr ""
+
 #: class.Page.php:1466
 msgid "Please"
 msgstr ""
 
 #: class.Page.php:1500
-#: class.Page.php:1952
+#: class.Page.php:1950
 msgid "RRP from"
 msgstr ""
 
-#: class.Page.php:1677
-#: class.Page.php:1684
-msgid "Sold Out"
-msgstr ""
-
-#: class.Page.php:1874
+#: class.Page.php:1872
 #, php-format
 msgid "Reset"
 msgstr ""
 
-#: class.Page.php:1914
+#: class.Page.php:1912
 msgid "Price"
 msgstr ""
 
-#: class.Page.php:1914
+#: class.Page.php:1912
 msgid "Price from"
 msgstr ""
 
-#: class.Page.php:2011
+#: class.Page.php:2009
 msgid "Basket & Checkout"
 msgstr ""
 
-#: class.Page.php:2019
+#: class.Page.php:2017
 #, fuzzy
 msgid "Log Out"
 msgstr "Déconnecter"
 
-#: class.Page.php:2019
+#: class.Page.php:2017
 msgid "Profile"
 msgstr ""
 
-#: class.Page.php:2021
+#: class.Page.php:2019
 msgid "Register"
 msgstr ""
 
-#: class.Page.php:2021
+#: class.Page.php:2019
 msgid "Log in"
 msgstr "Connecter"
 
-#: class.Page.php:2427
-#: class.Page.php:2439
+#: class.Page.php:2425
+#: class.Page.php:2437
 msgid "Wrong URL"
 msgstr ""
 
-#: class.Page.php:2469
+#: class.Page.php:2467
 msgid "Same URL as the redirect"
 msgstr ""
 
@@ -2158,61 +2155,70 @@ msgstr ""
 msgid "Checking delivery"
 msgstr ""
 
-#: class.Product.php:5954
+#: class.Product.php:5957
 msgid "Public Sale"
 msgstr ""
 
-#: class.Product.php:5957
-#: class.Product.php:6222
+#: class.Product.php:5960
+#: class.Product.php:6225
 msgid "Private Sale"
 msgstr ""
 
-#: class.Product.php:5972
-#: class.Product.php:5978
-#: class.Product.php:5981
-msgid "Forced"
+#: class.Product.php:5963
+msgid "Not for Sale"
 msgstr ""
 
 #: class.Product.php:5975
-#: class.Product.php:6185
+#: class.Product.php:5981
+#: class.Product.php:5984
+msgid "Forced"
+msgstr ""
+
+#: class.Product.php:5978
+#: class.Product.php:6188
 msgid "Auto"
 msgstr ""
 
-#: class.Product.php:5996
-#: class.Product.php:6209
+#: class.Product.php:5997
+#: class.Product.php:6210
+msgid "Discontinued"
+msgstr ""
+
+#: class.Product.php:5999
+#: class.Product.php:6212
 msgid "Offline"
 msgstr ""
 
-#: class.Product.php:6113
-#: class.Product.php:6131
+#: class.Product.php:6116
+#: class.Product.php:6134
 msgid "Product Sales Type updated"
 msgstr ""
 
-#: class.Product.php:6137
+#: class.Product.php:6140
 msgid "Error: Product sales type could not be updated "
 msgstr ""
 
-#: class.Product.php:6174
+#: class.Product.php:6177
 msgid "Product Web Configuration updated"
 msgstr ""
 
-#: class.Product.php:6182
+#: class.Product.php:6185
 msgid "Force out of stock"
 msgstr ""
 
-#: class.Product.php:6188
+#: class.Product.php:6191
 msgid "Force offline"
 msgstr ""
 
-#: class.Product.php:6191
+#: class.Product.php:6194
 msgid "Force Online"
 msgstr ""
 
-#: class.Product.php:6225
+#: class.Product.php:6228
 msgid "Not For Sale"
 msgstr ""
 
-#: class.Product.php:6235
+#: class.Product.php:6238
 msgid "Stock"
 msgstr ""
 
