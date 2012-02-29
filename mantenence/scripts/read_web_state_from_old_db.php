@@ -46,7 +46,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 */
 
-$sql=sprintf("select id,code,stock,condicion,web_tipo  from aw_old.product where code='StarRS-01' order by code  ");
+$sql=sprintf("select id,code,stock,condicion,web_tipo  from aw_old.product order by code  ");
 $result2a=mysql_query($sql,$con2);
 $codes=array();
 while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
