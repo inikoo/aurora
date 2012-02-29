@@ -209,7 +209,7 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-  alert(ar_file+'?'+request);
+ // alert(ar_file+'?'+request);
   //return;
     YAHOO.util.Connect.asyncRequest(
         'POST',

@@ -179,9 +179,6 @@ $smarty->assign('part_custom_fields',$part_custom_fields);
 $smarty->assign('number_part_custom_fields',count($part_custom_fields));
 
 
-
-
-
 $smarty->assign('part',$part);
 $smarty->assign('parent','parts');
 $smarty->assign('title',$part->get('SKU'));
