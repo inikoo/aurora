@@ -326,17 +326,18 @@ if(!Dom.get('modify_stock').value)return;
 	dialog_move_qty.show();
 }
 
-function save_qty(){
+
+function save_picking_quantity_limits(){
 //alert(sku);
 //alert(Dom.get('part_location').value + ':'+Dom.get('part_sku').value);//return;
 
 //ar_edit_warehouse.php?tipo=edit_part_location&key=min&newvalue=4&oldvalue=null&location_key=&part_sku=7
-    var request='ar_edit_warehouse.php?tipo=update_max_min&newvalue_min='+Dom.get('min_qty').value+'&newvalue_max='+Dom.get('max_qty').value+'&location_key='+Dom.get('part_location').value+'&part_sku='+Dom.get('part_sku').value
+    var request='ar_edit_warehouse.php?tipo=update_save_picking_location_quantity_limits&newvalue_min='+Dom.get('min_qty').value+'&newvalue_max='+Dom.get('max_qty').value+'&location_key='+Dom.get('part_location').value+'&part_sku='+Dom.get('part_sku').value
   // alert(request);  
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				//alert(o.responseText)
+				alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		   dialog_qty.hide();
@@ -354,9 +355,39 @@ function save_qty(){
 
 }
 
+function change_web_configuration(o,product_pid){
+region1 = Dom.getRegion(o); 
+    region2 = Dom.getRegion('dialog_edit_web_state'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_edit_web_state', pos);
+Dom.get('product_pid').value=product_pid
+dialog_edit_web_state.show()
+
+}
+
+function set_web_configuration(value){
+  var request='ar_edit_assets.php?tipo=edit_product&key=web_configuration&pid='+Dom.get('product_pid').value+'&newvalue='+value
+//   alert(request);
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+		//	alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		  dialog_edit_web_state.hide()
+		  Dom.get('product_web_state_'+r.newdata.pid).innerHTML=r.newdata.icon
+		  Dom.get('product_web_configuration_'+r.newdata.pid).innerHTML=r.newdata.formated_web_configuration_bis
+
+	}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+
+}
 function save_move_qty(){
 
-
+return;
 
     var request='ar_edit_warehouse.php?tipo=edit_part_location&key=move_qty&newvalue='+Dom.get('move_qty_part').value+'&location_key='+Dom.get('part_location').value+'&part_sku='+Dom.get('part_sku').value
    alert(request);  
@@ -375,18 +406,20 @@ function save_move_qty(){
 	    }
 	});    
 
-
-
-
-
 }
 
 function init(){
+
+dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_edit_web_state.render();
 
 image_region=Dom.getRegion('main_image')
 if(image_region.height>160){
 Dom.setStyle('main_image','height','160px')
 Dom.setStyle('main_image','width','')
+
+
+
 
 }
 

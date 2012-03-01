@@ -50,6 +50,13 @@ if (isset($_REQUEST['update_heights'])  and  $_REQUEST['update_heights']) {
 }
 
 
+if (isset($_REQUEST['redirect_review']) and $_REQUEST['redirect_review']==1  ) {
+    $smarty->assign('redirect_review',1);
+}else{
+    $smarty->assign('redirect_review',0);
+}
+
+
 if (isset($_REQUEST['take_snapshot']) and $_REQUEST['take_snapshot']  ) {
     $smarty->assign('take_snapshot',1);
 }else{
