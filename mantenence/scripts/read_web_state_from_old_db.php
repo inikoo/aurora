@@ -52,7 +52,7 @@ $codes=array();
 while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
 
 //	print $row2a['code']."\r";
-	$codes[]=$row2a['code'];
+	$codes[$row2a['code']]=$row2a['web_tipo'];
 
 }
 
@@ -70,7 +70,7 @@ if (!$db) {
 }
 
 
-foreach ($codes as $code) {
+foreach ($codes as $code=>$web_tipo) {
 
 	$sql=sprintf('select `Product ID` from `Product Dimension` where `Product Code`=%s',prepare_mysql($code));
 	$result=mysql_query($sql,$con);
@@ -79,7 +79,7 @@ foreach ($codes as $code) {
 //print $product->code."\n";
 //print_r($row['Product ID']);
 //continue;
-		switch ($row2a['web_tipo']) {
+		switch ($web_tipo) {
 		case 'HD':
 			$product->update_web_configuration('Offline');
 			break;

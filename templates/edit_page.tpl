@@ -6,6 +6,11 @@
 	<input type="hidden" id="site_id" value="{$site->id}" />
 	<input type="hidden" id="store_key" value="{$store->id}" />
 	<input type="hidden" id="page_key" value="{$page->id}" />
+	
+			<input type="hidden" id="redirect_review" value="{$redirect_review}" />
+
+		<input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
+
 	<input type="hidden" id="content_height" value="{$page->get('Page Content Height')}" />
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
@@ -543,7 +548,7 @@
 	</div>
 </div>
 
-<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px"> 
+<iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px" onload="redirect_to_preview()"> 
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>

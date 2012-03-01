@@ -1434,15 +1434,19 @@ function() {
 	    ,{key:"sales_type", label:"",hidden:true,width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Public Sale')?>","<?php echo _('Private Sale')?>","<?php echo _('Discontinue')?>","<?php echo _('Not For Sale')?>"],disableBtns:true})}
 				  
 				  ,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web/Sale Status')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
-				    {'value':"Online Auto",'label':"<?php echo _('Auto')?><br/>"},
-				    {'value':"Online Force For Sale",'label':"<?php echo _('Force online')?><br/>"},
-				    {'label':"<?php echo _('Force out of stock')?><br/>",'value':"Online Force Out of Stock"},
-				    {'label':"<?php echo _('Force offline')?><br/>",'value':'Offline'},
+				    {'value':"Online Auto",'label':"<?php echo _('Automatic')?><br/>"},
+				    {'value':"Online Force For Sale",'label':"<?php echo _('Force Online')?><br/>"},
+				    {'label':"<?php echo _('Force Out of Stock')?><br/>",'value':"Online Force Out of Stock"},
+				    {'label':"<?php echo _('Force Offline')?><br/>",'value':'Offline'},
 				    {'label':"<?php echo _('Private Sale')?><br/>",'value':'Private Sale'},
 				    {'label':"<?php echo _('Not For Sale')?>",'value':'Not for Sale'}
 				    ],disableBtns:true})}
 				    ,{key:"formated_web_configuration" , label:"",hidden:true}
 		];
+		
+	
+		
+		
 		this.dataSource1 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=products_in_part&sku="+part_sku+"&tableid=1");
 		this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource1.connXhrMode = "queueRequests";
