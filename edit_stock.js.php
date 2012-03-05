@@ -185,6 +185,12 @@ success: function (o) {
             if (o.responseText == 'Ok') {
                 Dom.get('part_location_tr_'+sku+'_'+location_key).parentNode.removeChild(Dom.get('part_location_tr_'+sku+'_'+location_key));
 
+table_id=1
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&tableid='+table_id;
+ if(Dom.get('page_name').value=='part')
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 
 
@@ -362,7 +368,7 @@ Dom.setStyle('Editor_audit_wait','display','')
 
    YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            //alert(o.responseText);
+            alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                   Dom.get('part_location_quantity_'+r.sku+'_'+r.location_key).setAttribute('quantity',r.qty);
@@ -577,9 +583,9 @@ Dom.setStyle('move_items_btn','display','none');
 
 
 
-if(data['from_key']<=0 || data['to_key']<=0   || data['qty']<=0){
-    return;
-}
+//if(data['from_key']<=0 || data['to_key']<=0   || data['qty']<=0){
+//    return;
+//}
 
 
 
@@ -589,7 +595,7 @@ if(data['from_key']<=0 || data['to_key']<=0   || data['qty']<=0){
 //alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-         //   alert(o.responseText);
+       //  alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='ok') {
                 close_lost_dialog();
@@ -652,7 +658,6 @@ success:function(o) {
 table_id=1
     var table=tables['table'+table_id];
     var datasource=tables['dataSource'+table_id];
-
     var request='&tableid='+table_id;
  if(Dom.get('page_name').value=='part')
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
@@ -682,6 +687,9 @@ table_id=1
 
 
 function move_stock_right() {
+
+  
+
     if (isNaN(parseFloat(Dom.get("move_stock_right").getAttribute('ovalue')))) {
         return;
     }
@@ -720,40 +728,51 @@ function roundNumber(num, dec) {
 
 
 function move_qty_changed() {
+
+
+
+
     var _qty_change=Dom.get('move_qty').value;
     if (_qty_change=='')_qty_change=0;
+    
+    
+  
     var qty_change=parseFloat(_qty_change+' '+qty_change);
-
     if (isNaN(qty_change))
         return;
 
-    if (qty_change<0) {
-        Dom.addClass('move_qty','error');
+         
+ left_old_value=parseFloat(Dom.get("move_stock_left").getAttribute('ovalue'));
+    right_old_value=parseFloat(Dom.get("move_stock_right").getAttribute('ovalue'));
 
+
+    if (qty_change<0 && left_old_value>=0) {
+        Dom.addClass('move_qty','error');
         return;
     } else
         Dom.removeClass('move_qty','error');
 
 
-    left_old_value=parseFloat(Dom.get("move_stock_left").getAttribute('ovalue'));
-    right_old_value=parseFloat(Dom.get("move_stock_right").getAttribute('ovalue'));
+   
 
-//alert(left_old_value)
 
     if (Dom.get('flow').getAttribute('flow')=='right') {
-        if (left_old_value < qty_change) {
-            Dom.addClass('move_qty','error');
-            qty_change=left_old_value;
-        } else
-            Dom.removeClass('move_qty','error');
+     //   if (left_old_value < qty_change) {
+     //       Dom.addClass('move_qty','error');
+     //       qty_change=left_old_value;
+     //   } else
+     //       Dom.removeClass('move_qty','error');
+            
+            
+
         left_value=left_old_value-qty_change;
         right_value=right_old_value+qty_change;
     } else {
-        if (right_old_value < qty_change) {
-            Dom.addClass('move_qty','error');
-            qty_change=right_old_value;
-        } else
-            Dom.removeClass('move_qty','error');
+    //    if (right_old_value < qty_change) {
+     //       Dom.addClass('move_qty','error');
+     //       qty_change=right_old_value;
+     //   } else
+      //      Dom.removeClass('move_qty','error');
             
         left_value=roundNumber(left_old_value+qty_change,3);
         right_value=roundNumber(right_old_value-qty_change,3);
@@ -764,7 +783,7 @@ function move_qty_changed() {
     Dom.get("move_stock_left").innerHTML=left_value;
     Dom.get("move_stock_right").innerHTML=right_value;
 
-
+//alert(left_value+' '+right_value)
 
 }
 function close_add_location_dialog() {
@@ -837,7 +856,7 @@ function add_location_selected(sType, aArgs) {
 
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-           // alert(o.responseText);
+            alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='added') {
                 close_add_location_dialog();
@@ -868,6 +887,12 @@ success:function(o) {
          
 
 
+table_id=1
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&tableid='+table_id;
+ if(Dom.get('page_name').value=='part')
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 
 

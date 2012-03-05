@@ -122,11 +122,13 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
+//print $sql;
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-	if ($row['External File Type']=='CSS')
-		$css_files[]='public_external_file.php?id='.$row['external_file_key'];
-	else
+	if ($row['External File Type']=='CSS'){
+	
+	$css_files[]='public_external_file.php?id='.$row['external_file_key'];
+	}else
 		$js_files[]='public_external_file.php?id='.$row['external_file_key'];
 
 }

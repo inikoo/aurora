@@ -622,7 +622,7 @@ function change_display_mode(parent,name,label){
 		var request='&percentages=0&show_default_currency=1';
     }
 
-    Dom.get('change_'+parent+'_display_mode').innerHTML=label;
+    Dom.get('change_'+parent+'_display_mode').innerHTML='&#x21b6 '+label;
    
    if(parent=='products'){
    var table=tables['table2'];

@@ -263,7 +263,32 @@ $smarty->assign('filter_menu2',$filter_menu);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
+$tipo_filter=$_SESSION['state']['part']['transactions']['f_field'];
+$smarty->assign('filter_show3',$_SESSION['state']['part']['transactions']['f_show']);
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['part']['transactions']['f_value']);
+$filter_menu=array(
+                 'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
+                 'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
+             );
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+$transactions=array(
+	'all_transactions'=>$part->data['Part Transactions'],
+	'in_transactions'=>$part->data['Part Transactions In'],
+	'out_transactions'=>$part->data['Part Transactions Out'],
+	'audit_transactions'=>$part->data['Part Transactions Audit'],
+	'oip_transactions'=>$part->data['Part Transactions OIP'],
+	'move_transactions'=>$part->data['Part Transactions Move'],
+	);
+
+
+$smarty->assign('transactions',$transactions);
+$smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['view']);
 
 
 $smarty->assign('warehouse',$warehouse);

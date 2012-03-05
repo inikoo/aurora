@@ -92,12 +92,21 @@
 						<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode} </a> 
 						<img style="{if $modify_stock}cursor:pointer{/if}"  sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}"  can_pick="{if $location.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}"  alt="can_pick" onclick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /> </td>
 						
-						<td id="picking_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" style="cursor:pointer; color:#808080;{if $location.CanPick =='No'}display:none{/if}"
-						onClick="show_picking_limit_quantities(this, {$location.LocationKey}, {if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}''{/if}, {if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}''{/if})" >
-						{literal}{{/literal}{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if},{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}{literal}}{/literal}
+						<td 
+						id="picking_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" 
+						min_value='{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{/if}' 
+						max_value='{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{/if}'
+						style="cursor:pointer; color:#808080;{if $location.CanPick =='No'}display:none{/if}"
+						onClick="show_picking_limit_quantities(this, {$location.LocationKey} )"
+						>
+						{literal}{{/literal}
+						<span id="picking_limit_min_{$location.PartSKU}_{$location.LocationKey}">{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if}</span>
+						,
+						<span id="picking_limit_max_{$location.PartSKU}_{$location.LocationKey}">{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}</span>
+						{literal}}{/literal}
 						</td>
 					
-						<td id="picking_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" style="cursor:pointer; color:#808080" onClick="show_move_quantities(this, {$location.LocationKey}, {if isset($location.MovingQty)}{$location.MovingQty}{else}0{/if})" >[{if isset($location.MovingQty)}{$location.MovingQty}{else}{t}?{/t}{/if}]</td>
+						<td id="store_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" style="cursor:pointer; color:#808080;{if $location.CanPick =='Yes'}display:none{/if}" onClick="show_move_quantities(this, {$location.LocationKey}, {if isset($location.MovingQty)}{$location.MovingQty}{else}0{/if})" >[{if isset($location.MovingQty)}{$location.MovingQty}{else}{t}?{/t}{/if}]</td>
 						
 						<td class="quantity" id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}">{$location.FormatedQuantityOnHand}</td>
 						<td style="{if !$modify_stock}display:none{/if}" class="button"><img style="cursor:pointer" id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onclick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
@@ -150,24 +159,20 @@
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
 		</div>
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div class="clean_table_controls">
-			<div>
-				<span style="margin:0 5px" id="paginator1"></span> 
-			</div>
-		</div>
 		<div style="font-size:85%" id="table1" class="data_table_container dtable btable ">
 		</div>
 	</div>
 	<div id="block_history" class="block data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
-		<span class="clean_table_title">{t}Stock History Chart{/t} <img id="hide_stock_history_chart" alt="{t}hide{/t}" title="{t}Hide Chart{/t}" style="{if !$show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle;" src="art/icons/hide_button.png" /> <img id="show_stock_history_chart" alt="{t}show{/t}" title="{t}Show Chart{/t}" style="{if $show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle" src="art/icons/show_button.png" /> </span> 
-		<div id="stock_history_plot" style="{if !$show_stock_history_chart}display:none;{/if}">
+		<span class="clean_table_title">{t}Stock History Chart{/t} <img id="hide_stock_history_chart" alt="{t}hide{/t}" title="{t}Hide Chart{/t}" style="{if !$show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle;position:relative;bottom:1px" src="art/icons/hide_button.png" /> <img id="show_stock_history_chart" alt="{t}show{/t}" title="{t}Show Chart{/t}" style="{if $show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle" src="art/icons/show_button.png" /> </span> 
+	<div class="buttons small"><button>&#x21b6 {t}Stock{/t}</button></div>
+	<div id="stock_history_plot" style="{if !$show_stock_history_chart}display:none;{/if}">
 			<strong>You need to upgrade your Flash Player</strong> 
 		</div>
 <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "930", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&sku={$part->sku}"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&output={$stock_history_chart_output}&parent=part&parent_key={$part->sku}"));
 		so.addVariable("preloader_color", "#999999");
 		so.write("stock_history_plot");
 		// ]]>
@@ -179,13 +184,10 @@
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1 } 
-		<div class="clean_table_controls">
-			<div>
-				<span style="margin:0 5px" id="paginator0"></span> 
-			</div>
-		</div>
 		<div id="table0" style="font-size:85%" class="data_table_container dtable btable ">
 		</div>
+	
+	
 	</div>
 	<div id="block_description" class="block data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
 		<div style="width:340px;float:left;margin-left:10px;">

@@ -12,7 +12,7 @@ $editor=array(
             'Author Type'=>$user->data['User Type'],
             'Author Key'=>$user->data['User Parent Key'],
             'User Key'=>$user->id,
-            'Date'=>date('Y-m-d H:i:s')
+            'Date'=>gmdate('Y-m-d H:i:s')
         );
 }else{
 $editor=array(
@@ -21,7 +21,7 @@ $editor=array(
             'Author Type'=>'',
             'Author Key'=>'',
             'User Key'=>0,
-            'Date'=>date('Y-m-d H:i:s')
+            'Date'=>gmdate('Y-m-d H:i:s')
         );
 
 }

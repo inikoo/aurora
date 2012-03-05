@@ -192,7 +192,9 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$smarty->assign('show_stock_history_chart',$_SESSION['state']['part']['show_stock_history_chart']);
+$smarty->assign('show_stock_history_chart',$_SESSION['state']['part']['stock_history']['show_chart']);
+$smarty->assign('stock_history_chart_output',$_SESSION['state']['part']['stock_history']['chart_output']);
+
 $smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
 
 //$part->update_number_transactions();

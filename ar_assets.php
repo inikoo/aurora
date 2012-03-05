@@ -9616,16 +9616,16 @@ function part_transactions() {
 		$where.=" and `Inventory Transaction Type` in ('In') ";
 		break;
 	case('move_transactions'):
-		$where.=" and `Inventory Transaction Type` in ('Move In','Move Out') ";
+		$where.=" and `Inventory Transaction Type` in ('Move') ";
 		break;
 	case('out_transactions'):
 		$where.=" and `Inventory Transaction Type` in ('Sale','Broken','Lost') ";
 		break;
 	case('audit_transactions'):
-		$where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Associate','Disassociate','Adjust') ";
+		$where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Associate','Disassociate','Adjust','Audit') ";
 		break;
 	default:
-		$where.="and `Inventory Transaction Type`!='Audit' ";
+		// $where.="and `Inventory Transaction Type` not in ('Move In','Move Out') ";
 		break;
 		break;
 	}
@@ -9654,23 +9654,11 @@ function part_transactions() {
 
 
 
-	$rtext=$total.' '.ngettext('stock operation','stock operations',$total_records);
-	if ($total_records>$number_results)
-		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
-		$rtext_rpp=' ('._('Showing all').')';
+	
 
 
 
-	if ($total_records==0) {
-		$rtext=_('No stock movements');
-		$rtext_rpp='';
-	}
-
-
-
-
-	$rtext=$total_records." ".ngettext('stock operation','stock operations',$total_records);
+	$rtext=number($total_records)." ".ngettext('stock operation','stock operations',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
 	else
@@ -9703,10 +9691,10 @@ function part_transactions() {
 	$order_direction=' ';
 
 	if ($parent=='part') {
-		$sql="select `User Alias`, ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+		$sql="select `Inventory Transaction Stock`,`User Alias`, ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
 	}
 	else if ($parent=='warehouse') {
-			$sql="select  `User Alias`,ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)   $where $wheref limit $start_from,$number_results ";
+			$sql="select  `Inventory Transaction Stock`,`User Alias`,ITF.`User Key`,`Required`,`Picked`,`Packed`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`) left join `User Dimension` U on (ITF.`User Key`=U.`User Key`)   $where $wheref limit $start_from,$number_results ";
 		}
 
 
@@ -9722,19 +9710,30 @@ function part_transactions() {
 		if ($qty>0) {
 			$qty='+'.$qty;
 		}
-		else if ($qty==0) {
-				$qty='';
-			}
+	//	else if ($qty==0) {
+	//			$qty=;
+	//		}
 
 		switch ($data['Inventory Transaction Type']) {
 		case 'Order In Process':
 			$transaction_type='OIP';
 			$qty.='('.(-1*$data['Required']).')';
 			break;
+
+		case 'Move':
+			$transaction_type=_('Move');
+			$qty='&harr;';
+			break;
+		case 'Audit':
+			$transaction_type=_('Audit');
+			$qty='&#3663; <b>'.$data['Inventory Transaction Stock'].'</b>';
+			break;
 		default:
 			$transaction_type=$data['Inventory Transaction Type'];
 			break;
 		}
+
+
 
 
 		$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
@@ -9743,9 +9742,10 @@ function part_transactions() {
 			'type'=>$transaction_type,
 			'change'=>$qty,
 			'date'=>strftime("%c", strtotime($data['Date'])),
-			'note'=>$data['Note'],
+			'note'=>$data['Note'].$data['Inventory Transaction Key'],
 			'location'=>$location,
-			'user'=>$data['User Alias']
+			'user'=>$data['User Alias'],
+
 
 		);
 	}
@@ -9847,21 +9847,21 @@ function part_stock_history() {
 		$_SESSION['state']['part']['stock_history']['to']=$to;
 	}
 
-	$_SESSION['state']['part']['stock_history']=
-		array(
-		'order'=>$order,
-		'type'=>$type,
-		'order_dir'=>$order_direction,
-		'nr'=>$number_results,
-		'sf'=>$start_from,
-		'where'=>$where,
-		'f_field'=>$f_field,
-		'f_value'=>$f_value,
-		'from'=>$from,
-		'to'=>$to,
-		'elements'=>$elements,
-		'f_show'=>$_SESSION['state']['part']['stock_history']['f_show']
-	);
+
+$_SESSION['state']['part']['stock_history']['order']=$order;
+$_SESSION['state']['part']['stock_history']['type']=$type;
+$_SESSION['state']['part']['stock_history']['order_dir']=$order_direction;
+$_SESSION['state']['part']['stock_history']['nr']=$number_results;
+$_SESSION['state']['part']['stock_history']['sf']=$start_from;
+$_SESSION['state']['part']['stock_history']['f_field']=$f_field;
+$_SESSION['state']['part']['stock_history']['f_value']=$f_value;
+$_SESSION['state']['part']['stock_history']['from']=$from;
+$_SESSION['state']['part']['stock_history']['to']=$to;
+$_SESSION['state']['part']['stock_history']['elements']=$elements;
+
+$_SESSION['state']['part']['stock_history']['f_show']=$_SESSION['state']['part']['stock_history']['f_show'];
+
+
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';

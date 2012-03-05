@@ -13,7 +13,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>", width:150,sortable:false,className:"aright"}
+				     {key:"date", label:"<?php echo _('Date')?>", width:150,sortable:false,className:"aright"}
 				      
 				      ,{key:"type", label:"<?php echo _('Type')?>", width:50,sortable:false,className:"aleft"}
 				       ,{key:"user", label:"<?php echo _('User')?>", width:50,sortable:false,className:"aleft"}
@@ -23,7 +23,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"change", label:"<?php echo _('Change')?>", width:60,sortable:false,className:"aright"}
 					 ];
 	    //?tipo=locations&tid=0"
-		//alert("ar_assets.php?tipo=part_transactions&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&sf=0&tableid="+tableid);
+	//	alert("ar_assets.php?tipo=part_transactions&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&sf=0&tableid="+tableid);
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_transactions&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&sf=0&tableid="+tableid);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

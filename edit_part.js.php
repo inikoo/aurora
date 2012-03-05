@@ -477,8 +477,8 @@ var request='ar_edit_assets.php?tipo=edit_part&key=' + key+ '&newvalue=' + value
 
 function change_block(e) {
 
-	var ids = ["description", "pictures", "products", "suppliers","activation"];
-	var block_ids = ["d_description", "d_pictures", "d_products", "d_suppliers","d_activation"];
+	var ids = ["description", "pictures", "products", "suppliers","activation","transactions"];
+	var block_ids = ["d_description", "d_pictures", "d_products", "d_suppliers","d_activation","d_transactions"];
 
 
 
@@ -1016,7 +1016,7 @@ validate_scope('part_health_and_safety')
 
 function init() {
 init_search('parts');
-	var ids = ["description", "pictures", "products", "suppliers","activation"];
+	var ids = ["description", "pictures", "products", "suppliers","activation","transactions"];
 	Event.addListener(ids, "click", change_block);
 
 	Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {
@@ -1627,6 +1627,86 @@ function formater_available  (el, oRecord, oColumn, oData) {
 		};
 
 
+
+
+		    var tableid=3;
+		    var tableDivEL="table"+tableid;
+
+   var ColumnDefs = [
+   				       {key:"transaction_key", label:"", hidden:true,isPrimaryKey:true} 
+
+				      ,{key:"date", label:"<?php echo _('Date')?>", width:150,sortable:false,className:"aright"}
+				      
+				      ,{key:"type", label:"<?php echo _('Type')?>", width:50,sortable:false,className:"aleft"}
+				       ,{key:"user", label:"<?php echo _('User')?>", width:50,sortable:false,className:"aleft"}
+				     ,{key:"location", label:"<?php echo _('Location')?>", width:60,sortable:false,className:"aleft"}
+
+				      ,{key:"note", label:"<?php echo _('Note')?>", width:300,sortable:false,className:"aleft"}
+				      ,{key:"change", label:"<?php echo _('Change')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"delete", label:"", width:10,sortable:false,object:'part_location_transaction',action:'delete'}
+				      ,{key:"edit", label:"", width:10,sortable:false}
+
+				      ];
+		 
+		    
+//alert("ar_assets.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid)
+		    this.dataSource3 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+		    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		    this.dataSource3.connXhrMode = "queueRequests";
+		    this.dataSource3.responseSchema = {
+			resultsList: "resultset.data", 
+			metaFields: {
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"			
+			
+			 
+			},
+			
+			fields: [
+				 "date","change","type","location","note","user","edit","delete","transaction_key"
+
+				 ]};
+	    
+		    this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+							     this.dataSource3, {
+								 //draggableColumns:true,
+								 renderLoopSize: 50,generateRequest : myRequestBuilder
+								 ,paginator : new YAHOO.widget.Paginator({
+								   
+									 rowsPerPage:<?php echo$_SESSION['state']['part']['transactions']['nr']?>,containers : 'paginator3', 
+									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									 previousPageLinkLabel : "<",
+									 nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								     })
+								 
+								 ,sortedBy : {
+								   key: "<?php echo$_SESSION['state']['part']['transactions']['order']?>",
+								    dir: "<?php echo$_SESSION['state']['part']['transactions']['order_dir']?>"
+								  }
+								 ,dynamicData : true
+								 
+							     }
+							     );
+
+
+		    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+		    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+		    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    
+		       this.table3.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table3.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table3.subscribe("cellClickEvent", onCellClick);
+
+   this.table3.filter={key:'<?php echo$_SESSION['state']['part']['transactions']['f_field']?>',value:'<?php echo$_SESSION['state']['part']['transactions']['f_value']?>'};
 
 
 
