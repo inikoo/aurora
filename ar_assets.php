@@ -9742,7 +9742,7 @@ function part_transactions() {
 			'type'=>$transaction_type,
 			'change'=>$qty,
 			'date'=>strftime("%c", strtotime($data['Date'])),
-			'note'=>$data['Note'].$data['Inventory Transaction Key'],
+			'note'=>$data['Note'],//.$data['Inventory Transaction Key'],
 			'location'=>$location,
 			'user'=>$data['User Alias'],
 
