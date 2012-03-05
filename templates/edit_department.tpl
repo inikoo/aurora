@@ -31,6 +31,7 @@
 		<li> <span class="item {if $edit=='families'}selected{/if}" id="families"><span> {t}Families{/t}</span></span></li>
 		<li> <span class="item {if $edit=='web'}selected{/if} " id="web"><span> {t}Web Pages{/t}</span></span></li>
 	</ul>
+	
 	<div class="tabbed_container">
 		<span style="display:none" id="description_num_changes"></span> 
 		<div id="description_errors">
@@ -133,7 +134,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="d_web" class="edit_block" style="{if $edit!=" web"}display:none{/if}">
+		<div id="d_web" class="edit_block" style="{if $edit!='web'}display:none{/if}">
 			<div class="buttons">
 				<button id="new_department_page" class="positive">{t}Create Page{/t}</button> 
 			</div>
@@ -153,7 +154,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="d_discounts" class="edit_block" style="{if $edit!=" discounts"}display:none{/if}">
+		<div id="d_discounts" class="edit_block" style="{if $edit!='discounts'}display:none{/if}">
 		</div>
 	</div>
 	<div id="the_table1" class="data_table" style=" clear:both">
