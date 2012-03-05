@@ -99,11 +99,7 @@
 						style="cursor:pointer; color:#808080;{if $location.CanPick =='No'}display:none{/if}"
 						onClick="show_picking_limit_quantities(this, {$location.LocationKey} )"
 						>
-						{literal}{{/literal}
-						<span id="picking_limit_min_{$location.PartSKU}_{$location.LocationKey}">{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if}</span>
-						,
-						<span id="picking_limit_max_{$location.PartSKU}_{$location.LocationKey}">{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}</span>
-						{literal}}{/literal}
+						{literal}{{/literal}<span id="picking_limit_min_{$location.PartSKU}_{$location.LocationKey}">{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if}</span>,<span id="picking_limit_max_{$location.PartSKU}_{$location.LocationKey}">{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}</span>{literal}}{/literal}
 						</td>
 					
 						<td id="store_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" style="cursor:pointer; color:#808080;{if $location.CanPick =='Yes'}display:none{/if}" onClick="show_move_quantities(this, {$location.LocationKey}, {if isset($location.MovingQty)}{$location.MovingQty}{else}0{/if})" >[{if isset($location.MovingQty)}{$location.MovingQty}{else}{t}?{/t}{/if}]</td>

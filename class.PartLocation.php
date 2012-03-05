@@ -297,7 +297,7 @@ class PartLocation extends DB_Table {
 
 	}
 
-	function audit($qty,$note='',$date=false,$include_current=false) {
+	function audit($qty,$note='',$date=false,$include_current=false,$parent='') {
 
 		if (!$date) {
 			$historic=true;
@@ -343,18 +343,10 @@ class PartLocation extends DB_Table {
 		$qty_change=$qty-$old_qty;
 		$value_change=$value-$old_value;
 
-		//print $this->location_key." Q: $old_qty $qty_change\n";
 
-
-		// $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f, `Last Updated`=NOW()  where `Part SKU`=%d and `Location Key`=%d "
-		//  ,$qty
-		//  ,$value
-		//  ,$this->part_sku
-		//  ,$this->location_key
-		// );
-
-		// if (mysql_query($sql)) {
 		$this->updated=true;
+		
+		
 		//$this->data['Quantity On Hand']=$qty;
 		//$this->data['Stock Value']=$value;
 
@@ -370,8 +362,14 @@ class PartLocation extends DB_Table {
 		}else {
 			$details='<b>'._('Audit').'</b>, ';
 		}
+		
+		if($parent=='associate'){
+				$details.='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8692; <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
+		}else if($parent=='disassociate'){
+				$details.='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8603; <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
+		}else{
 		$details.='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('set to').': <b>'.number($qty).'</b>';
-
+}
 
 		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Inventory Transaction Stock`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%f)"
 			,$this->part_sku
@@ -408,89 +406,16 @@ class PartLocation extends DB_Table {
 				,prepare_mysql($audit_key)
 			);
 			mysql_query($sql);
+		 }
 
 
 
-
-			// }
-
-
-
-		}
+		
 		$this->update_stock();
 
 		return $audit_key;
 
 
-		/*   $qty=$data['qty']; */
-		/*     $user_id=$data['user key']; */
-		/*     $note=$data['note']; */
-		/*  //   $options=$data['options']; */
-		/*     $date=$data['date']; */
-
-		/*     if($date==''){ */
-		/*       $date=date("Y-m-d H:i:s"); */
-
-		/*       if(preg_match('/force_update/',$date)){ */
-		/* 	$from=$this->last_inventory_date(); */
-		/* 	if(!$from){ */
-		/* 	  $from=$this->first_inventory_transacion(); */
-		/* 	} */
-		/* 	if($from){ */
-		/* 	  $this->redo_daily_inventory($from,''); */
-		/* 	} */
-
-		/*       } */
-		/*       $unitary_price=''; */
-		/*       $_date=date("Y-m-d",strtotime($date)); */
-		/*       $sql=sprintf("select `Value At Cost`,`Quantity On Hand` from `Inventory Spanshot Fact` where  `Part SKU`=%d  and `Location Key`=%d  and `Date`=%s ",$this->part_sku,$this->location_key,prepare_mysql($_date)); */
-		/*       $result=mysql_query($sql); */
-		/*       if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
-		/* 	$old_value=$row['Value At Cost']; */
-		/* 	$old_qty=$row['Quantity On Hand']; */
-		/* 	if(is_numeric($old_qty)){ */
-		/* 	  $ok=true; */
-		/* 	  if($old_qty>0) */
-		/* 	    $unitary_price=$old_value/$old_qty; */
-
-
-		/* 	}else{ */
-		/* 	  $unitary_price=''; */
-		/* 	  $ok=false; */
-		/* 	}        */
-
-
-		/*       } */
-
-		/*       if(!is_numeric($unitary_price)){ */
-		/* 	$sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%d  and `Supplier Product Part Most Recent`='Yes'    ",$this->part_sku); */
-		/* 	$result=mysql_query($sql); */
-		/* 	if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
-		/* 	  $unitary_price=$row['cost']; */
-
-		/* 	} */
-
-
-		/*       } */
-
-		/*       if(!is_numeric($user_id) or $user_id<0) */
-		/* 	$user_id='NULL'; */
-		/*       $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)" */
-		/* 		   ,$this->part_sku */
-		/* 		   ,$this->location_key */
-		/* 		   ,"'Audit'" */
-		/* 		   ,$qty */
-		/* 		   ,$qty*$unitary_price */
-		/* 		   ,$user_id */
-		/* 		   ,prepare_mysql($note) */
-		/* 		   ,prepare_mysql($date) */
-		/* 		   ); */
-		/*       if(!mysql_query($sql)) */
-		/* 	print "Error can not audit liocatun"; */
-		/*       // print "$sql\n"; */
-
-		/*     } */
-		/*     $this->redo_daily_inventory($_date,''); */
 
 	}
 
@@ -1025,7 +950,7 @@ $this->associate($associate_data);
 
 
 
-		$audit_key=$this->audit(0,_('Part disassociate with location'),$date,$include_current=true);
+		$audit_key=$this->audit(0,_('Part disassociate with location'),$date,$include_current=true,'disassociate');
 		$sql=sprintf("update `Inventory Transaction Fact` set `Relations`=%d where `Inventory Transaction Key`=%d",$disassociate_transaction_key,$audit_key);
 
 
@@ -1061,7 +986,7 @@ $this->associate($associate_data);
 
 		mysql_query($sql);
 		$associate_transaction_key=mysql_insert_id();
-		$audit_key=$this->audit(0,_('Part associated with location'),$base_data['date']);
+		$audit_key=$this->audit(0,_('Part associated with location'),$base_data['date'],$include_current=false,$parent='associate');
 		$sql=sprintf("update `Inventory Transaction Fact` set `Relations`=%d where `Inventory Transaction Key`=%d",$associate_transaction_key,$audit_key);
 
 
@@ -1124,7 +1049,7 @@ $this->associate($associate_data);
 		if (!$date)
 			$date=gmdate('Y-m-d H:i:s');
 
-		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
+		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as stock ,sum(`Inventory Transaction Amount`) as value from `Inventory Transaction Fact` where  `Date`<=%s and `Part SKU`=%d and `Location Key`=%d"
 			,prepare_mysql($date)
 			,$this->part_sku
 			,$this->location_key
@@ -1212,6 +1137,10 @@ $this->associate($associate_data);
 	function update_stock() {
 
 		list($stock,$value,$in_process)=$this->get_stock();
+
+		$this->data['Quantity On Hand']=$stock;
+		$this->data['Stock Value']=$value;
+		$this->data['Quantity In Process']=$in_process;
 
 		$sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Quantity In Process`=%f,`Stock Value`=%f where `Part SKU`=%d and `Location Key`=%d"
 			,$stock
