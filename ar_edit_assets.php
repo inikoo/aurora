@@ -33,7 +33,7 @@ switch ($tipo) {
 case('delete_part_location_transaction'):
 	$data=prepare_values($_REQUEST,array(
 			'transaction_key'=>array('type'=>'key'),
-			
+
 		));
 	delete_part_location_transaction($data);
 	break;
@@ -4095,12 +4095,12 @@ function part_transactions() {
 			$transaction_type='OIP';
 			$qty.='('.(-1*$data['Required']).')';
 			break;
-			
+
 		case 'Move':
 			$transaction_type=_('Move');
 			$qty='&harr;';
-			break;	
-			
+			break;
+
 		default:
 			$transaction_type=$data['Inventory Transaction Type'];
 			break;
@@ -4120,7 +4120,7 @@ function part_transactions() {
 
 		$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
 		$adata[]=array(
-'transaction_key'=>$data['Inventory Transaction Key'],
+			'transaction_key'=>$data['Inventory Transaction Key'],
 			'type'=>$transaction_type,
 			'change'=>$qty,
 			'date'=>strftime("%c", strtotime($data['Date'])),
@@ -4150,41 +4150,37 @@ function part_transactions() {
 	echo json_encode($response);
 }
 
-function delete_part_location_transaction($data){
+function delete_part_location_transaction($data) {
 
-
-$sql=sprintf("select * from `Inventory Transction Fact` where `Incentory Transaction Key`");
+$deleted=false;
+$msg='';
+	$sql=sprintf("select * from `Inventory Transction Fact` where `Incentory Transaction Key`");
 	$res=mysql_query($sql);
-	if($row=mysql_query($res)){
-	if(in_array($row['Inventory Tansaction Type'],array('Move In','Move Out','Sale','Adjust','Associate','Disassociate','Order In Process','No Dispatched')){
-		$response=array('state'=>400,'msg'=>'transaction type can not be deleted');
+	if ($row=mysql_query($res)) {
+		if (in_array($row['Inventory Tansaction Type'],array('Move In','Move Out','Sale','Adjust','Associate','Disassociate','Order In Process','No Dispatched'))) {
+				$response=array('state'=>400,'msg'=>'transaction type can not be deleted');
+echo json_encode($response);
+exit;
+			}else {
 
-	}else{
-	
-	}
-	
-	
-	}else{
-	$response=array('state'=>400,'msg'=>_('Transaction not found'));
-	
-	}
-	echo json_encode($response);
-	
-	$id=$data['family_key'];
-	$family=new Family($id);
+			}
 
-	if ($data['delete_type']=='delete') {
 
-		$family->delete();
-	} else if ($data['delete_type']=='discontinue') {
-			$family->discontinue();
+		}else {
+			$response=array('state'=>400,'msg'=>_('Transaction not found'));
+echo json_encode($response);
+exit;
 		}
-	if ($family->deleted) {
-		$response=array('state'=>200,'msg'=>$family->msg,'action'=>'deleted');
-	} else {
-		$response=array('state'=>400,'msg'=>$family->msg);
+		echo json_encode($response);
+
+	
+
+		if ($deleted) {
+			$response=array('state'=>200,'msg'=>$msg,'action'=>'deleted');
+		} else {
+			$response=array('state'=>400,'msg'=>$msg);
+		}
+		echo json_encode($response);
 	}
-	echo json_encode($response);
-}
 
 ?>
