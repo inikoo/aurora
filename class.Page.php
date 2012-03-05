@@ -623,10 +623,13 @@ class Page extends DB_Table {
 			break;
 		case('code'):
 		case('page_code'):
-			$this->update_field('Page Code',$value,$options);
+			$this->update_code($value);
 			break;
+
+
 		case('url'):
-			$this->update_field('Page URL',$value,$options);
+			return;
+
 			break;
 		case('page_title'):
 		case('title'):
@@ -689,6 +692,101 @@ class Page extends DB_Table {
 
 	}
 
+
+
+	function update_code($value) {
+
+
+		if ($this->type!='Store') {
+			return;
+		}
+
+$value=_trim($value);
+	if ($value=='') {
+		$this->msg.=' '._('Invalid Code')."\n";
+			$this->error_updated=true;
+			$this->error=true;
+			return;
+		}
+
+		if ($value==$this->data['Page Code']) {
+			$this->msg.=' '._('Same value as the old record');
+			return;
+		}
+
+		$old_value=$this->data['Page Code'];
+
+
+
+		$sql=sprintf("select `Page Code`  from  `Page Store Dimension`  where `Page Store Key`=%d and `Product Code`=%s ",
+			$this->data['Page Store Key'],
+			prepare_mysql($value)
+
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$this->msg.=' '._('Code already usen on this website')."\n";
+			$this->error_updated=true;
+			$this->error=true;
+
+			return;
+
+
+		}
+
+
+
+
+
+		$sql=sprintf("update `Page Store Dimension`  set  `Page Code`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
+		// print $sql;
+
+
+		mysql_query($sql);
+		$affected=mysql_affected_rows();
+		if ($affected==-1) {
+			$this->msg.=' '._('Record can not be updated')."\n";
+			$this->error_updated=true;
+			$this->error=true;
+
+			return;
+		}
+		elseif ($affected==0) {
+			$this->msg.=' '._('Same value as the old record');
+
+		} else {
+			$this->data[$field]=$value;
+			$this->msg.=_('Code updated').", \n";
+			$this->msg_updated.=_('Code updated').", \n";
+			$this->updated=true;
+			$this->new_value=$value;
+			$this->data['Page Code']=$value;
+			
+			$save_history=true;
+			if (preg_match('/no( |\_)history|nohistory/i',$options))
+				$save_history=false;
+			
+			if (!$this->new and $save_history) {
+				$history_data=array(
+					'indirect_object'=>$field
+					,'old_value'=>$old_value
+					,'new_value'=>$value
+
+				);
+
+
+
+				$this->add_history($history_data);
+
+			}
+			
+			$site-new Site($this->data['Page Site Key']);
+			$url=$site->data['Site URL'].'/'.strtolower($value);
+			$this->update_field('Page URL',$url,'nohistory');
+
+		}
+
+	}
 
 
 	function update_field($field,$value,$options='') {
@@ -1178,7 +1276,7 @@ class Page extends DB_Table {
 				$product->data['Product Units Per Case'],
 				$product->data['Product Name'],
 				$this->data['Page URL'],
-				 number_format($product->data['Product Price'],2,'.',''),
+				number_format($product->data['Product Price'],2,'.',''),
 				_('Order Product')
 
 
@@ -1187,8 +1285,8 @@ class Page extends DB_Table {
 
 		$data=array(
 			'Product Price'=>$product->data['Product Price'],
-			
-			
+
+
 			'Product Units Per Case'=>$product->data['Product Units Per Case'],
 			'Product Currency'=>$product->get('Product Currency'),
 			'Product Unit Type'=>$product->data['Product Unit Type'],
@@ -1670,7 +1768,7 @@ class Page extends DB_Table {
 
 
 			if ($product['Product Web State']=='Out of Stock') {
-	
+
 
 				$order_button=sprintf('<td></td><td colspan=2 style="padding:0px"><div style="background:#ffdada;color:red;display:table-cell; vertical-align:middle;font-size:90%%;text-align:center;;border:1px solid #ccc;height:18px;width:58px;">%s</div></td>',_('Sold Out'));
 
