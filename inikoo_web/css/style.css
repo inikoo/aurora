@@ -1,5 +1,5 @@
 body {
-	background-image:url('../images/background_pattern_9.gif');background-repeat:repeat-xy;
+	background-image:url('../images/wood5.jpg');background-repeat:repeat-xy;
 	color: #383838;
 	font: 13px/19px "Helvetica Neue", Helvetica, Arial, sans-serif;
 	min-width: 1024px;
@@ -227,7 +227,7 @@ a:active.about-button {
 
 
 #home_header{width:969px;height:418px;color:red}
-#content{background:#e8ecf8;border:1px solid #777;margin-bottom:30px; width:969px; padding:25px 0px 5px 0px;text-decoration:none;}
+#content{background:#e8ecf8;border:1px solid #777;margin-bottom:30px; width:969px; padding:25px 0px 5px 0px;}
 .home_page{margin-top:20px;}
 
 #content .inner { padding:0 20px 0 0; }
