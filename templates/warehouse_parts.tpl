@@ -2,17 +2,19 @@
 <div id="bd" style="padding:0px">
 	<div style="padding:0 20px">
 		{include file='locations_navigation.tpl'} 
+		<input type="hidden" value="{$warehouse->id}" id="warehouse_id"/>
+
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 				{if $modify} <button onclick="window.location='part_configuration.php'"><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button> {/if} 
-							<button onclick="window.location='warehouse_orders.php?id={$warehouse->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Pick Orders{/t}</button> <button onclick="window.location='parts_movements.php?id={$warehouse->id}'"><img src="art/icons/arrow_switch.png" alt=""> {t}Part Movements{/t}</button> <button onclick="window.location='parts_stats.php?warehouse={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='parts_lists.php?warehouse={$warehouse->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='part_categories.php?id=0&warehouse_id={$warehouse->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
+							<button onclick="window.location='warehouse_orders.php?id={$warehouse->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Pick Orders{/t}</button> <button style="display:none" onclick="window.location='parts_movements.php?id={$warehouse->id}'"><img src="art/icons/arrow_switch.png" alt=""> {t}Part Movements{/t}</button> <button onclick="window.location='parts_stats.php?warehouse={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='parts_lists.php?warehouse={$warehouse->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='part_categories.php?id=0&warehouse_id={$warehouse->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 
 			</div>
 			<div class="buttons" style="float:left">
-						<span style="font-size:140%;position:relative;bottom:-2.5px">	<span class="id">{$warehouse->get('Warehouse Name')}</span> {t}Inventory{/t} <span style="font-style:italic">({t}Parts{/t})</span> </span>
+						<span class="main_title">	<span class="id">{$warehouse->get('Warehouse Name')}</span> {t}Inventory{/t} <span style="font-style:italic">({t}Parts{/t})</span> </span>
 
 			</div>
 			<div style="clear:both">
@@ -22,8 +24,8 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $view=='parts'}selected{/if}" id="parts"> <span> {t}Parts{/t}</span></span></li>
-		<li style="display:none"> <span class="item {if $view=='movements'}selected{/if}" id="movements"> <span> {t}Movements{/t}</span></span></li>
-		<li style="display:none"> <span class="item {if $view=='stats'}selected{/if}" id="stats"> <span> {t}Stats{/t}</span></span></li>
+		<li> <span class="item {if $view=='movements'}selected{/if}" id="movements"> <span> {t}Movements{/t}</span></span></li>
+		<li> <span class="item {if $view=='stats'}selected{/if}" id="stats"> <span> {t}Stock History{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -56,8 +58,41 @@
 		</div>
 	</div>
 	<div id="block_movements" style="{if $view!='movements'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	
+	<div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
+    <span class="clean_table_title">{t}Part Movements{/t}</span>
+
+     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+    <div  id="table0"   class="data_table_container dtable btable" style="font-size:85%" > </div>
+  </div>
+	
 	</div>
 	<div id="block_stats" style="{if $view!='stats'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+	
+	<span class="clean_table_title">{t}Stock History Chart{/t} <img id="hide_stock_history_chart" alt="{t}hide{/t}" title="{t}Hide Chart{/t}" style="{if !$show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle;" src="art/icons/hide_button.png" /> <img id="show_stock_history_chart" alt="{t}show{/t}" title="{t}Show Chart{/t}" style="{if $show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle" src="art/icons/show_button.png" /> </span> 
+		<div id="stock_history_plot" style="{if !$show_stock_history_chart}display:none;{/if}">
+			<strong>You need to upgrade your Flash Player</strong> 
+		</div>
+<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "930", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&parent=warehouse&parent_key={$warehouse_id}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("stock_history_plot");
+		// ]]>
+	</script> <span class="clean_table_title" style="clear:both;margin-top:20px">{t}Stock History{/t} 
+		<div id="stock_history_type" style="display:inline;color:#aaa">
+			<span id="stock_history_type_day" table_type="day" style="margin-left:10px;font-size:80%;" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Daily{/t}</span> <span id="stock_history_type_week" table_type="week" style="margin-left:5px;font-size:80%;" class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span id="stock_history_type_month" table_type="month" style="margin-left:5px;font-size:80%;" class="table_type state_details {if $stock_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> 
+		</div>
+		</span> 
+		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
+		</div>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1 } 
+		<div id="table1" style="font-size:85%" class="data_table_container dtable btable ">
+		</div>
+	
+	
 	</div>
 </div>
 <div id="filtermenu2" class="yuimenu">

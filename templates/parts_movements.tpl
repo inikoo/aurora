@@ -12,23 +12,23 @@
        
     </div>
     <div class="buttons" style="float:left">
-         <button  onclick="window.location='parts_movements.php?id={$warehouse->id}'" ><img src="art/icons/house.png" alt=""> {t}Inventory{/t}</button>
+						<span class="main_title">	<span class="id">{$warehouse->get('Warehouse Name')}</span> {t}Part Movements{/t}</span>
+
 	 </div>
     <div style="clear:both"></div>
 </div>
 
 
 
- <div style="clear:left;margin:0 0px">
-    <h1>{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</h1>
-  </div>
+
 
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 
-    <li> <span class="item {if $view=='movements'}selected{/if}"  id="locations">  <span> {t}Movements{/t}</span></span></li>
- 
+    <li> <span class="item {if $view=='movements'}selected{/if}"  id="locations">  <span> {t}Transactions{/t}</span></span></li>
+     <li> <span class="item {if $view=='movements'}selected{/if}"  id="locations">  <span> {t}Movements{/t}</span></span></li>
+
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
@@ -39,7 +39,7 @@
     <span class="clean_table_title">{t}Part Movements{/t}</span>
 
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+    <div  id="table0"   class="data_table_container dtable btable" style="font-size:85%" > </div>
   </div>
 
 </div>

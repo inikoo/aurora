@@ -1357,7 +1357,7 @@ $default_state=array(
 		'edit'=>'description',
 		'view'=>'locations',
 		'parts_view'=>'parts',
-
+'show_stock_history_chart'=>false,
 		'parts'=>array(
 			'order'=>'sku',
 			'order_dir'=>'',
@@ -1402,7 +1402,8 @@ $default_state=array(
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array()
+			'elements'=>array(),
+		'view'=>''
 		),
 
 
@@ -3480,7 +3481,7 @@ $default_state=array(
 		'id'=>1,
 		'edit'=>'description',
 		'view'=>'description',
-		'show_stock_history_chart'=>1,
+		
 
 		'history'=>array(
 			'order'=>'date',
@@ -3522,6 +3523,8 @@ $default_state=array(
 
 
 		'stock_history'=>array(
+		'show_chart'=>1,
+		'chart_output'=>'stock',
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,

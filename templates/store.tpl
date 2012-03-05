@@ -314,7 +314,7 @@
 				<div class="table_top_bar">
 				</div>
 				<div class="buttons small clusters">
-					<button class="selected" id="change_departments_display_mode">{$display_departments_mode_label}</button> <button class="selected" id="change_departments_table_type">{if $departments_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
+					<button class="selected" id="change_departments_display_mode">&#x21b6 {$display_departments_mode_label}</button> <button class="selected" id="change_departments_table_type">&#x21b6 {if $departments_table_type=='list'}{t}List{/t}{else}{t}Thumbnails{/t}{/if}</button> 
 				</div>
 				<div class="clusters">
 					<div class="buttons small left cluster">

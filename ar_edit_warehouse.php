@@ -53,7 +53,13 @@ case('save_description'):
 	break;
 
 case('add_part_to_location'):
-	add_part_to_location();
+$data=prepare_values($_REQUEST,array(
+			'location_key'=>array('type'=>'key'),
+			'part_sku'=>array('type'=>'key'),
+		
+
+		));
+	add_part_to_location($data);
 	break;
 case('update_save_picking_location_quantity_limits'):
 	$data=prepare_values($_REQUEST,array(
@@ -371,7 +377,7 @@ function audit_stock($data) {
 	$note=$data['values']['note'];
 	$part_location=new PartLocation($part_sku,$location_key);
 	$part_location->editor=$editor;
-	$part_location->audit($qty,$note);
+	$part_location->audit($qty,$note,$editor['Date']);
 
 	if ($part_location->updated) {
 		$response=array(
@@ -405,7 +411,7 @@ function add_stock($data) {
 	$part_location=new PartLocation($part_sku,$location_key);
 	$part_location->editor=$editor;
 	$_data=array('Quantity'=>$qty,'Origin'=>$note);
-	$part_location->add_stock($_data);
+	$part_location->add_stock($_data,$editor['Date']);
 
 	if ($part_location->updated) {
 		$response=array(
@@ -1111,61 +1117,28 @@ function delete_part_location() {
 
 
 }
-function add_part_to_location() {
+function add_part_to_location($data) {
 	global $editor;
 
-	if (!isset($_REQUEST['location_key'])
-		or !isset($_REQUEST['part_sku'])
+	if (!isset($data['location_key'])
+		or !isset($data['part_sku'])
 	) {
 		$response=array('state'=>400,'msg'=>'Error');
 		echo json_encode($response);
 		return;
 	}
 
-	$location_key=$_REQUEST['location_key'];
-	$part_sku=$_REQUEST['part_sku'];
-	$data=array(
+	$location_key=$data['location_key'];
+	$part_sku=$data['part_sku'];
+	$part_location_data=array(
 		'Location Key'=>$location_key
 		,'Part SKU'=>$part_sku
 		,'editor'=>$editor
 	);
 
-	// is logical to disassociate the part from an unknown location with no stock
-	if ($location_key!=1) {
-		$part=new Part($part_sku);
-		$old_locations=$part->get_locations();
-		// print_r($old_locations);
-		if (count($old_locations)==1) {
-			$old_pl=array_pop($old_locations);
-			if ($old_pl['Quantity On Hand']<=0 and $old_pl['Location Key']==1) {
-				$old_part_location=new PartLocation($part_sku.'_1');
-				$old_part_location->editor=$editor;
-				$old_part_location->identify_unknown($location_key);
-
-				$part_location=new PartLocation($part_sku,$location_key);
 
 
-				$response=array(
-					'state'=>200
-					,'action'=>'added'
-					,'msg'=>$old_part_location->msg
-					,'sku'=>$part_location->part_sku
-					,'formated_sku'=>$part_location->part->get_sku()
-					,'location_key'=>$part_location->location_key
-					,'location_code'=>$part_location->location->data['Location Code']
-					,'qty'=>$part_location->data['Quantity On Hand']
-					,'formated_qty'=>number($part_location->data['Quantity On Hand'])
-					,'limits'=>'{?,?}'
-					
-				);
-				echo json_encode($response);
-				return;
-
-			}
-		}
-	}
-
-	$part_location=new PartLocation('find',$data,'create');
+	$part_location=new PartLocation('find',$part_location_data,'create');
 	if ($part_location->new) {
 
 		$response=array(
@@ -1231,7 +1204,7 @@ function lost_stock($data) {
 		return;
 	}
 	$part_location->editor=$editor;
-	$part_location->set_stock_as_lost($data);
+	$part_location->set_stock_as_lost($data,$editor['Date']);
 	if ($part_location->error) {
 		$response=array('state'=>400,'action'=>'nochange','msg'=>$part_location->msg);
 		echo json_encode($response);
@@ -1302,7 +1275,7 @@ function move_stock() {
 	}
 	$part_location->editor=$editor;
 	// print_r($data);
-	$part_location->move_stock($data);
+	$part_location->move_stock($data,$editor['Date']);
 	$to_part_location=new PartLocation($raw_data['part_sku'],$data['Destination Key']);
 	if ($part_location->error) {
 		$response=array('state'=>400,'action'=>'nochange','msg'=>$part_location->msg);

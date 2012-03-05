@@ -459,7 +459,7 @@ print_r($cols);
 
 				$product->new_current_part_list(array(),$part_list);
 				$product->update_parts();
-				$part =new Part('sku',part_sku_from_uk);
+				$part =new Part('sku',$part_sku_from_uk);
 				$part->update_used_in();
 			}
 		}

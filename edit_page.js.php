@@ -866,9 +866,13 @@ Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','non
 //	    update_page_height_and_reload(r.page_key)
   //          Dom.get('page_preview_iframe').src='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
 //window.location='page_preview.php?id='+r.page_key+'&logged=1&update_heights=1';
-window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=overview&redirect_review=1&update_heights=1';
 //setTimeout("reload_this("+r.page_key+")", 250);
 	     
+	     
+	     
+	     
+	  window.location='edit_page.php?id='+r.page_key+'&take_snapshot=1&content_view=overview&redirect_review=1&update_heights=1';
+
 	     
       return;
                 

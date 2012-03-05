@@ -38,7 +38,7 @@
 				<div class="table_top_bar">
 				</div>
 				<div class="buttons small clusters">
-					<button class="selected" id="change_stores_display_mode">{$display_stores_mode_label}</button> 
+					<button class="selected" id="change_stores_display_mode">&#x21b6 {$display_stores_mode_label}</button> 
 				</div>
 				<div class="clusters">
 					<div class="buttons small left cluster">
