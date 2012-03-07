@@ -33,7 +33,7 @@ date_default_timezone_set('UTC');
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select * from `Part Dimension` where `Part SKU`=749 order by `Part SKU`";
-$sql="select * from `Part Dimension`  where `Part SKU`=30683 order by `Part SKU` desc ";
+$sql="select * from `Part Dimension`  where `Part SKU`=39077 order by `Part SKU` desc ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -87,6 +87,19 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	}
+	
+	
+		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where  `Part SKU`=%d group by `Location Key` ",$row['Part SKU']);
+	print $sql;
+
+	$result2=mysql_query($sql);
+
+	while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+		$part_location=new PartLocation($row['Part SKU'].'_'.$row2['Location Key']);
+		$part_location->redo_adjusts();
+
+	}
+	
 
 }
 
