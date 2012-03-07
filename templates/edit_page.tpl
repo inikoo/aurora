@@ -274,6 +274,12 @@
 				<img id="page_preview_snapshot_image" style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="{t}No Snapshot Available{/t}" /> 
 			</div>
 			<div style="{if $content_view!='header'}display:none{/if};margin:10px 20px" id="page_header_block">
+			
+			
+			
+			
+			
+			
 				<table class="edit" border="0" id="header_edit_table" style="width:100%">
 					<tr class="title">
 					<td>Title</td>
@@ -374,6 +380,15 @@
 						<td> </td>
 					</tr>
 				</table>
+				
+				
+				<div style="clear:both">
+				<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
+				<div id="table8" class="data_table_container dtable btable ">
+				</div>
+			</div>
+				
+				
 			</div>
 			<div style="{if $content_view!='footer'}display:none{/if};margin:10px 20px" id="page_footer_block">
 			</div>

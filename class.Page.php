@@ -737,7 +737,8 @@ $value=_trim($value);
 
 
 
-
+$site=new Site($this->data['Page Site Key']);
+			$url=$site->data['Site URL'].'/'.strtolower($value);
 
 		$sql=sprintf("update `Page Store Dimension`  set  `Page Code`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
 		// print $sql;
@@ -778,12 +779,25 @@ $value=_trim($value);
 
 
 				$this->add_history($history_data);
+				
+				
+$site=new Site($this->data['Page Site Key']);
+			$url=$site->data['Site URL'].'/'.strtolower($value);
+
+		$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
+		// print $sql;
+
+
+		mysql_query($sql);
+				
 
 			}
 			
-			$site=new Site($this->data['Page Site Key']);
-			$url=$site->data['Site URL'].'/'.strtolower($value);
-			$this->update_field('Page URL',$url,'nohistory');
+			
+			
+			
+			
+			//$this->update_field('Page URL',$url,'nohistory');
 
 		}
 

@@ -31,12 +31,9 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-
-
-
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $sql="select * from `Part Dimension` where `Part SKU`=749 order by `Part SKU`";
-$sql="select * from `Part Dimension`   order by `Part SKU` desc ";
+$sql="select * from `Part Dimension`  where `Part SKU`=30683 order by `Part SKU` desc ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -50,9 +47,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$result2=mysql_query($sql);
 
 	while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
+		$_part_loc=new PartLocation($row['Part SKU'].'_'.$row2['Location Key']) ;
 
-
-		$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact`  where `Inventory Transaction Type` in ('Associate','Disassociate') and  `Part SKU`=%d and `Location Key`=%d order by `Date` desc ",$row['Part SKU'],$row2['Location Key']);
+		$sql=sprintf("select `Inventory Transaction Type`,`Date` from `Inventory Transaction Fact`  where `Inventory Transaction Type` in ('Associate','Disassociate') and  `Part SKU`=%d and `Location Key`=%d order by `Date` desc ",$row['Part SKU'],$row2['Location Key']);
 		//print "$sql\n";
 		$result3=mysql_query($sql);
 
@@ -62,17 +59,35 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				$sql=sprintf("delete from `Part Location Dimension`  where   `Part SKU`=%d and `Location Key`=%d  ",$row['Part SKU'],$row2['Location Key']);
 				print "$sql\n";
 				mysql_query($sql);
+			}else {
+				$pl_data=array(
+					'Part SKU'=>$row['Part SKU'],
+					'Location Key'=>$row2['Location Key'],
+					'Date'=>$row3['Date']);
+				print_r($pl_data);
+				$part_location=new PartLocation('find',$pl_data,'create');
+
+
+				$part_location->redo_adjusts();
+				continue;
 			}
 
 
 
+		}else {
+			$sql=sprintf("delete from `Part Location Dimension`  where   `Part SKU`=%d and `Location Key`=%d  ",$row['Part SKU'],$row2['Location Key']);
+			print "$sql\n";
+			//print "$sql\n";
+			mysql_query($sql);
+
 		}
+		$_part_loc->redo_adjusts();
 
-
-		print $row['Part SKU']."\r";
+		//print $row['Part SKU']."\r";
 
 
 	}
+
 }
 
 ?>

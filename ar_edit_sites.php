@@ -544,16 +544,7 @@ function new_store_page($data) {
 	$store=new Store($site->data['Site Store Key']);
 	$page_data=array();
 
-
-
-
-
-
-
-
-
 	$site->add_store_page($page_data);
-
 	if ($site->new_page) {
 		$response= array('state'=>200,'action'=>'created','page_key'=>$site->new_page_key);
 
@@ -1286,7 +1277,7 @@ function delete_page_footer($data) {
 
 
 function list_headers_for_edition() {
-	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','department','family','product')) ) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','department','family','product','page')) ) {
 		$parent=$_REQUEST['parent'];
 
 	} else {
@@ -1362,9 +1353,17 @@ function list_headers_for_edition() {
 
 	switch ($parent) {
 	case 'site':
-		$table='  `Page Header Dimension`  ';
+		$table='  `Page Header Dimension` H   ';
 		$where=sprintf(' where `Site Key`=%d',$parent_key);
 		break;
+		
+	case 'page':
+		$table='  `Page Header Dimension`   ';
+		
+		$page=new Page($parent_key);
+		$where=sprintf(' where `Site Key`=%d',$page->data['Page Site Key']);
+		break;	
+		
 	default:
 
 		break;
@@ -1383,7 +1382,7 @@ function list_headers_for_edition() {
 
 
 	$sql="select count(*) as total from $table  $where $wheref";
-	//print $sql;
+//	print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -1436,7 +1435,7 @@ function list_headers_for_edition() {
 
 
 	$adata=array();
-	$sql="select *  from $table $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select * from $table $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
 
 	$res = mysql_query($sql);
 
@@ -1447,6 +1446,10 @@ function list_headers_for_edition() {
 
 		$site=new Site($parent_key);
 		$default_header_key=$site->data['Site Default Header Key'];
+		$selected_header_key=0;
+	}else{
+	$default_header_key=0;
+	$selected_header_key=$page->data['Page Header Key'];
 	}
 
 
@@ -1462,6 +1465,14 @@ function list_headers_for_edition() {
 
 
 		}
+		
+		if($see_also_key==$row['Page Header Key']){
+					$selected='<div class="buttons small"><button class="positive" onClick="select_header('.$row['Page Header Key'].')">'._('Use this header').'</button></div>';
+
+		}else{
+			$selected=_('Current Header');;
+		}
+		
 
 		$adata[]=array(
 			'id'=>$row['Page Header Key'],
@@ -1469,8 +1480,9 @@ function list_headers_for_edition() {
 			'pages'=>number($row['Number Pages']),
 			'image'=>'<img alt="preview" style="width:300px" src="image.php?id='.$row['Page Header Preview Image Key'].'"/>',
 			'default'=>$default,
+			'selected'=>$selected,
 			'go'=>sprintf("<a href='edit_page_header.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
-
+			
 			'delete'=>(($row['Number Pages'] or $is_default)?'':"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />")
 
 		);
