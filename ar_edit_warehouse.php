@@ -157,7 +157,11 @@ case('lost_stock'):
 	lost_stock($data);
 	break;
 case('move_stock'):
-	move_stock();
+$data=prepare_values($_REQUEST,array(
+			'values'=>array('type'=>'json array')
+
+		));
+	move_stock($data);
 	break;
 case('locations'):
 	list_locations();
@@ -1224,34 +1228,14 @@ function lost_stock($data) {
 	}
 }
 
-function move_stock() {
+function move_stock($_data) {
+
+
+
 	global $editor;
-	if ( !isset($_REQUEST['values']) ) {
-		$response=array('state'=>400,'msg'=>'Error no value');
-		echo json_encode($response);
-		return;
-	}
+	
+$raw_data=$_data['values'];
 
-	$tmp=preg_replace('/\\\"/','"',$_REQUEST['values']);
-	$tmp=preg_replace('/\\\\\"/','"',$tmp);
-
-	$raw_data=json_decode($tmp, true);
-	if (!is_array($raw_data)) {
-		$response=array('state'=>400,'msg'=>'Wrong value');
-		echo json_encode($response);
-		return;
-	}
-
-	if (
-		!isset($raw_data['from_key'])
-		or !isset($raw_data['part_sku'])
-		or !isset($raw_data['qty'])
-		or !isset($raw_data['to_key'])
-	) {
-		$response=array('state'=>400,'action'=>'error','msg'=>'wp');
-		echo json_encode($response);
-		return;
-	}
 
 
 	$traslator=array(
@@ -1264,6 +1248,21 @@ function move_stock() {
 			$data[$traslator[$key]]=$value;
 		}
 	}
+
+if(!$data['Destination Key']){
+	$response=array('state'=>400,'action'=>'error','msg'=>_('No location selected'));
+		echo json_encode($response);
+		return;
+}
+
+
+	if($raw_data['from_key']==$data['Destination Key']){
+		$response=array('state'=>400,'action'=>'error','msg'=>'wp');
+		echo json_encode($response);
+		return;
+	
+	}
+
 
 	$part_location=new PartLocation($raw_data['part_sku'],$raw_data['from_key']);
 
