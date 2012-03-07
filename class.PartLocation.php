@@ -1056,7 +1056,7 @@ mysql_query($sql);
 			,$this->location_key
 		);
 		$res=mysql_query($sql);
-//print $sql;
+//print "$sql\n";
 		$stock=0;
 		$value=0;
 
@@ -1064,7 +1064,7 @@ mysql_query($sql);
 			$stock=round($row['stock'],3);
 			$value=$row['value'];
 		}
-
+//print "$stock\n";
 		return array($stock,$value,0);
 
 	}

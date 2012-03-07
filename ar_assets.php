@@ -9616,7 +9616,7 @@ function part_transactions() {
 		$where.=" and `Inventory Transaction Type` in ('In') ";
 		break;
 	case('move_transactions'):
-		$where.=" and `Inventory Transaction Type` in ('Move') ";
+		$where.=" and `Inventory Transaction Type` in ('Move','Move In','Move Out') ";
 		break;
 	case('out_transactions'):
 		$where.=" and `Inventory Transaction Type` in ('Sale','Broken','Lost') ";
@@ -9625,7 +9625,7 @@ function part_transactions() {
 		$where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Audit','Adjust','Associate','Disassociate') ";
 		break;
 	default:
-		 $where.="and `Inventory Transaction Type` not in ('Move In','Move Out') ";
+		// $where.="and `Inventory Transaction Type` not in ('Move In','Move Out') ";
 		break;
 		break;
 	}
