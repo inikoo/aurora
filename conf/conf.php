@@ -2396,9 +2396,19 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>''
-		)
+		),
 
+	'edit_headers'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'overview'
 
+		),
 
 	),
 	'sites'=>array(

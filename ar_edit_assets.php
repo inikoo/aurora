@@ -3989,7 +3989,7 @@ function part_transactions() {
 		$where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Associate','Disassociate','Audit') ";
 		break;
 	default:
-		$where.="and `Inventory Transaction Type` not in ('Move In','Move Out') ";
+		//$where.="and `Inventory Transaction Type` not in ('Move In','Move Out') ";
 		break;
 		break;
 	}
@@ -4124,7 +4124,7 @@ function part_transactions() {
 			'type'=>$transaction_type,
 			'change'=>$qty,
 			'date'=>strftime("%c", strtotime($data['Date'])),
-			'note'=>$data['Note']." ".$data['Inventory Transaction Key'].' -> '.$data['Relations'],
+			'note'=>$data['Inventory Transaction Key'].' -> '.$data['Relations'].'*'.$data['Note'],
 			'location'=>$location,
 			'user'=>$data['User Alias'],
 			'delete'=>$delete,
@@ -4152,35 +4152,87 @@ function part_transactions() {
 
 function delete_part_location_transaction($data) {
 
-$deleted=false;
-$msg='';
-	$sql=sprintf("select * from `Inventory Transction Fact` where `Incentory Transaction Key`");
+	$deleted=false;
+	$msg='';
+	$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$data['transaction_key']);
 	$res=mysql_query($sql);
-	if ($row=mysql_query($res)) {
-		if (in_array($row['Inventory Tansaction Type'],array('Move In','Move Out','Sale','Adjust','Associate','Disassociate','Order In Process','No Dispatched'))) {
-				$response=array('state'=>400,'msg'=>'transaction type can not be deleted');
-echo json_encode($response);
-exit;
-			}else {
+	if ($row=mysql_fetch_assoc($res)) {
+		if (in_array($row['Inventory Transaction Type'],array('Move In','Move Out','Sale','Adjust','Associate','Disassociate','Order In Process','No Dispatched'))) {
+			$response=array('state'=>400,'msg'=>'transaction type can not be deleted');
+			echo json_encode($response);
+			exit;
+		}else {
+
+			switch ($row['Inventory Transaction Type']) {
+			case 'Audit':
+				$sql=sprintf("delete from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$row['Relations']);
+				mysql_query($sql);
+				$sql=sprintf("delete from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$data['transaction_key']);
+				mysql_query($sql);
+				
+				
+				
+				
+
+				$part_location= new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+				$part_location->redo_adjusts();
+				
+				post_edit_transaction_actions($row['Part SKU'],$row['Location Key']);
+				$deleted=true;
+				break;
 
 			}
 
-
-		}else {
-			$response=array('state'=>400,'msg'=>_('Transaction not found'));
-echo json_encode($response);
-exit;
 		}
-		echo json_encode($response);
 
-	
 
-		if ($deleted) {
-			$response=array('state'=>200,'msg'=>$msg,'action'=>'deleted');
-		} else {
-			$response=array('state'=>400,'msg'=>$msg);
-		}
+	}else {
+		$response=array('state'=>400,'msg'=>_('Transaction not found'));
 		echo json_encode($response);
+		exit;
 	}
+
+
+
+	if ($deleted) {
+		$response=array('state'=>200,'msg'=>$msg,'action'=>'deleted');
+	} else {
+		$response=array('state'=>400,'msg'=>$msg);
+	}
+	echo json_encode($response);
+}
+
+
+function post_edit_transaction_actions($part_sku,$location_key) {
+
+
+	$sql=sprintf("select `Inventory Transaction Type`,`Date` from `Inventory Transaction Fact`  where `Inventory Transaction Type` in ('Associate','Disassociate') and  `Part SKU`=%d and `Location Key`=%d order by `Date` desc ",$part_sku,$location_key);
+	//print "$sql\n";
+	$result3=mysql_query($sql);
+
+	if ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
+		//print_r($row3);
+		if ($row3['Inventory Transaction Type']=='Disassociate') {
+			$sql=sprintf("delete from `Part Location Dimension`  where   `Part SKU`=%d and `Location Key`=%d  ",$part_sku,$location_key);
+			mysql_query($sql);
+		}else {
+			$pl_data=array(
+				'Part SKU'=>$part_sku,
+				'Location Key'=>$location_key,
+				'Date'=>$row3['Date']);
+			//print_r($pl_data);
+			$part_location=new PartLocation('find',$pl_data,'create');
+
+		}
+
+
+
+	}else {
+		$sql=sprintf("delete from `Part Location Dimension`  where   `Part SKU`=%d and `Location Key`=%d  ",$part_sku,$location_key);
+		mysql_query($sql);
+	}
+
+
+}
 
 ?>

@@ -63,7 +63,7 @@ print $row['Date']."\t".$row2['Part SKU'].'_'.$row2['Location Key']."\t\r";
 exit;
 */
 $from=date("Y-m-d",strtotime('now -1 day'));
-$from="2012-02-12";
+//$from="2012-02-12";
 $to="2007-01-01";
 
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`<=%s and `Date`>=%s order by `Date` desc",

@@ -124,7 +124,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="edit_block" style="min-height:200px;{if $edit!=" description"}display:none{/if}" id="d_description">
+		<div class="edit_block" style="min-height:200px;{if $edit!='description'}display:none{/if}" id="d_description">
 			<table style="margin:0;clear:both;width:870px" class="edit">
 				<tr class="title">
 					<td>{t}Store Details{/t} </td>
@@ -246,7 +246,7 @@
 			</tr>
 		</table>
 	</div>
-	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!=" pictures"}display:none{/if}" id="d_pictures">
+	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='pictures'}display:none{/if}" id="d_pictures">
 		<table class="edit" border="0" style="width:890px">
 			<tr class="title">
 				<td>{t}Logo{/t} <span id="store_logo_msg"></span></td>
@@ -262,7 +262,7 @@
 			</tr>
 		</table>
 	</div>
-	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!=" discounts"}display:none{/if}" id="d_discounts">
+	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='discounts'}display:none{/if}" id="d_discounts">
 		<div class="buttons">
 			<button id="add_deal"><img src="art/icons/add.png" alt=""> {t}Add Deal{/t}</button> <button id="edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Deal Templates{/t}</button> <button style="display:none" class="positive" id="save_new_deal">{t}Save New Template{/t}</button> <button style="display:none" class="negative" id="cancel_add_deal">{t}Cancel{/t}</button> 
 		</div>
@@ -293,7 +293,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!=" campaigns"}display:none{/if}" id="d_campaigns">
+	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='campaigns'}display:none{/if}" id="d_campaigns">
 		<div class="buttons">
 			<button id="add_campaign"><img src="art/icons/add.png" alt=""> {t}Add Template{/t}</button> <button id="close_edit_deals_templates"><img src="art/icons/page_edit.png" alt=""> {t}Edit Store Deals{/t}</button> <button style="display:none" class="positive" id="save_new_campaign">{t}Save New Template{/t}</button> <button style="display:none" class="negative" id="cancel_add_campaign">{t}Cancel{/t}</button> 
 		</div>
@@ -324,7 +324,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!=" charges"}display:none{/if}" id="d_charges">
+	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='charges'}display:none{/if}" id="d_charges">
 		<div class="new_item_dialog" id="new_charge_dialog" style="display:none">
 			<div id="new_charge_messages" class="messages_block">
 			</div>
@@ -354,9 +354,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!=" shipping"}display:none{/if}" id="d_shipping">
+	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='shipping'}display:none{/if}" id="d_shipping">
 	</div>
-	<div class="edit_block" style="min-height:200px;{if $edit!=" departments"}display:none{/if}" id="d_departments">
+	<div class="edit_block" style="min-height:200px;{if $edit!='departments'}display:none{/if}" id="d_departments">
 		<div class="general_options" style="float:right">
 			<span style="margin-right:10px" id="add_department" class="state_details">Create Department</span> <span style="margin-right:10px;display:none" id="save_new_department" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;display:none" id="close_add_department" class="state_details">{t}Close Dialog{/t}</span> 
 		</div>
@@ -404,7 +404,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="edit_block" style="min-height:200px;{if $edit!=" communications"}display:none{/if}" id="d_communications">
+	<div class="edit_block" style="min-height:200px;{if $edit!='communications'}display:none{/if}" id="d_communications">
 		<div class="general_options" style="float:right">
 			<span style="margin-right:10px;visibility:hidden" id="save_edit_communications" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;visibility:hidden" id="reset_edit_communications" class="state_details">{t}Reset{/t}</span> 
 		</div>

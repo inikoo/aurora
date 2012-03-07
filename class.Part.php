@@ -2517,8 +2517,7 @@ class part extends DB_Table {
 				'Location Key'=>$location_key,
 				'Date'=>$first_date);
 			//print_r($pl_data);
-			$part_location=new PartLocation('find',$pl_data
-				,'create');
+			$part_location=new PartLocation('find',$pl_data,'create');
 			// print_r($part_location);
 			if ($part_location->found) {
 

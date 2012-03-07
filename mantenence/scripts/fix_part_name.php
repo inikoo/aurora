@@ -29,42 +29,50 @@ require_once '../../conf/conf.php';
 $count=0;
 
 
-$sql="select * from `Part Dimension` order by `Part SKU`";
+$sql="select * from `Part Dimension`  order by `Part SKU`";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
+	if ($part->data['Part Unit Description']=='') {
+	
+	
+		$uk_product=new Product('code_store',$part->data['Part Currently Used In'],1);
 
-	$supplier_products=$part->get_supplier_products();
-	//print_r($supplier_products);
+		if($uk_product->id){
+$description=$uk_product->data['Product Units Per Case'].'x '.$uk_product->data['Product Name'];
 
-	$sup_code=array();
-	foreach ($supplier_products as $supplier_product) {
-		if ( $supplier_product['Supplier Product Code']=='' or  preg_match('/\?/',$supplier_product['Supplier Product Code'])  )
-			continue;
-		$sup_code[strtolower($supplier_product['Supplier Product Code'])]=$supplier_product['Supplier Product Code'];
-	}
+		$supplier_products=$part->get_supplier_products();
+		
 
-
-	$scode='';
-	// print_r($sup_code);
-	if (count($sup_code)>0) {
-		$scode='('.join(',',$sup_code).')';
-	}
-
-	if ($scode!='') {
-
-		print $part->sku." $scode\n";
-		if (!preg_match('/\)$/',$part->data['Part Unit Description'])) {
-			$description= $part->data['Part Unit Description'].' '.$scode;
-			$part->update(array('Part Unit Description'=>$description));
-			print "Part ".$part->data['Part SKU'].' '.$scode."\n";
+		$sup_code=array();
+		foreach ($supplier_products as $supplier_product) {
+			if ( $supplier_product['Supplier Product Code']=='' or  preg_match('/\?/',$supplier_product['Supplier Product Code'])  )
+				continue;
+			$sup_code[strtolower($supplier_product['Supplier Product Code'])]=$supplier_product['Supplier Product Code'];
 		}
 
+		$scode='';
+		// print_r($sup_code);
+		if (count($sup_code)>0) {
+			$scode='('.join(',',$sup_code).')';
+		}
+
+		if ($scode!='') {
+
+			print $part->sku." $scode\n";
+			if (!preg_match('/\)$/',$part->data['Part Unit Description'])) {
+				$description.=' '.$scode;
+				
+			}
+
+		}
+		$part->update(array('Part Unit Description'=>$description));
+		
+		// print $row['Part SKU']."\r";
+
 	}
-	// print $row['Part SKU']."\r";
-
-
+	}
 }
 
 
