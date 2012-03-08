@@ -626,6 +626,11 @@ class Page extends DB_Table {
 			$this->update_code($value);
 			break;
 
+		case('Page Header Key'):
+
+			$this->update_header_key($value);
+			break;
+
 
 		case('url'):
 			return;
@@ -693,6 +698,81 @@ class Page extends DB_Table {
 	}
 
 
+	function update_header_key($value,$options='') {
+		if ($this->type!='Store') {
+			return;
+		}
+		
+		$old_value=$this->data['Page Header Key'];
+		
+		
+		$site=new Site($this->data['Page Site Key']);
+
+		$default_header_key=$site->data['Site Default Header Key'];
+		if ($value==$default_header_key) {
+			$header_type='SiteDefault';
+		}else {
+			$header_type='Set';
+
+		}
+
+		$sql=sprintf("update `Page Store Dimension`  set  `Page Header Key`=%d , `Page Header Type`=%s    where `Page Key`=%d",
+			$value,prepare_mysql($header_type),$this->id);
+		// print $sql;
+
+
+		mysql_query($sql);
+		$affected=mysql_affected_rows();
+		if ($affected==-1) {
+			$this->msg.=' '._('Record can not be updated')."\n";
+			$this->error_updated=true;
+			$this->error=true;
+
+			return;
+		}
+		elseif ($affected==0) {
+			$this->msg.=' '._('Same value as the old record');
+
+		} else {
+
+			$this->msg.=_('Header updated').", \n";
+			$this->msg_updated.=_('Code updated').", \n";
+			$this->updated=true;
+			$this->new_value=$value;
+			$this->data['Page Header Key']=$value;
+			$this->data['Page Header Type']=$header_type;
+			$save_history=true;
+			if (preg_match('/no( |\_)history|nohistory/i',$options))
+				$save_history=false;
+
+			if (!$this->new and $save_history) {
+				$history_data=array(
+					'indirect_object'=>'Page Code'
+					,'old_value'=>$old_value
+					,'new_value'=>$value
+
+				);
+
+
+
+				$this->add_history($history_data);
+
+
+
+			}
+
+
+
+
+
+			//$this->update_field('Page URL',$url,'nohistory');
+
+		}
+
+
+
+	}
+
 
 	function update_code($value,$options='') {
 
@@ -701,9 +781,9 @@ class Page extends DB_Table {
 			return;
 		}
 
-$value=_trim($value);
-	if ($value=='') {
-		$this->msg.=' '._('Invalid Code')."\n";
+		$value=_trim($value);
+		if ($value=='') {
+			$this->msg.=' '._('Invalid Code')."\n";
 			$this->error_updated=true;
 			$this->error=true;
 			return;
@@ -723,7 +803,7 @@ $value=_trim($value);
 			prepare_mysql($value)
 
 		);
-		
+
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$this->msg.=' '._('Code already usen on this website')."\n";
@@ -737,8 +817,8 @@ $value=_trim($value);
 
 
 
-$site=new Site($this->data['Page Site Key']);
-			$url=$site->data['Site URL'].'/'.strtolower($value);
+		$site=new Site($this->data['Page Site Key']);
+		$url=$site->data['Site URL'].'/'.strtolower($value);
 
 		$sql=sprintf("update `Page Store Dimension`  set  `Page Code`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
 		// print $sql;
@@ -757,17 +837,17 @@ $site=new Site($this->data['Page Site Key']);
 			$this->msg.=' '._('Same value as the old record');
 
 		} else {
-		
+
 			$this->msg.=_('Code updated').", \n";
 			$this->msg_updated.=_('Code updated').", \n";
 			$this->updated=true;
 			$this->new_value=$value;
 			$this->data['Page Code']=$value;
-			
+
 			$save_history=true;
 			if (preg_match('/no( |\_)history|nohistory/i',$options))
 				$save_history=false;
-			
+
 			if (!$this->new and $save_history) {
 				$history_data=array(
 					'indirect_object'=>'Page Code'
@@ -779,24 +859,24 @@ $site=new Site($this->data['Page Site Key']);
 
 
 				$this->add_history($history_data);
-				
-				
-$site=new Site($this->data['Page Site Key']);
-			$url=$site->data['Site URL'].'/'.strtolower($value);
-
-		$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
-		// print $sql;
 
 
-		mysql_query($sql);
-				
+				$site=new Site($this->data['Page Site Key']);
+				$url=$site->data['Site URL'].'/'.strtolower($value);
+
+				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
+				// print $sql;
+
+
+				mysql_query($sql);
+
 
 			}
-			
-			
-			
-			
-			
+
+
+
+
+
 			//$this->update_field('Page URL',$url,'nohistory');
 
 		}
