@@ -11,11 +11,13 @@
 
 <div class="top_page_menu">
     <div class="buttons" style="float:right">
-       
+       				{if isset($next) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+
         <button  onclick="window.location='part.php?id={$part->sku}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
      <button  onclick="window.location='associate_product.php?id={$part->sku}'" ><img src="art/icons/door_out.png" alt=""> {t}Associate Product{/t}</button>
     </div>
     <div class="buttons" style="float:left">
+				{if isset($prev)}<img style="vertical-align:bottom;float:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span style="font-size:140%;width:600px;position:relative;bottom:-5px;left:-5px"><span style="font-weight:800"><span class="id">{$part->get_sku()}</span></span> {$part->get('Part Unit Description')} </span> 
 
  </div>
     <div style="clear:both"></div>
