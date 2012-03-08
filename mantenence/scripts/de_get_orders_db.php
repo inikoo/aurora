@@ -936,7 +936,19 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
             //      print_r($transaction);
 
-
+   //creamos una supplier parrt nueva
+            $scode=$sup_prod_code;
+            $scode=_trim($scode);
+            $scode=preg_replace('/^\"\s*/','',$scode);
+            $scode=preg_replace('/\s*\"$/','',$scode);
+            if (preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
+                $scode='';
+            if (preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
+                $scode='';
+            if ($scode=='same')
+                $scode=$code;
+            if ($scode=='' or $scode=='0')
+                $scode='?'.$code;
 
 
 
@@ -1021,7 +1033,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
             $parts_per_product=1;
-            if ($product->new_id ) {
+            if ($product->new_code ) {
 
                 $uk_product=new Product('code_store',$code,1);
                 $parts=$uk_product->get('Parts SKU');
@@ -1052,7 +1064,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-                } else {
+                } 
+                else {
 
                     //creamos una parte nueva
                     $part_data=array(
@@ -1089,6 +1102,40 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 //	print_r($part_list);
                 $product->new_historic_part_list($product_part_header,$part_list);
                 $used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+
+
+
+     // $scode= preg_replace('/\?/i','_unk',$scode);
+
+            $sp_data=array(
+                         'Supplier Key'=>$supplier->id,
+                         'Supplier Product Status'=>'Not In Use',
+                         'Supplier Product Code'=>$scode,
+                         'SPH Case Cost'=>sprintf("%.2f",$supplier_product_cost),
+                         'Supplier Product Name'=>$description,
+                         'Supplier Product Description'=>$description,
+                         'Supplier Product Valid From'=>$date_order,
+                         'Supplier Product Valid To'=>$date2
+                     );
+
+            $supplier_product=new SupplierProduct('find',$sp_data,'create');
+            $spp_header=array(
+                            'Supplier Product Part Type'=>'Simple',
+                            'Supplier Product Part Most Recent'=>'Yes',
+                            'Supplier Product Part Valid From'=>$date_order,
+                            'Supplier Product Part Valid To'=>$date2,
+                            'Supplier Product Part In Use'=>'Yes',
+                            'Supplier Product Part Metadata'=>''
+                        );
+
+            $spp_list=array(
+                          array(
+                              'Part SKU'=>$part->data['Part SKU'],
+                              'Supplier Product Units Per Part'=>$transaction['units'],
+                              'Supplier Product Part Type'=>'Simple'
+                          )
+                      );
+            $supplier_product->new_historic_part_list($spp_header,$spp_list);
 
             } 
             else {
@@ -1137,19 +1184,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-            //creamos una supplier parrt nueva
-            $scode=$sup_prod_code;
-            $scode=_trim($scode);
-            $scode=preg_replace('/^\"\s*/','',$scode);
-            $scode=preg_replace('/\s*\"$/','',$scode);
-            if (preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
-                $scode='';
-            if (preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
-                $scode='';
-            if ($scode=='same')
-                $scode=$code;
-            if ($scode=='' or $scode=='0')
-                $scode='?'.$code;
+         
 
             // $scode= preg_replace('/\?/i','_unk',$scode);
 
@@ -1164,24 +1199,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                          'Supplier Product Valid To'=>$date2
                      );
 
-            $supplier_product=new SupplierProduct('find',$sp_data,'create');
-            $spp_header=array(
-                            'Supplier Product Part Type'=>'Simple',
-                            'Supplier Product Part Most Recent'=>'Yes',
-                            'Supplier Product Part Valid From'=>$date_order,
-                            'Supplier Product Part Valid To'=>$date2,
-                            'Supplier Product Part In Use'=>'Yes',
-                            'Supplier Product Part Metadata'=>''
-                        );
-
-            $spp_list=array(
-                          array(
-                              'Part SKU'=>$part->data['Part SKU'],
-                              'Supplier Product Units Per Part'=>$transaction['units'],
-                              'Supplier Product Part Type'=>'Simple'
-                          )
-                      );
-            $supplier_product->new_historic_part_list($spp_header,$spp_list);
+            $supplier_product=new SupplierProduct('find',$sp_data);
+      
 
 
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
