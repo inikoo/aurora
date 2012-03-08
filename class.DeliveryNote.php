@@ -853,8 +853,11 @@ class DeliveryNote extends DB_Table {
 					$supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
 
 				} else {
-					print_r($part);
-					exit("\nError geting supplier products\n");
+					
+					$supplier_product_key=0;
+					
+					//print_r($part);
+					//exit("\nError geting supplier products\n");
 
 				}
 
@@ -1007,9 +1010,9 @@ class DeliveryNote extends DB_Table {
 						$supplier_product_pid=$supplier_products_keys[array_rand($supplier_products_keys)];
 
 					} else {
-						print_r($part);
-						exit("\nError geting supplier products\n");
-
+						//print_r($part);
+						//exit("\nError geting supplier products\n");
+						$supplier_product_key=0;
 					}
 
 				}
