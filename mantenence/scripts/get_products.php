@@ -590,7 +590,7 @@ foreach ($__cols as $cols) {
 			$product=new Product('find',$data,'create');
 
 			//print_r($family->data);
-			if ($product->new_id) {
+			if ($product->new_code) {
 				$scode=_trim($cols[$map['supplier_product_code']]);
 				$supplier_code=$cols[$map['supplier_code']];
 				update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
