@@ -294,6 +294,50 @@ $smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['v
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);
 
+$order=$_SESSION['state']['warehouse']['parts']['order'];
+if ($order=='sku') {
+$_order='Part SKU';
+     $order='P.`Part SKU`';
+    $order_label=_('SKU');;
+   
+} else {
+$_order='Part SKU';
+     $order='P.`Part SKU`';
+    $order_label=_('SKU');
+}
+//$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select  P.`Part SKU` as id , `Part Unit Description` as name from `Part Dimension` P left join  `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`)  where  `Warehouse Key`=%d  and %s < %s  order by %s desc  limit 1",
+             $warehouse->id,
+             $order,
+             prepare_mysql($part->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $prev['link']='part.php?sku='.$row['id'];
+    $prev['title']=$row['name'];
+    $smarty->assign('prev',$prev);
+}
+mysql_free_result($result);
+
+
+$sql=sprintf(" select P.`Part SKU` as id , `Part Unit Description` as name from `Part Dimension` P  left join  `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`) where  `Warehouse Key`=%d    and  %s>%s  order by %s   ",
+  $warehouse->id,
+             $order,
+             prepare_mysql($part->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $next['link']='part.php?sku='.$row['id'];
+    $next['title']=$row['name'];
+    $smarty->assign('next',$next);
+}
+mysql_free_result($result);
+
+
 $smarty->display('edit_part.tpl');
 
 
