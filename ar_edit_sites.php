@@ -1466,7 +1466,7 @@ function list_headers_for_edition() {
 
 		}
 		
-		if($see_also_key==$row['Page Header Key']){
+		if($selected_header_key==$row['Page Header Key']){
 					$selected='<div class="buttons small"><button class="positive" onClick="select_header('.$row['Page Header Key'].')">'._('Use this header').'</button></div>';
 
 		}else{
