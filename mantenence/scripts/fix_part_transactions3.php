@@ -38,20 +38,32 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
-$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move Out'";
+$sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move Out'   ";
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 	$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
-	$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move In' and  `Part SKU`=%d and `Location Key`=%d and `Date`=%s   ",
-		$row['Part SKU'],$row['Location Key'],prepare_mysql($row['Date'])
+	$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move In' and  `Part SKU`=%d  and `Date`=%s   ",
+		$row['Part SKU'],prepare_mysql($row['Date'])
 	);
+	print "$sql\n";
 	$result2=mysql_query($sql);
 	if ($row1=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
 
+
+
+$sql=sprintf("select count(*) as num  from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move' and `Date`=%s   ",
+		prepare_mysql($row['Date'])
+	);
+	
+	$result3=mysql_query($sql);
+	if ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
+if($row3['num']>0)
+	continue;
+}
 		
 		$destination=new PartLocation($row1['Part SKU'].'_'.$row1['Location Key']);
 
@@ -65,11 +77,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			,0
 			,$row['User Key']
 			,prepare_mysql($details,false)
-			,prepare_mysql($part_location->editor['Date'])
+			,prepare_mysql($row['Date'])
 			,prepare_mysql($row['Inventory Transaction Key'].','.$row1['Inventory Transaction Key'])
 
 
 		);
+		//print "$sql\n";
 		mysql_query($sql);
 		$move_transaction_key=mysql_insert_id();
 
