@@ -1856,3 +1856,28 @@ function() {
 	
 });
 
+YAHOO.util.Event.onContentReady("rppmenu3", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu3", {
+		trigger: "rtext_rpp3"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+
+YAHOO.util.Event.onContentReady("filtermenu3", 
+function() {
+	var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {
+		trigger: "filter_name3"
+		
+	});
+	oMenu.render();
+	oMenu.subscribe("show", oMenu.focus);
+
+	
+});
+
+
