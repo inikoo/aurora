@@ -2473,7 +2473,7 @@ function set_header($data){
 $page=new Page($data['page_key']);
 	if ($page->id) {
 		$page->update_field_switcher('Page Header Key',$data['header_key']);
-		
+		$response= array('state'=>200);
 
 	}else{
 			$response= array('state'=>400,'msg'=>'page not found');

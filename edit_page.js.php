@@ -1054,15 +1054,16 @@ Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_p
 
 function set_header(header_key){
 var request='ar_edit_sites.php?tipo=set_header&header_key='+header_key+'&page_key='+Dom.get('page_key').value
-alert(request)
+//alert(request)
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-alert(o.responseText)
+//alert(o.responseText)
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				
 				if(r.state==200){
 			
-	
+	  window.location='edit_page.php?id='+Dom.get('page_key').value+'&take_snapshot=1&update_heights=1';
+
 
       
       }else{
