@@ -384,7 +384,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   				  //     ,{key:"pages",label:"<?php echo _('Pages')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   				       ,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
 
-				         ,{key:"select", label:"",width:90,sortable:false,className:"acenter"}		         
+				         ,{key:"selected", label:"",width:180,sortable:false,className:"acenter"}		         
 				     //,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'page_header'}		         
 				       ];
 				       
@@ -415,7 +415,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 "id"
-			 ,"go","name","delete","pages","image","select"
+			 ,"go","name","delete","pages","image","selected"
 
 			 ]};
 
@@ -1049,6 +1049,30 @@ Dom.setStyle('page_content_overview_block','display','')
 Dom.removeClass(['show_page_header_block','show_page_content_block','show_page_product_list_block','show_page_product_buttons_block','show_page_footer_block'],'selected')
     Dom.setStyle(['page_header_block','page_content_block','page_product_list_block','page_product_buttons_block','page_footer_block'],'display','none')
   
+}
+
+
+function set_header(header_key){
+var request='ar_edit_sites.php?tipo=set_header&header_key='+header_key+'&page_key='+Dom.get('page_key').value
+alert(request)
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+alert(o.responseText)
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				
+				if(r.state==200){
+			
+	
+
+      
+      }else{
+                alert(r.msg)
+            }
+            }
+        
+    
+    });
+
 }
 
 function save_delete_page(){

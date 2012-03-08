@@ -26,6 +26,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+
+
 case('add_redirect'):
 	$data=prepare_values($_REQUEST,array(
 			'url'=>array('type'=>'string'),
@@ -114,7 +117,15 @@ case('set_default_header'):
 		));
 	set_default_header($data);
 	break;
+case('set_header'):
+	$data=prepare_values($_REQUEST,array(
+			'header_key'=>array('type'=>'key'),
+			'page_key'=>array('type'=>'key'),
+		));
 
+	set_header($data);
+	break;
+	
 case('set_default_footer'):
 	$data=prepare_values($_REQUEST,array(
 			'footer_key'=>array('type'=>'key'),
@@ -1467,10 +1478,11 @@ function list_headers_for_edition() {
 		}
 		
 		if($selected_header_key==$row['Page Header Key']){
-					$selected='<div class="buttons small"><button class="positive" onClick="select_header('.$row['Page Header Key'].')">'._('Use this header').'</button></div>';
-
+	$selected=_('Current Header');
 		}else{
-			$selected=_('Current Header');;
+		
+								$selected='<div class="buttons small"><button class="positive" onClick="set_header('.$row['Page Header Key'].')">'._('Use this header').'</button></div>';
+
 		}
 		
 
@@ -2453,6 +2465,21 @@ function update_page_preview_snapshot($data) {
 		$page->update_preview_snapshot();
 	}
 	$response= array('state'=>200,'image_key'=>$page->data['Page Preview Snapshot Image Key'],'formated_date'=>$page->get_preview_snapshot_date());
+	echo json_encode($response);
+}
+
+function set_header($data){
+
+$page=new Page($data['page_key']);
+	if ($page->id) {
+		$page->update_field_switcher('Page Header Key',$data['header_key']);
+		
+
+	}else{
+			$response= array('state'=>400,'msg'=>'page not found');
+
+	}
+
 	echo json_encode($response);
 }
 

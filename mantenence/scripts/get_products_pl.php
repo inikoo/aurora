@@ -432,9 +432,13 @@ $is_product=true;
 		}
 
 
-    $product=new Product('find',$data,'create');
-   		if ($product->new) {
+		$product=new Product('find',$data,'create');
+		if ($product->new) {
 			$product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
+
+		}
+
+		if ($product->new_code) {
 			if (count($parts)>0) {
 				$part_sku_from_uk=array_pop($parts);
 				$part_list[]=array(
