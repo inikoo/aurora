@@ -184,9 +184,9 @@ foreach ($__cols as $cols) {
 	$rrp=$cols[$map['rrp']];
 
 
-	//    if(!preg_match('/bot-10/i',$code)){
-	//  continue;
-	//   }
+//	   if(!preg_match('/^SG-C2$/i',$code)){
+//	 continue;
+//	  }
 
 	$code=_trim($code);
 	if ($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
@@ -618,6 +618,7 @@ foreach ($__cols as $cols) {
 			}
 
 			$product->change_current_key($product->id);
+		
 			$product->update_rrp('Product RRP',$rrp);
 
 			$product->update_stage('Normal');
@@ -625,11 +626,11 @@ foreach ($__cols as $cols) {
 				set_part_as_available($product);
 			}
 
-
+//print "zzzzzz1\n";
 			if ($product->data['Product Family Key']==$fam_products_no_family_key) {
 				$product->update_family_key($family->id);
 			}
-
+//print "zzzzzz2\n";
 			if ($product->data['Product Sales Type']!='Private Sale') {
 				$product->update_sales_type('Public Sale');
 
@@ -638,7 +639,7 @@ foreach ($__cols as $cols) {
 			}
 
 
-
+//print "zzzzzz\n";
 
 			$sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d and `Product ID`!=%d group by `Product ID`",
 				prepare_mysql($product->code),
@@ -652,6 +653,7 @@ foreach ($__cols as $cols) {
 				$_product=new Product('pid',$row['Product ID']);
 				$_product->set_as_historic();
 			}
+			
 			$product->update_web_state();
 
 		}

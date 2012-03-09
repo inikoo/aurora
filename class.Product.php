@@ -5944,7 +5944,7 @@ protected function update_field($field,$value,$options='') {
 			$this->pid
 		);
 
-		//print $sql;
+		//print "$sql\n";
 		mysql_query($sql);
 		$this->data['Product Web State']=$web_state;
 
@@ -6110,6 +6110,8 @@ protected function update_field($field,$value,$options='') {
 			//print $sql;
 			if (mysql_query($sql)) {
 
+
+				
 				$this->data['Product Sales Type']=$sales_state;
 
 				if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
@@ -6119,11 +6121,11 @@ protected function update_field($field,$value,$options='') {
 
 
 
-				if ($value=='Public Sale')
-					$_web_configuration='Online Auto';
-				else
-					$_web_configuration='Offline';
-				$this->update_web_configuration($_web_configuration);
+				//if ($value=='Public Sale')
+				//	$_web_configuration='Online Auto';
+				//else
+				//	$_web_configuration='Offline';
+				//$this->update_web_configuration($_web_configuration);
 
 
 				$this->update_main_type();
@@ -6149,7 +6151,7 @@ protected function update_field($field,$value,$options='') {
 
 
 	function update_web_configuration($a1) {
-
+//print "update web cont\n";
 
 		if ($a1!='Online Force Out of Stock' and $a1!='Online Auto' and $a1!='Offline'
 			and $a1!= 'Online Force For Sale'      ) {
