@@ -24,17 +24,22 @@ function change_parts_view(e,table_id){
        table.hideColumn('profit_sold');
        table.hideColumn('margin');
 		 table.hideColumn('locations');
+		  table.hideColumn('used_in');
 
-      
+      		 table.hideColumn('description_small');
+
       if(tipo=='general'){
 	            // Dom.setStyle(['period_options','avg_options'],'display','none')
 	             Dom.setStyle(['period_options'],'display','none')
 
 	  table.showColumn('description');
 	  table.showColumn('supplied_by');
-	
+		  table.showColumn('used_in');
+
       }
       else if(tipo=='stock'){
+            	  table.showColumn('description_small');
+
         	//Dom.setStyle(['period_options','avg_options'],'display','none')
             Dom.setStyle(['period_options'],'display','none')
 
@@ -48,7 +53,8 @@ function change_parts_view(e,table_id){
        table.showColumn('unknown_days');
       }
       else if(tipo=='sales'){
-      
+      	  table.showColumn('description_small');
+
       //Dom.setStyle(['period_options','avg_options'],'display','')
       Dom.setStyle(['period_options'],'display','')
       
@@ -60,6 +66,8 @@ function change_parts_view(e,table_id){
 
       }
       else if(tipo=='locations'){
+            	  table.showColumn('description_small');
+
       // Dom.setStyle(['period_options','avg_options'],'display','')
 	        Dom.setStyle(['period_options'],'display','none')
 		 table.showColumn('locations');
@@ -68,6 +76,8 @@ function change_parts_view(e,table_id){
 	     
       }
 	  else if(tipo=='forecast'){
+	        	  table.showColumn('description_small');
+
 	         // Dom.setStyle(['period_options','avg_options'],'display','')
 	        Dom.setStyle(['period_options'],'display','')
 

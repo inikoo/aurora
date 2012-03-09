@@ -3715,6 +3715,7 @@ function list_parts() {
 			'locations'=>$locations,
 			'sku'=>sprintf('<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
 			'description'=>$data['Part Unit Description'],
+			'description_small'=>$data['Part Unit Description'].'<br/>'.$data['Part XHTML Currently Used In'],
 
 			'used_in'=>$data['Part XHTML Currently Used In'],
 			'supplied_by'=>$data['Part XHTML Currently Supplied By'],
