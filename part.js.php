@@ -5,7 +5,7 @@ include_once('common.php');?>
 var dialog_qty;
 var dialog_move_qty;
 var category_labels={'stock':'<?php echo _('Stock Keeping Units')?>','value':'<?php echo _('Stock value')?>'};
-
+var change_plot_menu;
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -387,30 +387,37 @@ function set_web_configuration(value){
 	});    
 
 }
-function save_move_qty(){
 
-return;
+function change_plot(type){
+Dom.setStyle(['change_plot_label_stock','change_plot_label_value'],'display','none')
 
-    var request='ar_edit_warehouse.php?tipo=edit_part_location&key=move_qty&newvalue='+Dom.get('move_qty_part').value+'&location_key='+Dom.get('part_location').value+'&part_sku='+Dom.get('part_sku').value
-   alert(request);  
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    
-	    success:function(o) {
-				alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if (r.state==200) {
-		   dialog_move_qty.hide();
-		   window.location.reload();
+if(type=='stock'){
+Dom.setStyle('change_plot_label_stock','display','')
+}else{
+Dom.setStyle('change_plot_label_value','display','')
+}
+change_plot_menu.hide()
 
-		}else{
-		  alert(r.msg);
-	    }
-	    }
-	});    
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-stock_history-chart_output&value='+type ,{});
 
 }
 
+
+function show_dialog_change_plot(){
+region1 = Dom.getRegion('change_plot'); 
+    region2 = Dom.getRegion('change_plot_menu'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('change_plot_menu', pos);
+
+change_plot_menu.show()
+}
+
 function init(){
+
+
+change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {visible : false,close:true,underlay: "none",draggable:false});
+change_plot_menu.render();
+	YAHOO.util.Event.addListener("change_plot", "click", show_dialog_change_plot);
 
 dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_edit_web_state.render();
@@ -419,8 +426,6 @@ image_region=Dom.getRegion('main_image')
 if(image_region.height>160){
 Dom.setStyle('main_image','height','160px')
 Dom.setStyle('main_image','width','')
-
-
 
 
 }

@@ -1018,16 +1018,19 @@ mysql_query($sql);
 
 	function get_ohlc($date) {
 
-
-
 		$day_before_date = date("Y-m-d", strtotime($date."-1 day", strtotime($date)));
 
-		list ($open,$open_value,$in_process)=$this->get_stock($day_before_date." 23:59:59");
+		list ($open,$value_open,$in_process)=$this->get_stock($day_before_date." 23:59:59");
 
 		$high=$open;
 		$low=$open;
 		$close=$open;
-		$sql=sprintf("select `Inventory Transaction Quantity` as delta from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d order by `Date` "
+		
+		$value_high=$value_open;
+		$value_low=$value_open;
+		$value_close=$value_open;
+		
+		$sql=sprintf("select `Inventory Transaction Quantity` as delta,`Inventory Transaction Amount` as value_delta  from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d order by `Date` "
 			,prepare_mysql($date)
 			,$this->part_sku
 			,$this->location_key
@@ -1040,11 +1043,20 @@ mysql_query($sql);
 				$high=$close;
 			if ($low>$close)
 				$low=$close;
+				
+			$value_close+=$row['value_delta'];
+			if ($value_high<$value_close)
+				$value_high=$value_close;
+			if ($value_low>$value_close)
+				$value_low=$value_close;	
 
 		}
-		return array($open,$high,$low,$close);
+		return array($open,$high,$low,$close,$value_open,$value_high,$value_low,$value_close);
 
 	}
+
+
+
 
 	function get_stock($date='') {
 		if (!$date)
@@ -1269,14 +1281,14 @@ mysql_query($sql);
 			list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
 			list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
 			list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
-			list($open,$high,$low,$close)=$this->get_ohlc($row['Date']);
+			list($open,$high,$low,$close,$value_open,$value_high,$value_low,$value_close)=$this->get_ohlc($row['Date']);
 
 
 			$storing_cost=0;
 			$comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
 			$location_type="Unknown";
 			$warehouse_key=1;
-			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%s) ",
+			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s) ",
 				prepare_mysql($row['Date']),
 
 				$this->part_sku,
@@ -1298,11 +1310,15 @@ mysql_query($sql);
 				$open,
 				$high,
 				$low,
+				$value_open,
+				$value_high,
+				$value_low,
 				prepare_mysql($location_type)
 
 			);
 			mysql_query($sql);
 			//print "$sql\n";
+			//exit;
 		}
 
 	}
