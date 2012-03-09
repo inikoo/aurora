@@ -51,8 +51,11 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$url=$row['Page URL'];
 
 	
-	$url=preg_replace('/aw-cadeux/','aw-cadeaux',$url);
+	$url=preg_replace('/ancietwisdom/','ancientwisdom',$url);
+	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
 	
+
+	mysql_query($sql);
 	
 }	
 
