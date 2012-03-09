@@ -51,11 +51,14 @@ var CellEdit = function (callback, newValue) {
 		//alert(	'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ //myBuildUrl(datatable,record))
 
 
-	if(column.object=='department_page_properties')	
+	if(column.object=='department_page_properties' ||  column.object=='family_page_properties')	
 					request_page=	'ar_edit_sites.php';			
 
 			else
 		request_page=	'ar_edit_assets.php';			
+
+
+
 
 		YAHOO.util.Connect.asyncRequest(
 						'POST',

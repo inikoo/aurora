@@ -5659,3 +5659,4 @@ ALTER TABLE `Supplier Product Part Dimension` ADD `Supplier Product Historic Key
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Type` `Inventory Transaction Type` ENUM( 'Move', 'Order In Process', 'No Dispatched', 'Sale', 'Audit', 'In', 'Adjust', 'Broken', 'Lost', 'Not Found', 'Associate', 'Disassociate', 'Move In', 'Move Out' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Inventory Transaction Fact` ADD `Relations` VARCHAR( 64 ) NOT NULL ;
 ALTER TABLE `Inventory Transaction Fact` ADD `Inventory Transaction Stock` FLOAT NOT NULL DEFAULT '0';
+ALTER TABLE `Inventory Spanshot Fact` ADD `Value Open` FLOAT NOT NULL DEFAULT '0' AFTER `Quantity Low` ,ADD `Value High` FLOAT NOT NULL DEFAULT '0' AFTER `Value Open` ,ADD `Value Low` FLOAT NOT NULL DEFAULT '0' AFTER `Value High` ;

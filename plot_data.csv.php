@@ -170,6 +170,7 @@ case('part_location_stock_history'):
     $data=prepare_values($_REQUEST,array(
                              'part_sku'=>array('type'=>'key'),
                              'location_key'=>array('type'=>'numeric'),
+                             'output'=>array('type'=>'string'),
                          ));
     part_location_stock_history($data);
     break;
@@ -235,24 +236,24 @@ function part_location_stock_history($data) {
 
     if ($data['location_key']) {
 
-        $sql=sprintf("select `Date`,`Quantity Open`,`Quantity High`,`Quantity Low`,`Quantity On Hand`, (`Quantity Sold`+`Quantity In`+`Quantity Lost`) as `Volume` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
+        $sql=sprintf("select `Date`,`Quantity Open`,`Quantity High`,`Quantity Low`,`Quantity On Hand` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
                      $data['part_sku'],
                      $data['location_key']
                     );
         $res=mysql_query($sql);
 
         while ($row=mysql_fetch_assoc($res)) {
-            printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Quantity Open'],$row['Quantity High'],$row['Quantity Low'],$row['Quantity On Hand'],$row['Volume']);
+            printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Quantity Open'],$row['Quantity High'],$row['Quantity Low'],$row['Quantity On Hand'],$row['Quantity On Hand']);
         }
     } else {// stock in all locatins
-        $sql=sprintf("select `Date`,sum(`Quantity Open`) as open ,max(`Quantity High`) as high,min(`Quantity Low`) as low,sum(`Quantity On Hand`) as close, sum(`Quantity Sold`+`Quantity In`+`Quantity Lost`) as `Volume` from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
+        $sql=sprintf("select `Date`,sum(`Quantity Open`) as open ,max(`Quantity High`) as high,min(`Quantity Low`) as low,sum(`Quantity On Hand`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
                      $data['part_sku']
 
                     );
         $res=mysql_query($sql);
 
         while ($row=mysql_fetch_assoc($res)) {
-            printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['Volume']);
+            printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
         }
 
     }

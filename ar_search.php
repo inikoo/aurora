@@ -1355,7 +1355,7 @@ function is_postal_code($postalcode) {
 function search_parts($data) {
 	$the_results=array();
 
-	$max_results=10;
+	$max_results=30;
 	$user=$data['user'];
 	$q=$data['q'];
 	// $q=_trim($_REQUEST['q']);
@@ -1395,15 +1395,15 @@ function search_parts($data) {
     */
 
 
-    
-   
 
-	$sql=sprintf('select `Part Currently Used In`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 20',addslashes($q));
+
+
+	$sql=sprintf('select `Part Currently Used In`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In` like "%%%s%%" limit 30',addslashes($q));
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 
-	
+
 
 		if ($row['Part Status']=='In Use') {
 			$candidates[$row['Part SKU']]=100;
@@ -1415,15 +1415,19 @@ function search_parts($data) {
 	}
 
 
-  	$sql=sprintf('select `Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In`=%s limit 5',prepare_mysql($q));
+	$sql=sprintf('select `Part Status`,`Part Status`,`Part XHTML Currently Used In`,`Part Unit Description`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Currently Used In`=%s limit 5',prepare_mysql($q));
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
 
-		$candidates[$row['Part SKU']]=150;
+		if ($row['Part Status']=='In Use') {
+			$candidates[$row['Part SKU']]=150;
+		}else {
+			$candidates[$row['Part SKU']]=60;
+		}
 		$part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 	}
-    
+
 
 	$sql=sprintf('select `Category Key` ,`Category Name`, `Category Label` from `Category Dimension`   where `Category Subject`="Part" and `Category Name` like "%s%%" limit 20',addslashes($q));
 
@@ -1446,26 +1450,30 @@ function search_parts($data) {
 
 
 
-	/*
 
-          $qs=preg_split('/\s+|\,/',$q);
-          if(count($sq>1)){
-            foreach($qs as $q){
-             $sql=sprintf('select `Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 20',addslashes($q));
 
-         $res=mysql_query($sql);
-          while($row=mysql_fetch_array($res)){
+	$qs=preg_split('/\s+|\,/',$q);
+	if (count($qs>1)) {
+		foreach ($qs as $q) {
+			$sql=sprintf('select `Part XHTML Currently Used In`,`Part Status`,`Part SKU`,`Part Unit Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 30',addslashes($q));
 
-              $candidates[$row['Part SKU']]=100;
-              $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'description'=>$row['Part Unit Description']);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_array($res)) {
 
-          }
+					if ($row['Part Status']=='In Use') {
+			$candidates[$row['Part SKU']]=90;
+		}else {
+			$candidates[$row['Part SKU']]=40;
+		}
+		$part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
-            }
+			}
 
-          }
+		}
 
-          */
+	}
+
+
 
 
 	arsort($candidates);
@@ -2421,8 +2429,8 @@ function search_order_picking_aid($data) {
 			$response=array('state'=>200,'id'=>$row['Delivery Note Key']);
 		}
 	}
-	else{
-				$response=array('state'=>400,'msg'=>_('Order not found'));
+	else {
+		$response=array('state'=>400,'msg'=>_('Order not found'));
 
 	}
 	echo json_encode($response);

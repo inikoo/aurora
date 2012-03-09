@@ -160,7 +160,7 @@
 	</div>
 	<div id="block_history" class="block data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
 		<span class="clean_table_title">{t}Stock History Chart{/t} <img id="hide_stock_history_chart" alt="{t}hide{/t}" title="{t}Hide Chart{/t}" style="{if !$show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle;position:relative;bottom:1px" src="art/icons/hide_button.png" /> <img id="show_stock_history_chart" alt="{t}show{/t}" title="{t}Show Chart{/t}" style="{if $show_stock_history_chart}display:none;{/if}cursor:pointer;vertical-align:middle" src="art/icons/show_button.png" /> </span> 
-	<div class="buttons small"><button>&#x21b6 {t}Stock{/t}</button></div>
+	<div  class="buttons small"><button id="change_plot">&#x21b6 <span id="change_plot_label_value" style="{if $stock_history_chart_output!='stock'}display:none{/if}">{t}Stock{/t}</span><span id="change_plot_label_stock" style="{if $stock_history_chart_output!='value'}display:none{/if}">{t}Value{/t}</span></button></div>
 	<div id="stock_history_plot" style="{if !$show_stock_history_chart}display:none;{/if}">
 			<strong>You need to upgrade your Flash Player</strong> 
 		</div>
@@ -1015,4 +1015,24 @@
 
 	</table>
 
+</div>
+<div id="change_plot_menu" style="padding:10px 20px 0px 10px">
+	<table class="edit" border="0" style="width:200px">
+		<tr class="title">
+			<td>{t}Choose chart{/t}:</td>
+		</tr>
+		<tr style="height:5px">
+			<td></td>
+		</tr>
+	
+		<tr>
+			<td> 
+			<div class="buttons">
+				<button style="float:none;margin:0px auto;min-width:120px" onclick="change_plot('stock')"> {t}Stock{/t}</button> 
+				<button style="float:none;margin:0px auto;min-width:120px" onclick="change_plot('value')"> {t}Value{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		
+	</table>
 </div>
