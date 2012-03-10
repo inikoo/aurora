@@ -106,9 +106,8 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$_SESSION['state']['assets']['page']='site';
 if (isset($_REQUEST['view'])) {
-    $valid_views=array('sales','general','stoke');
+    $valid_views=array('details','pages','hits','visitors');
     if (in_array($_REQUEST['view'], $valid_views))
         $_SESSION['state']['site']['view']=$_REQUEST['view'];
 
@@ -116,6 +115,13 @@ if (isset($_REQUEST['view'])) {
 $smarty->assign('block_view',$_SESSION['state']['site']['view']);
 
 
+if (isset($_REQUEST['pages_view'])) {
+    $valid_views=array('general','hits','visitors');
+    if (in_array($_REQUEST['view'], $valid_views))
+        $_SESSION['state']['site']['pages']['view']=$_REQUEST['view'];
+
+}
+$smarty->assign('pages_view',$_SESSION['state']['site']['pages']['view']);
 
 
 

@@ -143,6 +143,53 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
 
 
+var myRequestBuilder_page_thumbnails = function(oState, oSelf) {
+    // Get states or use defaults
+
+    oState = oState || {pagination:null, sortedBy:null};
+
+    var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
+
+  //  var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
+var dir=oState.sortedBy.dir;
+
+   var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
+    var results = (oState.pagination) ? oState.pagination.rowsPerPage : 5;
+
+    // Build custom request
+    var request= "&o=" + sort +
+    "&od=" + dir +
+    "&sf=" + startIndex +
+    "&nr=" + results;
+//alert(oState.sortedBy.dir)
+get_page_thumbnails(oSelf.table_id,request)
+
+    return request;
+};
+
+var myRequestBuilder_thumbnails = function(oState, oSelf) {
+    // Get states or use defaults
+
+    oState = oState || {pagination:null, sortedBy:null};
+
+    var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
+
+  //  var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
+var dir=oState.sortedBy.dir;
+
+   var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
+    var results = (oState.pagination) ? oState.pagination.rowsPerPage : 5;
+
+    // Build custom request
+    var request= "&o=" + sort +
+    "&od=" + dir +
+    "&sf=" + startIndex +
+    "&nr=" + results;
+//alert(oState.sortedBy.dir)
+get_thumbnails(oSelf.table_id,request)
+
+    return request;
+};
 
 
 var myRequestBuilder = function(oState, oSelf) {
@@ -302,6 +349,78 @@ table=tables['table'+table_id];
 
     if(table.request==undefined)
     return;
+
+YAHOO.util.Connect.asyncRequest('POST',table.request+extra_arguments , {success:function(o) {
+//alert(o.responseText)
+        var r =  YAHOO.lang.JSON.parse(o.responseText);
+        if (r.resultset.state==200) {
+            var container=Dom.get('thumbnails'+table_id);
+            container.innerHTML='';
+            var counter=0;
+            for (x in r.resultset.data) {
+                if (r.resultset.data[x].item_type=='item') {
+                
+             
+					
+					var table = new YAHOO.util.Element(document.createElement('table'));
+					
+					Dom.addClass(table,'item_container');
+					var tr = new YAHOO.util.Element(document.createElement('tr'));
+					var td = new YAHOO.util.Element(document.createElement('td'));
+					Dom.addClass(td,'image_container');
+					var img = new YAHOO.util.Element(document.createElement('img'));
+                    img.set('src', r.resultset.data[x].image);
+                    img.set('alt', '');
+					
+			img.appendTo(td);
+					
+					td.appendTo(tr);
+					tr.appendTo(table);
+					
+					var tr = new YAHOO.util.Element(document.createElement('tr'));
+					var td = new YAHOO.util.Element(document.createElement('td'));
+										Dom.addClass(td,'item_caption');
+
+					
+					td.appendTo(tr);
+					 td.set('innerHTML', r.resultset.data[x].code);
+					tr.appendTo(table);
+					
+					table.appendTo(container);
+
+					
+                  
+                    counter++
+                }
+					
+            }
+            var div = new YAHOO.util.Element(document.createElement('div'));
+					Dom.setStyle(div,'clear','both')
+										div.appendTo(container);
+
+
+        }
+
+    }
+
+                                                              });
+}
+
+
+
+function get_page_thumbnails(table_id,extra_arguments) {
+
+
+
+if(extra_arguments==undefined)
+extra_arguments='';
+if(Dom.get('thumbnails'+table_id)==undefined)
+return;
+
+table=tables['table'+table_id];
+
+    if(table.request==undefined)
+    return;
 //    parent=data.parent;
   //  tipo=data.tipo;
     
@@ -349,10 +468,16 @@ YAHOO.util.Connect.asyncRequest('POST',table.request+extra_arguments , {success:
 					var tr = new YAHOO.util.Element(document.createElement('tr'));
 					var td = new YAHOO.util.Element(document.createElement('td'));
 					Dom.addClass(td,'image_container');
-					var img = new YAHOO.util.Element(document.createElement('img'));
-                    img.set('src', r.resultset.data[x].image);
-                    img.set('alt', r.resultset.data[x].image);
-					img.appendTo(td);
+				
+					
+			//img.appendTo(td);
+					Dom.setStyle(td,'background-image',r.resultset.data[x].image);
+					
+										Dom.setStyle(td,'background-image',"url('"+r.resultset.data[x].image+"')");
+										Dom.setStyle(td,'background-size',"100% auto");
+										Dom.setStyle(td,'background-repeat',"no-repeat");
+										Dom.setStyle(td,'height',"126px");
+
 					td.appendTo(tr);
 					tr.appendTo(table);
 					
@@ -384,6 +509,7 @@ YAHOO.util.Connect.asyncRequest('POST',table.request+extra_arguments , {success:
 
                                                               });
 }
+
 
 function change_period(e,data){
 

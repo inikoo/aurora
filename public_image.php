@@ -55,12 +55,11 @@ if ($size=='original') {
 
 
 
-$sql=sprintf("select $image_data ,`Image Original Filename`,UNIX_TIMESTAMP(`Last Modify Date`) image_time,`Image File Format` from `Image Dimension` where `Image Key`=%d",$id);
-$result = mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+$sql=sprintf("select UNIX_TIMESTAMP(`Last Modify Date`) as image_time from `Image Dimension` where `Image Key`=%d",$id);
+$result2 = mysql_query($sql);
+if ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
 
-	//print_r($row);
-
+	/*
 $tmp= 'Last-Modified: '.gmdate('D, d M Y H:i:s', $row['image_time']).' GMT';
 
    // header($tmp, true, 304);
@@ -74,11 +73,42 @@ $tmp= 'Last-Modified: '.gmdate('D, d M Y H:i:s', $row['image_time']).' GMT';
 	// var_dump(  $row) ;
 
 	//exit;
+*/
+
+	$image_time=$row2['image_time'];
+	$send_304 = false;
+	$sapi=php_sapi_name() ;
+	if (in_array($sapi,array( 'apache','apache2handler','apache2filter'))) {
+		$ar = apache_request_headers();
+		if (isset($ar['If-Modified-Since']) && // If-Modified-Since should exists
+			($ar['If-Modified-Since'] != '') && // not empty
+			(strtotime($ar['If-Modified-Since']) >= $image_time)) // and grater than
+			$send_304 = true;                                     // image_time
+	}
 
 
+	if ($send_304) {
+		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $image_time).' GMT', true, 304);
+		exit();
+	}
 
 
-}else {
+	$sql=sprintf("select $image_data ,`Image Original Filename`,`Image File Format` from `Image Dimension` where `Image Key`=%d",$id);
+	$result = mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $image_time).' GMT',true, 200);
+		header('Expires: '.gmdate('D, d M Y H:i:s',  $image_time + 86400*365).' GMT',true, 200);
+		header('Content-Length: '.strlen($row['data']));
+		header('Content-type: image/'.$row['Image File Format']);
+		header('Content-Disposition: inline; filename='.$row['Image Original Filename']);
+		echo $row['data'];
+		exit();
+
+
+	}
+}
+else {
 
 	$css_files=array(
 		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',

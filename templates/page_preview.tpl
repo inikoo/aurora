@@ -5,12 +5,20 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$title}</title>
 	<link href="art/inikoo-icon.png" rel="shortcut icon" type="image/x-icon" />
-	{foreach from=$css_files item=i } 
-	<link rel="stylesheet" href="{$i}" type="text/css" />
-	{/foreach} {foreach from=$js_files item=i } <script type="text/javascript" src="{$i}"></script> {/foreach} <style type="text/css">{$page->get_css()}</style> <script type="text/javascript">{$page->get_javascript()}</script> 
 	<link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
 	<link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
-<script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> <script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> 
+	{foreach from=$css_files item=i } 
+	<link rel="stylesheet" href="{$i}" type="text/css" />
+	{/foreach} {foreach from=$js_files item=i } 
+	<script type="text/javascript" src="{$i}"></script> 
+	{/foreach} 
+	
+	<style type="text/css">{$page->get_css()}</style> 
+	<script type="text/javascript">{$page->get_javascript()}</script> 
+	
+	
+<script type="text/javascript" src="public_search.js.php?id={$site->id}"></script> 
+<script type="text/javascript" src="public_menu.js.php?id={$site->id}"></script> 
 </head>
 <body class="yui-skin-sam inikoo">
 <input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
