@@ -978,7 +978,7 @@ function extract_products_info($html) {
 
 
 	$html=preg_replace("/<\?php\s*show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
-$html=preg_replace("/<\? show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
+$html=preg_replace("/<\?\s+show_product\((.+)\).*\?>/",'{$page->display_button($1)}',$html);
 	$html=preg_replace("/<\?php\s*show_products\(.+\).*\?>/siU",'{$page->display_list()}',$html);
 
 
