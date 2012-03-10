@@ -102,7 +102,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 						     this.dataSource0, {
 							 //draggableColumns:true,
-							   renderLoopSize: 50,generateRequest : myRequestBuilder
+							   renderLoopSize: 50,generateRequest : myRequestBuilder_page_thumbnails
 								       ,paginator : new YAHOO.widget.Paginator({
 								        
 									      rowsPerPage:<?php echo$_SESSION['state']['site']['pages']['nr']?>,containers : 'paginator0', 
@@ -139,7 +139,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	};
-	get_thumbnails(0)
+	get_page_thumbnails(0)
     });
 
 
