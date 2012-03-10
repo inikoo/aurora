@@ -7,9 +7,11 @@
 	<link href="art/inikoo-icon.png" rel="shortcut icon" type="image/x-icon" />
 	<link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
 	<link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
+	
 	{foreach from=$css_files item=i } 
 	<link rel="stylesheet" href="{$i}" type="text/css" />
 	{/foreach} {foreach from=$js_files item=i } 
+
 	<script type="text/javascript" src="{$i}"></script> 
 	{/foreach} 
 	
