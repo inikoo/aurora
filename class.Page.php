@@ -1539,7 +1539,7 @@ class Page extends DB_Table {
 				if ($row['Range']!='') {
 					$range=preg_split('/-/',$row['Range']);
 
-					$range_where=sprintf("and  $order_by>=%s  and $order_by<=%s ", prepare_mysql($range[0]), prepare_mysql(++$range[1]));
+					$range_where=sprintf("and  $order_by>=%s  and $order_by<=%s ", prepare_mysql($range[0]), prepare_mysql(($range[1]=='z'?'z':++$range[1])));
 				} else {
 					$range_where='';
 				}
