@@ -108,7 +108,7 @@ var request='tipo=new_store_page&store_key='+Dom.get('store_key').value+'&site_k
 						'POST',
 						'ar_edit_sites.php', {
 						    success:function(o) {
-						    alert(o.responseText)
+						    //alert(o.responseText)
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 

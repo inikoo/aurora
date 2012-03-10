@@ -757,6 +757,15 @@ function list_pages_for_edition() {
 
 	if ($order=='title')
 		$order='`Page Title`';
+	if ($order=='link_title')
+		$order='`Page Short Title`';	
+if ($order=='store_title')
+		$order='`Page Store Title`';
+	if ($order=='page_title')
+		$order='`Page Title`';			
+		
+	if ($order=='code')
+		$order='`Page Code`';		
 	else
 		$order='`Page Section`';
 
