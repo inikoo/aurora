@@ -41,16 +41,16 @@ chdir('../../');
 //}
 //exit;
 
-/*
+
 $sql="select * from `Page Redirection Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
+	$page=new Page($row['Page Target Key']);
+//$redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$row['Page Target URL']);
 
-$redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$row['Page Target URL']);
 
-
-	$sql=sprintf("update `Page Redirection Dimension` set `Page Target URL`=%s where `Page Redirection Key`=%d",prepare_mysql($redirection),$row['Page Redirection Key']);
+	$sql=sprintf("update `Page Redirection Dimension` set `Page Target URL`=%s where `Page Redirection Key`=%d",prepare_mysql($page->data['Page URL']),$row['Page Redirection Key']);
 	
 
 	mysql_query($sql);
@@ -58,7 +58,10 @@ $redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$ro
 }	
 
 exit;
-*/
+
+
+
+exit;
 
 
 $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`!=3  ";
