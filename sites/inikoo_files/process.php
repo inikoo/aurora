@@ -65,11 +65,12 @@ $path=preg_replace('/\/$/','',$path);
 
 	$sql=sprintf("select `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",_prepare_mysql($site_url),_prepare_mysql($path,false),_prepare_mysql($file));
 
-//print $sql;
-//exit;
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$target=$row['Page Target URL'];
+		print "http://".$target;
+exit;
 		header("Location: http://".$target);
 	}else {
 		header("Location: http://".$site_url."/404.php?p=$path&f=$file&url=$url");
