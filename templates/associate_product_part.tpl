@@ -1,5 +1,30 @@
 {include file='header.tpl'}
-<div id="bd">
+<div id="bd" >
+{include file='assets_navigation.tpl'}
+<input type='hidden' id="family_key" value="{$family->id}">
+
+
+<div  class="branch"> 
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span>
+</div>
+<div class="top_page_menu">
+    <div class="buttons">
+        				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+
+        <button style="margin-left:0px"  onclick="window.location='family.php?id={$family->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Cancel{/t}</button>
+<button style="display:none;margin-left:0px"  onclick="window.location='associate_product_part.php?id={$family->id}'" ><img src="art/icons/brick_add.png" alt=""/> {t}Associate Product{/t}</button>
+    </div>
+    <div class="buttons" style="float:left">
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
+    <span class="main_title">{t}Family{/t}: <span  id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></span>
+
+    </div>
+    <div style="clear:both"></div>
+</div> 
+
+
+
+
 <h1>{t}New Product{/t}</h1>
 
 <div class="search_box" ></div>
@@ -8,10 +33,10 @@
     </div>
 <div >
      <div id="results" style="margin-top:0px;float:right;width:600px;"></div>
-	 <div  style="float:left;width:600px;" >
+	 <div  style="float:left;width:900px;" >
 
 <input type="hidden" value="{$sp_key}" id="sp_key"/>
-    <table class="edit"  border="0" style="width:100%;margin-bottom:0px" >
+    <table class="edit"  border="1" style="width:100%;margin-bottom:0px" >
 	<input type="hidden" value="{$family->get('Product Family Store Key')}" id="store_key"/>
 	<input type="hidden" value="{$family->id}" id="family_key"/>
 	<input type="hidden" value="0" id="part_key"/>	
@@ -20,7 +45,8 @@
 	<td colspan=3>{t}Product Info{/t}</td>
 	</tr>
 
-	 <tr style="display:none"><td style="width:200px"class="label">{t}Product Store{/t}:</td><td style="width:370px">
+	 <tr style="display:none"><td style="width:210px"class="label">{t}Product Store{/t}:</td>
+	 <td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="store_code" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="" />
@@ -31,20 +57,22 @@
 	   <td id="store_code_msg" class="edit_td_alert" ></td>
 	  </tr>
 
-	 <tr><td style="width:200px"class="label">{t}Part{/t}:</td><td style="width:370px">
+	 <tr><td style="width:210px"class="label">{t}Part{/t}:</td><td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="part_code" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="" />
 	   <div id="part_code_Container"  ></div>
        </div>
 	   </td>
-	<td id="family_list" onClick="view_family_list(this)">{t}List{/t}</td>
-	   <td id="part_code_msg" class="edit_td_alert" ></td>
+	<td id="family_list" ><div class="buttons small left"><button onClick="view_family_list(this)">{t}List{/t}</buttons></div>
+	   <span id="part_code_msg" class="edit_td_alert" ></span>
+	   </td>
 	  </tr>
 
 
 
-	 <tr><td style="width:200px"class="label">{t}Product Code{/t}:</td><td style="width:370px">
+	 <tr><td style="width:210px"class="label">{t}Product Code{/t}:</td>
+	 <td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="product_code" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="" />
@@ -56,7 +84,7 @@
 
 
 
-	 <tr><td style="width:200px"class="label">{t}Product Name{/t}:</td><td style="width:370px">
+	 <tr><td style="width:210px"class="label">{t}Product Name{/t}:</td><td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="product_name" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="" />
@@ -66,9 +94,40 @@
 	   <td id="product_name_msg" class="edit_td_alert" ></td>
 	  </tr>
 
+	<tr><td style="width:210px"class="label">{t}Product Units{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="product_units" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="product_units_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="product_units_msg" class="edit_td_alert" ></td>
+	  </tr>
 
 
-		<tr><td style="width:200px"class="label">{t}Product Weight{/t}:</td><td style="width:370px">
+	<tr><td style="width:210px"class="label">{t}Product Price{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="product_price" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="product_price_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="product_price_msg" class="edit_td_alert" ></td>
+	  </tr>
+	  
+	  
+	<tr><td style="width:210px"class="label">{t}Product RRP{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="product_rrp" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="product_rrp_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="product_rrp_msg" class="edit_td_alert" ></td>
+	  </tr>
+
+
+		<tr><td style="width:210px"class="label">{t}Product Weight{/t}:</td><td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="product_weight" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="" />
@@ -79,7 +138,7 @@
 	  </tr>
 
 
-		<tr><td style="width:200px"class="label">{t}Product Special Characteristics{/t}:</td><td style="width:370px">
+		<tr><td style="width:210px"class="label">{t}Product Special Characteristics{/t}:</td><td style="width:370px">
 	  <div  >
 	   <input  style="width:100%" id="special_characteristics" changed=0 type='text' MAXLENGTH="255"  class='text' 
 	   value="" />
@@ -90,28 +149,33 @@
 	  </tr>
 
 
-		<tr><td style="width:200px"class="label">{t}Product Description{/t}:</td><td style="width:370px">
+		<tr><td style="width:210px"class="label">{t}Product Description{/t}:</td><td style="width:370px">
 	  <div  >
-	   <input  style="width:100%" id="product_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   <input  style="width:100%" id="product_description" changed=0 type='text'   class='text' 
 	   value="" />
 	   <div id="product_description_Container"  ></div>
        </div>
 	   </td>
 	   <td id="product_description_msg" class="edit_td_alert" ></td>
 	  </tr>
+<tr style="height:10px"><td colspan=3></td></tr>
 
-
-</table>
-
-
-<table class="options" style="float:right;padding:0;margin:0">
 	<tr>
+	<td colspan=2>
 	<div class="buttons" >
 			<button  style="margin-right:10px;visibility:"  id="save_new_product" class="positive disabled">{t}Save{/t}</button>
 			<button style="margin-right:10px;visibility:" id="reset_new_product" class="negative">{t}Reset{/t}</button>
 	</div>
+	</td><td></td>
 	</tr>
+	  </tr>
+<tr style="height:10px"><td colspan=3 id="new_product_dialog_msg"></td></tr>
+
+	<tr>
 </table>
+
+
+
     
       </div>
       <div style="clear:both;height:40px"></div>

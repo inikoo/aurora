@@ -41,17 +41,22 @@ chdir('../../');
 //}
 //exit;
 
-$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`)   ";
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`!=3  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
+
+if(in_array($row['Page Store Section'],array('Login','Client Section','Registration'))){
+continue;
+}
 	$site=new Site($row['Page Site Key']);
 	$page=new Page($row['Page Key']);
 
-	$url=$row['Page URL'];
+	//$url=$row['Page URL'];
 
 	
-	$url=preg_replace('/ancietwisdom/','ancientwisdom',$url);
+	$url=$site->data['Site URL'].'/'.strtolower($row['Page Code']);
+	print $row['Page Site Key']." $url\n";
 	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
 	
 

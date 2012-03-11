@@ -3723,36 +3723,75 @@ function edit_supplier_product_part($data) {
 
 function create_product($data) {
 	global $editor;
-	//print_r($data['values']);exit;
+	
 	if (array_key_exists('Product Name',$data['values'])
 		and  array_key_exists('Product Code',$data['values'])
-		and  array_key_exists('Product Special Characteristic',$data['values'])
-		and  array_key_exists('Product Description',$data['values'])
+		and  array_key_exists('Product Units',$data['values'])
+		and  array_key_exists('Product Name',$data['values'])
+		and  array_key_exists('Product Price',$data['values'])
+		and  array_key_exists('Product Family Key',$data['values'])
+		and  array_key_exists('Product Store Key',$data['values'])
 
 	) {
-		$part_id=$data['parent_key'];
+		$part_sku=$data['parent_key'];
 		$family=new Family($data['values']['Product Family Key']);
 
 		$department_key=$family->data['Product Family Main Department Key'];
-		$store_key=(isset($data['values']['Product Store Key'])?$data['values']['Product Store Key']:'');
+		$store_key=$data['values']['Product Store Key'];
+
+		if ($store_key!=$family->data['Product Family Store Key']) {
+			$response=array('state'=>400,'msg'=>'Error store key family do not match');
+			echo json_encode($response);
+			return;
+		}
+
 		$weight=(isset($data['values']['Product Net Weight'])?$data['values']['Product Net Weight']:'');
+		$store=new Store($store_key);
+
+
 
 
 		$product=new Product('create',array(
+				'product stage'=>'Normal',
+				'product sales type'=>'Public Sale',
+				'product type'=>'Normal',
+				'Product stage'=>'Normal',
+				'product record type'=>'Normal',
+				'Product Web Configuration'=>'Online Auto',
+				'product store key'=>$store->id,
+				'product currency'=>$store->data['Store Currency Code'],
+				'product locale'=>$store->data['Store Locale'],
+				'product price'=>$data['values']['Product Price'],
+				'product rrp'=>$data['values']['Product RRP'],
+				'product units per case'=>$data['values']['Product Units'],
+				'product family key'=>$family->id,
 
+				'product valid from'=>$editor['Date'],
+				'product valid to'=>$editor['Date'],
 				'Product Code'=>$data['values']['Product Code'],
 				'Product Name'=>$data['values']['Product Name'],
 				'Product Description'=>$data['values']['Product Description'],
 				'Product Special Characteristic'=>$data['values']['Product Special Characteristic'],
 				'Product Main Department Key'=>$department_key,
 				'editor'=>$editor,
-				'Product Store Key'=>$store_key,
 				'Product Net Weight'=>$weight,
 				'Product Gross Weight'=>$weight,
-				'Product Family Key'=>$data['values']['Product Family Key']
 			));
+
+		if ($product->id) {
+
+			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created','object_key'=>$product->pid);
+
+		}else {
+			$response=array('state'=>400,'msg'=>$product->msg);
+
+
+		}
+
+		/*
+
 		if (!$product->new) {
-			$part= new Part($part_id);
+			$part= new Part($part_sku);
 			$part_list[]=array(
 				'Part SKU'=>$part->get('Part SKU'),
 				'Parts Per Product'=>1,
@@ -3772,11 +3811,12 @@ function create_product($data) {
 			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created_', 'object_key'=>$product->id);
 		}
 
+*/
 
 
-
-	} else
+	} else {
 		$response=array('state'=>400,'msg'=>_('Error'));
+	}
 	echo json_encode($response);
 }
 
@@ -4169,14 +4209,14 @@ function delete_part_location_transaction($data) {
 				mysql_query($sql);
 				$sql=sprintf("delete from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$data['transaction_key']);
 				mysql_query($sql);
-				
-				
-				
-				
+
+
+
+
 
 				$part_location= new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
 				$part_location->redo_adjusts();
-				
+
 				post_edit_transaction_actions($row['Part SKU'],$row['Location Key']);
 				$deleted=true;
 				break;

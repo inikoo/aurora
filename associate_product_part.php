@@ -16,6 +16,7 @@ include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.SupplierProduct.php');
 include_once('class.Family.php');
+include_once('class.Department.php');
 
 if(!$user->can_view('contacts')){
   header('Location: index.php');
@@ -57,6 +58,8 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/edit_common.js',
+				'js/search.js',
+
 		'js/validate_telecom.js',
 		'edit_address.js.php',
 		'edit_contact_from_parent.js.php',
@@ -68,8 +71,19 @@ $js_files=array(
 		);
 
 $family=new Family($_REQUEST['id']);
+$store=new Store($family->data['Product Family Store Key']);
+$department=new Department($family->data['Product Family Main Department Key']);
 
 $smarty->assign('family',$family);
+$smarty->assign('store',$store);
+$smarty->assign('department',$department);
+
+$smarty->assign('store_id',$store->id);
+
+
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
+
 
 
 $tipo_filter2='code';

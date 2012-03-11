@@ -12,17 +12,20 @@
 </div>
 <div class="top_page_menu">
     <div class="buttons">
+        				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+
         <button style="margin-left:0px"  onclick="window.location='family.php?id={$family->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
-<button style="margin-left:0px"  onclick="window.location='associate_product_part.php?id={$family->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Associate Product{/t}</button>
+<button style="margin-left:0px"  onclick="window.location='associate_product_part.php?id={$family->id}'" ><img src="art/icons/brick_add.png" alt=""/> {t}Associate Product{/t}</button>
     </div>
-    <div class="buttons" style="float:right">
+    <div class="buttons" style="float:left">
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
+    <span class="main_title">{t}Family{/t}: <span  id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></span>
+
     </div>
     <div style="clear:both"></div>
 </div> 
 
-<div style="clear:left;margin:0 0px">
-    <h1>{t}Family{/t}; <span class="id" id="title_name">{$family->get('Product Family Name')}</span> <span class="id" id="title_code">({$family->get('Product Family Code')})</span></h1>
-</div>
+
 </div>
 
 

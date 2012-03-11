@@ -17,7 +17,7 @@ class EmailCredentials extends DB_Table{
 	var $areas=false;
 	var $locations=false;
 	var $updated_data=array();
-	
+
 	function EmailCredentials($a1=false,$a2=false,$a3=false) {
 
 		$this->table_name='Email Credentials';
@@ -167,25 +167,30 @@ class EmailCredentials extends DB_Table{
 	}
 
 
-	function get_password($key){
-		
+	function get_password($key) {
+
 		$password=AESDecryptCtr(base64_decode($this->data['Password']),$key,256);
 		$password=preg_replace('/^\_Hello \:\)/','',$password);
 		return $password;
 	}
-	
 
-	
+	function encrypt_password($password) {
 
-	 function update_field_switcher($field,$value,$options='') {
+		$salt='_Hello :)';
+		$value=base64_encode(AESEncryptCtr($salt.$password,CKEY,256));
+		return $value;
+	}
+
+
+	function update_field_switcher($field,$value,$options='') {
 
 
 		$base_data=$this->base_data();
-		
-		if($field=='Password'){
+
+		if ($field=='Password') {
 			$salt='_Hello :)';
-			$value=base64_encode(AESEncryptCtr($salt.$value,$options,256));
-		
+			$value=base64_encode(AESEncryptCtr($salt.$value,256));
+
 		}
 
 
@@ -197,7 +202,7 @@ class EmailCredentials extends DB_Table{
 
 			}
 		}
-		
+
 	}
 
 
@@ -206,10 +211,10 @@ class EmailCredentials extends DB_Table{
 		case('Gmail'):
 			$data['Incoming Mail Server']='imap.gmail.com:993/imap/ssl/novalidate-cert';
 			$data['Outgoing Mail Server']='smtp.gmail.com';
-			if(array_key_exists('Email Address',$data))
-			$data['Login']=$data['Email Address'];
+			if (array_key_exists('Email Address',$data))
+				$data['Login']=$data['Email Address'];
 			break;
-			default:
+		default:
 		}
 		return $data;
 
@@ -223,9 +228,17 @@ class EmailCredentials extends DB_Table{
 		$data=$this->cure_data($data);
 		$base_data=$this->base_data();
 
+
+
+
 		foreach ($data as $key=>$value) {
-			if (array_key_exists($key,$base_data))
+			if (array_key_exists($key,$base_data)) {
+				if ($key=='Password') {
+					$value=$this->encrypt_password($value);
+				}
 				$base_data[$key]=_trim($value);
+
+			}
 		}
 
 		$keys='(';$values='values(';
@@ -270,8 +283,8 @@ class EmailCredentials extends DB_Table{
 		$sql=sprintf("delete from `Email Credentials Dimension` where `Email Credentials Key`=%d",$this->id);
 		mysql_query($sql);
 	}
-	
-	
+
+
 
 }
 

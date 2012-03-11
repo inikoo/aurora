@@ -38,7 +38,7 @@ require_once '../../conf/conf.php';
 global $myconf;
 
 
-$sql=sprintf("select * from `Site Dimension` ");
+$sql=sprintf("select * from `Site Dimension`  where `Site Key`=1");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
@@ -53,7 +53,7 @@ $page_data=array(
   'Page URL'=>'profile.php',
   'Page Store Content Display Type'=>'Template',
   'Page Store Content Template Filename'=>'profile',
-  'Number See Also Links'=>0
+  'Number See Also Links'=>0,
 
  );
 $site->add_store_page($page_data);
@@ -69,10 +69,10 @@ $site->add_store_page($page_data);
   'Page Store Content Display Type'=>'Template',
   'Page Store Content Template Filename'=>'registration',
     'Number See Also Links'=>0
-
  );
 $site->add_store_page($page_data);
 
+exit;
  $page_data=array(
  'Page Store Section'=>'Registration',
  'Page Store Title'=>_('Log in'),

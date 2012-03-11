@@ -594,7 +594,8 @@ foreach ($__cols as $cols) {
 				$scode=_trim($cols[$map['supplier_product_code']]);
 				$supplier_code=$cols[$map['supplier_code']];
 				update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
-
+				
+				
 				$old_pids=$product->set_duplicates_as_historic($date);
 				if (count($old_pids)>0) {
 					$sql="select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`)where `Product ID` in (".join(",",$old_pids).")  ";
