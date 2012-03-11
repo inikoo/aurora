@@ -55,7 +55,7 @@ if (!$modify) {
 }
 
 
-if (isset($_REQUEST['edit_tab'])) {
+if (isset($_REQUEST['edit_tab']) and in_array($_REQUEST['edit_tab'],array('web'))) {
     $edit=$_REQUEST['edit_tab'];
     $_SESSION['state']['family']['editing']=$edit;
 } else {
@@ -339,6 +339,46 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
+
+$order=$_SESSION['state']['department']['families']['order'];
+if ($order=='code') {
+    $order='`Product Family Code`';
+    $order_label=_('Code');
+} else {
+     $order='`Product Family Code`';
+    $order_label=_('Code');
+}
+$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select `Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d  and %s < %s  order by %s desc  limit 1",
+             $family->data['Product Family Main Department Key'],
+             $order,
+             prepare_mysql($family->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $prev['link']='edit_family.php?id='.$row['id'];
+    $prev['title']=$row['name'];
+    $smarty->assign('prev',$prev);
+}
+mysql_free_result($result);
+
+
+$sql=sprintf(" select`Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d   and  %s>%s  order by %s   ",
+  $family->data['Product Family Main Department Key'],
+             $order,
+             prepare_mysql($family->get($_order)),
+             $order
+            );
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+    $next['link']='edit_family.php?id='.$row['id'];
+    $next['title']=$row['name'];
+    $smarty->assign('next',$next);
+}
+mysql_free_result($result);
 
 $smarty->display('edit_family.tpl');
 

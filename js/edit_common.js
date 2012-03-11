@@ -539,7 +539,7 @@ function validate_scope_new(branch) {
     for (items in validate_scope_data[branch]) {
 	//alert(items + ':' + validate_scope_data[branch][items].required + ':' + validate_scope_data[branch][items].validated);
         if (validate_scope_data[branch][items].required==true && validate_scope_data[branch][items].validated==false) {
-             //alert(branch+' , '+items+" error")
+          //   alert(branch+' , '+items+" error")
             errors=true;
         }
     }
@@ -665,7 +665,7 @@ function client_validation(branch,items,query) {
 function validate_general_new(branch,items,query) {
 
     var data= validate_scope_data[branch][items];
-    //alert(data)
+   
     if (''!=trim(query.toLowerCase())    ) {
         validate_scope_data[branch][items].changed=true;
 
@@ -1028,10 +1028,10 @@ return;
 
 	//alert(scope_edit_ar_file);
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-	//alert(request);
+	alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-//alert(o.responseText);
+alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
 

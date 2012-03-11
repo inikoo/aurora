@@ -68,7 +68,7 @@
 				</td>
 			</tr>
 			<tr id="tr_forgot_password_error2" style="display:none" class="button" style="">
-				<td colspan="2">{t}Sorry, an automatic password reset could not be done, try later or call us{/t}.<br><br><button style="margin-bottom:10px" id="hide_email_in_db_dialog3">Close</button></td>
+				<td colspan="2">{t}Sorry, an automatic password reset could not be done, try later or call us{/t}.<br><div class="buttons"><button  id="hide_email_in_db_dialog3">{t}Close{/t}</button></div></td>
 			</tr>
 		</table>
 	</div>

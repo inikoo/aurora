@@ -66,7 +66,6 @@ class SendEmail extends DB_Table {
             $this->message='';
             $this->additional_headers='';
             $this->additional_parameters='';
- 
 
             switch ($data['type']) {
             case 'Plain':
@@ -286,7 +285,7 @@ class SendEmail extends DB_Table {
 
                 $email_credentials=new EmailCredentials($data['email_credentials_key']);
                 
-          
+      //    print_r($email_credentials);
                 if ( $email_credentials->id) {
 
                     $this->from_name=$data['from_name'];
@@ -362,6 +361,9 @@ class SendEmail extends DB_Table {
 
                     /* authentication password */
                     $this->message_object->smtp_password=$email_credentials->get_password($this->secret_key);
+
+
+
 
                     /* if you need POP3 authetntication before SMTP delivery,
                      * specify the host name here. The smtp_user and smtp_password above

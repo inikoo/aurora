@@ -392,6 +392,11 @@ function show_dialog_change_products_display(){
 	dialog_change_products_display.show();
 }
 
+function edit_family(){
+
+element=Dom.getElementsByClassName('selected', 'span', 'chooser_ul') 
+window.location='edit_family.php?id='+Dom.get('family_key').value+'&edit_tab='+element[0].id
+}
 
 function init(){
 

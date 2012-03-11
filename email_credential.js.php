@@ -131,7 +131,7 @@ var request='ar_edit_sites.php?tipo=delete_email_credentials&site_key=' + site_i
 
 function send_test_message() {
 site_id=Dom.get('site_id').value;
-    value={test_message:Dom.get('test_message').value};
+    value={to:Dom.get('test_message_to').value};
 
 
     json_value = YAHOO.lang.JSON.stringify(value);
@@ -142,7 +142,7 @@ site_id=Dom.get('site_id').value;
   
   
 success:function(o) {
-  //alert(o.responseText)
+//  alert(o.responseText)
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state==200) {
 		dialog_test_email_credentials.hide();

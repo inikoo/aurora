@@ -125,7 +125,7 @@ case('set_header'):
 
 	set_header($data);
 	break;
-	
+
 case('set_default_footer'):
 	$data=prepare_values($_REQUEST,array(
 			'footer_key'=>array('type'=>'key'),
@@ -758,14 +758,14 @@ function list_pages_for_edition() {
 	if ($order=='title')
 		$order='`Page Title`';
 	if ($order=='link_title')
-		$order='`Page Short Title`';	
-if ($order=='store_title')
+		$order='`Page Short Title`';
+	if ($order=='store_title')
 		$order='`Page Store Title`';
 	if ($order=='page_title')
-		$order='`Page Title`';			
-		
+		$order='`Page Title`';
+
 	if ($order=='code')
-		$order='`Page Code`';		
+		$order='`Page Code`';
 	else
 		$order='`Page Section`';
 
@@ -922,7 +922,7 @@ function delete_redirect($data) {
 
 		$sql=sprintf("delete from  `Page Redirection Dimension` where `Page Redirection Key`=%d",
 			$data['id']);
-	//	print $sql;
+		// print $sql;
 		mysql_query($sql);
 		$site=new Site($data['site_key']);
 		$site->upload_redirections($row['Source Host'],$row['Source Path']);
@@ -932,16 +932,16 @@ function delete_redirect($data) {
 
 	}
 }
-function add_redirect($data){
+function add_redirect($data) {
 
 	$page=new Page($data['page_key']);
 	$page->add_redirect($data['url']);
-	if($page->error){
-	$response= array('state'=>400,'msg'=>$page->msg);
+	if ($page->error) {
+		$response= array('state'=>400,'msg'=>$page->msg);
 		echo json_encode($response);
-	
-	}else{
-	$response= array('state'=>200);
+
+	}else {
+		$response= array('state'=>200);
 		echo json_encode($response);
 	}
 
@@ -1376,14 +1376,14 @@ function list_headers_for_edition() {
 		$table='  `Page Header Dimension` H   ';
 		$where=sprintf(' where `Site Key`=%d',$parent_key);
 		break;
-		
+
 	case 'page':
 		$table='  `Page Header Dimension`   ';
-		
+
 		$page=new Page($parent_key);
 		$where=sprintf(' where `Site Key`=%d',$page->data['Page Site Key']);
-		break;	
-		
+		break;
+
 	default:
 
 		break;
@@ -1402,7 +1402,7 @@ function list_headers_for_edition() {
 
 
 	$sql="select count(*) as total from $table  $where $wheref";
-//	print $sql;
+	// print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total=$row['total'];
@@ -1467,9 +1467,9 @@ function list_headers_for_edition() {
 		$site=new Site($parent_key);
 		$default_header_key=$site->data['Site Default Header Key'];
 		$selected_header_key=0;
-	}else{
-	$default_header_key=0;
-	$selected_header_key=$page->data['Page Header Key'];
+	}else {
+		$default_header_key=0;
+		$selected_header_key=$page->data['Page Header Key'];
 	}
 
 
@@ -1485,15 +1485,15 @@ function list_headers_for_edition() {
 
 
 		}
-		
-		if($selected_header_key==$row['Page Header Key']){
-	$selected=_('Current Header');
-		}else{
-		
-								$selected='<div class="buttons small"><button class="positive" onClick="set_header('.$row['Page Header Key'].')">'._('Use this header').'</button></div>';
+
+		if ($selected_header_key==$row['Page Header Key']) {
+			$selected=_('Current Header');
+		}else {
+
+			$selected='<div class="buttons small"><button class="positive" onClick="set_header('.$row['Page Header Key'].')">'._('Use this header').'</button></div>';
 
 		}
-		
+
 
 		$adata[]=array(
 			'id'=>$row['Page Header Key'],
@@ -1503,7 +1503,7 @@ function list_headers_for_edition() {
 			'default'=>$default,
 			'selected'=>$selected,
 			'go'=>sprintf("<a href='edit_page_header.php?id=%d&referral=%s&referral_key=%s'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Header Key'],$parent,$parent_key),
-			
+
 			'delete'=>(($row['Number Pages'] or $is_default)?'':"<img src='art/icons/cross.png'  alt='"._('Delete')."'  title='"._('Delete')."' />")
 
 		);
@@ -2477,15 +2477,15 @@ function update_page_preview_snapshot($data) {
 	echo json_encode($response);
 }
 
-function set_header($data){
+function set_header($data) {
 
-$page=new Page($data['page_key']);
+	$page=new Page($data['page_key']);
 	if ($page->id) {
 		$page->update_field_switcher('Page Header Key',$data['header_key']);
 		$response= array('state'=>200);
 
-	}else{
-			$response= array('state'=>400,'msg'=>'page not found');
+	}else {
+		$response= array('state'=>400,'msg'=>'page not found');
 
 	}
 
@@ -2658,7 +2658,7 @@ function test_email_credentials($data) {
 
 	//print_r($message_data);
 	$send_email=new SendEmail();
-
+$send_email->secret_key=CKEY;
 	$send_email->track=false;
 
 

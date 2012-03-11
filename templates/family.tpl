@@ -9,18 +9,16 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
-				<button onclick="window.location='edit_family.php?id={$family->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Family{/t}</button> 
+				{if $modify}<button onclick="edit_family()"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Family{/t}</button>{/if} 
 			</div>
 			<div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
-				{if $modify}<button onclick="window.location='store.php?id={$store->id}'"><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>{/if} 
+<span class="main_title">{t}Family{/t}: {$family->get('Product Family Name')} <span class="id">({$family->get('Product Family Code')})</span></span>
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<h1 style="width:600px">
-			{t}Family{/t}: {$family->get('Product Family Name')} ({$family->get('Product Family Code')}) 
-		</h1>
+		
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>

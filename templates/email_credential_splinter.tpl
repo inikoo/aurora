@@ -82,16 +82,26 @@
 <div id="dialog_test_email_credentials" style="padding:30px 10px 10px 10px;width:320px">
 	<table style="margin:0 auto">
 		<tr>
-			<td colspan="2">{t}Sending test email to {/t}:{$email_credentials.Email_Address}</td>
+			<td colspan="2">{t}Send test message{/t}</td>
+		</tr>
+		<tr style="height:5px">
+			<td colspan="2"></td>
 		</tr>
 		<tr>
-			<td>{t}Test Message{/t}:</td>
-			<td><textarea rows='2' cols="20" id="test_message"></textarea></td>
+			<td>{t}From{/t}:</td>
+			<td>{$email_credentials.Email_Address}</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td>
-			<div class="buttons small">
+			<td>{t}To{/t}:</td>
+			<td><input style="width:100%" id="test_message_to"/></td>
+		</tr>
+		<tr style="height:10px">
+			<td colspan="2"></td>
+		</tr>
+		<tr>
+			
+			<td colspan=2>
+			<div class="buttons">
 				<button onclick="send_test_message()">{t}Send{/t}</button>
 			</div>
 			</td>

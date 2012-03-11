@@ -1072,13 +1072,15 @@ class product extends DB_Table {
 		// exit;
 		//}
 		$sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-		//print $sql;exit;
+		
 		if (mysql_query($sql)) {
 			if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 			$this->pid = mysql_insert_id();
 			$this->code =$base_data['product code'];
 			$this->new_id=true;
 			$this->new=true;
+
+			
 
 			$editor_data=$this->get_editor_data();
 
@@ -1108,6 +1110,7 @@ class product extends DB_Table {
 		}
 
 		$this->get_data('pid',$this->pid);
+		$this->update_main_type();
 		$this->data['Product Short Description']=$this->get('short description');
 		$this->data['Product XHTML Short Description']=$this->get('xhtml short description');
 
@@ -5830,6 +5833,7 @@ protected function update_field($field,$value,$options='') {
 			,$this->pid
 
 		);
+	
 		$res_code=mysql_query($sql);
 		$old_pids=array();
 		while ($row_c=mysql_fetch_array($res_code)) {

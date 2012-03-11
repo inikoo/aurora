@@ -2,8 +2,8 @@
   //@author Raul Perusquia <rulovico@gmail.com>
   //Copyright (c) 2009 LW
 include_once('common.php');
-include_once('class.Contact.php');
-include_once('class.Company.php');
+//include_once('class.Contact.php');
+//include_once('class.Company.php');
 include_once('class.Family.php');
 ?>
 
@@ -15,6 +15,9 @@ function validate_product_name(query){ validate_general('product','product_name'
 function validate_product_description(query){ validate_general('product','product_description',unescape(query));}
 function validate_special_characteristics(query){ validate_general('product','special_characteristics',unescape(query));}
 function validate_product_weight(query){ validate_general('product','product_weight',unescape(query));}
+function validate_product_rrp(query){ validate_general('product','product_rrp',unescape(query));}
+function validate_product_units(query){ validate_general('product','product_units',unescape(query));}
+function validate_product_price(query){ validate_general('product','product_price',unescape(query));}
 
 
 function view_store_list(e){
@@ -264,8 +267,8 @@ function save_new_product(){
  save_new_general('product');
 }
 
-function post_action(branch,r){
-	window.location.href='product.php?id='+r.object_key;
+function post_new_create_actions(branch,r){
+	window.location.href='product.php?pid='+r.object_key;
 }
 
 
@@ -273,6 +276,7 @@ function post_action(branch,r){
 
 function init(){
 
+    init_search('products_store');
 
 	
 validate_scope_data=
@@ -282,12 +286,15 @@ validate_scope_data=
 	'product_code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],'name':'product_code'
 	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_code&store_key='+Dom.get('store_key').value+'&query=', 'dbname':'Product Code'}
-	,'part_key':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','name':'family_key','ar':false,'dbname':'Product Family Key', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
+	,'part_key':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'family_key','ar':false,'dbname':'Product Family Key', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
 	,'store_key':{'changed':true,'validated':true,'required':true,'dbname':'Product Store Key','group':1,'type':'item','name':'store_key','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
 ,'product_name':{'changed':true,'validated':true,'required':true,'dbname':'Product Name','group':1,'type':'item','name':'product_name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Name'}]}
-,'product_description':{'changed':true,'validated':true,'required':false,'dbname':'Product Description','group':1,'type':'item','name':'product_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Description'}]}
+,'product_description':{'changed':true,'validated':false,'required':false,'dbname':'Product Description','group':1,'type':'item','name':'product_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Description'}]}
 ,'special_characteristics':{'changed':true,'validated':true,'required':false,'dbname':'Product Special Characteristic','group':1,'type':'item','name':'special_characteristics','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Characteristics'}]}
-,'product_weight':{'changed':true,'validated':true,'required':false,'dbname':'Product Net Weight','group':1,'type':'item','name':'product_weight','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Weight'}]}
+,'product_weight':{'changed':true,'validated':true,'required':false,'dbname':'Product Net Weight','group':1,'type':'item','name':'product_weight','ar':false,'validation':[{'regexp':"[\\d\\.]+",'invalid_msg':'Invalid Quantity'}]}
+,'product_units':{'changed':true,'validated':false,'required':true,'dbname':'Product Units','group':1,'type':'item','name':'product_units','ar':false,'validation':[{'regexp':"[\\d\\.]+",'invalid_msg':'Invalid Number'}]}
+,'product_price':{'changed':true,'validated':false,'required':true,'dbname':'Product Price','group':1,'type':'item','name':'product_price','ar':false,'validation':[{'regexp':"[\\d\\.]+",'invalid_msg':'Invalid Price'}]}
+,'product_rrp':{'changed':true,'validated':true,'required':false,'dbname':'Product RRP','group':1,'type':'item','name':'product_rrp','ar':false,'validation':[{'regexp':"[\\d\\.]?",'invalid_msg':'Invalid Quantity'}]}
 
 
 	}
@@ -295,7 +302,7 @@ validate_scope_data=
 
 	
 validate_scope_metadata={
-    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'parent_key', 'key':Dom.get('part_key').value}
+    'product':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'family_key', 'key':Dom.get('family_key').value}
     
 
 };
@@ -333,6 +340,25 @@ validate_scope_metadata={
     var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_weight","product_weight_Container", product_units_oACDS);
     product_units_oAutoComp.minQueryLength = 0; 
     product_units_oAutoComp.queryDelay = 0.1;
+    
+     var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_price);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_price","product_price_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
+    
+     var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_units);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_units","product_units_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
+    
+       var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_rrp);
+    product_units_oACDS.queryMatchContains = true;
+    var product_units_oAutoComp = new YAHOO.widget.AutoComplete("product_rrp","product_rrp_Container", product_units_oACDS);
+    product_units_oAutoComp.minQueryLength = 0; 
+    product_units_oAutoComp.queryDelay = 0.1;
+    
 
  //  YAHOO.util.Event.addListener('reset_new_part', "click",reset_new_part)
    YAHOO.util.Event.addListener('save_new_product', "click",save_new_product)
