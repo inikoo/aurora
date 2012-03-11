@@ -69,8 +69,7 @@ $path=preg_replace('/\/$/','',$path);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$target=$row['Page Target URL'];
-		print "http://".$target;
-exit;
+		
 		header("Location: http://".$target);
 	}else {
 		header("Location: http://".$site_url."/404.php?p=$path&f=$file&url=$url");

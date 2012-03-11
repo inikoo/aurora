@@ -41,6 +41,7 @@ chdir('../../');
 //}
 //exit;
 
+/*
 $sql="select * from `Page Redirection Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -57,7 +58,7 @@ $redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$ro
 }	
 
 exit;
-
+*/
 
 
 $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`!=3  ";
