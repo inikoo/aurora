@@ -361,7 +361,7 @@ foreach ($__cols as $cols) {
 		//print "-> $description <-  -> $price <- \n";
 
 		if (     preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX/i',$code) or      $code=='FishP-Mix' or  $code=='IncB-St' or $code=='IncIn-ST' or $code=='LLP-ST' or   $code=='LLP-ST' or  $code=='EO-XST' or $code=='AWRP-ST' or $code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St'
-			or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
+			or $code=='DOT-St' 	or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
 			or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
 			or ($description=='' and ( $price=='' or $price==0 ))
 
