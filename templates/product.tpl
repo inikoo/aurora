@@ -1,4 +1,5 @@
 {include file='header.tpl'} 
+
 <input id="product_pid" value="{$product->pid}" type="hidden" />
 <div id="bd" style="padding:0px;{if $product->get('Product Record Type')=='Discontinued'}background-position:300px 30px;background-image:url('art/stamp.discontinued.en.png');background-repeat:no-repeat;{/if}">
 	<div style="padding:0 20px">
@@ -28,11 +29,44 @@
 			<div id="photo_container" style="margin-top:0px;float:left">
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-						<img id="main_image" src="{$product->get('Product Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px"  valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
+<ul class="gallery clearfix">						
+<li><a rel="prettyPhoto[gallery1]" title=""><img id="main_image" src="{$product->get('Product Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px"  valign="center" border="1" id="image" alt="{t}Image{/t}" /> </a></li>
+
+</ul>
+
+
 					</div>
+
+
 				</div>
 				<div style="width:160px;margin:auto;padding-top:5px">
-					{foreach from=$product->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} <img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" title="" alt="" /> {/if} {/foreach} 
+<ul class="gallery clearfix">	
+					{foreach from=$product->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} 
+					<li><a href="{$image.normal_url}" rel="prettyPhoto[gallery1]" title=""><img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" title="" alt="" /></a>
+					{/if} {/foreach} 
+</ul>
+
+{literal}
+			<script type="text/javascript" charset="utf-8">
+			$(document).ready(function(){
+				$("area[rel^='prettyPhoto']").prettyPhoto();
+				
+				$(".gallery:first a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'normal',theme:'light_square',slideshow:3000, autoplay_slideshow: true});
+				$(".gallery:gt(0) a[rel^='prettyPhoto']").prettyPhoto({animation_speed:'fast',slideshow:10000, hideflash: true});
+		
+				$("#custom_content a[rel^='prettyPhoto']:first").prettyPhoto({
+					custom_markup: '<div id="map_canvas" style="width:260px; height:265px"></div>',
+					changepicturecallback: function(){ initialize(); }
+				});
+
+				$("#custom_content a[rel^='prettyPhoto']:last").prettyPhoto({
+					custom_markup: '<div id="bsap_1259344" class="bsarocks bsap_d49a0984d0f377271ccbf01a33f2b6d6"></div><div id="bsap_1237859" class="bsarocks bsap_d49a0984d0f377271ccbf01a33f2b6d6" style="height:260px"></div><div id="bsap_1251710" class="bsarocks bsap_d49a0984d0f377271ccbf01a33f2b6d6"></div>',
+					changepicturecallback: function(){ _bsap.exec(); }
+				});
+			});
+			</script>
+
+{/literal}
 				</div>
 			</div>
 			<div style="float:left;margin-left:20px">
@@ -285,6 +319,8 @@
 						</tr>
 					</tbody>
 				</table>
+
+
 				<div id="plots" style="clear:both">
 					<ul class="tabs" id="chooser_ul" style="margin-top:25px">
 						<li> <span class="item {if $plot_tipo=='store'}selected{/if}" onclick="change_plot(this)" id="plot_store" tipo="store"> <span>{t}Product Sales{/t}</span> </span> </li>

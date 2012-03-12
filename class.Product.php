@@ -6507,6 +6507,7 @@ protected function update_field($field,$value,$options='') {
 				'name'=>$row['Image Filename'],
 				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
 				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+				'normal_url'=>'image.php?id='.$row['Image Key'],
 				'filename'=>$row['Image Filename'],
 				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
 				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
@@ -6515,6 +6516,8 @@ protected function update_field($field,$value,$options='') {
 
 		return $images_slideshow;
 	}
+
+
 	function get_main_image_key() {
 
 		return $this->data['Product Main Image Key'];

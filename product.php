@@ -44,7 +44,11 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
 
-              'js/dropdown.js'
+              'js/dropdown.js',
+		'js/jquery.js',
+		'js/jquery-1.6.1.min.js',
+		'js/jquery.prettyPhoto.js',
+		
           );
 
 

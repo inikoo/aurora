@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="{$i}" type="text/css" />
 	{/foreach} 
 	<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />
+<link rel="stylesheet" href="css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
 	{foreach from=$js_files item=i } 
 	<script type="text/javascript" src="{$i}"></script> 
 	{/foreach} 

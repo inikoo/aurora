@@ -2525,6 +2525,8 @@ function edit_email_credentials($data,$CKEY) {
 		'password'=>'Password',
 		'incoming_server'=>'Incoming Mail Server',
 		'outgoing_server'=>'Outgoing Mail Server',
+		'access_key'=>'Access Key',
+		'secret_key'=>'Secret Key',
 	);
 	$inv_key_dic=array(
 		'Email Provider'=>'email_provider',
@@ -2533,6 +2535,8 @@ function edit_email_credentials($data,$CKEY) {
 		'Password'=>'password',
 		'Incoming Mail Server'=>'incoming_server',
 		'Outgoing Mail Server'=>'outgoing_server',
+		'Access Key'=>'access_key',
+		'Secret Key'=>'secret_key'
 	);
 
 	$email_credential_data=array();
@@ -2560,7 +2564,7 @@ function edit_email_credentials($data,$CKEY) {
 
 				if (array_key_exists($_key,$inv_key_dic)) {
 
-					$responses[]=array('state'=>200, 'newvalue'=>$_value,'key'=>$inv_key_dic[$_key],'action'=>'');
+					$responses[]=array('state'=>200, 'newvalue'=>$_value,'key'=>$inv_key_dic[$_key],'action'=>'', 'msg'=>'');
 				}
 
 
