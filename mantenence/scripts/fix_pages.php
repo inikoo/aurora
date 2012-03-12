@@ -41,7 +41,23 @@ chdir('../../');
 //}
 //exit;
 
+$sql="select * from `Page Redirection Dimension`  ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
+//	$page=new Page($row['Page Target Key']);
+//$redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$row['Page Target URL']);
+$tmp=_trim($row['Source File']);
+
+	$sql=sprintf("update `Page Redirection Dimension` set `Source File`=%s where `Page Redirection Key`=%d",prepare_mysql($tmp),$row['Page Redirection Key']);
+	
+
+	mysql_query($sql);
+	
+}	
+
+
+exit;
 $sql="select * from `Page Redirection Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
