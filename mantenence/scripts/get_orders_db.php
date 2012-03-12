@@ -589,7 +589,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			if(preg_match('/-\st$/i',$__code)){
 				continue;
 			}
-			
+			if(preg_match('/-\minst$/i',$__code)){
+				continue;
+			}
 
 			$transaction['description']=preg_replace('/\s*\(\s*replacements?\s*\)\s*$/i','',$transaction['description']);
 			$transaction['description']=preg_replace('/\s*(\-|\/)\s*replacements?\s*$/i','',$transaction['description']);
