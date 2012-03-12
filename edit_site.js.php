@@ -73,7 +73,8 @@ var validate_scope_data=
 	,'incoming_server':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Incoming_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Incoming Server')?>'}]}
 	,'outgoing_server':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Outgoing_Server','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Outgoing Server')?>'}]}
 	,'email_provider':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
-
+	,'access_key':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Access_Key','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Access Key')?>'}]}
+	,'secret_key':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Secret_Key','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Secret Key')?>'}]}
 }
 
 		

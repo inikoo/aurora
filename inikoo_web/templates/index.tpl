@@ -39,7 +39,7 @@
 <div style="float:left; margin:0 0px 10px 10px;  border: 1px solid #BDC3D9; padding: 10px 10px 10px 10px; width:280px; height:180px">
 <h2>You're at the right place !</h2>
 
-<strong>Tough problem? Need a solid solution? <br/><a href="contact.php">Contact Us</a><br/>Call us on: (+44) 114 299 8401</strong>
+<strong>Tough problem? Need a solid solution? <br/><a href="contact.php">Contact Us</a><br/>Call us on: (+44) 114 360 9600</strong>
 </div>
 
 <div style="clear:both"></div>

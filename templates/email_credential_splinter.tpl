@@ -6,20 +6,65 @@
 		<td colspan="2">{t}Email Credentials{/t}</td>
 		<td> 
 		<div class="buttons">
-			<button style="{if !$site->get_email_credentials_key()}display:none{/if}" id="test_email_credentials" class="positive">{t}Test{/t}</button> <button style="{if !$site->get_email_credentials_key()}display:none{/if}" id="delete_email_credentials" class="negative">{t}Delete{/t}</button> <button style="visibility:hidden" id="save_edit_email_credentials" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_email_credentials" class="negative">{t}Reset{/t}</button> 
+			<button style="{if !$site->get_email_credentials_key()}display:none{/if}" id="test_email_credentials" class="positive">{t}Test{/t}</button> 
+			<button style="{if !$site->get_email_credentials_key()}display:none{/if}" id="delete_email_credentials" class="negative">{t}Delete{/t}</button> 
+			<button style="visibility:hidden" id="save_edit_email_credentials" class="positive">{t}Save{/t}</button> 
+			<button style="visibility:hidden" id="reset_edit_email_credentials" class="negative">{t}Reset{/t}</button> 
 		</div>
 		</td>
 	</tr>
 	<tr class="top">
+		<td class="label">{t}Select Mail Provider{/t}: </td>
+		<td> 
+		<div class="buttons" id="site_email_providers" style="float:left">
+			<button id="smtp_btn" class="site_email_provider {if $email_credentials.Email_Provider=='Other' or $email_credentials.Email_Provider=='Gmail'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}SMTP{/t}</button> 
+			<button id="amazon_btn" class="site_email_provider {if $email_credentials.Email_Provider=='Amazon'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Amazon{/t}</button>
+			<button id="php_mail_btn" class="site_email_provider {if $email_credentials.Email_Provider=='PHPMail'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}PHP Mail{/t}</button>  
+		</div>
+		</td>
+	</tr>
+
+	<tbody id="amazon" style="{if $email_credentials.Email_Provider!='Amazon'}display:none{/if}">
+		<tr>
+			<td class="label">{t}Access Key{/t}:</td>
+			<td style="text-align:left"> 
+			<div>
+				<input style="text-align:left;width:100%" id="Access_Key" value="{$email_credentials.Access_Key}" ovalue="{$email_credentials.Access_Key}" valid="0"> 
+				<div id="Access_Key_Container">
+				</div>
+			</div>
+			</td>
+			<td id="Access_Key_msg" class="edit_td_alert"></td>
+		</tr>
+		<tr>
+			<td class="label">{t}Secret Key{/t}:</td>
+			<td style="text-align:left"> 
+			<div>
+				<input style="text-align:left;width:100%" id="Secret_Key" value="{$email_credentials.Secret_Key}" ovalue="{$email_credentials.Secret_Key}" valid="0"> 
+				<div id="Secret_Key_Container">
+				</div>
+			</div>
+			</td>
+			<td id="Secret_Key_msg" class="edit_td_alert"></td>
+		</tr>
+	</tbody>
+
+	<tbody id="php_mail" style="{if $email_credentials.Email_Provider!='PHPMail'}display:none{/if}">
+
+	</tbody>
+
+	<tbody id="smtp_1" style="{if $email_credentials.Email_Provider!='Gmail'}display:none{/if}">
+	<tr class="xtop">
 		<td class="label">{t}Select Mail Server{/t}: </td>
 		<td> 
 		<div class="buttons" id="site_email_servers" style="float:left">
-			<button id="other" class="site_email_server {if $email_credentials.Email_Provider=='Other' or $email_credentials.Email_Provider==''}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Other{/t}</button> <button id="gmail" class="site_email_server {if $email_credentials.Email_Provider=='Gmail'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Gmail{/t}</button> 
+			<button id="other" class="site_email_server {if $email_credentials.Email_Provider=='Other' or $email_credentials.Email_Provider==''}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Other{/t}</button> 
+			<button id="gmail" class="site_email_server {if $email_credentials.Email_Provider=='Gmail'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Gmail{/t}</button> 
 		</div>
 		</td>
-		<td style="width:300px">
 		<td id="Email_Provider_msg" class="edit_td_alert"></td>
-		</td>
+	</tr>
+	</tbody>
 		<tr>
 			<td class="label">{t}Email Address{/t}:</td>
 			<td style="text-align:left"> 
@@ -31,6 +76,8 @@
 			</td>
 			<td id="Email_Address_msg" class="edit_td_alert"></td>
 		</tr>
+	
+	<tbody id="smtp_2" style="{if $email_credentials.Email_Provider!='Gmail'}display:none{/if}">
 		<tr id="tr_email_login" style="{if $email_credentials.Email_Provider=='Gmail'}display:none{/if}">
 			<td class="label">{t}Login{/t}:</td>
 			<td style="text-align:left"> 
@@ -53,8 +100,9 @@
 			</td>
 			<td id="Email_Password_msg" class="edit_td_alert"></td>
 		</tr>
-	</tr>
-	<tbody id="other_tbody" style="{if $email_credentials.Email_Provider=='Gmail'}display:none{/if}">
+
+	</tbody>
+	<tbody id="other_tbody" style="{if $email_credentials.Email_Provider!='Other'}display:none{/if}">
 		<tr>
 			<td class="label">{t}Incoming Mail Server{/t}:</td>
 			<td style="text-align:left"> 
