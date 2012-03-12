@@ -16,6 +16,58 @@ function change_email_method(){
 	
 }
 
+
+function change_email_provider(){
+	types=Dom.getElementsByClassName('site_email_provider', 'button', 'site_email_providers')
+
+	Dom.removeClass(types,'selected');
+	Dom.addClass(this.id,'selected');
+//alert(this.id)
+Dom.setStyle(['smtp_1','smtp_2','other_tbody', 'amazon','php_mail'],'display','none');
+	if(this.id=='smtp_btn'){
+		Dom.setStyle(['smtp_1', 'smtp_2'],'display','');
+		update_email_credentials('email_provider','Gmail')
+	}
+	else if(this.id=='amazon_btn'){
+		Dom.setStyle(['amazon'],'display','');
+		update_email_credentials('email_provider','Amazon')
+	}
+	else{
+		Dom.setStyle(['php_mail'],'display','');
+		update_email_credentials('email_provider','PHPMail')
+
+	}
+	
+}
+
+
+
+function update_email_credentials(key, value){
+ var data_to_update=new Object;
+ data_to_update[key]={'okey':key,'value':value}
+ jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+site_id=Dom.get('site_id').value;
+var request='ar_edit_sites.php?tipo=edit_email_credentials&site_key=' + site_id+'&values='+ jsonificated_values;
+	           // alert(request);	
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+
+	            success:function(o){
+					
+	            //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+
+			if(r.state==200){
+				window.location.reload()
+			}
+			else{
+				//alert(r.msg);
+			}
+
+   		    }
+    });
+
+}
+
 function set_provider_as_gmail(){
 
 
@@ -69,6 +121,13 @@ function set_provider_as_other(){
 
 function validate_email_address(query){
  validate_general('email_credentials','email',unescape(query));
+}
+
+function validate_access_key(query){
+ validate_general('email_credentials','access_key',unescape(query));
+}
+function validate_secret_key(query){
+ validate_general('email_credentials','secret_key',unescape(query));
 }
 function validate_login(query){
  validate_general('email_credentials','login',unescape(query));
@@ -169,6 +228,19 @@ function init_email_credentials(){
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
 
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_access_key);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Access_Key","Access_Key_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
+
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_secret_key);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Secret_Key","Secret_Key_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0;
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+
 var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_login);
 	site_slogan_oACDS.queryMatchContains = true;
 	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Email_Login","Email_Login_Container", site_slogan_oACDS);
@@ -196,6 +268,8 @@ var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_login);
 
 
 	Event.addListener(["gmail","other"], "click", change_email_method);
+	
+	Event.addListener(["smtp_btn","amazon_btn", "php_mail_btn"], "click", change_email_provider);
 
 
 	Event.addListener('save_edit_email_credentials', "click", save_edit_email_credentials);

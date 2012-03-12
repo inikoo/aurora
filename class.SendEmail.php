@@ -499,8 +499,11 @@ class SendEmail extends DB_Table {
         case 'Amazon':
         case 'amazon':
         case 'AMAZON':
-            $access_key=$data['access_key'];
-            $secret_key=$data['secret_key'];
+	$email_credentials=new EmailCredentials($data['email_credentials_key']);
+	$data['Email Address']=$email_credentials->data['Email Address'];//"registration@ancientwisdom.biz";
+	$data['return_path']=$email_credentials->data['Email Address'];//"registration@ancientwisdom.biz";
+            $access_key=$email_credentials->data['Access Key'];//$data['access_key'];
+            $secret_key=$email_credentials->data['Secret Key'];//$data['secret_key'];
             if ($access_key==null || $secret_key==null) {
                 print 'No access key/ secret key set';
                 exit;
@@ -511,7 +514,7 @@ class SendEmail extends DB_Table {
 
 
             $this->m->addTo($data['to']);
-            $this->m->setFrom($row['Email Address']);
+            $this->m->setFrom($data['Email Address']);
             $this->m->setSubject($data['subject']);
             $this->m->setReturnPath($data['return_path']);
 
@@ -537,7 +540,8 @@ class SendEmail extends DB_Table {
             break;
         
 	case 'sendmail':
-		$data['from']="registration@ancientwisdom.biz";
+		$email_credentials=new EmailCredentials($data['email_credentials_key']);
+		$data['from']=$email_credentials->data['Email Address'];//"registration@ancientwisdom.biz";
 	switch ($data['type']) {
             case 'plain':
             case 'PLAIN':
