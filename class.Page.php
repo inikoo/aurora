@@ -2622,7 +2622,7 @@ class Page extends DB_Table {
 
 		$site=new Site($this->data['Page Site Key']);
 
-		$url_array=explode("/", $source_url);
+		$url_array=explode("/", _trim($source_url));
 		//print_r($url_array);
 
 		if (count($url_array)<2) {
