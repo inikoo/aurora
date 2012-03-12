@@ -1,7 +1,7 @@
 <?php
+
 require_once 'app_files/db/dns.php';
 require_once 'conf/timezone.php';
-
 
 
 date_default_timezone_set(TIMEZONE) ;
@@ -18,9 +18,10 @@ require_once 'conf/conf.php';
 $site_key=$myconf['site_key'];
 
 $url=$_SERVER['REQUEST_URI'];
+
 $url=preg_replace('/^\//', '', $url);
 $url=preg_replace('/\?.*$/', '', $url);
-
+$original=$url;
 
 
 
@@ -41,7 +42,7 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 	if ($row=mysql_fetch_assoc($res)) {
 		$site_url=$row['Site URL'];
 	}else {
-		exit();
+		exit("error A");
 	}
 
 $path='';
@@ -63,23 +64,24 @@ $path=preg_replace('/\/$/','',$path);
 
 
 
-	$sql=sprintf("select `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",_prepare_mysql($site_url),_prepare_mysql($path,false),_prepare_mysql($file));
+	$sql=sprintf("select  `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",_prepare_mysql($site_url),_prepare_mysql($path,false),_prepare_mysql($file));
 
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$target=$row['Page Target URL'];
-		
+		$new_url='ter:'.$target." $sql";
 		header("Location: http://".$target);
 	}else {
-		header("Location: http://".$site_url."/404.php?p=$path&f=$file&url=$url");
+			$new_url=$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url";
+	header("Location: http://".$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url");
 	}
 
 
 
 	
 
-	exit;
+	exit();
 }
 
 
