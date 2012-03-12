@@ -535,8 +535,53 @@ class SendEmail extends DB_Table {
             }
             $response=$this->ses->sendEmail($this->m);
             break;
-        }
+        
+	case 'sendmail':
+		$data['from']="registration@ancientwisdom.biz";
+	switch ($data['type']) {
+            case 'plain':
+            case 'PLAIN':
 
+		$to      = $data['to'];
+		$subject = $data['subject'];
+		$message = $data['plain'];
+		$headers = sprintf("From: %s\r\n Reply-To: %s\r\n X-Mailer: PHP/%s", $data['from'], $data['to'], phpversion());
+		break;
+            case 'html':
+            case 'HTML':
+            case 'HTML Template':
+		$to = $data['to'];
+
+		// subject
+		$subject = $data['subject'];
+
+		// message
+		$message = $data['html'];
+
+		// To send HTML mail, the Content-type header must be set
+		$headers  = 'MIME-Version: 1.0' . "\r\n";
+		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
+		// Additional headers
+		$headers .= sprintf("To: %s\r\n", $data['to']);
+		$headers .= sprintf("From: %s\r\n", $data['from']);
+		break;
+	}
+		// Mail it
+		$response=mail($to, $subject, $message, $headers);
+
+
+		if ($response) {
+			$response=  array('state'=>400,'msg'=>'ok');
+
+		} else
+			$response=  array('state'=>200,'msg'=>'Error with mail');
+
+		return $response;
+
+		break;
+
+	}
         return $response;
     }
 
