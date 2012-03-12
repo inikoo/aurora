@@ -1251,7 +1251,7 @@ $login_handle=$user->data['User Handle'];
 	//print_r($credentials);
 
 //	$login_handle='raul@inikoo.com';
-	$message_data['method']='smtp';
+	$message_data['method']='sendmail';
 	$message_data['from_name']=$site->data['Site Name'];
 	$message_data['type']='html';
 	$message_data['to']=$login_handle;

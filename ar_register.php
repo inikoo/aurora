@@ -214,7 +214,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 					return array($user->id,$user->msg);
 				}
 				$message_data['from_name']=$site->data['Site Name'];
-				$message_data['method']='smtp';
+				$message_data['method']='sendmail';
 				$message_data['type']='html';
 				$message_data['to']=$handle;
 				$message_data['subject']=$welcome_email_subject;
@@ -362,7 +362,7 @@ function send_reset_password($data,$CKEY) {
 
 	$credentials=$site->get_email_credentials();
 	//$login_handle='raul@inikoo.com';
-	$message_data['method']='smtp';
+	$message_data['method']='sendmail';
 	$message_data['from_name']=$site->data['Site Name'];
 	$message_data['type']='html';
 	$message_data['to']=$login_handle;
