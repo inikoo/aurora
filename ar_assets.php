@@ -2515,10 +2515,7 @@ function list_products() {
 
 
 
-		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-		//$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
-		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
-
+	
 		if ($percentages) {
 			$sold='';
 			$margin='';
@@ -3039,8 +3036,11 @@ function list_products() {
 		if ($row['Product Stage']=='In Process')
 			$type.='<span style="color:red">*</span>';
 
+	$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+		//$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
+		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
 
-
+//'Historic','Discontinued','Private','NoSale','Sale'
 		switch ($row['Product Main Type']) {
 		case('Historic'):
 			$main_type=_('Historic');
@@ -3091,21 +3091,11 @@ function list_products() {
 
 		}
 
-
-
-
-
-
-
-
-
 		include_once 'locale.php';
 		global $locale_product_record_type;
 
 		$stock_state=$row['Product Availability State'];
 		$stock_forecast=interval($row['Product Available Days Forecast']);
-
-
 
 		$record_type=$row['Product Record Type'];
 
@@ -3130,7 +3120,7 @@ function list_products() {
 			'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
 			'margin'=>$margin,
 			'sold'=>(is_numeric($sold)?number($sold):$sold),
-			'state'=>$type,
+			'state'=>$main_type,
 			'web'=>$formated_web_configuration,
 			'image'=>$row['Product Main Image'],
 			'item_type'=>'item',

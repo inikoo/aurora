@@ -554,6 +554,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			}
 
 
+			if (preg_match('/-\st$/i',$__code)) {
+				continue;
+			}
+			if (preg_match('/-\minst$/i',$__code)) {
+				continue;
+			}
+
 			$transaction['code']=preg_replace('/L\&P\-/','LLP-',$transaction['code']);
 
 
@@ -1047,7 +1054,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-				} 
+				}
 				else {
 
 					//creamos una parte nueva
@@ -1085,35 +1092,35 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				// print_r($part_list);
 				$product->new_historic_part_list($product_part_header,$part_list);
 				$used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
-	$sp_data=array(
-				'Supplier Key'=>$supplier->id,
-				'Supplier Product Status'=>'Not In Use',
-				'Supplier Product Code'=>$scode,
-				'SPH Case Cost'=>sprintf("%.2f",$supplier_product_cost),
-				'Supplier Product Name'=>$description,
-				'Supplier Product Description'=>$description,
-				'Supplier Product Valid From'=>$date_order,
-				'Supplier Product Valid To'=>$date2
-			);
+				$sp_data=array(
+					'Supplier Key'=>$supplier->id,
+					'Supplier Product Status'=>'Not In Use',
+					'Supplier Product Code'=>$scode,
+					'SPH Case Cost'=>sprintf("%.2f",$supplier_product_cost),
+					'Supplier Product Name'=>$description,
+					'Supplier Product Description'=>$description,
+					'Supplier Product Valid From'=>$date_order,
+					'Supplier Product Valid To'=>$date2
+				);
 
-			$supplier_product=new SupplierProduct('find',$sp_data,'create');
-			$spp_header=array(
-				'Supplier Product Part Type'=>'Simple',
-				'Supplier Product Part Most Recent'=>'Yes',
-				'Supplier Product Part Valid From'=>$date_order,
-				'Supplier Product Part Valid To'=>$date2,
-				'Supplier Product Part In Use'=>'Yes',
-				'Supplier Product Part Metadata'=>''
-			);
+				$supplier_product=new SupplierProduct('find',$sp_data,'create');
+				$spp_header=array(
+					'Supplier Product Part Type'=>'Simple',
+					'Supplier Product Part Most Recent'=>'Yes',
+					'Supplier Product Part Valid From'=>$date_order,
+					'Supplier Product Part Valid To'=>$date2,
+					'Supplier Product Part In Use'=>'Yes',
+					'Supplier Product Part Metadata'=>''
+				);
 
-			$spp_list=array(
-				array(
-					'Part SKU'=>$part->data['Part SKU'],
-					'Supplier Product Units Per Part'=>$transaction['units'],
-					'Supplier Product Part Type'=>'Simple'
-				)
-			);
-			$supplier_product->new_historic_part_list($spp_header,$spp_list);
+				$spp_list=array(
+					array(
+						'Part SKU'=>$part->data['Part SKU'],
+						'Supplier Product Units Per Part'=>$transaction['units'],
+						'Supplier Product Part Type'=>'Simple'
+					)
+				);
+				$supplier_product->new_historic_part_list($spp_header,$spp_list);
 			} else {
 
 
@@ -1173,7 +1180,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			);
 
 			$supplier_product=new SupplierProduct('find',$sp_data);
-		
+
 			$used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 			$used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
