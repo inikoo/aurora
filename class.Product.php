@@ -6518,6 +6518,8 @@ protected function update_field($field,$value,$options='') {
 	}
 
 
+
+
 	function get_main_image_key() {
 
 		return $this->data['Product Main Image Key'];

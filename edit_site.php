@@ -94,7 +94,8 @@ $js_files=array(
               'js/table_common.js',
 
               'js/search.js',
-              'js/pages_common.js'
+              'js/pages_common.js',
+		'js/upload_image.js'
           );
 
 $smarty->assign('search_label',_('Website'));
@@ -132,6 +133,8 @@ $subject_id=$site_id;
 
 
 $smarty->assign('site',$site);
+
+//print_r($site->get_images_slidesshow());
 
 $smarty->assign('parent','products');
 $smarty->assign('title', $site->data['Site Name']);

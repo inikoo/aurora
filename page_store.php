@@ -57,6 +57,46 @@ $page->user=$user;
 $page->logged=$logged;
 $page->currency=$store->data['Store Currency Code'];
 
+$images_slideshow=array();
+$family_key=$page->data['Page Parent Key'];
+
+$sql=sprintf("select `Product ID`, `Product Code` from `Product Dimension` where `Product Family Key`=%d", $family_key);
+$result1=mysql_query($sql);
+while($row1=mysql_fetch_assoc($result1)){
+	$product_id=$row1['Product ID'];
+	$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d",$product_id);
+
+	//print $sql;
+
+	$res=mysql_query($sql);
+	//$images_slideshow=array();
+	while ($row=mysql_fetch_array($res)) {
+		if ($row['Image Height']!=0)
+			$ratio=$row['Image Width']/$row['Image Height'];
+		else
+			$ratio=1;
+		// print_r($row);
+		$images_slideshow[]=array(
+			'name'=>$row['Image Filename'],
+			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+			'normal_url'=>'image.php?id='.$row['Image Key'],
+			'filename'=>$row['Image Filename'],
+			'ratio'=>$ratio,'caption'=>$row['Image Caption'],
+			'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],
+			'code'=>$row1['Product Code']);
+	}
+	// print_r($images_slideshow);
+
+	//return $images_slideshow;
+
+}
+
+
+
+$page->images_slideshow=$images_slideshow;
+
+
 
 
 
@@ -142,8 +182,15 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 	$smarty->assign('type_content','file');
 	$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].'.tpl');
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].'.css';
+
 	$js_files[]='js/'.$page->data['Page Store Content Template Filename'].'.js';
+$js_files[]='js/jquery.js';
+	$js_files[]='js/jquery.prettyPhoto.js';
+	
+
 }
+
+
 
 
 

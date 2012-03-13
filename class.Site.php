@@ -1357,9 +1357,178 @@ $page_code=$this->get_unique_family_page_code($family);
 		mysql_query($sql);
 	}
 
+	function add_image($image_key) {
+
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$this->nochange=true;
+			$this->msg=_('Image already uploaded');
+			return;
+		}
+
+
+		$number_images=$this->get_number_of_images();
+		if ($number_images==0) {
+			$principal='Yes';
+		} else {
+			$principal='No';
+		}
+
+		$sql=sprintf("insert into `Image Bridge` values ('Site Favicon',%d,%d,%s,'')"
+			,$this->id
+			,$image_key
+			,prepare_mysql($principal)
+
+		);
+
+		mysql_query($sql);
+
+
+		if ($principal=='Yes') {
+			$this->update_main_image($image_key);
+		}
+
+
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+			,$this->id
+			,$image_key
+		);
+
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_array($res)) {
+			if ($row['Image Height']!=0)
+				$ratio=$row['Image Width']/$row['Image Height'];
+			else
+				$ratio=1;
+			$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>'image.php?id='.$row['Image Key'].'&size=small','thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail','filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+			// $this->images_slideshow[]=$this->new_value;
+		}
+
+		$this->updated=true;
+		$this->msg=_("image added");
+	}
+
+	function remove_image($image_key) {
+
+		$sql=sprintf("select `Image Key`,`Is Principal` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+			$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+			mysql_query($sql);
+			$this->updated=true;
+			$number_images=$this->get_number_of_images();
+			if ($number_images==0) {
+				$main_image_src='art/nopic.png';
+				$main_image_key=0;
+				$this->data['Product Main Image']=$main_image_src;
+				$this->data['Product Main Image Key']=$main_image_key;
+
+
+			} else if ($row['Is Principal']=='Yes') {
+
+					$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  ",$this->id);
+					$res2=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res2)) {
+						$this->update_main_image($row2['Image Key']) ;
+					}
+				}
+
+
+		} else {
+			$this->error=true;
+			$this->msg='image not associated';
+
+		}
 
 
 
 
+
+	}
+
+	function get_number_of_images() {
+		$number_of_images=0;
+		$sql=sprintf("select count(*) as num from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$number_of_images=$row['num'];
+		}
+		return $number_of_images;
+	}
+
+	function update_main_image($image_key) {
+
+		$sql=sprintf("select `Image Key` from `Image Bridge` where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+		$res=mysql_query($sql);
+		if (!mysql_num_rows($res)) {
+			$this->error=true;
+			$this->msg='image not associated';
+		}
+
+		$sql=sprintf("update `Image Bridge` set `Is Principal`='No' where `Subject Type`='Site Favicon' and `Subject Key`=%d  ",$this->id);
+		mysql_query($sql);
+		$sql=sprintf("update `Image Bridge` set `Is Principal`='Yes' where `Subject Type`='Site Favicon' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+		mysql_query($sql);
+
+
+		$main_image_src='image.php?id='.$image_key.'&size=small';
+		$main_image_key=$image_key;
+
+		$this->data['Product Main Image']=$main_image_src;
+		$this->data['Product Main Image Key']=$main_image_key;
+
+
+		$this->updated=true;
+
+	}
+
+	function get_images_slidesshow() {
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d",$this->id);
+		$res=mysql_query($sql);
+		$images_slideshow=array();
+		while ($row=mysql_fetch_array($res)) {
+			if ($row['Image Height']!=0)
+				$ratio=$row['Image Width']/$row['Image Height'];
+			else
+				$ratio=1;
+			// print_r($row);
+			$images_slideshow[]=array(
+				'name'=>$row['Image Filename'],
+				'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
+				'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
+				'normal_url'=>'image.php?id='.$row['Image Key'],
+				'filename'=>$row['Image Filename'],
+				'ratio'=>$ratio,'caption'=>$row['Image Caption'],
+				'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+		}
+		// print_r($images_slideshow);
+
+		return $images_slideshow;
+	}
+
+	function get_favicon_url(){
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
+		
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_array($res)) {
+			$images_slideshow='image.php?id='.$row['Image Key'];
+		}
+		return $images_slideshow;
+	}
+
+	function get_main_image_key(){
+				$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
+		
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_array($res)) {
+			$images_slideshow=$row['Image Key'];
+		}
+		return $images_slideshow;
+	}
 }
 ?>

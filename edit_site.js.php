@@ -15,7 +15,11 @@ var dialog_upload_menu_files;
 var dialog_upload_search_files;
 
 
+
 var id=<?php echo$_SESSION['state']['site']['id']?>;
+
+var scope='favicon';
+var scope_key=id;
 
 var validate_scope_data=
 {
@@ -99,8 +103,8 @@ var validate_scope_metadata={
 
 
 function change_block(e){
-    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email"]; 
-	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu", "d_email"]; 
+    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"]; 
+	var block_ids = ["d_general","d_layout","d_style","d_sections","d_pages","d_headers","d_footers","d_website_search","d_menu", "d_email", "d_favicon"]; 
 	Dom.setStyle(block_ids,'display','none');
 	Dom.setStyle('d_'+this.id,'display','');
 	Dom.removeClass(ids,'selected');
@@ -764,13 +768,13 @@ Event.addListener("cancel_upload_search", "click", close_upload_search);
     dialog_upload_search.render();
 
 
-
+YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
  ids=['page_properties','page_html_head','page_header'];
  YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
 
 
-    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email"]; 
+    var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
  

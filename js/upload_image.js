@@ -72,7 +72,7 @@ function set_image_as_principal(o){
 
 image_key=o.parentNode.parentNode.getAttribute('image_id');
     var request='ar_edit_images.php?tipo=update_image&key=principal&new_value=Yes&image_key='+escape(image_key)+'&scope='+scope+'&scope_key='+scope_key;
-  
+ // alert(request)
   YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
@@ -105,13 +105,14 @@ function delete_image(o){
 
     // alert(scope_key)
     image_key=o.parentNode.getAttribute('image_id');
+    
     var answer = confirm('Delete?');
     if (answer){
 
 	
 
 	 var request='ar_edit_images.php?tipo=update_image&key=delete&new_value=&image_key='+escape(image_key)+'&scope='+scope+'&scope_key='+scope_key;
-	
+	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		  
@@ -144,10 +145,10 @@ return;
 
     YAHOO.util.Connect.setForm('testForm', true);
     var request='ar_edit_images.php?tipo=upload_image&scope='+scope+'&scope_key='+scope_key;
- //  alert(request);
+  // alert(request);return;
    var uploadHandler = {
       upload: function(o) {
-	//   alert(o.responseText)
+	   //alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){
