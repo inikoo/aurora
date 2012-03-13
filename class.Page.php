@@ -702,10 +702,10 @@ class Page extends DB_Table {
 		if ($this->type!='Store') {
 			return;
 		}
-		
+
 		$old_value=$this->data['Page Header Key'];
-		
-		
+
+
 		$site=new Site($this->data['Page Site Key']);
 
 		$default_header_key=$site->data['Site Default Header Key'];
@@ -1465,30 +1465,19 @@ class Page extends DB_Table {
 			return '';
 		}
 
-
-
-
 		$products=$this->get_products_from_list($list_code);
 		$this->print_rrp=false;
 
 		if (count($products)==0)
 			return;
 
-
-
 		if ($this->logged) {
-
 			return $this->display_list_logged_in($products);
 		} else {
-
 			return $this->display_list_logged_out($products);
-
 		}
-
-
-
-
 	}
+
 
 	function get_products_from_list($list_code) {
 
@@ -1548,7 +1537,7 @@ class Page extends DB_Table {
 					$range_where,
 					$order_by,
 					$limit);
-			//	print $sql;
+				// print $sql;
 				$result=mysql_query($sql);
 				while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -2077,7 +2066,18 @@ class Page extends DB_Table {
 		$min_price=999999999999;
 		$max_price=-99999999999;
 		$number_products_with_price=0;
+
+
+		$same_units=true;
+		$units=1;
+		$counter=0;
 		foreach ($products as $product) {
+
+			if ($counter and $product['Product Units Per Case']!=$units) {
+				$same_units=false;
+			}else {
+				$units=$product['Product Units Per Case'];
+			}
 
 			if ($product['Product Price']) {
 				$number_products_with_price++;
@@ -2086,21 +2086,15 @@ class Page extends DB_Table {
 				if ($max_price<$product['Product Price'])
 					$max_price=$product['Product Price'];
 			}
-
-
-
+			$counter++;
 		}
 
 
-		if ($number_products_with_price) {
-
-
-
-
+		if ($number_products_with_price and $same_units) {
 			$price= $this->get_formated_price(
 				array(
 					'Product Price'=>$min_price,
-					'Product Units Per Case'=>1,
+					'Product Units Per Case'=>$units,
 					'Product Unit Type'=>'',
 					'Label'=>($min_price==$max_price?_('Price'):_('Price from')).':'
 				)
@@ -2122,7 +2116,19 @@ class Page extends DB_Table {
 		$min_rrp=999999999999;
 		$max_rrp=-99999999999;
 		$number_products_with_rrp=0;
+
+		$same_units=true;
+		$units=1;
+		$counter=0;
+
 		foreach ($products as $product) {
+
+			if ($counter and $product['Product Units Per Case']!=$units) {
+				$same_units=false;
+			}else {
+				$units=$product['Product Units Per Case'];
+			}
+
 
 			if ($product['Product RRP']) {
 				$number_products_with_rrp++;
@@ -2132,13 +2138,13 @@ class Page extends DB_Table {
 					$max_rrp=$product['Product RRP'];
 			}
 
-
+			$counter++;
 		}
 
 		if ($number_products_with_rrp) {
 			$rrp= $this->get_formated_price(array(
 					'Product Price'=>$min_rrp,
-					'Product Units Per Case'=>1,
+					'Product Units Per Case'=>$units,
 					'Product Unit Type'=>'',
 					'Label'=>($min_rrp==$max_rrp?_('RRP'):_('RRP from')).':'
 				)
