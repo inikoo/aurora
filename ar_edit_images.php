@@ -13,6 +13,7 @@ require_once 'common.php';
 
 require_once 'class.Image.php';
 
+
 require_once 'ar_edit_common.php';
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -78,6 +79,10 @@ function update_image($data) {
     case 'customer_profile':
         include_once('class.User.php');
         $scope=new User($data['scope_key']);
+        break;
+    case 'favicon':
+        include_once('class.Site.php');
+        $scope=new Site($data['scope_key']);
         break;
     default:
         $response=array('state'=>404,'resp'=>'Operation not found');
@@ -185,6 +190,10 @@ function upload_image($data) {
             case 'customer_profile':
                 include_once('class.User.php');
                 $scope=new User($data['scope_key']);
+                break;
+            case 'favicon':
+                include_once('class.Site.php');
+                $scope=new Site($data['scope_key']);
                 break;
             default:
                 $response=array('state'=>404,'resp'=>'Operation not found');

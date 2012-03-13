@@ -29,10 +29,10 @@
 			<div id="photo_container" style="margin-top:0px;float:left">
 				<div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 					<div id="imagediv" style="border:1px solid #ddd;width:190px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
-<ul class="gallery clearfix">						
-<li><a rel="prettyPhoto[gallery1]" title=""><img id="main_image" src="{$product->get('Product Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px"  valign="center" border="1" id="image" alt="{t}Image{/t}" /> </a></li>
+					
+<img id="main_image" src="{$product->get('Product Main Image')}" style="vertical-align:middle;display:block;margin:0px auto;width:190px"  valign="center" border="1" id="image" alt="{t}Image{/t}" /> 
 
-</ul>
+
 
 
 					</div>
@@ -42,7 +42,7 @@
 				<div style="width:160px;margin:auto;padding-top:5px">
 <ul class="gallery clearfix">	
 					{foreach from=$product->get_images_slidesshow() item=image name=foo} {if $image.is_principal==0} 
-					<li><a href="{$image.normal_url}" rel="prettyPhoto[gallery1]" title=""><img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" title="" alt="" /></a>
+					<li><a href="{$image.normal_url}" rel="prettyPhoto[gallery1]" ><img style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}" alt="{$image.name}" /></a>
 					{/if} {/foreach} 
 </ul>
 
