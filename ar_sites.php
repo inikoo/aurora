@@ -348,107 +348,133 @@ function list_pages() {
 		break;
 
 	}
-
+$interval_db= get_interval_db_name($period);
 
 	if ($order=='code')
 		$order='`Page Code`';
-	else if ($order=='url')
-			$order='`Page URL`';
-		else if ($order=='title')
-				$order='`Page Store Title`';
-			else if ($order=='link_title')
-					$order='`Page Short Title`';
-				else {
-					$order='`Page Code`';
-				}
-			//print $order;
-			//    elseif($order='used_in')
-			//        $order='Supplier Product XHTML Sold As';
-
-			$sql="select *,`Site Code`,`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` on (`Site Key`=`Page Site Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+	elseif ($order=='url')
+		$order='`Page URL`';
+	elseif ($order=='users'){
+		$order="`Page Store $interval_db Acc Users`";
+	}elseif ($order=='visitors'){
+		$order="`Page Store $interval_db Acc Visitors`";
+	}elseif ($order=='sessions'){
+		$order="`Page Store $interval_db Acc Sessions`";
+	}elseif ($order=='requests'){
+		$order="`Page Store $interval_db Acc Requests`";
+	}		
+	
 
 
+	elseif ($order=='title')
+		$order='`Page Store Title`';
+	elseif ($order=='link_title')
+		$order='`Page Short Title`';
+	else {
+		$order='`Page Code`';
+	}
+	//print $order;
+	//    elseif($order='used_in')
+	//        $order='Supplier Product XHTML Sold As';
 
+	$sql="select *,`Site Code`,`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` on (`Site Key`=`Page Site Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-		$result=mysql_query($sql);
+	$result=mysql_query($sql);
 	$data=array();
 
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
-
 		$code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Code']."</a>";
 
-		
-                switch ($period) {
-                case 'three_year':
-                    $visitors=number($row['Page Store 3 Year Acc Visitors']);
-                    $sessions=number($row['Page Store 3 Year Acc Sessions']);
-                    $requests=number($row['Page Store 3 Year Acc Requests']);
-                    $users=number($row['Page Store 3 Year Acc Users']);
-                    break;
-                case 'year':
-                    $visitors=number($row['Page Store 1 Year Acc Visitors']);
-                    $sessions=number($row['Page Store 1 Year Acc Sessions']);
-                    $requests=number($row['Page Store 1 Year Acc Requests']);
-                    $users=number($row['Page Store 1 Year Acc Users']);
-                    break;
-                case 'quarter':
-                    $visitors=number($row['Page Store 1 Quarter Acc Visitors']);
-                    $sessions=number($row['Page Store 1 Quarter Acc Sessions']);
-                    $requests=number($row['Page Store 1 Quarter Acc Requests']);
-                    $users=number($row['Page Store 1 Quarter Acc Users']);
-                    break;
+		switch ($period) {
+		case 'three_year':
+			$visitors=number($row['Page Store 3 Year Acc Visitors']);
+			$sessions=number($row['Page Store 3 Year Acc Sessions']);
+			$requests=number($row['Page Store 3 Year Acc Requests']);
+			$users=number($row['Page Store 3 Year Acc Users']);
+			break;
+		case 'year':
+			$visitors=number($row['Page Store 1 Year Acc Visitors']);
+			$sessions=number($row['Page Store 1 Year Acc Sessions']);
+			$requests=number($row['Page Store 1 Year Acc Requests']);
+			$users=number($row['Page Store 1 Year Acc Users']);
+			break;
+		case 'quarter':
+			$visitors=number($row['Page Store 1 Quarter Acc Visitors']);
+			$sessions=number($row['Page Store 1 Quarter Acc Sessions']);
+			$requests=number($row['Page Store 1 Quarter Acc Requests']);
+			$users=number($row['Page Store 1 Quarter Acc Users']);
+			break;
 
-                case 'six_month':
-                    $visitors=number($row['Page Store 6 Month Acc Visitors']);
-                    $sessions=number($row['Page Store 6 Month Acc Sessions']);
-                    $requests=number($row['Page Store 6 Month Acc Requests']);
-                    $users=number($row['Page Store 6 Month Acc Users']);
-                    break;
-                case 'month':
-                    $visitors=number($row['Page Store 1 Month Acc Visitors']);
-                    $sessions=number($row['Page Store 1 Month Acc Sessions']);
-                    $requests=number($row['Page Store 1 Month Acc Requests']);
-                    $users=number($row['Page Store 1 Month Acc Users']);
-                    break;
-                case 'ten_day':
-                    $visitors=number($row['Page Store 10 Day Acc Visitors']);
-                    $sessions=number($row['Page Store 10 Day Acc Sessions']);
-                    $requests=number($row['Page Store 10 Day Acc Requests']);
-                    $users=number($row['Page Store 10 Day Acc Users']);
-                    break;
-                case 'week':
-                    $visitors=number($row['Page Store 1 Week Acc Visitors']);
-                    $sessions=number($row['Page Store 1 Week Acc Sessions']);
-                    $requests=number($row['Page Store 1 Week Acc Requests']);
-                    $users=number($row['Page Store 1 Week Acc Users']);
-                    break;
-                case 'yeartoday':
-                    $visitors=number($row['Page Store Year To Day Acc Visitors']);
-                    $sessions=number($row['Page Store Year To Day Acc Sessions']);
-                    $requests=number($row['Page Store Year To Day Acc Requests']);
-                    $users=number($row['Page Store Year To Day Acc Users']);
-                    break;
-                case 'monthtoday':
-                    $visitors=number($row['Page Store Month To Day Acc Visitors']);
-                    $sessions=number($row['Page Store Month To Day Acc Sessions']);
-                    $requests=number($row['Page Store Month To Day Acc Requests']);
-                    $users=number($row['Page Store Month To Day Acc Users']);
-                    break;
-                case 'weektoday':
-                    $visitors=number($row['Page Store Week To Day Acc Visitors']);
-                    $sessions=number($row['Page Store Week To Day Acc Sessions']);
-                    $requests=number($row['Page Store Week To Day Acc Requests']);
-                    $users=number($row['Page Store Week To Day Acc Users']);
-                    $margin=percentage($row['Page Store Week To Day Acc Parts Margin'],1);
-                    break;
-                default:
-                    $visitors=number($row['Page Store Total Acc Visitors']);
-                    $sessions=number($row['Page Store Total Acc Sessions']);
-                    $requests=number($row['Page Store Total Acc Requests']);
-                    $users=number($row['Page Store Total Acc Users']);
-                    break;
-                }
-      
+		case 'six_month':
+			$visitors=number($row['Page Store 6 Month Acc Visitors']);
+			$sessions=number($row['Page Store 6 Month Acc Sessions']);
+			$requests=number($row['Page Store 6 Month Acc Requests']);
+			$users=number($row['Page Store 6 Month Acc Users']);
+			break;
+		case 'month':
+			$visitors=number($row['Page Store 1 Month Acc Visitors']);
+			$sessions=number($row['Page Store 1 Month Acc Sessions']);
+			$requests=number($row['Page Store 1 Month Acc Requests']);
+			$users=number($row['Page Store 1 Month Acc Users']);
+			break;
+		case 'ten_day':
+			$visitors=number($row['Page Store 10 Day Acc Visitors']);
+			$sessions=number($row['Page Store 10 Day Acc Sessions']);
+			$requests=number($row['Page Store 10 Day Acc Requests']);
+			$users=number($row['Page Store 10 Day Acc Users']);
+			break;
+		case 'week':
+			$visitors=number($row['Page Store 1 Week Acc Visitors']);
+			$sessions=number($row['Page Store 1 Week Acc Sessions']);
+			$requests=number($row['Page Store 1 Week Acc Requests']);
+			$users=number($row['Page Store 1 Week Acc Users']);
+			break;
+		case 'yeartoday':
+			$visitors=number($row['Page Store Year To Day Acc Visitors']);
+			$sessions=number($row['Page Store Year To Day Acc Sessions']);
+			$requests=number($row['Page Store Year To Day Acc Requests']);
+			$users=number($row['Page Store Year To Day Acc Users']);
+			break;
+		case 'monthtoday':
+			$visitors=number($row['Page Store Month To Day Acc Visitors']);
+			$sessions=number($row['Page Store Month To Day Acc Sessions']);
+			$requests=number($row['Page Store Month To Day Acc Requests']);
+			$users=number($row['Page Store Month To Day Acc Users']);
+			break;
+		case 'weektoday':
+			$visitors=number($row['Page Store Week To Day Acc Visitors']);
+			$sessions=number($row['Page Store Week To Day Acc Sessions']);
+			$requests=number($row['Page Store Week To Day Acc Requests']);
+			$users=number($row['Page Store Week To Day Acc Users']);
+			break;
+		case 'day':
+			$visitors=number($row['Page Store 1 Day Acc Visitors']);
+			$sessions=number($row['Page Store 1 Day Acc Sessions']);
+			$requests=number($row['Page Store 1 Day Acc Requests']);
+			$users=number($row['Page Store 1 Day Acc Users']);
+			break;
+		case 'hour':
+			$visitors=number($row['Page Store 1 Hour Acc Visitors']);
+			$sessions=number($row['Page Store 1 Hour Acc Sessions']);
+			$requests=number($row['Page Store 1 Hour Acc Requests']);
+			$users=number($row['Page Store 1 Hour Acc Users']);
+			break;
+case 'all':
+			$visitors=number($row['Page Store Total Acc Visitors']);
+			$sessions=number($row['Page Store Total Acc Sessions']);
+			$requests=number($row['Page Store Total Acc Requests']);
+			$users=number($row['Page Store Total Acc Users']);
+			break;
+
+		default:
+			exit("error $period");
+			$visitors=number($row['Page Store Total Acc Visitors']);
+			$sessions=number($row['Page Store Total Acc Sessions']);
+			$requests=number($row['Page Store Total Acc Requests']);
+			$users=number($row['Page Store Total Acc Users']);
+			break;
+		}
+
 
 		switch ($row['Page Store Section']) {
 		case 'Department Catalogue':
@@ -462,7 +488,6 @@ function list_pages() {
 			break;
 		}
 		$site="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
-
 		$data[]=array(
 			'id'=>$row['Page Key'],
 			'code'=>$code,
@@ -472,23 +497,15 @@ function list_pages() {
 			'url'=>$row['Page URL'],
 			'site'=>$site,
 			'image'=>'image.php?size=small&id='.$row['Page Preview Snapshot Image Key'],
-			'item_type'=>'item'
-			/*
-                    'for_sale'=>number($row['Supplier For Sale Products']),
-                    'low'=>number($row['Supplier Low Availability Products']),
-                    'outofstock'=>number($row['Supplier Out Of Stock Products']),
-                    'location'=>$row['Supplier Main Location'],
-                    'email'=>$row['Supplier Main XHTML Email'],
-                    'tel'=>$row['Supplier Main XHTML Telephone'],
-                    'contact'=>$row['Supplier Main Contact Name'],
-                    'sales'=>$sales,
-                    'profit'=>$profit,
-                    'profit_after_storing'=>$profit_after_storing,
-                    'cost'=>$cost,
-                    'pending_pos'=>number($row['Supplier Open Purchase Orders']),
-                    'margin'=>$margin
+			'item_type'=>'item',
+			'visitors'=>$visitors,
+			'sessions'=>$sessions,
+			'requests'=>$requests,
+			'users'=>$users,
 
-                    */
+
+
+
 		);
 	}
 

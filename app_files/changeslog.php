@@ -5660,3 +5660,8 @@ ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Type` `In
 ALTER TABLE `Inventory Transaction Fact` ADD `Relations` VARCHAR( 64 ) NOT NULL ;
 ALTER TABLE `Inventory Transaction Fact` ADD `Inventory Transaction Stock` FLOAT NOT NULL DEFAULT '0';
 ALTER TABLE `Inventory Spanshot Fact` ADD `Value Open` FLOAT NOT NULL DEFAULT '0' AFTER `Quantity Low` ,ADD `Value High` FLOAT NOT NULL DEFAULT '0' AFTER `Value Open` ,ADD `Value Low` FLOAT NOT NULL DEFAULT '0' AFTER `Value High` ;
+
+
+ALTER TABLE `Email Credentials Dimension` ADD `Access Key` VARCHAR( 255 ) NOT NULL ,ADD `Secret Key` VARCHAR( 255 ) NOT NULL;
+ALTER TABLE `Email Credentials Dimension` CHANGE `Email Provider` `Email Provider` ENUM( 'Gmail', 'Other', 'Amazon', 'PHPMail' ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Other';
+ALTER TABLE `Image Bridge` CHANGE `Subject Type` `Subject Type` ENUM( 'Site Favicon', 'Product', 'Family', 'Department', 'Store', 'Website', 'Part', 'Supplier Product', 'Store Logo', 'Store Email Template Header', 'Store Email Postcard', 'Email Image', 'Page', 'Page Header', 'Page Footer', 'Site', 'Page Header Preview', 'Page Footer Preview', 'Page Preview', 'Site Menu', 'Site Search', 'User Profile' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
