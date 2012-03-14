@@ -121,7 +121,9 @@ if (isset($_REQUEST['pages_view'])) {
         $_SESSION['state']['site']['pages']['view']=$_REQUEST['view'];
 
 }
+
 $smarty->assign('pages_view',$_SESSION['state']['site']['pages']['view']);
+$smarty->assign('page_period',$_SESSION['state']['site']['pages']['period']);
 
 
 
