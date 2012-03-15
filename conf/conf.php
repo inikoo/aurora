@@ -250,7 +250,7 @@ $default_state=array(
 		'store_key'=>0,
 
 		'products'=>array(
-		'view'=>'general',
+			'view'=>'general',
 			'order'=>'code',
 			'order_dir'=>'',
 			'f_field'=>'code',
@@ -942,7 +942,7 @@ $default_state=array(
 
 	'report_sales'=>array(
 		'tipo'=>'mtd',
-		
+
 		'y'=>date('Y'),
 		'm'=>date('m'),
 		'd'=>date('d'),
@@ -965,10 +965,10 @@ $default_state=array(
 	),
 	'report_intrastad'=>array(
 		'tipo'=>'last_m',
-		
-		
-		
-		),
+
+
+
+	),
 	'report_sales_week'=>array(
 		'store'=>'',
 		'invoices'=> array(
@@ -1357,7 +1357,7 @@ $default_state=array(
 		'edit'=>'description',
 		'view'=>'locations',
 		'parts_view'=>'parts',
-'show_stock_history_chart'=>false,
+		'show_stock_history_chart'=>false,
 		'parts'=>array(
 			'order'=>'sku',
 			'order_dir'=>'',
@@ -1372,6 +1372,16 @@ $default_state=array(
 			'percentage'=>false,
 			'f_value'=>'',
 			'elements'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>0,'NotKeeping'=>0),
+
+
+		),
+	'parts_lists'=>array(
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>20,
+			'f_field'=>'name',
+				'f_value'=>'',
 
 
 		),
@@ -1403,7 +1413,7 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>array(),
-		'view'=>''
+			'view'=>''
 		),
 
 
@@ -1700,13 +1710,13 @@ $default_state=array(
 			'where'=>'',
 			'f_field'=>'name_a',
 			'f_value'=>''),
-	'users'=>array(
+		'users'=>array(
 			'display'=>'all',
 			'order'=>'last_request',
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
-			
+
 			'f_field'=>'customer_name',
 			'f_value'=>''
 		),
@@ -2232,7 +2242,7 @@ $default_state=array(
 		)
 	),
 
-'site_user'=>array(
+	'site_user'=>array(
 		'block_view'=>'login_history',
 		'login_history'=>array(
 			'display'=>'all',
@@ -2398,7 +2408,7 @@ $default_state=array(
 			'elements'=>''
 		),
 
-	'edit_headers'=>array(
+		'edit_headers'=>array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'f_show'=>false,
@@ -2412,10 +2422,10 @@ $default_state=array(
 
 	),
 	'sites'=>array(
-	'block_view'=>'sites',
-	
-	'sites'=>array(
-		'table_type'=>'list',
+		'block_view'=>'sites',
+
+		'sites'=>array(
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -2431,12 +2441,12 @@ $default_state=array(
 			'mode'=>'all',
 			'avg'=>'totals',
 			'type'=>'list',
-			
+
 
 
 		),
-	'pages'=>array(
-		'table_type'=>'list',
+		'pages'=>array(
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -2476,7 +2486,7 @@ $default_state=array(
 		)
 
 	),
-	
+
 	'store'=>array(
 		'block_view'=>'departments',
 		'plot'=>'store',
@@ -2500,7 +2510,7 @@ $default_state=array(
 			)
 		),
 		'pages'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -2527,7 +2537,7 @@ $default_state=array(
 		),
 
 		'sites'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'name',
 			'f_value'=>'',
@@ -2546,7 +2556,7 @@ $default_state=array(
 
 		),
 		'departments'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -2590,7 +2600,7 @@ $default_state=array(
 		),
 
 		'families'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -2635,7 +2645,7 @@ $default_state=array(
 
 		),
 		'products'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -2815,7 +2825,7 @@ $default_state=array(
 
 		),
 		'pages'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -3038,7 +3048,7 @@ $default_state=array(
 		),
 
 		'families'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -3084,7 +3094,7 @@ $default_state=array(
 
 		),
 		'products'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
@@ -3153,7 +3163,7 @@ $default_state=array(
 			'nr'=>25,
 		),
 		'pages'=>array(
-	'table_type'=>'list',
+			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -3204,7 +3214,7 @@ $default_state=array(
 		),
 
 		'products'=>array(
-		'table_type'=>'list',
+			'table_type'=>'list',
 			'percentages'=>false,
 			'view'=>'general',
 
@@ -3491,7 +3501,7 @@ $default_state=array(
 		'id'=>1,
 		'edit'=>'description',
 		'view'=>'description',
-		
+
 
 		'history'=>array(
 			'order'=>'date',
@@ -3533,8 +3543,8 @@ $default_state=array(
 
 
 		'stock_history'=>array(
-		'show_chart'=>1,
-		'chart_output'=>'stock',
+			'show_chart'=>1,
+			'chart_output'=>'stock',
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -3734,7 +3744,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-		
+
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
@@ -3769,7 +3779,7 @@ $default_state=array(
 
 		),
 		'families'=>array(
-					'percentages'=>false,
+			'percentages'=>false,
 			'view'=>'general',
 			'period'=>'year',
 			'mode'=>'all',
@@ -3785,7 +3795,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			
+
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
@@ -3823,7 +3833,7 @@ $default_state=array(
 
 		),
 		'products'=>array(
-					'percentages'=>false,
+			'percentages'=>false,
 			'view'=>'general',
 			'period'=>'year',
 			'mode'=>'all',
@@ -3839,7 +3849,7 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
-			
+
 			'view'=>'general',
 			'period'=>'year',
 			'percentage'=>0,
@@ -4097,7 +4107,7 @@ $default_state=array(
 
 			)
 		),
-			'sites'=>array(
+		'sites'=>array(
 			'table_type'=>'list',
 			'where'=>'where true',
 			'f_field'=>'name',

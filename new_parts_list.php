@@ -1,30 +1,28 @@
 <?php
 include_once('common.php');
 include_once('class.Warehouse.php');
-/*if (!$user->can_view('customers') ) {
-    header('Location: index.php');
-    exit;
-}*/
 
-/*
-if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
-    $store_id=$_REQUEST['store'];
 
-} else {
-    header('Location: customers.php?error');
-    exit;
+if(isset($_REQUEST['warehouse_id']) and is_numeric($_REQUEST['warehouse_id']) ){
+  $warehouse_id=$_REQUEST['warehouse_id'];
+
+}else{
+  header('Location: index.php?error_no_warehouse_key');
+   exit;
 }
 
-if (! ($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
-    header('Location: customers.php?error_store='.$store_id);
-    exit;
+
+$warehouse=new warehouse($warehouse_id);
+if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ){
+  header('Location: index.php');
+   exit;
 }
 
-*/
-$warehouse_id=1;
+
+
 $warehouse=new Warehouse($warehouse_id);
-//$smarty->assign('store_id',$store_id);
 $smarty->assign('warehouse',$warehouse);
+$smarty->assign('warehouse_id',$warehouse->id);
 
 
 
@@ -32,9 +30,13 @@ $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
                'common.css',
+               'button.css',
                'css/container.css',
-               'table.css'
+               'table.css',
+               'theme.css.php'
            );
 $js_files=array(
               $yui_path.'utilities/utilities.js',
@@ -48,11 +50,14 @@ $js_files=array(
               $yui_path.'calendar/calendar-min.js',
               'js/common.js',
               'js/table_common.js',
-              'common_customers.js.php',
-              'new_parts_list.js.php',
-              'js/edit_common.js',
+              'js/search.js',
+'js/edit_common.js',
+'new_parts_list.js.php',
+              
           );
 
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','parts');
 
 
 $_SESSION['state']['parts']['list']['where']='';
@@ -132,6 +137,41 @@ $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2',$_SESSION['state']['world']['countries']['f_value']);
+
+
+
+
+$tipo_filter=$_SESSION['state']['warehouse']['parts']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['warehouse']['parts']['f_value']);
+$filter_menu=array(
+		   'sku'=>array('db_key'=>_('code'),'menu_label'=>'Part SKU','label'=>'SKU'),
+		   'used_in'=>array('db_key'=>_('used_in'),'menu_label'=>'Used in','label'=>'Used in'),
+
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+
+$elements_number=array('Keeping'=>0,'LastStock'=>0,'Discontinued'=>0,'NotKeeping'=>0);
+$sql=sprintf("select count(*) as num ,`Part Main State` from  `Part Dimension` P left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  where B.`Warehouse Key`=%d group by  `Part Main State`   ",
+$warehouse->id);
+//print_r($sql);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+    $elements_number[$row['Part Main State']]=$row['num'];
+}
+
+
+
+
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['warehouse']['parts']['elements']);
+
 
 
 $smarty->display('new_parts_list.tpl');

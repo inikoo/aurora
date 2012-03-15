@@ -27,6 +27,46 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
+
+$csv_file='tariff_codes.csv';
+$handle_csv = fopen($csv_file, "r");
+
+
+
+while (($data = fgetcsv($handle_csv, 1000, ",",'"',"\n")) !== FALSE) {
+
+	if ($data[1]=='' and $data[2]=='') {
+		continue;
+	}
+
+	if ( $data[2]=='')
+		$tariff_code= $data[1];
+	else
+		$tariff_code= $data[2];
+
+	$product=new Product('code_store',$data[0],1);
+	print $product->data['Product Code']."\r";
+	if ($product->id) {
+		$current_part_skus=$product->get_current_part_skus();
+
+
+		foreach ($current_part_skus as $_part_sku) {
+			$part=new Part($_part_sku);
+
+
+			$part->update_tariff_code(substr($tariff_code,0,8));
+
+
+
+		}
+	}
+
+
+
+};
+
+exit;
+
 $sql=sprintf("select id,code,export_code  from aw_old.product    ");
 $result2a=mysql_query($sql);
 while ($row2a=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {

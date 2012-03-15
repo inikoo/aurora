@@ -2515,7 +2515,7 @@ function list_products() {
 
 
 
-	
+
 		if ($percentages) {
 			$sold='';
 			$margin='';
@@ -3036,11 +3036,11 @@ function list_products() {
 		if ($row['Product Stage']=='In Process')
 			$type.='<span style="color:red">*</span>';
 
-	$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
 		//$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
 		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
 
-//'Historic','Discontinued','Private','NoSale','Sale'
+		//'Historic','Discontinued','Private','NoSale','Sale'
 		switch ($row['Product Main Type']) {
 		case('Historic'):
 			$main_type=_('Historic');
@@ -3448,21 +3448,22 @@ function list_parts() {
 	$wheref='';
 	if ($f_field=='used_in' and $f_value!='')
 		$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
-	else if ($f_field=='description' and $f_value!='')
-			$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
-		else if ($f_field=='supplied_by' and $f_value!='')
-				$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
-			else if ($f_field=='sku' and $f_value!='')
-					$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
+	elseif ($f_field=='description' and $f_value!='')
+		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='supplied_by' and $f_value!='')
+		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='sku' and $f_value!='')
+		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
-				$sql="select count(*) as total from $table  $where $wheref";
+	$sql="select count(*) as total from $table  $where $wheref";
+ print "$sql";
+exit;
 
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-			$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-			$total=$row['total'];
-		}
+		$total=$row['total'];
+	}
 	if ($wheref=='') {
 		$filtered=0;
 		$total_records=$total;
@@ -3634,8 +3635,7 @@ function list_parts() {
 		$adata=array();
 	$result=mysql_query($sql);
 
-	// print "$sql";
-
+	
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$locations='<table border=0 style="width:150px">';
 		$locations_data=preg_split('/,/',$data['location_data']);
@@ -9616,7 +9616,7 @@ function part_transactions() {
 		$where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Audit','Adjust') ";
 		break;
 	default:
-		 $where.="and `Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate') ";
+		$where.="and `Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate') ";
 		break;
 		break;
 	}
@@ -9645,7 +9645,7 @@ function part_transactions() {
 
 
 
-	
+
 
 
 
@@ -9701,9 +9701,9 @@ function part_transactions() {
 		if ($qty>0) {
 			$qty='+'.$qty;
 		}
-	//	else if ($qty==0) {
-	//			$qty=;
-	//		}
+		// else if ($qty==0) {
+		//   $qty=;
+		//  }
 
 		switch ($data['Inventory Transaction Type']) {
 		case 'Order In Process':
@@ -9839,18 +9839,18 @@ function part_stock_history() {
 	}
 
 
-$_SESSION['state']['part']['stock_history']['order']=$order;
-$_SESSION['state']['part']['stock_history']['type']=$type;
-$_SESSION['state']['part']['stock_history']['order_dir']=$order_direction;
-$_SESSION['state']['part']['stock_history']['nr']=$number_results;
-$_SESSION['state']['part']['stock_history']['sf']=$start_from;
-$_SESSION['state']['part']['stock_history']['f_field']=$f_field;
-$_SESSION['state']['part']['stock_history']['f_value']=$f_value;
-$_SESSION['state']['part']['stock_history']['from']=$from;
-$_SESSION['state']['part']['stock_history']['to']=$to;
-$_SESSION['state']['part']['stock_history']['elements']=$elements;
+	$_SESSION['state']['part']['stock_history']['order']=$order;
+	$_SESSION['state']['part']['stock_history']['type']=$type;
+	$_SESSION['state']['part']['stock_history']['order_dir']=$order_direction;
+	$_SESSION['state']['part']['stock_history']['nr']=$number_results;
+	$_SESSION['state']['part']['stock_history']['sf']=$start_from;
+	$_SESSION['state']['part']['stock_history']['f_field']=$f_field;
+	$_SESSION['state']['part']['stock_history']['f_value']=$f_value;
+	$_SESSION['state']['part']['stock_history']['from']=$from;
+	$_SESSION['state']['part']['stock_history']['to']=$to;
+	$_SESSION['state']['part']['stock_history']['elements']=$elements;
 
-$_SESSION['state']['part']['stock_history']['f_show']=$_SESSION['state']['part']['stock_history']['f_show'];
+	$_SESSION['state']['part']['stock_history']['f_show']=$_SESSION['state']['part']['stock_history']['f_show'];
 
 
 	$_order=$order;
