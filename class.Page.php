@@ -1550,7 +1550,8 @@ class Page extends DB_Table {
 			switch ($row['List Product Description']) {
 			case 'Units Name':
 				foreach ($products as $key=>$product) {
-					$$products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+					$products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+					$products[$key]['long_description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
 				}
 				break;
 			case 'Units Name RRP':
@@ -1560,18 +1561,22 @@ class Page extends DB_Table {
 
 				foreach ($products as $key=>$product) {
 					$rrp=money_locale($product['Product RRP'],$this->site->data['Site Locale'],$product['Product Currency']);
-
-					$products[$key]['description']=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
+					$tmp=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
 						$product['Product Units Per Case'],
 						$product['Product Name'],
 						_('RRP'),
 						$rrp
 					);
+					
+					$products[$key]['description']=$tmp;
+					$products[$key]['long_description']=$tmp;
 				}
 				break;
 			case 'Units Special Characteristic':
 				foreach ($products as $key=>$product) {
 					$products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Special Characteristic']);
+					$products[$key]['long_description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+
 				}
 				break;
 			case 'Units Special Characteristic RRP':
@@ -1588,12 +1593,21 @@ class Page extends DB_Table {
 						_('RRP'),
 						$rrp
 					);
+					$products[$key]['long_description']=sprintf("%dx %s <span class='rrp' >(%s: %s)</span>",
+						$product['Product Units Per Case'],
+						$product['Product Name'],
+						_('RRP'),
+						$rrp
+					);
+					
 				}
 				break;
 
 			default:
 				foreach ($products as $key=>$product) {
 					$products[$key]['description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+					$products[$key]['long_description']=sprintf("%dx %s",$product['Product Units Per Case'],$product['Product Name']);
+
 				}
 				break;
 			}
@@ -2025,7 +2039,7 @@ class Page extends DB_Table {
 
 				$counter,
 				number_format($product['Product Price'],2,'.',''),
-				$counter,$product['Product Code'],clean_accents($product['description']),
+				$counter,$product['Product Code'],clean_accents($product['long_description']),
 
 				$product['Product Code'],
 				$price,
