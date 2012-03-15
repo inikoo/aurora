@@ -3456,8 +3456,7 @@ function list_parts() {
 		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
 	$sql="select count(*) as total from $table  $where $wheref";
- print "$sql";
-exit;
+
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
