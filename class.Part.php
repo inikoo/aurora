@@ -1281,8 +1281,7 @@ class part extends DB_Table {
 		$locations=array();
 		$was_associated=array();
 		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
-		// print $sql;
-
+		
 		$result=mysql_query($sql);
 		$_locations=array();
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1291,12 +1290,10 @@ class part extends DB_Table {
 			}else{
 				$_locations[]=$row['Location Key'];
 			}
-		
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-			if ($part_location->location->data['Location Mainly Used For']='Picking') {
-
-
-
+		
+		//print_r($part_location->location);
+		if ($part_location->location->data['Location Mainly Used For']=='Picking') {
 				if ($part_location->is_associated($date)) {
 					list($stock,$value,$in_process)=$part_location->get_stock($date);
 					$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
