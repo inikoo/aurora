@@ -1024,11 +1024,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 				$supplier=new Supplier('find',$the_supplier_data,'create update');
 			}
-
-			$parts_per_product=1;
+	$parts_per_product=1;
 
 			$part_list=array();
-			if ($product->new_code ) {
+$part_list=$product->get_all_part_skus();
+		$number_parts=count($part_list);
+			
+			if ($number_parts==0 ) {
+
+		
+				
 
 				$uk_product=new Product('code_store',$code,1);
 				$parts=$uk_product->get('Parts SKU');
