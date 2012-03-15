@@ -47,7 +47,7 @@ require_once '../../conf/conf.php';
 
 $change=false;
 
-//$sql=sprintf("select *  from  `Product Dimension` where `Product Store Key`!=1   and `Product Code` like 'alpha-03' ");
+$sql=sprintf("select *  from  `Product Dimension` where `Product Store Key`!=1   and `Product Code` like 'BookM-04' ");
 $sql=sprintf("select *  from  `Product Dimension` where `Product Store Key`!=1   ");
 
 $res=mysql_query($sql);
