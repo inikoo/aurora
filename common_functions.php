@@ -1508,12 +1508,12 @@ function parts_awhere($awhere) {
 
 	$where='where true';
 	//$table='`Part Dimension` P ';
-	$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`) left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
+	//$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`) left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
+	$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`)  left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
 
 	$use_product=false;
 	//$use_categories =false;
 	$use_otf =false;
-
 
 	/*
         $price_where='';
