@@ -37,23 +37,9 @@ $smarty->assign('modify',$modify);
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));
-//get_header_info($user,$smarty);
-
-
-
-
-
-
 
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');
-
-
-//$smarty->assign('general_options_list',$general_options_list);
-
-
-
-
 
 $smarty->assign('view',$_SESSION['state']['warehouse']['parts_view']);
 $smarty->assign('parts_view',$_SESSION['state']['warehouse']['parts']['view']);
@@ -141,25 +127,7 @@ $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
-/*
-$elements_number=array('InUse'=>0,'NotInUse'=>0);
-$sql=sprintf("select count(*) as num , `Part Status` from  `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where `Warehouse Key`=%d group by `Part Status`",$warehouse->id);
 
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-    $elements_number[preg_replace('/\s/','',$row['Part Status'])]=$row['num'];
-}
-
-
-$smarty->assign('elements_number',$elements_number);
-
-$_elements=array();
-foreach($_SESSION['state']['warehouse']['parts']['elements'] as $key=>$value){
-    $_elements[preg_replace('/\s/','',$key)]=$value;
-}
-
-$smarty->assign('elements',$_elements);
-*/
 
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);

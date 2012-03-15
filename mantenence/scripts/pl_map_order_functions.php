@@ -4573,12 +4573,6 @@ $_data=preg_replace('/[^\d^\.]/','',$_data);
 
 //printf("XXXX %s %s %s %s \n",$cols[$y_map['code']],$cols[$y_map['order']],$cols[$y_map['credit']] ,$cols[$y_map['discount']]);
 
-//exit;
-
-// 	if($cols['units']==1 or $cols['units']='')
-// 	  $cols['name']=$cols['description'];
-// 	else
-// 	  $cols['name']=$cols['units'].'x '.$cols['description'];
 
 	$cols['fob']=$first_order_bonus;
 	$products[]=$cols;
