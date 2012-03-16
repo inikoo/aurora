@@ -267,13 +267,13 @@ class product extends DB_Table {
 
 
 
-				$sql=sprintf("select `Product ID`,`Product Current Key` from `Product Dimension` where `Product Code`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and  `Product Store Key`=%d "
+				$sql=sprintf("select `Product ID`,`Product Current Key` from `Product Dimension` where `Product Code`=%s and `Product Units Per Case`=%f and `Product Unit Type`=%s  and  `Product Store Key`=%d  ORDER BY `Product Record Type` "
 					,prepare_mysql($data['product code'])
 					,$data['product units per case']
 					,prepare_mysql($data['product unit type'])
 					,$data['product store key']
 				);
-				// print "aqui zxseu $sql\n";
+			//	 print "aqui zxseu $sql\n";
 				$result2=mysql_query($sql);
 				if ($row2=mysql_fetch_array($result2)) {
 					$this->found_in_id=true;
@@ -284,7 +284,7 @@ class product extends DB_Table {
 						,$data['product price']
 						,prepare_mysql($data['product name'])
 					);
-					//print "$sql\n";
+				//	print "$sql\n";
 					$result3=mysql_query($sql);
 					if ($row3=mysql_fetch_array($result3)) {
 						$this->found_in_key=true;
@@ -300,10 +300,10 @@ class product extends DB_Table {
 		}
 
 		// print "Found in key ".$this->found_in_key."\n";
-		//print "Found in id ".$this->found_in_id."\n";
+	//	print "Found in id ".$this->found_in_id."\n";
 		// print "Found in store ".$this->found_in_store."\n";
-		// print "Found in code ".$this->found_in_code."\n";
-
+	 //print "Found in code ".$this->found_in_code."\n";
+ //print "Found in key ".$this->found_key."\n";
 
 		if ($create) {
 
@@ -2518,7 +2518,7 @@ class product extends DB_Table {
 	function get_historic_keys_with_same_code() {
 		$sql=sprintf("select PHD.`Product Key` from `Product History Dimension` PHD left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  where `Product Code`=%s group by `Product Key`"
 			,prepare_mysql($this->code));
-		// print $sql;
+		// print "$sql\n";
 		$res=mysql_query($sql);
 		$this->historic_keys_with_same_code=array();
 		while ($row=mysql_fetch_array($res)) {

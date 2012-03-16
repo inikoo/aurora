@@ -121,7 +121,16 @@ foreach ($__cols as $cols) {
 
 	if (!preg_match('/^DONE$/i',$cols[0]))
 		$is_product=false;
+
+
+
 	$code=_trim($code);
+
+
+	if (!preg_match('/eid-04c/i',$code)) {
+		$is_product=false;
+	}
+
 	if ($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
 		$is_product=false;
 	if (preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
@@ -475,7 +484,7 @@ foreach ($__cols as $cols) {
 			$product->pid
 		);
 		$res=mysql_query($sql);
-		//print $sql;
+		//print "$sql\n";
 		$pids=array();
 		while ($row=mysql_fetch_array($res)) {
 			$_product=new Product('pid',$row['Product ID']);

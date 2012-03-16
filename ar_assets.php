@@ -3455,8 +3455,9 @@ function list_parts() {
 	elseif ($f_field=='sku' and $f_value!='')
 		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
-	$sql="select count(*) as total from $table  $where $wheref";
-
+	$sql="select count(Distinct P.`Part SKU`) as total from $table  $where $wheref";
+//	print $sql;
+//exit;
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -3627,10 +3628,11 @@ function list_parts() {
 
 				$order='P.'.$order;
 
+$group='';
 
-
-			$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-
+			$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref   $group   order by $order $order_direction limit $start_from,$number_results    ";
+//print $sql;
+//exit;
 		$adata=array();
 	$result=mysql_query($sql);
 
