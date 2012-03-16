@@ -22,7 +22,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"parts", label:"<?php echo _('Products')?>",sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 	    //?tipo=locations&tid=0"
-		//alert("ar_warehouse.php?tipo=locations&parent=warehouse");
+		alert("ar_warehouse.php?tipo=locations&parent=warehouse");
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=locations&parent=warehouse");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -159,11 +159,57 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehou
 }
 
 
+function change_elements(){
+
+ids=['elements_Yellow','elements_Red','elements_Purple','elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
+
+
+if(Dom.hasClass(this,'selected')){
+
+var number_selected_elements=0;
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+number_selected_elements++;
+}
+}
+
+if(number_selected_elements>1){
+Dom.removeClass(this,'selected')
+
+}
+
+}else{
+Dom.addClass(this,'selected')
+
+}
+
+table_id=0;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+var request='';
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+request=request+'&'+ids[i]+'=1'
+}else{
+request=request+'&'+ids[i]+'=0'
+
+}
+}
+  
+  alert(request)
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+
+}
 
 
  function init(){
   init_search('locations');
   
+ids=['elements_Yellow','elements_Red','elements_Purple','elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
+ Event.addListener(ids, "click",change_elements);
+
+						
 Event.addListener(['locations','areas','shelfs','map','stats','movements','parts'], "click",change_block);
 
    YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);

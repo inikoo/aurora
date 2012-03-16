@@ -33,6 +33,22 @@ $smarty->assign('search_scope','locations');
 
 
 
+$elements_number=array('Blue'=>0,'Green'=>0,'Orange'=>0,'Pink'=>0,'Purple'=>0,'Red'=>0,'Yellow'=>0);
+$sql=sprintf("select count(*) as num,`Location Flag` from  `Location Dimension` where `Location Warehouse Key`=%d group by `Location Flag`",$warehouse_id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+$_key=preg_replace('/ /','',$row['Location Flag']);
+
+   if(in_array($_key,array('Blue','Green','Orange','Pink','Purple','Red','Yellow')))
+	$elements_number[$_key]=$row['num'];
+}
+
+//print_r($elements_number);
+$smarty->assign('elements_number',$elements_number);
+
+
+
+
 
 
 //$smarty->assign('general_options_list',$general_options_list);
