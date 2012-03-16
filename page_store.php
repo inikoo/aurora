@@ -57,48 +57,22 @@ $page->user=$user;
 $page->logged=$logged;
 $page->currency=$store->data['Store Currency Code'];
 
-$images_slideshow=array();
+//print_r($page->display_product_image('3dart-01'));
+//exit;
+
 $family_key=$page->data['Page Parent Key'];
 
-$sql=sprintf("select `Product ID`, `Product Code` from `Product Dimension` where `Product Family Key`=%d", $family_key);
-$result1=mysql_query($sql);
-while($row1=mysql_fetch_assoc($result1)){
-	$product_id=$row1['Product ID'];
-	$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d",$product_id);
+/*
+//$page->update_button_products('Parent');
 
-	//print $sql;
+$products=$page->get_all_products();
+//print_r($products);
 
-	$res=mysql_query($sql);
-	//$images_slideshow=array();
-	while ($row=mysql_fetch_array($res)) {
-		if ($row['Image Height']!=0)
-			$ratio=$row['Image Width']/$row['Image Height'];
-		else
-			$ratio=1;
-		// print_r($row);
-		$images_slideshow[]=array(
-			'name'=>$row['Image Filename'],
-			'small_url'=>'image.php?id='.$row['Image Key'].'&size=small',
-			'thumbnail_url'=>'image.php?id='.$row['Image Key'].'&size=thumbnail',
-			'normal_url'=>'image.php?id='.$row['Image Key'],
-			'filename'=>$row['Image Filename'],
-			'ratio'=>$ratio,'caption'=>$row['Image Caption'],
-			'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key'],
-			'code'=>$row1['Product Code']);
-	}
-	// print_r($images_slideshow);
-
-	//return $images_slideshow;
-
+foreach($products as $product){
+	//print $product['code'];
 }
 
-
-
-$page->images_slideshow=$images_slideshow;
-
-
-
-
+*/
 
 if (isset($_REQUEST['update_heights'])  and  $_REQUEST['update_heights']) {
 	$smarty->assign('update_heights',1);

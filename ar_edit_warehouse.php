@@ -1750,7 +1750,8 @@ function edit_location_description() {
 		'weight'=>'Location Max Weight',
 		'slots'=>'Location Max Slots',
 		'parts'=>'Location Distinct Parts',
-		'used_for'=>'Location Mainly Used For'
+		'used_for'=>'Location Mainly Used For',
+		'flag'=>'Location Flag'
 	);
 
 

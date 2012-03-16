@@ -241,7 +241,6 @@ this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 
 function delete_location(){
 	
-	if (confirm('Are you sure, you want to delete location '+location_name+' now?')) {
 		var request='ar_edit_warehouse.php?tipo=delete_location&location_key=' + Dom.get('location_key').value + '&area_key=' + Dom.get('area_key').value
 		//alert(request);//return;
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -259,7 +258,8 @@ function delete_location(){
 
 			}
 		});
-	}
+	
+		dialog_delete_location.hide();
 
 
 
@@ -291,7 +291,25 @@ var request='ar_edit_warehouse.php?tipo=edit_location_description&key=' + key+ '
 
 }
 
+function save_location_flag(key,value){
 
+var request='ar_edit_warehouse.php?tipo=edit_location_description&key=' + key+ '&newvalue=' + value +'&location_key=' + location_id+'&okey=' + key
+	//alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+//alert(o.responseText)
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+
+
+				if(r.state==200){
+
+				window.location.reload()
+            }
+
+    }
+    });
+
+}
 
 function select_area(oArgs){
 //alert('ss');return;
@@ -454,9 +472,13 @@ validate_scope_metadata={
 	dialog_area_list = new YAHOO.widget.Dialog("dialog_area_list", {context:["edit_location_area","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_area_list.render();
 	
-		   
-
+dialog_delete_location = new YAHOO.widget.Dialog("dialog_delete_location", { visible : false,close:true,underlay: "none",draggable:false});
+    dialog_delete_location.render();
 	
+Event.addListener("close_dialog_delete_location", "click", close_dialog_delete_location);		   
+
+	Event.addListener("delete_location", "click", delete_location);
+
     Event.addListener("edit_location_area", "click", dialog_area_list.show,dialog_area_list , true);
 
 }
@@ -467,6 +489,19 @@ YAHOO.util.Event.onDOMReady(init);
 
 
 
+function close_dialog_delete_location(){
+	dialog_delete_location.hide();
+}
+
+function show_dialog_delete_location(){
+
+
+	region1 = Dom.getRegion('show_dialog_delete_location'); 
+	var pos =[region1.left-200,region1.bottom+2]
+	Dom.setXY('dialog_delete_location', pos);
+
+	dialog_delete_location.show();
+}
 
 
 function save_location(){
