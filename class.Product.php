@@ -1117,7 +1117,6 @@ class product extends DB_Table {
 			,prepare_mysql($this->data['Product XHTML Short Description'])
 			,$this->pid);
 		mysql_query($sql);
-		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 		$this->update_full_search();
 
@@ -1161,7 +1160,6 @@ class product extends DB_Table {
 		$sql=sprintf("insert into `Product Same Code Dimension` %s %s",$keys,$values);
 		// print "$sql\n";
 		if (mysql_query($sql)) {
-			if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 			$this->new_code=true;
 			$this->code = $base_data_same_code['product code'];
 		}

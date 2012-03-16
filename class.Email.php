@@ -211,8 +211,17 @@ class Email extends DB_Table {
                 $this->candidate[$row['Subject Key']]=1000;
             }
             elseif($num_results>1) {
-                exit("error ".$raw_data['Email']." are in more than one contact\n");
+                print("error ".$raw_data['Email']." are in more than one contact\n");
+            
+             $result=mysql_query($sql);
+                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                
+                $this->candidate[$row['Subject Key']]=700;
+                
+                }
+            
             }
+            
             elseif($find_fuzzy) {
 
 

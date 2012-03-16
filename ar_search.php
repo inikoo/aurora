@@ -2297,7 +2297,7 @@ function search_supplier_products($data) {
 function search_site($data) {
 	$the_results=array();
 
-	$max_results=10;
+	$max_results=20;
 	$user=$data['user'];
 	$q=$data['q'];
 
@@ -2323,7 +2323,20 @@ function search_site($data) {
 
 	$found_family=false;
 
+
 	$candidates=array();
+	$sql=sprintf('select `Page Key`,`Page Code` from `Page Store Dimension` where `Page Site Key`=%d and `Page Code` like "%s%%" limit 100 ',$data['site_id'],addslashes($q));
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res)) {
+		if (strtolower($row['Page Code'])==strtolower($q)) {
+			$factor=230;
+		} else {
+			$factor=220;
+		}
+		$candidates[$row['Page Key']]=$factor;
+	}
+
 	$sql=sprintf('select `Page Key`,`Page Parent Code` from `Page Store Dimension` where `Page Site Key`=%d and `Page Parent Code` like "%s%%" limit 100 ',$data['site_id'],addslashes($q));
 	//print $sql;
 	$res=mysql_query($sql);

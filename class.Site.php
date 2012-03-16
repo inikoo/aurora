@@ -307,12 +307,7 @@ class Site extends DB_Table {
 			}
 
 		}
-
-
-
 	}
-
-
 
 
 
@@ -466,17 +461,9 @@ class Site extends DB_Table {
 		$page_data['Page URL']=$this->data['Site URL'].'/'.strtolower($page_code);
 
 
-
-
 		foreach ($raw_page_data as $key=>$value) {
-
-
-
 			$page_data[$key]=$value;
 		}
-
-
-
 
 
 		$page_section=new PageStoreSection('code',$page_data['Page Store Section']);

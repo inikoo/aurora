@@ -172,9 +172,12 @@ case('part_location_stock_history'):
                              'location_key'=>array('type'=>'numeric'),
                              'output'=>array('type'=>'string'),
                          ));
+    if($data['output']=='value')
+        part_location_stock_value_history($data);
+
+    else
     part_location_stock_history($data);
     break;
-//--------
 case('top_countries_sales'):
     $data=prepare_values($_REQUEST,array(
                              'from'=>array('type'=>'date','optional'=>true),
@@ -230,6 +233,35 @@ case('region_sales'):
                          ));
     region_sales($data);
     break;
+}
+
+
+function part_location_stock_value_history($data) {
+
+    if ($data['location_key']) {
+
+        $sql=sprintf("select `Date`,`Value Open`,`Value High`,`Value Low`,`Value At Cost` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
+                     $data['part_sku'],
+                     $data['location_key']
+                    );
+        $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Value Open'],$row['Value High'],$row['Value Low'],$row['Value At Cost'],$row['Value At Cost']);
+        }
+    } else {// stock in all locatins
+        $sql=sprintf("select `Date`,sum(`Value Open`) as open ,max(`Value High`) as high,min(`Value Low`) as low,sum(`Value At Cost`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
+                     $data['part_sku']
+
+                    );
+        $res=mysql_query($sql);
+
+        while ($row=mysql_fetch_assoc($res)) {
+            printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+        }
+
+    }
+
 }
 
 function part_location_stock_history($data) {

@@ -45,6 +45,7 @@ function post_action(branch,r){
 }
 
 function init(){
+  init_search('parts');
 
 validate_scope_data=
 {
