@@ -122,7 +122,23 @@ var request='ar_edit_sites.php?tipo=edit_page_header&newvalue='+value+"&id="+Dom
 }
 
 
-
+function set_template(display_type,template){
+var request='ar_edit_sites.php?tipo=change_template&page_key=' + Dom.get('page_key').value +'&template='+template+'&display_type='+display_type
+	           
+	          
+alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	           alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				window.location.reload();
+                        }else{
+				window.location.reload();
+                        }
+		     }
+    });
+}
 
 function delete_found_in_page( page_key ) {
 	
@@ -204,6 +220,20 @@ switch ( type ) {
 select_page_operation=type;
 dialog_page_list.show();
 }
+
+
+
+function show_dialog_template_list(){
+
+
+	region1 = Dom.getRegion('show_dialog_template_list'); 
+	var pos =[region1.right,region1.bottom+2]
+	Dom.setXY('dialog_template_list', pos);
+
+	dialog_template_list.show();
+}
+
+
 
 function select_page(oArgs){
 if(select_page_operation=='found_in'){
@@ -1254,7 +1284,12 @@ Event.addListener("cancel_upload_page_content", "click", close_upload_page_conte
 
 dialog_page_list = new YAHOO.widget.Dialog("dialog_page_list", { visible : false,close:true,underlay: "none",draggable:false});
     dialog_page_list.render();
+
+
+dialog_template_list = new YAHOO.widget.Dialog("dialog_template_list", { visible : false,close:true,underlay: "none",draggable:false});
+    dialog_template_list.render();
 	
+Event.addListener("show_dialog_template_list", "click", show_dialog_template_list);
 
      Event.addListener("add_other_found_in_page", "click", show_dialog_page_list,'found_in', true);
   Event.addListener("add_other_see_also_page", "click", show_dialog_page_list,'see_also' , true);

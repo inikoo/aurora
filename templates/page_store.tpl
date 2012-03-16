@@ -24,9 +24,15 @@
 		{*}{include file="header.tpl" }{*} {include file="string:{$page->get_header_template()}" } 
 	</div>
 	<div id="bd" style="position: relative ;z-index:1;">
+
+{if $page->get('Page Store Content Display Type')=='Template'}
+{include file="$type_content:$template_string" } 
+{else}
 		<div id="content" class="content" style="overflow-x:hidden;overflow-y:auto;position:relative;clear:both;width:100%;{if $type_content=='string'}height:{$page->get('Page Content Height')}px{/if}">
 			{include file="$type_content:$template_string" } 
 		</div>
+
+{/if}
 	</div>
 	<div id="ft" style="position: relative ;z-index:2">
 		{include file="string:{$page->get_footer_template()}" } 
