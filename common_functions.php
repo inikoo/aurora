@@ -1487,6 +1487,8 @@ function parts_awhere($awhere) {
 		//'invoice'=>array(),
 		//'web_state'=>array(),
 		//'availability_state'=>array(),
+		'tariff_code'=>'',
+		'invalid_tariff_code'=>false,
 		'geo_constraints'=>'',
 		'part_valid_from'=>'',
 		'part_valid_to'=>'',
@@ -1509,7 +1511,15 @@ function parts_awhere($awhere) {
 	$where='where true';
 	//$table='`Part Dimension` P ';
 	//$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`) left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
-	$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`)  left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
+	$table='`Inventory Transaction Fact` ITF left join kbase.`Country Dimension` CD on (CD.`Country Code`=ITF.`Dispatch Country Code`) left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) ';
+
+
+
+//if($where_data['invalid_tariff_code']){
+//$where.=' and `Part T`';
+
+//}
+
 
 	$use_product=false;
 	//$use_categories =false;
