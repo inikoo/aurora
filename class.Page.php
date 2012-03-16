@@ -613,7 +613,7 @@ class Page extends DB_Table {
 
 	function update_field_switcher($field,$value,$options='') {
 
-		
+
 		switch ($field) {
 		case('Page Store See Also Type'):
 			$this->update_field('Page Store See Also Type',$value,$options);
@@ -688,13 +688,13 @@ class Page extends DB_Table {
 			$this->update_presentation_template_data($value,$options);
 			break;
 		default:
-	
+
 			$base_data=$this->base_data();
 
 			if (array_key_exists($field,$base_data)) {
-						
+
 				if ($value!=$this->data[$field]) {
-					
+
 					$this->update_field($field,$value,$options);
 				}
 			}
@@ -1486,7 +1486,7 @@ class Page extends DB_Table {
 		}
 	}
 
-	
+
 
 	function get_products_from_list($list_code) {
 
@@ -1576,7 +1576,7 @@ class Page extends DB_Table {
 						_('RRP'),
 						$rrp
 					);
-					
+
 					$products[$key]['description']=$tmp;
 					$products[$key]['long_description']=$tmp;
 				}
@@ -1608,7 +1608,7 @@ class Page extends DB_Table {
 						_('RRP'),
 						$rrp
 					);
-					
+
 				}
 				break;
 
@@ -2254,6 +2254,15 @@ class Page extends DB_Table {
 	}
 
 
+	function clear_products() {
+
+		$sql=sprintf("delete from `Page Product List Dimension` where `Page Key`=%d",$this->id);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Page Product Dimension` where `Page Key`=%d  ",$this->id);
+		mysql_query($sql);
+	}
+
+
 	function update_list_products() {
 		$lists=$this->get_list_products_from_source();
 
@@ -2344,32 +2353,32 @@ class Page extends DB_Table {
 	}
 
 
-	function get_button_products_from_parent(){
+	function get_button_products_from_parent() {
 		$sql=sprintf("select `Product Currency`,`Product Name`,`Product ID`,`Product Code`,`Product Price`,`Product RRP`,`Product Units Per Case`,`Product Unit Type`,`Product Web State`,`Product Special Characteristic` from `Product Dimension` where `Product Family Key`=%d and `Product Web State`!='Offline'",
 			$this->data['Page Parent Key']);
-		 print $sql;
+		print $sql;
 		$result=mysql_query($sql);
 		$products=array();
 		while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			
+
 			$products[]=$row2;
 		}
 		return $products;
 	}
-	
+
 	function update_button_products($source='Source') {
 		include_once 'class.Product.php';
 
-	if($source=='Source'){
+		if ($source=='Source') {
 
-		$buttons=$this->get_button_products_from_source();
-	}
-	else if($source=='Parent'){
-		$buttons=$this->get_button_products_from_parent();
-	}
-	else{
-		reuturn;
-	}
+			$buttons=$this->get_button_products_from_source();
+		}
+		else if ($source=='Parent') {
+				$buttons=$this->get_button_products_from_parent();
+			}
+		else {
+			reuturn;
+		}
 		$sql=sprintf("delete from  `Page Product Dimension`  where `Page Key`=%d",$this->id);
 		mysql_query($sql);
 
@@ -2383,7 +2392,7 @@ class Page extends DB_Table {
 				$sql=sprintf("insert into `Page Product Dimension` (`Page Key`,`Product ID`) values  (%d,%d)",
 					$this->id,
 					$product->pid
-				
+
 				);
 				//print $sql;
 				mysql_query($sql);
@@ -2890,12 +2899,12 @@ class Page extends DB_Table {
 		//print "$sql\n";
 	}
 
-	function  get_all_products(){
+	function get_all_products() {
 		$sql=sprintf("select pd.`Product ID`, `Product Code` from `Page Product Dimension` ppd left join `Product Dimension` pd on (ppd.`Product ID` = pd.`Product ID`) where `Page Key`=%d", $this->id);
 		//print $sql;
 		$result1=mysql_query($sql);
 		$products=array();
-		while($row1=mysql_fetch_assoc($result1)){
+		while ($row1=mysql_fetch_assoc($result1)) {
 			$products[]=array('code'=>$row1['Product Code']);
 
 		}
@@ -2908,7 +2917,7 @@ class Page extends DB_Table {
 		$html='';
 		include_once 'class.Product.php';
 		$product=new Product('code_store',$tag,$this->data['Page Store Key']);
-//print_r($product);
+		//print_r($product);
 		if ($product->id) {
 			$html=$this->display_button_logged_out($product);
 			$small_url='public_image.php?id='.$product->data["Product Main Image Key"].'&size=small';
