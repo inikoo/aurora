@@ -43,6 +43,18 @@
  <div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
     <span class="clean_table_title">{t}Locations{/t}</span>
 
+	<div style="font-size:90%" id="transaction_chooser">
+		<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Yellow}selected{/if} label_page_type" id="elements_Yellow">{t}Yellow{/t} (<span id="elements_Yellow_number">{$elements_number.Yellow}</span>)</span> 
+		<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Red}selected{/if} label_page_type" id="elements_Red">{t}Red{/t} (<span id="elements_Red_number">{$elements_number.Red}</span>)</span> 
+		<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Purple}selected{/if} label_page_type" id="elements_Purple">{t}Purple{/t} (<span id="elements_Purple_number">{$elements_number.Purple}</span>)</span> 
+		<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Pink}selected{/if} label_page_type" id="elements_Pink">{t}Pink{/t} (<span id="elements_Pink_number">{$elements_number.Pink}</span>)</span> 
+		<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Orange}selected{/if} label_page_type" id="elements_Orange">{t}Orange{/t} (<span id="elements_Orange_number">{$elements_number.Orange}</span>)</span> 
+		<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Green}selected{/if} label_page_type" id="elements_Green">{t}Green{/t} (<span id="elements_Green_number">{$elements_number.Green}</span>)</span> 
+		<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Blue}selected{/if} label_page_type" id="elements_Blue">{t}Blue{/t} (<span id="elements_Blue_number">{$elements_number.Blue}</span>)</span> 
+	</div>
+ 
+
+
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>

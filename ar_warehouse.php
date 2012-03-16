@@ -252,6 +252,32 @@ function list_locations() {
     $_SESSION['state']['locations']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
 
+
+	//$elements=$conf['elements'];
+
+	if (isset( $_REQUEST['elements_Yellow'])) {
+		$elements['Yellow']=$_REQUEST['elements_Yellow'];
+	}
+	if (isset( $_REQUEST['elements_Red'])) {
+		$elements['Red']=$_REQUEST['elements_Red'];
+	}
+	if (isset( $_REQUEST['elements_Purple'])) {
+		$elements['Purple']=$_REQUEST['elements_Purple'];
+	}
+	if (isset( $_REQUEST['elements_Pink'])) {
+		$elements['Pink']=$_REQUEST['elements_Pink'];
+	}
+	if (isset( $_REQUEST['elements_Orange'])) {
+		$elements['Orange']=$_REQUEST['elements_Orange'];
+	}
+	if (isset( $_REQUEST['elements_Green'])) {
+		$elements['Green']=$_REQUEST['elements_Green'];
+	}
+	if (isset( $_REQUEST['elements_Blue'])) {
+		$elements['Blue']=$_REQUEST['elements_Blue'];
+	}
+
+
     switch ($parent) {
     case('warehouse'):
         $where.=sprintf(' and `Location Warehouse Key`=%d',$_SESSION['state']['warehouse']['id']);
@@ -263,6 +289,44 @@ function list_locations() {
         $where.=sprintf(' and `Location Shelf Key`=%d',$_SESSION['state']['shelf']['id']);
         break;
     }
+
+	if ($parent=='warehouse') {
+
+		$_elements='';
+		foreach ($elements as $_key=>$_value) {
+			if ($_value) {
+				if ($_key=='Blue') {
+					$_elements.=",'Blue'";
+				}
+				elseif ($_key=='Green') {
+					$_elements.=",'Green'";
+				}
+				elseif ($_key=='Orange') {
+					$_elements.=",'Orange'";
+				}
+				elseif ($_key=='Pink') {
+					$_elements.=",'Pink'";
+				}
+				elseif ($_key=='Purple') {
+					$_elements.=",'Purple'";
+				}
+				elseif ($_key=='Red') {
+					$_elements.=",'Red'";
+				}
+				elseif ($_key=='Yellow') {
+					$_elements.=",'Yellow'";
+				}
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} else {
+			$where.=' and `Location Flag` in ('.$_elements.')' ;
+		}
+
+
+	}
 
 
     $wheref='';

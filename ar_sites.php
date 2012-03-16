@@ -193,7 +193,7 @@ function list_pages() {
 
 
 	$elements=$conf['elements'];
-
+print_r( $elements);exit;
 
 	if (isset( $_REQUEST['elements_product_description'])) {
 		$elements['ProductDescription']=$_REQUEST['elements_product_description'];
