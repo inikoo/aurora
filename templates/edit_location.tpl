@@ -12,7 +12,7 @@
      
    
         <button  onclick="window.location='location.php?id={$location->id}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
-        <button  {if $location_id==1 || $location_id==2}style="display:none"{/if} onclick="delete_location()" ><img src="art/icons/cancel.png" alt=""> {t}Delete Location{/t}</button>
+        <button  {if $location_id==1 || $location_id==2}style="display:none"{/if} id="show_dialog_delete_location" onclick="show_dialog_delete_location()" ><img src="art/icons/cancel.png" alt=""> {t}Delete Location{/t}</button>
 
     </div>
     <div class="buttons" style="float:left">
@@ -56,6 +56,17 @@
 	 
 	 </tr> 
 	   
+	  <tr><td class="label">{t}Flag{/t}:</td>
+ 
+	<td colspan=5>
+		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="buttons left" >
+		{foreach from=$flag_list item=cat key=cat_id name=foo}
+		<button class="{if $location->get('Location Flag')==$cat.name}selected{/if}" onclick="save_location_flag('flag','{$cat.name}')" id="flag_{$cat.name}">{$cat.name}</button> 
+	    {/foreach}
+		</div>
+	</td>
+	 
+	 </tr> 
 	   
 	 <tr class="title"><td colspan=5>{t}Parameters{/t}</td></tr> 
 	<div class="buttons" >
@@ -190,4 +201,25 @@
         </div>
     </div>
  </div>
+
+
+<div id="dialog_delete_location" style="padding:10px">
+	<table style="margin:10px">
+		<tr>
+			<td> {t}This location has {/t}{$number_of_parts}{t} part(s). Parts will be moved to unknown location{/t}</td>
+		</tr>
+		<tr>
+			<td> {t}Are you sure want to delete this location ?{/t}</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<button class="negative" id="delete_location">{t}Delete{/t}</button>
+				<button class="positive" id="close_dialog_delete_location">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
 {include file='footer.tpl'}
