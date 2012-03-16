@@ -508,6 +508,8 @@ function get_awhere(){
 	//invoice_upper:Dom.get('invoice_upper').value,
     }
 
+
+
     return YAHOO.lang.JSON.stringify(data);
 
    
@@ -739,9 +741,26 @@ function checkbox_changed_availability_state_condition(o){
 	}
 }
 
+
+function tariff_code_invalid(){
+if(Dom.hasClass('selected')){
+Dom.setStyle('tariff_code','display','')
+}else{
+Dom.addClass('tariff_code_invalid','selected')
+Dom.setStyle('tariff_code','display','none')
+
+}
+
+}
+
 function init(){
 
   init_search('parts');
+
+
+YAHOO.util.Event.addListener('tariff_code_invalid', "click",tariff_code_invalid);
+
+
 
 YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
  YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
@@ -802,20 +821,20 @@ YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);
 //var ids=['general','contact'];
 //YAHOO.util.Event.addListener(ids, "click",change_view);
 
-/* cal1 = new YAHOO.widget.Calendar("product_ordered_or_from","product_ordered_or_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
+cal1 = new YAHOO.widget.Calendar("part_dispatched_from","part_dispatched_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
  cal1.update=updateCal;
  cal1.id='1';
  cal1.render();
  cal1.update();
  cal1.selectEvent.subscribe(handleSelect, cal1, true); 
 
- cal2 = new YAHOO.widget.Calendar("product_ordered_or_to","product_ordered_or_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
+ cal2 = new YAHOO.widget.Calendar("part_dispatched_to","part_dispatched_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
  cal2.update=updateCal;
  cal2.id='2';
  cal2.render();
  cal2.update();
  cal2.selectEvent.subscribe(handleSelect, cal2, true); 
-*/
+
 cal3 = new YAHOO.widget.Calendar("part_created_from","part_created_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
  cal3.update=updateCal;
  cal3.id='3';
@@ -839,8 +858,8 @@ cal4.selectEvent.subscribe(handleSelect, cal4, true);
 
 
 
-//YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1, true);
-//YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
+YAHOO.util.Event.addListener("part_dispatched_from", "click", cal1.show, cal1, true);
+YAHOO.util.Event.addListener("part_dispatched_to", "click", cal2.show, cal2, true);
 YAHOO.util.Event.addListener("part_created_from", "click", cal3.show, cal3, true);
 YAHOO.util.Event.addListener("part_created_to", "click", cal4.show, cal4, true);
 
