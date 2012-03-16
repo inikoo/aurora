@@ -7,6 +7,8 @@ include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
+include_once('../../class.PartLocation.php');
+
 include_once('../../class.SupplierProduct.php');
 error_reporting(E_ALL);
 
@@ -33,12 +35,17 @@ date_default_timezone_set('UTC');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension` where `Part SKU`=1991 order by `Part SKU`";
-$sql="select * from `Part Dimension`   order by `Part SKU`";
+$sql="select * from `Part Dimension` where `Part SKU`=36891 order by `Part SKU`";
+//$sql="select * from `Part Dimension`   order by `Part SKU`";
 
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);
+
+//$locations=$part->get_picking_location_historic('2012-03-14 00:00:00',1);
+//print_r($locations);
+//exit;
+
 
 //$part->update_estimated_future_cost();
 

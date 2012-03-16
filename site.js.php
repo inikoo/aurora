@@ -61,6 +61,59 @@ request=request+'&'+ids[i]+'=0'
 
 }
 
+
+var change_view=function(e){
+	
+	var table=tables['table0'];
+
+if(this.id=='page_visitors'){
+tipo='visitors'
+}else if(this.id=='page_general'){
+tipo='general'
+
+}else{
+return
+}
+
+
+
+
+	    table.hideColumn('type');
+	    table.hideColumn('title');
+	    table.hideColumn('users');
+	    table.hideColumn('visitors');
+	    table.hideColumn('sessions');
+	    table.hideColumn('requests');
+
+
+	    if(tipo=='visitors'){
+		Dom.get('page_period_options').style.display='';
+		  table.showColumn('users');
+	    table.showColumn('visitors');
+	    table.showColumn('sessions');
+	    table.showColumn('requests');
+	    }
+	    if(tipo=='general'){
+		Dom.get('page_period_options').style.display='none';
+		table.showColumn('title');
+		table.showColumn('type');
+	
+
+	    }
+	 
+
+	      Dom.removeClass(Dom.getElementsByClassName('table_option','button' , this.parentNode),'selected')
+    Dom.addClass(this,"selected");	
+
+	
+	
+	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=site-pages-view&value=' + escape(tipo),{} );
+	
+  }
+
+
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -69,13 +122,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"code", label:"<?php echo _('Code')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"type", label:"<?php echo _('Type')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-				    ,{key:"title", label:"<?php echo _('Header Title')?>", width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"type", label:"<?php echo _('Type')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='general'?'':'hidden:true,')?> width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"title", label:"<?php echo _('Header Title')?>",<?php echo($_SESSION['state']['site']['pages']['view']=='general'?'':'hidden:true,')?> width:270,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"link_title", label:"<?php echo _('Link Label')?>", width:330,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"users", label:"<?php echo _('Users')?>",<?php echo($_SESSION['state']['site']['pages']['view']!='general'?'':'hidden:true,')?>width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"visitors", label:"<?php echo _('Visitors')?>",<?php echo($_SESSION['state']['site']['pages']['view']!='general'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"sessions", label:"<?php echo _('Sessions')?>",<?php echo($_SESSION['state']['site']['pages']['view']!='general'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"requests", label:"<?php echo _('Requests')?>",<?php echo($_SESSION['state']['site']['pages']['view']!='general'?'':'hidden:true,')?> width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 						    
-				    
+		
+			    
 				    
 				     ];
 		request="ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value;
@@ -96,7 +153,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','title','code','url','type','link_title'
+			 'id','title','code','url','type','link_title','visitors','sessions','requests','users'
 						 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -176,9 +233,15 @@ function show_dialog_change_pages_table_type(){
 
 
  function init(){
+//'page_period_yeartoday'
+
+   ids=['page_period_all','page_period_year','page_period_quarter','page_period_month','page_period_week','page_period_three_year','page_period_six_month','page_period_ten_day','page_period_day','page_period_hour','page_period_yeartoday'];
+    YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'page'});
+
 
   init_search('site');
  Event.addListener(['details','pages','hits','visitors'], "click",change_block);
+ Event.addListener(['page_general','page_visitors'], "click",change_view);
 
 ids=['elements_other','elements_department_catalogue','elements_family_catalogue','elements_product_description'];
  Event.addListener(ids, "click",change_elements);

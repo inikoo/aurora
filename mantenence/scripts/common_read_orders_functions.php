@@ -746,6 +746,7 @@ function send_order($data,$data_dn_transactions) {
 
 
 
+
 	if (count($picker_data['id'])==0)$staff_key=0;
 	else {
 		$staff_key=$picker_data['id'][0];
@@ -756,13 +757,14 @@ function send_order($data,$data_dn_transactions) {
 	//print_r($data_dn_transactions);
 	$skus_to_pick_data=array();
 
-
+//print_r($dn);
 	$_picked_qty=array();
 	$_out_of_stock_qty=array();
 	foreach ($data_dn_transactions as $key=>$value) {
 
 		$shipped_quantity=round($value['Shipped Quantity'],8);
 		$out_of_stock_quantity=round($value['No Shipped Due Out of Stock'],8);;
+//print_r($value);
 
 		//   print $value['Code']."  ship ".$value['Shipped Quantity']."   given ".$value['given']." \n";
 		$sql=sprintf("select `Inventory Transaction Key`,`Required`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
@@ -771,7 +773,7 @@ function send_order($data,$data_dn_transactions) {
 		$num_rows = mysql_num_rows($res);
 
 		if (!$num_rows) {
-			exit("==============\n  $key\n $sql    Error no itf-otf map\n");
+			exit("==============\n  $key\n $sql    Error no itf-otf map1\n");
 		}
 
 		while ($row=mysql_fetch_assoc($res)) {

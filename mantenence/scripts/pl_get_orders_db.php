@@ -1023,7 +1023,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$parts_per_product=1;
 
 
-			if ($product->new_code ) {
+			$part_list=$product->get_all_part_skus();
+		$number_parts=count($part_list);
+			
+			if ($number_parts==0 ) {
 
 				$uk_product=new Product('code_store',$code,1);
 				$parts=$uk_product->get('Parts SKU');

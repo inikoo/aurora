@@ -11,17 +11,14 @@ dialog_new_list.hide();
 }
 
 function new_list(store_key){
-    location.href='new_products_list.php?store_key='+store_key;
+    location.href='new_parts_list.php?store_key='+store_key;
 }
 
 
 function show_dialog_new_list(){
-if(Dom.get('direct_store_key').value){
-        location.href='new_products_list.php?store_key='+Dom.get('direct_store_key').value;
 
-}else{
     dialog_new_list.show();
-}
+
 }
 
 
@@ -43,28 +40,30 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
                                         ,{key:"name", label:"<?php echo _('List Name')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
                                      ,{key:"creation_date", label:"<?php echo _('List Created')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"customer_list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"list_type", label:"<?php echo _('List Type')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 	 ,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'parts_list'}
 
 				 
 				 ];
 	    //?tipo=products&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=parts_lists");
-		alert("ar_assets.php?tipo=parts_lists");
+		
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",  rtext:"resultset.rtext",
+	 rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"		
 		},
 		
-		fields: ["name","key","creation_date","products","customer_list_type","delete"]};
+		fields: ["name","key","creation_date","products","list_type","delete"]};
 		
 
 	  this.table0 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
@@ -73,7 +72,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 //,initialLoad:false
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['products']['list']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['parts_lists']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -86,8 +85,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['products']['list']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['products']['list']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['warehouse']['parts_lists']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse']['parts_lists']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -105,7 +104,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	   // this.table0.subscribe("dataReturnEvent", data_returned);  
 
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['products']['list']['f_field']?>',value:'<?php echo$_SESSION['state']['products']['list']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouse']['parts_lists']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['parts_lists']['f_value']?>'};
 
 	
 	};
@@ -115,12 +114,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function init(){
 
-init_search('products_store');
-dialog_new_list = new YAHOO.widget.Dialog("dialog_new_list", {context:["new_customer_list","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+  init_search('parts');
+dialog_new_list = new YAHOO.widget.Dialog("dialog_new_list", {context:["new_parts_list","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_new_list.render();
 
 
-Event.addListener("new_customer_list", "click", show_dialog_new_list);
+Event.addListener("new_parts_list", "click", show_dialog_new_list);
 
 
 }

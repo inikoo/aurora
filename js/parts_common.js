@@ -66,7 +66,8 @@ function change_parts_view(e,table_id){
 
       }
       else if(tipo=='locations'){
-            	  table.showColumn('description_small');
+
+      		 table.showColumn('description_small');
 
       // Dom.setStyle(['period_options','avg_options'],'display','')
 	        Dom.setStyle(['period_options'],'display','none')
