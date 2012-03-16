@@ -65,6 +65,23 @@ $used_for_list=array(
 			  
 $smarty->assign('used_for_list',$used_for_list);
 
+$flag_list=array(
+         'blue'=>array('name'=>_('Blue')),
+                  'green'=>array('name'=>_('Green')),
+                  'orange'=>array('name'=>_('Orange')),
+                  'pink'=>array('name'=>_('Pink')),
+		  'purple'=>array('name'=>_('Purple')),
+		  'red'=>array('name'=>_('Red')),
+		  'yellow'=>array('name'=>_('Yellow'))
+              );
+			  
+$smarty->assign('flag_list',$flag_list);
+
+$sql=sprintf("select * from `Part Location Dimension` where `Location Key`=%d", $location->id);
+$result=mysql_query($sql);
+$number_of_parts=mysql_num_rows($result);
+$smarty->assign('number_of_parts',$number_of_parts);
+
 $shape_type_list=array(
                   'box'=>array('name'=>_('Box')),
                   'cylinder'=>array('name'=>_('Cylinder')),

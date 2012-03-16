@@ -54,6 +54,16 @@ case('edit_email_credentials'):
 
 	edit_email_credentials($data,CKEY);
 	break;
+case('change_template'):
+	$data=prepare_values($_REQUEST,array(
+			'page_key'=>array('type'=>'key'),
+			'template'=>array('type'=>'string'),
+			'display_type'=>array('type'=>'string'),
+
+		));
+
+	change_template($data);
+	break;
 case('test_email_credentials'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -2672,4 +2682,47 @@ $send_email->secret_key=CKEY;
 	echo json_encode($send_result);
 
 }
+
+function change_template($data){
+	//print_r($data);
+	global $editor;
+	$page=new Page($data['page_key']);
+	$page->editor=$editor;
+
+	if (!$page->id) {
+		$response= array('state'=>400,'msg'=>$page->msg);
+		echo json_encode($response);
+		return;
+	}
+
+	if($data['display_type'] == 'Template'){
+		$page->update_field_switcher('display_type','Template');
+		$page->update_field_switcher('filename',$data['template']);
+
+		$history_data=array(
+			'History Abstract'=>_('Page content uploaded'),
+			'History Details'=>'',
+
+			'Indirect Object'=>'Page Store Source',
+			'Indirect Object Key'=>''
+		);
+		$page->add_history($history_data);
+
+		$page->update_button_products('Parent');
+		$page->update_list_products();
+
+	}
+	else if($data['display_type']=='Source'){
+		$page->update_field_switcher('display_type','Source');
+		$page->update_field_switcher('filename','');
+	}
+
+	if ($page->updated) {
+		$response= array('state'=>200,'newvalue'=>$page->new_value);
+	} else {
+		$response= array('state'=>400,'msg'=>$page->msg);
+	}
+	echo json_encode($response);
+}
+
 ?>

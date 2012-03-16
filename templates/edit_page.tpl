@@ -19,7 +19,13 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
+				<button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
+				<button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> 
+				<button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> {if isset($referral_data)} 
+				<button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} 
+				<button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
+				<button id="show_dialog_template_list" ><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button>
 			</div>
 			<div class="buttons left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
@@ -561,6 +567,15 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<div id="dialog_template_list"  style="position:absolute;top:-2000px;" >
+	<table border="0" style="margin-top:20px; width:100%">
+	<tr><td class="buttons"><button onClick="set_template('Source', '')">PPP</button></td></tr>
+	<tr><td class="buttons"><button onClick="set_template('Template', 'template_list_left')">Template 1</button></td></tr>
+	<tr><td class="buttons"><button onClick="set_template('Template', 'template_single_button')">Template 1</button></td></tr>	
+
+	</table>
 </div>
 
 <iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px" onload="redirect_to_preview()"> 

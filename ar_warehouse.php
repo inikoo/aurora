@@ -366,6 +366,19 @@ function list_locations() {
             $area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
         $warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
 
+	switch($row['Location Flag']){
+		case 'Blue': $flag="<img src='art/icons/flag_blue.png'/>"; break;
+		case 'Green':  $flag="<img src='art/icons/flag_green.png'/>";break;
+		case 'Orange': $flag="<img src='art/icons/flag_orange.png'/>"; break;
+		case 'Pink': $flag="<img src='art/icons/flag_pink.png'/>"; break;
+		case 'Purple': $flag="<img src='art/icons/flag_purple.png'/>"; break;
+		case 'Red':  $flag="<img src='art/icons/flag_red.png'/>";break;
+		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png'/>";break;
+		default:
+			$flag='';
+		
+	}
+
         $data[]=array(
                     'id'=>$row['Location Key']
                          ,'tipo'=>$tipo
@@ -375,6 +388,7 @@ function list_locations() {
                                                               ,'parts'=>number($row['Location Distinct Parts'])
                                                                        ,'max_weight'=>$max_weight
                                                                                      ,'max_volumen'=>$max_vol
+											,'flag'=>$flag
                 );
     }
     $response=array('resultset'=>
