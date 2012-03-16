@@ -10,9 +10,9 @@
 	<div style="border:1px solid #ccc;padding:20px;width:870px">
 		<input type="hidden" id="warehouse_key" value="{$warehouse->id}"> <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span> 
 		<table>
-			<form>
+		
 				<tr>
-					<td colspan="2"><b>{t}Parts{/t}</b></td>
+					<td colspan="2"><b>{t}Part Properties{/t}</b></td>
 				</tr>
 				<tr>
 					<td>{t}created between{/t}:</td>
@@ -27,9 +27,36 @@
 					</div>
 					</td>
 				</tr>
+				
 				<tr>
-					<td colspan="2"><b>{t}Destination country{/t}</b></td>
+					<td>{t}Tarrif Code{/t}:</td>
+					<td> 
+					<input id="tariff_code" style="width:100px;float:left;margin-right:10px;" />
+					<div style="margin-left:10px;display:inline" class="buttons small left">
+					<button id="tariff_code_invalid">{t}Invalid Tariff Codes{/t}</button>
+					</div>
+					
+					</td>
 				</tr>
+				
+				<tr>
+					<td colspan="2"><b>{t}Dispatched parts:{/t}</b></td>
+				</tr>
+				
+				<tr>
+					<td>{t}created between{/t}:</td>
+					<td> 
+					<input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="" />
+					<img id="part_dispatched_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <span class="calpop">&rarr;</span> 
+					<input id="v_calpop2" class="calpop" size="11" maxlength="10" type="text" class="text" size="8" name="to" value="" />
+					<img id="part_dispatched_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> 
+					<div id="part_dispatched_from_Container" style="position:absolute;display:none; z-index:2">
+					</div>
+					<div id="part_dispatched_to_Container" style="display:none; z-index:2;position:absolute">
+					</div>
+					</td>
+				</tr>
+				
 				<tr>
 					<td>{t}shipped to{/t}:</td>
 					<td> 
@@ -41,7 +68,7 @@
 				</tr>
 				
 			</table>
-		</form>
+		
 	</table>
 </div>
 <div style="padding:20px;width:890px;xtext-align:right">

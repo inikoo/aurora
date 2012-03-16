@@ -7,7 +7,7 @@ if(isset($_REQUEST['warehouse_id']) and is_numeric($_REQUEST['warehouse_id']) ){
   $warehouse_id=$_REQUEST['warehouse_id'];
 
 }else{
-  header('Location: index.php?error_no_warehouse_key');
+  header('Location: index.php?error_no_warehouse_key_a');
    exit;
 }
 
