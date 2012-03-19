@@ -15,16 +15,16 @@
 			</div>
 			<div class="buttons" style="float:left">
 							{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
-
+<span class="main_title">
+			{t}Department{/t}: {$department->get('Product Department Name')} ({$department->get('Product Department Code')}) 
+		</span>
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<h1>
-			{t}Department{/t}: {$department->get('Product Department Name')} ({$department->get('Product Department Code')}) 
-		</h1>
+		
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='categories'}selected{/if}" style="display:none" id="categories"> <span> {t}Categories{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='families'}selected{/if}" id="families"> <span> {t}Families{/t}</span></span></li>

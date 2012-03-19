@@ -9,8 +9,8 @@
 <div class="top_page_menu">
 
 <div class="buttons" style="float:right">
-
-{if $modify}
+<button onclick="window.location='store_deals.php?store={$store->id}'"><img src="art/icons/money.png" alt=""> {t}Offers{/t}</button>
+{if $modify and false}
 <button  id="new_reminder"><img src="art/icons/add.png" alt=""> {t}Remainder{/t}</button>
 <button  id="new_media_campaign"><img src="art/icons/add.png" alt=""> {t}Media{/t}</button>
 <button  id="new_post_campaign"><img src="art/icons/add.png" alt=""> {t}Post{/t}</button>
@@ -22,8 +22,7 @@
 
 
 <div class="buttons" style="float:left">
-
-<button  onclick="window.location='marketing_stats.php?store={$store->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+ <span class="main_title">{t}Marketing{/t} <span class="id">{$store->get('Store Name')}</span></span>
 </div>
 
 
@@ -32,12 +31,9 @@
 
 
  
-<div style="clear:left;margin:0 0px">
-    <h1>{t}Marketing{/t} <span class="id">{$store->get('Store Name')}</span></h1>
-</div>
 
 </div>
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
     <li> <span class="item {if $view=='metrics'}selected{/if}" id="metrics"  ><span>  {t}Overview{/t}</span></span></li>
     <li> <span class="item {if $view=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Campaigns{/t}</span></span></li>
     <li> <span class="item {if $view=='newsletter'}selected{/if}"  id="newsletter">  <span> {t}eNewsletters{/t}</span></span></li>

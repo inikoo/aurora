@@ -98,7 +98,9 @@ el.innerHTML =location_type_name[oData];
 
 					 ];
 	    //?tipo=locations&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_warehouse.php?tipo=locations");
+	    request="ar_edit_warehouse.php?tipo=locations&parent=warehouse&parent_key="+Dom.get('warehouse_key').value;
+		//alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -125,7 +127,7 @@ el.innerHTML =location_type_name[oData];
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['locations']['edit_table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['edit_locations']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -134,8 +136,8 @@ el.innerHTML =location_type_name[oData];
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['locations']['edit_table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['locations']['edit_table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['warehouse']['edit_locations']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse']['edit_locations']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -143,7 +145,7 @@ el.innerHTML =location_type_name[oData];
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['locations']['edit_table']['f_field']?>',value:'<?php echo$_SESSION['state']['locations']['edit_table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouse']['edit_locations']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['edit_locations']['f_value']?>'};
 	  
 	  
 	     this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);

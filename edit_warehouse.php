@@ -90,9 +90,9 @@ $smarty->assign('table_title',_('Location List'));
 
 
 
-$tipo_filter=$_SESSION['state']['locations']['table']['f_field'];
+$tipo_filter=$_SESSION['state']['warehouse']['edit_locations']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['locations']['table']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['warehouse']['edit_locations']['f_value']);
 
 $filter_menu=array(
 		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Location Code','label'=>'Code'),

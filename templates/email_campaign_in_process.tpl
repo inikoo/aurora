@@ -15,7 +15,7 @@
 
 <div class="top_page_menu">
 
-<div class="buttons" style="width:100%">
+<div class="buttons" >
 	<button   class="{if !$email_campaign->ready_to_send()}disabled{/if} positive"  id="send_email_campaign">{t}Send{/t}</button>
 		<button  class="{if !$email_campaign->ready_to_send()}disabled{/if}"   id="preview_email_campaign" >{t}Preview{/t}</button>
 			<button style="margin-left:20px" id="delete_email_campaign" class="negative">{t}Delete{/t}</button>
@@ -24,10 +24,14 @@
 
 	
 </div>
+<div style="float:left">
+<span class="main_title">{t}Email Campaign{/t}: <span class="id" id="h1_email_campaign_name">{$email_campaign->get('Email Campaign Name')}</span></span>
+
+</div>
 <div style="clear:both"></div>
+
 </div>
 
-<h1>{t}Email Campaign{/t}: <span id="h1_email_campaign_name">{$email_campaign->get('Email Campaign Name')}</span></h1>
 
 <div class="margin-bottom:0px" >
 <div  style="display:none;padding:10px;float:left" id="edit_email_campaign_msg">
@@ -55,11 +59,11 @@
 <tbody >
 
 
-<tr class="top">
+<tr >
 
 
 <tr>
-<td><h2>{t}Mailing List{/t}</h2></td>
+<td><h2>{t}Mailing List{/t}:</h2></td>
 <td  colspan=2  >
     <div class="buttons" >
     	    <button   id="add_email_address_from_customer_list" ><img src="art/icons/add.png" alt="{t}Add{/t}"/> {t}Import from Customer List{/t}</button>
@@ -79,7 +83,7 @@
 
 <tr>
 
-<td colspan=3><span id="recipients_preview">{$email_campaign->get('Email Campaign Recipients Preview')}</span></td>
+<td colspan=3><div style="padding:10px;border:1px solid #ccc;" id="recipients_preview">{$email_campaign->get('Email Campaign Recipients Preview')}</div></td>
 
 </tr>
 
@@ -708,6 +712,7 @@
 
 
  </div>
+
 <div id="dialog_department_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >

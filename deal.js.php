@@ -90,7 +90,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 		      this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		      
+		       this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
 		    	    this.table0.filter={key:'<?php echo$_SESSION['state']['deal']['orders']['f_field']?>',value:'<?php echo$_SESSION['state']['deal']['orders']['f_value']?>'};
 
 		      
@@ -161,80 +162,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
-		  		    	    this.table1.filter={key:'<?php echo$_SESSION['state']['deal']['customers']['f_field']?>',value:'<?php echo$_SESSION['state']['deal']['customers']['f_value']?>'};
-
-
-
-	    var tableid=2; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-	    var productsColumnDefs = [
-	    
-	    				       {key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-
-                                        ,{key:"name", label:"<?php echo _('Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                                     ,{key:"description", label:"<?php echo _('Description')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"duration", label:"<?php echo _('Duration')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"used", label:"<?php echo _('Used')?>",  width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-				 
-				 ];
-	    //?tipo=products&tid=0"
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=campaigns&deal_key="+Dom.get('deal_key').value);
-	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource2.connXhrMode = "queueRequests";
-	    this.dataSource2.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		     rowsPerPage:"resultset.records_perpage",
-		    rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-		},
-		
-		fields: ["name","key","description","duration","used"]};
-		
-
-	  this.table2 = new YAHOO.widget.DataTable(tableDivEL, productsColumnDefs,
-								   this.dataSource2
-								 , {
-							 renderLoopSize: 50,generateRequest : myRequestBuilder
-							 //,initialLoad:false
-								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo $_SESSION['state']['deal']['campaigns']['nr']?>,containers : 'paginator2', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+ this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
+		  		this.table1.filter={key:'<?php echo$_SESSION['state']['deal']['customers']['f_field']?>',value:'<?php echo$_SESSION['state']['deal']['customers']['f_value']?>'};
 
 
 
-									  })
-								     
-								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['deal']['campaigns']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['deal']['campaigns']['order_dir']?>"
-								     },
-								     dynamicData : true
-
-								  }
-								   
-								 );
-	    
-	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
-	  
-	    this.table2.filter={key:'<?php echo $_SESSION['state']['deal']['campaigns']['f_field']?>',value:'<?php echo $_SESSION['state']['deal']['campaigns']['f_value']?>'};
-	    
-	    
+	
 	    
 	    
 

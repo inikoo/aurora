@@ -13,15 +13,16 @@
 				{if $modify} <button onclick="window.location='edit_site.php?id={$site->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Site{/t}</button> {/if} 
 			</div>
 			<div class="buttons" style="float:left">
+			<span class="main_title">
+			{$site->get('Site Name')} ({$site->get('Site URL')}) 
+		</span>
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<h1>
-			{$site->get('Site Name')} ({$site->get('Site URL')}) 
-		</h1>
+		
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Hits{/t}</span></span></li>

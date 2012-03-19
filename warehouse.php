@@ -45,6 +45,7 @@ $_key=preg_replace('/ /','',$row['Location Flag']);
 
 //print_r($elements_number);
 $smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['warehouse']['locations']['elements']);
 
 
 
@@ -99,13 +100,13 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('table_title',_('Location List'));
 
 
-if ($_SESSION['state']['locations']['table']['order']=='warehouse') {
-	$_SESSION['state']['locations']['table']['order']='code';
+if ($_SESSION['state']['warehouse']['locations']['order']=='warehouse') {
+	$_SESSION['state']['warehouse']['locations']['order']='code';
 }
 
-$tipo_filter=$_SESSION['state']['locations']['table']['f_field'];
+$tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['locations']['table']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['warehouse']['locations']['f_value']);
 $filter_menu=array(
 	'code'=>array('db_key'=>_('code'),'menu_label'=>'Location Code','label'=>'Code'),
 );

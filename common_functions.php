@@ -4049,11 +4049,14 @@ case 'all':
 }
 
 function calculate_inteval_dates($interval) {
+
+
+
 	switch ($interval) {
 
 
 	case 'Total':
-
+case 'all':
 		$db_interval='Total';
 		$from_date=false;
 		$to_date=false;

@@ -80,7 +80,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				 
 				 ];
 	    //?tipo=products&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=campaigns&store_id="+Dom.get('store_id').value);
+	    request='ar_assets.php?tipo=campaigns&parent=store&parent_key='+Dom.get('store_id').value;
+	 //  alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -130,7 +132,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+ 		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
 	  
 	    this.table0.filter={key:'<?php echo $_SESSION['state']['store_offers']['campaigns']['f_field']?>',value:'<?php echo $_SESSION['state']['store_offers']['campaigns']['f_value']?>'};
 	    
@@ -202,7 +205,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+ 		this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
 	  
 	    this.table1.filter={key:'<?php echo $_SESSION['state']['store_offers']['offers']['f_field']?>',value:'<?php echo $_SESSION['state']['store_offers']['offers']['f_value']?>'};
 	    

@@ -1186,17 +1186,17 @@ function get_preview( index ) {
                  
            Dom.setStyle(['tr_preview_plain_body','tr_preview_html_body','tr_preview_template_body'],'display','none') 
     
-           
+          
              Dom.get('preview_index').value=r.index;
              Dom.get('preview_formated_index').innerHTML=r.formated_index;
              Dom.get('preview_to').innerHTML=r.to;
              Dom.get('preview_subject').innerHTML=r.subject;
-             
+          
              if(r.type=='Plain'){
                 Dom.setStyle('tr_preview_plain_body','display','')
                 Dom.get('preview_plain_body').innerHTML=r.plain;
 
-             }if(r.type=='HTML'){
+             }else if(r.type=='HTML'){
                 Dom.setStyle('tr_preview_plain_body','display','')
                               Dom.get('preview_plain_body').innerHTML=r.html;
 

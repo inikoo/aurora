@@ -53,10 +53,10 @@ case('save_description'):
 	break;
 
 case('add_part_to_location'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'location_key'=>array('type'=>'key'),
 			'part_sku'=>array('type'=>'key'),
-		
+
 
 		));
 	add_part_to_location($data);
@@ -157,7 +157,7 @@ case('lost_stock'):
 	lost_stock($data);
 	break;
 case('move_stock'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'values'=>array('type'=>'json array')
 
 		));
@@ -443,7 +443,7 @@ function add_stock($data) {
 function update_save_picking_location_quantity_limits($data) {
 	global $editor;
 
-	
+
 
 	$part_sku=$data['part_sku'];
 	$location_key=$data['location_key'];
@@ -1155,7 +1155,7 @@ function add_part_to_location($data) {
 			,'qty'=>$part_location->data['Quantity On Hand']
 			,'formated_qty'=>number($part_location->data['Quantity On Hand'])
 			,'limits'=>'{?,?}'
-			
+
 		);
 		echo json_encode($response);
 		return;
@@ -1233,8 +1233,8 @@ function move_stock($_data) {
 
 
 	global $editor;
-	
-$raw_data=$_data['values'];
+
+	$raw_data=$_data['values'];
 
 
 
@@ -1249,18 +1249,18 @@ $raw_data=$_data['values'];
 		}
 	}
 
-if(!$data['Destination Key']){
-	$response=array('state'=>400,'action'=>'error','msg'=>_('No location selected'));
+	if (!$data['Destination Key']) {
+		$response=array('state'=>400,'action'=>'error','msg'=>_('No location selected'));
 		echo json_encode($response);
 		return;
-}
+	}
 
 
-	if($raw_data['from_key']==$data['Destination Key']){
+	if ($raw_data['from_key']==$data['Destination Key']) {
 		$response=array('state'=>400,'action'=>'error','msg'=>'wp');
 		echo json_encode($response);
 		return;
-	
+
 	}
 
 
@@ -1306,7 +1306,13 @@ if(!$data['Destination Key']){
 }
 
 function list_locations() {
-	$conf=$_SESSION['state']['locations']['edit_table'];
+	$conf=$_SESSION['state']['warehouse']['edit_locations'];
+
+
+	if (!isset( $_REQUEST['parent']) or !isset( $_REQUEST['parent_key']) ) {
+		print "no parent info\n";
+		return;
+	}
 
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
@@ -1325,10 +1331,6 @@ function list_locations() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -1348,11 +1350,45 @@ function list_locations() {
 		$tableid=0;
 
 
-	if (isset( $_REQUEST['parent'])) {
-		$parent=$_REQUEST['parent'];
-		$_SESSION['state']['locations']['parent']=$parent;
-	}else
-		$parent=$_SESSION['state']['locations']['parent'];
+	$elements=$conf['elements'];
+	$parent=$_REQUEST['parent'];
+
+	$parent_key=$_REQUEST['parent_key'];
+
+
+	$_SESSION['state']['warehouse']['locations']['order']=$order;
+	$_SESSION['state']['warehouse']['locations']['order_dir']=$order_direction;
+	$_SESSION['state']['warehouse']['locations']['nr']=$number_results;
+	$_SESSION['state']['warehouse']['locations']['sf']=$start_from;
+	$_SESSION['state']['warehouse']['locations']['f_field']=$f_field;
+	$_SESSION['state']['warehouse']['locations']['f_value']=$f_value;
+
+
+
+	//$elements=$conf['elements'];
+
+	if (isset( $_REQUEST['elements_Yellow'])) {
+		$elements['Yellow']=$_REQUEST['elements_Yellow'];
+	}
+	if (isset( $_REQUEST['elements_Red'])) {
+		$elements['Red']=$_REQUEST['elements_Red'];
+	}
+	if (isset( $_REQUEST['elements_Purple'])) {
+		$elements['Purple']=$_REQUEST['elements_Purple'];
+	}
+	if (isset( $_REQUEST['elements_Pink'])) {
+		$elements['Pink']=$_REQUEST['elements_Pink'];
+	}
+	if (isset( $_REQUEST['elements_Orange'])) {
+		$elements['Orange']=$_REQUEST['elements_Orange'];
+	}
+	if (isset( $_REQUEST['elements_Green'])) {
+		$elements['Green']=$_REQUEST['elements_Green'];
+	}
+	if (isset( $_REQUEST['elements_Blue'])) {
+		$elements['Blue']=$_REQUEST['elements_Blue'];
+	}
+
 
 
 
@@ -1364,9 +1400,7 @@ function list_locations() {
 
 
 
-	$_SESSION['state']['locations']['edit_table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-
+$where='where true ';
 
 
 	switch ($parent) {
@@ -1381,6 +1415,40 @@ function list_locations() {
 		break;
 	}
 
+
+
+	$_elements='';
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			if ($_key=='Blue') {
+				$_elements.=",'Blue'";
+			}
+			elseif ($_key=='Green') {
+				$_elements.=",'Green'";
+			}
+			elseif ($_key=='Orange') {
+				$_elements.=",'Orange'";
+			}
+			elseif ($_key=='Pink') {
+				$_elements.=",'Pink'";
+			}
+			elseif ($_key=='Purple') {
+				$_elements.=",'Purple'";
+			}
+			elseif ($_key=='Red') {
+				$_elements.=",'Red'";
+			}
+			elseif ($_key=='Yellow') {
+				$_elements.=",'Yellow'";
+			}
+		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} else {
+		$where.=' and `Location Flag` in ('.$_elements.')' ;
+	}
 
 	$sql="select count(*) as total from `Location Dimension`    $where $wheref";
 	// print $sql;

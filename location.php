@@ -99,7 +99,7 @@ $js_files=array(
 
 
 
-$order=$_SESSION['state']['locations']['table']['order'];
+$order=$_SESSION['state']['warehouse']['locations']['order'];
 
 if ($order=='code') {
     $order='`Location Code`';

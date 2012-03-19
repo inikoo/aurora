@@ -77,24 +77,20 @@ $smarty->assign('general_options_list',$general_options_list);
 
 
 
-//$tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
-//$smarty->assign('filter',$tipo_filter);
-//$smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);
+$tipo_filter=$_SESSION['state']['stores']['marketing']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['stores']['marketing']['f_value']);
 
-//$filter_menu=array(
-//	   'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>'Customer Name','label'=>'Name'),
-//		   'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>'Customer Postcode','label'=>'Postcode'),
-//		   'min'=>array('db_key'=>_('min'),'menu_label'=>'Mininum Number of Orders','label'=>'Min No Orders'),
-//		   'max'=>array('db_key'=>_('min'),'menu_label'=>'Maximum Number of Orders','label'=>'Max No Orders'),
+$filter_menu=array(
+	   'code'=>array('db_key'=>'code','menu_label'=>_('Store Code'),'label'=>_('Code')),
 
-//		   );
-//$smarty->assign('filter_menu0',$filter_menu);
-//$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$smarty->assign('options_box_width','200px');
 
 
 //$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);

@@ -7,9 +7,11 @@
 </div>
 <div class="top_page_menu">
 <div class="buttons" style="float:right">
+<button style="visibility:hidden" onclick="window.location='marketing_server_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+
 </div>
 <div class="buttons" style="float:left">
-<button  onclick="window.location='marketing_server_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+<span class="main_title">{t}Marketing Store Overview{/t}</span>
 </div>
 <div style="clear:both"></div>
 </div>

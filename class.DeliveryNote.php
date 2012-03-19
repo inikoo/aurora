@@ -1163,7 +1163,9 @@ class DeliveryNote extends DB_Table {
 			} 
 			else {
 
-				$sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='Sale' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
+				$sql=sprintf("update `Inventory Transaction Fact` set `Date Shipped`=%s,`Inventory Transaction Type`='Sale' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
+					prepare_mysql($data['Delivery Note Date']),
+					
 					$this->id,
 					$row['Inventory Transaction Key']
 

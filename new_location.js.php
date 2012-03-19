@@ -64,7 +64,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo $_SESSION['state']['locations']['edit_table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo $_SESSION['state']['warehouse']['edit_locations']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -77,8 +77,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['locations']['edit_table']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['locations']['edit_table']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['warehouse']['edit_locations']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['warehouse']['edit_locations']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -94,7 +94,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", onCellClick);
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['locations']['edit_table']['f_field']?>',value:'<?php echo$_SESSION['state']['locations']['edit_table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouse']['edit_locations']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['edit_locations']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 
 

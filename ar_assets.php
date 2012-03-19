@@ -6131,15 +6131,14 @@ function list_charges() {
 function list_campaigns() {
 
 
-	$parent='store';
 
-	if ( isset($_REQUEST['parent']))
-		$parent= $_REQUEST['parent'];
+if(!isset($_REQUEST['parent']) or !isset($_REQUEST['parent_key'])){
 
-	if ($parent=='store')
-		$parent_id=$_SESSION['state']['store']['id'];
-	else
-		return;
+exit("no parent");
+}
+
+$parent= $_REQUEST['parent'];
+$parent_key=$_REQUEST['parent_key'];
 
 	$conf=$_SESSION['state'][$parent]['campaigns'];
 
@@ -6170,10 +6169,6 @@ function list_campaigns() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -6193,21 +6188,29 @@ function list_campaigns() {
 		$tableid=0;
 
 
-	$_SESSION['state'][$parent]['campaigns']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+$_SESSION['state'][$parent]['campaigns']['order']=$order;
+$_SESSION['state'][$parent]['campaigns']['order_dir']=$order_direction;
+$_SESSION['state'][$parent]['campaigns']['nr']=$number_results;
+$_SESSION['state'][$parent]['campaigns']['sf']=$start_from;
+$_SESSION['state'][$parent]['campaigns']['f_field']=$f_field;
+$_SESSION['state'][$parent]['campaigns']['f_value']=$f_value;
+
+
 
 	if ($parent=='store')
-		$where=sprintf("where  `Store Key`=%d    ",$parent_id);
+		$where=sprintf("where  `Store Key`=%d    ",$parent_key);
 	else
 		$where=sprintf("where true ");;
 
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='description' and $f_value!='')
-		$wheref.=" and  `Deal Description` like '".addslashes($f_value)."%'";
+		$wheref.=" and  `Deal Campaign Description` like '".addslashes($f_value)."%'";
 	else if ($f_field=='name' and $f_value!='')
-			$wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+			$wheref.=" and  `Deal Campaign Name` like '".addslashes($f_value)."%'";
 
-		$sql="select count(*) as total from `Deal Dimension`   $where $wheref";
+		$sql="select count(*) as total from `Deal Campaign Dimension`   $where $wheref";
 	//  print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -6219,7 +6222,7 @@ function list_campaigns() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total `Deal Dimension`   $where ";
+		$sql="select count(*) as total `Deal Campaign Dimension`   $where ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -6264,19 +6267,19 @@ function list_campaigns() {
 	$_order=$order;
 
 	if ($order=='name')
-		$order='`Deal Name`';
+		$order='`Deal Campaign Name`';
 	else if ($order=='description')
-			$order='`Deal Description`';
+		$order='`Deal Campaign Description`';
 		else
-			$order='`Deal Name`';
+			$order='`Deal Campaign Name`';
 
 
-		$sql="select *  from `Campaign Deal Schema` $where    order by $order $order_direction limit $start_from,$number_results    ";
-	print $sql;
+		$sql="select *  from `Deal Campaign Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+	
 	$res = mysql_query($sql);
 
 	$total=mysql_num_rows($res);
-
+$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		//$sql=sprintf("select * from `Campaign Deal Schema`  where `Deal Key`=%d  ",$row['Deal Key']);
@@ -6291,20 +6294,20 @@ function list_campaigns() {
 		$deals='';
 		$used=0;
 
-		if (!$row['Deal Expiration Date'] ) {
+		if (!$row['Deal Campaign Valid To'] ) {
 			$duration=_('Permanent');
 		} else {
-			if (!$row['Deal Begin Date']) {
-				$duration=strftime("%a %e %b %y", $row['Deal Begin Date']." +00:00").' - ';
+			if (!$row['Deal Campaign Valid From']) {
+				$duration=strftime("%a %e %b %y", $row['Deal Campaign Valid From']." +00:00").' - ';
 			}
-			$duration.=strftime("%a %e %b %y", $row['Deal Expiration Date']." +00:00");
+			$duration.=strftime("%a %e %b %y", $row['Deal Campaign Valid To']." +00:00");
 		}
 
 
 
 		$adata[]=array(
-			'name'=>$row['Deal Name'],
-			'description'=>$row['Deal Description'].$deals,
+			'name'=>$row['Deal Campaign Name'],
+			'description'=>$row['Deal Campaign Description'].$deals,
 			'duration'=>$duration,
 			'used'=>$used
 		);

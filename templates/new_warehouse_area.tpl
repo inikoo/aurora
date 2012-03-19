@@ -2,13 +2,31 @@
 <div id="bd">
 	{include file='locations_navigation.tpl'} 
 	<div class="branch">
-		<span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$warehouse->id}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if}<a href="warehouse.php?id={$warehouse->id}">{t}Locations{/t}</a> &rarr; {t}New Warehouse Area{/t}</span> 
+  <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a>  &rarr; {/if} <a href="edit_warehouse.php?id={$warehouse->id}">{t}Locations{/t} ({t}Editing Warehouse{/t})</a> &rarr; {t}New Warehouse Area{/t}</span>
+
 	</div>
-	<h1 style="padding:10px 0px">
-		{t}New Warehouse Area{/t} 
-	</h1>
+	
+	<div class="top_page_menu">
+    <div class="buttons" style="float:right">
+       
+        <button  onclick="window.location='edit_warehouse.php?id={$warehouse->id}'" class="negative" ><img src="art/icons/door_out.png" alt=""> {t}Cancel{/t}</button>
+
+        
+       
+    </div>
+    <div class="buttons" style="float:left">
+      
+    <span class="main_title">{t}New Warehouse Area{/t}  (<span id="title_code">{$warehouse->get('Warehouse Code')}</span>)</span></span>
+
+
+ </div>
+    <div style="clear:both"></div>
+</div>
+	
+	
+	
 	<div>
-		<table class="edit" style="width:500px">
+		<table class="edit" style="margin-top:10px;width:500px">
 			<tr class="top">
 				<td class="label" style="width:150px">{t}Warehouse{/t}:</td>
 				<td><span style="font-weight:800">{$warehouse->get('Warehouse Name')}</span> 
