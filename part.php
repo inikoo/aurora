@@ -306,5 +306,10 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 mysql_free_result($result);
 
+include_once('conf/period_tags.php');
+
+unset($period_tags['hour']);
+$smarty->assign('period_tags',$period_tags);
+
 $smarty->display('part.tpl');
 ?>

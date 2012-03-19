@@ -1,45 +1,45 @@
 <?php
 /*
- File: location.php 
+ File: location.php
 
  UI location page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Inikoo 
- 
+
+ Copyright (c) 2009, Inikoo
+
  Version 2.0
 */
-include_once('common.php');
-include_once('class.Location.php');
+include_once 'common.php';
+include_once 'class.Location.php';
 
-if(!$user->can_view('warehouses') or !$user->can_edit('warehouses')  ){
-  header('Location: index.php');
-  exit;
+if (!$user->can_view('warehouses') or !$user->can_edit('warehouses')  ) {
+	header('Location: index.php');
+	exit;
 }
 
 
 
-if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
-  $location_id=1;
+if (!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
+	$location_id=1;
 else
-  $location_id=$_REQUEST['id'];
+	$location_id=$_REQUEST['id'];
 $_SESSION['state']['location']['id']=$location_id;
 
 
 $location= new location($location_id);
 //print_r($location);
 
-if( !$location->id or   !in_array($location->data['Location Warehouse Key'],$user->warehouses   ) ){
-  header('Location: index.php');
-  exit;
+if ( !$location->id or   !in_array($location->data['Location Warehouse Key'],$user->warehouses   ) ) {
+	header('Location: index.php');
+	exit;
 }
 
 
-if(!$user->can_edit('warehouses')  ){
-  header('Location: location.php?id='.$location->id);
-  exit;
+if (!$user->can_edit('warehouses')  ) {
+	header('Location: location.php?id='.$location->id);
+	exit;
 }
 
 $smarty->assign('edit',$_SESSION['state']['location']['edit']);
@@ -56,25 +56,25 @@ $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
 
 $used_for_list=array(
-                  'picking'=>array('name'=>_('Picking')),
-                  'storing'=>array('name'=>_('Storing')),
-                  'loading'=>array('name'=>_('Loading')),
-                  'displaying'=>array('name'=>_('Displaying')),
-				  'other'=>array('name'=>_('Other'))
-              );
-			  
+	'picking'=>array('name'=>_('Picking')),
+	'storing'=>array('name'=>_('Storing')),
+	'loading'=>array('name'=>_('Loading')),
+	'displaying'=>array('name'=>_('Displaying')),
+	'other'=>array('name'=>_('Other'))
+);
+
 $smarty->assign('used_for_list',$used_for_list);
 
 $flag_list=array(
-         'blue'=>array('name'=>_('Blue')),
-                  'green'=>array('name'=>_('Green')),
-                  'orange'=>array('name'=>_('Orange')),
-                  'pink'=>array('name'=>_('Pink')),
-		  'purple'=>array('name'=>_('Purple')),
-		  'red'=>array('name'=>_('Red')),
-		  'yellow'=>array('name'=>_('Yellow'))
-              );
-			  
+	'blue'=>array('name'=>_('Blue')),
+	'green'=>array('name'=>_('Green')),
+	'orange'=>array('name'=>_('Orange')),
+	'pink'=>array('name'=>_('Pink')),
+	'purple'=>array('name'=>_('Purple')),
+	'red'=>array('name'=>_('Red')),
+	'yellow'=>array('name'=>_('Yellow'))
+);
+
 $smarty->assign('flag_list',$flag_list);
 
 $sql=sprintf("select * from `Part Location Dimension` where `Location Key`=%d", $location->id);
@@ -83,59 +83,59 @@ $number_of_parts=mysql_num_rows($result);
 $smarty->assign('number_of_parts',$number_of_parts);
 
 $shape_type_list=array(
-                  'box'=>array('name'=>_('Box')),
-                  'cylinder'=>array('name'=>_('Cylinder')),
-                  'unknown'=>array('name'=>_('Unknown'))
-              );
-			  
+	'box'=>array('name'=>_('Box')),
+	'cylinder'=>array('name'=>_('Cylinder')),
+	'unknown'=>array('name'=>_('Unknown'))
+);
+
 $smarty->assign('shape_type_list',$shape_type_list);
 
 
 $has_stock_list=array(
-                  'yes'=>array('name'=>_('Yes')),
-                  'no'=>array('name'=>_('No')),
-                  'unknown'=>array('name'=>_('Unknown'))
-              );
-			  
+	'yes'=>array('name'=>_('Yes')),
+	'no'=>array('name'=>_('No')),
+	'unknown'=>array('name'=>_('Unknown'))
+);
+
 $smarty->assign('has_stock_list',$has_stock_list);
 $css_files=array(
-              $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'assets/skins/sam/autocomplete.css',
-               $yui_path.'calendar/assets/skins/sam/calendar.css',
-               'common.css',
-               'css/container.css',
-               'button.css',
-               'table.css',
-               'css/edit',
-               'theme.css.php'
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	'common.css',
+	'css/container.css',
+	'button.css',
+	'table.css',
+	'css/edit',
+	'theme.css.php'
 
-		 );
+);
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',	
-		$yui_path.'datatable/datatable.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/common.js',
-		'js/search.js',
-		'js/table_common.js',
-		'js/dropdown.js',
-		'js/edit_common.js',
-		'edit_location.js.php?location_id='.$location_id.'&warehouse_key='.$location->data['Location Warehouse Key']
-		);
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'datatable/datatable.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	'js/common.js',
+	'js/search.js',
+	'js/table_common.js',
+	'js/dropdown.js',
+	'js/edit_common.js',
+	'edit_location.js.php?location_id='.$location_id.'&warehouse_key='.$location->data['Location Warehouse Key']
+);
 
 //print_r($location);
 
 
 $tipo_filter0=$_SESSION['state']['location']['stock_history']['f_field'];
 $filter_menu0=array(
-                  'note'=>array('db_key'=>_('note'),'menu_label'=>'Part SKU','label'=>_('Note')),
-		   'author'=>array('db_key'=>_('author'),'menu_label'=>'Used in','label'=>_('Author')),
-              );
+	'note'=>array('db_key'=>_('note'),'menu_label'=>'Part SKU','label'=>_('Note')),
+	'author'=>array('db_key'=>_('author'),'menu_label'=>'Used in','label'=>_('Author')),
+);
 $smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
 $smarty->assign('filter_menu0',$filter_menu0);
 $smarty->assign('filter0',$tipo_filter0);
@@ -147,41 +147,41 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 $tipo_filter2='code';
 $filter_menu2=array(
-                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
-              );
+	'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
+	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2','');
 
-$order=$_SESSION['state']['locations']['table']['order'];
+$order=$_SESSION['state']['warehouse']['locations']['order'];
 
-if($order=='code'){
-  $order='`Location Code`';
- }
- elseif($order=='parts')
-    $order='`Location Distinct Parts`';
- elseif($order=='max_volumen')
-    $order='`Location Max Volume`';
-  elseif($order=='max_weight')
-    $order='`Location Max Weight`';
-  elseif($order=='tipo')
-    $order='`Location Mainly Used For`';
- elseif($order=='area')
-    $order='`Location Area`';
+if ($order=='code') {
+	$order='`Location Code`';
+}
+elseif ($order=='parts')
+	$order='`Location Distinct Parts`';
+elseif ($order=='max_volumen')
+	$order='`Location Max Volume`';
+elseif ($order=='max_weight')
+	$order='`Location Max Weight`';
+elseif ($order=='tipo')
+	$order='`Location Mainly Used For`';
+elseif ($order=='area')
+	$order='`Location Area`';
 $_order=str_replace('`','',$order);
 
 $sql=sprintf("select `Location Key` as id,`Location Code` as code from `Location Dimension` where  %s<'%s'  order by %s desc  ",$order,$location->data[$_order],$order);
 $result=mysql_query($sql);
-if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
-  $prev=array('id'=>0,'code'=>'');
+if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
+	$prev=array('id'=>0,'code'=>'');
 mysql_free_result($result);
 $sql=sprintf("select `Location Key` as id,`Location Code` as code  from `Location Dimension` where  %s>'%s'   order by %s   ",$order,$location->data[$_order],$order);
 //print "$sql";
 $result=mysql_query($sql);
-if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
-  $next=array('id'=>0,'code'=>'');
+if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
+	$next=array('id'=>0,'code'=>'');
 mysql_free_result($result);
 
 $smarty->assign('prev',$prev);

@@ -398,7 +398,7 @@ function delete_old_data() {
 	mysql_query($sql);
 	$sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s and `Order Key` IS NULL",prepare_mysql($store_code.$order_data_id));
 	mysql_query($sql);
-$sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s and  `Order Key`=0",prepare_mysql($store_code.$order_data_id));
+	$sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s and  `Order Key`=0",prepare_mysql($store_code.$order_data_id));
 	mysql_query($sql);
 
 
@@ -406,7 +406,7 @@ $sql=sprintf("delete from `Order Transaction Fact` where `Refund Metadata`=%s an
 	$sql=sprintf("select `Part SKU`,`Location Key` from  `Inventory Transaction Fact` where `Metadata`=%s   ",prepare_mysql($store_code.$order_data_id));
 	$res_q=mysql_query($sql);
 	while ($row_q=mysql_fetch_assoc($res_q)) {
-$parts_to_update_stock[]=$row_q['Part SKU'].'_'.$row_q['Location Key'];
+		$parts_to_update_stock[]=$row_q['Part SKU'].'_'.$row_q['Location Key'];
 	}
 
 
@@ -416,8 +416,8 @@ $parts_to_update_stock[]=$row_q['Part SKU'].'_'.$row_q['Location Key'];
 		print "$sql Warning can no delete old inv";
 
 	foreach ($parts_to_update_stock as $part_to_update_stock) {
-			$part_location=new PartLocation($part_to_update_stock);
-					$part_location->update_stock();
+		$part_location=new PartLocation($part_to_update_stock);
+		$part_location->update_stock();
 	}
 
 
@@ -426,8 +426,8 @@ $parts_to_update_stock[]=$row_q['Part SKU'].'_'.$row_q['Location Key'];
 	$sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
 	if (!mysql_query($sql))
 		print "$sql Warning can no delete oldhidt nio prod";
-		
-	
+
+
 }
 
 
@@ -713,8 +713,8 @@ function create_order($data) {
 
 	//print "sending to warehouse\n";
 
-	//$order->update_stock=false;	
-	
+	//$order->update_stock=false;
+
 	if (count($data_dn_transactions)>0) {
 		$dn=$order->send_to_warehouse($date_order);
 
@@ -757,14 +757,14 @@ function send_order($data,$data_dn_transactions) {
 	//print_r($data_dn_transactions);
 	$skus_to_pick_data=array();
 
-//print_r($dn);
+	//print_r($dn);
 	$_picked_qty=array();
 	$_out_of_stock_qty=array();
 	foreach ($data_dn_transactions as $key=>$value) {
 
 		$shipped_quantity=round($value['Shipped Quantity'],8);
 		$out_of_stock_quantity=round($value['No Shipped Due Out of Stock'],8);;
-//print_r($value);
+		//print_r($value);
 
 		//   print $value['Code']."  ship ".$value['Shipped Quantity']."   given ".$value['given']." \n";
 		$sql=sprintf("select `Inventory Transaction Key`,`Required`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
@@ -823,7 +823,7 @@ function send_order($data,$data_dn_transactions) {
 
 
 	}
-$dn->update_stock=false;
+	$dn->update_stock=false;
 	foreach ($_picked_qty as $itf=>$_qty) {
 		$dn->set_as_picked($itf,$_qty,$date_order);
 	}
@@ -911,7 +911,7 @@ $dn->update_stock=false;
 
 	$dn->set_parcels($parcels,$parcel_type);
 
-$dn->update_stock=true;
+	$dn->update_stock=true;
 
 	//print "----- rea ship\n";
 
@@ -962,6 +962,8 @@ $dn->update_stock=true;
 
 	}
 	$dn->approved_for_shipping($date_inv);
+	
+	
 	//print "CACA ==".$dn->data['Delivery Note Dispatch Method']."================\n";
 	if ($dn->data['Delivery Note Dispatch Method']=='Dispatch')
 		$dn->dispatch(array('Delivery Note Date'=>$date_inv));

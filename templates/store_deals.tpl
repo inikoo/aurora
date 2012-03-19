@@ -3,17 +3,18 @@
 <div style="padding:0 20px">
 {include file='assets_navigation.tpl'}
 <div class="branch"> 
-  <span   >{if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {t}Offers{/t}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$stoer->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr;  {t}Offers{/t}</span>
 </div>
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 
   <div class="buttons" style="float:left">
-        <button  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>
+<span class="main_title">{t}Offers{/t} <span class="id">{$store->get('Store Code')}</span></span>
+
     </div>
 
 
 <div class="buttons">
-<button  id="new_offer" ><img src="art/icons/add.png" alt=""> {t}Add Offer{/t}</button>
+<button  id="new_offer" ><img src="art/icons/add.png" alt=""> {t}Create Campaign{/t}</button>
 </div>
 
 
@@ -24,12 +25,11 @@
 
 
 
-<h1 style="clear:left">{t}Offers{/t} <span class="id">{$store->get('Store Code')}</span></h1>
 
 </div>
 
 <div style="padding:0px">
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
     <li> <span class="item {if $block_view=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Campaigns{/t}</span></span></li>
     <li> <span class="item {if $block_view=='offers'}selected{/if}"  id="offers">  <span> {t}Offers{/t}</span></span></li>

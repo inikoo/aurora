@@ -1,8 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='locations_navigation.tpl'}
+<input type="hidden" id="warehouse_key" value="{$warehouse->id}"/>
+
 <div class="branch"> 
-  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Locations{/t}</span>
+  <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Locations{/t} ({t}Editing Warehouse{/t})</span>
 </div>
 
 
@@ -18,6 +20,8 @@
     </div>
     <div class="buttons" style="float:left">
       
+    <span class="main_title">{t}Editing Warehouse{/t}: <span class="id" ><span id="title_name">{$warehouse->get('Warehouse Name')}</span> (<span id="title_code">{$warehouse->get('Warehouse Code')}</span>)</span></span>
+
 
  </div>
     <div style="clear:both"></div>
@@ -25,9 +29,7 @@
 
 
 
-<div style="clear:left;margin:0 0px">
-    <h1>{t}Editing Warehouse{/t}: <span id="title_name">{$warehouse->get('Warehouse Name')}</span> (<span id="title_code">{$warehouse->get('Warehouse Code')}</span>)</h1>
-</div>
+
 <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
     <li> <span class="item {if $edit=='areas'}selected{/if}"  id="areas">  <span> {t}Areas{/t}</span></span></li>
@@ -77,10 +79,10 @@
 	</table>
   </div>
    <div id="areas_block" style="{if $edit!='areas'}display:none{/if}" >
-    <div class="general_options" style="float:right">
-      <span   style="margin-right:10px"  id="add_area_here" class="state_details" >Add Area</span>
-       <span  style="margin-right:10px;display:none"  id="save_area" class="state_details">{t}Save{/t}</span>
-      <span style="margin-right:10px;display:none" id="close_add_area" class="state_details">{t}Close Dialog{/t}</span>
+    <div class="buttons small" >
+      <button   id="add_area_here" class="state_details" >Add Area</button>
+       <button  style="display:none"  id="save_area" class="state_details">{t}Save{/t}</button>
+      <button style="display:none" id="close_add_area" class="state_details">{t}Close Dialog{/t}</button>
       
     </div>
     
@@ -97,12 +99,13 @@
      </div>
     
     
-    
+    <div style="clear:both"></div>
    
     
     
      <div id="the_table1" class="data_table" style="margin:0px 0px;clear:left;">
        <span class="clean_table_title">{t}Warehouse Areas{/t}</span>
+       <div class="table_top_bar" style="margin-bottom:15px"></div>
                  {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
 
        <div  id="table1"   class="data_table_container dtable btable "> </div>

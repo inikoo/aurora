@@ -1375,7 +1375,7 @@ $default_state=array(
 
 
 		),
-	'parts_lists'=>array(
+		'parts_lists'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -1385,8 +1385,6 @@ $default_state=array(
 
 
 		),
-
-
 		'stock_history'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -1414,6 +1412,27 @@ $default_state=array(
 			'to'=>'',
 			'elements'=>array(),
 			'view'=>''
+		),
+'locations'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'elements'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
+
+		),
+		'edit_locations'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'elements'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
 		),
 
 
@@ -1470,31 +1489,7 @@ $default_state=array(
 
 	),
 
-	'locations'=>array(
-		'parent'=>'none',
-		'table'=>array(
-			'order'=>'code',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
-			'elements'=>array()
-		),
-		'edit_table'=>array(
-			'order'=>'code',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'code',
-			'f_value'=>'','f_show'=>false,
-			'elements'=>array()
-		),
 
-
-	),
 
 
 	'shelfs'=>array(
@@ -1620,7 +1615,7 @@ $default_state=array(
 		'id'=>1,
 		'view'=>'description',
 		'edit'=>'description',
-		'locations'=>array(
+'locations'=>array(
 			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -1628,7 +1623,18 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
-			'elements'=>array()
+			'elements'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
+
+		),
+		'edit_locations'=>array(
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			'elements'=>array('Blue'=>1,'Green'=>1,'Orange'=>1,'Pink'=>1,'Purple'=>1,'Red'=>1,'Yellow'=>1)
 		),
 		'parts'=>array(
 			'order'=>'sku',

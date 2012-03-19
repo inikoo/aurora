@@ -9,37 +9,21 @@
 
 <div class="buttons" style="float:right">
 
-
-
 <button  onclick="window.location='preferences.php'" ><img src="art/icons/cog.png" alt=""> {t}Preferences{/t}</button>
-
-
-
-
-</div>
-
-
-<div class="buttons" style="float:left">
 
 <button  onclick="window.location='users_customer.php'" ><img src="art/icons/page_world.png" alt=""> {t}Website Users{/t}</button>
 <button  onclick="window.location='users_supplier.php'" ><img src="art/icons/lorry.png" alt=""> {t}Supplier Users{/t}</button>
 <button  onclick="window.location='users_staff.php'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Inikoo Users{/t}</button>
-
-
-
+</div>
+<div class="buttons" style="float:left">
+  <span class="main_title">{t}Users Handing{/t}</span>
 </div>
 
 
 <div style="clear:both"></div>
 </div>
 
-
-
-	
-    <h1>{t}Users Handing{/t}</h1>
-
-
-<div class="top_row">
+<div class="top_row" style="margin-top:15px">
 
 <table>
 <tr>

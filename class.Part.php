@@ -533,6 +533,10 @@ class part extends DB_Table {
 
 	}
 
+function get_period($period,$key) {
+	return $this->get($period.' '.$key);
+}
+
 	function get($key='',$args=false) {
 
 
@@ -559,14 +563,14 @@ class part extends DB_Table {
 		}
 
 
-		if (preg_match('/^(Total|1|10|6|3|Year To|Month To|Today|Week To).*(Amount|Profit)$/',$key)) {
+		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Amount|Profit)$/',$key)) {
 
 			$amount='Part '.$key;
 
 			return money($this->data[$amount]);
 		}
 
-		if (preg_match('/^(Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin)$/',$key)) {
+		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin)$/',$key)) {
 
 			$amount='Part '.$key;
 
@@ -574,7 +578,7 @@ class part extends DB_Table {
 		}
 
 
-		if (preg_match('/^(Total|1|10|6|3|Year To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Provided|Broken|Acquired)$/',$key) or $key=='Current Stock'  ) {
+		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Provided|Broken|Acquired)$/',$key) or $key=='Current Stock'  ) {
 
 			$amount='Part '.$key;
 
@@ -1524,154 +1528,12 @@ class part extends DB_Table {
 
 	function update_sales_from_invoices($interval) {
 
-		$to_date='';
-
-		switch ($interval) {
-		case 'Last Month':
-			$db_interval='Last Month';
-			$from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
-			$to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-			break;
-
-		case 'Last Week':
-			$db_interval='Last Week';
+$to_date='';
+list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
-			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
-				$to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+		
 
-			} else {
-				return;
-			}
-
-
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-			break;
-
-		case 'Yesterday':
-			$db_interval='Yesterday';
-			$from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
-			$to_date=date('Y-m-d 00:00:00',strtotime('today'));
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
-			break;
-
-		case 'Week To Day':
-		case 'wtd':
-			$db_interval='Week To Day';
-
-			$from_date=false;
-			$from_date_1yb=false;
-
-			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date=$row['First Day'].' 00:00:00';
-				$lapsed_seconds=strtotime('now')-strtotime($from_date);
-
-			} else {
-				return;
-			}
-
-			$sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date_1yb=$row['First Day'].' 00:00:00';
-			}
-
-
-			$to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
-
-
-
-			break;
-		case 'Today':
-
-			$db_interval='Today';
-			$from_date=date('Y-m-d 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-
-		case 'Total':
-		case 'all':
-			$db_interval='Total';
-			$from_date=$this->data['Part Valid From'];
-			$from_date_1yb=false;
-			$to_1yb=false;
-			break;
-		case 'Month To Day':
-		case 'mtd':
-			$db_interval='Month To Day';
-			$from_date=date('Y-m-01 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case 'Year To Day':
-		case 'ytd':
-			$db_interval='Year To Day';
-			$from_date=date('Y-01-01 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-			break;
-		case '3 Year':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
-			$from_date_1yb=false;
-			$to_1yb=false;
-			break;
-		case '1 Year':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '6 Month':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Quarter':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Month':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '10 Day':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Week':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-
-		default:
-			return;
-			break;
-		}
 
 		setlocale(LC_ALL, 'en_GB');
 

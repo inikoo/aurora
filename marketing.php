@@ -115,8 +115,8 @@ $smarty->assign('js_files',$js_files);
 
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['marketing']['email_campaigns']['f_field']:'code');
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['marketing']['email_campaigns']['f_value']:addslashes($q)));
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['marketing']['email_campaigns']['f_value']:addslashes($q)));
 $filter_menu=array(
                  'name'=>array('db_key'=>'name','menu_label'=>'Campaign with name like <i>x</i>','label'=>'Name')
              );

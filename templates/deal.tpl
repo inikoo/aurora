@@ -4,13 +4,14 @@
 {include file='assets_navigation.tpl'}
 <input type="hidden" value="{$deal->id}" id="deal_key"/>
 <div class="branch"> 
-  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a  href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="store_deals.php?store=$store->id">{t}Offers{/t}</a> &rarr; {$deal->get('Deal Code')}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr;  {/if} <a href="marketing.php?store={$stoer->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr;  <a href="store_deals.php?store={$store->id}">{t}Offers{/t}</a></span> &rarr; {$deal->get('Deal Code')}</span>
 </div>
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 
   <div class="buttons" style="float:left">
-        <button  onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>
-    </div>
+        <button  style="visibility:hidden" onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>
+   <span class="main_title">{$deal->get('Deal Name')} <span class="id">{$deal->get('Deal Code')}</span></span>
+   </div>
 
 
 <div class="buttons">
@@ -24,14 +25,13 @@
 
 
 
-<h1 style="clear:left">{$deal->get('Deal Name')} <span class="id">{$deal->get('Deal Code')}</span></h1>
+
 
 </div>
 
 <div style="padding:0px">
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Campaigns{/t}</span></span></li>
     <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='customers'}selected{/if}"  id="customers">  <span> {t}Customers{/t}</span></span></li>
    
@@ -42,17 +42,7 @@
 
 <div style="padding:0 20px">
 
-<div id="block_campaigns" style="{if $block_view!='campaigns'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 
-        <div id="the_table" class="data_table" style="margin-top:20px;clear:both;" >
-    <span class="clean_table_title">{t}Campaigns{/t}</span>
-  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
-</div>
-       {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=true }
-     	<div  id="table2"   class="data_table_container dtable btable" style="font-size:85%"> </div>
-      
-      
-      </div>
 <div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 <h2>{$deal->get('Deal Name')}</h2>
 <p style="width:300px">

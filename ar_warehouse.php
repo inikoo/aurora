@@ -16,240 +16,244 @@ require_once 'common.php';
 require_once 'ar_edit_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
-    $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
-    echo json_encode($response);
-    exit;
+	$response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+	echo json_encode($response);
+	exit;
 }
 
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
 case('other_locations_quick_buttons'):
- $data=prepare_values($_REQUEST,array(
-				'sku'=>array('type'=>'key'),
-                             'location_key'=>array('type'=>'key')
-                          
-                         ));
+	$data=prepare_values($_REQUEST,array(
+			'sku'=>array('type'=>'key'),
+			'location_key'=>array('type'=>'key')
 
-    other_locations_quick_buttons($data);
-    break;
+		));
+
+	other_locations_quick_buttons($data);
+	break;
 case('location_stock_history'):
-    history_stock_location();
-    break;
+	history_stock_location();
+	break;
 case('stock_history'):
-    warehouse_stock_history();
-    break;
+	warehouse_stock_history();
+	break;
 case('parts_at_location'):
-    parts_at_location();
-    break;
+	parts_at_location();
+	break;
 case('find_warehouse_area'):
-    $data=prepare_values($_REQUEST,array(
-				'parent_key'=>array('type'=>'string'),
-                             'query'=>array('type'=>'string')
-                          
-                         ));
+	$data=prepare_values($_REQUEST,array(
+			'parent_key'=>array('type'=>'string'),
+			'query'=>array('type'=>'string')
 
-    find_warehouse_area($data);
-    break;
+		));
+
+	find_warehouse_area($data);
+	break;
 case('find_location'):
-    find_location();
-    break;
+	find_location();
+	break;
 case('find_shelf_type'):
-    $data=prepare_values($_REQUEST,array(
-                             'query'=>array('type'=>'string')
-                         ));
-    find_shelf_type($data);
-    break;
+	$data=prepare_values($_REQUEST,array(
+			'query'=>array('type'=>'string')
+		));
+	find_shelf_type($data);
+	break;
 case('locations'):
-    list_locations();
-    break;
+	list_locations();
+	break;
 case('shelfs'):
-    list_shelfs();
-    break;
+	list_shelfs();
+	break;
 case('warehouse_areas'):
-    list_warehouse_areas();
-    break;
+	list_warehouse_areas();
+	break;
 case('warehouses'):
-    list_warehouses();
-    break;
+	list_warehouses();
+	break;
 case('part_categories'):
-    list_part_categories();
-    break;
+	list_part_categories();
+	break;
 case('is_warehouse_code'):
-    $data=prepare_values($_REQUEST,array(
-                             'warehouse_code'=>array('type'=>'string'),
-                             'query'=>array('type'=>'string')
-                         ));
-    is_warehouse_code($data);
-    break;
+	$data=prepare_values($_REQUEST,array(
+			'warehouse_code'=>array('type'=>'string'),
+			'query'=>array('type'=>'string')
+		));
+	is_warehouse_code($data);
+	break;
 case('is_warehouse_area_code'):
-    $data=prepare_values($_REQUEST,array(
-                             'warehouse_code'=>array('type'=>'string'),
-                             'query'=>array('type'=>'string')
-                         ));
-    is_warehouse_area_code($data);
-    break;
+	$data=prepare_values($_REQUEST,array(
+			'warehouse_code'=>array('type'=>'string'),
+			'query'=>array('type'=>'string')
+		));
+	is_warehouse_area_code($data);
+	break;
 default:
 
-    $response=array('state'=>404,'resp'=>_('Operation not found ha ha'));
-    echo json_encode($response);
+	$response=array('state'=>404,'resp'=>_('Operation not found ha ha'));
+	echo json_encode($response);
 
 
 }
 
 function is_warehouse_code($data) {
-    if (!isset($data['query']) or !isset($data['warehouse_code'])) {
-        $response= array(
-                       'state'=>400,
-                       'msg'=>'Error'
-                   );
-        echo json_encode($response);
-        return;
-    } else
-        $query=$data['query'];
-    if ($query=='') {
-        $response= array(
-                       'state'=>200,
-                       'found'=>0
-                   );
-        echo json_encode($response);
-        return;
-    }
+	if (!isset($data['query']) or !isset($data['warehouse_code'])) {
+		$response= array(
+			'state'=>400,
+			'msg'=>'Error'
+		);
+		echo json_encode($response);
+		return;
+	} else
+		$query=$data['query'];
+	if ($query=='') {
+		$response= array(
+			'state'=>200,
+			'found'=>0
+		);
+		echo json_encode($response);
+		return;
+	}
 
-    $warehouse_code=$data['warehouse_code'];
+	$warehouse_code=$data['warehouse_code'];
 
-    $sql=sprintf("select * from `Warehouse Dimension` where  `Warehouse Code`=%s"
-                 ,prepare_mysql($data['query'])
-                );
-    $res=mysql_query($sql);
+	$sql=sprintf("select * from `Warehouse Dimension` where  `Warehouse Code`=%s"
+		,prepare_mysql($data['query'])
+	);
+	$res=mysql_query($sql);
 
-    if ($data=mysql_fetch_array($res)) {
-        $msg=sprintf('Another warehouse (<a href="warehouse.php?pid=%d">%s</a>) already has this name'
-                     ,$data['Warehouse Key']
-                     ,$data['Warehouse Code']
-                    );
-        $response= array(
-                       'state'=>200,
-                       'found'=>1,
-                       'msg'=>$msg
-                   );
-        echo json_encode($response);
-        return;
-    } else {
-        $response= array(
-                       'state'=>200,
-                       'found'=>0
-                   );
-        echo json_encode($response);
-        return;
-    }
+	if ($data=mysql_fetch_array($res)) {
+		$msg=sprintf('Another warehouse (<a href="warehouse.php?pid=%d">%s</a>) already has this name'
+			,$data['Warehouse Key']
+			,$data['Warehouse Code']
+		);
+		$response= array(
+			'state'=>200,
+			'found'=>1,
+			'msg'=>$msg
+		);
+		echo json_encode($response);
+		return;
+	} else {
+		$response= array(
+			'state'=>200,
+			'found'=>0
+		);
+		echo json_encode($response);
+		return;
+	}
 
 }
 
 function is_warehouse_area_code($data) {
-    if (!isset($data['query']) or !isset($data['warehouse_code'])) {
-        $response= array(
-                       'state'=>400,
-                       'msg'=>'Error'
-                   );
-        echo json_encode($response);
-        return;
-    } else
-        $query=$data['query'];
-    if ($query=='') {
-        $response= array(
-                       'state'=>200,
-                       'found'=>0
-                   );
-        echo json_encode($response);
-        return;
-    }
+	if (!isset($data['query']) or !isset($data['warehouse_code'])) {
+		$response= array(
+			'state'=>400,
+			'msg'=>'Error'
+		);
+		echo json_encode($response);
+		return;
+	} else
+		$query=$data['query'];
+	if ($query=='') {
+		$response= array(
+			'state'=>200,
+			'found'=>0
+		);
+		echo json_encode($response);
+		return;
+	}
 
-    $warehouse_code=$data['warehouse_code'];
+	$warehouse_code=$data['warehouse_code'];
 
-    $sql=sprintf("select * from `Warehouse Area Dimension` where  `Warehouse Area Code`=%s"
-                 ,prepare_mysql($data['query'])
-                );
-    $res=mysql_query($sql);
+	$sql=sprintf("select * from `Warehouse Area Dimension` where  `Warehouse Area Code`=%s"
+		,prepare_mysql($data['query'])
+	);
+	$res=mysql_query($sql);
 
-    if ($data=mysql_fetch_array($res)) {
-        $msg=sprintf('Another warehouse (<a href="warehouse.php?pid=%d">%s</a>) already has this name'
-                     ,$data['Warehouse Area Key']
-                     ,$data['Warehouse Area Code']
-                    );
-        $response= array(
-                       'state'=>200,
-                       'found'=>1,
-                       'msg'=>$msg
-                   );
-        echo json_encode($response);
-        return;
-    } else {
-        $response= array(
-                       'state'=>200,
-                       'found'=>0
-                   );
-        echo json_encode($response);
-        return;
-    }
+	if ($data=mysql_fetch_array($res)) {
+		$msg=sprintf('Another warehouse (<a href="warehouse.php?pid=%d">%s</a>) already has this name'
+			,$data['Warehouse Area Key']
+			,$data['Warehouse Area Code']
+		);
+		$response= array(
+			'state'=>200,
+			'found'=>1,
+			'msg'=>$msg
+		);
+		echo json_encode($response);
+		return;
+	} else {
+		$response= array(
+			'state'=>200,
+			'found'=>0
+		);
+		echo json_encode($response);
+		return;
+	}
 
 }
 function list_locations() {
-    $conf=$_SESSION['state']['locations']['table'];
 
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
+	if (!isset( $_REQUEST['parent']) or !isset( $_REQUEST['parent_key']) ) {
+		print "no parent info\n";
+		return;
+	}
 
+	$conf=$_SESSION['state']['warehouse']['locations'];
 
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
 
 
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
 
-    if (isset( $_REQUEST['parent'])) {
-        $parent=$_REQUEST['parent'];
-        $_SESSION['state']['locations']['parent']=$parent;
-    } else
-        $parent=$_SESSION['state']['locations']['parent'];
-
-    if (isset( $_REQUEST['parent_key'])) {
-        $parent_key=$_REQUEST['parent_key'];
-        $_SESSION['state']['warehouse_area']['id']=$parent_key;
-    } else
-        $parent_key=$_SESSION['state']['warehouse_area']['id'];
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
 
 
-    $_SESSION['state']['locations']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	$elements=$conf['elements'];
+	$parent=$_REQUEST['parent'];
+
+	$parent_key=$_REQUEST['parent_key'];
+
+
+	$_SESSION['state']['warehouse']['locations']['order']=$order;
+	$_SESSION['state']['warehouse']['locations']['order_dir']=$order_direction;
+	$_SESSION['state']['warehouse']['locations']['nr']=$number_results;
+	$_SESSION['state']['warehouse']['locations']['sf']=$start_from;
+	$_SESSION['state']['warehouse']['locations']['f_field']=$f_field;
+	$_SESSION['state']['warehouse']['locations']['f_value']=$f_value;
 
 
 
@@ -278,159 +282,159 @@ function list_locations() {
 	}
 
 
-    switch ($parent) {
-    case('warehouse'):
-        $where.=sprintf(' and `Location Warehouse Key`=%d',$_SESSION['state']['warehouse']['id']);
-        break;
-    case('warehouse_area'):
-        $where.=sprintf(' and `Location Warehouse Area Key`=%d',$_SESSION['state']['warehouse_area']['id']);
-        break;
-    case('shelf'):
-        $where.=sprintf(' and `Location Shelf Key`=%d',$_SESSION['state']['shelf']['id']);
-        break;
-    }
+	switch ($parent) {
+	case('warehouse'):
+		$where.=sprintf(' and `Location Warehouse Key`=%d',$parent_key);
+		break;
+	case('warehouse_area'):
+		$where.=sprintf(' and `Location Warehouse Area Key`=%d',$parent_key);
+		break;
+	case('shelf'):
+		$where.=sprintf(' and `Location Shelf Key`=%d',$parent_key);
+		break;
+	}
 
-	if ($parent=='warehouse') {
 
-		$_elements='';
-		foreach ($elements as $_key=>$_value) {
-			if ($_value) {
-				if ($_key=='Blue') {
-					$_elements.=",'Blue'";
-				}
-				elseif ($_key=='Green') {
-					$_elements.=",'Green'";
-				}
-				elseif ($_key=='Orange') {
-					$_elements.=",'Orange'";
-				}
-				elseif ($_key=='Pink') {
-					$_elements.=",'Pink'";
-				}
-				elseif ($_key=='Purple') {
-					$_elements.=",'Purple'";
-				}
-				elseif ($_key=='Red') {
-					$_elements.=",'Red'";
-				}
-				elseif ($_key=='Yellow') {
-					$_elements.=",'Yellow'";
-				}
+
+	$_elements='';
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			if ($_key=='Blue') {
+				$_elements.=",'Blue'";
+			}
+			elseif ($_key=='Green') {
+				$_elements.=",'Green'";
+			}
+			elseif ($_key=='Orange') {
+				$_elements.=",'Orange'";
+			}
+			elseif ($_key=='Pink') {
+				$_elements.=",'Pink'";
+			}
+			elseif ($_key=='Purple') {
+				$_elements.=",'Purple'";
+			}
+			elseif ($_key=='Red') {
+				$_elements.=",'Red'";
+			}
+			elseif ($_key=='Yellow') {
+				$_elements.=",'Yellow'";
 			}
 		}
-		$_elements=preg_replace('/^\,/','',$_elements);
-		if ($_elements=='') {
-			$where.=' and false' ;
-		} else {
-			$where.=' and `Location Flag` in ('.$_elements.')' ;
-		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} else {
+		$where.=' and `Location Flag` in ('.$_elements.')' ;
+	}
 
+
+
+
+
+	$wheref='';
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Location Code` like '".addslashes($f_value)."%'";
+
+
+
+
+	$sql="select count(*) as total from `Location Dimension`    $where $wheref";
+	// print $sql;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Location Dimension`  $where ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
 
 	}
 
 
-    $wheref='';
-    if ($f_field=='code' and $f_value!='')
-        $wheref.=" and  `Location Code` like '".addslashes($f_value)."%'";
+
+	$rtext=$total_records." ".ngettext('location','locations',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp='('._("Showing all").')';
 
 
 
 
-    $sql="select count(*) as total from `Location Dimension`    $where $wheref";
-    // print $sql;
-    $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total from `Location Dimension`  $where ";
-
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$row['total']-$total;
-        }
-
-    }
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any location name starting with")." <b>$f_value</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only locations starting with')." <b>$f_value</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
 
 
 
-    $rtext=$total_records." ".ngettext('location','locations',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp='('._("Showing all").')';
+	$_order=$order;
+	$_dir=$order_direction;
 
 
 
-
-    if ($total==0 and $filtered>0) {
-        switch ($f_field) {
-        case('code'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any location name starting with")." <b>$f_value</b> ";
-            break;
-        }
-    }
-    elseif($filtered>0) {
-        switch ($f_field) {
-        case('code'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only locations starting with')." <b>$f_value</b>";
-            break;
-        }
-    }
-    else
-        $filter_msg='';
+	if ($order=='parts')
+		$order='`Location Distinct Parts`';
+	elseif ($order=='max_volumen')
+		$order='`Location Max Volume`';
+	elseif ($order=='max_weight')
+		$order='`Location Max Weight`';
+	elseif ($order=='tipo')
+		$order='`Location Mainly Used For`';
+	elseif ($order=='area')
+		$order='`Warehouse Area Code`';
+	elseif ($order=='warehouse')
+		$order='`Warehouse Code`';
+	else
+		$order='`Location Code`';
 
 
+	$data=array();
+	$sql="select * from `Location Dimension` left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	// print $where;
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		$code=sprintf('<a href="location.php?id=%d" >%s</a>',$row['Location Key'],$row['Location Code']);
+		$tipo=$row['Location Mainly Used For'];
 
-    $_order=$order;
-    $_dir=$order_direction;
+		if ($row['Location Max Weight']=='' or $row['Location Max Weight']<=0)
+			$max_weight=_('Unknown');
+		else
+			$max_weight=number($row['Location Max Weight'])._('Kg');
+		if ($row['Location Max Volume']==''  or $row['Location Max Volume']<=0)
+			$max_vol=_('Unknown');
+		else
+			$max_vol=number($row['Location Max Volume'])._('L');
 
+		if ($row['Warehouse Area Code']=='')
+			$area=_('Unknown');
+		else
+			$area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
+		$warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
 
-
-    if ($order=='parts')
-        $order='`Location Distinct Parts`';
-    elseif($order=='max_volumen')
-    $order='`Location Max Volume`';
-    elseif($order=='max_weight')
-    $order='`Location Max Weight`';
-    elseif($order=='tipo')
-    $order='`Location Mainly Used For`';
-    elseif($order=='area')
-    $order='`Warehouse Area Code`';
-    elseif($order=='warehouse')
-    $order='`Warehouse Code`';
-    else
-        $order='`Location Code`';
-
-
-    $data=array();
-    $sql="select * from `Location Dimension` left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-     // print $where;
-    $result=mysql_query($sql);
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-        $code=sprintf('<a href="location.php?id=%d" >%s</a>',$row['Location Key'],$row['Location Code']);
-        $tipo=$row['Location Mainly Used For'];
-
-        if ($row['Location Max Weight']=='' or $row['Location Max Weight']<=0)
-            $max_weight=_('Unknown');
-        else
-            $max_weight=number($row['Location Max Weight'])._('Kg');
-        if ($row['Location Max Volume']==''  or $row['Location Max Volume']<=0)
-            $max_vol=_('Unknown');
-        else
-            $max_vol=number($row['Location Max Volume'])._('L');
-
-        if ($row['Warehouse Area Code']=='')
-            $area=_('Unknown');
-        else
-            $area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
-        $warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
-
-	switch($row['Location Flag']){
+		switch ($row['Location Flag']) {
 		case 'Blue': $flag="<img src='art/icons/flag_blue.png'/>"; break;
 		case 'Green':  $flag="<img src='art/icons/flag_green.png'/>";break;
 		case 'Orange': $flag="<img src='art/icons/flag_orange.png'/>"; break;
@@ -440,467 +444,467 @@ function list_locations() {
 		case 'Yellow':  $flag="<img src='art/icons/flag_yellow.png'/>";break;
 		default:
 			$flag='';
-		
-	}
 
-        $data[]=array(
-                    'id'=>$row['Location Key']
-                         ,'tipo'=>$tipo
-                                 ,'code'=>$code
-                                         ,'area'=>$area
-                                                 ,'warehouse'=>$warehouse
-                                                              ,'parts'=>number($row['Location Distinct Parts'])
-                                                                       ,'max_weight'=>$max_weight
-                                                                                     ,'max_volumen'=>$max_vol
-											,'flag'=>$flag
-                );
-    }
-    $response=array('resultset'=>
-                                array(
-                                    'state'=>200,
-                                    'data'=>$data,
-                                    'rtext'=>$rtext,
-                                    'rtext_rpp'=>$rtext_rpp,
-                                    'sort_key'=>$_order,
-                                    'sort_dir'=>$_dir,
-                                    'tableid'=>$tableid,
-                                    'filter_msg'=>$filter_msg,
-                                    'total_records'=>$total
-                                )
-                   );
-    echo json_encode($response);
+		}
+
+		$data[]=array(
+			'id'=>$row['Location Key']
+			,'tipo'=>$tipo
+			,'code'=>$code
+			,'area'=>$area
+			,'warehouse'=>$warehouse
+			,'parts'=>number($row['Location Distinct Parts'])
+			,'max_weight'=>$max_weight
+			,'max_volumen'=>$max_vol
+			,'flag'=>$flag
+		);
+	}
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$data,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total
+		)
+	);
+	echo json_encode($response);
 }
 function list_shelfs() {
-    $conf=$_SESSION['state']['shelfs']['table'];
+	$conf=$_SESSION['state']['shelfs']['table'];
 
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
-
-
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
 
 
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
 
-    if (isset( $_REQUEST['parent'])) {
-        $parent=$_REQUEST['parent'];
-        $_SESSION['state']['shelfs']['parent']=$parent;
-    } else
-        $parent=$_SESSION['state']['shelfs']['parent'];
-
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
 
 
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
-    $_SESSION['state']['shelfs']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-
-    switch ($parent) {
-    case('warehouse'):
-        $where.=sprintf(' and `Shelf Warehouse Key`=%d',$_SESSION['state']['warehouse']['id']);
-        break;
-    case('warehouse_area'):
-        $where.=sprintf(' and `Shelf Area Key`=%d',$_SESSION['state']['warehouse_area']['id']);
-        break;
-    case('shelf'):
-        $where.=sprintf(' and `Shelf Shelf Key`=%d',$_SESSION['state']['shelf']['id']);
-        break;
-    }
-
-
-    $wheref='';
-    if ($f_field=='code' and $f_value!='')
-        $wheref.=" and  `Shelf Code` like '".addslashes($f_value)."%'";
+	if (isset( $_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+		$_SESSION['state']['shelfs']['parent']=$parent;
+	} else
+		$parent=$_SESSION['state']['shelfs']['parent'];
 
 
 
 
-    $sql="select count(*) as total from `Shelf Dimension`    $where $wheref";
-    // print $sql;
-    $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total from `Shelf Dimension`  $where ";
-
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$row['total']-$total;
-        }
-
-    }
+	$_SESSION['state']['shelfs']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
 
+	switch ($parent) {
+	case('warehouse'):
+		$where.=sprintf(' and `Shelf Warehouse Key`=%d',$_SESSION['state']['warehouse']['id']);
+		break;
+	case('warehouse_area'):
+		$where.=sprintf(' and `Shelf Area Key`=%d',$_SESSION['state']['warehouse_area']['id']);
+		break;
+	case('shelf'):
+		$where.=sprintf(' and `Shelf Shelf Key`=%d',$_SESSION['state']['shelf']['id']);
+		break;
+	}
+
+
+	$wheref='';
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Shelf Code` like '".addslashes($f_value)."%'";
 
 
 
 
-    if ($total==0 and $filtered>0) {
-        switch ($f_field) {
-        case('code'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any shelf name starting with")." <b>$f_value</b> ";
-            break;
-        }
-    }
-    elseif($filtered>0) {
-        switch ($f_field) {
-        case('code'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only shelfs starting with')." <b>$f_value</b>";
-            break;
-        }
-    }
-    else
-        $filter_msg='';
+	$sql="select count(*) as total from `Shelf Dimension`    $where $wheref";
+	// print $sql;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Shelf Dimension`  $where ";
 
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
 
-    $rtext=$total_records." ".ngettext('shelf','shelfs',$total_records);
-    if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-    $_order=$order;
-    $_dir=$order_direction;
-
-
-    $order='`Shelf Code`';
-    if ($order=='parts')
-        $order='`Shelf Distinct Parts`';
-    if ($order=='locations')
-        $order='`Shelf Number Locations`';
-    elseif($order=='area')
-    $order='`Warehouse Area Code`';
-    elseif($order=='warehouse')
-    $order='`Warehouse Code`';
-    $data=array();
-    $sql="select * from `Shelf Dimension` left join `Warehouse Area Dimension` WAD on (`Shelf Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Shelf Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
-    //  print $sql;
-    $result=mysql_query($sql);
-    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-        $code=sprintf('<a href="shelf.php?id=%d" >%s</a>',$row['Shelf Key'],$row['Shelf Code']);
+	}
 
 
 
-        if ($row['Warehouse Area Code']=='')
-            $area=_('Unknown');
-        else
-            $area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
-        $warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
 
-        $data[]=array(
-                    'id'=>$row['Shelf Key']
-                         // ,'tipo'=>$tipo
-                         ,'code'=>$code
-                                 ,'area'=>$area
-                                         ,'warehouse'=>$warehouse
-                                                      ,'locations'=>number($row['Shelf Number Locations'])
 
-                                                                   ,'parts'=>number($row['Shelf Distinct Parts'])
 
-                );
-    }
-    $response=array('resultset'=>
-                                array(
-                                    'state'=>200,
-                                    'data'=>$adata,
-                                    'rtext'=>$rtext,
-                                    'rtext_rpp'=>$rtext_rpp,
-                                    'sort_key'=>$_order,
-                                    'sort_dir'=>$_dir,
-                                    'tableid'=>$tableid,
-                                    'filter_msg'=>$filter_msg,
-                                    'total_records'=>$total
-                                )
-                   );
-    echo json_encode($response);
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any shelf name starting with")." <b>$f_value</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only shelfs starting with')." <b>$f_value</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+	$rtext=$total_records." ".ngettext('shelf','shelfs',$total_records);
+	if ($total_records>$number_results)
+		$rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	$order='`Shelf Code`';
+	if ($order=='parts')
+		$order='`Shelf Distinct Parts`';
+	if ($order=='locations')
+		$order='`Shelf Number Locations`';
+	elseif ($order=='area')
+		$order='`Warehouse Area Code`';
+	elseif ($order=='warehouse')
+		$order='`Warehouse Code`';
+	$data=array();
+	$sql="select * from `Shelf Dimension` left join `Warehouse Area Dimension` WAD on (`Shelf Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Shelf Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+	//  print $sql;
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+		$code=sprintf('<a href="shelf.php?id=%d" >%s</a>',$row['Shelf Key'],$row['Shelf Code']);
+
+
+
+		if ($row['Warehouse Area Code']=='')
+			$area=_('Unknown');
+		else
+			$area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
+		$warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
+
+		$data[]=array(
+			'id'=>$row['Shelf Key']
+			// ,'tipo'=>$tipo
+			,'code'=>$code
+			,'area'=>$area
+			,'warehouse'=>$warehouse
+			,'locations'=>number($row['Shelf Number Locations'])
+
+			,'parts'=>number($row['Shelf Distinct Parts'])
+
+		);
+	}
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total
+		)
+	);
+	echo json_encode($response);
 }
 function list_warehouse_areas() {
 
 
-    $conf=$_SESSION['state']['warehouse_areas']['table'];
+	$conf=$_SESSION['state']['warehouse_areas']['table'];
 
 
 
 
-    if (isset( $_REQUEST['parent'])) {
-        $parent=$_REQUEST['parent'];
-        $_SESSION['state']['warehouse_areas']['parent']=$parent;
-    } else
-        $parent=$_SESSION['state']['warehouse_areas']['parent'];
+	if (isset( $_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+		$_SESSION['state']['warehouse_areas']['parent']=$parent;
+	} else
+		$parent=$_SESSION['state']['warehouse_areas']['parent'];
 
 
-    if (isset( $_REQUEST['sf'])) {
-        $start_from=$_REQUEST['sf'];
+	if (isset( $_REQUEST['sf'])) {
+		$start_from=$_REQUEST['sf'];
 
 
-    } else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr'])) {
-        $number_results=$_REQUEST['nr'];
-        if ($start_from>0) {
-            $page=floor($start_from/$number_results);
-            $start_from=$start_from-$page;
-        }
+	} else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		if ($start_from>0) {
+			$page=floor($start_from/$number_results);
+			$start_from=$start_from-$page;
+		}
 
-    } else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
-
-
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
+	} else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
 
 
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
 
 
-
-
-
-
-    $_SESSION['state']['warehouse_area']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
-
-
-
-    switch ($parent) {
-    case('warehouse'):
-        if (isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
-            $warehouse_id=$_REQUEST['warehouse'];
-        else
-            $warehouse_id=$_SESSION['state']['warehouse']['id'];
-
-
-
-
-        $where=sprintf("where  `Warehouse Key`=%d",$warehouse_id);
-
-    default:
-        $where='where true';
-
-    }
-
-    $filter_msg='';
-    $wheref='';
-    if ($f_field=='name' and $f_value!='')
-        $wheref.=" and  `Warehouse Area Name` like '".addslashes($f_value)."%'";
-    if ($f_field=='code' and $f_value!='')
-        $wheref.=" and  `Warehouse Area Code` like '".addslashes($f_value)."%'";
-
-
-
-
-
-    $sql="select count(*) as total from `Warehouse Area Dimension`   $where $wheref";
-
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($res)) {
-        $total=$row['total'];
-    }
-    mysql_free_result($res);
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total `Warehouse Area Dimension`   $where ";
-
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
-            mysql_free_result($result);
-        }
-
-    }
-
-    $rtext=$total_records." ".ngettext('area','areas',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=' ('._('Showing all').')';
-    $_dir=$order_direction;
-    $_order=$order;
-
-    $order='`Warehouse Area Code`';
-    if ($order=='name')
-        $order='`Warehouse Area Name`';
-    elseif($order=='code')
-    $order='`Warehouse Area Code`';
-    elseif($order=='locations')
-    $order='`Warehouse Area Number Locations`';
-    elseif($order=='shelfs')
-    $order='`Warehouse Area Number Shelfs`';
-
-    $sql="select *  from `Warehouse Area Dimension` WA left join `Warehouse Dimension` W  on (WA.`Warehouse Key`=W.`Warehouse Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-    // print $sql;
-    $res = mysql_query($sql);
-    $adata=array();
-
-    $sum_active=0;
-
-
-    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $code=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
-        $name=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Name']);
-        $warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
-
-        $locations=number($row['Warehouse Area Number Locations']);
-        $shelfs=number($row['Warehouse Area Number Shelfs']);
-
-        $adata[]=array(
-                     'code'=>$code,
-                     'name'=>$name,
-                     'locations'=>$locations,
-                     'shelfs'=>$shelfs,
-                     'parts'=>number($row['Warehouse Area Distinct Parts']),
-                     'warehouse'=>$warehouse,
-
-                     'description'=>$row['Warehouse Area Description']
-
-                 );
-    }
-    mysql_free_result($res);
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
 
 
 
 
 
+	$_SESSION['state']['warehouse_area']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
 
 
 
-    $response=array('resultset'=>
-                                array(
-                                    'state'=>200,
-                                    'data'=>$adata,
-                                    'rtext'=>$rtext,
-                                    'rtext_rpp'=>$rtext_rpp,
-                                    'sort_key'=>$_order,
-                                    'sort_dir'=>$_dir,
-                                    'tableid'=>$tableid,
-                                    'filter_msg'=>$filter_msg,
-                                    'total_records'=>$total
-                                )
-                   );
-    echo json_encode($response);
+	switch ($parent) {
+	case('warehouse'):
+		if (isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
+			$warehouse_id=$_REQUEST['warehouse'];
+		else
+			$warehouse_id=$_SESSION['state']['warehouse']['id'];
+
+
+
+
+		$where=sprintf("where  `Warehouse Key`=%d",$warehouse_id);
+
+	default:
+		$where='where true';
+
+	}
+
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Warehouse Area Name` like '".addslashes($f_value)."%'";
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Warehouse Area Code` like '".addslashes($f_value)."%'";
+
+
+
+
+
+	$sql="select count(*) as total from `Warehouse Area Dimension`   $where $wheref";
+
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total `Warehouse Area Dimension`   $where ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+			mysql_free_result($result);
+		}
+
+	}
+
+	$rtext=$total_records." ".ngettext('area','areas',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+	$_dir=$order_direction;
+	$_order=$order;
+
+	$order='`Warehouse Area Code`';
+	if ($order=='name')
+		$order='`Warehouse Area Name`';
+	elseif ($order=='code')
+		$order='`Warehouse Area Code`';
+	elseif ($order=='locations')
+		$order='`Warehouse Area Number Locations`';
+	elseif ($order=='shelfs')
+		$order='`Warehouse Area Number Shelfs`';
+
+	$sql="select *  from `Warehouse Area Dimension` WA left join `Warehouse Dimension` W  on (WA.`Warehouse Key`=W.`Warehouse Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	// print $sql;
+	$res = mysql_query($sql);
+	$adata=array();
+
+	$sum_active=0;
+
+
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$code=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
+		$name=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Name']);
+		$warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
+
+		$locations=number($row['Warehouse Area Number Locations']);
+		$shelfs=number($row['Warehouse Area Number Shelfs']);
+
+		$adata[]=array(
+			'code'=>$code,
+			'name'=>$name,
+			'locations'=>$locations,
+			'shelfs'=>$shelfs,
+			'parts'=>number($row['Warehouse Area Distinct Parts']),
+			'warehouse'=>$warehouse,
+
+			'description'=>$row['Warehouse Area Description']
+
+		);
+	}
+	mysql_free_result($res);
+
+
+
+
+
+
+
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total
+		)
+	);
+	echo json_encode($response);
 }
 
 function find_warehouse_area($data) {
 
-    $q=$data['query'];
+	$q=$data['query'];
 
-    $where='';
-    if ( $data['parent_key'])
-        $where=sprintf(' and `Warehouse Key`=%d ',$data['parent_key']);
+	$where='';
+	if ( $data['parent_key'])
+		$where=sprintf(' and `Warehouse Key`=%d ',$data['parent_key']);
 
 
-    $sql=sprintf("select `Warehouse Area Key`,`Warehouse Area Code`,`Warehouse Area Name` from `Warehouse Area Dimension` where (`Warehouse Area Code`like '%s%%' or `Warehouse Area Name` like '%%%s%%'   )  %s  order by `Warehouse Area Name` limit 10 "
-                 ,addslashes($q)
-                 ,addslashes($q)
-                 ,$where
-                );
-    //print $sql;
-    $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
-        $adata[]=array(
-                     'code'=>$row['Warehouse Area Code'],
-                     'key'=>$row['Warehouse Area Key'],
+	$sql=sprintf("select `Warehouse Area Key`,`Warehouse Area Code`,`Warehouse Area Name` from `Warehouse Area Dimension` where (`Warehouse Area Code`like '%s%%' or `Warehouse Area Name` like '%%%s%%'   )  %s  order by `Warehouse Area Name` limit 10 "
+		,addslashes($q)
+		,addslashes($q)
+		,$where
+	);
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res)) {
+		$adata[]=array(
+			'code'=>$row['Warehouse Area Code'],
+			'key'=>$row['Warehouse Area Key'],
 
-                     'name'=>$row['Warehouse Area Name'],
+			'name'=>$row['Warehouse Area Name'],
 
-                 );
-    }
-    $response=array('data'=>$adata);
-    echo json_encode($response);
+		);
+	}
+	$response=array('data'=>$adata);
+	echo json_encode($response);
 
 
 }
 
 function find_shelf_type($data) {
 
-    $q=$data['query'];
-    $where='';
-    $sql=sprintf("select *  from `Shelf Type Dimension` where (`Shelf Type Name`like '%s%%' or `Shelf Type Description` like '%%%s%%'   )  %s  order by `Shelf Type Name` limit 10 "
-                 ,addslashes($q)
-                 ,addslashes($q)
-                 ,$where
-                );
-    //print $sql;
-    $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
+	$q=$data['query'];
+	$where='';
+	$sql=sprintf("select *  from `Shelf Type Dimension` where (`Shelf Type Name`like '%s%%' or `Shelf Type Description` like '%%%s%%'   )  %s  order by `Shelf Type Name` limit 10 "
+		,addslashes($q)
+		,addslashes($q)
+		,$where
+	);
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res)) {
 
-        $info=sprintf("<h3>%s</h3><p>%s</p>",$row['Shelf Type Name'],$row['Shelf Type Description']);
-        $adata[]=array(
-                     "key"=>$row['Shelf Type Key']
-                           ,"name"=>$row['Shelf Type Name']
-                                   ,"description"=>$row['Shelf Type Description']
-                                                  ,"type"=>$row['Shelf Type Type']
-                                                          ,"rows"=>$row['Shelf Type Rows']
-                                                                  ,"columns"=>$row['Shelf Type Columns']
-                                                                             ,"l_height"=>$row['Shelf Type Location Height']
-                                                                                         ,"l_length"=>$row['Shelf Type Location Length']
-                                                                                                     ,'l_deep'=>$row['Shelf Type Location Deep']
-                                                                                                               ,'l_weight'=>$row['Shelf Type Location Max Weight']
-                                                                                                                           ,'l_volume'=>$row['Shelf Type Location Max Volume']
-                                                                                                                                       ,'info'=>$info
+		$info=sprintf("<h3>%s</h3><p>%s</p>",$row['Shelf Type Name'],$row['Shelf Type Description']);
+		$adata[]=array(
+			"key"=>$row['Shelf Type Key']
+			,"name"=>$row['Shelf Type Name']
+			,"description"=>$row['Shelf Type Description']
+			,"type"=>$row['Shelf Type Type']
+			,"rows"=>$row['Shelf Type Rows']
+			,"columns"=>$row['Shelf Type Columns']
+			,"l_height"=>$row['Shelf Type Location Height']
+			,"l_length"=>$row['Shelf Type Location Length']
+			,'l_deep'=>$row['Shelf Type Location Deep']
+			,'l_weight'=>$row['Shelf Type Location Max Weight']
+			,'l_volume'=>$row['Shelf Type Location Max Volume']
+			,'info'=>$info
 
 
-                 );
-    }
-    $response=array('data'=>$adata);
-    echo json_encode($response);
+		);
+	}
+	$response=array('data'=>$adata);
+	echo json_encode($response);
 
 
 }
@@ -909,57 +913,57 @@ function find_shelf_type($data) {
 
 
 function find_location() {
-    if (!isset($_REQUEST['query']))
-        $q='';
-    else
-        $q=$_REQUEST['query'];
-    $where='';
-    if (isset($_REQUEST['parent']) and $_REQUEST['parent']=='warehouse')
-        $where=sprintf(' and `Warehouse Key`=%d ',$_SESSION['state']['warehouse']['id']);
+	if (!isset($_REQUEST['query']))
+		$q='';
+	else
+		$q=$_REQUEST['query'];
+	$where='';
+	if (isset($_REQUEST['parent']) and $_REQUEST['parent']=='warehouse')
+		$where=sprintf(' and `Warehouse Key`=%d ',$_SESSION['state']['warehouse']['id']);
 
-    if (isset($_REQUEST['except_location']) )
-        $where=sprintf(' and LD.`Location Key`!=%d ',$_REQUEST['except_location']);
-
-
-    $part_sku=0;
-    if (isset($_REQUEST['get_data'])) {
-        if (preg_match('/^sku\d+$/i',$_REQUEST['get_data']))
-            $part_sku=preg_replace('/sku/','',$_REQUEST['get_data']);
-    }
+	if (isset($_REQUEST['except_location']) )
+		$where=sprintf(' and LD.`Location Key`!=%d ',$_REQUEST['except_location']);
 
 
-    if ($part_sku) {
+	$part_sku=0;
+	if (isset($_REQUEST['get_data'])) {
+		if (preg_match('/^sku\d+$/i',$_REQUEST['get_data']))
+			$part_sku=preg_replace('/sku/','',$_REQUEST['get_data']);
+	}
 
-        if (isset($_REQUEST['with'])) {
-            if ($_REQUEST['with']=='stock')
-                $where.=sprintf(' and (`Quantity On Hand` IS NOT NULL and `Quantity On Hand`>0 ')   ;
-        }
-        $sql=sprintf("select LD.`Location Key`,`Location Code`,(select `Quantity On Hand` from `Part Location Dimension` t where t.`Location Key`=LD.`Location Key` and `Part SKU`=%d) as `Quantity On Hand` from `Location Dimension` LD    where (`Location Code` like '%s%%' )  %s  order by `Location Code` limit 10 "
-                     ,$part_sku
-                     ,addslashes($q)
-                     ,$where
-                    );
 
-    } else {
-        $sql=sprintf("select `Location Key`,`Location Code`,0 as `Quantity On Hand` from `Location Dimension` LD where (`Location Code` like '%s%%'    )  %s  order by `Location Code` limit 10 "
-                     ,addslashes($q)
-                     ,$where
-                    );
-    }
-    //  print $sql;
-    $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
-        if (!is_numeric($row['Quantity On Hand']))
-            $row['Quantity On Hand']=0;
-        $adata[]=array(
+	if ($part_sku) {
 
-                     'key'=>$row['Location Key'],
-                     'code'=>$row['Location Code'],
-                     'stock'=>$row['Quantity On Hand']
-                 );
-    }
-    $response=array('data'=>$adata);
-    echo json_encode($response);
+		if (isset($_REQUEST['with'])) {
+			if ($_REQUEST['with']=='stock')
+				$where.=sprintf(' and (`Quantity On Hand` IS NOT NULL and `Quantity On Hand`>0 ')   ;
+		}
+		$sql=sprintf("select LD.`Location Key`,`Location Code`,(select `Quantity On Hand` from `Part Location Dimension` t where t.`Location Key`=LD.`Location Key` and `Part SKU`=%d) as `Quantity On Hand` from `Location Dimension` LD    where (`Location Code` like '%s%%' )  %s  order by `Location Code` limit 10 "
+			,$part_sku
+			,addslashes($q)
+			,$where
+		);
+
+	} else {
+		$sql=sprintf("select `Location Key`,`Location Code`,0 as `Quantity On Hand` from `Location Dimension` LD where (`Location Code` like '%s%%'    )  %s  order by `Location Code` limit 10 "
+			,addslashes($q)
+			,$where
+		);
+	}
+	//  print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_array($res)) {
+		if (!is_numeric($row['Quantity On Hand']))
+			$row['Quantity On Hand']=0;
+		$adata[]=array(
+
+			'key'=>$row['Location Key'],
+			'code'=>$row['Location Code'],
+			'stock'=>$row['Quantity On Hand']
+		);
+	}
+	$response=array('data'=>$adata);
+	echo json_encode($response);
 
 
 }
@@ -968,552 +972,552 @@ function find_location() {
 function history_stock_location() {
 
 
-    $conf=$_SESSION['state']['location']['stock_history'];
-    $location_id=$_SESSION['state']['location']['id'];
-    if (isset( $_REQUEST['elements']))
-        $elements=$_REQUEST['elements'];
-    else
-        $elements=$conf['elements'];
+	$conf=$_SESSION['state']['location']['stock_history'];
+	$location_id=$_SESSION['state']['location']['id'];
+	if (isset( $_REQUEST['elements']))
+		$elements=$_REQUEST['elements'];
+	else
+		$elements=$conf['elements'];
 
-    if (isset( $_REQUEST['from']))
-        $from=$_REQUEST['from'];
-    else
-        $from=$conf['from'];
-    if (isset( $_REQUEST['to']))
-        $to=$_REQUEST['to'];
-    else
-        $to=$conf['to'];
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$conf['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$conf['to'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
 
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
 
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-
-    list($date_interval,$error)=prepare_mysql_dates($from,$to);
-    if ($error) {
-        list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
-    } else {
-        $_SESSION['state']['location']['stock_history']['from']=$from;
-        $_SESSION['state']['location']['stock_history']['to']=$to;
-    }
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
 
-
-    $_SESSION['state']['location']['stock_history']['order']=$order;
-    $_SESSION['state']['location']['stock_history']['order_dir']=$order_direction;
-    $_SESSION['state']['location']['stock_history']['nr']=$number_results;
-    $_SESSION['state']['location']['stock_history']['sf']=$start_from;
-    $_SESSION['state']['location']['stock_history']['where']=$where;
-    $_SESSION['state']['location']['stock_history']['f_field']=$f_field;
-    $_SESSION['state']['location']['stock_history']['f_value']=$f_value;
-    $_SESSION['state']['location']['stock_history']['from']=$from;
-    $_SESSION['state']['location']['stock_history']['to']=$to;
-    $_SESSION['state']['location']['stock_history']['elements']=$elements;
-
-
-    $_order=$order;
-    $_dir=$order_direction;
-    $filter_msg='';
+	list($date_interval,$error)=prepare_mysql_dates($from,$to);
+	if ($error) {
+		list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+	} else {
+		$_SESSION['state']['location']['stock_history']['from']=$from;
+		$_SESSION['state']['location']['stock_history']['to']=$to;
+	}
 
 
 
-
-    $wheref='';
-
-
-    if ($f_field=='note' and $f_value!='')
-        $wheref.=" and  `Product Note` like '%".addslashes($f_value)."%'";
-    elseif($f_field=='author' and $f_value!='')
-    $wheref.=" and  `User Alias` like '".addslashes($f_value)."%'";
-
-    $where=$where.sprintf(" and `History Type`='Normal' and `Location Key`=%d  ",$location_id);
-
-
-    //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
+	$_SESSION['state']['location']['stock_history']['order']=$order;
+	$_SESSION['state']['location']['stock_history']['order_dir']=$order_direction;
+	$_SESSION['state']['location']['stock_history']['nr']=$number_results;
+	$_SESSION['state']['location']['stock_history']['sf']=$start_from;
+	$_SESSION['state']['location']['stock_history']['where']=$where;
+	$_SESSION['state']['location']['stock_history']['f_field']=$f_field;
+	$_SESSION['state']['location']['stock_history']['f_value']=$f_value;
+	$_SESSION['state']['location']['stock_history']['from']=$from;
+	$_SESSION['state']['location']['stock_history']['to']=$to;
+	$_SESSION['state']['location']['stock_history']['elements']=$elements;
 
 
-
-    $sql="select count(*) as total from  `Inventory Transaction Fact`   $where $wheref";
-
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($res)) {
-        $total=$row['total'];
-    }
-    mysql_free_result($res);
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total from  `Inventory Transaction Fact`  $where ";
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
-            mysql_free_result($result);
-        }
-
-    }
-
-
-    $rtext=$total_records." ".ngettext('stock operation','stock operations',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=' ('._('Showing all').')';
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
 
 
 
 
-    $sql=sprintf("select  *,IFNULL(ITF.`User Key`,-1) as user from `Inventory Transaction Fact` ITF left join `User Dimension` UD on (ITF.`User Key`=UD.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-// print $sql;
-
-    $result=mysql_query($sql);
-    $adata=array();
-    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-        if ($data['user']==-1)
-            $author=_('Unknown');
-        elseif($data['user']==0)
-        $author=_('System');
-        else {
-            $author=$data['User Alias'];
-
-        }
-
-        $tipo=$data['Inventory Transaction Type'];
+	$wheref='';
 
 
-        if ($tipo=='Move In' or $tipo=='Audit' or   $tipo=='Move Out' )
-            $qty=number($data['Inventory Transaction Quantity']);
-        else
-            $qty='';
+	if ($f_field=='note' and $f_value!='')
+		$wheref.=" and  `Product Note` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='author' and $f_value!='')
+		$wheref.=" and  `User Alias` like '".addslashes($f_value)."%'";
 
-        $adata[]=array(
+	$where=$where.sprintf(" and `History Type`='Normal' and `Location Key`=%d  ",$location_id);
 
-                     'author'=>$author,
-                     'tipo'=>$tipo,
-                     'diff_qty'=>$qty,
-                     'diff_amount'=>money($data['Inventory Transaction Amount']),
-                     'note'=>$data['Note'],
-                     'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date'].' UTC'))
-                 );
-    }
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results
-                                     )
-                   );
-    echo json_encode($response);
+
+	//   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
+
+
+
+	$sql="select count(*) as total from  `Inventory Transaction Fact`   $where $wheref";
+
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from  `Inventory Transaction Fact`  $where ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+			mysql_free_result($result);
+		}
+
+	}
+
+
+	$rtext=$total_records." ".ngettext('stock operation','stock operations',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+
+
+
+	$sql=sprintf("select  *,IFNULL(ITF.`User Key`,-1) as user from `Inventory Transaction Fact` ITF left join `User Dimension` UD on (ITF.`User Key`=UD.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+	// print $sql;
+
+	$result=mysql_query($sql);
+	$adata=array();
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		if ($data['user']==-1)
+			$author=_('Unknown');
+		elseif ($data['user']==0)
+			$author=_('System');
+		else {
+			$author=$data['User Alias'];
+
+		}
+
+		$tipo=$data['Inventory Transaction Type'];
+
+
+		if ($tipo=='Move In' or $tipo=='Audit' or   $tipo=='Move Out' )
+			$qty=number($data['Inventory Transaction Quantity']);
+		else
+			$qty='';
+
+		$adata[]=array(
+
+			'author'=>$author,
+			'tipo'=>$tipo,
+			'diff_qty'=>$qty,
+			'diff_amount'=>money($data['Inventory Transaction Amount']),
+			'note'=>$data['Note'],
+			'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date'].' UTC'))
+		);
+	}
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results
+		)
+	);
+	echo json_encode($response);
 }
 
 function historic_parts_at_location() {
-    $conf=$_SESSION['state']['location']['parts'];
-    $location_id=$_SESSION['state']['location']['id'];
+	$conf=$_SESSION['state']['location']['parts'];
+	$location_id=$_SESSION['state']['location']['id'];
 
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
 
-    if (isset( $_REQUEST['date']))
-        $date=$_REQUEST['date'];
-    else
-        $date=date("Y-m-d");
-
-
-
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
+	if (isset( $_REQUEST['date']))
+		$date=$_REQUEST['date'];
+	else
+		$date=date("Y-m-d");
 
 
 
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
 
-    $_SESSION['state']['location']['parts']=
-        array(
-            'order'=>$order,
-            'order_dir'=>$order_direction,
-            //'nr'=>$number_results,
-            // 'sf'=>$start_from,
-            'where'=>$where,
-            'f_field'=>$f_field,
-            'f_value'=>$f_value,
-            //  'from'=>$from,
-            //  'to'=>$to,
-            //  'elements'=>$elements
-        );
-    $_order=$order;
-    $_dir=$order_direction;
-    $filter_msg='';
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
 
 
 
-//  $view='';
-//  foreach($elements as $key=>$val){
-//    if(!$val)
-//      $view.=' and op_tipo!='.$key;
-//  }
-
-
-    $wheref='';
-//   if($f_field=='name' and $f_value!='')
-//     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-
-
-    $start_from=0;
-    $number_results=99999999;
-
-
-
-    $where=$where.sprintf(" and `Location Key`=%d and Date=%s",$location_id,prepare_mysql($date));
-
-
-    //   $where =$where.$view.sprintf(' and part_id=%d  %s',$part_id,$date_interval);
-
-    $sql="select count(*) as total from `Inventory Spanshot Fact`   $where $wheref";
-    //   print "$sql";
-
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-        $total=$row['total'];
-    }
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select  count(*) as total from `Inventory Spanshot Fact`  $where ";
-        $res = mysql_query($sql);
-        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-            $total_records=$row['total'];
-            $filtered=$row['total']-$total;
-        }
-
-    }
-
-    if ($order=='sku')
-        $order='PD.`Part SKU`';
-
-    if ($total_records==0)
-        $rtext=_('No parts on this location');
-    else
-        $rtext=$total_records.' '.ngettext('part','parts',$total_records);
-
-    if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+	$_SESSION['state']['location']['parts']=
+		array(
+		'order'=>$order,
+		'order_dir'=>$order_direction,
+		//'nr'=>$number_results,
+		// 'sf'=>$start_from,
+		'where'=>$where,
+		'f_field'=>$f_field,
+		'f_value'=>$f_value,
+		//  'from'=>$from,
+		//  'to'=>$to,
+		//  'elements'=>$elements
+	);
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
 
 
 
 
-
-    $sql=sprintf("select  * from `Inventory Spanshot Fact` ISF left join `Part Dimension` PD on (PD.`Part SKU`=ISF.`Part SKU`)    $where $wheref    order by $order $order_direction  ");
-
-
-    $adata=array();
-
-    $res = mysql_query($sql);
-// print $sql;
-    while ($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	//  $view='';
+	//  foreach($elements as $key=>$val){
+	//    if(!$val)
+	//      $view.=' and op_tipo!='.$key;
+	//  }
 
 
-        $loc_sku=$data['Location Key'].'_'.$data['Part SKU'];
+	$wheref='';
+	//   if($f_field=='name' and $f_value!='')
+	//     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
 
-        $adata[]=array(
 
-                     'sku'=>sprintf('<a href="part.php?sku=%d">%05d</a>',$data['Part SKU'],$data['Part SKU'])
-                           ,'description'=>$data['Part Unit Description']
-                                          ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
-                                                         ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
-                                                                        ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
-                                                                                   ,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-                                                                                                ,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-                                                                                                               ,'_qty_damaged'=>'<input id="qd'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
-                                                                                                                               ,'note'=>'<input  id="n'.$loc_sku.'" type="text" value="" style="width:100px">'
-                                                                                                                                       ,'delete'=>($data['Quantity On Hand']==0?'<img onclick="remove_prod('.$data['Location Key'].','.$data['Part SKU'].')" style="cursor:pointer" title="'._('Remove').' '.$data['Part SKU'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
-                 );
-    }
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'rtext'=>$rtext,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      'records_text'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
-                                     )
-                   );
-    echo json_encode($response);
+	$start_from=0;
+	$number_results=99999999;
+
+
+
+	$where=$where.sprintf(" and `Location Key`=%d and Date=%s",$location_id,prepare_mysql($date));
+
+
+	//   $where =$where.$view.sprintf(' and part_id=%d  %s',$part_id,$date_interval);
+
+	$sql="select count(*) as total from `Inventory Spanshot Fact`   $where $wheref";
+	//   print "$sql";
+
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select  count(*) as total from `Inventory Spanshot Fact`  $where ";
+		$res = mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+	if ($order=='sku')
+		$order='PD.`Part SKU`';
+
+	if ($total_records==0)
+		$rtext=_('No parts on this location');
+	else
+		$rtext=$total_records.' '.ngettext('part','parts',$total_records);
+
+	if ($total_records>$number_results)
+		$rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+
+
+
+
+
+	$sql=sprintf("select  * from `Inventory Spanshot Fact` ISF left join `Part Dimension` PD on (PD.`Part SKU`=ISF.`Part SKU`)    $where $wheref    order by $order $order_direction  ");
+
+
+	$adata=array();
+
+	$res = mysql_query($sql);
+	// print $sql;
+	while ($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+		$loc_sku=$data['Location Key'].'_'.$data['Part SKU'];
+
+		$adata[]=array(
+
+			'sku'=>sprintf('<a href="part.php?sku=%d">%05d</a>',$data['Part SKU'],$data['Part SKU'])
+			,'description'=>$data['Part Unit Description']
+			,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
+			,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
+			,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
+			,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+			,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+			,'_qty_damaged'=>'<input id="qd'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
+			,'note'=>'<input  id="n'.$loc_sku.'" type="text" value="" style="width:100px">'
+			,'delete'=>($data['Quantity On Hand']==0?'<img onclick="remove_prod('.$data['Location Key'].','.$data['Part SKU'].')" style="cursor:pointer" title="'._('Remove').' '.$data['Part SKU'].'" alt="'._('Desassociate Product').'" src="art/icons/cross.png".>':'')
+		);
+	}
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'rtext'=>$rtext,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
 }
 
 
 function parts_at_location() {
-    $conf=$_SESSION['state']['location']['parts'];
-    $location_id=$_SESSION['state']['location']['id'];
+	$conf=$_SESSION['state']['location']['parts'];
+	$location_id=$_SESSION['state']['location']['id'];
 
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
 
-    if (isset( $_REQUEST['date']))
-        $date=$_REQUEST['date'];
-    else
-        $date=date("Y-m-d");
-
-
-
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-
-    if (isset( $_REQUEST['nr'])) {
-        $number_results=$_REQUEST['nr'];
-    } else
-        $number_results=$conf['nr'];
+	if (isset( $_REQUEST['date']))
+		$date=$_REQUEST['date'];
+	else
+		$date=date("Y-m-d");
 
 
 
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
 
-    $_SESSION['state']['location']['parts']['order']=$order;
-    $_SESSION['state']['location']['parts']['order_dir']=$order_direction;
-    $_SESSION['state']['location']['parts']['where']=$where;
-    $_SESSION['state']['location']['parts']['f_field']=$f_field;
-    $_SESSION['state']['location']['parts']['f_value']=$f_value;
-    $_SESSION['state']['location']['parts']['nr']=$number_results;
-    $_SESSION['state']['location']['parts']['sf']=$start_from;
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
 
-    $_order=$order;
-    $_dir=$order_direction;
-    $filter_msg='';
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+	} else
+		$number_results=$conf['nr'];
 
 
 
 
-//  $view='';
-//  foreach($elements as $key=>$val){
-//    if(!$val)
-//      $view.=' and op_tipo!='.$key;
-//  }
+	$_SESSION['state']['location']['parts']['order']=$order;
+	$_SESSION['state']['location']['parts']['order_dir']=$order_direction;
+	$_SESSION['state']['location']['parts']['where']=$where;
+	$_SESSION['state']['location']['parts']['f_field']=$f_field;
+	$_SESSION['state']['location']['parts']['f_value']=$f_value;
+	$_SESSION['state']['location']['parts']['nr']=$number_results;
+	$_SESSION['state']['location']['parts']['sf']=$start_from;
 
 
-    $wheref='';
-
-
-    if ($f_field=='used_in' and $f_value!='')
-        $wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
-    elseif($f_field=='description' and $f_value!='')
-    $wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
-    elseif($f_field=='supplied_by' and $f_value!='')
-    $wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
-    elseif($f_field=='sku' and $f_value!='')
-    $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
 
 
 
 
-    $where=$where.sprintf(" and PLD.`Location Key`=%d ",$location_id);
+	//  $view='';
+	//  foreach($elements as $key=>$val){
+	//    if(!$val)
+	//      $view.=' and op_tipo!='.$key;
+	//  }
 
 
-    //   $where =$where.$view.sprintf(' and part_id=%d  %s',$part_id,$date_interval);
+	$wheref='';
 
 
-    $sql="select count(*) as total from `Part Location Dimension` PLD  $where $wheref";
-    //print $sql;
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-        $total=$row['total'];
-    }
-    if ($wheref!='') {
-        $sql="select count(*) as total_without_filters `Part Location Dimension` PLD $where ";
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-            $total_records=$row['total_without_filters'];
-            $filtered=$row['total_without_filters']-$total;
-        }
-
-    } else {
-        $filtered=0;
-        $filter_total=0;
-        $total_records=$total;
-    }
-    mysql_free_result($res);
-
-
-
-    $rtext=$total_records." ".ngettext('part','parts',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=' '._('(Showing all)');
-    if ($total==0 and $filtered>0) {
-        switch ($f_field) {
-        case('sku'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
-            break;
-
-        case('used_in'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
-            break;
-        case('suppiled_by'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part supplied by ")." <b>".$f_value."*</b> ";
-            break;
-        case('description'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>".$f_value."*</b> ";
-            break;
-        }
-    }
-    elseif($filtered>0) {
-
-
-        switch ($f_field) {
-        case('sku'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
-            break;
-
-        case('used_in'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
-            break;
-        case('supplied_by'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts supplied by')." <b>".$f_value."*</b>";
-            break;
-        case('description'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with description like')." <b>".$f_value."*</b>";
-            break;
-        }
-    }
-    else
-        $filter_msg='';
-
-
-
-    $order='PD.`Part SKU`';
+	if ($f_field=='used_in' and $f_value!='')
+		$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='description' and $f_value!='')
+		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='supplied_by' and $f_value!='')
+		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='sku' and $f_value!='')
+		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
 
 
 
+	$where=$where.sprintf(" and PLD.`Location Key`=%d ",$location_id);
 
 
-    $sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`)    $where $wheref    order by $order $order_direction  limit $start_from,$number_results ");
-//print $sql;
-
-    $adata=array();
-
-    $res = mysql_query($sql);
-
-    while ($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	//   $where =$where.$view.sprintf(' and part_id=%d  %s',$part_id,$date_interval);
 
 
+	$sql="select count(*) as total from `Part Location Dimension` PLD  $where $wheref";
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-        if ($data['Part Current Stock']==0 or !is_numeric($data['Quantity On Hand'])) {
-            $move='';
-        } else {
-            if ($data['Quantity On Hand']==0)
-                $move='<img src="art/icons/package_come.png" alt="'._('Move').'" />';
-            else
-                $move='<img src="art/icons/package_go.png" alt="'._('Move').'" />';
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count(*) as total_without_filters `Part Location Dimension` PLD $where ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-        }
-/*
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+
+	$rtext=$total_records." ".ngettext('part','parts',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' '._('(Showing all)');
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
+			break;
+
+		case('used_in'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
+			break;
+		case('suppiled_by'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part supplied by ")." <b>".$f_value."*</b> ";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+
+
+		switch ($f_field) {
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
+			break;
+
+		case('used_in'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
+			break;
+		case('supplied_by'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts supplied by')." <b>".$f_value."*</b>";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with description like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+	$order='PD.`Part SKU`';
+
+
+
+
+
+
+	$sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`)    $where $wheref    order by $order $order_direction  limit $start_from,$number_results ");
+	//print $sql;
+
+	$adata=array();
+
+	$res = mysql_query($sql);
+
+	while ($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+
+		if ($data['Part Current Stock']==0 or !is_numeric($data['Quantity On Hand'])) {
+			$move='';
+		} else {
+			if ($data['Quantity On Hand']==0)
+				$move='<img src="art/icons/package_come.png" alt="'._('Move').'" />';
+			else
+				$move='<img src="art/icons/package_go.png" alt="'._('Move').'" />';
+
+		}
+		/*
 	$min='0';
 	$max='0';
 	if($data['Can Pick']=='Yes'){
@@ -1521,832 +1525,832 @@ function parts_at_location() {
 		$max=$data['Maximum Quantity'];
 	}
 */
-        $adata[]=array(
+		$adata[]=array(
 
-                     'sku'=>sprintf('<a href="part.php?id=%d&edit_stock=1">SKU%05d</a>',$data['Part SKU'],$data['Part SKU']),
-                     'part_sku'=>$data['Part SKU'],
-                     'location_key'=>$data['Location Key'],
-                     'location'=>$data['Location Code'],
-                     'description'=>$data['Part Unit Description'].' ('.$data['Part XHTML Currently Used In'].')',
-                     'formated_qty'=>number($data['Quantity On Hand']),
-                      'qty'=>$data['Quantity On Hand'],
-                     'can_pick'=>($data['Can Pick']=='Yes'?_('Yes'):_('No')),
-                     'move'=>$move,
-                     'audit'=>'<img src="art/icons/page_white_edit.png" alt="'._('Audit').'" />',
-                     'lost'=>($data['Quantity On Hand']==0?'':'<img src="art/icons/package_delete.png" alt="'._('Set stock as damaged/lost').'" />'),
-                     'add'=>'<img src="art/icons/lorry.png" alt="'._('Add stock').'" />',
-                     'delete'=>($data['Quantity On Hand']==0?'<img src="art/icons/cross.png"  alt="'._('Free location').'" />':''),
-                     'number_locations'=>$data['Part Distinct Locations'],
-                     'number_qty'=>$data['Quantity On Hand'],
-                     'part_stock'=>$data['Part Current Stock'],
-		     'min'=>$data['Minimum Quantity'],
-		     'max'=>$data['Maximum Quantity']
-                 );
-	
-    }
-    $response=array('resultset'=>
+			'sku'=>sprintf('<a href="part.php?id=%d&edit_stock=1">SKU%05d</a>',$data['Part SKU'],$data['Part SKU']),
+			'part_sku'=>$data['Part SKU'],
+			'location_key'=>$data['Location Key'],
+			'location'=>$data['Location Code'],
+			'description'=>$data['Part Unit Description'].' ('.$data['Part XHTML Currently Used In'].')',
+			'formated_qty'=>number($data['Quantity On Hand']),
+			'qty'=>$data['Quantity On Hand'],
+			'can_pick'=>($data['Can Pick']=='Yes'?_('Yes'):_('No')),
+			'move'=>$move,
+			'audit'=>'<img src="art/icons/page_white_edit.png" alt="'._('Audit').'" />',
+			'lost'=>($data['Quantity On Hand']==0?'':'<img src="art/icons/package_delete.png" alt="'._('Set stock as damaged/lost').'" />'),
+			'add'=>'<img src="art/icons/lorry.png" alt="'._('Add stock').'" />',
+			'delete'=>($data['Quantity On Hand']==0?'<img src="art/icons/cross.png"  alt="'._('Free location').'" />':''),
+			'number_locations'=>$data['Part Distinct Locations'],
+			'number_qty'=>$data['Quantity On Hand'],
+			'part_stock'=>$data['Part Current Stock'],
+			'min'=>$data['Minimum Quantity'],
+			'max'=>$data['Maximum Quantity']
+		);
 
-
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results
-                                     )
+	}
+	$response=array('resultset'=>
 
 
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results
+		)
 
-                   );
-    echo json_encode($response);
+
+
+	);
+	echo json_encode($response);
 }
 function list_warehouses() {
 
 
 
-    $conf=$_SESSION['state']['warehouses']['warehouses'];
+	$conf=$_SESSION['state']['warehouses']['warehouses'];
 
-    $conf_table='warehouses';
-
-
-    if (isset( $_REQUEST['sf'])) {
-        $start_from=$_REQUEST['sf'];
+	$conf_table='warehouses';
 
 
-    } else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr'])) {
-        $number_results=$_REQUEST['nr'];
-        if ($start_from>0) {
-            $page=floor($start_from/$number_results);
-            $start_from=$start_from-$page;
-        }
-
-    } else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
+	if (isset( $_REQUEST['sf'])) {
+		$start_from=$_REQUEST['sf'];
 
 
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
+	} else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		if ($start_from>0) {
+			$page=floor($start_from/$number_results);
+			$start_from=$start_from-$page;
+		}
 
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-
-
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-
-
-
-
-
-    $_SESSION['state'][$conf_table]['table']['order']=$order;
-    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_direction;
-    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
-    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
-    $_SESSION['state'][$conf_table]['table']['where']=$where;
-    $_SESSION['state'][$conf_table]['table']['f_field']=$order;
-    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+	} else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
 
 
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
 
 
-    $filter_msg='';
-    $wheref='';
-    if ($f_field=='name' and $f_value!='')
-        $wheref.=" and  `Warehouse Name` like '".addslashes($f_value)."%'";
-    if ($f_field=='code' and $f_value!='')
-        $wheref.=" and  `Warehouse Code` like '".addslashes($f_value)."%'";
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
 
 
 
 
-    $sql="select count(*) as total from `Warehouse Dimension`   $where $wheref";
-    $res = mysql_query($sql);
-    if ($row=mysql_fetch_array($res)) {
-        $total=$row['total'];
-    }
-    mysql_free_result($res);
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total `Warehouse Dimension`   $where ";
 
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
-            mysql_free_result($result);
-        }
-
-    }
-
-    $rtext=$total_records." ".ngettext('warehouse','warehouses',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=' ('._('Showing all').')';
-    $_dir=$order_direction;
-    $_order=$order;
-
-    $order='`Warehouse Code`';
-    if ($order=='name')
-        $order='`Warehouse Name`';
-    elseif($order=='code')
-    $order='`Warehouse Code`';
-    elseif($order=='locations')
-    $order='`Warehouse Number Locations`';
-    elseif($order=='areas')
-    $order='`Warehouse Number Areas`';
-    elseif($order=='shelfs')
-    $order='`Warehouse Number Shelfs`';
-    $sql="select *  from `Warehouse Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-    // print $sql;
-    $res = mysql_query($sql);
-    $adata=array();
-
-    $sum_active=0;
+	$_SESSION['state'][$conf_table]['table']['order']=$order;
+	$_SESSION['state'][$conf_table]['table']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_table]['table']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['table']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['table']['where']=$where;
+	$_SESSION['state'][$conf_table]['table']['f_field']=$order;
+	$_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
 
 
-    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $code=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
-        $name=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Name']);
-        $locations=number($row['Warehouse Number Locations']);
-        $areas=number($row['Warehouse Number Areas']);
-        $shelfs=number($row['Warehouse Number Shelfs']);
-
-        $adata[]=array(
-                     'id'=>$row['Warehouse Key'],
-                     'code'=>$code,
-                     'name'=>$name,
-                     'locations'=>$locations,
-                     'areas'=>$areas,
-                     'shelfs'=>$shelfs
 
 
-                              //'description'=>$row['Warehouse Area Description']
-                 );
-    }
-    mysql_free_result($res);
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results,
-                                     )
-                   );
-    echo json_encode($response);
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Warehouse Name` like '".addslashes($f_value)."%'";
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Warehouse Code` like '".addslashes($f_value)."%'";
+
+
+
+
+
+	$sql="select count(*) as total from `Warehouse Dimension`   $where $wheref";
+	$res = mysql_query($sql);
+	if ($row=mysql_fetch_array($res)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total `Warehouse Dimension`   $where ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+			mysql_free_result($result);
+		}
+
+	}
+
+	$rtext=$total_records." ".ngettext('warehouse','warehouses',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+	$_dir=$order_direction;
+	$_order=$order;
+
+	$order='`Warehouse Code`';
+	if ($order=='name')
+		$order='`Warehouse Name`';
+	elseif ($order=='code')
+		$order='`Warehouse Code`';
+	elseif ($order=='locations')
+		$order='`Warehouse Number Locations`';
+	elseif ($order=='areas')
+		$order='`Warehouse Number Areas`';
+	elseif ($order=='shelfs')
+		$order='`Warehouse Number Shelfs`';
+	$sql="select *  from `Warehouse Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+	// print $sql;
+	$res = mysql_query($sql);
+	$adata=array();
+
+	$sum_active=0;
+
+
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$code=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
+		$name=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Name']);
+		$locations=number($row['Warehouse Number Locations']);
+		$areas=number($row['Warehouse Number Areas']);
+		$shelfs=number($row['Warehouse Number Shelfs']);
+
+		$adata[]=array(
+			'id'=>$row['Warehouse Key'],
+			'code'=>$code,
+			'name'=>$name,
+			'locations'=>$locations,
+			'areas'=>$areas,
+			'shelfs'=>$shelfs
+
+
+			//'description'=>$row['Warehouse Area Description']
+		);
+	}
+	mysql_free_result($res);
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
 }
 
 function warehouse_stock_history() {
-    $conf=$_SESSION['state']['warehouse_stock_history']['table'];
-    $warehouse_key=$_SESSION['state']['warehouse']['id'];
-    if (isset( $_REQUEST['elements']))
-        $elements=$_REQUEST['elements'];
-    else
-        $elements=$conf['elements'];
+	$conf=$_SESSION['state']['warehouse_stock_history']['table'];
+	$warehouse_key=$_SESSION['state']['warehouse']['id'];
+	if (isset( $_REQUEST['elements']))
+		$elements=$_REQUEST['elements'];
+	else
+		$elements=$conf['elements'];
 
-    if (isset( $_REQUEST['from']))
-        $from=$_REQUEST['from'];
-    else
-        $from=$conf['from'];
-    if (isset( $_REQUEST['to']))
-        $to=$_REQUEST['to'];
-    else
-        $to=$conf['to'];
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$conf['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$conf['to'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['where']))
+		$where=addslashes($_REQUEST['where']);
+	else
+		$where=$conf['where'];
 
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
 
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-
-    if (isset( $_REQUEST['type']))
-        $type=$_REQUEST['type'];
-    else
-        $type=$conf['type'];
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
 
-
-
-    list($date_interval,$error)=prepare_mysql_dates($from,$to);
-    if ($error) {
-        list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
-    } else {
-        $_SESSION['state']['warehouse_stock_history']['table']['from']=$from;
-        $_SESSION['state']['warehouse_stock_history']['table']['to']=$to;
-    }
-
-    $_SESSION['state']['warehouse_stock_history']['table']=
-        array(
-            'order'=>$order,
-            'type'=>$type,
-            'order_dir'=>$order_direction,
-            'nr'=>$number_results,
-            'sf'=>$start_from,
-            'where'=>$where,
-            'f_field'=>$f_field,
-            'f_value'=>$f_value,
-            'from'=>$from,
-            'to'=>$to,
-            'elements'=>$elements,
-            'f_show'=>$_SESSION['state']['warehouse_stock_history']['table']['f_show']
-        );
-    $_order=$order;
-    $_dir=$order_direction;
-    $filter_msg='';
-
-    $wheref='';
+	if (isset( $_REQUEST['type']))
+		$type=$_REQUEST['type'];
+	else
+		$type=$conf['type'];
 
 
 
 
+	list($date_interval,$error)=prepare_mysql_dates($from,$to);
+	if ($error) {
+		list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+	} else {
+		$_SESSION['state']['warehouse_stock_history']['table']['from']=$from;
+		$_SESSION['state']['warehouse_stock_history']['table']['to']=$to;
+	}
 
-    switch ($type) {
-    case 'month':
-        $group=' group by DATE_FORMAT(%Y%m)   ';
-        break;
-    case 'day':
-        $group=' group by `Date`   ';
-        break;
-    default:
-        $group=' group by YEARWEEK(`Date`)   ';
-        break;
-    }
+	$_SESSION['state']['warehouse_stock_history']['table']=
+		array(
+		'order'=>$order,
+		'type'=>$type,
+		'order_dir'=>$order_direction,
+		'nr'=>$number_results,
+		'sf'=>$start_from,
+		'where'=>$where,
+		'f_field'=>$f_field,
+		'f_value'=>$f_value,
+		'from'=>$from,
+		'to'=>$to,
+		'elements'=>$elements,
+		'f_show'=>$_SESSION['state']['warehouse_stock_history']['table']['f_show']
+	);
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
 
-
-
-
-    $where=$where.sprintf(" and `Warehouse Key`=%d ",$warehouse_key);
-    $sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref $group";
-
-    $result=mysql_query($sql);
-    $total=mysql_num_rows($result);
+	$wheref='';
 
 
 
 
 
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total from `Inventory Spanshot Fact`   $where  $group";
+	switch ($type) {
+	case 'month':
+		$group=' group by DATE_FORMAT(%Y%m)   ';
+		break;
+	case 'day':
+		$group=' group by `Date`   ';
+		break;
+	default:
+		$group=' group by YEARWEEK(`Date`)   ';
+		break;
+	}
 
 
 
-        $total_records=$result;
-        $filtered=$total_records-$total;
 
-    }
+	$where=$where.sprintf(" and `Warehouse Key`=%d ",$warehouse_key);
+	$sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref $group";
 
-
-
-
-    switch ($type) {
-    case 'month':
-        $rtext=$total_records.' '.ngettext('months','month',$total);
-        break;
-    case 'day':
-        $rtext=$total_records.' '.ngettext('days','days',$total);
-        break;
-    default:
-        $rtext=$total_records.' '.ngettext('week','weeks',$total);
-        break;
-    }
+	$result=mysql_query($sql);
+	$total=mysql_num_rows($result);
 
 
 
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=' ('._('Showing all').')';
+
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Inventory Spanshot Fact`   $where  $group";
 
 
 
-    if ($total_records==0) {
-        $rtext=_('No stock history');
-        $rtext_rpp='';
-    }
+		$total_records=$result;
+		$filtered=$total_records-$total;
 
-
-    $order='`Date`';
-
-    $sql=sprintf("select  GROUP_CONCAT(distinct '<a href=\"location.php?id=',ISF.`Location Key`,'\">',`Location Code`,'<a/>') as locations,`Date`, ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Quantity On Hand`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref   $group order by $order $order_direction  limit $start_from,$number_results "
-                 ,$warehouse_key
-                 ,$warehouse_key
-                );
+	}
 
 
 
-    $result=mysql_query($sql);
-    $adata=array();
-    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+	switch ($type) {
+	case 'month':
+		$rtext=$total_records.' '.ngettext('months','month',$total);
+		break;
+	case 'day':
+		$rtext=$total_records.' '.ngettext('days','days',$total);
+		break;
+	default:
+		$rtext=$total_records.' '.ngettext('week','weeks',$total);
+		break;
+	}
 
 
-        $adata[]=array(
 
-                     'date'=>strftime("%A %d/%m/%Y", strtotime($data['Date']))
-                            ,'locations'=>$data['locations']
-                                         ,'quantity'=>number($data['Quantity On Hand'])
-                                                     ,'value'=>money($data['Value At Cost'])
-                                                              ,'sold_qty'=>number($data['Quantity Sold'])
-                                                                          ,'in_qty'=>number($data['Quantity In'])
-                                                                                    ,'lost_qty'=>number($data['Quantity Lost'])
-                 );
-    }
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
 
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results,
-                                     )
-                   );
-    echo json_encode($response);
+
+
+	if ($total_records==0) {
+		$rtext=_('No stock history');
+		$rtext_rpp='';
+	}
+
+
+	$order='`Date`';
+
+	$sql=sprintf("select  GROUP_CONCAT(distinct '<a href=\"location.php?id=',ISF.`Location Key`,'\">',`Location Code`,'<a/>') as locations,`Date`, ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Quantity On Hand`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref   $group order by $order $order_direction  limit $start_from,$number_results "
+		,$warehouse_key
+		,$warehouse_key
+	);
+
+
+
+	$result=mysql_query($sql);
+	$adata=array();
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+		$adata[]=array(
+
+			'date'=>strftime("%A %d/%m/%Y", strtotime($data['Date']))
+			,'locations'=>$data['locations']
+			,'quantity'=>number($data['Quantity On Hand'])
+			,'value'=>money($data['Value At Cost'])
+			,'sold_qty'=>number($data['Quantity Sold'])
+			,'in_qty'=>number($data['Quantity In'])
+			,'lost_qty'=>number($data['Quantity Lost'])
+		);
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
 }
 
 function list_part_categories() {
-    $conf=$_SESSION['state']['part_categories']['subcategories'];
-    $conf2=$_SESSION['state']['part_categories'];
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
+	$conf=$_SESSION['state']['part_categories']['subcategories'];
+	$conf2=$_SESSION['state']['part_categories'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
 
-    if (isset( $_REQUEST['nr'])) {
-        $number_results=$_REQUEST['nr'];
-        if ($start_from>0) {
-            $page=floor($start_from/$number_results);
-            $start_from=$start_from-$page;
-        }
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		if ($start_from>0) {
+			$page=floor($start_from/$number_results);
+			$start_from=$start_from-$page;
+		}
 
-    } else
-        $number_results=$conf['nr'];
+	} else
+		$number_results=$conf['nr'];
 
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
 
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-
-
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
 
 
-    if (isset( $_REQUEST['percentages'])) {
-        $percentages=$_REQUEST['percentages'];
-        $_SESSION['state']['part_categories']['percentages']=$percentages;
-    } else
-        $percentages=$_SESSION['state']['part_categories']['percentages'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
 
 
-
-    if (isset( $_REQUEST['period'])) {
-        $period=$_REQUEST['period'];
-        $_SESSION['state']['part_categories']['period']=$period;
-    } else
-        $period=$_SESSION['state']['part_categories']['period'];
-
-    if (isset( $_REQUEST['avg'])) {
-        $avg=$_REQUEST['avg'];
-        $_SESSION['state']['part_categories']['avg']=$avg;
-    } else
-        $avg=$_SESSION['state']['part_categories']['avg'];
-
-    if (isset( $_REQUEST['stores_mode'])) {
-        $stores_mode=$_REQUEST['stores_mode'];
-        $_SESSION['state']['part_categories']['stores_mode']=$stores_mode;
-    } else
-        $stores_mode=$_SESSION['state']['part_categories']['stores_mode'];
+	if (isset( $_REQUEST['percentages'])) {
+		$percentages=$_REQUEST['percentages'];
+		$_SESSION['state']['part_categories']['percentages']=$percentages;
+	} else
+		$percentages=$_SESSION['state']['part_categories']['percentages'];
 
 
 
-    $_SESSION['state']['part_categories']['table']['order']=$order;
-    $_SESSION['state']['part_categories']['table']['order_dir']=$order_direction;
-    $_SESSION['state']['part_categories']['table']['nr']=$number_results;
-    $_SESSION['state']['part_categories']['table']['sf']=$start_from;
-    $_SESSION['state']['part_categories']['table']['f_field']=$f_field;
-    $_SESSION['state']['part_categories']['table']['f_value']=$f_value;
+	if (isset( $_REQUEST['period'])) {
+		$period=$_REQUEST['period'];
+		$_SESSION['state']['part_categories']['period']=$period;
+	} else
+		$period=$_SESSION['state']['part_categories']['period'];
 
+	if (isset( $_REQUEST['avg'])) {
+		$avg=$_REQUEST['avg'];
+		$_SESSION['state']['part_categories']['avg']=$avg;
+	} else
+		$avg=$_SESSION['state']['part_categories']['avg'];
 
-// print_r($_SESSION['tables']['families_list']);
-
-    //  print_r($_SESSION['tables']['families_list']);
-
-    if (isset( $_REQUEST['category'])) {
-        $root_category=$_REQUEST['category'];
-        $_SESSION['state']['part_categories']['category']=$avg;
-    } else
-        $root_category=$_SESSION['state']['part_categories']['category_key'];
-
-
-
-    $store_key=$_SESSION['state']['store']['id'];
-
-    $where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$root_category);
-    //  $where=sprintf("where `Category Subject`='Product'  ");
-
-    //  if ($stores_mode=='grouped')
-    //     $group=' group by S.`Category Key`';
-    // else
-    $group='';
-
-    $filter_msg='';
-    $wheref='';
-    if ($f_field=='name' and $f_value!='')
-        $wheref.=" and  `Category Name` like '%".addslashes($f_value)."%'";
+	if (isset( $_REQUEST['stores_mode'])) {
+		$stores_mode=$_REQUEST['stores_mode'];
+		$_SESSION['state']['part_categories']['stores_mode']=$stores_mode;
+	} else
+		$stores_mode=$_SESSION['state']['part_categories']['stores_mode'];
 
 
 
-
-    $sql="select count(*) as total   from `Category Dimension`   $where $wheref";
-
-//$sql=" describe `Category Dimension`;";
-// $sql="select *  from `Category Dimension` where `Category Parent Key`=1 ";
-//print $sql;
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_assoc($res)) {
-        $total=$row['total'];
-//   print_r($row);
-    }
-    mysql_free_result($res);
-
-//exit;
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total  from `Category Dimension`  $where ";
-
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
-        }
-        mysql_free_result($result);
-
-    }
+	$_SESSION['state']['part_categories']['table']['order']=$order;
+	$_SESSION['state']['part_categories']['table']['order_dir']=$order_direction;
+	$_SESSION['state']['part_categories']['table']['nr']=$number_results;
+	$_SESSION['state']['part_categories']['table']['sf']=$start_from;
+	$_SESSION['state']['part_categories']['table']['f_field']=$f_field;
+	$_SESSION['state']['part_categories']['table']['f_value']=$f_value;
 
 
-    $rtext=$total_records." ".ngettext('category','categories',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=' ('._('Showing all').')';
+	// print_r($_SESSION['tables']['families_list']);
 
-    if ($total==0 and $filtered>0) {
-        switch ($f_field) {
+	//  print_r($_SESSION['tables']['families_list']);
 
-        case('name'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
-            break;
-        }
-    }
-    elseif($filtered>0) {
-        switch ($f_field) {
+	if (isset( $_REQUEST['category'])) {
+		$root_category=$_REQUEST['category'];
+		$_SESSION['state']['part_categories']['category']=$avg;
+	} else
+		$root_category=$_SESSION['state']['part_categories']['category_key'];
 
-        case('name'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
-            break;
-        }
-    }
-    else
-        $filter_msg='';
 
-    $_dir=$order_direction;
-    $_order=$order;
 
-    if ($order=='subjects')
-        $order='`Category Number Subjects`';
-    else if ($order=='departments')
-        $order='`Product Category Departments`';
-    else if ($order=='code')
-        $order='`Product Category Code`';
-    else if ($order=='todo')
-        $order='`Product Category In Process Products`';
-    else if ($order=='discontinued')
-        $order='`Product Category In Process Products`';
-    else if ($order=='sold') {
-        if ($period=='1w')
-            $order='`1 Week Acc Sold`';
-        else if ($period=='10d')
-            $order='`10 Days Acc Sold`';
-        else if ($period=='1m')
-            $order='`1 Month Acc Sold`';
-        else if ($period=='1q')
-            $order='`1 Quarter Acc Sold`';
-        else if ($period=='6m')
-            $order='`6 Month Acc Sold`';
-        else if ($period=='1y')
-            $order='`1 Year Acc Sold`';
-        else if ($period=='3y')
-            $order='`3 Year Acc Sold`';
-        else if ($period=='yesterday')
-            $order='`Yesterday Acc Sold`';
-        else if ($period=='last_m')
-            $order='`Last Month Acc Sold`';
-        else if ($period=='last_w')
-            $order='`Last Week Acc Sold`';
-        else if ($period=='today')
-            $order='`Today Acc Sold`';
-        else if ($period=='wtd')
-            $order='`Week To Day Acc Sold`';
-        else if ($period=='mtd')
-            $order='`Month To Day Acc Sold`';
-        else if ($period=='ytd')
-            $order='`Year To Day Acc Sold`';
-        else if ($period=='all')
-            $order='`Total Acc Sold`';
-    }  else if ($order=='profit') {
-        if ($period=='1w')
-            $order='`1 Week Acc Profit`';
-        else if ($period=='10d')
-            $order='`10 Days Acc Profit`';
-        else if ($period=='1m')
-            $order='`1 Month Acc Profit`';
-        else if ($period=='1q')
-            $order='`1 Quarter Acc Profit`';
-        else if ($period=='6m')
-            $order='`6 Month Acc Profit`';
-        else if ($period=='1y')
-            $order='`1 Year Acc Profit`';
-        else if ($period=='3y')
-            $order='`3 Year Acc Profit`';
-        else if ($period=='yesterday')
-            $order='`Yesterday Acc Profit`';
-        else if ($period=='last_m')
-            $order='`Last Month Acc Profit`';
-        else if ($period=='last_w')
-            $order='`Last Week Acc Profit`';
-        else if ($period=='today')
-            $order='`Today Acc Profit`';
-        else if ($period=='wtd')
-            $order='`Week To Day Acc Profit`';
-        else if ($period=='mtd')
-            $order='`Month To Day Acc Profit`';
-        else if ($period=='ytd')
-            $order='`Year To Day Acc Profit`';
-        else if ($period=='all')
-            $order='`Total Acc Profit`';
-    }
-    elseif($order=='sales') {
-        if ($period=='1w')
-            $order='`1 Week Acc Sold Amount`';
-        else if ($period=='10d')
-            $order='`10 Days Acc Sold Amount`';
-        else if ($period=='1m')
-            $order='`1 Month Acc Sold Amount`';
-        else if ($period=='1q')
-            $order='`1 Quarter Acc Sold Amount`';
-        else if ($period=='6m')
-            $order='`6 Month Acc Sold Amount`';
-        else if ($period=='1y')
-            $order='`1 Year Acc Sold Amount`';
-        else if ($period=='3y')
-            $order='`3 Year Acc Sold Amount`';
-        else if ($period=='yesterday')
-            $order='`Yesterday Acc Sold Amount`';
-        else if ($period=='last_m')
-            $order='`Last Month Acc Sold Amount`';
-        else if ($period=='last_w')
-            $order='`Last Week Acc Sold Amount`';
-        else if ($period=='today')
-            $order='`Today Acc Sold Amount`';
-        else if ($period=='wtd')
-            $order='`Week To Day Acc Sold Amount`';
-        else if ($period=='mtd')
-            $order='`Month To Day Acc Sold Amount`';
-        else if ($period=='ytd')
-            $order='`Year To Day Acc Sold Amount`';
-        else if ($period=='all')
-            $order='`Total Acc Sold Amount`';
+	$store_key=$_SESSION['state']['store']['id'];
 
-    }
-    elseif($order=='name')
-    $order='`Category Name`';
+	$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$root_category);
+	//  $where=sprintf("where `Category Subject`='Product'  ");
+
+	//  if ($stores_mode=='grouped')
+	//     $group=' group by S.`Category Key`';
+	// else
+	$group='';
+
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Category Name` like '%".addslashes($f_value)."%'";
 
 
 
 
+	$sql="select count(*) as total   from `Category Dimension`   $where $wheref";
 
-    $sql="select * from `Category Dimension` C left join `Part Category Dimension` P on (P.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
- 
-    $res = mysql_query($sql);
-    $adata=array();
+	//$sql=" describe `Category Dimension`;";
+	// $sql="select *  from `Category Dimension` where `Category Parent Key`=1 ";
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$total=$row['total'];
+		//   print_r($row);
+	}
+	mysql_free_result($res);
 
+	//exit;
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total  from `Category Dimension`  $where ";
 
-    // print "$sql";
-    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
 
-
-     if ($period=='week')
-            $sold=$row['1 Week Acc Sold'];
-        else if ($period=='10d')
-            $sold=$row['10 Days Acc Sold'];
-        else if ($period=='1m')
-            $sold=$row['1 Month Acc Sold'];
-        else if ($period=='1q')
-            $sold=$row['1 Quarter Acc Sold'];
-        else if ($period=='6m')
-            $sold=$row['6 Month Acc Sold'];
-        else if ($period=='year')
-            $sold=$row['1 Year Acc Sold'];
-        else if ($period=='3y')
-            $sold=$row['3 Year Acc Sold'];
-        else if ($period=='yesterday')
-            $sold=$row['Yesterday Acc Sold'];
-        else if ($period=='last_m')
-            $sold=$row['Last Month Acc Sold'];
-        else if ($period=='last_w')
-            $sold=$row['Last Week Acc Sold'];
-        else if ($period=='today')
-            $sold=$row['Today Acc Sold'];
-        else if ($period=='wtd')
-            $sold=$row['Week To Day Acc Sold'];
-        else if ($period=='mtd')
-            $sold=$row['Month To Day Acc Sold'];
-        else if ($period=='ytd')
-            $sold=$row['Year To Day Acc Sold'];
-        else if ($period=='all')
-            $sold=$row['Total Acc Sold'];
+	}
 
 
-        $name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
-	
-	
-        $adata[]=array(
-                     'id'=>$row['Category Key'],
-                     'name'=>$name,
-                     'subjects'=>number($row['Category Number Subjects']),
-                     'sold'=>number($sold)
+	$rtext=$total_records." ".ngettext('category','categories',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_dir=$order_direction;
+	$_order=$order;
+
+	if ($order=='subjects')
+		$order='`Category Number Subjects`';
+	else if ($order=='departments')
+			$order='`Product Category Departments`';
+		else if ($order=='code')
+				$order='`Product Category Code`';
+			else if ($order=='todo')
+					$order='`Product Category In Process Products`';
+				else if ($order=='discontinued')
+						$order='`Product Category In Process Products`';
+					else if ($order=='sold') {
+							if ($period=='1w')
+								$order='`1 Week Acc Sold`';
+							else if ($period=='10d')
+									$order='`10 Days Acc Sold`';
+								else if ($period=='1m')
+										$order='`1 Month Acc Sold`';
+									else if ($period=='1q')
+											$order='`1 Quarter Acc Sold`';
+										else if ($period=='6m')
+												$order='`6 Month Acc Sold`';
+											else if ($period=='1y')
+													$order='`1 Year Acc Sold`';
+												else if ($period=='3y')
+														$order='`3 Year Acc Sold`';
+													else if ($period=='yesterday')
+															$order='`Yesterday Acc Sold`';
+														else if ($period=='last_m')
+																$order='`Last Month Acc Sold`';
+															else if ($period=='last_w')
+																	$order='`Last Week Acc Sold`';
+																else if ($period=='today')
+																		$order='`Today Acc Sold`';
+																	else if ($period=='wtd')
+																			$order='`Week To Day Acc Sold`';
+																		else if ($period=='mtd')
+																				$order='`Month To Day Acc Sold`';
+																			else if ($period=='ytd')
+																					$order='`Year To Day Acc Sold`';
+																				else if ($period=='all')
+																						$order='`Total Acc Sold`';
+						}  else if ($order=='profit') {
+							if ($period=='1w')
+								$order='`1 Week Acc Profit`';
+							else if ($period=='10d')
+									$order='`10 Days Acc Profit`';
+								else if ($period=='1m')
+										$order='`1 Month Acc Profit`';
+									else if ($period=='1q')
+											$order='`1 Quarter Acc Profit`';
+										else if ($period=='6m')
+												$order='`6 Month Acc Profit`';
+											else if ($period=='1y')
+													$order='`1 Year Acc Profit`';
+												else if ($period=='3y')
+														$order='`3 Year Acc Profit`';
+													else if ($period=='yesterday')
+															$order='`Yesterday Acc Profit`';
+														else if ($period=='last_m')
+																$order='`Last Month Acc Profit`';
+															else if ($period=='last_w')
+																	$order='`Last Week Acc Profit`';
+																else if ($period=='today')
+																		$order='`Today Acc Profit`';
+																	else if ($period=='wtd')
+																			$order='`Week To Day Acc Profit`';
+																		else if ($period=='mtd')
+																				$order='`Month To Day Acc Profit`';
+																			else if ($period=='ytd')
+																					$order='`Year To Day Acc Profit`';
+																				else if ($period=='all')
+																						$order='`Total Acc Profit`';
+						}
+					elseif ($order=='sales') {
+						if ($period=='1w')
+							$order='`1 Week Acc Sold Amount`';
+						else if ($period=='10d')
+								$order='`10 Days Acc Sold Amount`';
+							else if ($period=='1m')
+									$order='`1 Month Acc Sold Amount`';
+								else if ($period=='1q')
+										$order='`1 Quarter Acc Sold Amount`';
+									else if ($period=='6m')
+											$order='`6 Month Acc Sold Amount`';
+										else if ($period=='1y')
+												$order='`1 Year Acc Sold Amount`';
+											else if ($period=='3y')
+													$order='`3 Year Acc Sold Amount`';
+												else if ($period=='yesterday')
+														$order='`Yesterday Acc Sold Amount`';
+													else if ($period=='last_m')
+															$order='`Last Month Acc Sold Amount`';
+														else if ($period=='last_w')
+																$order='`Last Week Acc Sold Amount`';
+															else if ($period=='today')
+																	$order='`Today Acc Sold Amount`';
+																else if ($period=='wtd')
+																		$order='`Week To Day Acc Sold Amount`';
+																	else if ($period=='mtd')
+																			$order='`Month To Day Acc Sold Amount`';
+																		else if ($period=='ytd')
+																				$order='`Year To Day Acc Sold Amount`';
+																			else if ($period=='all')
+																					$order='`Total Acc Sold Amount`';
+
+					}
+				elseif ($order=='name')
+					$order='`Category Name`';
 
 
 
-                 );
-    }
-    mysql_free_result($res);
+
+
+				$sql="select * from `Category Dimension` C left join `Part Category Dimension` P on (P.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+
+			$res = mysql_query($sql);
+		$adata=array();
+
+
+	// print "$sql";
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+		if ($period=='week')
+			$sold=$row['1 Week Acc Sold'];
+		else if ($period=='10d')
+				$sold=$row['10 Days Acc Sold'];
+			else if ($period=='1m')
+					$sold=$row['1 Month Acc Sold'];
+				else if ($period=='1q')
+						$sold=$row['1 Quarter Acc Sold'];
+					else if ($period=='6m')
+							$sold=$row['6 Month Acc Sold'];
+						else if ($period=='year')
+								$sold=$row['1 Year Acc Sold'];
+							else if ($period=='3y')
+									$sold=$row['3 Year Acc Sold'];
+								else if ($period=='yesterday')
+										$sold=$row['Yesterday Acc Sold'];
+									else if ($period=='last_m')
+											$sold=$row['Last Month Acc Sold'];
+										else if ($period=='last_w')
+												$sold=$row['Last Week Acc Sold'];
+											else if ($period=='today')
+													$sold=$row['Today Acc Sold'];
+												else if ($period=='wtd')
+														$sold=$row['Week To Day Acc Sold'];
+													else if ($period=='mtd')
+															$sold=$row['Month To Day Acc Sold'];
+														else if ($period=='ytd')
+																$sold=$row['Year To Day Acc Sold'];
+															else if ($period=='all')
+																	$sold=$row['Total Acc Sold'];
+
+
+																$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+
+
+															$adata[]=array(
+																'id'=>$row['Category Key'],
+																'name'=>$name,
+																'subjects'=>number($row['Category Number Subjects']),
+																'sold'=>number($sold)
 
 
 
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results,
-                                     )
-                   );
-    echo json_encode($response);
+															);
+	}
+	mysql_free_result($res);
+
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
 }
 
 
-function other_locations_quick_buttons($data){
+function other_locations_quick_buttons($data) {
 
 
-$sql=sprintf("select `Quantity On Hand`,L.`Location Key`,`Location Code` from `Part Location Dimension` B left join `Location Dimension` L on (B.`Location Key`=L.`Location Key`) where `Part Sku`=%d and B.`Location Key`not in (0,%d)",
-$data['sku'],
-$data['location_key']
-);
-//print $sql;
+	$sql=sprintf("select `Quantity On Hand`,L.`Location Key`,`Location Code` from `Part Location Dimension` B left join `Location Dimension` L on (B.`Location Key`=L.`Location Key`) where `Part Sku`=%d and B.`Location Key`not in (0,%d)",
+		$data['sku'],
+		$data['location_key']
+	);
+	//print $sql;
 
-$res=mysql_query($sql);
-$locations_data=array();
-while($row=mysql_fetch_assoc($res)){
-$locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
-}
+	$res=mysql_query($sql);
+	$locations_data=array();
+	while ($row=mysql_fetch_assoc($res)) {
+		$locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
+	}
 
 
-$number_cols=5;
-$row=0;
-$location_buttons=array();
-$contador=0;
-  $_row_tmp='';
-  
-  
-  
-$other_locations_quick_buttons='<div class="options" style="xwidth:270px;padding:0px 0px 0px 0px;text-align:center;margin:0px" >
+	$number_cols=5;
+	$row=0;
+	$location_buttons=array();
+	$contador=0;
+	$_row_tmp='';
+
+
+
+	$other_locations_quick_buttons='<div class="options" style="xwidth:270px;padding:0px 0px 0px 0px;text-align:center;margin:0px" >
 <table border=1 style="margin:auto" id="pack_it_buttons"><tr>'."\n";
-foreach($locations_data as $location_data) {
- 
-  
-    
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-         $_row_tmp.="</tr><tr>\n";
-   
-  $other_locations_quick_buttons.='<td onClick="select_move_location('.$location_data['location_key'].',\''.$location_data['location_code'].'\',\''.$location_data['stock'].'\')" >'.$location_data['location_code']."</td>\n";
-    $contador++;
-}
-$other_locations_quick_buttons.='</tr></table></div>';
-
-
-    
-//print "\n $other_locations_quick_buttons \n\n";
+	foreach ($locations_data as $location_data) {
 
 
 
-$response=array(
-			'state'=>200,
-			'other_locations_quick_buttons'=>$other_locations_quick_buttons
+		if (fmod($contador,$number_cols)==0 and $contador>0)
+			$_row_tmp.="</tr><tr>\n";
 
-		);
+		$other_locations_quick_buttons.='<td onClick="select_move_location('.$location_data['location_key'].',\''.$location_data['location_code'].'\',\''.$location_data['stock'].'\')" >'.$location_data['location_code']."</td>\n";
+		$contador++;
+	}
+	$other_locations_quick_buttons.='</tr></table></div>';
 
 
- echo json_encode($response);
+
+	//print "\n $other_locations_quick_buttons \n\n";
+
+
+
+	$response=array(
+		'state'=>200,
+		'other_locations_quick_buttons'=>$other_locations_quick_buttons
+
+	);
+
+
+	echo json_encode($response);
 }
 
 ?>

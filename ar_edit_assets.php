@@ -2405,20 +2405,15 @@ function list_campaigns_for_edition() {
 function list_deals_for_edition() {
 
 
-	$parent='store';
-	if ( isset($_REQUEST['parent']))
-		$parent= $_REQUEST['parent'];
+if(!isset($_REQUEST['parent']) or !isset($_REQUEST['parent_key'])){
 
-	if ($parent=='store')
-		$parent_id=$_SESSION['state']['store']['id'];
-	elseif ($parent=='department')
-		$parent_id=$_SESSION['state']['department']['id'];
-	elseif ($parent=='family')
-		$parent_id=$_SESSION['state']['family']['id'];
-	elseif ($parent=='product')
-		$parent_id=$_SESSION['state']['product']['pid'];
-	else
-		return;
+exit("no parent");
+}
+
+$parent= $_REQUEST['parent'];
+$parent_key=$_REQUEST['parent_key'];
+
+	
 
 
 	$conf=$_SESSION['state'][$parent]['deals'];
@@ -2476,13 +2471,13 @@ function list_deals_for_edition() {
 	$_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
 	if ($parent=='store')
-		$where=sprintf("where  D.`Store Key`=%d and D.`Deal Metadata Trigger`='Order'    ",$parent_id);
+		$where=sprintf("where  DM.`Store Key`=%d and DM.`Deal Metadata Trigger`='Order'    ",$parent_key);
 	elseif ($parent=='department')
-		$where=sprintf("where    D.`Deal Metadata Trigger`='Department' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
+		$where=sprintf("where    DM.`Deal Metadata Trigger`='Department' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='family')
-		$where=sprintf("where    D.`Deal Metadata Trigger`='Family' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
+		$where=sprintf("where    DM.`Deal Metadata Trigger`='Family' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='product')
-		$where=sprintf("where    D.`Deal Metadata Trigger`='Product' and  D.`Deal Metadata Trigger Key`=%d   ",$parent_id);
+		$where=sprintf("where    DM.`Deal Metadata Trigger`='Product' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
 	else
 		$where=sprintf("where true ");;
 
@@ -2497,7 +2492,7 @@ function list_deals_for_edition() {
 	elseif ($f_field=='name' and $f_value!='')
 		$wheref.=" and  `Deal Metadata Name` like '".addslashes($f_value)."%'";
 
-	$sql="select count(*) as total from `Deal Metadata Dimension` D   $where $wheref";
+	$sql="select count(*) as total from `Deal Metadata Dimension` DM   $where $wheref";
 	//  print $sql;
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2509,7 +2504,7 @@ function list_deals_for_edition() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total `Deal Metadata Dimension`  D  $where ";
+		$sql="select count(*) as total `Deal Metadata Dimension`  DM  $where ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2554,14 +2549,15 @@ function list_deals_for_edition() {
 	$_order=$order;
 
 	if ($order=='name')
-		$order='D.`Deal Metadata Name`';
+		$order='DM.`Deal Metadata Name`';
 	elseif ($order=='description')
 		$order='`Deal Metadata Terms Description`,`Deal Metadata Allowance Description`';
 	else
-		$order='D.`Deal Metadata Name`';
+		$order='DM.`Deal Metadata Name`';
 
 
-	$sql="select D.`Deal Metadata Trigger`,`Deal Metadata Key`,D.`Deal Metadata Name`,`Campaign Deal Schema Key`,`Deal Name`,`Campaign Deal Schema Key`  from `Deal Metadata Dimension` D left join `Campaign Deal Schema`CDS  on (CDS.`Deal Schema Key`=`Campaign Deal Schema Key`) left join `Deal Dimension`C  on (CDS.`Deal Key`=C.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select DM.`Deal Metadata Trigger`,`Deal Metadata Key`,DM.`Deal Metadata Name`,D.`Deal Name`
+	from `Deal Metadata Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
 	// print $sql;
 	$res = mysql_query($sql);
 	$total=mysql_num_rows($res);
@@ -2652,9 +2648,9 @@ function list_deals_for_edition() {
 
 
 		$name=$row['Deal Metadata Name'];
-		if ($row['Campaign Deal Schema Key']) {
-			$name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
-		}
+		//if ($row['Campaign Deal Schema Key']) {
+		//	$name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
+		//}
 		$adata[]=array(
 			'status'=>$deal->get_xhtml_status(),
 			'name'=>$name,

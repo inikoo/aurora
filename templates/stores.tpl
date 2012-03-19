@@ -8,16 +8,18 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 				<button onclick="window.location='edit_stores.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button> <button onclick="window.location='new_store.php'"><img src="art/icons/add.png" alt=""> {t}Add Store{/t}</button> 
-			</div>
+					<button onclick="window.location='stores_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
+
+	</div>
 			<div class="buttons" style="float:left">
-				<button onclick="window.location='stores_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
+			<span class="main_title">{t}Stores{/t}</span>
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
 	</div>
 	<div style="padding:0px">
-		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li style="display:none"> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='stores'}selected{/if}" id="stores"> <span> {t}Stores{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='departments'}selected{/if}" id="departments"> <span> {t}Departments{/t}</span></span></li>

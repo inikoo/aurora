@@ -225,10 +225,10 @@ get_header_info($user,$smarty);
 
 $family_order=$_SESSION['state']['family']['products']['order'];
 $family_period=$_SESSION['state']['family']['products']['period'];
-$family_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
 
-$smarty->assign('family_period',$family_period);
-$smarty->assign('family_period_title',$family_period_title[$family_period]);
+//$family_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+$smarty->assign('products_period',$family_period);
+//$smarty->assign('family_period_title',$family_period_title[$family_period]);
 
 
 // $_SESSION['views']['product_blocks'][5]=0;
@@ -419,5 +419,8 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 mysql_free_result($result);
 
+include_once('conf/period_tags.php');
+unset($period_tags['hour']);
+$smarty->assign('period_tags',$period_tags);
 $smarty->display('product.tpl');
 ?>

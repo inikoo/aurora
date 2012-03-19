@@ -84,7 +84,9 @@
 								<tr>
 									<td>{t}Web Status{/t}:</td>
 									<td style="text-align:right;width:50px" id="product_web_state_{$product->get('Product ID')}">{if $product->get('Product Web State')=='For Sale'}<img src="art/icons/world.png"  />{else if $product->get('Product Web State')=='Out of Stock'}<img src="art/icons/no_stock.jpg" />{else}<img src="art/icons/sold_out.gif" />{/if} </td>
-						<td style="text-align:right;width:100px"><span style="cursor:pointer" id="product_web_configuration_{$product->get('Product ID')}" onClick="change_web_configuration(this,{$product->get('Product ID')})">{if $product->get('Product Web Configuration')=='Online Auto'}{t}Automatic{/t}{elseif $product->get('Product Web Configuration')=='Offline'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Offline{/t} {elseif $product->get('Product Web Configuration')=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Out of stock{/t} {elseif $product->get('Product Web Configuration')=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Online{/t} {/if} <span> </td>
+									<td style="text-align:right;width:100px">
+									<span style="cursor:pointer" id="product_web_configuration_{$product->get('Product ID')}" onClick="change_web_configuration(this,{$product->get('Product ID')})">{if $product->get('Product Web Configuration')=='Online Auto'}{t}Automatic{/t}{elseif $product->get('Product Web Configuration')=='Offline'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Offline{/t} {elseif $product->get('Product Web Configuration')=='Online Force Out of Stock'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Out of stock{/t} {elseif $product->get('Product Web Configuration')=='Online Force For Sale'}<img src="art/icons/police_hat.jpg" style="height:16px;vertical-align:top" /> {t}Online{/t} {/if} </span> 
+									</td>
 
 								</tr>
 							</table>
@@ -224,102 +226,85 @@
 				</div>
 			</div>
 			<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-				<table class="show_info_product" style="width:250px">
-					<tr>
-						<td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$family_period_title}</span></span> <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<" title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer" src="art/icons/next.png" alt=">" tite="next" /></td>
-					</tr>
-					<tbody id="info_all" style="{if $family_period!='all'}display:none{/if}">
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright">{$product->get('Total Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$product->get('Total Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$product->get('Total Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$product->get('Total Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_year" style="{if $family_period!='year'}display:none{/if}">
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright">{$product->get('1 Year Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$product->get('1 Year Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$product->get('1 Year Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$product->get('1 Year Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_quarter" style="{if $family_period!='quarter'}display:none{/if}">
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright">{$product->get('1 Quarter Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$product->get('1 Quarter Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$product->get('1 Quarter Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$product->get('1 Quarter Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_month" style="{if $family_period!='month'}display:none{/if}">
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright">{$product->get('1 Month Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$product->get('1 Month Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$product->get('1 Month Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$product->get('1 Month Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_week" style="{if $family_period!='week'}display:none{/if}">
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright">{$product->get('1 Week Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$product->get('1 Week Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$product->get('1 Week Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$product->get('1 Week Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-				</table>
+			
+			<div class="clusters">
+					<div class="buttons small left cluster">
+					<button class="{if $products_period=='all'}selected{/if}" period="all" id="products_period_all" style="padding-left:7px;padding-right:7px">{t}All{/t}</button>
+				</div>
+				<div class="buttons small left cluster">				<tr>
+					<button class="{if $products_period=='yeartoday'}selected{/if}" period="yeartoday" id="products_period_yeartoday">{t}YTD{/t}</button>
+					<button class="{if $products_period=='monthtoday'}selected{/if}" period="monthtoday" id="products_period_monthtoday">{t}MTD{/t}</button>
+					<button class="{if $products_period=='weektoday'}selected{/if}" period="weektoday" id="products_period_weektoday">{t}WTD{/t}</button>
+					<button class="{if $products_period=='today'}selected{/if}" period="today" id="products_period_today">{t}Today{/t}</button>
+					</div>
+					
+						<div class="buttons small left cluster">				<tr>
+					<button class="{if $products_period=='yesterday'}selected{/if}" period="yesterday" id="products_period_yesterday">{t}Yesterday{/t}</button>
+					<button class="{if $products_period=='last_w'}selected{/if}" period="last_w" id="products_period_last_w">{t}Last Week{/t}</button>
+					<button class="{if $products_period=='last_m'}selected{/if}" period="last_m" id="products_period_last_m">{t}Last Month{/t}</button>
+					</div>
+					
+					<div class="buttons small left cluster">				<tr>
+					<button class="{if $products_period=='three_year'}selected{/if}" period="three_year" id="products_period_three_year">{t}3Y{/t}</button>
+					<button class="{if $products_period=='year'}selected{/if}" period="year" id="products_period_year">{t}1Yr{/t}</button>
+					<button class="{if $products_period=='six_month'}selected{/if}" period="six_month" id="products_period_six_month">{t}6M{/t}</button>
+					<button class="{if $products_period=='quarter'}selected{/if}" period="quarter" id="products_period_quarter">{t}1Qtr{/t}</button>
+					<button class="{if $products_period=='month'}selected{/if}" period="month" id="products_period_month">{t}1M{/t}</button>
+					<button class="{if $products_period=='ten_day'}selected{/if}" period="ten_day" id="products_period_ten_day">{t}10D{/t}</button>
+					<button class="{if $products_period=='week'}selected{/if}" period="week" id="products_period_week">{t}1W{/t}</button>
+				
+				</div>
 
+			<div style="clear:both"></div>
+	
+	</div>
+					
+			<div style="margin-top:20px">
+				<table class="show_info_product" style="float:left;width:250px">
+			
+			
+			
+					<tr style="display:none">
+						<td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$products_period_title}</span></span> <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<" title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer" src="art/icons/next.png" alt=">" tite="next" /></td>
+					</tr>
+					{foreach from=$period_tags item=period }
+					<tbody id="info_{$period.key}" style="{if $products_period!=$period.key}display:none{/if}">
+					
+						<tr>
+							<td>{t}Sales{/t}:</td>
+							<td class=" aright">{$product->get_period({$period.db},'Acc Invoiced Amount')}</td>
+						</tr>
+						<tr>
+							<td>{t}Profit{/t}:</td>
+							<td class=" aright">{$product->get_period({$period.db},'Acc Profit')}</td>
+						</tr>
+						<tr>
+							<td>{t}Outers{/t}:</td>
+							<td class="aright">{$product->get_period({$period.db},'Acc Quantity Delivered')}</td>
+						</tr>
+					</tbody>
+				{/foreach}
+				</table>
+					<table class="show_info_product" style="float:left;width:250px;margin-left:20px">
+			
+			
+			
+					
+					{foreach from=$period_tags item=period }
+					<tbody id="info2_{$period.key}" style="{if $products_period!=$period.key}display:none{/if}">
+						<tr>
+							<td>{t}Invoices{/t}:</td>
+							<td class="aright">{$product->get_period({$period.db},'Acc Invoices')}</td>
+						</tr>
+						<tr>
+							<td>{t}Customers{/t}:</td>
+							<td class=" aright">{$product->get_period({$period.db},'Acc Customers')}</td>
+						</tr>
+						
+					</tbody>
+				{/foreach}
+				</table>
+			</div>
 
 				<div id="plots" style="clear:both">
 					<ul class="tabs" id="chooser_ul" style="margin-top:25px">
@@ -389,41 +374,12 @@
 				{/if} 
 			</div>
 			<div id="block_customers" class="data_table" style="{if $block_view!='customers'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-				<table class="show_info_product" style="width:250px">
-					<tr>
-						<td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$family_period_title}</span></span> <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<" title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer" src="art/icons/next.png" alt=">" tite="next" /></td>
-					</tr>
-					<tbody id="info_all" style="{if $family_period!='all'}display:none{/if}">
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$product->get('Total Customers')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_year" style="{if $family_period!='year'}display:none{/if}">
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$product->get('1 Year Acc Customers')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_quarter" style="{if $family_period!='quarter'}display:none{/if}">
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$product->get('1 Quarter Acc Customers')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_month" style="{if $family_period!='month'}display:none{/if}">
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$product->get('1 Month Acc Customers')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_week" style="{if $family_period!='week'}display:none{/if}">
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$product->get('1 Week Acc Customers')}</td>
-						</tr>
-					</tbody>
-				</table>
+			
+			
+			
+			
+				
+				
 				<span id="table_title" class="clean_table_title">{t}Customers who order this Product{/t}</span> 
 				<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 				</div>

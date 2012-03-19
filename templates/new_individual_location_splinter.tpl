@@ -1,19 +1,7 @@
-<div class="top_page_menu">
-    <div class="buttons" style="float:right">
-       
-<button  onClick="exit_add_location()" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>    
 
-        
-       
-    </div>
-    <div class="buttons" style="float:left">
-      
+   
 
- </div>
-    <div style="clear:both"></div>
-</div>
-
-    <div style="float:left;padding:20px 5px 5px;border:1px solid #ddd;width:500px">
+    <div style="margin-top:10px;float:left;padding:20px 10px 20px 10px;border:1px solid #ddd;width:500px">
       <table class="edit">
 	<tr><td class="label">{t}Warehouse{/t}:</td><td><input id="location_warehouse" type="text" value="{$warehouse->get('Warehouse Name')}"/><input type="hidden" id="warehouse_key" value="{$warehouse->id}"></td></tr>
 	
@@ -64,8 +52,8 @@
 
        </table>
 	<div class="buttons" style="float:right">      
-	<button  onClick="save_add_location_return()" ><img src="art/icons/door_out.png" alt=""> {t}Create & Add Other{/t}</button>  
-	<button  onClick="save_add_location()" ><img src="art/icons/add.png" alt=""> {t}Create{/t}</button>
+	<button  onClick="save_add_location_return()" ><img src="art/icons/add.png" alt=""> {t}Create & Stay{/t}</button>  
+	<button  onClick="save_add_location()" ><img src="art/icons/door_out.png" alt=""> {t}Create{/t}</button>
 	</div>
     </div>
     

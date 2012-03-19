@@ -17,12 +17,12 @@
         {/if}
     </div>
     <div class="buttons" style="float:left">
-
+<span class="main_title">{t}Staff{/t}</span>
  </div>
     <div style="clear:both"></div>
 </div>
 
-   <h1>{t}Staff{/t}</h1>
+  
   </div>
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">

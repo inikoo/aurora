@@ -574,7 +574,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource4 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=store&tableid=4");
+	    this.dataSource4 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=store&parent_key="+Dom.get('store_key').value+"&tableid=4");
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";
 	    this.dataSource4.responseSchema = {

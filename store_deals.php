@@ -71,7 +71,7 @@ $js_files=array(
           );
 
 
-$smarty->assign('parent','products');
+$smarty->assign('parent','marketing');
 $smarty->assign('title', _('Store Offers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -84,8 +84,31 @@ $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
 
+$tipo_filter=$_SESSION['state']['store']['campaigns']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['store']['campaigns']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'notes','menu_label'=>_('Campaigns with name like *<i>x</i>*'),'label'=>_('Name')),
+               
+            
+             );
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['store']['deals']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['store']['deals']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'notes','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+               
+            
+             );
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
 
 
 $elements_number=array('Order'=>0,'Department'=>0,'Family'=>0,'Product'=>0);

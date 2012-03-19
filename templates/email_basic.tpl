@@ -7,7 +7,7 @@
     {foreach from=$js_files item=i }
     <script type="text/javascript" src="{$i}"></script>
     {/foreach}
-    <script type="text/javascript">{$script}</script>
+    
 </head>
 
 {literal}
@@ -25,6 +25,7 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 {/literal}
 
 {/if}
+
 {literal}
 <STYLE>
 
