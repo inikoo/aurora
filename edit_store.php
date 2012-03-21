@@ -42,7 +42,7 @@ $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product departments');
 
-
+$smarty->assign('store',$store);
 
 $smarty->assign('pages_view',$_SESSION['state']['store']['edit_pages']['view']);
 
@@ -100,7 +100,7 @@ $js_files=array(
               'edit_store.js.php'
           );
 
-
+$js_files[]='email_credential.js.php';
 
 $smarty->assign('edit',$_SESSION['state'][$page]['edit']);
 
@@ -205,6 +205,33 @@ if ($row=mysql_fetch_assoc($res)) {
 
 $smarty->assign('number_of_sites',$number_of_sites);
 $smarty->assign('site_key',$site_key);
+
+
+$credentials=array();
+if($store->get_email_credentials_data('Newsletters')){
+foreach($store->get_email_credentials_data('Newsletters') as $_key=>$_value){
+   foreach($_value as $key=>$value){
+	$key=preg_replace('/\s/', '_', $key);
+	$credentials[$key]=$value;
+    }
+}
+}
+else{
+	$credentials['Email_Address_Gmail']='';
+	$credentials['Password_Gmail']='';
+	$credentials['Email_Address_Other']='';
+	$credentials['Login_Other']='';
+	$credentials['Password_Other']='';
+	$credentials['Incoming_Mail_Server']='';
+	$credentials['Outgoing_Mail_Server']='';
+	$credentials['Email_Address_Direct_Mail']='';
+	$credentials['Email_Address_Amazon_Mail']='';
+
+}
+
+
+$smarty->assign('email_credentials',$credentials);
+
 
 $smarty->display('edit_store.tpl');
 

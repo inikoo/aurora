@@ -1,0 +1,1 @@
+../../class.HQ.php

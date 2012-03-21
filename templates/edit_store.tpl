@@ -411,24 +411,8 @@
 		<h2>
 			Store Emails Accounts
 		</h2>
-		<table class="edit">
-			<tr>
-				<td lass="label">{t}Newsletters{/t}</td>
-				<td>{$store->get_formated_email_credentials('Newsletters')}</td>
-			</tr>
-			<tr>
-				<td lass="label">{t}Marketing Emails{/t}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td lass="label">{t}General Messages{/t}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td lass="label">{t}Website Registration{/t}</td>
-				<td></td>
-			</tr>
-		</table>
+
+	{include file='email_credential_splinter.tpl' site=$store email_credentials=$email_credentials} 
 	</div>
 </div>
 <div id="the_table1" class="data_table">

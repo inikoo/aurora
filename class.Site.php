@@ -1038,7 +1038,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		return $email_credentials;
 	}
 
-	function get_email_credentials_key() {
+	function get_email_credential_key() {
 		$sql=sprintf("select E.`Email Credentials Key` from `Email Credentials Dimension` E left join `Email Credentials Site Bridge` B on (E.`Email Credentials Key`=B.`Email Credentials Key`) where B.`Site Key`=%d",
 			$this->id);
 
@@ -1053,6 +1053,16 @@ $page_code=$this->get_unique_family_page_code($family);
 		return $email_credentials_key;
 	}
 
+	function get_credential_type(){
+		include_once 'class.EmailCredentials.php';
+		$keys=$this->get_email_credential_key();
+		$email_credential = new EmailCredentials($keys);
+		if($email_credential->id){
+			return $email_credential->data['Email Provider'];
+		}
+		else
+			return false;
+	}
 
 	function associate_email_credentials($email_credentials_key) {
 
@@ -1061,7 +1071,7 @@ $page_code=$this->get_unique_family_page_code($family);
 			return;
 		}
 
-		$current_email_credentials_key=$this->get_email_credentials_key();
+		$current_email_credentials_key=$this->get_email_credential_key();
 		if ($email_credentials_key==$current_email_credentials_key) {
 			return;
 		}

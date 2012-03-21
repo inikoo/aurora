@@ -1253,9 +1253,9 @@ $login_handle=$user->data['User Handle'];
 //	$login_handle='raul@inikoo.com';
 
 
-	$message_data['method']='sendmail';
+	//$message_data['method']='sendmail';
 	$message_data['from_name']=$site->data['Site Name'];
-	$message_data['type']='html';
+	$message_data['type']='HTML';
 	$message_data['to']=$login_handle;
 	$message_data['subject']=$forgot_password_subject;
 	$message_data['html']=$html_message;
@@ -1273,15 +1273,24 @@ $login_handle=$user->data['User Handle'];
 		$message_data['plain']=null;
 
 	//print_r($message_data);
+/*
 	$send_email=new SendEmail();
 
 	$send_email->track=false;
 	$send_email->secret_key=$CKEY;
 
 	$result=$send_email->send($message_data);
+*/
+	$send_email=new SendEmail();
+	$send_email->secret_key=CKEY;
+	$send_email->track=false;
 
-	if ($result['msg']=='ok') {
-		$response=array('state'=>200,'result'=>'send','msg'=>'<img src="art/icons/accept.png"/> '._('Email send') );
+	$send_email->set($message_data);
+	$result=$send_email->send();
+
+
+	if ($result['state']==200) {
+		$response=array('state'=>200,'result'=>'send','msg'=>'<img src="art/icons/accept.png"/> '._('Email sent') );
 		echo json_encode($response);
 		exit;
 

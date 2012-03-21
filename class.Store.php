@@ -1457,18 +1457,17 @@ class Store extends DB_Table {
 
 
 
-	function get_email_credentials_data($type) {
+	function get_email_credentials_data($type='Newsletters') {
 		$credentials=array();
 		$sql=sprintf("select * from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
 			prepare_mysql($type),
 			$this->id
 		);
-
+		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
-			$credentials[$row['Email Credentials Key ']]=$row;
+			$credentials[$row['Email Credentials Key']]=$row;
 		}
-
 
 		return $credentials;
 
@@ -1572,8 +1571,8 @@ class Store extends DB_Table {
 	}
 
 
-
-	function get_email_credential_key($type) {
+//$type='Newsletters'
+	function get_email_credential_key($type='Newsletters') {
 
 		$sql=sprintf("select C.`Email Credentials Key` from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
 			prepare_mysql($type),
@@ -1591,7 +1590,59 @@ class Store extends DB_Table {
 
 	}
 
+	function get_credential_type(){
+		include_once 'class.EmailCredentials.php';
+		$keys=$this->get_email_credential_key();
+		$email_credential = new EmailCredentials($keys);
+		if($email_credential->id){
+			return $email_credential->data['Email Provider'];
+		}
+		else
+			return false;
+	}
 
+	function associate_email_credentials($email_credentials_key, $scope='Newsletters') {
+
+		if (!$email_credentials_key) {
+			$this->error=true;
+			return;
+		}
+
+		$current_email_credentials_key=$this->get_email_credential_key();
+		if ($email_credentials_key==$current_email_credentials_key) {
+			return;
+		}
+
+
+
+
+		$sql=sprintf("delete from `Email Credentials Store Bridge` where `Store Key`=%d w ",
+			$this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("delete from `Email Credentials Scope Bridge` where `Scope`='%s'", $scope);
+		mysql_query($sql);
+
+		include_once 'class.EmailCredentials.php';
+
+		$old_email_credentials=new EmailCredentials($current_email_credentials_key);
+		$old_email_credentials->delete();
+
+		$sql=sprintf("insert into `Email Credentials Store Bridge` values (%d,%d)",$email_credentials_key, $this->id);
+		mysql_query($sql);
+
+		$sql=sprintf("insert into `Email Credentials Scope Bridge` values (%d, '%s')",$email_credentials_key, $scope);
+		mysql_query($sql);
+
+
+
+
+		$this->updated=true;
+		$this->msg='Updated';
+		$this->newvalue=$email_credentials_key;
+
+
+	}
 
 }
 
