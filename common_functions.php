@@ -245,6 +245,8 @@ function getOrdinal($number) {
 
 function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='') {
 
+
+
 	$start='';
 	$end='';
 	if (preg_match('/start.*end/i',$options)) {
@@ -252,17 +254,22 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 		$end=' end';
 
 	}
-	if (preg_match('/dates?_only|dates? only|only dates|date|only_dates?/i',$options)) {
+	if (preg_match('/^(dates?_only|dates? only|only dates|date|only_dates?)$/i',$options)) {
 		$d_option='date';
 
 
 
 		$date_only=true;
 	} else {
-		$d_option='';
+		$d_option='datetime';
 		$date_only=false;
 	}
+//	print "$options $d_option.$start |\n";
+	
 	$tmp=prepare_mysql_datetime($date1,$d_option.$start);
+	
+	
+	
 	$mysql_date1=$tmp['mysql_date'];
 	$ok1=$tmp['ok'];
 	if ($tmp['status']=='empty')
@@ -322,7 +329,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 
 function prepare_mysql_datetime($datetime,$tipo='datetime') {
 
-
+//print "** $tipo \n";exit;
 	if ($datetime=='')
 		return array('mysql_date'=>'','status'=>'empty','ok'=>false);
 	$time='';
@@ -330,10 +337,29 @@ function prepare_mysql_datetime($datetime,$tipo='datetime') {
 	if (preg_match('/datetime/',$tipo)) {
 		if (preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/',$datetime))
 			$datetime=$datetime.':00';
+			
+		if (preg_match('/^[0123]\d[\-\/][01]\d[\-\/][12]\d{3} /',$datetime)) {
+			$_tmp=preg_split('/\s/',$datetime);
+			
+			$tmp=preg_split('/\-|\//',$_tmp[0]);
+			if (count($tmp)==3) {
+				$_datetime=$tmp[2].'-'.$tmp[1].'-'.$tmp[0];
+			}
+			
+			$datetime=$_datetime.' '.$_tmp[1];
+			
+			
+			
+			
+		}	
+			
 		if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
-			return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." $datetime",'ok'=>false);
+			return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." * $datetime",'ok'=>false);
 		$ts=date('U',strtotime($datetime));
 		list($date,$time)=preg_split('/\s+/',$datetime);
+		
+		//exit;
+		
 	} else {
 
 
@@ -351,7 +377,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime') {
 	}
 
 
-	//BfcGlE80Qt;D
+	//BfxcGlE80Qt;D
 
 	$date=str_replace('/','-',$date);
 	$date=preg_split('/-/',$date);
@@ -1481,6 +1507,8 @@ function invoices_awhere($awhere) {
 //Parts awhere
 function parts_awhere($awhere) {
 
+$sql_type='part';
+
 	$where_data=array(
 		//'product_ordered1'=>'∀',
 		//'price'=>array(),
@@ -1492,6 +1520,9 @@ function parts_awhere($awhere) {
 		'geo_constraints'=>'',
 		'part_valid_from'=>'',
 		'part_valid_to'=>'',
+			'part_dispatched_from'=>'',
+		'part_dispatched_to'=>'',
+		
 		//'product_valid_to'=>'',
 		//'price_lower'=>'',
 		//'price_upper'=>'',
@@ -1508,22 +1539,30 @@ function parts_awhere($awhere) {
 	}
 
 
-	$where='where true';
+$sql_type='itf';
+
+	$where='where  `Inventory Transaction Type` in ("Sale","OIP")  ';
 	//$table='`Part Dimension` P ';
 	//$table='`Part Dimension` P  left join  `Inventory Transaction Fact` ITF  on (P.`Part SKU`=ITF.`Part SKU`) left join  `Order Transaction Fact` OTF  on (ITF.`Map To Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) left join kbase.`Country Dimension` CD on (CD.`Country 2 Alpha Code`=OTF.`Destination Country 2 Alpha Code`) ';
-	$table='`Inventory Transaction Fact` ITF left join kbase.`Country Dimension` CD on (CD.`Country Code`=ITF.`Dispatch Country Code`) left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) ';
+	$table='`Inventory Transaction Fact` ITF  left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) ';
 
 
 
-//if($where_data['invalid_tariff_code']){
-//$where.=' and `Part T`';
+if($where_data['invalid_tariff_code']=='Yes'){
+$where.=" and `Part Tariff Code Valid`='Yes'";
 
-//}
+}else if($where_data['invalid_tariff_code']=='No'){
+$where.=" and `Part Tariff Code Valid`='No'";
+
+}
 
 
-	$use_product=false;
-	//$use_categories =false;
-	$use_otf =false;
+	$date_dispatched=prepare_mysql_dates(($where_data['part_dispatched_from']==''?'':$where_data['part_dispatched_from'].' 00:00:00'),($where_data['part_dispatched_to']==''?'':$where_data['part_dispatched_to'].' 23:59:59'),'ITF.`Date`','datetime');
+
+//print_r($date_dispatched);exit;
+	$where.=$date_dispatched['mysql'];
+
+
 
 	/*
         $price_where='';
@@ -1562,7 +1601,7 @@ function parts_awhere($awhere) {
 
 	$where_geo_constraints='';
 	if ($where_data['geo_constraints']!='') {
-		$where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints'],'CD.`Country Code`','CD.`World Region Code`');
+		$where_geo_constraints=extract_products_geo_groups($where_data['geo_constraints'],'`Dispatch Country Code`','CD.`World Region Code`');
 	}
 	$where.=$where_geo_constraints;
 	//print $where_geo_constraints;exit;
@@ -1578,7 +1617,7 @@ function parts_awhere($awhere) {
 
 	//print $table. $where; exit;
 
-	return array($where,$table);
+	return array($where,$table,$sql_type);
 }
 ////
 

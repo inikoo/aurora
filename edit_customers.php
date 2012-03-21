@@ -36,7 +36,7 @@ if (isset($_REQUEST['list_key'])  and is_numeric($_REQUEST['list_key']) ) {
         exit;
 
     }
-    $store_id=$customer_list_data['List Store Key'];
+    $store_id=$customer_list_data['List Parent Key'];
 
 
     $customer_list_name=$customer_list_data['List Name'];

@@ -1,4 +1,4 @@
-<?php
+ø<?php
 $store_code='PL';
 
 

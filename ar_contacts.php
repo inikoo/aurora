@@ -20,7 +20,9 @@ if (!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('pending_post'):
+	pending_post();
+	break;
 case('check_tax_number'):
 $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key')
@@ -1968,7 +1970,7 @@ function list_customers() {
 
                 $raw_data=json_decode($tmp, true);
 
-                $raw_data['store_key']=$customer_list_data['List Store Key'];
+                $raw_data['store_key']=$customer_list_data['List Parent Key'];
                 list($where,$table)=customers_awhere($raw_data);
 
 
@@ -5540,7 +5542,7 @@ function list_customers_lists() {
 
 
     if (in_array($store,$user->stores)) {
-        $where.=sprintf(' and `List Store Key`=%d  ',$store);
+        $where.=sprintf(' and `List Parent Key`=%d  ',$store);
 
     }
 
@@ -5599,7 +5601,7 @@ function list_customers_lists() {
         $order='`List Key`';
 
 
-    $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+    $sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
 
 
     $adata=array();
@@ -6136,8 +6138,424 @@ $customer->update($update_data);
     echo json_encode($response);
     exit;
 
+}
+
+function pending_post(){
 
 
+
+
+    if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else {
+        return;
+    }
+    if (isset( $_REQUEST['parent_key']))
+        $parent_key=$_REQUEST['parent_key'];
+    else {
+        return;
+    }
+
+
+    $conf=$_SESSION['state']['store']['pending_post'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+ 
+ 
+
+
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+    $_SESSION['state']['store']['pending_post']['order']=$order;
+    $_SESSION['state']['store']['pending_post']['order_dir']=$order_direction;
+    $_SESSION['state']['store']['pending_post']['nr']=$number_results;
+    $_SESSION['state']['store']['pending_post']['sf']=$start_from;
+    $_SESSION['state']['store']['pending_post']['f_field']=$f_field;
+    $_SESSION['state']['store']['pending_post']['f_value']=$f_value;
+
+    $where=sprintf('where `Customer Store Key`=%d ',$parent_key);
+    $table='`Customers Send Post` CSP left join  `Customer Dimension` C  on (CSP.`Customer Key`=C.`Customer Key`) ';
+    $where_type='';
+    $currency='';
+
+
+
+    $filter_msg='';
+    $wheref='';
+
+
+
+
+//  print $f_field;
+
+
+    if (($f_field=='customer name'     )  and $f_value!='') {
+        $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+    }
+    elseif(($f_field=='postcode'     )  and $f_value!='') {
+        $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+    }
+    else if ($f_field=='id'  )
+        $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+    else if ($f_field=='last_more' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+    else if ($f_field=='last_less' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+    else if ($f_field=='max' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Orders`<=".$f_value."    ";
+    else if ($f_field=='min' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Orders`>=".$f_value."    ";
+    else if ($f_field=='maxvalue' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+    else if ($f_field=='minvalue' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+    else if ($f_field=='country' and  $f_value!='') {
+        if ($f_value=='UNK') {
+            $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+            $find_data=' '._('a unknown country');
+        } else {
+
+            $f_value=Address::parse_country($f_value);
+            if ($f_value!='UNK') {
+                $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+                $country=new Country('code',$f_value);
+                $find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+            }
+
+        }
+    }
+
+
+
+    $sql="select count(Distinct C.`Customer Key`) as total from $table   $where $wheref $where_type";
+  //  print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        $total=$row['total'];
+    }
+    if ($wheref!='') {
+        $sql="select count(Distinct C.`Customer Key`) as total_without_filters from $table  $where  $where_type";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
+        }
+
+    } else {
+        $filtered=0;
+        $filter_total=0;
+        $total_records=$total;
+    }
+    mysql_free_result($res);
+
+
+    $rtext=$total_records." ".ngettext('customer','customers',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._("Showing All").')';
+
+
+
+//if($total_records>$number_results)
+// $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('customer name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
+            break;
+        case('postcode'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
+            break;
+        case('country'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
+            break;
+
+        case('id'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
+            break;
+
+        case('last_more'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+            break;
+        case('last_more'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+            break;
+        case('maxvalue'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
+            break;
+        case('minvalue'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
+            break;
+
+
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('customer name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+            break;
+        case('id'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b>";
+            break;
+        case('postcode'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
+            break;
+        case('country'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
+            break;
+        case('last_more'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
+            break;
+        case('last_less'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value);
+            break;
+        case('maxvalue'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency);
+            break;
+        case('minvalue'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency);
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+
+
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+// if($order=='location'){
+//      if($order_direction=='desc')
+//        $order='country_code desc ,town desc';
+//      else
+//        $order='country_code,town';
+//      $order_direction='';
+//    }
+
+//     if($order=='total'){
+//       $order='supertotal';
+//    }
+
+
+    if ($order=='name')
+        $order='`Customer File As`';
+    elseif($order=='id')
+    $order='C.`Customer Key`';
+    elseif($order=='location')
+    $order='`Customer Main Location`';
+    elseif($order=='orders')
+    $order='`Customer Orders`';
+    elseif($order=='email')
+    $order='`Customer Main Plain Email`';
+    elseif($order=='telephone')
+    $order='`Customer Main Plain Telephone`';
+    elseif($order=='last_order')
+    $order='`Customer Last Order Date`';
+    elseif($order=='contact_name')
+    $order='`Customer Main Contact Name`';
+    elseif($order=='address')
+    $order='`Customer Main Location`';
+    elseif($order=='town')
+    $order='`Customer Main Town`';
+    elseif($order=='postcode')
+    $order='`Customer Main Postal Code`';
+    elseif($order=='region')
+    $order='`Customer Main Country First Division`';
+    elseif($order=='country')
+    $order='`Customer Main Country`';
+//  elseif($order=='ship_address')
+//  $order='`customer main ship to header`';
+    elseif($order=='ship_town')
+    $order='`Customer Main Delivery Address Town`';
+    elseif($order=='ship_postcode')
+    $order='`Customer Main Delivery Address Postal Code`';
+    elseif($order=='ship_region')
+    $order='`Customer Main Delivery Address Country Region`';
+    elseif($order=='ship_country')
+    $order='`Customer Main Delivery Address Country`';
+    elseif($order=='net_balance')
+    $order='`Customer Net Balance`';
+    elseif($order=='balance')
+    $order='`Customer Outstanding Net Balance`';
+    elseif($order=='total_profit')
+    $order='`Customer Profit`';
+    elseif($order=='total_payments')
+    $order='`Customer Net Payments`';
+    elseif($order=='top_profits')
+    $order='`Customer Profits Top Percentage`';
+    elseif($order=='top_balance')
+    $order='`Customer Balance Top Percentage`';
+    elseif($order=='top_orders')
+    $order='``Customer Orders Top Percentage`';
+    elseif($order=='top_invoices')
+    $order='``Customer Invoices Top Percentage`';
+    elseif($order=='total_refunds')
+    $order='`Customer Total Refunds`';
+    elseif($order=='contact_since')
+    $order='`Customer First Contacted Date`';
+    elseif($order=='activity')
+    $order='`Customer Type by Activity`';
+    else
+        $order='`Customer File As`';
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results";
+//print $sql;
+    $adata=array();
+
+
+
+    $result=mysql_query($sql);
+//print $sql;exit;
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+        $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".sprintf("%05d",$data['Customer Key']).'</a>';
+        if ($data['Customer Type']=='Person') {
+            $name='<img src="art/icons/user.png" alt="('._('Person').')">';
+        } else {
+            $name='<img src="art/icons/building.png" alt="('._('Company').')">';
+
+        }
+
+        $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".($data['Customer Name']==''?'<i>'._('Unknown name').'</i>':$data['Customer Name']).'</a>';
+
+
+
+        if ($data['Customer Orders']==0)
+            $last_order_date='';
+        else
+            $last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
+
+        $contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
+
+
+        if ($data['Customer Billing Address Link']=='Contact')
+            $billing_address='<i>'._('Same as Contact').'</i>';
+        else
+            $billing_address=$data['Customer XHTML Billing Address'];
+
+        if ($data['Customer Delivery Address Link']=='Contact')
+            $delivery_address='<i>'._('Same as Contact').'</i>';
+        elseif($data['Customer Delivery Address Link']=='Billing')
+        $delivery_address='<i>'._('Same as Billing').'</i>';
+        else
+            $delivery_address=$data['Customer XHTML Main Delivery Address'];
+
+        switch ($data['Customer Type by Activity']) {
+        case 'Inactive':
+            $activity=_('Lost');
+            break;
+        case 'Active':
+            $activity=_('Active');
+            break;
+        case 'Prospect':
+            $activity=_('Prospect');
+            break;
+        default:
+            $activity=$data['Customer Type by Activity'];
+            break;
+        }
+
+        $adata[]=array(
+                     'id'=>$id,
+                     'name'=>$name,
+                     'location'=>$data['Customer Main Location'],
+                     'orders'=>number($data['Customer Orders']),
+                     'invoices'=>$data['Customer Orders Invoiced'],
+                     'email'=>$data['Customer Main XHTML Email'],
+                     'telephone'=>$data['Customer Main XHTML Telephone'],
+                     'last_order'=>$last_order_date,
+                     'contact_since'=>$contact_since,
+
+                     'total_payments'=>money($data['Customer Net Payments'],$currency),
+                     'net_balance'=>money($data['Customer Net Balance'],$currency),
+                     'total_refunds'=>money($data['Customer Net Refunds'],$currency),
+                     'total_profit'=>money($data['Customer Profit'],$currency),
+                     'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
+
+
+                     'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
+                     'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
+                     'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
+                     'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
+                     'contact_name'=>$data['Customer Main Contact Name'],
+                     'address'=>$data['Customer Main XHTML Address'],
+                     'billing_address'=>$billing_address,
+                     'delivery_address'=>$delivery_address,
+
+                     'activity'=>$activity
+
+                 );
+///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))
+///{
+///	$list_name=$_REQUEST['textValue'];
+///	$list_type=$_REQUEST['typeValue'];
+///}
+///$dataid[]=array('id'=>$id,'list_name'=>$list_name,'list_type'=>$list_type);//
+    }
+    mysql_free_result($result);
+
+///print_r($dataid);//
+
+
+
+
+    $response=array('resultset'=>
+                                array(
+                                    'state'=>200,
+                                    'data'=>$adata,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'total_records'=>$total
+
+                                )
+                   );
+    echo json_encode($response);
 
 
 }

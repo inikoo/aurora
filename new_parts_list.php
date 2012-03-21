@@ -52,12 +52,18 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
 'js/edit_common.js',
+              'js/parts_common.js',
+
 'new_parts_list.js.php',
               
           );
 
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');
+
+$smarty->assign('parts_view',$_SESSION['state']['warehouse']['parts']['view']);
+$smarty->assign('parts_period',$_SESSION['state']['warehouse']['parts']['period']);
+$smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
 
 
 $_SESSION['state']['parts']['list']['where']='';

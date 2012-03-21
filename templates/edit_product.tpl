@@ -145,7 +145,7 @@
 	<button style="visibility:hidden" class="negative" id="reset_edit_product_price" class="state_details" >{t}Reset{/t}</button>
 </div>
 
-<table class="edit" border=0>
+<table class="edit" border=0 style="width:890px;clear:both">
  <tr class="title"><td colspan=5>{t}Price{/t}</td></tr>
 
 <tr class="first"><td  class="label">{t}Price per Outer{/t}:</td>

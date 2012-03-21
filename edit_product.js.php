@@ -679,7 +679,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);	
 		    
 		    
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['product']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['history']['f_value']?>'};
@@ -757,7 +758,9 @@ var tableid=1;
 		      this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 		      this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 		      this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-                   
+            this.table1.table_id=tableid;
+     			this.table1.subscribe("renderEvent", myrenderEvent);
+     
                    this.table1.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow);
        this.table1.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow);
       this.table1.subscribe("rowClickEvent", salect_part_from_list);

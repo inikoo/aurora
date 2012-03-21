@@ -34,6 +34,8 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+
 case('customers_who_use_deal'):
 	list_customers_who_use_deal();
 	break;
@@ -60,20 +62,7 @@ case('new_list'):
 
 	new_products_list($data);
 	break;
-case('new_parts_list'):
 
-	$data=prepare_values($_REQUEST,array(
-			'awhere'=>array('type'=>'json array'),
-			//'store_id'=>array('type'=>'key'),
-			'list_name'=>array('type'=>'string'),
-			'list_type'=>array('type'=>'enum',
-				'valid values regex'=>'/static|Dynamic/i'
-			)
-		));
-
-
-	new_parts_list($data);
-	break;
 case('is_valid_family_code'):
 
 
@@ -3324,11 +3313,6 @@ function list_parts() {
 		$elements['LastStock']=$_REQUEST['elements_LastStock'];
 	}
 
-
-
-
-	//$_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
 	$_SESSION['state']['warehouse']['parts']['order']=$order;
 	$_SESSION['state']['warehouse']['parts']['order_dir']=$order_direction;
 	$_SESSION['state']['warehouse']['parts']['nr']=$number_results;
@@ -3340,7 +3324,7 @@ function list_parts() {
 
 
 	$filter_msg='';
-
+	$sql_type='part';
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 	if (!is_numeric($start_from))
@@ -3360,7 +3344,7 @@ function list_parts() {
 		$raw_data=json_decode($tmp, true);
 		//$raw_data['store_key']=$store;
 		//print_r($raw_data);exit;
-		list($where,$table)=parts_awhere($raw_data);
+		list($where,$table,$sql_type)=parts_awhere($raw_data);
 
 		$where_type='';
 		$where_interval='';
@@ -3375,7 +3359,7 @@ function list_parts() {
 				if ($customer_list_data['List Type']=='Static') {
 
 					$table='`List Part Bridge` PB left join `Part Dimension` P  on (PB.`Part SKU`=P.`Part SKU`)';
-					$where_type=sprintf(' and `List Key`=%d ',$parent_key);
+					$where.=sprintf(' and `List Key`=%d ',$parent_key);
 
 				} else {// Dynamic by DEFAULT
 
@@ -3388,7 +3372,7 @@ function list_parts() {
 					$raw_data=json_decode($tmp, true);
 
 					//$raw_data['store_key']=$store;
-					list($where,$table)=parts_awhere($raw_data);
+					list($where,$table,$sql_type)=parts_awhere($raw_data);
 				}
 
 			} else {
@@ -3421,8 +3405,8 @@ function list_parts() {
 
 
 
-
-
+	
+if (!$awhere  and $parent!='list') {
 	$_elements='';
 	foreach ($elements as $_key=>$_value) {
 		if ($_value)
@@ -3434,7 +3418,7 @@ function list_parts() {
 	} else {
 		$where.=' and `Part Main State` in ('.$_elements.')' ;
 	}
-
+}
 
 
 
@@ -3455,9 +3439,13 @@ function list_parts() {
 	elseif ($f_field=='sku' and $f_value!='')
 		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
-	$sql="select count(Distinct P.`Part SKU`) as total from $table  $where $wheref";
-//	print $sql;
-//exit;
+	if ($sql_type=='part')
+		$sql="select count(Distinct P.`Part SKU`) as total from $table  $where $wheref";
+	else
+		$sql="select count(Distinct ITF.`Part SKU`) as total from $table  $where $wheref";
+
+
+
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -3468,7 +3456,12 @@ function list_parts() {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total_without_filters from `Part Dimension`  $where ";
+	
+		if ($sql_type=='part')
+		$sql="select count(Distinct P.`Part SKU`) as total from $table  $where ";
+	else
+		$sql="select count(Distinct ITF.`Part SKU`) as total from $table  $where ";
+	
 
 
 		$result=mysql_query($sql);
@@ -3480,7 +3473,7 @@ function list_parts() {
 
 	}
 
-
+//print $sql;
 
 
 	$rtext=$total_records." ".ngettext('part','parts',$total_records);
@@ -3628,32 +3621,42 @@ function list_parts() {
 
 				$order='P.'.$order;
 
-$group='';
+			$group='';
 
-			$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref   $group   order by $order $order_direction limit $start_from,$number_results    ";
-//print $sql;
-//exit;
+		if ($sql_type=='part')
+			$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref    order by $order $order_direction limit $start_from,$number_results    ";
+		else
+			$sql="select *,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data from $table  $where $wheref  group by ITF.`Part SKU`  order by $order $order_direction limit $start_from,$number_results    ";
+
+
+
 		$adata=array();
 	$result=mysql_query($sql);
 
-	
+//print $sql;
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-		$locations='<table border=0 style="width:150px">';
-		$locations_data=preg_split('/,/',$data['location_data']);
-		//print_r($locations_data);
-		foreach ($locations_data as $raw_location_data) {
-			if ($raw_location_data!='') {
-				//print_r($raw_location_data);
-				$locations.='<tr style="border:none">';
-				$locations_data=preg_split('/\:/',$raw_location_data);
 
-				$locations.='<td style="0border:1px solid red;"><a href="locations.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
-				$locations.='</tr>';
+
+		if ($sql_type=='part') {
+			$locations='<table border=0 style="width:150px">';
+			$locations_data=preg_split('/,/',$data['location_data']);
+			//print_r($locations_data);
+			foreach ($locations_data as $raw_location_data) {
+				if ($raw_location_data!='') {
+					//print_r($raw_location_data);
+					$locations.='<tr style="border:none">';
+					$locations_data=preg_split('/\:/',$raw_location_data);
+
+					$locations.='<td style="0border:1px solid red;"><a href="locations.php?id='.$locations_data[0].'">'.$locations_data[1].'</a></td><td style="text-align:right">'.number($locations_data[3]).'</td>';
+					$locations.='</tr>';
+				}
 			}
-		}
-		$locations.='</table>';
-		//print $locations;
+			$locations.='</table>';
+			//print $locations;
+		}else {
 
+			$locations='';
+		}
 
 
 
@@ -6132,13 +6135,13 @@ function list_campaigns() {
 
 
 
-if(!isset($_REQUEST['parent']) or !isset($_REQUEST['parent_key'])){
+	if (!isset($_REQUEST['parent']) or !isset($_REQUEST['parent_key'])) {
 
-exit("no parent");
-}
+		exit("no parent");
+	}
 
-$parent= $_REQUEST['parent'];
-$parent_key=$_REQUEST['parent_key'];
+	$parent= $_REQUEST['parent'];
+	$parent_key=$_REQUEST['parent_key'];
 
 	$conf=$_SESSION['state'][$parent]['campaigns'];
 
@@ -6189,12 +6192,12 @@ $parent_key=$_REQUEST['parent_key'];
 
 
 
-$_SESSION['state'][$parent]['campaigns']['order']=$order;
-$_SESSION['state'][$parent]['campaigns']['order_dir']=$order_direction;
-$_SESSION['state'][$parent]['campaigns']['nr']=$number_results;
-$_SESSION['state'][$parent]['campaigns']['sf']=$start_from;
-$_SESSION['state'][$parent]['campaigns']['f_field']=$f_field;
-$_SESSION['state'][$parent]['campaigns']['f_value']=$f_value;
+	$_SESSION['state'][$parent]['campaigns']['order']=$order;
+	$_SESSION['state'][$parent]['campaigns']['order_dir']=$order_direction;
+	$_SESSION['state'][$parent]['campaigns']['nr']=$number_results;
+	$_SESSION['state'][$parent]['campaigns']['sf']=$start_from;
+	$_SESSION['state'][$parent]['campaigns']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['campaigns']['f_value']=$f_value;
 
 
 
@@ -6269,17 +6272,17 @@ $_SESSION['state'][$parent]['campaigns']['f_value']=$f_value;
 	if ($order=='name')
 		$order='`Deal Campaign Name`';
 	else if ($order=='description')
-		$order='`Deal Campaign Description`';
+			$order='`Deal Campaign Description`';
 		else
 			$order='`Deal Campaign Name`';
 
 
 		$sql="select *  from `Deal Campaign Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
-	
+
 	$res = mysql_query($sql);
 
 	$total=mysql_num_rows($res);
-$adata=array();
+	$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		//$sql=sprintf("select * from `Campaign Deal Schema`  where `Deal Key`=%d  ",$row['Deal Key']);
@@ -9995,7 +9998,7 @@ function new_products_list($data) {
 	$list_name=$data['list_name'];
 	$store_id=$data['store_id'];
 
-	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d ",
+	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Parent Key`=%d ",
 		prepare_mysql($list_name),
 		$store_id
 	);
@@ -10046,7 +10049,7 @@ function new_products_list($data) {
 	}
 	mysql_free_result($res);
 
-	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Product',%d,%s,%s,%s,NOW())",
+	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Product',%d,%s,%s,%s,NOW())",
 		$store_id,
 		prepare_mysql($list_name),
 		prepare_mysql($list_type),
@@ -10091,105 +10094,7 @@ function new_products_list($data) {
 
 }
 
-function new_parts_list($data) {
-	//print 'xx';exit;
-	$list_name=$data['list_name'];
-	//$store_id=$data['store_id'];
 
-	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s",
-		prepare_mysql($list_name)
-	);
-	$res=mysql_query($sql);
-
-	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		$response=array('resultset'=>
-			array(
-				'state'=>400,
-				'msg'=>_('Another list has the same name')
-			)
-		);
-		echo json_encode($response);
-		return;
-	}
-
-	$list_type=$data['list_type'];
-
-	$awhere=$data['awhere'];
-	$table='`Product Dimension` P ';
-
-
-	//   $where=customers_awhere($awhere);
-	list($where,$table)=parts_awhere($awhere);
-
-	//$where.=sprintf(' and `Product Store Key`=%d ',$store_id);
-
-
-	$sql="select count(Distinct P.`Part SKU`) as total from $table  $where";
-
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-		if ($row['total']==0) {
-			$response=array('resultset'=>
-				array(
-					'state'=>400,
-					'msg'=>_('No products match this criteria')
-				)
-			);
-			echo json_encode($response);
-			return;
-
-		}
-
-
-	}
-	mysql_free_result($res);
-
-	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Part',%d,%s,%s,%s,NOW())",
-		0,
-		prepare_mysql($list_name),
-		prepare_mysql($list_type),
-		prepare_mysql(json_encode($data['awhere']))
-
-	);
-	mysql_query($list_sql);
-	$customer_list_key=mysql_insert_id();
-
-	if ($list_type=='Static') {
-
-
-		$sql="select P.`Part SKU` from $table  $where group by P.`Part SKU`";
-		//print $sql;exit;
-		$result=mysql_query($sql);
-		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$customer_key=$data['Part SKU'];
-			$sql=sprintf("insert into `List Part Bridge` (`List Key`,`Part SKU`) values (%d,%d)",
-				$customer_list_key,
-				$customer_key
-			);
-			mysql_query($sql);
-
-		}
-		mysql_free_result($result);
-
-
-
-
-	}
-
-
-
-
-	$response=array(
-		'state'=>200,
-		'customer_list_key'=>$customer_list_key
-
-	);
-	echo json_encode($response);
-
-}
 
 function list_products_lists() {
 
@@ -10261,7 +10166,7 @@ function list_products_lists() {
 
 	$where=' where `List Scope`="Product"';
 	if (in_array($store,$user->stores)) {
-		$where.=sprintf(' and   `List Store Key`=%d  ',$store);
+		$where.=sprintf(' and   `List Parent Key`=%d  ',$store);
 
 	}
 
@@ -10320,7 +10225,7 @@ function list_products_lists() {
 				$order='`List Key`';
 
 
-			$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+			$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
 
 		$adata=array();
 
@@ -10510,7 +10415,7 @@ function list_parts_lists() {
 				$order='`List Key`';
 
 
-			$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+			$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
 
 		$adata=array();
 
@@ -11487,5 +11392,7 @@ function list_delivery_notes_per_part($data) {
 	);
 	echo json_encode($response);
 }
+
+
 
 ?>

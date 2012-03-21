@@ -117,7 +117,7 @@ elseif($map_type == 'customers_dynamic_list'){
 	if(isset($_REQUEST['subject_key']) and is_numeric($_REQUEST['subject_key'])){
 	    $dynamic_list_id=$_REQUEST['subject_key'];
 	}
-	$qry = mysql_query("SELECT `List Metadata`,`List Store Key` FROM `List Dimension` WHERE `List Key` = '$dynamic_list_id'");
+	$qry = mysql_query("SELECT `List Metadata`,`List Parent Key` FROM `List Dimension` WHERE `List Key` = '$dynamic_list_id'");
 	$rows= mysql_fetch_assoc($qry);
 	$metadata = $rows['List Metadata'];
 	$table='`Customer Dimension` C ';
@@ -231,7 +231,7 @@ elseif($map_type == 'customers_dynamic_list'){
     }
     $filter_msg='';
     $wheref='';
-    $store=$rows['List Store Key'];
+    $store=$rows['List Parent Key'];
     $currency='';
     if (is_numeric($store)) {
         $where.=sprintf(' and `Customer Store Key`=%d ',$store);

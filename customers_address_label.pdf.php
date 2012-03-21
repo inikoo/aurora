@@ -178,7 +178,7 @@ if ($type=='list') {
 
                 $raw_data=json_decode($tmp, true);
 
-                $raw_data['store_key']=$row2['List Store Key'];
+                $raw_data['store_key']=$row2['List Parent Key'];
                 list($where,$table)=customers_awhere($raw_data);
             
                     $sql=sprintf("select `Customer Key` from $table $where");

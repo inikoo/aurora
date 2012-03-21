@@ -542,8 +542,8 @@ var tableid=2;
 		      
 		      var ColumnDefs = [
 		      		{key:"formated_sku", label:"SKU",width:60, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"description", label:"<?php echo _('Description')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:210, sortable:false,className:"aleft"}
+					,{key:"description", label:"<?php echo _('Description')?>",width:240, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:170, sortable:false,className:"aleft"}
 			     	,{key:"status", label:"",width:70, hidden:true,sortable:false,className:"aleft"}
                    
 					];
@@ -1235,6 +1235,15 @@ dialog_add_part.show();
 }
 
 function init(){
+ var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS2.queryMatchContains = true;
+  oACDS2.table_id=2;
+ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
+ oAutoComp2.minQueryLength = 0; 
+ 
+ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+
   init_search('locations');
 
     Event.addListener(['details','parts','history'], "click",change_block);

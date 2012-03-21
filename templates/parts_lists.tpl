@@ -2,7 +2,7 @@
 <div id="bd">
 	{include file='locations_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Parts Lists{/t}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}   &rarr; <a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a>     &rarr; {t}Parts Lists{/t}</span> 
 	</div>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:15px">
 		<div class="buttons" style="float:left">

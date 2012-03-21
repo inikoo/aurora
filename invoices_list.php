@@ -23,7 +23,7 @@ if (!$customer_list_data=mysql_fetch_assoc($res)) {
     exit;
 
 }
-$store=new Store($customer_list_data['List Store Key']);
+$store=new Store($customer_list_data['List Parent Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 

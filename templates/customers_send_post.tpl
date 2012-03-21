@@ -1,13 +1,13 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='contacts_navigation.tpl'}
-<input type="hidden" id="customer_list_key" value="{$customer_list_key}"/>
+<input type="hidden" id="store_key" value="{$store->id}"/>
 <div class="branch"> 
-  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr; {$customer_list_name}</span>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Pending Post{/t}</span>
 </div>
  <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
     <div class="buttons" style="float:left">
-<span class="main_title">{t}Customers List{/t}: <span class="id">{$customer_list_name}</span></span>
+<span class="main_title">{t}Post to send{/t} <span class="id">({$store->get('Store Code')})</span></span>
     </div>
   <div class="buttons">
       {if $modify}<button onclick="window.location='edit_customers.php?list_key={$customer_list_key}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers in List{/t}</button>{/if}
