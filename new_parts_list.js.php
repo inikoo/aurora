@@ -20,9 +20,6 @@ var dialog_category_list;
 var searched=false;
 function save_search_list(){
 
-
-	
-	//var warehouse_id=Dom.get('warehouse_id').value;
 	var list_name = Dom.get('list_name').value;
 	
 	if(list_name==''){
@@ -40,19 +37,30 @@ function save_search_list(){
 	
 	var awhere=get_awhere();
 
-	var request="ar_assets.php?tipo=new_parts_list&list_name="+list_name+'&list_type='+list_type+'&awhere='+awhere;
-	//alert(request);//return;
+
+  Dom.setStyle('the_table','display','none');
+    Dom.setStyle('saving','display','');
+    Dom.setStyle('saving_form','display','none');
+
+
+	var request="ar_edit_assets.php?tipo=new_parts_list&list_name="+list_name+'&list_type='+list_type+'&parent_key='+Dom.get('warehouse_key').value+'&awhere='+awhere;
+//	alert(request);//return;
 	
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		   //alert(o.responseText);
+//		alert(o.responseText);
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
 			location.href='parts_list.php?id='+r.customer_list_key;
 
 		    }else
+			
+			 Dom.setStyle('the_table','display','');
+    Dom.setStyle('saving','display','none');
+    Dom.setStyle('saving_form','display','');
 			Dom.get('save_list_msg').innerHTML=r.msg;
+			
 		}
 	    });  
 	
@@ -252,6 +260,9 @@ request="ar_assets.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehou
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
+	    
 
  this.table0.subscribe("dataReturnEvent", data_returned);  
 	    
@@ -347,6 +358,9 @@ request="ar_assets.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehou
 	    
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table2.table_id=tableid;
+     this.table2.subscribe("renderEvent", myrenderEvent);
+	    
 	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
 
  this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
@@ -453,7 +467,8 @@ request="ar_assets.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehou
        this.table3.subscribe("rowMouseoutEvent", this.table3.onEventUnhighlightRow);
       this.table3.subscribe("rowClickEvent", select_postal_code);
      
-
+this.table3.table_id=tableid;
+     this.table3.subscribe("renderEvent", myrenderEvent);
 
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
@@ -491,7 +506,25 @@ function get_awhere(){
         availability_state_array[x]=availability_state[x].getAttribute('cat');
     }
 	
+	if(Dom.hasClass('tariff_code_invalid','selected')){
+		invalid_tariff_code='No'
+	}else if(Dom.hasClass('tariff_code_valid','selected')){
+		invalid_tariff_code='Yes'
+	}
+	
+	else{
+		invalid_tariff_code=''
+	}
+	tariff_code=Dom.get('tariff_code').value
+	
+	
     var data={ 
+    invalid_tariff_code:invalid_tariff_code,
+    tariff_code:tariff_code,
+	
+	part_dispatched_from:Dom.get('v_calpop1').value,
+	part_dispatched_to:Dom.get('v_calpop2').value,
+	
 	//price:price_array,
 	//invoice:invoice_array,
 	//web_state:web_state_array,
@@ -520,23 +553,22 @@ function get_awhere(){
 function submit_search(e){
 
 
-    //chack woth radio button is cheked
 
 searched=true;
 
   
    var awhere=get_awhere();
-//alert(awhere);
-	//alert(jsonStr);
+
     var table=tables.table0;
     var datasource=tables.dataSource0;
 	warehouse_id=Dom.get('warehouse_id').value;
     var request='&sf=0&parent=warehouse&parent_key='+Dom.get('warehouse_id').value+'&where=' +awhere;
+
     Dom.setStyle('the_table','display','none');
     Dom.setStyle('searching','display','');
     Dom.setStyle('save_dialog','visibility','visible');
 
-	alert(request);
+	//alert(request);
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
@@ -743,9 +775,15 @@ function checkbox_changed_availability_state_condition(o){
 
 
 function tariff_code_invalid(){
-if(Dom.hasClass('selected')){
+
+
+
+if(Dom.hasClass('tariff_code_invalid','selected')){
 Dom.setStyle('tariff_code','display','')
+Dom.removeClass(['tariff_code_valid','tariff_code_invalid'],'selected')
+
 }else{
+Dom.removeClass('tariff_code_valid','selected')
 Dom.addClass('tariff_code_invalid','selected')
 Dom.setStyle('tariff_code','display','none')
 
@@ -753,12 +791,55 @@ Dom.setStyle('tariff_code','display','none')
 
 }
 
+
+function tariff_code_valid(){
+if(Dom.hasClass('tariff_code_valid','selected')){
+Dom.setStyle('tariff_code','display','')
+Dom.removeClass(['tariff_code_valid','tariff_code_invalid'],'selected')
+
+}else{
+
+Dom.addClass('tariff_code_valid','selected')
+Dom.removeClass('tariff_code_invalid','selected')
+
+Dom.setStyle('tariff_code','display','none')
+
+}
+
+}
+function select_european_union_countries(){
+dialog_country_list.hide();
+
+var request='ar_kbase.php?tipo=add_european_union_countries&current_countries='+Dom.get('geo_constraints').value
+	           alert(request)
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	           alert(o.responseText);	
+			    var r =  YAHOO.lang.JSON.parse(o.responseText);
+			    if(r.state==200){
+                    Dom.get('geo_constraints').value=r.geo_constraints;
+                }
+   			}
+    });
+
+}
+
 function init(){
+
+ YAHOO.util.Event.addListener('dialog_country_list_european_union', "click",select_european_union_countries);
+ var ids=['parts_general','parts_stock','parts_sales','parts_forecast','parts_locations'];
+YAHOO.util.Event.addListener(ids, "click",change_parts_view,0);
+ ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week'];
+ YAHOO.util.Event.addListener(ids, "click",change_parts_period,0);
+ ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
+ YAHOO.util.Event.addListener(ids, "click",change_parts_avg,0);
+
 
   init_search('parts');
 
 
 YAHOO.util.Event.addListener('tariff_code_invalid', "click",tariff_code_invalid);
+YAHOO.util.Event.addListener('tariff_code_valid', "click",tariff_code_valid);
 
 
 

@@ -8,7 +8,7 @@
 		<div class="top_page_menu">
 			<div class="buttons" >
 			
-				{if $modify} <button id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button> <button onclick="window.location='edit_customers.php?store={$store->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button> {/if} <button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> 
+				{if $modify} <button id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button> <button onclick="window.location='edit_customers.php?store={$store->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button> {/if} <button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> <button onclick="window.location='customers_send_post.php?store={$store->id}'"><img src="art/icons/newspaper.png" alt=""> {t}Pending Post{/t}</button> 
 
 		</div>
 		

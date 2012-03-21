@@ -169,6 +169,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
        this.table0.doBeforeLoadData=mydoBeforeLoadData;
+       
+       
+       this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['stores']['stores']['view']?>';
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['stores']['stores']['f_field']?>',value:'<?php echo$_SESSION['state']['stores']['stores']['f_value']?>'};
@@ -259,7 +263,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
         this.table1.doBeforeLoadData=mydoBeforeLoadData;
 
-
+this.table1.table_id=tableid;
+     this.table1.subscribe("renderEvent", myrenderEvent);
 	    
 	    this.table1.view='<?php echo$_SESSION['state']['stores']['departments']['view']?>';
 
@@ -339,7 +344,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table2.table_id=tableid;
+     	this.table2.subscribe("renderEvent", myrenderEvent);
 
 	    
 	    this.table2.view='<?php echo$_SESSION['state']['stores']['families']['view']?>';
@@ -421,7 +427,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table3.table_id=tableid;
+     	this.table3.subscribe("renderEvent", myrenderEvent);
 
 	    
 	    this.table3.view='<?php echo$_SESSION['state']['stores']['products']['view']?>';

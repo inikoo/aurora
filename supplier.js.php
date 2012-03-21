@@ -102,6 +102,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		
+		this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
+		
 		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['supplier_products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['supplier_products']['f_value']?>'};
 		this.table0.view='<?php echo$_SESSION['state']['supplier']['supplier_products']['view']?>';
 		
@@ -164,6 +168,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
+	    
+	    
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['porders']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['porders']['table']['f_value']?>'};
 	
 	
@@ -224,6 +232,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table3.table_id=tableid;
+     this.table3.subscribe("renderEvent", myrenderEvent);
+	    
+	    
 	    this.table3.filter={key:'<?php echo$_SESSION['state']['supplier_dns']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_dns']['table']['f_value']?>'};
 
 
@@ -306,7 +318,8 @@ this.table100.prefix='';
        this.table100.subscribe("rowMouseoutEvent", this.table100.onEventUnhighlightRow);
       this.table100.subscribe("rowClickEvent", select_country_from_list);
      
-
+this.table100.table_id=tableid;
+     this.table100.subscribe("renderEvent", myrenderEvent);
 
 	    this.table100.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table100.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};

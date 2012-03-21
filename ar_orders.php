@@ -3516,7 +3516,7 @@ function orders_lists($data) {
 
 
 	if (in_array($store,$user->stores)) {
-		$where.=sprintf(' and `List Store Key`=%d  ',$store);
+		$where.=sprintf(' and `List Parent Key`=%d  ',$store);
 
 	}
 
@@ -3575,7 +3575,7 @@ function orders_lists($data) {
 		$order='`List Key`';
 
 
-	$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
 
 
 	$adata=array();
@@ -3719,7 +3719,7 @@ function invoices_lists($data) {
 
 
 	if (in_array($store,$user->stores)) {
-		$where.=sprintf(' and `List Store Key`=%d  ',$store);
+		$where.=sprintf(' and `List Parent Key`=%d  ',$store);
 
 	}
 
@@ -3778,7 +3778,7 @@ function invoices_lists($data) {
 		$order='`List Key`';
 
 
-	$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
 
 
 	$adata=array();
@@ -3922,7 +3922,7 @@ function dn_lists($data) {
 
 
 	if (in_array($store,$user->stores)) {
-		$where.=sprintf(' and `List Store Key`=%d  ',$store);
+		$where.=sprintf(' and `List Parent Key`=%d  ',$store);
 
 	}
 
@@ -3981,7 +3981,7 @@ function dn_lists($data) {
 		$order='`List Key`';
 
 
-	$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Store Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  CLD.`List key`,CLD.`List Name`,CLD.`List Parent Key`,CLD.`List Creation Date`,CLD.`List Type` from `List Dimension` CLD $where  order by $order $order_direction limit $start_from,$number_results";
 
 
 	$adata=array();
