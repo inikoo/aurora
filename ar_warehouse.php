@@ -247,6 +247,7 @@ function list_locations() {
 
 	$parent_key=$_REQUEST['parent_key'];
 
+	$_SESSION['state']['warehouse']['locations']['elements']=$elements;
 
 	$_SESSION['state']['warehouse']['locations']['order']=$order;
 	$_SESSION['state']['warehouse']['locations']['order_dir']=$order_direction;

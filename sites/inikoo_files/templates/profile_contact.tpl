@@ -106,7 +106,7 @@
 				</td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Receive Marketing Emails{/t}:</td>
+				<td class="label" style="width:200px">{t}Email Offers & Updates{/t}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button> 
@@ -120,7 +120,7 @@
 				<td colspan="3"></td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Send Marketing Post{/t}:</td>
+				<td class="label" style="width:200px">{t}Offers & Information by post{/t}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button> 
@@ -179,7 +179,7 @@
 </div>
 <div style="padding:0px 20px 20px 20px;float:left">
 	<h2 style="padding-top:10px">
-		{t}Questionare{/t} 
+		{t}About you{/t} 
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px;">
 		<table style="margin:10px">
@@ -195,7 +195,7 @@
 					{foreach from=$cat->get_children_objects_public_edit() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
 					<option value="">{t}Unknown{/t}</option>
 					{/if} 
-					<option {if $categories_value[$cat_key]="=$sub_cat_key" }selected='selected' {/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
+					<option {if $categories_value[$cat_key]==$sub_cat_key }selected='selected' {/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
 					{/foreach} 
 				</select>
 				</td>

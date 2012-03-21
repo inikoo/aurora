@@ -359,7 +359,7 @@ function fetch_records_from_customers_list($exported_data, $list_key) {
 
         list($where,$table)=customers_awhere($raw_data);
 
-  //      $where.=sprintf(' and `Customer Store Key` in (%s) ',$customer_list_data['List Store Key'] );
+  //      $where.=sprintf(' and `Customer Store Key` in (%s) ',$customer_list_data['List Parent Key'] );
 
 
         $sql=sprintf("select $fields from $table $where   group by C.`Customer Key` "

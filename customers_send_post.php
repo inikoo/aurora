@@ -7,32 +7,38 @@ if (!$user->can_view('customers') ) {
     exit;
 }
 $modify=$user->can_edit('customers');
-$general_options_list=array();
-if (isset($_REQUEST['id']))
-    $id=$_REQUEST['id'];
-else {
-    header('Location: index.php?error=no_id_in_customers_list');
-    exit;
+if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
+    $store_id=$_REQUEST['store'];
+
+} else {
+    $store_id=$_SESSION['state']['customers']['store'];
 
 }
 
-
-$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$id);
-
-$res=mysql_query($sql);
-if (!$customer_list_data=mysql_fetch_assoc($res)) {
-    header('Location: index.php?error=id_in_customers_list_not_found');
+if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+    header('Location: index.php');
     exit;
-
 }
-$store=new Store($customer_list_data['List Parent Key']);
+
+$store=new Store($store_id);
+if ($store->id) {
+    $_SESSION['state']['customers']['store']=$store->id;
+} else {
+    header('Location: index.php?error=store_not_found');
+    exit();
+}
+
+//print_r($_SESSION['state']['customers']);
+
+$currency=$store->data['Store Currency Code'];
+$currency_symbol=currency_symbol($currency);
+$smarty->assign('store',$store);
+
+
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
 
 
-$customer_list_name=$customer_list_data['List Name'];
-$smarty->assign('customer_list_name',$customer_list_name);
-$smarty->assign('customer_list_key',$customer_list_data['List Key']);
 $smarty->assign('modify',$modify);
 
 
@@ -73,9 +79,10 @@ $js_files=array(
               'js/table_common.js',
               'js/search.js',
               'js/edit_common.js',
-              'js/csv_common.js',
+                  'js/csv_common.js',
+
               'common_customers.js.php',
-              'customers_list.js.php?id='.$id
+              'customers_send_post.js.php'
           );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -83,7 +90,7 @@ $smarty->assign('parent','customers');
 //$smarty->assign('sub_parent','areas');
 $smarty->assign('view',$_SESSION['state']['customers']['table']['view']);
 
-$smarty->assign('title', _('Customer Static List'));
+$smarty->assign('title', _('Post to send'));
 $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
@@ -113,5 +120,5 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$smarty->display('customers_list.tpl');
+$smarty->display('customers_send_post.tpl');
 ?>

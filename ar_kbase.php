@@ -12,6 +12,15 @@ if(!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+
+case('add_european_union_countries'):
+
+  $data=prepare_values($_REQUEST,array(
+				       'current_countries'=>array('type'=>'string')
+				       )
+		       );
+  add_european_union_countries($data);
+  break;
 case('country_d1'):
   $data=prepare_values($_REQUEST,array(
 				       'query'=>array('type'=>'string')
@@ -134,11 +143,8 @@ function list_country_d2($data){
 
 
 
-
 function list_town($data){
 
-  
-  
   $extra_where='';
   if(isset($data['country_2acode']) and $data['country_2acode']!='')
     $extra_where.=sprintf(" and  `Country 2 Alpha Code`=%s",prepare_mysql($data['country_2acode']));
@@ -170,6 +176,25 @@ function list_town($data){
 
   echo json_encode($response);
 
+}
+
+function add_european_union_countries($data){
+	
+	$value='';
+	$sql=sprintf("select `Country Code` from kbase.`Country Dimension`  where `European Union`='Yes'  ");
+  	$res=mysql_query($sql);
+  	$data=array();
+  	while($row=mysql_fetch_array($res)){
+    	$value.=','.$row['Country Code'];
+  	}
+	$value=preg_replace('/^\,/','',$value);
+	
+	
+	
+	$response=array('state'=>200,'geo_constraints'=>$value);
+    	echo json_encode($response);
+	
+	
 }
 
 ?>

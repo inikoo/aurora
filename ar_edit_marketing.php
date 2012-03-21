@@ -301,7 +301,7 @@ function add_emails_to_email_campaign_from_list($data) {
 
 
 
-    if (!in_array($customer_list_data['List Store Key'],$user->stores)) {
+    if (!in_array($customer_list_data['List Parent Key'],$user->stores)) {
         $response= array('state'=>400,'msg'=>_('Operation forbidden'));
         return;
 

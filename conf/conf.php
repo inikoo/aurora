@@ -2763,9 +2763,44 @@ $default_state=array(
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
+		),
+
+
+	'customers'=>array(
+			'order'=>'id',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general',
+			'elements'=>array(
+				'all_contacts'=>array('Active'=>true,'Losing'=>true,'Lost'=>true),
+				'contacts_with_orders'=>array('Active'=>true,'Losing'=>true,'Lost'=>true)
+			),
+
+			'where'=>'',
+			'f_field'=>'customer name',
+			'f_value'=>'',
+
+			'csv_export'=>array(
+				'id'=>true,
+				'name'=>true,
+				'location'=>true,
+				'last_orders'=>true,
+				'orders'=>true,
+				'status'=>true
+			)
+		),
+	'pending_post'=>array(
+			'order'=>'id',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general',
+			'f_field'=>'customer name',
+			'f_value'=>'',
+
+	
 		)
-
-
 
 	),
 

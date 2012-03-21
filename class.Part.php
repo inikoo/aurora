@@ -150,7 +150,7 @@ class part extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-//print "$sql\n";
+		//print "$sql\n";
 
 	}
 
@@ -225,8 +225,30 @@ class part extends DB_Table {
 
 	}
 
+	function update_tariff_code_valid() {
+
+		$sql=sprintf("select count(*) as num  from kbase.`Commodity Code Dimension` where `Commodity Code`=%s ",
+			prepare_mysql($this->data['Part Tariff Code'])
+		);
+		$res=mysql_query($sql);
+		$valid='No';
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['num']>0) {
+				$valid='Yes';
+			}
+		}
+
+		$sql=sprintf("update `Part Dimension` set `Part Tariff Code Valid`=%s where `Part SKU`=%d",prepare_mysql($valid),$this->sku);
+		mysql_query($sql);
+		
+	}
+
 	function update_tariff_code($value,$options='') {
+
 		$this->update_field('Part Tariff Code',$value,$options);
+
+		$this->update_tariff_code_valid();
+
 		$product_ids=$this->get_product_ids();
 
 		foreach ($product_ids as $product_id) {
@@ -533,9 +555,9 @@ class part extends DB_Table {
 
 	}
 
-function get_period($period,$key) {
-	return $this->get($period.' '.$key);
-}
+	function get_period($period,$key) {
+		return $this->get($period.' '.$key);
+	}
 
 	function get($key='',$args=false) {
 
@@ -905,7 +927,7 @@ function get_period($period,$key) {
 
 
 
-//print_r($supplier_products);
+		//print_r($supplier_products);
 
 		//TODO meka it work if you have more that 2 suppliers, for now all parts are 1-1 (1-n,n-1) are treated as production
 
@@ -922,10 +944,10 @@ function get_period($period,$key) {
 		);
 		mysql_query($sql);
 
-		
-		
 
-//print "$sql\n";
+
+
+		//print "$sql\n";
 		$this->update_main_state();
 
 
@@ -1285,19 +1307,19 @@ function get_period($period,$key) {
 		$locations=array();
 		$was_associated=array();
 		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
-		
+
 		$result=mysql_query($sql);
 		$_locations=array();
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			if(in_array($row['Location Key'],$_locations)){
+			if (in_array($row['Location Key'],$_locations)) {
 				continue;
-			}else{
+			}else {
 				$_locations[]=$row['Location Key'];
 			}
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-		
-		//print_r($part_location->location);
-		if ($part_location->location->data['Location Mainly Used For']=='Picking') {
+
+			//print_r($part_location->location);
+			if ($part_location->location->data['Location Mainly Used For']=='Picking') {
 				if ($part_location->is_associated($date)) {
 					list($stock,$value,$in_process)=$part_location->get_stock($date);
 					$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
@@ -1324,7 +1346,7 @@ function get_period($period,$key) {
 			$qty=0;
 		}else {
 			//foreach ($was_associated as $key => $row) {
-			//	$_location_key[$key]  = $row['location_key'];
+			// $_location_key[$key]  = $row['location_key'];
 			//}
 			//array_multisort($_location_key, SORT_DESC, $was_associated);
 
@@ -1375,13 +1397,13 @@ function get_period($period,$key) {
 	function get_current_products($for_smarty=false) {
 
 
-	//	$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code`                                                                                 from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes'  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
+		// $sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code`                                                                                 from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes'  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
 
 		$sql=sprintf("select  `Product Web Configuration`,`Product Web State`,`Store Key`,`Store Code`,P.`Product ID`,`Product Code`,`Product Store Key` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` P on (P.`Product ID`=PPD.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`)  where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  and `Product Record Type`='Normal'"
 			,$this->sku
-		
+
 		);
-//print $sql;
+		//print $sql;
 		$res=mysql_query($sql);
 		$products=array();
 		while ($row=mysql_fetch_array($res)) {
@@ -1392,7 +1414,7 @@ function get_period($period,$key) {
 				'StoreKey'=>$row['Store Key'],
 				'ProductWebConfiguration'=>$row['Product Web Configuration'],
 				'ProductWebState'=>$row['Product Web State'],
-				);
+			);
 		}
 
 		return $products;
@@ -1528,11 +1550,11 @@ function get_period($period,$key) {
 
 	function update_sales_from_invoices($interval) {
 
-$to_date='';
-list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		$to_date='';
+		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
-		
+
 
 
 		setlocale(LC_ALL, 'en_GB');
@@ -2247,7 +2269,7 @@ list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($in
 		$raw_used_in_products='';
 		$sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where PPL.`Part SKU`=%d and `Product Part Most Recent`='Yes'  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
 		$result=mysql_query($sql);
-//		 print "$sql\n";
+		//   print "$sql\n";
 		$used_in=array();
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 

@@ -2655,7 +2655,7 @@ function new_dn_list($data) {
 	$list_name=$data['list_name'];
 	$store_id=$data['store_id'];
 
-	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d and `List Scope`='DN'",
+	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Parent Key`=%d and `List Scope`='DN'",
 		prepare_mysql($list_name),
 		$store_id
 	);
@@ -2704,7 +2704,7 @@ function new_dn_list($data) {
 	}
 	mysql_free_result($res);
 
-	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Delivery Note',%d,%s,%s,%s,NOW())",
+	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Delivery Note',%d,%s,%s,%s,NOW())",
 		$store_id,
 		prepare_mysql($list_name),
 		prepare_mysql($list_type),
@@ -2753,7 +2753,7 @@ function new_invoices_list($data) {
 	$list_name=$data['list_name'];
 	$store_id=$data['store_id'];
 
-	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d and `List Scope`='Invoice'",
+	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Parent Key`=%d and `List Scope`='Invoice'",
 		prepare_mysql($list_name),
 		$store_id
 	);
@@ -2802,7 +2802,7 @@ function new_invoices_list($data) {
 	}
 	mysql_free_result($res);
 
-	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Invoice',%d,%s,%s,%s,NOW())",
+	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Invoice',%d,%s,%s,%s,NOW())",
 		$store_id,
 		prepare_mysql($list_name),
 		prepare_mysql($list_type),
@@ -2852,7 +2852,7 @@ function new_orders_list($data) {
 	$list_name=$data['list_name'];
 	$store_id=$data['store_id'];
 
-	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d and `List Scope`='Order'",
+	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Parent Key`=%d and `List Scope`='Order'",
 		prepare_mysql($list_name),
 		$store_id
 	);
@@ -2901,7 +2901,7 @@ function new_orders_list($data) {
 	}
 	mysql_free_result($res);
 
-	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Order',%d,%s,%s,%s,NOW())",
+	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Order',%d,%s,%s,%s,NOW())",
 		$store_id,
 		prepare_mysql($list_name),
 		prepare_mysql($list_type),
@@ -2947,12 +2947,12 @@ function new_orders_list($data) {
 
 function delete_order_list($data) {
 	global $user;
-	$sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+	$sql=sprintf("select `List Parent Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		if (in_array($row['List Store Key'],$user->stores)) {
+		if (in_array($row['List Parent Key'],$user->stores)) {
 			$sql=sprintf("delete from  `List Order Bridge` where `List Key`=%d",$data['key']);
 			mysql_query($sql);
 			$sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
@@ -2984,12 +2984,12 @@ function delete_order_list($data) {
 
 function delete_invoice_list($data) {
 	global $user;
-	$sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+	$sql=sprintf("select `List Parent Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		if (in_array($row['List Store Key'],$user->stores)) {
+		if (in_array($row['List Parent Key'],$user->stores)) {
 			$sql=sprintf("delete from  `List Invoice Bridge` where `List Key`=%d",$data['key']);
 			mysql_query($sql);
 			$sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
@@ -3021,12 +3021,12 @@ function delete_invoice_list($data) {
 
 function delete_dn_list($data) {
 	global $user;
-	$sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+	$sql=sprintf("select `List Parent Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		if (in_array($row['List Store Key'],$user->stores)) {
+		if (in_array($row['List Parent Key'],$user->stores)) {
 			$sql=sprintf("delete from  `List Delivery Note Bridge` where `List Key`=%d",$data['key']);
 			mysql_query($sql);
 			$sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
