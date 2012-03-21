@@ -1,0 +1,1 @@
+../../class.DealMetadata.php

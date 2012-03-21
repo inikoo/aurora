@@ -494,14 +494,16 @@ function validate_scope_edit(branch) {
 
     for (items in validate_scope_data[branch]) {
     
-       //alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
+     //  alert(branch +' xxx items:  '+items+' Dom id:   '+validate_scope_data[branch][items].name) 
 
-        if (validate_scope_data[branch][items].validated==false   ||    (validate_scope_data[branch][items].required &&  Dom.get(validate_scope_data[branch][items].name).value=='' )  )
+        if (validate_scope_data[branch][items].validated==false   ||    (validate_scope_data[branch][items].required &&  Dom.get(validate_scope_data[branch][items].name).value=='' )  ){
+
             errors=true;
+	}
         if (validate_scope_data[branch][items].changed==true)
             changed=true;
             
-         //   alert(errors+' '+changed)
+            //alert(errors+' '+changed)
     }
 
 
@@ -509,7 +511,8 @@ function validate_scope_edit(branch) {
 Dom.setStyle('save_edit_'+branch,'visibility','visible');
 Dom.setStyle('reset_edit_'+branch,'visibility','visible');
 
-if(changed){	
+if(changed){
+
         Dom.setStyle('save_edit_'+branch,'visibility','visible');
         Dom.setStyle('reset_edit_'+branch,'visibility','visible');
 
@@ -695,6 +698,7 @@ function validate_general_edit(branch,items,query) {
 
 		
         if (old_value.toLowerCase()!=trim(query.toLowerCase())    ) {
+
             validate_scope_data[branch][items].changed=true;
 
             if (data.ar=='find') {
@@ -941,6 +945,8 @@ var item_input=Dom.get(validate_scope_data[branch]['email_provider'].name);
 var request=scope_edit_ar_file
 
 var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
+
+
 //alert(request+'?'+postData);//return;
  YAHOO.util.Connect.asyncRequest('POST',request , {
     success:function(o) {

@@ -126,6 +126,7 @@ class EmailCredentials extends DB_Table{
 
 
 	public function update($data,$options='') {
+
 		$data=$this->cure_data($data);
 		if (!is_array($data)) {
 
@@ -167,9 +168,26 @@ class EmailCredentials extends DB_Table{
 	}
 
 
-	function get_password($key) {
+	function get_amazon_keys($key) {
+		$password=$this->data['Email Address Amazon Mail'];
+	
+		$password=AESDecryptCtr(base64_decode($password),$key,256);
+		$password=preg_replace('/^\_Hello \:\)/','',$password);
+		return $password;
+	}
 
-		$password=AESDecryptCtr(base64_decode($this->data['Password']),$key,256);
+	function get_password($key) {
+		
+		switch($this->data['Email Provider']){
+			case 'Gmail':
+				$password=$this->data['Password Gmail'];
+			break;
+			case 'Other':
+				$password=$this->data['Password Other'];
+			break;
+		}
+
+		$password=AESDecryptCtr(base64_decode($password),$key,256);
 		$password=preg_replace('/^\_Hello \:\)/','',$password);
 		return $password;
 	}
@@ -188,9 +206,11 @@ class EmailCredentials extends DB_Table{
 		$base_data=$this->base_data();
 
 		if ($field=='Password') {
+		
 			$salt='_Hello :)';
-			$value=base64_encode(AESEncryptCtr($salt.$value,256));
-
+//print $salt.$value;exit;
+			$value=base64_encode(AESEncryptCtr($salt.$value,CKEY,256));
+		
 		}
 
 
@@ -207,12 +227,11 @@ class EmailCredentials extends DB_Table{
 
 
 	function cure_data($data) {
+
 		switch ($data['Email Provider']) {
 		case('Gmail'):
-			$data['Incoming Mail Server']='imap.gmail.com:993/imap/ssl/novalidate-cert';
-			$data['Outgoing Mail Server']='smtp.gmail.com';
-			if (array_key_exists('Email Address',$data))
-				$data['Login']=$data['Email Address'];
+			//$data['Incoming Mail Server']='imap.gmail.com:993/imap/ssl/novalidate-cert';
+			//$data['Outgoing Mail Server']='smtp.gmail.com';
 			break;
 		default:
 		}
@@ -220,6 +239,44 @@ class EmailCredentials extends DB_Table{
 
 	}
 
+	function get_amazon_Data(){
+		return array('email'=>$this->data['Email Address Amazon Mail'], 'access_key'=>$this->data['Amazon Access Key'], 'secret_key'=>$this->data['Amazon Secret Key']);
+	}
+
+	function save_amazon_data($email, $secret_key, $access_key){
+		
+	}
+
+
+	function get_smtp_data(){
+		switch($this->data['Email Provider']){
+			case 'Gmail' :
+				return array('login'=>$this->data['Email Address Gmail'], 'password'=>$this->get_password(CKEY), 'outgoing_server'=>'smtp.gmail.com');
+			break;
+			case 'Other':
+				return array('login'=>$this->data['Email Address Other'], 'password'=>$this->get_password(CKEY), 'outgoing_server'=>$this->data['Outgoing Mail Server']);
+			break;
+		}
+	
+	}
+
+	function get_direct_mail_data(){
+		return $this->data['Email Address Direct Mail'];
+	}
+
+	function save_gmail_data($login, $password){
+		$password=$this->encrypt_password($password);
+		$sql=sprintf("insert into `Email Credentials Dimension` (`Email Credentials Method`, `Email Provider`, `Email Address Gmail`, `Password Gmail`, `Outgoing Mail Server`) values ('%s', '%s', '%s','%s', '%s')", 'SMTP', 'Gmail', $login, $password, 'smtp.gmail.com');
+		mysql_query($sql);
+
+	}
+
+	function save_other_data($email, $login, $password, $incoming_server, $outgoing_server){
+		$password=$this->encrypt_password($password);
+		$sql=sprintf("insert into `Email Credentials Dimension` (`Email Credentials Method`, `Email Provider`, `Email Address Other`, `Login Other`, `Password Other`, `Incoming Mail Server`, `Outgoing Mail Server`) values ('%s', '%s', '%s','%s','%s', '%s', '%s')", 'SMTP', 'Other', $email, $login, $password, $incoming_server, $outgoing_server);
+		mysql_query($sql);
+		
+	}
 
 	function create($data) {
 
@@ -249,7 +306,7 @@ class EmailCredentials extends DB_Table{
 		$keys=preg_replace('/,$/',')',$keys);
 		$values=preg_replace('/,$/',')',$values);
 		$sql=sprintf("insert into `Email Credentials Dimension` %s %s",$keys,$values);
-
+//print $sql;
 		if (mysql_query($sql)) {
 			$this->id = mysql_insert_id();
 			$this->msg=_("Email Credentials Added");

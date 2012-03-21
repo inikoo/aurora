@@ -226,12 +226,16 @@ foreach($site->get_email_credentials() as $key=>$value){
 }
 }
 else{
-	$credentials['Email_Address']='';
-	$credentials['Password']='';
+	$credentials['Email_Address_Gmail']='';
+	$credentials['Password_Gmail']='';
+	$credentials['Email_Address_Other']='';
+	$credentials['Login_Other']='';
+	$credentials['Password_Other']='';
 	$credentials['Incoming_Mail_Server']='';
 	$credentials['Outgoing_Mail_Server']='';
-	$credentials['Login']='';
-	$credentials['Email_Provider']='Other';
+	$credentials['Email_Address_Direct_Mail']='';
+	$credentials['Email_Address_Amazon_Mail']='';
+
 }
 
 $smarty->assign('email_credentials',$credentials);
