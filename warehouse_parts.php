@@ -69,10 +69,8 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js',
-		              'external_libs/amstock/amstock/swfobject.js',
-
+		'external_libs/amstock/amstock/swfobject.js',
 		'js/table_common.js',
-		'js/dropdown.js',
 		'js/search.js',
 		'js/parts_common.js',
 		'warehouse_parts.js.php'

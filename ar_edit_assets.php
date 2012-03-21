@@ -30,6 +30,20 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
+case('new_parts_list'):
+
+	$data=prepare_values($_REQUEST,array(
+			'awhere'=>array('type'=>'json array'),
+			'parent_key'=>array('type'=>'key'),
+			'list_name'=>array('type'=>'string'),
+			'list_type'=>array('type'=>'enum',
+				'valid values regex'=>'/static|Dynamic/i'
+			)
+		));
+
+
+	new_parts_list($data);
+	break;
 case('delete_part_location_transaction'):
 	$data=prepare_values($_REQUEST,array(
 			'transaction_key'=>array('type'=>'key'),
@@ -2405,15 +2419,15 @@ function list_campaigns_for_edition() {
 function list_deals_for_edition() {
 
 
-if(!isset($_REQUEST['parent']) or !isset($_REQUEST['parent_key'])){
+	if (!isset($_REQUEST['parent']) or !isset($_REQUEST['parent_key'])) {
 
-exit("no parent");
-}
+		exit("no parent");
+	}
 
-$parent= $_REQUEST['parent'];
-$parent_key=$_REQUEST['parent_key'];
+	$parent= $_REQUEST['parent'];
+	$parent_key=$_REQUEST['parent_key'];
 
-	
+
 
 
 	$conf=$_SESSION['state'][$parent]['deals'];
@@ -2649,7 +2663,7 @@ $parent_key=$_REQUEST['parent_key'];
 
 		$name=$row['Deal Metadata Name'];
 		//if ($row['Campaign Deal Schema Key']) {
-		//	$name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
+		// $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
 		//}
 		$adata[]=array(
 			'status'=>$deal->get_xhtml_status(),
@@ -3719,7 +3733,7 @@ function edit_supplier_product_part($data) {
 
 function create_product($data) {
 	global $editor;
-	
+
 	if (array_key_exists('Product Name',$data['values'])
 		and  array_key_exists('Product Code',$data['values'])
 		and  array_key_exists('Product Units',$data['values'])
@@ -3820,12 +3834,12 @@ function create_product($data) {
 
 function delete_parts_list($data) {
 	global $user;
-	$sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+	$sql=sprintf("select `List Parent Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
-		//if (in_array($row['List Store Key'],$user->stores)) {
+		//if (in_array($row['List Parent Key'],$user->stores)) {
 		$sql=sprintf("delete from  `List Order Bridge` where `List Key`=%d",$data['key']);
 		mysql_query($sql);
 		$sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
@@ -4268,6 +4282,118 @@ function post_edit_transaction_actions($part_sku,$location_key) {
 		mysql_query($sql);
 	}
 
+
+}
+
+function new_parts_list($data) {
+	//print 'xx';exit;
+	$list_name=$data['list_name'];
+	//$store_id=$data['store_id'];
+
+	$sql=sprintf("select * from `List Dimension`  where `List Name`=%s  and `List Scope`='Part' and `List Parent Key`=%d ",
+		prepare_mysql($list_name),
+		$data['parent_key']
+	);
+	$res=mysql_query($sql);
+
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+		$response=array('resultset'=>
+			array(
+				'state'=>400,
+				'msg'=>_('Another list has the same name')
+			)
+		);
+		echo json_encode($response);
+		return;
+	}
+
+	$list_type=$data['list_type'];
+
+	$awhere=$data['awhere'];
+
+
+	//   $where=customers_awhere($awhere);
+	list($where,$table,$sql_type)=parts_awhere($awhere);
+
+	//$where.=sprintf(' and `Product Store Key`=%d ',$store_id);
+
+
+
+	if ($sql_type=='part')
+		$sql="select count(Distinct P.`Part SKU`) as total from $table  $where ";
+	else
+		$sql="select count(Distinct ITF.`Part SKU`) as total from $table  $where";
+
+
+//print $sql;
+
+
+
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+		if ($row['total']==0) {
+			$response=array('resultset'=>
+				array(
+					'state'=>400,
+					'msg'=>_('No products match this criteria')
+				)
+			);
+			echo json_encode($response);
+			return;
+
+		}
+
+
+	}
+	mysql_free_result($res);
+
+
+//ar_edit_assets.php?tipo=new_parts_list&list_name=xxx&list_type=Static&parent_key=1&awhere={"invalid_tariff_code":"No","tariff_code":"","part_dispatched_from":"01-03-2012","part_dispatched_to":"10-03-2012","geo_constraints":"","part_valid_from":"","part_valid_to":""}
+
+	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Part',%d,%s,%s,%s,NOW())",
+		$data['parent_key'],
+		prepare_mysql($list_name),
+		prepare_mysql($list_type),
+		prepare_mysql(json_encode($data['awhere']))
+
+	);
+	mysql_query($list_sql);
+	$customer_list_key=mysql_insert_id();
+
+	if ($list_type=='Static') {
+
+
+		$sql="select P.`Part SKU` from $table  $where group by P.`Part SKU`";
+		//print $sql;exit;
+		$result=mysql_query($sql);
+		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			$customer_key=$data['Part SKU'];
+			$sql=sprintf("insert into `List Part Bridge` (`List Key`,`Part SKU`) values (%d,%d)",
+				$customer_list_key,
+				$customer_key
+			);
+			mysql_query($sql);
+
+		}
+		mysql_free_result($result);
+
+
+
+
+	}
+
+
+
+
+	$response=array(
+		'state'=>200,
+		'customer_list_key'=>$customer_list_key
+
+	);
+	echo json_encode($response);
 
 }
 

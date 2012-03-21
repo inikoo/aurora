@@ -5690,5 +5690,13 @@ ALTER TABLE `Deal Metadata Dimension` ADD `Deal Campaign Key` MEDIUMINT UNSIGNED
 ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Description` TEXT NOT NULL AFTER `Deal Campaign Name` ;
 
 
+ALTER TABLE `Location Dimension` CHANGE `Location Flag` `Location Flag` ENUM( 'Blue', 'Green', 'Orange', 'Pink', 'Purple', 'Red', 'Yellow' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Blue';
+ALTER TABLE `Part Dimension` ADD `Part Tarrif Code Valid` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Part Tariff Code` ,ADD INDEX ( `Part Tarrif Code Valid` ) ;
 
+ALTER TABLE `Part Dimension` CHANGE `Part Tarrif Code Valid` `Part Tariff Code Valid` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'No';
+ALTER TABLE `Inventory Transaction Fact`  DROP PRIMARY KEY, ADD INDEX(`Inventory Transaction Key`);
+alter table `Inventory Transaction Fact`  partition BY KEY(`Date`) PARTITIONS 30;
+
+ALTER TABLE `List Dimension` CHANGE `List Store Key` `List Parent Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
+ALTER TABLE `List Dimension` DROP INDEX `Customer List Store Key` , ADD UNIQUE `Customer List Store Key` ( `List Parent Key` , `List Name` , `List Scope` ) ;
 

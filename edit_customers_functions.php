@@ -455,7 +455,7 @@ function unique_concecutive_list_suffix($store_key) {
 
     $suffix=uniqid('', true);
 
-    $sql=sprintf('select count(*) as num from `List Dimension` where `List Use Type`="CSV Import" and `List Store Key`=%d ',
+    $sql=sprintf('select count(*) as num from `List Dimension` where `List Use Type`="CSV Import" and `List Parent Key`=%d ',
                  $store_key
                 );
 
@@ -478,7 +478,7 @@ function unique_concecutive_list_suffix($store_key) {
         }
     //    print "i: $i $suffix  \n";
 
-        $sql=sprintf('select count(*) as num from `List Dimension` where `List Name`=%s and `List Store Key`=%d ',
+        $sql=sprintf('select count(*) as num from `List Dimension` where `List Name`=%s and `List Parent Key`=%d ',
                      prepare_mysql(_('CSV Imported')." ".$suffix),
                      $store_key);
 
@@ -504,7 +504,7 @@ function new_imported_csv_customers_list($store_key) {
 
 
 
-    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Use Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NULL,NOW())",
+    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Use Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NULL,NOW())",
                       $store_key,
                       prepare_mysql(_('CSV Imported')." ".unique_concecutive_list_suffix($store_key)),
                       prepare_mysql('Static'),

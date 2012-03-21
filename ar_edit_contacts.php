@@ -3874,12 +3874,12 @@ function edit_company_department() {
 }
 function delete_customer_list($data) {
     global $user;
-    $sql=sprintf("select `List Store Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
+    $sql=sprintf("select `List Parent Key`,`List Key` from `List Dimension` where `List Key`=%d",$data['key']);
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
 
-        if (in_array($row['List Store Key'],$user->stores)) {
+        if (in_array($row['List Parent Key'],$user->stores)) {
             $sql=sprintf("delete from  `List Customer Bridge` where `List Key`=%d",$data['key']);
             mysql_query($sql);
             $sql=sprintf("delete from  `List Dimension` where `List Key`=%d",$data['key']);
@@ -3950,7 +3950,7 @@ function new_customers_list($data) {
     $list_name=$data['list_name'];
     $store_id=$data['store_id'];
 
-    $sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Store Key`=%d ",
+    $sql=sprintf("select * from `List Dimension`  where `List Name`=%s and `List Parent Key`=%d ",
                  prepare_mysql($list_name),
                  $store_id
                 );
@@ -3998,7 +3998,7 @@ function new_customers_list($data) {
     }
     mysql_free_result($res);
 
-    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Store Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NOW())",
+    $list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Customer',%d,%s,%s,%s,NOW())",
                       $store_id,
                       prepare_mysql($list_name),
                       prepare_mysql($list_type),
