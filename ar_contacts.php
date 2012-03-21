@@ -6187,11 +6187,6 @@ function pending_post(){
         $f_value=$conf['f_value'];
 
 
-    if (isset( $_REQUEST['where']))
-        $awhere=$_REQUEST['where'];
-    else
-        $awhere=$conf['where'];
-
 
     if (isset( $_REQUEST['tableid']))
         $tableid=$_REQUEST['tableid'];
@@ -6213,7 +6208,7 @@ function pending_post(){
     $_SESSION['state']['store']['pending_post']['f_field']=$f_field;
     $_SESSION['state']['store']['pending_post']['f_value']=$f_value;
 
-    $where='where true';
+    $where=sprintf('where `Customer Store Key`=%d ',$parent_key);
     $table='`Customers Send Post` CSP left join  `Customer Dimension` C  on (CSP.`Customer Key`=C.`Customer Key`) ';
     $where_type='';
     $currency='';
@@ -6455,7 +6450,7 @@ function pending_post(){
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-        $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
+        $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".sprintf("%05d",$data['Customer Key']).'</a>';
         if ($data['Customer Type']=='Person') {
             $name='<img src="art/icons/user.png" alt="('._('Person').')">';
         } else {
