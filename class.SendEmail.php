@@ -14,27 +14,37 @@ class SendEmail extends DB_Table {
 
     function SendEmail($data=false) {
 
-
     }
 
-    function set_method($method) {
-        $this->method=$method;
-    }
+    function send_actual_email() {
 
-    function smtp($data) {
+	$email_credentials=new EmailCredentials($this->email_send_data['Email Credential Key']);
 
-        //$this->email_type=$data['email_type'];
-        //$this->recipient_key=$data['recipient_key'];
-        //$this->recipient_type=$data['recipient_type'];
+	if ( !$email_credentials->id) {
+		$this->error=true;
+		$this->msg="Credentials not found";
+		return array('state'=>400,'msg'=>"Credentials not found");
+	}
 
-  
 
-        $this->method=$data['method'];
- 
- 
+
+	switch($email_credentials->data['Email Provider']){
+	case 'Gmail':
+	case 'Other':
+		$this->method='SMTP';
+		break;
+	case 'Amazon':
+	case 'Inikoo':
+		$this->method='Amazon';
+		break;
+	case 'PHPMail':
+		$this->method='PHPMail';
+		break;
+	default:
+		return;
+	}
 
         switch ($this->method) {
-        case 'smtp':
         case 'SMTP':
             if (!isset($data['attachement']))
                 $data['attachement']=array();
@@ -67,18 +77,23 @@ class SendEmail extends DB_Table {
             $this->additional_headers='';
             $this->additional_parameters='';
 
-            switch ($data['type']) {
-            case 'Plain':
-            case 'plain':
-                $this->type='Plain';
-                
-                $email_credentials=new EmailCredentials($data['email_credentials_key']);
-                
-          
-                if ( $email_credentials->id) {
+		list($to,$subject,$html_message,$plain_message)=$this->get_message_data();
+		
+		if($email_credentials->data['Email Provider'] == 'Gmail'){
+			$this->from_name=$email_credentials->data['Email Address Gmail'];
+			$this->from_address=$email_credentials->data['Email Address Gmail'];
+		}
+		else{
+			$this->from_name=$email_credentials->data['Email Address Gmail'];
+			$this->from_address=$email_credentials->data['Email Address Other'];
+		}
 
-                  $this->from_name=$data['from_name'];
-                    $this->from_address=$email_credentials->data['Email Address'];
+		if($email_credentials->data['Email Provider'] == 'Gmail')
+                    $this->message_object->smtp_host='smtp.gmail.com';
+		else
+		    $this->message_object->smtp_host=$email_credentials->data['Outgoing Mail Sever'];
+
+
                     $this->sender_line=__LINE__;
 
                     $this->reply_name=$this->from_name;
@@ -86,26 +101,19 @@ class SendEmail extends DB_Table {
                     $this->reply_address=$this->from_address;
                     $this->error_delivery_name=$this->from_name;
                     $this->error_delivery_address=$this->from_address;
-                    $this->to_name=$data['to'];
-                    $this->to_address=$data['to'];
+                    $this->to_name=$to;
+                    $this->to_address=$to;
                     $this->recipient_line=__LINE__;
-                    $this->subject= mb_convert_encoding($data['subject'], 'ISO-8859-1');
-                    $this->message=mb_convert_encoding($data['plain'], 'ISO-8859-1');
+                    $this->subject= mb_convert_encoding($subject, 'ISO-8859-1');
 
                     if (strlen($this->from_address)==0)
                         die("Please set the messages sender address in line ".$this->sender_line." of the script ".basename(__FILE__)."\n");
                     if (strlen($this->to_address)==0)
                         die("Please set the messages recipient address in line ".$this->recipient_line." of the script ".basename(__FILE__)."\n");
 
-                    //$this->message_object=new smtp_message_class;
 
-                    /* This computer address */
                     $this->message_object->localhost="localhost";
 
-                    /* SMTP server address, probably your ISP address,
-                     * or smtp.gmail.com for Gmail
-                     * or smtp.live.com for Hotmail */
-                    $this->message_object->smtp_host=$email_credentials->data['Outgoing Mail Sever'];
 
                     /* SMTP server port, usually 25 but can be 465 for Gmail */
                     $this->message_object->smtp_port=465;
@@ -137,24 +145,14 @@ class SendEmail extends DB_Table {
                      * case, set this variable with that sub-domain address. */
                     $this->message_object->smtp_exclude_address="";
 
-                    /* If you use the direct delivery mode and the GetMXRR is not functional,
-                     * you need to use a replacement function. */
-                    /*
-                    $_NAMESERVERS=array();
-                    include("rrcompat.php");
-                    $message_object->smtp_getmxrr="_getmxrr";
-                    */
+		if($email_credentials->data['Email Provider'] == 'Gmail')
+                    $this->message_object->smtp_user=$email_credentials->data['Email Address Gmail'];
+		else
+		    $this->message_object->smtp_user=$email_credentials->data['Login Other'];
 
-                    /* authentication user name */
-                    $this->message_object->smtp_user=$email_credentials->data['Login'];
+		$this->message_object->smtp_password=$email_credentials->get_password($this->secret_key);
 
-                    /* authentication password */
-                    $this->message_object->smtp_password=$email_credentials->get_password($this->secret_key);
-
-                    /* if you need POP3 authetntication before SMTP delivery,
-                     * specify the host name here. The smtp_user and smtp_password above
-                     * should set to the POP3 user and password*/
-                    $this->message_object->smtp_pop3_auth_host="";
+		$this->message_object->smtp_pop3_auth_host="";
 
                     /* authentication realm or Windows domain when using NTLM authentication */
                     $this->message_object->smtp_realm="";
@@ -183,44 +181,11 @@ class SendEmail extends DB_Table {
                     $this->message_object->SetHeader("Return-Path",$this->error_delivery_address);
                     $this->message_object->SetEncodedEmailHeader("Errors-To",$this->error_delivery_address,$this->error_delivery_name);
 
-
-                    /*
-                    	$message_object->SetEncodedHeader("Subject",$subject);
-                    	$message_object->AddQuotedPrintableTextPart($message_object->WrapText($message));
-
-                    */
-
-                    /*
-                     *  Set the Return-Path header to define the envelope sender address to which bounced messages are delivered.
-                     *  If you are using Windows, you need to use the smtp_message_class to set the return-path address.
-                     */
                     if (defined("PHP_OS")
                             && strcmp(substr(PHP_OS,0,3),"WIN"))
                         $this->message_object->SetHeader("Return-Path",$this->error_delivery_address);
 
                     $this->message_object->SetEncodedHeader("Subject",$this->subject);
-
-
-                    /*
-                     *  It is strongly recommended that when you send HTML messages,
-                     *  also provide an alternative text version of HTML page,
-                     *  even if it is just to say that the message is in HTML,
-                     *  because more and more people tend to delete HTML only
-                     *  messages assuming that HTML messages are spam.
-                     */
-                    $this->text_message=$this->message;
-                    $this->message_object->CreateQuotedPrintableTextPart($this->message_object->WrapText($this->text_message),"",$this->text_part);
-
-                    /*
-                     *  Multiple alternative parts are gathered in multipart/alternative parts.
-                     *  It is important that the fanciest part, in this case the HTML part,
-                     *  is specified as the last part because that is the way that HTML capable
-                     *  mail programs will show that part and not the text version part.
-                     */
-                    $this->alternative_parts=array(
-                                                 $this->text_part
-                                             );
-                    $this->message_object->AddAlternativeMultipart($this->alternative_parts);
 
 
                     //Attachements
@@ -247,187 +212,34 @@ class SendEmail extends DB_Table {
                     }
 
 
-                    foreach($text_attachment as $single_text)
-                    $this->message_object->AddFilePart($single_text);
+            switch ($this->email_send_data['Email Type']) {
+            case 'Plain':
+                $this->type='Plain';
+    
+                    $this->message=mb_convert_encoding($plain_message, 'ISO-8859-1');
 
-                    foreach($image_attachment as $single_image)
-                    $this->message_object->AddFilePart($single_image);
+                    $this->text_message=$this->message;
+                    $this->message_object->CreateQuotedPrintableTextPart($this->message_object->WrapText($this->text_message),"",$this->text_part);
+
+                    $this->alternative_parts=array(
+                                                 $this->text_part
+                                             );
 
 
-
-
-
-                } else {
-                    $this->error=true;
-                    $this->msg="Cretentials not found";
-                    return array('state'=>400,'msg'=>"Credentials not found");
-                }
                 break;
             case 'HTML':
-            case 'html':
-            case 'HTML Template':
-            
-            
-         
-            
+     
                 $this->type='HTML';
 
-                /*
-                	$data=array(
-                		'subject'=>	'',
-                		'plain'=>'',
-                		'html'=>'',
-                		'email_credentials_key'=>'',
-                		'to'=>'',
-                		'bcc'=>''
-                	);
-                */
+                    $this->message=mb_convert_encoding($plain_message, 'ISO-8859-1');
 
-                $email_credentials=new EmailCredentials($data['email_credentials_key']);
-                
-      //    print_r($email_credentials);
-                if ( $email_credentials->id) {
-
-                    $this->from_name=$data['from_name'];
-                    $this->from_address=$email_credentials->data['Email Address'];
-                    $this->sender_line=__LINE__;
-
-                    $this->reply_name=$this->from_name;
-                    $this->reply_address=$this->from_address;
-                    $this->reply_address=$this->from_address;
-                    $this->error_delivery_name=$this->from_name;
-                    $this->error_delivery_address=$this->from_address;
-                    $this->to_name=$data['to'];
-                    $this->to_address=$data['to'];
-                    $this->recipient_line=__LINE__;
-                    $this->subject= mb_convert_encoding($data['subject'], 'ISO-8859-1');;//$data['subject'];
-                    $this->message=mb_convert_encoding($data['plain'], 'ISO-8859-1');
-
-                    if (strlen($this->from_address)==0)
-                        die("Please set the messages sender address in line ".$this->sender_line." of the script ".basename(__FILE__)."\n");
-                    if (strlen($this->to_address)==0)
-                        die("Please set the messages recipient address in line ".$this->recipient_line." of the script ".basename(__FILE__)."\n");
-
-                    //$this->message_object=new smtp_message_class;
-
-                    /* This computer address */
-                    $this->message_object->localhost="localhost";
-
-                    /* SMTP server address, probably your ISP address,
-                     * or smtp.gmail.com for Gmail
-                     * or smtp.live.com for Hotmail */
-                    $this->message_object->smtp_host=$email_credentials->data['Outgoing Mail Server'];
-
-                    /* SMTP server port, usually 25 but can be 465 for Gmail */
-                    $this->message_object->smtp_port=465;
-
-                    /* Use SSL to connect to the SMTP server. Gmail requires SSL */
-                    $this->message_object->smtp_ssl=1;
-
-                    /* Use TLS after connecting to the SMTP server. Hotmail requires TLS */
-                    $this->message_object->smtp_start_tls=0;
-
-                    /* Change this variable if you need to connect to SMTP server via an HTTP proxy */
-                    $this->message_object->smtp_http_proxy_host_name='';
-                    /* Change this variable if you need to connect to SMTP server via an HTTP proxy */
-                    $this->message_object->smtp_http_proxy_host_port=3128;
-
-                    /* Change this variable if you need to connect to SMTP server via an SOCKS server */
-                    $this->message_object->smtp_socks_host_name = '';
-                    /* Change this variable if you need to connect to SMTP server via an SOCKS server */
-                    $this->message_object->smtp_socks_host_port = 1080;
-                    /* Change this variable if you need to connect to SMTP server via an SOCKS server */
-                    $this->message_object->smtp_socks_version = '5';
-
-
-                    /* Deliver directly to the recipients destination SMTP server */
-                    $this->message_object->smtp_direct_delivery=0;
-
-                    /* In directly deliver mode, the DNS may return the IP of a sub-domain of
-                     * the default domain for domains that do not exist. If that is your
-                     * case, set this variable with that sub-domain address. */
-                    $this->message_object->smtp_exclude_address="";
-
-                    /* If you use the direct delivery mode and the GetMXRR is not functional,
-                     * you need to use a replacement function. */
-                    /*
-                    $_NAMESERVERS=array();
-                    include("rrcompat.php");
-                    $message_object->smtp_getmxrr="_getmxrr";
-                    */
-
-                    /* authentication user name */
-                    $this->message_object->smtp_user=$email_credentials->data['Login'];
-
-                    /* authentication password */
-                    $this->message_object->smtp_password=$email_credentials->get_password($this->secret_key);
-
-
-
-
-                    /* if you need POP3 authetntication before SMTP delivery,
-                     * specify the host name here. The smtp_user and smtp_password above
-                     * should set to the POP3 user and password*/
-                    $this->message_object->smtp_pop3_auth_host="";
-
-                    /* authentication realm or Windows domain when using NTLM authentication */
-                    $this->message_object->smtp_realm="";
-
-                    /* authentication workstation name when using NTLM authentication */
-                    $this->message_object->smtp_workstation="";
-
-                    /* force the use of a specific authentication mechanism */
-                    $this->message_object->smtp_authentication_mechanism="";
-
-                    /* Output dialog with SMTP server */
-                    $this->message_object->smtp_debug=0;
-
-                    /* if smtp_debug is 1,
-                     * set this to 1 to make the debug output appear in HTML */
-                    $this->message_object->smtp_html_debug=1;
-
-                    /* If you use the SetBulkMail function to send messages to many users,
-                     * change this value if your SMTP server does not accept sending
-                     * so many messages within the same SMTP connection */
-                    $this->message_object->maximum_bulk_deliveries=100;
-
-                    $this->message_object->SetEncodedEmailHeader("To",$this->to_address,$this->to_name);
-                    $this->message_object->SetEncodedEmailHeader("From",$this->from_address,$this->from_name);
-                    $this->message_object->SetEncodedEmailHeader("Reply-To",$this->reply_address,$this->reply_name);
-                    $this->message_object->SetHeader("Return-Path",$this->error_delivery_address);
-                    $this->message_object->SetEncodedEmailHeader("Errors-To",$this->error_delivery_address,$this->error_delivery_name);
-
-
-                    /*
-                    	$message_object->SetEncodedHeader("Subject",$subject);
-                    	$message_object->AddQuotedPrintableTextPart($message_object->WrapText($message));
-
-                    */
-
-                    /*
-                     *  Set the Return-Path header to define the envelope sender address to which bounced messages are delivered.
-                     *  If you are using Windows, you need to use the smtp_message_class to set the return-path address.
-                     */
-                    if (defined("PHP_OS")
-                            && strcmp(substr(PHP_OS,0,3),"WIN"))
-                        $this->message_object->SetHeader("Return-Path",$this->error_delivery_address);
-
-                    $this->message_object->SetEncodedHeader("Subject",$this->subject);
-
-
-                    if (isset($data['html']) and $data['html'])
-                        $html_msg=mb_convert_encoding($data['html'], 'ISO-8859-1');
+                    if (isset($html_message) and $html_message)
+                        $html_msg=mb_convert_encoding($html_message, 'ISO-8859-1');
                     else
                         $html_msg='';
 
-
-
                     $this->html_message=$html_msg.$this->get_track_code();
                     $this->message_object->CreateQuotedPrintableHTMLPart($this->html_message,"",$this->html_part);
-
-
-//print  $this->html_message;
-
            
                     $this->text_message=$this->message;
 
@@ -440,48 +252,16 @@ class SendEmail extends DB_Table {
 
                                              );
 
+                break;
+            }
 
                     $this->message_object->AddAlternativeMultipart($this->alternative_parts);
-
-
-                    //Attachements
-                    $text_attachment=array();
-                    $image_attachment=array();
-                    foreach($data['attachement'] as $value) {
-                        if ($value['attachement_type']=='Text') {
-                            $text_attachment[]=array('Data'=>$value['Data'],
-                                                     'Name'=>$value['Name'],
-                                                     'Content-Type'=>$value['Content-Type'],
-                                                     'Disposition'=>$value['Disposition']
-                                                    );
-                        }
-
-                        else if ($value['attachement_type']=='Image') {
-                            $image_attachment[]=array('FileName'=>$value['FileName'],
-                                                      'Content-Type'=>$value['Content-Type'],
-                                                      'Disposition'=>$value['Disposition']
-                                                     );
-                        }
-
-                    }
-
 
                     foreach($text_attachment as $single_text)
                     $this->message_object->AddFilePart($single_text);
 
                     foreach($image_attachment as $single_image)
                     $this->message_object->AddFilePart($single_image);
-
-
-                } else {
-
-                    $this->error=true;
-                    $this->msg="Credentials not found";
-                    return array('state'=>400,'msg'=>"Credentials not found");
-                }
-
-                break;
-            }
 
 
             $error=$this->message_object->Send();
@@ -491,95 +271,77 @@ class SendEmail extends DB_Table {
                 $response=  array('state'=>400,'msg'=>$error);
 
             } else
-                $response=  array('state'=>200,'msg'=>'ok');
+                $response=  array('state'=>200,'msg'=>'Email has been sent!');
 
             return $response;
 
             break;
         case 'Amazon':
-        case 'amazon':
-        case 'AMAZON':
-	$email_credentials=new EmailCredentials($data['email_credentials_key']);
-	$data['Email Address']=$email_credentials->data['Email Address'];//"registration@ancientwisdom.biz";
-	$data['return_path']=$email_credentials->data['Email Address'];//"registration@ancientwisdom.biz";
-            $access_key=$email_credentials->data['Access Key'];//$data['access_key'];
-            $secret_key=$email_credentials->data['Secret Key'];//$data['secret_key'];
+
+
+
+		list($to,$subject,$html_message,$plain_message)=$this->get_message_data();
+		$from=$email_credentials->data['Email Address Amazon Mail'];
+		$access_key=$email_credentials->data['Amazon Access Key'];
+		$secret_key=$email_credentials->data['Amazon Secret Key'];
+
             if ($access_key==null || $secret_key==null) {
                 print 'No access key/ secret key set';
                 exit;
             }
-            $this->ses = new SimpleEmailService($access_key, $secret_key);
-            $this->m = new SimpleEmailServiceMessage();
 
+		$this->ses = new SimpleEmailService($access_key, $secret_key);
+		$this->m = new SimpleEmailServiceMessage();
+		$this->m->addTo($to);
+		$this->m->setFrom($from);
+		$this->m->setSubject($subject);
+		$this->m->setReturnPath($from);
 
-
-            $this->m->addTo($data['to']);
-            $this->m->setFrom($data['Email Address']);
-            $this->m->setSubject($data['subject']);
-            $this->m->setReturnPath($data['return_path']);
-
-            switch ($data['type']) {
-            case 'plain':
-            case 'PLAIN':
+            switch ($this->email_send_data['Email Type']) {
+            case 'Plain':
                 $this->type='Plain';
-                $this->m->setMessageFromString($data['plain']);
+                $this->m->setMessageFromString($plain_message);
                 break;
 
-            case 'html':
             case 'HTML':
-            case 'HTML Template':
                 $this->type='HTML';
-
-
-
-                $this->m->setMessageFromString($data['plain'], $data['html'].$this->get_track_code());
+                $this->m->setMessageFromString($plain_message, $html_message.$this->get_track_code());
                 break;
 
             }
             $response=$this->ses->sendEmail($this->m);
             break;
         
-	case 'sendmail':
-		$email_credentials=new EmailCredentials($data['email_credentials_key']);
-		$data['from']=$email_credentials->data['Email Address'];//"registration@ancientwisdom.biz";
-	switch ($data['type']) {
-            case 'plain':
-            case 'PLAIN':
+	case 'PHPMail':
 
-		$to      = $data['to'];
-		$subject = $data['subject'];
-		$message = $data['plain'];
-		$headers = sprintf("From: %s\r\n Reply-To: %s\r\n X-Mailer: PHP/%s", $data['from'], $data['to'], phpversion());
+		list($to,$subject,$html_message,$plain_message)=$this->get_message_data();
+
+		$from=$email_credentials->data['Email Address Direct Mail'];//"registration@ancientwisdom.biz";
+	switch ($this->email_send_data['Email Type']) {
+            case 'Plain':
+
+		$headers = sprintf("From: %s\r\n Reply-To: %s\r\n X-Mailer: PHP/%s", $from, $to, phpversion());
+		$message=$plain_message;
 		break;
-            case 'html':
+
             case 'HTML':
-            case 'HTML Template':
-		$to = $data['to'];
 
-		// subject
-		$subject = $data['subject'];
-
-		// message
-		$message = $data['html'];
-
-		// To send HTML mail, the Content-type header must be set
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-		// Additional headers
-		$headers .= sprintf("To: %s\r\n", $data['to']);
-		$headers .= sprintf("From: %s\r\n", $data['from']);
+		$headers .= sprintf("To: %s\r\n", $to);
+		$headers .= sprintf("From: %s\r\n", $from);
+		$message=$html_message;
 		break;
 	}
-		// Mail it
+
 		$response=mail($to, $subject, $message, $headers);
 
 
 		if ($response) {
-			$response=  array('state'=>400,'msg'=>'ok');
+			$response=  array('state'=>200,'msg'=>'Your Email has been sent!');
 
 		} else
-			$response=  array('state'=>200,'msg'=>'Error with mail');
+			$response=  array('state'=>400,'msg'=>'Error with mail');
 
 		return $response;
 
@@ -589,37 +351,55 @@ class SendEmail extends DB_Table {
         return $response;
     }
 
+function get_message_data(){
+	return array($this->email_send_data['Email Send To'], $this->email_send_data['Email Send Subject'],$this->email_send_data['Email Send HTML'],$this->email_send_data['Email Send Plain'] );
+}
 
-
-
-    function send($data) {
+function set($data){
 
 
 //print_r($data);
 
-        $email_send_data=array(
-                             'Email Send Type'=>$data['email_matter'],
-                             'Email Send Type Key'=>$data['email_matter_key'],
-                             'Email Send Type Parent Key'=>$data['email_matter_parent_key'],
-                             'Email Send Recipient Type'=>$data['recipient_type'],
-                             'Email Send Recipient Key'=>$data['recipient_key'],
-                             'Email Key'=>$data['email_key'],
-                             'Email Send Creation Date'=>date('Y-m-d H:i:s',strtotime('now +0:00'))
+        $this->email_send_data=array(
+			'Email Send Type'=>$data['email_matter'],
+			'Email Send Type Key'=>$data['email_matter_key'],
+			'Email Send Type Parent Key'=>$data['email_matter_parent_key'],
+			'Email Send Recipient Type'=>$data['recipient_type'],
+			'Email Send Recipient Key'=>$data['recipient_key'],
+			'Email Key'=>$data['email_key'],
+			'Email Send Creation Date'=>date('Y-m-d H:i:s',strtotime('now +0:00')),
+			'Email Matter'=>$data['email_matter'],
+			'Email Matter Key'=>$data['email_matter_key'],
+			'Email Credential Key'=>$data['email_credentials_key'],
+			'Email Type'=>$data['type'],
+			'Email Send To'=>$data['to'],
+			'Email Send HTML'=>$data['html'],
+			'Email Send Plain'=>$data['plain'],
+			'Email Send Subject'=>$data['subject']
 
                          );
+      
+//print_r($this->email_send_data);exit;
+
+}
+
+    function send() {
+
+
+
         $email_send=new EmailSend();
 
 
 
-        $email_send->create($email_send_data);
+        $email_send->create($this->email_send_data);
         $this->send_key=$email_send->id;
 
 
-        switch ($data['email_matter']) {
+        switch ($this->email_send_data['Email Matter']) {
         case 'Marketing':
             $sql=sprintf("update `Email Campaign Mailing List`  set `Email Send Key`=%d where `Email Campaign Mailing List Key`=%d ",
                          $this->send_key,
-                         $data['email_matter_key']
+                        $this->email_send_data['Email Matter Key']
                         );
             // mysql_query($sql);
             break;
@@ -630,7 +410,7 @@ class SendEmail extends DB_Table {
 
 
 
-        $send_result=$this->smtp($data);
+        $send_result=$this->send_actual_email();
 
         //print_r($send_result);
         if ($send_result['state']==200) {
@@ -639,7 +419,7 @@ class SendEmail extends DB_Table {
                          $this->send_key);
             mysql_query($sql);
 
-            switch ($data['email_matter']) {
+            switch ($this->email_send_data['Email Matter']) {
             case 'Marketing':
                 $email_campaign=new EmailCampaign($email_send->data['Email Send Type Parent Key']);
                 $email_campaign->update_send_emails();
@@ -659,7 +439,6 @@ class SendEmail extends DB_Table {
 
 
     }
-
 
     function retry($type) {
         $success=0;
@@ -696,7 +475,7 @@ class SendEmail extends DB_Table {
                           'attachement'=>$files
                       );
 
-                $this->smtp('plain', $data);
+                $this->send_actual_email();
                 $res=$this->send();
 
                 if ($res['msg']=='ok') {
@@ -742,7 +521,7 @@ class SendEmail extends DB_Table {
                           'bcc'=>$row['BCC'],
                           'attachement'=>$files
                       );
-                $this->smtp('html', $data);
+                $this->send_actual_email();
                 $res=$this->send();
 
                 if ($res['msg']=='ok') {
@@ -829,12 +608,6 @@ class SendEmail extends DB_Table {
         }
         return $result;
     }
-
-
-
-
-
-
 
     function get_track_code() {
 
@@ -1181,7 +954,7 @@ class SimpleEmailService {
         if ($rest->error !== false)
             $response=  array('state'=>400,'msg'=>$rest->error);
         else
-            $response=  array('state'=>200,'msg'=>'ok');
+            $response=  array('state'=>200,'msg'=>'Email has been Sent');
 
         //print_r($response);
         return $response;
@@ -1282,7 +1055,7 @@ final class SimpleEmailServiceRequest {
 
         $url = 'https://'.$this->ses->getHost().'/';
 
-        // Basic setup
+        // Basic 
         $curl = curl_init();
         //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_USERAGENT, 'SimpleEmailService/php');

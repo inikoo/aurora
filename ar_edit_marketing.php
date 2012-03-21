@@ -4,7 +4,7 @@ require_once 'ar_edit_common.php';
 require_once 'class.EmailCampaign.php';
 require_once 'class.Page.php';
 require_once 'common_natural_language.php';
-
+require_once 'class.Store.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -263,6 +263,18 @@ case('create_email_campaign'):
                          ));
     create_email_campaign($data);
     break;
+case('edit_email_credentials_inikoo_mail'):
+case('edit_email_credentials_other'):
+case('edit_email_credentials_direct_mail'):
+case('edit_email_credentials'):
+	$data=prepare_values($_REQUEST,array(
+			'store_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array'),
+
+		));
+
+	edit_email_credentials($data,CKEY);
+	break;
 default:
     $response=array('state'=>404,'msg'=>_('Operation not found'));
     echo json_encode($response);
@@ -2317,10 +2329,102 @@ function delete_template_header_image($data) {
 
 function update_objective($data){
 
+}
+
+
+function edit_email_credentials($data,$CKEY) {
+
+//print_r($data['values']);exit;
+	$store=new Store($data['store_key']);
+
+
+	global $editor;
+	$store->editor=$editor;
+
+	include_once 'class.EmailCredentials.php';
+	$store_email_credentials_key=$store->get_email_credential_key();
+
+	if($store_email_credentials_key){
+		$email_credentials=new EmailCredentials($store_email_credentials_key);
+		$email_credentials->delete();
+	}
 
 
 
+	$key_dic=array(
+		'email_provider'=>'Email Provider',
+		'email'=>'Email Address Gmail',
+		'password'=>'Password Gmail',
+		'email_other'=>'Email Address Other',
+		'login'=>'Login Other',
+		'password_other'=>'Password Other',
+		'incoming_server'=>'Incoming Mail Server',
+		'outgoing_server'=>'Outgoing Mail Server',
+		'email_direct_mail'=>'Email Address Direct Mail',
+		'email_inikoo_mail'=>'Email Address Amazon Mail'
+	);
 
+	$inv_key_dic=array(
+		'Email Provider'=>'email_provider',
+		'Email Address Gmail'=>'email',
+		'Password Gmail'=>'password',
+		'Email Address Other'=>'email_other',
+		'Login Other'=>'login',
+		'Password Other'=>'password_other',
+		'Incoming Mail Server'=>'incoming_server',
+		'Outgoing Mail Server'=>'outgoing_server',
+		'Email Address Direct Mail'=>'email_direct_mail',
+		'Email Address Amazon Mail'=>'email_inikoo_mail
+'
+	);
+
+
+
+//print_r($email_credential_data);//exit;
+	$email_credentials=new EmailCredentials();
+
+	$email_credential_data=array();
+	foreach ($data['values'] as $key=>$value) {
+		if (array_key_exists($key,$key_dic)) {
+			if($key=='password' || $key=='password_other')
+				$value['value']=$email_credentials->encrypt_password($value['value']);
+			$email_credential_data[$key_dic[$key]]=$value['value'];
+		}
+	}
+
+	$email_credentials->create($email_credential_data,$CKEY);
+	$store->associate_email_credentials($email_credentials->id);
+
+
+
+		$responses=array();
+
+		foreach($store->get_email_credentials_data() as $key=>$value)
+			$credentials_data=$value;
+//print_r($credentials_data);exit;
+
+		switch($credentials_data['Email Provider']){
+			case 'PHPMail':
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Direct Mail'],'key'=>'email_direct_mail','action'=>'', 'msg'=>'');
+			break;
+			case 'Gmail':
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Gmail'],'key'=>'email','action'=>'', 'msg'=>'');
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Password Gmail'],'key'=>'password','action'=>'', 'msg'=>'');
+			break;
+			case 'Other':
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Other'],'key'=>'email_other','action'=>'', 'msg'=>'');
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Login Other'],'key'=>'login','action'=>'', 'msg'=>'');
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Password Other'],'key'=>'password_other','action'=>'', 'msg'=>'');
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Incoming Mail Server'],'key'=>'incoming_server','action'=>'', 'msg'=>'');
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Outgoing Mail Server'],'key'=>'outgoing_server','action'=>'', 'msg'=>'');
+			break;
+			case 'Inikoo':
+				$responses[]=array('state'=>200, 'newvalue'=>$credentials_data['Email Address Amazon Mail'],'key'=>'email_inikoo_mail','action'=>'', 'msg'=>'');
+			break;
+		}
+
+		echo json_encode($responses);
+		return;
 
 }
 
