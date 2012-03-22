@@ -152,6 +152,12 @@ $js_files[]='location.js.php';
 $smarty->assign('location',$location);
 
 
+$flag=$location->data['Location Flag'];
+$flag_name="flag_".strtolower($location->data['Location Flag']).".png";
+
+$smarty->assign('flag_name',$flag_name);
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
