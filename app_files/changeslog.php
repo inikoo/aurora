@@ -5701,6 +5701,9 @@ ALTER TABLE `List Dimension` CHANGE `List Store Key` `List Parent Key` SMALLINT(
 ALTER TABLE `List Dimension` DROP INDEX `Customer List Store Key` , ADD UNIQUE `Customer List Store Key` ( `List Parent Key` , `List Name` , `List Scope` ) ;
 
 
+
+
+
 DROP TABLE IF EXISTS `Email Credentials Dimension`;
 
 CREATE TABLE `Email Credentials Dimension` (
@@ -5721,5 +5724,8 @@ CREATE TABLE `Email Credentials Dimension` (
   PRIMARY KEY (`Email Credentials Key`)
 ) ENGINE=MyISAM AUTO_INCREMENT=104 DEFAULT CHARSET=utf8;
 
-ALTER TABLE `dw`.`Customers Send Post` ADD PRIMARY KEY ( `Customer Send Post Key` ) ;
+ALTER TABLE `Customers Send Post` ADD PRIMARY KEY ( `Customer Send Post Key` ) ;
 ALTER TABLE `Customers Send Post` CHANGE `Customer Send Post Key` `Customer Send Post Key` MEDIUMINT( 11 ) NOT NULL AUTO_INCREMENT ;
+
+RENAME TABLE `Customers Send Post` TO `Customer Send Post` ;
+ALTER TABLE `Customer Send Post` CHANGE `Date Send` `Date Send` DATETIME NULL DEFAULT NULL ;

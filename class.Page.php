@@ -1371,7 +1371,7 @@ class Page extends DB_Table {
                              <input type='hidden' name='product' value='%s %sx %s'>
                              <input type='hidden' name='return' value='%s'>
                              <input type='hidden' name='price' value='%s'>
-                             <input type='text' size='2' class='qty' name='qty' value=''>
+                             <input type='text' size='2' class='qty' name='qty' value='1'>
                              <input type='Submit' value='%s'></form></div>",
 				'http://'.$this->site->get_mals_data('url').'/cf/add.cfm',
 				$this->site->get_mals_data('id'),

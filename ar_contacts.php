@@ -2450,7 +2450,7 @@ function list_customers_send_post() {
     $_SESSION['state']['customers']['table']['f_value']=$f_value;
 
 
-    $table='`Customers Send Post` CSD ';
+    $table='`Customer Send Post` CSD ';
 
 
 
@@ -6209,7 +6209,7 @@ function pending_post(){
     $_SESSION['state']['store']['pending_post']['f_value']=$f_value;
 
     $where=sprintf('where `Customer Store Key`=%d ',$parent_key);
-    $table='`Customers Send Post` CSP left join  `Customer Dimension` C  on (CSP.`Customer Key`=C.`Customer Key`) ';
+    $table='`Customer Send Post` CSP left join  `Customer Dimension` C  on (CSP.`Customer Key`=C.`Customer Key`) ';
     $where_type='';
     $currency='';
 

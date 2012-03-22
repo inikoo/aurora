@@ -22,7 +22,7 @@ $tax_number_regex="^((AT)?U[0-9]{8}|(BE)?0?[0-9]{9}|(BG)?[0-9]{9,10}|(CY)?[0-9]{
 
 $send_post_type='Letter';
 $send_post_status='Cancelled';
-$sql=sprintf("select * from `Customers Send Post`   where  `Customer Key`=%d  " ,
+$sql=sprintf("select * from `Customer Send Post`   where  `Customer Key`=%d  " ,
 $_REQUEST['id']);
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
