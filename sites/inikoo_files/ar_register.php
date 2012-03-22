@@ -1,4 +1,6 @@
 <?php
+// V2
+//dsfsdf
 require_once 'common.php';
 
 
@@ -214,7 +216,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 					return array($user->id,$user->msg);
 				}
 				$message_data['from_name']=$site->data['Site Name'];
-				$message_data['method']='sendmail';
+				$message_data['method']='smtp';
 				$message_data['type']='html';
 				$message_data['to']=$handle;
 				$message_data['subject']=$welcome_email_subject;
@@ -305,6 +307,8 @@ function forgot_password($data,$secret_key) {
 
 function send_reset_password($data,$CKEY) {
 	// notr this functions also present in ar_edit_users
+//hello sdfdfdsfxxxxx
+
 	$user_key=$data['values']['user_key'];
 	$site_key=$data['values']['site_key'];
 	$url=$data['values']['url'];
@@ -362,9 +366,9 @@ function send_reset_password($data,$CKEY) {
 
 	$credentials=$site->get_email_credentials();
 	//$login_handle='raul@inikoo.com';
-	$message_data['method']='sendmail';
+	//$message_data['method']='smtp';
 	$message_data['from_name']=$site->data['Site Name'];
-	$message_data['type']='html';
+	$message_data['type']='HTML';
 	$message_data['to']=$login_handle;
 	$message_data['subject']=$forgot_password_subject;
 	$message_data['html']=$html_message;
@@ -382,12 +386,24 @@ function send_reset_password($data,$CKEY) {
 		$message_data['plain']=null;
 
 	//print_r($message_data);
+/*
 	$send_email=new SendEmail();
 
 	$send_email->track=false;
 	$send_email->secret_key=$CKEY;
 
 	$result=$send_email->send($message_data);
+*/
+
+
+	$send_email=new SendEmail();
+	$send_email->secret_key=CKEY;
+	$send_email->track=false;
+
+	$send_email->set($message_data);
+	$result=$send_email->send();
+
+
 
 	if ($result['msg']=='ok') {
 		$response=array('state'=>200,'result'=>'send','msg'=>'<img src="art/icons/accept.png"/> '._('Email send') );
