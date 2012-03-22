@@ -5700,3 +5700,26 @@ alter table `Inventory Transaction Fact`  partition BY KEY(`Date`) PARTITIONS 30
 ALTER TABLE `List Dimension` CHANGE `List Store Key` `List Parent Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
 ALTER TABLE `List Dimension` DROP INDEX `Customer List Store Key` , ADD UNIQUE `Customer List Store Key` ( `List Parent Key` , `List Name` , `List Scope` ) ;
 
+
+DROP TABLE IF EXISTS `Email Credentials Dimension`;
+
+CREATE TABLE `Email Credentials Dimension` (
+  `Email Credentials Method` enum('Amazon','SMTP','Direct') NOT NULL DEFAULT 'SMTP',
+  `Email Credentials Key` mediumint(8) NOT NULL AUTO_INCREMENT,
+  `Email Provider` enum('Gmail','Other','Inikoo','PHPMail') NOT NULL DEFAULT 'Other',
+  `Email Address Gmail` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `Password Gmail` varchar(1024) CHARACTER SET utf8 DEFAULT NULL,
+  `Incoming Mail Server` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `Outgoing Mail Server` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `Amazon Access Key` varchar(255) DEFAULT NULL,
+  `Amazon Secret Key` varchar(255) DEFAULT NULL,
+  `Email Address Amazon Mail` varchar(255) DEFAULT NULL,
+  `Email Address Direct Mail` varchar(255) DEFAULT NULL,
+  `Email Address Other` varchar(255) DEFAULT NULL,
+  `Password Other` varchar(1024) DEFAULT NULL,
+  `Login Other` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Email Credentials Key`)
+) ENGINE=MyISAM AUTO_INCREMENT=104 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `dw`.`Customers Send Post` ADD PRIMARY KEY ( `Customer Send Post Key` ) ;
+ALTER TABLE `Customers Send Post` CHANGE `Customer Send Post Key` `Customer Send Post Key` MEDIUMINT( 11 ) NOT NULL AUTO_INCREMENT ;

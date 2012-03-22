@@ -306,8 +306,7 @@ function forgot_password($data,$secret_key) {
 }
 
 function send_reset_password($data,$CKEY) {
-	// notr this functions also present in ar_edit_users
-//hello sdfdfdsfxxxxx
+
 
 	$user_key=$data['values']['user_key'];
 	$site_key=$data['values']['site_key'];
@@ -405,7 +404,7 @@ function send_reset_password($data,$CKEY) {
 
 
 
-	if ($result['msg']=='ok') {
+	if ($result['state']==200) {
 		$response=array('state'=>200,'result'=>'send','msg'=>'<img src="art/icons/accept.png"/> '._('Email send') );
 		echo json_encode($response);
 		exit;

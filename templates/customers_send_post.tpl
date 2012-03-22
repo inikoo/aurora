@@ -31,6 +31,8 @@
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
 	  <td {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  	  <td {if $view=='info'}class="selected"{/if}  id="info"  >{t}Info{/t}</td>
+
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
 	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
 	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
@@ -38,7 +40,7 @@
 	</tr>
       </table>
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
- <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
+ <div  id="table0"  style="font-size:85%"  class="data_table_container dtable btable "> </div>
  </div>
 
 </div>
