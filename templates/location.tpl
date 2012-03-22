@@ -128,7 +128,21 @@
 </div>
 
 
-
+<div id="dialog_edit_flag" style="padding:10px 20px">
+<table>
+ <tr>
+ 
+	<td colspan=5>
+		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="buttons left" >
+		{foreach from=$flag_list item=cat key=cat_id name=foo}
+		<button class="{if $location->get('Location Flag')==$cat.name}selected{/if}" onclick="save_location_flag('flag','{$cat.name}', '{$location->id}')" id="flag_{$cat.name}">{$cat.name}</button> 
+	    {/foreach}
+		</div>
+	</td>
+	 
+	 </tr> 
+</table>
+</div>
 
 {include file='footer.tpl'}
 
