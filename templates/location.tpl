@@ -127,12 +127,6 @@
 
 </div>
 
-<div id="dialog_edit_flag" style="padding:10px 20px">
-
-   xxxx
- 
-
-</div>
 
 
 
