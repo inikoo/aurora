@@ -127,9 +127,9 @@ foreach ($__cols as $cols) {
 	$code=_trim($code);
 
 
-	if (!preg_match('/eid-04c/i',$code)) {
-		$is_product=false;
-	}
+//	if (!preg_match('/eid-04c/i',$code)) {
+//		$is_product=false;
+//	}
 
 	if ($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
 		$is_product=false;
