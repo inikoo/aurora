@@ -156,6 +156,18 @@ $flag=$location->data['Location Flag'];
 $flag_name="flag_".strtolower($location->data['Location Flag']).".png";
 
 $smarty->assign('flag_name',$flag_name);
+$flag_list=array(
+	'blue'=>array('name'=>_('Blue')),
+	'green'=>array('name'=>_('Green')),
+	'orange'=>array('name'=>_('Orange')),
+	'pink'=>array('name'=>_('Pink')),
+	'purple'=>array('name'=>_('Purple')),
+	'red'=>array('name'=>_('Red')),
+	'yellow'=>array('name'=>_('Yellow'))
+);
+
+$smarty->assign('flag_list',$flag_list);
+
 
 
 $smarty->assign('css_files',$css_files);

@@ -5,7 +5,7 @@
  var Dom   = YAHOO.util.Dom;
  var Event = YAHOO.util.Event;
  var dialog_add_part;
-
+var dialog_edit_flag;
 var lost_label='<?php echo '<img src="art/icons/package_delete.png"  alt="'._('Lost').'" />' ?>';
 var delete_label='<?php echo '<img src="art/icons/cross.png"  alt="'._('Free location').'" />' ?>';
 var move_label='<?php echo '<img src="art/icons/package_go.png"  alt="'._('Move Stock').'" />' ?>';
@@ -1082,6 +1082,30 @@ success:function(o) {
 
 
 
+function edit_flag(){
+	dialog_edit_flag.show();
+
+}
+
+function save_location_flag(key,value, location_id){
+
+var request='ar_edit_warehouse.php?tipo=edit_location_description&key=' + key+ '&newvalue=' + value +'&location_key=' + location_id+'&okey=' + key
+	//alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+//alert(o.responseText)
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+
+
+				if(r.state==200){
+
+				window.location.reload()
+            }
+
+    }
+    });
+
+}
 
 function save_move_items(){
     var data=new Object();
@@ -1259,8 +1283,9 @@ Event.addListener('location_submit_search', "click",submit_search,'location');
  Event.addListener("add_part", "click", show_add_part_dialog);
  Event.addListener("change_stock", "click", change_stock);
 
-zz
-
+Event.addListener("edit_flag", "click", edit_flag);
+dialog_edit_flag = new YAHOO.widget.Dialog("dialog_edit_flag", {context:["edit_flag","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_edit_flag.render();
 
 	dialog_add_part = new YAHOO.widget.Dialog("dialog_add_part", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_add_part.render();
