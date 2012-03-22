@@ -17,7 +17,7 @@
    
         <button  onclick="window.location='edit_location.php?id={$location->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Location{/t}</button>
             <button  id="add_part" ><img src="art/icons/add.png" alt=""> {t}Add Part{/t}</button>
-
+	    <button  id="edit_flag" ><img src="art/icons/{$flag_name}" alt=""> {t}Edit Flag{/t}</button>
     {/if}
     </div>
     <div class="buttons" style="float:left">
@@ -123,6 +123,13 @@
   
     
       <div id="product_messages" style="display:none;clear:both"></div>
+ 
+
+</div>
+
+<div id="dialog_edit_flag" style="padding:10px 20px">
+
+   xxxx
  
 
 </div>
