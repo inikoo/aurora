@@ -5,6 +5,7 @@
  var Dom   = YAHOO.util.Dom;
  var Event = YAHOO.util.Event;
  var dialog_add_part;
+ var dialog_edit_flag;
 
 var lost_label='<?php echo '<img src="art/icons/package_delete.png"  alt="'._('Lost').'" />' ?>';
 var delete_label='<?php echo '<img src="art/icons/cross.png"  alt="'._('Free location').'" />' ?>';
@@ -1258,12 +1259,12 @@ Event.addListener('location_submit_search', "click",submit_search,'location');
  Event.addListener("move_stock", "click", move_stock);
  Event.addListener("add_part", "click", show_add_part_dialog);
  Event.addListener("change_stock", "click", change_stock);
+Event.addListener("edit_flag", "click", edit_flag);
 
-
-
-
-	dialog_add_part = new YAHOO.widget.Dialog("dialog_add_part", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_add_part = new YAHOO.widget.Dialog("dialog_add_part", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_add_part.render();
+
+
 
 	dialog_add_part = new YAHOO.widget.Dialog("dialog_part_list", {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_add_part.render();
