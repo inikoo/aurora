@@ -1239,6 +1239,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 					//print_r($part_list);
 					//exit("Error can not find product part list (get_orders_db)\n");
                     $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
+				}else{
+					print "Warninf part per product not found (get_orders_db)\n";
 				}
 
 				
