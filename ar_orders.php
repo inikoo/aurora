@@ -1031,10 +1031,15 @@ function list_transactions_in_invoice() {
 		else
 			$discount=money($row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']);
 
+		if($row['Product Tariff Code']!='')
+		$tariff_code=' <span style="color:#777" >('.$row['Product Tariff Code'].')</span>';
+		else
+		$tariff_code='';
+		
 		$data[]=array(
 
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'],
+			'description'=>$row['Product XHTML Short Description'].$tariff_code,
 			'tariff_code'=>$row['Product Tariff Code'],
 			'quantity'=>number($row['Invoice Quantity']),
 			'gross'=>money($row['Invoice Transaction Gross Amount'],$row['Invoice Currency Code']),
