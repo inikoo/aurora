@@ -104,7 +104,7 @@ if ($order=='tariff_code')
 		$order='`Product Tariff Code`';
 	}
 
-	$sql="select sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , sum(`Shipped Quantity`*`Product Net Weight`) as weight , `Product Tariff Code`, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir ";
+	$sql="select sum(`Shipped Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus, sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , sum(`Shipped Quantity`*`Product Net Weight`) as weight , `Product Tariff Code`, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir ";
 	$result=mysql_query($sql);
 	$data=array();
 //print $sql;
@@ -118,15 +118,16 @@ if ($order=='tariff_code')
 			'value'=>round($row['value']),
 			'weight'=>ceil($row['weight']),
 			'country_2alpha_code'=>$row['Destination Country 2 Alpha Code'],
-
+			'items'=>ceil($row['items']),
+			'bonus'=>ceil($row['bonus'])
 
 
 
 		);
 	}
 
-
-
+$fields=array(_('Comodity Code'),_('Period'),_('Value'),_('Net Mass'),_('Country'),_('Items'),_('Bonus'));
+ fputcsv($output, $fields);
 
 foreach ($data as $fields) {
     fputcsv($output, $fields);
