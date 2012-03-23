@@ -1235,6 +1235,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				if (!$product_part_key) {
 					print "->End.(GO UK) ".date("r")."\n";
 					print_r($product->data);
+					print_r($part_list);
 					exit("Error can not find product part list (get_orders_db)\n");
 
 				}
