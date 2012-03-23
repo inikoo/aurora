@@ -2660,13 +2660,8 @@ function test_email_credentials($data) {
 	$from_name=$site->data['Site Name'];
 
 
-	//$to=$credentials['Email Address'];
 
-
-	$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
-	//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
-
-	//$message_data['method']='smtp';
+	
 	$message_data['type']=$data['values']['email_type'];//'HTML';
 	$message_data['to']=$data['values']['to'];
 	$message_data['subject']=_('Test');
@@ -2687,9 +2682,8 @@ function test_email_credentials($data) {
 		$message_data['plain']=$message_data['plain'];
 	}
 	else
-		$message_data['plain']=null;
+		$message_data['plain']='';
 
-	//print_r($message_data);
 	$send_email=new SendEmail();
 	$send_email->secret_key=CKEY;
 	$send_email->track=false;
