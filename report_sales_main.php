@@ -115,7 +115,7 @@ $_SESSION['state']['report_sales']['to']=$to;
 $_SESSION['state']['report_sales']['from']=$from;
 $_SESSION['state']['report_sales']['period']=$period;
 
-
+//print "$to $from $period\n";
 
 global $myconf;
 
@@ -125,8 +125,10 @@ global $myconf;
 /* 		   ); */
 
 
-$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+$int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`','date start end');
 
+//print_r($int);
+//exit;
 
 
 
@@ -170,6 +172,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 	$sql=sprintf("select `Category Name`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$int[0]);
+//print "$sql<br><br>";
 	$result2=mysql_query($sql);
 	if (mysql_num_rows($result2) >1 ) {
 		while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {

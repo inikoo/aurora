@@ -5729,3 +5729,5 @@ ALTER TABLE `Customers Send Post` CHANGE `Customer Send Post Key` `Customer Send
 
 RENAME TABLE `Customers Send Post` TO `Customer Send Post` ;
 ALTER TABLE `Customer Send Post` CHANGE `Date Send` `Date Send` DATETIME NULL DEFAULT NULL ;
+
+ALTER TABLE `Order Transaction Fact`  DROP PRIMARY KEY, ADD INDEX(`Order Transaction Fact Key`);

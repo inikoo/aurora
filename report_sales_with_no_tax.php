@@ -42,7 +42,7 @@ $js_files=array(
 
 
 
-
+$title='';
 
 
 
