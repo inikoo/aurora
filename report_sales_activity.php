@@ -115,7 +115,8 @@ default:
 $smarty->assign('compare_label',$compare_label);
 $smarty->assign('period_label',$period_label);
 
-$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+$int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`','date start end');
+
 $compare_int=prepare_mysql_dates($compare_from,$compare_to,'`Invoice Date`','date start end');
 
 $compare_menu=array(
