@@ -208,7 +208,6 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 
 
-
 				$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
 				$credentials=$site->get_email_credentials();
 				//$handle='rulovico@gmail.com';
@@ -217,7 +216,7 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 				}
 				$message_data['from_name']=$site->data['Site Name'];
 				$message_data['method']='smtp';
-				$message_data['type']='html';
+				$message_data['type']='HTML';
 				$message_data['to']=$handle;
 				$message_data['subject']=$welcome_email_subject;
 				$message_data['html']=$html_message;
@@ -238,9 +237,10 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 				$send_email=new SendEmail();
 
 				$send_email->track=false;
-				$send_email->secret_key=$secret_key;
+				$send_email->secret_key=CKEY;
 
-				$send_result=$send_email->send($message_data);
+				$send_email->set($message_data);
+				$result=$send_email->send();
 			}
 
 			return array($user->id,$user->msg);
@@ -364,8 +364,7 @@ function send_reset_password($data,$CKEY) {
 	$forgot_password_subject=$site->data['Site Forgot Password Email Subject'];
 
 	$credentials=$site->get_email_credentials();
-	//$login_handle='raul@inikoo.com';
-	//$message_data['method']='smtp';
+
 	$message_data['from_name']=$site->data['Site Name'];
 	$message_data['type']='HTML';
 	$message_data['to']=$login_handle;
@@ -384,15 +383,6 @@ function send_reset_password($data,$CKEY) {
 	} else
 		$message_data['plain']=null;
 
-	//print_r($message_data);
-/*
-	$send_email=new SendEmail();
-
-	$send_email->track=false;
-	$send_email->secret_key=$CKEY;
-
-	$result=$send_email->send($message_data);
-*/
 
 
 	$send_email=new SendEmail();

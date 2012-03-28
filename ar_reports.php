@@ -406,8 +406,15 @@ $total_weight=$row['weight'];
 }
 //print $sql;
 
-    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
-// print $sql;
+
+
+//select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') and `Order Date`>='2012-01-01' and `Order Date`<='2012-12-31' group by `Picker Key` order by `Staff Alias` 
+
+    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product ID`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product ID`) as units from  `Order Transaction Fact` OTF left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+
+
+print $sql;
     $result=mysql_query($sql);
     $data=array();
     $hours=40;
@@ -556,9 +563,9 @@ $total_orders=$row['orders'];
 $total_units=$row['units'];
 $total_weight=$row['weight'];
 }
-
+//print $sql;
     $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
-    // print $sql;
+   //  print $sql;
     $result=mysql_query($sql);
     $data=array();
     $hours=40;
