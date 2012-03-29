@@ -1253,18 +1253,21 @@ $this->location->update_parts();
     
 
 	function is_associated($date) {
+	
+//	print "is associate $date ".$this->location_key."\n";
+	
 		$intervals=$this->get_history_datetime_intervals();
 	//	print_r($intervals);
 		$date=strtotime($date);
 		foreach ($intervals as $interval) {
 			if (!$interval['To'])
-				$to=date('U');
+				$to=gmdate('U');
 			else{
 				$to=strtotime($interval['To']);
 			}
 			    
 			    $from=strtotime($interval['From']);
-	//	print "$from $date $to\n";
+	//print "$from $date $to\n";
 		    if ($from<=$date and $to>=$date)
 				return true;
 
