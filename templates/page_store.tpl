@@ -29,7 +29,6 @@
 {include file="$type_content:$template_string" } 
 {else}
 		<div id="content" class="content" style="overflow-x:hidden;overflow-y:auto;position:relative;clear:both;width:100%;{if $type_content=='string'}height:{$page->get('Page Content Height')}px{/if}">
-			{include file="$type_content:$template_string" } 
 		</div>
 
 {/if}
