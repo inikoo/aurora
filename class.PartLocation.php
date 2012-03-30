@@ -1254,19 +1254,19 @@ $this->location->update_parts();
 
 	function is_associated($date) {
 	
-//	print "is associate $date ".$this->location_key."\n";
+	//print "is test: $date ".$this->location_key."\n";
 	
 		$intervals=$this->get_history_datetime_intervals();
-	//	print_r($intervals);
+		//print_r($intervals);
 		$date=strtotime($date);
 		foreach ($intervals as $interval) {
 			if (!$interval['To'])
-				$to=gmdate('U');
+				$to=gmdate('U')+1000000000;
 			else{
-				$to=strtotime($interval['To']);
+				$to=strtotime($interval['To'].' +00:00');
 			}
 			    
-			    $from=strtotime($interval['From']);
+			    $from=strtotime($interval['From'].' +00:00');
 	//print "$from $date $to\n";
 		    if ($from<=$date and $to>=$date)
 				return true;

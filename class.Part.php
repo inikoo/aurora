@@ -1311,7 +1311,7 @@ class part extends DB_Table {
 		$result=mysql_query($sql);
 		$_locations=array();
 		
-		
+		//print $sql;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (in_array($row['Location Key'],$_locations)) {
 				continue;
