@@ -963,11 +963,18 @@ $default_state=array(
 		'plot_data'=>array(
 		),
 	),
-	'report_intrastad'=>array(
-		'tipo'=>'last_m',
+	'report_intrastat'=>array(
+		'y'=>date('Y'),
+		'm'=>date('m',strtotime('now -1 month')),
+		
 
-
-
+		'period'=>'',
+		'order'=>'country_2alpha_code',
+		'order_dir'=>'',
+		'sf'=>0,
+		'nr'=>500,
+		'f_field'=>'tariff_code',
+	'f_value'=>''
 	),
 	'report_sales_week'=>array(
 		'store'=>'',

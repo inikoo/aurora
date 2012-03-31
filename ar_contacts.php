@@ -2450,7 +2450,7 @@ function list_customers_send_post() {
     $_SESSION['state']['customers']['table']['f_value']=$f_value;
 
 
-    $table='`Customers Send Post` CSD ';
+    $table='`Customer Send Post` CSD ';
 
 
 
@@ -6209,7 +6209,7 @@ function pending_post(){
     $_SESSION['state']['store']['pending_post']['f_value']=$f_value;
 
     $where=sprintf('where `Customer Store Key`=%d ',$parent_key);
-    $table='`Customers Send Post` CSP left join  `Customer Dimension` C  on (CSP.`Customer Key`=C.`Customer Key`) ';
+    $table='`Customer Send Post` CSP left join  `Customer Dimension` C  on (CSP.`Customer Key`=C.`Customer Key`) ';
     $where_type='';
     $currency='';
 
@@ -6468,6 +6468,23 @@ function pending_post(){
             $last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
 
         $contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
+$requested=strftime("%e %b %y", strtotime($data['Date Creation']." +00:00"));
+ $send='';
+  switch ($data['Send Post Status']) {
+        case 'To Send':
+            $request_state=_('To Send');
+            break;
+        case 'Send':
+            $request_state=_('Send');
+            $send=strftime("%e %b %y", strtotime($data['Date Send']." +00:00"));
+            break;
+        case 'Cancelled':
+            $request_state=_('Cancelled');
+            break;
+        default:
+            $request_state=$data['Send Post Status'];
+            break;
+        }
 
 
         if ($data['Customer Billing Address Link']=='Contact')
@@ -6507,6 +6524,7 @@ function pending_post(){
                      'telephone'=>$data['Customer Main XHTML Telephone'],
                      'last_order'=>$last_order_date,
                      'contact_since'=>$contact_since,
+                    
 
                      'total_payments'=>money($data['Customer Net Payments'],$currency),
                      'net_balance'=>money($data['Customer Net Balance'],$currency),
@@ -6524,7 +6542,12 @@ function pending_post(){
                      'billing_address'=>$billing_address,
                      'delivery_address'=>$delivery_address,
 
-                     'activity'=>$activity
+                     'activity'=>$activity,
+                     'requested'=>$requested,
+                     'send'=>$send,
+                     'request_state'=>$request_state,
+                     'delete'=>'<img src="art/icons/cross.png" alt="'._('Delete').'"/>',
+                     'mark_as_send'=>'<img src="art/icons/email_go.png" alt="'._('Mark as Send').'"/>',
 
                  );
 ///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))

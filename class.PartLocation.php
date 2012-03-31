@@ -1221,22 +1221,59 @@ $this->location->update_parts();
 		return $intervals;
 
 	}
+	
+		function get_history_datetime_intervals() {
+		$sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part SKU`=%d and  `Location Key`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Inventory Transaction Key` ",
+			$this->part_sku,
+			$this->location_key
+		);
+		// print "$sql\n";
+		$dates=array();
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$dates[$row['Date']]= $row['Inventory Transaction Type'];
+		}
 
+		$intervals=array();
+		// print_r($dates);
+
+		foreach ($dates as $date=>$type) {
+			if ($type=='Associate')
+				$intervals[]=array('From'=>date("Y-m-d H:i:s",strtotime($date)),'To'=>false);
+			if ($type=='Disassociate')
+				$intervals[count($intervals)-1]['To']=date("Y-m-d H:i:s",strtotime($date));
+		}
+
+
+		return $intervals;
+
+	}
+
+
+    
 
 	function is_associated($date) {
-		$intervals=$this->get_history_intervals();
+	
+	//print "is test: $date ".$this->location_key."\n";
+	
+		$intervals=$this->get_history_datetime_intervals();
 		//print_r($intervals);
 		$date=strtotime($date);
 		foreach ($intervals as $interval) {
 			if (!$interval['To'])
-				$to=date('U');
-			else
-				$to=strtotime($interval['To']);
-			$from=strtotime($interval['From']);
-			if ($from<=$date and $to>=$date)
+				$to=gmdate('U')+1000000000;
+			else{
+				$to=strtotime($interval['To'].' +00:00');
+			}
+			    
+			    $from=strtotime($interval['From'].' +00:00');
+	//print "$from $date $to\n";
+		    if ($from<=$date and $to>=$date)
 				return true;
 
 		}
+	    //print "not asscated\n ";
+	    
 		return false;
 
 

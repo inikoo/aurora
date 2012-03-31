@@ -16,6 +16,11 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('intrastat'):
+
+list_intrastat();
+exit;
 case('tax_overview'):
 
 
@@ -401,8 +406,15 @@ $total_weight=$row['weight'];
 }
 //print $sql;
 
-    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
-// print $sql;
+
+
+//select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') and `Order Date`>='2012-01-01' and `Order Date`<='2012-12-31' group by `Picker Key` order by `Staff Alias` 
+
+    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product ID`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+    $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product ID`) as units from  `Order Transaction Fact` OTF left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+
+
+print $sql;
     $result=mysql_query($sql);
     $data=array();
     $hours=40;
@@ -551,9 +563,9 @@ $total_orders=$row['orders'];
 $total_units=$row['units'];
 $total_weight=$row['weight'];
 }
-
+//print $sql;
     $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
-    // print $sql;
+   //  print $sql;
     $result=mysql_query($sql);
     $data=array();
     $hours=40;
@@ -4446,6 +4458,191 @@ function list_stores() {
     echo json_encode($response);
 }
 
+function list_intrastat(){
 
+	$conf=$_SESSION['state']['report_intrastat'];
+
+$conf_table='report_intrastat';
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	if (isset( $_REQUEST['y']))
+		$y=$_REQUEST['y'];
+	else
+		$y=$conf['y'];
+
+
+	if (isset( $_REQUEST['m']))
+		$m=$_REQUEST['m'];
+	else
+		$m=$conf['m'];
+
+	$_SESSION['state'][$conf_table]['pages']['y']=$y;
+	$_SESSION['state'][$conf_table]['pages']['m']=$m;
+	$_SESSION['state'][$conf_table]['pages']['order']=$order;
+	$_SESSION['state'][$conf_table]['pages']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['pages']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['pages']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['pages']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['pages']['f_value']=$f_value;
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	$where=sprintf("where `Current Dispatching State`='Dispatched' and MONTH(`Invoice Date`)=%d  and YEAR(`Invoice Date`)=%d and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",$m,$y);
+
+
+	$wheref='';
+	if ($f_field=='tariff_code'  and $f_value!='')
+		$wheref.=" and `Product Tariff Code` like '".addslashes($f_value)."%'";
+	
+
+
+	$sql="select `Product Tariff Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code` ";
+
+	$result=mysql_query($sql);
+	
+
+	
+		$total= mysql_num_rows($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+	$sql="select `Product Tariff Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where group by `Product Tariff Code`,`Destination Country 2 Alpha Code` ";
+		$result=mysql_query($sql);
+		$total_records=mysql_num_rows($result);
+		$filtered=$total_records-$total;
+		
+	
+
+	}
+
+	$rtext=$total_records." ".ngettext('page','pages',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+
+
+
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('tariff_code'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record with comodity code")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('records with comodity code')." <b>$f_value</b>*)";
+		break;
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any page with name")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('pages with name')." <b>$f_value</b>*)";
+		break;
+
+	}
+
+	if ($order=='tariff_code')
+		$order='`Product Tariff Code`';
+	
+	elseif ($order=='value'){
+		$order="value";
+	}elseif ($order=='weight'){
+		$order="weight";
+	}elseif ($order=='country_2alpha_code'){
+		$order="`Destination Country 2 Alpha Code`, `Product Tariff Code`  ";
+	}	
+	else {
+		$order='`Product Tariff Code`';
+	}
+
+	$sql="select  GROUP_CONCAT(' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , sum(`Shipped Quantity`*`Product Net Weight`) as weight , `Product Tariff Code`, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir  limit $start_from,$number_results";
+//print $sql;
+	$result=mysql_query($sql);
+	$data=array();
+
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+		
+		$invoices=$row['invoices'];
+		
+		$data[]=array(
+			'tariff_code'=>$row['Product Tariff Code'],
+		
+			'monthyear'=>$row['monthyear'],
+			'value'=>money($row['value']),
+			'weight'=>weight($row['weight']),
+			'country_2alpha_code'=>$row['Destination Country 2 Alpha Code'],
+			'invoices'=>$invoices
+
+
+
+
+		);
+	}
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+
+
+}
 
 ?>

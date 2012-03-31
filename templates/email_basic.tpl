@@ -83,7 +83,7 @@ div.email_paragraph:hover{border:1px solid #ddd;}
 <input type="hidden" id="paragraph_type{$paragraph_key}" value="Main">
 <h1 style="font-size:20px;font-weight:bold;color:#{$color_scheme.H1};font-family:arial;line-height:110%;margin:0px" id="paragraph_title{$paragraph_key}">{$paragraph.title}</h1>
 <h2 style="font-size:11px;font-weight:normal;color:#{$color_scheme.H2};font-style:italic;font-family:arial;margin:0px" id="paragraph_subtitle{$paragraph_key}">{$paragraph.subtitle}</h2>
-<p style="color:#{$color_scheme.Text_Content};margin:0px"  id="paragraph_content{$paragraph_key}" >
+<p style="margin:0px"  id="paragraph_content{$paragraph_key}" >
 {$paragraph.content}
 </p>
 </div>
@@ -122,7 +122,6 @@ Our telephone:<br />
 <br />
 Copyright (C) {$smarty.now|date_format:'%Y'} {$store->get('Store Name')} All rights reserved.<br />
 <br />
-<a href="*|FORWARD|*">Forward</a> this email to a friend
   
 
 </span>

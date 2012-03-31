@@ -626,7 +626,7 @@ function part_list() {
     $wheref='';
 
   if ($f_field=='used_in' and $f_value!='')
-        $wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
+        $wheref.=" and  `Part Currently Used In` like '%".addslashes($f_value)."%'";
     elseif($f_field=='description' and $f_value!='')
     $wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
     elseif($f_field=='supplied_by' and $f_value!='')
@@ -635,7 +635,7 @@ function part_list() {
     $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
     $sql="select count(DISTINCT `Part SKU`) as total from `Part Dimension` $where $wheref  ";
-
+print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];

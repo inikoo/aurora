@@ -4,6 +4,12 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$title}</title>
+	{if {$page->get('Page Keywords')!=''}}
+	<meta name="keywords" content="{$page->get('Page Keywords')}">
+	{/if}
+	{if {$page->get('Page Store Resume')!=''}}
+	<meta name="description" content="{$page->get('Page Store Resume')}">
+	{/if}
 	<link href="{$site->get_favicon_url()}" rel="shortcut icon" type="image/x-icon" />
 	{foreach from=$css_files item=i } 
 	<link rel="stylesheet" href="{$i}" type="text/css" />

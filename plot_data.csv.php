@@ -630,7 +630,7 @@ function department_sales($data) {
     if (array_key_exists('from',$data)) {
         $dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
     } else {
-        $dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product Depament Key` in (%s)  and `Current Payment State`='Paid'  )",join(',',$departments_keys));
+        $dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Order Transaction Fact` where `Product Department Key` in (%s)  and `Current Payment State`='Paid'  )",join(',',$departments_keys));
     }
 
     $sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
@@ -638,7 +638,7 @@ function department_sales($data) {
 
                 );
 
-//print $sql;
+
 
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
@@ -662,12 +662,12 @@ function department_sales($data) {
 
     $corporate_currency='';
     if ($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange Rate`';
-    $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Depament Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+    $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` %s) as net, count(*) as invoices  from `Order Transaction Fact` where  %s and `Product Department Key` in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
                  $corporate_currency,
                  $dates,
                  join(',',$departments_keys)
                 );
-    //print $sql;
+   // print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $graph_data[$row['date']]['vol']=$row['invoices'];
