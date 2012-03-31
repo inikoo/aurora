@@ -141,14 +141,80 @@ var  group_name=new Object;
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['site_user']['login_history']['f_field']?>',value:'<?php echo$_SESSION['state']['site_user']['login_history']['f_value']?>'};
 
 
+ var tableid=2; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [ 
+
+				    {key:"code", label:"<?php echo _('Page Key')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   , {key:"page", label:"<?php echo _('Page')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"total_visits", label:"<?php echo _('Total Visits')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	    
+				    
+				    
+				     ];
+request="ar_sites.php?tipo=page_stats&group_by=pages&parent=user&tableid=2&parent_key="+Dom.get('user_key').value
+//alert(request)
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: { 
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id','title','code','url','type','site','name', 'email', 'visits','ip','date','previous_page', 'page', 'total_visits'
+						 ]};
+	    
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource2, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+								        
+									      rowsPerPage:<?php echo$_SESSION['state']['site_user']['visit_pages']['nr']?>,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['site_user']['visit_pages']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site_user']['visit_pages']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+ this.table2.request=request;
+  this.table2.table_id=tableid;
+     this.table2.subscribe("renderEvent", myrenderEvent);
+
+	    
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['site_user']['visit_pages']['f_field']?>',value:'<?php echo$_SESSION['state']['site_user']['visit_pages']['f_value']?>'};
+
 
 	};
     });
 
 
 function change_block(){
-ids=['login_history','access','email'];
-block_ids=['block_login_history','block_access','block_email'];
+ids=['login_history','access','email','pages_visit'];
+block_ids=['block_login_history','block_access','block_email', 'block_pages_visit'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -162,7 +228,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=user-bl
 
  function init(){
 
- ids=['login_history'];
+ ids=['login_history','pages_visit'];
  YAHOO.util.Event.addListener(ids, "click",change_block)
 
  init_search('users');

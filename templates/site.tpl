@@ -142,6 +142,12 @@
 		</div>
 	</div>
 	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
+		<div  id="table1"   class="data_table_container dtable btable" style="font-size:85%"> </div>
+
+
+
 		<div id="plot1" style="clear:both;border:1px solid #ccc">
 			<div id="single_data_set">
 				<strong>You need to upgrade your Flash Player</strong> 
