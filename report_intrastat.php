@@ -32,11 +32,10 @@ $js_files=array(
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/common.js',
 	'js/table_common.js',
-	//  'report_sales.js.php',
 	'report_sales_main.js.php',
 	'js/calendar_interval.js',
 	'reports_calendar.js.php',
-	'report_instrastad.js.php'
+	'report_intrastat.js.php'
 
 );
 
@@ -45,11 +44,17 @@ $title=_('Instrastad');
 
 //include_once 'reports_list.php';
 
+$y=$_SESSION['state']['report_intrastat']['y'];
+$m=$_SESSION['state']['report_intrastat']['m'];
+
+$period=strftime("%B %Y", strtotime("$y-$m-01"));
+$smarty->assign('period',$period);
+
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-
+/*
 
 if (isset($_REQUEST['tipo'])) {
 	$tipo=$_REQUEST['tipo'];
@@ -58,6 +63,9 @@ if (isset($_REQUEST['tipo'])) {
 	$tipo=$_SESSION['state']['report_intrastad']['tipo'];
 
 
+$report_name='report_intrastat';
+
+//include_once 'report_dates.php';
 
 
 
@@ -77,7 +85,9 @@ $smarty->assign('to',$to);
 $smarty->assign('currency',$myconf['currency_symbol']);
 
 $smarty->assign('quick_period',$quick_period);
-$smarty->display('report_intrastad.tpl');
+
+*/
+$smarty->display('report_intrastat.tpl');
 
 
 

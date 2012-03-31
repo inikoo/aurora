@@ -1310,6 +1310,8 @@ class part extends DB_Table {
 
 		$result=mysql_query($sql);
 		$_locations=array();
+		
+		//print $sql;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (in_array($row['Location Key'],$_locations)) {
 				continue;
@@ -1318,8 +1320,36 @@ class part extends DB_Table {
 			}
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
 
-			//print_r($part_location->location);
+			
 			if ($part_location->location->data['Location Mainly Used For']=='Picking') {
+			
+			
+				if ($part_location->is_associated($date)) {
+					list($stock,$value,$in_process)=$part_location->get_stock($date);
+					$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
+
+				}
+			}
+
+		}
+
+
+
+	$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
+
+		$result=mysql_query($sql);
+		
+		
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			if (in_array($row['Location Key'],$_locations)) {
+				continue;
+			}else {
+				$_locations[]=$row['Location Key'];
+			}
+			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+
+		//	print_r($part_location->location);
+			if ($part_location->location->data['Location Mainly Used For']!='Picking') {
 				if ($part_location->is_associated($date)) {
 					list($stock,$value,$in_process)=$part_location->get_stock($date);
 					$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
@@ -1333,7 +1363,7 @@ class part extends DB_Table {
 
 
 		//print "------------------".$this->sku."\n";
-		//print_r($was_associated);
+	//	print_r($was_associated);
 
 		//print "==================\n";
 

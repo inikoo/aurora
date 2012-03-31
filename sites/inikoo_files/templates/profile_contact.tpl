@@ -343,7 +343,7 @@
 	</table>
 </div>
 {/if} {/foreach} {section name=foo loop=5} 
-<div id="dialog_badge_info_{$smarty.section.foo.iteration}" style="padding:10px">
+<div id="dialog_badge_info_{$smarty.section.foo.iteration}" style="padding:10px;display:none">
 	<table style="margin:10px">
 		<tr>
 			<td>{$page->customer->badge_info($smarty.section.foo.iteration)}</td>

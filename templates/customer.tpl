@@ -16,7 +16,7 @@
 			</div>
 			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img src="art/icons/add.png" alt=""> {t}Order{/t}</button> <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')"><img src="art/icons/printer.png" alt=""> {t}Address{/t}</button> 
+				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img src="art/icons/add.png" alt=""> {t}Order{/t}</button> <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> 
 				{if $new_customer}
 			     <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button>
 
@@ -40,6 +40,7 @@
 					<div id="main_address">
 						{$customer->get('Customer Main XHTML Address')} 
 					</div>
+					<div style="margin-top:3px" class="buttons small left"><button onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')"><img style="height:12px" src="art/icons/printer.png" alt=""> {t}Label{/t}</button></div>
 					</td>
 					{/if} 
 					<td valign="top"> 
@@ -148,40 +149,42 @@
 			</table>
 			
 		</div>
-		<div id="sticky_note_div" class="sticky_note" style="margin-top:3px;width:370px;">
+		
+		<div style="margin-top:3px;width:370px;float:left">
+		
+		<div id="sticky_note_div" class="sticky_note" >
 			<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
 			<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
 		</div>
 		<div style="clear:both">
 		</div>
-	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-		<li> <span class="item {if $view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
-		<li> <span class="item {if $view=='history'}selected{/if}" id="history"> <span> {t}History, Notes{/t}</span></span></li>
-		{if $customer_type} 
-		<li> <span class="item {if $view=='login_stat'}selected{/if}" id="login_stat"> <span> {t}Login Status{/t}</span></span></li>
-		{/if} 
-		<li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"><span> {t}Products Ordered{/t}</span></span></li>
-		<li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}" id="orders"> <span> {t}Order Details{/t}</span></span></li>
-	</ul>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
-	</div>
-	<div id="block_details" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
-			{include file='customer_badges.tpl' customer=$customer} 
-			<div style="clear:both">
-			</div>
-		</div>
 		
-		<div id="overviews" style="width:800px">
+		
+			<div id="overviews" style="padding:20px;font-size:90%">
 				<div id="orders_overview" style="float:left;;margin-right:40px;width:300px">
-					<h2 style="font-size:120% ">
+					<h2 style="font-size:100%;padding:0;font-weight:800">
 						{t}Customer Overview{/t} 
 					</h2>
-					<table border=0 style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;min-width:300px">
-						<tr>
-							<td colspan=2> {if $customer->get('Customer Type by Activity')=='Losing'} {elseif $customer->get('Customer Type by Activity')=='Lost'} <span style="font-weight:800">{t}Lost Customer{/t}</span> ({$customer->get('Lost Date')}) {else} {t}Contact Since{/t}: {$customer->get('First Contacted Date')} {/if} </td>
-						</tr>
+					<table border=0 style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+						
+						 {if $customer->get('Customer Type by Activity')=='Losing'} 
+						
+						<tr><td colspan="2">{t}Losing Customer{/t}</td></tr>
+						{elseif $customer->get('Customer Type by Activity')=='Lost'} 
+							<tr><td >{t}Lost Customer{/t}</td><td>{$customer->get('Lost Date')}</td></tr>
+								 
+								 
+								  
+								  						
+
+								  {/if}
+						
+						
+						
+					
+						
+						<tr>	<td >{t}Contact Since{/t}:</td><td>{$customer->get('First Contacted Date')}</td></tr>
+						
 						{if $correlation_msg}
 						<tr>
 							<td>{$correlation_msg}</td>
@@ -190,7 +193,7 @@
 						{if $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'} 
 						<tr>
 							<td> 
-							<div style="font-size:90%">
+							<div>
 								{if $customer->get('Customer Send Newsletter')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send newsletters{/t}</span><br />
 								{/if} {if $customer->get('Customer Send Email Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send marketing by email{/t}</span><br />
 								{/if} {if $customer->get('Customer Send Postal Marketing')=='No'}<img alt="{t}Attention{/t}" width='14' src="art/icons/exclamation.png" /> <span>{t}Don't send marketing by post{/t}</span><br />
@@ -211,11 +214,11 @@
 					</table>
 				</div>
 				{if $customer->get('Customer Orders')>0} 
-				<div id="customer_overview" style="float:left;width:400px">
-					<h2 style="font-size:120% ">
+				<div id="customer_overview" style="float:left;margin-top:10px;">
+					<h2 style="font-size:100%;padding:0;font-weight:800">
 						{t}Orders Overview{/t} 
 					</h2>
-					<table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;">
+					<table style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
 						<tr>
 							<td> {if $customer->get('Customer Orders')==1} {$customer->get('Customer Name')} {t}has place one order{/t}. {elseif $customer->get('Customer Orders')>1 } {$customer->get('customer name')} {t}has placed{/t} <b>{$customer->get('Customer Orders')}</b> {t}orders so far{/t}, {t}which amounts to a total of{/t} <b>{$customer->get('Net Balance')}</b> {t}plus tax{/t} ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}). {if $customer->get('Customer Orders Invoiced')}<br />
 							{t}This customer usually places an order every{/t} {$customer->get('Order Interval')}.{/if} {else} Customer has not place any order yet. {/if} </td>
@@ -224,6 +227,34 @@
 				</div>
 				{/if} 
 			</div>
+		
+		
+		</div>
+		
+		
+		
+	</div>
+	<div style="clear:both"></div>
+	
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+		<li> <span class="item {if $view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
+		<li> <span class="item {if $view=='history'}selected{/if}" id="history"> <span> {t}History, Notes{/t}</span></span></li>
+		{if $customer_type} 
+		<li> <span class="item {if $view=='login_stat'}selected{/if}" id="login_stat"> <span> {t}Login Status{/t}</span></span></li>
+		{/if} 
+		<li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"><span> {t}Products Ordered{/t}</span></span></li>
+		<li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}" id="orders"> <span> {t}Order Details{/t}</span></span></li>
+	</ul>
+	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
+	</div>
+	<div id="block_details" style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
+			{include file='customer_badges.tpl' customer=$customer} 
+			<div style="clear:both">
+			</div>
+		</div>
+		
+		
 		
 		
 		

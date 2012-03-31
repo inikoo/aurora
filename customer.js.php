@@ -1733,6 +1733,31 @@ function save_tax_details_match(e,value){
          
 }
 
+function request_catalogue(){
+
+    
+    	   var request='ar_edit_contacts.php?tipo=add_customer_send_post&customer_key='+Dom.get('customer_key').value+'&post_type=Catalogue'
+
+
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+
+		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state=='200'){
+		     
+		     
+			}
+
+		},failure:function(o){
+		    alert(o)
+		}
+	    
+	    });
+
+
+}
+
 
 function show_dialog_check_tax_number(){
 

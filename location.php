@@ -32,8 +32,8 @@ $view_stock=$user->can_view('product stock');
 $view_orders=$user->can_view('orders');
 
 
-$create=$user->can_create('products');
-$modify=$user->can_edit('products');
+$create=$user->can_create('locations');
+$modify=$user->can_edit('locations');
 $modify_stock=$user->can_edit('product stock');
 
 $smarty->assign('search_label',_('Locations'));

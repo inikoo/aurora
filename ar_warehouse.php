@@ -243,23 +243,8 @@ function list_locations() {
 		$tableid=0;
 
 	$elements=$conf['elements'];
-	$parent=$_REQUEST['parent'];
-
-	$parent_key=$_REQUEST['parent_key'];
-
-	$_SESSION['state']['warehouse']['locations']['elements']=$elements;
-
-	$_SESSION['state']['warehouse']['locations']['order']=$order;
-	$_SESSION['state']['warehouse']['locations']['order_dir']=$order_direction;
-	$_SESSION['state']['warehouse']['locations']['nr']=$number_results;
-	$_SESSION['state']['warehouse']['locations']['sf']=$start_from;
-	$_SESSION['state']['warehouse']['locations']['f_field']=$f_field;
-	$_SESSION['state']['warehouse']['locations']['f_value']=$f_value;
-
-
-
-	//$elements=$conf['elements'];
-
+	
+	
 	if (isset( $_REQUEST['elements_Yellow'])) {
 		$elements['Yellow']=$_REQUEST['elements_Yellow'];
 	}
@@ -281,6 +266,26 @@ function list_locations() {
 	if (isset( $_REQUEST['elements_Blue'])) {
 		$elements['Blue']=$_REQUEST['elements_Blue'];
 	}
+
+	
+	
+	
+	$parent=$_REQUEST['parent'];
+
+	$parent_key=$_REQUEST['parent_key'];
+
+	$_SESSION['state']['warehouse']['locations']['elements']=$elements;
+
+	$_SESSION['state']['warehouse']['locations']['order']=$order;
+	$_SESSION['state']['warehouse']['locations']['order_dir']=$order_direction;
+	$_SESSION['state']['warehouse']['locations']['nr']=$number_results;
+	$_SESSION['state']['warehouse']['locations']['sf']=$start_from;
+	$_SESSION['state']['warehouse']['locations']['f_field']=$f_field;
+	$_SESSION['state']['warehouse']['locations']['f_value']=$f_value;
+
+
+
+	//$elements=$conf['elements'];
 
 
 	switch ($parent) {

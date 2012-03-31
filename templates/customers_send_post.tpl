@@ -11,7 +11,7 @@
     </div>
   <div class="buttons">
       {if $modify}<button onclick="window.location='edit_customers.php?list_key={$customer_list_key}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers in List{/t}</button>{/if}
-           <button onclick="window.location='customers_address_label.pdf.php?label=l7159&scope=list&id={$customer_list_key}'" ><img src="art/icons/printer.png" alt=""/> {t}Print{/t}</button>
+           <button onclick="window.location='customers_address_label.pdf.php?label=l7159&scope=send_post&id={$store->id}'" ><img src="art/icons/printer.png" alt=""/> {t}Print{/t}</button>
 
       </div>
     <div style="clear:both"></div>
@@ -31,6 +31,8 @@
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
 	  <td {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  	  <td {if $view=='info'}class="selected"{/if}  id="info"  >{t}Info{/t}</td>
+
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
 	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
 	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
@@ -38,7 +40,7 @@
 	</tr>
       </table>
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
- <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
+ <div  id="table0"  style="font-size:85%"  class="data_table_container dtable btable "> </div>
  </div>
 
 </div>

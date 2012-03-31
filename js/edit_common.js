@@ -948,7 +948,10 @@ var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+br
 
 
 //alert(request+'?'+postData);//return;
- YAHOO.util.Connect.asyncRequest('POST',request , {
+ YAHOO.util.Connect.asyncRequest(
+ 'POST',
+ request , 
+ {
     success:function(o) {
 //alert(o.responseText)
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
@@ -986,10 +989,11 @@ var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+br
             validate_scope_edit(branch)
 
         },
-    failure: function(o) {alert(o.statusText)},      
-    },postData
+    failure: function(o) {alert(o.statusText)}
     
-    );
+    },
+postData
+);
   
 
    

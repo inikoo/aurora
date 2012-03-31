@@ -5,6 +5,8 @@
 chdir('../../');
 
 include_once 'app_files/db/dns.php';
+include_once 'app_files/key.php';
+
 include_once 'class.Image.php';
 
 include_once 'class.Store.php';
@@ -55,10 +57,10 @@ $res=mysql_query($sql);
 if ($row=mysql_fetch_array($res)) {
 	$inikoo_public_url=$row['Inikoo Public URL'];
 }
+$inikoo_public_url='http://localhost/';
 
-
-//$sql=sprintf("select * from `Email Campaign Dimension` where `Email Campaign Status` in ('Ready') and `Email Campaign Start Overdue Date`<%s ",prepare_mysql(date('Y-m-d H:i:s')));
-$sql=sprintf("select * from `Email Campaign Dimension` where `Email Campaign Key`=2 ");
+$sql=sprintf("select * from `Email Campaign Dimension` where `Email Campaign Status` in ('Ready') and `Email Campaign Start Overdue Date`<NOW() ");
+//print $sql;
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$email_campaign=new EmailCampaign($row['Email Campaign Key']);
@@ -74,7 +76,7 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 
-	$email_credentials_key=$store->get_email_credential_key('Marketing Email');
+	$email_credentials_key=$store->get_email_credential_key();
 	if (!$email_credentials_key) {
 		print "error can not find credentials\n";
 		continue;
@@ -91,9 +93,17 @@ while ($row=mysql_fetch_assoc($res)) {
 
 		$message_data=$email_campaign->get_message_data($email_mailing_list_key,$smarty,$inikoo_public_url);
 
+
+
+
 		if ($message_data['ok']) {
+
+
+
+
 			$message_data['method']='smtp';
-			$message_data['email_credentials_key']=$store->get_email_credential_key('Marketing Email');
+			$message_data['email_credentials_key']=$store->get_email_credential_key();
+
 			$message_data['email_matter']='Marketing';
 			$message_data['email_matter_key']=$email_mailing_list_key;
 			$message_data['email_matter_parent_key']=$email_campaign->id;
@@ -105,11 +115,13 @@ while ($row=mysql_fetch_assoc($res)) {
 
 
 			$send_email=new SendEmail();
-
+			$send_email->secret_key=CKEY;
 			$send_email->track=true;
 
-			//print_r($message_data);
-			$send_result=$send_email->send($message_data);
+			$send_email->set($message_data);
+
+
+			$send_result=$send_email->send();
 
 		}
 	}

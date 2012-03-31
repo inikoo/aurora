@@ -873,12 +873,12 @@ class Page extends DB_Table {
 				$url=$site->data['Site URL'].'/'.strtolower($value);
 
 				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
-				// print $sql;
-
-
+			
 				mysql_query($sql);
 
-
+$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d",prepare_mysql($value),$this->id);
+			
+				mysql_query($sql);
 			}
 
 
@@ -1131,6 +1131,9 @@ class Page extends DB_Table {
 		mysql_query($sql);
 		$sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$this->id);
 		mysql_query($sql);
+		$sql=sprintf("delete from `Page Redirection Dimension` where `Page Target Key`=%d",$this->id);
+		mysql_query($sql);
+		
 		$this->deleted=true;
 
 
@@ -1371,7 +1374,7 @@ class Page extends DB_Table {
                              <input type='hidden' name='product' value='%s %sx %s'>
                              <input type='hidden' name='return' value='%s'>
                              <input type='hidden' name='price' value='%s'>
-                             <input type='text' size='2' class='qty' name='qty' value=''>
+                             <input type='text' size='2' class='qty' name='qty' value='1'>
                              <input type='Submit' value='%s'></form></div>",
 				'http://'.$this->site->get_mals_data('url').'/cf/add.cfm',
 				$this->site->get_mals_data('id'),

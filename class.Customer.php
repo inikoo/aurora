@@ -5376,7 +5376,7 @@ class Customer extends DB_Table {
 		mysql_query($sql);
 		$sql=sprintf("delete from `Customer Ship To Bridge` where `Customer Key`=%d",$this->id);
 		mysql_query($sql);
-		$sql=sprintf("delete from `Customers Send Post` where `Customer Key`=%d",$this->id);
+		$sql=sprintf("delete from `Customer Send Post` where `Customer Key`=%d",$this->id);
 		mysql_query($sql);
 		$sql=sprintf("delete from `Search Full Text Dimension` where `Subject`='Customer' and `Subject Key`=%d",$this->id);
 		mysql_query($sql);
@@ -5396,7 +5396,7 @@ class Customer extends DB_Table {
 		$sql=sprintf("delete from `Customer Ship To Bridge` where  `Customer Key`=%d",$this->id);
 		mysql_query($sql);
 
-		$sql=sprintf("delete from `Customers Send Post` where  `Customer Key`=%d",$this->id);
+		$sql=sprintf("delete from `Customer Send Post` where  `Customer Key`=%d",$this->id);
 		mysql_query($sql);
 
 
