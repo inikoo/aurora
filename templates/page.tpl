@@ -29,10 +29,16 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Hits{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Visitors{/t}</span></span></li>
+		<li> <span style="display:none" class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Visitors{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='users'}selected{/if}" id="users"> <span> {t}Users{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
+	<div id="block_users" style="{if $block_view!='users'}display:none;{/if}clear:both;margin:25px 0 40px 0;padding:0 20px">
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
+		<div  id="table1"   class="data_table_container dtable btable" style="font-size:85%"> </div>
+	</div>
+
 	<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:25px 0 40px 0;padding:0 20px">
 		<div style="width:450px;float:left;margin-top:0">
 			<table id="page_info" class="show_info_product">
@@ -152,7 +158,13 @@
 		<div style="clear:both;margin-bottom:20px">
 		</div>
 	</div>
-	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px"">
+
+		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0  }
+		<div  id="table0"   class="data_table_container dtable btable" style="font-size:85%"> </div>
+
+
+{*}
 		<div id="plot1" style="clear:both;border:1px solid #ccc">
 			<div id="single_data_set">
 				<strong>You need to upgrade your Flash Player</strong> 
@@ -167,6 +179,8 @@
 		so.write("plot1");
 		// ]]>
 	</script> 
+
+{*}
 	</div>
 	<div id="block_visitors" style="{if $block_view!='visitors'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 		<div id="plot2" style="clear:both;border:1px solid #ccc">

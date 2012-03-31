@@ -2261,6 +2261,17 @@ $default_state=array(
 			'f_field'=>'ip',
 			'f_value'=>''
 		),
+		'visit_pages'=>array(
+			'display'=>'all',
+			'order'=>'total_visits',
+			'order_dir'=>'',
+			'type'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'',
+			'f_value'=>''
+		),
 	),
 
 

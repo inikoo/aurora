@@ -70,12 +70,20 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 		<li> <span class="item {if $block_view=='login_history'}selected{/if}" id="login_history"> <span> {t}Login History{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='pages_visit'}selected{/if}" id="pages_visit"> <span> {t}Pages Visit{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div style="padding:0 20px">
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 		</div>
+
+		<div id="block_pages_visit" style="{if $block_view!='pages_visit'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 no_filter=2  }
+			<div id="table2" class="data_table_container dtable btable" style="font-size:85%"> </div>
+		</div>
+
+
 		<div id="block_login_history" style="{if $block_view!='login_history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title">{t}Login History{/t}</span> {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 			<div id="table0" class="data_table_container dtable btable ">
