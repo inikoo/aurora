@@ -5731,3 +5731,4 @@ RENAME TABLE `Customers Send Post` TO `Customer Send Post` ;
 ALTER TABLE `Customer Send Post` CHANGE `Date Send` `Date Send` DATETIME NULL DEFAULT NULL ;
 
 ALTER TABLE `Order Transaction Fact`  DROP PRIMARY KEY, ADD INDEX(`Order Transaction Fact Key`);
+ALTER TABLE `Page Store Deleted Dimension` ADD `Page Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Page Store Deleted Key` ;

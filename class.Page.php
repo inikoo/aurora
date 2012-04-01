@@ -1141,6 +1141,7 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 
 		$data=array(
 			'Page Code'=>$this->data['Page Code'] ,
+			'Page Key'=>$this->id,
 			'Site Key'=>$this->data['Page Site Key'] ,
 			'Page Store Section'=>$this->data['Page Store Section'] ,
 			'Page Parent Key'=>$this->data['Page Parent Key'] ,
