@@ -41,7 +41,7 @@ chdir('../../');
 //}
 //exit;
 
-$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page URL` not like 'www%' and `Page Site Key`>0 and `Page Store Section` not in ('Login','Client Section','Registration'); ";
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where  `Page Site Key`>0 and `Page Store Section` not in ('Login','Client Section','Registration'); ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
