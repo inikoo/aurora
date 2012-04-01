@@ -19,7 +19,7 @@ class SendEmail extends DB_Table {
 	function send_actual_email() {
 
 
-		print_r($this->email_send_data);
+		//print_r($this->email_send_data);
 		$email_credentials=new EmailCredentials($this->email_send_data['Email Credential Key']);
 
 		if ( !$email_credentials->id) {
