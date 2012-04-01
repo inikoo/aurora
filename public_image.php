@@ -110,35 +110,7 @@ $tmp= 'Last-Modified: '.gmdate('D, d M Y H:i:s', $row['image_time']).' GMT';
 }
 else {
 
-	$css_files=array(
-		$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		$yui_path.'menu/assets/skins/sam/menu.css',
-		$yui_path.'button/assets/skins/sam/button.css',
-		$yui_path.'assets/skins/sam/autocomplete.css',
-		'common.css',
-		'css/container.css',
-		'button.css',
-		'table.css',
-		'css/dropdown.css'
-	);
-	$js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'dragdrop/dragdrop-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/php.default.min.js',
-		'js/common.js',
 
-		'js/dropdown.js'
-	);
-	$smarty->assign('css_files',$css_files);
-	$smarty->assign('js_files',$js_files);
-	$smarty->display('forbidden.tpl');
 
 }
 
