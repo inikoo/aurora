@@ -15,8 +15,8 @@ if (!$db_selected) {
 	exit;
 }
 
-
-
+//print_r($_SERVER);
+//exit;
 require_once 'conf/conf.php';
 $site_key=$myconf['site_key'];
 
@@ -24,15 +24,16 @@ $url=$_SERVER['REQUEST_URI'];
 
 
 
-	$port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
-	$original_url= $_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];
-
+	
+//print_r($_SERVER);
 
 $url=preg_replace('/^\//', '', $url);
+
+
 $url=preg_replace('/\?.*$/', '', $url);
 
 
-
+	$original_url= $url;
 
 if ($page_key=get_page_key_from_code($site_key,$url)) {
 	include_once 'common.php';
@@ -53,6 +54,8 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 	}else {
 		exit("error A");
 	}
+
+$original_url=$site_url.'/'.$original_url;
 
 	$path='';
 	$file='';
