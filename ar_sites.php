@@ -1917,7 +1917,7 @@ function list_requests() {
 		$data[]=array(
 			'customer'=>$customer,
 			'handle'=>$row['User Handle'],
-			'date'=>strftime("%a %e %b %y %H:%M", strtotime($row['Date']." +00:00")),
+			'date'=>strftime("%a %e %b %y %H:%M:s", strtotime($row['Date']." +00:00")),
 			'ip'=>$row['IP'],
 			'previous_page'=>$previous_page
 
