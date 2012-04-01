@@ -2397,6 +2397,29 @@ $default_state=array(
 		'view'=>'details',
 		'editing'=>'content',
 		'editing_content_block'=>'overview',
+		
+		'users'=>array(
+			'f_field'=>'handle',
+			'f_value'=>'',
+			'order'=>'last_visit',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'general',
+			
+			),
+		'requests'=>array(
+			'f_field'=>'handle',
+			'f_value'=>'',
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'general',
+			
+			),
+		
+		
 		'history'=>array(
 			'where'=>'where true',
 			'f_field'=>'abstract',
@@ -2922,7 +2945,28 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>''
-		)
+		),
+		
+			'users'=>array(
+			'f_field'=>'handle',
+			'f_value'=>'',
+			'order'=>'last_visit',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'general',
+			
+			),
+		'requests'=>array(
+			'f_field'=>'handle',
+			'f_value'=>'',
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>50,
+			'view'=>'general',
+			
+			)
 
 
 

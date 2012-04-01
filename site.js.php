@@ -55,7 +55,7 @@ request=request+'&'+ids[i]+'=0'
 }
 }
   
-  alert(request)
+ // alert(request)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 
 
@@ -138,7 +138,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	
 		request="ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value;
-//alert(request);
+
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -192,24 +192,25 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['site']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['pages']['f_value']?>'};
-		
+			
+
 
 
 var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 
-				    {key:"code", label:"<?php echo _('ID')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				,{key:"email", label:"<?php echo _('Email')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"visits", label:"<?php echo _('Visits')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					    {key:"customer", label:"<?php echo _('Customer')?>", width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"handle", label:"<?php echo _('Handle')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"last_visit", label:"<?php echo _('Last Visit')?>", width:280,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"visits", label:"<?php echo _('Visits')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-						    
+				    
 				    
 				    
 				     ];
-request="ar_sites.php?tipo=page_stats&group_by=site_hits&parent=site&tableid=1&parent_key="+Dom.get('site_key').value
-alert(request)
+request="ar_sites.php?tipo=users&parent=site&tableid=1&parent_key="+Dom.get('site_key').value
+//alert(request)
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -227,7 +228,7 @@ alert(request)
 		},
 		
 		fields: [
-			 'id','title','code','url','type','site','name', 'email', 'visits'
+			 'customer','handle','visits','last_visit'
 						 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -236,7 +237,7 @@ alert(request)
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 								        
-									      rowsPerPage:<?php echo$_SESSION['state']['sites']['pages']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['users']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -246,8 +247,8 @@ alert(request)
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['sites']['pages']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['sites']['pages']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['site']['users']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['users']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -261,7 +262,7 @@ alert(request)
      this.table1.subscribe("renderEvent", myrenderEvent);
 
 	    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['sites']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['sites']['pages']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['site']['users']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['users']['f_value']?>'};
 
 
 	};

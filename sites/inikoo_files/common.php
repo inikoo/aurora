@@ -330,13 +330,16 @@ function log_visit($session_key,$user_log_key,$user,$site_key) {
 	$date=date("Y-m-d H:i:s");
 
 
-	if ($_SERVER['PHP_SELF']=='/process.php') {
-		$current_url=get_current_url_from_process();
-	}else {
-		$current_url=get_current_url();
-
-
-	}
+if(isset($not_found_current_page)){
+$current_url=$not_found_current_page;
+}else{
+$current_url='';
+}
+//	if ($_SERVER['PHP_SELF']=='/process.php') {
+//		$current_url=get_current_url_from_process();
+//	}else {
+//		$current_url=get_current_url();
+//	}
 
 
 	$sql1=sprintf("INSERT INTO `User Request Dimension` (
@@ -363,7 +366,7 @@ function log_visit($session_key,$user_log_key,$user,$site_key) {
                   );",
 		$user_key,
 		$user_log_key,
-		prepare_mysql($current_url),
+		prepare_mysql($current_url,false),
 
 		0,
 		prepare_mysql($date),

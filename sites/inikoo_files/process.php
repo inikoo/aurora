@@ -14,14 +14,23 @@ if (!$db_selected) {
 	print "Error can not access the database\n";
 	exit;
 }
+
+
+
 require_once 'conf/conf.php';
 $site_key=$myconf['site_key'];
 
 $url=$_SERVER['REQUEST_URI'];
 
+
+
+	$port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+	$original_url= $_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];
+
+
 $url=preg_replace('/^\//', '', $url);
 $url=preg_replace('/\?.*$/', '', $url);
-$original=$url;
+
 
 
 
@@ -45,8 +54,8 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 		exit("error A");
 	}
 
-$path='';
-$file='';
+	$path='';
+	$file='';
 	$url_array=explode("/", $url);
 	//print_r($url_array);
 
@@ -59,7 +68,7 @@ $file='';
 
 	}
 
-$path=preg_replace('/\/$/','',$path);
+	$path=preg_replace('/\/$/','',$path);
 
 
 
@@ -73,13 +82,13 @@ $path=preg_replace('/\/$/','',$path);
 		$new_url='ter:'.$target." $sql";
 		header("Location: http://".$target);
 	}else {
-			$new_url=$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url";
-	header("Location: http://".$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url");
+		$new_url=$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url";
+		header("Location: http://".$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url");
 	}
 
 
 
-	
+
 
 	exit();
 }
