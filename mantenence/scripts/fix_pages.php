@@ -60,7 +60,7 @@ continue;
 	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
 	
 print "$sql\n";
-	//mysql_query($sql);
+	mysql_query($sql);
 	
 }	
 
