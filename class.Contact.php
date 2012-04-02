@@ -1575,7 +1575,15 @@ class Contact extends DB_Table {
 				$email_data['editor']=$this->editor;
 
 				$this->email_added=false;
+				
+				
+				
+				
+				
 				$email=new Email('find create',$email_data);
+				
+				
+				
 				if ($email->id) {
 
 			//	print "hola $scope :) ";
