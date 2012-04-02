@@ -43,7 +43,7 @@ $sql=sprintf("select * from `Customer Dimension` where (`Customer Send Email Mar
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
-  //  print $row['Customer Store Key'].' '.$row['Email']."\n";
+//    print $row['Customer Store Key']."\n";
  
  if(filter_var($row['Customer Main Plain Email'], FILTER_VALIDATE_EMAIL)){ 
  
