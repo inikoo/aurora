@@ -39,7 +39,7 @@ $store_code='UK';
 $found=0;
 $not_found=0;
 
-$sql=sprintf("select * from `Customer Dimension` where (`Customer Send Email Marketing`='Yes' or `Customer Send Newsletter`) and `Customer Store Key`=1 and `Customer Main Email Key`>0  ");
+$sql=sprintf("select * from `Customer Dimension` where (`Customer Send Email Marketing`='Yes' or `Customer Send Newsletter`='Yes') and `Customer Store Key`=1 and `Customer Main Email Key`>0  ");
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
