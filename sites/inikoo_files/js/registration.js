@@ -183,7 +183,7 @@ Dom.setStyle('processing_register','display','');
 Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 
      var request='ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
-// alert(request);//return;
+// alert(request);return;
  
      
     	YAHOO.util.Connect.asyncRequest('POST',request ,{

@@ -157,7 +157,6 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 			'User Handle'=>$handle,
 			'User Type'=>'Customer',
 			'User Password'=>$password,
-			'User Parent Key'=>$row['Customer Store Key'],
 			'User Site Key'=>$site->id,
 			'User Active'=>'Yes',
 			'User Alias'=>$row['Customer Name'],
@@ -445,7 +444,7 @@ function check_email($data) {
 function register($data,$CKEY) {
 
 
-
+/*
 	include_once 'external_libs/securimage/securimage.php';
 	$securimage = new Securimage();
 	if ($securimage->check($data['values']['captcha_code']) == false) {
@@ -454,7 +453,7 @@ function register($data,$CKEY) {
 		echo json_encode($response);
 		exit;
 	}
-
+*/
 
 	$sql=sprintf("select `Country Code` from kbase.`Country Dimension` where `Country 2 Alpha Code`=%s",
 		prepare_mysql($data['values']['Customer Address Country 2 Alpha Code']));
