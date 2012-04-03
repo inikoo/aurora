@@ -623,6 +623,7 @@ class Page extends DB_Table {
 			break;
 		case('code'):
 		case('page_code'):
+		case('Page Code'):
 			$this->update_code($value);
 			break;
 
