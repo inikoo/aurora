@@ -183,12 +183,11 @@ Dom.setStyle('processing_register','display','');
 Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 
      var request='ar_register.php?tipo=register&values='+json_value+'&store_key='+store_key+'&site_key='+site_key+'&ep='+encodeURIComponent(epwd);
-// alert(request);//return;
+// alert(request);return;
  
      
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-	Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
 
 	//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
@@ -201,18 +200,26 @@ Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 
 		       }
 		        else if(r.result=='error'){
+		        	Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
+
                 remove_register_message_blocks()
 				Dom.setStyle('message_register_error','display','');
 
 				}else if(r.result=='handle_found'){
+					Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
+
 				remove_register_message_blocks()
 
 						show_email_in_db_dialog();
 				}else if(r.result=='capture_false'){
+					Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
+
                     remove_register_message_blocks()
 		            Dom.addClass('captcha_code','error');
 		            Dom.setStyle('message_register_error_captcha','display','');
 				}else{
+					Dom.setStyle(['submit_register','cancel_register'],'visibility','visible');
+
 				remove_register_message_blocks()
 				Dom.setStyle('message_register_error','display','');
 				
@@ -335,7 +342,7 @@ function submit_check_email(){
  //	alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 		var r=YAHOO.lang.JSON.parse(o.responseText);
 	
 		    if(r.state=='200'){

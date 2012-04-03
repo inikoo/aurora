@@ -28,9 +28,18 @@ case('pages'):
 case('sites'):
 	list_sites();
 	break;
+
     case('page_stats'):
         list_page_stats();
         break;
+
+case('users'):
+	list_users_requesting();
+	break;
+	case('requests'):
+	list_requests();
+	break;	
+
 case('is_page_store_code'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -268,7 +277,7 @@ function list_pages() {
 		foreach ($elements as $_key=>$_value) {
 			if ($_value) {
 				if ($_key=='Other') {
-					$_key="'Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'";
+					$_key="'Not Found','Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'";
 					$_elements.=','.$_key;
 
 				}
@@ -350,22 +359,22 @@ function list_pages() {
 		break;
 
 	}
-$interval_db= get_interval_db_name($period);
+	$interval_db= get_interval_db_name($period);
 
 	if ($order=='code')
 		$order='`Page Code`';
 	elseif ($order=='url')
 		$order='`Page URL`';
-	elseif ($order=='users'){
+	elseif ($order=='users') {
 		$order="`Page Store $interval_db Acc Users`";
-	}elseif ($order=='visitors'){
+	}elseif ($order=='visitors') {
 		$order="`Page Store $interval_db Acc Visitors`";
-	}elseif ($order=='sessions'){
+	}elseif ($order=='sessions') {
 		$order="`Page Store $interval_db Acc Sessions`";
-	}elseif ($order=='requests'){
+	}elseif ($order=='requests') {
 		$order="`Page Store $interval_db Acc Requests`";
-	}		
-	
+	}
+
 
 
 	elseif ($order=='title')
@@ -461,7 +470,7 @@ $interval_db= get_interval_db_name($period);
 			$requests=number($row['Page Store 1 Hour Acc Requests']);
 			$users=number($row['Page Store 1 Hour Acc Users']);
 			break;
-case 'all':
+		case 'all':
 			$visitors=number($row['Page Store Total Acc Visitors']);
 			$sessions=number($row['Page Store Total Acc Sessions']);
 			$requests=number($row['Page Store Total Acc Requests']);
@@ -1090,6 +1099,7 @@ function list_sites() {
 }
 
 
+<<<<<<< HEAD
     //////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////
     //List users with number of hits for a particular page //
@@ -1468,3 +1478,863 @@ function list_sites() {
                         );
         echo json_encode($response);
     }
+=======
+
+
+function list_page_stats() {
+
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='none';
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		$parent_key='';
+
+	if (isset( $_REQUEST['group_by']))
+		$group_by=$_REQUEST['group_by'];
+	else
+		$group_by='';
+
+	if ($parent=='store') {
+		$conf=$_SESSION['state']['store']['sites'];
+		$conf_table='store';
+	}
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['sites']['sites'];
+		$conf_table='department';
+	}
+	elseif ($parent=='page') {
+		$conf=$_SESSION['state']['sites']['pages'];
+		$conf_table='sites';
+		$conf_var='pages';
+	}
+	elseif ($parent=='user') {
+		$conf=$_SESSION['state']['site_user']['visit_pages'];
+		$conf_table='site_user';
+		$conf_var='visit_pages';
+	}
+	elseif ($parent=='site') {
+		$conf=$_SESSION['state']['site_user']['visit_pages'];
+		$conf_table='site';
+		$conf_var='pages';
+	}
+	else {
+
+		exit;
+	}
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	if (isset( $_REQUEST['where']))
+		$where=$_REQUEST['where'];
+	else
+		$where=$conf['where'];
+	/*
+	if (isset( $_REQUEST['period']))
+		$period=$_REQUEST['period'];
+	else
+		$period=$conf['period'];
+
+	if (isset( $_REQUEST['percentages']))
+		$percentages=$_REQUEST['percentages'];
+	else
+		$percentages=$conf['percentages'];
+*/
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	$_SESSION['state'][$conf_table][$conf_var]['order']=$order;
+	$_SESSION['state'][$conf_table][$conf_var]['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table][$conf_var]['nr']=$number_results;
+	$_SESSION['state'][$conf_table][$conf_var]['sf']=$start_from;
+	$_SESSION['state'][$conf_table][$conf_var]['f_field']=$f_field;
+	$_SESSION['state'][$conf_table][$conf_var]['f_value']=$f_value;
+	//$_SESSION['state'][$conf_table][$conf_var]['percentages']=$percentages;
+	//$_SESSION['state'][$conf_table][$conf_var]['period']=$period;
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if (count($user->websites)==0) {
+		$where='where false ';
+	}else {
+		$where='where true ';
+	}
+
+	switch ($parent) {
+	case('page'):
+	case('site_hits'):
+		$where.=sprintf(' and URD.`Page Key`=%d',$parent_key);
+		break;
+	case('user'):
+		$where.=sprintf(' and URD.`User Key`=%d',$parent_key);
+		break;
+	case('site'):
+		$where.=sprintf(' and PSD.`Page Site Key`=%d',$parent_key);
+		break;
+	default:
+		$where.=sprintf(' and `Site Key` in (%s)',join(',',$user->websites));
+
+
+		break;
+
+	}
+
+	switch ($group_by) {
+	case('users'):
+		$group=sprintf('URD.`User Key`');
+		break;
+	case('pages'):
+	case('site_hits'):
+		$group=sprintf('URD.`Page Key`');
+		break;
+	default:
+		$group=true;
+		break;
+
+	}
+
+
+
+	$wheref='';
+	if ($f_field=='name'  and $f_value!='')
+		$wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='url' and $f_value!='')
+		$wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
+
+	switch ($group_by) {
+	case('users'):
+	case('pages'):
+		$sql="select count(*) as total from (select count($group) as tot from `User Request Dimension` URD $where $wheref group by $group) as temp";
+		break;
+	case('hits'):
+		$sql="select count(*) as total from `User Request Dimension` URD $where $wheref";
+		break;
+	case('site_hits'):
+		$sql="select count(*) as total from (select count($group) as tot from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) $where $wheref group by $group) as temp";
+		break;
+	default:
+		$sql="";
+		break;
+	}
+
+	//$sql="select count(*) as total from "
+
+
+	//print $sql; exit;
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from `Site Dimension` $where      ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$row['total']-$total;
+		}
+
+	}
+
+	switch ($group_by) {
+	case('users'):
+		$rtext=$total_records." ".ngettext('user','users',$total_records);
+		break;
+	case('hits'):
+	case('site_hits'):
+		$rtext=$total_records." ".ngettext('hit','hits',$total_records);
+		break;
+	case('pages'):
+		$rtext=$total_records." ".ngettext('page','pages',$total_records);
+		break;
+	default:
+		$rtext=$total_records." ".ngettext('','',$total_records);
+		break;
+
+	}
+
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any website with name")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('websites with name')." <b>$f_value</b>*)";
+		break;
+	case('url'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any website with address")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('websites with address')." <b>$f_value</b>*)";
+		break;
+
+	}
+
+	$order=true;
+	/*
+	switch($order){
+		//if($parent=='')
+		case 'email':
+		$order='CD.`Customer Main Plain Email` ';
+		case 'visits':
+		$order='total ';
+		case 'name':
+		$order='CD.`Customer Name` ';
+		case 'code':
+		$order='CD.`Customer Key` ';
+	}
+*/
+	switch ($group_by) {
+	case('users'):
+		$sql="select `Customer Name`, `Customer Key`, `Customer Main Plain Email`, `Page Title`, count(*) as total from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) $where $wheref group by $group order by $order $order_direction limit $start_from,$number_results ";
+		break;
+	case('hits'):
+		$sql=sprintf("select CD.`Customer Name`, CD.`Customer Key`, CD.`Customer Main Plain Email`, URD.`Page Key` as current_page_key, URD.`Previous Page Key` previous_page_key, PD.`Page Title` as prev_page_title, URD.`Date`, URD.`IP` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Previous Page Key`=PD.`Page Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+		break;
+	case('pages'):
+		$sql=sprintf("select count(*) as total_visits, PD.`Page Title`, PD.`Page Key` from `User Request Dimension` URD left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) $where $wheref group by $group order by $order $order_direction limit $start_from, $number_results ");
+		break;
+	case('site_hits'):
+		$sql=sprintf("select CD.`Customer Name`, CD.`Customer Key`, CD.`Customer Main Plain Email`, URD.`Page Key` as current_page_key, URD.`Previous Page Key` previous_page_key, PD.`Page Title` as prev_page_title, URD.`Date`, URD.`IP` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Previous Page Key`=PD.`Page Key`) left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Site Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+		break;
+	default:
+		$sql='';
+		break;
+
+	}
+
+
+
+	//$sql=sprintf("select * from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Site Key`) left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+
+	// print $sql; exit;
+
+	$result=mysql_query($sql);
+
+
+	$data=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+
+		switch ($group_by) {
+		case('users'):
+			$name="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
+			//$code="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
+			if ($row['Customer Name']=='') {
+				continue;
+			}
+			$data[]=array(
+				'code'=>$row['Customer Key'],//$row['Site Key'],
+				'name'=>$name,
+				'email'=>$row['Customer Main Plain Email'],
+				'visits'=>$row['total'],//$row['Site URL'],
+			);
+			break;
+		case('hits'):
+		case('site_hits'):
+			$name="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
+			$prev_page="<a href='page.php?id=".$row['previous_page_key']."'>".$row['prev_page_title']."</a>";
+
+			if ($row['Customer Name']=='') {
+				$name='Not Registered';
+			}
+			if ($row['prev_page_title']=='') {
+				$prev_page='N/A';
+			}
+			$data[]=array(
+				'code'=>$row['Customer Key'],//$row['Site Key'],
+				'name'=>$name,
+				'email'=>$row['Customer Main Plain Email'],
+				'previous_page'=>$prev_page,
+				'ip'=>$row['IP'],
+				'date'=>$row['Date']
+			);
+			break;
+		case('pages'):
+			$page="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Title']."</a>";
+			$code="<a href='page.php?id=".$row['Page Key']."'>".$row['Page Key']."</a>";
+			$data[]=array(
+				'code'=>$code,
+				'total_visits'=>$row['total_visits'],
+				'page'=>$page,
+			);
+			break;
+		}
+	}
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
+
+
+
+function list_users_requesting() {
+
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='none';
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		$parent_key='';
+
+	if (isset( $_REQUEST['group_by']))
+		$group_by=$_REQUEST['group_by'];
+	else
+		$group_by='';
+
+	if ($parent=='store') {
+		$conf=$_SESSION['state']['store']['users'];
+		$conf_table='store';
+	}
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['sites']['users'];
+		$conf_table='department';
+	}
+	elseif ($parent=='page') {
+		$conf=$_SESSION['state']['page']['users'];
+		$conf_table='sites';
+		$conf_var='users';
+	}
+	elseif ($parent=='site') {
+		$conf=$_SESSION['state']['site']['users'];
+		$conf_table='site';
+		$conf_var='users';
+	}
+	else {
+
+		exit;
+	}
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	/*
+	if (isset( $_REQUEST['period']))
+		$period=$_REQUEST['period'];
+	else
+		$period=$conf['period'];
+
+	if (isset( $_REQUEST['percentages']))
+		$percentages=$_REQUEST['percentages'];
+	else
+		$percentages=$conf['percentages'];
+*/
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	$_SESSION['state'][$conf_table][$conf_var]['order']=$order;
+	$_SESSION['state'][$conf_table][$conf_var]['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table][$conf_var]['nr']=$number_results;
+	$_SESSION['state'][$conf_table][$conf_var]['sf']=$start_from;
+	$_SESSION['state'][$conf_table][$conf_var]['f_field']=$f_field;
+	$_SESSION['state'][$conf_table][$conf_var]['f_value']=$f_value;
+	//$_SESSION['state'][$conf_table][$conf_var]['percentages']=$percentages;
+	//$_SESSION['state'][$conf_table][$conf_var]['period']=$period;
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if (count($user->websites)==0) {
+		$where='where false ';
+	}else {
+		$where='where URD.`User Key`>0 ';
+	}
+
+	switch ($parent) {
+	case('store'):
+		$where.=sprintf(' and URD.`Page Key`=%d',$parent_key);
+		break;
+
+	case('page'):
+		$where.=sprintf(' and URD.`Page Key`=%d',$parent_key);
+		break;
+	case('site'):
+		$where.=sprintf(' and PSD.`Page Site Key`=%d',$parent_key);
+		break;
+	default:
+		$where.=sprintf(' and `Site Key` in (%s)',join(',',$user->websites));
+
+
+		break;
+
+	}
+
+
+
+	$wheref='';
+	if ($f_field=='name'  and $f_value!='')
+		$wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='url' and $f_value!='')
+		$wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
+
+
+
+	$sql="select  URD.`User Key` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Store Dimension` PSD on (URD.`Page Key` = PSD.`Page Key`) $where  group by   URD.`User Key`  ";
+
+//print $sql;
+
+	$result=mysql_query($sql);
+	$total=mysql_num_rows($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select  URD.`User Key` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) $where $wheref group by   URD.`User Key`  ";
+		$result=mysql_query($sql);
+		$total_records=mysql_num_rows($result);
+		$filtered=$row['total']-$total;
+
+
+	}
+
+	switch ($group_by) {
+	case('users'):
+		$rtext=$total_records." ".ngettext('user','users',$total_records);
+		break;
+	case('hits'):
+	case('site_hits'):
+		$rtext=$total_records." ".ngettext('hit','hits',$total_records);
+		break;
+	case('pages'):
+		$rtext=$total_records." ".ngettext('page','pages',$total_records);
+		break;
+	default:
+		$rtext=$total_records." ".ngettext('','',$total_records);
+		break;
+
+	}
+
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any website with name")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('websites with name')." <b>$f_value</b>*)";
+		break;
+	case('url'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any website with address")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('websites with address')." <b>$f_value</b>*)";
+		break;
+
+	}
+
+
+ $_order=$order;
+    $_dir=$order_direction;
+    
+    $order='`Date`';
+
+
+	$sql=sprintf("select `Customer Key`,`Customer Name`,`User Handle`,count(*) visits, max(`Date`) last_visit from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref group by URD.`User Key` order by $order $order_direction limit $start_from,$number_results ");
+
+//	print $sql; exit;
+
+	$result=mysql_query($sql);
+
+
+	$data=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+		$customer="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
+		$data[]=array(
+			'customer'=>$customer,
+			'handle'=>$row['User Handle'],
+			'visits'=>$row['visits'],
+			'last_visit'=>strftime("%a %e %b %y %H:%M", strtotime($row['last_visit']." +00:00")),
+
+		);
+
+
+	}
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
+
+function list_requests() {
+
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='none';
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else
+		$parent_key='';
+
+
+
+	if ($parent=='store') {
+		$conf=$_SESSION['state']['store']['users'];
+		$conf_table='store';
+	}
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['sites']['users'];
+		$conf_table='department';
+	}
+	elseif ($parent=='page') {
+		$conf=$_SESSION['state']['page']['requests'];
+		$conf_table='page';
+		$conf_var='requests';
+	}
+	elseif ($parent=='site') {
+		$conf=$_SESSION['state']['site']['users'];
+		$conf_table='site';
+		$conf_var='pages';
+	}
+	else {
+
+		exit;
+	}
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	/*
+	if (isset( $_REQUEST['period']))
+		$period=$_REQUEST['period'];
+	else
+		$period=$conf['period'];
+
+	if (isset( $_REQUEST['percentages']))
+		$percentages=$_REQUEST['percentages'];
+	else
+		$percentages=$conf['percentages'];
+*/
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+	$_SESSION['state'][$conf_table][$conf_var]['order']=$order;
+	$_SESSION['state'][$conf_table][$conf_var]['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table][$conf_var]['nr']=$number_results;
+	$_SESSION['state'][$conf_table][$conf_var]['sf']=$start_from;
+	$_SESSION['state'][$conf_table][$conf_var]['f_field']=$f_field;
+	$_SESSION['state'][$conf_table][$conf_var]['f_value']=$f_value;
+	//$_SESSION['state'][$conf_table][$conf_var]['percentages']=$percentages;
+	//$_SESSION['state'][$conf_table][$conf_var]['period']=$period;
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+	if (count($user->websites)==0) {
+		$where='where false ';
+	}else {
+		$where='where true ';
+	}
+
+	switch ($parent) {
+	case('store'):
+		$where.=sprintf(' and URD.`Page Key`=%d',$parent_key);
+		break;
+
+	case('page'):
+		$where.=sprintf(' and URD.`Page Key`=%d',$parent_key);
+		break;
+	case('site'):
+		$where.=sprintf(' and PSD.`Page Site Key`=%d',$parent_key);
+		break;
+	default:
+		$where.=sprintf(' and `Site Key` in (%s)',join(',',$user->websites));
+
+
+		break;
+
+	}
+
+
+
+	$wheref='';
+	if ($f_field=='name'  and $f_value!='')
+		$wheref.=" and `Site Name` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='url' and $f_value!='')
+		$wheref.=" and  `Site URL` like '%".addslashes($f_value)."%'";
+
+
+
+	$sql="select  URD.`User Key` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) $where   ";
+
+
+
+	$result=mysql_query($sql);
+	$total=mysql_num_rows($result);
+
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select  URD.`User Key` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`) left join `Customer Dimension` CD on (UD.`User Parent Key` = CD.`Customer Key`) left join `Page Dimension` PD on (URD.`Page Key` = PD.`Page Key`) $where $wheref   ";
+		$result=mysql_query($sql);
+		$total_records=mysql_num_rows($result);
+		$filtered=$row['total']-$total;
+
+
+	}
+
+
+		$rtext=$total_records." ".ngettext('request','requests',$total_records);
+
+
+
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	$filter_msg='';
+
+	switch ($f_field) {
+	case('name'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any website with name")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('websites with name')." <b>$f_value</b>*)";
+		break;
+	case('url'):
+		if ($total==0 and $filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any website with address")." <b>$f_value</b>* ";
+		elseif ($filtered>0)
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('websites with address')." <b>$f_value</b>*)";
+		break;
+
+	}
+
+//	$order=true;
+	/*
+	switch($order){
+		//if($parent=='')
+		case 'email':
+		$order='CD.`Customer Main Plain Email` ';
+		case 'visits':
+		$order='total ';
+		case 'name':
+		$order='CD.`Customer Name` ';
+		case 'code':
+		$order='CD.`Customer Key` ';
+	}
+*/
+
+ $_order=$order;
+    $_dir=$order_direction;
+    
+    $order='`Date`';
+    
+
+	$sql=sprintf("select `URL`,PSD.`Page Store Section`, PP.`Page Code` previous_code ,PP.`Page Key` previous_page_key  ,`IP`,`Previous Page`,`Previous Page Key`,`Customer Key`,`Customer Name`,`User Handle`, `Date` from `User Request Dimension` URD left join `Page Store Dimension` PSD on (URD.`Page Key`=PSD.`Page Key`) left join `Page Store Dimension` PP on (URD.`Previous Page Key`=PP.`Page Key`)  left join `User Dimension` U on (URD.`User Key`=U.`User Key`) left join `Customer Dimension` C on (C.`Customer Key`=U.`User Parent Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+
+	//print $sql; exit;
+
+	$result=mysql_query($sql);
+
+
+	$data=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+		if($row['Customer Key'])
+		$customer="<a href='customer.php?id=".$row['Customer Key']."'>".$row['Customer Name']."</a>";
+		else
+		$customer='<span style="color:#777;font-style:italic">'.$row['IP'].'</span>';
+		
+		$previous_page=$row['Previous Page'];
+		if($row['previous_page_key']){
+					$previous_page=sprintf('<a href="page.php?id=%d">%s</a>',$row['previous_page_key'],$row['previous_code']);
+		}
+		
+		
+		if($row['Page Store Section']=='Not Found'){
+		$previous_page='<b>'.$row['URL'].'</b> '.$previous_page;
+		}
+		$data[]=array(
+			'customer'=>$customer,
+			'handle'=>$row['User Handle'],
+			'date'=>strftime("%a %e %b %y %H:%M:%S", strtotime($row['Date']." +00:00")),
+			'ip'=>$row['IP'],
+			'previous_page'=>$previous_page
+
+		);
+
+
+	}
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			'records_text'=>$rtext,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+>>>>>>> a178b3f18dd0bbd8ffafb129af24315849fe0149

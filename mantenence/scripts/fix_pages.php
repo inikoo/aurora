@@ -41,6 +41,30 @@ chdir('../../');
 //}
 //exit;
 
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where  `Page Site Key`>0 and `Page Store Section` not in ('Login','Client Section','Registration'); ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+if(in_array($row['Page Store Section'],array('Login','Client Section','Registration'))){
+continue;
+}
+	$site=new Site($row['Page Site Key']);
+	$page=new Page($row['Page Key']);
+
+	//$url=$row['Page URL'];
+
+	
+	$url=$site->data['Site URL'].'/'.strtolower($row['Page Code']);
+	print $row['Page Site Key']." $url\n";
+	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
+	
+print "$sql\n";
+	mysql_query($sql);
+	
+}	
+
+
 $sql="select * from `Page Redirection Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -57,7 +81,7 @@ $tmp=_trim($row['Source File']);
 }	
 
 
-exit;
+
 $sql="select * from `Page Redirection Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -80,28 +104,7 @@ exit;
 exit;
 
 
-$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where `Page Site Key`!=3  ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-
-if(in_array($row['Page Store Section'],array('Login','Client Section','Registration'))){
-continue;
-}
-	$site=new Site($row['Page Site Key']);
-	$page=new Page($row['Page Key']);
-
-	//$url=$row['Page URL'];
-
-	
-	$url=$site->data['Site URL'].'/'.strtolower($row['Page Code']);
-	print $row['Page Site Key']." $url\n";
-	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
-	
-
-	mysql_query($sql);
-	
-}	
 
 exit;
 
