@@ -65,7 +65,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				     ];
 request="ar_sites.php?tipo=page_stats&group_by=hits&parent=page&tableid=0&parent_key="+Dom.get('page_key').value
-//alert(request)
+alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -92,7 +92,7 @@ request="ar_sites.php?tipo=page_stats&group_by=hits&parent=page&tableid=0&parent
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 								        
-									      rowsPerPage:<?php echo$_SESSION['state']['sites']['pages']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['page']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -102,8 +102,8 @@ request="ar_sites.php?tipo=page_stats&group_by=hits&parent=page&tableid=0&parent
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['sites']['pages']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['sites']['pages']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['site']['page']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['page']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -117,7 +117,7 @@ request="ar_sites.php?tipo=page_stats&group_by=hits&parent=page&tableid=0&parent
      this.table0.subscribe("renderEvent", myrenderEvent);
 
 	    
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['sites']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['sites']['pages']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['site']['page']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['page']['f_value']?>'};
 
 
 
@@ -136,7 +136,7 @@ request="ar_sites.php?tipo=page_stats&group_by=hits&parent=page&tableid=0&parent
 				    
 				     ];
 request="ar_sites.php?tipo=page_stats&group_by=users&parent=page&tableid=1&parent_key="+Dom.get('page_key').value
-alert(request)
+//alert(request)
 	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -163,7 +163,7 @@ alert(request)
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 								        
-									      rowsPerPage:<?php echo$_SESSION['state']['sites']['pages']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage:<?php echo$_SESSION['state']['site']['page']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -173,8 +173,8 @@ alert(request)
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['sites']['pages']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['sites']['pages']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['site']['page']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['site']['page']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -188,7 +188,7 @@ alert(request)
      this.table1.subscribe("renderEvent", myrenderEvent);
 
 	    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['sites']['pages']['f_field']?>',value:'<?php echo$_SESSION['state']['sites']['pages']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['site']['page']['f_field']?>',value:'<?php echo$_SESSION['state']['site']['page']['f_value']?>'};
 
 	};
     });
