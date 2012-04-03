@@ -1329,7 +1329,9 @@ function historic_parts_at_location() {
 
 function parts_at_location() {
 	$conf=$_SESSION['state']['location']['parts'];
-	$location_id=$_SESSION['state']['location']['id'];
+	$location_id=$_REQUEST['id'];
+
+
 
 	if (isset( $_REQUEST['o']))
 		$order=$_REQUEST['o'];

@@ -63,6 +63,9 @@ class User extends DB_Table {
 			}
 		}
 
+$create=false;
+$update=false;
+
 		if (preg_match('/create/i',$options)) {
 			$create='create';
 		}
@@ -91,7 +94,7 @@ class User extends DB_Table {
 			$where_site
 		);
 
-
+//print $sql;
 
 		$result = mysql_query($sql);
 

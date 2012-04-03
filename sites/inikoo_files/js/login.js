@@ -350,7 +350,8 @@ function handle_changed(e){
 
     Dom.removeClass('login_handle','error');
 remove_login_message_blocks()
-
+return;
+/*
  var key;     
      if(window.event)
          Key = window.event.keyCode; //IE
@@ -361,7 +362,7 @@ remove_login_message_blocks()
 	 submit_login();
 	 
 	 }
-
+*/
 }
 
 function remove_forgot_password_message_blocks(){
@@ -385,8 +386,8 @@ Event.addListener(['forgot_password_handle','captcha_code2'], "keydown", forgot_
 Event.addListener('cancel_forgot_password', "click", cancel_forgot_password);
 
 
-//Event.addListener('login_handle', "keydown", handle_changed);
-Event.addListener(['login_password','login_handle'], "keydown", submit_login_on_enter);
+Event.addListener('login_handle', "keydown", handle_changed);
+Event.addListener(['login_password'], "keydown", submit_login_on_enter);
 
 
 

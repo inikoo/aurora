@@ -623,6 +623,7 @@ class Page extends DB_Table {
 			break;
 		case('code'):
 		case('page_code'):
+		case('Page Code'):
 			$this->update_code($value);
 			break;
 
@@ -872,11 +873,11 @@ class Page extends DB_Table {
 				$site=new Site($this->data['Page Site Key']);
 				$url=$site->data['Site URL'].'/'.strtolower($value);
 
-				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
+				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($url),$this->id);
 			
 				mysql_query($sql);
 
-$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d",prepare_mysql($value),$this->id);
+$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d",prepare_mysql($url),$this->id);
 			
 				mysql_query($sql);
 			}
@@ -1141,6 +1142,7 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 
 		$data=array(
 			'Page Code'=>$this->data['Page Code'] ,
+			'Page Key'=>$this->id,
 			'Site Key'=>$this->data['Page Site Key'] ,
 			'Page Store Section'=>$this->data['Page Store Section'] ,
 			'Page Parent Key'=>$this->data['Page Parent Key'] ,

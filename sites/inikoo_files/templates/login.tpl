@@ -13,16 +13,21 @@
 			{t}Login{/t}
 		</h2>
 		<div style="border:1px solid #ccc;padding:20px;width:400px;float:left">
+					
+
+		<form name="loginform" id="loginform" method="post"   action="login.php"   onSubmit="return false"   >
+
 			<table style="margin-bottom:10px">
+
 				<tr>
 					<td class="label">{t}Email{/t}: </td>
 					<td>
-					<input id="login_handle"></td>
+					<input id="login_handle" type="text" name="login_handle"></td>
 				</tr>
 				<tr>
 					<td class="label">{t}Password{/t}: </td>
 					<td>
-					<input type="password" id="login_password"></td>
+					<input type="password" id="login_password" name="_passwd_"></td>
 				</tr>
 				<tr>
 					<td class="label">{t}Remember Me{/t}: </td>
@@ -30,6 +35,9 @@
 					<input style="width:20px;border:none" type="checkbox"  name="remember_me" id="remember_me" value="0" />
 					</td>
 				</tr>
+				
+			
+				
 				<tr class="button space" style="">
 					<td colspan="2"> 
 					<div class="buttons">
@@ -37,7 +45,9 @@
 					</div>
 					</td>
 				</tr>
+				
 			</table>
+	</form>
 		</div>
 		<div id="message_log_out" class="ok_block" style="{if !isset($logged_out)}display:none;{/if}width:300px;float:left;margin-left:30px;margin-bottom:10px">
 			{t}You have successfully logged out, see you soon{/t} 

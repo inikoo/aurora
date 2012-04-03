@@ -166,6 +166,33 @@ $smarty->assign('parent_url','site.php?id='.$site->id);
 $parent_title=$site->data['Site Name'].' '._('Pages').' ('.$order_label.')';
 $smarty->assign('parent_title',$parent_title);
 
+$tipo_filter=$_SESSION['state']['page']['requests']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['page']['requests']['f_value']);
+$filter_menu=array(
+                 'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with  <i>x</i>'),'label'=>_('Handle')),
+
+             );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+$tipo_filter=$_SESSION['state']['page']['users']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['page']['users']['f_value']);
+$filter_menu=array(
+                'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with  <i>x</i>'),'label'=>_('Handle')),
+
+
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
 $smarty->display('page.tpl');
 
 ?>
