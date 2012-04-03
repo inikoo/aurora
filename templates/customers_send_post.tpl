@@ -11,7 +11,7 @@
     </div>
   <div class="buttons">
       {if $modify}<button onclick="window.location='edit_customers.php?list_key={$customer_list_key}'" ><img src="art/icons/table_edit.png" alt=""/> {t}Edit Customers in List{/t}</button>{/if}
-           <button onclick="window.location='customers_address_label.pdf.php?label=l7159&scope=send_post&id={$store->id}'" ><img src="art/icons/printer.png" alt=""/> {t}Print{/t}</button>
+           <button onclick="window.location='customers_address_label.pdf.php?label=l7159&type=send_post&id={$store->id}'" ><img src="art/icons/printer.png" alt=""/> {t}Print{/t}</button>
 
       </div>
     <div style="clear:both"></div>
