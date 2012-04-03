@@ -873,11 +873,11 @@ class Page extends DB_Table {
 				$site=new Site($this->data['Page Site Key']);
 				$url=$site->data['Site URL'].'/'.strtolower($value);
 
-				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($value),$this->id);
+				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($url),$this->id);
 			
 				mysql_query($sql);
 
-$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d",prepare_mysql($value),$this->id);
+$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d",prepare_mysql($url),$this->id);
 			
 				mysql_query($sql);
 			}
