@@ -8,7 +8,6 @@ $label = isset($_REQUEST['label']) ? $_REQUEST['label'] : 'l7159';
 
 
 
-
 if (!$id) {
     exit;
 }
@@ -243,6 +242,92 @@ elseif($type=='customer') {
         'M',
 
         true);
+}
+elseif ($type=='send_post') {
+$conf=$_SESSION['state']['store']['pending_post'];
+ if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+$wheref='';
+  if (($f_field=='customer name'     )  and $f_value!='') {
+        $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+    }
+    elseif(($f_field=='postcode'     )  and $f_value!='') {
+        $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+    }
+    elseif ($f_field=='id'  )
+        $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+    elseif ($f_field=='last_more' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+    elseif ($f_field=='last_less' and is_numeric($f_value) )
+        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+    elseif ($f_field=='max' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Orders`<=".$f_value."    ";
+    elseif ($f_field=='min' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Orders`>=".$f_value."    ";
+    else if ($f_field=='maxvalue' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+    else if ($f_field=='minvalue' and is_numeric($f_value) )
+        $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+    else if ($f_field=='country' and  $f_value!='') {
+        if ($f_value=='UNK') {
+            $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+            $find_data=' '._('a unknown country');
+        } else {
+
+            $f_value=Address::parse_country($f_value);
+            if ($f_value!='UNK') {
+                $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+                $country=new Country('code',$f_value);
+                $find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+            }
+
+        }
+    }
+
+  $where=sprintf('where `Customer Store Key`=%d ',$id);
+    $table='`Customer Send Post` CSP left join  `Customer Dimension` C  on (CSP.`Customer Key`=C.`Customer Key`) ';
+
+    $sql="select CSP.`Customer Key`  from  $table   $where $wheref ";
+$res=mysql_query($sql);
+ $counter=0;
+ $labels_per_page=$label_data['COLUMNS']*$label_data['ROWS'];
+            while ($row=mysql_fetch_assoc($res)) {
+                $counter++;
+
+                $customer=new Customer($row['Customer Key']);
+                $pdf->MultiCell(
+                    $label_data['CELL_WIDTH'],
+                    $label_data['CELL_HEIGHT'],
+                    $customer->display_contact_address('label'),
+                    0,
+                    'C',
+
+                    0,
+                    (fmod($counter,$label_data['COLUMNS'])?0:1),
+                    '',
+                    '',
+                    true,
+
+                    0,
+                    false,
+                    true,
+                    $label_data['CELL_HEIGHT'],
+                    'M',
+
+                    true);
+
+
+
+            }
+
 }
 
 

@@ -1097,7 +1097,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$supplier=new Supplier('find',$the_supplier_data,'create update');
 			}
 
-
+unset($part);
 			if ($product->new_code ) {
 				//creamos una parte nueva
 				$part_data=array(
@@ -1210,15 +1210,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				if ($row_x=mysql_fetch_array($res_x)) {
 					$part_sku=$row_x['Part SKU'];
 					$parts_per_product=$row_x['Parts Per Product'];
-				} else {
-					print_r($product);
-					print "->End.(GO UK) ".date("r")."\n";
-					exit("error: $sql");
-
-				}
-				mysql_free_result($res_x);
-
-				$part=new Part('sku',$part_sku);
+					$part=new Part('sku',$part_sku);
 				$part->update_valid_dates($date_order);
 				$part->update_valid_dates($date2);
 				
@@ -1247,7 +1239,21 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 				$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
+					
+					
+				} else {
+					//print_r($product);
+					//print "->End.(GO UK) ".date("r")."\n";
+					//exit("error: $sql");
+
+				}
+				
+
+				
 			}
+
+
+if(isset($part) and $part->sku){
 
 
 
@@ -1273,6 +1279,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
+			
+			}
 
 		}
 
