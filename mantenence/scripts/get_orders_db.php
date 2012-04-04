@@ -1242,9 +1242,9 @@ unset($part);
 					
 					
 				} else {
-					//print_r($product);
-					//print "->End.(GO UK) ".date("r")."\n";
-					//exit("error: $sql");
+					print_r($product);
+					print "->End.(GO UK) ".date("r")."\n";
+					exit("error: $sql");
 
 				}
 				
@@ -1253,7 +1253,7 @@ unset($part);
 			}
 
 
-if(isset($part) and $part->sku){
+
 
 
 
@@ -1280,7 +1280,7 @@ if(isset($part) and $part->sku){
 
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 			
-			}
+			
 
 		}
 
