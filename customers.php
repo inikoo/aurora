@@ -60,7 +60,7 @@ if (preg_match('/es_es/i',  $lc_messages_locale)) {
 } else {
     $s='';
     if ($store->data['Store Total Users'])
-        $s=sprintf("%d (%s) customer are registered in the website.", $store->data['Store Total Users'] ,percentage($store->data['Store Total Users'],$store->data['Store Active Contacts']));
+        $s=sprintf("%s (%s) customers have visited the website.", number($store->data['Store Contacts Who Visit Website']) ,percentage($store->data['Store Contacts Who Visit Website'],$store->data['Store Contacts']));
 
     $overview_all_contacts_text=sprintf("We have had %s contacts so far, %s of them still active (%s). Over the last week we acquired  %s new %s representing  %s of the total active customer base. %s",
                            $store->get('Contacts')
