@@ -5,7 +5,7 @@ $report_data=array('ES1'=>array('umbral'=>3000,'year'=>date('Y')-1));
 
 
 $myconf=array(
-			'site_key'=>9,
+			'site_key'=>1,
 			'public_url'=>'localhost',
 			'family_table_type'=>'manual,thumbnails,list,slideshow',
 			'department_table_type'=>'manual,thumbnails,list,slideshow',

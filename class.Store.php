@@ -716,8 +716,23 @@ class Store extends DB_Table {
 		$this->data['Store Active Contacts With Orders']=0;
 		$this->data['Store Losing Contacts With Orders']=0;
 		$this->data['Store Lost Contacts With Orders']=0;
+		$this->data['Store Contacts Who Visit Website']=0;
+		
+		
+		$site_keys=$this->get_site_keys();
+		
+		if(count($site_keys)){
+			$sql=sprintf("select  URD.`User Key` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`)  where URD.`User Key`>0 and `User Site Key` in (%s)    group by  UD.`User Parent Key`  ",join($site_keys));
+	$result=mysql_query($sql);
+	$this->data['Store Contacts Who Visit Website']=mysql_num_rows($result);
+}
 
-		$sql=sprintf("select count(*) as num ,sum(IF(`Customer New`='Yes',1,0)) as new,sum(IF(`Customer New`='Yes',1,0)) as new,sum(IF(`Customer Type by Activity`='Active'   ,1,0)) as active, sum(IF(`Customer Type by Activity`='Losing',1,0)) as losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d ",$this->id);
+//print "$sql\n";
+
+	
+		//print $this->data['Store Contacts Who Visit Website'];
+
+		$sql=sprintf("select count(*) as num ,sum(IF(`Customer New`='Yes',1,0)) as new,  sum(IF(`Customer Type by Activity`='Active'   ,1,0)) as active, sum(IF(`Customer Type by Activity`='Losing',1,0)) as losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d ",$this->id);
 		//  print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -750,7 +765,8 @@ class Store extends DB_Table {
                      `Store New Contacts With Orders`=%d,
                      `Store Active Contacts With Orders`=%d,
                      `Store Losing Contacts With Orders`=%d,
-                     `Store Lost Contacts With Orders`=%d
+                     `Store Lost Contacts With Orders`=%d,
+                     `Store Contacts Who Visit Website`=%d
                      where `Store Key`=%d  ",
 			$this->data['Store Contacts'],
 			$this->data['Store New Contacts'],
@@ -763,6 +779,8 @@ class Store extends DB_Table {
 			$this->data['Store Active Contacts With Orders'],
 			$this->data['Store Losing Contacts With Orders'],
 			$this->data['Store Lost Contacts With Orders'],
+						$this->data['Store Contacts Who Visit Website'],
+
 			$this->id
 		);
 		//print "$sql\n";
