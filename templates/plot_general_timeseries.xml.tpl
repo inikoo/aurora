@@ -649,7 +649,7 @@
           <min_max></min_max>          
          
   		    <legend>
-            <date key="false" title="false"><![CDATA[{literal}{close}{/literal} {$graph_data.currency_code}]]></date>
+            <date key="false" title="false"><![CDATA[{literal}{close}{/literal} {if isset($graph_data.currency_code)}{$graph_data.currency_code}{/if}]]></date>
             <period key="false" title="false"></period>
             <date_comparing key="false" title="false"><![CDATA[]]></date_comparing>
             <period_comparing key="false" title="false"><![CDATA[]]></period_comparing>

@@ -23,7 +23,7 @@ full list of available settings, check the amstock_settings.xml file in the amst
   
     <data_set did="{$graph_data.gid}">
        <title>{$graph_data.title}</title>
-       <short>{$graph_data.short_title}</short>
+       <short>{if isset($graph_data.short_title)}{$graph_data.short_title}{/if}</short>
        <color>#00b8bf</color>
        <file_name>plot_data.csv.php?{$graph_data.csv_args}</file_name>
        <compare_list_box selected="false">false</compare_list_box>
