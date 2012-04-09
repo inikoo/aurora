@@ -64,11 +64,29 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	
 	$htaccess=$site->get_redirections_htaccess($host,$path);
 	print $htaccess;
+	
+	
 	//exit;
 
 }
 
 
+$sql="select `Source Path`,`Source Host` from `Page Redirection Dimension` R  left join `Page Store Dimension` P on (R.`Page Target Key`=P.`Page Key`) where `Page Site Key`=".$site->id." group by `Source Path`";
 
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+	$host=$row['Source Host'];
+	$path=$row['Source Path'];
+
+$site->upload_redirections($host,$path);
+	
+
+	
+	
+	//exit;
+
+}
 
 ?>

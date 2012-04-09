@@ -1157,7 +1157,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 
 //exit("--> $htaccess\n");
-print "$htaccess";
+//print "$htaccess";
 		return $htaccess;
 
 	}
