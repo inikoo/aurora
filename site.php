@@ -176,6 +176,21 @@ $smarty->assign('pages_table_type_label',$table_type_options[$_SESSION['state'][
 $smarty->assign('pages_table_type_menu',$table_type_options);
 
 
+
+$tipo_filter=$_SESSION['state']['site']['users']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['site']['users']['f_value']);
+$filter_menu=array(
+                'handle'=>array('db_key'=>'handle','menu_label'=>_('Handle starting with  <i>x</i>'),'label'=>_('Handle')),
+
+
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
 $smarty->display('site.tpl');
 
 ?>

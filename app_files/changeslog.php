@@ -5732,3 +5732,5 @@ ALTER TABLE `Customer Send Post` CHANGE `Date Send` `Date Send` DATETIME NULL DE
 
 ALTER TABLE `Order Transaction Fact`  DROP PRIMARY KEY, ADD INDEX(`Order Transaction Fact Key`);
 ALTER TABLE `Page Store Deleted Dimension` ADD `Page Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Page Store Deleted Key` ;
+ALTER TABLE `Store Dimension` ADD `Store Contacts Who Visit Website` BIGINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Contacts With Orders` ;
+ALTER TABLE `Site Dimension` ADD `Site From` DATETIME NULL DEFAULT NULL ,ADD `Site To` DATETIME NULL DEFAULT NULL ;

@@ -14,6 +14,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('site_requests'):
+    $data=prepare_values($_REQUEST,array(
+                             'site_key'=>array('type'=>'key'),
+                         ));
+    site_requests($data);
+    break;
+
 case('category'):
     $data=prepare_values($_REQUEST,array(
                              'category_key'=>array('type'=>'key'),
@@ -291,6 +298,25 @@ function part_location_stock_history($data) {
     }
 
 }
+
+function site_requests($data) {
+
+$timeseries_name='Site No Users Requests';
+
+    $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`=%s and `Time Series Name Key`=%d order by `Time Series Date` desc",
+                 prepare_mysql($timeseries_name),
+                 $data['site_key']
+                );
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_assoc($res)) {
+        printf("%s,%s,%s\n",$row['Time Series Date'],$row['Volume'],$row['Close']);
+    }
+
+
+}
+
+
 function number_of_contacts($data) {
 
     $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`='contact population' and `Time Series Name Key`=%d order by `Time Series Date` desc",
@@ -879,7 +905,7 @@ function stacked_store_sales($data) {
 
                 );
 
-    print $sql;
+   // print $sql;
 
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {

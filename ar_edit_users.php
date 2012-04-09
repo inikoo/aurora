@@ -1331,13 +1331,12 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 	$site->update_customer_data();
 
 	//print_r($_user);
-	if (!$_user->id) 
-	{
+	if (!$_user->id) 	{
 
 		return array(0,$_user->msg);
 
-	}elseif ($_user->new and $send_email_flag) 
-	{
+	}
+	elseif ($_user->new and $send_email_flag) {
 
 		$welcome_email_subject=$site->data['Site Welcome Email Subject'];
 

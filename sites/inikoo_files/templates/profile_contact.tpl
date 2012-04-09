@@ -8,13 +8,12 @@
 <input type="hidden" id="other_value_{$key}" value="{$other}" />
 {/foreach} {foreach from=$enable_other item=other key=key} 
 <input type="hidden" id="enable_other_{$key}" value="{$other}" />
-{/foreach} {include file='profile_header.tpl' select='contact'} 
+{/foreach} 
+{include file='profile_header.tpl' select='contact'} 
 
 {if $site->get('Show Site Badges')=='Yes'} 
-<div style="border:0px solid #ccc;padding:0px 20px;width:890px;font-size:15px;margin:0px auto;margin-top:20px">
-	<div style="float:left;;xborder:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px" id="show_upload_image">
-		<img id="avatar" src="{if $user->get_image_src()}{$user->get_image_src()}{else}art/siluet.jpg{/if}" style="height:100px"> 
-	</div>
+<div style="border:0px solid #ccc;padding:0px 0px 0 0;width:890px;font-size:15px;margin-left:20px;margin-top:20px">
+	
 	{include file='customer_badges.tpl' customer=$page->customer} 
 	<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px;margin-left:20px">
 		Thank you for trading with us! 
@@ -29,6 +28,14 @@
 		{t}Contact Details{/t} 
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
+		
+		<div style="float:right;border:0px solid #ccc;;margin-right:0px;margin-bottom:10px" id="show_upload_image">
+		{if $user->get_image_src()}
+		<img id="avatar" src="{$user->get_image_src()}" style="cursor:pointer;border:1px solid #ccc;width:100px;max-height:100px"> 
+		{else}
+		<img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> 
+		{/if}
+	</div>
 		<h3>
 			{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()}) 
 		</h3>
@@ -87,18 +94,25 @@
 </div>
 <div style="padding:0px 20px;float:right">
 	<h2 style="padding-top:10px">
-		{t}Communication{/t} 
+		{t}Let's connect together{/t} 
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
 		<table class="edit" style="width:390px" border="0">
+		
+		<tr >
+				<td colspan="5" style="text-align:right"><div style="font-size:120%;font-weight:800"><a style="text-decoration:none;color:#000" href="mailto:{$store->get('Store Email')}">{$store->get('Store Email')}</a><br>{$store->get('Store Telephone')}</div></td>
+			</tr>
+		<tr style="height:10px">
+				<td colspan="3"></td>
+			</tr>
 			<tr class="title">
-				<td colspan="5">{t}Marketing Emails{/t}</td>
+				<td colspan="5">{t}Newsletter{/t}</td>
 			</tr>
 			<tr style="height:10px">
 				<td colspan="3"></td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Receive Newsletter{/t}:</td>
+				<td class="label" style="width:200px">{t}Newsletter{/t}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button> 
@@ -106,7 +120,7 @@
 				</td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Email Offers & Updates{/t}:</td>
+				<td class="label" style="width:200px">{t}Latest Offers & Updates{/t}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button> 
@@ -120,7 +134,7 @@
 				<td colspan="3"></td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Offers & Information by post{/t}:</td>
+				<td class="label" style="width:200px">{t}Catalogues & Vouchers{/t}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button> 
@@ -171,18 +185,44 @@
 					</div>
 					</td>
 				</tr>
+				
+				
 			</tbody>
+			
+			<tr>
+			
+			
+			<tr class="title">
+					<td colspan="5">{t}Social Sites{/t}</td>
+				</tr>
+				<tr style="height:10px">
+					<td colspan="3"></td>
+				</tr>
+				<td>
+				<a href="http://www.facebook.com/AncientWisdom.biz"><img src="art/grunge_facebook.png" style="height:40px"/></a>
+								<a href="https://twitter.com/#!/awnews"><img src="art/grunge_twitter.png" style="height:40px"/></a>
+								<a href="http://www.youtube.com/user/TDBelan"><img src="art/grunge_youtube.png" style="height:40px"/></a>
+
+				</td>
+				</tr>
+			
 		</table>
 	</div>
 </div>
-<div style="clear:both">
+<div style="clear:left">
 </div>
 <div style="padding:0px 20px 20px 20px;float:left">
 	<h2 style="padding-top:10px">
 		{t}About you{/t} 
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px;">
+		
+		
 		<table style="margin:10px">
+		
+		
+		
+		
 			{foreach from=$categories item=cat key=cat_key name=foo } 
 			<tr>
 				<td class="label"> 
@@ -359,17 +399,30 @@
 	</table>
 </div>
 {/section} 
+
+
 <div id="dialog_image_upload" style="padding:10px">
 	<table>
-		<tr>
-			<td>{t}Upload Image{/t}</td>
-		</tr>
-		<tr>
+	
+	
+	<tr style="{if $user->get_image_src()}display:inline{else}display:none{/if}">
 			<td> 
-			<div class="image" image_id="{$user->get_image_key()}">
-				<img {if $user->get_image_src()}style="display:''"{else}style="display:none"{/if} class="delete" src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}" onClick="delete_image(this)"> 
+			<div class="buttons left" image_id="{$user->get_image_key()}">
+			<button onClick="delete_image(this)"  > {t}Delete Image{/t}	</button> 
 			</div>
 			</td>
+		</tr>
+	
+	<tr style="height:10px">
+			<td></td>
+		</tr>
+	
+		<tr>
+			<td>{if $user->get_image_src()}{t}Change Image{/t}{else}{t}Upload Image{/t}{/if}</td>
+		</tr>
+		
+		<tr style="height:10px">
+			<td></td>
 		</tr>
 		<tr>
 			<td> 
