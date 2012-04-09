@@ -228,7 +228,7 @@ function save_comunications(key,value){
  var data_to_update=new Object;
  data_to_update[key]={'okey':key,'value':value}
 var customer_id=Dom.get('customer_key').value;
- jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
+ jsonificated_values=YAHOO.lang.JSON.stringify(data_to_update);
 
 
 var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
