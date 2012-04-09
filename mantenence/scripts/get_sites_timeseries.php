@@ -27,17 +27,17 @@ $_SESSION['lang']=1;
 //$stores=array(1);
 $forecast=true;
 
-$sql="select * from `Store Dimension` limit 1";
+$sql="select * from `Site Dimension` limit 1";
 $res=mysql_query($sql);
 
 while( $row=mysql_fetch_array($res)){
   
-    print 'contact population ('.$row['Store Key'].') '."\n";
-$tm=new TimeSeries(array('d',"contact population (".$row['Store Key'].")"));
+    print 'Site No Users Requests ('.$row['Site Key'].') '."\n";
+$tm=new TimeSeries(array('d',"Site No Users Requests (".$row['Site Key'].")"));
  $tm->get_values('save');
   
- print 'customer population ('.$row['Store Key'].') '."\n";
-$tm=new TimeSeries(array('d',"customer population (".$row['Store Key'].")"));
+ print 'Site Users Requests ('.$row['Site Key'].') '."\n";
+$tm=new TimeSeries(array('d',"Site Users Requests (".$row['Site Key'].")"));
  $tm->get_values('save');
 
 

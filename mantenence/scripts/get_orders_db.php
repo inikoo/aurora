@@ -577,7 +577,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			$__code=strtolower($transaction['code']);
 
-			if (    preg_match('/\-pack$/i',$__code)  or    preg_match('/\-pst$/i',$__code)  or    preg_match('/\-kit2$/i',$__code)  or  preg_match('/\-kit1$/i',$__code)  or preg_match('/\-st$/i',$__code)  or     preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or       $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
+			if (   preg_match('/\-minst$/i',$__code) or   preg_match('/\-Starter\d$/i',$__code)   or   preg_match('/^bonus\-/i',$__code)  or   preg_match('/\-st\d$/i',$__code)  or   preg_match('/\-pack$/i',$__code)  or    preg_match('/\-pst$/i',$__code)  or    preg_match('/\-kit2$/i',$__code)  or  preg_match('/\-kit1$/i',$__code)  or preg_match('/\-st$/i',$__code)  or     preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or       $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
 					or $__code=='DOT-St' or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
 				or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
 			) {
@@ -1097,7 +1097,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$supplier=new Supplier('find',$the_supplier_data,'create update');
 			}
 
-
+unset($part);
 			if ($product->new_code ) {
 				//creamos una parte nueva
 				$part_data=array(
@@ -1210,15 +1210,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				if ($row_x=mysql_fetch_array($res_x)) {
 					$part_sku=$row_x['Part SKU'];
 					$parts_per_product=$row_x['Parts Per Product'];
-				} else {
-					print_r($product);
-					print "->End.(GO UK) ".date("r")."\n";
-					exit("error: $sql");
-
-				}
-				mysql_free_result($res_x);
-
-				$part=new Part('sku',$part_sku);
+					$part=new Part('sku',$part_sku);
 				$part->update_valid_dates($date_order);
 				$part->update_valid_dates($date2);
 				
@@ -1247,7 +1239,21 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 				$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
+					
+					
+				} else {
+					print_r($product);
+					print "->End.(GO UK) ".date("r")."\n";
+					exit("error: $sql");
+
+				}
+				
+
+				
 			}
+
+
+
 
 
 
@@ -1273,6 +1279,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
+			
+			
 
 		}
 
