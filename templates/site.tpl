@@ -25,8 +25,8 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Overview{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Hits{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Visitors{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='hits'}selected{/if}" id="hits"> <span> {t}Requests{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='visitors'}selected{/if}" id="visitors"> <span> {t}Users{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -143,12 +143,11 @@
 	</div>
 	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 
-		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
-		<div  id="table1"   class="data_table_container dtable btable" style="font-size:85%"> </div>
+		
 
 
 
-		<div id="plot1" style="clear:both;border:1px solid #ccc">
+		<div id="plot1" style="clear:both;border:0px solid #ccc">
 			<div id="single_data_set">
 				<strong>You need to upgrade your Flash Player</strong> 
 			</div>
@@ -157,19 +156,21 @@
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_timeseries.xml.php?tipo=site_hits&site_key={$site->id}"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_timeseries.xml.php?tipo=site_requests&site_key={$site->id}"));
 		so.addVariable("preloader_color", "#999999");
 		so.write("plot1");
 		// ]]>
 	</script> 
+	
+	<div style="clear:both"></div>
 	</div>
-	<div id="block_visitors" style="{if $block_view!='visitors'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-		<div id="plot2" style="clear:both;border:1px solid #ccc">
+	<div id="block_visitors" style="{if $block_view!='visitors'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+		<div id="plot2" style="clear:both;border:1px solid #ccc;display:none">
 			<div id="single_data_set">
 				<strong>You need to upgrade your Flash Player</strong> 
 			</div>
 		</div>
-<script type="text/javascript">
+        <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -178,7 +179,17 @@
 		so.write("plot2");
 		// ]]>
 	</script> 
+
+
+	{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
+		<div  id="table1"   class="data_table_container dtable btable" style="font-size:85%"> </div>
+
+
 	</div>
+
+
+
+
 </div>
 </div>
 <div id="change_pages_table_type_menu" style="padding:10px 20px 0px 10px">
