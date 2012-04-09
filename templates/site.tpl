@@ -1,4 +1,4 @@
-{include file='header.tpl'} 
+﻿{include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> 
 	<input type="hidden" id="site_key" value="{$site->id}" />
@@ -105,13 +105,6 @@
 					</tr>
 				</table>
 			</div>
-            <div style="clear:both"></div>
-            <div>
-            {t}Top Visit Pages
-            {/t}
-            {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 no_filter=3  }
-                <div  id="table3"   class="data_table_container dtable btable" style="font-size:85%"> </div>
-            </div>
 			<div style="width:15em;float:left;margin-left:20px">
 			</div>
 		</div>
@@ -149,13 +142,12 @@
 		</div>
 	</div>
 	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-    
-  
+
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
 		<div  id="table1"   class="data_table_container dtable btable" style="font-size:85%"> </div>
-        
-          {*}  
-    
+
+
+
 		<div id="plot1" style="clear:both;border:1px solid #ccc">
 			<div id="single_data_set">
 				<strong>You need to upgrade your Flash Player</strong> 
@@ -170,7 +162,6 @@
 		so.write("plot1");
 		// ]]>
 	</script> 
-    {*}
 	</div>
 	<div id="block_visitors" style="{if $block_view!='visitors'}display:none;{/if}clear:both;margin:20px 0 40px 0">
 		<div id="plot2" style="clear:both;border:1px solid #ccc">
