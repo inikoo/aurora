@@ -226,7 +226,7 @@
  
   
 
-  	<chart cid="0">
+  	<chart cid="1">
   		<height>30</height>
   		<title>Volume</title>  		
   		<bg_color></bg_color>
@@ -298,7 +298,7 @@
         <value_color></value_color>
         <positive_color></positive_color>
         <negative_color></negative_color>        
-        <show_date>false</show_date>
+        <show_date>true</show_date>
         <key_size></key_size>
         <key_type></key_type>
       </legend>

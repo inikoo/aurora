@@ -110,7 +110,8 @@ $tmp= 'Last-Modified: '.gmdate('D, d M Y H:i:s', $row['image_time']).' GMT';
 }
 else {
 
-
+header("HTTP/1.0 404 Not Found");
+	exit();
 
 }
 

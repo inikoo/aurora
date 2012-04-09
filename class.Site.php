@@ -1157,7 +1157,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 
 //exit("--> $htaccess\n");
-
+print "$htaccess";
 		return $htaccess;
 
 	}
@@ -1190,7 +1190,7 @@ $page_code=$this->get_unique_family_page_code($family);
 			}else {
 				
 				//print $path."/.htaccess";
-				$ftp_connection->upload_string($htaccess,$path."/redirection.txt");
+				$ftp_connection->upload_string($htaccess,$path."/.htaccess");
 				$ftp_connection->end();
 			}
 
