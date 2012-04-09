@@ -62,8 +62,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	//$site->upload_redirections($host,$path);
 	
-	$htaccess=$site->get_redirections_htaccess($host,$path);
-	print $htaccess;
+//	$htaccess=$site->get_redirections_htaccess($host,$path);
+//	print $htaccess;
 	
 	
 	//exit;
