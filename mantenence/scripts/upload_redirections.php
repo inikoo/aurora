@@ -48,7 +48,7 @@ $site=new Site(1);
 
 $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where PS.`Page Key`=2205  ";
 
-$sql="select `Source Path`,`Source Host` from `Page Redirection Dimension` R  left join `Page Store Dimension` P on (R.`Page Target Key`=P.`Page Key`) where `Page Site Key`=".$site->id." group by `Source Path` limit 100,1";
+$sql="select `Source Path`,`Source Host` from `Page Redirection Dimension` R  left join `Page Store Dimension` P on (R.`Page Target Key`=P.`Page Key`) where `Page Site Key`=".$site->id." group by `Source Path`";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
@@ -60,8 +60,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	
 
 	$site->upload_redirections($host,$path);
-exit;	
 	
+	exit;
 
 }
 
