@@ -5734,3 +5734,4 @@ ALTER TABLE `Order Transaction Fact`  DROP PRIMARY KEY, ADD INDEX(`Order Transac
 ALTER TABLE `Page Store Deleted Dimension` ADD `Page Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Page Store Deleted Key` ;
 ALTER TABLE `Store Dimension` ADD `Store Contacts Who Visit Website` BIGINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Contacts With Orders` ;
 ALTER TABLE `Site Dimension` ADD `Site From` DATETIME NULL DEFAULT NULL ,ADD `Site To` DATETIME NULL DEFAULT NULL ;
+ALTER TABLE `User Dimension` ADD `User First Request` DATETIME NULL AFTER `User Login Count` ;
