@@ -162,7 +162,7 @@
 					</td>
 				</tr>
 			</tbody>
-			<tbody id="social_media" style="{if $site->get('Site Show Twitter')=='No' && $site->get('Site Show Facebook')=='No'}display:none{/if}">
+			<tbody style="display:none" id="social_media">
 				<tr class="title">
 					<td colspan="5">{t}Social Media{/t}</td>
 				</tr>
@@ -192,19 +192,26 @@
 			<tr>
 			
 			
-			<tr class="title">
-					<td colspan="5">{t}Social Sites{/t}</td>
+				<tr class="title">
+						<td colspan="5">{t}Social Sites{/t}</td>
 				</tr>
 				<tr style="height:10px">
 					<td colspan="3"></td>
 				</tr>
 				<td>
-				<a href="http://www.facebook.com/AncientWisdom.biz"><img src="art/grunge_facebook.png" style="height:40px"/></a>
-								<a href="https://twitter.com/#!/awnews"><img src="art/grunge_twitter.png" style="height:40px"/></a>
-								<a href="http://www.youtube.com/user/TDBelan"><img src="art/grunge_youtube.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Facebook')=='No'}none{/if}" href="{$site->get('Site Facebook URL')}"><img src="art/grunge_facebook.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show LinkedIn')=='No'}none{/if}" href="{$site->get('Site LinkedIn URL')}"><img src="art/grunge_linkedin.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Skype')=='No'}none{/if}" href="{$site->get('Site Skype URL')}"><img src="art/grunge_skype.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Youtube')=='No'}none{/if}" href="{$site->get('Site Youtube URL')}"><img src="art/grunge_youtube.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Flickr')=='No'}none{/if}" href="{$site->get('Site Flickr URL')}"><img src="art/grunge_flickr.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Blog')=='No'}none{/if}" href="{$site->get('Site Blog URL')}"><img src="art/grunge_blog.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Digg')=='No'}none{/if}" href="{$site->get('Site Digg URL')}"><img src="art/grunge_digg.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Google')=='No'}none{/if}" href="{$site->get('Site Google URL')}"><img src="art/grunge_google_plus.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show RSS')=='No'}none{/if}" href="{$site->get('Site RSS URL')}"><img src="art/grunge_rss.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Twitter')=='No'}none{/if}" href="{$site->get('Site Twitter URL')}"><img src="art/grunge_twitter.png" style="height:40px"/></a>
 
 				</td>
-				</tr>
+			</tr>
 			
 		</table>
 	</div>
