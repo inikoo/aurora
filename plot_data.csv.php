@@ -301,7 +301,7 @@ function part_location_stock_history($data) {
 
 function site_requests($data) {
 
-$timeseries_name='Site No Users Requests';
+$timeseries_name='Site Users Requests';
 
     $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`=%s and `Time Series Name Key`=%d order by `Time Series Date` desc",
                  prepare_mysql($timeseries_name),
@@ -310,7 +310,7 @@ $timeseries_name='Site No Users Requests';
     $res=mysql_query($sql);
 
     while ($row=mysql_fetch_assoc($res)) {
-        printf("%s,%s,%s\n",$row['Time Series Date'],$row['Volume'],$row['Close']);
+        printf("%s,%s\n",$row['Time Series Date'],$row['Volume']);
     }
 
 
