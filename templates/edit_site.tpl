@@ -293,6 +293,11 @@
 				<tbody style="border-top: 5px solid white" id="website_profile">
 					<tr class="title">
 						<td>{t}Client Area{/t}</td>
+						<td colspan="2"> 
+						<div class="buttons">
+							<button style="visibility:hidden" id="save_edit_site_client_area" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_client_area" class="negative">{t}Reset{/t}</button> 
+						</div>
+						</td>
 					</tr>
 					<tr>
 						<td class="label">{t}Registration Method{/t}:</td>
@@ -329,6 +334,39 @@
 							<button dbvalue="Yes" id="show_twitter_Yes" class="show_twitter_method {if $site->get('Site Show Twitter')=='Yes'}selected{/if}"> {t}Yes{/t}</button> <button dbvalue="No" id="show_twitter_No" class="show_twitter_method {if $site->get('Site Show Twitter')=='No'}selected{/if}"> {t}No{/t}</button> 
 						</div>
 						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}Newsletter Custom Label{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Newsletter_Custom_Label" value="{$site->get('Site Newsletter Custom Label')}" ovalue="{$site->get('Site Newsletter Custom Label')}"> 
+							<div id="Site_Newsletter_Custom_Label_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Newsletter_Custom_Label_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Email Marketing Custom Label{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Email_Marketing_Custom_Label" value="{$site->get('Site Email Marketing Custom Label')}" ovalue="{$site->get('Site Email Marketing Custom Label')}"> 
+							<div id="Site_Email_Marketing_Custom_Label_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Email_Marketing_Custom_Label_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Postal Marketing Custom Label{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Postal_Marketing_Custom_Label" value="{$site->get('Site Postal Marketing Custom Label')}" ovalue="{$site->get('Site Postal Marketing Custom Label')}"> 
+							<div id="Site_Postal_Marketing_Custom_Label_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Postal_Marketing_Custom_Label_msg" class="edit_td_alert"></td>
 					</tr>
 				</tbody>
 				<tbody style="border-top: 10px solid white" id="website_checkout">

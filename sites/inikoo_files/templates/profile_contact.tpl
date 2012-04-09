@@ -112,7 +112,7 @@
 				<td colspan="3"></td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Newsletter{/t}:</td>
+				<td class="label" style="width:200px">{if $site->get('Site Newsletter Custom Label')==''}{t}Newsletter{/t}{else}{t}{$site->get('Site Newsletter Custom Label')}{/t}{/if}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button> 
@@ -120,7 +120,7 @@
 				</td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Latest Offers & Updates{/t}:</td>
+				<td class="label" style="width:200px">{if $site->get('Site Email Marketing Custom Label')==''}{t}Latest Offers & Updates{/t}{else}{t}{$site->get('Site Email Marketing Custom Label')}{/t}{/if}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button> 
@@ -134,7 +134,7 @@
 				<td colspan="3"></td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Catalogues & Vouchers{/t}:</td>
+				<td class="label" style="width:200px">{if $site->get('Site Postal Marketing Custom Label')==''}{t}Catalogues & Vouchers{/t}{else}{t}{$site->get('Site Postal Marketing Custom Label')}{/t}{/if}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button> 
