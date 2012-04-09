@@ -1259,8 +1259,17 @@ function edit_site_field($site_key,$key,$value_data) {
 		'welcome_source'=>'Site Welcome Source',
 		'newsletter_label'=>'Site Newsletter Custom Label',
 		'email_marketing_label'=>'Site Email Marketing Custom Label',
-		'postal_marketing_label'=>'Site Postal Marketing Custom Label'
-
+		'postal_marketing_label'=>'Site Postal Marketing Custom Label',
+		'facebook_url'=>'Site Facebook URL',
+		'twitter_url'=>'Site Twitter URL',
+		'skype_url'=>'Site Skype URL',
+		'flickr_url'=>'Site Flickr URL',
+		'blog_url'=>'Site Blog URL',
+		'digg_url'=>'Site Digg URL',
+		'linkedin_url'=>'Site LinkedIn URL',
+		'google_url'=>'Site Google URL',
+		'youtube_url'=>'Site Youtube URL',
+		'rss_url'=>'Site RSS URL'
 	);
 
 	if (array_key_exists($key,$key_dic))

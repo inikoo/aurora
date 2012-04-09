@@ -48,6 +48,20 @@ var validate_scope_data=
 	'newsletter_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Newsletter Custom Label','name':'Site_Newsletter_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
 	,'email_marketing_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Email Marketing Custom Label','name':'Site_Email_Marketing_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
 	,'postal_marketing_label':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Postal Marketing Custom Label','name':'Site_Postal_Marketing_Custom_Label','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Label')?>'}]}
+
+,'facebook_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Facebook URL','name':'Site_Facebook_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+
+,'twitter_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Twitter URL','name':'Site_Twitter_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+
+,'skype_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Skype URL','name':'Site_Skype_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'linkedin_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site LinkedIn URL','name':'Site_LinkedIn_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'flickr_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Flickr URL','name':'Site_Flickr_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'digg_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Digg URL','name':'Site_Digg_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'blog_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Blog URL','name':'Site_Blog_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'youtube_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Youtube URL','name':'Site_Youtube_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'rss_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site RSS URL','name':'Site_RSS_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+,'google_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Google URL','name':'Site_Google_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
+
 },
 
 'site_menu':{
@@ -793,7 +807,7 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     var ids = ["general","layout","style","sections","pages","headers","footers","website_search","menu", "email", "favicon"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    
- 
+
 	   
 	Event.addListener(["Mals","Inikoo"], "click", change_checkout_method);
 	Event.addListener(["registration_simple","registration_wholesale","registration_none"], "click", change_registration_method);
@@ -802,8 +816,7 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 	Event.addListener(["ftp_protocol_FTPS","ftp_protocol_FTP","ftp_protocol_SFTP"], "click", change_ftp_method);
 	Event.addListener(["ftp_passive_Yes","ftp_passive_No"], "click", change_ftp_passive);
 	Event.addListener(["show_badges_Yes","show_badges_No"], "click", change_show_badges);
-	Event.addListener(["show_facebook_Yes","show_facebook_No"], "click", change_show_facebook);
-	Event.addListener(["show_twitter_Yes","show_twitter_No"], "click", change_show_twitter);
+
 
 
 
@@ -825,7 +838,7 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     customer_Registration_Number_oAutoComp.minQueryLength = 0; 
     customer_Registration_Number_oAutoComp.queryDelay = 0.1;  
 
-    
+
        var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_site_mals_id);
     site_slogan_oACDS.queryMatchContains = true;
     var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Site_Mals_ID","Site_Mals_ID_Container", site_slogan_oACDS);
@@ -912,7 +925,78 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Postal_Marketing_Custom_Label","Site_Postal_Marketing_Custom_Label_Container", site_ftp_server_oACDS);
     site_ftp_server_oAutoComp.minQueryLength = 0; 
     site_ftp_server_oAutoComp.queryDelay = 0.1;
-		
+
+
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_twitter);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Twitter_URL","Site_Twitter_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_skype);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Skype_URL","Site_Skype_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_linkedin);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_LinkedIn_URL","Site_LinkedIn_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_flickr);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Flickr_URL","Site_Flickr_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_blog);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Blog_URL","Site_Blog_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_digg);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Digg_URL","Site_Digg_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_google);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Google_URL","Site_Google_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_rss);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_RSS_URL","Site_RSS_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_youtube);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Youtube_URL","Site_Youtube_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+
+
+	var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_url_facebook);
+    site_ftp_server_oACDS.queryMatchContains = true;
+    var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_Facebook_URL","Site_Facebook_URL_Container", site_ftp_server_oACDS);
+    site_ftp_server_oAutoComp.minQueryLength = 0; 
+    site_ftp_server_oAutoComp.queryDelay = 0.1;
+
+
+
+
+
+
+
+
     var site_ftp_server_oACDS = new YAHOO.util.FunctionDataSource(validate_site_ftp_server);
     site_ftp_server_oACDS.queryMatchContains = true;
     var site_ftp_server_oAutoComp = new YAHOO.widget.AutoComplete("Site_FTP_Server","Site_FTP_Server_Container", site_ftp_server_oACDS);
@@ -1031,6 +1115,8 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
  var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3","f_container3", oACDS3);
  oAutoComp3.minQueryLength = 0; 
     
+
+
 }
 
 function save_edit_email_forgot(){
@@ -1109,6 +1195,7 @@ function reset_edit_site_search(){
 
 
 function validate_client_newsletter_label(query){
+
  validate_general('site_client_area','newsletter_label',unescape(query));
 }
 
@@ -1120,6 +1207,43 @@ function validate_client_email_marketing_label(query){
 function validate_client_postal_marketing_label(query){
  validate_general('site_client_area','postal_marketing_label',unescape(query));
 }
+
+
+function validate_url_facebook(query){
+ validate_general('site_client_area','facebook_url',unescape(query));
+}
+
+function validate_url_twitter(query){
+ validate_general('site_client_area','twitter_url',unescape(query));
+}
+
+function validate_url_skype(query){
+ validate_general('site_client_area','skype_url',unescape(query));
+}
+function validate_url_flickr(query){
+ validate_general('site_client_area','flickr_url',unescape(query));
+}
+function validate_url_blog(query){
+ validate_general('site_client_area','blog_url',unescape(query));
+}
+function validate_url_digg(query){
+ validate_general('site_client_area','digg_url',unescape(query));
+}
+function validate_url_linkedin(query){
+ validate_general('site_client_area','linkedin_url',unescape(query));
+}
+function validate_url_google(query){
+ validate_general('site_client_area','google_url',unescape(query));
+}
+function validate_url_youtube(query){
+ validate_general('site_client_area','youtube_url',unescape(query));
+}
+function validate_url_rss(query){
+ validate_general('site_client_area','rss_url',unescape(query));
+}
+
+
+
 
 function validate_site_ftp_server(query){
 
@@ -1492,59 +1616,47 @@ var request='ar_edit_sites.php?tipo=edit_show_badges&site_key=' + site_id +'&sto
     });
 }
 
+function save_social_media(key,value){
 
-function change_show_facebook(){
-types=Dom.getElementsByClassName('show_facebook_method', 'button', 'show_facebook_method_buttons')
-Dom.removeClass(types,'selected');
+ var data_to_update=new Object;
+ data_to_update[key]={'okey':key,'value':value}
 
-Dom.get('show_facebook_method').value=this.getAttribute('dbvalue');
+ jsonificated_values=YAHOO.lang.JSON.stringify(data_to_update);
 
-site_id=Dom.get('site_key').value;
-store_key=Dom.get('store_key').value;
-var request='ar_edit_sites.php?tipo=edit_show_facebook&site_key=' + site_id +'&store_key='+store_key + '&site_facebook='+Dom.get('show_facebook_method').value
-	    //       alert(request);	
+
+var request='ar_edit_sites.php?tipo=edit_site_client_area&values='+ jsonificated_values+"&site_key="+id
+
+
+//var request='ar_edit_contacts.php?tipo=edit_customer&key=' + key+ '&newvalue=' + value +'&customer_key=' + customer_id
+	//alert(request);
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+//alert(o.responseText)
+				var ra =  YAHOO.lang.JSON.parse(o.responseText);
+				  for (x in ra){
+               r=ra[x]
+				if(r.state==200){
+			
+  
+ 
+            if (r.newvalue=='no' || r.newvalue=='yes') {
 
-	            success:function(o){
-					
-	          //  alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				Dom.addClass('show_facebook_'+r.new_value,'selected');
+		if(r.newvalue=='no')
+			r.newvalue='No'
+		if(r.newvalue=='yes')
+			r.newvalue='Yes';
+                           Dom.removeClass([r.key+'_No',r.key+'_Yes'],'selected');
 
-			}
-			else{
-				Dom.addClass(Dom.get('show_facebook_method').value,'selected');
-			}
-   			}
+               Dom.addClass(r.key+'_'+r.newvalue,'selected');
+
+            }else{
+                alert(r.msg)
+            }
+            }
+        }
+    }
     });
-}
 
-function change_show_twitter(){
-types=Dom.getElementsByClassName('show_twitter_method', 'button', 'show_twitter_method_buttons')
-Dom.removeClass(types,'selected');
-
-Dom.get('show_twitter_method').value=this.getAttribute('dbvalue');
-
-site_id=Dom.get('site_key').value;
-store_key=Dom.get('store_key').value;
-var request='ar_edit_sites.php?tipo=edit_show_twitter&site_key=' + site_id +'&store_key='+store_key + '&site_twitter='+Dom.get('show_twitter_method').value
-	            //alert(request);	
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-
-	            success:function(o){
-					
-	           // alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-				Dom.addClass('show_twitter_'+r.new_value,'selected');
-
-			}
-			else{
-				Dom.addClass(Dom.get('show_twitter_method').value,'selected');
-			}
-   			}
-    });
 }
 
 

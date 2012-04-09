@@ -318,20 +318,202 @@
 						</td>
 					</tr>
 					<tr>
+						<td class="label">{t}Facebook URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Facebook_URL" value="{$site->get('Site Facebook URL')}" ovalue="{$site->get('Site Facebook URL')}"> 
+							<div id="Site_Facebook_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Facebook_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
 						<td class="label">{t}Show Facebook{/t}:</td>
 						<td> 
 						<input id="show_facebook_method" value="sidebar" type="hidden" />
 						<div class="buttons" id="show_facebook_method_buttons" style="float:left">
-							<button dbvalue="Yes" id="show_facebook_Yes" class="show_facebook_method {if $site->get('Site Show Facebook')=='Yes'}selected{/if}"> {t}Yes{/t}</button> <button dbvalue="No" id="show_facebook_No" class="show_facebook_method {if $site->get('Site Show Facebook')=='No'}selected{/if}"> {t}No{/t}</button> 
+							<button style="display:{if $site->get('Site Facebook URL')==''}none{/if}" class="{if $site->get('Site Show Facebook')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show Facebook','Yes')" id="Site Show Facebook_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show Facebook')=='No'}selected{/if} negative" onclick="save_social_media('Site Show Facebook','No')" id="Site Show Facebook_No">{t}Hide{/t}</button> 
 						</div>
 						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}Twitter URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Twitter_URL" value="{$site->get('Site Twitter URL')}" ovalue="{$site->get('Site Twitter URL')}"> 
+							<div id="Site_Twitter_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Twitter_URL_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr>
 						<td class="label">{t}Show Twitter{/t}:</td>
 						<td> 
 						<input id="show_twitter_method" value="sidebar" type="hidden" />
 						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
-							<button dbvalue="Yes" id="show_twitter_Yes" class="show_twitter_method {if $site->get('Site Show Twitter')=='Yes'}selected{/if}"> {t}Yes{/t}</button> <button dbvalue="No" id="show_twitter_No" class="show_twitter_method {if $site->get('Site Show Twitter')=='No'}selected{/if}"> {t}No{/t}</button> 
+							<button style="display:{if $site->get('Site Twitter URL')==''}none{/if}" class="{if $site->get('Site Show Twitter')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show Twitter','Yes')" id="Site Show Twitter_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show Twitter')=='No'}selected{/if} negative" onclick="save_social_media('Site Show Twitter','No')" id="Site Show Twitter_No">{t}Hide{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}Skype URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Skype_URL" value="{$site->get('Site Skype URL')}" ovalue="{$site->get('Site Skype URL')}"> 
+							<div id="Site_Skype_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Skype_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Show Skype{/t}:</td>
+						<td> 
+						<input id="show_twitter_method" value="sidebar" type="hidden" />
+						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+							<button style="display:{if $site->get('Site Skype URL')==''}none{/if}" class="{if $site->get('Site Show Skype')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show Skype','Yes')" id="Site Show Skype_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show Skype')=='No'}selected{/if} negative" onclick="save_social_media('Site Show Skype','No')" id="Site Show Skype_No">{t}Hide{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}LinkedIn URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_LinkedIn_URL" value="{$site->get('Site LinkedIn URL')}" ovalue="{$site->get('Site LinkedIn URL')}"> 
+							<div id="Site_LinkedIn_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_LinkedIn_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Show LinkedIn{/t}:</td>
+						<td> 
+						<input id="show_twitter_method" value="sidebar" type="hidden" />
+						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+							<button style="display:{if $site->get('Site LinkedIn URL')==''}none{/if}" class="{if $site->get('Site Show LinkedIn')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show LinkedIn','Yes')" id="Site Show LinkedIn_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show LinkedIn')=='No'}selected{/if} negative" onclick="save_social_media('Site Show LinkedIn','No')" id="Site Show LinkedIn_No">{t}Hide{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}Flickr URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Flickr_URL" value="{$site->get('Site Flickr URL')}" ovalue="{$site->get('Site Flickr URL')}"> 
+							<div id="Site_Flickr_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Flickr_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Show Flickr{/t}:</td>
+						<td> 
+						<input id="show_twitter_method" value="sidebar" type="hidden" />
+						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+							<button style="display:{if $site->get('Site Flickr URL')==''}none{/if}" class="{if $site->get('Site Show Flickr')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show Flickr','Yes')" id="Site Show Flickr_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show Flickr')=='No'}selected{/if} negative" onclick="save_social_media('Site Show Flickr','No')" id="Site Show Flickr_No">{t}Hide{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}Blog URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Blog_URL" value="{$site->get('Site Blog URL')}" ovalue="{$site->get('Site Blog URL')}"> 
+							<div id="Site_Blog_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Blog_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Show Blog{/t}:</td>
+						<td> 
+						<input id="show_twitter_method" value="sidebar" type="hidden" />
+						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+							<button style="display:{if $site->get('Site Blog URL')==''}none{/if}" class="{if $site->get('Site Show Blog')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show Blog','Yes')" id="Site Show Blog_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show Blog')=='No'}selected{/if} negative" onclick="save_social_media('Site Show Blog','No')" id="Site Show Blog_No">{t}Hide{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}Digg URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Digg_URL" value="{$site->get('Site Digg URL')}" ovalue="{$site->get('Site Digg URL')}"> 
+							<div id="Site_Digg_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Digg_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Show Digg{/t}:</td>
+						<td> 
+						<input id="show_twitter_method" value="sidebar" type="hidden" />
+						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+							<button style="display:{if $site->get('Site Digg URL')==''}none{/if}" class="{if $site->get('Site Show Digg')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show Digg','Yes')" id="Site Show Digg_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show Digg')=='No'}selected{/if} negative" onclick="save_social_media('Site Show Digg','No')" id="Site Show Digg_No">{t}Hide{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}Google+ URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Google_URL" value="{$site->get('Site Google URL')}" ovalue="{$site->get('Site Google URL')}"> 
+							<div id="Site_Google_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Google_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Show Google+{/t}:</td>
+						<td> 
+						<input id="show_twitter_method" value="sidebar" type="hidden" />
+						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+							<button style="display:{if $site->get('Site Google URL')==''}none{/if}" class="{if $site->get('Site Show Google')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show Google','Yes')" id="Site Show Google_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show Google')=='No'}selected{/if} negative" onclick="save_social_media('Site Show Google','No')" id="Site Show Google_No">{t}Hide{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}RSS URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_RSS_URL" value="{$site->get('Site RSS URL')}" ovalue="{$site->get('Site RSS URL')}"> 
+							<div id="Site_RSS_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_RSS_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Show RSS{/t}:</td>
+						<td> 
+						<input id="show_twitter_method" value="sidebar" type="hidden" />
+						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+							<button style="display:{if $site->get('Site RSS URL')==''}none{/if}" class="{if $site->get('Site Show RSS')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show RSS','Yes')" id="Site Show RSS_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show RSS')=='No'}selected{/if} negative" onclick="save_social_media('Site Show RSS','No')" id="Site Show RSS_No">{t}Hide{/t}</button> 
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="label">{t}Youtube URL{/t}:</td>
+						<td style="text-align:left"> 
+						<div>
+							<input style="text-align:left;width:100%" id="Site_Youtube_URL" value="{$site->get('Site Youtube URL')}" ovalue="{$site->get('Site Youtube URL')}"> 
+							<div id="Site_Youtube_URL_Container">
+							</div>
+						</div>
+						</td>
+						<td id="Site_Youtube_URL_msg" class="edit_td_alert"></td>
+					</tr>
+					<tr>
+						<td class="label">{t}Show Youtube{/t}:</td>
+						<td> 
+						<input id="show_twitter_method" value="sidebar" type="hidden" />
+						<div class="buttons" id="show_twitter_method_buttons" style="float:left">
+							<button style="display:{if $site->get('Site Youtube URL')==''}none{/if}" class="{if $site->get('Site Show Youtube')=='Yes'}selected{/if} positive" onclick="save_social_media('Site Show Youtube','Yes')" id="Site Show Youtube_Yes">{t}Show{/t}</button> <button class="{if $site->get('Site Show Youtube')=='No'}selected{/if} negative" onclick="save_social_media('Site Show Youtube','No')" id="Site Show Youtube_No">{t}Hide{/t}</button> 
 						</div>
 						</td>
 					</tr>
