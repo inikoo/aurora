@@ -184,6 +184,7 @@ case('edit_email_forgot'):
 case('edit_email_welcome'):
 case('edit_welcome_message'):
 case('edit_site_ftp'):
+case('edit_site_client_area'):
 case('edit_site_properties'):
 case('edit_site_checkout'):
 	$data=prepare_values($_REQUEST,array(
@@ -1255,9 +1256,20 @@ function edit_site_field($site_key,$key,$value_data) {
 		'forgot_subject'=>'Site Forgot Password Email Subject',
 		'forgot_body_html'=>'Site Forgot Password Email HTML Body',
 		'forgot_body_plain'=>'Site Forgot Password Email Plain Body',
-		'welcome_source'=>'Site Welcome Source'
-
-
+		'welcome_source'=>'Site Welcome Source',
+		'newsletter_label'=>'Site Newsletter Custom Label',
+		'email_marketing_label'=>'Site Email Marketing Custom Label',
+		'postal_marketing_label'=>'Site Postal Marketing Custom Label',
+		'facebook_url'=>'Site Facebook URL',
+		'twitter_url'=>'Site Twitter URL',
+		'skype_url'=>'Site Skype URL',
+		'flickr_url'=>'Site Flickr URL',
+		'blog_url'=>'Site Blog URL',
+		'digg_url'=>'Site Digg URL',
+		'linkedin_url'=>'Site LinkedIn URL',
+		'google_url'=>'Site Google URL',
+		'youtube_url'=>'Site Youtube URL',
+		'rss_url'=>'Site RSS URL'
 	);
 
 	if (array_key_exists($key,$key_dic))

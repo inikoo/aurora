@@ -112,7 +112,7 @@
 				<td colspan="3"></td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Newsletter{/t}:</td>
+				<td class="label" style="width:200px">{if $site->get('Site Newsletter Custom Label')==''}{t}Newsletter{/t}{else}{t}{$site->get('Site Newsletter Custom Label')}{/t}{/if}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Newsletter')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Newsletter','Yes')" id="Customer Send Newsletter_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Newsletter')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Newsletter','No')" id="Customer Send Newsletter_No">{t}No{/t}</button> 
@@ -120,7 +120,7 @@
 				</td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Latest Offers & Updates{/t}:</td>
+				<td class="label" style="width:200px">{if $site->get('Site Email Marketing Custom Label')==''}{t}Latest Offers & Updates{/t}{else}{t}{$site->get('Site Email Marketing Custom Label')}{/t}{/if}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Email Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Email Marketing','Yes')" id="Customer Send Email Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Email Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Email Marketing','No')" id="Customer Send Email Marketing_No">{t}No{/t}</button> 
@@ -134,7 +134,7 @@
 				<td colspan="3"></td>
 			</tr>
 			<tr style="height:30px;">
-				<td class="label" style="width:200px">{t}Catalogues & Vouchers{/t}:</td>
+				<td class="label" style="width:200px">{if $site->get('Site Postal Marketing Custom Label')==''}{t}Catalogues & Vouchers{/t}{else}{t}{$site->get('Site Postal Marketing Custom Label')}{/t}{/if}:</td>
 				<td> 
 				<div class="buttons small">
 					<button class="{if $page->customer->get('Customer Send Postal Marketing')=='Yes'}selected{/if} positive" onclick="save_comunications('Customer Send Postal Marketing','Yes')" id="Customer Send Postal Marketing_Yes">{t}Yes{/t}</button> <button class="{if $page->customer->get('Customer Send Postal Marketing')=='No'}selected{/if} negative" onclick="save_comunications('Customer Send Postal Marketing','No')" id="Customer Send Postal Marketing_No">{t}No{/t}</button> 
@@ -162,7 +162,7 @@
 					</td>
 				</tr>
 			</tbody>
-			<tbody id="social_media" style="{if $site->get('Site Show Twitter')=='No' && $site->get('Site Show Facebook')=='No'}display:none{/if}">
+			<tbody style="display:none" id="social_media">
 				<tr class="title">
 					<td colspan="5">{t}Social Media{/t}</td>
 				</tr>
@@ -192,19 +192,26 @@
 			<tr>
 			
 			
-			<tr class="title">
-					<td colspan="5">{t}Social Sites{/t}</td>
+				<tr class="title">
+						<td colspan="5">{t}Social Sites{/t}</td>
 				</tr>
 				<tr style="height:10px">
 					<td colspan="3"></td>
 				</tr>
 				<td>
-				<a href="http://www.facebook.com/AncientWisdom.biz"><img src="art/grunge_facebook.png" style="height:40px"/></a>
-								<a href="https://twitter.com/#!/awnews"><img src="art/grunge_twitter.png" style="height:40px"/></a>
-								<a href="http://www.youtube.com/user/TDBelan"><img src="art/grunge_youtube.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Facebook')=='No'}none{/if}" href="{$site->get('Site Facebook URL')}"><img src="art/grunge_facebook.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show LinkedIn')=='No'}none{/if}" href="{$site->get('Site LinkedIn URL')}"><img src="art/grunge_linkedin.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Skype')=='No'}none{/if}" href="{$site->get('Site Skype URL')}"><img src="art/grunge_skype.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Youtube')=='No'}none{/if}" href="{$site->get('Site Youtube URL')}"><img src="art/grunge_youtube.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Flickr')=='No'}none{/if}" href="{$site->get('Site Flickr URL')}"><img src="art/grunge_flickr.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Blog')=='No'}none{/if}" href="{$site->get('Site Blog URL')}"><img src="art/grunge_blog.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Digg')=='No'}none{/if}" href="{$site->get('Site Digg URL')}"><img src="art/grunge_digg.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Google')=='No'}none{/if}" href="{$site->get('Site Google URL')}"><img src="art/grunge_google_plus.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show RSS')=='No'}none{/if}" href="{$site->get('Site RSS URL')}"><img src="art/grunge_rss.png" style="height:40px"/></a>
+					<a style="display:{if $site->get('Site Show Twitter')=='No'}none{/if}" href="{$site->get('Site Twitter URL')}"><img src="art/grunge_twitter.png" style="height:40px"/></a>
 
 				</td>
-				</tr>
+			</tr>
 			
 		</table>
 	</div>
