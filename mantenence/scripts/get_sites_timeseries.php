@@ -27,7 +27,7 @@ $_SESSION['lang']=1;
 //$stores=array(1);
 $forecast=true;
 
-$sql="select * from `Site Dimension` limit 1";
+$sql="select * from `Site Dimension` ";
 $res=mysql_query($sql);
 
 while( $row=mysql_fetch_array($res)){

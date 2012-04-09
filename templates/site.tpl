@@ -141,7 +141,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0">
+	<div id="block_hits" style="{if $block_view!='hits'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 10px">
 
 		
 
@@ -156,7 +156,7 @@
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_timeseries.xml.php?tipo=site_requests&site_key={$site->id}"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_volume_timeseries.xml.php?tipo=site_requests&site_key={$site->id}"));
 		so.addVariable("preloader_color", "#999999");
 		so.write("plot1");
 		// ]]>
