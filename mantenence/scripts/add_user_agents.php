@@ -1,4 +1,10 @@
 <?php
+//**********************************************//
+//User Agent Download Link
+//http://www.user-agents.org/allagents.xml
+//**********************************************//
+
+
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once '../../app_files/db/dns.php';
