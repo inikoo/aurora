@@ -1131,7 +1131,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		$host_bis=strtolower(preg_replace('/^www\./','',$host));
 		$ftp_sever=strtolower($this->data['Site FTP Server']);
 		
-		print "\n$host $ftp_sever\n";
+		//print "\n$host $ftp_sever\n";
 		
 		if ($ftp_sever==strtolower($host) or $ftp_sever==$host_bis) {
 			$sql=sprintf("select * from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s",
@@ -1156,6 +1156,8 @@ $page_code=$this->get_unique_family_page_code($family);
 
 		}
 
+//exit("--> $htaccess\n");
+
 		return $htaccess;
 
 	}
@@ -1170,8 +1172,6 @@ $page_code=$this->get_unique_family_page_code($family);
 		$htaccess=$this->get_redirections_htaccess($host,$path);
 
 
-print $htaccess;
-exit();
 
 		if ($htaccess!='') {
 			$ftp_connection=$this->create_ftp_connection();
