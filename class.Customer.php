@@ -5989,7 +5989,7 @@ class Customer extends DB_Table {
 
 	function badge_state_gold() {
 
-		if (strtotime($this->data['Customer Last Order Date'] .' +1 month')>time()) {
+		if ( $this->data['Customer With Orders']=='Yes' and $this->data['Customer Last Order Date']!='' and    strtotime($this->data['Customer Last Order Date'] .' +1 month')>time()) {
 			return true;
 		} else {
 			return false;
