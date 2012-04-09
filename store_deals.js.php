@@ -248,4 +248,14 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
     });
 
 
-
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 rppmenu.render();
+	 rppmenu.subscribe("show", rppmenu.focus);
+    });
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });

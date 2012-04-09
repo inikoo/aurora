@@ -101,10 +101,13 @@ $tipo_filter=$_SESSION['state']['store']['deals']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['store']['deals']['f_value']);
 $filter_menu=array(
-                 'name'=>array('db_key'=>'notes','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
-               
+                 'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),
+
             
              );
+$smarty->assign('filter_menu1',$filter_menu);
+             
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);

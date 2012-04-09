@@ -60,8 +60,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	//print "$host $path\n";
 	
 
-	$site->upload_redirections($host,$path);
+	//$site->upload_redirections($host,$path);
 	
+	$htaccess=$site->get_redirections_htaccess($host,$path);
+	print $htaccess;
 	//exit;
 
 }

@@ -34,7 +34,8 @@
     <li> <span class="item {if $block_view=='details'}selected{/if}"  id="details">  <span> {t}Overview{/t}</span></span></li>
     <li> <span class="item {if $block_view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
     <li> <span class="item {if $block_view=='customers'}selected{/if}"  id="customers">  <span> {t}Customers{/t}</span></span></li>
-   
+    <li> <span class="item" style="{if $deal->get('Deal Terms Type')!='Order Interval'}display:none{/if}"    id="email_remainder">  <span> {t}Email Remainder{/t}</span></span></li>
+
   </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 </div>
