@@ -60,6 +60,10 @@ class TimeSeries {
 
 		if (!$this->name or !$this->freq)
 			return;
+			
+			
+			
+			
 		if (preg_match('/contact population \((\d)+\)\s*?/i',$this->name,$match)) {
 			$store_key_array=array();
 
@@ -123,6 +127,76 @@ class TimeSeries {
 			//$this->max_forecast_bins=12;
 			//$this->where=sprintf(' and `Invoice Category Key`=%d',$category_key);
 			$this->label=_('CP')." (".$this->name_key.")";
+
+
+		}elseif (preg_match('/Site No Users Requests \((\d)+\)\s*?/i',$this->name,$match)) {
+			$store_key_array=array();
+
+
+
+			if (preg_match('/\(.+\)/',$match[0],$keys)) {
+				$keys=preg_replace('/\(|\)/','',$keys[0]);
+				$keys=preg_split('/\s*,\s*/',$keys);
+
+				$store_keys='(';
+
+				foreach ($keys as $key) {
+					if (is_numeric($key)) {
+						$store_keys.=sprintf("%d,",$key);
+						$store_key_array[]=$key;
+
+					}
+				}
+				$store_keys=preg_replace('/,$/',')',$store_keys);
+			}
+
+			//$this->keys=$keys;
+			//print_r($store_keys);
+
+			$this->name_key=array_pop($keys);
+			$this->name='Site No Users Requests';
+			//$this->count='count(*)';
+			//$this->date_field='`Invoice Date`';
+			//$this->table='`Invoice Dimension`';
+			//$this->value_field='`Invoice Currency Exchange`*`Invoice Total Net Amount`';
+			//$this->max_forecast_bins=12;
+			//$this->where=sprintf(' and `Invoice Category Key`=%d',$category_key);
+			$this->label=_('SNUR')." (".$this->name_key.")";
+
+
+		}elseif (preg_match('/Site Users Requests \((\d)+\)\s*?/i',$this->name,$match)) {
+			$store_key_array=array();
+
+
+
+			if (preg_match('/\(.+\)/',$match[0],$keys)) {
+				$keys=preg_replace('/\(|\)/','',$keys[0]);
+				$keys=preg_split('/\s*,\s*/',$keys);
+
+				$store_keys='(';
+
+				foreach ($keys as $key) {
+					if (is_numeric($key)) {
+						$store_keys.=sprintf("%d,",$key);
+						$store_key_array[]=$key;
+
+					}
+				}
+				$store_keys=preg_replace('/,$/',')',$store_keys);
+			}
+
+			//$this->keys=$keys;
+			//print_r($store_keys);
+
+			$this->name_key=array_pop($keys);
+			$this->name='Site Users Requests';
+			//$this->count='count(*)';
+			//$this->date_field='`Invoice Date`';
+			//$this->table='`Invoice Dimension`';
+			//$this->value_field='`Invoice Currency Exchange`*`Invoice Total Net Amount`';
+			//$this->max_forecast_bins=12;
+			//$this->where=sprintf(' and `Invoice Category Key`=%d',$category_key);
+			$this->label=_('SUR')." (".$this->name_key.")";
 
 
 		}elseif (preg_match('/^invoice(\s|_)category:?/i',$this->name)) {
@@ -791,7 +865,7 @@ class TimeSeries {
 	function save_day_values($date,$data) {
 
 		$sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,%s,%s,%s,%s,%s,%s,'Data','','','')
-  ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d , `Open`=%s,`High`=%s,`Low`=%s,`Close`=%s,`Volume`=%,`Adj Close`=%s, `Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d ",
+  ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d , `Open`=%s,`High`=%s,`Low`=%s,`Close`=%s,`Volume`=%s,`Adj Close`=%s, `Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d ",
 			prepare_mysql($date),
 			prepare_mysql($this->freq),
 			prepare_mysql($this->name),
@@ -819,7 +893,7 @@ class TimeSeries {
 		);
 		mysql_query($sql);
 
-
+//print "$sql\n";
 
 	}
 
@@ -1425,7 +1499,71 @@ class TimeSeries {
 
 	}
 
+function get_site_users_requests_value_day($date,$last_close){
+	
+	$new=0;
 
+
+		$sql=sprintf("select count(*) as request  from `User Request Dimension` URD  left join `Page Store Dimension` PSD on (PSD.`Page Key`=URD.`Page Key`) where  `Page Site Key`=%d and Date(`Date`)=%s and `User Key`!=0",
+			$this->name_key,
+			prepare_mysql($date)
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$new=$row['request'];
+		}
+		//  print "$sql\n";
+		$data=array(
+			'value'=>$last_close,
+			'count'=>0,
+			'open'=>$last_close,
+			'close'=>$last_close+$new,
+			'low'=>$last_close+$new,
+			'high'=>$last_close,
+			'volume'=>$new,
+			'adj close'=>false,
+
+		);
+		//   print_r($data);
+
+		return $data;
+	
+	
+	}
+
+	function get_site_no_users_requests_value_day($date,$last_close){
+	
+	$new=0;
+
+
+		$sql=sprintf("select count(*) as request  from `User Request Dimension` URD  left join `Page Store Dimension` PSD on (PSD.`Page Key`=URD.`Page Key`) where  `Page Site Key`=%d and Date(`Date`)=%s and `User Key`=0",
+			$this->name_key,
+			prepare_mysql($date)
+		);
+
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$new=$row['request'];
+		}
+		//  print "$sql\n";
+		$data=array(
+			'value'=>$last_close,
+			'count'=>0,
+			'open'=>$last_close,
+			'close'=>$last_close+$new,
+			'low'=>$last_close+$new,
+			'high'=>$last_close,
+			'volume'=>$new,
+			'adj close'=>false,
+
+		);
+		//   print_r($data);
+
+		return $data;
+	
+	
+	}
 
 	function get_contact_population_value_day($date,$last_close) {
 
@@ -1555,6 +1693,10 @@ class TimeSeries {
 			return $this->get_customer_population_value_day($date,$last_close);
 		}elseif ($this->name=='contact population') {
 			return $this->get_contact_population_value_day($date,$last_close);
+		}elseif ($this->name=='Site No Users Requests') {
+			return $this->get_site_no_users_requests_value_day($date,$last_close);
+		}elseif ($this->name=='Site Users Requests') {
+			return $this->get_site_users_requests_value_day($date,$last_close);
 		}
 
 
@@ -1604,7 +1746,7 @@ class TimeSeries {
 		$last_day=date("Y-m-d");
 
 		if ($last_day<$start_day) {
-		print "$start_day  $last_day  \n";
+			print "$start_day  $last_day  \n";
 			$this->error=true;
 			$this->no_data=true;
 			return;
@@ -2154,7 +2296,34 @@ class TimeSeries {
 
 	function first_complete_day() {
 
+	if ($this->name=='Site No Users Requests' or $this->name=='Site Users Requests') {
+	$sql=sprintf("select `Site From` as the_date from `Site Dimension`  where  `Site Key`=%d ",
+				$this->name_key
 
+			);
+
+			$res=mysql_query($sql);
+
+			if ($row=mysql_fetch_array($res)) {
+
+			if($row['the_date']=='')
+				return;
+
+				$this->start_date=date("Y-m-d", strtotime($row['the_date']));
+				$this->start_day=$this->start_date;
+				$this->start_bin=1;
+				$time=strtotime($row['the_date'].' +1 day');
+				$this->first_complete_date=date("Y-m-d", $time);
+				$this->first_complete_bin=1;
+				$this->no_data=false;
+				return $this->start_date;
+
+			}else{
+				return;
+			}
+	
+	}
+	
 		if ($this->name=='customer population') {
 
 			$sql=sprintf("select min(`Customer First Order Date`) as the_date from `Customer Dimension`  where `Customer With Orders`='Yes' and `Customer Store Key`=%d ",
@@ -2165,14 +2334,14 @@ class TimeSeries {
 			$res=mysql_query($sql);
 
 			if ($row=mysql_fetch_array($res)) {
-			
-$this->start_date=date("Y-m-d", strtotime($row['the_date']));
-			$this->start_day=$this->start_date;
-			$this->start_bin=1;
-			$time=strtotime($row['the_date'].' +1 day');
-			$this->first_complete_date=date("Y-m-d", $time);
-			$this->first_complete_bin=1;
-			$this->no_data=false;
+
+				$this->start_date=date("Y-m-d", strtotime($row['the_date']));
+				$this->start_day=$this->start_date;
+				$this->start_bin=1;
+				$time=strtotime($row['the_date'].' +1 day');
+				$this->first_complete_date=date("Y-m-d", $time);
+				$this->first_complete_bin=1;
+				$this->no_data=false;
 				return $this->start_date;
 
 			}
@@ -2322,7 +2491,7 @@ $this->start_date=date("Y-m-d", strtotime($row['the_date']));
 			,$this->name_key
 
 		);
-		print $sql;
+		
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			return $row['date'];
@@ -2332,10 +2501,31 @@ $this->start_date=date("Y-m-d", strtotime($row['the_date']));
 
 	}
 
+
+function site_last_day() {
+		$sql=sprintf("select `Site To` as date from `Site Dimension` where `Site To` IS NOT NULL and `Site Key` =%d  "
+			,$this->name_key
+
+		);
+		
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+			return $row['date'];
+
+		} else
+			return gmdate('Y-m-d');
+
+	}
+
+
 	function last_date() {
 
 		if ($this->name=='customer population' or $this->name=='contact population') {
 			return $this->store_last_day();
+		}
+		
+		if ($this->name=='Site No Users Requests' or $this->name=='Site Users Requests') {
+			return $this->site_last_day();
 		}
 
 		$sql=sprintf("select %s as date from %s where %s IS NOT NULL %s  order by %s desc limit 1  "

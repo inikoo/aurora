@@ -29,9 +29,12 @@
 	</h2>
 	<div style="border:1px solid #ccc;padding:20px;width:400px;font-size:15px">
 		
-		<div style="float:right;border:0px solid #ccc;;width:100px;margin-right:0px" id="show_upload_image">
-		<img id="avatar" src="{if $user->get_image_src()}{$user->get_image_src()}{else}art/siluet.jpg{/if}" style="border:1px solid #ccc;width:100px"> 
-	
+		<div style="float:right;border:0px solid #ccc;;margin-right:0px;margin-bottom:10px" id="show_upload_image">
+		{if $user->get_image_src()}
+		<img id="avatar" src="{$user->get_image_src()}" style="cursor:pointer;border:1px solid #ccc;width:100px;max-height:100px"> 
+		{else}
+		<img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> 
+		{/if}
 	</div>
 		<h3>
 			{$page->customer->get('Customer Name')} ({$page->customer->get_formated_id()}) 
@@ -396,17 +399,30 @@
 	</table>
 </div>
 {/section} 
+
+
 <div id="dialog_image_upload" style="padding:10px">
 	<table>
-		<tr>
-			<td>{t}Upload Image{/t}</td>
-		</tr>
-		<tr>
+	
+	
+	<tr style="{if $user->get_image_src()}display:inline{else}display:none{/if}">
 			<td> 
-			<div class="image" image_id="{$user->get_image_key()}">
-				<img {if $user->get_image_src()}style="display:''"{else}style="display:none"{/if} class="delete" src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}" onClick="delete_image(this)"> 
+			<div class="buttons left" image_id="{$user->get_image_key()}">
+			<button onClick="delete_image(this)"  > {t}Delete Image{/t}	</button> 
 			</div>
 			</td>
+		</tr>
+	
+	<tr style="height:10px">
+			<td></td>
+		</tr>
+	
+		<tr>
+			<td>{if $user->get_image_src()}{t}Change Image{/t}{else}{t}Upload Image{/t}{/if}</td>
+		</tr>
+		
+		<tr style="height:10px">
+			<td></td>
 		</tr>
 		<tr>
 			<td> 
