@@ -1141,7 +1141,7 @@ $page_code=$this->get_unique_family_page_code($family);
 			$result=mysql_query($sql);
 			// print $sql;
 			while ($row=mysql_fetch_assoc($result)) {
-				$redirect_line='/'.($row['Source Path']?$row['Source Path'].'/':'').$row['Source File'].' '.$row['Page Target URL'];
+				$redirect_line='/'.($row['Source Path']?$row['Source Path'].'/':'').$row['Source File'].' http://'.$row['Page Target URL'];
 				$redirect_lines[$redirect_line]=1;
 			}
 		}
@@ -1152,7 +1152,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		if ($path=='') {
 			$_htaccess_redirections=$htaccess;
 
-			$htaccess="Options +FollowSymLinks\nRedirect 301 /index.html ".$this->data['Site URL']."/index.php\n$_htaccess_redirections\nRewriteEngine On\nRewriteCond %{SCRIPT_FILENAME} !-d\nRewriteCond %{SCRIPT_FILENAME} !-f\nRewriteRule ^.*$ ./process.php";
+			$htaccess="Options +FollowSymLinks\nRedirect 301 /index.html http://".$this->data['Site URL']."/index.php\n$_htaccess_redirections\nRewriteEngine On\nRewriteCond %{SCRIPT_FILENAME} !-d\nRewriteCond %{SCRIPT_FILENAME} !-f\nRewriteRule ^.*$ ./process.php";
 
 		}
 
