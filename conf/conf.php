@@ -2268,17 +2268,6 @@ $default_state=array(
 			'f_field'=>'ip',
 			'f_value'=>''
 		),
-		'visit_pages'=>array(
-			'display'=>'all',
-			'order'=>'total_visits',
-			'order_dir'=>'',
-			'type'=>'',
-			'sf'=>0,
-			'nr'=>50,
-			'where'=>'where true',
-			'f_field'=>'',
-			'f_value'=>''
-		),
 	),
 
 
@@ -2933,7 +2922,73 @@ $default_state=array(
 
 
 		),
-
+          'hits'=>array(
+                         'table_type'=>'list',
+                         'where'=>'where true',
+                         'f_field'=>'code',
+                         'f_value'=>'',
+                         'f_show'=>false,
+                         'order'=>'code',
+                         'order_dir'=>'',
+                         'sf'=>0,
+                         'nr'=>50,
+                         'percentages'=>false,
+                         'view'=>'general',
+                         'period'=>'year',
+                         'percentage'=>0,
+                         'mode'=>'all',
+                         'avg'=>'totals',
+                         'type'=>'list',
+                         'elements'=>array(
+                                           'ProductDescription'=>1,
+                                           'FamilyCatalogue'=>1,
+                                           'DepartmentCatalogue'=>1,
+                                           'Other'=>1,
+                                           
+                                           )
+                         
+                         
+                         ),
+      'page'=>array(
+                    'table_type'=>'list',
+                    'where'=>'where true',
+                    'f_field'=>'code',
+                    'f_value'=>'',
+                    'f_show'=>false,
+                    'order'=>'code',
+                    'order_dir'=>'',
+                    'sf'=>0,
+                    'nr'=>50,
+                    'percentages'=>false,
+                    'view'=>'general',
+                    'period'=>'year',
+                    'percentage'=>0,
+                    'mode'=>'all',
+                    //'avg'=>'totals',
+                    //'type'=>'list'
+                    
+                    
+                    ),
+          'overview'=>array(
+                        'table_type'=>'list',
+                        'where'=>'where true',
+                        'f_field'=>'total_visits',
+                        'f_value'=>'',
+                        'f_show'=>false,
+                        'order'=>'total_visits',
+                        'order_dir'=>'desc',
+                        'sf'=>0,
+                        'nr'=>5,
+                        'percentages'=>false,
+                        'view'=>'general',
+                        'period'=>'year',
+                        'percentage'=>0,
+                        'mode'=>'all',
+                        //'avg'=>'totals',
+                        //'type'=>'list'
+                        
+                        
+                        ),
 		'history'=>array(
 			'where'=>'where true',
 			'f_field'=>'abstract',
