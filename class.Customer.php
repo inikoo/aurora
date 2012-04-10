@@ -2386,7 +2386,7 @@ class Customer extends DB_Table {
 		//    print (date('U')." ".strtotime($this->data['Customer First Contacted Date']))." $interval  \n";
 		//    print $sql;
 		mysql_query($sql);
-			
+
 
 
 	}
@@ -3072,20 +3072,20 @@ class Customer extends DB_Table {
 	}
 
 	function update_tax_number($value) {
-	
-	$this->update_field('Customer Tax Number',$value);
-	if($this->updated){
-		$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
-		$this->id
-		);
-		mysql_query($sql);
-		
-	$this->new_value=$value;
-	}
-	
+
+		$this->update_field('Customer Tax Number',$value);
+		if ($this->updated) {
+			$sql=sprintf("update `Customer Dimension` set `Customer Tax Number Valid`='Unknown', `Customer Tax Number Details Match`='Unknown', `Customer Tax Number Validation Date`=NULL where `Customer Key`=%d",
+				$this->id
+			);
+			mysql_query($sql);
+
+			$this->new_value=$value;
+		}
 
 
-		
+
+
 	}
 
 
@@ -6218,6 +6218,44 @@ class Customer extends DB_Table {
 
 		return $html;
 	}
+
+
+	function get_image_src() {
+		$image=false;
+
+		$user_keys=$this->get_users_keys();
+
+		if (count($user_keys)>0) {
+
+			$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key` in (%s)",join($user_keys));
+			$res=mysql_query($sql);
+
+			// print $sql;
+
+			$image=false;
+			while ($row=mysql_fetch_array($res)) {
+				//if ($row['Image Height']!=0)
+				// $ratio=$row['Image Width']/$row['Image Height'];
+				//else
+				// $ratio=1;
+				//  print_r($row);
+				if ($row['Image Key']) {
+
+					$image='image.php?id='.$row['Image Key'].'&size=small';
+
+
+					return $image;
+				}
+
+			}
+
+			return $image;
+		}
+		return false;
+
+
+	}
+
 
 
 	function get_category_data() {
