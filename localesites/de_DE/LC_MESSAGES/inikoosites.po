@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-20 16:56+0100\n"
-"PO-Revision-Date: 2012-03-20 16:59+0100\n"
+"PO-Revision-Date: 2012-04-10 10:48+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -2680,9 +2680,8 @@ msgstr "registrieren"
 #: class.Page.php:1669
 #: class.Page.php:1787
 #: class.Page.php:2007
-#, fuzzy
 msgid "OoS"
-msgstr "von"
+msgstr "n.v."
 
 #: class.Page.php:1671
 msgid "Please"
