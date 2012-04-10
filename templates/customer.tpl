@@ -36,7 +36,7 @@
 			{/foreach} {/foreach} </span> 
 			<table id="customer_data" border="0" style="width:100%;border-collapse: collapse;">
 			<tr>
-			<td>
+			<td colspan=2>
 			
 			<div style="border:0px solid red;float:left;margin-right:20px">
 					{if $customer->get_image_src()}
