@@ -1279,7 +1279,8 @@ function edit_site_field($site_key,$key,$value_data) {
 		'linkedin_url'=>'Site LinkedIn URL',
 		'google_url'=>'Site Google URL',
 		'youtube_url'=>'Site Youtube URL',
-		'rss_url'=>'Site RSS URL'
+		'rss_url'=>'Site RSS URL',
+		'registration_disclaimer'=>'Site Registration Disclaimer'
 	);
 
 	if (array_key_exists($key,$key_dic))

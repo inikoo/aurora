@@ -61,7 +61,7 @@ var validate_scope_data=
 ,'youtube_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Youtube URL','name':'Site_Youtube_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
 ,'rss_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site RSS URL','name':'Site_RSS_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
 ,'google_url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Site Google URL','name':'Site_Google_URL','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid uRL')?>'}]}
-
+,'registration_disclaimer':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'registration_disclaimer','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Site Disclaimer Text')?>'}]}
 },
 
 'site_menu':{
@@ -1054,6 +1054,13 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
 	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
 
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_registration_disclaimer);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("registration_disclaimer","registration_disclaimer_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;
+
+
 	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_welcome_body_html);
 	site_slogan_oACDS.queryMatchContains = true;
 	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("welcome_body_html","welcome_body_html_Container", site_slogan_oACDS);
@@ -1242,7 +1249,9 @@ function validate_url_rss(query){
  validate_general('site_client_area','rss_url',unescape(query));
 }
 
-
+function validate_registration_disclaimer(query){
+ validate_general('site_client_area','registration_disclaimer',unescape(query));
+}
 
 
 function validate_site_ftp_server(query){
@@ -1275,6 +1284,9 @@ function validate_forgot_subject(query){
 function validate_welcome_body_plain(query){
  validate_general('email_welcome','welcome_body_plain',unescape(query));
 }
+
+
+
 function validate_welcome_body_html(query){
  validate_general('email_welcome','welcome_body_html',unescape(query));
 }

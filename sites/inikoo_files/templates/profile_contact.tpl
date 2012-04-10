@@ -68,6 +68,11 @@
 				<td><img src="art/edit.gif" id="show_edit_telephone" alt="{t}Edit{/t}" /></td>
 				<td class="aright">{$page->customer->get('Customer Main Plain Telephone')}</td>
 			</tr>
+			<tr>
+				<td>{t}Website{/t}:</td>
+				<td><img src="art/edit.gif" id="show_edit_website" alt="{t}Edit{/t}" /></td>
+				<td class="aright">{$page->customer->get('Customer Website')}</td>
+			</tr>
 			{foreach from=$custom_fields item=custom_field key=key} 
 			<tr>
 				<td>{$custom_field.name}:</td>
@@ -356,6 +361,28 @@
 		</tr>
 	</table>
 </div>
+<div id="dialog_quick_edit_Website" style="padding:10px">
+	<table style="margin:10px">
+		<tr>
+			<td>{t}Website:{/t}</td>
+			<td> 
+			<div style="width:220px">
+				<input type="text" id="Customer_Website" value="{$page->customer->get('Customer Website')}" ovalue="{$page->customer->get('Customer Website')}" valid="0"> 
+				<div id="Customer_Website_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<span id="Customer_Website_msg"></span> <button class="positive" onclick="save_quick_edit_website()">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_website">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
 {foreach from=$custom_fields item=custom_field key=key} {if $custom_field.type=='Enum'} 
 <div id="dialog_quick_edit_Customer_{$custom_field.name}" style="padding:10px">
 	<table style="margin:10px">
