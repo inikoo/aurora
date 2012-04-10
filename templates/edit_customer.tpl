@@ -515,6 +515,24 @@
 					</div>
 					</td>
 				</tr>
+
+
+
+				<tr>
+					<td class="label">{t}Website{/t}:</td>
+					<td style="text-align:left"> 
+					<div>
+						<input style="text-align:left;width:100%" id="Customer_Website" value="{$customer->get('Customer Website')}" ovalue="{$customer->get('Customer Website')}" valid="0"> 
+						<div id="Customer_Website_Container">
+						</div>
+					</div>
+					</td>
+					<td>
+					<span id="Customer_Website_msg" class="edit_td_alert"></span> 
+					</td>
+				</tr>
+
+
 			</table>
 			<div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;min-height:300px">
 				<div style="border-bottom:1px solid #777;margin-bottom:5px">

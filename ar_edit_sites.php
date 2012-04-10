@@ -67,6 +67,16 @@ case('change_template'):
 
 	change_template($data);
 	break;
+case('add_template'):
+	$data=prepare_values($_REQUEST,array(
+			'page_key'=>array('type'=>'key'),
+			'template'=>array('type'=>'string'),
+			'display_type'=>array('type'=>'string'),
+
+		));
+
+	add_template($data);
+	break;
 case('test_email_credentials'):
 	$data=prepare_values($_REQUEST,array(
 			'site_key'=>array('type'=>'key'),
@@ -2750,4 +2760,24 @@ function change_template($data){
 	echo json_encode($response);
 }
 
+function add_template($data){
+	//print_r($data);
+	global $editor;
+	$page=new Page($data['page_key']);
+	$page->editor=$editor;
+
+	if (!$page->id) {
+		$response= array('state'=>400,'msg'=>$page->msg);
+		echo json_encode($response);
+		return;
+	}
+
+
+	$sql=sprintf("insert into `Template Dimension` (`Template Name`, `Page Key`) values ('%s', %d)", 'test name', $page->id);
+	mysql_query($sql);
+
+	$response= array('state'=>200,'page_key'=>$page->id, 'template_id'=>mysql_insert_id());
+
+	echo json_encode($response);
+}
 ?>

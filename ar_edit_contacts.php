@@ -140,6 +140,22 @@ case('delete_customer_list'):
 		));
 	delete_customer_list($data);
 	break;
+case('delete_post_to_send'):
+	$data=prepare_values($_REQUEST,array(
+			'key'=>array('type'=>'key'),
+
+
+		));
+	delete_post_to_send($data);
+	break;
+case('edit_post_to_send'):
+	$data=prepare_values($_REQUEST,array(
+			'key'=>array('type'=>'key'),
+
+
+		));
+	edit_post_to_send($data);
+	break;
 case('convert_customer_to_company'):
 	$data=prepare_values($_REQUEST,array(
 			'customer_key'=>array('type'=>'key'),
@@ -2890,7 +2906,8 @@ function edit_customer_field($customer_key,$key,$value_data) {
 		"sticky_note"=>'Customer Sticky Note',
 		"new_sticky_note"=>'Customer Sticky Note',
 		"preferred_contact_number"=>'Customer Preferred Contact Number',
-		"company_name"=>'Customer Company Name'
+		"company_name"=>'Customer Company Name',
+		"web"=>'Customer Website'
 	);
 
 
@@ -3975,6 +3992,58 @@ function delete_customer_list($data) {
 
 	} else {
 		$response=array('state'=>400,'msg'=>'Error no customer list');
+		echo json_encode($response);
+		return;
+
+	}
+
+
+
+}
+
+function delete_post_to_send($data) {
+	global $user;
+	$sql=sprintf("select * from `Customer Send Post` where `Customer Send Post Key`=%d", $data['key']);
+	
+	$res=mysql_query($sql);
+
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$sql=sprintf("delete from `Customer Send Post` where `Customer Send Post Key`=%d", $data['key']);
+		$res=mysql_query($sql);
+
+		$response=array('state'=>200,'action'=>'deleted');
+		echo json_encode($response);
+		return;
+
+	} else {
+		$response=array('state'=>400,'msg'=>'Error no send to post');
+		echo json_encode($response);
+		return;
+
+	}
+
+
+
+}
+
+function edit_post_to_send($data) {
+	global $user;
+	$sql=sprintf("select * from `Customer Send Post` where `Customer Send Post Key`=%d", $data['key']);
+	
+	$res=mysql_query($sql);
+
+	if ($row=mysql_fetch_assoc($res)) {
+
+		$sql=sprintf("update `Customer Send Post` set `Send Post Status` = 'Send' where `Customer Send Post Key`=%d", $data['key']);
+		$res=mysql_query($sql);
+
+		$response=array('state'=>200,'action'=>'edited');
+		echo json_encode($response);
+		return;
+
+	} else {
+		$response=array('state'=>400,'msg'=>'Error no send to post');
 		echo json_encode($response);
 		return;
 

@@ -54,6 +54,23 @@ $smarty->assign('modify',$modify);
 
 
 
+
+$elements_number=array('Send'=>0,'ToSend'=>0);
+$sql=sprintf("select count(*) as num,`Send Post Status` from  `Customer Send Post` group by `Send Post Status`");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+$_key=preg_replace('/ /','',$row['Send Post Status']);
+
+   if(in_array($_key,array('Send','ToSend')))
+	$elements_number[$_key]=$row['num'];
+}
+
+//print_r($elements_number);
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['store']['pending_post']['elements']);
+
+
+
 $css_files=array(
                  $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',

@@ -256,7 +256,7 @@ var onCellClick = function(oArgs) {
 
     var recordIndex = this.getRecordIndex(record);
   //var  datatable = this.getDataTable();
-   //alert(column.object)
+   //alert(column.object); return;
     switch (column.action) {
 
    
@@ -269,7 +269,7 @@ if(delete_type== undefined)
 
 
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
-                if (column.object=='company' || column.object=='company_area' || column.object=='customer_history' || column.object=='customer_list')
+                if (column.object=='company' || column.object=='company_area' || column.object=='customer_history' || column.object=='customer_list' || column.object=='post_to_send')
                     ar_file='ar_edit_contacts.php';
 		else if(column.object=='widget_in_dashboard' )
 			ar_file='ar_edit_dashboard.php';
@@ -288,13 +288,13 @@ if(delete_type== undefined)
                 else if (column.object=='order_list' || column.object=='invoice_list'|| column.object=='dn_list')
      		         ar_file='ar_edit_orders.php';
      		        else if (column.object=='email_campaign_recipient' || column.object=='email_campaign_objetive'  || column.object=='color_scheme'     || column.object=='template_header_image'     || column.object=='template_postcard' )
-     		         ar_file='ar_edit_marketing.php';         
+     		         ar_file='ar_edit_marketing.php';   
      		   else
                     ar_file='ar_edit_assets.php';
 
 
 
-       //  alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+         //alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
@@ -371,6 +371,41 @@ scope:this
 
 
 break;
+
+case 'edit':
+
+		if(column.object=='post_to_send' )
+			ar_file='ar_edit_contacts.php';
+
+
+
+        //alert(ar_file+'?tipo=edit_'+column.object + myBuildUrl(this,record))
+                YAHOO.util.Connect.asyncRequest(
+                    'GET',
+                ar_file+'?tipo=edit_'+column.object + myBuildUrl(this,record), {
+                success: function (o) {
+                    //alert(o.responseText);
+                        var r = YAHOO.lang.JSON.parse(o.responseText);
+                        if (r.state == 200 && r.action=='edited') {
+				var table=this;
+				var datasource=this.getDataSource();
+				datasource.sendRequest('',table.onDataReturnInitializeTable, table);   
+
+
+                        } else {
+                            alert(r.msg);
+                        }
+                    },
+failure: function (fail) {
+                        alert(fail.statusText);
+                    },
+scope:this
+                }
+                );
+
+
+break;
+
 
 
     default:
@@ -947,13 +982,13 @@ var request=scope_edit_ar_file
 var postData='tipo='+operation+'_'+branch+'&values='+ jsonificated_values+'&'+branch_key_name+'='+branch_key;
 
 
-//alert(request+'?'+postData);//return;
+alert(request+'?'+postData);//return;
  YAHOO.util.Connect.asyncRequest(
  'POST',
  request , 
  {
     success:function(o) {
-//alert(o.responseText)
+alert(o.responseText)
             var ra =  YAHOO.lang.JSON.parse(o.responseText);
         
             count=ra.length;

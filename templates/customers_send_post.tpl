@@ -25,7 +25,13 @@
  <div id="the_table" class="data_table" style="clear:both;margin-top:10px">
       <div>
       <span class="clean_table_title">{t}Customers{/t}  <img id="export_data"  style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
-    
+    <div style="font-size:90%" id="transaction_chooser">
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Send}selected{/if} label_page_type" id="elements_Send">{t}Send{/t} (<span id="elements_Send_number">{$elements_number.Send}</span>)</span> 
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.ToSend}selected{/if} label_page_type" id="elements_ToSend">{t}To Send{/t} (<span id="elements_ToSend_number">{$elements_number.ToSend}</span>)</span> 
+			</div>
+
+
+
  
   <div style="clear:both;margin:2px 0 0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
