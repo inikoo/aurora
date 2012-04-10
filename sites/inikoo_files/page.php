@@ -59,7 +59,7 @@ $js_files=array(
 	//      'js/table_common.js',
 
 	'js/edit_common.js',
-	
+
 	'js/page.js'
 );
 
@@ -85,7 +85,7 @@ if ($page->data['Page Code']=='login') {
 	$js_files[]='js/sha256.js';
 	$css_files[]='css/inikoo.css';
 
-} 
+}
 else if ($page->data['Page Code']=='registration') {
 		$welcome=false;
 		if ($logged_in) {
@@ -103,7 +103,7 @@ else if ($page->data['Page Code']=='registration') {
 
 		$smarty->assign('welcome',$welcome);
 		$smarty->assign('customer',$customer);
-		
+
 		$js_files[]='js/aes.js';
 		$js_files[]='js/sha256.js';
 		$css_files[]='css/inikoo.css';
@@ -126,7 +126,7 @@ else if ($page->data['Page Code']=='registration') {
 else if ($page->data['Page Code']=='profile') {
 
 
-//$js_files[]='upload_common.js.php';
+		//$js_files[]='upload_common.js.php';
 
 		if (!$logged_in) {
 			header('location: login.php');
@@ -141,7 +141,7 @@ else if ($page->data['Page Code']=='profile') {
 		} else {
 			$view='contact';
 		}
-		
+
 		$smarty->assign('user',$user);
 
 		if (isset($_REQUEST['view']) && $_REQUEST['view']=='delivery_notes') {
@@ -282,6 +282,9 @@ else if ($page->data['Page Code']=='profile') {
 
 				break;
 			case('Dispatched'):
+			
+			
+			
 				$smarty->assign('search_label',_('Orders'));
 				$smarty->assign('search_scope','orders_store');
 
@@ -320,15 +323,14 @@ else if ($page->data['Page Code']=='profile') {
 
 		$template_suffix='_'.$view;
 
-
 		$smarty->assign('view',$view);
 
 		$smarty->assign('user',$user);
 		$rnd='';
-//$js_files[]='address_data.js.php';
+		//$js_files[]='address_data.js.php';
 
-		if($view=='contact')
-		$js_files[]='profile_contact.js.php';
+		if ($view=='contact')
+			$js_files[]='profile_contact.js.php';
 
 		if (isset($_REQUEST['type'])) {
 			$smarty->assign('address_identifier',$_REQUEST['type']);
@@ -418,12 +420,12 @@ else if ($page->data['Page Code']=='profile') {
 		$js_files[]='js/aes.js';
 		$js_files[]='js/sha256.js';
 		$js_files[]='js/table_common.js';
-		
+
 		$css_files[]='css/container.css';
 		$css_files[]='css/edit.css';
 		$css_files[]='css/inikoo.css';
 		$css_files[]='css/inikoo_table.css';
-		
+
 	}
 
 $smarty->assign('logged',$logged_in);
@@ -435,6 +437,8 @@ $page->currency=$store->data['Store Currency Code'];
 if ($logged_in) {
 	$page->customer=$customer;
 }
+
+
 
 
 $sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
@@ -449,8 +453,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
-`Page Footer External File Bridge` where `Page Footer Key`=%d",$page->data['Page Footer Key']);
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Footer External File Bridge` where `Page Footer Key`=%d",$page->data['Page Footer Key']);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	if ($row['External File Type']=='CSS')
@@ -505,6 +508,8 @@ $smarty->assign('title',$page->data['Page Title']);
 $smarty->assign('store',$store);
 $smarty->assign('page',$page);
 $smarty->assign('site',$site);
+
+
 $smarty->display('page.tpl');
 
 ?>
