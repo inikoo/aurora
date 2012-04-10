@@ -6143,7 +6143,7 @@ $customer->update($update_data);
 function pending_post(){
 
 
-
+//$conf=$_SESSION['state']['warehouse']['locations'];
 
     if (isset( $_REQUEST['parent']))
         $parent=$_REQUEST['parent'];
@@ -6193,14 +6193,20 @@ function pending_post(){
     else
         $tableid=0;
 
+	$elements=$conf['elements'];
 
- 
+ 	if (isset( $_REQUEST['elements_Send'])) {
+		$elements['Send']=$_REQUEST['elements_Send'];
+	}
+	if (isset( $_REQUEST['elements_ToSend'])) {
+		$elements['ToSend']=$_REQUEST['elements_ToSend'];
+	}
  
 
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
+    $_SESSION['state']['store']['pending_post']['elements']=$elements;
     $_SESSION['state']['store']['pending_post']['order']=$order;
     $_SESSION['state']['store']['pending_post']['order_dir']=$order_direction;
     $_SESSION['state']['store']['pending_post']['nr']=$number_results;
@@ -6217,6 +6223,27 @@ function pending_post(){
 
     $filter_msg='';
     $wheref='';
+
+
+
+	$_elements='';
+	foreach ($elements as $_key=>$_value) {
+		if ($_value) {
+			if ($_key=='Send') {
+				$_elements.=",'Send'";
+			}
+			elseif ($_key=='ToSend') {
+				$_elements.=",'To Send'";
+			}
+		}
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} else {
+		$where.=' and `Send Post Status` in ('.$_elements.')' ;
+	}
+
 
 
 
@@ -6516,6 +6543,7 @@ $requested=strftime("%e %b %y", strtotime($data['Date Creation']." +00:00"));
 
         $adata[]=array(
                      'id'=>$id,
+			'key'=>$data['Customer Send Post Key'],
                      'name'=>$name,
                      'location'=>$data['Customer Main Location'],
                      'orders'=>number($data['Customer Orders']),

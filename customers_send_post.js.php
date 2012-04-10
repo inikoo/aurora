@@ -14,7 +14,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	
 		    var CustomersColumnDefs = [ 
-				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					{key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				       ,{key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:210,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['table']['view']=='general'?'':'hidden:true,')?> width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       	,{key:"contact_since", label:"<?php echo _('Since')?>",<?php echo($_SESSION['state']['customers']['table']['view']=='general'?'':'hidden:true,')?>width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -39,15 +40,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"top_invoices", label:"<?php echo _('Rank Invoices')?>",width:121,<?php echo($_SESSION['state']['customers']['table']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"top_balance", label:"<?php echo _('Rank Balance')?>",width:120,<?php echo($_SESSION['state']['customers']['table']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"top_profits", label:"<?php echo _('Rank Profits')?>",width:120,<?php echo($_SESSION['state']['customers']['table']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-						  ,{key:"delete", label:"",sortable:false, width:16}
-				       ,{key:"mark_as_send", label:"",sortable:false, width:16}
+						  ,{key:"delete", label:"",sortable:false,width:16,sortable:false,action:'delete',object:'post_to_send'}
+				       ,{key:"mark_as_send", label:"",sortable:false, width:16,sortable:false,action:'edit',object:'post_to_send'}
 					];
 	store_id=Dom.get('store_id').value;
 
 request="ar_contacts.php?tipo=pending_post&parent=store&sf=0&parent_key="+Dom.get('store_key').value
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	  
-alert(request)
+//alert(request)
 	  
 	  this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -66,7 +67,7 @@ alert(request)
 		
 		
 		fields: [
-			 'id',
+			 'id','key',
 			 'name',
 			 'location',
 			 'orders',
@@ -115,7 +116,7 @@ alert(request)
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+	this.table0.subscribe("cellClickEvent", onCellClick);  
 		    
 		    
 	    this.table0.view='<?php echo$_SESSION['state']['customers']['table']['view']?>';
@@ -134,13 +135,57 @@ case('export'):
     }
 };
 
+function change_elements(){
+
+ids=['elements_Send','elements_ToSend'];
+
+
+if(Dom.hasClass(this,'selected')){
+
+var number_selected_elements=0;
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+number_selected_elements++;
+}
+}
+
+if(number_selected_elements>1){
+Dom.removeClass(this,'selected')
+
+}
+
+}else{
+Dom.addClass(this,'selected')
+
+}
+
+table_id=0;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+var request='';
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+request=request+'&'+ids[i]+'=1'
+}else{
+request=request+'&'+ids[i]+'=0'
+
+}
+}
+  alert(request);
+  
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+
+}
+
 
  function init(){
  
  
   init_search('customers_store');
 
-
+ids=['elements_Send','elements_ToSend'];
+ Event.addListener(ids, "click",change_elements);
  
 
 

@@ -122,6 +122,25 @@ var request='ar_edit_sites.php?tipo=edit_page_header&newvalue='+value+"&id="+Dom
 }
 
 
+function add_template(display_type,template){
+var request='ar_edit_sites.php?tipo=add_template&page_key=' + Dom.get('page_key').value +'&template='+template+'&display_type='+display_type
+	           
+	          
+alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	           alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+				window.location.href='custom_template.php?id='+r.template_id+'&page_id='+r.page_key;
+                        }else{
+				window.location.reload();
+                        }
+		     }
+    });
+}
+
+
 function set_template(display_type,template){
 var request='ar_edit_sites.php?tipo=change_template&page_key=' + Dom.get('page_key').value +'&template='+template+'&display_type='+display_type
 	           
