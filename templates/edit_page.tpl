@@ -571,10 +571,10 @@
 
 <div id="dialog_template_list"  style="position:absolute;top:-2000px;" >
 	<table border="0" style="margin-top:20px; width:100%">
+	<tr><td class="buttons"><button onClick="add_template('Template', '')">Add Custom Template</button></td></tr>
 	<tr><td class="buttons"><button onClick="set_template('Source', '')">PPP</button></td></tr>
 	<tr><td class="buttons"><button onClick="set_template('Template', 'template_list_left')">Template 1</button></td></tr>
-	<tr><td class="buttons"><button onClick="set_template('Template', 'template_single_button')">Template 1</button></td></tr>	
-
+	<tr><td class="buttons"><button onClick="set_template('Template', 'template_single_button')">Template 2</button></td></tr>
 	</table>
 </div>
 
