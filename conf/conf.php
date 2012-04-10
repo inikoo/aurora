@@ -2828,7 +2828,7 @@ $default_state=array(
 			'view'=>'general',
 			'f_field'=>'customer name',
 			'f_value'=>'',
-
+			'elements'=>array('Send'=>1,'ToSend'=>1)
 	
 		)
 

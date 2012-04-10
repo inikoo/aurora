@@ -19,7 +19,7 @@
 				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img src="art/icons/add.png" alt=""> {t}Order{/t}</button> <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> 
 				{if $new_customer}
 			     <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button>
-
+				
 			{/if}
 			</div>
 			<div style="clear:both">
@@ -28,13 +28,45 @@
 		<input type="hidden" id="modify" value="{$modify}" />
 		<input type="hidden" id="other_email_count" value="{$other_email_count}" />
 		<div style="width:520px;float:left;padding-top:0px">
-			<h1 style="padding-bottom:0px">
-				<span id="customer_name_heading" style="padding:2px 7px;padding-left:0;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"><span id="customer_name">{$customer->get('Customer Name')}</span> <img onmouseover="Dom.addClass('customer_name_heading','edit_over')" onmouseout="Dom.removeClass('customer_name_heading','edit_over')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> 
-			</h1>
+					
+
+			
+			
 			<span id="warning_message" class="edit_td_alert"> {foreach from=$all_warning item=item key=key} {foreach from=$item item=msg key=msg_key}  {$msg}<br />
 			{/foreach} {/foreach} </span> 
 			<table id="customer_data" border="0" style="width:100%;border-collapse: collapse;">
-				<tr>
+			<tr>
+			<td colspan=2>
+			
+			<div style="border:0px solid red;float:left;margin-right:20px">
+					{if $customer->get_image_src()}
+		<img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px" > 
+		{else}
+		<img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> 
+		{/if}
+					</div>
+			
+			<h1 style="padding-bottom:0px;width:300px">
+				<span id="customer_name_heading" style="padding:2px 7px;padding-left:0;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"><span id="customer_name">{$customer->get('Customer Name')}</span> <img onmouseover="Dom.addClass('customer_name_heading','edit_over')" onmouseout="Dom.removeClass('customer_name_heading','edit_over')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> 
+			</h1>
+			<table class="customer_show_data">
+			{if $customer->get('Customer Main Contact Key')} 
+						<tr id="main_contact_name_tr" onmouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
+							<td id="main_contact_name" colspan="2" class="aright">{$customer->get('Customer Main Contact Name')}</td>
+							<td><img alt="{t}Name{/t}" title="{t}Name{/t}" src="art/icons/user_suit.png" /></td>
+							<td><img onmouseover="Dom.addClass('main_contact_name_tr','edit_over')" onmouseout="Dom.removeClass('main_contact_name_tr','edit_over')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+						</tr>
+						{/if} 
+			
+			</table>
+			
+			</td>
+			<td>
+			
+			</td>
+			</tr>
+			
+			<tr>
 					{if $customer->get('Customer Main Address Key')} 
 					<td id="main_address_td" style="border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_main_address','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_main_address','visibility','hidden')"> <img onmouseover="Dom.addClass('main_address_td','edit_over')" onmouseout="Dom.removeClass('main_address_td','edit_over')" id="quick_edit_main_address" style="float:right;cursor:pointer;visibility:hidden" src="art/icons/edit.gif"> 
 					<div id="main_address">
@@ -62,13 +94,8 @@
 							</td>
 							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
-						{/if} {if $customer->get('Customer Main Contact Key')} 
-						<tr id="main_contact_name_tr" onmouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
-							<td id="main_contact_name" colspan="2" class="aright">{$customer->get('Customer Main Contact Name')}</td>
-							<td><img alt="{t}Name{/t}" title="{t}Name{/t}" src="art/icons/user_suit.png" /></td>
-							<td><img onmouseover="Dom.addClass('main_contact_name_tr','edit_over')" onmouseout="Dom.removeClass('main_contact_name_tr','edit_over')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
-						</tr>
 						{/if} 
+						
 						{if $customer->get('Customer Main Email Key')!=''} 
 						<tr id="main_email_tr" onmouseover="Dom.setStyle('quick_edit_email','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">
 							<td id="main_email" colspan="2" class="aright">{if $customer->get_main_email_user_key()}<a href="site_user.php?id={$customer->get_main_email_user_key()}" ><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if} {$customer->get('Customer Main XHTML email')}</td>

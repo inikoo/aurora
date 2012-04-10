@@ -198,7 +198,7 @@ request=request+'&'+ids[i]+'=0'
 }
 }
   
-  
+  alert(request);
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 
 
