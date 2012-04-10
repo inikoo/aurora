@@ -9,6 +9,11 @@
 	<h2>
 		{t}Registration{/t} 
 	</h2>
+	
+	<p style="padding:0 0 10px 0">
+	{$site->get('Site Registration Disclaimer')}
+	</p>
+	
 	<div style="border:1px solid #ccc;padding:20px;width:500px;float:left">
 		<table border="0">
 			<tr>
