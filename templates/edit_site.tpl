@@ -309,6 +309,18 @@
 						</td>
 					</tr>
 					<tr>
+								<td class="label">{t}Registration Disclaimer{/t}: <span id="registration_disclaimer_msg"></span></td>
+								<td style="text-align:left" colspan="2"> 
+								<div style="height:265px">
+					<textarea style="height:260px;width:600px;background-image:url(art/text_email_guide.png);" id="registration_disclaimer" value="{$site->get('Site Registration Disclaimer')|escape}" ovalue="{$site->get('Site Registration Disclaimer')|escape}" valid="0">{$site->get('Site Registration Disclaimer')}</textarea> 
+									<div id="registration_disclaimer_Container">
+									</div>
+								</div>
+								</td>
+					</tr>
+
+
+					<tr>
 						<td class="label">{t}Show Badges{/t}:</td>
 						<td> 
 						<input id="show_badges_method" value="sidebar" type="hidden" />

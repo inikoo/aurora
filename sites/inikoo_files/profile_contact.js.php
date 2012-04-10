@@ -8,6 +8,7 @@ var validate_scope_metadata;
 var validate_scope_data;
 var dialog_quick_edit_Customer_Contact;
 var dialog_quick_edit_Customer_Telephone;
+var dialog_quick_edit_Website;
 var scope='customer_profile';
 var number_of_categories=2;
 
@@ -65,7 +66,9 @@ function save_quick_edit_contact(){
 function save_quick_edit_telephone(){
     save_edit_general_bulk('customer_quick');
 }
-
+function save_quick_edit_website(){
+    save_edit_general_bulk('customer_quick');
+}
 <?php
 if(!empty($fields)){
 foreach($fields as $field){
@@ -124,6 +127,22 @@ function show_edit_telephone(){
 	dialog_quick_edit_Customer_Telephone.show();
 }
 
+
+function show_edit_website(){
+
+ region1 = Dom.getRegion('show_edit_website'); 
+    region2 = Dom.getRegion('dialog_quick_edit_Website'); 
+
+ var pos =[region1.right,region1.top]
+
+    Dom.setXY('dialog_quick_edit_Website', pos);
+
+
+
+
+	dialog_quick_edit_Website.show();
+}
+
 function show_upload_image(){
 
  region1 = Dom.getRegion('show_upload_image'); 
@@ -179,6 +198,10 @@ function validate_customer_telephone(query){
  validate_general('customer_quick','telephone',unescape(query));
 }
 
+
+function validate_customer_website(query){
+ validate_general('customer_quick','web',unescape(query));
+}
 <?php
 if(!empty($fields)){
 foreach($fields as $field){
@@ -350,6 +373,7 @@ var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Customer Name'}]}
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Contact','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Contact Name'}]}
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Telephone','validation':[{'regexp':regex_valid_tel,'invalid_msg':'Invalid Telephone'}]}
+	,'web':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Website','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Website'}]}
 
 <?php
 if(!empty($fields)){
@@ -372,6 +396,7 @@ foreach($fields as $field)
 Event.addListener('show_edit_name', "click", show_edit_name);
 Event.addListener('show_edit_contact', "click", show_edit_contact);
 Event.addListener('show_edit_telephone', "click", show_edit_telephone);
+Event.addListener('show_edit_website', "click", show_edit_website);
 Event.addListener('show_upload_image', "click", show_upload_image);
 <?php
 if(!empty($all_fields)){
@@ -391,6 +416,9 @@ dialog_quick_edit_Customer_Contact.render();
 
 dialog_quick_edit_Customer_Telephone = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Telephone", {context:["customer_telephone","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Telephone.render();
+
+dialog_quick_edit_Website = new YAHOO.widget.Dialog("dialog_quick_edit_Website", {context:["customer_website","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Website.render();
 
 dialog_image_upload = new YAHOO.widget.Dialog("dialog_image_upload", {context:["customer_telephone","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_image_upload.render();
@@ -415,6 +443,7 @@ print "\n";
 Event.addListener('close_quick_edit_name', "click", dialog_quick_edit_Customer_Name.hide,dialog_quick_edit_Customer_Name , true);
 Event.addListener('close_quick_edit_contact', "click", dialog_quick_edit_Customer_Contact.hide,dialog_quick_edit_Customer_Contact , true);
 Event.addListener('close_quick_edit_telephone', "click", dialog_quick_edit_Customer_Telephone.hide,dialog_quick_edit_Customer_Telephone , true);
+Event.addListener('close_quick_edit_website', "click", dialog_quick_edit_Website.hide,dialog_quick_edit_Website , true);
 
 
 <?php
@@ -449,6 +478,13 @@ customer_name_oACDS.queryMatchContains = true;
 var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Telephone","Customer_Telephone_Container", customer_name_oACDS);
 customer_name_oAutoComp.minQueryLength = 0; 
 customer_name_oAutoComp.queryDelay = 0.1;
+
+var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_website);
+customer_name_oACDS.queryMatchContains = true;
+var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Website","Customer_Website_Container", customer_name_oACDS);
+customer_name_oAutoComp.minQueryLength = 0; 
+customer_name_oAutoComp.queryDelay = 0.1;
+
 
 <?php
 if(!empty($fields)){
