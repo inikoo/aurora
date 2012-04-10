@@ -126,8 +126,9 @@ if($row['Order Current Dispatch State']=='Unknown')
 function transactions_dipatched() {
     if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
         $order_id=$_REQUEST['id'];
-    else
-        $order_id=$_SESSION['state']['order']['id'];
+    else{
+    	return;
+    }
 
 
 
