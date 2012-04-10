@@ -192,7 +192,7 @@
 			<tr>
 			
 			
-				<tr class="title">
+				<tr style="display:{if $site->get('Site Show Facebook')=='No' && $site->get('Site Show Twitter')=='No' && $site->get('Site Show Google')=='No' && $site->get('Site Show LinkedIn')=='No' && $site->get('Site Show Youtube')=='No' && $site->get('Site Show Flickr')=='No' && $site->get('Site Show Blog')=='No' && $site->get('Site Show Digg')=='No' && $site->get('Site Show RSS')=='No' && $site->get('Site Show Skype')=='No'}none{/if}" class="title">
 						<td colspan="5">{t}Social Sites{/t}</td>
 				</tr>
 				<tr style="height:10px">
