@@ -193,10 +193,14 @@ else if ($page->data['Page Code']=='profile') {
 
 		$smarty->assign('custom_fields',$custom_fields);
 
-
+$template_suffix='_'.$view;
 		$order_template='dummy.tpl';
 		if (isset($_REQUEST['order_id'])) {
 			$order=new Order($_REQUEST['order_id']);
+
+		$smarty->assign('customer',$customer);
+
+
 
 			if (!$order->id) {
 				header('Location: profile.php');
@@ -288,9 +292,9 @@ else if ($page->data['Page Code']=='profile') {
 				$smarty->assign('search_label',_('Orders'));
 				$smarty->assign('search_scope','orders_store');
 
-				$js_files[]='js/order_dispatched.js.php';
+				$js_files[]='js/order_dispatched.js';
 				$order_template='order_dispatched.tpl';
-
+$template_suffix='_order_dispatched';
 
 				break;
 			case('Cancelled'):
@@ -321,7 +325,7 @@ else if ($page->data['Page Code']=='profile') {
 		$smarty->assign('order_template',$order_template);
 
 
-		$template_suffix='_'.$view;
+		
 
 		$smarty->assign('view',$view);
 
@@ -492,6 +496,8 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 }
 else {
 	$smarty->assign('type_content','file');
+
+	
 	$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
 	$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
