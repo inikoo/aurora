@@ -145,7 +145,18 @@
 							<td><img alt="{t}Fax{/t}" title="{t}Fax{/t}" src="art/icons/printer.png" /></td>
 							<td id="fax_label{$key}" style="color:#777;font-size:80%">{$other_tel.label} <img onmouseover="Dom.addClass('other_fax_tr','edit_over')" onmouseout="Dom.removeClass('other_fax_tr','edit_over')" id="quick_edit_other_fax{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
-						{/foreach} {foreach from=$show_case key=name item=value} {if $value!=''} 
+						{/foreach} 
+
+						{if $customer->get('Customer Website')} 
+						<tr id="website_tr" onmouseover="Dom.setStyle('quick_edit_website','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_website','visibility','hidden')">
+							<td id="website" colspan="2" class="aright">{$customer->get('Customer Website')}</td>
+							<td><img alt="{t}Fax{/t}" title="{t}Website{/t}" src="art/icons/world.png" /></td>
+							<td id="website_label{$customer->get('Customer Main FAX Key')}" style="color:#777;font-size:80%"><img onmouseover="Dom.addClass('website_tr','edit_over')" onmouseout="Dom.removeClass('website_tr','edit_over')" id="quick_edit_website" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
+						</tr>
+						{/if}
+
+
+						{foreach from=$show_case key=name item=value} {if $value!=''} 
 						<tr>
 							<td colspan="2" class="aright">{$value}</td>
 							<td 
@@ -972,6 +983,31 @@
 		</tr>
 	</table>
 </div>
+
+<div id="dialog_quick_edit_Customer_Website" style="padding:10px">
+	<table style="margin:10px">
+
+		<tr>
+			<td>{t}Website:{/t}</td>
+			<td> 
+			<div style="width:200px">
+				<input type="text" id="Customer_Website" value="{$customer->get('Customer Website')}" ovalue="{$customer->get('Customer Website')}" valid="0"> 
+				<div id="Customer_Website_Container">
+				</div>
+			</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons" style="margin-top:10px">
+				<span id="Customer_Website_msg"></span> <button class="positive" id="save_quick_edit_web">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_web">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+
 {foreach from=$customer->get_other_mobiles_data() item=other_mobile key=key} 
 <div id="dialog_quick_edit_Customer_Mobile{$key}" style="padding:10px">
 	<table style="margin:10px">

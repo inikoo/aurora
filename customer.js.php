@@ -20,6 +20,7 @@ var dialog_quick_edit_Customer_Main_Email;
 var dialog_quick_edit_Customer_Main_Address;
 var dialog_quick_edit_Customer_Main_Telephone;
 var dialog_quick_edit_Customer_Main_Mobile;
+var dialog_quick_edit_Customer_Website;
 var dialog_quick_edit_Customer_Main_FAX;
 var customer_key=<?php echo $_REQUEST['customer_key']  ?>;
 var customer_type="<?php echo $_REQUEST['customer_type']  ?>";
@@ -185,7 +186,7 @@ var validate_scope_data=
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':regex_valid_tel,'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
 	,'mobile':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Mobile','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Mobile')?>'}]}
 	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_FAX','validation':[{'regexp':"^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*$",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
-
+	,'web':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Website','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Website')?>'}]}
 <?php
 
 foreach($customer->get_other_emails_data()  as $email_key=>$email  ){
@@ -1467,6 +1468,12 @@ function save_quick_edit_mobile(){
     save_edit_general_bulk('customer_quick');
 	//window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
 }
+function save_quick_edit_web(){
+
+    save_edit_general_bulk('customer_quick');
+	//window.location ='http://'+ window.location.host + window.location.pathname+'?id='+customer_id;
+}
+
 function save_quick_edit_fax(){
 	//alert('fax');
 	//validate_customer_fax();
@@ -1870,6 +1877,7 @@ list_of_dialogs=["dialog_quick_edit_Customer_Name",
 "dialog_quick_edit_Customer_Main_Email",
 "dialog_quick_edit_Customer_Main_Telephone",
 "dialog_quick_edit_Customer_Main_Mobile",
+"dialog_quick_edit_Customer_Website",
 "dialog_quick_edit_Customer_Main_FAX"
 <?php
 foreach($customer->get_other_emails_data() as $key=>$value)
@@ -2038,6 +2046,8 @@ dialog_quick_edit_Customer_Main_Mobile.render();
 dialog_quick_edit_Customer_Main_FAX = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_FAX", {context:["quick_edit_main_fax","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Main_FAX.render();
 
+dialog_quick_edit_Customer_Website = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Website", {context:["quick_edit_website","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_quick_edit_Customer_Website.render();
 
 <?php
 	foreach($customer->get_other_emails_data() as $key=>$value){
@@ -2080,6 +2090,7 @@ Event.addListener('quick_edit_main_address', "click", dialog_quick_edit_Customer
 Event.addListener('quick_edit_main_telephone', "click", dialog_quick_edit_Customer_Main_Telephone_);
 Event.addListener('quick_edit_main_mobile', "click", dialog_quick_edit_Customer_Main_Mobile_);
 Event.addListener('quick_edit_main_fax', "click", dialog_quick_edit_Customer_Main_FAX_);
+Event.addListener('quick_edit_website', "click", dialog_quick_edit_Customer_Website_);
 
 
 <?php
@@ -2158,6 +2169,9 @@ Event.addListener('close_quick_edit_mobile', "click", dialog_quick_edit_Customer
 Event.addListener('save_quick_edit_fax', "click", save_quick_edit_fax, true);
 Event.addListener('close_quick_edit_fax', "click", dialog_quick_edit_Customer_Main_FAX.hide,dialog_quick_edit_Customer_Main_FAX , true);
 
+
+Event.addListener('save_quick_edit_web', "click", save_quick_edit_web, true);
+Event.addListener('close_quick_edit_web', "click", dialog_quick_edit_Customer_Website.hide,dialog_quick_edit_Customer_Website , true);
 
 	var customer_email_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_email);
     customer_email_oACDS.queryMatchContains = true;
@@ -2338,6 +2352,12 @@ $mobile_key
     var customer_mobile_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Mobile","Customer_Main_Mobile_Container", customer_mobile_oACDS);
     customer_mobile_oAutoComp.minQueryLength = 0; 
     customer_mobile_oAutoComp.queryDelay = 0.1;
+
+    var customer_mobile_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_website);
+    customer_mobile_oACDS.queryMatchContains = true;
+    var customer_mobile_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Website","Customer_Website_Container", customer_mobile_oACDS);
+    customer_mobile_oAutoComp.minQueryLength = 0; 
+    customer_mobile_oAutoComp.queryDelay = 0.1;
 	
 	
     var customer_mobile_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_mobile_comment);
@@ -2458,6 +2478,12 @@ function dialog_quick_edit_Customer_Main_Mobile_(){
 	hide_all_dialogs();
 	dialog_quick_edit_Customer_Main_Mobile.show();
 }
+function dialog_quick_edit_Customer_Website_(){
+	Dom.get('Customer_Website').value=Dom.get('Customer_Website').getAttribute('ovalue');
+	hide_all_dialogs();
+	dialog_quick_edit_Customer_Website.show();
+}
+
 function dialog_quick_edit_Customer_Main_FAX_(){
 	Dom.get('Customer_Main_FAX').value=Dom.get('Customer_Main_FAX').getAttribute('ovalue');
 	<?php if($customer->get_principal_telecom_comment('FAX')) {?>
@@ -2483,6 +2509,32 @@ foreach($customer->get_other_faxes_data() as $key=>$value){
 function validate_customer_name(query){
  validate_general('customer_quick','name',unescape(query));
 }
+/*
+function validate_customer_website(query){
+ validate_general('customer_quick','web',unescape(query));
+}
+*/
+function validate_customer_website(query){
+//alert('q: ' + query)
+if(query==''){
+    validate_scope_data.customer_quick.web.validated=true;
+    
+ if(Dom.get(validate_scope_data.customer_quick.web.name).getAttribute('ovalue')!=query){
+     validate_scope_data.customer_quick.web.changed=true;
+ }else{
+    validate_scope_data.customer_quick.web.changed=false;
+ }
+    
+	validate_scope('customer_quick'); 
+    Dom.get(validate_scope_data.customer_quick.web.name+'_msg').innerHTML='<?php echo _('This operation will remove the website')?>';
+}else{
+validate_general('customer_quick','web',unescape(query));
+
+}
+
+
+}
+
 
 function validate_customer_main_contact_name(query){
  validate_general('customer_quick','contact',unescape(query));
