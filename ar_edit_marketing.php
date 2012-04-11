@@ -460,6 +460,17 @@ if($email_campaign_data['Email Campaign Name']==''){
                        'action'=>'created',
                        'email_campaign_key'=>$email_campaign->id
                    );
+                   
+        if(isset($data['values']['deal_key'])){
+        	$sql=sprintf("update `Deal Dimension` set `Deal Remainder Email Campaign Key`=%s where `Deal Key`=%d",
+        	$email_campaign->id,
+        	$data['values']['deal_key']
+        	);
+        	mysql_query($sql);
+        //	print $sql;
+        }
+                   
+                   
     }
     elseif($email_campaign->found) {
         $response= array(
@@ -1624,7 +1635,8 @@ function color_schemes() {
 
 
 
-        $scheme_data=$row['Kbase Modifed'].';'.$row['Background Body'].';'.$row['Background Header'].';'.$row['Background Container'].';'.$row['Background Footer'].';'.$row['Text Header'].';'.$row['Link Header'].';'.$row['Text Footer'].';'.$row['Link Footer'].';'.$row['Text Container'].';'.$row['Link Container'].';'.$row['H1'].';'.$row['H2'].';'.$scheme_selected;
+        //$scheme_data=$row['Kbase Modifed'].';'.$row['Background Body'].';'.$row['Background Header'].';'.$row['Background Container'].';'.$row['Background Footer'].';'.$row['Text Header'].';'.$row['Link Header'].';'.$row['Text Footer'].';'.$row['Link Footer'].';'.$row['Text Container'].';'.$row['Link Container'].';'.$row['H1'].';'.$row['H2'].';'.$scheme_selected;
+        $scheme_data=';'.$row['Background Body'].';'.$row['Background Header'].';'.$row['Background Container'].';'.$row['Background Footer'].';'.$row['Text Header'].';'.$row['Link Header'].';'.$row['Text Footer'].';'.$row['Link Footer'].';'.$row['Text Container'].';'.$row['Link Container'].';'.$row['H1'].';'.$row['H2'].';'.$scheme_selected;
 
         $adata[]=array(
                      'id'=>$row['Email Template Color Scheme Key'],
@@ -1791,12 +1803,11 @@ function email_template_header_images() {
     $current_header_image_key=0;
 
     if ($email_content_key) {
-        $sql=sprintf("select `Email Content Template Header Image Key` from  `Email Content Dimension`  where `Email Content Key`=%d",$email_content_key);
-
+        $sql=sprintf("select `Email Template Header Image Key` from  `Email Content Dimension`  where `Email Content Key`=%d",$email_content_key);
         $res=mysql_query($sql);
         if ($row=mysql_fetch_assoc($res)) {
 
-            $current_header_image_key= $row['Email Content Template Header Image Key'];
+            $current_header_image_key= $row['Email Template Header Image Key'];
         }
     }
 //   $sql="select *  from `Email Template Header Image Dimension`HI  left join `Image Dimension` I on (I.`Image Key`=HI.`Image Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
@@ -2311,7 +2322,7 @@ function delete_template_header_image($data) {
                        'state'=>200,
                        'action'=>'deleted'
                    );
-        $sql=sprintf("update `Email Content Dimension` set `Email Content Template Header Image Key`=0   where  `Email Content Template Header Image Key`=%d ",
+        $sql=sprintf("update `Email Content Dimension` set `Email Template Header Image Key`=0   where  `Email Template Header Image Key`=%d ",
                      $data['id']);
         $res=mysql_query($sql);
 
