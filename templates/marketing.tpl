@@ -81,7 +81,7 @@
 <div id="dialog_new_email_campaign" style="padding:20px 10px 20px 10px;width:400px">
 
 <table class="edit" border=0 style="margin:0px auto">
-
+<tr>
 <td colspan="2">{t}Type of email{/t}:</td>
 </tr>
 <tr>

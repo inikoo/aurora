@@ -83,6 +83,60 @@ $js_files=array(
           );
 
 
+if($deal->get('Deal Terms Type')=='Order Interval'){
+
+
+
+
+$js_files[]=$yui_path.'editor/editor-min.js';
+$js_files[]=$yui_path.'slider/slider-min.js';
+$js_files[]=$yui_path.'colorpicker/colorpicker-min.js';
+
+$js_files[]='js/editor_image_uploader.js';
+    $js_files[]='js/rgbcolor.js';
+$js_files[]='js/build_email.js';	
+
+
+
+    $color_schemes=array();
+    $sql=sprintf("select * from `Email Template Color Scheme Dimension` where `Store Key`=%d  limit 100",$store->id);
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $color_scheme=array();
+        foreach($row as $key=>$value) {
+            $color_scheme[preg_replace('/ /','_',$key)]=$value;
+        }
+        $color_schemes[]=$color_scheme;
+    }
+    $smarty->assign('color_schemes',$color_schemes);
+
+
+
+$smarty->assign('filter10','name');
+$smarty->assign('filter_value10','');
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name like <i>x</i>'),'label'=>_('Name')),
+);
+$smarty->assign('filter_menu10',$filter_menu);
+$smarty->assign('filter_name10',$filter_menu['name']['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu10',$paginator_menu);
+
+
+$smarty->assign('filter11','name');
+$smarty->assign('filter_value11','');
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name like <i>x</i>'),'label'=>_('Name')),
+);
+$smarty->assign('filter_menu11',$filter_menu);
+$smarty->assign('filter_name11',$filter_menu['name']['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu11',$paginator_menu);
+
+
+}
+
+
 $smarty->assign('parent','marketing');
 $smarty->assign('title',$deal->data['Deal Name']);
 $smarty->assign('css_files',$css_files);
