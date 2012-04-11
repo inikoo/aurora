@@ -31,7 +31,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
 
-$sql=sprintf("update orders_data.orders orders_data.orders set timestamp=0 where id=%d",$id);
+$sql=sprintf("update orders_data.orders set timestamp=0 where id=%d",$id);
 print "$sql\n";
 mysql_query($sql);
 
