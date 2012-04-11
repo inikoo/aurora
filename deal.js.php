@@ -171,6 +171,247 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	
+	
+	
+	
+	
+	
+	
+	
+	
+        var tableid=10; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+	    				    {key:"id", label:"",hidden:true,action:"none",isPrimaryKey:true}
+	    				    ,{key:"name", label:"<?php echo _('Name')?>",width:170,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                        ,{key:"palette", label:"<?php echo _('Palette')?>",width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                        ,{key:"used",label:"<?php echo _('In Use')?>", width:40,className:"aright"}
+
+			                ,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'color_scheme'}
+			  			];
+			       
+		request="ar_edit_marketing.php?tipo=color_schemes&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&sf=0&email_content_key="+Dom.get('email_content_key').value	       
+
+
+		this.dataSource10 = new YAHOO.util.DataSource(request);
+	 this.dataSource10.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource10.connXhrMode = "queueRequests";
+	    	    this.dataSource10.table_id=tableid;
+
+	    this.dataSource10.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		      rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		
+		fields: [
+			 "id","name","palette","delete","used"
+			 ]};
+
+	    this.table10 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource10
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator10', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info10'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "name",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table10.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table10.doBeforeSortColumn = mydoBeforeSortColumn;
+	  this.table10.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table10.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        this.table10.subscribe("cellClickEvent", onCellClick);      	    
+     
+ this.table10.table_id=tableid;
+     this.table10.subscribe("renderEvent", myrenderEvent);
+
+	    this.table10.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table10.filter={key:'name',value:''};
+
+
+
+  var tableid=11; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+	    				    {key:"id", label:"",hidden:true,action:"none",isPrimaryKey:true}
+	    				    ,{key:"name", label:"<?php echo _('Name')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                        ,{key:"image", label:"<?php echo _('Image')?>",width:610,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                        ,{key:"used",label:"<?php echo _('In Use')?>", width:40,className:"aright"}
+
+			                ,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'template_header_image'}
+			  			];
+			
+request="ar_edit_marketing.php?tipo=email_template_header_images&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&sf=0&email_content_key="+Dom.get('email_content_key').value
+
+		this.dataSource11 = new YAHOO.util.DataSource(request);
+	 this.dataSource11.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource11.connXhrMode = "queueRequests";
+	    	    this.dataSource11.table_id=tableid;
+
+	    this.dataSource11.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		     rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		
+		fields: [
+			 "id","name","image","delete","used"
+			 ]};
+
+	    this.table11 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource11
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator11', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info11'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "name",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table11.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table11.doBeforeSortColumn = mydoBeforeSortColumn;
+	  this.table11.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table11.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        this.table11.subscribe("cellClickEvent", onCellClick);      	    
+     
+
+ this.table11.table_id=tableid;
+     this.table11.subscribe("renderEvent", myrenderEvent);
+	    this.table11.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table11.filter={key:'name',value:''};
+
+
+
+
+
+  var tableid=12; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+	    				    {key:"id", label:"",hidden:true,action:"none",isPrimaryKey:true}
+	    				    ,{key:"name", label:"<?php echo _('Name')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                        ,{key:"image", label:"<?php echo _('Image')?>",width:610,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                        ,{key:"used",label:"<?php echo _('In Use')?>", width:40,className:"aright"}
+
+			                ,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'template_postcard'}
+			  			];
+			       
+		this.dataSource12 = new YAHOO.util.DataSource("ar_edit_marketing.php?tipo=email_template_postcards&store_key="+Dom.get('store_key').value+"&tableid="+tableid+"&sf=0&email_content_key="+Dom.get('email_content_key').value);
+	 this.dataSource12.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource12.connXhrMode = "queueRequests";
+	    	    this.dataSource12.table_id=tableid;
+
+	    this.dataSource12.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		
+		fields: [
+			 "id","name","image","delete","used"
+			 ]};
+
+	    this.table12 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource12
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator12', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info12'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "name",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table12.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table12.doBeforeSortColumn = mydoBeforeSortColumn;
+	  this.table12.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table12.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	        this.table12.subscribe("cellClickEvent", onCellClick);      	    
+     
+ this.table12.table_id=tableid;
+     this.table12.subscribe("renderEvent", myrenderEvent);
+
+
+	    this.table12.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table12.filter={key:'name',value:''};
+
+	
+	
+	
+	
+	
 	    
 	    
 
@@ -181,7 +422,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+function update_objects_table(){
 
+}
 
 
 function change_new_email_campaign_type(){

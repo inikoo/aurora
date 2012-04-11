@@ -1,3 +1,9 @@
+
+<input type="hidden" id="email_content_key" value="{$email_campaign->get_first_content_key()}" >
+<input type="hidden" id="email_campaign_key" value="{$email_campaign->id}" >
+
+
+
 <tbody id="text_email_fields" style="{if $email_campaign->get('Email Campaign Content Type')!='Plain'}display:none{/if}">
 
 

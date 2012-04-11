@@ -732,7 +732,7 @@ function build_email_init(){
        Event.addListener('reset_edit_email_content_html', "click", reset_edit_email_content_html);
     Event.addListener('save_edit_email_content_html', "click", save_edit_email_content_html);
     
-   alert("xx")
+  
      
        var myConfig = {
         height: '300px',

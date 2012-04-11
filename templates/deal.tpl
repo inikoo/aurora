@@ -77,6 +77,7 @@
 
 {if $deal->get('Deal Remainder Email Campaign Key')}
 
+
 {if $deal->remainder_email_campaign->get('Email Campaign Status')=='Creating'}
 
 
