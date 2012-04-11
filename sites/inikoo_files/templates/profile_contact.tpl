@@ -13,11 +13,11 @@
 
 {if $site->get('Show Site Badges')=='Yes'} 
 <div style="border:0px solid #ccc;padding:0px 0px 0 0;width:890px;font-size:15px;margin-left:20px;margin-top:20px">
-	
-	{include file='customer_badges.tpl' customer=$page->customer} 
-	<div style="float:left;;border:1px solid #ccc;;height:60px;width:100px;;padding:5px 20px;margin-left:20px">
-		Thank you for trading with us! 
+	<div style="float:left;;border:0px solid #ccc;;height:60px;width:350px;;padding:5px 20px;margin-left:20px;font-size:80%">
+		This profile page is your way to tell us something about you that will help us to help you. The awards on the right illuminate as you get to know us better. Mouse over the awards to see how to get them, a full set will trigger your <i>Most Favoured Trader</i> status.
 	</div>
+	{include file='customer_badges.tpl' customer=$page->customer} 
+	
 	<div style="clear:both">
 	</div>
 </div>
