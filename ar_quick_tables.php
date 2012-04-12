@@ -635,7 +635,7 @@ function part_list() {
     $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
     $sql="select count(DISTINCT `Part SKU`) as total from `Part Dimension` $where $wheref  ";
-print $sql;
+//print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];

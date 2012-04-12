@@ -63,16 +63,15 @@ print $row['Date']."\t".$row2['Part SKU'].'_'.$row2['Location Key']."\t\r";
 exit;
 */
 $from=date("Y-m-d",strtotime('now -1 day'));
-//$from="2012-02-12";
-$to="2007-01-01";
+$to=date("Y-m-d");
 
-$sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`<=%s and `Date`>=%s order by `Date` desc",
+$sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
 	prepare_mysql($from),prepare_mysql($to));
 $res=mysql_query($sql);
-//print $sql;
+
 while ($row=mysql_fetch_array($res)) {
 	print $row['Date']."\r";
-	$where=' true';
+	$where=' `Part SKU`=39077';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
 
 	//print $sql;
@@ -80,8 +79,11 @@ while ($row=mysql_fetch_array($res)) {
 	$count=0;
 	while ($row2=mysql_fetch_array($res2)) {
 		print "\t\t\t\tChecking:".$row2['Part SKU']."\r";
-		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where  `Inventory Transaction Type`='Associate' and  `Part SKU`=%d  ",$row2['Part SKU']);
-		//print $sql;
+		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where  `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s group by `Location Key`",
+		$row2['Part SKU'],
+		prepare_mysql($row['Date'])
+		);
+		//print "$sql\n";
 		$result=mysql_query($sql);
 		$_locations=array();
 		while ($row3=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -93,6 +95,9 @@ while ($row=mysql_fetch_array($res)) {
 			}
 
 			$part_location=new PartLocation($row2['Part SKU'].'_'.$row3['Location Key']);
+			
+			print $row2['Part SKU'].'_'.$row3['Location Key']."\n";
+			
 			$part_location->update_stock_history_date($row['Date']);
 		}
 
