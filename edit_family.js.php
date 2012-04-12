@@ -555,7 +555,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    //,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 
 				     ];
-
+//alert("ar_edit_assets.php?tipo=edit_products&sf=0&parent=family&parent_key="+Dom.get('family_key').value)
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_products&sf=0&parent=family&parent_key="+Dom.get('family_key').value);
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

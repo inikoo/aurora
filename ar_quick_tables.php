@@ -822,7 +822,7 @@ function family_list() {
 
     }
 
-        $where=sprintf('where true ');
+      
 
     $filter_msg='';
     $wheref='';
