@@ -1126,7 +1126,7 @@ function list_products_for_edition() {
 	$res = mysql_query($sql);
 	$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		if ($row['Product Total Quantity Ordered']==0 and  $row['Product Total Quantity Invoiced']==0 and  $row['Product Total Quantity Delivered']==0  ) {
+		if ($row['Product Total Acc Quantity Ordered']==0 and  $row['Product Total Acc Quantity Invoiced']==0 and  $row['Product Total Acc Quantity Delivered']==0  ) {
 			$delete='<img src="art/icons/delete.png" /> <span>'._('Delete').'<span>';
 			$delete_type='delete';
 		} else {
