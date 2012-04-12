@@ -45,6 +45,9 @@ return;
 	$gid=0;
 	if ($parent=='part') {
 
+
+	
+
 		$sql=sprintf("select ISF.`Location Key`,`Location Code` from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) where `part SKU` =%d group by `Location Key` ",$parent_key);
 		$res=mysql_query($sql);
 
@@ -52,7 +55,7 @@ return;
 		while ($row=mysql_fetch_assoc($res)) {
 			$graphs_data[]=array(
 				'gid'=>$gid,
-				'label'=>_('Stock').":",
+				'label'=>($output=='value'?_('Stock Value'):_('Stock')).":",
 				'title'=>$row['Location Code'],
 				'short_title'=>$row['Location Code'],
 				'csv_args'=>'tipo=part_location_stock_history&output='.$output.'&location_key='.$row['Location Key'].'&part_sku='.$parent_key
@@ -75,6 +78,11 @@ return;
 
 			array_unshift($graphs_data, $all_locations);
 		}
+		
+		
+		
+		
+		
 
 	}else {
 		$graphs_data[]=array(
