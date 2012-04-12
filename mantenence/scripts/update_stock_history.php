@@ -62,7 +62,7 @@ print $row['Date']."\t".$row2['Part SKU'].'_'.$row2['Location Key']."\t\r";
 
 exit;
 */
-$from=date("Y-m-d",strtotime('now -1 day'));
+$from=date("Y-m-d",strtotime('now -1000 day'));
 $to=date("Y-m-d");
 
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
@@ -72,6 +72,7 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 	print $row['Date']."\r";
 	$where=' `Part SKU`=39077';
+	$where='  true';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
 
 	//print $sql;
@@ -96,7 +97,7 @@ while ($row=mysql_fetch_array($res)) {
 
 			$part_location=new PartLocation($row2['Part SKU'].'_'.$row3['Location Key']);
 			
-			print $row2['Part SKU'].'_'.$row3['Location Key']."\n";
+			//print $row2['Part SKU'].'_'.$row3['Location Key']."\n";
 			
 			$part_location->update_stock_history_date($row['Date']);
 		}

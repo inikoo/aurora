@@ -424,7 +424,6 @@ function department_list() {
 
 
     $sql="select count(DISTINCT `Product Department Name`) as total from `Product Department Dimension` $where $wheref  ";
-
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
