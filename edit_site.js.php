@@ -107,7 +107,12 @@ var validate_scope_data=
 	'email_inikoo_mail':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_inikoo_mail','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
 	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
 }
-
+, 'email_credentials_MadMimi':{
+	'api_email_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'API_Email_Address_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'api_key_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'API_Key_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid API Key')?>'}]}	
+	,'email_MadMimi':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Address_MadMimi','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Email Address')?>'}]}
+	,'email_provider':{'changed':true,'validated':true,'required':true,'group':1,'type':'item','name':'Email_Provider','ar':false,'validation':false,'invalid_msg':''}
+}
 		
 };
 
@@ -125,6 +130,7 @@ var validate_scope_metadata={
 ,'email_credentials_direct_mail':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'email_credentials_other':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 ,'email_credentials_inikoo_mail':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
+,'email_credentials_MadMimi':{'type':'edit','ar_file':'ar_edit_sites.php','key_name':'site_key','key':<?php echo$_SESSION['state']['site']['id']?>}
 };
 
 

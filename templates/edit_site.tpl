@@ -549,7 +549,7 @@
 							</div>
 						</div>
 						</td>
-						<td id="Site_Email_Marketing_Custom_Label_msg" class="edit_td_alert"></td>
+						<td id="Site_Welcome EmailEmail_Marketing_Custom_Label_msg" class="edit_td_alert"></td>
 					</tr>
 					<tr>
 						<td class="label">{t}Postal Marketing Custom Label{/t}:</td>

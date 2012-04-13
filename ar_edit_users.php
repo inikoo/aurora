@@ -1272,15 +1272,13 @@ $login_handle=$user->data['User Handle'];
 	} else
 		$message_data['plain']=null;
 
-	//print_r($message_data);
-/*
-	$send_email=new SendEmail();
+	$message_data['email_placeholders']=array(
+			'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Passworsd').'</a>', 'masterkey_link'=>$masterkey_link
+			);
 
-	$send_email->track=false;
-	$send_email->secret_key=$CKEY;
+	$message_data['promotion_name']='Forgot Password';
 
-	$result=$send_email->send($message_data);
-*/
+
 	$send_email=new SendEmail();
 	$send_email->secret_key=CKEY;
 	$send_email->track=false;
@@ -1385,11 +1383,19 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 		} else
 			$message_data['plain']=null;
 
-		//print_r($message_data);
-		$send_email=new SendEmail();
+	$message_data['email_placeholders']=array('greetings' => $greetings);
 
+	$message_data['promotion_name']='Welcome Email';
+
+		//print_r($message_data);
+
+
+		$send_email=new SendEmail();
+		$send_email->secret_key=CKEY;
 		$send_email->track=false;
-		$send_email->secret_key=$secret_key;
+
+		$send_email->set($message_data);
+		$result=$send_email->send();
 
 
 
