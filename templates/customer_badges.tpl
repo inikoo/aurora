@@ -1,5 +1,5 @@
-<div id="badge_1" onClick="show_badge_info(this, 'dialog_badge_info_1')" style="float:left;;margin-left:20px;width:70px">{$customer->display_badge(1)}</div>
-<div id="badge_2" onClick="show_badge_info(this, 'dialog_badge_info_2')" style="float:left;;margin-left:20px;width:70px">{$customer->display_badge(2)}</div>
-<div id="badge_3" onClick="show_badge_info(this, 'dialog_badge_info_3')" style="float:left;;margin-left:20px;width:70px">{$customer->display_badge(3)}</div>
-<div id="badge_4" onClick="show_badge_info(this, 'dialog_badge_info_4')" style="float:left;;margin-left:20px;width:70px">{$customer->display_badge(4)}</div>
-<div id="badge_5" onClick="show_badge_info(this, 'dialog_badge_info_5')" style="float:left;;margin-left:20px;width:70px">{$customer->display_badge(5)}</div>
+<div id="badge_1" onClick="show_badge_info(this, 'dialog_badge_info_1')" style="float:left;;margin-left:20px;width:70px" title="Gold Reward. Place an order within 30 days of last order to keep this status" >{$customer->display_badge(1)}</div>
+<div id="badge_2" onClick="show_badge_info(this, 'dialog_badge_info_2')" style="float:left;;margin-left:20px;width:70px" title="Freedom Figther. Buy any product from Freeinc range and help the Freedom Fund">{$customer->display_badge(2)}</div>
+<div id="badge_3" onClick="show_badge_info(this, 'dialog_badge_info_3')" style="float:left;;margin-left:20px;width:70px" title="Let us know more about you">{$customer->display_badge(3)}</div>
+<div id="badge_4" onClick="show_badge_info(this, 'dialog_badge_info_4')" style="float:left;;margin-left:20px;width:70px" title="Receive newsletters & updates">{$customer->display_badge(4)}</div>
+<div id="badge_5" onClick="show_badge_info(this, 'dialog_badge_info_5')" style="float:left;;margin-left:20px;width:70px" title="Ten orders or more will light this badge">{$customer->display_badge(5)}</div>

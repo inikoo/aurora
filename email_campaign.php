@@ -137,6 +137,29 @@ case 'Creating':
     }
     $smarty->assign('color_schemes',$color_schemes);
 
+
+
+$smarty->assign('filter10','name');
+$smarty->assign('filter_value10','');
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name like <i>x</i>'),'label'=>_('Name')),
+);
+$smarty->assign('filter_menu10',$filter_menu);
+$smarty->assign('filter_name10',$filter_menu['name']['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu10',$paginator_menu);
+
+
+$smarty->assign('filter11','name');
+$smarty->assign('filter_value11','');
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name like <i>x</i>'),'label'=>_('Name')),
+);
+$smarty->assign('filter_menu11',$filter_menu);
+$smarty->assign('filter_name11',$filter_menu['name']['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu11',$paginator_menu);
+
     break;
 
 case 'Ready':

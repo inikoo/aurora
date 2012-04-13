@@ -6106,7 +6106,7 @@ class Customer extends DB_Table {
 	function badge_caption_loyalty($state) {
 
 		if (!$state) {
-			$to_go=10-$this->data['Customer Orders Invoiced'];
+			$to_go=$this->data['Customer Orders Invoiced'];
 			return number($to_go);
 		}else {
 			return "";

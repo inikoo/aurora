@@ -6068,7 +6068,17 @@ $tax_number=$customer->data['Customer Tax Number'];
 $tax_number=preg_replace('/^'.$country->data['Country 2 Alpha Code'].'/i','',$tax_number);
 $tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
 	
-check_european_tax_number($country->data['Country 2 Alpha Code'],$tax_number,$customer);
+	
+	
+	if(preg_match('/^gr$/i',$country->data['Country 2 Alpha Code'])){
+	$country_code='EL';
+	}else{
+	$country_code=$country->data['Country 2 Alpha Code'];
+	}
+	
+	$tax_number=preg_replace('/^'.$country_code.'/i','',$tax_number);
+$tax_number=preg_replace('/[^a-z^0-9]/i','',$tax_number);
+check_european_tax_number($country_code,$tax_number,$customer);
 }
 
 }
@@ -6076,6 +6086,9 @@ check_european_tax_number($country->data['Country 2 Alpha Code'],$tax_number,$cu
 
 function check_european_tax_number($country_code,$tax_number,$customer){
 //print "$country_code,$tax_number";
+
+
+
 $result=array();
 
 try { 

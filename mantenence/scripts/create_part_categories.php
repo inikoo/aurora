@@ -58,7 +58,7 @@ while ($row=mysql_fetch_assoc($res)) {
             $fam_code=$match[1];
             $family=new Family('code_store',$fam_code,1);
             if ($family->id) {
-                print "xxx->".$family->data['Product Family Code']."\n";
+               // print "xxx->".$family->data['Product Family Code']."\n";
                 $data=array(
                           'Category Parent Key'=>$main_cat->id,
                           'Category Warehouse Key'=>1,
@@ -132,13 +132,13 @@ function associate_subject_to_category_radio($data) {
         $old_category->update_number_of_subjects();
     $old_category->update_subjects_data();
 
-    $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d)",
+    $sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,NULL)",
                  $data['category_key'],
                  prepare_mysql($data['subject']),
                  $data['subject_key']
                 );
     mysql_query($sql);
-
+	//print "$sql\n";
     if (mysql_affected_rows()>0) {
 
 
