@@ -424,7 +424,6 @@ function department_list() {
 
 
     $sql="select count(DISTINCT `Product Department Name`) as total from `Product Department Dimension` $where $wheref  ";
-
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -635,7 +634,7 @@ function part_list() {
     $wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
 
     $sql="select count(DISTINCT `Part SKU`) as total from `Part Dimension` $where $wheref  ";
-print $sql;
+//print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -823,7 +822,7 @@ function family_list() {
 
     }
 
-        $where=sprintf('where true ');
+      
 
     $filter_msg='';
     $wheref='';

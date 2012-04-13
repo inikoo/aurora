@@ -50,7 +50,11 @@ class Deal extends DB_Table {
             $this->id=$this->data['Deal Key'];
         }
         
+     if($this->data['Deal Remainder Email Campaign Key']>0){
+     include_once('class.EmailCampaign.php');
+     $this->remainder_email_campaign=new EmailCampaign($this->data['Deal Remainder Email Campaign Key']);
      
+     }
         
         
     }

@@ -976,7 +976,12 @@ function delete_redirect($data) {
 function add_redirect($data) {
 
 	$page=new Page($data['page_key']);
-	$page->add_redirect($data['url']);
+	
+	$url=_trim($data['url']);
+	
+	$url=preg_replace('|^https?:\/\/|','',$url);
+	
+	$page->add_redirect($url);
 	if ($page->error) {
 		$response= array('state'=>400,'msg'=>$page->msg);
 		echo json_encode($response);

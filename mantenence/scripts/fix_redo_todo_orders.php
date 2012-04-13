@@ -30,8 +30,18 @@ $sql="select * from `Delivery Note Dimension` where   `Delivery Note State` not 
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
-$sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
+
+$sql=sprintf("update orders_data.orders set timestamp=0 where id=%d",$id);
+print "$sql\n";
 mysql_query($sql);
+
+
+$sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
+
+mysql_query($sql);
+
+
+
 }
 
 

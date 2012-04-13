@@ -1288,6 +1288,7 @@ $this->location->update_parts();
 		}else {
 			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
 			mysql_query($sql);
+			
 		}
 
 

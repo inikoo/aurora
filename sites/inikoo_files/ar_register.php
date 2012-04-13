@@ -302,7 +302,7 @@ function forgot_password($data,$secret_key) {
 		$_data['values']['login_handle']=$login_handle;
 		send_reset_password($_data,$secret_key);
 	} else {
-		$response=array('state'=>200,'result'=>'handle_not_found','msg'=>$customer_key.' '.$msg);
+		$response=array('state'=>200,'result'=>'handle_not_found');
 		echo json_encode($response);
 		exit;
 	}

@@ -28,7 +28,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
   
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		//alert(o.responseText)
+//		alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			Dom.removeClass('captcha_code2','error');
@@ -47,7 +47,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
 			   
 			   
 			   
-			   alert(r.msg)
+			//   alert(r.msg)
 			   
 			   			Dom.addClass('forgot_password_handle','error');
 
