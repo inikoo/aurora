@@ -235,6 +235,9 @@ else{
 	$credentials['Outgoing_Mail_Server']='';
 	$credentials['Email_Address_Direct_Mail']='';
 	$credentials['Email_Address_Amazon_Mail']='';
+	$credentials['API_Key_MadMimi']='';
+	$credentials['API_Email_Address_MadMimi']='';
+	$credentials['Email_Address_MadMimi']='';
 
 }
 

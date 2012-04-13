@@ -233,6 +233,11 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 					$message_data['plain']=null;
 
 				//print_r($message_data);
+
+	$message_data['email_placeholders']=array('greetings' => $greetings);
+
+	$message_data['promotion_name']='Welcome Email';
+
 				$send_email=new SendEmail();
 
 				$send_email->track=false;
@@ -382,7 +387,11 @@ function send_reset_password($data,$CKEY) {
 	} else
 		$message_data['plain']=null;
 
+	$message_data['email_placeholders']=array(
+			'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Passworsd').'</a>', 'masterkey_link'=>$masterkey_link
+			);
 
+	$message_data['promotion_name']='Forgot Password';
 
 	$send_email=new SendEmail();
 	$send_email->secret_key=CKEY;

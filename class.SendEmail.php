@@ -43,6 +43,9 @@ class SendEmail extends DB_Table {
 		case 'PHPMail':
 			$this->method='PHPMail';
 			break;
+		case 'MadMimi':
+			$this->method='MadMimi';
+			break;
 		default:
 			return;
 		}
@@ -315,6 +318,56 @@ class SendEmail extends DB_Table {
 			$response=$this->ses->sendEmail($this->m);
 			break;
 
+		case 'MadMimi':
+			list($to,$subject,$html_message,$plain_message)=$this->get_message_data();
+			$from=$email_credentials->data['Email Address MadMimi'];
+			$api_key=$email_credentials->data['API Key MadMimi'];
+			$username=$email_credentials->data['API Email Address MadMimi'];
+			$promotion_name=$this->email_send_data['Email Promotion Name'];
+			$body_array=$this->email_send_data['Email Placeholders'];
+			
+/*
+			$date1=$this->email_send_data['Email Promotion Date_1'];
+			$date2=$this->email_send_data['Email Promotion Date_2'];
+			$name=$this->email_send_data['Email Recipient Name'];
+			$greeting=$this->email_send_data['Email Greeting'];
+*/
+			if ($api_key==null) {
+				print 'No api key';
+				exit;
+			}
+
+			if ($username==null) {
+				print 'No username specified';
+				exit;
+			}
+
+			require('class.MadMimi.php');
+/*
+			$body_array = array(
+			'some_placeholder' => 'some content here' // This will replace "{some_placeholder}" in your promotion with "some content here".
+				,'greeting' => $greeting, 'name' => $name, 'date1'=>$date1, 'date2'=>$date2
+			);
+*/
+			
+			$options = array(
+				'promotion_name' => $promotion_name, 
+				'recipients' => $to,
+				'from' => $from,
+				'subject' => $subject
+			);
+
+			//print_r($body_array);
+			$mailer = new MadMimi($username, $api_key);
+			$response = $mailer->SendMessage($options, $body_array, false);
+			//print_r($response);//exit;
+			if (is_numeric($response)) {
+				$response=  array('state'=>200,'msg'=>'Your Email has been sent!');
+
+			} else
+				$response=  array('state'=>400,'msg'=>'Error with mail');
+			break;
+
 		case 'PHPMail':
 
 
@@ -385,8 +438,15 @@ class SendEmail extends DB_Table {
 			'Email Send To'=>$data['to'],
 			'Email Send HTML'=>$data['html'],
 			'Email Send Plain'=>$data['plain'],
-			'Email Send Subject'=>$data['subject']
-
+			'Email Send Subject'=>$data['subject'],
+			'Email Promotion Name'=>$data['promotion_name'],
+			'Email Placeholders'=>$data['email_placeholders']
+			/*
+			'Email Promotion Date_1'=>$data['promotion_date1'],
+			'Email Promotion Date_2'=>$data['promotion_date2'],
+			'Email Recipient Name'=>$data['recipient_name'],
+			'Email Greeting'=>$data['greeting']
+			*/
 		);
 
 

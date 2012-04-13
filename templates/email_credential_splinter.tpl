@@ -1,4 +1,3 @@
-
 <input type="hidden" value="{$site->id}" id="site_id" />
 <input type="hidden" id="Email_Provider" value="{$email_credentials.Email_Provider}" ovalue="{$email_credentials.Email_Provider}"  />
 <span id="Email_Provider_msg" style="display:none"></span>
@@ -13,6 +12,7 @@
 			<button id="inikoo_btn" class="site_email_provider {if $email_credentials.Email_Provider=='Inikoo'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Inikoo Mail{/t}</button>
 			<button id="php_mail_btn" class="site_email_provider {if $email_credentials.Email_Provider=='PHPMail'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}PHP Mail{/t}</button>  
 			<button id="other_btn" class="site_email_provider {if $email_credentials.Email_Provider=='Other'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Other{/t}</button>  
+			<button id="madmimi_btn" class="site_email_provider {if $email_credentials.Email_Provider=='MadMimi'}selected{/if}"><img src="art/icons/email.png" alt="" /> {t}Mad Mimi{/t}</button>  
 		</div>
 		</td>
 	</tr>
@@ -55,6 +55,60 @@
 			</td>
 			<td id="Email_Password_msg" class="edit_td_alert"></td>
 		</tr>
+	</tr>
+</tbody>
+
+<tbody id="block_MadMimi" style="{if $email_credentials.Email_Provider!='MadMimi'}display:none;{/if}">
+	<tr class="title">
+		<td colspan="2">{t}Email Credentials Mad Mimi{/t}</td>
+		<td> 
+		<div class="buttons">
+			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='MadMimi'}display:block{else}display:none{/if}" onClick="show_dialog_test_email_credentials(this)" id="test_email_credentials" class="positive">{t}Test{/t}</button> 
+			<button style="{if $site->get_email_credential_key() and $site->get_credential_type()=='MadMimi'}display:block{else}display:none{/if}" id="delete_email_credentials_MadMimi" class="negative">{t}Delete{/t}</button> 
+			<button style="visibility:hidden" id="save_edit_email_credentials_MadMimi" class="positive">{t}Save{/t}</button> 
+			<button style="visibility:hidden" id="reset_edit_email_credentials_MadMimi" class="negative">{t}Reset{/t}</button> 
+		</div>
+		</td>
+	</tr>
+
+	<tr class="top">
+
+		<tr>
+			<td class="label">{t}API Email{/t}:</td>
+			<td style="text-align:left"> 
+			<div>
+				<input style="text-align:left;width:100%" id="API_Email_Address_MadMimi" value="{$email_credentials.API_Email_Address_MadMimi}" ovalue="{$email_credentials.API_Email_Address_MadMimi}" valid="0"> 
+				<div id="API_Email_Address_MadMimi_Container">
+				</div>
+			</div>
+			</td>
+			<td id="API_Email_Address_MadMimi_msg" class="edit_td_alert"></td>
+		</tr>
+
+		<tr>
+			<td class="label">{t}API Key{/t}:</td>
+			<td style="text-align:left"> 
+			<div>
+				<input type="password" style="text-align:left;width:100%" id="API_Key_MadMimi" value="{$email_credentials.API_Key_MadMimi}" ovalue="{$email_credentials.API_Key_MadMimi}" valid="0"> 
+				<div id="API_Key_MadMimi_Container">
+				</div>
+			</div>
+			</td>
+			<td id="API_Key_MadMimi_msg" class="edit_td_alert"></td>
+		</tr>
+
+		<tr>
+			<td class="label">{t}Sender Email{/t}:</td>
+			<td style="text-align:left"> 
+			<div>
+				<input style="text-align:left;width:100%" id="Email_Address_MadMimi" value="{$email_credentials.Email_Address_MadMimi}" ovalue="{$email_credentials.Email_Address_MadMimi}" valid="0"> 
+				<div id="Email_Address_MadMimi_Container">
+				</div>
+			</div>
+			</td>
+			<td id="Email_Address_MadMimi_msg" class="edit_td_alert"></td>
+		</tr>
+
 	</tr>
 </tbody>
 
@@ -204,11 +258,15 @@
 		</tr>
 		<tr>
 			<td>{t}From{/t}:</td>
-			<td>{if $email_credentials.Email_Provider=='Gmail'}{$email_credentials.Email_Address_Gmail}{elseif $email_credentials.Email_Provider=='Other'}{$email_credentials.Email_Address_Other}{elseif $email_credentials.Email_Provider=='Inikoo'}{$email_credentials.Email_Address_Amazon_Mail}{elseif $email_credentials.Email_Provider=='PHPMail'}{$email_credentials.Email_Address_Direct_Mail}{/if}</td>
+			<td>{if $email_credentials.Email_Provider=='Gmail'}{$email_credentials.Email_Address_Gmail}{elseif $email_credentials.Email_Provider=='Other'}{$email_credentials.Email_Address_Other}{elseif $email_credentials.Email_Provider=='Inikoo'}{$email_credentials.Email_Address_Amazon_Mail}{elseif $email_credentials.Email_Provider=='PHPMail'}{$email_credentials.Email_Address_Direct_Mail}{elseif $email_credentials.Email_Provider=='MadMimi'}{$email_credentials.Email_Address_MadMimi}{/if}</td>
 		</tr>
 		<tr>
 			<td>{t}To{/t}:</td>
 			<td><input style="width:100%" id="test_message_to"/></td>
+		</tr>
+		<tr style="display:{if $email_credentials.Email_Provider!='MadMimi'}none{/if}">
+			<td>{t}Prmotion Name{/t}:</td>
+			<td><input style="width:100%" id="promotion_name"/></td>
 		</tr>
 		<tr style="height:10px">
 			<td colspan="2"></td>

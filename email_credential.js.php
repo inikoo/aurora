@@ -45,7 +45,7 @@ function change_email_provider(){
 	Dom.removeClass(types,'selected');
 	Dom.addClass(this.id,'selected');
 //alert(this.id)
-id=["block_gmail", "block_other", "block_direct", "block_inikoo"];
+id=["block_gmail", "block_other", "block_direct", "block_inikoo", "block_MadMimi"];
 Dom.setStyle(id,'display','none');
 
 	if(this.id=='gmail_btn'){
@@ -67,7 +67,11 @@ Dom.setStyle(id,'display','none');
 		Dom.get('Email_Provider').value='PHPMail';
 
 	}
+	else if(this.id=='madmimi_btn'){
+		Dom.setStyle('block_MadMimi','display','');
+		Dom.get('Email_Provider').value='MadMimi';
 
+	}
 	//alert(Dom.get('Email_Provider').value)
 }
 
@@ -84,7 +88,7 @@ var request='ar_edit_sites.php?tipo=edit_email_credentials&site_key=' + site_id+
 
 	            success:function(o){
 					
-	            alert(o.responseText);	
+	            //alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 
 			if(r.state==200){
@@ -153,6 +157,17 @@ function set_provider_as_other(){
 function validate_email_address(query){
  validate_general('email_credentials','email',unescape(query));
 }
+function validate_api_email_address_MadMimi(query){
+ validate_general('email_credentials_MadMimi','api_email_MadMimi',unescape(query));
+}
+function validate_api_key_MadMimi(query){
+ validate_general('email_credentials_MadMimi','email_MadMimi',unescape(query));
+}
+
+function validate_email_MadMimi(query){
+ validate_general('email_credentials_MadMimi','api_key_MadMimi',unescape(query));
+}
+
 function validate_email_address_direct_mail(query){
  validate_general('email_credentials_direct_mail','email_direct_mail',unescape(query));
 }
@@ -179,6 +194,7 @@ function validate_password_other(query){
  validate_general('email_credentials_other','password',unescape(query));
 }
 
+
 function validate_incoming_server_other(query){
  validate_general('email_credentials_other','incoming_server',unescape(query));
 }
@@ -201,11 +217,18 @@ function save_edit_email_credentials_inikoo_mail(){
 function save_edit_email_credentials_other(){
     save_edit_general_bulk('email_credentials_other');
 }
+
+function save_edit_email_credentials_MadMimi(){
+    save_edit_general_bulk('email_credentials_MadMimi');
+}
 function reset_edit_email_credentials(){
     reset_edit_general('email_credentials');
 }
 function reset_edit_email_credentials_other(){
     reset_edit_general('email_credentials_other');
+}
+function reset_edit_email_credentials_MadMimi(){
+    reset_edit_general('email_credentials_MadMimi');
 }
 function reset_edit_email_credentials_direct_mail(){
     reset_edit_general('email_credentials_direct_mail');
@@ -258,8 +281,8 @@ site_id=Dom.get('site_id').value;
 
 
     json_value = YAHOO.lang.JSON.stringify(value);
-    var request='ar_edit_sites.php?tipo=test_email_credentials&values=' + json_value + '&site_key=' + site_id;// + '&email_type=' + Dom.get('email_type').value;
-// alert(request)
+    var request='ar_edit_sites.php?tipo=test_email_credentials&values=' + json_value + '&site_key=' + site_id+'&promotion_name='+Dom.get('promotion_name').value;// + '&email_type=' + Dom.get('email_type').value;
+ //alert(request)
 
  YAHOO.util.Connect.asyncRequest('POST',request , {
   
@@ -284,8 +307,23 @@ function init_email_credentials(){
 	//auto_fill_gmail_settings();
 
 
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_api_email_address_MadMimi);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("API_Email_Address_MadMimi","API_Email_Address_MadMimi_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
 
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_api_key_MadMimi);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("API_Key_MadMimi","API_Key_MadMimi_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
 
+	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_email_MadMimi);
+	site_slogan_oACDS.queryMatchContains = true;
+	var customer_Registration_Number_oAutoComp = new YAHOO.widget.AutoComplete("Email_Address_MadMimi","Email_Address_MadMimi_Container", site_slogan_oACDS);
+	customer_Registration_Number_oAutoComp.minQueryLength = 0; 
+	customer_Registration_Number_oAutoComp.queryDelay = 0.1;   
 
 	var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_email_address);
 	site_slogan_oACDS.queryMatchContains = true;
@@ -348,20 +386,22 @@ var site_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_login_other);
 
 	Event.addListener(["gmail","other"], "click", change_email_method);
 	
-	Event.addListener(["gmail_btn","inikoo_btn", "php_mail_btn", "other_btn"], "click", change_email_provider);
+	Event.addListener(["gmail_btn","inikoo_btn", "php_mail_btn", "other_btn", "madmimi_btn"], "click", change_email_provider);
 	Event.addListener(["btn_plain","btn_html"], "click", change_email_type);
 
 	Event.addListener('save_edit_email_credentials', "click", save_edit_email_credentials);
 	Event.addListener('save_edit_email_credentials_direct_mail', "click", save_edit_email_credentials_direct_mail);
 	Event.addListener('save_edit_email_credentials_other', "click", save_edit_email_credentials_other);
 	Event.addListener('save_edit_email_credentials_inikoo_mail', "click", save_edit_email_credentials_inikoo_mail);
+	Event.addListener('save_edit_email_credentials_MadMimi', "click", save_edit_email_credentials_MadMimi);
 
 	Event.addListener('reset_edit_email_credentials', "click", reset_edit_email_credentials);
 	Event.addListener('reset_edit_email_credentials_other', "click", reset_edit_email_credentials_other);
+	Event.addListener('reset_edit_email_credentials_MadMimi', "click", reset_edit_email_credentials_MadMimi);
 	Event.addListener('reset_edit_email_credentials_direct_mail', "click", reset_edit_email_credentials_direct_mail);
 	Event.addListener('reset_edit_email_credentials_inikoo_mail', "click", reset_edit_email_credentials_inikoo_mail);
 
-	Event.addListener(["delete_email_credentials", "delete_email_credentials_direct_mail", "delete_email_credentials_inikoo_mail", "delete_email_credentials_other"], "click", delete_email_credentials);
+	Event.addListener(["delete_email_credentials", "delete_email_credentials_direct_mail", "delete_email_credentials_inikoo_mail", "delete_email_credentials_other", "delete_email_credentials_MadMimi"], "click", delete_email_credentials);
 	//Event.addListener('test_email_credentials', "click", test_email_credentials);
 	Event.addListener('test_email_credentials', "click", show_dialog_test_email_credentials);
 
