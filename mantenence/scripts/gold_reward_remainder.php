@@ -40,7 +40,7 @@ global $myconf;
 
 $date1=date('Y-m-d',strtotime("now -25 days"));
 $date2=date('Y-m-d',strtotime("$date1 +1 month"));
-print "$date1 $date2\n";
+//print "$date1 $date2\n";
 $sql=sprintf("select `Customer Key`,`Customer Last Order Date` from `Customer Dimension` where Date(`Customer Last Order Date`)=%s and `Customer Main Plain Email`!=''   ",prepare_mysql($date1));
 
 //print "$sql";
@@ -58,12 +58,12 @@ while($row=mysql_fetch_assoc($res)){
   'some_placeholder' => 'some content here' // This will replace "{some_placeholder}" in your promotion with "some content here".
 	,'greeting' => 'Hello', 'name' => $name, 'date1'=>strftime("%e %b %Y", strtotime($date1.' UTC')), 'date2'=>strftime("%a %e %b %Y", strtotime($date2.' UTC'))
 );
-$email='raul@inikoo.com';
+//$email='raul@inikoo.com';
 $options = array(
   'promotion_name' => 'Gold Reward Reminder',  // This is the promotion that I had manually created before executing this code
   'recipients' => $email,
   'from' => 'Katka <katka@ancientwisdom.biz>',
-  'bcc'=>'david.hardy@gmail.com',
+
   'subject' => 'Ancient Wisdom Gold Reward Reminder'
 
 );
