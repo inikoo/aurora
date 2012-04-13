@@ -388,7 +388,7 @@ function send_reset_password($data,$CKEY) {
 		$message_data['plain']=null;
 
 	$message_data['email_placeholders']=array(
-			'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Passworsd').'</a>', 'masterkey_link'=>$masterkey_link
+			'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Password').'</a>', 'masterkey_link'=>$masterkey_link
 			);
 
 	$message_data['promotion_name']='Forgot Password';
@@ -409,7 +409,7 @@ function send_reset_password($data,$CKEY) {
 
 	} else {
 		//print_r($result);
-		$response=array('state'=>200,'result'=>'error','msg'=>join(' ',$result));
+		$response=array('state'=>200,'result'=>'error','msg'=>'Error, please try again');
 		echo json_encode($response);
 		exit;
 	}
