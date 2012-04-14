@@ -10,11 +10,17 @@
 .dialog_inikoo .link{color:#000}
 .dialog_inikoo .link:hover{color:#111}
 
+
+a {color:#222;text-decoration:none}
+a:hover {color:#000;text-decoration:underline}
+
+ h1 {font-size:18px;font-weight:800;padding:20px 0px 5px 0px}
  h2 {font-size:16px;font-weight:800;padding:20px 0px 5px 0px}
   h3 {font-size:22px;font-weight:800;padding:0px 0px}
 
 .top_page_menu{clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px}
 
+.discount_label {color:#444}
 
 .contact_cards{float:left;width:430px;margin-left:50px;text-align:right}
 .contact_cards .contact_card{margin:auto}

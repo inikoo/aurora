@@ -2160,7 +2160,7 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 
 			if ($product['Product RRP']) {
 				$number_products_with_rrp++;
-				if ($min_rrp>$product['Product RRP'])
+				if ($min_rrp>($product['Product RRP']))
 					$min_rrp=$product['Product RRP'];
 				if ($max_rrp<$product['Product RRP'])
 					$max_rrp=$product['Product RRP'];
@@ -2169,7 +2169,7 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 			$counter++;
 		}
 
-		if ($number_products_with_rrp) {
+		if ($number_products_with_rrp and $same_units) {
 			$rrp= $this->get_formated_price(array(
 					'Product Price'=>$min_rrp,
 					'Product Units Per Case'=>$units,
