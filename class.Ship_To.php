@@ -172,7 +172,7 @@ function get_xhtml_address() {
 
 
 
-    $address.='<a class="ninja" href="region.php?country='.$this->data['Ship To Country Code'].'" >'.$this->data['Ship To Country Name'].'</a>';
+    $address.=$this->data['Ship To Country Name'];
 
 return _trim($address);
 

@@ -30,8 +30,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ,{key:"invoiced",label:Dom.get('label_amount').value, width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
-
-	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_dipatched&tid=0");
+//alert("ar_orders.php?tipo=transactions_dipatched&tid=1&id="+Dom.get('order_key').value)
+	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_dipatched&tid=1&id="+Dom.get('order_key').value);
 	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.InvoiceDataSource.connXhrMode = "queueRequests";
 	    this.InvoiceDataSource.responseSchema = {
@@ -67,8 +67,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ,{key:"notes",label:Dom.get('label_notes').value, width:250,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
-
-	    this.InvoiceDataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=post_transactions&tid=0&id="+Dom.get('order_key').value);
+	    this.InvoiceDataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=post_transactions&tid=1&id="+Dom.get('order_key').value);
 	    this.InvoiceDataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.InvoiceDataSource1.connXhrMode = "queueRequests";
 	    this.InvoiceDataSource1.responseSchema = {
