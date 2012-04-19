@@ -1160,7 +1160,7 @@ $part_list=$product->get_all_part_skus();
 					'Product Part Type'=>'Simple'
 
 				);
-				//print_r($part_list);
+				print_r($part_list);
 				$product_part_key=$product->find_product_part_list($part_list);
 				if (!$product_part_key) {
 					print_r($product);
