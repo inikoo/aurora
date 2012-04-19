@@ -1160,10 +1160,11 @@ $part_list=$product->get_all_part_skus();
 					'Product Part Type'=>'Simple'
 
 				);
-				print_r($part_list);
+				
 				$product_part_key=$product->find_product_part_list($part_list);
 				if (!$product_part_key) {
 					print_r($product);
+					print_r($part_list);
 					exit("Error can not find product part list (get_orders_db)\n");
 				}
 
