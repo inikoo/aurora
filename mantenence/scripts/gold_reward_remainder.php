@@ -41,7 +41,7 @@ global $myconf;
 $date1=date('Y-m-d',strtotime("now -24 days"));
 $date2=date('Y-m-d',strtotime("$date1 +1 month"));
 //print "$date1 $date2\n";
-$sql=sprintf("select `Customer Key`,`Customer Last Order Date` from `Customer Dimension` where Date(`Customer Last Order Date`)=%s and `Customer Main Plain Email`!=''   ",prepare_mysql($date1));
+$sql=sprintf("select `Customer Key`,`Customer Last Order Date` from `Customer Dimension` where Date(`Customer Last Order Date`)=%s and `Customer Main Plain Email`!=''  and `Customer Store Key`=1  ",prepare_mysql($date1));
 
 //print "$sql";
 //exit;
