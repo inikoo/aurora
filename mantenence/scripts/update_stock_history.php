@@ -62,7 +62,8 @@ print $row['Date']."\t".$row2['Part SKU'].'_'.$row2['Location Key']."\t\r";
 
 exit;
 */
-$from=date("Y-m-d",strtotime('now -1000 day'));
+$from=date("Y-m-d",strtotime('now -1 day'));
+$from=date("Y-m-d");
 $to=date("Y-m-d");
 
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
@@ -79,7 +80,7 @@ while ($row=mysql_fetch_array($res)) {
 	$res2=mysql_query($sql);
 	$count=0;
 	while ($row2=mysql_fetch_array($res2)) {
-		print "\t\t\t\tChecking:".$row2['Part SKU']."\r";
+		//print "\t\t\t\tChecking:".$row2['Part SKU']."\r";
 		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where  `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s group by `Location Key`",
 		$row2['Part SKU'],
 		prepare_mysql($row['Date'])
