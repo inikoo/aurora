@@ -47,8 +47,14 @@ You have {$records} Records to verify.
 </div>
 {/*}
 
-
+{if $scope=='customers_store'}
 <h1>{t}Import Contacts From CSV File{/t}</h1>
+{/if}
+
+{if $scope=='family'}
+<h1>{t}Import Product From CSV File{/t}</h1>
+{/if}
+
 <div class="error">{$showerror}</div>
 
 

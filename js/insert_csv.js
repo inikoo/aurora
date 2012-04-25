@@ -8,7 +8,7 @@ function insert_data(){
    var ar_file='ar_import_csv.php';
     var request=ar_file+'?tipo=insert_data'; 
     
-    
+   // alert(request);
     
     
     YAHOO.util.Connect.asyncRequest('POST',request ,{});
@@ -20,7 +20,7 @@ function read_results(){
     
 
     
-    //alert(request);
+    //alert(request); 
  YAHOO.util.Connect.asyncRequest('POST',request , {
   
   

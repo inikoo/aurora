@@ -143,6 +143,7 @@ function get_record_data($data) {
 
     //extracting the HEADERS
     $headers = $csv->getHeaders();
+
     //print_r($_SESSION['state']['import']['options_labels']);
     $number_of_records = $csv->countRows();
     $ignore_record = array_key_exists($index,$records_ignored_by_user);
@@ -207,7 +208,683 @@ function insert_data() {
     switch ($_SESSION['state']['import']['scope']) {
     case('customers_store'):
         insert_customers_from_csv();
+    case('family'):
+	insert_products_from_csv();
+    case('department'):
+	insert_family_from_csv();
+    case('store'):
+	insert_department_from_csv();
     }
+    
+	
+}
+
+function insert_department_from_csv(){
+    global $editor;
+    include_once('class.Department.php');
+    $imported_records=new ImportedRecords($_SESSION['state']['import']['key']);
+
+    $imported_records->update(array('Imported Records Start Date'=>date('Y-m-d H:i:s')));
+    //$_SESSION['state']['import']['in_progress']=1;
+
+    $store_key=$imported_records->data['Imported Records Scope Key'];
+    $customer_list_key=0;
+	
+
+
+
+    $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
+    $map = $_SESSION['state']['import']['map'];
+
+    require_once 'csvparser.php';
+    $data_to_import=array();
+    if ($_SESSION['state']['import']['type']) {
+        $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+        //print $sql;
+
+        $result=mysql_query($sql);
+
+        $row = mysql_fetch_array($result);
+        //$record_id=$row[1];
+        //print $record_id;exit;
+        $headers = explode('#', $row[0]);
+        $number_of_records = mysql_num_rows($result);
+
+        $raw=array();
+
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result)) {
+            $data = explode('#', $row[0]);
+            foreach($data as $key=>$value)
+            $temp[$key]=preg_replace('/"/', '', $value);
+
+            $raw[]=$temp;
+            unset($temp);
+        }
+
+    } else {
+        $csv = new CSV_PARSER;
+
+        if (isset($_SESSION['state']['import']['file_path'])) {
+            $csv->load($_SESSION['state']['import']['file_path']);
+        }
+        $headers = $csv->getHeaders();
+        $number_of_records = $csv->countRows();
+
+
+
+        $raw = $csv->getrawArray();
+    }
+
+//print_r($raw);
+    foreach($raw as $record_key=>$record_data) {
+        if (array_key_exists($record_key,$records_ignored_by_user)) {
+            $record_data[]='Ignored';
+
+            $cvs_line=array_to_CSV($record_data);
+            $imported_records->append_not_imported_log($cvs_line);
+
+            $imported_records->update(
+                array(
+                    'Imported Records'=>((float) $imported_records->data['Imported Records']+1),
+                ));
+            continue;
+
+        }
+
+
+        $parsed_record_data=array('csv_key'=>$record_key);
+        foreach($record_data as $field_key=>$field) {
+            //$field['csv_key']=$field_key;
+            $mapped_field_key=$map[$field_key];
+		//print $mapped_field_key;
+		//print_r($_SESSION['state']['import']['options_db_fields']);exit;
+            if ($mapped_field_key){
+                $parsed_record_data[$_SESSION['state']['import']['options_db_fields'][$mapped_field_key]]=$field;
+		//print_r($_SESSION['state']['import']['options_db_fields'][$mapped_field_key]);exit;
+	    }
+        }
+        $data_to_import[]=$parsed_record_data;
+    }
+
+    $_SESSION['state']['import']['todo']=count($data_to_import);
+
+//print_r($data_to_import);exit;
+
+
+    foreach($data_to_import as $_department_data) {
+
+
+        $sql=sprintf("select `External Record Key` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+        //print $sql;
+
+        $result=mysql_query($sql);
+
+        $row = mysql_fetch_array($result);
+        $record_id=$row[0];
+
+
+
+
+
+		$department_data=array(
+				'Product Department Code'=>''
+				,'Product Department Name'=>''
+				,'Product Department Store Key'=>$store_key
+				,'editor'=>$editor
+				);
+
+//print_r($_customer_data);
+        foreach($_department_data as $key=>$value) {
+            $department_data[$key]=$value;
+        }
+
+	$department=new Department('find', $department_data, 'create');
+//print_r($department);exit;
+        if ($department->new) {
+
+
+/*
+                if (!$customer_list_key) {
+                    $customer_list_key=new_imported_csv_customers_list($store_key);
+
+                    $imported_records->update(
+                        array(
+                            'Scope List Key'=>$customer_list_key,
+                        ));
+
+
+                }
+
+                $sql=sprintf("insert into `List Customer Bridge` (`List Key`,`Customer Key`) values (%d,%d)",
+                             $customer_list_key,
+                             $response['customer_key']
+                            );
+                mysql_query($sql);
+*/
+                $imported_records->update(
+                    array(
+                        'Imported Records'=>( (float) $imported_records->data['Imported Records']+1),
+                    ));
+
+                //Update Read Status
+
+                $sql=sprintf("update `External Records` set `Read Status`='Yes' where `External Record Key`=%d", $record_id);
+                //print $sql;
+                mysql_query($sql);
+
+
+
+
+
+        } else {
+
+
+
+            $imported_records->update(
+                array(
+                    'Error Records'=>( (float) $imported_records->data['Error Records']+1),
+                ));
+
+            if ($_SESSION['state']['import']['type']) {
+                $_record_data=$raw[0];
+            } else {
+                $_record_data=$csv->getRow($_department_data['csv_key']-1);
+            }
+            //print_r( $_record_data);exit;
+            $_record_data[]='Already in DB';
+
+            $cvs_line=array_to_CSV($_record_data);
+            $imported_records->append_not_imported_log($cvs_line);
+
+            //print_r($imported_records);
+
+
+        }
+        unset($department);
+//exit;
+    }
+
+
+    $imported_records->update(array('Imported Records Finish Date'=>date('Y-m-d H:i:s')));
+
+
+
+
+
+}
+
+
+function insert_family_from_csv(){
+    global $editor;
+
+    include_once('class.Department.php');
+
+
+    $imported_records=new ImportedRecords($_SESSION['state']['import']['key']);
+
+    $imported_records->update(array('Imported Records Start Date'=>date('Y-m-d H:i:s')));
+    //$_SESSION['state']['import']['in_progress']=1;
+
+    $department_key=$imported_records->data['Imported Records Scope Key'];
+    $customer_list_key=0;
+    $department = new Department($department_key);	
+
+
+
+    $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
+    $map = $_SESSION['state']['import']['map'];
+
+    require_once 'csvparser.php';
+    $data_to_import=array();
+    if ($_SESSION['state']['import']['type']) {
+        $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+        //print $sql;
+
+        $result=mysql_query($sql);
+
+        $row = mysql_fetch_array($result);
+        //$record_id=$row[1];
+        //print $record_id;exit;
+        $headers = explode('#', $row[0]);
+        $number_of_records = mysql_num_rows($result);
+
+        $raw=array();
+
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result)) {
+            $data = explode('#', $row[0]);
+            foreach($data as $key=>$value)
+            $temp[$key]=preg_replace('/"/', '', $value);
+
+            $raw[]=$temp;
+            unset($temp);
+        }
+
+    } else {
+        $csv = new CSV_PARSER;
+
+        if (isset($_SESSION['state']['import']['file_path'])) {
+            $csv->load($_SESSION['state']['import']['file_path']);
+        }
+        $headers = $csv->getHeaders();
+        $number_of_records = $csv->countRows();
+
+
+
+        $raw = $csv->getrawArray();
+    }
+
+//print_r($raw);
+    foreach($raw as $record_key=>$record_data) {
+        if (array_key_exists($record_key,$records_ignored_by_user)) {
+            $record_data[]='Ignored';
+
+            $cvs_line=array_to_CSV($record_data);
+            $imported_records->append_not_imported_log($cvs_line);
+
+            $imported_records->update(
+                array(
+                    'Imported Records'=>((float) $imported_records->data['Imported Records']+1),
+                ));
+            continue;
+
+        }
+
+
+        $parsed_record_data=array('csv_key'=>$record_key);
+        foreach($record_data as $field_key=>$field) {
+            //$field['csv_key']=$field_key;
+            $mapped_field_key=$map[$field_key];
+		//print $mapped_field_key;
+		//print_r($_SESSION['state']['import']['options_db_fields']);exit;
+            if ($mapped_field_key){
+                $parsed_record_data[$_SESSION['state']['import']['options_db_fields'][$mapped_field_key]]=$field;
+		//print_r($_SESSION['state']['import']['options_db_fields'][$mapped_field_key]);exit;
+	    }
+        }
+        $data_to_import[]=$parsed_record_data;
+    }
+
+    $_SESSION['state']['import']['todo']=count($data_to_import);
+
+//print_r($data_to_import);exit;
+
+
+    foreach($data_to_import as $_family_data) {
+
+
+        $sql=sprintf("select `External Record Key` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+        //print $sql;
+
+        $result=mysql_query($sql);
+
+        $row = mysql_fetch_array($result);
+        $record_id=$row[0];
+
+
+
+
+
+		$family_data=array(
+
+				'Product Family Code'=>'',
+				'Product Family Name'=>'',
+				'Product Family Description'=>'',
+				'Product Family Special Characteristic'=>'',
+				'Product Family Main Department Key'=>$department->id,
+				'Product Family Store Key'=>$department->data['Product Department Store Key'],
+				'editor'=>$editor
+			);
+
+
+
+
+//print_r($_customer_data);
+        foreach($_family_data as $key=>$value) {
+            $family_data[$key]=$value;
+        }
+
+	if($family_data['Product Family Special Characteristic']==''){
+		$family_data['Product Special Characteristic']=$family_data['Product Family Name'];
+	}
+		
+	$family=new Family('create', $family_data);
+
+        if ($family->new) {
+
+
+/*
+                if (!$customer_list_key) {
+                    $customer_list_key=new_imported_csv_customers_list($store_key);
+
+                    $imported_records->update(
+                        array(
+                            'Scope List Key'=>$customer_list_key,
+                        ));
+
+
+                }
+
+                $sql=sprintf("insert into `List Customer Bridge` (`List Key`,`Customer Key`) values (%d,%d)",
+                             $customer_list_key,
+                             $response['customer_key']
+                            );
+                mysql_query($sql);
+*/
+                $imported_records->update(
+                    array(
+                        'Imported Records'=>( (float) $imported_records->data['Imported Records']+1),
+                    ));
+
+                //Update Read Status
+
+                $sql=sprintf("update `External Records` set `Read Status`='Yes' where `External Record Key`=%d", $record_id);
+                //print $sql;
+                mysql_query($sql);
+
+
+
+
+
+        } else {
+
+
+
+            $imported_records->update(
+                array(
+                    'Error Records'=>( (float) $imported_records->data['Error Records']+1),
+                ));
+
+            if ($_SESSION['state']['import']['type']) {
+                $_record_data=$raw[0];
+            } else {
+                $_record_data=$csv->getRow($_family_data['csv_key']-1);
+            }
+            //print_r( $_record_data);exit;
+            $_record_data[]='Already in DB';
+
+            $cvs_line=array_to_CSV($_record_data);
+            $imported_records->append_not_imported_log($cvs_line);
+
+            //print_r($imported_records);
+
+
+        }
+        unset($family);
+//exit;
+    }
+
+
+    $imported_records->update(array('Imported Records Finish Date'=>date('Y-m-d H:i:s')));
+
+
+
+
+
+}
+
+
+
+
+function insert_products_from_csv(){
+    global $editor;
+
+    include_once('class.Product.php');
+    include_once('class.Family.php');
+
+    $imported_records=new ImportedRecords($_SESSION['state']['import']['key']);
+
+    $imported_records->update(array('Imported Records Start Date'=>date('Y-m-d H:i:s')));
+    //$_SESSION['state']['import']['in_progress']=1;
+
+    $family_key=$imported_records->data['Imported Records Scope Key'];
+    $customer_list_key=0;
+    $family = new Family($family_key);	
+
+    $store = new Store($family->data['Product Family Store Key']);
+
+    $records_ignored_by_user = $_SESSION['state']['import']['records_ignored_by_user'];
+    $map = $_SESSION['state']['import']['map'];
+
+    require_once 'csvparser.php';
+    $data_to_import=array();
+    if ($_SESSION['state']['import']['type']) {
+        $sql=sprintf("select `Record` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+        //print $sql;
+
+        $result=mysql_query($sql);
+
+        $row = mysql_fetch_array($result);
+        //$record_id=$row[1];
+        //print $record_id;exit;
+        $headers = explode('#', $row[0]);
+        $number_of_records = mysql_num_rows($result);
+
+        $raw=array();
+
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result)) {
+            $data = explode('#', $row[0]);
+            foreach($data as $key=>$value)
+            $temp[$key]=preg_replace('/"/', '', $value);
+
+            $raw[]=$temp;
+            unset($temp);
+        }
+
+    } else {
+        $csv = new CSV_PARSER;
+
+        if (isset($_SESSION['state']['import']['file_path'])) {
+            $csv->load($_SESSION['state']['import']['file_path']);
+        }
+        $headers = $csv->getHeaders();
+        $number_of_records = $csv->countRows();
+
+
+
+        $raw = $csv->getrawArray();
+    }
+
+//print_r($raw);
+    foreach($raw as $record_key=>$record_data) {
+        if (array_key_exists($record_key,$records_ignored_by_user)) {
+            $record_data[]='Ignored';
+
+            $cvs_line=array_to_CSV($record_data);
+            $imported_records->append_not_imported_log($cvs_line);
+
+            $imported_records->update(
+                array(
+                    'Imported Records'=>((float) $imported_records->data['Imported Records']+1),
+                ));
+            continue;
+
+        }
+
+
+        $parsed_record_data=array('csv_key'=>$record_key);
+        foreach($record_data as $field_key=>$field) {
+            //$field['csv_key']=$field_key;
+            $mapped_field_key=$map[$field_key];
+		//print $mapped_field_key;
+		//print_r($_SESSION['state']['import']['options_db_fields']);exit;
+            if ($mapped_field_key){
+                $parsed_record_data[$_SESSION['state']['import']['options_db_fields'][$mapped_field_key]]=$field;
+		//print_r($_SESSION['state']['import']['options_db_fields'][$mapped_field_key]);exit;
+	    }
+        }
+        $data_to_import[]=$parsed_record_data;
+    }
+
+    $_SESSION['state']['import']['todo']=count($data_to_import);
+
+//print_r($data_to_import);exit;
+
+
+    foreach($data_to_import as $_product_data) {
+
+
+        $sql=sprintf("select `External Record Key` from `External Records` where `Store Key`=%d and `Scope`='%s' and `Read Status`='No'", $_SESSION['state']['import']['scope_key'], $_SESSION['state']['import']['scope']);
+        //print $sql;
+
+        $result=mysql_query($sql);
+
+        $row = mysql_fetch_array($result);
+        $record_id=$row[0];
+
+        $product_data=array(
+				'Product Stage'=>'Normal',
+				'Product Sales Type'=>'Public Sale',
+				'Product Type'=>'Normal',
+				'Product Stage'=>'Normal',
+				'Product Record Type'=>'Normal',
+				'Product Web Configuration'=>'Online Auto',
+				'Product Store Key'=>$store->id,
+				'Product Currency'=>$store->data['Store Currency Code'],
+				'Product Locale'=>$store->data['Store Locale'],
+				'Product Price'=>'',
+				'Product RRP'=>'',
+				'Product Units Per Case'=>'',
+				'Product Family Key'=>$family->id,
+
+				'Product Valid From'=>$editor['Date'],
+				'Product Valid To'=>$editor['Date'],
+				'Product Code'=>'',
+				'Product Name'=>'',
+				'Product Description'=>'',
+				'Product Special Characteristic'=>'',
+				'Product Main Department Key'=>$family->data['Product Family Main Department Key'],
+				'editor'=>$editor,
+				'Product Net Weight'=>'',
+				'Product Gross Weight'=>'',
+			);
+
+
+//print_r($_customer_data);
+        foreach($_product_data as $key=>$value) {
+            $product_data[$key]=$value;
+        }
+
+	if($product_data['Product Special Characteristic']==''){
+		$product_data['Product Special Characteristic']=$product_data['Product Name'];
+	}
+		
+//print_r($product_data);exit;
+
+
+
+
+        //$product=new Product('find complete',$customer_data);
+
+
+        // print_r($customer_data);
+
+//print_r($customer);
+	$sql=sprintf("select `Product ID`,`Product Name`,`Product Code` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s  "
+		,$store->id
+		,prepare_mysql($product_data['Product Code'])
+	);
+	$res=mysql_query($sql);
+
+	//print $sql;exit;
+
+        if (!$data = mysql_fetch_array($res)) {
+
+
+            // print_r($customer_data);
+
+            //$response=add_customer($customer_data) ;
+            //  print_r($response);
+	    $product=new Product('create', $product_data);
+		//print_r($product);exit;
+
+
+            if ($product->new_id) {
+/*
+                if (!$customer_list_key) {
+                    $customer_list_key=new_imported_csv_customers_list($store_key);
+
+                    $imported_records->update(
+                        array(
+                            'Scope List Key'=>$customer_list_key,
+                        ));
+
+
+                }
+
+                $sql=sprintf("insert into `List Customer Bridge` (`List Key`,`Customer Key`) values (%d,%d)",
+                             $customer_list_key,
+                             $response['customer_key']
+                            );
+                mysql_query($sql);
+*/
+                $imported_records->update(
+                    array(
+                        'Imported Records'=>( (float) $imported_records->data['Imported Records']+1),
+                    ));
+
+                //Update Read Status
+
+                $sql=sprintf("update `External Records` set `Read Status`='Yes' where `External Record Key`=%d", $record_id);
+                //print $sql;
+                mysql_query($sql);
+
+
+            } else {
+
+                $imported_records->update(
+                    array(
+                        'Error Records'=>( (float) $imported_records->data['Error Records']+1),
+                    ));
+
+
+                $_record_data=$csv->getRow($_product_data['csv_key']-1);
+                $_record_data[]='Can not add to the DB';
+
+                $cvs_line=array_to_CSV($_record_data);
+                $imported_records->append_not_imported_log($cvs_line);
+
+
+            }
+
+
+        } else {
+
+
+
+            $imported_records->update(
+                array(
+                    'Error Records'=>( (float) $imported_records->data['Error Records']+1),
+                ));
+
+            if ($_SESSION['state']['import']['type']) {
+                $_record_data=$raw[0];
+            } else {
+                $_record_data=$csv->getRow($_product_data['csv_key']-1);
+            }
+            //print_r( $_record_data);exit;
+            $_record_data[]='Already in DB';
+
+            $cvs_line=array_to_CSV($_record_data);
+            $imported_records->append_not_imported_log($cvs_line);
+
+            //print_r($imported_records);
+
+
+        }
+        unset($product);
+//exit;
+    }
+
+
+    $imported_records->update(array('Imported Records Finish Date'=>date('Y-m-d H:i:s')));
+
+
+
+
+
 }
 
 
@@ -535,9 +1212,27 @@ function import_customer_csv_status() {
 function save_map() {
     $map_name=_trim($_REQUEST['name']);
     $scope=$_REQUEST['scope'];
-    $scope_key=$_REQUEST['scope_key'];
+
+    
     $meta_data=$_REQUEST['meta_data'];
 
+
+	switch($scope){
+	case 'customers_store':
+	case 'store':
+		$scope_key=$_REQUEST['scope_key'];
+	break;
+	case 'family':
+		require_once 'class.Family.php';
+		$family = new Family($_REQUEST['scope_key']);
+		$scope_key=$family->data['Product Family Store Key'];
+	break;
+	case 'department':
+		require_once 'class.Department.php';
+		$department = new Department($_REQUEST['scope_key']);
+		$scope_key=$department->data['Product Department Store Key'];
+	break;
+	}
 
     if ($map_name=='') {
         $response= array('state'=>400,'type'=>'no_name');
@@ -584,21 +1279,56 @@ function browse_maps($data) {
     if (isset( $_REQUEST['tableid']))$tableid=$_REQUEST['tableid'];
     else$tableid=0;
 
-    if (isset( $_REQUEST['store_key']))$store_key=$_REQUEST['store_key'];
-    else$store_key='';
+
+
+
+
+
+	switch($scope){
+	case 'customers_store':
+	case 'store':
+		$scope_key=$_REQUEST['scope_key'];
+	break;
+	case 'family':
+		require_once 'class.Family.php';
+		$family = new Family($_REQUEST['scope_key']);
+		$scope_key=$family->data['Product Family Store Key'];
+	break;
+	case 'department':
+		require_once 'class.Department.php';
+		$department = new Department($_REQUEST['scope_key']);
+		$scope_key=$department->data['Product Department Store Key'];
+	break;
+
+	}
+
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     $_order=$order;
     $_dir=$order_direction;
     $filter_msg='';
 
+	if (!in_array($scope_key,$user->stores)) {
+		$where=sprintf('where false ');
+	} else {
+		$where=sprintf('where `Store Key`=%d',$scope_key);
+		switch($_REQUEST['scope']){
+		case 'customers_store':
+			$where.=sprintf(" and `Scope`='%s'",'customers_store');
+		break;
+		case 'family':
+			$where.=sprintf(" and `Scope`='%s'",'family');
+		break;
+		case 'department':
+			$where.=sprintf(" and `Scope`='%s'",'department');
+		break;
+		case 'store':
+			$where.=sprintf(" and `Scope`='%s'",'store');
+		break;
+		}
+	}
 
 
-    if (!in_array($store_key,$user->stores)) {
-        $where=sprintf('where false ');
-    } else {
-        $where=sprintf('where `Store Key`=%d',$store_key);
-    }
 
 
 
@@ -613,7 +1343,7 @@ function browse_maps($data) {
 
     $sql="select count(DISTINCT `Map Name`) as total from `Import CSV Map` $where $wheref  ";
 
-    //print $sql;
+   // print $sql;
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {

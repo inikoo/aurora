@@ -1355,6 +1355,12 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
 	
     Event.addListener("edit_family_department", "click", dialog_family_list.show,dialog_family_list , true);
  
+
+dialog_new_product = new YAHOO.widget.Dialog("dialog_new_product", {context:["new_product","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_new_product.render();
+Event.addListener("new_product", "click", dialog_new_product.show,dialog_new_product , true);
+Event.addListener("close_dialog_new_product", "click", dialog_new_product.hide,dialog_new_product , true);
+
 }
 
 YAHOO.util.Event.onDOMReady(init);

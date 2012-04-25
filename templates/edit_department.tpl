@@ -70,8 +70,11 @@
 		</div>
 		<div id="d_families" class="edit_block" style="{if $edit!='families'}display:none{/if}">
 			<div class="buttons" >
-				<button id="show_new_family_dialog_button" onclick="show_new_family_dialog()" >{t}Create New Family{/t}</button> <button id="import_new_family" >{t}Import Families (CSV){/t}</button>
+				<button id="show_new_family_dialog_button" onclick="show_new_family_dialog()" >Create New Family</button> 
+				<button onclick="window.location='import_csv.php?subject=department&subject_key={$department->id}'" >Import Families (CSV)</button>
+
 			</div>
+
 			<div style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none" id="new_family_dialog">
 			
 			<div class="buttons" >
@@ -88,7 +91,8 @@
 						<td style="width:160px" class="label">{t}Family Code{/t}:</td>
 						<td> 
 						<div>
-							<input id="family_code" changed="0" type='text' class='text' maxlength="16" value="" ovalue="" />
+							<input id="family_code" changed="0" type=
+						<div>'text' class='text' maxlength="16" value="" ovalue="" />
 							<div id="family_code_Container">
 							</div>
 						</div>
