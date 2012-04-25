@@ -1273,7 +1273,7 @@ $login_handle=$user->data['User Handle'];
 		$message_data['plain']=null;
 
 	$message_data['email_placeholders']=array(
-			'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Passworsd').'</a>', 'masterkey_link'=>$masterkey_link
+			'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Password').'</a>', 'masterkey_link'=>$masterkey_link
 			);
 
 	$message_data['promotion_name']='Forgot Password';

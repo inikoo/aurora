@@ -1137,10 +1137,12 @@ $part_list=$product->get_all_part_skus();
 			} else {
 
 
-				$sql=sprintf("select `Part SKU` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
+				$sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
 				$res_x=mysql_query($sql);
 				if ($row_x=mysql_fetch_array($res_x)) {
 					$part_sku=$row_x['Part SKU'];
+					$parts_per_product=$row_x['Parts Per Product'];
+					
 				} else {
 					print_r($product);
 					exit("error: $sql");
@@ -1150,7 +1152,7 @@ $part_list=$product->get_all_part_skus();
 				$part=new Part('sku',$part_sku);
 				$part->update_valid_dates($date_order);
 				$part->update_valid_dates($date2);
-				$parts_per_product=1;
+				
 				$part_list=array();
 				$part_list[]=array(
 
@@ -1160,10 +1162,11 @@ $part_list=$product->get_all_part_skus();
 					'Product Part Type'=>'Simple'
 
 				);
-				//print_r($part_list);
+				
 				$product_part_key=$product->find_product_part_list($part_list);
 				if (!$product_part_key) {
 					print_r($product);
+					print_r($part_list);
 					exit("Error can not find product part list (get_orders_db)\n");
 				}
 

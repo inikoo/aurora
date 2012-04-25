@@ -5746,3 +5746,6 @@ ALTER TABLE `Site Dimension`  ADD `Site Show Facebook` ENUM( 'Yes', 'No' ) NOT N
 
 ALTER TABLE `Customer Dimension` ADD `Customer Website` VARCHAR( 255 ) NULL;
 ALTER TABLE `Deal Dimension` ADD `Deal Remainder Email Campaign Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Site Dimension` ADD `Site Registration Disclaimer` LONGTEXT NULL;
+
+ALTER TABLE `Email Credentials Dimension` ADD `API Email Address MadMimi` VARCHAR( 256 ) NULL DEFAULT NULL ,ADD `API Key MadMimi` VARCHAR( 256 ) NULL DEFAULT NULL ,ADD `Email Address MadMimi` VARCHAR( 256 ) NULL DEFAULT NULL ;
