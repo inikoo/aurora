@@ -17,7 +17,7 @@ for (var i = 0; i<13; i++) temp_map[i] = '0';
 function get_record_data(index){
   var ar_file='ar_import_csv.php';
     var request=ar_file+"?tipo=get_record_data&index="+index+"&scope="+Dom.get('scope').value; 
-	//alert(request);
+	alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	
 	  success:function(o) {
@@ -360,7 +360,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-	var store_key=Dom.get('scope_key').value;
+	var scope_key=Dom.get('scope_key').value;
 
 	var tableid=5; 
 	    var tableDivEL="table"+tableid;
@@ -372,9 +372,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				];
 			       
 	   
-		this.dataSource5 = new YAHOO.util.DataSource("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+		this.dataSource5 = new YAHOO.util.DataSource("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&scope_key="+scope_key+"&tableid="+tableid+"&nr=20&sf=0");
 	    
-		//alert("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&store_key="+store_key+"&tableid="+tableid+"&nr=20&sf=0");
+		alert("ar_import_csv.php?tipo=browse_maps&scope="+Dom.get('scope').value+"&scope_key="+scope_key+"&tableid="+tableid+"&nr=20&sf=0");
 		
 		this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource5.connXhrMode = "queueRequests";

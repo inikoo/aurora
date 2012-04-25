@@ -17,7 +17,7 @@ include_once 'class.Part.php';
 include_once 'class.Store.php';
 include_once 'class.Family.php';
 include_once 'common_store_functions.php';
-
+include_once 'class.Department.php';
 /* class: product
    Class to manage the *Product Family Dimension* table
 */
