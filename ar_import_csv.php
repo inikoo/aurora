@@ -143,7 +143,7 @@ function get_record_data($data) {
 
     //extracting the HEADERS
     $headers = $csv->getHeaders();
-
+//print_r($headers);
     //print_r($_SESSION['state']['import']['options_labels']);
     $number_of_records = $csv->countRows();
     $ignore_record = array_key_exists($index,$records_ignored_by_user);
@@ -721,7 +721,7 @@ function insert_products_from_csv(){
     $_SESSION['state']['import']['todo']=count($data_to_import);
 
 //print_r($data_to_import);exit;
-
+print $_SESSION['state']['import']['todo'];
 
     foreach($data_to_import as $_product_data) {
 
@@ -771,17 +771,46 @@ function insert_products_from_csv(){
 		$product_data['Product Special Characteristic']=$product_data['Product Name'];
 	}
 		
-//print_r($product_data);exit;
+
+	if(!is_numeric($product_data['Product Price'])){
+            $imported_records->update(
+                array(
+                    'Error Records'=>( (float) $imported_records->data['Error Records']+1),
+                ));
+
+            if ($_SESSION['state']['import']['type']) {
+                $_record_data=$raw[0];
+            } else {
+                $_record_data=$csv->getRow($_product_data['csv_key']-1);
+            }
+            //print_r( $_record_data);exit;
+            $_record_data[]='Invalid Price, cannot insert into DB';
+
+            $cvs_line=array_to_CSV($_record_data);
+            $imported_records->append_not_imported_log($cvs_line);
+	    continue;
+	}
+
+	if(!is_numeric($product_data['Product Units Per Case'])){
+            $imported_records->update(
+                array(
+                    'Error Records'=>( (float) $imported_records->data['Error Records']+1),
+                ));
+
+            if ($_SESSION['state']['import']['type']) {
+                $_record_data=$raw[0];
+            } else {
+                $_record_data=$csv->getRow($_product_data['csv_key']-1);
+            }
+            //print_r( $_record_data);exit;
+            $_record_data[]='Invalid Unit, cannot insert into DB';
+
+            $cvs_line=array_to_CSV($_record_data);
+            $imported_records->append_not_imported_log($cvs_line);
+	    continue;
+	}
 
 
-
-
-        //$product=new Product('find complete',$customer_data);
-
-
-        // print_r($customer_data);
-
-//print_r($customer);
 	$sql=sprintf("select `Product ID`,`Product Name`,`Product Code` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s  "
 		,$store->id
 		,prepare_mysql($product_data['Product Code'])
@@ -789,6 +818,9 @@ function insert_products_from_csv(){
 	$res=mysql_query($sql);
 
 	//print $sql;exit;
+
+
+
 
         if (!$data = mysql_fetch_array($res)) {
 
