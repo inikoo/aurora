@@ -183,6 +183,7 @@ function option_changed(key,option_key){
 
 function insert_data(){
 window.location.href='insert_csv.php?subject='+Dom.get('scope').value+'&subject_key='+Dom.get('scope_key').value;
+
 }
 
 function new_map(){
