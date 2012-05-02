@@ -1067,13 +1067,13 @@ return;
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     parent_key=validate_scope_metadata[branch]['key'];
     parent=validate_scope_metadata[branch]['key_name'];
-//alert(parent_key);
+//alert(branch);
 
     jsonificated_values=YAHOO.lang.JSON.stringify(values);
 
 	//alert(scope_edit_ar_file);
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-	alert(request)
+	//alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
 //alert(o.responseText);

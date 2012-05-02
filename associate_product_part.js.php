@@ -54,9 +54,10 @@ Dom.get('part_code').value=part_code;
 
 
 validate_scope_data['product']['part_key'].validated=true;
-validate_scope_metadata['product'].key=Dom.get('part_key').value;
+//validate_scope_metadata['product'].key=Dom.get('part_key').value;
 validate_scope_data['product']['product_code'].validated=true;
 dialog_family_list.hide();
+
 
 }
 
