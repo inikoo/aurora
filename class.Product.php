@@ -887,6 +887,7 @@ class product extends DB_Table {
 			'product valid from'=>date("Y-m-d H:i:s"),
 			'product valid to'=>date("Y-m-d H:i:s"),
 			'product current key'=>'',
+            'product part metadata'=>'',
 
 		);
 
