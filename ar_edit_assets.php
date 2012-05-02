@@ -100,6 +100,7 @@ case('edit_location'):
 	break;
 
 case('create_product'):
+
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')
@@ -3733,18 +3734,18 @@ function edit_supplier_product_part($data) {
 
 function create_product($data) {
 	global $editor;
-
+    
 	if (array_key_exists('Product Name',$data['values'])
 		and  array_key_exists('Product Code',$data['values'])
 		and  array_key_exists('Product Units',$data['values'])
 		and  array_key_exists('Product Name',$data['values'])
 		and  array_key_exists('Product Price',$data['values'])
-		and  array_key_exists('Product Family Key',$data['values'])
+		and  array_key_exists('Product Part Metadata',$data['values'])
 		and  array_key_exists('Product Store Key',$data['values'])
 
 	) {
-		$part_sku=$data['parent_key'];
-		$family=new Family($data['values']['Product Family Key']);
+		$part_sku=$data['values']['Product Part Metadata'];
+		$family=new Family($data['parent_key']);
 
 		$department_key=$family->data['Product Family Main Department Key'];
 		$store_key=$data['values']['Product Store Key'];
