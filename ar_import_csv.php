@@ -721,7 +721,7 @@ function insert_products_from_csv(){
     $_SESSION['state']['import']['todo']=count($data_to_import);
 
 //print_r($data_to_import);exit;
-print $_SESSION['state']['import']['todo'];
+print $_SESSION['state']['import']['todo']
 
     foreach($data_to_import as $_product_data) {
 
