@@ -3787,6 +3787,7 @@ function create_product($data) {
 				'editor'=>$editor,
 				'Product Net Weight'=>$weight,
 				'Product Gross Weight'=>$weight,
+                'Product Part Metadata'=>$data['values']['Product Part Metadata']
 			));
 
 		if ($product->id) {
