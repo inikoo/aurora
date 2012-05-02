@@ -3789,7 +3789,21 @@ function create_product($data) {
 			));
 
 		if ($product->id) {
+			if($part_sku != 0){
+				$part= new Part($part_sku);
+				$part_list[]=array(
+					'Part SKU'=>$part->get('Part SKU'),
+					'Parts Per Product'=>1,
+					'Product Part Type'=>'Simple'
+				);
 
+
+
+				$product->new_current_part_list(array(),$part_list);
+
+				$product->update_parts();
+				$product->update_cost_supplier();
+			}
 			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created','object_key'=>$product->pid);
 
 		}else {
@@ -3798,8 +3812,8 @@ function create_product($data) {
 
 		}
 
-		/*
-
+		
+/*
 		if (!$product->new) {
 			$part= new Part($part_sku);
 			$part_list[]=array(
@@ -3815,10 +3829,10 @@ function create_product($data) {
 			$product->update_parts();
 			$product->update_cost_supplier();
 
-			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->id);
+			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->pid);
 		} else {
 
-			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created_', 'object_key'=>$product->id);
+			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created', 'object_key'=>$product->pid);
 		}
 
 */
