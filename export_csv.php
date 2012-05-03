@@ -57,8 +57,8 @@ while ( ($line = fgets($outstream)) !== false) {
   
 fclose($outstream);
 
-$unicode_str_for_Excel = chr(255).chr(254).mb_convert_encoding( $csv, 'UTF-8');
-//$unicode_str_for_Excel = mb_convert_encoding( $csv, 'UTF-16LE', 'UTF-8');
+//$unicode_str_for_Excel = chr(255).chr(254).mb_convert_encoding( $csv, 'UTF-8');
+$unicode_str_for_Excel = mb_convert_encoding( $csv, 'UTF-8');
 
 print $unicode_str_for_Excel;
 
@@ -533,7 +533,7 @@ $fields=array(
 
 
 'price'=>array('title'=>_('Price'),'db_name'=>'Product Price'),
-//'part_sku'=>array('title'=>_('Part SKU'),'db_name'=>''),
+'part_sku'=>array('title'=>_('Part SKU'),'db_name'=>'Product Part Metadata'),
 'weight'=>array('title'=>_('Product Weight'),'db_name'=>'Product Net Weight'),
 'units'=>array('title'=>_('Product Units'),'db_name'=>'Product Units Per Case'),
 'special_characteristics'=>array('title'=>_('Special Characteristics'),'db_name'=>'Product Special Characteristic'),
