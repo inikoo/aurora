@@ -34,6 +34,28 @@ var Editor_change_part;
 
 var store_key=<?php echo $_REQUEST['store_key']?>;
 //alert(store_key);
+
+
+function delete_product(){
+	
+	var request = 'ar_edit_assets.php?tipo=delete_product&pid=' + product_pid
+	// alert(request);
+if (confirm('Are you sure, you want to delete product '+product_pid+' now?')) {
+	YAHOO.util.Connect.asyncRequest('POST', request, {
+		success: function(o) {
+			//alert(o.responseText);
+			var r = YAHOO.lang.JSON.parse(o.responseText);
+			if (r.state == 200) {				
+				window.location.href = 'family.php?id=' + r.family_key;
+			} else {
+				alert(r.msg);
+			}
+		}
+	});	
+}
+
+}
+
 function validate_product_name(query){
  validate_general('product_description','name',unescape(query));
 }

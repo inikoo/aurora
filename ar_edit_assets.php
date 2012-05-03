@@ -181,6 +181,9 @@ case('delete_family'):
 		));
 	delete_family($data);
 	break;
+case('delete_product'):
+	delete_product();
+	break;
 case('delete_store'):
 	delete_store();
 	break;
@@ -4411,6 +4414,28 @@ function new_parts_list($data) {
 	);
 	echo json_encode($response);
 
+}
+
+function delete_product(){
+	$product = new Product($_REQUEST['pid']);
+
+	$product->delete();
+
+	if($product->delete){
+		$response=array(
+			'state'=>200,
+			'msg'=>$product->msg,
+			'family_key'=>$product->data['Product Family Key']
+		);
+	}
+	else{
+		$response=array(
+			'state'=>400,
+			'msg'=>$product->msg
+		);
+	}
+
+	echo json_encode($response);
 }
 
 ?>
