@@ -721,7 +721,7 @@ function insert_products_from_csv(){
     $_SESSION['state']['import']['todo']=count($data_to_import);
 
 //print_r($data_to_import);exit;
-print $_SESSION['state']['import']['todo']
+//print $_SESSION['state']['import']['todo']
 
     foreach($data_to_import as $_product_data) {
 
@@ -759,14 +759,17 @@ print $_SESSION['state']['import']['todo']
 				'editor'=>$editor,
 				'Product Net Weight'=>'',
 				'Product Gross Weight'=>'',
+                'Product Part Metadata'=>''
 			);
 
 
-//print_r($_customer_data);
         foreach($_product_data as $key=>$value) {
             $product_data[$key]=$value;
         }
-
+        $product_data['Product Part Metadata'] = $product_data['Part SKU'];
+        unset($product_data['Part SKU']);
+        
+        //print_r($product_data);exit;
 	if($product_data['Product Special Characteristic']==''){
 		$product_data['Product Special Characteristic']=$product_data['Product Name'];
 	}
@@ -810,7 +813,7 @@ print $_SESSION['state']['import']['todo']
 	    continue;
 	}
 
-
+ 
 	$sql=sprintf("select `Product ID`,`Product Name`,`Product Code` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s  "
 		,$store->id
 		,prepare_mysql($product_data['Product Code'])
@@ -819,7 +822,7 @@ print $_SESSION['state']['import']['todo']
 
 	//print $sql;exit;
 
-
+       // print_r($product_data);exit;
 
 
         if (!$data = mysql_fetch_array($res)) {
@@ -831,9 +834,10 @@ print $_SESSION['state']['import']['todo']
             //  print_r($response);
 	    $product=new Product('create', $product_data);
 		//print_r($product);exit;
-
+            //print_r($product);exit;
 
             if ($product->new_id) {
+               // print $product->new_id;
 /*
                 if (!$customer_list_key) {
                     $customer_list_key=new_imported_csv_customers_list($store_key);
@@ -852,6 +856,25 @@ print $_SESSION['state']['import']['todo']
                             );
                 mysql_query($sql);
 */
+                
+                if($product_data['Product Part Metadata'] != 0){
+                    include_once('class.Part.php');
+                    $part= new Part($product_data['Product Part Metadata']);
+                    $part_list[]=array(
+                                       'Part SKU'=>$part->get('Part SKU'),
+                                       'Parts Per Product'=>1,
+                                       'Product Part Type'=>'Simple'
+                                       );
+                    
+                    
+                    
+                    $product->new_current_part_list(array(),$part_list);
+                    
+                    $product->update_parts();
+                    $product->update_cost_supplier();
+                }
+                
+                
                 $imported_records->update(
                     array(
                         'Imported Records'=>( (float) $imported_records->data['Imported Records']+1),
