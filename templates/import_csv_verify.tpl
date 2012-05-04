@@ -5,7 +5,7 @@
 
 {include file='contacts_navigation.tpl'}
 
-<div  class="branch"> 
+<div style="display:" class="branch"> 
 	<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a  href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a  href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {t}Import Customers{/t} (2/3)</span>
 </div>
 
@@ -29,6 +29,32 @@
     <div style="clear:both"></div>
 </div>
 {/if}
+
+
+{if $scope=='family' || $scope == 'department' || $scope == 'store'}
+
+{include file='contacts_navigation.tpl'}
+
+
+<div id="top_page_menu" class="top_page_menu">
+
+    <div class="buttons" style="float:left">
+        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
+    </div>
+    <div class="buttons" style="float:right">
+
+
+    <button class="positive" id="insert_data"   ><img src="art/icons/database_add.png" alt=""> {t}Insert data{/t}</button>	
+                 <button  id="browse_maps"><img src="art/icons/text_list_bullets.png" alt=""> {t}Pick a Field Map{/t}</button>
+                 <button  id="new_map"><img src="art/icons/disk.png" alt=""> {t}Save this Field Map{/t}</button>
+
+
+
+    </div>
+    <div style="clear:both"></div>
+</div>
+{/if}
+
 
 <input type="hidden" id="search_type" value="{$search_type}">
 <input type="hidden" id="scope" value="{$scope}">

@@ -15,7 +15,7 @@
         				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
 
         <button style="margin-left:0px"  onclick="window.location='family.php?id={$family->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
-<button style="margin-left:0px"  onclick="window.location='associate_product_part.php?id={$family->id}'" ><img src="art/icons/brick_add.png" alt=""/> {t}Associate Product{/t}</button>
+<button style="margin-left:0px"  id="new_product"><img src="art/icons/brick_add.png" alt=""/> {t}Associate Product{/t}</button>
     </div>
     <div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
@@ -562,3 +562,12 @@
 
 
 {include file='footer.tpl'}
+<div id="dialog_new_product" style="padding:20px 20px 10px 20px ">
+	<div id="new_product_msg">
+	</div>
+	<div class="buttons">
+		<button class="positive" onclick="window.location='associate_product_part.php?id={$family->id}'" >{t}Manually{/t}</button> 
+		<button class="positive" onclick="window.location='import_csv.php?subject=family&subject_key={$family->id}'">{t}Import from file{/t}</button> 
+		<button class="negative" id="close_dialog_new_product">{t}Cancel{/t}</button> 
+	</div>
+</div>

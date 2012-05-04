@@ -885,6 +885,12 @@ $default_state=array(
 				'product_1y_acc_profit_amount'=>false,
 				'product_1q_acc_invoiced_amount'=>false,
 				'product_1q_acc_profit_amount'=>false,
+				'price'=>true,
+				'part_sku'=>true,
+				'weight'=>true,
+				'units'=>true,
+				'special_characteristics'=>true,
+				'description'=>true
 
 			)
 		),

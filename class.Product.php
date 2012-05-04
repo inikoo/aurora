@@ -17,7 +17,7 @@ include_once 'class.Part.php';
 include_once 'class.Store.php';
 include_once 'class.Family.php';
 include_once 'common_store_functions.php';
-
+include_once 'class.Department.php';
 /* class: product
    Class to manage the *Product Family Dimension* table
 */
@@ -887,6 +887,7 @@ class product extends DB_Table {
 			'product valid from'=>date("Y-m-d H:i:s"),
 			'product valid to'=>date("Y-m-d H:i:s"),
 			'product current key'=>'',
+            'product part metadata'=>'',
 
 		);
 
@@ -6292,6 +6293,25 @@ class product extends DB_Table {
 
 		$this->updated=true;
 		$this->msg=_("image added");
+	}
+
+	function delete(){
+		$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Product ID` = %d", $this->id);
+		$result=mysql_query($sql);
+		$row = mysql_fetch_assoc($result);
+		if($row['num'] > 0){
+			$this->delete = false;
+			$this->msg = _("Product cannot be deleted");
+		}
+		else{
+			$sql = sprintf("delete from `Product Dimension` where `Product ID` = %d", $this->id);
+			mysql_query($sql);
+			$sql = sprintf("delete from `Product History Dimension` where `Product ID` = %d", $this->id);
+			mysql_query($sql);
+			$this->delete = true;
+			$this->msg = _("deleted");
+			
+		}
 	}
 
 }

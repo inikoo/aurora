@@ -74,7 +74,7 @@ case('customers_store'):
     $smarty->assign('store_id',$store->id);
     $smarty->assign('search_label',_('Customers'));
     $smarty->assign('search_scope','customers');
-  $smarty->assign('search_type','customers_store');
+    $smarty->assign('search_type','customers_store');
 break;
 
 case('supplier_products'):
@@ -95,6 +95,12 @@ $scope_args=$_REQUEST['subject_key'];
 break;
 
 case('departments'):
+$scope_args=$_REQUEST['subject_key'];
+break;
+
+case('family'):
+case('department'):
+case('store'):
 $scope_args=$_REQUEST['subject_key'];
 break;
 
@@ -123,6 +129,8 @@ $result=mysql_query($sql);
 $row=mysql_fetch_array($result);
 	$records=$row['COUNT(*)'];
 	
+
+
 $smarty->assign('records',$records);
 $smarty->assign('subject',$scope);
 $smarty->assign('subject_key',$scope_args);

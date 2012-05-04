@@ -46,18 +46,19 @@ $outstream = fopen("php://temp", 'r+');
 
 
 foreach ($adata as $data) {
-    fputcsv($outstream, $data,"\t");
+    fputcsv($outstream, $data,"\t", '"');
 }
  rewind($outstream);
 $csv='';
-  while ( ($line = fgets($outstream)) !== false) {
+while ( ($line = fgets($outstream)) !== false) {
   $csv.=$line;
 }
   
   
 fclose($outstream);
 
-$unicode_str_for_Excel = chr(255).chr(254).mb_convert_encoding( $csv, 'UTF-16LE', 'UTF-8');
+//$unicode_str_for_Excel = chr(255).chr(254).mb_convert_encoding( $csv, 'UTF-8');
+$unicode_str_for_Excel = mb_convert_encoding( $csv, 'UTF-8');
 
 print $unicode_str_for_Excel;
 
@@ -162,8 +163,8 @@ switch ($tipo) {
         break;
    case 'products_in_family':
     
-        $f_field=$_SESSION['state']['family']['table']['f_field'];
-        $f_value=$_SESSION['state']['family']['table']['f_value'];
+        $f_field=$_SESSION['state']['family']['products']['f_field'];
+        $f_value=$_SESSION['state']['family']['products']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('products').'.csv';
         $where=sprintf(' `Product Family Key`=%d ',$_SESSION['state']['family']['id']);
@@ -509,6 +510,8 @@ $fields_to_export=$data['fields'];
 $fields_to_export=$_SESSION['state']['products']['table']['csv_export'];
 }
 
+//print_r($fields_to_export);exit;
+
 
 $fields=array(
 'code'=>array('title'=>_('Code'),'db_name'=>'Product Code'),
@@ -529,6 +532,12 @@ $fields=array(
 'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Product 1 Week Acc Profit'),
 
 
+'price'=>array('title'=>_('Price'),'db_name'=>'Product Price'),
+'part_sku'=>array('title'=>_('Part SKU'),'db_name'=>'Product Part Metadata'),
+'weight'=>array('title'=>_('Product Weight'),'db_name'=>'Product Net Weight'),
+'units'=>array('title'=>_('Product Units'),'db_name'=>'Product Units Per Case'),
+'special_characteristics'=>array('title'=>_('Special Characteristics'),'db_name'=>'Product Special Characteristic'),
+//'description'=>array('title'=>_('Product Description'),'db_name'=>'Product Description')
 );
 
 
@@ -537,7 +546,7 @@ if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
 unset($fields[$key]);
 }
 
-
+//print_r($fields);exit;
 
 $data=array();
 $_data=array();
@@ -549,11 +558,13 @@ $sql="select * from `Product Dimension` where $where $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
+//print_r($row['Product Price']);exit;
 $_data=array();
 foreach($fields as $key=>$options){
-
+//print $options['db_name'];
 $_data[]=$row[$options['db_name']];
 }
+
 $data[]=$_data;
 }
 //print_r($data);exit;
