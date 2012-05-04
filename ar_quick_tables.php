@@ -606,7 +606,8 @@ function part_list() {
   */
   
   $where='where true ';
-    
+ 
+ /*
     
      $_elements='';
     foreach($elements as $_key=>$_value) {
@@ -619,7 +620,7 @@ function part_list() {
     } else {
         $where.=' and `Part Main State` in ('.$_elements.')' ;
     }
-    
+   */ 
     
     $filter_msg='';
     $wheref='';
