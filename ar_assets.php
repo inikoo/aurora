@@ -3445,7 +3445,7 @@ if (!$awhere  and $parent!='list') {
 		$sql="select count(Distinct ITF.`Part SKU`) as total from $table  $where $wheref";
 
 
-
+//print $sql;
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -4107,7 +4107,7 @@ function list_families() {
 
 
 
-
+//print $where;
 
 
 

@@ -382,6 +382,7 @@ if (!$customer_a['deleted'] and !$customer_b['deleted']) {
 
 
 $smarty->assign('parent','customers');
+$smarty->assign('title',_('Customer Split View'));
 
 
 $smarty->display('customer_split_view.tpl');

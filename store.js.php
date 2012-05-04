@@ -810,6 +810,9 @@ YAHOO.util.Event.onContentReady("filtermenu1", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
+    
+    
+    
 
 YAHOO.util.Event.onContentReady("info_period_menu", function () {
 	 var oMenu = new YAHOO.widget.Menu("info_period_menu", { context:["info_period","tr", "br"]  });
@@ -818,3 +821,26 @@ YAHOO.util.Event.onContentReady("info_period_menu", function () {
 	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
     });
     
+    
+    YAHOO.util.Event.onContentReady("rppmenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+YAHOO.util.Event.onContentReady("filtermenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {trigger:"filter_name2"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+    
+    
+    YAHOO.util.Event.onContentReady("rppmenu4", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {trigger:"rtext_rpp4" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+YAHOO.util.Event.onContentReady("filtermenu4", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu4", {trigger:"filter_name4"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });

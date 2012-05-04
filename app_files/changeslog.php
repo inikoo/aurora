@@ -5749,3 +5749,7 @@ ALTER TABLE `Deal Dimension` ADD `Deal Remainder Email Campaign Key` MEDIUMINT U
 ALTER TABLE `Site Dimension` ADD `Site Registration Disclaimer` LONGTEXT NULL;
 
 ALTER TABLE `Email Credentials Dimension` ADD `API Email Address MadMimi` VARCHAR( 256 ) NULL DEFAULT NULL ,ADD `API Key MadMimi` VARCHAR( 256 ) NULL DEFAULT NULL ,ADD `Email Address MadMimi` VARCHAR( 256 ) NULL DEFAULT NULL ;
+
+ALTER TABLE `Site Dimension` CHANGE `Site Logo Image Key` `Site Logo Image Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Site Dimension` CHANGE `Site Default Number See Also Links` `Site Default Number See Also Links` TINYINT( 4 ) UNSIGNED NOT NULL DEFAULT '3';
+

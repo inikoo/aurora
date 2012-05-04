@@ -30,7 +30,7 @@
 		<div style="float:left;margin-left:10px">
 		<a href="index.php"><img src="art/inikoo_logo_small.png" style="height:36px;;position:relative;top:2px" title="{t}Dashboard{/t}"/></a> 
 		</div>
-		<div class="buttons menu" style="float:right;z-index:2;position:relative;">
+		<div class="buttons menu" style="float:right;z-index:2;position:relative;font-size:90%">
 		
 			{foreach from=$nav_menu item=menu } <button onclick="window.location='{$menu[1]}'" class="header {if $menu[2]==$parent} selected{/if}">{$menu[0]}</button> {/foreach} 
 			<div style="clear:both">

@@ -3718,12 +3718,13 @@ class Customer extends DB_Table {
 
 	function get_users_keys() {
 		$user_keys=array();
-		$sql=sprintf("select `User Key` from`Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
-        left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Customer' and `User Parent Key`=%d )
-        where  `Subject Type`='Customer' and `Subject Key`=%d "
+		$sql=sprintf("select `User Key` from `User Dimension` U 
+        where  `User Type`='Customer' and `User Parent Key`=%d "
 			,$this->id
-			,$this->id
+			
 		);
+
+
 
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -6227,10 +6228,11 @@ class Customer extends DB_Table {
 
 		if (count($user_keys)>0) {
 
-			$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key` in (%s)",join($user_keys));
+			$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key` in (%s)",
+			join($user_keys));
 			$res=mysql_query($sql);
 
-			// print $sql;
+			
 
 			$image=false;
 			while ($row=mysql_fetch_array($res)) {
