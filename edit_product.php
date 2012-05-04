@@ -225,8 +225,8 @@ $smarty->assign('filter_menu0',$filter_menu);
 
 $tipo_filter2='code';
 $filter_menu2=array(
-                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+                  'code'=>array('db_key'=>'code','menu_label'=>_('Code'),'label'=>_('Code')),
+                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
               );
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
@@ -243,8 +243,8 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 $smarty->assign('filter1','used_in');
 $smarty->assign('filter_value1','');
 $filter_menu=array(
-		   'sku'=>array('db_key'=>_('code'),'menu_label'=>'Part SKU','label'=>'SKU'),
-		   'used_in'=>array('db_key'=>_('used_in'),'menu_label'=>'Used in','label'=>'Used in'),
+		   'sku'=>array('db_key'=>'sku','menu_label'=>_('Part SKU'),'label'=>_('SKU')),
+		   'used_in'=>array('db_key'=>'used_in','menu_label'=>_('Used in'),'label'=>_('Used in')),
 
 		   );
 $smarty->assign('filter_menu1',$filter_menu);
