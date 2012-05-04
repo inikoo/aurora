@@ -1243,7 +1243,7 @@ unset($part);
 					
 				} else {
 					print_r($product);
-					print "->End.(GO UK) ".date("r")."\n";
+					print "->End.(GO xxx UK) ".date("r")."\n";
 					exit("error: $sql");
 
 				}
