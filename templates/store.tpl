@@ -104,15 +104,17 @@
 							<td>{t}Profit{/t}:</td>
 							<td class=" aright">{$store->get('Total Profit')}</td>
 						</tr>
-						<tr>
+						{*}
+						<tr >
 							<td>{t}Outers{/t}:</td>
 							<td class="aright">{$store->get('Total Quantity Delivered')}</td>
 						</tr>
+						{/*}
 					</tbody>
 					<tbody id="info_year" style="{if $stores_period!='year'}display:none{/if}">
 						<tr>
 							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$store->get('1 Year Acc Customers')}</td>
+							<td class="aright">{$store->get('1 Year New Contacts With Orders')}</td>
 						</tr>
 						<tr>
 							<td>{t}Invoices{/t}:</td>
@@ -126,10 +128,12 @@
 							<td>{t}Profit{/t}:</td>
 							<td class=" aright">{$store->get('1 Year Acc Profit')}</td>
 						</tr>
+							{*}
 						<tr>
 							<td>{t}Outers{/t}:</td>
 							<td class="aright">{$store->get('1 Year Acc Quantity Delivered')}</td>
 						</tr>
+							{/*}
 					</tbody>
 					<tbody id="info_quarter" style="{if $stores_period!='quarter'}display:none{/if}">
 						<tr>
@@ -148,10 +152,12 @@
 							<td>{t}Profit{/t}:</td>
 							<td class=" aright">{$store->get('1 Quarter Acc Profit')}</td>
 						</tr>
+							{*}
 						<tr>
 							<td>{t}Outers{/t}:</td>
 							<td class="aright">{$store->get('1 Quarter Acc Quantity Delivered')}</td>
 						</tr>
+							{/*}
 					</tbody>
 					<tbody id="info_month" style="{if $stores_period!='month'}display:none{/if}">
 						<tr>
@@ -170,10 +176,12 @@
 							<td>{t}Profit{/t}:</td>
 							<td class=" aright">{$store->get('1 Month Acc Profit')}</td>
 						</tr>
+							{*}
 						<tr>
 							<td>{t}Outers{/t}:</td>
 							<td class="aright">{$store->get('1 Month Acc Quantity Delivered')}</td>
 						</tr>
+							{/*}
 					</tbody>
 					<tbody id="info_week" style="{if $stores_period!='week'}display:none{/if}">
 						<tr>
@@ -192,10 +200,12 @@
 							<td>{t}Profit{/t}:</td>
 							<td class=" aright">{$store->get('1 Week Acc Profit')}</td>
 						</tr>
+							{*}
 						<tr>
 							<td>{t}Outers{/t}:</td>
 							<td class="aright">{$store->get('1 Week Acc Quantity Delivered')}</td>
 						</tr>
+							{/*}
 					</tbody>
 				</table>
 			</div>
@@ -518,4 +528,49 @@
 		</ul>
 	</div>
 </div>
+
+
+<div id="rppmenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},2)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="rppmenu4" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu4 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp_with_totals({$menu},4)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="filtermenu4" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu4 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',4)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
 {include file='export_csv_menu_splinter.tpl' id=1 cols=$export_csv_table_cols session_address="families-table-csv_export" export_options=$csv_export_options } 
