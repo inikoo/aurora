@@ -357,8 +357,12 @@
 	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='shipping'}display:none{/if}" id="d_shipping">
 	</div>
 	<div class="edit_block" style="min-height:200px;{if $edit!='departments'}display:none{/if}" id="d_departments">
-		<div class="general_options" style="float:right">
-			<span style="margin-right:10px" id="add_department" class="state_details">Create Department</span> <span style="margin-right:10px;display:none" id="save_new_department" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;display:none" id="close_add_department" class="state_details">{t}Close Dialog{/t}</span> 
+<div class="general_options" style="float:right">
+<span style="margin-right:10px" onClick="window.location='import_csv.php?subject=store&subject_key={$store->id}'" class="state_details">Import Department (CSV)</span>			
+<span style="margin-right:10px" id="add_department" class="state_details">Create Department</span> 
+<span style="margin-right:10px;display:none" id="save_new_department" class="state_details">Save</span> 
+<span style="margin-right:10px;display:none" id="close_add_department" class="state_details">Close Dialog</span> 
+
 		</div>
 		<div class="new_item_dialog" id="new_department_dialog" style="display:none">
 			<div id="new_department_messages" class="messages_block">

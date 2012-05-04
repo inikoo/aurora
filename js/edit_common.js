@@ -1067,7 +1067,7 @@ return;
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     parent_key=validate_scope_metadata[branch]['key'];
     parent=validate_scope_metadata[branch]['key_name'];
-//alert(parent_key);
+//alert(branch);
 
     jsonificated_values=YAHOO.lang.JSON.stringify(values);
 

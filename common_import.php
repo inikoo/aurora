@@ -73,6 +73,35 @@ $fields['cat'.$row['Category Key']]=$row['Category Label'];
         $fields=array();
         break;
 
+    case('family'):
+        $fields=array(
+		'Ignore'=>_('Ignore')
+		,'Part SKU'=>_('SKU')
+		,'Product Code'=>_('Code')
+		,'Product Name'=>_('Name')
+		,'Product Units Per Case'=>_('Units')
+		,'Product Price'=>_('Price')
+		,'Product RRP'=>_('RRP')
+		,'Product Net Weight'=>_('Weight')
+		,'Product Special Characteristic'=>_('Special Characteristic')
+		,'Product Description'=>_('Description')
+		);
+        break;
+     case('department'):
+        $fields=array(
+		'Ignore'=>_('Ignore')
+		,'Product Family Code'=>_('Code')
+		,'Product Family Name'=>_('Name')
+		,'Product Family Description'=>_('Description')
+		);
+	break;
+     case('store'):
+        $fields=array(
+		 'Ignore'=>_('Ignore')
+		,'Product Department Code'=>_('Code')
+		,'Product Department Name'=>_('Name')
+		);
+	break;
     default:
         $fields=array();
     }
@@ -81,7 +110,7 @@ $db_fields=array();
 $labels=array();
 foreach ($fields as $key=>$item) {
    $db_fields[]=$key;
-$labels[]=$item;
+   $labels[]=$item;
 }
     return array($db_fields,$labels);
 

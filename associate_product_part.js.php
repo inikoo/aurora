@@ -54,9 +54,10 @@ Dom.get('part_code').value=part_code;
 
 
 validate_scope_data['product']['part_key'].validated=true;
-validate_scope_metadata['product'].key=Dom.get('part_key').value;
+//validate_scope_metadata['product'].key=Dom.get('part_key').value;
 validate_scope_data['product']['product_code'].validated=true;
 dialog_family_list.hide();
+
 
 }
 
@@ -286,7 +287,7 @@ validate_scope_data=
 	'product_code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}],'name':'product_code'
 	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_product_code&store_key='+Dom.get('store_key').value+'&query=', 'dbname':'Product Code'}
-	,'part_key':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'family_key','ar':false,'dbname':'Product Family Key', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Units per Case'}]}
+	,'part_key':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'part_key','ar':false,'dbname':'Product Part Metadata', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid part key'}]}
 	,'store_key':{'changed':true,'validated':true,'required':true,'dbname':'Product Store Key','group':1,'type':'item','name':'store_key','ar':false,'validation':[{'regexp':"[\\d]+",'invalid_msg':'Invalid Weight'}]}
 ,'product_name':{'changed':true,'validated':true,'required':true,'dbname':'Product Name','group':1,'type':'item','name':'product_name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Name'}]}
 ,'product_description':{'changed':true,'validated':false,'required':false,'dbname':'Product Description','group':1,'type':'item','name':'product_description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Product Description'}]}

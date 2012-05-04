@@ -100,6 +100,7 @@ case('edit_location'):
 	break;
 
 case('create_product'):
+
 	$data=prepare_values($_REQUEST,array(
 			'parent_key'=>array('type'=>'key'),
 			'values'=>array('type'=>'json array')
@@ -179,6 +180,9 @@ case('delete_family'):
 			'family_key'=>array('type'=>'key')
 		));
 	delete_family($data);
+	break;
+case('delete_product'):
+	delete_product();
 	break;
 case('delete_store'):
 	delete_store();
@@ -3733,18 +3737,18 @@ function edit_supplier_product_part($data) {
 
 function create_product($data) {
 	global $editor;
-
+    
 	if (array_key_exists('Product Name',$data['values'])
 		and  array_key_exists('Product Code',$data['values'])
 		and  array_key_exists('Product Units',$data['values'])
 		and  array_key_exists('Product Name',$data['values'])
 		and  array_key_exists('Product Price',$data['values'])
-		and  array_key_exists('Product Family Key',$data['values'])
+		and  array_key_exists('Product Part Metadata',$data['values'])
 		and  array_key_exists('Product Store Key',$data['values'])
 
 	) {
-		$part_sku=$data['parent_key'];
-		$family=new Family($data['values']['Product Family Key']);
+		$part_sku=$data['values']['Product Part Metadata'];
+		$family=new Family($data['parent_key']);
 
 		$department_key=$family->data['Product Family Main Department Key'];
 		$store_key=$data['values']['Product Store Key'];
@@ -3786,10 +3790,25 @@ function create_product($data) {
 				'editor'=>$editor,
 				'Product Net Weight'=>$weight,
 				'Product Gross Weight'=>$weight,
+                'Product Part Metadata'=>$data['values']['Product Part Metadata']
 			));
 
 		if ($product->id) {
+			if($part_sku != 0){
+				$part= new Part($part_sku);
+				$part_list[]=array(
+					'Part SKU'=>$part->get('Part SKU'),
+					'Parts Per Product'=>1,
+					'Product Part Type'=>'Simple'
+				);
 
+
+
+				$product->new_current_part_list(array(),$part_list);
+
+				$product->update_parts();
+				$product->update_cost_supplier();
+			}
 			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created','object_key'=>$product->pid);
 
 		}else {
@@ -3798,8 +3817,8 @@ function create_product($data) {
 
 		}
 
-		/*
-
+		
+/*
 		if (!$product->new) {
 			$part= new Part($part_sku);
 			$part_list[]=array(
@@ -3815,10 +3834,10 @@ function create_product($data) {
 			$product->update_parts();
 			$product->update_cost_supplier();
 
-			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->id);
+			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'found','object_key'=>$product->pid);
 		} else {
 
-			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created_', 'object_key'=>$product->id);
+			$response=array('state'=>200,'msg'=>$product->msg,'action'=>'created', 'object_key'=>$product->pid);
 		}
 
 */
@@ -4395,6 +4414,28 @@ function new_parts_list($data) {
 	);
 	echo json_encode($response);
 
+}
+
+function delete_product(){
+	$product = new Product($_REQUEST['pid']);
+
+	$product->delete();
+
+	if($product->delete){
+		$response=array(
+			'state'=>200,
+			'msg'=>$product->msg,
+			'family_key'=>$product->data['Product Family Key']
+		);
+	}
+	else{
+		$response=array(
+			'state'=>400,
+			'msg'=>$product->msg
+		);
+	}
+
+	echo json_encode($response);
 }
 
 ?>

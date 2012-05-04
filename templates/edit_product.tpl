@@ -8,6 +8,7 @@
 <div class="top_page_menu">
     <div class="buttons" >
         <button style="margin-left:0px"  onclick="window.location='product.php?id={$product->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
+	<button style="margin-left:0px"  onclick="delete_product()" ><img src="art/icons/delete.png" alt=""/> {t}Delete{/t}</button>
   </div>
     <div class="buttons" style="float:right">
     </div>

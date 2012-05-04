@@ -84,6 +84,32 @@ case 'customers_store':
     $smarty->assign('search_type','customers_store');
 
     break;
+case 'family':
+	include_once('class.Family.php');
+	$family=new Family($scope_key);
+	$smarty->assign('family',$family);
+	$smarty->assign('family_id',$family->id);
+	$smarty->assign('search_label',_('Family'));
+	$smarty->assign('search_scope','families');
+	break;
+case 'department':
+	include_once('class.Department.php');
+	$department=new Department($scope_key);
+	$smarty->assign('department',$department);
+	$smarty->assign('department_id',$department->id);
+	$smarty->assign('search_label',_('Deparatment'));
+	$smarty->assign('search_scope','departments');
+	break;
+case 'store':
+	include_once('class.Store.php');
+	$store=new Store($scope_key);
+	$smarty->assign('store',$store);
+	$smarty->assign('store_id',$store->id);
+	$smarty->assign('search_label',_('Customers'));
+	$smarty->assign('search_scope','customers');
+
+	$smarty->assign('search_type','customers_store');
+	break;
 default:
     return;
     break;

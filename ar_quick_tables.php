@@ -721,7 +721,7 @@ function part_list() {
 
     $adata=array();
     $sql="select  `Part Status`,`Part SKU`,`Part Currently Used In`,`Part Unit Description` from `Part Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
-
+    //print $sql;exit;
 
     $res=mysql_query($sql);
 
