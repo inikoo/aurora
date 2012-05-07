@@ -32,7 +32,10 @@ require_once '../../conf/conf.php';
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
  $product=new Product('pid',$row['Product ID']);
- 
+  $product->update_parts();
+  
+  continue;
+  
  $images=$product->get_images_slidesshow();
  if(count($images)>0){
  $_data=array_pop($images);
