@@ -238,7 +238,7 @@
 					<td class="label" style="width:120px">{t}Description{/t}:</td>
 					<td style="width:400px"> 
 					<div>
-<textarea id="page_html_head_resume" style="width:100%;height:80px" maxlength="24" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
+<textarea id="page_html_head_resume" style="width:100%;height:80px"  value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
 						<div id="page_html_head_resume_msg">
 						</div>
 						<div id="page_html_head_resume_Container">
