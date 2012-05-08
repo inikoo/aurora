@@ -580,7 +580,7 @@ function upload_footer(e){
     Dom.setStyle(['upload_footer','cancel_upload_footer'],'display','none');
    var uploadHandler = {
       upload: function(o) {
-	   //alert(o.responseText)
+	   alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){

@@ -23,8 +23,6 @@ class PartLocation extends DB_Table {
 
 		$this->table_name='Part Location';
 
-
-
 		if (is_array($arg1)) {
 			$data=$arg1;
 			if (isset($data['LocationPart'])) {
@@ -408,7 +406,6 @@ class PartLocation extends DB_Table {
 			);
 			mysql_query($sql);
 		}
-
 
 
 
@@ -1068,7 +1065,8 @@ $this->location->update_parts();
 			,$this->location_key
 		);
 		$res=mysql_query($sql);
-		//print "$sql\n";
+	
+		
 		$stock=0;
 		$value=0;
 
@@ -1163,7 +1161,7 @@ $this->location->update_parts();
 			,$this->location_key
 		);
 		mysql_query($sql);
-		//print "$sql\n";
+		
 		$this->part->update_stock();
 	}
 
