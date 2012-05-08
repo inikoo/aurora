@@ -1329,6 +1329,10 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 		return $formated_store_section;
 	}
 
+function display_buttom($tag){
+return $this->display_button($tag);
+}
+
 	function display_button($tag) {
 		$html='';
 		include_once 'class.Product.php';
