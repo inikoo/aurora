@@ -56,6 +56,25 @@ if (confirm('Are you sure, you want to delete product '+product_pid+' now?')) {
 
 }
 
+function change_state(newval, oldval){
+
+
+	var request = 'ar_edit_assets.php?tipo=edit_product&key=web_configuration&newvalue='+newval+'&oldvalue='+oldval+'&pid=' + product_pid
+	// alert(request);
+//return;
+	YAHOO.util.Connect.asyncRequest('POST', request, {
+		success: function(o) {
+			//alert(o.responseText);
+			var r = YAHOO.lang.JSON.parse(o.responseText);
+			if (r.state == 200) {				
+				window.location.reload();
+			} else {
+				alert(r.msg);
+			}
+		}
+	});	
+}
+
 function validate_product_name(query){
  validate_general('product_description','name',unescape(query));
 }
