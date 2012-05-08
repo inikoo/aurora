@@ -8,21 +8,25 @@
 {*}
 {include file='contacts_navigation.tpl'}
 <div id="top_page_menu" class="top_page_menu">
-    {if isset($prev.id_a)}<img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Customer{/t} {$prev.name_a}, {$prev.name_b}"  onclick="window.location='customer_split_view.php?{$parent_info}id_a={$prev.id_a}&id_b={$prev.id_b}&score={$prev.score}&name_a={$prev.name_a|escape:'url'}&name_b={$prev.name_b|escape:'url'}'"  alt="{t}Previous{/t}"  style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if}
+    {if isset($prev.id_a)}<img onMouseover="this.src='art/previous_button.gif'"  onMouseout="this.src='art/previous_button.png'"   title="{t}Previous Customer{/t} {$prev.name_a}, {$prev.name_b}"  onclick="window.location='customer_split_view.php?{$parent_info}id_a={$prev.id_a}&id_b={$prev.id_b}&score={$prev.score}&name_a={$prev.name_a|escape:'url'}&name_b={$prev.name_b|escape:'url'}'"   src="art/previous_button.png"  alt="{t}Previous{/t}"  style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if}
     <div class="buttons" style="float:left">
-        <button  onclick="window.location='customers.php?store={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Customers{/t}</button>
     </div>
+    
+    <span class="main_title">
+			{t}Customers Split View{/t} ({$store->get('Store Code')})
+		</span>
+    
     {if isset($next.id_a)}<img onMouseover="this.src='art/next_button.gif'"  onMouseout="this.src='art/next_button.png'"  title="{t}Next Customers{/t} {$next.name_a}, {$next.name_b}"  onclick="window.location='customer_split_view.php?{$parent_info}id_a={$prev.id_a}&id_b={$prev.id_b}&score={$prev.score}&name_a={$next.name_a|escape:'url'}&name_b={$next.name_b|escape:'url'}'"   src="art/next_button.png" alt="{t}Next{/t}"  style="float:right;height:22px;cursor:pointer;position:relative;top:2px"/ >{/if}
     <div class="buttons" style="float:right">
+
            {if $can_merge}<button id="open_merge_dialog" ><img src="art/icons/group_link.png" alt=""> {t}Merge{/t}</button>{/if}
+                       <button  onclick="window.location='customers_stats.php?store={$store->id}'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+
        </div>
     <div style="clear:both"></div>
 </div>
 
- 
- 
- 
- <h1>{t}Customers Split View{/t} ({$store->get('Store Code')})</h1>
+
 
 
 <div style="clear:both">

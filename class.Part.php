@@ -2311,7 +2311,7 @@ class part extends DB_Table {
 			$used_in[strtolower($row['Product Code'])][$row['Store Code']][$row['Product ID']]=1;
 
 		}
-		// print_r($used_in);
+		//print_r($used_in);
 		foreach ($used_in as $code=>$store_data) {
 			$raw_used_in_products.=' '.$code;
 			$used_in_products.=sprintf(', <a href="product.php?code=%s">%s</a>',$code,$code);

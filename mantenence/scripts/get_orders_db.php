@@ -577,7 +577,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			$__code=strtolower($transaction['code']);
 
-			if (   preg_match('/\-kit1$/i',$__code) or  preg_match('/\-minst$/i',$__code) or   preg_match('/\-Starter\d$/i',$__code)   or   preg_match('/^bonus\-/i',$__code)  or   preg_match('/\-st\d$/i',$__code)  or   preg_match('/\-pack$/i',$__code)  or    preg_match('/\-pst$/i',$__code)  or    preg_match('/\-kit2$/i',$__code)  or  preg_match('/\-kit1$/i',$__code)  or preg_match('/\-st$/i',$__code)  or     preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or       $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
+			if (   preg_match('/\-kit1$/i',$__code) or  preg_match('/\-minst$/i',$__code) or  preg_match('/\-Starter$/i',$__code)   or  preg_match('/\-Starter\d$/i',$__code)   or   preg_match('/^bonus\-/i',$__code)  or   preg_match('/\-st\d$/i',$__code)  or   preg_match('/\-pack$/i',$__code)  or    preg_match('/\-pst$/i',$__code)  or    preg_match('/\-kit2$/i',$__code)  or  preg_match('/\-kit1$/i',$__code)  or preg_match('/\-st$/i',$__code)  or     preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or       $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
 					or $__code=='DOT-St' or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
 				or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
 			) {
@@ -1243,7 +1243,7 @@ unset($part);
 					
 				} else {
 					print_r($product);
-					print "->End.(GO UK) ".date("r")."\n";
+					print "  $sql  ->End.(GO xxx UK) ".date("r")."\n";
 					exit("error: $sql");
 
 				}

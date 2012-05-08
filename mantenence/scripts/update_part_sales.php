@@ -35,8 +35,8 @@ date_default_timezone_set('UTC');
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension` where `Part SKU`=36891 order by `Part SKU`";
-//$sql="select * from `Part Dimension`   order by `Part SKU`";
+$sql="select * from `Part Dimension` where `Part SKU`=10635 order by `Part SKU`";
+$sql="select * from `Part Dimension`   order by `Part SKU`";
 
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -79,7 +79,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   }
   */
 //  $part->update_number_transactions();
- // $part->update_used_in();
+  $part->update_used_in();
   $part->update_supplied_by();
   
 //  $part->update_picking_location();
@@ -89,9 +89,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 
-$part->update_up_today_sales();
-$part->update_interval_sales();
-$part->update_last_period_sales();
+//$part->update_up_today_sales();
+//$part->update_interval_sales();
+//$part->update_last_period_sales();
   
 
 
