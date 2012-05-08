@@ -157,13 +157,15 @@ var CellEdit = function (callback, newValue) {
 			else
 		request_page=	'ar_edit_assets.php';			
 						
-						
+		//alert(request_page+'?tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
+						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+						myBuildUrl(datatable,record))				
 						
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						request_page, {
 						    success:function(o) {
-						//	alert(o.responseText);
+							//alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
@@ -535,7 +537,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {'label':"<?php echo _('Force out of stock')?><br/>",'value':"Online Force Out of Stock"},
 				    {'label':"<?php echo _('Force offline')?><br/>",'value':'Offline'},
 				    {'label':"<?php echo _('Private Sale')?><br/>",'value':'Private Sale'},
-				    {'label':"<?php echo _('Not For Sale')?>",'value':'Not for Sale'}
+				    {'label':"<?php echo _('Not For Sale')?>",'value':'Not For Sale'}
 				    ],disableBtns:true})}
 				    ,{key:"formated_web_configuration" , label:"",hidden:true}
 
