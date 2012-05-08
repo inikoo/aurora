@@ -157,9 +157,7 @@ var CellEdit = function (callback, newValue) {
 			else
 		request_page=	'ar_edit_assets.php';			
 						
-		//alert(request_page+'?tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
-						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
-						myBuildUrl(datatable,record))				
+		//alert(request_page+'?tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record))				
 						
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
