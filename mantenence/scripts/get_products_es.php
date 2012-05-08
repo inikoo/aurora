@@ -41,12 +41,13 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='AWorder2002-spain.xls';
 $csv_file='es_tmp.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
 $products=false;
 $count=0;
+$set_part_as_available=true;
 
 $store_key=1;
 $create_cat=false;
@@ -149,6 +150,8 @@ foreach ($__cols as $cols) {
 
 	$is_product=true;
 
+
+
 	$code=_trim($cols[3+2]);
 
 
@@ -177,10 +180,8 @@ foreach ($__cols as $cols) {
 
 	}
 
-	// if(!preg_match('/moonbr-/i',$code)){
-
-	//continue;
-	//}
+	if($code=='?')
+		continue;
 
 
 	// print_r($cols);
@@ -188,8 +189,21 @@ foreach ($__cols as $cols) {
 	$code=preg_replace('/\s.*$/','',$code);
 
 	$code=_trim($code);
-	if ($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
+	
+	
+	
+	
+	if ( !preg_match('/\-/',$code) and !is_numeric($price))
 		$is_product=false;
+	
+	if ($code==''  or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
+		$is_product=false;
+
+
+
+
+
+
 	if (preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
 		$is_product=false;
 	if (preg_match('/^staf-set/i',$code) and $price=='')
@@ -203,20 +217,38 @@ foreach ($__cols as $cols) {
 	if (preg_match('/^(DB-IS|EO-Sticker|ECBox-01|SHOP-Fit)$/i',$code) and $price=='')
 		$is_product=false;
 
+	if(in_array($code,array('FL05/B','T10C','T54C')))
+		$is_product=true;
+if (preg_match('/^b\d{4}$/i',$code) )
+		$is_product=true;
 
+if (preg_match('/^t\d{4}c$/i',$code) )
+		$is_product=true;
+
+
+
+	if (preg_match('/^y\d{2}$/i',$code) )
+		$is_product=true;
 	if (preg_match('/^credit|Freight|^frc\-|^cxd\-|^wsl$|^postage$/i',$code) )
 		$is_product=false;
 
 
 
+//print "$code -> $is_product .\n";
+
+//continue;
+
 	if ($is_product) {
 
-		// print " $code\n";
+		
 
 		if ($cols[8]=='' and $price=='')
 			continue;
 
+ if(!preg_match('/thss-10/i',$code)){
 
+//	  continue;
+	}
 
 
 
@@ -309,7 +341,7 @@ foreach ($__cols as $cols) {
 			$deals=array();
 
 
-
+$deals=array();
 
 
 		$units=$cols[7];
@@ -468,7 +500,17 @@ foreach ($__cols as $cols) {
 
 			if (preg_match('/Cristales Nuevos/i',$department_name) )
 				$department_code='Crist';
-
+if (preg_match('/Departamento De Fiesta/i',$department_name) )
+				$department_code='Fiesta';
+				
+				
+				if (preg_match('/Departamento De Navidad/i',$department_name) )
+				$department_code='Navi';
+				
+				
+				
+				
+				
 			if ($department_code=='') {
 
 				exit("Error unknown department (get_product_es.php) name: $department_name\n");
@@ -617,9 +659,10 @@ foreach ($__cols as $cols) {
 		$product=new Product('find',$data,'create');
 
 
+        $__parts=$product->get_part_list();
 
 
-		if ($product->new_id) {
+		if ($product->new_id or count($__parts)==0) {
 
 
 
@@ -631,14 +674,23 @@ foreach ($__cols as $cols) {
 			$supplier_code=$cols[23];
 			update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
 
-			$product->set_duplicates_as_historic();
+			
 		}
+		
+		
+		$product->set_duplicates_as_historic();
+		
 
 		$product->change_current_key($product->id);
 		//print_r($cols);
 		//print $product->data['Product Code'].": ".$product->data['Product RRP']." -> $rrp\n";
 
 		$product->update_rrp('Product RRP',$rrp);
+
+
+	
+
+
 
 		$product->update_stage('Normal');
 		if ($set_part_as_available) {
@@ -647,12 +699,15 @@ foreach ($__cols as $cols) {
 
 
 
-		if ($product->data['Product Family Key']==$fam_products_no_family_key) {
+		//if ($product->data['Product Family Key']==$fam_products_no_family_key) {
 			$product->update_family_key($family->id);
-		}
+		//}
 
 		if ($product->data['Product Sales Type']!='Private Sale') {
 			$product->update_sales_type('Public Sale');
+		}else{
+		
+			$product->update_web_configuration('Online Force For Sale');
 		}
 
 		$sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d and `Product ID`!=%d group by `Product ID`",
@@ -671,7 +726,8 @@ foreach ($__cols as $cols) {
 
 
 
-	}else {
+	}
+	else {
 
 
 
@@ -1521,6 +1577,39 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
 
 }
 
+function set_part_as_available($product) {
+
+	$current_part_skus=$product->get_current_part_skus();
+	foreach ($current_part_skus as $_part_sku) {
+		$part=new Part($_part_sku);
+		//$part->update_status('Not In Use');
+
+		$supplier_products=$part->get_supplier_products();
+
+		foreach ($supplier_products as $supplier_product) {
+			$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Status`='In Use' where `Supplier Product Key`=%d",
+				$supplier_product['Supplier Product Key']
+			);
+			mysql_query($sql);
+			//print "$sql\n";
+			$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part In Use`='Yes' where `Supplier Product Part Key`=%d",
+				$supplier_product['Supplier Product Part Key']
+			);
+			mysql_query($sql);
+			//  print "$sql\n";
+
+		}
+
+		$part->update_availability();
+
+
+		$part->update_status('In Use');
+
+
+
+	}
+
+}
 
 
 ?>

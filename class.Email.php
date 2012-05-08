@@ -727,8 +727,9 @@ class Email extends DB_Table {
 
 
 		if (!isset($this->data['Email'])) {
-			print_r($this);
-			exit("error no email data (*)");
+			exit;
+			//print_r($this);
+			//exit("error no email data (*)");
 		}
 
 		switch ($tipo) {
