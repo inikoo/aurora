@@ -62,7 +62,8 @@ default:
 
 function process_uploaded_files($data) {
 
-
+print_r($_FILES);
+exit;
 
 	if (isset($_FILES['file']['tmp_name']) and $_FILES['file']['tmp_name']) {
 		$file_name=$_FILES['file']['tmp_name'];
