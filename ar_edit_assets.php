@@ -654,8 +654,11 @@ function edit_product() {
 		$key=$key;
 
 
-	if ($key=='web_configuration' and  ($newvalue=='Private Sale'  or $newvalue=='Not For Sale') )
+	if ($key=='web_configuration' and  ($newvalue=='Private Sale'  or $newvalue=='Not For Sale') ){
+			
 		$key='Product Sales Type';
+	}
+
 	$product->update($key,stripslashes(urldecode($newvalue)));
 
 

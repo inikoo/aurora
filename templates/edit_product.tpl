@@ -235,6 +235,16 @@
 
  </td>
  </tr>
+<tr><td style="width:180px" class="label">{t}State{/t}:</td>
+<td style="width:600px" class="buttons left small">
+<button class="{if $web_configuration=='Online Auto'}selected{/if}" onClick="change_state('Online Auto', '{$web_configuration}')">{t}Auto{/t}</button>
+<button class="{if $web_configuration=='Online Force For Sale'}selected{/if}" onClick="change_state('Online Force For Sale', '{$web_configuration}')">{t}Force online{/t}</button>
+<button class="{if $web_configuration=='Online Force Out of Stock'}selected{/if}" onClick="change_state('Online Force Out of Stock', '{$web_configuration}')">{t}Force out of stock{/t}</button>
+<button class="{if $web_configuration=='Offline'}selected{/if}" onClick="change_state('Offline', '{$web_configuration}')">{t}Force offline{/t}</button>
+<button class="{if $web_configuration=='Private Sale'}selected{/if}" onClick="change_state('Private Sale', '{$web_configuration}')">{t}Private Sale{/t}</button>
+<button class="{if $web_configuration=='Not for Sale'}selected{/if}" onClick="change_state('Not For Sale', '{$web_configuration}')">{t}Not For Sale{/t}</button>
+</td>
+</tr>
 <tr class="first"><td style="width:180px" class="label">{t}Units Per Outer{/t}:</td>
    <td  style="text-align:left">
      <div   >
