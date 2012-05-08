@@ -245,10 +245,10 @@ if (preg_match('/^t\d{4}c$/i',$code) )
 		if ($cols[8]=='' and $price=='')
 			continue;
 
-// if(!preg_match('/cbox-101/i',$code)){
+ if(!preg_match('/thss-10/i',$code)){
 
-	//  continue;
-//	}
+//	  continue;
+	}
 
 
 
@@ -659,9 +659,10 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 		$product=new Product('find',$data,'create');
 
 
+        $__parts=$product->get_part_list();
 
 
-		if ($product->new_id) {
+		if ($product->new_id or count($__parts)==0) {
 
 
 
@@ -673,8 +674,12 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 			$supplier_code=$cols[23];
 			update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
 
-			$product->set_duplicates_as_historic();
+			
 		}
+		
+		
+		$product->set_duplicates_as_historic();
+		
 
 		$product->change_current_key($product->id);
 		//print_r($cols);
@@ -684,7 +689,6 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 
 
 	
-
 
 
 
