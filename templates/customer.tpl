@@ -571,9 +571,10 @@
 			<td colspan="2">{t}Payment Method{/t}:</td>
 		</tr>
 		<tr>
+		
 			<td colspan="2"> 
 			<select id="make_order_payment_method">
-				{if $hq_country=='ES'} 
+				{if $hq_country=='ESP'} 
 				<option>Tarjeta</option>
 				<option>Paypal</option>
 				<option>Ingreso</option>
@@ -605,6 +606,9 @@
 				</select>
 				</td>
 			</tr>
+			 
+			
+			
 		</tbody>
 		<tr>
 			<td colspan="2">Gold Reward:</td>
