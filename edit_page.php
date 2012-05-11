@@ -241,6 +241,16 @@ $smarty->assign('filter_name7',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu7',$paginator_menu);
 
+$tipo_filter='name';
+$smarty->assign('filter8','name');
+$smarty->assign('filter_value8','');
+$filter_menu=array(
+	'name'=>array('db_key'=>'name','menu_label'=>_('Name starting with <i>x</i>'),'label'=>_('Name')),
+);
+$smarty->assign('filter_menu8',$filter_menu);
+$smarty->assign('filter_name8',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu8',$paginator_menu);
 
 
 

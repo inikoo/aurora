@@ -33,7 +33,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
  $product=new Product('pid',$row['Product ID']);
   $product->update_parts();
-  
+  $product->update_web_state();
   continue;
   
  $images=$product->get_images_slidesshow();
