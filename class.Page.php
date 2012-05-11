@@ -1180,6 +1180,8 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 		$correlation_upper_limit=1/($min_sales_correlation_samples);
 		$see_also=array();
 		$number_links=0;
+	
+		
 		switch ($this->data['Page Store Section']) {
 		case 'Department Catalogue':
 			break;
@@ -1257,6 +1259,7 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 
 			break;
 		}
+
 
 
 		$sql=sprintf("delete from `Page Store See Also Bridge`where `Page Store Key`=%d ",
