@@ -16,6 +16,7 @@
 
         <button style="margin-left:0px"  onclick="window.location='family.php?id={$family->id}'" ><img src="art/icons/door_out.png" alt=""/> {t}Exit Edit{/t}</button>
 <button style="margin-left:0px"  id="new_product"><img src="art/icons/brick_add.png" alt=""/> {t}Associate Product{/t}</button>
+<button style="margin-left:0px; {if !$family->get_number_products() || !$can_delete}display:none{/if}"  onclick="delete_family()" ><img src="art/icons/delete.png" alt=""/> {t}Delete{/t}</button>
     </div>
     <div class="buttons" style="float:left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
@@ -53,7 +54,7 @@
       </td>
       </tr>
     
-    <tr style="display:none">
+    <tr style="display:">
 <td></td>
 <td style="text-align:right;color:#777;font-size:90%">
 <div id="delete_family_warning" style="border:1px solid red;padding:5px 5px 15px 5px;color:red;display:none">
@@ -66,7 +67,7 @@
 <span id="save_delete_family"  style="cursor:pointer;display:none;margin-left:20px;">{t}Yes, delete it!{/t}</span>
 <p id="deleting" style="display:none;">{t}Deleting family, wait please{/t}</p>
 </div>
-<span id="delete_family" class="state_details" style="{if $family->get_number_products()}display:none{/if}">{t}Delete Family{/t}</span>
+
 
 </td>
 <td>
