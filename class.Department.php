@@ -36,7 +36,8 @@ class Department extends DB_Table {
         $this->ignore_fields=array(
                                  'Product Department Key',
                                  'Product Department Families',
-                                 'Product Department For Sale Products',
+                                 'Product Department For Public Sale Products',
+				 'Product Department For Private Sale Products',
                                  'Product Department In Process Products',
                                  'Product Department Not For Sale Products',
                                  'Product Department Discontinued Products',
@@ -450,9 +451,32 @@ class Department extends DB_Table {
             }
 
             $this->deleted=true;
-        } else {
-            $this->msg=_('Department can not be deleted because it has associated some products');
+        } else {//when families are associated with this department
+            //$this->msg=_('Department can not be deleted because it has associated some products');
+		$move_all_products = true;
+		$store=new Store($this->data['Product Department Store Key']);
 
+		$sql = sprintf("select * from `Product Family Dimension` where `Product Family Main Department Key` = %d", $this->id);
+		$result = mysql_query($sql);
+		while($row = mysql_fetch_assoc($result)){
+			$family = new Family($row['Product Family Key']);
+			$family->update_department($store->data['Store Orphan Families Department']);
+			if (!$family->updated) {
+				$move_all_products&=false;
+			}
+		}
+	
+
+		if($move_all_products){
+			$sql=sprintf("delete from `Product Department Dimension` where `Product Department Key`=%d",$this->id);
+			mysql_query($sql);
+		}
+
+		if (mysql_affected_rows()>0) {
+			$this->deleted=true;
+		} else {
+			$this->deleted_msg='Error family can not be deleted';
+		}
         }
     }
 
@@ -494,7 +518,7 @@ class Department extends DB_Table {
 
 
         case('Total Products'):
-            return $this->data['Product Department For Sale Products']+$this->data['Product Department In Process Products']+$this->data['Product Department Not For Sale Products']+$this->data['Product Department Discontinued Products']+$this->data['Product Department Unknown Sales State Products'];
+            return $this->data['Product Department For Public Sale Products']+$this->data['Product Department For Private Sale Products']+$this->data['Product Department In Process Products']+$this->data['Product Department Not For Sale Products']+$this->data['Product Department Discontinued Products']+$this->data['Product Department Unknown Sales State Products'];
             break;
 
 //   case('weeks'):
