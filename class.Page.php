@@ -1068,7 +1068,6 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 		$see_also=array();
 		$sql=sprintf("select `Page Store See Also Key`,`Correlation Type`,`Correlation Value` from  `Page Store See Also Bridge` where `Page Store Key`=%d order by `Correlation Value` desc ",
 			$this->id);
-
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
@@ -1328,6 +1327,10 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 
 		return $formated_store_section;
 	}
+
+function display_buttom($tag){
+return $this->display_button($tag);
+}
 
 	function display_button($tag) {
 		$html='';
