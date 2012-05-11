@@ -42,6 +42,18 @@ if (!( $user->can_view('stores') and in_array($family->data['Product Family Stor
 }
 
 $store=new Store($family->data['Product Family Store Key']);
+
+$can_delete = true;
+
+if($store->data['Store Orphan Products Family'] == $family->id){
+	$can_delete = false;
+}
+
+
+
+$smarty->assign('can_delete',$can_delete);
+
+
 $department=new Department($family->get('Product Family Main Department Key'));
 
 $view_sales=$user->can_view('product sales');

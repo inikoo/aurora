@@ -478,10 +478,10 @@ var request='ar_edit_assets.php?tipo=delete_family&delete_type=delete&family_key
 	           
 	           Dom.setStyle('deleting','display','');
 	           	           Dom.setStyle(['save_delete_family','cancel_delete_family'],'display','none');
-alert(request);
+//alert(request);
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 	            success:function(o){
-	           alert(o.responseText);	
+	          // alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
         location.href='family.php?id='+family_id;
@@ -1023,7 +1023,7 @@ function show_add_product_dialog(){
 
 
 function select_department(oArgs){
-//alert('ss');
+
 
 department_key=tables.table2.getRecord(oArgs.target).getData('key');
 
