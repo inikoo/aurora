@@ -986,9 +986,11 @@ Dom.setStyle(['upload_page_content','cancel_upload_page_content'],'display','non
 
     YAHOO.util.Connect.setForm('upload_page_content_form', true,true);
     var request='ar_upload_page_content.php?tipo=upload_page_content';
+
+//alert(request);
    var uploadHandler = {
       upload: function(o) {
-// alert(o.responseText)
+ //alert(o.responseText)
 	
 	var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
