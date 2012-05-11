@@ -1180,6 +1180,8 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 		$correlation_upper_limit=1/($min_sales_correlation_samples);
 		$see_also=array();
 		$number_links=0;
+	
+		
 		switch ($this->data['Page Store Section']) {
 		case 'Department Catalogue':
 			break;
@@ -1257,6 +1259,7 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 
 			break;
 		}
+
 
 
 		$sql=sprintf("delete from `Page Store See Also Bridge`where `Page Store Key`=%d ",
@@ -2524,6 +2527,8 @@ return $this->display_button($tag);
 
 		elseif (preg_match('/linux/i',$_system)) {
 			$command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --style=windows  --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png    '.$url;
+
+
 
 			//  $command='xvfb-run --server-args="-screen 0, 1280x1024x24" python mantenence/scripts/webkit2png_linux.py --log=app_files/tmp/webkit2png_linux.log -o app_files/tmp/pp_image'.$this->id.'-clipped.png --scale  512 '.(ceil($height*0.5)).'    '.$url;
 		}
