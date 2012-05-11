@@ -184,6 +184,7 @@ function delete_found_in_page( page_key ) {
 
 function change_number_auto_see_also(e,operation){
 	var request='ar_edit_sites.php?tipo=update_see_also_quantity&id='+Dom.get('page_key').value +'&operation='+operation
+//alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o){
 	                           // alert(o.responseText);	
