@@ -73,7 +73,7 @@ function process_uploaded_files($data) {
 		}
 	} else {
 		$poidsMax = ini_get('upload_max_filesize');
-		$msg=_("Your feet is too big, maximum allowed size here is").": $poidsMax";
+		$msg=_("Your file is too big, maximum allowed size here is").": $poidsMax";
 		$response= array('state'=>400,'msg'=>$msg);
 		echo json_encode($response);
 		return;

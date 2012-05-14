@@ -201,7 +201,8 @@ foreach ($__cols as $cols) {
 
 
 
-
+if (preg_match('/\-st$/i',$code))
+		$is_product=false;
 
 
 	if (preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
