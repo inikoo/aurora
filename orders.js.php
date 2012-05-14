@@ -527,7 +527,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-
 
 Event.onDOMReady(init);
 
-Event.onContentReady("filtermenu0", function () {
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
@@ -535,46 +535,41 @@ Event.onContentReady("filtermenu0", function () {
     });
 
 
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
 
-Event.onContentReady("rppmenu0", function () {
-	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-	Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
-});
 
-Event.onContentReady("filtermenu1", function () {
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+	 
     });
 
 
-
-Event.onContentReady("rppmenu1", function () {
-	var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-	Event.addListener("rtext_rpp1", "click",oMenu.show , null, oMenu);
-
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
     });
 
-Event.onContentReady("filtermenu2", function () {
+
+YAHOO.util.Event.onContentReady("filtermenu2", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {  trigger: "filter_name2"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 Event.addListener("filter_name2", "click", oMenu.show, null, oMenu);
+	 
     });
 
 
-
-Event.onContentReady("rppmenu2", function () {
-	var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-	Event.addListener("rtext_rpp2", "click",oMenu.show , null, oMenu);
-
+YAHOO.util.Event.onContentReady("rppmenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
     });
+
 
 

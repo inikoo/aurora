@@ -55,7 +55,9 @@ if (isset($_REQUEST['dispatch']) and preg_match('/^all_orders|in_process|dispatc
     $_SESSION['state']['orders']['table']['dispatch']=$_REQUEST['dispatch'];
 }
 
-$smarty->assign('block_view',$_SESSION['state']['orders']['view']);
+$block_view=$_SESSION['state']['orders']['view'];
+
+$smarty->assign('block_view',$block_view);
 $smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
 $smarty->assign('invoice_type',$_SESSION['state']['orders']['invoices']['invoice_type']);
 $smarty->assign('dn_state_type',$_SESSION['state']['orders']['dn']['dn_state_type']);
@@ -107,7 +109,6 @@ $js_files=array(
 
 
 $smarty->assign('parent','orders');
-$smarty->assign('title', _('Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -338,5 +339,16 @@ $csv_export_options2=array(
 $smarty->assign('export_csv_table_cols2',4);
 $smarty->assign('csv_export_options2',$csv_export_options2);
 // ----------------------------------export csv array for delivery notes list ends here-----------------------------------------------
+
+if($block_view=='invoices')
+$smarty->assign('title', _('Invoices'));
+
+elseif($block_view=='dn')
+$smarty->assign('title', _('Delivery Notes'));
+
+else
+$smarty->assign('title', _('Orders'));
+
+
 $smarty->display('orders.tpl');
 ?>

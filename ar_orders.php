@@ -1031,11 +1031,11 @@ function list_transactions_in_invoice() {
 		else
 			$discount=money($row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']);
 
-		if($row['Product Tariff Code']!='')
-		$tariff_code=' <span style="color:#777" >('.$row['Product Tariff Code'].')</span>';
+		if ($row['Product Tariff Code']!='')
+			$tariff_code=' <span style="color:#777" >('.$row['Product Tariff Code'].')</span>';
 		else
-		$tariff_code='';
-		
+			$tariff_code='';
+
 		$data[]=array(
 
 			'code'=>$code,
@@ -1305,7 +1305,7 @@ function list_transactions_in_process_in_dn() {
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-	$notes='';
+		$notes='';
 
 		if ($row['Out of Stock']!=0) {
 			$notes.=_('Out of Stock').' '.number($row['Out of Stock']).'<br/>';
@@ -1322,14 +1322,14 @@ function list_transactions_in_process_in_dn() {
 		$data[]=array(
 
 			'part'=>sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']),
-						'description'=>$row['Part Unit Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':''),
+			'description'=>$row['Part Unit Description'].($row['Picking Note']?' <i>('.$row['Picking Note'].')</i>':''),
 
 			'quantity'=>number($row['Required']+$row['Given']),
-						'packed'=>number($row['Packed']),
+			'packed'=>number($row['Packed']),
 			'picked'=>number($row['Picked']),
 			'notes'=>$notes,
 
-			
+
 
 		);
 	}
@@ -2585,14 +2585,14 @@ function list_invoices() {
 	//  print $f_field;
 
 
-	if (($f_field=='customer name'     )  and $f_value!='') {
-		$wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+	if (($f_field=='customer_name'     )  and $f_value!='') {
+		$wheref="  and  `Invoice Customer Name` like '%".addslashes($f_value)."%'";
 	}
 	elseif (($f_field=='postcode'     )  and $f_value!='') {
 		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
 	}
-	else if ($f_field=='id'  )
-			$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+	else if ($f_field=='public_id'  )
+			$wheref.=" and  `Invoice Public ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
 		else if ($f_field=='last_more' and is_numeric($f_value) )
 				$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
 			else if ($f_field=='last_less' and is_numeric($f_value) )
