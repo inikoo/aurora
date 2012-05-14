@@ -38,6 +38,15 @@ if (!$modify) {
 
 $store=new Store($department->get('Product Department Store Key'));
 
+$can_delete = true;
+
+if($store->data['Store Orphan Families Department'] == $department->id){
+	$can_delete = false;
+}
+
+
+
+$smarty->assign('can_delete',$can_delete);
 
 $create=$user->can_create('product families');
 
