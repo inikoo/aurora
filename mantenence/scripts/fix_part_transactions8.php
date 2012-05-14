@@ -31,32 +31,43 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
+$sql="select * from `Part Dimension` order by `Part SKU` desc ";
 
+$date='2012-05-05 09:00:00';
 
+$sql=sprintf("delete from `Inventory Transaction Fact` where `Date`=%s  ",prepare_mysql($date));
+mysql_query($sql);
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension` where `Part SKU`=749 order by `Part SKU`";
+$sql="select * from `Part Dimension` where `Part SKU`=1874 order by `Part SKU`";
 $sql="select * from `Part Dimension` order by `Part SKU` desc ";
+
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
-	$part->wrap_transactions();
-	$locations=array();
-	$was_associated=array();
-	$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d   group by `Location Key` ",$row['Part SKU']);
-	// print $sql;
-
-	$result2=mysql_query($sql);
-
-	while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
-		$part_location=new PartLocation($row['Part SKU'].'_'.$row2['Location Key']);
-		$part_location->redo_adjusts();
-
+	
+	
+	$part_location=new PartLocation($part->sku.'_1');
+	
+	list($stock,$x,$y)=$part_location->get_stock($date);
+	if($stock!=0){
+	print $stock;
+	if ($part_location->is_associated($date)) {
+				print "a\n";
+				
+				$part_location->audit(0,'Inikoo Stock',$date);
+				
+				}else{
+					print "n\n";
+				
+				}
+	
+	
+	
+	
 	}
-
-
-	print $row['Part SKU']."\r";
+	
 
 
 }
