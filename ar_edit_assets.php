@@ -533,10 +533,11 @@ function delete_department() {
 			$department->close();
 		}
 	if ($department->deleted) {
-		print 'Ok';
+		$response=array('state'=>200,'msg'=>$department->msg,'action'=>'deleted');
 	} else {
-		print $department->msg;
+		$response=array('state'=>400,'msg'=>$department->msg);
 	}
+	echo json_encode($response);
 
 
 }

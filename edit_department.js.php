@@ -4,13 +4,41 @@
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
+function delete_department(){
+	region1 = Dom.getRegion('delete'); 
+	var pos =[region1.left,region1.bottom]
+	Dom.setXY('dialog_delete_department', pos);
+
+	Dom.setStyle(['save_delete_department','cancel_delete_department','delete_department_warning'],'display','');
+	Dom.setStyle('delete_department','display','none');
+}
+function cancel_delete_department(){
+	Dom.setStyle(['save_delete_department','cancel_delete_department','delete_department_warning'],'display','none');
+	Dom.setStyle('delete_department','display','');
+}
+function save_delete_department(){
 
 
+var request='ar_edit_assets.php?tipo=delete_department&delete_type=delete&id=' + Dom.get('department_key').value
+	           
+	           Dom.setStyle('deleting','display','');
+	           	           Dom.setStyle(['save_delete_department','cancel_delete_department'],'display','none');
+//alert(request);
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	          // alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+        location.href='department.php?id='+Dom.get('department_key').value;
+                                  }else{
+                                   Dom.setStyle('deleting','display','none');
+                                  Dom.get('delete_department_msg').innerHTML=r.msg
+                                  }
+   			}
+    });
 
 
-
-
-
+}
 
 
 function change_block(e){
@@ -759,7 +787,9 @@ var request='tipo=new_department_page&department_key='+Dom.get('department_key')
 
 function init(){
 
-
+     //YAHOO.util.Event.addListener('delete_department', "click", delete_department);
+        YAHOO.util.Event.addListener('cancel_delete_department', "click", cancel_delete_department);
+        YAHOO.util.Event.addListener('save_delete_department', "click", save_delete_department);
 
   ids=['page_properties','page_html_head','page_header'];
  YAHOO.util.Event.addListener(ids, "click",change_edit_pages_view,{'table_id':6,'parent':'page'})
