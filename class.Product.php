@@ -5236,7 +5236,8 @@ class product extends DB_Table {
 		$department->update_product_data();
 		$store=new Store($this->data['Product Store Key']);
 		$store->update_product_data();
-		//   }
+		
+		$this->update_web_state();
 
 
 
