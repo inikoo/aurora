@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-10 18:09+0100\n"
-"PO-Revision-Date: 2012-05-11 08:42+0100\n"
+"PO-Revision-Date: 2012-05-13 13:08+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -4772,7 +4772,7 @@ msgstr "agregó"
 #: class.DummyCustomer.php:10
 #, fuzzy
 msgid "Hello, Customer Name"
-msgstr "Nombre del cliente"
+msgstr "Hola, (Nombre del cliente)"
 
 #: class.Email.php:147
 msgid "Error no email data"
@@ -5463,7 +5463,7 @@ msgstr "Precio desde"
 
 #: class.Page.php:2240
 msgid "Basket & Checkout"
-msgstr ""
+msgstr "Revisar Pedido y Pago"
 
 #: class.Page.php:2248
 msgid "Log Out"
@@ -5525,8 +5525,8 @@ msgstr[1] "Caja"
 #: class.Part.php:738
 msgid "dozen"
 msgid_plural "dozens"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "docena"
+msgstr[1] "docenas"
 
 #: class.Part.php:742
 #, fuzzy
@@ -6460,7 +6460,7 @@ msgstr ""
 
 #: class.User.php:191
 msgid "The user"
-msgstr ""
+msgstr "El usuario"
 
 #: class.User.php:191
 msgid "is already in the database!"
@@ -6832,7 +6832,7 @@ msgstr ""
 
 #: company_areas.php:95
 msgid "Other Details"
-msgstr ""
+msgstr "Otros Detalles"
 
 #: company_areas.php:99
 msgid "No. Of Department"
@@ -6848,7 +6848,7 @@ msgstr "número de empleado"
 
 #: company_departments.php:20
 msgid "Edit Departments"
-msgstr ""
+msgstr "Editar Departementos"
 
 #: company_departments.php:21
 msgid "Add Department"
@@ -6884,7 +6884,7 @@ msgstr "Moneda"
 #: customer.js.php:196
 #: customer.js.php:227
 msgid "Invalid Email"
-msgstr ""
+msgstr "Email invalido"
 
 #: customer.js.php:186
 #: customer.js.php:203
@@ -7633,7 +7633,7 @@ msgstr "URL"
 
 #: department.php:87
 msgid "Edit Department"
-msgstr "Editar Departemento"
+msgstr "Editar Departamento"
 
 #: department.php:171
 #, fuzzy
@@ -7772,7 +7772,7 @@ msgstr "ca"
 
 #: edit_company.js.php:369
 msgid "changes"
-msgstr ""
+msgstr "cambios"
 
 #: edit_company_area.js.php:36
 msgid "Invalid Area Name"
@@ -8089,7 +8089,7 @@ msgstr ""
 
 #: edit_family.js.php:841
 msgid "Notes for picker"
-msgstr ""
+msgstr "Notas para el picker"
 
 #: edit_family.js.php:1193
 msgid "Invalid Product Name"
@@ -17743,7 +17743,7 @@ msgstr "Intervalo de"
 #: smarty.php:11789
 #: smarty.php:13460
 msgid "To pay"
-msgstr "Para pagar"
+msgstr "Por pagar"
 
 #: smarty.php:11816
 #: smarty.php:13487
@@ -19522,7 +19522,7 @@ msgstr "filtrar resultados"
 #: smarty.php:18512
 #: smarty.php:18518
 msgid "Close filter"
-msgstr "Cerca del filtro"
+msgstr "Cerrar del filtro"
 
 #: smarty.php:18524
 msgid "Upload the file again (if need it)"
