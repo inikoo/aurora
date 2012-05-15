@@ -60,7 +60,7 @@ function change_state(newval, oldval){
 
 
 	var request = 'ar_edit_assets.php?tipo=edit_product&key=web_configuration&newvalue='+newval+'&oldvalue='+oldval+'&pid=' + product_pid
-	// alert(request);
+	 //alert(request);
 //return;
 	YAHOO.util.Connect.asyncRequest('POST', request, {
 		success: function(o) {
