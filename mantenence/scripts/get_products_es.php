@@ -202,13 +202,13 @@ foreach ($__cols as $cols) {
 
 
 if (preg_match('/\-st$/i',$code))
-		$is_product=false;
+			continue;
 
 
 	if (preg_match('/^(ob\-108|ob\-156|ish\-94|rds\-47)/i',$code))
-		$is_product=false;
+		continue;
 	if (preg_match('/^staf-set/i',$code) and $price=='')
-		$is_product=false;
+		continue;
 	if (preg_match('/^hook-/i',$code) and $price=='')
 		$is_product=false;
 	if (preg_match('/^shop-fit-/i',$code) and $price=='')
@@ -700,9 +700,9 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 
 
 
-		//if ($product->data['Product Family Key']==$fam_products_no_family_key) {
+		if (!preg_match('EO-0.d',$product->data['Product Code'])) {
 			$product->update_family_key($family->id);
-		//}
+		}
 
 		if ($product->data['Product Sales Type']!='Private Sale') {
 			$product->update_sales_type('Public Sale');
