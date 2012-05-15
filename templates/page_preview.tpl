@@ -33,9 +33,9 @@
 		{$page->get('Page Short Title')} 
 		<a href="http://{$page->get('Page URL')}">
 			<img src="art/external_link.png" alt=""/>
-		</a> {if isset($next)}<img style="cursor:pointer;vertical-align:text-top;height:20px;margin-left:10px;float:right" class="next" onmouseover="this.src='art/next_button_yellow.png'" onmouseout="this.src='art/next_button_white.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button_white.png" alt="{t}Next{/t}" />{/if} 
+		</a> {if isset($next)}<img style="cursor:pointer;vertical-align:text-top;height:20px;margin-left:10px;float:right" class="next" onmouseover="this.src='art/next_button_yellow.png'" onmouseout="this.src='art/next_button_white.png'" title="{$next.title}" onclick="window.location='{$next.link}&update_heights=1'" src="art/next_button_white.png" alt="{t}Next{/t}" />{/if} 
 		<div style="width:400px;float:right" class="buttons small">
-			<button id="show_logout_view" onclick="window.location='page_preview.php?id={$page->id}&logged=0'">{t}Show as logged out{/t}</button> <button id="show_login_view" onclick="window.location='page_preview.php?id={$page->id}&logged=1'">{t}Show as logged in{/t}</button> <button id="show_login_view" onclick="window.location='edit_page.php?id={$page->id}'">{t}Edit{/t}</button> <button id="show_login_view" onclick="window.location='page.php?id={$page->id}'">{t}Page{/t}</button> {if isset($referral)}<button onclick="window.location='{$referral}'">{t}Go Back{/t}</button>{/if} 
+			<button id="show_logout_view" onclick="window.location='page_preview.php?id={$page->id}&logged=0&update_heights=1'">{t}Show as logged out{/t}</button> <button id="show_login_view" onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'">{t}Show as logged in{/t}</button> <button id="show_login_view" onclick="window.location='edit_page.php?id={$page->id}'">{t}Edit{/t}</button> <button id="show_login_view" onclick="window.location='page.php?id={$page->id}'">{t}Page{/t}</button> {if isset($referral)}<button onclick="window.location='{$referral}'">{t}Go Back{/t}</button>{/if} 
 		</div>
 		<div style="clear:both">
 		</div>
