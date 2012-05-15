@@ -82,14 +82,8 @@ $smarty->assign('units_tipo',$units_tipo);
 $smarty->assign('box_layout','yui-t0');
 
 
-if ($product->data['Product Sales Type']!='Public Sale') {
-	$web_configuration=$product->data['Product Sales Type'];
-} 
-else {
-	$web_configuration=$product->data['Product Web Configuration'];
-}
 
-$smarty->assign('web_configuration',$web_configuration);
+$smarty->assign('sales_type',$product->data['Product Sales Type']);
 
 
 $css_files=array(
