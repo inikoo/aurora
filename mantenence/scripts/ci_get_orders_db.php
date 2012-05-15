@@ -921,8 +921,8 @@ $has_part=true;
                 if ($product_part_key) {
                                 $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 $has_part=true;
-                	//print_r($product);
-                    //exit("Error can not find product part list (get_orders_db)\n");
+              	print_r($product);
+                    exit("Error can not find product part list (get_orders_db)\n");
                 }
 
                 $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
