@@ -12,12 +12,12 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} {if $modify}<button onclick="window.location='edit_page.php?id={$page->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}&update_heights=1'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} {if $modify}<button onclick="window.location='edit_page.php?id={$page->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Page{/t}</button>{/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
     
                 <a href="page.zip.php?id={$page->id}">{t}Export{/t}</a>
 			</div>
 			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <button onclick="window.location='site.php?id={$site->id}'"><img src="art/icons/house.png" alt=""> {t}Site{/t}</button> 
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <button onclick="window.location='site.php?id={$site->id}'"><img src="art/icons/house.png" alt=""> {t}Site{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>
