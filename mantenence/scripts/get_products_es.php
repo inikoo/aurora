@@ -700,7 +700,7 @@ if (preg_match('/Departamento De Fiesta/i',$department_name) )
 
 
 
-		if (!preg_match('EO-0.d',$product->data['Product Code'])) {
+		if (!preg_match('/EO-0.d/',$product->data['Product Code'])) {
 			$product->update_family_key($family->id);
 		}
 
