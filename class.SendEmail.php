@@ -359,6 +359,8 @@ class SendEmail extends DB_Table {
 
 			//print_r($body_array);
 			$mailer = new MadMimi($username, $api_key);
+			
+			
 			$response = $mailer->SendMessage($options, $body_array, false);
 			//print_r($response);//exit;
 			if (is_numeric($response)) {
