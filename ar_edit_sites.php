@@ -2732,6 +2732,12 @@ function test_email_credentials($data) {
 				,'greeting' => 'Hello', 'name' => 'TestName', 'date1'=>'test date 1', 'date2'=>'test date 2'
 			);
 
+$message_data['email_placeholders']=array(
+			'greeting' => 'Hello','greetings' => 'greetings', 'live_masterkey_link' => '<a href="xxxxxxx" >'._('Change Password').'</a>', 'masterkey_link'=>'xxxx'
+			);
+
+
+
 	$message_data['promotion_name']=$_REQUEST['promotion_name'];
 
 	
