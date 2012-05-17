@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-11 08:59+0100\n"
-"PO-Revision-Date: 2012-05-11 09:37+0100\n"
+"POT-Creation-Date: 2012-05-17 12:43+0100\n"
+"PO-Revision-Date: 2012-05-17 12:56+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -449,9 +449,8 @@ msgid "Change Password"
 msgstr "Cambiar contraseña"
 
 #: ar_register.php:406
-#, fuzzy
 msgid "Email send"
-msgstr "Mensajes de correo electrónico"
+msgstr "Correo electrónico envido"
 
 #: class.Address.php:874
 msgid "Error no address data"
@@ -884,9 +883,8 @@ msgstr "Contacto principal XHTML Mobile cambiado de"
 
 #: class.Customer.php:520
 #: class.Customer.php:524
-#, fuzzy
 msgid "To whom it corresponds"
-msgstr "No hay registros de la historia"
+msgstr "A quien corresponda"
 
 #: class.Customer.php:650
 msgid "Customer Created"
@@ -1869,7 +1867,7 @@ msgstr "Agotado"
 #: class.Page.php:2081
 #, php-format
 msgid "Order Product"
-msgstr "Ordenar"
+msgstr "Pedir"
 
 #: class.Page.php:1412
 #: class.Page.php:1581
@@ -1921,7 +1919,7 @@ msgstr "PVP desde"
 #: class.Page.php:2082
 #, php-format
 msgid "Reset"
-msgstr "Restablecer"
+msgstr "Borrar"
 
 #: class.Page.php:2127
 msgid "Price"
@@ -2655,9 +2653,8 @@ msgstr "Móvil no válido "
 #: smarty.php:2
 #: smarty.php:1394
 #: smarty.php:1544
-#, fuzzy
 msgid "Edit Profile"
-msgstr "Perfil"
+msgstr "Editar Perfil"
 
 #: smarty.php:5
 #: smarty.php:1397
@@ -3746,9 +3743,8 @@ msgid "South Korea"
 msgstr "Tienda"
 
 #: smarty.php:734
-#, fuzzy
 msgid "Spain"
-msgstr "Guardando"
+msgstr "España"
 
 #: smarty.php:737
 msgid "Sri Lanka"
@@ -3866,9 +3862,8 @@ msgid "United Kingdom"
 msgstr ""
 
 #: smarty.php:812
-#, fuzzy
 msgid "United States"
-msgstr "Los clientes Estadísticas"
+msgstr "Estados Unidos"
 
 #: smarty.php:815
 msgid "Uruguay"
@@ -3993,7 +3988,6 @@ msgstr "Ciudad 1 ª Div"
 #: smarty.php:920
 #: smarty.php:1988
 #: smarty.php:2165
-#, fuzzy
 msgid "Postal Code"
 msgstr "Código Postal"
 
@@ -4014,7 +4008,6 @@ msgid "Subregion"
 msgstr "Subregión"
 
 #: smarty.php:935
-#, fuzzy
 msgid "Region"
 msgstr "Región"
 
@@ -4089,7 +4082,7 @@ msgstr "Ver también"
 
 #: smarty.php:1031
 msgid "You have successfully logged in"
-msgstr ""
+msgstr "Has entrado exitosamente, en hora buena."
 
 #: smarty.php:1034
 msgid "Login"
@@ -4103,7 +4096,7 @@ msgstr "Contraseña"
 
 #: smarty.php:1043
 msgid "Remember Me"
-msgstr ""
+msgstr "Recuerdame"
 
 #: smarty.php:1046
 msgid "Log In"
@@ -4119,18 +4112,18 @@ msgstr "Cerrar"
 
 #: smarty.php:1052
 msgid "You have successfully logged out, see you soon"
-msgstr ""
+msgstr "Te haz salido de nuestro sito, nos vemos pronto"
 
 #: smarty.php:1055
 #: smarty.php:1112
 #: smarty.php:2057
 #: smarty.php:2231
 msgid "Fill all fields please"
-msgstr ""
+msgstr "Llena todos los campos por favor"
 
 #: smarty.php:1058
 msgid "An email has been sent to you with instructions on how to access your account"
-msgstr ""
+msgstr "Un correo electrónico se a mandado con instriciones de como acceder a tu cuenta"
 
 #: smarty.php:1061
 #: smarty.php:1118
@@ -4175,13 +4168,13 @@ msgstr "Contraseña olvidada"
 #: smarty.php:1703
 #, fuzzy
 msgid "Change Image"
-msgstr "Cambiar fecha"
+msgstr "Cambiar Imagen"
 
 #: smarty.php:1094
 #: smarty.php:1916
 #: smarty.php:2099
 msgid "input the letters shown on the left"
-msgstr ""
+msgstr "ingresa las letras mostradas a la izquierda"
 
 #: smarty.php:1097
 msgid "Send Email"
@@ -4197,11 +4190,11 @@ msgstr "Procesando"
 #: smarty.php:1934
 #: smarty.php:2117
 msgid "Sorry, an automatic password reset could not be done, try later or call us"
-msgstr ""
+msgstr "Ohh no, no hemos podido mandarte el email con información para restablecer tu contraseña, intenta mas tarde o llamanos."
 
 #: smarty.php:1109
 msgid "Sorry, that email is not in our records"
-msgstr ""
+msgstr "Lo sentimos, el email no esta en nuesta base de datos"
 
 #: smarty.php:1115
 #: smarty.php:2066
@@ -4211,7 +4204,7 @@ msgstr "La Captcha as incorrecta"
 
 #: smarty.php:1121
 msgid "Want to try to login again?"
-msgstr ""
+msgstr "Deseas intentar entrar de nuevoÇ"
 
 #: smarty.php:1139
 msgid "Pending Orders"
@@ -4430,7 +4423,7 @@ msgstr "Ingresa nueva contraseña"
 #: smarty.php:2060
 #: smarty.php:2234
 msgid "Passwords don't match"
-msgstr ""
+msgstr "Las contraseñas no son las mismas"
 
 #: smarty.php:1502
 #: smarty.php:2063
@@ -4448,7 +4441,7 @@ msgstr "Sitio Web"
 
 #: smarty.php:1550
 msgid "Let's connect together"
-msgstr ""
+msgstr "Vamos a conocernos mejor"
 
 #: smarty.php:1553
 #: smarty.php:1556
@@ -4471,15 +4464,15 @@ msgstr "Catalogo"
 
 #: smarty.php:1586
 msgid "Send Post "
-msgstr ""
+msgstr "Mandar Correo"
 
 #: smarty.php:1589
 msgid "Add Customer To Send Post"
-msgstr ""
+msgstr "Añadir cliente a Lista de Correo"
 
 #: smarty.php:1598
 msgid "Post Type"
-msgstr ""
+msgstr "Tipo de Correo"
 
 #: smarty.php:1601
 msgid "Letter"
@@ -4504,14 +4497,12 @@ msgid "Friend on Facebook"
 msgstr "Show también"
 
 #: smarty.php:1628
-#, fuzzy
 msgid "Social Sites"
-msgstr "Vendidos desde"
+msgstr "Sitos Sociales"
 
 #: smarty.php:1631
-#, fuzzy
 msgid "About you"
-msgstr "Auto"
+msgstr "Acerca de Ti"
 
 #: smarty.php:1637
 #: smarty.php:2021
@@ -4528,28 +4519,24 @@ msgid "false"
 msgstr "Venta"
 
 #: smarty.php:1649
-#, fuzzy
 msgid "Customer Name:"
-msgstr "Nombre del cliente"
+msgstr "Nombre del cliente:"
 
 #: smarty.php:1658
-#, fuzzy
 msgid "Name:"
-msgstr "Nombre"
+msgstr "Nombre:"
 
 #: smarty.php:1667
 msgid "Telephone:"
 msgstr "Teléfono:"
 
 #: smarty.php:1676
-#, fuzzy
 msgid "Website:"
-msgstr "Sitio Web"
+msgstr "Sitio Web:"
 
 #: smarty.php:1700
-#, fuzzy
 msgid "Delete Image"
-msgstr "Crear Página"
+msgstr "Borrar Imagen"
 
 #: smarty.php:1706
 #, fuzzy
@@ -4704,7 +4691,7 @@ msgstr "Información de contacto"
 #: smarty.php:1961
 #: smarty.php:2141
 msgid "Contact Name"
-msgstr "Nombre y apellido del contacto"
+msgstr "Nombre del contacto"
 
 #: smarty.php:1967
 #: smarty.php:2147
@@ -4718,12 +4705,12 @@ msgstr "Número fiscal"
 #: smarty.php:1979
 #: smarty.php:2156
 msgid "Line 1"
-msgstr "Linea 2"
+msgstr "Dirección 1"
 
 #: smarty.php:1982
 #: smarty.php:2159
 msgid "Line 2"
-msgstr "Linea 2"
+msgstr "Dirección 2"
 
 #: smarty.php:1985
 #: smarty.php:2162
@@ -4733,11 +4720,11 @@ msgstr "Ciudad"
 #: smarty.php:1994
 #: smarty.php:2171
 msgid "Select One"
-msgstr "Selecciona una"
+msgstr "Selecciona uno"
 
 #: smarty.php:2015
 msgid "Other Details"
-msgstr ""
+msgstr "Otros detalles"
 
 #: smarty.php:2027
 #: smarty.php:2201
@@ -4747,7 +4734,7 @@ msgstr "Catalogo"
 #: smarty.php:2036
 #: smarty.php:2210
 msgid "Offers by email & e-Newsletter"
-msgstr ""
+msgstr "Ofertas por Email"
 
 #: smarty.php:2048
 #: smarty.php:2222

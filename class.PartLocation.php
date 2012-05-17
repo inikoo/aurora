@@ -1162,7 +1162,7 @@ $this->location->update_parts();
 		);
 		mysql_query($sql);
 		
-		//$this->part->update_stock();
+		$this->part->update_stock();
 	}
 
 	function exist_on_date($date) {
