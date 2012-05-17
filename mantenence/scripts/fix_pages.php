@@ -34,6 +34,28 @@ require_once '../../conf/conf.php';
 
 chdir('../../');
 
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where  `Page Site Key`>0 and `Page Store Section` not in ('Login','Client Section','Registration'); ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$site=new Site($row['Page Site Key']);
+	$page=new Page($row['Page Key']);
+
+	if ($row['Page Store Section']=='Family Catalogue' ) {
+
+	
+		$old_url='www.aw-regalos.com/forms/'.strtolower($page->data['Page Code']).'/index.html';
+
+		$redirect_key=$page->add_redirect($old_url);
+	}
+
+}
+
+
+
+exit;
+
+
 //$sql="select * from kbase.`Country Dimension`";
 //$result=mysql_query($sql);
 //while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -45,17 +67,17 @@ $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-$site=new Site($row['Page Site Key']);
+	$site=new Site($row['Page Site Key']);
 	$page=new Page($row['Page Key']);
 
 	if ($row['Page Store Section']=='Family Catalogue' ) {
-	$quantity=3;
+		$quantity=3;
 
 	}else
 		$quantity=0;
 
-$page->update_field_switcher('Number See Also Links',$quantity);
-$page->update_see_also();
+	$page->update_field_switcher('Number See Also Links',$quantity);
+	$page->update_see_also();
 }
 
 
