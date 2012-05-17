@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-17 12:43+0100\n"
-"PO-Revision-Date: 2012-05-17 12:56+0100\n"
+"PO-Revision-Date: 2012-05-17 14:21+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -468,7 +468,7 @@ msgstr "No hay nada que se actualizará"
 #: class.Order.php:1153
 #: class.Page.php:907
 msgid "Unknown"
-msgstr "desconocido"
+msgstr "?"
 
 #: class.Address.php:1656
 msgid "Somewhere in"
@@ -2499,12 +2499,12 @@ msgstr "Parte"
 
 #: delivery_notes.pdf.php:300
 msgid "Used In"
-msgstr "usado/a en"
+msgstr "usado en"
 
 #: delivery_notes.pdf.php:301
 #: invoice.pdf.php:367
 msgid "Description"
-msgstr "Descripcion"
+msgstr "Descripción"
 
 #: delivery_notes.pdf.php:302
 #: invoice.pdf.php:368
@@ -4138,7 +4138,7 @@ msgstr "Credenciales incorrectas"
 
 #: smarty.php:1067
 msgid "Don't know your password?"
-msgstr "Olvidaste tu contraseñaÇ"
+msgstr "Olvidaste tu contraseña?"
 
 #: smarty.php:1070
 #: smarty.php:1124
@@ -4204,7 +4204,7 @@ msgstr "La Captcha as incorrecta"
 
 #: smarty.php:1121
 msgid "Want to try to login again?"
-msgstr "Deseas intentar entrar de nuevoÇ"
+msgstr "Deseas intentar entrar de nuevo?"
 
 #: smarty.php:1139
 msgid "Pending Orders"
@@ -4446,21 +4446,19 @@ msgstr "Vamos a conocernos mejor"
 #: smarty.php:1553
 #: smarty.php:1556
 msgid "Newsletter"
-msgstr "Boletín"
+msgstr "Boletín Electrónico"
 
 #: smarty.php:1565
-#, fuzzy
 msgid "Latest Offers & Updates"
-msgstr "Ultima actualización de la"
+msgstr "Últimas Ofertas y Anuncios"
 
 #: smarty.php:1574
 msgid "Post"
-msgstr "Mensaje"
+msgstr "Correo Postal"
 
 #: smarty.php:1577
-#, fuzzy
 msgid "Catalogues & Vouchers"
-msgstr "Catalogo"
+msgstr "Catalogos y Vouchers"
 
 #: smarty.php:1586
 msgid "Send Post "

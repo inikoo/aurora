@@ -172,8 +172,14 @@ else if ($page->data['Page Code']=='profile') {
 
 		}
 
-		$custom_fields=array();
-		$sql=sprintf("show columns from `Customer Custom Field Dimension`");
+
+
+$custom_fields=array();
+$sql=sprintf("select * from `Custom Field Dimension`  where `Custom Field Table`='Customer' and `Custom Field In Profile`='Yes'  ");
+
+
+
+		
 		$result=mysql_query($sql);
 		mysql_fetch_assoc($result);
 		while ($row=mysql_fetch_assoc($result)) {
