@@ -101,6 +101,7 @@ break;
 case('family'):
 case('department'):
 case('store'):
+case('locations'):
 $scope_args=$_REQUEST['subject_key'];
 break;
 

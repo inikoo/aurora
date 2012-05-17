@@ -300,7 +300,7 @@ class PartLocation extends DB_Table {
 
 		if (!$date) {
 			$historic=true;
-			$data=gmdate('Y-m-d H:i:s');
+			$date=gmdate('Y-m-d H:i:s');
 		}else {
 			$historic=false;
 
@@ -410,7 +410,7 @@ class PartLocation extends DB_Table {
 
 
 		$this->update_stock();
-
+                  
 		return $audit_key;
 
 
@@ -1162,7 +1162,7 @@ $this->location->update_parts();
 		);
 		mysql_query($sql);
 		
-		$this->part->update_stock();
+		//$this->part->update_stock();
 	}
 
 	function exist_on_date($date) {

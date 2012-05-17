@@ -30,6 +30,14 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
+case('location_audit'):
+    $data=prepare_values($_REQUEST,array(
+         'scope'=>array('type'=>'string'),
+         'scope_key'=>array('type'=>'key'),
+         ));
+
+    location_audit($data);
+    break;    
 case('new_parts_list'):
 
 	$data=prepare_values($_REQUEST,array(
@@ -4442,4 +4450,136 @@ function delete_product(){
 	echo json_encode($response);
 }
 
+function location_audit($data){
+
+    $error = false;
+    if (  ($_FILES["fileUpload"]["type"] == "text/plain")|| ($_FILES["fileUpload"]["type"] == "application/vnd.ms-excel")   || ($_FILES["fileUpload"]["type"] == "text/csv")  || ($_FILES["fileUpload"]["type"] == "application/csv")   || ($_FILES["fileUpload"]["type"] == "application/octet-stream")         ) {
+        if ($_FILES["fileUpload"]["error"] > 0) {
+            echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
+        } else {
+            $target_path = "app_files/uploads/";
+            
+            $target_path = $target_path . basename( $_FILES['fileUpload']['name']);
+            
+            if (move_uploaded_file($_FILES['fileUpload']['tmp_name'], $target_path)) {
+                $vv=basename( $_FILES['fileUpload']['name']);
+
+                $report=array();
+                $handle_csv = fopen($target_path, "r");
+                while ($_cols = fgetcsv($handle_csv)) {
+
+                    if ($_cols[0]!='' and $_cols[1]!='' and $_cols[2]!='' ) {
+                        if($_cols[3]==''){
+                            $date=date('Y-m-d H:i:s');
+                        }
+                        else{
+                            $date=$_cols[3];
+                        }
+                        //print_r($_cols);
+                        $used_for='Picking';
+                        $location_data=array(
+                                             'Location Warehouse Key'=>1,
+                                             'Location Warehouse Area Key'=>1,
+                                             'Location Code'=>$_cols[0],
+                                             'Location Mainly Used For'=>$used_for
+                                             );
+                        
+                        $location=new Location('find',$location_data,'create');
+                       
+                        
+                        
+                        
+                        $product=new Product('code_store',$_cols[1],1);
+                        
+                        if ($product->id) {
+                            //print_r($product->id);exit;
+                            
+                            $parts=$product->get_part_list();
+                           
+                            
+                            $parts_data=array_pop($parts);
+                            $part_sku=$parts_data['Part SKU'];
+                            
+                             
+                            //$part_location=new PartLocation($part_sku,$location->id);
+                            
+                            
+                            
+                            $location_key=$location->id;
+                            
+                            
+                            
+                            $part_location_data=array(
+                                                      'Location Key'=>$location_key
+                                                      ,'Part SKU'=>$part_sku
+                                                      
+                                                      );
+                            
+                            if($part_sku){
+
+                                $part_location=new PartLocation('find',$part_location_data,'create');
+                                $note='';
+                                $qty= (float) $_cols[2];
+                                $date=$_cols[3];
+                                //print "$qty\n";
+//                                
+//                                
+                                $part_location->audit($qty,$note,$date);
+                                
+                            }else{
+                                $report['msg'][] = "Error";
+                                $report['record'][] = $_cols;
+                                $error = true;
+                                
+                            }
+                            //exit;
+                            //$part_location->editor=$editor;
+                            //$part_location->audit($qty,$note,$editor['Date']);
+                            
+                        }
+                        
+                        
+                        
+                    }
+                    else{
+                        if($_cols[0]==''){
+                            $report['msg'][] = "No Location code";
+                            $report['record'][] = $_cols;
+                            $error = true;
+
+                        }
+                        if($_cols[1]==''){
+                            $report['msg'][] = "No SKU";
+                            $report['record'][] = $_cols;
+                            $error = true;
+                        }
+                    }
+                    
+                    //exit;
+                }
+                    
+
+                
+                
+                
+            }
+        }
+    }
+    
+    if($error){
+        $response=array(
+                        'state'=>400,
+                        'msg'=>$report
+                        );
+    }
+    else{
+        $response=array(
+                        'state'=>200,
+                        'msg'=>'ok'
+                        );
+    }
+    echo json_encode($response);
+    
+}
+    
 ?>
