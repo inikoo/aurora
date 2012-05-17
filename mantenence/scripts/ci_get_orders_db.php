@@ -847,11 +847,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $supplier=new Supplier('find',$the_supplier_data,'create update');
             }
 
-
+$has_part=false;
             if ($product->new_id ) {
                 //creamos una parte nueva
 
-
+$has_part=true;
                 $part_data=array(
 
                                'Part Status'=>'Not In Use',
@@ -890,8 +890,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $product->new_historic_part_list($product_part_header,$part_list);
                 $used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
-            } else {
-                $sql=sprintf("select `Part SKU` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
+            }
+            else {
+                $sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
                 $res_x=mysql_query($sql);
                 if ($row_x=mysql_fetch_array($res_x)) {
                     $part_sku=$row_x['Part SKU'];
@@ -904,7 +905,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $part=new Part('sku',$part_sku);
                 $part->update_valid_dates($date_order);
                 $part->update_valid_dates($date2);
-                $parts_per_product=1;
+                					$parts_per_product=$row_x['Parts Per Product'];
+
                 $part_list=array();
                 $part_list[]=array(
 
@@ -916,20 +918,25 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                              );
                 //print_r($part_list);
                 $product_part_key=$product->find_product_part_list($part_list);
-                if (!$product_part_key) {
+                if ($product_part_key) {
+                                $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+$has_part=true;
+              	
+                }else{
+                
+                print_r($product);
                     exit("Error can not find product part list (get_orders_db)\n");
                 }
 
                 $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
 
-                $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
 
             }
 
 
 
-
+if($has_part){
 
 
 
@@ -994,6 +1001,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 $used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
+
+}
+
+
 
             create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 

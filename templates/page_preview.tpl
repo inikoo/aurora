@@ -28,14 +28,14 @@
 <div id="doc4">
 	<div id="preview_hd" style="background:#245e86 url('art/themes/cobalt.jpg') bottom left repeat-x;color:#fff;;padding:3px 10px;height:22px;{if !$show_header}display:none{/if}">
 		<input type="hidden" id="page_key" value="{$page->id}" />
-		{if isset($prev)}<img style="cursor:pointer;vertical-align:text-top;height:20px;margin-right:5px" class="previous" onmouseover="this.src='art/previous_button_yellow.png'" onmouseout="this.src='art/previous_button_white.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button_white.png" alt="{t}Previous{/t}" />{/if} 
+		{if isset($prev)}<img style="cursor:pointer;vertical-align:text-top;height:20px;margin-right:5px" class="previous" onmouseover="this.src='art/previous_button_yellow.png'" onmouseout="this.src='art/previous_button_white.png'" title="{$prev.title}" onclick="window.location='{$prev.link}&update_heights=1'" src="art/previous_button_white.png" alt="{t}Previous{/t}" />{/if} 
 		<a href="store.php?id={$page->get('Page Store Key')}"><img style="height:20px;vertical-align:text-top;margin-right:10px" src="art/inikoo_logo_small.png" ></a> <span style="margin-right:10px;font-weight:800">{$page->get('Page Code')}</span>
 		{$page->get('Page Short Title')} 
 		<a href="http://{$page->get('Page URL')}">
 			<img src="art/external_link.png" alt=""/>
-		</a> {if isset($next)}<img style="cursor:pointer;vertical-align:text-top;height:20px;margin-left:10px;float:right" class="next" onmouseover="this.src='art/next_button_yellow.png'" onmouseout="this.src='art/next_button_white.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button_white.png" alt="{t}Next{/t}" />{/if} 
+		</a> {if isset($next)}<img style="cursor:pointer;vertical-align:text-top;height:20px;margin-left:10px;float:right" class="next" onmouseover="this.src='art/next_button_yellow.png'" onmouseout="this.src='art/next_button_white.png'" title="{$next.title}" onclick="window.location='{$next.link}&update_heights=1'" src="art/next_button_white.png" alt="{t}Next{/t}" />{/if} 
 		<div style="width:400px;float:right" class="buttons small">
-			<button id="show_logout_view" onclick="window.location='page_preview.php?id={$page->id}&logged=0'">{t}Show as logged out{/t}</button> <button id="show_login_view" onclick="window.location='page_preview.php?id={$page->id}&logged=1'">{t}Show as logged in{/t}</button> <button id="show_login_view" onclick="window.location='edit_page.php?id={$page->id}'">{t}Edit{/t}</button> <button id="show_login_view" onclick="window.location='page.php?id={$page->id}'">{t}Page{/t}</button> {if isset($referral)}<button onclick="window.location='{$referral}'">{t}Go Back{/t}</button>{/if} 
+			<button id="show_logout_view" onclick="window.location='page_preview.php?id={$page->id}&logged=0&update_heights=1'">{t}Show as logged out{/t}</button> <button id="show_login_view" onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'">{t}Show as logged in{/t}</button> <button id="show_login_view" onclick="window.location='edit_page.php?id={$page->id}'">{t}Edit{/t}</button> <button id="show_login_view" onclick="window.location='page.php?id={$page->id}'">{t}Page{/t}</button> {if isset($referral)}<button onclick="window.location='{$referral}'">{t}Go Back{/t}</button>{/if} 
 		</div>
 		<div style="clear:both">
 		</div>
