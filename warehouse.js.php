@@ -205,7 +205,45 @@ request=request+'&'+ids[i]+'=0'
 }
 
 
+var upload_csv = function(e){
+    
+    
+    if(Dom.get('fileUpload').value==''){
+        
+        return;
+    }
+    
+    
+    
+    YAHOO.util.Connect.setForm('testForm', true);
+    var request='ar_edit_assets.php?tipo=location_audit&scope=warehouse&scope_key='+Dom.get('warehouse_key').value;
+     //alert(request);
+    var uploadHandler = {
+    upload: function(o) {
+        //alert(o.responseText)
+	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+        
+	    if(r.state==200){
+            window.location.reload();
+        }
+        else{
+            alert(r.msg);
+	    }
+	    
+        
+	}
+    };
+    
+    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+    
+    
+    
+};
+
+
+
  function init(){
+  
   init_search('locations');
   
 ids=['elements_Yellow','elements_Red','elements_Purple','elements_Pink', 'elements_Orange', 'elements_Green', 'elements_Blue'];
@@ -255,10 +293,16 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
     });
 
-
+ 
   
 
+     dialog_location_audit = new YAHOO.widget.Dialog("dialog_location_audit", {context:["location_audit","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+     dialog_location_audit.render();
+     Event.addListener("location_audit", "click", dialog_location_audit.show,dialog_location_audit , true);
+     Event.addListener("close_dialog_location_audit", "click", dialog_location_audit.hide,dialog_location_audit , true);
+     
 
+YAHOO.util.Event.on('uploadButton', 'click', upload_csv);
 
 var ids=['parts_general','parts_stock','parts_sales','parts_forecast'];
 YAHOO.util.Event.addListener(ids, "click",change_parts_view);
@@ -268,6 +312,8 @@ YAHOO.util.Event.addListener(ids, "click",change_parts_view);
  YAHOO.util.Event.addListener(ids, "click",change_parts_period,2);
  ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_parts_avg,2);
+
+     
 
  }
 

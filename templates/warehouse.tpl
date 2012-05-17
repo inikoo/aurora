@@ -9,6 +9,7 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
 				{if $modify} <button onclick="window.location='edit_warehouse.php?id={$warehouse->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Warehouse{/t}</button> {/if} <button onclick="window.location='warehouse_stats.php?id={$warehouse->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='warehouse_map.php?id={$warehouse->id}'"><img src="art/icons/application_view_gallery.png" alt=""> {t}Map{/t}</button> 
+                <button id="location_audit"><img src="art/icons/application_view_gallery.png" alt=""> {t}Audit{/t}</button>
 			</div>
 			<div class="buttons" style="float:left">
 				<span class="main_title">{t}Warehouse{/t}: {$warehouse->get('Warehouse Name')} ({$warehouse->get('Warehouse Code')})</span> 
@@ -103,3 +104,24 @@
 	</div>
 </div>
 {include file='footer.tpl'} 
+
+
+<div id="dialog_location_audit" style="padding:20px 20px 10px 20px ">
+
+<table>
+<tr>
+<td>
+ <form action="location_audit.php" enctype="multipart/form-data" method="post" id="testForm">
+    <input id="fileUpload" style="border:1px solid #ddd;" type="file" name="fileUpload"/>
+ </form>
+  </td>
+  <td>
+  <div class="buttons left">
+    <button  id="uploadButton" class="positive">{t}Upload{/t}</button>
+    </div>
+ </td>
+ </tr>
+ </table>
+</div>
+
+
