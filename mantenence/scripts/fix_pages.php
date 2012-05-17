@@ -45,40 +45,62 @@ $sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
+$site=new Site($row['Page Site Key']);
+	$page=new Page($row['Page Key']);
 
-if(in_array($row['Page Store Section'],array('Login','Client Section','Registration'))){
-continue;
+	if ($row['Page Store Section']=='Family Catalogue' ) {
+	$quantity=3;
+
+	}else
+		$quantity=0;
+
+$page->update_field_switcher('Number See Also Links',$quantity);
+$page->update_see_also();
 }
+
+
+
+
+exit;
+
+$sql="select * from `Page Store Dimension` PS  left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) where  `Page Site Key`>0 and `Page Store Section` not in ('Login','Client Section','Registration'); ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+	if (in_array($row['Page Store Section'],array('Login','Client Section','Registration'))) {
+		continue;
+	}
 	$site=new Site($row['Page Site Key']);
 	$page=new Page($row['Page Key']);
 
 	//$url=$row['Page URL'];
 
-	
+
 	$url=$site->data['Site URL'].'/'.strtolower($row['Page Code']);
 	print $row['Page Site Key']." $url\n";
 	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
-	
-print "$sql\n";
+
+	print "$sql\n";
 	mysql_query($sql);
-	
-}	
+
+}
 
 
 $sql="select * from `Page Redirection Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-//	$page=new Page($row['Page Target Key']);
-//$redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$row['Page Target URL']);
-$tmp=_trim($row['Source File']);
+	// $page=new Page($row['Page Target Key']);
+	//$redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$row['Page Target URL']);
+	$tmp=_trim($row['Source File']);
 
 	$sql=sprintf("update `Page Redirection Dimension` set `Source File`=%s where `Page Redirection Key`=%d",prepare_mysql($tmp),$row['Page Redirection Key']);
-	
+
 
 	mysql_query($sql);
-	
-}	
+
+}
 
 
 
@@ -87,15 +109,15 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$page=new Page($row['Page Target Key']);
-//$redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$row['Page Target URL']);
+	//$redirection=preg_replace('/www\.ancietwisdom\.biz/','www.ancientwisdom.biz',$row['Page Target URL']);
 
 
 	$sql=sprintf("update `Page Redirection Dimension` set `Page Target URL`=%s where `Page Redirection Key`=%d",prepare_mysql($page->data['Page URL']),$row['Page Redirection Key']);
-	
+
 
 	mysql_query($sql);
-	
-}	
+
+}
 
 exit;
 
@@ -160,7 +182,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$url=str_replace('//','/',$url);
 	$sql=sprintf("update `Page Dimension` set `Page URL`=%s where `Page Key`=%d",prepare_mysql($url),$row['Page Key']);
 	//print "$sql\n";
-	
+
 
 	mysql_query($sql);
 
@@ -208,7 +230,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	}
 
 
-$page->get_data('id',$page->id);
+	$page->get_data('id',$page->id);
 
 	$page->update_see_also();
 	$page->update_number_found_in();
@@ -221,23 +243,23 @@ $page->get_data('id',$page->id);
 	mysql_query($sql);
 	$page->get_data('id',$page->id);
 
-//print_r($page);
+	//print_r($page);
 
 	$redirect_key=$page->add_redirect($old_url);
-	if($redirect_key){
-	$redirect_data=$page->get_redirect_data($redirect_key);
-	//print_r($redirect_data);
-	//print $redirect_data['Source File'];
-	if(preg_match('/\.html$/',$redirect_data['Source File'])){
-		$_source=preg_replace('/\.html$/','.php',$redirect_data['Source']);
-		$page->add_redirect($_source);
-	}elseif(preg_match('/\.php$/',$redirect_data['Source File'])){
-		$_source=preg_replace('/\.php$/','.html',$redirect_data['Source']);
-		$page->add_redirect($_source);
-	}
+	if ($redirect_key) {
+		$redirect_data=$page->get_redirect_data($redirect_key);
+		//print_r($redirect_data);
+		//print $redirect_data['Source File'];
+		if (preg_match('/\.html$/',$redirect_data['Source File'])) {
+			$_source=preg_replace('/\.html$/','.php',$redirect_data['Source']);
+			$page->add_redirect($_source);
+		}elseif (preg_match('/\.php$/',$redirect_data['Source File'])) {
+			$_source=preg_replace('/\.php$/','.html',$redirect_data['Source']);
+			$page->add_redirect($_source);
+		}
 	}
 	/*
-	
+
 //print "old:::  $url $old_url \n";
 	if($url=preg_match('/^www.aw-geschenke.com/',$old_url)){
 		$sql=sprintf("update `Page Redirection Dimension` set `Can Upload`='Yes' where `Page Redirection Key`=%d", $redirect_key);
@@ -266,12 +288,12 @@ $page->get_data('id',$page->id);
 	}
 
 */
-	if($redirect_key){
-		
-		
+	if ($redirect_key) {
+
+
 		//$page->upload_htaccess($redirect_key);
 
-	//sleep ( 1 );
+		//sleep ( 1 );
 
 	}
 	print $page->id."\n";
