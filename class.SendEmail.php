@@ -367,7 +367,7 @@ class SendEmail extends DB_Table {
 				$response=  array('state'=>200,'msg'=>'Your Email has been sent!');
 
 			} else
-			print_r($response);
+			
 				$response=  array('state'=>400,'msg'=>$response);
 			break;
 
