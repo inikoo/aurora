@@ -186,7 +186,7 @@ class product extends DB_Table {
 			$this->mode='pid';
 			$sql=sprintf("select * from `Product Dimension` where  `Product Code`=%s and `Product Store Key`=%d    order by
                          `Product Record Type`='Normal' DESC
-                         ,`Product Record Type`='Historic' DESC",prepare_mysql($tag),$extra);
+                        ,`Product Record Type`='Historic' DESC",prepare_mysql($tag),$extra);
 			//print $sql;
 			//print_r( $tag);exit;
 			$result=mysql_query($sql);
@@ -4443,7 +4443,7 @@ class product extends DB_Table {
 		$sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
 			,$this->pid
 		);
-		// print $sql;
+		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
@@ -4461,7 +4461,7 @@ class product extends DB_Table {
 			$part_list[$row['Part SKU']]['part']=new Part($row['Part SKU']);
 
 		}
-
+              
 		return $part_list;
 	}
 
