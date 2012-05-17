@@ -257,12 +257,12 @@ function delete_email_credentials(){
 
 site_id=Dom.get('site_id').value;
 var request='ar_edit_sites.php?tipo=delete_email_credentials&site_key=' + site_id
-	           // alert(request);	
+	        // alert(request);	
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 
 	            success:function(o){
 					
-	            //alert(o.responseText);	
+	         //   alert(o.responseText);	
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
 				window.location.reload()
@@ -282,13 +282,13 @@ site_id=Dom.get('site_id').value;
 
     json_value = YAHOO.lang.JSON.stringify(value);
     var request='ar_edit_sites.php?tipo=test_email_credentials&values=' + json_value + '&site_key=' + site_id+'&promotion_name='+Dom.get('promotion_name').value;// + '&email_type=' + Dom.get('email_type').value;
- //alert(request)
+ alert(request)
 
  YAHOO.util.Connect.asyncRequest('POST',request , {
   
   
 success:function(o) {
- // alert(o.responseText)
+  alert(o.responseText)
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state==200) {
 		alert(r.msg);
