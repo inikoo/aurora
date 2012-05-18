@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-17 12:43+0100\n"
-"PO-Revision-Date: 2012-05-17 14:21+0100\n"
+"PO-Revision-Date: 2012-05-18 13:31+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1205,7 +1205,7 @@ msgstr "Tomado de"
 #: class.Page.php:1364
 #: class.Page.php:1450
 msgid "Out of Stock"
-msgstr "Fuera de Stock"
+msgstr "Agotado"
 
 #: class.DeliveryNote.php:1382
 #, fuzzy
@@ -1905,7 +1905,7 @@ msgstr "registrar"
 #: class.Page.php:1792
 #: class.Page.php:2012
 msgid "OoS"
-msgstr "FdeS"
+msgstr "Agotado"
 
 #: class.Page.php:1676
 msgid "Please"
@@ -4082,7 +4082,7 @@ msgstr "Ver también"
 
 #: smarty.php:1031
 msgid "You have successfully logged in"
-msgstr "Has entrado exitosamente, en hora buena."
+msgstr "Has entrado exitosamente, enhorabuena."
 
 #: smarty.php:1034
 msgid "Login"
@@ -4123,7 +4123,7 @@ msgstr "Llena todos los campos por favor"
 
 #: smarty.php:1058
 msgid "An email has been sent to you with instructions on how to access your account"
-msgstr "Un correo electrónico se a mandado con instriciones de como acceder a tu cuenta"
+msgstr "Un correo electrónico se ha mandado con instrucciones de como acceder a tu cuenta"
 
 #: smarty.php:1061
 #: smarty.php:1118
@@ -4647,7 +4647,7 @@ msgstr "El correo electrónico a sido usado previamente"
 #: smarty.php:1910
 #: smarty.php:2093
 msgid "is already in our records, fill the anti-spam field and we will send you an email with instructions of how to access your account"
-msgstr ""
+msgstr "se encuentra en nuestra base de datos, llena el campo anti-spam y te enviaremos un correo electrónico con instrucciones de como acceder a tu cuanta"
 
 #: smarty.php:1913
 #: smarty.php:2045
@@ -4669,7 +4669,7 @@ msgstr "Procesando"
 #: smarty.php:1928
 #: smarty.php:2111
 msgid "An email has been sent to you with instructions how to access your account"
-msgstr ""
+msgstr "Un correo electrónico se ha mandado con instrucciones de como acceder a tu cuenta"
 
 #: smarty.php:1940
 #: smarty.php:2120
@@ -4749,7 +4749,7 @@ msgstr "Creando tu cueanta"
 #: smarty.php:2072
 #: smarty.php:2246
 msgid "An error incurred during your registration please try again later"
-msgstr ""
+msgstr "Un error se a encontrado al crear tu cuenta, por favor intenta después."
 
 #: smarty.php:2249
 msgid "filter results"

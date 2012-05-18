@@ -485,7 +485,7 @@ $deals=array();
 			if (preg_match('/Paradise Accesories/i',$department_name) )
 				$department_code='PA';
 			if (preg_match('/Departamento de Bolsas/i',$department_name) )
-				$department_code='BET';
+				$department_code='Bolsas';
 			if (preg_match('/Ancient Wisdom Aromatherapy Dept/i',$department_name) )
 				$department_code='Aterp';
 			if (preg_match('/Woodware Dept|Departamento de Madera/i',$department_name) )

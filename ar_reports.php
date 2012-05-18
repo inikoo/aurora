@@ -1621,6 +1621,8 @@ function transactions_parts_marked_as_out_of_stock() {
 function list_invoices_with_no_tax() {
 
 
+global $corporate_country_2alpha_code;
+
     $conf=$_SESSION['state']['report_sales_with_no_tax']['invoices'];
 
 
@@ -1689,7 +1691,7 @@ function list_invoices_with_no_tax() {
 
 
 
-$country='GB';
+$country=$corporate_country_2alpha_code;
 
 
     $elements_region=$_SESSION['state']['report_sales_with_no_tax'][$country]['regions'];
@@ -1784,16 +1786,24 @@ if(count($tax_categories)==0){
 }
 
 
+if($country=='GB'){
+	$_country='"GB","IM"';
+}else{
+$_country='"'.$country.'"';
+
+}
+
+
 
     $where_elements_region='';
-    if($elements_region['GBIM']){
-       $where_elements_region.=' or `Invoice Billing Country 2 Alpha Code` in ("GB","IM")  ';
+    if(isset($elements_region['GBIM']) and $elements_region['GBIM']){
+       $where_elements_region.=' or `Invoice Billing Country 2 Alpha Code` in ('.$_country.')  ';
     }
     if($elements_region['EU']){
-       $where_elements_region.=' or ( `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ) ';
+       $where_elements_region.=' or ( `Invoice Billing Country 2 Alpha Code` not in ('.$_country.') and `European Union`="Yes" ) ';
     }
     if($elements_region['NOEU']){
-       $where_elements_region.=' or (`Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No")  ';
+       $where_elements_region.=' or (`Invoice Billing Country 2 Alpha Code` not in ('.$_country.') and `European Union`="No")  ';
     }
   $where_elements_region=preg_replace('/^\s*or\s*/','',$where_elements_region);
   if( $where_elements_region=='')
@@ -1829,7 +1839,7 @@ if(count($tax_categories)==0){
 
 
     $sql="select count(*) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`)  left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)  $where $wheref ";
-   
+ // print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
