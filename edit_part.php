@@ -315,7 +315,7 @@ $sql=sprintf("select  P.`Part SKU` as id , `Part Unit Description` as name from 
 
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $prev['link']='part.php?sku='.$row['id'];
+    $prev['link']='edit_part.php?sku='.$row['id'];
     $prev['title']=$row['name'];
     $smarty->assign('prev',$prev);
 }
@@ -331,7 +331,7 @@ $sql=sprintf(" select P.`Part SKU` as id , `Part Unit Description` as name from 
 
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $next['link']='part.php?sku='.$row['id'];
+    $next['link']='edit_part.php?sku='.$row['id'];
     $next['title']=$row['name'];
     $smarty->assign('next',$next);
 }

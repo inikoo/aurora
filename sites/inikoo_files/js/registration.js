@@ -189,7 +189,7 @@ Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 
-		alert(o.responseText)
+	//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.result=='logged_in'){
@@ -339,7 +339,7 @@ function submit_check_email(){
     var site_key=Dom.get('site_key').value;
 
      var request='ar_register.php?tipo=check_email&login_handle='+login_handle+'&store_key='+store_key+'&site_key='+site_key;
- //	alert(request);
+ //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		//alert(o.responseText)
