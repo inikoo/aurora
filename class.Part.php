@@ -1182,7 +1182,7 @@ class part extends DB_Table {
 		}
 		$this->unknown_location_associated=false;
 		$locations=array();
-		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and `Can Pick`='Yes'  ",$this->sku);
+		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and `Can Pick`='Yes' order by `Location Key`  desc ",$this->sku);
 		//print "$sql\n";
 		$res=mysql_query($sql);
 		$locations_data=array();
@@ -1192,7 +1192,6 @@ class part extends DB_Table {
 			$locations_data[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
 
 		}
-
 
 		$number_associated_locations=count($locations_data);
 
@@ -1306,12 +1305,12 @@ class part extends DB_Table {
 
 		$locations=array();
 		$was_associated=array();
-		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
+		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   order by `Location Key`  desc  ",$this->sku,prepare_mysql($date));
 
 		$result=mysql_query($sql);
 		$_locations=array();
 		
-		//print $sql;
+		
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (in_array($row['Location Key'],$_locations)) {
 				continue;
@@ -1334,7 +1333,7 @@ class part extends DB_Table {
 		}
 
 
-
+//print_r($was_associated);exit;
 	$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
 
 		$result=mysql_query($sql);

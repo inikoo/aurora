@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-17 12:43+0100\n"
-"PO-Revision-Date: 2012-05-18 13:31+0100\n"
+"PO-Revision-Date: 2012-05-20 12:32+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1887,7 +1887,7 @@ msgstr "En stock"
 #: class.Page.php:1676
 #, php-format
 msgid "login"
-msgstr "cuenta"
+msgstr "entar"
 
 #: class.Page.php:1459
 #: class.Page.php:1676

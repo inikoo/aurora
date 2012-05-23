@@ -174,7 +174,12 @@
 					<option value="IE">{t}Ireland{/t}</option>
 					<option value="XX">----------</option>
 					{include file="country_select.tpl"}
-					
+					{elseif $site->get('Site Locale')=='es_ES'}
+					<option value="DE">{t}Spain{/t}</option>
+					<option value="AT">{t}Portugal{/t}</option>
+					<option value="XX">----------</option>
+					{include file="country_select.de_DE.tpl"}
+					{else}
 					{elseif $site->get('Site Locale')=='de_DE'}
 					<option value="DE">{t}Germany{/t}</option>
 					<option value="AT">{t}Austria{/t}</option>

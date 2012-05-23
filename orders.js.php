@@ -423,7 +423,8 @@ var clear_interval = function(e,suffix){
      Dom.get("v_calpop2dn").value=to;
      Dom.get("v_calpop1dn").value=from;
      
-     }else if(suffix=='i'){
+     }
+     else if(suffix=='i'){
      var table=tables.table1;
      var datasource=tables.dataSource1;
        Dom.get("v_calpop2").value=to;
@@ -447,6 +448,7 @@ var clear_interval = function(e,suffix){
        var table=tables.table1;
      var datasource=tables.dataSource1;
      var request='&sf=0&from=' +from+'&to='+to;
+    
  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
  
         var table=tables.table2;

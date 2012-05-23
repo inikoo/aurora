@@ -1,4 +1,4 @@
-<?
+<?php
 
 if (!isset($_REQUEST['ar_file'])    ) {
   exit;
