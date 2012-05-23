@@ -55,7 +55,7 @@ $_argv=$_SERVER['argv'];
 if (isset($_argv[1]))
 	$file_name=$_argv[1];
 else
-	$file_name='/data/excel_order/AWorder2002.xls';
+	$file_name='/data/new_excel_orderform/AWorder2002.xls';
 if (isset($_argv[2]))
 	$date=$_argv[2];
 else

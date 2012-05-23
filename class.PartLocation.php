@@ -1252,7 +1252,7 @@ $this->location->update_parts();
 
 	function is_associated($date) {
 	
-	//print "is test: $date ".$this->location_key."\n";
+//	print "is test: $date ".$this->location_key."\n";
 	
 		$intervals=$this->get_history_datetime_intervals();
 		//print_r($intervals);
@@ -1265,7 +1265,7 @@ $this->location->update_parts();
 			}
 			    
 			    $from=strtotime($interval['From'].' +00:00');
-	//print "$from $date $to\n";
+//	print "f: $from d: $date t: $to\n";
 		    if ($from<=$date and $to>=$date)
 				return true;
 

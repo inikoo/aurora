@@ -2425,12 +2425,12 @@ function list_invoices() {
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
 	else
-		$from=0;
+		$from=$_SESSION['state']['orders']['from'];
 
 	if (isset( $_REQUEST['to']))
 		$to=$_REQUEST['to'];
 	else
-		$to=0;
+		$to=$_SESSION['state']['orders']['to'];
 
 	if (isset( $_REQUEST['store_id'])    ) {
 		$store=$_REQUEST['store_id'];
@@ -2550,12 +2550,12 @@ function list_invoices() {
     	}
     	*/
 	$where_interval='';
-	/*
-    if($from & $to){
-        $where_interval=prepare_mysql_dates($from,$to,'`Order Last Updated Date`','only_dates');
+	
+    if($from or $to){
+        $where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     	$where_interval=$where_interval['mysql'];
     }
-    */
+    
 
 
 	$filter_msg='';

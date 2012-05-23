@@ -27,7 +27,7 @@
 
 /** Error reporting */
 error_reporting(E_ALL);
-
+date_default_timezone_set('UTC');
 /** PHPExcel */
 require_once '../Classes/PHPExcel.php';
 
