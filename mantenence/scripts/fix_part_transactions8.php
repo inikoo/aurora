@@ -39,8 +39,8 @@ $sql=sprintf("delete from `Inventory Transaction Fact` where `Date`=%s  ",prepar
 mysql_query($sql);
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$sql="select * from `Part Dimension` where `Part SKU`=630 order by `Part SKU`";
-//$sql="select * from `Part Dimension` order by `Part SKU` desc ";
+//$sql="select * from `Part Dimension` where `Part SKU`=630 order by `Part SKU`";
+$sql="select * from `Part Dimension` order by `Part SKU` desc ";
 
 
 $result=mysql_query($sql);
