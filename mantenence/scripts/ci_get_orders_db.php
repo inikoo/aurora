@@ -581,7 +581,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
             $__code=strtolower($transaction['code']);
 
-            if ($__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
+            if (  preg_match('/-starter/',$__code) or  preg_match('/-st/',$__code) or  $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
                     or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
                     or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
                ) {
