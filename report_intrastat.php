@@ -44,6 +44,10 @@ $title=_('Instrastad');
 
 //include_once 'reports_list.php';
 
+if(isset($_REQUEST['m'])){
+$_SESSION['state']['report_intrastat']['m']=$_REQUEST['m'];
+}
+
 $y=$_SESSION['state']['report_intrastat']['y'];
 $m=$_SESSION['state']['report_intrastat']['m'];
 
