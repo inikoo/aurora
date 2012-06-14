@@ -761,7 +761,7 @@ function send_order($data,$data_dn_transactions) {
 	$_picked_qty=array();
 	$_out_of_stock_qty=array();
 	
-	print_r($data_dn_transactions);
+//	print_r($data_dn_transactions);
 	
 	foreach ($data_dn_transactions as $key=>$value) {
 
