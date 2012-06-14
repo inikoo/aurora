@@ -1128,7 +1128,7 @@ class DeliveryNote extends DB_Table {
 					prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 				);
 				mysql_query($sql);
-				print "$sql\n";
+				//print "$sql\n";
 				//exit;
 
 				if ($this->update_stock) {
