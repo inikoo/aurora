@@ -43,8 +43,8 @@
    <span class="clean_table_title">{t}Staff List{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
     <div id="table_type" class="table_type">
         		<div  style="font-size:90%"   id="transaction_chooser" >
-            		<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NotWorking}selected{/if} label_customer_history_notworking"  id="elements_notworking" table_type="notworking"   >{t}Not Working{/t} (<span id="elements_notworking_number">{$elements_number.NotWorking}</span>)</span>
-        		    <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Working}selected{/if} label_customer_history_working"  id="elements_working" table_type="working"   >{t}Working{/t} (<span id="elements_working_number">{$elements_number.Working}</span>)</span>
+            		<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $elements.NotWorking}selected{/if} label_customer_history_notworking"  id="elements_notworking" table_type="notworking"   >{t}Not Working{/t} (<span id="elements_notworking_number">{$elements_number.NotWorking}</span>)</span>
+        		    <span style="float:right;margin-left:20px;" class="table_type transaction_type state_details {if $elements.Working}selected{/if} label_customer_history_working"  id="elements_working" table_type="working"   >{t}Working{/t} (<span id="elements_working_number">{$elements_number.Working}</span>)</span>
              	</div>
      		</div>
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:12px"></div>
