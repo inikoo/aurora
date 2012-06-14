@@ -680,6 +680,9 @@ function create_order($data) {
 		mysql_query($sql);
 
 	}
+	
+	$order->authorize_all();
+	
 	$order->update_order_discounts();
 	$order->update_discounts();
 	$order->update_item_totals_from_order_transactions();

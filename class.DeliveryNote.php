@@ -1026,6 +1026,7 @@ class DeliveryNote extends DB_Table {
 			$part = new Part ('sku',$part_data['Part SKU']);
 			$quantity_to_be_taken=$part_data['Parts Per Product'] * $to_sell_quantity;
 
+
 			$locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
 
 
@@ -1162,10 +1163,13 @@ class DeliveryNote extends DB_Table {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
+			
+			//print_r($row);
+			
 			$this->create_inventory_transaction_fact_item(
 				$row['Product Key'],
 				$row['Order Transaction Fact Key'],
-				$row ['Current Autorized to Sell Quantity'],
+				$row['Current Autorized to Sell Quantity'],
 				$row['Supplier Metadata']
 			);
 
