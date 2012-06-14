@@ -12,7 +12,7 @@
 <div class="splinter_cell" style="width:910px">
     <div id="the_table" class="data_table" >
     <div style="float:left;margin-right:10px">
-        <span class="clean_table_title">Top Products</span>
+        <span class="clean_table_title">{t}Top Products{/t}</span>
         <div class="home_splinter_options">
                       <span id="top_products_fam" type="families" {if $conf_data.top_products.type=='families'}class="selected"{/if} style="float:right;margin-left:5px">{t}Families{/t}</span>
            <span id="top_products_products" type="products" {if $conf_data.top_products.type=='products'}class="selected"{/if} style="float:right;margin-left:15px">{t}Products{/t}</span>
@@ -25,8 +25,8 @@
             <span id="top_products_1q" period="1q" {if $conf_data.top_products.period=='1q'}class="selected"{/if} style="float:right;margin-left:5px">{t}1q{/t}</span>
             <span id="top_products_1m" period="1m" {if $conf_data.top_products.period=='1m'}class="selected"{/if} style="float:right;margin-left:5px">{t}1m{/t}</span>
         </div>
-        {include file='table_splinter.tpl' table_id=$index filter_name=$filter_name filter_value=$filter_value no_filter=1}
-        <div  id="table{$index}"   class="data_table_container dtable btable "> </div>
+        {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name filter_value=$filter_value no_filter=1}
+        <div  id="table1"   class="data_table_container dtable btable "> </div>
        </div>
         <div style="float:left;margin-left:10px" id="plot_orders">
 		<strong>You need to upgrade your Flash Player</strong>

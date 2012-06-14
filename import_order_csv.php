@@ -124,7 +124,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders where filename like '%/122384ref%.xls'   order by filename";
 //120239
 //120217
-//$sql="select * from  orders_data.orders where filename like '%/149865.xls'   order by filename";
+$sql="select * from  orders_data.orders where filename like '%/149865.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1271,39 +1271,17 @@ unset($part);
 				'Supplier Product Valid To'=>$date2
 			);
 			// print "-----$scode <-------------\n";
-		
+			//print_r($sp_data);
 			$supplier_product=new SupplierProduct('find',$sp_data);
 
-			if(!$supplier_product->id){
-			
-			
-			$supplier_product=new SupplierProduct('find',$sp_data,'create update');
-
-
-				$spp_header=array(
-					'Supplier Product Part Type'=>'Simple',
-					'Supplier Product Part Most Recent'=>'Yes',
-					'Supplier Product Part Valid From'=>$date_order,
-					'Supplier Product Part Valid To'=>$date2,
-					'Supplier Product Part In Use'=>'Yes',
-					'Supplier Product Part Metadata'=>''
-				);
-
-				$spp_list=array(
-					array(
-						'Part SKU'=>$part->data['Part SKU'],
-						'Supplier Product Units Per Part'=>$transaction['units'],
-						'Supplier Product Part Type'=>'Simple'
-					)
-				);
-				$supplier_product->new_historic_part_list($spp_header,$spp_list);
-			
-			
-			}
 			$used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 			$used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
+
+
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 			
+			
+
 		}
 
 

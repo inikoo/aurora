@@ -119,24 +119,7 @@ $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2','');
 
-$order=$_SESSION['state']['locations']['table']['order'];
 
-if($order=='code'){
-  $order='`Location Code`';
- }
- elseif($order=='parts')
-    $order='`Location Distinct Parts`';
- elseif($order=='max_volumen')
-    $order='`Location Max Volume`';
-  elseif($order=='max_weight')
-    $order='`Location Max Weight`';
-  elseif($order=='tipo')
-    $order='`Location Mainly Used For`';
- elseif($order=='area')
-    $order='`Location Area`';
-$_order=str_replace('`','',$order);
-
-//print_r($staff);
 
 //$staff->load('product');
 $smarty->assign('parent','staff');

@@ -111,10 +111,20 @@ function list_staff() {
     else
         $where=$conf['where'];
 
-    if (isset( $_REQUEST['view']))
-        $view=$_REQUEST['view'];
-    else
-        $view=$_SESSION['state']['hr']['staff']['view'];
+
+
+  
+  $elements=$conf['elements'];
+
+	if (isset( $_REQUEST['elements_notworking'])) {
+		$elements['NotWorking']=$_REQUEST['elements_notworking'];
+
+	}
+	if (isset( $_REQUEST['elements_working'])) {
+		$elements['Working']=$_REQUEST['elements_working'];
+	}
+
+  
 
 
 
@@ -133,9 +143,10 @@ function list_staff() {
    // $_SESSION['state']['hr']['staff']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    // $_SESSION['state']['hr']['view']=$view;
 
-foreach (array('view'=>$view,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
+foreach (array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value) as $key=>$item) {
        $_SESSION['state']['hr']['staff'][$key]=$item;
   }  
+	$_SESSION['state']['hr']['staff']['elements']=$elements;
 
     $wheref='';
     if ($f_field=='name' and $f_value!=''  )
@@ -144,16 +155,30 @@ foreach (array('view'=>$view,'order'=>$order,'order_dir'=>$order_direction,'nr'=
         $wheref.=sprintf(" and  $f_field=%d ",$f_value);
 
 
-    switch ($view) {
-    case('all'):
-        break;
-    case('staff'):
-        $where.=" and `Staff Currently Working`='Yes'  ";
-        break;
-    case('exstaff'):
-        $where.=" and `Staff Currently Working`='No' ";
-        break;
-    }
+
+
+$_elements='';
+		foreach ($elements as $_key=>$_value) {
+			if ($_value) {
+				if ($_key=='NotWorking') {
+					$_elements.=",'No'";
+				}
+				elseif ($_key=='Working') {
+					$_elements.=",'Yes'";
+				}
+				
+			}
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} else {
+			$where.=' and `Staff Currently Working` in ('.$_elements.')' ;
+		}
+
+
+
+    
 
     $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) $where $wheref";
 

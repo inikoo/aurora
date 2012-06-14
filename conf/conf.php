@@ -95,7 +95,7 @@ $default_state=array(
 	'home'=>array(
 		'display'=>'sales',
 		'splinters'=>array(
-			'top_products'=>array('type'=>'products','nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc'),
+			'top_products'=>array('type'=>'products','nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc','f_field'=>'code','f_value'=>''),
 			'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc'),
 			'sales'=>array('type'=>'invoice_categories','period'=>'ytd','currency'=>'corporate'),
 			'orders_in_process'=>array(

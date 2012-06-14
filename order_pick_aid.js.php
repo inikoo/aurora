@@ -56,14 +56,19 @@ var myonCellClick = function(oArgs) {
  var y=(Dom.getY(target))
    var x=(Dom.getX(target))
 
-  
+
+ if(Dom.get('todo_units').value<0){
+ alert("caca")
+ 
+ }else{
+ 
   x=x-120;
     y=y+18;
     Dom.setX('no_dispatchable_editor_dialog', x)
     Dom.setY('no_dispatchable_editor_dialog', y)
-   //Dom.get('Assign_Picker_Staff_Name').focus();
-   //Dom.get('assign_picker_dn_key').value=dn_key;
+ 
     no_dispatchable_editor_dialog.show();
+}
 
     break;
     case('add_object'):
@@ -143,7 +148,7 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-				//	 alert(o.responseText);
+					 alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){
@@ -331,18 +336,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var InvoiceColumnDefs = [
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 
-				     ,{key:"sku", label:"<?php echo _('Part')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-						     ,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"sku", label:"<?php echo _('Part')?>",hidden:true,width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+						     ,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 												  ,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 								,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-		,{key:"description",label:"<?php echo _('Description')?>", width:390,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+		,{key:"description",label:"<?php echo _('Description')?>", width:(Dom.get('method').value=='Inikoo'?260:390),sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				//	,{key:"picking_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				
 				// 	,{key:"used_in", label:"<?php echo _('Sold as')?>",width:230,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:200,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"location",label:"<?php echo _('Location')?>", hidden:(Dom.get('method').value=='Inikoo'?false:true),width:180,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
                 
                 

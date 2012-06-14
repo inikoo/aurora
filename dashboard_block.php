@@ -53,6 +53,40 @@ $js_files=array(
 
 
 switch ($tipo) {
+
+case 'top_products':
+	$js_files[]='js/splinter_top_products.js';
+	$template='splinter_top_products.tpl';
+
+	switch ($_SESSION['state']['home']['splinters']['top_products']['period']) {
+	case 'ytd':
+		$table_title=_('Sales').": "._('Year-to-Date');
+		break;
+	default:
+		$table_title=_('Sales').' '.$_SESSION['state']['home']['splinters']['top_products']['period'];
+		break;
+	}
+	$smarty->assign('table_title',$table_title);
+	
+	
+	print_r($_SESSION['state']['home']);
+	$tipo_filter=$_SESSION['state']['home']['splinters']['top_products']['f_field'];
+$smarty->assign('filter_name',$tipo_filter);
+$smarty->assign('filter_value',$_SESSION['state']['home']['splinters']['top_products']['f_value']);
+$filter_menu=array(
+        'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+       'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
+             );
+             
+$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+	
+	
+	break;
+
 case 'sales_overview':
 	$js_files[]='js/splinter_sales.js';
 	$template='splinter_sales.tpl';

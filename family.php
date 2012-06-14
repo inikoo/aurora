@@ -384,7 +384,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 mysql_free_result($result);
 
 
-$sql=sprintf(" select`Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d   and  %s>%s  order by %s   ",
+$sql=sprintf("select`Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d   and  %s>%s  order by %s   ",
   $family->data['Product Family Main Department Key'],
              $order,
              prepare_mysql($family->get($_order)),

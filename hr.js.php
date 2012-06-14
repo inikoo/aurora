@@ -163,8 +163,8 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'staff');
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
  oAutoComp.minQueryLength = 0; 
 
- var ids=['staff_all','staff_staff','staff_exstaff'];
- YAHOO.util.Event.addListener(ids, "click", change_staff_view);
+ var ids=['elements_notworking','elements_working'];
+ YAHOO.util.Event.addListener(ids, "click", change_elements);
 
  var ids=['staff','areas','departments','positions'];
  YAHOO.util.Event.addListener(ids, "click", change_view);
@@ -206,23 +206,47 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=hr-view&value='+this.id ,{});
 }
 
-var change_staff_view = function (e){
 
-    new_view=this.id
 
-    if(new_view!=view){
-	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=hr-view&value='+escape(new_view));
-	this.className='selected';
-	Dom.get(view).className='';
-	
-	view=new_view;
-	
-	
-	var table=tables.table0;
-	var datasource=tables.dataSource0;
-	var request='&sf=0&view='+view;
-	datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-    }
-    
+function change_elements(){
 
-	}
+ids=['elements_working','elements_notworking'];
+
+
+if(Dom.hasClass(this,'selected')){
+
+var number_selected_elements=0;
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+number_selected_elements++;
+}
+}
+
+if(number_selected_elements>1){
+Dom.removeClass(this,'selected')
+
+}
+
+}else{
+Dom.addClass(this,'selected')
+
+}
+
+table_id=0;
+ var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+var request='';
+for(i in ids){
+if(Dom.hasClass(ids[i],'selected')){
+request=request+'&'+ids[i]+'=1'
+}else{
+request=request+'&'+ids[i]+'=0'
+
+}
+}
+  
+ // alert(request)
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+
+}
