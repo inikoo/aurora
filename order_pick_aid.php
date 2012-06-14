@@ -2,6 +2,7 @@
 include_once 'common.php';
 include_once 'class.CurrencyExchange.php';
 include_once 'class.Department.php';
+include_once 'class.PartLocation.php';
 
 include_once 'class.Order.php';
 include_once 'class.PartLocation.php';
@@ -121,7 +122,7 @@ $smarty->assign( 'customer', $customer );
 
 
 $smarty->assign( 'parent', 'orders' );
-$smarty->assign( 'title', _( 'Picking Aid Sheet' ).' '.$dn->get( 'Delivery Note Title' ) );
+$smarty->assign( 'title', _( 'Picking Aid Sheet' ).' '.strip_tags($dn->get( 'Delivery Note Title' )) );
 $smarty->assign( 'css_files', $css_files );
 $smarty->assign( 'js_files', $js_files );
 

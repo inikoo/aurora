@@ -70,7 +70,8 @@ while($row=mysql_fetch_array($res)){
   if($user->id){
 //	print "Found\n";
 $found++;
-  }else{
+  }
+  else{
 // 	print "Not Found\n";
   $not_found++;
   
@@ -97,7 +98,8 @@ $found++;
   //print_r($fields);
     fputcsv($fp, $fields);
 
-  
+  fclose($fp);
+  exit;
   
   }
  // exit;

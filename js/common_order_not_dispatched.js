@@ -34,6 +34,42 @@ var ar_file='ar_edit_orders.php';
 
 }
 
+
+
+function save_use_calculated_items_charges(){
+var ar_file='ar_edit_orders.php'; 
+    	var request='tipo=use_calculated_items_charges&order_key='+order_key;
+
+//alert(request);
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+					//	alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+					
+					for(x in r.data){
+
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+					       // Dom.get('order_items_charges_method').innerHTML=r.order_items_charges_method;
+					 Dom.get('items_charges_amount').value=r.items_charges_amount
+						}
+						reset_set_items_charges()
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
+}
+
 function save_set_shipping(){
 value=Dom.get("shipping_amount").value;
 var ar_file='ar_edit_orders.php'; 
@@ -226,7 +262,17 @@ var ar_file='ar_edit_orders.php';
 
 function validate_discount_percentage(o){
 
+
+
+if(o.value==''){
+percentage=0;
+}else{
 percentage=parseFloat(o.value);
+
+}
+
+
+
 if(!isNaN(percentage) && percentage>=0 && percentage<=100){
 Dom.removeClass('change_discount_save','disabled')
 
@@ -242,6 +288,11 @@ Dom.addClass('change_discount_save','disabled')
 
 
 function change_discount(o,transaction_key,record_key,value){
+
+
+if(!transaction_key)
+return;
+
 	region1 = Dom.getRegion(o); 
     region2 = Dom.getRegion('change_staff_discount'); 
 	var pos =[region1.right-region2.width,region1.bottom]
@@ -280,7 +331,7 @@ dialog_sending_to_warehouse.show();
 					'POST',
 					ar_file, {
 					    success:function(o) {
-							//		alert(o.responseText);
+									alert(o.responseText);
 
 						//return;
 						var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -320,16 +371,19 @@ if(!Dom.hasClass('change_discount_save','disabled')){
 Dom.setStyle('change_staff_discount_waiting','display','')
 Dom.setStyle('change_staff_discount_buttons','display','none')
 
+percentage=Dom.get('change_discount_value').value;
+
+if(percentage=='')percentage=0;
 
 var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=update_percentage_discount&order_transaction_key='+Dom.get('change_discount_transaction_key').value+'&percentage='+Dom.get('change_discount_value').value+'&order_key='+Dom.get('order_key').value;
+    	var request='tipo=update_percentage_discount&order_transaction_key='+Dom.get('change_discount_transaction_key').value+'&percentage='+percentage+'&order_key='+Dom.get('order_key').value;
 
-//alert(request);
+alert(request);
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						//alert(o.responseText);
+						alert(o.responseText);
 					
 					
 						
@@ -607,7 +661,7 @@ var myonCellClick = function(oArgs) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   // alert(o.responseText);
+					    alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
@@ -849,6 +903,8 @@ Event.addListener("tr_order_items_charges", "mouseout", hide_edit_button,{'name'
 
 
 Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
+Event.addListener("use_calculate_items_charges", "click", save_use_calculated_items_charges);
+
 edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_splinter_dialog", 
 			{ 
 			    visible : false,close:true,

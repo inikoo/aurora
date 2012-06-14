@@ -3,6 +3,7 @@ require_once 'common.php';
 require_once 'ar_edit_common.php';
 require_once 'class.Order.php';
 require_once 'class.User.php';
+include_once 'class.PartLocation.php';
 
 
 
@@ -426,17 +427,10 @@ function edit_new_order_shipping_type() {
 
 function use_calculated_shipping($data) {
 	$order_key=$data['order_key'];
-
-
-
 	$order=new Order($order_key);
 	if ($order->id) {
 
 		$order->use_calculated_shipping();
-
-
-
-
 		$updated_data=array(
 			'order_items_gross'=>$order->get('Items Gross Amount'),
 			'order_items_discount'=>$order->get('Items Discount Amount'),
@@ -450,20 +444,44 @@ function use_calculated_shipping($data) {
 
 		);
 		$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'order_shipping_method'=>$order->data['Order Shipping Method'],'data'=>$updated_data,'shipping'=>money($order->new_value),'shipping_amount'=>$order->data['Order Shipping Net Amount']);
-
-
-
-
-
-
 	} else {
 		$response=array('state'=>400,'msg'=>$order->msg);
 
 	}
 	echo json_encode($response);
-
-
 }
+
+
+
+function use_calculated_items_charges($data) {
+	$order_key=$data['order_key'];
+	$order=new Order($order_key);
+	if ($order->id) {
+
+		$order->use_calculated_items_charges();
+		$updated_data=array(
+			'order_items_gross'=>$order->get('Items Gross Amount'),
+			'order_items_discount'=>$order->get('Items Discount Amount'),
+			'order_items_net'=>$order->get('Items Net Amount'),
+			'order_net'=>$order->get('Total Net Amount'),
+			'order_tax'=>$order->get('Total Tax Amount'),
+			'order_charges'=>$order->get('Charges Net Amount'),
+			'order_credits'=>$order->get('Net Credited Amount'),
+			'order_shipping'=>$order->get('Shipping Net Amount'),
+			'order_total'=>$order->get('Total Amount')
+
+		);
+		$response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'items_charges'=>money($order->new_value),'items_charges_amount'=>$order->data['Order Charges Net Amount']);
+	} else {
+		$response=array('state'=>400,'msg'=>$order->msg);
+
+	}
+	echo json_encode($response);
+}
+
+
+
+
 
 function set_order_shipping($data) {
 
@@ -606,15 +624,32 @@ function edit_new_order() {
 
 	if (is_numeric($quantity) and $quantity>=0) {
 
+
+	
+
+		
+
 		$order=new Order($order_key);
+		
+		
+			if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
+		$dispatching_state='Ready to Pick';
+		}else{
+		
+		$dispatching_state='In Process';
+		}
+		
+		$payment_state='Waiting Payment';
+		
+		
 		$product=new Product('pid',$product_pid);
 		$data=array(
 			'date'=>date('Y-m-d H:i:s'),
 			'Product Key'=>$product->data['Product Current Key'],
 			'Metadata'=>'',
 			'qty'=>$quantity,
-			'Current Dispatching State'=>'In Process',
-			'Current Payment State'=>'Waiting Payment'
+			'Current Dispatching State'=>$dispatching_state,
+			'Current Payment State'=>$payment_state
 		);
 
 		$disconted_products=$order->get_discounted_products();
@@ -855,11 +890,12 @@ function transactions_to_process() {
 	if ($display=='all_products') {
 		$table=' `Product Dimension` P ';
 		$where=sprintf('where `Product Store Key`=%d  and `Product Record Type`="Normal"    and `Product Main Type` in ("Private","Sale") ',$store_key);
-		$sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,"" as `Current Dispatching State` ',$order_id,$order_id,$order_id,$order_id);
+		$sql_qty=sprintf(',(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
+		$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='ordered_products') {
 			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
 			$where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-			$sql_qty=',`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+			$sql_qty=',`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 		} else {
 		exit();
 	}
@@ -1022,13 +1058,13 @@ function transactions_to_process() {
 			$dispatching_status=_('In Process');
 			break;
 		case 'Ready to Pick':
-			$dispatching_status=_('Ready to Pick');
+			$dispatching_status=_('Ready to Pick').' ['.$row['Picking Factor']*$row['Order Quantity'].'/'.$row['Order Quantity'].']';
 			break;
 		case 'Picking':
-			$dispatching_status=_('Picking');
+			$dispatching_status=_('Picking').' ['.$row['Picking Factor']*$row['Order Quantity'].'/'.$row['Order Quantity'].']';
 			break;
 		case 'Ready to Pack':
-			$dispatching_status=_('Ready to Pack');
+			$dispatching_status=_('Ready to Pack').' ['.$row['Picking Factor']*$row['Order Quantity'].'/'.$row['Order Quantity'].'] '.' ['.$row['Packing Factor']*$row['Order Quantity'].'/'.$row['Order Quantity'].']';
 			break;
 		case 'Ready to Ship':
 			$dispatching_status=_('Ready to Ship');
@@ -1070,7 +1106,7 @@ function transactions_to_process() {
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 		$adata[]=array(
 			'pid'=>$row['Product ID'],
-			'otf_key'=>($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
+			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
 			'code'=>$code,
 			'description'=>$row['Product XHTML Short Description'].$deal_info,
 			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea'),
@@ -1090,7 +1126,6 @@ function transactions_to_process() {
 			'add'=>'+',
 			'remove'=>'-',
 			//'change'=>'<span onClick="quick_change("+",'.$row['Product ID'].')" class="quick_add">+</span> <span class="quick_add" onClick="quick_change("-",'.$row['Product ID'].')" >-</span>',
-			//'to_charge'=>'<span style="cursor:pointer" onClick="change_discount(this,'.$row['Order Transaction Fact Key'].')">'.money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']).'</span>',
 			'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$store->data['Store Currency Code']),
 
 			'dispatching_status'=>$dispatching_status,
@@ -2226,9 +2261,14 @@ $order_dir='';
 
 		if ($todo==0)
 			$formated_todo='';
-		else
+		else{
+			if($todo<0){
+			$formated_todo='<span style="font-weight:800;color:#FFFFFF;background:#EE0000;padding:0 4px">'.number($todo).'</span>';
+			}else{
 			$formated_todo=number($todo);
+}
 
+}
 
 
 		$notes='';
@@ -3278,6 +3318,7 @@ function update_percentage_discount($data) {
 
 
 
+$discounts= (float) $order->data['Order Items Discount Amount'];
 	$response= array(
 		'state'=>200,
 		'quantity'=>$transaction_data['qty'],
@@ -3288,8 +3329,9 @@ function update_percentage_discount($data) {
 		'data'=>$updated_data,
 		'to_charge'=>$transaction_data['to_charge'],
 		//'discount_data'=>$adata,
-		'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
-		'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
+		'discounts'=>($discounts!=0?true:false),
+		//'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
+		'charges'=>$order->data['Order Charges Net Amount']
 	);
 	echo json_encode($response);
 

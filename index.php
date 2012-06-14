@@ -94,6 +94,7 @@ $blocks=array();
 $sql=sprintf("select * from  `Dashboard Widget Bridge`B  left join `Widget Dimension` W on (B.`Widget Key`=W.`Widget Key`)   where `Dashboard Key`=%d  order by `Dashboard Widget Order`",
 	$dashboard_key
 );
+
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$dashboard_key=$row['Dashboard Key'];

@@ -635,10 +635,12 @@ class Order extends DB_Table {
 				exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
 			$otf_key=mysql_insert_id();
 
-		}else {
+		}else
+		{
 
 
-			if (!in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process','Submitted by Customer')) ) {
+
+			if (!in_array($this->data['Order Current Dispatch State'],array('In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed')) ) {
 				return array(
 					'updated'=>false,
 
@@ -690,8 +692,9 @@ class Order extends DB_Table {
 
 
 
-					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
+					$sql = sprintf( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Current Autorized to Sell Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
 						$estimated_weight ,
+						$quantity,
 						$quantity,
 						$bonus_quantity,
 						prepare_mysql ( $data ['date'] ),
@@ -729,12 +732,13 @@ class Order extends DB_Table {
 				$estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
 
 
-				$sql = sprintf( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
+				$sql = sprintf( "insert into `Order Transaction Fact` (`Current Autorized to Sell Quantity`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,
                                  `Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
                                  `Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
-                                 values (%f,%s,%f,%s,%s,%s,%s,%s,%s,
+                                 values (%f,%f,%s,%f,%s,%s,%s,%s,%s,%s,
                                  %d,%d,%s,%d,%d,
                                  %s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'')   ",
+					$quantity,
 					$bonus_quantity,
 					prepare_mysql($order_type),
 					$tax_rate,
@@ -766,8 +770,26 @@ class Order extends DB_Table {
 				if (! mysql_query( $sql ))
 					exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
 				$otf_key=mysql_insert_id();
+				
+				
+				
 
 			}
+			
+			
+			
+			
+					if (in_array($this->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
+				
+				
+				$dn_keys=$this->get_delivery_notes_ids();
+				$dn_key=array_pop($dn_keys);
+				$dn=new DeliveryNote($dn_key);
+				$dn->update_inventory_transaction_fact($otf_key,$quantity);
+				
+				
+			}
+
 		}
 
 
@@ -1041,6 +1063,8 @@ class Order extends DB_Table {
 			if ($this->data = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 				$this->id = $this->data ['Order Key'];
 			}
+			
+			
 		}
 		elseif ($key == 'public id' or $key == 'public_id') {
 			$sql = sprintf( "select * from `Order Dimension` where `Order Public ID`=%s", prepare_mysql ( $id ) );
@@ -2420,6 +2444,22 @@ class Order extends DB_Table {
 		$this->new_value=$this->data['Order Shipping Net Amount'];
 
 	}
+	
+	
+		function use_calculated_items_charges() {
+
+		$this->update_charges();
+		$this->updated=true;
+		$this->update_item_totals_from_order_transactions();
+		$this->get_items_totals_by_adding_transactions();
+		$this->update_no_normal_totals('save');
+		$this->update_totals_from_order_transactions();
+		$this->new_value=$this->data['Order Charges Net Amount'];
+
+	}
+	
+	
+	
 
 	function update_shipping_amount($value) {
 		$value=sprintf("%.2f",$value);;
@@ -3030,6 +3070,7 @@ class Order extends DB_Table {
 	function update_transaction_discount_amount($otf_key,$amount,$deal_key=0) {
 
 
+
 		if (!$deal_key) {
 			$deal_info='';
 		}
@@ -3039,11 +3080,24 @@ class Order extends DB_Table {
 		);
 
 		$res=mysql_query($sql);
-		if ($row=mysql_fetch_array($res)) {
+		if ($row=mysql_fetch_assoc($res)) {
+
+
 
 			if ($amount==$row['Order Transaction Total Discount Amount'] or $row['Order Transaction Gross Amount']==0) {
 				$this->msg='Nothing to Change';
-				return;
+					$return_data= array(
+					'updated'=>true,
+					'otf_key'=>$otf_key,
+					'description'=>$row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
+					'discount_percentage'=>percentage($amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
+					'to_charge'=>money($row['Order Transaction Gross Amount']-
+					$amount,$this->data['Order Currency']),
+					'qty'=>$row['Order Quantity'],
+					'bonus qty'=>0
+				);
+				//print_r($return_data);
+				return $return_data;
 			}
 			$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Transaction Fact Key` =%d",$otf_key);
 			mysql_query($sql);
@@ -3059,7 +3113,7 @@ class Order extends DB_Table {
 			$this->update_no_normal_totals('save');
 
 			$this->update_totals_from_order_transactions();
-
+$deal_info='';
 			if ($amount>0  ) {
 				$deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
 
@@ -3077,19 +3131,19 @@ class Order extends DB_Table {
 				);
 				mysql_query($sql);
 				$this->updated=true;
-
+}
 				return array(
 					'updated'=>true,
 					'otf_key'=>$otf_key,
 					'description'=>$row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
 					'discount_percentage'=>percentage($amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
-					'to_charge'=>money($row['Order Transaction Gross Amount']-$this->data['Order Transaction Total Discount Amount'],$this->data['Order Currency']),
+					'to_charge'=>money($row['Order Transaction Gross Amount']-$amount,$this->data['Order Currency']),
 					'qty'=>$row['Order Quantity'],
 					'bonus qty'=>0
 				);
 
 
-			}
+			
 
 
 		}

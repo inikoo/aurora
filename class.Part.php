@@ -1300,6 +1300,9 @@ class part extends DB_Table {
 
 	function get_picking_location_historic($date,$qty) {
 
+
+include_once('class.PartLocation.php');
+
 		$this->unknown_location_associated=false;
 
 
