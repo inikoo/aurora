@@ -626,10 +626,10 @@ position:relative;top:1px;
 .splinter_cell.double{width:930px}
 .splinter_cell .data_table_container{font-size:75%}
 
-
-.home_splinter_options span{color:#999;cursor:pointer}
-.home_splinter_options span:hover{color:#777}
-.home_splinter_options span.selected{color:#333;font-weight:100;text-decoration:none;}
+.home_splinter_options{padding-top:2px}
+.home_splinter_options span{color:#eee;cursor:pointer}
+.home_splinter_options span:hover{color:#fff}
+.home_splinter_options span.selected{color:#FAFA7F;font-weight:800;text-decoration:none;}
 
 
 span.state_details,search_sugestion{cursor:pointer;}

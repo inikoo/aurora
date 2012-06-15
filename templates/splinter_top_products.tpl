@@ -34,12 +34,9 @@
 <input type="hidden" value="{t}Description{/t}" id="label_Description"  />
 
 
+<div  id="title" class="title" style="height:22px">
 
-<div class="splinter_cell" style="width:910px">
-    <div id="the_table" class="data_table" >
-    <div style="float:left;margin-right:10px;width:450px">
-        <span class="clean_table_title">{t}Top Products{/t}</span>
-        <div class="home_splinter_options" style="font-size:80%">
+ <div class="home_splinter_options" style="font-size:80%;">
                       <span id="top_products_fam" type="families" {if $conf_data.top_products.type=='families'}class="selected"{/if} style="float:right;margin-left:5px">{t}Families{/t}</span>
            <span id="top_products_products" type="products" {if $conf_data.top_products.type=='products'}class="selected"{/if} style="float:right;margin-left:15px">{t}Products{/t}</span>
 
@@ -51,16 +48,29 @@
             <span id="top_products_1q" period="1q" {if $conf_data.top_products.period=='1q'}class="selected"{/if} style="float:right;margin-left:5px">{t}1q{/t}</span>
             <span id="top_products_1m" period="1m" {if $conf_data.top_products.period=='1m'}class="selected"{/if} style="float:right;margin-left:5px">{t}1m{/t}</span>
         </div>
-        {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name filter_value=$filter_value no_filter=1}
-        <div  id="table1"   class="data_table_container dtable btable "> </div>
+   <h1>{t}Top Products{/t}</h1>     
+        
+</div>
+
+
+
+<div style="float:left;width:450px;margin-right:18px;border:1px solid #e7e7e7;padding:5px;margin-bottom:10px;width:918px">
+
+
+
+    <div id="the_table" class="data_table" style="font-size:85%">
+    <div style="float:left;margin-right:10px;width:450px">
+        
+       
+        {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name filter_value=$filter_value no_filter=1 hide_caption=1}
+        <div  id="table1"   class="data_table_container dtable btable" style="margin-top:5px"> </div>
        </div>
-        <div style="float:left;margin-left:10px" id="plot_orders">
+    <div style="float:left;margin-left:5px;padding-top:20px" id="plot_orders">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
-
-	<script type="text/javascript">
+    <script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "430", "400", "1", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "450", "500", "1", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=top_families&store_keys={$store_keys}&period={$conf_data.top_products.period}")); 
