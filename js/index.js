@@ -5,7 +5,7 @@ var Event = YAHOO.util.Event;
 function changeHeight(iframe){
         try
         {
-        
+       
          
           var innerDoc = (iframe.contentDocument) ? iframe.contentDocument : iframe.contentWindow.document;
           
@@ -69,7 +69,8 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=home-di
 }
 
 function init(){
-
+ //jQuery('iframe').iframeAutoHeight({debug: true, diagnostics: false});    
+//alert("x")
  init_search();
 
 // var panes=Dom.getElementsByClassName('splinter_buttons', 'li', 'buttons');

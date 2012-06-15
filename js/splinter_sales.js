@@ -20,9 +20,6 @@ function getDocHeight() {
 
 
 function myrenderEvent(){
-//alert(   YAHOO.util.Dom.getViewportHeight())
-
-//alert(Dom)
 
 parent.Dom.setStyle('block_'+Dom.get('block_key').value,'height',getDocHeight()+'px')
 

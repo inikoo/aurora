@@ -19,6 +19,10 @@
   </head>
 
   <body class="yui-skin-sam inikoo">
+  
+  
+  
+  
 <input type="hidden" value="0" id="sales_index"  />
 <input type="hidden" value="{$conf_data.sales.currency}" id="sales_currency"  />
 <input type="hidden" value="{$conf_data.sales.type}" id="sales_type"  />

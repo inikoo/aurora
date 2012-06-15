@@ -58,6 +58,8 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+
+
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
@@ -65,6 +67,8 @@ $js_files=array(
 	'js/index.js',
 
 );
+
+
 
 
 if($user->data['User Type']=='Warehouse'){

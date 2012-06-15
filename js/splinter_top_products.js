@@ -1,6 +1,25 @@
 top_products_tables= new Object();
 
+function getDocHeight() {
+    var D = document;
+    return Math.max(
+        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+        Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+    );
+}
+
+
+function myrenderEvent(){
+
+parent.Dom.setStyle('block_'+Dom.get('block_key').value,'height',getDocHeight()+'px')
+
+}
+
+
+
 function top_products_init(){
+var tableid=1
 
         var tableid=Dom.get('top_products_index').value;
 	    var tableDivEL="table"+tableid;
@@ -10,19 +29,23 @@ function top_products_init(){
 				       ,{key:"description", label:Dom.get('label_Product').value, width:280,sortable:false,className:"aleft"}
 				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:65,sortable:false,className:"aright"}
 					 ];
-	    top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type')+"&tableid="+tableid);
+	  
+	 // alert("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid)
+	  top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid);
 	    top_products_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    top_products_tables.dataSourcetopprod.connXhrMode = "queueRequests";
 	    top_products_tables.dataSourcetopprod.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    rtext:"resultset.rtext",
+	 rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -61,7 +84,7 @@ function top_products_init(){
 	    top_products_tables.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    top_products_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
   top_products_tables.table1.table_id=tableid;
-		   top_products_tables.table1.subscribe("renderEvent", myrenderEvent);
+		    top_products_tables.table1.subscribe("renderEvent", myrenderEvent);
 		    
 	   
 
@@ -122,6 +145,8 @@ Dom.addClass(this,'selected');
 
 }
 function init(){
+
+
  ids=['top_products_50','top_products_10','top_products_20'];
  YAHOO.util.Event.addListener(ids, "click",change_product_number);
  

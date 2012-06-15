@@ -55,8 +55,34 @@ $js_files=array(
 switch ($tipo) {
 
 case 'top_products':
+
+	
+
+
 	$js_files[]='js/splinter_top_products.js';
 	$template='splinter_top_products.tpl';
+
+
+
+	if (count($user->stores)==0) {
+		return;
+	}
+
+	$store_keys=join(',',$user->stores);
+	$store_title='';
+
+	$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension` where `Store Key` in (%s) ",$store_keys);
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_assoc($res)) {
+		$store_title.=sprintf(" ,<a target='_parent' style='color: inherit;' href='customers_pending_orders.php?store=%d'>%s</a>",$row['Store Key'],$row['Store Code']);
+	}
+	$store_title=preg_replace('/^\s*\,/','',$store_title);
+	$smarty->assign('store_title',$store_title);
+	$smarty->assign('store_keys',$store_keys);
+
+
+/*
 
 	switch ($_SESSION['state']['home']['splinters']['top_products']['period']) {
 	case 'ytd':
@@ -68,8 +94,10 @@ case 'top_products':
 	}
 	$smarty->assign('table_title',$table_title);
 	
+*/	
 	
-	print_r($_SESSION['state']['home']);
+	
+
 	$tipo_filter=$_SESSION['state']['home']['splinters']['top_products']['f_field'];
 $smarty->assign('filter_name',$tipo_filter);
 $smarty->assign('filter_value',$_SESSION['state']['home']['splinters']['top_products']['f_value']);
@@ -84,6 +112,11 @@ $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 	
+	//print_r($_SESSION['state']['home']['splinters']['top_products']);
+	$smarty->assign('top_products_nr',$_SESSION['state']['home']['splinters']['top_products']['nr']);
+	$smarty->assign('top_products_type',$_SESSION['state']['home']['splinters']['top_products']['type']);
+	$smarty->assign('top_products_index',1);
+
 	
 	break;
 
