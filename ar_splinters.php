@@ -715,7 +715,7 @@ $_SESSION['state']['home']['splinters']['top_products']['type']='products';
     else {
         switch ($period) {
         case('all'):
-            $order='`Product Total Invoiced Amount`';
+            $order='`Product Total Acc Invoiced Amount`';
             break;
         case('1m'):
             $order='`Product 1 Month Acc Invoiced Amount`';
@@ -735,7 +735,7 @@ $_SESSION['state']['home']['splinters']['top_products']['type']='products';
 
     $sql="select  * from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
     $adata=array();
-    //print $sql;
+   // print $sql;
     $position=1;
     $result=mysql_query($sql);
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -743,7 +743,7 @@ $_SESSION['state']['home']['splinters']['top_products']['type']='products';
 
         switch ($period) {
         case('all'):
-            $sales=money($data['Product Total Invoiced Amount'],$data['Store Currency Code']);
+            $sales=money($data['Product Total Acc Invoiced Amount'],$data['Store Currency Code']);
             break;
         case('1m'):
             $sales=money($data['Product 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
@@ -782,6 +782,7 @@ $_SESSION['state']['home']['splinters']['top_products']['type']='products';
                                 array('state'=>200,
                                       'data'=>$adata,
                                       'rtext'=>$rtext,
+                                      'rtext_rpp'=>$number_results,
                                       'sort_key'=>'position',
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
