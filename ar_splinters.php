@@ -571,7 +571,7 @@ $_SESSION['state']['home']['splinters']['top_products']['type']='families';
 
     }
 
-    $sql="select  * from `Product Family Dimension` P  left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+    $sql="select  *  from `Product Family Dimension` P  left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
     $adata=array();
     //print $sql;
     $position=1;
@@ -619,6 +619,7 @@ $_SESSION['state']['home']['splinters']['top_products']['type']='families';
                                 array('state'=>200,
                                       'data'=>$adata,
                                       'rtext'=>$rtext,
+                                        'rtext_rpp'=>$number_results,
                                       'sort_key'=>'position',
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,

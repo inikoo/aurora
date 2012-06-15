@@ -24,10 +24,10 @@ var tableid=1
         var tableid=Dom.get('top_products_index').value;
 	    var tableDivEL="table"+tableid;
 	    var ProductsColumnDefs = [
-				       {key:"position", label:"", width:2,sortable:false,className:"aleft"}
-				       ,{key:"family", label:Dom.get('label_Fam').value, width:25,sortable:false,className:"aleft"}
-				       ,{key:"description", label:Dom.get('label_Product').value, width:280,sortable:false,className:"aleft"}
-				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:65,sortable:false,className:"aright"}
+				       {key:"position", label:"", width:5,sortable:false,className:"aleft"}
+				       ,{key:"family", label:Dom.get('label_Fam').value, width:28,sortable:false,className:"aleft"}
+				       ,{key:"description", label:Dom.get('label_Product').value, width:271,sortable:false,className:"aleft"}
+				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:69,sortable:false,className:"aright"}
 					 ];
 	  
 	 // alert("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid)
