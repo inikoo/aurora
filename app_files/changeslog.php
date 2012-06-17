@@ -5764,3 +5764,5 @@ ALTER TABLE `Dashboard Widget Dimension` CHANGE `Dashboard Widget Key` `Dashboar
 DROP TABLE `Order Public ID Dimension`;
 ALTER TABLE `User Dimension` CHANGE `User Theme Key` `User Theme Key` SMALLINT( 5 ) UNSIGNED NULL DEFAULT '1',CHANGE `User Theme Background Key` `User Theme Background Key` SMALLINT( 5 ) UNSIGNED NULL DEFAULT '1';
 
+INSERT INTO `dw`.`Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`, `Widget Metadata`) VALUES (NULL, 'Top Products', 'block_3', NULL, 'dashboard_block.php?tipo=top_products', 'Top products', '');
+INSERT INTO `dw`.`Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`, `Widget Metadata`) VALUES (NULL, 'Average Order Value', 'block_1', NULL, 'dashboard_block.php?tipo=average_order_value', '', '');
