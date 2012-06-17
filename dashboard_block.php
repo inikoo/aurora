@@ -56,7 +56,7 @@ switch ($tipo) {
 
 case 'top_products':
 
-	
+
 
 
 	$js_files[]='js/splinter_top_products.js';
@@ -82,7 +82,7 @@ case 'top_products':
 	$smarty->assign('store_keys',$store_keys);
 
 
-/*
+	/*
 
 	switch ($_SESSION['state']['home']['splinters']['top_products']['period']) {
 	case 'ytd':
@@ -93,31 +93,31 @@ case 'top_products':
 		break;
 	}
 	$smarty->assign('table_title',$table_title);
-	
-*/	
-	
-	
+
+*/
+
+
 
 	$tipo_filter=$_SESSION['state']['home']['splinters']['top_products']['f_field'];
-$smarty->assign('filter_name',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['home']['splinters']['top_products']['f_value']);
-$filter_menu=array(
-        'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
-       'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
-             );
-             
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+	$smarty->assign('filter_name',$tipo_filter);
+	$smarty->assign('filter_value',$_SESSION['state']['home']['splinters']['top_products']['f_value']);
+	$filter_menu=array(
+		'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+		'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
+	);
 
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
-	
+	$smarty->assign('filter_menu',$filter_menu);
+	$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+
+	$paginator_menu=array(10,25,50,100,500);
+	$smarty->assign('paginator_menu',$paginator_menu);
+
 	//print_r($_SESSION['state']['home']['splinters']['top_products']);
 	$smarty->assign('top_products_nr',$_SESSION['state']['home']['splinters']['top_products']['nr']);
 	$smarty->assign('top_products_type',$_SESSION['state']['home']['splinters']['top_products']['type']);
 	$smarty->assign('top_products_index',1);
 
-	
+
 	break;
 
 case 'sales_overview':
@@ -181,26 +181,53 @@ case 'pending_orders':
 case 'dispatch_time':
 	$js_files[]='js/splinter_dispatch_time.js';
 	$template='splinter_dispatch_time.tpl';
+	$parent='store';
+	$parent_key=1;
 
-
-$parent='store';
-$parent_key=1;
-
-if($parent=='store'){
-include_once('class.Store.php');
-	$scope= new Store($parent_key);
+	if ($parent=='store') {
+		include_once 'class.Store.php';
+		$scope= new Store($parent_key);
 		$smarty->assign('scope',$scope);
-}elseif($parent=='warehouse'){
-include_once('class.Warehouse.php');
-	$scope= new Warehouse($parent_key);
+	}elseif ($parent=='warehouse') {
+		include_once 'class.Warehouse.php';
+		$scope= new Warehouse($parent_key);
 		$smarty->assign('scope',$scope);
-}else{
-exit;
-}
-
-
+	}else {
+		exit;
+	}
 	break;
+case 'average_order_value':
+	$js_files[]='js/splinter_average_order_value.js';
+	$template='splinter_average_order_value.tpl';
+	$parent='store';
+	$parent_key=1;
 
+	
+		include_once 'class.Store.php';
+		$scope= new Store($parent_key);
+		$smarty->assign('scope',$scope);
+		$corporation_data=get_corporation_data();
+
+$currency=$corporation_data['HQ Currency'];
+
+$sql=sprintf("select count(*) as orders, avg(`Order Total Net Amount`*`Order Currency Exchange`) as net from `Order Dimension` where `Order Current Dispatch State`='Dispatched'");
+$res=mysql_query($sql);
+
+
+$average_order_value=_('ND');
+$samples=0;
+
+if($row=mysql_fetch_assoc($res)){
+$average_order_value=money($row['net'],$currency);
+$samples=$row['orders'];
+
+}
+$smarty->assign('average_order_value',$average_order_value);
+$smarty->assign('store_title',$scope->data['Store Code']);
+		
+		
+	
+	break;
 default:
 	exit;
 	break;
