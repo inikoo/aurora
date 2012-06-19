@@ -449,7 +449,7 @@ class SendEmail extends DB_Table {
 			'Email Send Subject'=>$data['subject'],
 			'Email Promotion Name'=>$data['promotion_name'],
 			'Email Placeholders'=>$data['email_placeholders'],
-			'Madmimi Auto Subscribe'->false	
+			'Madmimi Auto Subscribe'=>false	
 			
 			/*
 			'Email Promotion Date_1'=>$data['promotion_date1'],
