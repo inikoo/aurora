@@ -629,10 +629,6 @@ function init(){
   YAHOO.util.Event.addListener("cancel", "click",cancel );
    YAHOO.util.Event.addListener("send", "click",create_delivery_note );
    YAHOO.util.Event.addListener("save_refund", "click",create_refund );
-
-
-
-
 }
 
 
