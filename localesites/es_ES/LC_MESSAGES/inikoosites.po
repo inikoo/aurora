@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-05-17 12:43+0100\n"
-"PO-Revision-Date: 2012-05-20 12:32+0100\n"
+"PO-Revision-Date: 2012-06-19 11:19+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1931,7 +1931,7 @@ msgstr "Precio desde"
 
 #: class.Page.php:2236
 msgid "Basket & Checkout"
-msgstr ""
+msgstr "Ver Carrito"
 
 #: class.Page.php:2244
 msgid "Log Out"

@@ -234,9 +234,13 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 				//print_r($message_data);
 
-	$message_data['email_placeholders']=array('greetings' => $greetings);
+				$message_data['email_placeholders']=array('greetings' => $greetings);
 
-	$message_data['promotion_name']='Welcome Email';
+				$message_data['promotion_name']='Welcome Email';
+
+				if($site->data['Site Direct Subscribe Madmimi']){
+				$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi']
+				}
 
 				$send_email=new SendEmail();
 
@@ -388,8 +392,8 @@ function send_reset_password($data,$CKEY) {
 		$message_data['plain']=null;
 
 	$message_data['email_placeholders']=array(
-			'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Password').'</a>', 'masterkey_link'=>$masterkey_link
-			);
+		'greetings' => $greetings, 'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Password').'</a>', 'masterkey_link'=>$masterkey_link
+	);
 
 	$message_data['promotion_name']='Forgot Password';
 
@@ -453,7 +457,7 @@ function check_email($data) {
 function register($data,$CKEY) {
 
 
-/*
+	/*
 	include_once 'external_libs/securimage/securimage.php';
 	$securimage = new Securimage();
 	if ($securimage->check($data['values']['captcha_code']) == false) {
@@ -518,12 +522,12 @@ function register($data,$CKEY) {
 
 			$_SESSION['user_key']=$user_key;
 			$_SESSION['customer_key']=$response['customer_key'];
-			
+
 			$auth=new Auth();
 			$auth->use_key=$user_key;
 			$auth->create_user_log();
 			$_SESSION['user_log_key']=$auth->user_log_key;
-		//	print_r($_SESSION);
+			// print_r($_SESSION);
 			$response=array('state'=>200,'result'=>'logged_in');
 			echo json_encode($response);
 			exit;

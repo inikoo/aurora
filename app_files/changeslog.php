@@ -5765,5 +5765,7 @@ INSERT INTO `dw`.`Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`
 INSERT INTO `dw`.`Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`, `Widget Metadata`) VALUES (NULL, 'Average Order Value', 'block_1', NULL, 'dashboard_block.php?tipo=average_order_value', '', '');
 DROP TABLE `Order Post Transaction In Process Dimension` ;
 
+ALTER TABLE `Site Dimension` ADD `Site Direct Subscribe Madmimi` VARCHAR( 256 ) NULL DEFAULT NULL;
+
 
 

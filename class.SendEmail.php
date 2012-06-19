@@ -359,9 +359,14 @@ class SendEmail extends DB_Table {
 
 			//print_r($body_array);
 			$mailer = new MadMimi($username, $api_key);
-			
-			
 			$response = $mailer->SendMessage($options, $body_array, false);
+
+			if($this->email_send_data['Madmimi Auto Subscribe']){
+			$response_add_membership= $mailer->AddMembership($to,$this->email_send_data['Madmimi Auto Subscribe']);	
+			
+			}
+
+
 			//print_r($response);//exit;
 			if (is_numeric($response)) {
 				$response=  array('state'=>200,'msg'=>'Your Email has been sent!');
@@ -443,7 +448,9 @@ class SendEmail extends DB_Table {
 			'Email Send Plain'=>$data['plain'],
 			'Email Send Subject'=>$data['subject'],
 			'Email Promotion Name'=>$data['promotion_name'],
-			'Email Placeholders'=>$data['email_placeholders']
+			'Email Placeholders'=>$data['email_placeholders'],
+			'Madmimi Auto Subscribe'->false	
+			
 			/*
 			'Email Promotion Date_1'=>$data['promotion_date1'],
 			'Email Promotion Date_2'=>$data['promotion_date2'],
@@ -452,7 +459,9 @@ class SendEmail extends DB_Table {
 			*/
 		);
 
-
+			if(array_key_exists('madmimi_auto_subscribe', $data)){
+				$this->email_send_data['Madmimi Auto Subscribe']=$data['madmimi_auto_subscribe'];
+			}
 
 		//print_r($this->email_send_data);exit;
 
