@@ -1164,7 +1164,7 @@ class DeliveryNote extends DB_Table {
 
 		while ($row=mysql_fetch_assoc($res)) {
 			
-			//print_r($row);
+			print_r($row);
 			
 			$this->create_inventory_transaction_fact_item(
 				$row['Product Key'],

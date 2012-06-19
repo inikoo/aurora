@@ -331,7 +331,7 @@ dialog_sending_to_warehouse.show();
 					'POST',
 					ar_file, {
 					    success:function(o) {
-									alert(o.responseText);
+						//alert(o.responseText);
 
 						//return;
 						var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -378,12 +378,12 @@ if(percentage=='')percentage=0;
 var ar_file='ar_edit_orders.php'; 
     	var request='tipo=update_percentage_discount&order_transaction_key='+Dom.get('change_discount_transaction_key').value+'&percentage='+percentage+'&order_key='+Dom.get('order_key').value;
 
-alert(request);
+//alert(request);
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
+					//	alert(o.responseText);
 					
 					
 						
@@ -545,6 +545,8 @@ function show_only_ordered_products(){
    var datasource=tables['dataSource0'];
    var request='&display=ordered_products';
     Dom.get('products_display_type').value='ordered_products';
+hide_filter('',0)
+
 
    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
@@ -558,7 +560,7 @@ function show_all_products(){
    var request='&display=all_products';
   Dom.get('products_display_type').value='all_products';
   
-  
+  hide_filter('',0)
   
    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
@@ -581,7 +583,15 @@ Dom.setStyle('edit_button_'+data.name,'visibility','hidden')
 
 function show_dialog_import_transactions_mals_e(){
 Dom.get('transactions_mals_e').value='';
+
+region1 = Dom.getRegion('import_transactions_mals_e'); 
+    region2 = Dom.getRegion('dialog_import_transactions_mals_e'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_import_transactions_mals_e', pos);
+
 dialog_import_transactions_mals_e.show();
+
+
 }
 
 function save_import_transactions_mals_e(){
@@ -600,7 +610,7 @@ var ar_file='ar_edit_orders.php';
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
+						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						window.location.reload();
@@ -661,7 +671,7 @@ var myonCellClick = function(oArgs) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    alert(o.responseText);
+					   // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
@@ -942,7 +952,7 @@ dialog_sending_to_warehouse.render();
 Event.addListener("change_discount_save", "click", save_change_discount);
 Event.addListener("change_discount_cancel", "click", cancel_change_discount);
 
-dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {context:["import_transactions_mals_e","tl","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_import_transactions_mals_e = new YAHOO.widget.Dialog("dialog_import_transactions_mals_e", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_import_transactions_mals_e.render();
 Event.addListener("import_transactions_mals_e", "click", show_dialog_import_transactions_mals_e,true);
 

@@ -24,10 +24,10 @@
 
 <div  id="title" class="title" style="height:22px">
 <img id="configuration" style="display:none;cursor:pointer;position:relative;top:3px;float:right" src="art/icons/cog.png"/>
-<h1 style="padding:3px 0px ;font-size:90%">{t}Pending Orders{/t}: <span  id="stores_title">{$store_title}</span></h1>
+<h1 style="padding:3px 0px ;font-size:90%">{t}Average Order Value{/t}: <span  id="stores_title">{$store_title}</span></h1>
 
 </div>
-<div style="margin-top:5px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;width:100px">
+<div style="margin-top:5px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;">
 	{$average_order_value}
 </div>
 <div style="margin-top:5px;margin-left:10px;float:left;border:1px solid #ccc;padding:20px;font-size:40px;font-weight:800;width:100px;display:none">

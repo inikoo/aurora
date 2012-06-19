@@ -382,7 +382,7 @@ function send_to_warehouse($order_key) {
 
 
 
-
+$order->authorize_all();
 
 	$order->send_to_warehouse();
 	if (!$order->error) {
@@ -1108,7 +1108,7 @@ function transactions_to_process() {
 			'pid'=>$row['Product ID'],
 			'otf_key'=>$row['Order Transaction Fact Key'],//($display=='ordered_products'?$row['Order Transaction Fact Key']:0),
 			'code'=>$code,
-			'description'=>$row['Product XHTML Short Description'].$deal_info,
+			'description'=>$row['Product XHTML Short Description'].' <span style="color:#777">['.$stock.']</span> '.$deal_info,
 			'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case'],$store->data['Store Currency Code']).' '._('ea'),
 			'family'=>$row['Product Family Name'],
 			'dept'=>$row['Product Main Department Name'],
@@ -2455,6 +2455,12 @@ function cancel_post_transactions_in_process($data) {
 		echo json_encode($response);
 
 	}
+
+}
+
+
+function save_credits($data){
+
 
 }
 

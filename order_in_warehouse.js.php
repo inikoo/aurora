@@ -95,7 +95,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginator = mydoBeforePaginatorChange;
-	  	    
+	  	
+	  	
+	  			this.table0.table_id=tableid;
+     	this.table0.subscribe("renderEvent", myrenderEvent);
+
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['products']['f_field']?>',value:''};
     
     };

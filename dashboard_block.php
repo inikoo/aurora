@@ -210,7 +210,9 @@ case 'average_order_value':
 
 $currency=$corporation_data['HQ Currency'];
 
-$sql=sprintf("select count(*) as orders, avg(`Order Total Net Amount`*`Order Currency Exchange`) as net from `Order Dimension` where `Order Current Dispatch State`='Dispatched'");
+
+$from=date("Y-m-d H:i:s",strtotime("now -30 days"));
+$sql=sprintf("select count(*) as orders, avg(`Order Total Net Amount`*`Order Currency Exchange`) as net from `Order Dimension` where `Order Current Dispatch State`='Dispatched' and `Order Date`>%s ",prepare_mysql($from));
 $res=mysql_query($sql);
 
 

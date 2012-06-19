@@ -2,8 +2,15 @@
 <div id="bd">
 <input type="hidden" id="dn_key" value="{$dn->id}" />
 
+<div  class="branch"> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  
+		{if $user->get_number_stores()>1}<a href="orders_server.php?view=dns">&#8704; {t}Delivery Notes{/t}</a> &rarr; {/if}
+		<a href="orders.php?store={$store->id}&view=dns">{t}Delivery Notes{/t} ({$store->get('Store Code')})</a> &rarr;
+		{$dn->get('Delivery Note ID')}</span> 
+	</div>
+
 	<div class="buttons">
-		<button onclick="window.location='delivery_notes.pdf.php?id={$dn->id}'">PDF Delivery Note</button> 
+		<button onclick="window.location='dn.pdf.php?id={$dn->id}'">PDF Delivery Note</button> 
 	</div>
 	<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
 		<div style="border:0px solid #ddd;width:350px;float:left">
@@ -78,7 +85,7 @@
 
 
 </div>
-{if $items_out_of_stock} 
+{if isset($items_out_of_stock) and $items_out_of_stock} 
 <div style="clear:both;margin:30px 0">
 	<h2>
 		{t}Items Out of Stock{/t}
