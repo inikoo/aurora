@@ -2284,7 +2284,7 @@ function list_delivery_notes() {
 
 
 	if ($order=='date' or $order=='')
-		$order='`Delivery Note Date`';
+		$order='`Delivery Note Date Created`';
 	else if ($order=='id')
 			$order='`Delivery Note File As`';
 		else if ($order=='customer')
@@ -2331,13 +2331,19 @@ function list_delivery_notes() {
 				else {
 					$parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type;
 				}
-				if ($row['Delivery Note State']=='Dispatched')
-					$date=strftime("%e %b %y", strtotime($row['Delivery Note Date']));
-				else
+				
+				
+				//if ($row['Delivery Note State']=='Dispatched')
+				//	$date=strftime("%e %b %y", strtotime($row['Delivery Note Date']));
+				//else
 					$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
+				
+				
+				
+				
 				$data[]=array(
 					'id'=>$order_id
-					,'customer'=>$customer
+					,'customer'=>$customer.' '.$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
 					,'date'=>$date
 					,'type'=>$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
 					,'orders'=>$row['Delivery Note XHTML Orders']

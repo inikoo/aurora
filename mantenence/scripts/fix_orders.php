@@ -7,6 +7,8 @@ include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
+include_once('../../class.Order.php');
+
 include_once('../../class.SupplierProduct.php');
 error_reporting(E_ALL);
 
@@ -28,6 +30,16 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('UTC');
+$sql="select `Order Key` from `Order Dimension`   ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+$order=new Order($row['Order Key']);
+$order->update_xhtml_invoices();
+$order->update_xhtml_delivery_notes();
+ }
+
+
+exit;
 
 $sql="select replace(`Invoice Metadata`,'U','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=1  ";
 $result=mysql_query($sql);

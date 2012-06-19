@@ -75,14 +75,12 @@
 					<td class="aright">{t}Items Net{/t}</td>
 					<td width="100" class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td>
 				</tr>
-				<tr {if $order->
-					get('Order Net Credited Amount')==0}style="display:none"{/if}> 
+				<tr {if $order->get('Order Net Credited Amount')==0}style="display:none"{/if}> 
 					<td class="aright">{t}Credits{/t}</td>
 					<td width="100" class="aright" id="order_credits">{$order->get('Net Credited Amount')}</td>
 				</tr>
 				<tr id="tr_order_items_charges">
 					<td class="aright"><img style="visibility:hidden;cursor:pointer" src="art/icons/edit.gif" id="edit_button_items_charges" /> {t}Charges{/t}</td>
-
 					<td id="order_charges" width="100" class="aright">{$order->get('Charges Net Amount')}</td>
 				</tr>
 				<tr id="tr_order_shipping">
@@ -200,7 +198,10 @@
 			<td style="padding-top:10px"> <textarea style="width:100%" id="transactions_mals_e"></textarea> </td>
 		</tr>
 		<tr>
-			<td style="padding-top:10px"> <button style="cursor:pointer" id="save_import_transactions_mals_e">{t}Import{/t}</button> </td>
+			<td style="padding-top:10px">
+			<div class="buttons">
+			<button id="save_import_transactions_mals_e">{t}Import{/t}</button> 
+			</td>
 		</tr>
 	</table>
 </div>

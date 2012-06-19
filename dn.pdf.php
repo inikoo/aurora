@@ -4,7 +4,7 @@
 require_once('common.php');
 require_once('class.Store.php');
 
-require_once('class.Invoice.php');
+require_once('class.DeliveryNote.php');
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
@@ -296,9 +296,9 @@ $pdf->writeHTML($html, true, false, true, false, '');
 // Set some content to print
 $pdf->ln(3);
 $columns=array(
-             array('w'=>30,'txt'=>_('Part SKU'),'border'=>'TB','align'=>'L'),
-             array('w'=>70,'txt'=>_('Used In'),'border'=>'TB','align'=>'L'),
-             array('w'=>70,'txt'=>_('Description'),'border'=>'TB','align'=>'R'),
+             array('w'=>20,'txt'=>_('Part SKU'),'border'=>'TB','align'=>'L'),
+             array('w'=>30,'txt'=>_('Code'),'border'=>'TB','align'=>'L'),
+             array('w'=>120,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
              array('w'=>20,'txt'=>_('Qty'),'border'=>'TB','align'=>'R')
          );
 
@@ -307,7 +307,7 @@ $pdf->MultiRow($columns);
 
 
 
-$sql=sprintf("select `Required`,`Part Unit Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d", $dn->id);
+$sql=sprintf("select `Required`,`Product Code`,`Part Unit Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Order Transaction Fact`  on (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`)  where ITF.`Delivery Note Key`=%d", $dn->id);
 //print $sql;exit;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -316,9 +316,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
     //$sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
-                 array('w'=>30,'txt'=>'SKU'.$row['Part SKU'],'border'=>'T','align'=>'L'),
-                 array('w'=>70,'txt'=>strip_tags($row['Part XHTML Currently Used In']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>70,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>'SKU'.$row['Part SKU'],'border'=>'T','align'=>'L'),
+                 array('w'=>30,'txt'=>strip_tags($row['Product Code']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>120,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>'T','align'=>'L'),
                  array('w'=>20,'txt'=>$row['Required'],'border'=>'T','align'=>'R')
 
 
