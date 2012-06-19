@@ -2343,7 +2343,7 @@ function list_delivery_notes() {
 				
 				$data[]=array(
 					'id'=>$order_id
-					,'customer'=>$customer.' '.$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
+					,'customer'=>$customer.' '.$type.($row['Delivery Note XHTML Orders']?', <span style="color:#ccc">('.$row['Delivery Note XHTML Orders'].')</span>':'')
 					,'date'=>$date
 					,'type'=>$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
 					,'orders'=>$row['Delivery Note XHTML Orders']
