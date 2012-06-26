@@ -1,6 +1,5 @@
- 
 <div id="assign_picker_dialog" style="width:360px;padding:10px 20px 10px 10px">
-	<div class="options" style="width:300px;padding:10px;text-align:center">
+	<div class="options" style="width:350px;padding:10px;text-align:center">
 		<table border="0" style="margin:auto" id="assign_picker_buttons">
 			{foreach from=$pickers item=picker_row name=foo} 
 			<tr>
@@ -17,19 +16,85 @@
 		<tr class="first">
 			<td class="label">{t}Staff Name{/t}:</td>
 			<td style="text-align:left"> 
-			<div style="width:190px;position:relative;top:00px">
+			<div style="width:x190px;position:relative;top:00px">
 				<input style="text-align:left;width:180px" id="Assign_Picker_Staff_Name" value="" ovalue="" valid="0"> 
 				<div id="Assign_Picker_Staff_Name_Container">
 				</div>
 			</div>
 			</td>
-			<td class="assign_picker_button" td_id="other_staff_picker" onclick="show_other_staff(this)">{t}Other{/t}</td>
-			<td id="Assign_Picker_Staff_Name_msg" class="edit_td_alert"></td>
+			<td class="assign_picker_button"  >
+			<div class="buttons small">
+			<button onclick="show_other_staff(this)"  td_id="other_staff_picker" >{t}Other{/t}</button>
+			</div>
+			</td>
+			
 		</tr>
-		<tr>
-			<td>{t}Supervisor PIN{/t}:</td>
+		
+		<tr style="{if $user->can_edit('assign_pp')}display:none{/if}">
+			<td class="label">{t}Supervisor PIN{/t}:</td>
 			<td>
 			<input id="assign_picker_sup_password" type="password" />
+			</td>
+		</tr>
+		
+		
+	<tr>
+	<td></td>
+	<td colspan=2 id="pick_it_msg"  class="edit_td_alert"></td>
+	</tr>
+	
+	</table>
+	<table class="edit" style="margin-top:0px;float:right">
+		<tr>
+			<td colspan="2"> 
+			<div class="buttons">
+			<button class="positive" onclick="assign_picker_save()">{t}Go{/t}</button>
+				<button class="negative" onclick="close_dialog('assign_picker_dialog')">{t}Cancel{/t}</button>  
+			</div>
+			<td>
+		</tr>
+	</table>
+</div>
+
+
+<div id="assign_packer_dialog" style="width:360px;">
+	<div class="options" style="width:350px;padding:10px;text-align:center">
+		<table border="0" style="margin:auto" id="assign_packer_buttons">
+			{foreach from=$packers item=packer_row name=foo} 
+			<tr>
+				{foreach from=$packer_row key=row_key item=packer } 
+				<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" class="assign_packer_button" onclick="select_staff_assign_packer(this,event)">{$packer.StaffAlias}</td>
+				{/foreach} 
+			</tr>
+			{/foreach} 
+		</table>
+	</div>
+	<table class="edit">
+		<input type="hidden" id="assign_packer_staff_key"> 
+		<input type="hidden" id="assign_packer_dn_key"> 
+		<tr class="first">
+			<td class="label">{t}Staff Name{/t}:</td>
+			<td style="text-align:left"> 
+			<div style="width:190px;position:relative;top:00px">
+				<input style="text-align:left;width:180px" id="Assign_Packer_Staff_Name" value="" ovalue="" valid="0"> 
+				<div id="Assign_Packer_Staff_Name_Container">
+				</div>
+			</div>
+			</td>
+			
+			<td class="assign_packer_button"  >
+			<div class="buttons small">
+			<button onclick="show_other_staff(this)"  td_id="other_staff_packer" >{t}Other{/t}</button>
+			</div>
+			</td>
+			
+			
+			<td id="Assign_Packer_Staff_Name_msg" class="edit_td_alert"></td>
+		</tr>
+			<tr style="{if $user->can_edit('assign_pp')}display:none{/if}">
+			<td>{t}Supervisor PIN{/t}:</td>
+			<td>
+			<input id="assign_packer_sup_password" type="password" />
 			</td>
 		</tr>
 	</table>
@@ -37,12 +102,16 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
-				<button class="negative" onclick="close_dialog('assign_picker_dialog')">{t}Cancel{/t}</button> <button class="positive" onclick="assign_picker_save()">{t}Go{/t}</button> 
+			<button class="positive" onclick="assign_packer_save()">{t}Go{/t}</button> 
+				<button class="negative" onclick="close_dialog('assign_packer_dialog')">{t}Cancel{/t}</button> 
 			</div>
 			<td>
 		</tr>
 	</table>
 </div>
+
+
+
 <div id="pick_it_dialog" style="width:390px;padding:10px 20px 10px 10px">
 	<div class="options" style="width:100%;padding:10px;text-align:center">
 		<table border="0" style="margin:auto;padding:0 10px" id="pick_it_buttons">
@@ -119,50 +188,7 @@
 		</tr>
 	</table>
 </div>
-<div id="assign_packer_dialog" style="width:300px;">
-	<div class="options" style="width:300px;padding:10px;text-align:center">
-		<table border="0" style="margin:auto" id="assign_packer_buttons">
-			{foreach from=$packers item=packer_row name=foo} 
-			<tr>
-				{foreach from=$packer_row key=row_key item=packer } 
-				<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" class="assign_packer_button" onclick="select_staff_assign_packer(this,event)">{$packer.StaffAlias}</td>
-				{/foreach} 
-			</tr>
-			{/foreach} 
-		</table>
-	</div>
-	<table class="edit">
-		<input type="hidden" id="assign_packer_staff_key"> 
-		<input type="hidden" id="assign_packer_dn_key"> 
-		<tr class="first">
-			<td class="label">{t}Staff Name{/t}:</td>
-			<td style="text-align:left"> 
-			<div style="width:190px;position:relative;top:00px">
-				<input style="text-align:left;width:180px" id="Assign_packer_Staff_Name" value="" ovalue="" valid="0"> 
-				<div id="Assign_packer_Staff_Name_Container">
-				</div>
-			</div>
-			</td>
-			<td class="assign_packer_button" td_id="other_staff_picker" onclick="show_other_staff(this)">{t}Other{/t}</td>
-			<td id="Assign_packer_Staff_Name_msg" class="edit_td_alert"></td>
-		</tr>
-		<tr>
-			<td>{t}Supervisor PIN{/t}:</td>
-			<td>
-			<input id="assign_packer_sup_password" type="password" />
-			</td>
-		</tr>
-	</table>
-	<table class="edit" style="margin-top:10px;float:right">
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<button class="negative" onclick="close_dialog('assign_packer_dialog')">{t}Cancel{/t}</button> <button class="positive" onclick="assign_packer_save()">{t}Go{/t}</button> 
-			</div>
-			<td>
-		</tr>
-	</table>
-</div>
+
 <div id="pack_it_dialog" style="width:300px;">
 	<div class="options" style="width:300px;padding:10px;text-align:center">
 		<table border="0" style="margin:auto" id="pack_it_buttons">
@@ -201,7 +227,8 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
-				<button class="negative" onclick="close_dialog('pack_it_dialog')">{t}Cancel{/t}</button> <button class="positive" onclick="pack_it_save()">{t}Go{/t}</button> 
+			<button class="positive" onclick="pack_it_save()">{t}Go{/t}</button>  
+				<button class="negative" onclick="close_dialog('pack_it_dialog')">{t}Cancel{/t}</button> 
 			</div>
 			<td>
 		</tr>
@@ -222,7 +249,9 @@
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
-				<button class="negative" onclick="close_dialog('pack_assigned_dialog')">{t}Cancel{/t}</button> <button class="positive" onclick="pack_assigned_save()">{t}Go{/t}</button> 
+				<button class="positive" onclick="pack_assigned_save()">{t}Go{/t}</button> 
+								<button class="negative" onclick="close_dialog('pack_assigned_dialog')">{t}Cancel{/t}</button> 
+
 			</div>
 			<td>
 		</tr>

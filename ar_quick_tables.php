@@ -2019,7 +2019,7 @@ function active_staff_list(){
     }
 
 
-    $rtext=$total_records." ".ngettext('`Staff Member','`Staff Members',$total_records);
+    $rtext=$total_records." ".ngettext('Staff Member','Staff Members',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else

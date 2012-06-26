@@ -17,9 +17,19 @@
 
 
 			<button style="height:24px;" onclick="window.location='dn.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
-			<button style="height:24px;{if   $warehouse->get('Warehouse Picking Aid Type')!='Inikoo'}display:none{/if}"  class="{if !$dn->get('Delivery Note Assigned Packer Key')}disabled{/if}" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Packing{/t}</button> 
-			<button style="height:24px;{if  $warehouse->get('Warehouse Picking Aid Type')!='Inikoo'}display:none{/if}" id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Picking{/t}</button> 
+			{if $dn->get('Delivery Note Approved Done')=='No'}
+			
+			<button style="height:24px;"   class="{if !$dn->get('Delivery Note Assigned Packer Key')}disabled{/if}" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Packing{/t}</button> 
+			{if !$dn->get('Delivery Note Assigned Picker Key')}
+			<button style="height:24px;"   id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Start Picking{/t}</button> 
+			{else}
+			<button style="height:24px;"   onCLick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
+			{/if}
+			{else}
+						<button style="height:24px;"    id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
 
+			
+			{/if}
 		</div>
 		<div class="buttons" style="float:left">
 			{if isset($referal) and $referal=='store_pending_orders'} <button onclick="window.location='$referal_url'"><img src="art/icons/text_list_bullets.png" alt=""> {t}Pending Orders (Store){/t}</button> {else} <button onclick="window.location='warehouse_orders.php?id={$dn->get('Delivery Note Warehouse Key')}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if}  
@@ -92,12 +102,8 @@
 
 
 </div>
-</div>
-</div>
-</div>
-{include file='footer.tpl'} 
 
-<div id="dialog_pick_it" style="padding:20px 20px 10px 20px ">
+<div id="dialog_pick_it" style="padding:20px 20px 10px 20px">
   <div id="pick_it_msg"></div>
   
   <div class="buttons">
@@ -109,7 +115,7 @@
 
 </div>
 
-<div id="dialog_pack_it" style="padding:20px 20px 10px 20px ">
+<div id="dialog_pack_it" style="padding:20px 20px 10px 20px">
   <div id="pack_it_msg"></div>
   
   <div class="buttons">
@@ -122,3 +128,6 @@
 </div>
 
 {include file='assign_picker_packer_splinter.tpl'}
+
+{include file='footer.tpl'} 
+

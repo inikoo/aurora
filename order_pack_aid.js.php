@@ -404,6 +404,7 @@ function set_pending_as_packed(){
     request, {
 		success: function (o) {
 var r =  YAHOO.lang.JSON.parse(o.responseText);
+
             if (r.state == 200) {
      window.location='order_pack_aid.php?id='+Dom.get('dn_key').value;
 
@@ -423,12 +424,12 @@ scope:this
 function set_as_done(){
 ar_file='ar_edit_orders.php';
    	request=ar_file+'?tipo=set_delivery_note_as_packed&dn_key='+Dom.get('dn_key').value;
-   alert(request)
+   //alert(request)
    YAHOO.util.Connect.asyncRequest(
         'GET',
     request, {
 		success: function (o) {
-		alert(o.responseText)
+		//alert(o.responseText)
 var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
      				window.location='dn.php?id='+Dom.get('dn_key').value;

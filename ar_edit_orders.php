@@ -29,7 +29,7 @@ case('update_percentage_discount'):
 
 case('set_delivery_note_as_packed'):
 	$data=prepare_values($_REQUEST,array(
-			'order_key'=>array('type'=>'key'),
+			'dn_key'=>array('type'=>'key'),
 
 		));
 	set_delivery_note_as_packed($data);
@@ -81,15 +81,38 @@ case('delete_dn_list'):
 		));
 	delete_dn_list($data);
 	break;
+case('pay_invoice'):
+	if (!$user->can_view('orders'))
+		exit();
+
+	$data=prepare_values($_REQUEST,array(
+		
+			'invoice_key'=>array('type'=>'key'),
+			'reference'=>array('type'=>'string'),
+						'pay_amount'=>array('type'=>'numeric'),
+
+						'method'=>array('type'=>'enum','valid values regex'=>'/pay_by_creditcard|pay_by_bank_transfer|pay_by_paypal|pay_by_cash|pay_by_cheque|pay_by_other/i'
+
+		
+			)
+		));
+
+
+	pay_invoice($data);
+	break;
+	
+	
 case('new_list'):
 	if (!$user->can_view('orders'))
 		exit();
+		
+
 
 	$data=prepare_values($_REQUEST,array(
 			'awhere'=>array('type'=>'json array'),
 			'store_id'=>array('type'=>'key'),
 			'list_name'=>array('type'=>'string'),
-			'list_type'=>array('type'=>'enum',
+				'list_type'=>array('type'=>'enum',
 				'valid values regex'=>'/static|Dynamic/i'
 			)
 		));
@@ -202,7 +225,7 @@ case('picking_aid_sheet'):
 	break;
 case('get_locations'):
 
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 
 			'part_sku'=>array('type'=>'key')
 		));
@@ -213,17 +236,35 @@ case('packing_aid_sheet'):
 	packing_aid_sheet();
 	break;
 case('create_invoice'):
-	create_invoice();
+
+	$data=prepare_values($_REQUEST,array(
+			'dn_key'=>array('type'=>'key'),
+
+		));
+
+	create_invoice($data);
 	break;
 case('assign_picker'):
-	if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
+
+
+	if ($_REQUEST['staff_key']=='') {
 		$response=array(
 			'state'=>400,
-			'msg'=>'Required fields missing'
+			'msg'=>_('Please select a picker')
 		);
 		echo json_encode($response);
 		exit;
 	}
+	if ($_REQUEST['pin']=='' and !$user->can_edit('assign_pp')) {
+		$response=array(
+			'state'=>400,
+			'msg'=>_('Please provide the supervisor PIN')
+		);
+		echo json_encode($response);
+		exit;
+	}
+
+
 	$data=prepare_values($_REQUEST,array(
 			'dn_key'=>array('type'=>'key'),
 			'pin'=>array('type'=>'string'),
@@ -232,6 +273,37 @@ case('assign_picker'):
 
 	assign_picker($data);
 	break;
+case('assign_packer'):
+
+
+	if ($_REQUEST['staff_key']=='') {
+		$response=array(
+			'state'=>400,
+			'msg'=>_('Please select a packer')
+		);
+		echo json_encode($response);
+		exit;
+	}
+	if ($_REQUEST['pin']=='' and !$user->can_edit('assign_pp')) {
+		$response=array(
+			'state'=>400,
+			'msg'=>_('Please provide the supervisor PIN')
+		);
+		echo json_encode($response);
+		exit;
+	}
+
+
+	$data=prepare_values($_REQUEST,array(
+			'dn_key'=>array('type'=>'key'),
+			'pin'=>array('type'=>'string'),
+			'staff_key'=>array('type'=>'key')
+		));
+
+	assign_packer($data);
+	break;
+
+
 case('pick_it'):
 
 	if ($_REQUEST['staff_key']=='' || $_REQUEST['pin']=='') {
@@ -286,6 +358,8 @@ case('send_to_warehouse'):
 		$order_key=$_SESSION['state']['order']['id'];
 	send_to_warehouse($order_key);
 	break;
+
+
 case('edit_new_order'):
 	edit_new_order();
 	break;
@@ -382,7 +456,7 @@ function send_to_warehouse($order_key) {
 
 
 
-$order->authorize_all();
+	$order->authorize_all();
 
 	$order->send_to_warehouse();
 	if (!$order->error) {
@@ -625,23 +699,23 @@ function edit_new_order() {
 	if (is_numeric($quantity) and $quantity>=0) {
 
 
-	
 
-		
+
+
 
 		$order=new Order($order_key);
-		
-		
-			if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
-		$dispatching_state='Ready to Pick';
-		}else{
-		
-		$dispatching_state='In Process';
+
+
+		if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
+			$dispatching_state='Ready to Pick';
+		}else {
+
+			$dispatching_state='In Process';
 		}
-		
+
 		$payment_state='Waiting Payment';
-		
-		
+
+
 		$product=new Product('pid',$product_pid);
 		$data=array(
 			'date'=>date('Y-m-d H:i:s'),
@@ -891,7 +965,7 @@ function transactions_to_process() {
 		$table=' `Product Dimension` P ';
 		$where=sprintf('where `Product Store Key`=%d  and `Product Record Type`="Normal"    and `Product Main Type` in ("Private","Sale") ',$store_key);
 		$sql_qty=sprintf(',(select `Order Transaction Fact Key` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Order Transaction Fact Key`,IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info`,(select `Current Dispatching State` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Current Dispatching State`,(select `Picking Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Picking Factor`,(select `Packing Factor` from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d limit 1) as `Packing Factor` ',
-		$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
+			$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id,$order_id);
 	} else if ($display=='ordered_products') {
 			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
 			$where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
@@ -1915,7 +1989,7 @@ function ready_to_pick_orders() {
 			'operations'=>$operations,
 			'status'=>$row['Delivery Note XHTML State'],
 			'see_link'=>$see_link
-			
+
 		);
 	}
 	mysql_free_result($res);
@@ -1941,6 +2015,7 @@ function ready_to_pick_orders() {
 }
 
 function assign_picker($data) {
+	global $user;
 
 	$dn=new DeliveryNote($data['dn_key']);
 	if (!$dn->id) {
@@ -1952,24 +2027,32 @@ function assign_picker($data) {
 		exit;
 	}
 
+	$autorized=false;
+	if (!$user->can_edit('assign_pp')) {
+		$sql=sprintf("select count(*) as cnt from `Staff Dimension` where `Staff PIN`=%d and `Staff Is Supervisor`='Yes' and `Staff Currently Working`='Yes'", $data['pin']);
+		//print $sql;
+		$result=mysql_query($sql);
+		$row=mysql_fetch_assoc($result);
+		//print_r($row);exit;
+		if ($row['cnt'] > 0) {
+			$autorized=true;
+		}
 
-	$sql=sprintf("select count(*) as cnt from `Staff Dimension` where `Staff PIN`=%d and `Staff Is Supervisor`='Yes' and `Staff Currently Working`='Yes'", $data['pin']);
-	//print $sql;
-	$result=mysql_query($sql);
-	$row=mysql_fetch_assoc($result);
-	//print_r($row);exit;
-	if ($row['cnt'] > 0) {
-		$dn->assign_picker($data['staff_key']);
+	}else {
+		$autorized=true;
 	}
-	else {
+
+	if ($autorized) {
+		$dn->assign_picker($data['staff_key']);
+	}else {
 		$response=array(
 			'state'=>400,
-			'msg'=>'Wrong Supervisor PIN'
+			'msg'=>_('Wrong Supervisor PIN')
 		);
 		echo json_encode($response);
 		exit;
-
 	}
+
 
 
 
@@ -2005,6 +2088,82 @@ function assign_picker($data) {
 	echo json_encode($response);
 
 }
+
+function assign_packer($data) {
+	global $user;
+
+	$dn=new DeliveryNote($data['dn_key']);
+	if (!$dn->id) {
+		$response=array(
+			'state'=>400,
+			'msg'=>'Unknown Delivery Note'
+		);
+		echo json_encode($response);
+		exit;
+	}
+
+	$autorized=false;
+	if (!$user->can_edit('assign_pp')) {
+		$sql=sprintf("select count(*) as cnt from `Staff Dimension` where `Staff PIN`=%d and `Staff Is Supervisor`='Yes' and `Staff Currently Working`='Yes'", $data['pin']);
+		//print $sql;
+		$result=mysql_query($sql);
+		$row=mysql_fetch_assoc($result);
+		//print_r($row);exit;
+		if ($row['cnt'] > 0) {
+			$autorized=true;
+		}
+
+	}else {
+		$autorized=true;
+	}
+
+	if ($autorized) {
+		$dn->assign_packer($data['staff_key']);
+	}else {
+		$response=array(
+			'state'=>400,
+			'msg'=>_('Wrong Supervisor PIN')
+		);
+		echo json_encode($response);
+		exit;
+	}
+
+
+
+
+
+	if ($dn->assigned) {
+		$response=array(
+			'state'=>200,
+			'action'=>'updated',
+			'operations'=>$dn->operations,
+			'dn_state'=>$dn->dn_state,
+			'dn_key'=>$dn->id
+		);
+
+
+
+	} else if ($dn->error) {
+			$response=array(
+				'state'=>400,
+				'msg'=>$dn->msg
+			);
+
+
+
+		} else {
+		$response=array(
+			'state'=>200,
+			'action'=>'uncharged',
+
+		);
+
+
+	}
+	echo json_encode($response);
+
+}
+
 
 function start_picking($data) {
 
@@ -2171,7 +2330,7 @@ function set_picking_aid_sheet_pending_as_picked($data) {
 		$todo=$row['Required']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
 
 		if ($todo) {
-			$delivery_note->set_as_picked($row['Inventory Transaction Key'],round($todo,8),gmdate("Y-m-d H:i:s"),$row['Picker Key']);
+			$delivery_note->set_as_picked($row['Inventory Transaction Key'],round($todo,8),false,$row['Picker Key']);
 		}
 
 
@@ -2247,8 +2406,8 @@ function picking_aid_sheet() {
 	$total_discounts=0;
 	$total_picks=0;
 
-$order='`Location Code`';
-$order_dir='';
+	$order='`Location Code`';
+	$order_dir='';
 
 	$data=array();
 	$sql="select  Part.`Part Current On Hand Stock` as total_stock, PLD.`Quantity On Hand` as stock_in_picking,`Packed`,`Given`,`Location Code`,`Picking Note`,`Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part Unit Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`) left join  `Location Dimension` L on  (L.`Location Key`=ITF.`Location Key`) left join `Part Location Dimension` PLD on (ITF.`Location Key`=PLD.`Location Key` and ITF.`Part SKU`=PLD.`Part SKU`) $where order by  $order $order_dir  ";
@@ -2261,14 +2420,14 @@ $order_dir='';
 
 		if ($todo==0)
 			$formated_todo='';
-		else{
-			if($todo<0){
-			$formated_todo='<span style="font-weight:800;color:#FFFFFF;background:#EE0000;padding:0 4px">'.number($todo).'</span>';
-			}else{
-			$formated_todo=number($todo);
-}
+		else {
+			if ($todo<0) {
+				$formated_todo='<span style="font-weight:800;color:#FFFFFF;background:#EE0000;padding:0 4px">'.number($todo).'</span>';
+			}else {
+				$formated_todo=number($todo);
+			}
 
-}
+		}
 
 
 		$notes='';
@@ -2286,10 +2445,10 @@ $order_dir='';
 		}
 		//$notes=preg_replace('/^\,/', '', $notes);
 
-$stock_in_picking=$row['stock_in_picking'];
-$total_stock=$row['total_stock'];
+		$stock_in_picking=$row['stock_in_picking'];
+		$total_stock=$row['total_stock'];
 
-//print_r($row);exit;
+		//print_r($row);exit;
 		$sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
 		$_id=$row['Part SKU'];
 		$data[]=array(
@@ -2437,12 +2596,21 @@ function packing_aid_sheet() {
 	echo json_encode($response);
 }
 
-function create_invoice($dn_notes) {
-	$dn_notes=preg_split('/\,/',$dn_notes);
-	foreach ($dn_notes as $dn_key) {
-		$dn=new DeliveryNote($dn_key);
-		$invoice=$dn->create_invoice();
+function create_invoice($data) {
+
+	$dn_key=$data['dn_key'];
+	$dn=new DeliveryNote($dn_key);
+	$invoice=$dn->create_invoice();
+
+	if (!$dn->error and $invoice->id) {
+		$response=array('state'=>200,'invoice_key'=>$invoice->id);
+		echo json_encode($response);
+	} else {
+		$response=array('state'=>400,'msg'=>$dn->msg);
+		echo json_encode($response);
+
 	}
+
 }
 function cancel_post_transactions_in_process($data) {
 	$order=new Order($data['order_key']);
@@ -2459,7 +2627,7 @@ function cancel_post_transactions_in_process($data) {
 }
 
 
-function save_credits($data){
+function save_credits($data) {
 
 
 }
@@ -3236,6 +3404,48 @@ function update_order() {
 	echo json_encode($response);
 }
 
+function pay_invoice($data){
+
+$invoice=new Invoice($data['invoice_key']);
+
+
+
+switch($data['method']){
+case 'pay_by_creditcard':
+	$method='Credit Card';
+	break;
+case 'pay_by_bank_transfer':
+	$method='Bank Transfer';
+	break;
+case 'pay_by_paypal':
+	$method='Paypal Card';
+	break;
+case 'pay_by_cash':
+	$method='Cash';
+	break;
+case 'pay_by_cheque':
+	$method='Check';
+	break;
+default:
+$method='Other';	
+}
+
+$payment_data=array('amount'=>$data['pay_amount'],'Payment Method'=>$method);
+$invoice->pay('',$payment_data);
+
+if(!$invoice->error){
+	$response= array('state'=>200,'msg'=>'paid','invoice_key'=>$invoice->id);
+		echo json_encode($response);
+
+}else{
+	$response= array('state'=>400,'msg'=>$invoice->msg);
+		echo json_encode($response);
+}
+
+
+}
+
+
 function cc_payment($data) {
 	$data=$data['json_values'];
 	require_once 'paypal/DoDirectPayment.php';
@@ -3324,7 +3534,7 @@ function update_percentage_discount($data) {
 
 
 
-$discounts= (float) $order->data['Order Items Discount Amount'];
+	$discounts= (float) $order->data['Order Items Discount Amount'];
 	$response= array(
 		'state'=>200,
 		'quantity'=>$transaction_data['qty'],
@@ -3343,22 +3553,22 @@ $discounts= (float) $order->data['Order Items Discount Amount'];
 
 }
 
-function get_locations($data){
+function get_locations($data) {
 	//$part_sku=$_REQUEST['part_sku'];
 	//print $part_sku;
 
 	//$sql=sprintf("select * from `Part Location Dimension` where `Part SKU`=%d", $part_sku);
 	//print $sql;
 
-$part= new part('sku',$data['part_sku']);
-$user=$data['user'];
-$modify_stock=$user->can_edit('product stock');
+	$part= new part('sku',$data['part_sku']);
+	$user=$data['user'];
+	$modify_stock=$user->can_edit('product stock');
 
-$result='<table border="0" id="part_locations" class="show_info_product" style="width:260px;margin-top:10px">';
-foreach($part->get_locations(true) as $location){
-//print_r($location);
-$result.=sprintf('<tr id="part_location_tr_%s_%s">', $location['PartSKU'], $location['LocationKey']);
-$result.=sprintf('<td><a href="location.php?id=%s">%s </a> 
+	$result='<table border="0" id="part_locations" class="show_info_product" style="width:260px;margin-top:10px">';
+	foreach ($part->get_locations(true) as $location) {
+		//print_r($location);
+		$result.=sprintf('<tr id="part_location_tr_%s_%s">', $location['PartSKU'], $location['LocationKey']);
+		$result.=sprintf('<td><a href="location.php?id=%s">%s </a>
 						<img style="cursor:pointer;" sku_formated="%s" location="%s" id="part_location_can_pick_%s_%s"  can_pick="%s" src="%s"  alt="can_pick" onclick="save_can_pick(%s,%s)" /> </td>
 						<td class="quantity" id="part_location_quantity_%s_%s" quantity="%s">%s</td>
 						<td style="%s" class="button"><img style="cursor:pointer" id="part_location_audit_%s_%s" src="art/icons/note_edit.png" title="audit" alt="audit" onclick="audit(%s,%s)" /></td>
@@ -3366,37 +3576,37 @@ $result.=sprintf('<td><a href="location.php?id=%s">%s </a>
 						<td style="%s" class="button"> <img style="%s cursor:pointer" sku_formated="%s" location="%s" id="part_location_delete_%s_%s" src="art/icons/cross_bw.png" title="delete" alt="delete" onclick="delete_part_location(%s,%s)" /><img style="%s cursor:pointer" id="part_location_lost_items_%s_%s" src="art/icons/package_delete.png" title="lost" alt="lost" onclick="lost(%s,%s)" /></td>
 						<td style="%s" class="button"><img style="cursor:pointer" sku_formated="%s" location="%s" id="part_location_move_items_%s_%s" src="art/icons/package_go.png" title="move" alt="move" onclick="move(%s,%s)" /></td>
 						'
-						,$location['LocationKey']
-						,$location['LocationCode']
-						,$part->get_sku()
-						,$location['LocationCode']
-						,$location['PartSKU']
-						,$location['LocationKey']
-						,($location['CanPick']=='Yes')?_('No'):_('Yes')
-						,($location['CanPick']=='Yes')?_('art/icons/basket.png'):_('art/icons/box.png')
-						,$location['PartSKU']
-						,$location['LocationKey']
-						,$location['PartSKU']
-						,$location['LocationKey']
-						,$location['QuantityOnHand']
-						,$location['FormatedQuantityOnHand']
-						,(!$modify_stock)?_('display:none'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
-						,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
-						,(!$modify_stock)?_('display:none'):'',($location['QuantityOnHand']!=0)?_('display:none;'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'], $location['LocationKey'], $location['PartSKU'],$location['LocationKey'],($location['QuantityOnHand']==0)?_('display:none;'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
-						,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'], $location['PartSKU'],$location['LocationKey'],$location['PartSKU'], $location['LocationKey']
-						);
+			,$location['LocationKey']
+			,$location['LocationCode']
+			,$part->get_sku()
+			,$location['LocationCode']
+			,$location['PartSKU']
+			,$location['LocationKey']
+			,($location['CanPick']=='Yes')?_('No'):_('Yes')
+			,($location['CanPick']=='Yes')?_('art/icons/basket.png'):_('art/icons/box.png')
+			,$location['PartSKU']
+			,$location['LocationKey']
+			,$location['PartSKU']
+			,$location['LocationKey']
+			,$location['QuantityOnHand']
+			,$location['FormatedQuantityOnHand']
+			,(!$modify_stock)?_('display:none'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+			,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+			,(!$modify_stock)?_('display:none'):'',($location['QuantityOnHand']!=0)?_('display:none;'):'',$part->get_sku(),$location['LocationCode'],$location['PartSKU'], $location['LocationKey'], $location['PartSKU'],$location['LocationKey'],($location['QuantityOnHand']==0)?_('display:none;'):'',$location['PartSKU'],$location['LocationKey'],$location['PartSKU'],$location['LocationKey']
+			,(!$modify_stock)?_('display:none'):'',$part->get_sku(),$location['LocationCode'], $location['PartSKU'],$location['LocationKey'],$location['PartSKU'], $location['LocationKey']
+		);
 
 
-$result.='</tr>';
-}
-$result.=sprintf('<tr style="%s"><td colspan="6"><div id="add_location_button" class="buttons small left"><button onclick="add_location(%s)">Add Location</button></div></td></tr></table>'
+		$result.='</tr>';
+	}
+	$result.=sprintf('<tr style="%s"><td colspan="6"><div id="add_location_button" class="buttons small left"><button onclick="add_location(%s)">Add Location</button></div></td></tr></table>'
 		,(!$modify_stock)?_('display:none'):'',$location['PartSKU']);
 
-$response= array(
+	$response= array(
 		'state'=>200,
 		'result'=>$result
 	);
-echo json_encode($response);
+	echo json_encode($response);
 
 }
 

@@ -88,6 +88,7 @@ $js_files=array(
 	'js/search.js',
 	'js/table_common.js',
 	'js/edit_common.js',
+	'js/common_assign_picker_packer.js.php',
 	'order_pick_aid.js.php?dn_key='.$dn->id,
 	'edit_stock.js.php'
 );
@@ -140,8 +141,25 @@ $smarty->assign( 'filter_name0', $filter_menu[$tipo_filter]['label'] );
 $paginator_menu=array( 10, 25, 50, 100, 500 );
 $smarty->assign( 'paginator_menu0', $paginator_menu );
 
+
+$tipo_filter2='alias';
+$filter_menu2=array(
+                  'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
+$smarty->assign('pickers',false);
+
+
+
+
 $modify_stock=$user->can_edit('product stock');
 $smarty->assign('modify_stock',$modify_stock);
+
+
 
 
 $smarty->display( $template );

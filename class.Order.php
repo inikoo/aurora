@@ -278,6 +278,8 @@ class Order extends DB_Table {
 		);
 
 		mysql_query($sql);
+		
+		$this->update_delivery_notes();
 		$this->update_full_search();
 
 		return $dn;
@@ -3302,6 +3304,7 @@ $deal_info='';
 					,$this->id
 				);
 				mysql_query($sql);
+				
 
 			} else {
 				$customer=new Customer($this->data['Order Customer Key']);
@@ -3345,7 +3348,16 @@ $deal_info='';
 			//TODO
 			$ship_to=new Ship_To($ship_to_key);
 		}
+
+
+
+
+
 		// $this->data ['Order Ship To Key To Deliver'],
+
+
+
+
 		//prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ,false),
 		//prepare_mysql ( $this->data ['Order Ship To Keys'],false),
 
@@ -3363,9 +3375,9 @@ $deal_info='';
 			,prepare_mysql($ship_to->data['Ship To Postal Code'])
 
 			,$this->id
+			
 		);
 		mysql_query($sql);
-		//print $sql;
 		if (mysql_affected_rows()>0) {
 			$this->get_data('id',$this->id);
 			$this->updated=true;

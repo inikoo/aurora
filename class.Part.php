@@ -870,7 +870,7 @@ class part extends DB_Table {
 
 
 
-		$sql=sprintf("select sum(ifnull(`Picked`,0)) as picked, sum(ifnull(`Required`,0)) as required from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Order In Process'"
+		$sql=sprintf("select sum(`Picked`) as picked, sum(`Required`) as required from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Order In Process'"
 			,$this->id
 		);
 		$res=mysql_query($sql);

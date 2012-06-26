@@ -5766,6 +5766,12 @@ INSERT INTO `Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Wi
 DROP TABLE `Order Post Transaction In Process Dimension`;
 
 ALTER TABLE `Site Dimension` ADD `Site Direct Subscribe Madmimi` VARCHAR( 256 ) NULL DEFAULT NULL;
+INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right Access`, `Right Access Keys`) VALUES (NULL, 'Edit', 'assign_pp', 'All', '');
+// ID is 68, groups w this riht Customer Services 2, Administratoe 1
+INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('2', '68');
+INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');
+ALTER TABLE `Invoice Dimension` ADD `Invoice Payment Reference` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Invoice Main Payment Method` ;
+
 
 
 

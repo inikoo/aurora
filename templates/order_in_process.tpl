@@ -112,13 +112,7 @@
 					<td>{t}Order Date{/t}:</td>
 					<td class="aright">{$order->get('Date')}</td>
 				</tr>
-				<tr style="{if $order->get('Order Current Dispatch State')=='In Process'}display:none;{/if}font-size:90%">
-					<td>{t}Delivery Notes{/t}:</td>
-					
-					<td class="aright" >{$order->get('Order Current XHTML Dispatch State')}</td>
-
 				
-				</tr>
 			</table>
 		</div>
 		<div style="clear:both">

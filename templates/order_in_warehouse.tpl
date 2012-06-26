@@ -20,7 +20,7 @@
 			<button onclick="window.location='orders.php?store={$store->id}&view=orders'"><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button> 
 		</div>
 		<div class="buttons">
-					<button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
+					<button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
 
 			<button style="{if $amend}display:none{/if}" id="modify_order">{t}Modify Order{/t}</button>
 			<button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
@@ -115,13 +115,22 @@
 					<td>{t}Order Date{/t}:</td>
 					<td class="aright">{$order->get('Date')}</td>
 				</tr>
-				<tr style="{if $order->get('Order Current Dispatch State')=='In Process'}display:none;{/if}font-size:90%">
+				<tr style="font-size:90%">
 					<td>{t}Delivery Notes{/t}:</td>
+					
+					<td class="aright" >{$order->get('Order XHTML Delivery Notes')}</td>
+
+				
+				</tr>
+				
+				<tr style="">
+					<td></td>
 					
 					<td class="aright" >{$order->get('Order Current XHTML Dispatch State')}</td>
 
 				
 				</tr>
+				
 			</table>
 		</div>
 		<div style="clear:both">
