@@ -189,7 +189,7 @@ function get_tipo_order($ltipo,$header) {
     elseif(preg_match('/^quote|ANGEBOT/i',$ltipo)) {
         $tipo=11;
     }
-    elseif(preg_match('/^return to supplier/i',$ltipo)) {|
+    elseif(preg_match('/^return to supplier/i',$ltipo)) {
         $tipo=12;
 
 
