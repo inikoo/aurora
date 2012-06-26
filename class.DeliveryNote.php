@@ -1164,7 +1164,7 @@ class DeliveryNote extends DB_Table {
 
 		while ($row=mysql_fetch_assoc($res)) {
 			
-			print_r($row);
+			//print_r($row);
 			
 			$this->create_inventory_transaction_fact_item(
 				$row['Product Key'],
@@ -1594,7 +1594,7 @@ class DeliveryNote extends DB_Table {
 			,$this->id);
 		mysql_query($sql);
 		$this->assigned=true;
-		$operations='<span style="cursor:pointer"  onClick="pick_it(this,'.$this->id.','.$staff->id.')"> <b>'.$staff->data['Staff Alias'].'</b> '._('pick order')."</span>";
+		$operations='<b>'.$staff->data['Staff Alias'].'</b> <a href="order_pick_aid.php?id='.$this->id.'">'._('pick order')."</a>";
 		$operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$this->id.')">';
 		$this->operations=$operations;
 		$this->dn_state=_('Picker Assigned');
@@ -2009,7 +2009,7 @@ class DeliveryNote extends DB_Table {
 		$required_items=0;
 		$packed_weight=0;
 		$packed_items=0;
-
+//print $sql;
 		while ($row=mysql_fetch_assoc($res)) {
 			$to_be_packed=$row['Required']+$row['Given']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
 
@@ -2019,12 +2019,14 @@ class DeliveryNote extends DB_Table {
 			$qty=$row['Packed'];
 
 
-			//print "Packing $qty $to_be_packed\n";
+		//	print "Packing $qty $to_be_packed\n";
 
 			if ($qty>$to_be_packed)
 				$qty=$to_be_packed;
 
 			$required_weight+=$to_be_packed*$row['Part Gross Weight'];
+			
+			if($to_be_packed)
 			$required_items++;
 
 			if ($to_be_packed>0) {
@@ -2049,7 +2051,7 @@ class DeliveryNote extends DB_Table {
 		}
 
 
-		//print "packing percentage: $percentage_packed\n";
+	//	print "packing percentage: $percentage_packed\n";
 
 		return $percentage_packed;
 
@@ -2270,7 +2272,7 @@ class DeliveryNote extends DB_Table {
 	}
 	function set_as_picked($itf_key,$qty,$date=false,$picker_key=false) {
 		if (!$date)
-			$date=date("Y-m-d H:i:s");
+			$date=gmdate("Y-m-d H:i:s");
 		$this->updated=false;
 
 		if (!$picker_key) {

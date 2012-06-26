@@ -11,7 +11,7 @@ YAHOO.namespace ("invoice");
      var Dom   = YAHOO.util.Dom;
 var updating_record;
 var no_dispatchable_editor_dialog;
-var pack_it_dialog;
+var assign_packer_dialog;
 var dialog_locations;
 
 
@@ -396,6 +396,78 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	
 
 
+var tableid=2; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+			 {key:"key", label:"",width:100,hidden:true}
+                    ,{key:"code", label:"<?php echo _('Alias')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                   ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+						
+			];
+		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+//alert("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    	    this.dataSource2.table_id=tableid;
+
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "code",'name','key'
+			 ]};
+
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
+       this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
+      this.table2.subscribe("rowClickEvent", select_staff_from_list);
+        this.table2.table_id=tableid;
+           this.table2.subscribe("renderEvent", myrenderEvent);
+
+
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.filter={key:'code',value:''};	    
+
     
     };
   });
@@ -528,9 +600,12 @@ YAHOO.util.Connect.asyncRequest(
 
 function set_pending_as_picked(){
 
+
+Dom.get('set_all_as_picked').src="art/loading.gif";
+
 	ar_file='ar_edit_orders.php';
    	request=ar_file+'?tipo=set_picking_aid_sheet_pending_as_picked&dn_key='+Dom.get('dn_key').value;
-  	
+  	//alert(ar_file+request);return
     YAHOO.util.Connect.asyncRequest(
         'GET',
     request, {
@@ -555,24 +630,7 @@ scope:this
 
 
 }
-function close_dialog(dialog_name) {
 
-    switch ( dialog_name ) {
-   
-    case('pack_it_dialog'):
-    
-        Dom.get('pack_it_Staff_Name').value='';
-        Dom.get('pack_it_staff_key').value='';
-        Dom.setStyle('pack_it_pin_tr','visibility','hidden');
-        Dom.get("pack_it_pin_alias").innerHTML='';
-        Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'assign_packer_buttons'),'selected');
-        Dom.get('pack_it_password').value='';
-        pack_it_dialog.hide();
-        break;
-    default:
-
-    }
-}
 function pack_it_save(){
 
 var staff_key=Dom.get('pack_it_staff_key').value;
@@ -590,7 +648,7 @@ var dn_key=Dom.get('pack_it_dn_key').value;
 		    if(r.action='updated'){
 		    location.href='order_pack_aid.php?id='+dn_key;
 		    }
-		    close_dialog('pack_it_dialog');
+		    close_dialog('assign_packer_dialog');
 
 		}else{
 		  alert(r.msg);
@@ -600,42 +658,20 @@ var dn_key=Dom.get('pack_it_dn_key').value;
 
 }
 
-function select_staff_pack_it(o){
-var staff_key=o.getAttribute('staff_id');
-var staff_alias=o.innerHTML;
-Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'pack_it_buttons'),'selected');
-Dom.addClass(o,'selected');
-Dom.get('pack_it_Staff_Name').value=staff_alias;
-Dom.get('pack_it_staff_key').value=staff_key;
 
-Dom.setStyle('pack_it_pin_tr','visibility','visible');
-Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
-Dom.get('pack_it_password').focus();
-}
-
-
-function select_staff(o){
-var staff_key=o.getAttribute('staff_id');
-var staff_alias=o.innerHTML;
-Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'),'selected');
-Dom.addClass(o,'selected');
-Dom.get('Assign_Picker_Staff_Name').value=staff_alias;
-Dom.get('assign_picker_staff_key').value=staff_key;
-Dom.get('assign_picker_sup_password').focus();
-}
 
 function start_packing(){
 
-    
+  
      region1 = Dom.getRegion('start_packing'); 
-    region2 = Dom.getRegion('pack_it_dialog'); 
+    region2 = Dom.getRegion('assign_packer_dialog'); 
 
  var pos =[region1.right-region2.width-20,region1.bottom]
 
-    Dom.setXY('pack_it_dialog', pos);
+    Dom.setXY('assign_packer_dialog', pos);
 
-pack_it_dialog.show()
-Dom.get('pack_it_Staff_Name').focus();
+assign_packer_dialog.show()
+Dom.get('Assign_Packer_Staff_Name').focus();
     
 }
 
@@ -682,13 +718,36 @@ function init(){
 
 
 Event.addListener('pick_all', "click",set_pending_as_picked);
- pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {visible : false,close:true,underlay: "none",draggable:false});
- pack_it_dialog.render();    
  Event.addListener('start_packing', "click",start_packing);
 
 
 dialog_locations = new YAHOO.widget.Dialog("dialog_locations", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_locations.render();
+
+
+
+assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+	assign_picker_dialog.render();
+
+	dialog_pick_it = new YAHOO.widget.Dialog("dialog_pick_it", {context:["pick_it_","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	//dialog_pick_it.render();
+
+	dialog_pack_it = new YAHOO.widget.Dialog("dialog_pack_it", {context:["pack_it","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_pack_it.render();
+
+	pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	//pick_assigned_dialog.render();
+	pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	//pick_it_dialog.render();
+
+	assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	assign_packer_dialog.render();
+	pack_assigned_dialog = new YAHOO.widget.Dialog("pack_assigned_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	pack_assigned_dialog.render();
+	pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	pack_it_dialog.render();    
+	dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {context:["other_staff","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_other_staff.render();
 
 
 }

@@ -170,7 +170,7 @@ function get_tipo_order($ltipo,$header) {
         $header['notes2']=preg_replace('/^replacement$/i','',_trim($header['notes2']));
 
     }
-    elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)) {
+    elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|INTEGRAZIONE|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)) {
 
         $tipo=7;
     }
@@ -189,7 +189,7 @@ function get_tipo_order($ltipo,$header) {
     elseif(preg_match('/^quote|ANGEBOT/i',$ltipo)) {
         $tipo=11;
     }
-    elseif(preg_match('/^return to supplier/i',$ltipo)) {
+    elseif(preg_match('/^return to supplier/i',$ltipo)) {|
         $tipo=12;
 
 

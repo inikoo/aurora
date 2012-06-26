@@ -29,6 +29,26 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
+
+$sql="select * from `Ship To Dimension`  ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+//	$address=$row['Ship To XHTML Address'];
+	$ship_to=new Ship_To($row['Ship To Key']);
+	$address=$ship_to->get_xhtml_address();
+	$sql=sprintf("update `Ship To Dimension` set `Ship To XHTML Address`=%s where `Ship To Key` =%d",
+		prepare_mysql($address),
+		$row['Ship To Key']
+
+	);
+	mysql_query($sql);
+
+}
+
+
+
+exit;
+
 $sql="select * from `Ship To Dimension`  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -42,6 +62,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	mysql_query($sql);
 
 }
+
+
 
 //Order XHTML Ship Tos
 

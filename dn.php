@@ -8,6 +8,14 @@ if (!$user->can_view('orders')) {
 	exit;
 }
 
+
+
+
+
+
+
+
+
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 	$yui_path.'menu/assets/skins/sam/menu.css',
@@ -20,6 +28,9 @@ $css_files=array(
 	'css/edit.css',
 	'theme.css.php'
 );
+
+
+
 $js_files=array(
 
 	$yui_path.'utilities/utilities.js',
@@ -27,16 +38,41 @@ $js_files=array(
 	$yui_path.'paginator/paginator-min.js',
 	$yui_path.'datasource/datasource-min.js',
 	$yui_path.'autocomplete/autocomplete-min.js',
-	$yui_path.'datatable/datatable-min.js',
+	$yui_path.'datatable/datatable.js',
 	$yui_path.'container/container-min.js',
-
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
 	'js/table_common.js',
-	'js/common_assign_picker_packer.js.php',
+	'js/edit_common.js',
 	'js/search.js',
-	'dn.js.php'
+	'warehouse_orders.js.php',
+
+	'js/common_assign_picker_packer.js.php',
+	'js/csv_common.js'
+);
+
+
+
+$js_files=array(
+
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	$yui_path.'calendar/calendar-min.js',
+
+	'js/common.js',
+	'js/table_common.js',
+	'js/search.js',
+//	'dn.js.php',
+	'js/common_assign_picker_packer.js.php',
+	
+	
 );
 
 
@@ -136,16 +172,16 @@ foreach($packers as $packer) {
 
 $smarty->assign('packers',$packers_data);
 
-
-$tipo_filter2='code';
+$tipo_filter2='alias';
 $filter_menu2=array(
-                  'code'=>array('db_key'=>_('code'),'menu_label'=>_('Code'),'label'=>_('Code')),
-                  'name'=>array('db_key'=>_('name'),'menu_label'=>_('Name'),'label'=>_('Name')),
+                  'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
               );
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2','');
+
 
 
 $smarty->assign('dn',$dn);

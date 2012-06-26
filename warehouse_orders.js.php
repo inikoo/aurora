@@ -241,7 +241,7 @@ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'ready_to_pick_
 
 
 
- assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+ assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:true,underlay: "none",draggable:false});
  assign_picker_dialog.render();
  pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {visible : false,close:false,underlay: "none",draggable:false});
  pick_assigned_dialog.render();

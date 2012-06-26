@@ -16,7 +16,6 @@ function show_active_staff_dialog(o){
 }
 
 function close_dialog(dialog_name) {
-
     switch ( dialog_name ) {
     case 'assign_picker_dialog':
         Dom.get('Assign_Picker_Staff_Name').value='';
@@ -37,9 +36,9 @@ function close_dialog(dialog_name) {
         pick_it_dialog.hide();
         break;
           case 'assign_packer_dialog':
-        Dom.get('Assign_Picker_Staff_Name').value='';
+        Dom.get('Assign_Packer_Staff_Name').value='';
         Dom.get('assign_packer_staff_key').value='';
-        Dom.get('Assign_Picker_Staff_Name').focus();
+        Dom.get('Assign_Packer_Staff_Name').focus();
         Dom.get('assign_packer_sup_password').value='';
         Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'),'selected');
         assign_packer_dialog.hide();
@@ -83,7 +82,7 @@ var staff_alias=o.innerHTML;
 
 Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons'),'selected');
 Dom.addClass(o,'selected');
-Dom.get('Assign_packer_Staff_Name').value=staff_alias;
+Dom.get('Assign_Packer_Staff_Name').value=staff_alias;
 Dom.get('assign_packer_staff_key').value=staff_key;
 Dom.get('assign_packer_sup_password').focus();
 }
@@ -113,24 +112,31 @@ Dom.get('pick_it_msg').innerHTML='';
 var staff_key=Dom.get('assign_picker_staff_key').value;
  var sup_pwd=   Dom.get('assign_picker_sup_password').value;
 var dn_key=Dom.get('assign_picker_dn_key').value;
+
+
     var request='ar_edit_orders.php?tipo=assign_picker&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
-   // alert(request); return;
+ //  alert(request); return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				//alert(o.responseText)
+			//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		    
-		    if(r.action='updated'){
+		    if(r.action='updated' && Dom.get('operations'+dn_key)){
 
 		    Dom.get('operations'+dn_key).innerHTML=r.operations;
-		    //Dom.get('dn_state'+dn_key).innerHTML=r.dn_state;
+		    
 		    }
 		    close_dialog('assign_picker_dialog');
+		    
+		    if(!Dom.get('operations'+dn_key)){
+		     location.href='order_pick_aid.php?id='+dn_key;
+		    }
+		    
 
 		}else{
-		//Dom.get('pick_it_msg').innerHTML=r.msg
+		Dom.get('pick_it_msg').innerHTML=r.msg
 		  
 	    }
 	    }
@@ -175,11 +181,12 @@ region1 = Dom.getRegion(o);
 
    Dom.get('Assign_Picker_Staff_Name').focus();
    Dom.get('assign_picker_dn_key').value=dn_key;
-
  Dom.get('staff_list_parent_dialog').value='assign_picker';
     assign_picker_dialog.show();
+    
+  
+    
 }
-
 function pick_it(o,dn_key){
 
 var staff_alias='';
@@ -204,8 +211,6 @@ Dom.get('staff_list_parent_dialog').value='pick_it';
 
 
 }
-
-
 function select_staff_pack_it(o){
 var staff_key=o.getAttribute('staff_id');
 var staff_alias=o.innerHTML;
@@ -230,19 +235,23 @@ var staff_key=Dom.get('assign_packer_staff_key').value;
  var sup_pwd=   Dom.get('assign_packer_sup_password').value;
 var dn_key=Dom.get('assign_packer_dn_key').value;
     var request='ar_edit_orders.php?tipo=assign_packer&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
-    // alert(request)
+     //alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				alert(o.responseText)
+				//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		    
-		    if(r.action='updated'){
+		    if(r.action='updated'  && Dom.get('operations'+dn_key)){
 		    Dom.get('operations'+dn_key).innerHTML=r.operations;
 		    Dom.get('dn_state'+dn_key).innerHTML=r.dn_state;
 		    }
 		    close_dialog('assign_packer_dialog');
+
+    if(!Dom.get('operations'+dn_key)){
+		     location.href='order_pack_aid.php?id='+dn_key;
+		    }
 
 		}else{
 		    alert(r.msg);
@@ -261,7 +270,7 @@ var dn_key=Dom.get('pack_it_dn_key').value;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				//alert(o.responseText)
+			//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		    
@@ -284,7 +293,7 @@ function assign_packer(o,dn_key){
     y=y+18;
     Dom.setX('assign_packer_dialog', x)
     Dom.setY('assign_packer_dialog', y)
-   Dom.get('Assign_packer_Staff_Name').focus();
+   Dom.get('Assign_Packer_Staff_Name').focus();
    Dom.get('assign_packer_dn_key').value=dn_key;
 Dom.get('staff_list_parent_dialog').value='assign_packer';
     assign_packer_dialog.show();
@@ -373,7 +382,7 @@ case 'assign_picker':
 	Dom.get('assign_picker_sup_password').focus();
 	break;
 case 'assign_packer':
-	Dom.get('Assign_packer_Staff_Name').value=staff_alias;
+	Dom.get('Assign_Packer_Staff_Name').value=staff_alias;
 	Dom.get('assign_packer_staff_key').value=staff_key;
 	Dom.get('assign_packer_sup_password').focus();
 	break;

@@ -139,10 +139,11 @@ var tableid=2;
 
 
 function init(){
+
+
 init_search('orders_store');
 
-
-    function mygetTerms(query) {
+function mygetTerms(query) {
 	var Dom = YAHOO.util.Dom
 	var table=YAHOO.orders.XHR_JSON.OrdersDataTable;
 	var data=table.getDataSource();
@@ -156,41 +157,65 @@ init_search('orders_store');
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
     oAutoComp.minQueryLength = 0; 
     
-Event.addListener("pick_it_", "click", pick_it_);
-Event.addListener("pack_it", "click", pack_it);
+	Event.addListener("pick_it_", "click", pick_it_);
+	Event.addListener("pack_it", "click", pack_it);
 
+	assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:false,underlay: "none",draggable:false});
+	assign_picker_dialog.render();
 
-    dialog_pick_it = new YAHOO.widget.Dialog("dialog_pick_it", {context:["pick_it_","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_pick_it.render();
-Event.addListener("close_dialog_pick_it", "click", dialog_pick_it.hide,dialog_pick_it , true);
+	dialog_pick_it = new YAHOO.widget.Dialog("dialog_pick_it", {context:["pick_it_","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_pick_it.render();
 
-   dialog_pack_it = new YAHOO.widget.Dialog("dialog_pack_it", {context:["pack_it","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_pack_it.render();
-Event.addListener("close_dialog_pack_it", "click", dialog_pack_it.hide,dialog_pack_it , true);
+	Event.addListener("close_dialog_pick_it", "click", dialog_pick_it.hide,dialog_pick_it , true);
+	dialog_pack_it = new YAHOO.widget.Dialog("dialog_pack_it", {context:["pack_it","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_pack_it.render();
+	Event.addListener("close_dialog_pack_it", "click", dialog_pack_it.hide,dialog_pack_it , true);
 
+	pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	pick_assigned_dialog.render();
+	pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	pick_it_dialog.render();
 
- assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
- assign_picker_dialog.render();
- pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
- pick_assigned_dialog.render();
- pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
- pick_it_dialog.render();
+	assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	assign_packer_dialog.render();
+	pack_assigned_dialog = new YAHOO.widget.Dialog("pack_assigned_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	pack_assigned_dialog.render();
+	pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+	pack_it_dialog.render();    
+	dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {context:["other_staff","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+	dialog_other_staff.render();
 
-assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
- assign_packer_dialog.render();
- pack_assigned_dialog = new YAHOO.widget.Dialog("pack_assigned_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
- pack_assigned_dialog.render();
- pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {context:["pack_it","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
- pack_it_dialog.render();    
-
-
-dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {context:["other_staff","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-    dialog_other_staff.render();
+	Event.addListener("create_invoice", "click", create_invoice);
 
 
 
 }
 
+
+function create_invoice(){
+
+
+var dn_key=Dom.get('dn_key').value;
+
+
+    var request='ar_edit_orders.php?tipo=create_invoice&dn_key='+escape(dn_key);
+//  alert(request); //return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+		//		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		        location.href='invoice.php?id='+r.invoice_key;
+		  
+		}else{
+		alert(r.msg)
+		  
+	    }
+	    }
+	});    
+
+}
 
 function pick_it_(){
 state=Dom.get('dn_state').value;
