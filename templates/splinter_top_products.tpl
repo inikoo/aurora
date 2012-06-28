@@ -70,7 +70,7 @@
 	</div>
     <script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "450", "500", "1", "#FFFFFF");
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "450", "575", "1", "#FFFFFF");
 		so.addVariable("path", "external_libs/ampie/ampie/");
 		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=top_families&store_keys={$store_keys}&period={$conf_data.top_products.period}")); 

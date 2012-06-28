@@ -2535,11 +2535,12 @@ class product extends DB_Table {
 
 
 	function update_up_today_sales() {
+	$this->update_sales_from_invoices('Total');
 		$this->update_sales_from_invoices('Today');
 		$this->update_sales_from_invoices('Week To Day');
 		$this->update_sales_from_invoices('Month To Day');
 		$this->update_sales_from_invoices('Year To Day');
-		$this->update_sales_from_invoices('Total');
+		
 	}
 
 	function update_last_period_sales() {
@@ -2595,7 +2596,11 @@ class product extends DB_Table {
 		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
-		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product ID`=%d %s %s ",
+		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
+				,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as dc_gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as dc_disc ,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) as dc_net 
+,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Cost Supplier`)*`Invoice Currency Exchange Rate`) as dc_profit
+		
+		from `Order Transaction Fact` where `Product ID`=%d %s %s ",
 			$this->pid,
 			($from_date?sprintf('and `Invoice Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
@@ -2612,6 +2617,12 @@ class product extends DB_Table {
 			$this->data['Product $db_interval Acc Quantity Ordered']=$row['ordered'];
 			$this->data['Product $db_interval Acc Quantity Invoiced']=$row['invoiced'];
 			$this->data['Product $db_interval Acc Quantity Delivered']=$row['delivered'];
+			$this->data['Product ID DC $db_interval Acc Invoiced Gross Amount']=$row['dc_gross'];
+			$this->data['Product ID DC $db_interval Acc Invoiced Discount Amount']=$row['dc_disc'];
+			$this->data['Product ID DC $db_interval Acc Invoiced Amount']=$row['dc_net'];
+			$this->data['Product ID DC $db_interval Acc Profit']=$row['dc_profit'];
+			
+			
 		} else {
 			$this->data['Product $db_interval Acc Customers']=0;
 			$this->data['Product $db_interval Acc Invoices']=0;
@@ -2622,6 +2633,10 @@ class product extends DB_Table {
 			$this->data['Product $db_interval Acc Quantity Ordered']=0;
 			$this->data['Product $db_interval Acc Quantity Invoiced']=0;
 			$this->data['Product $db_interval Acc Quantity Delivered']=0;
+			$this->data['Product ID DC $db_interval Acc Invoiced Gross Amount']=0;
+			$this->data['Product ID DC $db_interval Acc Invoiced Discount Amount']=0;
+			$this->data['Product ID DC $db_interval Acc Invoiced Amount']=0;
+			$this->data['Product ID DC $db_interval Acc Profit']=0;
 		}
 		$sql=sprintf("update `Product Dimension` set `Product $db_interval Acc Customers`=%d,`Product $db_interval Acc Invoices`=%d,`Product $db_interval Acc Invoiced Gross Amount`=%.2f,`Product $db_interval Acc Invoiced Discount Amount`=%.2f,`Product $db_interval Acc Invoiced Amount`=%.2f,`Product $db_interval Acc Profit`=%.2f, `Product $db_interval Acc Quantity Ordered`=%s , `Product $db_interval Acc Quantity Invoiced`=%s,`Product $db_interval Acc Quantity Delivered`=%s  where `Product ID`=%d "
 			,$this->data['Product $db_interval Acc Customers']
@@ -2636,9 +2651,18 @@ class product extends DB_Table {
 			,$this->pid
 		);
 		mysql_query($sql);
-
-
-
+//print "$sql\n\n";
+		$sql=sprintf("update `Product ID Default Currency` set `Product ID DC $db_interval Acc Invoiced Gross Amount`=%.2f,`Product ID DC $db_interval Acc Invoiced Discount Amount`=%.2f,`Product ID DC $db_interval Acc Invoiced Amount`=%.2f,`Product ID DC $db_interval Acc Profit`=%.2f where `Product ID`=%d "
+			,$this->data['Product ID DC $db_interval Acc Invoiced Gross Amount']
+			,$this->data['Product ID DC $db_interval Acc Invoiced Discount Amount']
+			,$this->data['Product ID DC $db_interval Acc Invoiced Amount']
+			,$this->data['Product ID DC $db_interval Acc Profit']
+			
+			,$this->pid
+		);
+		mysql_query($sql);
+//print "$sql\n\n";
+//exit;
 
 	}
 
@@ -2650,7 +2674,10 @@ class product extends DB_Table {
 		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
-		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d %s %s ",
+		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced 
+		sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,
+		
+		from `Order Transaction Fact` where `Product Key`=%d %s %s ",
 			$this->id,
 			($from_date?sprintf('and `Invoice Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')

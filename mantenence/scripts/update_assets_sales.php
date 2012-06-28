@@ -36,35 +36,20 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
+$sql="select `Product ID` from `Product Dimension`";
+//$sql="select `Product ID` from `Product Dimension` ";
 
-
-$sql="select * from `Product History Dimension` PH  order by `Product Key` desc  ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result)   ) {
-	$product=new Product('id',$row['Product Key']);
-	
-	if($product->id){
-	
-	$product->update_up_today_historic_key_sales();
-	$product->update_interval_historic_key_sales();
-	$product->update_last_period_historic_key_sales();
-	
-	if(!array_key_exists('Product Code',$product->data)){
-	print_r($product); 
-
-	}
-	
-	
-	print "PH ".$row['Product Key']."\t\t ".$product->data['Product Code']." \r";
-}else{
-
-print_r($product); 
-exit;
-
+	$product=new Product('pid',$row['Product ID']);
+	$product->update_up_today_sales();
+	$product->update_interval_sales();
+	$product->update_last_period_sales();
+	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
 }
 
 
-}
 
 
 $sql="select * from `Product Family Dimension` where `Product Family Key`=4695";
@@ -109,19 +94,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-
-$sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
-$sql="select `Product ID` from `Product Dimension`";
-//$sql="select `Product ID` from `Product Dimension` ";
-
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result)   ) {
-	$product=new Product('pid',$row['Product ID']);
-	$product->update_up_today_sales();
-	$product->update_interval_sales();
-	$product->update_last_period_sales();
-	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
-}
 
 
 
@@ -192,6 +164,34 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	print "Supplier Product ".$supplier_product->pid."\t\t\r";
 }
 
+
+$sql="select * from `Product History Dimension` PH  order by `Product Key` desc  ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result)   ) {
+	$product=new Product('id',$row['Product Key']);
+	
+	if($product->id){
+	
+	$product->update_up_today_historic_key_sales();
+	$product->update_interval_historic_key_sales();
+	$product->update_last_period_historic_key_sales();
+	
+	if(!array_key_exists('Product Code',$product->data)){
+	print_r($product); 
+
+	}
+	
+	
+	print "PH ".$row['Product Key']."\t\t ".$product->data['Product Code']." \r";
+}else{
+
+print_r($product); 
+exit;
+
+}
+
+
+}
 
 
 
