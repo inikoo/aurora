@@ -2674,15 +2674,15 @@ class product extends DB_Table {
 		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
-		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced 
-		sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,
-		
-		from `Order Transaction Fact` where `Product Key`=%d %s %s ",
+		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced ,	sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc 		from `Order Transaction Fact` where `Product Key`=%d %s %s ",
 			$this->id,
 			($from_date?sprintf('and `Invoice Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
 		);
+		
+	//	print "$sql\n";
+		
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			$this->data['Product History $db_interval Acc Customers']=$row['customers'];
