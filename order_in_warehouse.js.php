@@ -12,6 +12,7 @@ print "var order_key=$order_key;";
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_cancel,dialog_edit_shipping;
+var process_order_dialog;
 var change_staff_discount;
 YAHOO.namespace ("invoice"); 
 
@@ -34,13 +35,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				        {key:"pid", label:"Product ID", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				     
 					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description", label:"Description",width:400,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"description", label:"Description",width:370,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"stock",label:"Able", hidden:(Dom.get('dispatch_state').value=='In Process'?false:true),width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"quantity",label:"Qty", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"add",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false}
 					,{key:"remove",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false}
 			     ,{key:"to_charge",label:"To Charge", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				,{key:"dispatching_status",label:"Status" ,hidden:(Dom.get('dispatch_state').value!='In Process'?false:true),width:90,sortable:false,className:"aright"}
+				,{key:"dispatching_status",label:"Status" ,hidden:(Dom.get('dispatch_state').value!='In Process'?false:true),width:120,sortable:false,className:"aright"}
 
 				];
 
@@ -125,11 +126,22 @@ Event.addListener('clean_table_filter_show0', "click",show_filter,0);
 
 Event.addListener("modify_order", "click", modify_order);
 
+Event.addListener("process_order", "click", show_process_order_dialog);
+
+process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {visible : true,close:true,underlay: "none",draggable:false});
+ process_order_dialog.render();
 
 
 
 }
 
+function close_process_order_dialog(){
+ process_order_dialog.hide()
+}
+
+function show_process_order_dialog(){
+ process_order_dialog.show()
+}
 
 function modify_order(){
 window.location='order.php?id='+Dom.get('order_key').value+'&amend=1';

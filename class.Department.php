@@ -48,15 +48,15 @@ class Department extends DB_Table {
                                  'Product Department Critical Availability Products',
                                  'Product Department Out Of Stock Products',
                                  'Product Department Unknown Stock Products',
-                                 'Product Department Total Invoiced Gross Amount',
-                                 'Product Department Total Invoiced Discount Amount',
-                                 'Product Department Total Invoiced Amount',
-                                 'Product Department Total Profit',
-                                 'Product Department Total Quantity Ordered',
-                                 'Product Department Total Quantity Invoiced',
-                                 'Product Department Total Quantity Delivere',
-                                 'Product Department Total Days On Sale',
-                                 'Product Department Total Days Available',
+                                 'Product Department Total Acc Invoiced Gross Amount',
+                                 'Product Department Total Acc Invoiced Discount Amount',
+                                 'Product Department Total Acc Invoiced Amount',
+                                 'Product Department Total Acc Profit',
+                                 'Product Department Total Acc Quantity Ordered',
+                                 'Product Department Total Acc Quantity Invoiced',
+                                 'Product Department Total Acc Quantity Delivere',
+                                 'Product Department Total Acc Days On Sale',
+                                 'Product Department Total Acc Days Available',
                                  'Product Department 1 Year Acc Invoiced Gross Amount',
                                  'Product Department 1 Year Acc Invoiced Discount Amount',
                                  'Product Department 1 Year Acc Invoiced Amount',
@@ -93,7 +93,7 @@ class Department extends DB_Table {
                                  'Product Department 1 Week Acc Quantity Delivere',
                                  'Product Department 1 Week Acc Days On Sale',
                                  'Product Department 1 Week Acc Days Available',
-                                 'Product Department Total Quantity Delivered',
+                                 'Product Department Total Acc Quantity Delivered',
                                  'Product Department 1 Year Acc Quantity Delivered',
                                  'Product Department 1 Month Acc Quantity Delivered',
                                  'Product Department 1 Quarter Acc Quantity Delivered',
@@ -482,20 +482,22 @@ class Department extends DB_Table {
 
 
 
-
+	function get_period($period,$key) {
+		return $this->get($period.' '.$key);
+	}
 
     function get($key) {
 
         if (array_key_exists($key,$this->data))
             return $this->data[$key];
 
-        if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
+		if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit)$/',$key)) {
 
             $amount='Product Department '.$key;
 
             return money($this->data[$amount]);
         }
-        if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers)$/',$key)) {
+		if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers)$/',$key)) {
 
             $amount='Product Department '.$key;
 
@@ -591,9 +593,372 @@ class Department extends DB_Table {
             }
         }
     }
+    
+    
+    
+    
+    
+    
+      function update_up_today_sales() {
+   
+        $this->update_sales_from_invoices('Today');
+        $this->update_sales_from_invoices('Week To Day');
+        $this->update_sales_from_invoices('Month To Day');
+        $this->update_sales_from_invoices('Year To Day');
+       
+        $this->update_sales_from_invoices('Total');
+    }
+
+    function update_last_period_sales() {
+
+        $this->update_sales_from_invoices('Yesterday');
+        $this->update_sales_from_invoices('Last Week');
+        $this->update_sales_from_invoices('Last Month');
+      
+    }
 
 
-    function update_sales_data() {
+    function update_interval_sales() {
+   
+        $this->update_sales_from_invoices('3 Year');
+        $this->update_sales_from_invoices('1 Year');
+        $this->update_sales_from_invoices('6 Month');
+        $this->update_sales_from_invoices('1 Quarter');
+        $this->update_sales_from_invoices('1 Month');
+        $this->update_sales_from_invoices('10 Day');
+        $this->update_sales_from_invoices('1 Week');
+      
+    }
+    
+     function update_sales_from_invoices($interval) {
+
+
+
+        $to_date='';
+
+        switch ($interval) {
+
+
+		case 'Total':
+
+			$db_interval='Total';
+			$from_date=date('Y-m-d H:i:s',strtotime($this->data['Product Department Valid From']));
+			$to_date=gmdate('Y-m-d H:i:s');
+
+			$from_date_1yb=false;
+			$to_1yb=false;
+			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+			break;
+
+
+
+        case 'Last Month':
+        case 'last_m':
+            $db_interval='Last Month';
+            $from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
+            $to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+
+        case 'Last Week':
+        case 'last_w':
+            $db_interval='Last Week';
+
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
+                $to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
+
+            } else {
+                return;
+            }
+
+
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
+            break;
+
+        case 'Yesterday':
+        case 'yesterday':
+            $db_interval='Yesterday';
+            $from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
+            $to_date=date('Y-m-d 00:00:00',strtotime('today'));
+
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
+            break;
+
+        case 'Week To Day':
+        case 'wtd':
+            $db_interval='Week To Day';
+
+            $from_date=false;
+            $from_date_1yb=false;
+
+            $sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date=$row['First Day'].' 00:00:00';
+                $lapsed_seconds=strtotime('now')-strtotime($from_date);
+
+            } else {
+                return;
+            }
+
+            $sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $from_date_1yb=$row['First Day'].' 00:00:00';
+            }
+
+
+            $to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
+
+
+
+            break;
+        case 'Today':
+        case 'today':
+            $db_interval='Today';
+            $from_date=date('Y-m-d 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+
+        case 'Month To Day':
+        case 'mtd':
+            $db_interval='Month To Day';
+            $from_date=date('Y-m-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case 'Year To Day':
+        case 'ytd':
+            $db_interval='Year To Day';
+            $from_date=date('Y-01-01 00:00:00');
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+            break;
+        case '3 Year':
+        case '3y':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
+            $from_date_1yb=false;
+            $to_1yb=false;
+            break;
+        case '1 Year':
+        case '1y':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '6 Month':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Quarter':
+        case '1q':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Month':
+        case '1m':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '10 Day':
+        case '10d':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+        case '1 Week':
+        case '1w':
+            $db_interval=$interval;
+            $from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
+            $from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
+            $to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
+            break;
+
+        default:
+            return;
+            break;
+        }
+
+        setlocale(LC_ALL, 'en_GB');
+
+        //   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+
+        $this->data["Product Department $db_interval Acc Invoiced Discount Amount"]=0;
+        $this->data["Product Department $db_interval Acc Invoiced Amount"]=0;
+        $this->data["Product Department $db_interval Acc Invoices"]=0;
+        $this->data["Product Department $db_interval Acc Profit"]=0;
+        $this->data["Product Department $db_interval Acc Customers"]=0;
+          $this->data["Product Department $db_interval Acc Quantity Ordered"]=0;
+            $this->data["Product Department $db_interval Acc Quantity Invoiced"]=0;
+            $this->data["Product Department $db_interval Acc Quantity Delivered"]=0;
+        $this->data["Product Department DC $db_interval Acc Invoiced Amount"]=0;
+        $this->data["Product Department DC $db_interval Acc Invoiced Discount Amount"]=0;
+                $this->data["Product Department DC $db_interval Acc Invoiced Gross Amount"]=0;
+    $this->data["Product Department DC $db_interval Acc Profit"]=0;
+
+        $sql=sprintf("select  sum(`Shipped Quantity`) as qty_delivered,sum(`Order Quantity`) as qty_ordered,sum(`Invoice Quantity`) as qty_invoiced ,count(Distinct `Customer Key`)as customers,count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
+                     sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Department Key`=%d and `Invoice Date`>=%s %s" ,
+                     $this->id,
+                     prepare_mysql($from_date),
+                     ($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
+
+                    );
+
+        $result=mysql_query($sql);
+
+//print $sql."\n\n";
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data["Product Department $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
+            $this->data["Product Department $db_interval Acc Invoiced Amount"]=$row["net"];
+            $this->data["Product Department $db_interval Acc Invoices"]=$row["invoices"];
+            $this->data["Product Department $db_interval Acc Profit"]=$row["net"]-$row['total_cost'];
+             $this->data["Product Department $db_interval Acc Customers"]=$row["customers"];
+            $this->data["Product Department $db_interval Acc Quantity Ordered"]=$row["qty_ordered"];
+            $this->data["Product Department $db_interval Acc Quantity Invoiced"]=$row["qty_invoiced"];
+            $this->data["Product Department $db_interval Acc Quantity Delivered"]=$row["qty_delivered"];
+            
+            $this->data["Product Department DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
+            $this->data["Product Department DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
+                        $this->data["Product Department DC $db_interval Acc Invoiced Gross Amount"]=$row["dc_gross"];
+
+            $this->data["Product Department DC $db_interval Acc Profit"]=$row["dc_net"]-$row['dc_total_cost'];
+        }
+
+        $sql=sprintf("update `Product Department Dimension` set
+                     `Product Department $db_interval Acc Invoiced Discount Amount`=%.2f,
+                     `Product Department $db_interval Acc Invoiced Amount`=%.2f,
+                     `Product Department $db_interval Acc Invoices`=%d,
+                     `Product Department $db_interval Acc Profit`=%.2f,
+                      `Product Department $db_interval Acc Customers`=%d,
+                       `Product Department $db_interval Acc Quantity Ordered`=%d,
+                       `Product Department $db_interval Acc Quantity Invoiced`=%d,
+                       `Product Department $db_interval Acc Quantity Delivered`=%d
+                     where `Product Department Key`=%d "
+                     ,$this->data["Product Department $db_interval Acc Invoiced Discount Amount"]
+                     ,$this->data["Product Department $db_interval Acc Invoiced Amount"]
+                     ,$this->data["Product Department $db_interval Acc Invoices"]
+                     ,$this->data["Product Department $db_interval Acc Profit"]
+                      ,$this->data["Product Department $db_interval Acc Customers"]
+                       ,$this->data["Product Department $db_interval Acc Quantity Ordered"]
+            ,$this->data["Product Department $db_interval Acc Quantity Invoiced"]
+            ,$this->data["Product Department $db_interval Acc Quantity Delivered"]
+                      
+                     ,$this->id
+                    );
+
+        mysql_query($sql);
+//print $sql."\n\n";
+        
+                $sql=sprintf("update `Product Department Default Currency` set
+                             `Product Department DC $db_interval Acc Invoiced Discount Amount`=%.2f,
+                                                          `Product Department DC $db_interval Acc Invoiced Gross Amount`=%.2f,
+
+                             `Product Department DC $db_interval Acc Invoiced Amount`=%.2f,
+                             `Product Department DC $db_interval Acc Profit`=%.2f
+                             where `Product Department Key`=%d "
+                             ,$this->data["Product Department DC $db_interval Acc Invoiced Discount Amount"]
+                              ,$this->data["Product Department DC $db_interval Acc Invoiced Gross Amount"]
+                            
+                             ,$this->data["Product Department DC $db_interval Acc Invoiced Amount"]
+                             ,$this->data["Product Department DC $db_interval Acc Profit"]
+                             ,$this->id
+                            );
+
+                mysql_query($sql);
+
+     //   print $sql."\n\n";
+
+        if ($from_date_1yb) {
+            $this->data["Product Department $db_interval Acc 1YB Invoices"]=0;
+            $this->data["Product Department $db_interval Acc 1YB Invoiced Discount Amount"]=0;
+            $this->data["Product Department $db_interval Acc 1YB Invoiced Amount"]=0;
+            $this->data["Product Department $db_interval Acc 1YB Profit"]=0;
+            //$this->data["Product Department DC $db_interval Acc 1YB Invoiced Discount Amount"]=0;
+            //$this->data["Product Department DC $db_interval Acc 1YB Invoiced Amount"]=0;
+            //$this->data["Product Department DC $db_interval Acc 1YB Profit"]=0;
+
+            $sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
+                         sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Department Key`=%d and `Invoice Date`>=%s %s" ,
+                         $this->id,
+                         prepare_mysql($from_date_1yb),
+                         prepare_mysql($to_1yb)
+
+                        );
+
+
+
+            // print "$sql\n\n";
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $this->data["Product Department $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
+                $this->data["Product Department $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
+                $this->data["Product Department $db_interval Acc 1YB Invoices"]=$row["invoices"];
+                $this->data["Product Department $db_interval Acc 1YB Profit"]=$row["net"]-$row['total_cost'];
+                // $this->data["Product Department DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
+                //$this->data["Product Department DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
+                //$this->data["Product Department DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
+            }
+
+            $sql=sprintf("update `Product Department Dimension` set
+                         `Product Department $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
+                         `Product Department $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                         `Product Department $db_interval Acc 1YB Invoices`=%.2f,
+                         `Product Department $db_interval Acc 1YB Profit`=%.2f
+                         where `Product Department Key`=%d "
+                         ,$this->data["Product Department $db_interval Acc 1YB Invoiced Discount Amount"]
+                         ,$this->data["Product Department $db_interval Acc 1YB Invoiced Amount"]
+                         ,$this->data["Product Department $db_interval Acc 1YB Invoices"]
+                         ,$this->data["Product Department $db_interval Acc 1YB Profit"]
+                         ,$this->id
+                        );
+
+            mysql_query($sql);
+            //print "$sql\n";
+
+            /*
+            $sql=sprintf("update `Product Department Default Currency` set
+                         `Product Department DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
+                         `Product Department DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                         `Product Department DC $db_interval Acc 1YB Profit`=%.2f
+                         where `Product Department Key`=%d "
+                         ,$this->data["Product Department DC $db_interval Acc 1YB Invoiced Discount Amount"]
+                         ,$this->data["Product Department DC $db_interval Acc 1YB Invoiced Amount"]
+                         ,$this->data["Product Department DC $db_interval Acc 1YB Profit"]
+                         ,$this->id
+                        );
+            // print "$sql\n";
+            mysql_query($sql);
+            */
+        }
+
+        return array(substr($from_date, -19,-9), date("Y-m-d"));
+
+    }
+
+
+    function update_sales_data_old() {
         $on_sale_days=0;
 
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension`  where `Product Main Department Key`=".$this->id;
@@ -630,36 +995,36 @@ class Department extends DB_Table {
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Product Department Total Invoiced Gross Amount']=$row['gross'];
-            $this->data['Product Department Total Invoiced Discount Amount']=$row['disc'];
-            $this->data['Product Department Total Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data['Product Department Total Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Department Total Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Department Total Acc Invoiced Amount']=$row['gross']-$row['disc'];
 
-            $this->data['Product Department Total Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
-            $this->data['Product Department Total Quantity Ordered']=$row['ordered'];
-            $this->data['Product Department Total Quantity Invoiced']=$row['invoiced'];
-            $this->data['Product Department Total Quantity Delivered']=$row['delivered'];
-            $this->data['Product Department Total Days On Sale']=$on_sale_days;
-            $this->data['Product Department Total Customers']=$row['customers'];
-            $this->data['Product Department Total Invoices']=$row['invoices'];
-            $this->data['Product Department Total Pending Orders']=$pending_orders;
+            $this->data['Product Department Total Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Department Total Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Department Total Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Department Total Acc Quantity Delivered']=$row['delivered'];
+            $this->data['Product Department Total Acc Days On Sale']=$on_sale_days;
+            $this->data['Product Department Total Acc Customers']=$row['customers'];
+            $this->data['Product Department Total Acc Invoices']=$row['invoices'];
+            $this->data['Product Department Total Acc Pending Orders']=$pending_orders;
 
 
             $this->data['Product Department Valid From']=$_from;
             $this->data['Product Department Valid To']=$_to;
-            $sql=sprintf("update `Product Department Dimension` set `Product Department Total Invoiced Gross Amount`=%s,`Product Department Total Invoiced Discount Amount`=%s,`Product Department Total Invoiced Amount`=%s,`Product Department Total Profit`=%s, `Product Department Total Quantity Ordered`=%s , `Product Department Total Quantity Invoiced`=%s,`Product Department Total Quantity Delivered`=%s ,`Product Department Total Days On Sale`=%f ,`Product Department Valid From`=%s,`Product Department Valid To`=%s ,`Product Department Total Customers`=%d,`Product Department Total Invoices`=%d,`Product Department Total Pending Orders`=%d where `Product Department Key`=%d "
-                         ,prepare_mysql($this->data['Product Department Total Invoiced Gross Amount'])
-                         ,prepare_mysql($this->data['Product Department Total Invoiced Discount Amount'])
-                         ,prepare_mysql($this->data['Product Department Total Invoiced Amount'])
-                         ,prepare_mysql($this->data['Product Department Total Profit'])
-                         ,prepare_mysql($this->data['Product Department Total Quantity Ordered'])
-                         ,prepare_mysql($this->data['Product Department Total Quantity Invoiced'])
-                         ,prepare_mysql($this->data['Product Department Total Quantity Delivered'])
+            $sql=sprintf("update `Product Department Dimension` set `Product Department Total Acc Invoiced Gross Amount`=%s,`Product Department Total Acc Invoiced Discount Amount`=%s,`Product Department Total Acc Invoiced Amount`=%s,`Product Department Total Acc Profit`=%s, `Product Department Total Acc Quantity Ordered`=%s , `Product Department Total Acc Quantity Invoiced`=%s,`Product Department Total Acc Quantity Delivered`=%s ,`Product Department Total Acc Days On Sale`=%f ,`Product Department Valid From`=%s,`Product Department Valid To`=%s ,`Product Department Total Acc Customers`=%d,`Product Department Total Acc Invoices`=%d,`Product Department Total Acc Pending Orders`=%d where `Product Department Key`=%d "
+                         ,prepare_mysql($this->data['Product Department Total Acc Invoiced Gross Amount'])
+                         ,prepare_mysql($this->data['Product Department Total Acc Invoiced Discount Amount'])
+                         ,prepare_mysql($this->data['Product Department Total Acc Invoiced Amount'])
+                         ,prepare_mysql($this->data['Product Department Total Acc Profit'])
+                         ,prepare_mysql($this->data['Product Department Total Acc Quantity Ordered'])
+                         ,prepare_mysql($this->data['Product Department Total Acc Quantity Invoiced'])
+                         ,prepare_mysql($this->data['Product Department Total Acc Quantity Delivered'])
                          ,$on_sale_days
                          ,prepare_mysql($this->data['Product Department Valid From'])
                          ,prepare_mysql($this->data['Product Department Valid To'])
-                         ,$this->data['Product Department Total Customers']
-                         ,$this->data['Product Department Total Invoices']
-                         ,$this->data['Product Department Total Pending Orders']
+                         ,$this->data['Product Department Total Acc Customers']
+                         ,$this->data['Product Department Total Acc Invoices']
+                         ,$this->data['Product Department Total Acc Pending Orders']
 
                          ,$this->id
                         );
@@ -899,31 +1264,31 @@ class Department extends DB_Table {
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Product Department YearToDay Acc Invoiced Gross Amount']=$row['gross'];
-            $this->data['Product Department YearToDay Acc Invoiced Discount Amount']=$row['disc'];
-            $this->data['Product Department YearToDay Acc Invoiced Amount']=$row['gross']-$row['disc'];
+            $this->data['Product Department Year To Day Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Department Year To Day Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Department Year To Day Acc Invoiced Amount']=$row['gross']-$row['disc'];
 
-            $this->data['Product Department YearToDay Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
-            $this->data['Product Department YearToDay Acc Quantity Ordered']=$row['ordered'];
-            $this->data['Product Department YearToDay Acc Quantity Invoiced']=$row['invoiced'];
-            $this->data['Product Department YearToDay Acc Quantity Delivered']=$row['delivered'];
-            $this->data['Product Department YearToDay Acc Customers']=$row['customers'];
-            $this->data['Product Department YearToDay Acc Invoices']=$row['invoices'];
-            $this->data['Product Department YearToDay Acc Pending Orders']=$pending_orders;
+            $this->data['Product Department Year To Day Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Department Year To Day Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Department Year To Day Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Department Year To Day Acc Quantity Delivered']=$row['delivered'];
+            $this->data['Product Department Year To Day Acc Customers']=$row['customers'];
+            $this->data['Product Department Year To Day Acc Invoices']=$row['invoices'];
+            $this->data['Product Department Year To Day Acc Pending Orders']=$pending_orders;
 
-            $sql=sprintf("update `Product Department Dimension` set `Product Department YearToDay Acc Invoiced Gross Amount`=%s,`Product Department YearToDay Acc Invoiced Discount Amount`=%s,`Product Department YearToDay Acc Invoiced Amount`=%s,`Product Department YearToDay Acc Profit`=%s, `Product Department YearToDay Acc Quantity Ordered`=%s , `Product Department YearToDay Acc Quantity Invoiced`=%s,`Product Department 10 Day Acc Quantity Delivered`=%s  ,`Product Department 10 Day Acc Days On Sale`=%f  ,`Product Department 10 Day Acc Customers`=%d,`Product Department YearToDay Acc Invoices`=%d,`Product Department YearToDay Acc Pending Orders`=%d where `Product Department Key`=%d "
-                         ,prepare_mysql($this->data['Product Department YearToDay Acc Invoiced Gross Amount'])
-                         ,prepare_mysql($this->data['Product Department YearToDay Acc Invoiced Discount Amount'])
-                         ,prepare_mysql($this->data['Product Department YearToDay Acc Invoiced Amount'])
+            $sql=sprintf("update `Product Department Dimension` set `Product Department Year To Day Acc Invoiced Gross Amount`=%s,`Product Department Year To Day Acc Invoiced Discount Amount`=%s,`Product Department Year To Day Acc Invoiced Amount`=%s,`Product Department Year To Day Acc Profit`=%s, `Product Department Year To Day Acc Quantity Ordered`=%s , `Product Department Year To Day Acc Quantity Invoiced`=%s,`Product Department 10 Day Acc Quantity Delivered`=%s  ,`Product Department 10 Day Acc Days On Sale`=%f  ,`Product Department 10 Day Acc Customers`=%d,`Product Department Year To Day Acc Invoices`=%d,`Product Department Year To Day Acc Pending Orders`=%d where `Product Department Key`=%d "
+                         ,prepare_mysql($this->data['Product Department Year To Day Acc Invoiced Gross Amount'])
+                         ,prepare_mysql($this->data['Product Department Year To Day Acc Invoiced Discount Amount'])
+                         ,prepare_mysql($this->data['Product Department Year To Day Acc Invoiced Amount'])
 
-                         ,prepare_mysql($this->data['Product Department YearToDay Acc Profit'])
-                         ,prepare_mysql($this->data['Product Department YearToDay Acc Quantity Ordered'])
-                         ,prepare_mysql($this->data['Product Department YearToDay Acc Quantity Invoiced'])
-                         ,prepare_mysql($this->data['Product Department YearToDay Acc Quantity Delivered'])
+                         ,prepare_mysql($this->data['Product Department Year To Day Acc Profit'])
+                         ,prepare_mysql($this->data['Product Department Year To Day Acc Quantity Ordered'])
+                         ,prepare_mysql($this->data['Product Department Year To Day Acc Quantity Invoiced'])
+                         ,prepare_mysql($this->data['Product Department Year To Day Acc Quantity Delivered'])
                          ,$on_sale_days
-                         ,$this->data['Product Department YearToDay Acc Customers']
-                         ,$this->data['Product Department YearToDay Acc Invoices']
-                         ,$this->data['Product Department YearToDay Acc Pending Orders']
+                         ,$this->data['Product Department Year To Day Acc Customers']
+                         ,$this->data['Product Department Year To Day Acc Invoices']
+                         ,$this->data['Product Department Year To Day Acc Pending Orders']
                          ,$this->id
                         );
             // print "$sql\n";
@@ -1433,8 +1798,8 @@ class Department extends DB_Table {
 
         }
 
-        $this->data['Product Department Total Avg Week Sales Per Product']=$avg_weekly_sales_per_product;
-        $this->data['Product Department Total Avg Week Profit Per Product']=$avg_weekly_profit_per_product;
+        $this->data['Product Department Total Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product;
+        $this->data['Product Department Total Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product;
         $this->data['Product Department 1 Year Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1y;
         $this->data['Product Department 1 Year Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1y;
         $this->data['Product Department 1 Quarter Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1q;
@@ -1445,9 +1810,9 @@ class Department extends DB_Table {
         $this->data['Product Department 1 Week Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1w;
 
 
-        $sql=sprintf("update `Product Department Dimension` set `Product Department Total Avg Week Sales Per Product`=%.2f , `Product Department Total Avg Week Profit Per Product`=%.2f ,`Product Department 1 Year Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Year Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Quarter Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Quarter Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Month Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Month Acc Avg Week Profit Per Product`=%.2f ,`Product Department 1 Week Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Week Acc Avg Week Profit Per Product`=%.2f where `Product Department Key`=%d   "
-                     ,$this->data['Product Department Total Avg Week Sales Per Product']
-                     ,$this->data['Product Department Total Avg Week Profit Per Product']
+        $sql=sprintf("update `Product Department Dimension` set `Product Department Total Acc Avg Week Sales Per Product`=%.2f , `Product Department Total Acc Avg Week Profit Per Product`=%.2f ,`Product Department 1 Year Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Year Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Quarter Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Quarter Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Month Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Month Acc Avg Week Profit Per Product`=%.2f ,`Product Department 1 Week Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Week Acc Avg Week Profit Per Product`=%.2f where `Product Department Key`=%d   "
+                     ,$this->data['Product Department Total Acc Avg Week Sales Per Product']
+                     ,$this->data['Product Department Total Acc Avg Week Profit Per Product']
                      ,$this->data['Product Department 1 Year Acc Avg Week Sales Per Product']
                      ,$this->data['Product Department 1 Year Acc Avg Week Profit Per Product']
                      ,$this->data['Product Department 1 Quarter Acc Avg Week Sales Per Product']
@@ -1610,7 +1975,7 @@ class Department extends DB_Table {
 
 
 
-    function update_sales_default_currency() {
+    function update_sales_default_currency_old() {
         $this->data_default_currency=array();
         $this->data_default_currency['Product Department DC Total Invoiced Gross Amount']=0;
         $this->data_default_currency['Product Department DC Total Invoiced Discount Amount']=0;

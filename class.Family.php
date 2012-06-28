@@ -794,11 +794,7 @@ class Family extends DB_Table {
 
     }
 
-    /*
-       Function: get
-       Obtiene informacion de los diferentes precios de los productos
-    */
-// JFA
+  
 
     function get($key,$options=false) {
 
@@ -809,13 +805,13 @@ class Family extends DB_Table {
             return $this->data[$key];
 
 
-        if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
+      	if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit)$/',$key)) {
 
             $amount='Product Family '.$key;
 
             return money($this->data[$amount]);
         }
-        if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers)$/',$key)) {
+		if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers)$/',$key)) {
 
             $amount='Product Family '.$key;
 
@@ -1049,10 +1045,13 @@ class Family extends DB_Table {
 
 
     function update_up_today_sales() {
+   
         $this->update_sales_from_invoices('Today');
         $this->update_sales_from_invoices('Week To Day');
         $this->update_sales_from_invoices('Month To Day');
         $this->update_sales_from_invoices('Year To Day');
+       
+        $this->update_sales_from_invoices('Total');
     }
 
     function update_last_period_sales() {
@@ -1060,10 +1059,12 @@ class Family extends DB_Table {
         $this->update_sales_from_invoices('Yesterday');
         $this->update_sales_from_invoices('Last Week');
         $this->update_sales_from_invoices('Last Month');
+      
     }
 
 
     function update_interval_sales() {
+   
         $this->update_sales_from_invoices('3 Year');
         $this->update_sales_from_invoices('1 Year');
         $this->update_sales_from_invoices('6 Month');
@@ -1071,15 +1072,29 @@ class Family extends DB_Table {
         $this->update_sales_from_invoices('1 Month');
         $this->update_sales_from_invoices('10 Day');
         $this->update_sales_from_invoices('1 Week');
+      
     }
 
 
     function update_sales_from_invoices($interval) {
 
+
+
         $to_date='';
 
         switch ($interval) {
 
+
+		case 'Total':
+
+			$db_interval='Total';
+			$from_date=date('Y-m-d H:i:s',strtotime($this->data['Product Family Valid From']));
+			$to_date=gmdate('Y-m-d H:i:s');
+
+			$from_date_1yb=false;
+			$to_1yb=false;
+			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
+			break;
 
 
 
@@ -1240,12 +1255,19 @@ class Family extends DB_Table {
         $this->data["Product Family $db_interval Acc Invoiced Amount"]=0;
         $this->data["Product Family $db_interval Acc Invoices"]=0;
         $this->data["Product Family $db_interval Acc Profit"]=0;
-        //$this->data["Product Family DC $db_interval Acc Invoiced Amount"]=0;
-        //$this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]=0;
-        //$this->data["Product Family DC $db_interval Acc Profit"]=0;
+        $this->data["Product Family $db_interval Acc Customers"]=0;
+          $this->data["Product Family $db_interval Acc Quantity Ordered"]=0;
+            $this->data["Product Family $db_interval Acc Quantity Invoiced"]=0;
+            $this->data["Product Family $db_interval Acc Quantity Delivered"]=0;
+        $this->data["Product Family DC $db_interval Acc Invoiced Amount"]=0;
+        $this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]=0;
+                $this->data["Product Family DC $db_interval Acc Invoiced Gross Amount"]=0;
 
-        $sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
-                     sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
+        $this->data["Product Family DC $db_interval Acc Profit"]=0;
+
+        $sql=sprintf("select  sum(`Shipped Quantity`) as qty_delivered,sum(`Order Quantity`) as qty_ordered,sum(`Invoice Quantity`) as qty_invoiced ,count(Distinct `Customer Key`)as customers,count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost 
+        ,
+                     sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
                      $this->id,
                      prepare_mysql($from_date),
                      ($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
@@ -1254,39 +1276,59 @@ class Family extends DB_Table {
 
         $result=mysql_query($sql);
 
-
+//print $sql."\n\n";
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
             $this->data["Product Family $db_interval Acc Invoiced Amount"]=$row["net"];
             $this->data["Product Family $db_interval Acc Invoices"]=$row["invoices"];
             $this->data["Product Family $db_interval Acc Profit"]=$row["net"]-$row['total_cost'];
-            //$this->data["Product Family DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
-            //$this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
-            //$this->data["Product Family DC $db_interval Acc Profit"]=$row["dc_profit"];
+             $this->data["Product Family $db_interval Acc Customers"]=$row["customers"];
+            $this->data["Product Family $db_interval Acc Quantity Ordered"]=$row["qty_ordered"];
+            $this->data["Product Family $db_interval Acc Quantity Invoiced"]=$row["qty_invoiced"];
+            $this->data["Product Family $db_interval Acc Quantity Delivered"]=$row["qty_delivered"];
+            
+            $this->data["Product Family DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
+            $this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
+                        $this->data["Product Family DC $db_interval Acc Invoiced Gross Amount"]=$row["dc_gross"];
+
+            $this->data["Product Family DC $db_interval Acc Profit"]=$row["dc_net"]-$row['dc_total_cost'];
         }
 
         $sql=sprintf("update `Product Family Dimension` set
                      `Product Family $db_interval Acc Invoiced Discount Amount`=%.2f,
                      `Product Family $db_interval Acc Invoiced Amount`=%.2f,
                      `Product Family $db_interval Acc Invoices`=%d,
-                     `Product Family $db_interval Acc Profit`=%.2f
+                     `Product Family $db_interval Acc Profit`=%.2f,
+                      `Product Family $db_interval Acc Customers`=%d,
+                       `Product Family $db_interval Acc Quantity Ordered`=%d,
+                       `Product Family $db_interval Acc Quantity Invoiced`=%d,
+                       `Product Family $db_interval Acc Quantity Delivered`=%d
                      where `Product Family Key`=%d "
                      ,$this->data["Product Family $db_interval Acc Invoiced Discount Amount"]
                      ,$this->data["Product Family $db_interval Acc Invoiced Amount"]
                      ,$this->data["Product Family $db_interval Acc Invoices"]
                      ,$this->data["Product Family $db_interval Acc Profit"]
+                      ,$this->data["Product Family $db_interval Acc Customers"]
+                       ,$this->data["Product Family $db_interval Acc Quantity Ordered"]
+            ,$this->data["Product Family $db_interval Acc Quantity Invoiced"]
+            ,$this->data["Product Family $db_interval Acc Quantity Delivered"]
+                      
                      ,$this->id
                     );
 
         mysql_query($sql);
-
-        /*
+//print $sql."\n\n";
+        
                 $sql=sprintf("update `Product Family Default Currency` set
                              `Product Family DC $db_interval Acc Invoiced Discount Amount`=%.2f,
+                                                          `Product Family DC $db_interval Acc Invoiced Gross Amount`=%.2f,
+
                              `Product Family DC $db_interval Acc Invoiced Amount`=%.2f,
                              `Product Family DC $db_interval Acc Profit`=%.2f
                              where `Product Family Key`=%d "
                              ,$this->data["Product Family DC $db_interval Acc Invoiced Discount Amount"]
+                                                          ,$this->data["Product Family DC $db_interval Acc Invoiced Gross Amount"]
+
                              ,$this->data["Product Family DC $db_interval Acc Invoiced Amount"]
                              ,$this->data["Product Family DC $db_interval Acc Profit"]
                              ,$this->id
@@ -1294,7 +1336,7 @@ class Family extends DB_Table {
 
                 mysql_query($sql);
 
-        */
+     //   print $sql."\n\n";
 
         if ($from_date_1yb) {
             $this->data["Product Family $db_interval Acc 1YB Invoices"]=0;
@@ -1364,7 +1406,7 @@ class Family extends DB_Table {
     }
 
 
-    function update_sales_data() {
+    function update_sales_data_old() {
 
         //$sql="select  sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` where `Product Family Key`=".$this->id;
         $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')  and  `Product Family Key`=".$this->id;
@@ -1564,40 +1606,40 @@ class Family extends DB_Table {
         $result=mysql_query($sql);
 
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $this->data['Product Family YearToDay Acc Invoiced Gross Amount']=$row['gross'];
-            $this->data['Product Family YearToDay Acc Invoiced Discount Amount']=$row['disc'];
-            $this->data['Product Family YearToDay Acc Invoiced Amount']=$row['gross']-$row['disc']-$row['cost_sup'];
-            $this->data['Product Family YearToDay Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
-            $this->data['Product Family YearToDay Acc Quantity Ordered']=$row['ordered'];
-            $this->data['Product Family YearToDay Acc Quantity Invoiced']=$row['invoiced'];
-            $this->data['Product Family YearToDay Acc Quantity Delivered']=$row['delivered'];
-            $this->data['Product Family YearToDay Acc Customers']=$row['customers'];
-            $this->data['Product Family YearToDay Acc Invoices']=$row['invoices'];
-            $this->data['Product Family YearToDay Acc Pending Orders']=$pending_orders;
+            $this->data['Product Family Year To Day Acc Invoiced Gross Amount']=$row['gross'];
+            $this->data['Product Family Year To Day Acc Invoiced Discount Amount']=$row['disc'];
+            $this->data['Product Family Year To Day Acc Invoiced Amount']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family Year To Day Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+            $this->data['Product Family Year To Day Acc Quantity Ordered']=$row['ordered'];
+            $this->data['Product Family Year To Day Acc Quantity Invoiced']=$row['invoiced'];
+            $this->data['Product Family Year To Day Acc Quantity Delivered']=$row['delivered'];
+            $this->data['Product Family Year To Day Acc Customers']=$row['customers'];
+            $this->data['Product Family Year To Day Acc Invoices']=$row['invoices'];
+            $this->data['Product Family Year To Day Acc Pending Orders']=$pending_orders;
         } else {
-            $this->data['Product Family YearToDay Acc Invoiced Gross Amount']=0;
-            $this->data['Product Family YearToDay Acc Invoiced Discount Amount']=0;
-            $this->data['Product Family YearToDay Acc Invoiced Amount']=0;
-            $this->data['Product Family YearToDay Acc Profit']=0;
-            $this->data['Product Family YearToDay Acc Quantity Ordered']=0;
-            $this->data['Product Family YearToDay Acc Quantity Invoiced']=0;
-            $this->data['Product Family YearToDay Acc Quantity Delivered']=0;
-            $this->data['Product Family YearToDay Acc Customers']=0;
-            $this->data['Product Family YearToDay Acc Invoices']=0;
-            $this->data['Product Family YearToDay Acc Pending Orders']=$pending_orders;
+            $this->data['Product Family Year To Day Acc Invoiced Gross Amount']=0;
+            $this->data['Product Family Year To Day Acc Invoiced Discount Amount']=0;
+            $this->data['Product Family Year To Day Acc Invoiced Amount']=0;
+            $this->data['Product Family Year To Day Acc Profit']=0;
+            $this->data['Product Family Year To Day Acc Quantity Ordered']=0;
+            $this->data['Product Family Year To Day Acc Quantity Invoiced']=0;
+            $this->data['Product Family Year To Day Acc Quantity Delivered']=0;
+            $this->data['Product Family Year To Day Acc Customers']=0;
+            $this->data['Product Family Year To Day Acc Invoices']=0;
+            $this->data['Product Family Year To Day Acc Pending Orders']=$pending_orders;
         }
 
-        $sql=sprintf("update `Product Family Dimension` set `Product Family YearToDay Acc Invoiced Gross Amount`=%.2f,`Product Family YearToDay Acc Invoiced Discount Amount`=%.2f,`Product Family YearToDay Acc Invoiced Amount`=%.2f,`Product Family YearToDay Acc Profit`=%.2f, `Product Family YearToDay Acc Quantity Ordered`=%f , `Product Family YearToDay Acc Quantity Invoiced`=%f,`Product Family YearToDay Acc Quantity Delivered`=%f  ,`Product Family YearToDay Acc Customers`=%d,`Product Family YearToDay Acc Invoices`=%d,`Product Family YearToDay Acc Pending Orders`=%d  where `Product Family Key`=%d "
-                     ,$this->data['Product Family YearToDay Acc Invoiced Gross Amount']
-                     ,$this->data['Product Family YearToDay Acc Invoiced Discount Amount']
-                     ,$this->data['Product Family YearToDay Acc Invoiced Amount']
-                     ,$this->data['Product Family YearToDay Acc Profit']
-                     ,$this->data['Product Family YearToDay Acc Quantity Ordered']
-                     ,$this->data['Product Family YearToDay Acc Quantity Invoiced']
-                     ,$this->data['Product Family YearToDay Acc Quantity Delivered']
-                     ,$this->data['Product Family YearToDay Acc Customers']
-                     ,$this->data['Product Family YearToDay Acc Invoices']
-                     ,$this->data['Product Family YearToDay Acc Pending Orders']
+        $sql=sprintf("update `Product Family Dimension` set `Product Family Year To Day Acc Invoiced Gross Amount`=%.2f,`Product Family Year To Day Acc Invoiced Discount Amount`=%.2f,`Product Family Year To Day Acc Invoiced Amount`=%.2f,`Product Family Year To Day Acc Profit`=%.2f, `Product Family Year To Day Acc Quantity Ordered`=%f , `Product Family Year To Day Acc Quantity Invoiced`=%f,`Product Family Year To Day Acc Quantity Delivered`=%f  ,`Product Family Year To Day Acc Customers`=%d,`Product Family Year To Day Acc Invoices`=%d,`Product Family Year To Day Acc Pending Orders`=%d  where `Product Family Key`=%d "
+                     ,$this->data['Product Family Year To Day Acc Invoiced Gross Amount']
+                     ,$this->data['Product Family Year To Day Acc Invoiced Discount Amount']
+                     ,$this->data['Product Family Year To Day Acc Invoiced Amount']
+                     ,$this->data['Product Family Year To Day Acc Profit']
+                     ,$this->data['Product Family Year To Day Acc Quantity Ordered']
+                     ,$this->data['Product Family Year To Day Acc Quantity Invoiced']
+                     ,$this->data['Product Family Year To Day Acc Quantity Delivered']
+                     ,$this->data['Product Family Year To Day Acc Customers']
+                     ,$this->data['Product Family Year To Day Acc Invoices']
+                     ,$this->data['Product Family Year To Day Acc Pending Orders']
                      ,$this->id
                     );
 
@@ -3148,13 +3190,17 @@ class Family extends DB_Table {
             $form.=sprintf('<tr class="last register"><td colspan="4">%s</td></tr>',$register);
         $form.=sprintf('</table>');
         return $form;
-    }
+  
+  }
 //End
 
 
 
 
+	function get_period($period,$key) {
 
+		return $this->get($period.' '.$key);
+	}
 
 
 

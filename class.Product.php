@@ -151,7 +151,8 @@ class product extends DB_Table {
 				return;
 			mysql_free_result($result);
 			return;
-		} else if ($tipo=='pid') {
+		} 
+		else if ($tipo=='pid') {
 				$sql=sprintf("select * from `Product Dimension` where `Product ID`=%d    ",$tag);
 				$this->mode='pid';
 				$result=mysql_query($sql);
@@ -2539,7 +2540,6 @@ class product extends DB_Table {
 		$this->update_sales_from_invoices('Month To Day');
 		$this->update_sales_from_invoices('Year To Day');
 		$this->update_sales_from_invoices('Total');
-
 	}
 
 	function update_last_period_sales() {
@@ -2561,7 +2561,33 @@ class product extends DB_Table {
 
 	}
 
-	// select `Order Transaction Fact Key`, `Shipped Quantity` as delivered,`Order Quantity` as ordered,`Invoice Quantity` as invoiced,`Invoice Date`  from `Order Transaction Fact` where `Product ID`=5359 and `Invoice Date`>='2012-03-10 17:50:39';
+	function update_up_today_historic_key_sales() {
+		$this->update_historic_key_sales_from_invoices('Today');
+		$this->update_historic_key_sales_from_invoices('Week To Day');
+		$this->update_historic_key_sales_from_invoices('Month To Day');
+		$this->update_historic_key_sales_from_invoices('Year To Day');
+		$this->update_historic_key_sales_from_invoices('Total');
+	}
+
+	function update_last_period_historic_key_sales() {
+
+		$this->update_historic_key_sales_from_invoices('Yesterday');
+		$this->update_historic_key_sales_from_invoices('Last Week');
+		$this->update_historic_key_sales_from_invoices('Last Month');
+	}
+
+	function update_interval_historic_key_sales() {
+
+		$this->update_historic_key_sales_from_invoices('3 Year');
+		$this->update_historic_key_sales_from_invoices('1 Year');
+		$this->update_historic_key_sales_from_invoices('6 Month');
+		$this->update_historic_key_sales_from_invoices('1 Quarter');
+		$this->update_historic_key_sales_from_invoices('1 Month');
+		$this->update_historic_key_sales_from_invoices('10 Day');
+		$this->update_historic_key_sales_from_invoices('1 Week');
+
+	}
+
 
 	function update_sales_from_invoices($interval) {
 
@@ -2617,7 +2643,62 @@ class product extends DB_Table {
 	}
 
 
-	function update_historic_sales_data() {
+
+	function update_historic_key_sales_from_invoices($interval) {
+
+		$to_date='';
+		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+
+
+		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d %s %s ",
+			$this->id,
+			($from_date?sprintf('and `Invoice Date`>=%s',prepare_mysql($from_date)):''),
+			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
+
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$this->data['Product History $db_interval Acc Customers']=$row['customers'];
+			$this->data['Product History $db_interval Acc Invoices']=$row['invoices'];
+			$this->data['Product History $db_interval Acc Invoiced Gross Amount']=$row['gross'];
+			$this->data['Product History $db_interval Acc Invoiced Discount Amount']=$row['disc'];
+			$this->data['Product History $db_interval Acc Invoiced Amount']=$row['gross']-$row['disc'];
+			$this->data['Product History $db_interval Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+			$this->data['Product History $db_interval Acc Quantity Ordered']=$row['ordered'];
+			$this->data['Product History $db_interval Acc Quantity Invoiced']=$row['invoiced'];
+			$this->data['Product History $db_interval Acc Quantity Delivered']=$row['delivered'];
+		} else {
+			$this->data['Product History $db_interval Acc Customers']=0;
+			$this->data['Product History $db_interval Acc Invoices']=0;
+			$this->data['Product History $db_interval Acc Invoiced Gross Amount']=0;
+			$this->data['Product History $db_interval Acc Invoiced Discount Amount']=0;
+			$this->data['Product History $db_interval Acc Profit']=0;
+			$this->data['Product History $db_interval Acc Invoiced Amount']=0;
+			$this->data['Product History $db_interval Acc Quantity Ordered']=0;
+			$this->data['Product History $db_interval Acc Quantity Invoiced']=0;
+			$this->data['Product History $db_interval Acc Quantity Delivered']=0;
+		}
+		$sql=sprintf("update `Product History Dimension` set `Product History $db_interval Acc Customers`=%d,`Product History $db_interval Acc Invoices`=%d,`Product History $db_interval Acc Invoiced Gross Amount`=%.2f,`Product History $db_interval Acc Invoiced Discount Amount`=%.2f,`Product History $db_interval Acc Invoiced Amount`=%.2f,`Product History $db_interval Acc Profit`=%.2f, `Product History $db_interval Acc Quantity Ordered`=%s , `Product History $db_interval Acc Quantity Invoiced`=%s,`Product History $db_interval Acc Quantity Delivered`=%s  where `Product Key`=%d "
+			,$this->data['Product History $db_interval Acc Customers']
+			,$this->data['Product History $db_interval Acc Invoices']
+			,$this->data['Product History $db_interval Acc Invoiced Gross Amount']
+			,$this->data['Product History $db_interval Acc Invoiced Discount Amount']
+			,$this->data['Product History $db_interval Acc Invoiced Amount']
+			,$this->data['Product History $db_interval Acc Profit']
+			,prepare_mysql($this->data['Product History $db_interval Acc Quantity Ordered'])
+			,prepare_mysql($this->data['Product History $db_interval Acc Quantity Invoiced'])
+			,prepare_mysql($this->data['Product History $db_interval Acc Quantity Delivered'])
+			,$this->id
+		);
+		mysql_query($sql);
+
+//print "$sql\n\n\n";
+
+
+	}
+
+
+	function update_historic_sales_data_old() {
 
 		$sql=sprintf("select count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key`=%d"
 			,$this->id);
@@ -2758,32 +2839,32 @@ class product extends DB_Table {
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-			$this->data['Product History YearToDay Acc Invoiced Gross Amount']=$row['gross'];
-			$this->data['Product History YearToDay Acc Invoiced Discount Amount']=$row['disc'];
-			$this->data['Product History YearToDay Acc Invoiced Amount']=$row['gross']-$row['disc'];
+			$this->data['Product History Year To Day Acc Invoiced Gross Amount']=$row['gross'];
+			$this->data['Product History Year To Day Acc Invoiced Discount Amount']=$row['disc'];
+			$this->data['Product History Year To Day Acc Invoiced Amount']=$row['gross']-$row['disc'];
 
-			$this->data['Product History YearToDay Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
-			$this->data['Product History YearToDay Acc Quantity Ordered']=$row['ordered'];
-			$this->data['Product History YearToDay Acc Quantity Invoiced']=$row['invoiced'];
-			$this->data['Product History YearToDay Acc Quantity Delivered']=$row['delivered'];
+			$this->data['Product History Year To Day Acc Profit']=$row['gross']-$row['disc']-$row['cost_sup'];
+			$this->data['Product History Year To Day Acc Quantity Ordered']=$row['ordered'];
+			$this->data['Product History Year To Day Acc Quantity Invoiced']=$row['invoiced'];
+			$this->data['Product History Year To Day Acc Quantity Delivered']=$row['delivered'];
 		} else {
-			$this->data['Product History YearToDay Acc Invoiced Gross Amount']=0;
-			$this->data['Product History YearToDay Acc Invoiced Discount Amount']=0;
-			$this->data['Product History YearToDay Acc Profit']=0;
-			$this->data['Product History YearToDay Acc Invoiced Amount']=0;
-			$this->data['Product History YearToDay Acc Quantity Ordered']=0;
-			$this->data['Product History YearToDay Acc Quantity Invoiced']=0;
-			$this->data['Product History YearToDay Acc Quantity Delivered']=0;
+			$this->data['Product History Year To Day Acc Invoiced Gross Amount']=0;
+			$this->data['Product History Year To Day Acc Invoiced Discount Amount']=0;
+			$this->data['Product History Year To Day Acc Profit']=0;
+			$this->data['Product History Year To Day Acc Invoiced Amount']=0;
+			$this->data['Product History Year To Day Acc Quantity Ordered']=0;
+			$this->data['Product History Year To Day Acc Quantity Invoiced']=0;
+			$this->data['Product History Year To Day Acc Quantity Delivered']=0;
 		}
 
-		$sql=sprintf("update `Product History Dimension` set `Product History YearToDay Acc Invoiced Gross Amount`=%.2f,`Product History YearToDay Acc Invoiced Discount Amount`=%.2f,`Product History YearToDay Acc Invoiced Amount`=%.2f,`Product History YearToDay Acc Profit`=%.2f, `Product History YearToDay Acc Quantity Ordered`=%s , `Product History YearToDay Acc Quantity Invoiced`=%s,`Product History YearToDay Acc Quantity Delivered`=%s  where `Product Key`=%d "
-			,$this->data['Product History YearToDay Acc Invoiced Gross Amount']
-			,$this->data['Product History YearToDay Acc Invoiced Discount Amount']
-			,$this->data['Product History YearToDay Acc Invoiced Amount']
-			,$this->data['Product History YearToDay Acc Profit']
-			,prepare_mysql($this->data['Product History YearToDay Acc Quantity Ordered'])
-			,prepare_mysql($this->data['Product History YearToDay Acc Quantity Invoiced'])
-			,prepare_mysql($this->data['Product History YearToDay Acc Quantity Delivered'])
+		$sql=sprintf("update `Product History Dimension` set `Product History Year To Day Acc Invoiced Gross Amount`=%.2f,`Product History Year To Day Acc Invoiced Discount Amount`=%.2f,`Product History Year To Day Acc Invoiced Amount`=%.2f,`Product History Year To Day Acc Profit`=%.2f, `Product History Year To Day Acc Quantity Ordered`=%s , `Product History Year To Day Acc Quantity Invoiced`=%s,`Product History Year To Day Acc Quantity Delivered`=%s  where `Product Key`=%d "
+			,$this->data['Product History Year To Day Acc Invoiced Gross Amount']
+			,$this->data['Product History Year To Day Acc Invoiced Discount Amount']
+			,$this->data['Product History Year To Day Acc Invoiced Amount']
+			,$this->data['Product History Year To Day Acc Profit']
+			,prepare_mysql($this->data['Product History Year To Day Acc Quantity Ordered'])
+			,prepare_mysql($this->data['Product History Year To Day Acc Quantity Invoiced'])
+			,prepare_mysql($this->data['Product History Year To Day Acc Quantity Delivered'])
 			,$this->id
 		);
 		if (!mysql_query($sql)) {
@@ -2995,7 +3076,7 @@ class product extends DB_Table {
 
 
 
-	function update_same_code_sales_data() {
+	function update_same_code_sales_data_old() {
 
 		/*
             $this->get_historic_keys_with_same_code();
@@ -4790,7 +4871,7 @@ class product extends DB_Table {
 		$q_days=count($q_days);
 		$m_days=count($m_days);
 		$w_days=count($w_days);
-		$sql=sprintf("update `Product Dimension` set `Product Total Days On Sale`=%f ,`Product 1 Year Acc Days On Sale`=%f , `Product 1 Quarter Acc Days On Sale`=%f, `Product 1 Month Acc Days On Sale`=%f , `Product 1 Week Acc Days On Sale`=%f where  `Product ID`=%d "
+		$sql=sprintf("update `Product Dimension` set `Product Total Acc Days On Sale`=%f ,`Product 1 Year Acc Days On Sale`=%f , `Product 1 Quarter Acc Days On Sale`=%f, `Product 1 Month Acc Days On Sale`=%f , `Product 1 Week Acc Days On Sale`=%f where  `Product ID`=%d "
 			,$total_days
 			,$y_days
 			,$q_days

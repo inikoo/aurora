@@ -2,6 +2,7 @@
 include_once 'common.php';
 include_once 'class.CurrencyExchange.php';
 
+include_once 'class.CompanyArea.php';
 
 include_once 'class.Store.php';
 
@@ -313,6 +314,43 @@ if (isset($_REQUEST['pick_aid'])) {
 		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
 }
+
+$company_area=new CompanyArea('code','WAH');
+$pickers=$company_area->get_current_staff_with_position_code('PICK');
+$number_cols=5;
+$row=0;
+$pickers_data=array();
+$contador=0;
+foreach($pickers as $picker) {
+    if (fmod($contador,$number_cols)==0 and $contador>0)
+        $row++;
+    $tmp=array();
+    foreach($picker as $key=>$value) {
+        $tmp[preg_replace('/\s/','',$key)]=$value;
+    }
+    $pickers_data[$row][]=$tmp;
+    $contador++;
+}
+
+$smarty->assign('pickers',$pickers_data);
+
+$packers=$company_area->get_current_staff_with_position_code('PACK');
+$number_cols=5;
+$row=0;
+$packers_data=array();
+$contador=0;
+foreach($packers as $packer) {
+    if (fmod($contador,$number_cols)==0 and $contador>0)
+        $row++;
+    $tmp=array();
+    foreach($packer as $key=>$value) {
+        $tmp[preg_replace('/\s/','',$key)]=$value;
+    }
+    $packers_data[$row][]=$tmp;
+    $contador++;
+}
+
+$smarty->assign('packers',$packers_data);
 
 		break;
 

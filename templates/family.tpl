@@ -30,124 +30,90 @@
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
-	<div style="padding:0 20px">
+	
+			
+	<div style="padding:10px 20px">
+	
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<div style="width:300px;float:left;margin-left:20px">
-				<table class="show_info_product">
-					<tr>
-						<td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$department_period_title}</span></span> <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<" title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer" src="art/icons/next.png" alt=">" tite="next" /></td>
+			<div style="width:900px;float:left;margin-left:20px">
+					<div class="clusters">
+					<div class="buttons small left cluster">
+					<button class="{if $products_period=='all'}selected{/if}" period="all" id="products_period_all" style="padding-left:7px;padding-right:7px">{t}All{/t}</button>
+				</div>
+				<div class="buttons small left cluster">				<tr>
+					<button class="{if $products_period=='yeartoday'}selected{/if}" period="yeartoday" id="products_period_yeartoday">{t}YTD{/t}</button>
+					<button class="{if $products_period=='monthtoday'}selected{/if}" period="monthtoday" id="products_period_monthtoday">{t}MTD{/t}</button>
+					<button class="{if $products_period=='weektoday'}selected{/if}" period="weektoday" id="products_period_weektoday">{t}WTD{/t}</button>
+					<button class="{if $products_period=='today'}selected{/if}" period="today" id="products_period_today">{t}Today{/t}</button>
+					</div>
+					
+						<div class="buttons small left cluster">				<tr>
+					<button class="{if $products_period=='yesterday'}selected{/if}" period="yesterday" id="products_period_yesterday">{t}Yesterday{/t}</button>
+					<button class="{if $products_period=='last_w'}selected{/if}" period="last_w" id="products_period_last_w">{t}Last Week{/t}</button>
+					<button class="{if $products_period=='last_m'}selected{/if}" period="last_m" id="products_period_last_m">{t}Last Month{/t}</button>
+					</div>
+					
+					<div class="buttons small left cluster">				<tr>
+					<button class="{if $products_period=='three_year'}selected{/if}" period="three_year" id="products_period_three_year">{t}3Y{/t}</button>
+					<button class="{if $products_period=='year'}selected{/if}" period="year" id="products_period_year">{t}1Yr{/t}</button>
+					<button class="{if $products_period=='six_month'}selected{/if}" period="six_month" id="products_period_six_month">{t}6M{/t}</button>
+					<button class="{if $products_period=='quarter'}selected{/if}" period="quarter" id="products_period_quarter">{t}1Qtr{/t}</button>
+					<button class="{if $products_period=='month'}selected{/if}" period="month" id="products_period_month">{t}1M{/t}</button>
+					<button class="{if $products_period=='ten_day'}selected{/if}" period="ten_day" id="products_period_ten_day">{t}10D{/t}</button>
+					<button class="{if $products_period=='week'}selected{/if}" period="week" id="products_period_week">{t}1W{/t}</button>
+				
+				</div>
+
+			<div style="clear:both"></div>
+	
+	</div>
+					
+			<div style="margin-top:20px">
+				<table class="show_info_product" style="float:left;width:250px">
+			
+			
+			
+					<tr style="display:none">
+						<td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$products_period_title}</span></span> <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<" title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer" src="art/icons/next.png" alt=">" tite="next" /></td>
 					</tr>
-					<tbody id="info_all" style="{if $department_period!='all'}display:none{/if}">
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$family->get('Total Customers')}</td>
-						</tr>
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright">{$family->get('Total Invoices')}</td>
-						</tr>
+					{foreach from=$period_tags item=period }
+					<tbody id="info_{$period.key}" style="{if $products_period!=$period.key}display:none{/if}">
+					
 						<tr>
 							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$family->get('Total Invoiced Amount')}</td>
+							<td class=" aright">{$family->get_period({$period.db},'Acc Invoiced Amount')}</td>
 						</tr>
 						<tr>
 							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$family->get('Total Profit')}</td>
+							<td class=" aright">{$family->get_period({$period.db},'Acc Profit')}</td>
 						</tr>
 						<tr>
 							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$family->get('Total Quantity Delivered')}</td>
+							<td class="aright">{$family->get_period({$period.db},'Acc Quantity Delivered')}</td>
 						</tr>
 					</tbody>
-					<tbody id="info_year" style="{if $department_period!='year'}display:none{/if}">
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$family->get('1 Year Acc Customers')}</td>
-						</tr>
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright">{$family->get('1 Year Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$family->get('1 Year Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$family->get('1 Year Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$family->get('1 Year Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_quarter" style="{if $department_period!='quarter'}display:none{/if}">
-						<tr>
-							<td>{t}Orders{/t}:</td>
-							<td class="aright">{$family->get('1 Quarter Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$family->get('1 Quarter Acc Customers')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$family->get('1 Quarter Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$family->get('1 Quarter Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$family->get('1 Quarter Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_month" style="{if $department_period!='month'}display:none{/if}">
-						<tr>
-							<td>{t}Orders{/t}:</td>
-							<td class="aright">{$family->get('1 Month Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$family->get('1 Month Acc Customers')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$family->get('1 Month Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$family->get('1 Month Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$family->get('1 Month Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-					<tbody id="info_week" style="{if $department_period!='week'}display:none{/if}">
-						<tr>
-							<td>{t}Orders{/t}:</td>
-							<td class="aright">{$family->get('1 Week Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$family->get('1 Week Acc Customers')}</td>
-						</tr>
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$family->get('1 Week Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$family->get('1 Week Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$family->get('1 Week Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
+				{/foreach}
 				</table>
+				<table class="show_info_product" style="float:left;width:250px;margin-left:20px">
+			
+			
+			
+					
+					{foreach from=$period_tags item=period }
+					<tbody id="info2_{$period.key}" style="{if $products_period!=$period.key}display:none{/if}">
+						<tr>
+							<td>{t}Invoices{/t}:</td>
+							<td class="aright">{$family->get_period({$period.db},'Acc Invoices')}</td>
+						</tr>
+						<tr>
+							<td>{t}Customers{/t}:</td>
+							<td class=" aright">{$family->get_period({$period.db},'Acc Customers')}</td>
+						</tr>
+						
+					</tbody>
+				{/foreach}
+				</table>
+			</div>
 			</div>
 			<div id="plots" style="clear:both">
 				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
@@ -239,8 +205,7 @@
 				</div>
 				<div class="buttons small clusters">
 					<button class="selected" id="change_products_display_mode">{$display_products_mode_label}</button> <button class="selected" id="change_products_table_type">{$products_table_type_label}</button> 
-				<div style="clear:both">
-					</div>
+				
 				</div>
 				<div class="clusters" id="table_view_menu0"  style="{if $products_table_type=='thumbnails'}display:none{/if}"  >
 					<div class="buttons small left cluster">

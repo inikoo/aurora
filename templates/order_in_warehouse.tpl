@@ -1,6 +1,6 @@
 {include file='header.tpl'} 
 <div id="bd">
-<input type="hidden" id="amend" value="{$amend}" />
+
 	{include file='assets_navigation.tpl'} 
 	<input type="hidden" value="{$order->get('Order Shipping Method')}" id="order_shipping_method" />
 	<input type="hidden" value="{$store->id}" id="store_id" />
@@ -21,8 +21,9 @@
 		</div>
 		<div class="buttons">
 					<button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
+			<button id="modify_order">{t}Modify Order{/t}</button>
 
-			<button style="{if $amend}display:none{/if}" id="modify_order">{t}Modify Order{/t}</button>
+			<button id="process_order">{t}Process Order{/t}</button>
 			<button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 
 		</div>
@@ -169,5 +170,109 @@
 </div>
 </div>
 {include file='order_not_dispatched_dialogs_splinter.tpl'} 
+
+<div id="process_order_dialog" style="width:400px;;padding:20px 20px 0 20px;">
+
+	<div class="options" style="width:350px;padding:0 10px;text-align:center">
+		<table border="0" style="margin:auto" id="assign_picker_buttons">
+			{foreach from=$pickers item=picker_row name=foo} 
+			<tr>
+				{foreach from=$picker_row key=row_key item=picker } 
+				<td staff_id="{$picker.StaffKey}" id="picker{$picker.StaffKey}" class="assign_picker_button" onclick="select_staff(this,event)">{$picker.StaffAlias}</td>
+				{/foreach} 
+			</tr>
+			{/foreach} 
+		</table>
+	</div>
+	<table class="edit" border="1" style="margin-bottom:5px">
+		<input type="hidden" id="assign_picker_staff_key"> 
+		<input type="hidden" id="assign_picker_dn_key"> 
+		<tr class="first">
+			<td class="label" style="width:65px">{t}Picker{/t}:</td>
+			<td style="text-align:left"> 
+			<div style="width:x190px;position:relative;top:00px">
+				<input style="text-align:left;width:180px" id="Assign_Picker_Staff_Name" value="" ovalue="" valid="0"> 
+				<div id="Assign_Picker_Staff_Name_Container">
+				</div>
+			</div>
+			</td>
+			<td class="assign_picker_button"  >
+			<div class="buttons small">
+			<button onclick="show_other_staff(this)"  td_id="other_staff_picker" >{t}Other{/t}</button>
+			</div>
+			</td>
+			
+		</tr>
+		
+		<tr style="{if $user->can_edit('assign_pp')}display:none{/if}">
+			<td class="label">{t}Supervisor PIN{/t}:</td>
+			<td>
+			<input id="assign_picker_sup_password" type="password" />
+			</td>
+		</tr>
+		
+		
+	<tr>
+	<td></td>
+	<td colspan=2 id="pick_it_msg"  class="edit_td_alert"></td>
+	</tr>
+	
+	</table>
+
+<div class="options" style="width:350px;padding:0 10px;text-align:center;margin:0px">
+		<table style="margin:auto" id="assign_packer_buttons">
+			{foreach from=$packers item=packer_row name=foo} 
+			<tr>
+				{foreach from=$packer_row key=row_key item=packer } 
+				<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" class="assign_packer_button" onclick="select_staff_assign_packer(this,event)">{$packer.StaffAlias}</td>
+				{/foreach} 
+			</tr>
+			{/foreach} 
+		</table>
+	</div>
+	<table class="edit" border="1"  >
+		<input type="hidden" id="assign_packer_staff_key"> 
+		<input type="hidden" id="assign_packer_dn_key"> 
+		<tr class="first">
+			<td class="label" style="width:65px">{t}Packer{/t}:</td>
+			<td style="text-align:left"> 
+			<div style="xwidth:190px;position:relative;top:00px">
+				<input style="text-align:left;width:180px" id="Assign_Packer_Staff_Name" value="" ovalue="" valid="0"> 
+				<div id="Assign_Packer_Staff_Name_Container">
+				</div>
+			</div>
+			</td>
+			<td class="assign_packer_button"  >
+			<div class="buttons small">
+			<button onclick="show_other_staff(this)"  td_id="other_staff_packer" >{t}Other{/t}</button>
+			</div>
+			</td>
+			
+			
+			
+		</tr>
+		<tr style="{if $user->can_edit('assign_pp')}display:none{/if}">
+			<td>{t}Supervisor PIN{/t}:</td>
+			<td colspan=2>
+			<input id="assign_packer_sup_password" type="password" />
+			</td>
+		</tr>
+		<tr ><td colspan=3 id="Assign_Packer_Staff_Name_msg" class="edit_td_alert"></td></tr>
+	</table>
+
+
+	<table class="edit" style="width:100%" border=0>
+		<tr>
+			<td > 
+			<div class="buttons">
+			<button class="positive" onclick="quick_pick_dn()">{t}Invoice Order <br/>(Not all packed){/t}</button>  
+			<button class="positive" onclick="quick_invoice()">{t}Invoice Order <br/> (All packed){/t}</button>  
+				<button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
 
 {include file='footer.tpl'} 

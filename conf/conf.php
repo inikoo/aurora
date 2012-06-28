@@ -2657,7 +2657,7 @@ $default_state=array(
 			'mode'=>'all',
 			'avg'=>'totals',
 			'restrictions'=>'',
-			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0),
+			'elements'=>array('Discontinued'=>0,'Normal'=>1,'Discontinuing'=>1,'InProcess'=>0,'NoSale'=>0),
 			'csv_export'=>array(
 				'code'=>true,
 				'name'=>true,

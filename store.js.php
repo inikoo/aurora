@@ -744,15 +744,17 @@ dialog_change_departments_display.render();
 
  ids=['department_general','department_sales','department_stock'];
  YAHOO.util.Event.addListener(ids, "click",change_department_view,{'table_id':0,'parent':'store'})
- ids=['department_period_all','department_period_year','department_period_quarter','department_period_month','department_period_week'];
+ ids=['department_period_all','department_period_three_year','department_period_year','department_period_yeartoday','department_period_six_month','department_period_quarter','department_period_month','department_period_ten_day','department_period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'department'});
  ids=['department_avg_totals','department_avg_month','department_avg_week',"department_avg_month_eff","department_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'department'});
 
 ids=['family_general','family_sales','family_stock'];
  YAHOO.util.Event.addListener(ids, "click",change_family_view,{'table_id':1,'parent':'store'})
- ids=['family_period_all','family_period_year','family_period_quarter','family_period_month','family_period_week'];
+ 
+ ids=['family_period_all','family_period_three_year','family_period_year','family_period_yeartoday','family_period_six_month','family_period_quarter','family_period_month','family_period_ten_day','family_period_week'];
  YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':1,'subject':'family'});
+
  ids=['family_avg_totals','family_avg_month','family_avg_week',"family_avg_month_eff","family_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':1,'subject':'family'});
 
