@@ -25,8 +25,10 @@ var tableid=1
 	    var tableDivEL="table"+tableid;
 	    var ProductsColumnDefs = [
 				       {key:"position", label:"", width:5,sortable:false,className:"aleft"}
+				       	,{key:"store",label:"", width:10,sortable:false,className:"aleft"}
+
 				       ,{key:"family", label:Dom.get('label_Fam').value, width:28,sortable:false,className:"aleft"}
-				       ,{key:"description", label:Dom.get('label_Product').value, width:271,sortable:false,className:"aleft"}
+				       ,{key:"description", label:Dom.get('label_Product').value, width:241,sortable:false,className:"aleft"}
 				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:69,sortable:false,className:"aright"}
 					 ];
 	  
