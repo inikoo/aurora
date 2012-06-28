@@ -36,6 +36,9 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+
+
+
 $sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
 $sql="select `Product ID` from `Product Dimension`";
 //$sql="select `Product ID` from `Product Dimension` ";
@@ -163,7 +166,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$supplier_product->update_last_period_sales();
 	print "Supplier Product ".$supplier_product->pid."\t\t\r";
 }
-
 
 $sql="select * from `Product History Dimension` PH  order by `Product Key` desc  ";
 $result=mysql_query($sql);
