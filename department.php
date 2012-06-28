@@ -164,6 +164,17 @@ $smarty->assign('family_show_percentages',$_SESSION['state']['department']['fami
 $smarty->assign('family_avg',$_SESSION['state']['department']['families']['avg']);
 $smarty->assign('family_period',$_SESSION['state']['department']['families']['period']);
 
+
+$smarty->assign('department_period',$_SESSION['state']['store']['departments']['period']);
+
+
+
+include_once('conf/period_tags.php');
+unset($period_tags['hour']);
+$smarty->assign('period_tags',$period_tags);
+
+
+
 $tipo_filter=$_SESSION['state']['department']['families']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['department']['families']['f_value']);
@@ -195,6 +206,8 @@ $smarty->assign('products',$department->data['Product Department For Public Sale
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
+
+
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 
@@ -492,6 +505,9 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 mysql_free_result($result);
 
+$plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
+$smarty->assign('plot_tipo','store');
+$smarty->assign('plot_data',$plot_data);
 
 
 $smarty->display('department.tpl');

@@ -419,8 +419,21 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 mysql_free_result($result);
 
+
+
+$smarty->assign('plot_tipo','store');
+
 include_once('conf/period_tags.php');
 unset($period_tags['hour']);
 $smarty->assign('period_tags',$period_tags);
+
+$family_order=$_SESSION['state']['family']['products']['order'];
+$family_period=$_SESSION['state']['family']['products']['period'];
+
+//$family_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+$smarty->assign('products_period',$family_period);
+
+
+
 $smarty->display('product.tpl');
 ?>

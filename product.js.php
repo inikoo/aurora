@@ -395,8 +395,8 @@ Dom.setStyle('main_image','width','')
    ids=['products_period_yesterday','products_period_last_m','products_period_last_w','products_period_all','products_period_three_year','products_period_year','products_period_yeartoday','products_period_six_month','products_period_quarter','products_period_month','products_period_ten_day','products_period_week','products_period_monthtoday','products_period_weektoday','products_period_today'];
  YAHOO.util.Event.addListener(ids, "click",change_sales_period);
    
-YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
-YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
+//YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
+//YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 
 
      YAHOO.util.Event.onContentReady("web_status_menu", function () {

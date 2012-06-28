@@ -399,7 +399,20 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 mysql_free_result($result);
 
+$plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
+$smarty->assign('plot_tipo','store');
+$smarty->assign('plot_data',$plot_data);
 
+include_once('conf/period_tags.php');
+unset($period_tags['hour']);
+$smarty->assign('period_tags',$period_tags);
+
+$family_order=$_SESSION['state']['family']['products']['order'];
+$family_period=$_SESSION['state']['family']['products']['period'];
+$smarty->assign('products_period',$family_period);
+
+//print $family_period;
+//print_r($period_tags);
 $smarty->display('family.tpl');
 
 

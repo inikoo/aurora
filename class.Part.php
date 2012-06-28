@@ -867,15 +867,15 @@ class part extends DB_Table {
 	function update_stock() {
 
 
-
+$picked=0;
+		$required=0;
 
 
 		$sql=sprintf("select sum(`Picked`) as picked, sum(`Required`) as required from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Order In Process'"
 			,$this->id
 		);
 		$res=mysql_query($sql);
-		$picked=0;
-		$required=0;
+		
 		if ($row=mysql_fetch_array($res)) {
 			$picked=round($row['picked'],3);
 			$required=round($row['required'],3);

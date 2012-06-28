@@ -331,6 +331,7 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     $elements_number[$row['Product Family Record Type']]=$row['num'];
 }
+//print_r($elements_number);
 $smarty->assign('elements_family_number',$elements_number);
 //print_r($_SESSION['state']['store']['families']);
 $smarty->assign('elements_family',$_SESSION['state']['store']['families']['elements']);
@@ -406,6 +407,10 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu4',$paginator_menu);
 $smarty->assign('sites_table_type',$_SESSION['state']['store']['pages']['table_type']);
 
+
+$plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
+$smarty->assign('plot_tipo','store');
+$smarty->assign('plot_data',$plot_data);
 
 
 $smarty->display('store.tpl');

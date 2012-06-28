@@ -285,7 +285,7 @@
 					</tbody>
 				{/foreach}
 				</table>
-					<table class="show_info_product" style="float:left;width:250px;margin-left:20px">
+				<table class="show_info_product" style="float:left;width:250px;margin-left:20px">
 			
 			
 			
