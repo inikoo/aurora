@@ -62,7 +62,7 @@ print $row['Date']."\t".$row2['Part SKU'].'_'.$row2['Location Key']."\t\r";
 
 exit;
 */
-$from=date("Y-m-d",strtotime('now -1 day'));
+$from=date("Y-m-d",strtotime('now -10 day'));
 $from=date("Y-m-d");
 $to=date("Y-m-d");
 

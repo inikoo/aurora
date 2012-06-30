@@ -37,7 +37,17 @@ global $myconf;
 
 
 
+$sql="select * from `Part Dimension`  ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$part=new Part('sku',$row['Part SKU']);
 
+	$part->update_up_today_sales();
+	
+	$part->update_interval_sales();
+	$part->update_last_period_sales();
+
+}
 
 $sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
 $sql="select `Product ID` from `Product Dimension`";
