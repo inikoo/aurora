@@ -311,5 +311,8 @@ include_once('conf/period_tags.php');
 unset($period_tags['hour']);
 $smarty->assign('period_tags',$period_tags);
 
+
+$smarty->assign('plot_tipo','sales');
+
 $smarty->display('part.tpl');
 ?>

@@ -32,38 +32,8 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-
-$from=date("Y-m-d");
-
-$to="2007-01-01";
-/*
-$sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`<=%s and `Date`>=%s order by `Date` desc",
-	prepare_mysql($from),prepare_mysql($to));
-$res=mysql_query($sql);
-//print $sql;
-while ($row=mysql_fetch_array($res)) {
-	
-	$where=' true';
-	$sql=sprintf('select `Part SKU`,`Location Key` from `Part Location Dimension` where %s     ',$where);
-
-	//print $sql;
-	$res2=mysql_query($sql);
-	$count=0;
-	while ($row2=mysql_fetch_array($res2)) {
-
-print $row['Date']."\t".$row2['Part SKU'].'_'.$row2['Location Key']."\t\r";
-		$part_location=new PartLocation($row2['Part SKU'].'_'.$row2['Location Key']);
-		$part_location->update_stock_history_date($row['Date']);
-
-	}
-
-}
-
-
-exit;
-*/
-$from=date("Y-m-d",strtotime('now -10 day'));
-$from=date("Y-m-d");
+$from=date("Y-m-d",strtotime('now -180 day'));
+//$from=date("Y-m-d");
 $to=date("Y-m-d");
 
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
@@ -71,8 +41,8 @@ $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Da
 $res=mysql_query($sql);
 
 while ($row=mysql_fetch_array($res)) {
-	print $row['Date']."\r";
-	$where=' `Part SKU`=39077';
+	//print $row['Date']."\r";
+	$where=' `Part SKU`=31873';
 	$where='  true';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
 
@@ -98,7 +68,7 @@ while ($row=mysql_fetch_array($res)) {
 
 			$part_location=new PartLocation($row2['Part SKU'].'_'.$row3['Location Key']);
 			
-			//print $row2['Part SKU'].'_'.$row3['Location Key']."\n";
+			print $row['Date'].' '.$row2['Part SKU'].'_'.$row3['Location Key']."\r";
 			
 			$part_location->update_stock_history_date($row['Date']);
 		}
@@ -112,8 +82,8 @@ while ($row=mysql_fetch_array($res)) {
 exit;
 
 //$where='and  `Part XHTML Currently Used In` like "%awred%"';
-//$where='and `Part SKU`=4303';
-$where='';
+$where='and `Part SKU`=31873';
+//$where='';
 $sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="In Use" %s   order by `Part Valid From`  ',$where);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
@@ -125,7 +95,8 @@ while ($row=mysql_fetch_array($res)) {
 $sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s  order by `Part Total Acc Sold Amount` desc ,`Part Valid From`   ',$where);
 $sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s     ',$where);
 
-//print $sql;
+print $sql;
+exit;
 $res=mysql_query($sql);
 $count=0;
 while ($row=mysql_fetch_array($res)) {
@@ -133,7 +104,7 @@ while ($row=mysql_fetch_array($res)) {
 
 	$part=new Part($row['Part SKU']);
 
-	print percentage($count,$total,5)."  ".$part->data['Part SKU']."\r";
+	//print percentage($count,$total,5)."  ".$part->data['Part SKU']."\r";
 	$part->update_stock_history();
 
 
