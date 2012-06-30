@@ -1552,12 +1552,13 @@ include_once('class.PartLocation.php');
 	}
 
 	function update_up_today_sales() {
+$this->update_sales_from_invoices('Total');
 
 		$this->update_sales_from_invoices('Today');
 		$this->update_sales_from_invoices('Week To Day');
 		$this->update_sales_from_invoices('Month To Day');
 		$this->update_sales_from_invoices('Year To Day');
-		$this->update_sales_from_invoices('Total');
+		
 
 	}
 
@@ -1604,14 +1605,15 @@ include_once('class.PartLocation.php');
 
 
 		$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
-                     from `Inventory Transaction Fact` ITF  where `Part SKU`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Part SKU`=%d %s %s" ,
 			$this->sku,
-			prepare_mysql($from_date),
+						($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
 		$result=mysql_query($sql);
-		//  print "$sql\n";
+	//	  print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->data["Part $db_interval Acc Profit"]=$row['profit'];
 			$this->data["Part $db_interval Acc Profit After Storing"]=$this->data["Part $db_interval Acc Profit"]-$row['cost_storing'];
@@ -1620,9 +1622,9 @@ include_once('class.PartLocation.php');
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Part SKU`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Part SKU`=%d  %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1642,9 +1644,9 @@ include_once('class.PartLocation.php');
                      sum(`Given`) as given,
                      sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
                      sum(`Given`-`Inventory Transaction Quantity`) as sold
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1661,9 +1663,9 @@ include_once('class.PartLocation.php');
 		}
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Part SKU`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Part SKU`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1677,9 +1679,9 @@ include_once('class.PartLocation.php');
 
 
 		$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
-                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Part SKU`=%d and `Date`>=%s %s" ,
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Part SKU`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1726,7 +1728,7 @@ include_once('class.PartLocation.php');
 
 		mysql_query($sql);
 
-		//  print "$sql\n";
+		// print "$sql\n";
 
 
 
