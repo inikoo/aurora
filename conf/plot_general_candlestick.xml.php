@@ -53,11 +53,14 @@ return;
 
 
 		while ($row=mysql_fetch_assoc($res)) {
+		
+		$location_code=($row['Location Code']?$row['Location Code']:_('Deleted').' '.$row['Location Key']);
+		
 			$graphs_data[]=array(
 				'gid'=>$gid,
 				'label'=>($output=='value'?_('Stock Value'):_('Stock')).":",
-				'title'=>$row['Location Code'],
-				'short_title'=>$row['Location Code'],
+				'title'=>$location_code,
+				'short_title'=>$location_code,
 				'csv_args'=>'tipo=part_location_stock_history&output='.$output.'&location_key='.$row['Location Key'].'&part_sku='.$parent_key
 
 			);

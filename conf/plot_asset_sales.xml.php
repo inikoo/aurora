@@ -314,6 +314,80 @@ case('family_sales'):
 
 
 	break;
+
+case('part_sales'):
+
+	if (!isset($_REQUEST['part_sku'])) {
+		exit;
+	}
+	$tmp=preg_split('/\|/', $_REQUEST['part_sku']);
+	$parts_skus=array();
+	foreach ($tmp as $part_sku) {
+
+		if (is_numeric($part_sku) ) {
+			$parts_skus[]=$part_sku;
+		}
+	}
+	$use_corporate=1;
+	$staked=false;
+	if (isset($_REQUEST['stacked']) and $_REQUEST['stacked'])$staked=true;
+	$graphs_data=array();
+	$gid=0;
+	//TODO anly display warehiuse $user->wherehouses;
+	
+	
+	if ($staked) {
+		$sql=sprintf("select `Part Unit Description` from `Part Dimension`  where `Part SKU` in (%s)",addslashes(join(',',$parts_skus)));
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			
+			$graphs_data[]=array(
+				'gid'=>$gid,
+				'title'=>$row['Part Unit Description'],
+				'currency_code'=>$corporate_currency,
+				'color'=>$colors[$gid]
+			);
+			$gid++;
+		}
+		$data_args='tipo=stacked_part_sales&part_sku='.join(',',$parts_skus);
+		$template='plot_stacked_asset_sales.xml.tpl';
+
+	} else {// no stakecked
+
+
+		$sql=sprintf("select `Part Unit Description` from `Part Dimension`  where `Part SKU` in (%s)",addslashes(join(',',$parts_skus)));
+		// print $sql;
+		$res=mysql_query($sql);
+		$title='';
+		$currencies=array();
+		while ($row=mysql_fetch_assoc($res)) {
+			$title.=','.$row['Part Unit Description'];
+			$currency_code=$corporate_currency;
+			$currencies[$currency_code]=1;
+		}
+
+
+		if (count($currencies)>1)
+			$use_corporate=1;
+
+
+
+
+		$graphs_data[]=array(
+			'gid'=>0,
+			'title'=>$title.' '._('Sales'),
+			'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
+		);
+		$data_args='tipo=part_sales&part_sku='.join(',',$parts_skus).'&use_corporate='.$use_corporate;
+
+		$template='plot_asset_sales.xml.tpl';
+
+	}
+
+
+	break;	
+	
 case('product_id_sales'):
 
 	if (!isset($_REQUEST['product_id'])) {

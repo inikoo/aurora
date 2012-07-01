@@ -626,6 +626,9 @@ function list_history($asset_type) {
 
 	$where_tipo='default';
 
+
+
+
     $id_key='id';
     if ($asset_type=='product') {
         $asset='Product';
@@ -716,6 +719,16 @@ function list_history($asset_type) {
                  $asset_id=$_SESSION['state'][$asset_type][$id_key];
 
     }
+      elseif($asset_type=='part_categories') {
+        $asset='Category';
+        $id_key='parent_key';
+        $asset_type='categories';
+        $where_tipo='category_base';
+                 $asset_id=$_SESSION['state'][$asset_type][$id_key];
+
+    }
+
+
 
 
 

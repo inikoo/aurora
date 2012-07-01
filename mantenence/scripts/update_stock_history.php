@@ -32,7 +32,7 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$from=date("Y-m-d",strtotime('now -180 day'));
+$from=date("Y-m-d",strtotime('now -3000 day'));
 //$from=date("Y-m-d");
 $to=date("Y-m-d");
 
@@ -42,7 +42,7 @@ $res=mysql_query($sql);
 
 while ($row=mysql_fetch_array($res)) {
 	//print $row['Date']."\r";
-	$where=' `Part SKU`=31873';
+	$where=' `Part SKU`=1991';
 	$where='  true';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
 
