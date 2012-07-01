@@ -83,7 +83,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 					if ($current=='Associate') {
 						$sql=sprintf("delete from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d",$row2['Inventory Transaction Key']);
-						print "$sql\n";
+						//print "$sql\n";
 						mysql_query($sql);
 					}
 
