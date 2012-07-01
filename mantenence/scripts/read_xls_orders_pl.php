@@ -90,7 +90,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 
-
+/*
 $sql="update pl_orders_data.orders set deleted='Yes' ";
   mysql_query($sql);
 foreach($good_files_number as $order_index=>$order){
@@ -99,7 +99,7 @@ foreach($good_files_number as $order_index=>$order){
   mysql_query($sql);
 }
 
-
+*/
 
 
 foreach($good_files_number as $order_index=>$order){
