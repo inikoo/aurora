@@ -26,7 +26,7 @@
 		<li style="{if $category->get('Category Children')==0 }display:none{/if}" > <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Category Children')})</span></span></li>
 		<li> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='subcategories_charts'}selected{/if}" id="subcategories_charts"> <span> {t}Charts{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
+		<li> <span style="display:none" class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>

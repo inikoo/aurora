@@ -62,6 +62,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
+
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=parts&tableid=0&where=&parent=category&parent_key="+Dom.get('category_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -189,7 +190,10 @@ this.table1.table_id=tableid;
 				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.part_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.part_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=category&id="+Dom.get('category_key').value+"tableid=2");
+				       
+				       
+				       
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=part_categories&id="+Dom.get('category_key').value+"&tableid=2");
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {

@@ -100,7 +100,7 @@ full list of available settings, check the amstock_settings.xml file in the amst
           <negative_color>db4c3c</negative_color>
   				<fill_alpha>70</fill_alpha>
   		    <legend>
-            <date key="true" title="true"><![CDATA[{$graph_data.label}  {literal}{close}{/literal}]]></date>
+            <date key="true" title="true"><![CDATA[{$graph_data.label}  {literal}{close}{/literal} ({literal}Open: {open} High:{high} Low: {low} Close:{close}{/literal}) ]]></date>
             <period key="true" title="true"><![CDATA[open:<b>{literal}{open}{/literal}</b> low:<b>{literal}{low}{/literal}</b> high:<b>{literal}{high}{/literal}</b> close:<b>{literal}{close}{/literal}</b>]]></period>
            
           </legend>         

@@ -1067,6 +1067,8 @@ $this->location->update_parts();
 		$res=mysql_query($sql);
 	
 		
+		//print "$sql\n";
+		
 		$stock=0;
 		$value=0;
 
@@ -1171,6 +1173,7 @@ $this->location->update_parts();
 
 		$intervals=$this->get_history_intervals();
 
+//print_r($intervals);
 		foreach ($intervals as $interval) {
 
 
@@ -1282,11 +1285,13 @@ $this->location->update_parts();
 	function update_stock_history_date($date) {
 
 		if ($this->exist_on_date($date)) {
+		//print "a\n";
 			$this->update_stock_history_interval($date,$date);
 		}else {
+			
 			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
 			mysql_query($sql);
-			
+			//print "$sql\n";
 		}
 
 
@@ -1320,11 +1325,18 @@ $this->location->update_parts();
 			list($open,$high,$low,$close,$value_open,$value_high,$value_low,$value_close)=$this->get_ohlc($row['Date']);
 
 
+
+//print "$stock,$value,$in_process\n";
+//exit;
 			$storing_cost=0;
 			$comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
 			$location_type="Unknown";
 			$warehouse_key=1;
-			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s) ",
+			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s)
+			ON DUPLICATE KEY UPDATE `Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Comercial`=%.2f,
+			`Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,`Value Open`=%f,`Value High`=%f,`Value Low`=%f
+,`Location Type`=%s
+			",
 				prepare_mysql($row['Date']),
 
 				$this->part_sku,
@@ -1349,7 +1361,28 @@ $this->location->update_parts();
 				$value_open,
 				$value_high,
 				$value_low,
+				prepare_mysql($location_type),
+				
+				$warehouse_key,
+				$stock,
+				$value,
+
+				$sales_value,
+				$comercial_value,
+
+				$storing_cost,
+
+				$sold,
+				$in,
+				$lost,
+				$open,
+				$high,
+				$low,
+				$value_open,
+				$value_high,
+				$value_low,
 				prepare_mysql($location_type)
+				
 
 			);
 			mysql_query($sql);

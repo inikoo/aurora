@@ -1049,6 +1049,21 @@ $picked=0;
 		}
 		return $suppliers;
 	}
+	
+	
+	function get_historic_locations(){
+	$locations=array();
+	
+	$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d   group by `Location Key`  ",$this->data['Part SKU']);
+		//print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_array($res)) {
+			$locations[$row['Location Key']]=$row['Location Key'];
+		}
+	
+	return $locations;
+	
+	}
 
 
 	function get_all_supplier_products_pids() {

@@ -48,6 +48,10 @@
 						<td>{t}Commodity Code{/t}:</td>
 						<td>{$part->get('Part Tariff Code')}</td>
 					</tr>
+					<tr>
+						<td>{t}Part Family{/t}:</td>
+						<td></td>
+					</tr>
 				</table>
 				{t}Products{/t}: 
 				<table border="0" id="products" class="show_info_product" style=";margin-top:0px">
@@ -388,7 +392,7 @@
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=family_sales&family_key=5"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=part_sales&part_sku={$part->sku}"));
 		so.addVariable("preloader_color", "#999999");
 		so.write("plot_part_sales");
 		// ]]>
