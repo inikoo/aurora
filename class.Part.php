@@ -592,7 +592,7 @@ class part extends DB_Table {
 			return money($this->data[$amount]);
 		}
 
-		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin)$/',$key)) {
+		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/',$key)) {
 
 			$amount='Part '.$key;
 

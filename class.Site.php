@@ -1231,6 +1231,17 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 		return $page_key;
 	}
+	
+		function get_reset_page_key() {
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Reset' and `Page Site Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
+	
 	function get_profile_page_key() {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Client Section' and `Page Site Key`=%d ",$this->id);

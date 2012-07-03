@@ -385,27 +385,19 @@
 			<table class="show_info_product">
 				<tr>
 					<td>{t}Last Login{/t}:</td>
-					<td>{$login_stat.UserLastLogin}</td>
+					<td>{$customer->users_last_login()}</td>
 				</tr>
 				<tr>
 					<td>{t}User Login Count{/t}:</td>
-					<td>{$login_stat.UserLoginCount}</td>
-				</tr>
-				<tr>
-					<td>{t}User Last Login IP{/t}:</td>
-					<td>{$login_stat.UserLastLoginIP}</td>
+					<td>{$customer->users_number_logins()}</td>
 				</tr>
 				<tr>
 					<td>{t}User Failed Login Count{/t}:</td>
-					<td>{$login_stat.UserFailedLoginCount}</td>
+					<td>{$customer->users_number_failed_logins()}</td>
 				</tr>
-				<tr>
-					<td>{t}User Last Failed Login IP{/t}:</td>
-					<td>{$login_stat.UserLastFailedLoginIP}</td>
-				</tr>
-				<tr>
+				<tr style="{if $customer->users_number_failed_logins()==0 }display:none{/if}">
 					<td>{t}User Last Failed Login{/t}:</td>
-					<td>{$login_stat.UserLastFailedLogin}</td>
+					<td>{$customer->users_last_failed_login()}</td>
 				</tr>
 			</table>
 		</div>

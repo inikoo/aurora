@@ -102,7 +102,16 @@ if(!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ){
 
 if (isset($_REQUEST['p'])) {
 
-	$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['p']),$secret_key,256);
+
+		
+
+header('Location: reset.php?master_key='.$_REQUEST['p']);
+exit;
+}
+
+if (isset($_REQUEST['masterkey'])) {
+
+	$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['masterkey']),$secret_key,256);
 
 	$auth=new Auth(IKEY,SKEY,'use_cookies');
 
@@ -138,6 +147,11 @@ if (isset($_REQUEST['p'])) {
 		unset($_SESSION['user_log_key']);
 		$logged_in=false;
 		$St=get_sk();
+		
+		header('Location: reset.php?emaster_key='.$_REQUEST['masterkey']);
+exit;
+		
+		
 	}
 
 

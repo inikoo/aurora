@@ -4,7 +4,7 @@
 <input type="hidden" id="store_id" value="{$store->id}">
 <input type="hidden" id="auto" value="{if $auto==1}1{else}0{/if}">
 {foreach from=$v_calpop key=key item=item}
-<input type="hidden" id="v_calpop" cat={$key} value={$item}>
+<input type="hidden" id="v_calpop" cat="{$key}" value="{$item}">
 {/foreach}
 <span id="error_no_name" style="display:none">{t}Please specify a name{/t}.</span>
 
@@ -96,7 +96,7 @@
         <td>
          <div id="allow_options" default_cat=""   class="buttons small left">
      {foreach from=$allow_options item=cat3 key=cat_key name=foo3}
-     <button  class="catbox {if $cat3.selected}selected{/if}"  style="{if $cat_key=='all'}margin-left:20px{/if}"onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_"  cat="{$cat_key}" >{$cat3.name}</button>
+     <button  class="catbox{if $cat3.selected} selected{/if}"  style="{if $cat_key=='all'}margin-left:20px{/if}" onclick="checkbox_changed_allow(this)" id="allow_{$cat_key}" parent="allow_"  cat="{$cat_key}" >{$cat3.name}</button>
      {/foreach}
     </div>    
         </td>
@@ -150,7 +150,7 @@
 	
 
   	  <tr id="lost_customer_title" style="display:none"><td colspan="2"><b>{t}Lost Customers{/t}</b></td></tr>
-      <tr id="lost_customer"style="display:none">
+      <tr id="lost_customer" style="display:none">
         <td>{t}Register between{/t}:</td>
         <td>
             <input style="height:18px" id="v_calpop5" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="lost_customer_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><span class="calpop">&rarr;</span> 
@@ -250,7 +250,7 @@
 </div>
 </div>
 <div style="padding:30px 40px;display:none" id="searching">
-	{t}Search in progress{/t} <img style="margin-left:20px;position:relative;top:5px "src="art/progressbar.gif"/>
+	{t}Search in progress{/t} <img style="margin-left:20px;position:relative;top:5px" src="art/progressbar.gif"/>
     </div>
 <div id="the_table" class="data_table" style="margin-top:20px;clear:both;{if $auto==0}display:none{/if}" >
     <span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
@@ -281,7 +281,8 @@
 
 
 
-{include file='footer.tpl'}
+
+
 <div id="dialog_wregion_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >
@@ -422,7 +423,7 @@
     </ul>
   </div>
 </div>
-  <div id="filtermenu5" class="yuimenu">
+<div id="filtermenu5" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
@@ -452,3 +453,5 @@
     </ul>
   </div>
 </div>
+
+{include file='footer.tpl'}

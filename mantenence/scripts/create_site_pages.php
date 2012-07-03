@@ -38,12 +38,30 @@ require_once '../../conf/conf.php';
 global $myconf;
 
 
-$sql=sprintf("select * from `Site Dimension`  where `Site Key`=1");
+$sql=sprintf("select * from `Site Dimension`  ");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 $site=new Site($row['Site Key']);
 
+
+$page_data=array(
+
+'Page Store Section'=>'Reset',
+ 'Page Store Title'=>'Reset Password',
+ 'Page Short Title'=>'Reset Password',
+  'Page Code'=>'reset',
+  'Page URL'=>'reset.php',
+  'Page Store Content Display Type'=>'Template',
+  'Page Store Content Template Filename'=>'reset',
+  'Number See Also Links'=>0,
+
+ );
+$site->add_store_page($page_data);
+
+
+
+continue;
 
 $page_data=array(
  'Page Store Section'=>'Client Section',
