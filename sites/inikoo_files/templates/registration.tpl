@@ -178,7 +178,7 @@
 					<option value="DE">{t}Spain{/t}</option>
 					<option value="AT">{t}Portugal{/t}</option>
 					<option value="XX">----------</option>
-					{include file="country_select.de_DE.tpl"}
+					{include file="country_select.es_ES.tpl"}
 					{elseif $site->get('Site Locale')=='de_DE'}
 					<option value="DE">{t}Germany{/t}</option>
 					<option value="AT">{t}Austria{/t}</option>
@@ -206,7 +206,7 @@
 					{foreach from=$cat->get_children_objects_public_new_subject() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
 					<option value="">{t}Unknown{/t}</option>
 					{/if} ` 
-					<option other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
+					<option other="{if $sub_cat->get('Is Category Field Other')=='Yes'}true{else}false{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Label')}</option>
 					{/foreach} 
 				</select>
 				</td>

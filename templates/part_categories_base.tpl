@@ -23,7 +23,7 @@
 
 <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
     <li> <span class="item {if $block_view=='subcategories'}selected{/if}"  id="subcategories">  <span> {t}Categories{/t}</span></span></li>
-    <li> <span class="item {if $block_view=='history'}selected{/if}"  id="history">  <span> {t}History{/t}</span></span></li>
+    <li> <span style="display:none" class="item {if $block_view=='history'}selected{/if}"  id="history">  <span> {t}History{/t}</span></span></li>
 </ul>
 <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 <div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">

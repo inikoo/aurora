@@ -18,10 +18,6 @@
 </div>
 
 
-
-
-
-
  <div id="the_table" class="data_table" style="clear:both;margin-top:10px">
       <div>
       <span class="clean_table_title">{t}Customers{/t}  <img id="export_data"  style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>

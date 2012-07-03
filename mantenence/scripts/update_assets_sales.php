@@ -35,7 +35,17 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$category=new Category($row['Category Key']);
+	$category->update_up_today();
+	$category->update_last_period();
+	$category->update_last_interval();
+	print "Category ".$category->id."\t\t\n";
+}
 
+exit;
 
 $sql="select * from `Part Dimension`  ";
 $result=mysql_query($sql);

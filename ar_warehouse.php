@@ -243,8 +243,8 @@ function list_locations() {
 		$tableid=0;
 
 	$elements=$conf['elements'];
-	
-	
+
+
 	if (isset( $_REQUEST['elements_Yellow'])) {
 		$elements['Yellow']=$_REQUEST['elements_Yellow'];
 	}
@@ -267,9 +267,9 @@ function list_locations() {
 		$elements['Blue']=$_REQUEST['elements_Blue'];
 	}
 
-	
-	
-	
+
+
+
 	$parent=$_REQUEST['parent'];
 
 	$parent_key=$_REQUEST['parent_key'];
@@ -1950,6 +1950,8 @@ function warehouse_stock_history() {
 }
 
 function list_part_categories() {
+global $corporate_currency;
+
 	$conf=$_SESSION['state']['part_categories']['subcategories'];
 	$conf2=$_SESSION['state']['part_categories'];
 	if (isset( $_REQUEST['sf']))
@@ -2008,6 +2010,8 @@ function list_part_categories() {
 	} else
 		$period=$_SESSION['state']['part_categories']['period'];
 
+
+
 	if (isset( $_REQUEST['avg'])) {
 		$avg=$_REQUEST['avg'];
 		$_SESSION['state']['part_categories']['avg']=$avg;
@@ -2022,12 +2026,12 @@ function list_part_categories() {
 
 
 
-	$_SESSION['state']['part_categories']['table']['order']=$order;
-	$_SESSION['state']['part_categories']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['part_categories']['table']['nr']=$number_results;
-	$_SESSION['state']['part_categories']['table']['sf']=$start_from;
-	$_SESSION['state']['part_categories']['table']['f_field']=$f_field;
-	$_SESSION['state']['part_categories']['table']['f_value']=$f_value;
+	$_SESSION['state']['part_categories']['subcategories']['order']=$order;
+	$_SESSION['state']['part_categories']['subcategories']['order_dir']=$order_direction;
+	$_SESSION['state']['part_categories']['subcategories']['nr']=$number_results;
+	$_SESSION['state']['part_categories']['subcategories']['sf']=$start_from;
+	$_SESSION['state']['part_categories']['subcategories']['f_field']=$f_field;
+	$_SESSION['state']['part_categories']['subcategories']['f_value']=$f_value;
 
 
 	// print_r($_SESSION['tables']['families_list']);
@@ -2042,7 +2046,6 @@ function list_part_categories() {
 
 
 
-	$store_key=$_SESSION['state']['store']['id'];
 
 	$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$root_category);
 	//  $where=sprintf("where `Category Subject`='Product'  ");
@@ -2117,248 +2120,274 @@ function list_part_categories() {
 	$_dir=$order_direction;
 	$_order=$order;
 
+
 	if ($order=='subjects')
 		$order='`Category Number Subjects`';
-	else if ($order=='departments')
-			$order='`Product Category Departments`';
-		else if ($order=='code')
-				$order='`Product Category Code`';
-			else if ($order=='todo')
-					$order='`Product Category In Process Products`';
-				else if ($order=='discontinued')
-						$order='`Product Category In Process Products`';
-					else if ($order=='sold') {
-							if ($period=='1w')
-								$order='`1 Week Acc Sold`';
-							else if ($period=='10d')
-									$order='`10 Days Acc Sold`';
-								else if ($period=='1m')
-										$order='`1 Month Acc Sold`';
-									else if ($period=='1q')
-											$order='`1 Quarter Acc Sold`';
-										else if ($period=='6m')
-												$order='`6 Month Acc Sold`';
-											else if ($period=='1y')
-													$order='`1 Year Acc Sold`';
-												else if ($period=='3y')
-														$order='`3 Year Acc Sold`';
-													else if ($period=='yesterday')
-															$order='`Yesterday Acc Sold`';
-														else if ($period=='last_m')
-																$order='`Last Month Acc Sold`';
-															else if ($period=='last_w')
-																	$order='`Last Week Acc Sold`';
-																else if ($period=='today')
-																		$order='`Today Acc Sold`';
-																	else if ($period=='wtd')
-																			$order='`Week To Day Acc Sold`';
-																		else if ($period=='mtd')
-																				$order='`Month To Day Acc Sold`';
-																			else if ($period=='ytd')
-																					$order='`Year To Day Acc Sold`';
-																				else if ($period=='all')
-																						$order='`Total Acc Sold`';
-						}  else if ($order=='profit') {
-							if ($period=='1w')
-								$order='`1 Week Acc Profit`';
-							else if ($period=='10d')
-									$order='`10 Days Acc Profit`';
-								else if ($period=='1m')
-										$order='`1 Month Acc Profit`';
-									else if ($period=='1q')
-											$order='`1 Quarter Acc Profit`';
-										else if ($period=='6m')
-												$order='`6 Month Acc Profit`';
-											else if ($period=='1y')
-													$order='`1 Year Acc Profit`';
-												else if ($period=='3y')
-														$order='`3 Year Acc Profit`';
-													else if ($period=='yesterday')
-															$order='`Yesterday Acc Profit`';
-														else if ($period=='last_m')
-																$order='`Last Month Acc Profit`';
-															else if ($period=='last_w')
-																	$order='`Last Week Acc Profit`';
-																else if ($period=='today')
-																		$order='`Today Acc Profit`';
-																	else if ($period=='wtd')
-																			$order='`Week To Day Acc Profit`';
-																		else if ($period=='mtd')
-																				$order='`Month To Day Acc Profit`';
-																			else if ($period=='ytd')
-																					$order='`Year To Day Acc Profit`';
-																				else if ($period=='all')
-																						$order='`Total Acc Profit`';
-						}
-					elseif ($order=='sales') {
-						if ($period=='1w')
-							$order='`1 Week Acc Sold Amount`';
-						else if ($period=='10d')
-								$order='`10 Days Acc Sold Amount`';
-							else if ($period=='1m')
-									$order='`1 Month Acc Sold Amount`';
-								else if ($period=='1q')
-										$order='`1 Quarter Acc Sold Amount`';
-									else if ($period=='6m')
-											$order='`6 Month Acc Sold Amount`';
-										else if ($period=='1y')
-												$order='`1 Year Acc Sold Amount`';
-											else if ($period=='3y')
-													$order='`3 Year Acc Sold Amount`';
-												else if ($period=='yesterday')
-														$order='`Yesterday Acc Sold Amount`';
-													else if ($period=='last_m')
-															$order='`Last Month Acc Sold Amount`';
-														else if ($period=='last_w')
-																$order='`Last Week Acc Sold Amount`';
-															else if ($period=='today')
-																	$order='`Today Acc Sold Amount`';
-																else if ($period=='wtd')
-																		$order='`Week To Day Acc Sold Amount`';
-																	else if ($period=='mtd')
-																			$order='`Month To Day Acc Sold Amount`';
-																		else if ($period=='ytd')
-																				$order='`Year To Day Acc Sold Amount`';
-																			else if ($period=='all')
-																					$order='`Total Acc Sold Amount`';
+	
+	elseif ($order=='sold') {
 
-					}
-				elseif ($order=='name')
-					$order='`Category Name`';
+
+		if ($period=='week')
+			$order='`Part Category 1 Week Acc Sold`';
+		elseif ($period=='ten_day')
+			$order='`Part Category 10 Day Acc Sold`';
+		elseif ($period=='month')
+			$order='`Part Category 1 Month Acc Sold`';
+		elseif ($period=='quarter')
+			$order='`Part Category 1 Quarter Acc Sold`';
+		elseif ($period=='six_month')
+			$order='`Part Category 6 Month Acc Sold`';
+		elseif ($period=='year')
+			$order='`Part Category 1 Year Acc Sold`';
+		elseif ($period=='three_year')
+			$order='`Part Category 3 Year Acc Sold`';
+		elseif ($period=='yesterday')
+			$order='`Part Category Yesterday Acc Sold`';
+		elseif ($period=='last_month')
+			$order='`Part Category Last Month Acc Sold`';
+		elseif ($period=='last_week')
+			$order='`Part Category Last Week Acc Sold`';
+		elseif ($period=='today')
+			$order='`Part Category Today Acc Sold`';
+		elseif ($period=='weektoday')
+			$order='`Part Category Week To Day Acc Sold`';
+		elseif ($period=='monthtoday')
+			$order='`Part Category Month To Day Acc Sold`';
+		elseif ($period=='yeartoday')
+			$order='`Part Category Year To Day Acc Sold`';
+		elseif ($period=='all')
+			$order='`Part Category Total Acc Sold`';
+	}  elseif ($order=='profit') {
+		if ($period=='week')
+			$order='`Part Category 1 Week Acc Profit`';
+		elseif ($period=='ten_day')
+			$order='`Part Category 10 Day Acc Profit`';
+		elseif ($period=='month')
+			$order='`Part Category 1 Month Acc Profit`';
+		elseif ($period=='quarter')
+			$order='`Part Category 1 Quarter Acc Profit`';
+		elseif ($period=='six_month')
+			$order='`Part Category 6 Month Acc Profit`';
+		elseif ($period=='year')
+			$order='`Part Category 1 Year Acc Profit`';
+		elseif ($period=='three_year')
+			$order='`Part Category 3 Year Acc Profit`';
+		elseif ($period=='yesterday')
+			$order='`Part Category Yesterday Acc Profit`';
+		elseif ($period=='last_month')
+			$order='`Part Category Last Month Acc Profit`';
+		elseif ($period=='last_week')
+			$order='`Part Category Last Week Acc Profit`';
+		elseif ($period=='today')
+			$order='`Part Category Today Acc Profit`';
+		elseif ($period=='weektoday')
+			$order='`Part Category Week To Day Acc Profit`';
+		elseif ($period=='monthtoday')
+			$order='`Part Category Month To Day Acc Profit`';
+		elseif ($period=='yeartoday')
+			$order='`Part Category Year To Day Acc Profit`';
+		elseif ($period=='all')
+			$order='`Part Category Total Acc Profit`';
+	}
+	elseif ($order=='sales') {
+		if ($period=='week')
+			$order='`Part Category 1 Week Acc Sold Amount`';
+		elseif ($period=='ten_day')
+			$order='`Part Category 10 Day Acc Sold Amount`';
+		elseif ($period=='month')
+			$order='`Part Category 1 Month Acc Sold Amount`';
+		elseif ($period=='quarter')
+			$order='`Part Category 1 Quarter Acc Sold Amount`';
+		elseif ($period=='six_month')
+			$order='`Part Category 6 Month Acc Sold Amount`';
+		elseif ($period=='year')
+			$order='`Part Category 1 Year Acc Sold Amount`';
+		elseif ($period=='three_year')
+			$order='`Part Category 3 Year Acc Sold Amount`';
+		elseif ($period=='yesterday')
+			$order='`Part Category Yesterday Acc Sold Amount`';
+		elseif ($period=='last_month')
+			$order='`Part Category Last Month Acc Sold Amount`';
+		elseif ($period=='last_week')
+			$order='`Part Category Last Week Acc Sold Amount`';
+		elseif ($period=='today')
+			$order='`Part Category Today Acc Sold Amount`';
+		elseif ($period=='weektoday')
+			$order='`Part Category Week To Day Acc Sold Amount`';
+		elseif ($period=='monthtoday')
+			$order='`Part Category Month To Day Acc Sold Amount`';
+		elseif ($period=='yeartoday')
+			$order='`Part Category Year To Day Acc Sold Amount`';
+		elseif ($period=='all')
+			$order='`Part Category Total Acc Sold Amount`';
+
+	}
+	elseif ($order=='name')
+		$order='`Category Name`';
 
 
 
 
+	$sql="select * from `Category Dimension` C left join `Part Category Dimension` P on (P.`Part Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
 
-				$sql="select * from `Category Dimension` C left join `Part Category Dimension` P on (P.`Category Key`=C.`Category Key`) $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-
-			$res = mysql_query($sql);
-		$adata=array();
+	$res = mysql_query($sql);
+	$adata=array();
 
 
 	// print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
-		if ($period=='week')
-			$sold=$row['1 Week Acc Sold'];
-		else if ($period=='10d')
-				$sold=$row['10 Days Acc Sold'];
-			else if ($period=='1m')
-					$sold=$row['1 Month Acc Sold'];
-				else if ($period=='1q')
-						$sold=$row['1 Quarter Acc Sold'];
-					else if ($period=='6m')
-							$sold=$row['6 Month Acc Sold'];
-						else if ($period=='year')
-								$sold=$row['1 Year Acc Sold'];
-							else if ($period=='3y')
-									$sold=$row['3 Year Acc Sold'];
-								else if ($period=='yesterday')
-										$sold=$row['Yesterday Acc Sold'];
-									else if ($period=='last_m')
-											$sold=$row['Last Month Acc Sold'];
-										else if ($period=='last_w')
-												$sold=$row['Last Week Acc Sold'];
-											else if ($period=='today')
-													$sold=$row['Today Acc Sold'];
-												else if ($period=='wtd')
-														$sold=$row['Week To Day Acc Sold'];
-													else if ($period=='mtd')
-															$sold=$row['Month To Day Acc Sold'];
-														else if ($period=='ytd')
-																$sold=$row['Year To Day Acc Sold'];
-															else if ($period=='all')
-																	$sold=$row['Total Acc Sold'];
+		if ($period=='week') {
+			$sold=$row['Part Category 1 Week Acc Sold'];
+			$amount=$row['Part Category 1 Week Acc Sold Amount'];
 
+		}elseif ($period=='ten_day') {
+			$sold=$row['Part Category 10 Day Acc Sold'];
+			$amount=$row['Part Category 10 Day Acc Sold Amount'];
 
-																$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+		}elseif ($period=='month'){
+			$sold=$row['Part Category 1 Month Acc Sold'];
+		$amount=$row['Part Category 1 Month Acc Sold Amount'];
 
+	}elseif ($period=='quarter') {
+		$sold=$row['Part Category 1 Quarter Acc Sold'];
+		$amount=$row['Part Category 1 Quarter Acc Sold Amount'];
 
-															$adata[]=array(
-																'id'=>$row['Category Key'],
-																'name'=>$name,
-																'subjects'=>number($row['Category Number Subjects']),
-																'sold'=>number($sold)
+	}elseif ($period=='six_month') {
+		$sold=$row['Part Category 6 Month Acc Sold'];
+		$amount=$row['Part Category 6 Month Acc Sold Amount'];
 
+	}elseif ($period=='year') {
+		$sold=$row['Part Category 1 Year Acc Sold'];
+		$amount=$row['Part Category 1 Year Acc Sold Amount'];
 
+	}elseif ($period=='three_year') {
+		$sold=$row['Part Category 3 Year Acc Sold'];
+		$amount=$row['Part Category 3 Year Acc Sold Amount'];
 
-															);
+	}elseif ($period=='yesterday') {
+		$sold=$row['Part Category Yesterday Acc Sold'];
+		$amount=$row['Part Category Yesterday Acc Sold Amount'];
+
+	}elseif ($period=='last_month') {
+		$sold=$row['Part Category Last Month Acc Sold'];
+		$amount=$row['Part Category Last Month Acc Sold Amount'];
+
+	}elseif ($period=='last_week') {
+		$sold=$row['Part Category Last Week Acc Sold'];
+		$amount=$row['Part Category Last Week Acc Sold Amount'];
+
+	}elseif ($period=='today') {
+		$sold=$row['Part Category Today Acc Sold'];
+		$amount=$row['Part Category Today Acc Sold Amount'];
+
+	}elseif ($period=='weektoday') {
+		$sold=$row['Part Category Week To Day Acc Sold'];
+		$amount=$row['Part Category Week To Day Acc Sold Amount'];
+
+	}elseif ($period=='monthtoday') {
+		$sold=$row['Part Category Month To Day Acc Sold'];
+		$amount=$row['Part Category Month To Day Acc Sold Amount'];
+
+	}elseif ($period=='yeartoday') {
+		$sold=$row['Part Category Year To Day Acc Sold'];
+		$amount=$row['Part Category Year To Day Acc Sold Amount'];
+
+	}elseif ($period=='all') {
+		$sold=$row['Part Category Total Acc Sold'];
+		$amount=$row['Part Category Total Acc Sold Amount'];
+
 	}
-	mysql_free_result($res);
+
+	$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+
+
+	$adata[]=array(
+		'id'=>$row['Category Key'],
+		'name'=>$name,
+		'subjects'=>number($row['Category Number Subjects']),
+		'sold'=>number($sold,0),
+		'sales'=>money($amount,$corporate_currency)
 
 
 
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
-			'records_offset'=>$start_from,
-			'records_perpage'=>$number_results,
-		)
 	);
-	echo json_encode($response);
+}
+mysql_free_result($res);
+
+
+
+$response=array('resultset'=>
+	array('state'=>200,
+		'data'=>$adata,
+		'sort_key'=>$_order,
+		'sort_dir'=>$_dir,
+		'tableid'=>$tableid,
+		'filter_msg'=>$filter_msg,
+		'rtext'=>$rtext,
+		'rtext_rpp'=>$rtext_rpp,
+		'total_records'=>$total_records,
+		'records_offset'=>$start_from,
+		'records_perpage'=>$number_results,
+	)
+);
+echo json_encode($response);
 }
 
 
 function other_locations_quick_buttons($data) {
 
 
-	$sql=sprintf("select `Quantity On Hand`,L.`Location Key`,`Location Code` from `Part Location Dimension` B left join `Location Dimension` L on (B.`Location Key`=L.`Location Key`) where `Part Sku`=%d and B.`Location Key`not in (0,%d)",
-		$data['sku'],
-		$data['location_key']
-	);
-	//print $sql;
+$sql=sprintf("select `Quantity On Hand`,L.`Location Key`,`Location Code` from `Part Location Dimension` B left join `Location Dimension` L on (B.`Location Key`=L.`Location Key`) where `Part Sku`=%d and B.`Location Key`not in (0,%d)",
+	$data['sku'],
+	$data['location_key']
+);
+//print $sql;
 
-	$res=mysql_query($sql);
-	$locations_data=array();
-	while ($row=mysql_fetch_assoc($res)) {
-		$locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
-	}
-
-
-	$number_cols=5;
-	$row=0;
-	$location_buttons=array();
-	$contador=0;
-	$_row_tmp='';
+$res=mysql_query($sql);
+$locations_data=array();
+while ($row=mysql_fetch_assoc($res)) {
+	$locations_data[]=array('location_key'=>$row['Location Key'],'location_code'=>$row['Location Code'],'stock'=>$row['Quantity On Hand']);
+}
 
 
+$number_cols=5;
+$row=0;
+$location_buttons=array();
+$contador=0;
+$_row_tmp='';
 
-	$other_locations_quick_buttons='<div class="options" style="xwidth:270px;padding:0px 0px 0px 0px;text-align:center;margin:0px" >
+
+
+$other_locations_quick_buttons='<div class="options" style="xwidth:270px;padding:0px 0px 0px 0px;text-align:center;margin:0px" >
 <table border=1 style="margin:auto" id="pack_it_buttons"><tr>'."\n";
-	foreach ($locations_data as $location_data) {
+foreach ($locations_data as $location_data) {
 
 
 
-		if (fmod($contador,$number_cols)==0 and $contador>0)
-			$_row_tmp.="</tr><tr>\n";
+	if (fmod($contador,$number_cols)==0 and $contador>0)
+		$_row_tmp.="</tr><tr>\n";
 
-		$other_locations_quick_buttons.='<td onClick="select_move_location('.$location_data['location_key'].',\''.$location_data['location_code'].'\',\''.$location_data['stock'].'\')" >'.$location_data['location_code']."</td>\n";
-		$contador++;
-	}
-	$other_locations_quick_buttons.='</tr></table></div>';
-
-
-
-	//print "\n $other_locations_quick_buttons \n\n";
+	$other_locations_quick_buttons.='<td onClick="select_move_location('.$location_data['location_key'].',\''.$location_data['location_code'].'\',\''.$location_data['stock'].'\')" >'.$location_data['location_code']."</td>\n";
+	$contador++;
+}
+$other_locations_quick_buttons.='</tr></table></div>';
 
 
 
-	$response=array(
-		'state'=>200,
-		'other_locations_quick_buttons'=>$other_locations_quick_buttons
-
-	);
+//print "\n $other_locations_quick_buttons \n\n";
 
 
-	echo json_encode($response);
+
+$response=array(
+	'state'=>200,
+	'other_locations_quick_buttons'=>$other_locations_quick_buttons
+
+);
+
+
+echo json_encode($response);
 }
 
 ?>

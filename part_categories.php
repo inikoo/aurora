@@ -64,6 +64,13 @@ $js_files=array(
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');
 
+$smarty->assign('subcategories_view',$_SESSION['state']['part_categories']['view']);
+
+$smarty->assign('subcategories_period',$_SESSION['state']['part_categories']['period']);
+$smarty->assign('subcategories_avg',$_SESSION['state']['part_categories']['avg']);
+
+
+
 
 
 if (isset($_REQUEST['id'])) {
@@ -227,6 +234,14 @@ $smarty->assign('subject','Part');
 $smarty->assign('category_key',$category_key);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+include_once('conf/period_tags.php');
+unset($period_tags['hour']);
+$smarty->assign('period_tags',$period_tags);
+
+$plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
+$smarty->assign('plot_tipo','store');
+$smarty->assign('plot_data',$plot_data);
 
 $smarty->display($tpl_file);
 ?>

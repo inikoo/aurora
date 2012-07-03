@@ -3716,6 +3716,70 @@ class Customer extends DB_Table {
 		return $comment;
 	}
 
+function users_last_login(){
+
+	$user_keys=array();
+		$sql=sprintf("select max(`User Last Login`) as last_login from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
+			,$this->id
+			
+		);
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			return strftime('%x',strtotime($row['last_login']));
+		}
+
+		return '';
+}
+
+function users_last_failed_login(){
+
+	$user_keys=array();
+		$sql=sprintf("select max(`User Last Failed Login`) as last_login from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
+			,$this->id
+			
+		);
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			return strftime('%x',strtotime($row['last_login']));
+		}
+
+		return '';
+}
+
+function users_number_logins(){
+
+	$user_keys=array();
+		$sql=sprintf("select sum(`User Login Count`) as logins from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
+			,$this->id
+			
+		);
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			return number($row['logins']);
+		}
+
+		return 0;
+}
+
+function users_number_failed_logins(){
+
+	$user_keys=array();
+		$sql=sprintf("select sum(`User Failed Login Count`) as logins from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
+			,$this->id
+			
+		);
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			return number($row['logins']);
+		}
+
+		return 0;
+}
+
 	function get_users_keys() {
 		$user_keys=array();
 		$sql=sprintf("select `User Key` from `User Dimension` U 

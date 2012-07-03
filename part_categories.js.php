@@ -13,8 +13,8 @@ var dialog_new_category;
 
 
 function change_block(){
-ids=['subcategories','subjects','subcategories_charts','history'];
-block_ids=['block_subcategories','block_subjects','block_subcategories_charts','block_history'];
+ids=['subcategories','subjects','subcategories_charts','history','sales'];
+block_ids=['block_subcategories','block_subjects','block_subcategories_charts','block_history','block_sales'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -62,7 +62,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
-
+//alert("ar_assets.php?tipo=parts&tableid=0&where=&parent=category&parent_key="+Dom.get('category_key').value)
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=parts&tableid=0&where=&parent=category&parent_key="+Dom.get('category_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -123,7 +123,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var OrdersColumnDefs = [ 
 				
 				    {key:"name", label:"<?php echo _('Name')?>", width:360,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"subjects", label:"<?php echo _('Parts')?>", width:260,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"subjects", label:"<?php echo _('Parts')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"sold", label:"<?php echo _('Outers')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				
 				     ];
@@ -145,7 +147,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			"name","subjects"
+			"name","subjects","sold","sales"
 			 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -261,12 +263,23 @@ this.table1.table_id=tableid;
     });
 
 
+
+
+
 function change_period(e,table_id){
 
     tipo=this.id;
-    Dom.get(period).className="";
-    Dom.get(tipo).className="selected";	
-    period=tipo;
+
+//period=this.getAttribute('period')
+
+ ids=['subcategories_period_all','subcategories_period_three_year','subcategories_period_year','subcategories_period_yeartoday','subcategories_period_six_month','subcategories_period_quarter','subcategories_period_month','subcategories_period_ten_day','subcategories_period_week','subcategories_period_monthtoday','subcategories_period_weektoday','subcategories_period_today'];
+
+    Dom.removeClass(ids,'selected')
+        Dom.addClass(this,'selected')
+
+    
+    
+    
     var table=tables['table'+table_id];
     var datasource=tables['dataSource'+table_id];
     var request='&period=' + this.getAttribute('period');
@@ -309,7 +322,7 @@ function change_display_mode(name,label){
  function init(){
 
 
- ids=['subcategories','subjects','subcategories_charts','history'];
+ ids=['subcategories','subjects','subcategories_charts','history','sales'];
   Event.addListener(ids, "click",change_block);
 
 
@@ -329,6 +342,10 @@ YAHOO.util.Event.addListener(ids, "click",change_parts_view,0);
  YAHOO.util.Event.addListener(ids, "click",change_parts_period,0);
  ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_parts_avg,0);
+
+
+ ids=['subcategories_period_all','subcategories_period_three_year','subcategories_period_year','subcategories_period_yeartoday','subcategories_period_six_month','subcategories_period_quarter','subcategories_period_month','subcategories_period_ten_day','subcategories_period_week','subcategories_period_monthtoday','subcategories_period_weektoday','subcategories_period_today'];
+ YAHOO.util.Event.addListener(ids, "click",change_period,1);
 
 
 

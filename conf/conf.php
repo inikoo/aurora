@@ -784,7 +784,7 @@ $default_state=array(
 		'percentages'=>0,
 		'mode'=>'all',
 		'avg'=>'totals',
-		'view'=>'general',
+		'view'=>'sales',
 		'block_view'=>'subcategories',
 		'base_block_view'=>'subcategories',
 		'from'=>'',
@@ -800,10 +800,13 @@ $default_state=array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>1000,
+			'nr'=>25,
 			'where'=>'where true',
 			'f_field'=>'name',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
+				
+			
 
 		),
 		'history'=>array(
@@ -2264,6 +2267,17 @@ $default_state=array(
 	'site_user'=>array(
 		'block_view'=>'login_history',
 		'login_history'=>array(
+			'display'=>'all',
+			'order'=>'login_date',
+			'order_dir'=>'',
+			'type'=>'',
+			'sf'=>0,
+			'nr'=>50,
+			'where'=>'where true',
+			'f_field'=>'ip',
+			'f_value'=>''
+		),
+		'visit_pages'=>array(
 			'display'=>'all',
 			'order'=>'login_date',
 			'order_dir'=>'',

@@ -1,5 +1,6 @@
 <?php
-include_once 'common.php';
+
+if(!isset($skip_common))include_once 'common.php';
 
 
 
@@ -122,7 +123,6 @@ else if ($page->data['Page Code']=='registration') {
 		}
 		$smarty->assign('categories',$categories);
 	}
-
 else if ($page->data['Page Code']=='profile') {
 
 
@@ -437,6 +437,11 @@ $sql=sprintf("select * from `Custom Field Dimension`  where `Custom Field Table`
 		$css_files[]='css/inikoo_table.css';
 
 	}
+else if ($page->data['Page Code']=='reset') {
+	$css_files[]='css/inikoo.css';
+}
+
+
 
 $smarty->assign('logged',$logged_in);
 $page->site=$site;

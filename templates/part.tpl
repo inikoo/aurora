@@ -310,7 +310,7 @@
 	
 	</div>
 			<div style="margin-top:20px">
-	<div style="width:200px;float:left;margin-left:0px;">
+				<div style="width:200px;float:left;margin-left:0px;">
 				<table style="clear:both" class="show_info_product">
 					
 					{foreach from=$period_tags item=period }
