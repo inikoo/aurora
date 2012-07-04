@@ -69,6 +69,7 @@ $smarty->assign('subcategories_view',$_SESSION['state']['part_categories']['view
 $smarty->assign('subcategories_period',$_SESSION['state']['part_categories']['period']);
 $smarty->assign('subcategories_avg',$_SESSION['state']['part_categories']['avg']);
 
+$smarty->assign('category_period',$_SESSION['state']['part_categories']['period']);
 
 
 
