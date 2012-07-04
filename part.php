@@ -260,6 +260,7 @@ $smarty->assign('paginator_menu2',$paginator_menu2);
 
 
 
+
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);
 

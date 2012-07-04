@@ -48,10 +48,13 @@
 						<td>{t}Commodity Code{/t}:</td>
 						<td>{$part->get('Part Tariff Code')}</td>
 					</tr>
-					<tr>
-						<td>{t}Part Family{/t}:</td>
-						<td></td>
+									{foreach from=$part->get_categories() item=category name=foo } 
+
+				<tr>
+						<td>{t}Category{/t}:</td>
+						<td><a href="part_categories.php?id={$category.category_key}">{$category.category_label}</a></td>
 					</tr>
+					{/foreach}
 				</table>
 				{t}Products{/t}: 
 				<table border="0" id="products" class="show_info_product" style=";margin-top:0px">
