@@ -1904,7 +1904,7 @@ return $this->display_button($tag);
 				$order_button=sprintf('
                                       <td ><span id="loading%d"></span></td>
                                       <td style="padding:0" class="input"><input style="height:20px" id="qty%s"  type="text" value="%s"  ></td>
-                                      <td style="padding:0"><button style="border:1px solid #ccc;border-left:none;height:22px"><img style="pointer:cursor;position:relative;bottom:2px"src="art/icons/basket_add.png" onClick="order_single_product(%d)"/></button></td>',
+                                      <td style="padding:0"><button onClick="order_single_product(%d)"  style="cursor:pointer;visibility:hiddenx;background:#fff;border:1px solid #ccc;border-left:none;height:22px;padding:4px"> '._('Add').' <img style="display:none;pointer:cursor;position:relative;bottom:2px"src="art/icons/basket_add.png" /></button></td>',
 					$product['Product ID'],
 					$product['Product ID'],
 					($old_qty>0?$old_qty:''),

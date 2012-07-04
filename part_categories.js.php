@@ -58,7 +58,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 //alert("ar_assets.php?tipo=parts&tableid=0&where=&parent=category&parent_key="+Dom.get('category_key').value)
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=parts&tableid=0&where=&parent=category&parent_key="+Dom.get('category_key').value);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=parts&tableid=0&where=&parent=category&sf=0&parent_key="+Dom.get('category_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -125,7 +125,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				
 				     ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=part_categories&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=part_categories&sf=0&tableid=1");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
