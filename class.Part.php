@@ -240,7 +240,7 @@ class part extends DB_Table {
 
 		$sql=sprintf("update `Part Dimension` set `Part Tariff Code Valid`=%s where `Part SKU`=%d",prepare_mysql($valid),$this->sku);
 		mysql_query($sql);
-		
+
 	}
 
 	function update_tariff_code($value,$options='') {
@@ -867,7 +867,7 @@ class part extends DB_Table {
 	function update_stock() {
 
 
-$picked=0;
+		$picked=0;
 		$required=0;
 
 
@@ -875,7 +875,7 @@ $picked=0;
 			,$this->id
 		);
 		$res=mysql_query($sql);
-		
+
 		if ($row=mysql_fetch_array($res)) {
 			$picked=round($row['picked'],3);
 			$required=round($row['required'],3);
@@ -1049,20 +1049,20 @@ $picked=0;
 		}
 		return $suppliers;
 	}
-	
-	
-	function get_historic_locations(){
-	$locations=array();
-	
-	$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d   group by `Location Key`  ",$this->data['Part SKU']);
+
+
+	function get_historic_locations() {
+		$locations=array();
+
+		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d   group by `Location Key`  ",$this->data['Part SKU']);
 		//print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
 			$locations[$row['Location Key']]=$row['Location Key'];
 		}
-	
-	return $locations;
-	
+
+		return $locations;
+
 	}
 
 
@@ -1316,7 +1316,7 @@ $picked=0;
 	function get_picking_location_historic($date,$qty) {
 
 
-include_once('class.PartLocation.php');
+		include_once 'class.PartLocation.php';
 
 		$this->unknown_location_associated=false;
 
@@ -1327,8 +1327,8 @@ include_once('class.PartLocation.php');
 
 		$result=mysql_query($sql);
 		$_locations=array();
-		
-		
+
+
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (in_array($row['Location Key'],$_locations)) {
 				continue;
@@ -1337,10 +1337,10 @@ include_once('class.PartLocation.php');
 			}
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
 
-			
+
 			if ($part_location->location->data['Location Mainly Used For']=='Picking') {
-			
-			
+
+
 				if ($part_location->is_associated($date)) {
 					list($stock,$value,$in_process)=$part_location->get_stock($date);
 					$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
@@ -1351,12 +1351,12 @@ include_once('class.PartLocation.php');
 		}
 
 
-//print_r($was_associated);exit;
-	$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
+		//print_r($was_associated);exit;
+		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   ",$this->sku,prepare_mysql($date));
 
 		$result=mysql_query($sql);
-		
-		
+
+
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 			if (in_array($row['Location Key'],$_locations)) {
 				continue;
@@ -1365,7 +1365,7 @@ include_once('class.PartLocation.php');
 			}
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
 
-		//	print_r($part_location->location);
+			// print_r($part_location->location);
 			if ($part_location->location->data['Location Mainly Used For']!='Picking') {
 				if ($part_location->is_associated($date)) {
 					list($stock,$value,$in_process)=$part_location->get_stock($date);
@@ -1380,7 +1380,7 @@ include_once('class.PartLocation.php');
 
 
 		//print "------------------".$this->sku."\n";
-	//	print_r($was_associated);
+		// print_r($was_associated);
 
 		//print "==================\n";
 
@@ -1567,13 +1567,13 @@ include_once('class.PartLocation.php');
 	}
 
 	function update_up_today_sales() {
-$this->update_sales_from_invoices('Total');
+		$this->update_sales_from_invoices('Total');
 
 		$this->update_sales_from_invoices('Today');
 		$this->update_sales_from_invoices('Week To Day');
 		$this->update_sales_from_invoices('Month To Day');
 		$this->update_sales_from_invoices('Year To Day');
-		
+
 
 	}
 
@@ -1622,13 +1622,13 @@ $this->update_sales_from_invoices('Total');
 		$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
                      from `Inventory Transaction Fact` ITF  where `Part SKU`=%d %s %s" ,
 			$this->sku,
-						($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
 		$result=mysql_query($sql);
-	//	  print "$sql\n";
+		//   print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->data["Part $db_interval Acc Profit"]=$row['profit'];
 			$this->data["Part $db_interval Acc Profit After Storing"]=$this->data["Part $db_interval Acc Profit"]-$row['cost_storing'];
@@ -2941,6 +2941,22 @@ $this->update_sales_from_invoices('Total');
 	function delete() {
 
 
+	}
+
+	function get_categories() {
+
+
+		$part_categories=array();
+
+
+		$sql=sprintf("select C.`Category Key`,`Category Label` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Part' and `Subject Key`=%d ",$this->sku);
+	//	print $sql;
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$part_categories[]=array('category_key'=>$row['Category Key'],'category_label'=>$row['Category Label']);
+		}
+
+		return $part_categories;
 	}
 
 }
