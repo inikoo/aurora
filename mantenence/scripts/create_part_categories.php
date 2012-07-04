@@ -145,7 +145,7 @@ function associate_subject_to_category_radio($data) {
 
         $category=new Category($data['category_key']);
         $category->update_number_of_subjects();
-        $category->update_subjects_data();
+        //$category->update_subjects_data();
 
 
 
