@@ -45,7 +45,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	print "Category ".$category->id."\t\t\n";
 }
 
-exit;
+
 
 $sql="select * from `Part Dimension`  ";
 $result=mysql_query($sql);

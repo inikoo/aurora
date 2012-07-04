@@ -36,29 +36,29 @@
 	<div style="margin-top:20px;width:900px">
 			<div class="clusters">
 					<div class="buttons small left cluster">
-					<button class="{if $parts_period=='all'}class=&quot;selected&quot;{/if}" period="all" id="parts_period_all" style="padding-left:7px;padding-right:7px">{t}All{/t}</button>
+					<button class="{if $category_period=='all'}class=&quot;selected&quot;{/if}" period="all" id="category_period_all" style="padding-left:7px;padding-right:7px">{t}All{/t}</button>
 				</div>
 				<div class="buttons small left cluster">				<tr>
-					<button class="{if $parts_period=='yeartoday'}selected{/if}" period="yeartoday" id="parts_period_yeartoday">{t}YTD{/t}</button>
-					<button class="{if $parts_period=='monthtoday'}selected{/if}" period="monthtoday" id="parts_period_monthtoday">{t}MTD{/t}</button>
-					<button class="{if $parts_period=='weektoday'}selected{/if}" period="weektoday" id="parts_period_weektoday">{t}WTD{/t}</button>
-					<button class="{if $parts_period=='today'}selected{/if}" period="today" id="parts_period_today">{t}Today{/t}</button>
+					<button class="{if $category_period=='yeartoday'}selected{/if}" period="yeartoday" id="category_period_yeartoday">{t}YTD{/t}</button>
+					<button class="{if $category_period=='monthtoday'}selected{/if}" period="monthtoday" id="category_period_monthtoday">{t}MTD{/t}</button>
+					<button class="{if $category_period=='weektoday'}selected{/if}" period="weektoday" id="category_period_weektoday">{t}WTD{/t}</button>
+					<button class="{if $category_period=='today'}selected{/if}" period="today" id="category_period_today">{t}Today{/t}</button>
 					</div>
 					
 						<div class="buttons small left cluster">				<tr>
-					<button class="{if $parts_period=='yesterday'}selected{/if}" period="yesterday" id="parts_period_yesterday">{t}Yesterday{/t}</button>
-					<button class="{if $parts_period=='last_w'}selected{/if}" period="last_w" id="parts_period_last_w">{t}Last Week{/t}</button>
-					<button class="{if $parts_period=='last_m'}selected{/if}" period="last_m" id="parts_period_last_m">{t}Last Month{/t}</button>
+					<button class="{if $category_period=='yesterday'}selected{/if}" period="yesterday" id="category_period_yesterday">{t}Yesterday{/t}</button>
+					<button class="{if $category_period=='last_w'}selected{/if}" period="last_w" id="category_period_last_w">{t}Last Week{/t}</button>
+					<button class="{if $category_period=='last_m'}selected{/if}" period="last_m" id="category_period_last_m">{t}Last Month{/t}</button>
 					</div>
 					
 					<div class="buttons small left cluster">				<tr>
-					<button class="{if $parts_period=='three_year'}selected{/if}" period="three_year" id="parts_period_three_year">{t}3Y{/t}</button>
-					<button class="{if $parts_period=='year'}selected{/if}" period="year" id="parts_period_year">{t}1Yr{/t}</button>
-					<button class="{if $parts_period=='six_month'}selected{/if}" period="six_month" id="parts_period_six_month">{t}6M{/t}</button>
-					<button class="{if $parts_period=='quarter'}selected{/if}" period="quarter" id="parts_period_quarter">{t}1Qtr{/t}</button>
-					<button class="{if $parts_period=='month'}selected{/if}" period="month" id="parts_period_month">{t}1M{/t}</button>
-					<button class="{if $parts_period=='ten_day'}selected{/if}" period="ten_day" id="parts_period_ten_day">{t}10D{/t}</button>
-					<button class="{if $parts_period=='week'}selected{/if}" period="week" id="parts_period_week">{t}1W{/t}</button>
+					<button class="{if $category_period=='three_year'}selected{/if}" period="three_year" id="category_period_three_year">{t}3Y{/t}</button>
+					<button class="{if $category_period=='year'}selected{/if}" period="year" id="category_period_year">{t}1Yr{/t}</button>
+					<button class="{if $category_period=='six_month'}selected{/if}" period="six_month" id="category_period_six_month">{t}6M{/t}</button>
+					<button class="{if $category_period=='quarter'}selected{/if}" period="quarter" id="category_period_quarter">{t}1Qtr{/t}</button>
+					<button class="{if $category_period=='month'}selected{/if}" period="month" id="category_period_month">{t}1M{/t}</button>
+					<button class="{if $category_period=='ten_day'}selected{/if}" period="ten_day" id="category_period_ten_day">{t}10D{/t}</button>
+					<button class="{if $category_period=='week'}selected{/if}" period="week" id="category_period_week">{t}1W{/t}</button>
 				
 				</div>
 
@@ -70,7 +70,7 @@
 				<table style="clear:both" class="show_info_product">
 					
 					{foreach from=$period_tags item=period }
-					<tbody id="info_{$period.key}" style="{if $parts_period!=$period.key}display:none{/if}">
+					<tbody id="info_{$period.key}" style="{if $category_period!=$period.key}display:none{/if}">
 						<tr>
 							<td>{t}Sales{/t}:</td>
 							<td class="aright">{$category->get_period($period.db,"Acc Sold Amount")}</td>
@@ -95,7 +95,7 @@
 			<div style="float:left;margin-left:20px">
 				<table style="width:200px;clear:both" class="show_info_product">
 				{foreach from=$period_tags item=period }
-					<tbody id="info2_{$period.key}" style="{if $parts_period!=$period.key}display:none{/if}">
+					<tbody id="info2_{$period.key}" style="{if $category_period!=$period.key}display:none{/if}">
 						{if $category->get_period($period.db,'Acc No Supplied')!=0} 
 						<tr>
 							<td>{t}Required{/t}:</td>
@@ -131,6 +131,37 @@
 				</table>
 			</div>
 		</div>	
+		
+		<div id="sales_plots" style="clear:both;display:none">
+				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
+					<li> <span class="item {if $plot_tipo=='store'}selected{/if}" onclick="change_plot(this)" id="plot_store" tipo="store"> <span>{t}Parts Sales{/t}</span> </span> </li>
+					{* 
+					<li> <span class="item {if $plot_tipo=='top_departments'}selected{/if}" id="plot_top_departments" onclick="change_plot(this)" tipo="top_departments"> <span>{t}Top Products{/t}</span> </span> </li>
+					
+					<li> <span class="item {if $plot_tipo=='pie'}selected{/if}" onclick="change_plot(this)" id="plot_pie" tipo="pie" forecast="{$plot_data.pie.forecast}" interval="{$plot_data.pie.interval}"> <span>{t}Products{/t}</span> </span> </li>
+				*} 
+				</ul>
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> 
+				<div id="sales_plot" style="clear:both;border:1px solid #ccc">
+					<div id="single_data_set">
+						<strong>You need to upgrade your Flash Player</strong> 
+					</div>
+				</div>
+<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=family_sales&family_key=1"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("sales_plot");
+		// ]]>
+	</script> 
+				<div style="clear:both">
+				</div>
+			</div>
+		
+		
+		
 		</div>
 	</div>
 	<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">

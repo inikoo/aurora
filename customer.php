@@ -344,7 +344,7 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 $filter_menu=array(
-	'code'=>array('db_key'=>'code','menu_label'=>'Code like','label'=>_('Code')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Code like'),'label'=>_('Code')),
 );
 $tipo_filter=$_SESSION['state']['customer']['assets']['f_field'];
 $filter_value=$_SESSION['state']['customer']['assets']['f_value'];
@@ -354,6 +354,23 @@ $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
+
+
+
+$filter_menu=array(
+	'ip'=>array('db_key'=>'ip','menu_label'=>'IP','label'=>'IP'),
+);
+$tipo_filter=$_SESSION['state']['staff_user']['login_history']['f_field'];
+$filter_value=$_SESSION['state']['staff_user']['login_history']['f_value'];
+
+$smarty->assign('filter_value3',$filter_value);
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+
+
 
 $elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
 $sql=sprintf("select count(*) as num , `Type` from  `Customer History Bridge` where `Customer Key`=%d group by `Type`",$customer->id);
