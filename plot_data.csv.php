@@ -61,11 +61,41 @@ case('top_families'):
 
 	$data=prepare_values($_REQUEST,array(
 			'store_keys'=>array('type'=>'string'),
-			'period'=>array('type'=>'string')
+			'period'=>array('type'=>'string'),
+			'nr'=>array('type'=>'numeric')
+
 		));
 	top_families($data);
 	break;
+case('top_products'):
 
+	$data=prepare_values($_REQUEST,array(
+			'store_keys'=>array('type'=>'string'),
+			'period'=>array('type'=>'string'),
+						'nr'=>array('type'=>'numeric')
+
+		));
+	top_products($data);
+	break;
+case('top_parts'):
+
+	$data=prepare_values($_REQUEST,array(
+			'period'=>array('type'=>'string'),
+						'nr'=>array('type'=>'numeric')
+
+		));
+	top_parts($data);
+	break;	
+case('top_parts_categories'):
+
+	$data=prepare_values($_REQUEST,array(
+			'period'=>array('type'=>'string'),
+						'nr'=>array('type'=>'numeric')
+
+		));
+	top_parts_categories($data);
+	break;	
+	
 case('number_of_contacts'):
 	$data=prepare_values($_REQUEST,array(
 			'store_key'=>array('type'=>'key'),
@@ -972,15 +1002,12 @@ function stacked_store_sales($data) {
 }
 function top_families($data) {
 
-	$max_slices=20;
-
-
+	$max_slices=$data['nr'];
 	$store_keys=preg_split('/,/',$data['store_keys']);
 
 	if (!is_array($store_keys) or count($store_keys)==0) {
 		return;
 	}
-
 	$valid_store_keys=array();
 	foreach ($store_keys as $store_key) {
 		if (is_numeric($store_key))
@@ -990,48 +1017,38 @@ function top_families($data) {
 
 	$period=$data['period'];
 
-	$field='(`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount`)';
-
-
-
 	switch ($period) {
 
 	case('1m'):
-		$field='(`Product Family 1 Month Acc Invoiced Amount`)';
+		$field='(`Product Family DC 1 Month Acc Invoiced Amount`)';
 
 		break;
 	case('1y'):
-		$field='(`Product Family 1 Year Acc Invoiced Amount`)';
+		$field='(`Product Family DC 1 Year Acc Invoiced Amount`)';
 
 		break;
 	case('1q'):
-		$field='(`Product Family 1 Quarter Acc Invoiced Amount`)';
+		$field='(`Product Family DC 1 Quarter Acc Invoiced Amount`)';
 
 		break;
 	default:
-		$field='(`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount`)';
-
-
+		$field='(`Product Family DC Total Acc Invoiced Amount`)';
 	}
 
-
-
-
-
-
-
 	$total=0;
-	$sql=sprintf("select sum%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s)  ",
+	$sql=sprintf("select sum%s as sales from `Product Family Dimension` F left join  `Product Family Default Currency` DC on (F.`Product Family Key`=DC.`Product Family Key`) where `Product Family Store Key` in (%s)  ",
 		$field,
 		join(",",$valid_store_keys)
 	);
+//	print $sql;
 	$res=mysql_query($sql);
+	
 	if ($row=mysql_fetch_assoc($res)) {
 		$total=$row['sales'];
 	}
 
 	$others=$total;
-	$sql=sprintf("select `Product Family Store Code`,`Product Family Name`,`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s) order by sales desc limit %d ",
+	$sql=sprintf("select `Product Family Store Code`,`Product Family Name`,F.`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` F left join  `Product Family Default Currency` DC on (F.`Product Family Key`=DC.`Product Family Key`) where `Product Family Store Key` in (%s) order by sales desc limit %d ",
 		$field,
 		join(",",$valid_store_keys),
 		$max_slices
@@ -1041,7 +1058,6 @@ function top_families($data) {
 	while ($row=mysql_fetch_assoc($res)) {
 		$descripton='';//$row['Product Family Name'];
 		$descripton=$row['Product Family Store Code'].' '.$row['Product Family Code'];
-
 		$code=$row['Product Family Code'];
 		printf("%s;%.2f;;;family.php?id=%d;%s\n",$code,$row['sales'],$row['Product Family Key'],$descripton);
 		$others-=$row['sales'];
@@ -1053,6 +1069,229 @@ function top_families($data) {
 
 }
 
+function top_products($data) {
+
+	$max_slices=$data['nr'];
+	$store_keys=preg_split('/,/',$data['store_keys']);
+
+	if (!is_array($store_keys) or count($store_keys)==0) {
+		return;
+	}
+	$valid_store_keys=array();
+	foreach ($store_keys as $store_key) {
+		if (is_numeric($store_key))
+			$valid_store_keys[]=$store_key;
+	}
+	if (count($valid_store_keys)==0)return;
+
+	$period=$data['period'];
+
+	switch ($period) {
+
+	case('1m'):
+		$field='(`Product ID DC 1 Month Acc Invoiced Amount`)';
+
+		break;
+	case('1y'):
+		$field='(`Product ID DC 1 Year Acc Invoiced Amount`)';
+
+		break;
+	case('1q'):
+		$field='(`Product ID DC 1 Quarter Acc Invoiced Amount`)';
+
+		break;
+	default:
+		$field='(`Product ID DC Total Acc Invoiced Amount`)';
+	}
+
+	$total=0;
+	$sql=sprintf("select sum%s as sales from `Product Dimension` F left join  `Product ID Default Currency` DC on (F.`Product ID`=DC.`Product ID`) where `Product Store Key` in (%s)  ",
+		$field,
+		join(",",$valid_store_keys)
+	);
+	//print $sql;
+	$res=mysql_query($sql);
+	
+	if ($row=mysql_fetch_assoc($res)) {
+		$total=$row['sales'];
+	}
+
+	$others=$total;
+	$sql=sprintf("select `Store Code`,`Product Name`,F.`Product ID`,`Product Code`,%s as sales from `Product Dimension` F left join  `Product ID Default Currency` DC on (F.`Product ID`=DC.`Product ID`) left join `Store Dimension` S on (`Store Key`=`Product Store Key`)  where `Product Store Key` in (%s) order by sales desc limit %d ",
+		$field,
+		join(",",$valid_store_keys),
+		$max_slices
+	);
+	$res=mysql_query($sql);
+	//print $sql;
+	while ($row=mysql_fetch_assoc($res)) {
+		$descripton='';//$row['Product Name'];
+		$descripton=$row['Store Code'].' '.$row['Product Code'];
+		$code=$row['Product Code'];
+		printf("%s;%.2f;;;product.php?pid=%d;%s\n",$code,$row['sales'],$row['Product ID'],$descripton);
+		$others-=$row['sales'];
+	}
+
+	if ($others) {
+		printf("%s;%.2f;true\n",_('Others'),$others);
+	}
+
+}
+
+function top_parts($data) {
+
+global $user;
+
+	$max_slices=$data['nr'];
+
+	
+
+	$period=$data['period'];
+	
+	
+		$warehouses=join(',',$user->warehouses);
+	if ($warehouses=='')$warehouses=0;
+
+
+	if (!$warehouses)
+		$where=sprintf('  false ');
+
+	else{
+		$where=sprintf('  `Warehouse Key` in (%s) ',$warehouses);
+	}
+
+	switch ($period) {
+
+	case('1m'):
+		$field='(`Part 1 Month Acc Sold Amount`)';
+
+		break;
+	case('1y'):
+		$field='(`Part 1 Year Acc Sold Amount`)';
+
+		break;
+	case('1q'):
+		$field='(`Part 1 Quarter Acc Sold Amount`)';
+
+		break;
+	default:
+		$field='(`Part Total Acc Sold Amount`)';
+	}
+
+	$total=0;
+	$sql=sprintf("select sum%s as sales from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where  $where   ",
+		$field
+	);
+	//print $sql;
+	$res=mysql_query($sql);
+	
+	if ($row=mysql_fetch_assoc($res)) {
+		$total=$row['sales'];
+	}
+
+	$others=$total;
+	$sql=sprintf("select `Part Unit Description`,P.`Part SKU` ,%s as sales from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where  $where   order by sales desc limit %d ",
+		$field,
+		$max_slices
+	);
+	$res=mysql_query($sql);
+//	print $sql;
+	while ($row=mysql_fetch_assoc($res)) {
+		$descripton=$row['Part Unit Description'];
+		$code=sprintf("SKU%05d",$row['Part SKU']);
+		printf("%s;%.2f;;;part.php?sku=%d;%s\n",$code,$row['sales'],$row['Part SKU'],$descripton);
+		$others-=$row['sales'];
+	}
+
+	if ($others) {
+		printf("%s;%.2f;true\n",_('Others'),$others);
+	}
+
+}
+
+function top_parts_categories($data) {
+
+global $user;
+
+	$max_slices=$data['nr'];
+
+	
+
+	$period=$data['period'];
+	
+	
+		$warehouses=join(',',$user->warehouses);
+	if ($warehouses=='')$warehouses=0;
+
+
+	if (!$warehouses)
+		$where=sprintf('  false ');
+
+	else{
+	
+	
+		$sql=sprintf("select GROUP_CONCAT(`Warehouse Family Category Key`) as root_category from `Warehouse Dimension` where `Warehouse Key` in (%s)",$warehouses);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$root_category=$row['root_category'];
+		}
+
+
+		$where=sprintf(" `Category Subject`='Part' and  `Category Parent Key` in (%s)",$root_category);
+	
+	
+		
+	}
+
+	switch ($period) {
+
+	case('1m'):
+		$field='(`Part Category 1 Month Acc Sold Amount`)';
+
+		break;
+	case('1y'):
+		$field='(`Part Category 1 Year Acc Sold Amount`)';
+
+		break;
+	case('1q'):
+		$field='(`Part Category 1 Quarter Acc Sold Amount`)';
+
+		break;
+	default:
+		$field='(`Part Category Total Acc Sold Amount`)';
+	}
+
+	$total=0;
+	$sql=sprintf("select sum%s as sales from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`)  where  $where   ",
+		$field
+	);
+	//print $sql;
+	$res=mysql_query($sql);
+	
+	if ($row=mysql_fetch_assoc($res)) {
+		$total=$row['sales'];
+	}
+
+	$others=$total;
+	$sql=sprintf("select `Category Label`,`Category Key` ,%s as sales from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`) where  $where   order by sales desc limit %d ",
+		$field,
+		$max_slices
+	);
+	$res=mysql_query($sql);
+	//print $sql;
+	while ($row=mysql_fetch_assoc($res)) {
+		$descripton=$row['Category Label'];
+		$code=$row['Category Label'];
+		printf("%s;%.2f;;;part_categories.php?id=%d;%s\n",$code,$row['sales'],$row['Category Key'],$descripton);
+		$others-=$row['sales'];
+	}
+
+	if ($others) {
+		printf("%s;%.2f;true\n",_('Others'),$others);
+	}
+
+}
 
 function store_departments_pie($data) {
 	$number_slices=9;

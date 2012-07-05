@@ -50,6 +50,7 @@ $js_files=array(
 );
 
 
+// $_SESSION['state']['home']['splinters']['top_products']['type']='families';
 
 
 switch ($tipo) {
@@ -115,8 +116,11 @@ case 'top_products':
 	//print_r($_SESSION['state']['home']['splinters']['top_products']);
 	$smarty->assign('top_products_nr',$_SESSION['state']['home']['splinters']['top_products']['nr']);
 	$smarty->assign('top_products_type',$_SESSION['state']['home']['splinters']['top_products']['type']);
-	$smarty->assign('top_products_index',1);
+	
+		$smarty->assign('top_products_period',$_SESSION['state']['home']['splinters']['top_products']['period']);
 
+	
+	$smarty->assign('top_products_index',1);
 
 	break;
 

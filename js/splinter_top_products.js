@@ -25,14 +25,14 @@ var tableid=1
 	    var tableDivEL="table"+tableid;
 	    var ProductsColumnDefs = [
 				       {key:"position", label:"", width:5,sortable:false,className:"aleft"}
-				       	,{key:"store",label:"", width:10,sortable:false,className:"aleft"}
+				      // 	,{key:"store",label:"", width:10,sortable:false,className:"aleft"}
 
-				       ,{key:"family", label:Dom.get('label_Fam').value, width:28,sortable:false,className:"aleft"}
-				       ,{key:"description", label:Dom.get('label_Product').value, width:241,sortable:false,className:"aleft"}
+				      // ,{key:"family", label:Dom.get('label_Fam').value, width:28,sortable:false,className:"aleft"}
+				       ,{key:"description", label:Dom.get('label_Product').value, width:279,sortable:false,className:"aleft"}
 				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:69,sortable:false,className:"aright"}
 					 ];
 	  
-	 // alert("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid)
+	 //alert("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid)
 	  top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid);
 	    top_products_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    top_products_tables.dataSourcetopprod.connXhrMode = "queueRequests";
@@ -100,11 +100,10 @@ YAHOO.util.Event.onDOMReady(top_products_init);
 
 
 function change_product_period(){
-stores_keys=Dom.get('store_keys').value;
 var period=this.getAttribute('period');
 var tableid=Dom.get('top_products_index').value
 
-
+Dom.get('top_products_period').value=period;
 
 var table=top_products_tables.table1;
     var datasource=top_products_tables.dataSourcetopprod;
@@ -115,19 +114,32 @@ var table=top_products_tables.table1;
 ids=['top_products_all','top_products_1y','top_products_1m','top_products_1q'];
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
-Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_families&store_keys='+stores_keys+'&period='+period); 
+Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_'+Dom.get('top_products_type').value+'&store_keys='+Dom.get('store_keys').value+'&period='+Dom.get('top_products_period').value+'&nr='+Dom.get('top_products_nr').value); 
 //alert ('plot_data.csv.php?tipo=top_families&store_keys='+stores_keys+'&period='+period)
 
 }
 
 function change_product_type(){
-Dom.removeClass(['top_products_fam','top_products_products'],'selected');
+Dom.removeClass(['top_products_fam','top_products_products','top_parts','top_parts_categories'],'selected');
 Dom.addClass(this,'selected');
 
 if(this.id=='top_products_fam')
 type='families'
-else
+else if(this.id=='top_products_products')
 type='products';
+else if(this.id=='top_parts')
+type='parts';
+else if(this.id=='top_parts_categories')
+type='parts_categories';
+
+Dom.get('top_products_type').value=type;
+
+
+Dom.setStyle(['title_families','title_products','title_parts','title_parts_categories'],'display','none');
+Dom.setStyle('title_'+type,'display','')
+
+Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_'+Dom.get('top_products_type').value+'&store_keys='+Dom.get('store_keys').value+'&period='+Dom.get('top_products_period').value+'&nr='+Dom.get('top_products_nr').value); 
+
 
 var table=top_products_tables.table1;
     var datasource=top_products_tables.dataSourcetopprod;
@@ -145,6 +157,11 @@ ids=['top_products_50','top_products_10','top_products_20'];
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
+Dom.get('top_products_nr').value=nr;
+
+Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_'+Dom.get('top_products_type').value+'&store_keys='+Dom.get('store_keys').value+'&period='+Dom.get('top_products_period').value+'&nr='+Dom.get('top_products_nr').value); 
+
+
 }
 function init(){
 
@@ -156,7 +173,7 @@ ids=['top_products_all','top_products_1y','top_products_1m','top_products_1q'];
  YAHOO.util.Event.addListener(ids, "click",change_product_period);
  
  
- ids=['top_products_fam','top_products_products'];
+ ids=['top_products_fam','top_products_products','top_parts','top_parts_categories'];
  YAHOO.util.Event.addListener(ids, "click",change_product_type);
  
  

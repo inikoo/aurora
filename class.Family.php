@@ -1046,32 +1046,32 @@ class Family extends DB_Table {
 
 	function update_up_today_sales() {
 
-		$this->update_sales_from_invoices('Today');
-		$this->update_sales_from_invoices('Week To Day');
-		$this->update_sales_from_invoices('Month To Day');
-		$this->update_sales_from_invoices('Year To Day');
+	//	$this->update_sales_from_invoices('Today');
+	//	$this->update_sales_from_invoices('Week To Day');
+	//	$this->update_sales_from_invoices('Month To Day');
+	//	$this->update_sales_from_invoices('Year To Day');
 
 		$this->update_sales_from_invoices('Total');
 	}
 
 	function update_last_period_sales() {
 
-		$this->update_sales_from_invoices('Yesterday');
-		$this->update_sales_from_invoices('Last Week');
-		$this->update_sales_from_invoices('Last Month');
+	//	$this->update_sales_from_invoices('Yesterday');
+	//	$this->update_sales_from_invoices('Last Week');
+	//	$this->update_sales_from_invoices('Last Month');
 
 	}
 
 
 	function update_interval_sales() {
 
-		$this->update_sales_from_invoices('3 Year');
-		$this->update_sales_from_invoices('1 Year');
-		$this->update_sales_from_invoices('6 Month');
-		$this->update_sales_from_invoices('1 Quarter');
-		$this->update_sales_from_invoices('1 Month');
-		$this->update_sales_from_invoices('10 Day');
-		$this->update_sales_from_invoices('1 Week');
+	//	$this->update_sales_from_invoices('3 Year');
+	//	$this->update_sales_from_invoices('1 Year');
+	//	$this->update_sales_from_invoices('6 Month');
+	//	$this->update_sales_from_invoices('1 Quarter');
+	//	$this->update_sales_from_invoices('1 Month');
+	//	$this->update_sales_from_invoices('10 Day');
+	//	$this->update_sales_from_invoices('1 Week');
 
 	}
 
@@ -1252,6 +1252,8 @@ class Family extends DB_Table {
 		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
 		$this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=0;
+				$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]=0;
+
 		$this->data["Product Family $db_interval Acc Invoiced Amount"]=0;
 		$this->data["Product Family $db_interval Acc Invoices"]=0;
 		$this->data["Product Family $db_interval Acc Profit"]=0;
@@ -1265,21 +1267,23 @@ class Family extends DB_Table {
 
 		$this->data["Product Family DC $db_interval Acc Profit"]=0;
 
-		$sql=sprintf("select  sum(`Shipped Quantity`) as qty_delivered,sum(`Order Quantity`) as qty_ordered,sum(`Invoice Quantity`) as qty_invoiced ,count(Distinct `Customer Key`)as customers,count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost
-        ,
-                     sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
+		$sql=sprintf("select  sum(`Shipped Quantity`) as qty_delivered,sum(`Order Quantity`) as qty_ordered,sum(`Invoice Quantity`) as qty_invoiced ,count(Distinct `Customer Key`)as customers,count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net ,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d %s %s" ,
 			$this->id,
-			prepare_mysql($from_date),
+			
+						($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
 		);
 
 		$result=mysql_query($sql);
 
-		//print $sql."\n\n";
+//		print $sql."\n\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
 			$this->data["Product Family $db_interval Acc Invoiced Amount"]=$row["net"];
+						$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]=$row["gross"];
+
 			$this->data["Product Family $db_interval Acc Invoices"]=$row["invoices"];
 			$this->data["Product Family $db_interval Acc Profit"]=$row["net"]-$row['total_cost'];
 			$this->data["Product Family $db_interval Acc Customers"]=$row["customers"];
@@ -1306,6 +1310,8 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 		$sql=sprintf("update `Product Family Dimension` set
                      `Product Family $db_interval Acc Invoiced Discount Amount`=%.2f,
+                                          `Product Family $db_interval Acc Invoiced Gross Amount`=%.2f,
+
                      `Product Family $db_interval Acc Invoiced Amount`=%.2f,
                      `Product Family $db_interval Acc Invoices`=%d,
                      `Product Family $db_interval Acc Profit`=%.2f,
@@ -1315,6 +1321,8 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
                        `Product Family $db_interval Acc Quantity Delivered`=%d
                      where `Product Family Key`=%d "
 			,$this->data["Product Family $db_interval Acc Invoiced Discount Amount"]
+						,$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]
+
 			,$this->data["Product Family $db_interval Acc Invoiced Amount"]
 			,$this->data["Product Family $db_interval Acc Invoices"]
 			,$this->data["Product Family $db_interval Acc Profit"]
