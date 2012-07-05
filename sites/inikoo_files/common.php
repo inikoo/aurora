@@ -95,7 +95,8 @@ $store_code=$store->data['Store Code'];
 setlocale(LC_MONETARY, $site->data['Site Locale']);
 $authentication_type='login';
 
-
+$_SESSION['text_locale_country_code']=substr($site->data['Site Locale'],3,2);
+$_SESSION['text_locale_code']=substr($site->data['Site Locale'],0,2);
 
 
 if(!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ){
@@ -235,7 +236,10 @@ $current_url=$not_found_current_page;
 $current_url='';
 }
 
-
+$order=false;
+$order_in_process=$customer->get_order_in_process_key();
+if($order_in_process)
+$order=new Order($order_in_process);
 
 $user_click_key=log_visit($session->id,(isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id,$current_url);
 

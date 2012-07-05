@@ -35,7 +35,7 @@ class Order extends DB_Table {
 
 
 	var $ghost_order=false;
-	var $update_stock=true;	
+	var $update_stock=true;
 	public $skip_update_product_sales=false;
 	var $skip_update_after_individual_transaction=true;
 	function __construct($arg1 = false, $arg2 = false) {
@@ -138,12 +138,18 @@ class Order extends DB_Table {
 		//$this->data ['Order Ship To Keys']=$this->ship_to->id;
 		//$this->data ['Order Ship To Country Code']=($this->ship_to->data['Ship To Country Code']==''?'UNK':$this->ship_to->data['Ship To Country Code']);
 
+		if (isset($data['Order Current Dispatch State']) and $data['Order Current Dispatch State']=='In Process by Customer') {
+			$this->data ['Order Current Dispatch State'] = 'In Process by Customer';
+			$this->data ['Order Current XHTML State'] = 'In Process by Customer';
+		}else {
+			$this->data ['Order Current Dispatch State'] = 'In Process';
+			$this->data ['Order Current XHTML State'] = 'In Process';
+
+		}
 
 
 
-		$this->data ['Order Current Dispatch State'] = 'In Process';
 		$this->data ['Order Current Payment State'] = 'Waiting Payment';
-		$this->data ['Order Current XHTML State'] = 'In Process';
 		$this->data ['Order Sale Reps IDs'] =array($this->editor['User Key']);
 		$this->data ['Order For'] = 'Customer';
 
@@ -278,7 +284,7 @@ class Order extends DB_Table {
 		);
 
 		mysql_query($sql);
-		
+
 		$this->update_delivery_notes();
 		$this->update_full_search();
 
@@ -527,13 +533,13 @@ class Order extends DB_Table {
 	}
 
 
-function authorize_all(){
-$sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Quantity`=`Order Quantity`  where `Order Key`=%d",$this->id);
+	function authorize_all() {
+		$sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Quantity`=`Order Quantity`  where `Order Key`=%d",$this->id);
 		mysql_query($sql);
 
-//print $sql;
+		//print $sql;
 
-}
+	}
 
 
 	function add_order_transaction($data,$historic=false) {
@@ -645,8 +651,7 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 				exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
 			$otf_key=mysql_insert_id();
 
-		}else
-		{
+		}else {
 
 
 
@@ -748,7 +753,7 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
                                  values (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                                  %d,%d,%s,%d,%d,
                                  %s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'')   ",
-			
+
 					$bonus_quantity,
 					prepare_mysql($order_type),
 					$tax_rate,
@@ -780,24 +785,24 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 				if (! mysql_query( $sql ))
 					exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
 				$otf_key=mysql_insert_id();
-				
-				
-				
+
+
+
 
 			}
-			
-			
-			
-			
-					if (in_array($this->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
-				
-				
+
+
+
+
+			if (in_array($this->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
+
+
 				$dn_keys=$this->get_delivery_notes_ids();
 				$dn_key=array_pop($dn_keys);
 				$dn=new DeliveryNote($dn_key);
 				$dn->update_inventory_transaction_fact($otf_key,$quantity);
-				
-				
+
+
 			}
 
 		}
@@ -1073,8 +1078,8 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 			if ($this->data = mysql_fetch_array( $result, MYSQL_ASSOC )) {
 				$this->id = $this->data ['Order Key'];
 			}
-			
-			
+
+
 		}
 		elseif ($key == 'public id' or $key == 'public_id') {
 			$sql = sprintf( "select * from `Order Dimension` where `Order Public ID`=%s", prepare_mysql ( $id ) );
@@ -2192,9 +2197,9 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 		$this->new_value=$this->data['Order Shipping Net Amount'];
 
 	}
-	
-	
-		function use_calculated_items_charges() {
+
+
+	function use_calculated_items_charges() {
 
 		$this->update_charges();
 		$this->updated=true;
@@ -2205,9 +2210,9 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 		$this->new_value=$this->data['Order Charges Net Amount'];
 
 	}
-	
-	
-	
+
+
+
 
 	function update_shipping_amount($value) {
 		$value=sprintf("%.2f",$value);;
@@ -2234,9 +2239,9 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 
 
 	function update_charges_amount($charge_data) {
-	
-	
-	
+
+
+
 		if ($charge_data['Charge Net Amount']!=$this->data['Order Charges Net Amount']) {
 
 			$this->data['Order Charges Net Amount']=$charge_data['Charge Net Amount'];
@@ -2287,7 +2292,7 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 
 			// exit;
 
-	$this->updated=true;
+			$this->updated=true;
 			$this->new_value=$this->data['Order Charges Net Amount'];
 
 			$this->update_item_totals_from_order_transactions();
@@ -2834,13 +2839,13 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 
 			if ($amount==$row['Order Transaction Total Discount Amount'] or $row['Order Transaction Gross Amount']==0) {
 				$this->msg='Nothing to Change';
-					$return_data= array(
+				$return_data= array(
 					'updated'=>true,
 					'otf_key'=>$otf_key,
 					'description'=>$row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
 					'discount_percentage'=>percentage($amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
 					'to_charge'=>money($row['Order Transaction Gross Amount']-
-					$amount,$this->data['Order Currency']),
+						$amount,$this->data['Order Currency']),
 					'qty'=>$row['Order Quantity'],
 					'bonus qty'=>0
 				);
@@ -2861,7 +2866,7 @@ $sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Qu
 			$this->update_no_normal_totals('save');
 
 			$this->update_totals_from_order_transactions();
-$deal_info='';
+			$deal_info='';
 			if ($amount>0  ) {
 				$deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
 
@@ -2879,19 +2884,19 @@ $deal_info='';
 				);
 				mysql_query($sql);
 				$this->updated=true;
-}
-				return array(
-					'updated'=>true,
-					'otf_key'=>$otf_key,
-					'description'=>$row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
-					'discount_percentage'=>percentage($amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
-					'to_charge'=>money($row['Order Transaction Gross Amount']-$amount,$this->data['Order Currency']),
-					'qty'=>$row['Order Quantity'],
-					'bonus qty'=>0
-				);
+			}
+			return array(
+				'updated'=>true,
+				'otf_key'=>$otf_key,
+				'description'=>$row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
+				'discount_percentage'=>percentage($amount,$row['Order Transaction Gross Amount'],$fixed=1,$error_txt='NA',$psign=''),
+				'to_charge'=>money($row['Order Transaction Gross Amount']-$amount,$this->data['Order Currency']),
+				'qty'=>$row['Order Quantity'],
+				'bonus qty'=>0
+			);
 
 
-			
+
 
 
 		}
@@ -3304,7 +3309,7 @@ $deal_info='';
 					,$this->id
 				);
 				mysql_query($sql);
-				
+
 
 			} else {
 				$customer=new Customer($this->data['Order Customer Key']);
@@ -3375,7 +3380,7 @@ $deal_info='';
 			,prepare_mysql($ship_to->data['Ship To Postal Code'])
 
 			,$this->id
-			
+
 		);
 		mysql_query($sql);
 		if (mysql_affected_rows()>0) {
