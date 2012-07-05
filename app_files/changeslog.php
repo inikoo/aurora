@@ -6153,8 +6153,8 @@ CREATE TABLE `Part Category Dimension` (
   `Part Category Total Acc Unknown Stock Days` float NOT NULL DEFAULT '0',
   `Part Category Total Acc GMROI` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`Part Category Key`)
-) ENGINE=MyISAM AUTO_INCREMENT=8826 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-
-
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Family Category Key` MEDIUMINT NULL DEFAULT NULL ;
+ALTER TABLE `Product Default Currency` CHANGE `Product DC Total Invoiced Gross Amount` `Product DC Total Acc Invoiced Gross Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', CHANGE `Product DC Total Invoiced Discount Amount` `Product DC Total Acc Invoiced Discount Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', CHANGE `Product DC Total Invoiced Amount` `Product DC Total Acc Invoiced Amount` DECIMAL(12,2) NOT NULL DEFAULT '0.00', CHANGE `Product DC Total Profit` `Product DC Total Acc Profit` DECIMAL(12,2) NOT NULL DEFAULT '0.00';

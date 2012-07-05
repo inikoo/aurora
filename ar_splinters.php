@@ -23,6 +23,10 @@ case('customers'):
 case('products'):
 	if ($_REQUEST['type']=='products')
 		$results=list_products();
+	elseif ($_REQUEST['type']=='parts')
+		$results=list_parts();
+	elseif ($_REQUEST['type']=='parts_categories')
+		$results=list_parts_categories();
 	else
 		$results=list_families();
 	break;
@@ -535,7 +539,7 @@ function list_families() {
 		$where=sprintf(' and `Product Family Store Key` in (%s) ',$store);
 
 
-$dc_currency=true;
+	$dc_currency=true;
 
 	$filtered=0;
 	$rtext='';
@@ -551,44 +555,44 @@ $dc_currency=true;
 		$order='`Product Family 1 Year Acc Profit`';
 
 	else {
-	
-	
-	if($dc_currency){
-	switch ($period) {
-		case('all'):
-			$order='`Product Family DC Total Acc Invoiced Amount`';
-			break;
-		case('1m'):
-			$order='`Product Family DC 1 Month Acc Invoiced Amount`';
-			break;
-		case('1y'):
-			$order='`Product Family DC 1 Year Acc Invoiced Amount`';
-			break;
-		case('1q'):
-			$order='`Product Family DC 1 Quarter Acc Invoiced Amount`';
-			break;
-		default:
-			$order='`Product Family DC 1 Year Acc Invoiced Amount`';
 
-		}
-	}else{
-		switch ($period) {
-		case('all'):
-			$order='`Product Family Total Acc Invoiced Amount`';
-			break;
-		case('1m'):
-			$order='`Product Family 1 Month Acc Invoiced Amount`';
-			break;
-		case('1y'):
-			$order='`Product Family 1 Year Acc Invoiced Amount`';
-			break;
-		case('1q'):
-			$order='`Product Family 1 Quarter Acc Invoiced Amount`';
-			break;
-		default:
-			$order='`Product Family 1 Year Acc Invoiced Amount`';
 
-		}
+		if ($dc_currency) {
+			switch ($period) {
+			case('all'):
+				$order='`Product Family DC Total Acc Invoiced Amount`';
+				break;
+			case('1m'):
+				$order='`Product Family DC 1 Month Acc Invoiced Amount`';
+				break;
+			case('1y'):
+				$order='`Product Family DC 1 Year Acc Invoiced Amount`';
+				break;
+			case('1q'):
+				$order='`Product Family DC 1 Quarter Acc Invoiced Amount`';
+				break;
+			default:
+				$order='`Product Family DC 1 Year Acc Invoiced Amount`';
+
+			}
+		}else {
+			switch ($period) {
+			case('all'):
+				$order='`Product Family Total Acc Invoiced Amount`';
+				break;
+			case('1m'):
+				$order='`Product Family 1 Month Acc Invoiced Amount`';
+				break;
+			case('1y'):
+				$order='`Product Family 1 Year Acc Invoiced Amount`';
+				break;
+			case('1q'):
+				$order='`Product Family 1 Quarter Acc Invoiced Amount`';
+				break;
+			default:
+				$order='`Product Family 1 Year Acc Invoiced Amount`';
+
+			}
 		}
 
 	}
@@ -601,52 +605,52 @@ $dc_currency=true;
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-if($dc_currency){
-		switch ($period) {
-		case('all'):
-			$sales=money($data['Product Family DC Total Acc Invoiced Amount'],$corporate_currency);
-			break;
-		case('1m'):
-			$sales=money($data['Product Family DC 1 Month Acc Invoiced Amount'],$corporate_currency);
-			break;
-		case('1y'):
-			$sales=money($data['Product Family DC 1 Year Acc Invoiced Amount'],$corporate_currency);
-			break;
-		case('1q'):
-			$sales=money($data['Product Family DC 1 Quarter Acc Invoiced Amount'],$corporate_currency);
-			break;
-		default:
-			$sales=money($data['Product Family DC 1 Year Acc Invoiced Amount'],$corporate_currency);
+		if ($dc_currency) {
+			switch ($period) {
+			case('all'):
+				$sales=money($data['Product Family DC Total Acc Invoiced Amount'],$corporate_currency);
+				break;
+			case('1m'):
+				$sales=money($data['Product Family DC 1 Month Acc Invoiced Amount'],$corporate_currency);
+				break;
+			case('1y'):
+				$sales=money($data['Product Family DC 1 Year Acc Invoiced Amount'],$corporate_currency);
+				break;
+			case('1q'):
+				$sales=money($data['Product Family DC 1 Quarter Acc Invoiced Amount'],$corporate_currency);
+				break;
+			default:
+				$sales=money($data['Product Family DC 1 Year Acc Invoiced Amount'],$corporate_currency);
 
+			}
+
+
+			if ($corporate_currency!=$data['Store Currency Code']) {
+				$sales='<i>'.$sales.'</i>';
+			}
+
+		}else {
+
+			switch ($period) {
+			case('all'):
+				$sales=money($data['Product Family Total Acc Invoiced Amount'],$data['Store Currency Code']);
+				break;
+			case('1m'):
+				$sales=money($data['Product Family 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
+				break;
+			case('1y'):
+				$sales=money($data['Product Family 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+				break;
+			case('1q'):
+				$sales=money($data['Product Family 1 Quarter Acc Invoiced Amount'],$data['Store Currency Code']);
+				break;
+			default:
+				$sales=money($data['Product Family 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+
+			}
 		}
-		
-		
-		if($corporate_currency!=$data['Store Currency Code']){
-		$sales='<i>'.$sales.'</i>';
-		}
 
-}else{
-
-		switch ($period) {
-		case('all'):
-			$sales=money($data['Product Family Total Acc Invoiced Amount'],$data['Store Currency Code']);
-			break;
-		case('1m'):
-			$sales=money($data['Product Family 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
-			break;
-		case('1y'):
-			$sales=money($data['Product Family 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
-			break;
-		case('1q'):
-			$sales=money($data['Product Family 1 Quarter Acc Invoiced Amount'],$data['Store Currency Code']);
-			break;
-		default:
-			$sales=money($data['Product Family 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
-
-		}
-}
-
-		$family="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a>';
+		$family="<b><a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a></b>';
 		$store="<a href='store.php?id=".$data['Product Family Store Key']."'>".$data['Store Code'].'</a>';
 		$family_description="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Name'].'</a>';
 		$adata[]=array(
@@ -654,7 +658,7 @@ if($dc_currency){
 			'family_description'=>$family_description,
 			'family'=>$family,
 			'store'=>$store,
-			'description'=>$data['Product Family Name'],
+			'description'=>$family.' '.$data['Product Family Name'].' ('.$store.')',
 			'net_sales'=>$sales
 		);
 	}
@@ -689,6 +693,367 @@ if($dc_currency){
 	}
 
 }
+function list_parts() {
+
+
+	global $myconf,$output_type,$user,$corporate_currency;
+	$_SESSION['state']['home']['splinters']['top_products']['type']='parts';
+	$conf=$_SESSION['state']['home']['splinters']['top_products'];
+	//print_r($conf);
+	$start_from=0;
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		$_SESSION['state']['home']['splinters']['top_products']['nr']=$number_results;
+	} else
+		$number_results=$conf['nr'];
+
+	if (isset( $_REQUEST['o'])) {
+		$order=$_REQUEST['o'];
+		$_SESSION['state']['home']['splinters']['top_products']['order']=$order;
+	} else
+		$order=$conf['order'];
+	$order_direction='desc';
+	$order_dir='desc';
+
+	if (isset( $_REQUEST['period'])) {
+		$period=$_REQUEST['period'];
+		$_SESSION['state']['home']['splinters']['top_products']['period']=$period;
+	} else
+		$period=$conf['period'];
+
+
+
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+	$warehouses=join(',',$user->warehouses);
+	if ($warehouses=='')$warehouses=0;
+
+
+
+
+	$filter_msg='';
+	$wheref='';
+
+	if (!$warehouses)
+		$where=sprintf(' and false ');
+
+	else
+		$where=sprintf(' and `Warehouse Key` in (%s) ',$warehouses);
+
+
+
+	$dc_currency=true;
+
+
+	$filtered=0;
+	$rtext='';
+	$total=$number_results;
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	if ($order=='profits')
+		$order='`Part 1 Year Acc Profit`';
+
+	else {
+
+
+
+		switch ($period) {
+		case('all'):
+			$order='`Part Total Acc Sold Amount`';
+			break;
+		case('1m'):
+			$order='`Part 1 Month Acc Sold Amount`';
+			break;
+		case('1y'):
+			$order='`Part 1 Year Acc Sold Amount`';
+			break;
+		case('1q'):
+			$order='`Part 1 Quarter Acc Sold Amount`';
+			break;
+		default:
+			$order='`Part 1 Year Acc Sold Amount`';
+
+		}
+
+	}
+
+
+
+	$sql="select   `Part Unit Description`,P.`Part SKU`,`Part Total Acc Sold Amount`,`Part 1 Month Acc Sold Amount`,`Part 1 Year Acc Sold Amount`,`Part 1 Quarter Acc Sold Amount`,`Part 1 Year Acc Sold Amount` from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+	// print $sql;
+	$position=1;
+	$result=mysql_query($sql);
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+		switch ($period) {
+		case('all'):
+			$sales=money($data['Part Total Acc Sold Amount'],$corporate_currency);
+			break;
+		case('1m'):
+			$sales=money($data['Part 1 Month Acc Sold Amount'],$corporate_currency);
+			break;
+		case('1y'):
+			$sales=money($data['Part 1 Year Acc Sold Amount'],$corporate_currency);
+			break;
+		case('1q'):
+			$sales=money($data['Part 1 Quarter Acc Sold Amount'],$corporate_currency);
+			break;
+		default:
+			$sales=money($data['Part 1 Year Acc Sold Amount'],$corporate_currency);
+
+		}
+
+
+		$code="<a href='part.php?sku=".$data['Part SKU']."'>".sprintf("SKU%05d",$data['Part SKU']).'</a>';
+		$family='';
+		$store='';
+
+		$adata[]=array(
+			'position'=>'<b>'.$position++.'</b>'
+			,'code'=>$code
+			,'family'=>$family
+			,'store'=>$store
+			,'description'=>'<b>'.$code.'</b> '.$data['Part Unit Description']
+			,'net_sales'=>$sales
+		);
+	}
+	mysql_free_result($result);
+
+
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$number_results,
+			'sort_key'=>'position',
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+
+			'records_perpage'=>$number_results,
+			'records_order'=>$_order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	if ($output_type=='ajax') {
+		echo json_encode($response);
+		return;
+	} else {
+		return $response;
+	}
+
+}
+
+
+
+
+function list_parts_categories() {
+
+
+	global $myconf,$output_type,$user,$corporate_currency;
+	$_SESSION['state']['home']['splinters']['top_products']['type']='parts_categories';
+	$conf=$_SESSION['state']['home']['splinters']['top_products'];
+	//print_r($conf);
+	$start_from=0;
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+		$_SESSION['state']['home']['splinters']['top_products']['nr']=$number_results;
+	} else
+		$number_results=$conf['nr'];
+
+	if (isset( $_REQUEST['o'])) {
+		$order=$_REQUEST['o'];
+		$_SESSION['state']['home']['splinters']['top_products']['order']=$order;
+	} else
+		$order=$conf['order'];
+	$order_direction='desc';
+	$order_dir='desc';
+
+	if (isset( $_REQUEST['period'])) {
+		$period=$_REQUEST['period'];
+		$_SESSION['state']['home']['splinters']['top_products']['period']=$period;
+	} else
+		$period=$conf['period'];
+
+
+
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+	$warehouses=join(',',$user->warehouses);
+	if ($warehouses=='')$warehouses=0;
+
+
+
+
+	$filter_msg='';
+	$wheref='';
+
+	if (!$warehouses)
+		$where=sprintf(' and false ');
+
+	else {
+		$where=sprintf(' and `Warehouse Key` in (%s) ',$warehouses);
+
+		$sql=sprintf("select GROUP_CONCAT(`Warehouse Family Category Key`) as root_category from `Warehouse Dimension` where `Warehouse Key` in (%s)",$warehouses);
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$root_category=$row['root_category'];
+		}
+
+
+		$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key` in (%s)",$root_category);
+	}
+
+
+
+
+
+	$dc_currency=true;
+
+
+	$filtered=0;
+	$rtext='';
+	$total=$number_results;
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+
+
+	if ($order=='profits')
+		$order='`Part Category 1 Year Acc Profit`';
+
+	else {
+
+
+
+		switch ($period) {
+		case('all'):
+			$order='`Part Category Total Acc Sold Amount`';
+			break;
+		case('1m'):
+			$order='`Part Category 1 Month Acc Sold Amount`';
+			break;
+		case('1y'):
+			$order='`Part Category 1 Year Acc Sold Amount`';
+			break;
+		case('1q'):
+			$order='`Part Category 1 Quarter Acc Sold Amount`';
+			break;
+		default:
+			$order='`Part Category 1 Year Acc Sold Amount`';
+
+		}
+
+	}
+
+
+
+	$sql="select   `Category Label`,C.`Category Key`,`Part Category Total Acc Sold Amount`,`Part Category 1 Month Acc Sold Amount`,`Part Category 1 Year Acc Sold Amount`,`Part Category 1 Quarter Acc Sold Amount`,`Part Category 1 Year Acc Sold Amount` from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$adata=array();
+	// print $sql;
+	$position=1;
+	$result=mysql_query($sql);
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+		switch ($period) {
+		case('all'):
+			$sales=money($data['Part Category Total Acc Sold Amount'],$corporate_currency);
+			break;
+		case('1m'):
+			$sales=money($data['Part Category 1 Month Acc Sold Amount'],$corporate_currency);
+			break;
+		case('1y'):
+			$sales=money($data['Part Category 1 Year Acc Sold Amount'],$corporate_currency);
+			break;
+		case('1q'):
+			$sales=money($data['Part Category 1 Quarter Acc Sold Amount'],$corporate_currency);
+			break;
+		default:
+			$sales=money($data['Part Category 1 Year Acc Sold Amount'],$corporate_currency);
+
+		}
+
+
+		$code="<a href='part_categories.php?id=".$data['Category Key']."'>".sprintf("%s",$data['Category Label']).'</a>';
+		$family='';
+		$store='';
+
+		$adata[]=array(
+			'position'=>'<b>'.$position++.'</b>'
+			,'code'=>$code
+			,'family'=>$family
+			,'store'=>$store
+			,'description'=>'<b>'.$code.'</b>'
+			,'net_sales'=>$sales
+		);
+	}
+	mysql_free_result($result);
+
+
+
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$number_results,
+			'sort_key'=>'position',
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+
+			'records_perpage'=>$number_results,
+			'records_order'=>$_order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	if ($output_type=='ajax') {
+		echo json_encode($response);
+		return;
+	} else {
+		return $response;
+	}
+
+}
+
+
 function list_products() {
 
 
@@ -747,7 +1112,7 @@ function list_products() {
 
 
 
-$dc_currency=true;
+	$dc_currency=true;
 
 
 	$filtered=0;
@@ -764,95 +1129,95 @@ $dc_currency=true;
 		$order='`Product 1 Year Acc Profit`';
 
 	else {
-	
-	if($dc_currency){
-	switch ($period) {
-		case('all'):
-			$order='`Product ID DC Total Acc Invoiced Amount`';
-			break;
-		case('1m'):
-			$order='`Product ID DC 1 Month Acc Invoiced Amount`';
-			break;
-		case('1y'):
-			$order='`Product ID DC 1 Year Acc Invoiced Amount`';
-			break;
-		case('1q'):
-			$order='`Product ID DC 1 Quarter Acc Invoiced Amount`';
-			break;
-		default:
-			$order='`Product ID DC 1 Year Acc Invoiced Amount`';
 
-		}
-	}else{
-	
-		switch ($period) {
-		case('all'):
-			$order='`Product Total Acc Invoiced Amount`';
-			break;
-		case('1m'):
-			$order='`Product 1 Month Acc Invoiced Amount`';
-			break;
-		case('1y'):
-			$order='`Product 1 Year Acc Invoiced Amount`';
-			break;
-		case('1q'):
-			$order='`Product 1 Quarter Acc Invoiced Amount`';
-			break;
-		default:
-			$order='`Product 1 Year Acc Invoiced Amount`';
+		if ($dc_currency) {
+			switch ($period) {
+			case('all'):
+				$order='`Product ID DC Total Acc Invoiced Amount`';
+				break;
+			case('1m'):
+				$order='`Product ID DC 1 Month Acc Invoiced Amount`';
+				break;
+			case('1y'):
+				$order='`Product ID DC 1 Year Acc Invoiced Amount`';
+				break;
+			case('1q'):
+				$order='`Product ID DC 1 Quarter Acc Invoiced Amount`';
+				break;
+			default:
+				$order='`Product ID DC 1 Year Acc Invoiced Amount`';
 
+			}
+		}else {
+
+			switch ($period) {
+			case('all'):
+				$order='`Product Total Acc Invoiced Amount`';
+				break;
+			case('1m'):
+				$order='`Product 1 Month Acc Invoiced Amount`';
+				break;
+			case('1y'):
+				$order='`Product 1 Year Acc Invoiced Amount`';
+				break;
+			case('1q'):
+				$order='`Product 1 Quarter Acc Invoiced Amount`';
+				break;
+			default:
+				$order='`Product 1 Year Acc Invoiced Amount`';
+
+			}
 		}
-}
 	}
 
 
 
 	$sql="select   `Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Product Total Acc Invoiced Amount`,`Product 1 Month Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product 1 Quarter Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product ID DC Total Acc Invoiced Amount`,`Product ID DC 1 Month Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
-//	 print $sql;
+	//  print $sql;
 	$position=1;
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-if($dc_currency){
-		switch ($period) {
-		case('all'):
-			$sales=money($data['Product ID DC Total Acc Invoiced Amount'],$corporate_currency);
-			break;
-		case('1m'):
-			$sales=money($data['Product ID DC 1 Month Acc Invoiced Amount'],$corporate_currency);
-			break;
-		case('1y'):
-			$sales=money($data['Product ID DC 1 Year Acc Invoiced Amount'],$corporate_currency);
-			break;
-		case('1q'):
-			$sales=money($data['Product ID DC 1 Quarter Acc Invoiced Amount'],$corporate_currency);
-			break;
-		default:
-			$sales=money($data['Product ID DC 1 Year Acc Invoiced Amount'],$corporate_currency);
+		if ($dc_currency) {
+			switch ($period) {
+			case('all'):
+				$sales=money($data['Product ID DC Total Acc Invoiced Amount'],$corporate_currency);
+				break;
+			case('1m'):
+				$sales=money($data['Product ID DC 1 Month Acc Invoiced Amount'],$corporate_currency);
+				break;
+			case('1y'):
+				$sales=money($data['Product ID DC 1 Year Acc Invoiced Amount'],$corporate_currency);
+				break;
+			case('1q'):
+				$sales=money($data['Product ID DC 1 Quarter Acc Invoiced Amount'],$corporate_currency);
+				break;
+			default:
+				$sales=money($data['Product ID DC 1 Year Acc Invoiced Amount'],$corporate_currency);
 
+			}
+
+		}else {
+
+			switch ($period) {
+			case('all'):
+				$sales=money($data['Product Total Acc Invoiced Amount'],$data['Store Currency Code']);
+				break;
+			case('1m'):
+				$sales=money($data['Product 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
+				break;
+			case('1y'):
+				$sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+				break;
+			case('1q'):
+				$sales=money($data['Product 1 Quarter Acc Invoiced Amount'],$data['Store Currency Code']);
+				break;
+			default:
+				$sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+
+			}
 		}
-
-}else{
-
-		switch ($period) {
-		case('all'):
-			$sales=money($data['Product Total Acc Invoiced Amount'],$data['Store Currency Code']);
-			break;
-		case('1m'):
-			$sales=money($data['Product 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
-			break;
-		case('1y'):
-			$sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
-			break;
-		case('1q'):
-			$sales=money($data['Product 1 Quarter Acc Invoiced Amount'],$data['Store Currency Code']);
-			break;
-		default:
-			$sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
-
-		}
-}
 
 		$code="<a href='product.php?pid=".$data['Product ID']."'>".$data['Product Code'].'</a>';
 		$family="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a>';
@@ -863,7 +1228,7 @@ if($dc_currency){
 			,'code'=>$code
 			,'family'=>$family
 			,'store'=>$store
-			,'description'=>'<b>'.$code.'</b> '.$data['Product Short Description']
+			,'description'=>'<b>'.$code.'</b> '.$data['Product Short Description']." ($store)"
 			,'net_sales'=>$sales
 		);
 	}
