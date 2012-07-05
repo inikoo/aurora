@@ -3716,12 +3716,12 @@ class Customer extends DB_Table {
 		return $comment;
 	}
 
-function users_last_login(){
+	function users_last_login() {
 
-	$user_keys=array();
+		$user_keys=array();
 		$sql=sprintf("select max(`User Last Login`) as last_login from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
 			,$this->id
-			
+
 		);
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3730,14 +3730,14 @@ function users_last_login(){
 		}
 
 		return '';
-}
+	}
 
-function users_last_failed_login(){
+	function users_last_failed_login() {
 
-	$user_keys=array();
+		$user_keys=array();
 		$sql=sprintf("select max(`User Last Failed Login`) as last_login from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
 			,$this->id
-			
+
 		);
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3746,14 +3746,14 @@ function users_last_failed_login(){
 		}
 
 		return '';
-}
+	}
 
-function users_number_logins(){
+	function users_number_logins() {
 
-	$user_keys=array();
+		$user_keys=array();
 		$sql=sprintf("select sum(`User Login Count`) as logins from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
 			,$this->id
-			
+
 		);
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3762,14 +3762,14 @@ function users_number_logins(){
 		}
 
 		return 0;
-}
+	}
 
-function users_number_failed_logins(){
+	function users_number_failed_logins() {
 
-	$user_keys=array();
+		$user_keys=array();
 		$sql=sprintf("select sum(`User Failed Login Count`) as logins from `User Dimension` U      where  `User Type`='Customer' and `User Parent Key`=%d "
 			,$this->id
-			
+
 		);
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3778,14 +3778,14 @@ function users_number_failed_logins(){
 		}
 
 		return 0;
-}
+	}
 
 	function get_users_keys() {
 		$user_keys=array();
-		$sql=sprintf("select `User Key` from `User Dimension` U 
+		$sql=sprintf("select `User Key` from `User Dimension` U
         where  `User Type`='Customer' and `User Parent Key`=%d "
 			,$this->id
-			
+
 		);
 
 
@@ -4491,6 +4491,20 @@ function users_number_failed_logins(){
 
 		return $ship_to;
 
+	}
+
+
+	function get_order_in_process_key() {
+
+		$order_key=false;
+		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process by Customer' ",
+		$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$order_key=$row['Order Key'];
+		}
+		return $order_key;
 	}
 
 	function get_ship_to_data() {
@@ -6293,10 +6307,10 @@ function users_number_failed_logins(){
 		if (count($user_keys)>0) {
 
 			$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='User Profile' and   `Subject Key` in (%s)",
-			join($user_keys));
+				join($user_keys));
 			$res=mysql_query($sql);
 
-			
+
 
 			$image=false;
 			while ($row=mysql_fetch_array($res)) {

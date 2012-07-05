@@ -1833,7 +1833,7 @@ return $this->display_button($tag);
 		$order_key=0;
 		if ($this->user->data['User Type']=='Customer') {
 
-			$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
+			$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process by Customer' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result))
 
@@ -1904,7 +1904,7 @@ return $this->display_button($tag);
 				$order_button=sprintf('
                                       <td ><span id="loading%d"></span></td>
                                       <td style="padding:0" class="input"><input style="height:20px" id="qty%s"  type="text" value="%s"  ></td>
-                                      <td style="padding:0"><button onClick="order_single_product(%d)"  style="cursor:pointer;visibility:hiddenx;background:#fff;border:1px solid #ccc;border-left:none;height:22px;padding:4px"> '._('Add').' <img style="display:none;pointer:cursor;position:relative;bottom:2px"src="art/icons/basket_add.png" /></button></td>',
+                                      <td style="padding:0"><button onClick="order_product_from_list(%d)"  style="cursor:pointer;visibility:hiddenx;background:#fff;border:1px solid #ccc;border-left:none;height:22px;padding:0 2px"><img style="pointer:cursor;position:relative;bottom:2px"src="art/icons/basket_add.png" /></button></td>',
 					$product['Product ID'],
 					$product['Product ID'],
 					($old_qty>0?$old_qty:''),
@@ -2242,7 +2242,25 @@ return $this->display_button($tag);
 				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_mals_data('url').'/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			default:
-				$basket='';
+			
+			if($this->order){
+			$basket='<div style="float:left;">
+				<span>'.$this->order->get('Total Amount').'</span>
+				<span class="link basket"  id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span> 
+				<span class="link basket"  id="checkout"  onClick=\'window.location="checkout.php"\' >'._('Check Out').'</span> 
+				
+				<img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+			}else{
+			$basket='<div style="float:left;">
+								<span>'.money_locale(0,$this->site->data['Site Locale'],$this->currency).'</span>
+
+				<span class="link basket" style="margin-left:5px" id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span> 
+				
+				<img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
+			
+			}
+			
+				
 				break;
 			}
 

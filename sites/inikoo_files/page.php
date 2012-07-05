@@ -439,6 +439,9 @@ $sql=sprintf("select * from `Custom Field Dimension`  where `Custom Field Table`
 	}
 else if ($page->data['Page Code']=='reset') {
 	$css_files[]='css/inikoo.css';
+}else{
+$js_files[]='js/basket.js';
+
 }
 
 
@@ -451,6 +454,7 @@ $page->currency=$store->data['Store Currency Code'];
 
 if ($logged_in) {
 	$page->customer=$customer;
+	$page->order=$order;
 }
 
 

@@ -2075,7 +2075,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	}
 
 
-	function get_product_in_family_with_order_form($data, $header=false, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method, $options=false, $user=false, $path=false) {
+	function get_product_in_family_with_order_form_deleteme($data, $header=false, $type, $secure, $_port, $_protocol, $url, $server, $ecommerce_url, $username, $method, $options=false, $user=false, $path=false) {
 
 
 		if (isset($options['order_by']))
@@ -2476,8 +2476,8 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 
 
-	//Start
-	function get_product_in_family_no_price($data, $header_options=false, $options=false) {
+	
+	function get_product_in_family_no_price_deleteme($data, $header_options=false, $options=false) {
 
 		if (isset($options['order_by']))
 			if (strtolower($options['order_by']) == 'price')
@@ -2664,7 +2664,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		return $form;
 
 	}
-	//End
+	
 
 
 

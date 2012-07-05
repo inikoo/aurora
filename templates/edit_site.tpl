@@ -831,7 +831,7 @@
 			</td>
 			<td id="welcome_body_html_msg" class="edit_td_alert"></td>
 		</tr>
-		<tr class="title">
+		<tr class="title" style="display:none">
 			<td colspan="2">{t}Welcome Message{/t}</td>
 			<td> 
 			<div class="buttons">
@@ -839,7 +839,7 @@
 			</div>
 			</td>
 		</tr>
-		<tr>
+		<tr style="display:none">
 			<td class="label">{t}Message{/t}:</td>
 			<td style="text-align:left"> 
 			<div style="height:307px">
