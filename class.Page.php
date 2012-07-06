@@ -1903,16 +1903,26 @@ return $this->display_button($tag);
 
 				$order_button=sprintf('
                                       <td ><span id="loading%d"></span></td>
-                                      <td style="padding:0" class="input"><input style="height:20px" id="qty%s"  type="text" value="%s"  ></td>
-                                      <td style="padding:0"><button onClick="order_product_from_list(%d)"  style="cursor:pointer;visibility:hiddenx;background:#fff;border:1px solid #ccc;border-left:none;height:22px;padding:0 2px"><img style="pointer:cursor;position:relative;bottom:2px"src="art/icons/basket_add.png" /></button></td>',
+                                      <td style="padding:0" class="input">
+                                       <input onKeyUp="order_product_from_list_changed(%d)"  style="height:20px" id="qty%s"  type="text" value="%s" ovalue="%s"  >
+                                      </td>
+                                      <td style="padding:0">
+                                      	<button id="list_button%d" onClick="order_product_from_list(%d)"  style="cursor:pointer;visibility:hiddenx;background:#fff;border:1px solid #ccc;border-left:none;height:22px;padding:0 2px">
+                                      	<img id="list_button_img%d"style="pointer:cursor;position:relative;bottom:2px;width:16px;;height:16px" src="art/icons/basket_add.png" />
+                                      	</button>
+                                      </td>',
 					$product['Product ID'],
 					$product['Product ID'],
+										$product['Product ID'],
+
+					($old_qty>0?$old_qty:''),
 					($old_qty>0?$old_qty:''),
 
 
+					$product['Product ID'],
 
+					$product['Product ID'],
 					$product['Product ID']
-
 
 				);
 
@@ -2245,7 +2255,7 @@ return $this->display_button($tag);
 			
 			if($this->order){
 			$basket='<div style="float:left;">
-				<span>'.$this->order->get('Total Amount').'</span>
+				<span id="basket_total">'.$this->order->get('Total Amount').'</span>
 				<span class="link basket"  id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span> 
 				<span class="link basket"  id="checkout"  onClick=\'window.location="checkout.php"\' >'._('Check Out').'</span> 
 				

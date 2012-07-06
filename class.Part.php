@@ -115,7 +115,7 @@ class part extends DB_Table {
 				'History Details'=>_('Part')." ".$this->get_sku()." (".$this->data['Part Unit Description'].")"._('Created')
 			);
 
-
+$this->update_main_state();
 		} else {
 			print "Error Part can not be created $sql\n";
 			$this->msg='Error Part can not be created';
