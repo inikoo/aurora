@@ -79,9 +79,10 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   }
   */
 //  $part->update_number_transactions();
+  $part->update_main_state();
+
   $part->update_used_in();
   $part->update_supplied_by();
-  
 //  $part->update_picking_location();
 //  $part->update_main_state();
  // $part->update_stock();
