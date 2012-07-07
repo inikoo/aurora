@@ -86,7 +86,7 @@ $original_url=$site_url.'/'.$original_url;
 		header("Location: http://".$target);
 	}else {
 		$new_url=$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url";
-		header("Location: http://".$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url");
+		header("Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url");
 	}
 
 

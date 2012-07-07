@@ -874,11 +874,11 @@ class Page extends DB_Table {
 				$url=$site->data['Site URL'].'/'.strtolower($value);
 
 				$sql=sprintf("update `Page Dimension`  set  `Page URL`=%s  where `Page Key`=%d",prepare_mysql($url),$this->id);
-			
+
 				mysql_query($sql);
 
-$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d",prepare_mysql($url),$this->id);
-			
+				$sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  where `Page Target Key`=%d",prepare_mysql($url),$this->id);
+
 				mysql_query($sql);
 			}
 
@@ -1133,7 +1133,7 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 		mysql_query($sql);
 		$sql=sprintf("delete from `Page Redirection Dimension` where `Page Target Key`=%d",$this->id);
 		mysql_query($sql);
-		
+
 		$this->deleted=true;
 
 
@@ -1180,8 +1180,8 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 		$correlation_upper_limit=1/($min_sales_correlation_samples);
 		$see_also=array();
 		$number_links=0;
-	
-		
+
+
 		switch ($this->data['Page Store Section']) {
 		case 'Department Catalogue':
 			break;
@@ -1331,9 +1331,9 @@ $sql=sprintf("update `Page Redirection Dimension`  set  `Page Target URL`=%s  wh
 		return $formated_store_section;
 	}
 
-function display_buttom($tag){
-return $this->display_button($tag);
-}
+	function display_buttom($tag) {
+		return $this->display_button($tag);
+	}
 
 	function display_button($tag) {
 		$html='';
@@ -1448,7 +1448,96 @@ return $this->display_button($tag);
 	}
 	function display_button_inikoo($product) {
 
+	$old_quantity=0;
+	if(isset($this->order) and $this->order){
+		
+		$sql=sprintf("select `Order Quantity` from `Order Transaction Fact` where `Order Key`=%d and `Product ID`=%d",
+					$this->order->id,
+					$product->pid);
+				$result1=mysql_query($sql);
+				if ($product1=mysql_fetch_array($result1))
+					$old_quantity=$product1['Order Quantity'];
+		
+		
+		}
+		
+	
+	
 
+if($old_quantity<=0){
+	$old_quantity='';
+}
+		
+
+
+		if ($product->data['Product Web State']=='Out of Stock') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Out of Stock').'</span>';
+		}
+		elseif ($product->data['Product Web State']=='Offline') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
+		}
+		elseif ($product->data['Product Web State']=='Discontinued') {
+			$message='<br/><span style="color:red;font-weight:800">'._('Sold Out').'</span>';
+		}
+		else {
+			$message=sprintf("<div class='order_but' style='margin-top:5px;text-align:left'>
+
+                        %s:
+                             <input onKeyUp=\"button_changed(%d)\"  type='text' size='2' class='qty' id='but_qty%d' value='%s' ovalue='%s' >
+                             <span style='display:none;' id='but_processing%d'> <img style='height:10px' src='art/loading.gif'></span>
+                             <button onCLick=\"order_product_from_button(%d)\" id='but_button%d' style='visibility:hidden' >%s</button>
+                             
+                             </div>"
+                             ,
+				_('Quantity to order'),
+				$product->pid,
+				$product->pid,
+				$old_quantity,
+				$old_quantity,
+				$product->pid,
+				$product->pid,
+$product->pid,
+				
+				_('Order Product')
+
+
+			);
+		}
+
+		$data=array(
+			'Product Price'=>$product->data['Product Price'],
+			'Product Units Per Case'=>$product->data['Product Units Per Case'],
+			'Product Currency'=>$product->get('Product Currency'),
+			'Product Unit Type'=>$product->data['Product Unit Type'],
+			'locale'=>$this->site->data['Site Locale']);
+		$price= '<span class="price">'.formated_price($data).'</span><br>';
+		$data=array(
+			'Product Price'=>$product->data['Product RRP'],
+			'Product Units Per Case'=>$product->data['Product Units Per Case'],
+			'Product Currency'=>$product->get('Product Currency'),
+			'Product Unit Type'=>$product->data['Product Unit Type'],
+			'Label'=>_('RRP').":",
+			'locale'=>$this->site->data['Site Locale']);
+		$rrp= '<span class="rrp">'.formated_price($data).'</span><br>';
+		$form=sprintf('<div  class="ind_form">
+                      <span class="code">%s</span><br/>
+                      <span class="name">%sx %s</span><br>
+                      %s
+                      %s
+                      %s
+                      </div>',
+			$product->data['Product Code'],
+			$product->data['Product Units Per Case'],
+			$product->data['Product Name'],
+			$price,
+			$rrp,
+			$message
+		);
+
+
+
+
+		return $form;
 	}
 	function display_button_logged_out($product) {
 
@@ -1830,7 +1919,13 @@ return $this->display_button($tag);
 		$form='';
 		$counter=0;
 
+		
+		if(isset($this->order) and $this->order){
+		$order_key=$this->order->id;
+		}else{
 		$order_key=0;
+		}
+	/*	
 		if ($this->user->data['User Type']=='Customer') {
 
 			$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process by Customer' order by `Order Public ID` DESC", $this->user->get('User Parent Key'));
@@ -1841,7 +1936,7 @@ return $this->display_button($tag);
 				$order_key=$row['Order Key'];
 		}
 
-
+*/
 		foreach ($products as $product) {
 
 			if ($this->print_rrp) {
@@ -1904,16 +1999,17 @@ return $this->display_button($tag);
 				$order_button=sprintf('
                                       <td ><span id="loading%d"></span></td>
                                       <td style="padding:0" class="input">
-                                       <input onKeyUp="order_product_from_list_changed(%d)"  style="height:20px" id="qty%s"  type="text" value="%s" ovalue="%s"  >
+                                       <input  onKeyUp="order_product_from_list_changed(%d)"  style="height:20px" id="qty%s"  type="text" value="%s" ovalue="%s"  >
                                       </td>
                                       <td style="padding:0">
-                                      	<button id="list_button%d" onClick="order_product_from_list(%d)"  style="cursor:pointer;visibility:hiddenx;background:#fff;border:1px solid #ccc;border-left:none;height:22px;padding:0 2px">
-                                      	<img id="list_button_img%d"style="pointer:cursor;position:relative;bottom:2px;width:16px;;height:16px" src="art/icons/basket_add.png" />
+                                      	<button id="list_button%d" onClick="order_product_from_list(%d)"  style="cursor:pointer;visibility:hidden;background:#fff;border:1px solid #ccc;border-left:none;height:22px;padding:0 2px">
+                                      	<img id="list_button_img%d" style="pointer:cursor;position:relative;bottom:2px;width:16px;;height:16px" src="art/icons/basket_add.png" />
                                       	</button>
                                       </td>',
 					$product['Product ID'],
+
 					$product['Product ID'],
-										$product['Product ID'],
+					$product['Product ID'],
 
 					($old_qty>0?$old_qty:''),
 					($old_qty>0?$old_qty:''),
@@ -2252,25 +2348,25 @@ return $this->display_button($tag);
 				$basket='<div style="float:left;"><span class="link basket"  id="see_basket"  onClick=\'window.location="http://'.$this->site->get_mals_data('url').'/cf/review.cfm?userid='.$this->site->get_mals_data('id').'"\' >'._('Basket & Checkout').'</span>  <img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
 				break;
 			default:
-			
-			if($this->order){
-			$basket='<div style="float:left;">
+
+				if ($this->order) {
+					$basket='<div style="float:left;">
 				<span id="basket_total">'.$this->order->get('Total Amount').'</span>
-				<span class="link basket"  id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span> 
-				<span class="link basket"  id="checkout"  onClick=\'window.location="checkout.php"\' >'._('Check Out').'</span> 
-				
+				<span class="link basket"  id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span>
+				<span class="link basket"  id="checkout"  onClick=\'window.location="checkout.php"\' >'._('Check Out').'</span>
+
 				<img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
-			}else{
-			$basket='<div style="float:left;">
+				}else {
+					$basket='<div style="float:left;">
 								<span>'.money_locale(0,$this->site->data['Site Locale'],$this->currency).'</span>
 
-				<span class="link basket" style="margin-left:5px" id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span> 
-				
+				<span class="link basket" style="margin-left:5px" id="see_basket"  onClick=\'window.location="basket.php"\' >'._('See Basket').'</span>
+
 				<img src="art/gear.png" style="visibility:hidden" class="dummy_img" /></div>' ;
-			
-			}
-			
-				
+
+				}
+
+
 				break;
 			}
 
