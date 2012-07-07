@@ -47,6 +47,36 @@ $site=new Site($row['Site Key']);
 
 $page_data=array(
 
+'Page Store Section'=>'Basket',
+ 'Page Store Title'=>'Basket',
+ 'Page Short Title'=>'Basket',
+  'Page Code'=>'basket',
+  'Page URL'=>'basket.php',
+  'Page Store Content Display Type'=>'Template',
+  'Page Store Content Template Filename'=>'basket',
+  'Number See Also Links'=>0,
+
+ );
+$site->add_store_page($page_data);
+
+$page_data=array(
+
+'Page Store Section'=>'Checkout',
+ 'Page Store Title'=>'Checkout',
+ 'Page Short Title'=>'Checkout',
+  'Page Code'=>'checkout',
+  'Page URL'=>'checkout.php',
+  'Page Store Content Display Type'=>'Template',
+  'Page Store Content Template Filename'=>'checkout',
+  'Number See Also Links'=>0,
+
+ );
+$site->add_store_page($page_data);
+
+continue;
+
+$page_data=array(
+
 'Page Store Section'=>'Reset',
  'Page Store Title'=>'Reset Password',
  'Page Short Title'=>'Reset Password',

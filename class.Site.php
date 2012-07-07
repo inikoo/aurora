@@ -1241,6 +1241,24 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 		return $page_key;
 	}
+		function get_basket_page_key() {
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Basket' and `Page Site Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
+		function get_checkout_page_key() {
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Checkout' and `Page Site Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
 	
 	function get_profile_page_key() {
 		$page_key=0;

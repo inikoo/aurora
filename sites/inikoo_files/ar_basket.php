@@ -133,6 +133,7 @@ function edit_order_transaction($__data) {
 		$response= array(
 			'state'=>200,
 			'quantity'=>$transaction_data['qty'],
+			'product_pid'=>$product_pid,
 			'description'=>$product->data['Product XHTML Short Description'],
 			'discount_percentage'=>$transaction_data['discount_percentage'],
 			'key'=>$order->id,
@@ -143,7 +144,7 @@ function edit_order_transaction($__data) {
 			'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
 		);
 	} else
-		$response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['id']);
+		$response= array('state'=>200);
 	echo json_encode($response);
 
 }

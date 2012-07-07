@@ -440,7 +440,7 @@ $sql=sprintf("select * from `Custom Field Dimension`  where `Custom Field Table`
 else if ($page->data['Page Code']=='reset') {
 	$css_files[]='css/inikoo.css';
 }else{
-$js_files[]='js/basket.js';
+$js_files[]='js/fill_basket.js';
 
 }
 
