@@ -836,7 +836,66 @@ $default_state=array(
 
 
 	),
+'invoice_categories'=>array(
+		'category_key'=>0,
+		'from'=>'',
+		'to'=>'',
+		'period'=>'year',
+		'percentages'=>0,
+		'mode'=>'all',
+		'avg'=>'totals',
+		'view'=>'sales',
+		'block_view'=>'subcategories',
+		'base_block_view'=>'subcategories',
+		'from'=>'',
+		'to'=>'',
+		'exchange_type'=>'day2day',
+		'stores'=>'all',
+		'stores_mode'=>'grouped',
+		'exchange_value'=>1,
+		'show_default_currency'=>false,
+		'edit'=>'description',
+		'subcategories'=>array(
 
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+				
+			
+
+		),
+		'history'=>array(
+			'where'=>'where true',
+			'f_field'=>'abstract',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>''
+		),
+
+		'parts'=>array(
+
+			'order'=>'sku',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'sku',
+			'f_value'=>'','f_show'=>false,
+
+		),
+
+
+	),
 	'products'=>array(
 		'details'=>false,
 		'store'=>'1',
@@ -1076,6 +1135,11 @@ $default_state=array(
 
 
 	'report_customers'=>array(
+'tipo'=>'m',
+'y'=>date('Y'),
+		'm'=>date('m'),
+		'd'=>date('d'),
+		'w'=>1,
 		'store_keys'=>'all',
 		'top'=>100,
 		'criteria'=>'net_balance',

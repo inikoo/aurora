@@ -102,77 +102,77 @@ function invoice_categories_sales_overview() {
 
 	switch ($period) {
 	case('1w'):
-		$fields=sprintf(" `1 Week Acc Invoices` as invoices,`1 Week Acc Invoiced Amount` as sales, `1 Week Acc 1YB Invoices` as invoices_1yb,`1 Week Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC 1 Week Acc Invoiced Amount` as dc_sales,`DC 1 Week Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category 1 Week Acc Invoices` as invoices,`Invoice Category 1 Week Acc Invoiced Amount` as sales, `Invoice Category 1 Week Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Week Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC 1 Week Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Week Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('10d'):
-		$fields=sprintf(" `10 Day Acc Invoices` as invoices,`10 Day Acc Invoiced Amount` as sales, `10 Day Acc 1YB Invoices` as invoices_1yb,`10 Day Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC 10 Day Acc Invoiced Amount` as dc_sales,`DC 10 Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category 10 Day Acc Invoices` as invoices,`Invoice Category 10 Day Acc Invoiced Amount` as sales, `Invoice Category 10 Day Acc 1YB Invoices` as invoices_1yb,`Invoice Category 10 Day Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC 10 Day Acc Invoiced Amount` as dc_sales,`Invoice Category DC 10 Day Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('1m'):
-		$fields=sprintf(" `1 Month Acc Invoices` as invoices,`1 Month Acc Invoiced Amount` as sales, `1 Month Acc 1YB Invoices` as invoices_1yb,`1 Month Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC 1 Month Acc Invoiced Amount` as dc_sales,`DC 1 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category 1 Month Acc Invoices` as invoices,`Invoice Category 1 Month Acc Invoiced Amount` as sales, `Invoice Category 1 Month Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Month Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC 1 Month Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('1q'):
-		$fields=sprintf(" `1 Quarter Acc Invoices` as invoices,`1 Quarter Acc Invoiced Amount` as sales, `1 Quarter Acc 1YB Invoices` as invoices_1yb,`1 Quarter Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC 1 Quarter Acc Invoiced Amount` as dc_sales,`DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category 1 Quarter Acc Invoices` as invoices,`Invoice Category 1 Quarter Acc Invoiced Amount` as sales, `Invoice Category 1 Quarter Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Quarter Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC 1 Quarter Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('1y'):
-		$fields=sprintf(" `1 Year Acc Invoices` as invoices,`1 Year Acc Invoiced Amount` as sales, `1 Year Acc 1YB Invoices` as invoices_1yb,`1 Year Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC 1 Year Acc Invoiced Amount` as dc_sales,`DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category 1 Year Acc Invoices` as invoices,`Invoice Category 1 Year Acc Invoiced Amount` as sales, `Invoice Category 1 Year Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Year Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC 1 Year Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('3y'):
 		$fields=sprintf(" `3 Year Acc Invoices` as invoices,`3 Year Acc Invoiced Amount` as sales, `3 Year Acc Invoices` as invoices_1yb,`3 Year Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC 3 Year Acc Invoiced Amount` as dc_sales,`DC 3 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        `Invoice Category DC 3 Year Acc Invoiced Amount` as dc_sales,`Invoice Category DC 3 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('yesterday'):
-		$fields=sprintf(" `Yesterday Acc Invoices` as invoices,`Yesterday Acc Invoiced Amount` as sales, `Yesterday Acc 1YB Invoices` as invoices_1yb,`Yesterday Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC Yesterday Acc Invoiced Amount` as dc_sales,`DC Yesterday Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category Yesterday Acc Invoices` as invoices,`Invoice Category Yesterday Acc Invoiced Amount` as sales, `Invoice Category Yesterday Acc 1YB Invoices` as invoices_1yb,`Invoice Category Yesterday Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC Yesterday Acc Invoiced Amount` as dc_sales,`Invoice Category DC Yesterday Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('last_m'):
-		$fields=sprintf(" `Last Month Acc Invoices` as invoices,`Last Month Acc Invoiced Amount` as sales, `Last Month Acc 1YB Invoices` as invoices_1yb,`Last Month Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC Last Month Acc Invoiced Amount` as dc_sales,`DC Last Month Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category Last Month Acc Invoices` as invoices,`Invoice Category Last Month Acc Invoiced Amount` as sales, `Invoice Category Last Month Acc 1YB Invoices` as invoices_1yb,`Invoice Category Last Month Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC Last Month Acc Invoiced Amount` as dc_sales,`Invoice Category DC Last Month Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('last_w'):
-		$fields=sprintf(" `Last Week Acc Invoices` as invoices,`Last Week Acc Invoiced Amount` as sales, `Last Week Acc 1YB Invoices` as invoices_1yb,`Last Week Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC Last Week Acc Invoiced Amount` as dc_sales,`DC Last Week Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category Last Week Acc Invoices` as invoices,`Invoice Category Last Week Acc Invoiced Amount` as sales, `Invoice Category Last Week Acc 1YB Invoices` as invoices_1yb,`Invoice Category Last Week Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC Last Week Acc Invoiced Amount` as dc_sales,`Invoice Category DC Last Week Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('today'):
-		$fields=sprintf(" `Today Acc Invoices` as invoices,`Today Acc Invoiced Amount` as sales, `Today Acc 1YB Invoices` as invoices_1yb,`Today Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC Today Acc Invoiced Amount` as dc_sales,`DC Today Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category Today Acc Invoices` as invoices,`Invoice Category Today Acc Invoiced Amount` as sales, `Invoice Category Today Acc 1YB Invoices` as invoices_1yb,`Invoice Category Today Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC Today Acc Invoiced Amount` as dc_sales,`Invoice Category DC Today Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 
 	case('wtd'):
-		$fields=sprintf(" `Week To Day Acc Invoices` as invoices,`Week To Day Acc Invoiced Amount` as sales, `Week To Day Acc 1YB Invoices` as invoices_1yb,`Week To Day Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC Week To Day Acc Invoiced Amount` as dc_sales,`DC Week To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category Week To Day Acc Invoices` as invoices,`Invoice Category Week To Day Acc Invoiced Amount` as sales, `Invoice Category Week To Day Acc 1YB Invoices` as invoices_1yb,`Invoice Category Week To Day Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC Week To Day Acc Invoiced Amount` as dc_sales,`Invoice Category DC Week To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('mtd'):
-		$fields=sprintf(" `Month To Day Acc Invoices` as invoices,`Month To Day Acc Invoiced Amount` as sales, `Month To Day Acc 1YB Invoices` as invoices_1yb,`Month To Day Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC Month To Day Acc Invoiced Amount` as dc_sales,`DC Month To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category Month To Day Acc Invoices` as invoices,`Invoice Category Month To Day Acc Invoiced Amount` as sales, `Invoice Category Month To Day Acc 1YB Invoices` as invoices_1yb,`Invoice Category Month To Day Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC Month To Day Acc Invoiced Amount` as dc_sales,`Invoice Category DC Month To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 	case('ytd'):
-		$fields=sprintf(" `Year To Day Acc Invoices` as invoices,`Year To Day Acc Invoiced Amount` as sales, `Year To Day Acc 1YB Invoices` as invoices_1yb,`Year To Day Acc 1YB Invoiced Amount` as sales_1yb,
-                        `DC Year To Day Acc Invoiced Amount` as dc_sales,`DC Year To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
+		$fields=sprintf(" `Invoice Category Year To Day Acc Invoices` as invoices,`Invoice Category Year To Day Acc Invoiced Amount` as sales, `Invoice Category Year To Day Acc 1YB Invoices` as invoices_1yb,`Invoice Category Year To Day Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC Year To Day Acc Invoiced Amount` as dc_sales,`Invoice Category DC Year To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
 
 	default:
-		$fields=sprintf(" `1 Week Acc Invoices` as invoices,`1 Week Acc Invoiced Amount` as sales " );
+		exit;
 	}
 
-	$sql=sprintf("select  IC.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",
+	$sql=sprintf("select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",
 		$fields);
 	$adata=array();
 	//print $sql;
@@ -308,6 +308,9 @@ function store_sales_overview() {
 		$where=sprintf(' and S.`Store Key` in (%s) ',$store);
 
 
+$_order='';
+$_dir='';
+$number_results='';$order='';$order_dir='';
 
 
 	$filtered=0;

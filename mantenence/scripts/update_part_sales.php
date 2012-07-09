@@ -83,6 +83,15 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $part->update_used_in();
   $part->update_supplied_by();
+  
+  
+  	$product_ids=$part->get_product_ids();
+
+		foreach ($product_ids as $product_id) {
+			$product=new Product('pid',$product_id);
+			$product->update_field('Product Tariff Code',$part->data['Part Tariff Code'],'');
+		}
+  
 //  $part->update_picking_location();
 //  $part->update_main_state();
  // $part->update_stock();

@@ -338,6 +338,21 @@ request=request+'&'+ids[i]+'=0'
 }
 
  
+ function show_export_dialog(e,table_id){
+    	
+    
+    Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
+    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
+
+
+	region1 = Dom.getRegion('export'+table_id); 
+    region2 = Dom.getRegion('dialog_export'); 
+
+	var pos =[region1.right-20,region1.bottom]
+	Dom.setXY('dialog_export', pos);
+	dialog_export.show()
+}
+ 
  function init(){
 
 Event.addListener(['elements_all_contacts_lost','elements_all_contacts_losing','elements_all_contacts_active'], "click",change_elements,'all_contacts');
@@ -345,17 +360,11 @@ Event.addListener(['elements_contacts_with_orders_lost','elements_contacts_with_
 
 
 
-  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers');
- YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'customers'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-	 csvMenu.render();
-	 csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
-dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+  
+ 
+dialog_export = new YAHOO.widget.Dialog("dialog_export", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_export.render();
-Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
-
+Event.addListener("export0", "click",show_export_dialog,0);
  
   init_search('customers_store');
 

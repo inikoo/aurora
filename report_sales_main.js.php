@@ -26,16 +26,20 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_
 function change_view() {
 
     var view=this.getAttribute('view');
+    Dom.removeClass(['show_invoices_table','show_profit_table'],'selected')
+    
     if (view=='invoices') {
         Dom.setStyle(Dom.get('report_sales_profit'),'display','none')
         Dom.setStyle(Dom.get('report_sales_invoices'),'display','')
-       
-       
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_sales-view&value=invoices', {success:function(o) {}});
+            Dom.addClass(['show_invoices_table'],'selected')
+
+       	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_sales-view&value=invoices', {success:function(o) {}});
     } else {
        Dom.setStyle(Dom.get('report_sales_profit'),'display','')
         Dom.setStyle(Dom.get('report_sales_invoices'),'display','none')
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_sales-view&value=profits', {success:function(o) {}});
+            Dom.addClass(['show_profit_table'],'selected')
+
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_sales-view&value=profits', {success:function(o) {}});
     }
 }
 
@@ -56,8 +60,8 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_
 }
 
 function init_rep_sales_main(){
- YAHOO.util.Event.addListener(['invoices_corporate_currency_button','invoices_stores_currency_button','profits_corporate_currency_button','profits_stores_currency_button'], "click",change_currency,0);
- YAHOO.util.Event.addListener(['invoices_profits_button','profits_invoices_button'], "click",change_view,0);
+ YAHOO.util.Event.addListener(['invoices_corporate_currency_button','invoices_stores_currency_button'], "click",change_currency,0);
+ YAHOO.util.Event.addListener(['show_invoices_table','show_profit_table'], "click",change_view,0);
 
 }
 

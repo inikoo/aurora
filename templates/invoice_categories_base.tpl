@@ -1,23 +1,27 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0px">
 <div style="padding:0px 20px">
- {include file='locations_navigation.tpl'}
+{include file='orders_navigation.tpl'}
 
-<div class="branch"> 
-  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php">{t}Inventory{/t}</a>  &rarr; {t}Parts Categories{/t}</span>
+
+<div  class="branch"> 
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}   <a href="orders_server.php?view=invoices" id="branch_type_invoices"  >&#8704; {t}Invoices{/t}</a>    &rarr; {/if}
+    <a href="orders.php?store={$store->id}&view=invoices" >{t}Invoices{/t}</span>  ({$store->get('Store Code')})</a> &rarr; <span>{t}Invoice Categories{/t}</span>
 </div>
+
+
 <div class="top_page_menu">
     <div class="buttons" style="float:left">
-        <button  onclick="window.location='warehouse_parts.php?warehouse_id={$warehouse->id}'" ><img src="art/icons/house.png" alt=""> {t}Warehouse{/t}</button>
+        <button  onclick="window.location='orders.php?store={$store->id}&view=invoices'" ><img src="art/icons/house.png" alt=""> {t}Invoices{/t}</button>
     </div>
     <div class="buttons" style="float:right">
-        <button  onclick="window.location='edit_part_category.php?warehouse_id={$warehouse->id}&id=0'" ><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>
+        <button  onclick="window.location='edit_invoice_category.php?store_id={$store->id}&id=0'" ><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>
         <button id="new_category" ><img src="art/icons/add.png" alt=""> {t}Main Category{/t}</button>
     </div>
     <div style="clear:both"></div>
 </div>
  <div style="clear:left;">
-  <h1>{t}Parts Categories Home{/t}</h1>
+  <h1>{t}Invoice Categories Home{/t}</h1>
 </div>
 </div>
 
@@ -46,5 +50,6 @@
 
   
 </div> 
-{include file='footer.tpl'}
 {include file='new_category_splinter.tpl'}
+
+{include file='footer.tpl'}

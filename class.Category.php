@@ -454,7 +454,6 @@ class Category extends DB_Table {
 		mysql_query($sql);
 
 	}
-
 	function update_number_of_subjects() {
 		$sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
 			$this->id
@@ -473,9 +472,6 @@ class Category extends DB_Table {
 		$this->update_no_assigned_subjects();
 		//        print "$sql\n";
 	}
-
-
-
 	function update_no_assigned_subjects() {
 		$children_keys=$this->get_children_keys();
 		$no_assigned_subjects=0;
@@ -1564,165 +1560,29 @@ function update_part_category_sales($interval) {
 
 		$to_date='';
 
-		switch ($interval) {
+			list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
-
-
-
-		case 'Last Month':
-			$db_interval='Last Month';
-			$from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
-			$to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-			//  print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-			break;
-
-		case 'Last Week':
-			$db_interval='Last Week';
-
-
-			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
-				$to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
-
-			} else {
-				return;
-			}
-
-
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-			break;
-
-		case 'Yesterday':
-			$db_interval='Yesterday';
-			$from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
-			$to_date=date('Y-m-d 00:00:00',strtotime('today'));
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
-			break;
-
-		case 'Week To Day':
-		case 'wtd':
-			$db_interval='Week To Day';
-
-			$from_date=false;
-			$from_date_1yb=false;
-
-			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date=$row['First Day'].' 00:00:00';
-				$lapsed_seconds=strtotime('now')-strtotime($from_date);
-
-			} else {
-				return;
-			}
-
-			$sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date_1yb=$row['First Day'].' 00:00:00';
-			}
-
-
-			$to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
-
-
-
-			break;
-		case 'Today':
-
-			$db_interval='Today';
-			$from_date=date('Y-m-d 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-
-
-		case 'Month To Day':
-		case 'mtd':
-			$db_interval='Month To Day';
-			$from_date=date('Y-m-01 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case 'Year To Day':
-		case 'ytd':
-			$db_interval='Year To Day';
-			$from_date=date('Y-01-01 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-			break;
-		case '3 Year':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
-			$from_date_1yb=false;
-			$to_1yb=false;
-			break;
-		case '1 Year':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '6 Month':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Quarter':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Month':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '10 Day':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Week':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-
-		default:
-			return;
-			break;
-		}
 
 		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
-		$invoice_category_data["$db_interval Acc Invoiced Discount Amount"]=0;
-		$invoice_category_data["$db_interval Acc Invoiced Amount"]=0;
-		$invoice_category_data["$db_interval Acc Invoices"]=0;
-		$invoice_category_data["$db_interval Acc Profit"]=0;
-		$invoice_category_data["DC $db_interval Acc Invoiced Amount"]=0;
-		$invoice_category_data["DC $db_interval Acc Invoiced Discount Amount"]=0;
-		$invoice_category_data["DC $db_interval Acc Profit"]=0;
+		$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=0;
+		$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=0;
+		$invoice_category_data["Invoice Category $db_interval Acc Invoices"]=0;
+		$invoice_category_data["Invoice Category $db_interval Acc Refunds"]=0;
+		$invoice_category_data["Invoice Category $db_interval Acc Paid"]=0;
+		$invoice_category_data["Invoice Category $db_interval Acc To Pay"]=0;
 
-		$sql=sprintf("select  sum(if(`Invoice Title`='Invoice',1,0)) as invoices  ,IFNULL(sum(`Invoice Items Discount Amount`),0) as discounts,IFNULL(sum(`Invoice Total Net Amount`),0) net  ,IFNULL(sum(`Invoice Total Profit`),0) as profit ,IFNULL(sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`),0) as dc_discounts,IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) dc_net  ,IFNULL(sum(`Invoice Total Profit`*`Invoice Currency Exchange`),0) as dc_profit from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d and `Invoice Date`>=%s %s" ,
+		$invoice_category_data["Invoice Category $db_interval Acc Profit"]=0;
+		$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]=0;
+		$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]=0;
+		$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]=0;
+
+		$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Title`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Title`='Refund',1,0)) as refunds  ,IFNULL(sum(`Invoice Items Discount Amount`),0) as discounts,IFNULL(sum(`Invoice Total Net Amount`),0) net  ,IFNULL(sum(`Invoice Total Profit`),0) as profit ,IFNULL(sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`),0) as dc_discounts,IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) dc_net  ,IFNULL(sum(`Invoice Total Profit`*`Invoice Currency Exchange`),0) as dc_profit from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d %s %s" ,
 			$this->id,
 			$this->data['Category Store Key'],
-			prepare_mysql($from_date),
+		
+			($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
+
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
 		);
@@ -1730,38 +1590,50 @@ function update_part_category_sales($interval) {
 
 		//print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$invoice_category_data["$db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
-			$invoice_category_data["$db_interval Acc Invoiced Amount"]=$row["net"];
-			$invoice_category_data["$db_interval Acc Invoices"]=$row["invoices"];
-			$invoice_category_data["$db_interval Acc Profit"]=$row["profit"];
-			$invoice_category_data["DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
-			$invoice_category_data["DC $db_interval Acc Invoiced Discount Amount"]=$row["dc_discounts"];
-			$invoice_category_data["DC $db_interval Acc Profit"]=$row["dc_profit"];
+			$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]=$row["discounts"];
+			$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]=$row["net"];
+			$invoice_category_data["Invoice Category $db_interval Acc Invoices"]=$row["invoices"];
+			$invoice_category_data["Invoice Category $db_interval Acc Refunds"]=$row["refunds"];
+			$invoice_category_data["Invoice Category $db_interval Acc Paid"]=$row["paid"];
+			$invoice_category_data["Invoice Category $db_interval Acc To Pay"]=$row["to_pay"];
+
+			$invoice_category_data["Invoice Category $db_interval Acc Profit"]=$row["profit"];
+			$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]=$row["dc_net"];
+			$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]=$row["dc_discounts"];
+			$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]=$row["dc_profit"];
 		}
 
 		$sql=sprintf("update `Invoice Category Dimension` set
-                     `$db_interval Acc Invoiced Discount Amount`=%.2f,
-                     `$db_interval Acc Invoiced Amount`=%.2f,
-                     `$db_interval Acc Invoices`=%d,
-                     `$db_interval Acc Profit`=%.2f
-                     where `Category Key`=%d "
-			,$invoice_category_data["$db_interval Acc Invoiced Discount Amount"]
-			,$invoice_category_data["$db_interval Acc Invoiced Amount"]
-			,$invoice_category_data["$db_interval Acc Invoices"]
-			,$invoice_category_data["$db_interval Acc Profit"]
+                     `Invoice Category $db_interval Acc Discount Amount`=%.2f,
+                     `Invoice Category $db_interval Acc Invoiced Amount`=%.2f,
+                     `Invoice Category $db_interval Acc Invoices`=%d,
+                     `Invoice Category $db_interval Acc Refunds`=%d,
+                     `Invoice Category $db_interval Acc Paid`=%d,
+                     `Invoice Category $db_interval Acc To Pay`=%d,
+
+                     `Invoice Category $db_interval Acc Profit`=%.2f
+                     where `Invoice Category Key`=%d "
+			,$invoice_category_data["Invoice Category $db_interval Acc Discount Amount"]
+			,$invoice_category_data["Invoice Category $db_interval Acc Invoiced Amount"]
+			,$invoice_category_data["Invoice Category $db_interval Acc Invoices"]
+			,$invoice_category_data["Invoice Category $db_interval Acc Refunds"]
+			,$invoice_category_data["Invoice Category $db_interval Acc Paid"]
+			,$invoice_category_data["Invoice Category $db_interval Acc To Pay"]
+
+			,$invoice_category_data["Invoice Category $db_interval Acc Profit"]
 			,$this->id
 		);
 
 		mysql_query($sql);
 		//print "$sql\n\n";
 		$sql=sprintf("update `Invoice Category Dimension` set
-                     `DC $db_interval Acc Invoiced Discount Amount`=%.2f,
-                     `DC $db_interval Acc Invoiced Amount`=%.2f,
-                     `DC $db_interval Acc Profit`=%.2f
-                     where `Category Key`=%d "
-			,$invoice_category_data["DC $db_interval Acc Invoiced Discount Amount"]
-			,$invoice_category_data["DC $db_interval Acc Invoiced Amount"]
-			,$invoice_category_data["DC $db_interval Acc Profit"]
+                     `Invoice Category DC $db_interval Acc Discount Amount`=%.2f,
+                     `Invoice Category DC $db_interval Acc Invoiced Amount`=%.2f,
+                     `Invoice Category DC $db_interval Acc Profit`=%.2f
+                     where `Invoice Category Key`=%d "
+			,$invoice_category_data["Invoice Category DC $db_interval Acc Discount Amount"]
+			,$invoice_category_data["Invoice Category DC $db_interval Acc Invoiced Amount"]
+			,$invoice_category_data["Invoice Category DC $db_interval Acc Profit"]
 			,$this->id
 		);
 
@@ -1770,13 +1642,13 @@ function update_part_category_sales($interval) {
 
 
 		if ($from_date_1yb) {
-			$invoice_category_data["$db_interval Acc 1YB Invoices"]=0;
-			$invoice_category_data["$db_interval Acc 1YB Invoiced Discount Amount"]=0;
-			$invoice_category_data["$db_interval Acc 1YB Invoiced Amount"]=0;
-			$invoice_category_data["$db_interval Acc 1YB Profit"]=0;
-			$invoice_category_data["DC $db_interval Acc 1YB Invoiced Discount Amount"]=0;
-			$invoice_category_data["DC $db_interval Acc 1YB Invoiced Amount"]=0;
-			$invoice_category_data["DC $db_interval Acc 1YB Profit"]=0;
+			$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]=0;
+			$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]=0;
+			$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]=0;
+			$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]=0;
+			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]=0;
+			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]=0;
+			$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]=0;
 
 			$sql=sprintf("select count(*) as invoices,sum(`Invoice Items Discount Amount`) as discounts,sum(`Invoice Total Net Amount`) net  ,sum(`Invoice Total Profit`) as profit,sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`) as dc_discounts,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) dc_net  ,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as dc_profit  from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d and  `Invoice Date`>%s and `Invoice Date`<%s" ,
 				$this->id,
@@ -1787,38 +1659,38 @@ function update_part_category_sales($interval) {
 			// print "$sql\n\n";
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$invoice_category_data["$db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
-				$invoice_category_data["$db_interval Acc 1YB Invoiced Amount"]=$row["net"];
-				$invoice_category_data["$db_interval Acc 1YB Invoices"]=$row["invoices"];
-				$invoice_category_data["$db_interval Acc 1YB Profit"]=$row["profit"];
-				$invoice_category_data["DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
-				$invoice_category_data["DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
-				$invoice_category_data["DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
+				$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]=$row["discounts"];
+				$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
+				$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]=$row["invoices"];
+				$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]=$row["profit"];
+				$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
+				$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]=$row["dc_discounts"];
+				$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
 			}
 
 			$sql=sprintf("update `Invoice Category Dimension` set
-                         `$db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
-                         `$db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `$db_interval Acc 1YB Invoices`=%.2f,
-                         `$db_interval Acc 1YB Profit`=%.2f
-                         where `Category Key`=%d "
-				,$invoice_category_data["$db_interval Acc 1YB Invoiced Discount Amount"]
-				,$invoice_category_data["$db_interval Acc 1YB Invoiced Amount"]
-				,$invoice_category_data["$db_interval Acc 1YB Invoices"]
-				,$invoice_category_data["$db_interval Acc 1YB Profit"]
+                         `Invoice Category $db_interval Acc 1YB Discount Amount`=%.2f,
+                         `Invoice Category $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                         `Invoice Category $db_interval Acc 1YB Invoices`=%.2f,
+                         `Invoice Category $db_interval Acc 1YB Profit`=%.2f
+                         where `Invoice Category Key`=%d "
+				,$invoice_category_data["Invoice Category $db_interval Acc 1YB Discount Amount"]
+				,$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoiced Amount"]
+				,$invoice_category_data["Invoice Category $db_interval Acc 1YB Invoices"]
+				,$invoice_category_data["Invoice Category $db_interval Acc 1YB Profit"]
 				,$this->id
 			);
 
 			mysql_query($sql);
 			// print "$sql\n";
 			$sql=sprintf("update `Invoice Category Dimension` set
-                         `DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
-                         `DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `DC $db_interval Acc 1YB Profit`=%.2f
-                         where `Category Key`=%d "
-				,$invoice_category_data["DC $db_interval Acc 1YB Invoiced Discount Amount"]
-				,$invoice_category_data["DC $db_interval Acc 1YB Invoiced Amount"]
-				,$invoice_category_data["DC $db_interval Acc 1YB Profit"]
+                         `Invoice Category DC $db_interval Acc 1YB Discount Amount`=%.2f,
+                         `Invoice Category DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                         `Invoice Category DC $db_interval Acc 1YB Profit`=%.2f
+                         where `Invoice Category Key`=%d "
+				,$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Discount Amount"]
+				,$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Invoiced Amount"]
+				,$invoice_category_data["Invoice Category DC $db_interval Acc 1YB Profit"]
 				,$this->id
 			);
 			// print "$sql\n";

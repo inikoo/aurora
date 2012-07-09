@@ -2216,11 +2216,7 @@ class product extends DB_Table {
 		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	}
 
-	/*
-      Method: syncronize
-      Sincroniza actualizaciones en las base de datos.
-    */
-	// JFA
+
 
 	function syncronize() {
 
@@ -2235,11 +2231,7 @@ class product extends DB_Table {
 
 	}
 
-	/*
-      Method: save_to_db
-      Guarda cambios en la base de datos.
-    */
-	// JFA
+
 
 	function save_to_db($sql) {
 
@@ -2248,11 +2240,6 @@ class product extends DB_Table {
 
 	}
 
-	/*
-      Function: removeaccents
-      Remueve el acento de las vocales marcadas.
-    */
-	// JFA
 
 	function removeaccents($string) {
 		return strtr($string,"v©","e");
@@ -3316,7 +3303,7 @@ class product extends DB_Table {
 	}
 
 
-	protected function update_field($field,$value,$options='') {
+	 function update_field($field,$value,$options='') {
 
 		$this->updated=false;
 		$null_if_empty=true;

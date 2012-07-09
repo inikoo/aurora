@@ -1615,6 +1615,8 @@ class Invoice extends DB_Table {
 		$category->update_invoice_category_up_today_sales();
 		$category->update_invoice_category_interval_sales();
 		$category->update_invoice_category_last_period_sales();
+		$category->update_number_of_subjects();
+		$category->update_no_assigned_subjects();
 
 
 	}

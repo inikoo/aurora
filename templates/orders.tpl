@@ -2,21 +2,17 @@
 <div id="bd" style="padding:0px" >
 <div style="padding:0 20px">
 {include file='orders_navigation.tpl'}
+<input type="hidden" id="store_key" value="{$store->id}"/>
 <div  class="branch"> 
   <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}  <a href="orders_server.php?view=dn"  id="branch_type_dn" style="{if $block_view!='dn'}display:none{/if}" >&#8704; {t}Delivery Notes{/t}</a> <a href="orders_server.php?view=invoices" id="branch_type_invoices" style="{if $block_view!='invoices'}display:none{/if}" >&#8704; {t}Invoices{/t}</a> <a  href="orders_server.php?view=orders" id="branch_type_orders" style="{if $block_view!='orders'}display:none{/if}" >&#8704; {t}Orders{/t}</a>    &rarr; {/if}
     <span id="branch_type2_dn" style="{if $block_view!='dn'}display:none{/if}" >{t}Delivery Notes{/t}</span> <span id="branch_type2_invoices" style="{if $block_view!='invoices'}display:none{/if}" >{t}Invoices{/t}</span> <span id="branch_type2_orders" style="{if $block_view!='orders'}display:none{/if}" >{t}Orders{/t}</span> ({$store->get('Store Code')})</span>
 </div>
  <div class="top_page_menu">
-
-
-
-
 <div class="buttons" style="float:left">
+<button id="category_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoice{else}dn{/if}_categories.php?id=0&store={$store->id}'" ><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button>
+<button id="list_button" onclick="window.location='{if $block_view=='orders'}orders{elseif $block_view=='invoices'}invoices{else}dn{/if}_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
 
-<button  onclick="window.location='customers_lists.php?store={$store->id}'" ><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button>
 <button  onclick="window.location='warehouse_orders.php'" ><img src="art/icons/paste_plain.png" alt=""> {t}Warehouse Operations{/t}</button>
-
-
 
 </div>
 
@@ -41,7 +37,7 @@
 
 
 <div style="clear:both;margin-top:20px">
-    <span class="clean_table_title">{t}Orders{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+    <span class="clean_table_title">{t}Orders{/t} <img id="export0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span>
     
 	
     <div id="table_type" class="table_type">
@@ -95,24 +91,24 @@
    <div  id="block_invoices"   class="data_table" style="{if $block_view!='invoices'}display:none{/if};clear:both">
    
    <div style="clear:both;margin-top:20px">
-    <span class="clean_table_title">{t}Invoices{/t} <img id="export_csv1"   tipo="stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+    <span class="clean_table_title">{t}Invoices{/t} <img id="export1"   tipo="stores" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span>
      <div id="table_type" class="table_type">
 
         <div  style="font-size:90%"   id="invoice_chooser"  style="display:{if $block_view!='orders'}none{/if}">
            
-            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='all'}selected{/if}"  id="restrictions_all_invoices" table_type="all"  >{t}All{/t} ({$store->get('Total Invoices')})</span>
-            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='invoices'}selected{/if}"  id="restrictions_invoices" table_type="invoices"   >{t}Invoices{/t} ({$store->get('Invoices')})</span>
-            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='refunds'}selected{/if}"  id="restrictions_refunds"  table_type="refunds"  >{t}Refunds{/t} ({$store->get('Refunds')})</span>
-            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='to_pay'}selected{/if}"  id="restrictions_to_pay"  table_type="to_pay"  >{t}To pay{/t} ({$store->get('All To Pay Invoices')})</span>
-            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='paid'}selected{/if}"  id="restrictions_paid"  table_type="paid"  >{t}Paid{/t} ({$store->get('All Paid Invoices')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='all'}selected{/if}"  id="restrictions_all_invoices" table_type="all"  >{t}All{/t} (<span id="total_invoices_and_refunds_number">{$total_invoices_and_refunds}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='invoices'}selected{/if}"  id="restrictions_invoices" table_type="invoices"   >{t}Invoices{/t} (<span id="total_invoices_number">{$total_invoices}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='refunds'}selected{/if}"  id="restrictions_refunds"  table_type="refunds"  >{t}Refunds{/t} (<span id="total_refunds_number">{$total_refunds}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='to_pay'}selected{/if}"  id="restrictions_to_pay"  table_type="to_pay"  >{t}To pay{/t} (<span id="total_to_pay_number">{$total_to_pay}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='paid'}selected{/if}"  id="restrictions_paid"  table_type="paid"  >{t}Paid{/t} (<span id="total_paid_number">{$total_paid}</span>)</span>
         </div>
      </div>
 
 
 
-    <div id="list_options0"> 
-      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
    
+      <div  class="table_top_bar"></div>
+    <div id="list_options1"> 
     <div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">  
     <form action="orders.php?" method="GET" style="margin-top:10px">
       <div style="position:relative;left:18px">
@@ -146,7 +142,7 @@
  <div   id="block_dn"  class="data_table" style="{if $block_view!='dn'}display:none{/if};clear:both">
    
    <div style="clear:both;margin-top:20px">
-   <span class="clean_table_title">{t}Delivery Note List{/t} <img id="export_csv2"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+   <span class="clean_table_title">{t}Delivery Note List{/t} <img id="export2"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export table{/t}" alt="{t}Export table{/t}" src="art/icons/export_csv.gif"></span>
     
         <div style="font-size:90%"  id="dn_table_type" class="table_type">
             <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
@@ -275,10 +271,11 @@
   </div>
 </div>
 
-
-{*}
-{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="orders-table-csv_export0" export_options=$csv_export_options0 }
-{include file='export_csv_menu_splinter.tpl' id=1 cols=$export_csv_table_cols1 session_address="orders-table-csv_export1" export_options=$csv_export_options1 }
-{include file='export_csv_menu_splinter.tpl' id=2 cols=$export_csv_table_cols2 session_address="orders-table-csv_export2" export_options=$csv_export_options2 }
-{*}
+<div id="dialog_export" style="padding:15px 25px 5px 20px">
+<table>
+<tr><td colspan=3><div class="buttons"><button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button></div></td></tr>
+<tr style="height:10px"><td colspan=3></td></tr>
+<tr><td>{t}Map{/t}:</td><td>Default</td><td><div class="buttons small"><button onClick="alert('not availeable yet! :(')">{t}Change map{/t}</button></div></td></tr>
+</table>
+</div>
 {include file='footer.tpl'}

@@ -1,4 +1,5 @@
 {include file='header.tpl'} 
+<input type="hidden" id="store_key" value="{$store->id}"/>
 <div id="bd" style="padding:0px">
 	<div style="padding:0 20px">
 		{include file='contacts_navigation.tpl'} 
@@ -86,7 +87,7 @@
 		<div style="padding:15px 0 30px 0;{if !($block_view=='contacts_with_orders' or $block_view=='all_contacts')  }display:none{/if}" id="customer_list">
 			
 			<div style="clear:both">
-				<span class="clean_table_title">{t}Customers List{/t} <img id="export_csv0" class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title">{t}Customers List{/t} <img id="export0" class="export_data_link" label="{t}Export Tablr{/t}" alt="{t}Export Table{/t}" src="art/icons/export_csv.gif"></span> 
 				<div id="table_type_contacts_with_orders" class="table_type" style="{if $block_view!='contacts_with_orders'}display:none;{/if}font-size:90%">
 					<div id="transaction_chooser">
 						<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements_contacts_with_orders.Lost}selected{/if} label_contacts_with_orders_lost" id="elements_contacts_with_orders_lost" table_type="lost">{t}Lost{/t} (<span id="elements_contacts_with_orders_lost_number">{$elements_number_contacts_with_orders.Lost}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_contacts_with_orders.Losing}selected{/if} label_contacts_with_orders_losing" id="elements_contacts_with_orders_losing" table_type="losing">{t}Losing{/t} (<span id="elements_contacts_with_orders_losing_number">{$elements_number_contacts_with_orders.Losing}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements_contacts_with_orders.Active}selected{/if} label_contacts_with_orders_active" id="elements_contacts_with_orders_active" table_type="active">{t}Active{/t} (<span id="elements_contacts_with_orders_active_number">{$elements_number_contacts_with_orders.Active}</span>)</span> 
@@ -150,4 +151,11 @@
 		<button class="positive" onclick="new_customer()">{t}Manually{/t}</button> <button class="positive" onclick="new_customer_from_file()">{t}Import from file{/t}</button> <button class="negative" id="close_dialog_new_customer">{t}Cancel{/t}</button> 
 	</div>
 </div>
-{*} {include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="customers-csv_export0" export_options=$csv_export_options0 } {*} {include file='footer.tpl'} 
+<div id="dialog_export" style="padding:15px 25px 5px 20px">
+<table>
+<tr><td colspan=3><div class="buttons"><button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button></div></td></tr>
+<tr style="height:10px"><td colspan=3></td></tr>
+<tr><td>{t}Map{/t}:</td><td>Default</td><td><div class="buttons small"><button onClick="alert('not availeable yet! :(')">{t}Change map{/t}</button></div></td></tr>
+</table>
+</div>
+{include file='footer.tpl'} 

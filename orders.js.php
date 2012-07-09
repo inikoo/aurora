@@ -93,7 +93,7 @@ Event.addListener(window, "load", function() {
 				       ,{key:"state", label:"<?php echo _('Status')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=invoices&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get('store_key').value);
 		//alert("ar_orders.php?tipo=invoices&tableid=1");
 	     this.dataSource1.table_id=tableid;
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -247,118 +247,43 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-
 
 }
 
-function init(){
-// -------------------------Export(CSV) code for order list under order --------------------
-  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'orders');
- YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'orders'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-	 csvMenu.render();
-	 csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
-// -------------------------Export(CSV) code for invoice list under order --------------
 
-YAHOO.util.Event.addListener('export_csv1', "click",download_csv,'invoices');
- YAHOO.util.Event.addListener('export_csv1_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table1',tipo:'invoices'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu1", {trigger:"export_csv1" });
-         csvMenu.render();
-         csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv1_close_dialog', "click",csvMenu.hide,csvMenu,true);
-// ------------------------Export(CSV) code for delivery notes list under order ----------------
-YAHOO.util.Event.addListener('export_csv2', "click",download_csv,'dn');
- YAHOO.util.Event.addListener('export_csv2_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table2',tipo:'dn'});
-  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu2", {trigger:"export_csv2" });
-         csvMenu.render();
-         csvMenu.subscribe("show", csvMenu.focus);
-   
- YAHOO.util.Event.addListener('export_csv2_close_dialog', "click",csvMenu.hide,csvMenu,true);
-// ------------------------------------------------------------------------------------
-
-
-init_search('orders_store');
-
+function show_export_dialog(e,table_id){
  
-    Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
-Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+if(table_id==0){
+    Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=orders&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
+    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=orders&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
+
+}else if(table_id==1){
+    Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=invoices&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
+    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=invoices&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
+
+}else{
+    Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=dn&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
+    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=dn&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
+
+}
+
+	region1 = Dom.getRegion('export'+table_id); 
+    region2 = Dom.getRegion('dialog_export'); 
+	var pos =[region1.right-20,region1.bottom]
+	Dom.setXY('dialog_export', pos);
+	dialog_export.show()
+}
 
 
-
-
-
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
-  oACDS.table_id=0;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
+ function change_invoice_type(e){
+     var table=tables.table1;
+     var datasource=tables.dataSource1;
+     Dom.removeClass(Dom.getElementsByClassName('invoice_type','span' , 'invoice_chooser'),'selected');;
+     Dom.addClass(this,'selected');     
+     var request='&invoice_type='+this.getAttribute('table_type');
+	 
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ }
  
- var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
-  oACDS1.table_id=1;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
-
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
-  oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
-
-
- cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
  
- cal2.update=updateCal;
- cal2.id='2';
- cal2.render();
- cal2.update();
- cal2.selectEvent.subscribe(handleSelect, cal2, true); 
- cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1.update=updateCal;
- cal1.id='1';
- cal1.render();
- cal1.update();
- cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-cal2i = new YAHOO.widget.Calendar("cal2i","cal2iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal2i.update=updateCal;
- cal2i.id='2i';
- cal2i.render();
- cal2i.update();
- cal2i.selectEvent.subscribe(handleSelect, cal2i, true); 
- cal1i = new YAHOO.widget.Calendar("cal1i","cal1iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1i.update=updateCal;
- cal1i.id='1i';
- cal1i.render();
- cal1i.update();
- cal1i.selectEvent.subscribe(handleSelect, cal1i, true);  
-
-cal2dn = new YAHOO.widget.Calendar("cal2dn","cal2dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal2dn.update=updateCal;
- cal2dn.id='2dn';
- cal2dn.render();
- cal2dn.update();
- cal2dn.selectEvent.subscribe(handleSelect, cal2dn, true); 
- cal1dn = new YAHOO.widget.Calendar("cal1dn","cal1dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1dn.update=updateCal;
- cal1dn.id='1dn';
- cal1dn.render();
- cal1dn.update();
- cal1dn.selectEvent.subscribe(handleSelect, cal1dn, true);  
-
  
-
- 
- Event.addListener("calpop1", "click", cal1.show, cal1, true);
- Event.addListener("calpop2", "click", cal2.show, cal2, true);
- Event.addListener("calpop1i", "click", cal1i.show, cal1i, true);
- Event.addListener("calpop2i", "click", cal2i.show, cal2i, true);
- Event.addListener("calpop1dn", "click", cal1dn.show, cal1dn, true);
- Event.addListener("calpop2dn", "click", cal2dn.show, cal2dn, true);
- 
-
 var clear_interval = function(e,suffix){
 
      Dom.get("v_calpop1").value='';
@@ -466,7 +391,7 @@ var clear_interval = function(e,suffix){
      Dom.removeClass(Dom.getElementsByClassName('dispatch','span' , 'dispatch_chooser'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&dispatch='+this.getAttribute('table_type');
-	 alert(request);
+	// alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
  var change_invoice_type=function(e){
@@ -475,7 +400,7 @@ var clear_interval = function(e,suffix){
      Dom.removeClass(Dom.getElementsByClassName('invoice_type','span' , 'invoice_chooser'),'selected');;
      Dom.addClass(this,'selected');     
      var request='&invoice_type='+this.getAttribute('table_type');
-	 alert(request);
+//	 alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
  var change_dn_type=function(e){
@@ -488,6 +413,98 @@ var clear_interval = function(e,suffix){
 	 //alert(request);
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  } 
+
+function init(){
+dialog_export = new YAHOO.widget.Dialog("dialog_export", { visible : false,close:true,underlay: "none",draggable:false});
+dialog_export.render();
+   YAHOO.util.Event.addListener('export0', "click", show_export_dialog,0);
+   YAHOO.util.Event.addListener('export1', "click", show_export_dialog,1);
+   YAHOO.util.Event.addListener('export2', "click", show_export_dialog,2);
+
+
+init_search('orders_store');
+
+ 
+Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+
+
+
+
+
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+  oACDS.table_id=0;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+ 
+ var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+  oACDS1.table_id=1;
+ var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ oAutoComp1.minQueryLength = 0; 
+
+ var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS2.queryMatchContains = true;
+  oACDS2.table_id=2;
+ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
+ oAutoComp2.minQueryLength = 0; 
+
+
+ cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ 
+ cal2.update=updateCal;
+ cal2.id='2';
+ cal2.render();
+ cal2.update();
+ cal2.selectEvent.subscribe(handleSelect, cal2, true); 
+ cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal1.update=updateCal;
+ cal1.id='1';
+ cal1.render();
+ cal1.update();
+ cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+cal2i = new YAHOO.widget.Calendar("cal2i","cal2iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal2i.update=updateCal;
+ cal2i.id='2i';
+ cal2i.render();
+ cal2i.update();
+ cal2i.selectEvent.subscribe(handleSelect, cal2i, true); 
+ cal1i = new YAHOO.widget.Calendar("cal1i","cal1iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal1i.update=updateCal;
+ cal1i.id='1i';
+ cal1i.render();
+ cal1i.update();
+ cal1i.selectEvent.subscribe(handleSelect, cal1i, true);  
+
+cal2dn = new YAHOO.widget.Calendar("cal2dn","cal2dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal2dn.update=updateCal;
+ cal2dn.id='2dn';
+ cal2dn.render();
+ cal2dn.update();
+ cal2dn.selectEvent.subscribe(handleSelect, cal2dn, true); 
+ cal1dn = new YAHOO.widget.Calendar("cal1dn","cal1dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal1dn.update=updateCal;
+ cal1dn.id='1dn';
+ cal1dn.render();
+ cal1dn.update();
+ cal1dn.selectEvent.subscribe(handleSelect, cal1dn, true);  
+
+ 
+
+ 
+ Event.addListener("calpop1", "click", cal1.show, cal1, true);
+ Event.addListener("calpop2", "click", cal2.show, cal2, true);
+ Event.addListener("calpop1i", "click", cal1i.show, cal1i, true);
+ Event.addListener("calpop2i", "click", cal2i.show, cal2i, true);
+ Event.addListener("calpop1dn", "click", cal1dn.show, cal1dn, true);
+ Event.addListener("calpop2dn", "click", cal2dn.show, cal2dn, true);
+ 
+
  
 
  Event.addListener("submit_interval", "click", change_interval,'');
@@ -511,6 +528,17 @@ Event.addListener(ids, "click", change_dn_type);
 block_ids=['block_orders','block_invoices','block_dn'];
 branch_type_ids=['branch_type_orders','branch_type_invoices','branch_type_dn','branch_type2_orders','branch_type2_invoices','branch_type2_dn'];
 Dom.setStyle(branch_type_ids,'display','none');
+
+if(this.id=='invoices'){
+    Dom.get('category_button').onclick=function (){window.location='invoice_categories.php?id=0&store='+Dom.get('store_key').value};
+    Dom.get('list_button').onclick=function (){window.location='invoices_lists.php?store='+Dom.get('store_key').value};
+}else if(this.id=='orders'){
+    Dom.get('category_button').onclick=function (){window.location='orders_categories.php?id=0&store='+Dom.get('store_key').value};
+    Dom.get('list_button').onclick=function (){window.location='invoices_lists.php?store='+Dom.get('store_key').value};
+}else if(this.id=='dn'){
+    Dom.get('category_button').onclick=function (){window.location='dn_categories.php?id=0&store='+Dom.get('store_key').value};
+    Dom.get('list_button').onclick=function (){window.location='dn_lists.php?store='+Dom.get('store_key').value};
+}
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');

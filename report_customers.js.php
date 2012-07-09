@@ -5,7 +5,9 @@ print "var criteria='".$_SESSION['state']['report_customers']['criteria']."';";
 
 
 ?>
+
 var link='report_customers.php';
+var dialog_export;
 YAHOO.util.Event.addListener(window, "load", function() {
 
  var Dom   = YAHOO.util.Dom;
@@ -22,14 +24,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [
-				       {key:"position", label:"", width:20,sortable:false,className:"aleft"}
-				       ,{key:"store", label:"S", width:20,sortable:false,className:"aleft"}
-				       ,{key:"id", label:"<?php echo$customers_ids[0]?>",width:60,sortable:false,<?php echo($_SESSION['state']['customers']['table']['view']=='general'?'':'hidden:true,')?>className:"aright"}
-				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:240,sortable:false,className:"aleft"}
+				       {key:"position", label:"", width:15,sortable:false,className:"aleft"}
+				       ,{key:"store", label:"S", width:15,sortable:false,className:"aleft"}
+				       ,{key:"id", label:"<?php echo$customers_ids[0]?>",width:50,sortable:false,<?php echo($_SESSION['state']['customers']['table']['view']=='general'?'':'hidden:true,')?>className:"aright"}
+				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:220,sortable:false,className:"aleft"}
 
 				      
-				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['table']['view']=='general'?'':'hidden:true,')?> width:230,sortable:false,className:"aleft"}
-				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",<?php echo($_SESSION['state']['customers']['table']['view']=='loyalty'?'':'hidden:true,')?>width:100,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['table']['view']=='general'?'':'hidden:true,')?> width:200,sortable:false,className:"aleft"}
+				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",<?php echo($_SESSION['state']['customers']['table']['view']=='general'?'':'hidden:true,')?>width:100,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"invoices", label:"<?php echo _('Invoices')?>",<?php echo($_SESSION['state']['customers']['table']['view']=='general'?'':'hidden:true,')?>sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    
 				       
@@ -71,13 +73,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+			    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -171,11 +174,13 @@ var table=tables['table0'];
       datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
 }
 
-function export_data(){
-    o=Dom.get('export');
-    output=o.getAttribute('output');
-    location.href='export.php?ar_file=ar_reports&tipo=customers&output='+output;
-    
+function show_export_dialog(e,table_id){
+ 
+	region1 = Dom.getRegion('export'+table_id); 
+    region2 = Dom.getRegion('dialog_export'); 
+	var pos =[region1.right-20,region1.bottom]
+	Dom.setXY('dialog_export', pos);
+	dialog_export.show()
 }
 
 
@@ -186,20 +191,9 @@ function init(){
  
    YAHOO.util.Event.addListener(ids, "click", change_top);
 
-   YAHOO.util.Event.addListener('export', "click", export_data);
-   //YAHOO.util.Event.addListener('export', "contextmenu", change_export_type,'export');
-
-
-
-  var oContextMenu = new YAHOO.widget.ContextMenu("export_menu", {
-        trigger: 'export'
-    });
- 
-  
-    oContextMenu.render(document.body);
-
-
-
+dialog_export = new YAHOO.widget.Dialog("dialog_export", { visible : false,close:true,underlay: "none",draggable:false});
+dialog_export.render();
+   YAHOO.util.Event.addListener('export0', "click", show_export_dialog,0);
 
 
 }

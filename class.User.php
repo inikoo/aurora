@@ -63,8 +63,8 @@ class User extends DB_Table {
 			}
 		}
 
-$create=false;
-$update=false;
+		$create=false;
+		$update=false;
 
 		if (preg_match('/create/i',$options)) {
 			$create='create';
@@ -94,7 +94,7 @@ $update=false;
 			$where_site
 		);
 
-//print $sql;
+		//print $sql;
 
 		$result = mysql_query($sql);
 
@@ -1448,8 +1448,6 @@ $update=false;
 
 			$sql=sprintf("select count(*) as num_request, count(distinct `User Session Key`) as num_sessions , max(`Date`) as date from `User Request Dimension` where  `User Key`=%d",$this->id);
 			$res=mysql_query($sql);
-			//print "$sql\n";
-
 			if ($row=mysql_fetch_assoc($res)) {
 
 				$number_requests=$row['num_request'];
@@ -1471,6 +1469,23 @@ $update=false;
 		}
 
 
+	}
+
+
+	function get_table_export_fields($ar,$table) {
+	
+		$fields='';
+		$sql=sprintf("select `Table Default Export Fields` from `Table Dimension` where `Table AR`=%s and `Table Name`=%s ",
+			prepare_mysql($ar),
+			prepare_mysql($table)
+		);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$fields=$row['Table Default Export Fields'];
+		}
+
+		return $fields;
 	}
 
 }
