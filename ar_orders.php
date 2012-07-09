@@ -36,9 +36,9 @@ case('number_invoices_in_interval'):
 	$data=prepare_values($_REQUEST,array(
 			'store_key'=>array('type'=>'key'),
 			'to'=>array('type'=>'string'),
-			'from'=>array('type'=>'string'),
+			'from'=>array('type'=>'string')
 
-		)
+		
 
 	));
 number_invoices_in_interval($data);
@@ -4282,14 +4282,14 @@ if (!$to and !$from) {
 }
 
 $response= array('state'=>200,
-'total_invoices_and_refunds'=>$total_invoices_and_refunds,
-'total_invoices'=>$total_invoices,
-'total_refunds'=>$total_refunds,
-'total_paid'=>$total_paid,
-'total_to_pay'=>$total_to_pay
+	'total_invoices_and_refunds'=>$total_invoices_and_refunds,
+	'total_invoices'=>$total_invoices,
+	'total_refunds'=>$total_refunds,
+	'total_paid'=>$total_paid,
+	'total_to_pay'=>$total_to_pay
 
 );
-	echo json_encode($response);
+echo json_encode($response);
 
 }
 
