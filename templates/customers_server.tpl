@@ -31,7 +31,7 @@
 
 <div id="block_contacts_with_orders" style="clear:both;margin:10px 0 40px 0">
 
-    <span class="clean_table_title">{t}Customers per Store{/t} <img id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+    <span class="clean_table_title">{t}Customers per Store{/t} <img style="display:none" id="export_csv0"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
 
 <div class="table_top_bar" style="margin-bottom:10px"></div>
  

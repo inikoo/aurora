@@ -36,6 +36,19 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Invoice' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$category=new Category($row['Category Key']);
+		$category->update_invoice_category_up_today_sales();
+		$category->update_invoice_category_interval_sales();
+		$category->update_invoice_category_last_period_sales();
+	$category->update_number_of_subjects();
+		$category->update_no_assigned_subjects();
+	print "Category ".$category->id."\t\t\n";
+}
+exit;
+
 $sql="select * from `Product Family Dimension` where `Product Family Key`=4695";
 $sql="select * from `Product Family Dimension`";
 $result=mysql_query($sql);

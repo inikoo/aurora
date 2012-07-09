@@ -2,11 +2,6 @@
 include_once('common.php');
 include_once('report_functions.php');
 
-
-
-
-
-
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
@@ -39,16 +34,15 @@ $js_files=array(
 		'js/export.js'
 
 		);
+
+$root_title=_('Mark as Out of Stock Report');
+$title=_('Out of Stock');
 include_once('reports_list.php');
-$report_name=_('Out of Stock');
 
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
-
 $report_name='report_part_out_of_stock';
 
 
@@ -61,7 +55,6 @@ if(isset($_REQUEST['tipo'])){
 
 
 
-$root_title=_('Mark as Out of Stock Report');
 $smarty->assign('report_url','report_customers.php');
 
 if($_SESSION['state']['report_part_out_of_stock']['store_keys']=='all')
@@ -82,8 +75,10 @@ $smarty->assign('view',$_SESSION['state']['report_part_out_of_stock']['view']);
 $export_output['type']=$_SESSION['state']['export'];
 $export_output['label']=$export_data[$_SESSION['state']['export']]['label'];
 //print_r($export_output);
-$smarty->assign('export',$export_output);
-$smarty->assign('export_menu',$export_data);
+$smarty->assign('export0',$export_output);
+$smarty->assign('export_menu0',$export_data);
+$smarty->assign('export1',$export_output);
+$smarty->assign('export_menu1',$export_data);
 
 
 
@@ -108,6 +103,7 @@ $smarty->assign('week',date('W'));
 
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
+$smarty->assign('quick_period',$quick_period);
 
 $tipo_filter=$_SESSION['state']['report_part_out_of_stock']['transactions']['f_field'];
 $smarty->assign('filter0',$tipo_filter);

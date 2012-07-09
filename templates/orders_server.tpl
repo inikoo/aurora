@@ -21,13 +21,13 @@
  
 
   <div id="block_orders"   style="padding-top:20px;clear:both;{if $block_view!='orders'}display:none{/if}">
-    <span class="clean_table_title">{t}Orders Per Store{/t} <img id="export_csv0"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+    <span class="clean_table_title">{t}Orders Per Store{/t} <img style="display:none" id="export_csv0"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  no_filter=1} 
     <div  id="table0"   class="data_table_container dtable btable with_total "> </div>
   </div>
   <div  id="block_invoices"  style="padding-top:20px;clear:both;{if $block_view!='invoices'}display:none{/if}">
-    <span class="clean_table_title">{t}Invoices Per Store{/t} <img id="export_csv1" class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+    <span class="clean_table_title">{t}Invoices Per Store{/t} <img style="display:none" id="export_csv1" class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
 
 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
@@ -35,7 +35,7 @@
     <div  id="table1"   class="data_table_container dtable btable with_total "> </div>
   </div>  
   <div  id="block_dn"  style="padding-top:20px;clear:both;{if $block_view!='dn'}display:none{/if}">
-    <span class="clean_table_title">{t}Delivery Notes Per Store{/t} <img id="export_csv2"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
+    <span class="clean_table_title">{t}Delivery Notes Per Store{/t} <img style="display:none" id="export_csv2"   class="export_data_link" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span>
 
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:0px"></div>
     <div class="clusters">
