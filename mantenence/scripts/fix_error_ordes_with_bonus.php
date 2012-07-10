@@ -27,12 +27,13 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
 $sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=1";
-$sql="select `Metadata` as `Delivery Note Metadata` from `Order Transaction Fact` where `Order Bonus Quantity`>0 and  `Order Date`>'2012-06-01 12:00:00' and `Store Key`=1";
+$sql="select `Metadata` as `Delivery Note Metadata` from `Order Transaction Fact` where `Order Bonus Quantity`>0 and  `Order Date`>'2012-06-01 12:00:00' and `Store Key`=1 group by `Metadata`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
 $sql=sprintf("update orders_data.orders set last_transcribed=NULL where id=%d",$id);
 mysql_query($sql);
+print "$sql\n";
 
 }
 
