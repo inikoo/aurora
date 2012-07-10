@@ -1169,7 +1169,7 @@ class DeliveryNote extends DB_Table {
 			$this->create_inventory_transaction_fact_item(
 				$row['Product Key'],
 				$row['Order Transaction Fact Key'],
-				$row['Current Autorized to Sell Quantity'],
+				$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity'],
 				$row['Supplier Metadata']
 			);
 
