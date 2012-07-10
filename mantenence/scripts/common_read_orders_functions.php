@@ -549,10 +549,6 @@ function get_data($header_data) {
 function create_order($data) {
 	global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data,$data_dn_transactions,$discounts_with_order_as_term;
 
-
-
-
-
 	$order_data=array(
 		'type'=>'system',
 		'Customer Key'=>$customer_key,
@@ -637,6 +633,9 @@ function create_order($data) {
 
 		}
 		elseif ( $transaction['given']>0) {
+		
+			
+		
 			$product=new Product('id',$transaction['Product Key']);
 			$quantity=$transaction['given'];
 			$gross=0;
@@ -680,9 +679,9 @@ function create_order($data) {
 		mysql_query($sql);
 
 	}
-	
+
 	$order->authorize_all();
-	
+
 	$order->update_order_discounts();
 	$order->update_discounts();
 	$order->update_item_totals_from_order_transactions();
@@ -724,7 +723,7 @@ function create_order($data) {
 
 	}
 
-
+	
 
 	return $order;
 
@@ -763,9 +762,9 @@ function send_order($data,$data_dn_transactions) {
 	//print_r($dn);
 	$_picked_qty=array();
 	$_out_of_stock_qty=array();
-	
-//	print_r($data_dn_transactions);
-	
+
+	// print_r($data_dn_transactions);
+
 	foreach ($data_dn_transactions as $key=>$value) {
 
 		$shipped_quantity=round($value['Shipped Quantity'],8);
@@ -971,8 +970,8 @@ function send_order($data,$data_dn_transactions) {
 
 	}
 	$dn->approved_for_shipping($date_inv);
-	
-	
+
+
 	//print "CACA ==".$dn->data['Delivery Note Dispatch Method']."================\n";
 	if ($dn->data['Delivery Note Dispatch Method']=='Dispatch')
 		$dn->dispatch(array('Delivery Note Date'=>$date_inv));
