@@ -47,7 +47,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 		$category->update_no_assigned_subjects();
 	print "Category ".$category->id."\t\t\n";
 }
-exit;
+
 
 $sql="select * from `Product Family Dimension` where `Product Family Key`=4695";
 $sql="select * from `Product Family Dimension`";
