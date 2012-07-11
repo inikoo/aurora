@@ -1610,7 +1610,7 @@ class Invoice extends DB_Table {
 			mysql_query($sql);
 		}
 
-return;
+
 		$category=new Category($category_key);
 		$category->update_invoice_category_up_today_sales();
 		$category->update_invoice_category_interval_sales();
