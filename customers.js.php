@@ -339,11 +339,8 @@ request=request+'&'+ids[i]+'=0'
 
  
  function show_export_dialog(e,table_id){
-    	
-    
-    Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
+     Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
     Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
-
 
 	region1 = Dom.getRegion('export'+table_id); 
     region2 = Dom.getRegion('dialog_export'); 

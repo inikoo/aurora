@@ -42,12 +42,12 @@
 	
     <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="dispatch_chooser" style="display:{if $block_view!='orders'}none{/if}">
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='all_orders'}selected{/if}"  id="restrictions_all_orders" table_type="all_orders"  >{t}All Orders{/t} ({$store->get('Total Orders')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dispatch=='in_process'}selected{/if}"  id="restrictions_orders_in_process" table_type="in_process"   >{t}In Process{/t} ({$store->get('Orders In Process')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='dispatched'}selected{/if}"  id="restrictions_orders_dispatched"  table_type="dispatched"  >{t}Dispatched{/t} ({$store->get('Dispatched Orders')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='unknown'}selected{/if}"  id="restrictions_orders_unknown"  table_type="unknown"  >{t}Unknown{/t} ({$store->get('Unknown Orders')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='cancelled'}selected{/if}"  id="restrictions_orders_cancelled"  table_type="cancelled"  >{t}Cancel{/t} ({$store->get('Cancelled Orders')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='suspended'}selected{/if}"  id="restrictions_orders_suspended"  table_type="suspended"  >{t}Suspended{/t} ({$store->get('Suspended Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='all_orders'}selected{/if}"  id="restrictions_all_orders" table_type="all_orders"  >{t}All Orders{/t} (<span id="total_orders_number">{$store->get('Total Orders')}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dispatch=='in_process'}selected{/if}"  id="restrictions_orders_in_process" table_type="in_process"   >{t}In Process{/t} (<span id="total_orders_in_process_number">{$store->get('Orders In Process')}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='dispatched'}selected{/if}"  id="restrictions_orders_dispatched"  table_type="dispatched"  >{t}Dispatched{/t} (<span id="total_orders_dispatched_number">{$store->get('Dispatched Orders')}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='unknown'}selected{/if}"  id="restrictions_orders_unknown"  table_type="unknown"  >{t}Unknown{/t} (<span id="total_orders_unknown_number">{$store->get('Unknown Orders')}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='cancelled'}selected{/if}"  id="restrictions_orders_cancelled"  table_type="cancelled"  >{t}Cancel{/t} (<span id="total_orders_cancelled_number">{$store->get('Cancelled Orders')}</span>)</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='suspended'}selected{/if}"  id="restrictions_orders_suspended"  table_type="suspended"  >{t}Suspended{/t} (<span id="total_orders_suspended_number">{$store->get('Suspended Orders')}</span>)</span>
 
         </div>
      </div>
