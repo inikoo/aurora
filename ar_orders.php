@@ -2390,7 +2390,7 @@ function list_invoices() {
 	elseif (($f_field=='postcode'     )  and $f_value!='') {
 		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
 	}
-	elseif ($f_field=='public_id'  )
+	elseif ($f_field=='public_id'  and $f_value!='' )
 		$wheref.=" and  `Invoice Public ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
 	elseif ($f_field=='last_more' and is_numeric($f_value) )
 		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
@@ -2554,12 +2554,18 @@ function list_invoices() {
 	elseif ($order=='net')
 		$order='`Invoice Total Net Amount`';
 
+// 
+	$sql="select  `S4`,`S1`,`Invoice Total Tax Amount`,`Invoice Title`,`Invoice XHTML Delivery Notes`,`Invoice Shipping Net Amount`,`Invoice Total Net Amount`,`Invoice Items Net Amount`,`Invoice XHTML Orders`,`Invoice Total Amount`,I.`Invoice Key`,`Invoice Customer Name`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Date`,`Invoice Currency`,`Invoice Has Been Paid In Full` from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref  $where_type $where_interval   order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 
-	$sql="select   * from  $table   $where $wheref  $where_type $where_interval group by I.`Invoice Key` order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+
+	$sql="select  * from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref  $where_type $where_interval   order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+
 	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
 
 
-	//print $sql;exit;
+
+
+	//print $sql;
 	$adata=array();
 
 

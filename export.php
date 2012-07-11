@@ -1,6 +1,6 @@
 <?php
 
-if (!isset($_REQUEST['ar_file'])) {exit;}
+if (!isset($_REQUEST['ar_file'])) {exit('no ar file');}
 
 if (!isset($_REQUEST['output'])) {
 	$output_type='csv';
@@ -18,6 +18,8 @@ $filename='output';
 
 include_once $_REQUEST['ar_file'].'.php';
 $data=$results['resultset']['data'];
+
+
 
 require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
 require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
@@ -44,7 +46,6 @@ foreach ($data as $row) {
 	}
 	$row_index++;
 }
-
 
 
 
