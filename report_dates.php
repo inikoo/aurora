@@ -45,7 +45,7 @@ elseif ($tipo=='3y' ) {
 	$quick_period='3y';
 	$from= $from_date=date('Y-m-d',strtotime("now -3 year"));;
 	$to=date("Y-m-d");
-	$link='3y';
+	$link='&tipo=3y';
 	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
 
 }

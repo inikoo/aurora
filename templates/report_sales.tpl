@@ -1,13 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
-{include file='reports_navigation.tpl'}
-
-{include file='calendar_splinter.tpl'}
-
 
 
 <div class="branch"> 
-  <span><a  href="reports.php">{t}Reports{/t}</a> &rarr; <a  href="reports_section.php?category=Sales%20Reports">{t}Sales Reports{/t}</a> &rarr; <a  href="report_sales_main.php?tipo={$tipo}&y={$year}&m={$month}&d={$day}&w={$week}&from={$from}&to={$to}">{t}Store Sales Overview{/t}</a>
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a  href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales{/t}</span>
 </div>
 
 
@@ -15,7 +11,7 @@
 
 {if $total_invoices>0}
 <p style="width:450px">
-<b>{$total_invoices}</b> <img id="invoices" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/> orders has been invoiced during this period ({$days}), which amounts to a net total of <b>{$total_net}</b>.{if $todo_orders>0}{/if } 
+<b>{$total_invoices}</b> <img id="invoices" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/> orders has been invoiced during this period ({$days}), which amounts to a net total of <b>{$total_net}</b>.
 </p>
 <table class="report_sales1">
 <tr><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td>{t}Tax{/t}</td></tr>
@@ -393,8 +389,10 @@ We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b
 <td><b>{t}Net Sales{/t}</b><br>{$diff_sales_per}</td>
 <td style="padding-left:30px"><img src="{if $diff_invoices_change!="+"}art/down.png{else}art/up.png{/if}"/></td>
 <td><b>{t}Orders Invoiced{/t}</b><br>{$diff_invoices_per}</td>
+{*}
 <td style="padding-left:30px"><img src="{if $diff_orders_received!="+"}art/down.png{else}art/up.png{/if}"/></td>
 <td><b>{t}Orders Received{/t}</b><br>{$diff_orders_received_per}</td>
+{*}
 </tr>
 </table>
 <p style="width:500px;clear:both">
@@ -452,18 +450,14 @@ The principal export destination  is {$export_country1} with a {$per_export_coun
 
 <tr class="org"><td class="label">{$org}</td><td>{$invoices_org_nohome}</td><td>{$net_org_nohome}</td><td>{$tax_org_nohome}</td></tr>
 </table>
-
-
-
-
-
-
+{*}
 {else}
 {if $todo_orders>0}
 {$todo_orders} orders are waiting to be dispatched, which amounts to a total of  {$to_be_net}.
 {else}
 {t}No orders has been placed in this period{/t}.
 {/if}
+{*}
 {/if}
 
 

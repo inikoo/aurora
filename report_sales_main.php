@@ -115,14 +115,6 @@ $_SESSION['state']['report_sales']['to']=$to;
 $_SESSION['state']['report_sales']['from']=$from;
 $_SESSION['state']['report_sales']['period']=$period;
 
-//print "$to $from $period\n";
-
-global $myconf;
-
-/* $valid_rates=array( */
-/* 		   array('date'=>'01-01-2000','rate'=>17.5), */
-/* 		   array('date'=>'01-12-2008','rate'=>15) */
-/* 		   ); */
 
 
 $int=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`','date start end');
@@ -140,15 +132,16 @@ $result=mysql_query($sql);
 $mixed_currencies=false;
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-	if ($row['Store Currency Code']!=$corporate_currency)
+	if ($row['Store Currency Code']!=$corporate_currency){
 		$mixed_currencies=true;
+		}
 	$store_data[$row['Store Key']]=array(
 		'store'=>sprintf('<a href="report_sales.php?store_key=%d%s">%s</a>',$row['Store Key'],$link,$row['Store Name']),
 		'currency_code'=>$row['Store Currency Code'],
 		'net'=>money(0,$row['Store Currency Code']),
 		'tax'=>money(0,$row['Store Currency Code']),
-		'eq_tax'=>money(0),
-		'eq_net'=>money(0),
+		'eq_tax'=>money(0,$corporate_currency),
+		'eq_net'=>money(0,$corporate_currency),
 		'_eq_tax'=>0,
 		'_eq_net'=>0,
 		'invoices'=>0,
@@ -160,7 +153,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	);
 
 	$store_data_profit[$row['Store Key']]=array(
-	'class'=>'geo',
+		'class'=>'geo',
 		'store'=>sprintf('<a href="report_sales.php?store_key=%d%s">%s</a>',$row['Store Key'],$link,$row['Store Name']),
 		'currency_code'=>$row['Store Currency Code'],
 		'net'=>money(0,$row['Store Currency Code']),
@@ -184,8 +177,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				,'_invoices'=>$row2['invoices']
 				,'net'=>money($row2['net'],$row['Store Currency Code'])
 				,'tax'=>money($row2['tax'],$row['Store Currency Code'])
-				,'eq_net'=>money($row2['eq_net'])
-				,'eq_tax'=>money($row2['eq_tax'])
+				,'eq_net'=>money($row2['eq_net'],$corporate_currency)
+				,'eq_tax'=>money($row2['eq_tax'],$corporate_currency)
 				,'_eq_net'=>$row2['eq_net']
 				,'_eq_tax'=>$row2['eq_tax']
 				,'currency_code'=>$row['Store Currency Code']
@@ -226,8 +219,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				,'_invoices'=>$row2['invoices']
 				,'net'=>money($row2['net'],$row['Store Currency Code'])
 				,'tax'=>money($row2['tax'],$row['Store Currency Code'])
-				,'eq_net'=>money($row2['eq_net'])
-				,'eq_tax'=>money($row2['eq_tax'])
+				,'eq_net'=>money($row2['eq_net'],$corporate_currency)
+				,'eq_tax'=>money($row2['eq_tax'],$corporate_currency)
 				,'_eq_net'=>$row2['eq_net']
 				,'_eq_tax'=>$row2['eq_tax']
 				,'currency_code'=>$row['Store Currency Code']
@@ -417,19 +410,19 @@ if ($mixed_currencies) {
 		'last_yr_invoices'=>$last_year_invoices,
 		'last_yr_net'=>$last_year_net,
 		'net'=>'',
-		'tax'=>'<span class="mix_currency">'.money($sum_tax_eq)."</span>",
-		'eq_net'=>'<span class="mix_currency">'.money($sum_net_eq)."</span>",
-		'eq_tax'=>'<span class="mix_currency">'.money($sum_tax_eq)."</span>",
+		'tax'=>'<span class="mix_currency">'.money($sum_tax_eq,$corporate_currency)."</span>",
+		'eq_net'=>'<span class="mix_currency">'.money($sum_net_eq,$corporate_currency)."</span>",
+		'eq_tax'=>'<span class="mix_currency">'.money($sum_tax_eq,$corporate_currency)."</span>",
 		'per_eq_net'=>''
 	);
 	$store_data_profit[]=array(
 		'class'=>'total',
 		'store'=>_('Total'),
 		'invoices'=>number($sum_inv),
-		'net'=>'<b><span class="mix_currency">'.money($sum_net_eq)."</span></b>",
-		'tax'=>'<span class="mix_currency">'.money($sum_tax_eq)."</span>",
-		'eq_net'=>'<span>'.money($sum_net_eq)."</span>",
-		'eq_tax'=>'<span>'.money($sum_tax_eq)."</span>",
+		'net'=>'<b><span class="mix_currency">'.money($sum_net_eq,$corporate_currency)."</span></b>",
+		'tax'=>'<span class="mix_currency">'.money($sum_tax_eq,$corporate_currency)."</span>",
+		'eq_net'=>'<span>'.money($sum_net_eq,$corporate_currency)."</span>",
+		'eq_tax'=>'<span>'.money($sum_tax_eq,$corporate_currency)."</span>",
 		'profit'=>'',
 		'margin'=>'',
 		'eq_profit'=>''
@@ -443,18 +436,18 @@ if ($mixed_currencies) {
 		'invoices'=>number($sum_inv),
 		'last_yr_invoices'=>$last_year_invoices,
 		'last_yr_net'=>$last_year_net,
-		'net'=>money($sum_net_eq),
-		'tax'=>money($sum_tax_eq),
-		'eq_net'=>money($sum_net_eq),
-		'eq_tax'=>money($sum_tax_eq)
+		'net'=>money($sum_net_eq,$corporate_currency),
+		'tax'=>money($sum_tax_eq,$corporate_currency),
+		'eq_net'=>money($sum_net_eq,$corporate_currency),
+		'eq_tax'=>money($sum_tax_eq,$corporate_currency)
 	);
 	$store_data_profit[]=array(
 		'class'=>'total',
 		'store'=>_('Total'),
-		'net'=>'<b><span class="mix_currency">'.money($sum_net_eq).'</span></b>',
-		'profit'=>'<span class="mix_currency">'.money($sum_profit_eq)."</span>",
-		'eq_profit'=>'<span><b>'.money($sum_profit_eq).'</b></span>',
-		'eq_net'=>'<span><b>'.money($sum_net_eq).'</b></span>',
+		'net'=>'<b><span class="mix_currency">'.money($sum_net_eq,$corporate_currency).'</span></b>',
+		'profit'=>'<span class="mix_currency">'.money($sum_profit_eq,$corporate_currency)."</span>",
+		'eq_profit'=>'<span><b>'.money($sum_profit_eq,$corporate_currency).'</b></span>',
+		'eq_net'=>'<span><b>'.money($sum_net_eq,$corporate_currency).'</b></span>',
 		'profit'=>'',
 		'margin'=>''
 
@@ -493,7 +486,7 @@ $smarty->assign('month_name',date('M'));
 $smarty->assign('week',date('W'));
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
-$smarty->assign('currency',$myconf['currency_symbol']);
+$smarty->assign('currency',$corporate_currency);
 
 $smarty->assign('quick_period',$quick_period);
 $smarty->display('report_sales_main.tpl');
