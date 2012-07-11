@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-22 14:27+0100\n"
-"PO-Revision-Date: 2012-06-29 17:23+0100\n"
+"POT-Creation-Date: 2012-07-02 17:25+0100\n"
+"PO-Revision-Date: 2012-07-02 17:26+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1146,7 +1146,6 @@ msgid "Notes Transfered"
 msgstr "Notas Transferido"
 
 #: class.Customer.php:6006
-#, fuzzy
 msgid "Valid until"
 msgstr "Valido hasta"
 
@@ -1170,7 +1169,7 @@ msgstr "Recogido"
 #: class.DeliveryNote.php:600
 #: class.DeliveryNote.php:714
 #: class.DeliveryNote.php:1090
-#: class.DeliveryNote.php:2343
+#: class.DeliveryNote.php:2345
 msgid "Taken from an"
 msgstr "Tomado de un"
 
@@ -1178,25 +1177,25 @@ msgstr "Tomado de un"
 #: class.DeliveryNote.php:714
 #: class.DeliveryNote.php:887
 #: class.DeliveryNote.php:1090
-#: class.DeliveryNote.php:2346
+#: class.DeliveryNote.php:2348
 msgid "Unknown Location"
 msgstr "Ubicación Desconocida"
 
 #: class.DeliveryNote.php:603
 #: class.DeliveryNote.php:717
 #: class.DeliveryNote.php:1093
-#: class.DeliveryNote.php:2351
+#: class.DeliveryNote.php:2353
 msgid "Taken from"
 msgstr "Tomado de"
 
 #: class.DeliveryNote.php:887
-#: class.DeliveryNote.php:2341
+#: class.DeliveryNote.php:2343
 #, fuzzy
 msgid "To be taken from an"
 msgstr "Tomado de un"
 
 #: class.DeliveryNote.php:890
-#: class.DeliveryNote.php:2349
+#: class.DeliveryNote.php:2351
 #, fuzzy
 msgid "To be taken from"
 msgstr "Tomado de"
@@ -1275,7 +1274,7 @@ msgid "Packer Assigned"
 msgstr "Packer afectados"
 
 #: class.DeliveryNote.php:1714
-#: class.DeliveryNote.php:2099
+#: class.DeliveryNote.php:2101
 #: class.Order.php:1886
 msgid "Picking"
 msgstr "Recolección"
@@ -1286,23 +1285,23 @@ msgid "Delivery Note can not be assigned to a packer,because is been packed"
 msgstr "Nota de entrega no puede ser asignado a un envasador, porque se ha embalado"
 
 #: class.DeliveryNote.php:1777
-#: class.DeliveryNote.php:2111
+#: class.DeliveryNote.php:2113
 #: class.Order.php:1190
 #: class.Order.php:1896
 msgid "Packing"
 msgstr "Embalaje"
 
-#: class.DeliveryNote.php:2073
+#: class.DeliveryNote.php:2075
 #, fuzzy
 msgid "Ready to be Picked"
 msgstr "Listo para seleccionar"
 
-#: class.DeliveryNote.php:2076
+#: class.DeliveryNote.php:2078
 #, fuzzy
 msgid "Ready to be Dispatched"
 msgstr "Listo para seleccionar"
 
-#: class.DeliveryNote.php:2079
+#: class.DeliveryNote.php:2081
 #: class.Order.php:502
 #: class.Order.php:1184
 #: class.Order.php:2021
@@ -1310,33 +1309,33 @@ msgstr "Listo para seleccionar"
 msgid "Dispatched"
 msgstr "Enviado"
 
-#: class.DeliveryNote.php:2082
+#: class.DeliveryNote.php:2084
 #, fuzzy
 msgid "Cancelled to Restock"
 msgstr "Cancelado"
 
-#: class.DeliveryNote.php:2085
+#: class.DeliveryNote.php:2087
 #: class.Order.php:1181
 msgid "Ready to Ship"
 msgstr "Listo para enviar"
 
-#: class.DeliveryNote.php:2088
+#: class.DeliveryNote.php:2090
 #: class.Order.php:369
 #: class.Order.php:1193
 msgid "Cancelled"
 msgstr "Cancelado"
 
-#: class.DeliveryNote.php:2097
+#: class.DeliveryNote.php:2099
 #: class.Order.php:1884
 msgid "Picked"
 msgstr ""
 
-#: class.DeliveryNote.php:2108
+#: class.DeliveryNote.php:2110
 #: class.Order.php:1894
 msgid "Packed"
 msgstr "Lleno"
 
-#: class.DeliveryNote.php:2455
+#: class.DeliveryNote.php:2457
 #, fuzzy
 msgid "Error,the sum of out of stock and not found units are greater than the number of not picked units"
 msgstr "Error, la suma de fuera de stock y no se encuentran las unidades son mayores que el número de unidades que no sean recogidos"
@@ -1570,21 +1569,21 @@ msgstr "Error: valor incorrecto"
 msgid "Error: can not delete family"
 msgstr "Error: No se puede eliminar de la familia"
 
-#: class.Family.php:828
+#: class.Family.php:824
 msgid "No similar families"
 msgstr "No hay familias similares"
 
-#: class.Family.php:3266
+#: class.Family.php:3312
 #, fuzzy
 msgid "No change"
 msgstr "No hubo cambios"
 
-#: class.Family.php:3337
+#: class.Family.php:3383
 #, fuzzy
 msgid "Image already uploaded"
 msgstr "Mango ya está en uso"
 
-#: class.Family.php:3380
+#: class.Family.php:3426
 #, fuzzy
 msgid "image added"
 msgstr "agregó"
@@ -1905,379 +1904,379 @@ msgstr "Fecha erronea"
 msgid "Same URL as the redirect"
 msgstr "mismo valor que el récord anterior"
 
-#: class.Product.php:451
+#: class.Product.php:452
 #: common_store_functions.php:29
 msgid "each"
 msgstr "cada uno"
 
-#: class.Product.php:538
+#: class.Product.php:539
 msgid "Kg"
 msgstr "Kg"
 
-#: class.Product.php:567
+#: class.Product.php:568
 msgid "Pc"
 msgstr "PC"
 
-#: class.Product.php:569
+#: class.Product.php:570
 msgid "g"
 msgstr "g"
 
-#: class.Product.php:571
+#: class.Product.php:572
 #: common_functions.php:841
 msgid "m"
 msgstr "m"
 
-#: class.Product.php:733
+#: class.Product.php:734
 msgid "Not set"
 msgstr "No establecido"
 
-#: class.Product.php:1094
+#: class.Product.php:1095
 msgid "Product Created"
 msgstr "Producto de creación"
 
-#: class.Product.php:1095
-#: class.Product.php:2300
-#: class.Product.php:2341
-#: class.Product.php:2384
-#: class.Product.php:3463
-#: class.Product.php:3563
-#: class.Product.php:3747
-#: class.Product.php:3829
+#: class.Product.php:1096
+#: class.Product.php:2301
+#: class.Product.php:2342
+#: class.Product.php:2385
+#: class.Product.php:3571
+#: class.Product.php:3671
+#: class.Product.php:3855
+#: class.Product.php:3937
 msgid "Product"
 msgstr "Producto"
 
-#: class.Product.php:1914
+#: class.Product.php:1915
 msgid "Error: You can edit historic records"
 msgstr "Error: Usted puede editar los registros históricos"
 
-#: class.Product.php:1919
-#: class.Product.php:1928
-#: class.Product.php:1932
-#: class.Product.php:1952
+#: class.Product.php:1920
+#: class.Product.php:1929
+#: class.Product.php:1933
+#: class.Product.php:1953
 msgid "Editing"
 msgstr "Edición"
 
-#: class.Product.php:1919
-#: class.Product.php:1964
-#: class.Product.php:1980
-#: class.Product.php:2008
-#: class.Product.php:2033
+#: class.Product.php:1920
+#: class.Product.php:1965
+#: class.Product.php:1981
+#: class.Product.php:2009
+#: class.Product.php:2034
 msgid "Live"
 msgstr "En vivo"
 
-#: class.Product.php:1949
-#: class.Product.php:2006
-#: class.Product.php:2031
+#: class.Product.php:1950
+#: class.Product.php:2007
+#: class.Product.php:2032
 msgid "Product Record Type updated"
 msgstr "Tipo de registro del producto actualizado"
 
-#: class.Product.php:1955
-#: class.Product.php:1983
+#: class.Product.php:1956
+#: class.Product.php:1984
 #, fuzzy
 msgid "Error: Product stage could not be updated"
 msgstr "Error: el estado del producto web no puede ser actualizada"
 
-#: class.Product.php:1977
+#: class.Product.php:1978
 #, fuzzy
 msgid "Product Stage updated"
 msgstr "Web actualizada del producto Estado"
 
-#: class.Product.php:1995
-#: class.Product.php:2035
+#: class.Product.php:1996
+#: class.Product.php:2036
 msgid "Error: Product record state could not be updated"
 msgstr "Error: el estado de producto de registro no se pudo actualizar"
 
-#: class.Product.php:2091
+#: class.Product.php:2092
 msgid "Error: Another product with the same code"
 msgstr "Error: Otro producto con el mismo código"
 
-#: class.Product.php:2101
+#: class.Product.php:2102
 msgid "Product code updated"
 msgstr "Código del producto actualizado"
 
-#: class.Product.php:2105
+#: class.Product.php:2106
 msgid "Error: Product code could not be updated"
 msgstr "Error: el código del producto no pudo ser actualizado"
 
-#: class.Product.php:2139
+#: class.Product.php:2140
 msgid "Error: Wrong Product Family Special Characteristic (empty)"
 msgstr "Error: Wrong familia de productos especiales característicos (vacío)"
 
-#: class.Product.php:2165
-#: class.Product.php:3801
+#: class.Product.php:2166
+#: class.Product.php:3909
 msgid "Error: Another product with the same Product/Family Special Characteristic in this family"
 msgstr "Error: Otro producto con el mismo producto / de la familia especial característica de esta familia"
 
-#: class.Product.php:2182
+#: class.Product.php:2183
 msgid "Product Family Special Characteristic"
 msgstr "Familia de producto Características Especiales"
 
-#: class.Product.php:2186
+#: class.Product.php:2187
 msgid "Error: Product Family Special Characteristic could not be updated"
 msgstr "Error: la familia de productos especiales características no pueden ser actualizados"
 
-#: class.Product.php:2299
+#: class.Product.php:2300
 msgid "Product Set for Sale"
 msgstr "El producto Puesta en venta"
 
-#: class.Product.php:2300
+#: class.Product.php:2301
 msgid "set for sale"
 msgstr "conjunto para la venta"
 
-#: class.Product.php:2340
+#: class.Product.php:2341
 msgid "Product Last Sold"
 msgstr "Último producto vendido"
 
-#: class.Product.php:2341
+#: class.Product.php:2342
 msgid "last sold date"
 msgstr "fecha de la última venta"
 
-#: class.Product.php:2383
+#: class.Product.php:2384
 msgid "Product First Sold"
 msgstr "Primer producto vendido"
 
-#: class.Product.php:2384
+#: class.Product.php:2385
 msgid "first sold date"
 msgstr "vendió por primera vez la fecha"
 
-#: class.Product.php:3297
+#: class.Product.php:3405
 msgid "Error: The product cost is unknown"
 msgstr "Error: El costo del producto se desconoce"
 
-#: class.Product.php:3303
+#: class.Product.php:3411
 msgid "Error: Product margin should be a numeric value"
 msgstr "Error: El margen de producto debe ser un valor numérico"
 
-#: class.Product.php:3308
+#: class.Product.php:3416
 msgid "Error: Product margin can not have this value"
 msgstr "Error: El margen de producto no puede tener este valor"
 
-#: class.Product.php:3316
+#: class.Product.php:3424
 msgid "Error: Product price should be a numeric value"
 msgstr "Error: el precio del producto debe ser un valor numérico"
 
-#: class.Product.php:3339
+#: class.Product.php:3447
 msgid "Product price updated"
 msgstr "Precio del producto actualizado"
 
-#: class.Product.php:3354
+#: class.Product.php:3462
 msgid "Error: Product price could not be updated"
 msgstr ""
 
-#: class.Product.php:3462
+#: class.Product.php:3570
 msgid "Product Price Changed"
 msgstr ""
 
-#: class.Product.php:3463
+#: class.Product.php:3571
 msgid "price changed"
 msgstr ""
 
-#: class.Product.php:3463
-#: class.Product.php:3563
-#: class.Product.php:3747
-#: class.Product.php:3829
+#: class.Product.php:3571
+#: class.Product.php:3671
+#: class.Product.php:3855
+#: class.Product.php:3937
 msgid "from"
 msgstr "de"
 
-#: class.Product.php:3486
+#: class.Product.php:3594
 msgid "Error: Product RRP should be a numeric value"
 msgstr ""
 
-#: class.Product.php:3534
+#: class.Product.php:3642
 msgid "Product RRP updated"
 msgstr ""
 
-#: class.Product.php:3546
+#: class.Product.php:3654
 msgid "RRP Margin"
 msgstr "Margen PVP"
 
-#: class.Product.php:3548
+#: class.Product.php:3656
 msgid "Not for resale"
 msgstr ""
 
-#: class.Product.php:3562
+#: class.Product.php:3670
 msgid "Product RRP Changed"
 msgstr ""
 
-#: class.Product.php:3563
+#: class.Product.php:3671
 msgid "RRP changed"
 msgstr ""
 
-#: class.Product.php:3563
+#: class.Product.php:3671
 msgid "per unit"
 msgstr "por unidad"
 
-#: class.Product.php:3571
+#: class.Product.php:3679
 msgid "Error: Product Recomended Retail Price could not be updated"
 msgstr ""
 
-#: class.Product.php:3710
+#: class.Product.php:3818
 msgid "Error: Another product has already this same name"
 msgstr ""
 
-#: class.Product.php:3732
+#: class.Product.php:3840
 msgid "Product name updated"
 msgstr ""
 
-#: class.Product.php:3746
+#: class.Product.php:3854
 msgid "Product Name Changed"
 msgstr ""
 
-#: class.Product.php:3754
+#: class.Product.php:3862
 msgid "Error: Product name could not be updated"
 msgstr ""
 
-#: class.Product.php:3777
+#: class.Product.php:3885
 msgid "Error: Wrong Product Special Characteristic (empty)"
 msgstr "Error: El producto incorrecto especiales características (vacío)"
 
-#: class.Product.php:3819
+#: class.Product.php:3927
 msgid "Product Special Characteristic"
 msgstr "Características especiales del producto"
 
-#: class.Product.php:3828
+#: class.Product.php:3936
 msgid "Product Special Characteristic Changed"
 msgstr "Características especiales del producto ha cambiado"
 
-#: class.Product.php:3829
+#: class.Product.php:3937
 msgid "Special Characteristic"
 msgstr "Características especiales"
 
-#: class.Product.php:3837
+#: class.Product.php:3945
 msgid "Error: Product Special Characteristic could not be updated"
 msgstr "Error: Características especiales del producto no pudo ser actualizado"
 
-#: class.Product.php:3856
+#: class.Product.php:3964
 msgid "Product Description changed"
 msgstr "Descripción del producto ha cambiado"
 
-#: class.Product.php:3861
-#: class.Product.php:3862
+#: class.Product.php:3969
+#: class.Product.php:3970
 msgid "Product Description Created"
 msgstr "Descripción del producto de creación"
 
-#: class.Product.php:3864
-#: class.Product.php:3865
+#: class.Product.php:3972
+#: class.Product.php:3973
 msgid "Product Description Changed"
 msgstr "Descripción del producto ha cambiado"
 
-#: class.Product.php:3887
+#: class.Product.php:3995
 msgid "Error: Product Description could not be updated"
 msgstr "Error: Descripción del producto no pudo ser actualizado"
 
-#: class.Product.php:3923
-#: class.Product.php:3924
+#: class.Product.php:4031
+#: class.Product.php:4032
 msgid "Product remove from Category"
 msgstr "Producto quitar de la categoría"
 
-#: class.Product.php:3971
+#: class.Product.php:4079
 msgid "Product already in Category"
 msgstr "Producto ya la categoría"
 
-#: class.Product.php:4043
-#: class.Product.php:4044
+#: class.Product.php:4151
+#: class.Product.php:4152
 msgid "Product added to Category"
 msgstr "Producto que se añade a la categoría"
 
-#: class.Product.php:4907
+#: class.Product.php:5015
 msgid "Waiting for dispatch"
 msgstr "¡Lugar para una expedición"
 
-#: class.Product.php:4911
+#: class.Product.php:5019
 msgid "Waiting for checking"
 msgstr "Esperando para el control de"
 
-#: class.Product.php:4915
+#: class.Product.php:5023
 msgid "Checking delivery"
 msgstr "Comprobación de la entrega"
 
-#: class.Product.php:5640
+#: class.Product.php:5748
 msgid "Public Sale"
 msgstr "Venta al Público"
 
-#: class.Product.php:5643
-#: class.Product.php:5920
+#: class.Product.php:5751
+#: class.Product.php:6028
 msgid "Private Sale"
 msgstr "Venta Privada"
 
-#: class.Product.php:5646
+#: class.Product.php:5754
 msgid "Not for Sale"
 msgstr "No en Venta"
 
-#: class.Product.php:5658
-#: class.Product.php:5664
-#: class.Product.php:5667
+#: class.Product.php:5766
+#: class.Product.php:5772
+#: class.Product.php:5775
 msgid "Forced"
 msgstr "Forzado"
 
-#: class.Product.php:5661
+#: class.Product.php:5769
 msgid "Auto"
 msgstr "Auto"
 
-#: class.Product.php:5680
-#: class.Product.php:5902
+#: class.Product.php:5788
+#: class.Product.php:6010
 msgid "Discontinued"
 msgstr "Descontinuado"
 
-#: class.Product.php:5682
-#: class.Product.php:5878
-#: class.Product.php:5905
+#: class.Product.php:5790
+#: class.Product.php:5986
+#: class.Product.php:6013
 msgid "Offline"
 msgstr "Fuera de Stock"
 
-#: class.Product.php:5801
-#: class.Product.php:5819
+#: class.Product.php:5909
+#: class.Product.php:5927
 msgid "Product Sales Type updated"
 msgstr "Ventas Tipo de producto actualizado"
 
-#: class.Product.php:5825
+#: class.Product.php:5933
 msgid "Error: Product sales type could not be updated "
 msgstr "Error: Tipo de producto de venta no se pudo actualizar"
 
-#: class.Product.php:5862
+#: class.Product.php:5970
 #, fuzzy
 msgid "Product Web Configuration updated"
 msgstr "Web actualizada del producto Estado"
 
-#: class.Product.php:5870
+#: class.Product.php:5978
 msgid "Out of stock"
 msgstr "Fuera de stock"
 
-#: class.Product.php:5871
+#: class.Product.php:5979
 msgid "Force Out of Stock"
 msgstr "Forzar fuera de stock"
 
-#: class.Product.php:5874
-#: class.Product.php:5875
+#: class.Product.php:5982
+#: class.Product.php:5983
 msgid "Automatic"
 msgstr "Automatico"
 
-#: class.Product.php:5879
+#: class.Product.php:5987
 msgid "Force Offline"
 msgstr "Forzar no en línea"
 
-#: class.Product.php:5882
+#: class.Product.php:5990
 msgid "Online"
 msgstr "En línea"
 
-#: class.Product.php:5883
+#: class.Product.php:5991
 msgid "Force Online"
 msgstr "Forzar en línea"
 
-#: class.Product.php:5923
+#: class.Product.php:6031
 msgid "Not For Sale"
 msgstr "Not For Sale"
 
-#: class.Product.php:5933
+#: class.Product.php:6041
 msgid "Stock"
 msgstr "Inventario"
 
-#: class.Product.php:6305
+#: class.Product.php:6413
 #, fuzzy
 msgid "Product cannot be deleted"
 msgstr "Zona No se puede eliminar"
 
-#: class.Product.php:6313
+#: class.Product.php:6421
 #, fuzzy
 msgid "deleted"
 msgstr "eliminar"
@@ -2577,50 +2576,50 @@ msgid "Invalid Mobile"
 msgstr "Móvil no válido "
 
 #: smarty.php:2
-#: smarty.php:2114
-#: smarty.php:2264
+#: smarty.php:1394
+#: smarty.php:1544
 msgid "Edit Profile"
 msgstr "Editar Perfil"
 
 #: smarty.php:5
-#: smarty.php:2117
-#: smarty.php:2453
+#: smarty.php:1397
+#: smarty.php:1727
 #, fuzzy
 msgid "Address Book"
 msgstr "Información relacionada con la dirección"
 
 #: smarty.php:14
-#: smarty.php:1868
-#: smarty.php:2138
+#: smarty.php:1148
+#: smarty.php:1418
 msgid "Contact Address"
 msgstr "Dirección de contacto"
 
 #: smarty.php:17
-#: smarty.php:2141
+#: smarty.php:1421
 msgid "Billing Address"
 msgstr "Dirección de facturación"
 
 #: smarty.php:20
-#: smarty.php:2144
+#: smarty.php:1424
 msgid "Delivery Address"
 msgstr "Dirección de entrega"
 
 #: smarty.php:23
 #: smarty.php:29
-#: smarty.php:2147
-#: smarty.php:2153
+#: smarty.php:1427
+#: smarty.php:1433
 #, fuzzy
 msgid "Same as Contact Address"
 msgstr "Igual que la dirección de contacto"
 
 #: smarty.php:26
-#: smarty.php:2150
+#: smarty.php:1430
 #, fuzzy
 msgid "Same as Delivery Address"
 msgstr "Cambio de dirección de entrega"
 
 #: smarty.php:32
-#: smarty.php:2156
+#: smarty.php:1436
 #, fuzzy
 msgid "Same as Billing Address"
 msgstr "Igual que la dirección de facturación"
@@ -2630,58 +2629,58 @@ msgstr "Igual que la dirección de facturación"
 #: smarty.php:47
 #: smarty.php:53
 #: smarty.php:62
-#: smarty.php:1691
-#: smarty.php:1709
-#: smarty.php:1733
-#: smarty.php:2159
-#: smarty.php:2165
-#: smarty.php:2171
-#: smarty.php:2177
-#: smarty.php:2186
-#: smarty.php:2234
-#: smarty.php:2240
-#: smarty.php:2252
-#: smarty.php:2258
-#: smarty.php:2261
-#: smarty.php:2363
+#: smarty.php:971
+#: smarty.php:989
+#: smarty.php:1013
+#: smarty.php:1439
+#: smarty.php:1445
+#: smarty.php:1451
+#: smarty.php:1457
+#: smarty.php:1466
+#: smarty.php:1514
+#: smarty.php:1520
+#: smarty.php:1532
+#: smarty.php:1538
+#: smarty.php:1541
+#: smarty.php:1637
 msgid "Edit"
 msgstr "Editar"
 
 #: smarty.php:38
 #: smarty.php:44
-#: smarty.php:2162
-#: smarty.php:2168
+#: smarty.php:1442
+#: smarty.php:1448
 msgid "Add"
 msgstr "Agregar"
 
 #: smarty.php:50
 #: smarty.php:59
-#: smarty.php:1703
-#: smarty.php:1721
-#: smarty.php:2174
-#: smarty.php:2183
+#: smarty.php:983
+#: smarty.php:1001
+#: smarty.php:1454
+#: smarty.php:1463
 msgid "Set as Main"
 msgstr "Establecer como principal"
 
 #: smarty.php:56
 #: smarty.php:65
-#: smarty.php:1688
-#: smarty.php:1706
-#: smarty.php:1730
-#: smarty.php:2180
-#: smarty.php:2189
+#: smarty.php:968
+#: smarty.php:986
+#: smarty.php:1010
+#: smarty.php:1460
+#: smarty.php:1469
 msgid "Remove"
 msgstr "Quitar"
 
 #: smarty.php:68
 #: smarty.php:122
-#: smarty.php:2129
+#: smarty.php:1409
 msgid "No results found, try te a more comprensive search"
 msgstr "No hay resultados, prueba te una búsqueda más comprensiva"
 
 #: smarty.php:71
 #: smarty.php:125
-#: smarty.php:2132
+#: smarty.php:1412
 msgid "here"
 msgstr ""
 
@@ -2727,7 +2726,7 @@ msgid "Street Address"
 msgstr "Tienda Alta"
 
 #: smarty.php:104
-#: smarty.php:1637
+#: smarty.php:917
 msgid "City"
 msgstr "Ciudad"
 
@@ -2740,9 +2739,8 @@ msgid "Zip/Postal Code"
 msgstr "Código Postal"
 
 #: smarty.php:113
-#: smarty.php:1658
-#: smarty.php:2726
-#: smarty.php:2909
+#: smarty.php:938
+#: smarty.php:2000
 msgid "Country"
 msgstr "País"
 
@@ -2752,2383 +2750,2026 @@ msgid "Credit Card Number"
 msgstr "Tarjeta de crédito"
 
 #: smarty.php:131
-msgid "Afganistán"
+msgid "Afghanistan"
 msgstr ""
 
 #: smarty.php:134
-#: smarty.php:854
 #, fuzzy
 msgid "Albania"
 msgstr "alias"
 
 #: smarty.php:137
-#: smarty.php:857
 #, fuzzy
 msgid "Algeria"
 msgstr "alias"
 
 #: smarty.php:140
 #, fuzzy
-msgid "Samoa Americana"
+msgid "American Samoa"
 msgstr "N Latina"
 
 #: smarty.php:143
-#: smarty.php:863
 #, fuzzy
 msgid "Andorra"
 msgstr "Modifíquese el fin de"
 
 #: smarty.php:146
-#: smarty.php:866
 msgid "Angola"
 msgstr ""
 
 #: smarty.php:149
-#: smarty.php:869
 msgid "Anguilla"
 msgstr ""
 
 #: smarty.php:152
 #, fuzzy
-msgid "Antártida"
+msgid "Antarctica"
 msgstr "Automatico"
 
 #: smarty.php:155
-#: smarty.php:875
 msgid "Antigua and Barbuda"
 msgstr ""
 
 #: smarty.php:158
-#: smarty.php:878
 #, fuzzy
 msgid "Argentina"
 msgstr "Atención"
 
 #: smarty.php:161
-#: smarty.php:881
 #, fuzzy
 msgid "Armenia"
 msgstr "Espacio"
 
 #: smarty.php:164
-#: smarty.php:884
 #, fuzzy
 msgid "Aruba"
 msgstr "Espacio"
 
 #: smarty.php:167
-#: smarty.php:887
 #, fuzzy
 msgid "Australia"
 msgstr "Asia"
 
 #: smarty.php:170
-#: smarty.php:890
-#: smarty.php:2747
-#: smarty.php:2924
+#: smarty.php:2021
 #, fuzzy
 msgid "Austria"
 msgstr "Asia"
 
 #: smarty.php:173
-msgid "Azerbaiyán"
+msgid "Azerbaidjan"
 msgstr ""
 
 #: smarty.php:176
-#: smarty.php:896
 msgid "Bahamas"
 msgstr ""
 
 #: smarty.php:179
-#: smarty.php:899
 #, fuzzy
 msgid "Bahrain"
 msgstr "Marca"
 
 #: smarty.php:182
-#: smarty.php:902
 #, fuzzy
 msgid "Bangladesh"
 msgstr "Idiomas"
 
 #: smarty.php:185
-#: smarty.php:905
 #, fuzzy
 msgid "Barbados"
 msgstr "Marca"
 
 #: smarty.php:188
-msgid "Belarús"
+msgid "Belarus"
 msgstr ""
 
 #: smarty.php:191
-msgid "Bélgica"
+msgid "Belgium"
 msgstr ""
 
 #: smarty.php:194
-#: smarty.php:914
 #, fuzzy
 msgid "Belize"
 msgstr "Valor"
 
 #: smarty.php:197
-#: smarty.php:917
 #, fuzzy
 msgid "Benin"
 msgstr "Por hacer"
 
 #: smarty.php:200
-#: smarty.php:920
 #, fuzzy
 msgid "Bermuda"
 msgstr "Aleman"
 
 #: smarty.php:203
 #, fuzzy
-msgid "Bután"
+msgid "Bhutan"
 msgstr "Botones"
 
 #: smarty.php:206
-#: smarty.php:926
 #, fuzzy
 msgid "Bolivia"
 msgstr "a través de"
 
 #: smarty.php:209
-#: smarty.php:929
 msgid "Bosnia-Herzegovina"
 msgstr ""
 
 #: smarty.php:212
-#: smarty.php:932
 msgid "Botswana"
 msgstr ""
 
 #: smarty.php:215
-msgid "Isla Bouvet"
+msgid "Bouvet Island"
 msgstr ""
 
 #: smarty.php:218
-#, fuzzy
-msgid "Brasil"
-msgstr "Básico"
+msgid "Brazil"
+msgstr ""
 
 #: smarty.php:221
-#: smarty.php:941
 msgid "British Indian Ocean Territory"
 msgstr ""
 
 #: smarty.php:224
-#: smarty.php:944
 msgid "Brunei Darussalam"
 msgstr ""
 
 #: smarty.php:227
-#: smarty.php:947
 msgid "Bulgaria"
 msgstr ""
 
 #: smarty.php:230
-#: smarty.php:950
 msgid "Burkina Faso"
 msgstr ""
 
 #: smarty.php:233
-#: smarty.php:953
 #, fuzzy
 msgid "Burundi"
 msgstr "Marca"
 
 #: smarty.php:236
 #, fuzzy
-msgid "Camboya"
+msgid "Cambodia"
 msgstr "Ciudad"
 
 #: smarty.php:239
-msgid "Camerún"
+msgid "Cameroon"
 msgstr ""
 
 #: smarty.php:242
 #, fuzzy
-msgid "Canadá"
+msgid "Canada"
 msgstr "y"
 
 #: smarty.php:245
 #, fuzzy
-msgid "Cabo Verde"
+msgid "Cape Verde"
 msgstr "Cancelar Orden"
 
 #: smarty.php:248
-msgid "Islas Caimán"
+msgid "Cayman Islands"
 msgstr ""
 
 #: smarty.php:251
-msgid "República Centroafricana"
+msgid "Central African Republic"
 msgstr ""
 
 #: smarty.php:254
-#: smarty.php:974
 #, fuzzy
 msgid "Chad"
 msgstr "Cambiado"
 
 #: smarty.php:257
-#: smarty.php:977
 #, fuzzy
 msgid "Chile"
 msgstr "Chino"
 
 #: smarty.php:260
-#: smarty.php:980
 #, fuzzy
 msgid "China"
 msgstr "Chino"
 
 #: smarty.php:263
-msgid "Isla de Navidad"
+msgid "Christmas Island"
 msgstr ""
 
 #: smarty.php:266
-msgid "Islas Cocos (Keeling)"
+msgid "Cocos (Keeling) Islands"
 msgstr ""
 
 #: smarty.php:269
-#: smarty.php:989
 msgid "Colombia"
 msgstr ""
 
 #: smarty.php:272
-#: smarty.php:992
 #, fuzzy
 msgid "Comoros"
 msgstr "Colores"
 
 #: smarty.php:275
-#: smarty.php:995
 #, fuzzy
 msgid "Congo"
 msgstr "Lógo"
 
 #: smarty.php:278
-msgid "Islas Cook"
+msgid "Cook Islands"
 msgstr ""
 
 #: smarty.php:281
-#: smarty.php:1001
 #, fuzzy
 msgid "Costa Rica"
 msgstr "Precio de coste"
 
 #: smarty.php:284
 #, fuzzy
-msgid "Croacia"
+msgid "Croatia"
 msgstr "Critico"
 
 #: smarty.php:287
-#: smarty.php:1007
 msgid "Cuba"
 msgstr ""
 
 #: smarty.php:290
-#, fuzzy
-msgid "Chipre"
-msgstr "Chino"
+msgid "Cyprus"
+msgstr ""
 
 #: smarty.php:293
-msgid "República Checa"
+msgid "Czech Republic"
 msgstr ""
 
 #: smarty.php:296
 #, fuzzy
-msgid "Dinamarca"
+msgid "Denmark"
 msgstr "Estimado"
 
 #: smarty.php:299
-#: smarty.php:1019
 #, fuzzy
 msgid "Djibouti"
 msgstr "Descuento"
 
 #: smarty.php:302
-#: smarty.php:1022
 msgid "Dominica"
 msgstr ""
 
 #: smarty.php:305
-msgid "República Dominicana"
+msgid "Dominican Republic"
 msgstr ""
 
 #: smarty.php:308
-msgid "Timor Oriental"
-msgstr ""
+#, fuzzy
+msgid "East Timor"
+msgstr "last_more"
 
 #: smarty.php:311
-#: smarty.php:1031
 msgid "Ecuador"
 msgstr ""
 
 #: smarty.php:314
-#, fuzzy
-msgid "Egipto"
-msgstr "Editar"
+msgid "Egypt"
+msgstr ""
 
 #: smarty.php:317
-#: smarty.php:1037
 msgid "El Salvador"
 msgstr ""
 
 #: smarty.php:320
-msgid "Guinea Ecuatorial"
+msgid "Equatorial Guinea"
 msgstr ""
 
 #: smarty.php:323
-#: smarty.php:1043
 #, fuzzy
 msgid "Eritrea"
 msgstr "Área de edición"
 
 #: smarty.php:326
-#: smarty.php:1046
 msgid "Estonia"
 msgstr ""
 
 #: smarty.php:329
-msgid "Etiopía"
+msgid "Ethiopia"
 msgstr ""
 
 #: smarty.php:332
-msgid "Islas Malvinas"
+msgid "Falkland Islands"
 msgstr ""
 
 #: smarty.php:335
-msgid "Islas Faroe"
+msgid "Faroe Islands"
 msgstr ""
 
 #: smarty.php:338
-#: smarty.php:1058
 msgid "Fiji"
 msgstr ""
 
 #: smarty.php:341
 #, fuzzy
-msgid "Finlandia"
-msgstr "Campo"
-
-#: smarty.php:344
-#, fuzzy
-msgid "Francia"
-msgstr "Forzado"
-
-#: smarty.php:347
-#: smarty.php:1076
-#, fuzzy
-msgid "French Guyana"
-msgstr "Francés"
-
-#: smarty.php:350
-msgid "Territorios Australes Franceses"
-msgstr ""
-
-#: smarty.php:353
-#, fuzzy
-msgid "Gabón"
-msgstr "Agotado"
-
-#: smarty.php:356
-#: smarty.php:1085
-msgid "Gambia"
-msgstr ""
-
-#: smarty.php:359
-#: smarty.php:1088
-#, fuzzy
-msgid "Georgia"
-msgstr "Aleman"
-
-#: smarty.php:362
-#, fuzzy
-msgid "Alemania"
-msgstr "alias"
-
-#: smarty.php:365
-#: smarty.php:1094
-msgid "Ghana"
-msgstr ""
-
-#: smarty.php:368
-#: smarty.php:1097
-msgid "Gibraltar"
-msgstr ""
-
-#: smarty.php:371
-#, fuzzy
-msgid "Gran Bretaña"
-msgstr "Descripción del área"
-
-#: smarty.php:374
-#, fuzzy
-msgid "Grecia"
-msgstr "Crecimiento"
-
-#: smarty.php:377
-#, fuzzy
-msgid "Groenlandia"
-msgstr "Crecimiento"
-
-#: smarty.php:380
-#: smarty.php:1109
-#, fuzzy
-msgid "Grenada"
-msgstr "Crecimiento"
-
-#: smarty.php:383
-msgid "Guadalupe (Francia)"
-msgstr ""
-
-#: smarty.php:386
-msgid "Guam (EE.UU.)"
-msgstr ""
-
-#: smarty.php:389
-#: smarty.php:1118
-msgid "Guatemala"
-msgstr ""
-
-#: smarty.php:392
-#: smarty.php:1121
-#, fuzzy
-msgid "Guinea"
-msgstr "General"
-
-#: smarty.php:395
-#: smarty.php:1124
-msgid "Guinea Bissau"
-msgstr ""
-
-#: smarty.php:398
-#: smarty.php:1127
-msgid "Guyana"
-msgstr ""
-
-#: smarty.php:401
-#, fuzzy
-msgid "Haití"
-msgstr "Hits"
-
-#: smarty.php:404
-#: smarty.php:1133
-msgid "Heard and McDonald Islands"
-msgstr ""
-
-#: smarty.php:407
-#: smarty.php:1136
-#, fuzzy
-msgid "Honduras"
-msgstr "Horas"
-
-#: smarty.php:410
-#: smarty.php:1139
-msgid "Hong Kong"
-msgstr ""
-
-#: smarty.php:413
-#, fuzzy
-msgid "Hungría"
-msgstr "Domingo"
-
-#: smarty.php:416
-#, fuzzy
-msgid "Islandia"
-msgstr "Individuales"
-
-#: smarty.php:419
-#: smarty.php:1148
-#, fuzzy
-msgid "India"
-msgstr "Individuales"
-
-#: smarty.php:422
-#: smarty.php:1151
-#, fuzzy
-msgid "Indonesia"
-msgstr "Facturas"
-
-#: smarty.php:425
-#, fuzzy
-msgid "Irán"
-msgstr "En"
-
-#: smarty.php:428
-#: smarty.php:1160
-msgid "Iraq"
-msgstr ""
-
-#: smarty.php:431
-#, fuzzy
-msgid "Irlanda"
-msgstr "Marca"
-
-#: smarty.php:434
-#: smarty.php:1166
-#, fuzzy
-msgid "Israel"
-msgstr "tasa de"
-
-#: smarty.php:437
-#, fuzzy
-msgid "Italia"
-msgstr "Interior"
-
-#: smarty.php:440
-msgid "Costa del Marfil"
-msgstr ""
-
-#: smarty.php:443
-#: smarty.php:1175
-msgid "Jamaica"
-msgstr ""
-
-#: smarty.php:446
-#, fuzzy
-msgid "Japón"
-msgstr "campaña"
-
-#: smarty.php:449
-#: smarty.php:1181
-msgid "Jordan"
-msgstr ""
-
-#: smarty.php:452
-msgid "Kazajstán"
-msgstr ""
-
-#: smarty.php:455
-#: smarty.php:1187
-#, fuzzy
-msgid "Kenya"
-msgstr "clave"
-
-#: smarty.php:458
-#: smarty.php:1190
-msgid "Kiribati"
-msgstr ""
-
-#: smarty.php:461
-#: smarty.php:1193
-#, fuzzy
-msgid "Kuwait"
-msgstr "Unidad"
-
-#: smarty.php:464
-msgid "Kirguistán"
-msgstr ""
-
-#: smarty.php:467
-#: smarty.php:1199
-#, fuzzy
-msgid "Laos"
-msgstr "perdido"
-
-#: smarty.php:470
-#: smarty.php:1202
-#, fuzzy
-msgid "Latvia"
-msgstr "a través de"
-
-#: smarty.php:473
-#, fuzzy
-msgid "Líbano"
-msgstr "Razón"
-
-#: smarty.php:476
-#: smarty.php:1208
-#, fuzzy
-msgid "Lesotho"
-msgstr "Menor que"
-
-#: smarty.php:479
-#: smarty.php:1211
-#, fuzzy
-msgid "Liberia"
-msgstr "Litros"
-
-#: smarty.php:482
-#: smarty.php:1214
-msgid "Libya"
-msgstr ""
-
-#: smarty.php:485
-#: smarty.php:1217
-msgid "Liechtenstein"
-msgstr ""
-
-#: smarty.php:488
-#, fuzzy
-msgid "Lituania"
-msgstr "Margen"
-
-#: smarty.php:491
-msgid "Luxemburgo"
-msgstr ""
-
-#: smarty.php:494
-#: smarty.php:1226
-msgid "Macau"
-msgstr ""
-
-#: smarty.php:497
-#: smarty.php:1229
-#, fuzzy
-msgid "Macedonia"
-msgstr "Los medios de comunicación"
-
-#: smarty.php:500
-#: smarty.php:1232
-msgid "Madagascar"
-msgstr ""
-
-#: smarty.php:503
-#: smarty.php:1235
-#, fuzzy
-msgid "Malawi"
-msgstr "Principales"
-
-#: smarty.php:506
-#, fuzzy
-msgid "Malasia"
-msgstr "Principales"
-
-#: smarty.php:509
-#: smarty.php:1241
-#, fuzzy
-msgid "Maldives"
-msgstr "Hombre"
-
-#: smarty.php:512
-#, fuzzy
-msgid "Malí"
-msgstr "Principales"
-
-#: smarty.php:515
-#: smarty.php:1247
-#, fuzzy
-msgid "Malta"
-msgstr "Hombre"
-
-#: smarty.php:518
-msgid "Islas Marshall"
-msgstr ""
-
-#: smarty.php:521
-msgid "Martinica (Francia)"
-msgstr ""
-
-#: smarty.php:524
-#: smarty.php:1256
-#, fuzzy
-msgid "Mauritania"
-msgstr "Margen"
-
-#: smarty.php:527
-#: smarty.php:1259
-#, fuzzy
-msgid "Mauritius"
-msgstr "Número máximo de unidades"
-
-#: smarty.php:530
-#: smarty.php:1262
-#, fuzzy
-msgid "Mayotte"
-msgstr "Diseño"
-
-#: smarty.php:533
-#: smarty.php:1265
-msgid "Mexico"
-msgstr ""
-
-#: smarty.php:536
-#: smarty.php:1268
-msgid "Micronesia"
-msgstr ""
-
-#: smarty.php:539
-#: smarty.php:1271
-#, fuzzy
-msgid "Moldavia"
-msgstr "Los medios de comunicación"
-
-#: smarty.php:542
-#: smarty.php:1274
-#, fuzzy
-msgid "Monaco"
-msgstr "Lunes"
-
-#: smarty.php:545
-#: smarty.php:1277
-#, fuzzy
-msgid "Mongolia"
-msgstr "Consolidar"
-
-#: smarty.php:548
-#: smarty.php:1280
-#, fuzzy
-msgid "Montserrat"
-msgstr "No nulo"
-
-#: smarty.php:551
-#: smarty.php:1283
-msgid "Morocco"
-msgstr ""
-
-#: smarty.php:554
-#: smarty.php:1286
-#, fuzzy
-msgid "Mozambique"
-msgstr "Móvil"
-
-#: smarty.php:557
-#: smarty.php:1289
-#, fuzzy
-msgid "Myanmar"
-msgstr "Manual de"
-
-#: smarty.php:560
-#: smarty.php:1292
-msgid "Namibia"
-msgstr ""
-
-#: smarty.php:563
-#: smarty.php:1295
-msgid "Nauru"
-msgstr ""
-
-#: smarty.php:566
-#: smarty.php:1298
-#, fuzzy
-msgid "Nepal"
-msgstr "oferta"
-
-#: smarty.php:569
-#: smarty.php:1301
-#: smarty.php:2753
-#: smarty.php:2930
-msgid "Netherlands"
-msgstr ""
-
-#: smarty.php:572
-#: smarty.php:1304
-msgid "Netherlands Antilles"
-msgstr ""
-
-#: smarty.php:575
-#: smarty.php:1307
-#, fuzzy
-msgid "Neutral Zone"
-msgstr "Modo Normal"
-
-#: smarty.php:578
-#: smarty.php:1310
-msgid "New Caledonia (French)"
-msgstr ""
-
-#: smarty.php:581
-#: smarty.php:1313
-#, fuzzy
-msgid "New Zealand"
-msgstr "Nueva Cabacera"
-
-#: smarty.php:584
-#: smarty.php:1316
-msgid "Nicaragua"
-msgstr ""
-
-#: smarty.php:587
-#: smarty.php:1319
-msgid "Niger"
-msgstr ""
-
-#: smarty.php:590
-#: smarty.php:1322
-#, fuzzy
-msgid "Nigeria"
-msgstr "N Latina"
-
-#: smarty.php:593
-#: smarty.php:1325
-#, fuzzy
-msgid "Niue"
-msgstr "Número"
-
-#: smarty.php:596
-#: smarty.php:1328
-msgid "Norfolk Island"
-msgstr ""
-
-#: smarty.php:599
-#: smarty.php:1331
-#, fuzzy
-msgid "North Korea"
-msgstr "No en Venta"
-
-#: smarty.php:602
-#: smarty.php:1334
-msgid "Northern Mariana Islands"
-msgstr ""
-
-#: smarty.php:605
-#: smarty.php:1337
-#, fuzzy
-msgid "Norway"
-msgstr "Normal"
-
-#: smarty.php:608
-#: smarty.php:1340
-#, fuzzy
-msgid "Oman"
-msgstr "ca"
-
-#: smarty.php:611
-#: smarty.php:1343
-#, fuzzy
-msgid "Pakistan"
-msgstr "Embalaje"
-
-#: smarty.php:614
-#: smarty.php:1346
-#, fuzzy
-msgid "Palau"
-msgstr "Valor"
-
-#: smarty.php:617
-#: smarty.php:1349
-#, fuzzy
-msgid "Panama"
-msgstr "nombre"
-
-#: smarty.php:620
-#: smarty.php:1352
-msgid "Papua New Guinea"
-msgstr ""
-
-#: smarty.php:623
-#: smarty.php:1355
-msgid "Paraguay"
-msgstr ""
-
-#: smarty.php:626
-#: smarty.php:1358
-#, fuzzy
-msgid "Peru"
-msgstr "Persona"
-
-#: smarty.php:629
-#: smarty.php:1361
-#, fuzzy
-msgid "Philippines"
-msgstr "Envio"
-
-#: smarty.php:632
-#: smarty.php:1364
-msgid "Pitcairn Island"
-msgstr ""
-
-#: smarty.php:635
-#: smarty.php:1367
-#, fuzzy
-msgid "Poland"
-msgstr "y"
-
-#: smarty.php:638
-#: smarty.php:1370
-msgid "Polynesia (French)"
-msgstr ""
-
-#: smarty.php:641
-#: smarty.php:1373
-#: smarty.php:2741
-#, fuzzy
-msgid "Portugal"
-msgstr "Total"
-
-#: smarty.php:644
-#: smarty.php:1376
-msgid "Puerto Rico"
-msgstr ""
-
-#: smarty.php:647
-#: smarty.php:1379
-#, fuzzy
-msgid "Qatar"
-msgstr "Trimestre"
-
-#: smarty.php:650
-#: smarty.php:1382
-msgid "Reunion (French)"
-msgstr ""
-
-#: smarty.php:653
-#: smarty.php:1385
-#, fuzzy
-msgid "Romania"
-msgstr "Empresas"
-
-#: smarty.php:656
-#: smarty.php:1388
-msgid "Russian Federation"
-msgstr ""
-
-#: smarty.php:659
-#: smarty.php:1391
-#, fuzzy
-msgid "Rwanda"
-msgstr "y"
-
-#: smarty.php:662
-#: smarty.php:1394
-msgid "S. Georgia & S. Sandwich I."
-msgstr ""
-
-#: smarty.php:665
-#: smarty.php:1397
-#, fuzzy
-msgid "Saint Helena"
-msgstr "con Teléfono"
-
-#: smarty.php:668
-#: smarty.php:1400
-msgid "Saint Kitts & Nevis Anguilla"
-msgstr ""
-
-#: smarty.php:671
-#: smarty.php:1403
-msgid "Saint Lucia"
-msgstr ""
-
-#: smarty.php:674
-#: smarty.php:1406
-msgid "St Pierre and Miquelon"
-msgstr ""
-
-#: smarty.php:677
-#: smarty.php:1409
-msgid "St Tome & Principe"
-msgstr ""
-
-#: smarty.php:680
-#: smarty.php:1412
-msgid "St Vincent & Grenadines"
-msgstr ""
-
-#: smarty.php:683
-#: smarty.php:1415
-msgid "Samoa"
-msgstr ""
-
-#: smarty.php:686
-#: smarty.php:1418
-#, fuzzy
-msgid "San Marino"
-msgstr "Ajuste principal del"
-
-#: smarty.php:689
-#: smarty.php:1421
-msgid "Saudi Arabia"
-msgstr ""
-
-#: smarty.php:692
-#: smarty.php:1424
-#, fuzzy
-msgid "Senegal"
-msgstr "General"
-
-#: smarty.php:695
-#: smarty.php:1427
-#, fuzzy
-msgid "Seychelles"
-msgstr "estanterías"
-
-#: smarty.php:698
-#: smarty.php:1430
-#, fuzzy
-msgid "Sierra Leone"
-msgstr "Lista de proveedores"
-
-#: smarty.php:701
-#: smarty.php:1433
-msgid "Singapore"
-msgstr ""
-
-#: smarty.php:704
-#: smarty.php:1436
-msgid "Slovak Republic"
-msgstr ""
-
-#: smarty.php:707
-#: smarty.php:1439
-#, fuzzy
-msgid "Slovenia"
-msgstr "Eslovaca"
-
-#: smarty.php:710
-#: smarty.php:1442
-msgid "Solomon Islands"
-msgstr ""
-
-#: smarty.php:713
-#: smarty.php:1445
-#, fuzzy
-msgid "Somalia"
-msgstr "Normal"
-
-#: smarty.php:716
-#: smarty.php:1448
-#, fuzzy
-msgid "South Africa"
-msgstr "S Latina"
-
-#: smarty.php:719
-#: smarty.php:1451
-#, fuzzy
-msgid "South Korea"
-msgstr "Tienda"
-
-#: smarty.php:722
-#: smarty.php:1454
-#: smarty.php:2738
-msgid "Spain"
-msgstr "España"
-
-#: smarty.php:725
-#: smarty.php:1457
-msgid "Sri Lanka"
-msgstr ""
-
-#: smarty.php:728
-#: smarty.php:1460
-#, fuzzy
-msgid "Sudan"
-msgstr "Domingo"
-
-#: smarty.php:731
-#: smarty.php:1463
-#, fuzzy
-msgid "Suriname"
-msgstr "Apellido"
-
-#: smarty.php:734
-#: smarty.php:1466
-msgid "Svalbard and Jan Mayen I."
-msgstr ""
-
-#: smarty.php:737
-#: smarty.php:1469
-msgid "Swaziland"
-msgstr ""
-
-#: smarty.php:740
-#: smarty.php:1472
-#, fuzzy
-msgid "Sweden"
-msgstr "Mandando"
-
-#: smarty.php:743
-#: smarty.php:1475
-#: smarty.php:2750
-#: smarty.php:2927
-msgid "Switzerland"
-msgstr ""
-
-#: smarty.php:746
-#: smarty.php:1478
-msgid "Syria"
-msgstr ""
-
-#: smarty.php:749
-#: smarty.php:1481
-msgid "Tadjikistan"
-msgstr ""
-
-#: smarty.php:752
-#: smarty.php:1484
-#, fuzzy
-msgid "Taiwan"
-msgstr "Ciudad"
-
-#: smarty.php:755
-#: smarty.php:1487
-msgid "Tanzania"
-msgstr ""
-
-#: smarty.php:758
-#: smarty.php:1490
-#, fuzzy
-msgid "Thailand"
-msgstr "Colas"
-
-#: smarty.php:761
-#: smarty.php:1493
-#, fuzzy
-msgid "Togo"
-msgstr "Lógo"
-
-#: smarty.php:764
-#: smarty.php:1496
-#, fuzzy
-msgid "Tokelau"
-msgstr "Tlf"
-
-#: smarty.php:767
-#: smarty.php:1499
-#, fuzzy
-msgid "Tonga"
-msgstr "Ciudad"
-
-#: smarty.php:770
-#: smarty.php:1502
-msgid "Trinidad and Tobago"
-msgstr ""
-
-#: smarty.php:773
-#: smarty.php:1505
-msgid "Tunisia"
-msgstr ""
-
-#: smarty.php:776
-#: smarty.php:1508
-#, fuzzy
-msgid "Turkey"
-msgstr "clave"
-
-#: smarty.php:779
-#: smarty.php:1511
-msgid "Turkmenistan"
-msgstr ""
-
-#: smarty.php:782
-#: smarty.php:1514
-msgid "Turks and Caicos Islands"
-msgstr ""
-
-#: smarty.php:785
-#: smarty.php:1517
-msgid "Tuvalu"
-msgstr ""
-
-#: smarty.php:788
-#: smarty.php:1520
-#, fuzzy
-msgid "Uganda"
-msgstr "y"
-
-#: smarty.php:791
-#: smarty.php:1523
-#, fuzzy
-msgid "Ukraine"
-msgstr "ca"
-
-#: smarty.php:794
-#: smarty.php:1526
-msgid "United Arab Emirates"
-msgstr ""
-
-#: smarty.php:797
-#: smarty.php:1529
-#: smarty.php:2732
-#: smarty.php:2915
-msgid "United Kingdom"
-msgstr ""
-
-#: smarty.php:800
-#: smarty.php:1532
-msgid "United States"
-msgstr "Estados Unidos"
-
-#: smarty.php:803
-#: smarty.php:1535
-msgid "Uruguay"
-msgstr ""
-
-#: smarty.php:806
-#: smarty.php:1538
-msgid "USA Minor Outlying Islands"
-msgstr ""
-
-#: smarty.php:809
-#: smarty.php:1541
-msgid "Uzbekistan"
-msgstr ""
-
-#: smarty.php:812
-#: smarty.php:1544
-#, fuzzy
-msgid "Vanuatu"
-msgstr "Manual de"
-
-#: smarty.php:815
-#: smarty.php:1547
-msgid "Vatican City State"
-msgstr ""
-
-#: smarty.php:818
-#: smarty.php:1550
-msgid "Venezuela"
-msgstr ""
-
-#: smarty.php:821
-#: smarty.php:1553
-msgid "Vietnam"
-msgstr ""
-
-#: smarty.php:824
-#: smarty.php:1556
-msgid "Virgin Islands (British)"
-msgstr ""
-
-#: smarty.php:827
-#: smarty.php:1559
-msgid "Virgin Islands (USA)"
-msgstr ""
-
-#: smarty.php:830
-#: smarty.php:1562
-msgid "Wallis and Futuna Islands"
-msgstr ""
-
-#: smarty.php:833
-#: smarty.php:1565
-#, fuzzy
-msgid "Western Sahara"
-msgstr "clientes en el área"
-
-#: smarty.php:836
-#: smarty.php:1568
-#, fuzzy
-msgid "Yemen"
-msgstr "Segmento"
-
-#: smarty.php:839
-#: smarty.php:1571
-msgid "Yugoslavia"
-msgstr ""
-
-#: smarty.php:842
-#: smarty.php:1574
-#, fuzzy
-msgid "Zaire"
-msgstr "área"
-
-#: smarty.php:845
-#: smarty.php:1577
-msgid "Zambia"
-msgstr ""
-
-#: smarty.php:848
-#: smarty.php:1580
-msgid "Zimbabwe"
-msgstr ""
-
-#: smarty.php:851
-msgid "Afghanistan"
-msgstr ""
-
-#: smarty.php:860
-#, fuzzy
-msgid "American Samoa"
-msgstr "N Latina"
-
-#: smarty.php:872
-#, fuzzy
-msgid "Antarctica"
-msgstr "Automatico"
-
-#: smarty.php:893
-msgid "Azerbaidjan"
-msgstr ""
-
-#: smarty.php:908
-msgid "Belarus"
-msgstr ""
-
-#: smarty.php:911
-msgid "Belgium"
-msgstr ""
-
-#: smarty.php:923
-#, fuzzy
-msgid "Bhutan"
-msgstr "Botones"
-
-#: smarty.php:935
-msgid "Bouvet Island"
-msgstr ""
-
-#: smarty.php:938
-msgid "Brazil"
-msgstr ""
-
-#: smarty.php:956
-#, fuzzy
-msgid "Cambodia"
-msgstr "Ciudad"
-
-#: smarty.php:959
-msgid "Cameroon"
-msgstr ""
-
-#: smarty.php:962
-#, fuzzy
-msgid "Canada"
-msgstr "y"
-
-#: smarty.php:965
-#, fuzzy
-msgid "Cape Verde"
-msgstr "Cancelar Orden"
-
-#: smarty.php:968
-msgid "Cayman Islands"
-msgstr ""
-
-#: smarty.php:971
-msgid "Central African Republic"
-msgstr ""
-
-#: smarty.php:983
-msgid "Christmas Island"
-msgstr ""
-
-#: smarty.php:986
-msgid "Cocos (Keeling) Islands"
-msgstr ""
-
-#: smarty.php:998
-msgid "Cook Islands"
-msgstr ""
-
-#: smarty.php:1004
-#, fuzzy
-msgid "Croatia"
-msgstr "Critico"
-
-#: smarty.php:1010
-msgid "Cyprus"
-msgstr ""
-
-#: smarty.php:1013
-msgid "Czech Republic"
-msgstr ""
-
-#: smarty.php:1016
-#, fuzzy
-msgid "Denmark"
-msgstr "Estimado"
-
-#: smarty.php:1025
-msgid "Dominican Republic"
-msgstr ""
-
-#: smarty.php:1028
-#, fuzzy
-msgid "East Timor"
-msgstr "last_more"
-
-#: smarty.php:1034
-msgid "Egypt"
-msgstr ""
-
-#: smarty.php:1040
-msgid "Equatorial Guinea"
-msgstr ""
-
-#: smarty.php:1049
-msgid "Ethiopia"
-msgstr ""
-
-#: smarty.php:1052
-msgid "Falkland Islands"
-msgstr ""
-
-#: smarty.php:1055
-msgid "Faroe Islands"
-msgstr ""
-
-#: smarty.php:1061
-#, fuzzy
 msgid "Finland"
 msgstr "Campo"
 
-#: smarty.php:1064
+#: smarty.php:344
 msgid "Former Czechoslovakia"
 msgstr ""
 
-#: smarty.php:1067
+#: smarty.php:347
 #, fuzzy
 msgid "Former USSR"
 msgstr "URL de la tienda"
 
-#: smarty.php:1070
+#: smarty.php:350
 #, fuzzy
 msgid "France"
 msgstr "Forzado"
 
-#: smarty.php:1073
+#: smarty.php:353
 msgid "France (European Territory)"
 msgstr ""
 
-#: smarty.php:1079
+#: smarty.php:356
+#, fuzzy
+msgid "French Guyana"
+msgstr "Francés"
+
+#: smarty.php:359
 msgid "French Southern Territories"
 msgstr ""
 
-#: smarty.php:1082
+#: smarty.php:362
 #, fuzzy
 msgid "Gabon"
 msgstr "Agotado"
 
-#: smarty.php:1091
-#: smarty.php:2744
-#: smarty.php:2921
+#: smarty.php:365
+msgid "Gambia"
+msgstr ""
+
+#: smarty.php:368
+#, fuzzy
+msgid "Georgia"
+msgstr "Aleman"
+
+#: smarty.php:371
+#: smarty.php:2018
 #, fuzzy
 msgid "Germany"
 msgstr "Aleman"
 
-#: smarty.php:1100
+#: smarty.php:374
+msgid "Ghana"
+msgstr ""
+
+#: smarty.php:377
+msgid "Gibraltar"
+msgstr ""
+
+#: smarty.php:380
 #, fuzzy
 msgid "Great Britain"
 msgstr "Descripción del área"
 
-#: smarty.php:1103
+#: smarty.php:383
 #, fuzzy
 msgid "Greece"
 msgstr "Crecimiento"
 
-#: smarty.php:1106
+#: smarty.php:386
 #, fuzzy
 msgid "Greenland"
 msgstr "Crecimiento"
 
-#: smarty.php:1112
+#: smarty.php:389
+#, fuzzy
+msgid "Grenada"
+msgstr "Crecimiento"
+
+#: smarty.php:392
 msgid "Guadeloupe (French)"
 msgstr ""
 
-#: smarty.php:1115
+#: smarty.php:395
 msgid "Guam (USA)"
 msgstr ""
 
-#: smarty.php:1130
+#: smarty.php:398
+msgid "Guatemala"
+msgstr ""
+
+#: smarty.php:401
+#, fuzzy
+msgid "Guinea"
+msgstr "General"
+
+#: smarty.php:404
+msgid "Guinea Bissau"
+msgstr ""
+
+#: smarty.php:407
+msgid "Guyana"
+msgstr ""
+
+#: smarty.php:410
 #, fuzzy
 msgid "Haiti"
 msgstr "Hits"
 
-#: smarty.php:1142
+#: smarty.php:413
+msgid "Heard and McDonald Islands"
+msgstr ""
+
+#: smarty.php:416
+#, fuzzy
+msgid "Honduras"
+msgstr "Horas"
+
+#: smarty.php:419
+msgid "Hong Kong"
+msgstr ""
+
+#: smarty.php:422
 #, fuzzy
 msgid "Hungary"
 msgstr "Domingo"
 
-#: smarty.php:1145
+#: smarty.php:425
 #, fuzzy
 msgid "Iceland"
 msgstr "y"
 
-#: smarty.php:1154
+#: smarty.php:428
+#, fuzzy
+msgid "India"
+msgstr "Individuales"
+
+#: smarty.php:431
+#, fuzzy
+msgid "Indonesia"
+msgstr "Facturas"
+
+#: smarty.php:434
 #, fuzzy
 msgid "International"
 msgstr "Interior"
 
-#: smarty.php:1157
+#: smarty.php:437
 #, fuzzy
 msgid "Iran"
 msgstr "En"
 
-#: smarty.php:1163
-#: smarty.php:2735
-#: smarty.php:2918
+#: smarty.php:440
+msgid "Iraq"
+msgstr ""
+
+#: smarty.php:443
+#: smarty.php:2009
 #, fuzzy
 msgid "Ireland"
 msgstr "Marca"
 
-#: smarty.php:1169
+#: smarty.php:446
+#, fuzzy
+msgid "Israel"
+msgstr "tasa de"
+
+#: smarty.php:449
 #, fuzzy
 msgid "Italy"
 msgstr "Interior"
 
-#: smarty.php:1172
+#: smarty.php:452
 msgid "Ivory Coast (Cote D&#39;Ivoire)"
 msgstr ""
 
-#: smarty.php:1178
+#: smarty.php:455
+msgid "Jamaica"
+msgstr ""
+
+#: smarty.php:458
 #, fuzzy
 msgid "Japan"
 msgstr "campaña"
 
-#: smarty.php:1184
+#: smarty.php:461
+msgid "Jordan"
+msgstr ""
+
+#: smarty.php:464
 msgid "Kazakhstan"
 msgstr ""
 
-#: smarty.php:1196
+#: smarty.php:467
+#, fuzzy
+msgid "Kenya"
+msgstr "clave"
+
+#: smarty.php:470
+msgid "Kiribati"
+msgstr ""
+
+#: smarty.php:473
+#, fuzzy
+msgid "Kuwait"
+msgstr "Unidad"
+
+#: smarty.php:476
 msgid "Kyrgyzstan"
 msgstr ""
 
-#: smarty.php:1205
+#: smarty.php:479
+msgid "Laos"
+msgstr "Laos"
+
+#: smarty.php:482
+#, fuzzy
+msgid "Latvia"
+msgstr "a través de"
+
+#: smarty.php:485
 #, fuzzy
 msgid "Lebanon"
 msgstr "Razón"
 
-#: smarty.php:1220
+#: smarty.php:488
+#, fuzzy
+msgid "Lesotho"
+msgstr "Menor que"
+
+#: smarty.php:491
+#, fuzzy
+msgid "Liberia"
+msgstr "Litros"
+
+#: smarty.php:494
+msgid "Libya"
+msgstr ""
+
+#: smarty.php:497
+msgid "Liechtenstein"
+msgstr ""
+
+#: smarty.php:500
 msgid "Lithuania"
 msgstr ""
 
-#: smarty.php:1223
+#: smarty.php:503
 msgid "Luxembourg"
 msgstr ""
 
-#: smarty.php:1238
+#: smarty.php:506
+msgid "Macau"
+msgstr ""
+
+#: smarty.php:509
+#, fuzzy
+msgid "Macedonia"
+msgstr "Los medios de comunicación"
+
+#: smarty.php:512
+msgid "Madagascar"
+msgstr ""
+
+#: smarty.php:515
+#, fuzzy
+msgid "Malawi"
+msgstr "Principales"
+
+#: smarty.php:518
 msgid "Malaysia"
 msgstr ""
 
-#: smarty.php:1244
+#: smarty.php:521
+#, fuzzy
+msgid "Maldives"
+msgstr "Hombre"
+
+#: smarty.php:524
 #, fuzzy
 msgid "Mali"
 msgstr "Principales"
 
-#: smarty.php:1250
+#: smarty.php:527
+#, fuzzy
+msgid "Malta"
+msgstr "Hombre"
+
+#: smarty.php:530
 msgid "Marshall Islands"
 msgstr ""
 
-#: smarty.php:1253
+#: smarty.php:533
 msgid "Martinique (French)"
 msgstr ""
 
-#: smarty.php:1583
+#: smarty.php:536
+#, fuzzy
+msgid "Mauritania"
+msgstr "Margen"
+
+#: smarty.php:539
+#, fuzzy
+msgid "Mauritius"
+msgstr "Número máximo de unidades"
+
+#: smarty.php:542
+#, fuzzy
+msgid "Mayotte"
+msgstr "Diseño"
+
+#: smarty.php:545
+msgid "Mexico"
+msgstr ""
+
+#: smarty.php:548
+msgid "Micronesia"
+msgstr ""
+
+#: smarty.php:551
+#, fuzzy
+msgid "Moldavia"
+msgstr "Los medios de comunicación"
+
+#: smarty.php:554
+#, fuzzy
+msgid "Monaco"
+msgstr "Lunes"
+
+#: smarty.php:557
+#, fuzzy
+msgid "Mongolia"
+msgstr "Consolidar"
+
+#: smarty.php:560
+#, fuzzy
+msgid "Montserrat"
+msgstr "No nulo"
+
+#: smarty.php:563
+msgid "Morocco"
+msgstr ""
+
+#: smarty.php:566
+#, fuzzy
+msgid "Mozambique"
+msgstr "Móvil"
+
+#: smarty.php:569
+#, fuzzy
+msgid "Myanmar"
+msgstr "Manual de"
+
+#: smarty.php:572
+msgid "Namibia"
+msgstr ""
+
+#: smarty.php:575
+msgid "Nauru"
+msgstr ""
+
+#: smarty.php:578
+#, fuzzy
+msgid "Nepal"
+msgstr "oferta"
+
+#: smarty.php:581
+#: smarty.php:2027
+msgid "Netherlands"
+msgstr ""
+
+#: smarty.php:584
+msgid "Netherlands Antilles"
+msgstr ""
+
+#: smarty.php:587
+#, fuzzy
+msgid "Neutral Zone"
+msgstr "Modo Normal"
+
+#: smarty.php:590
+msgid "New Caledonia (French)"
+msgstr ""
+
+#: smarty.php:593
+#, fuzzy
+msgid "New Zealand"
+msgstr "Nueva Cabacera"
+
+#: smarty.php:596
+msgid "Nicaragua"
+msgstr ""
+
+#: smarty.php:599
+msgid "Niger"
+msgstr ""
+
+#: smarty.php:602
+#, fuzzy
+msgid "Nigeria"
+msgstr "N Latina"
+
+#: smarty.php:605
+#, fuzzy
+msgid "Niue"
+msgstr "Número"
+
+#: smarty.php:608
+msgid "Norfolk Island"
+msgstr ""
+
+#: smarty.php:611
+#, fuzzy
+msgid "North Korea"
+msgstr "No en Venta"
+
+#: smarty.php:614
+msgid "Northern Mariana Islands"
+msgstr ""
+
+#: smarty.php:617
+#, fuzzy
+msgid "Norway"
+msgstr "Normal"
+
+#: smarty.php:620
+#, fuzzy
+msgid "Oman"
+msgstr "ca"
+
+#: smarty.php:623
+#, fuzzy
+msgid "Pakistan"
+msgstr "Embalaje"
+
+#: smarty.php:626
+#, fuzzy
+msgid "Palau"
+msgstr "Valor"
+
+#: smarty.php:629
+#, fuzzy
+msgid "Panama"
+msgstr "nombre"
+
+#: smarty.php:632
+msgid "Papua New Guinea"
+msgstr ""
+
+#: smarty.php:635
+msgid "Paraguay"
+msgstr ""
+
+#: smarty.php:638
+#, fuzzy
+msgid "Peru"
+msgstr "Persona"
+
+#: smarty.php:641
+#, fuzzy
+msgid "Philippines"
+msgstr "Envio"
+
+#: smarty.php:644
+msgid "Pitcairn Island"
+msgstr ""
+
+#: smarty.php:647
+#, fuzzy
+msgid "Poland"
+msgstr "y"
+
+#: smarty.php:650
+msgid "Polynesia (French)"
+msgstr ""
+
+#: smarty.php:653
+#: smarty.php:2015
+#, fuzzy
+msgid "Portugal"
+msgstr "Total"
+
+#: smarty.php:656
+msgid "Puerto Rico"
+msgstr ""
+
+#: smarty.php:659
+#, fuzzy
+msgid "Qatar"
+msgstr "Trimestre"
+
+#: smarty.php:662
+msgid "Reunion (French)"
+msgstr ""
+
+#: smarty.php:665
+#, fuzzy
+msgid "Romania"
+msgstr "Empresas"
+
+#: smarty.php:668
+msgid "Russian Federation"
+msgstr ""
+
+#: smarty.php:671
+#, fuzzy
+msgid "Rwanda"
+msgstr "y"
+
+#: smarty.php:674
+msgid "S. Georgia & S. Sandwich I."
+msgstr ""
+
+#: smarty.php:677
+#, fuzzy
+msgid "Saint Helena"
+msgstr "con Teléfono"
+
+#: smarty.php:680
+msgid "Saint Kitts & Nevis Anguilla"
+msgstr ""
+
+#: smarty.php:683
+msgid "Saint Lucia"
+msgstr ""
+
+#: smarty.php:686
+msgid "St Pierre and Miquelon"
+msgstr ""
+
+#: smarty.php:689
+msgid "St Tome & Principe"
+msgstr ""
+
+#: smarty.php:692
+msgid "St Vincent & Grenadines"
+msgstr ""
+
+#: smarty.php:695
+msgid "Samoa"
+msgstr ""
+
+#: smarty.php:698
+#, fuzzy
+msgid "San Marino"
+msgstr "Ajuste principal del"
+
+#: smarty.php:701
+msgid "Saudi Arabia"
+msgstr ""
+
+#: smarty.php:704
+#, fuzzy
+msgid "Senegal"
+msgstr "General"
+
+#: smarty.php:707
+#, fuzzy
+msgid "Seychelles"
+msgstr "estanterías"
+
+#: smarty.php:710
+#, fuzzy
+msgid "Sierra Leone"
+msgstr "Lista de proveedores"
+
+#: smarty.php:713
+msgid "Singapore"
+msgstr ""
+
+#: smarty.php:716
+msgid "Slovak Republic"
+msgstr ""
+
+#: smarty.php:719
+#, fuzzy
+msgid "Slovenia"
+msgstr "Eslovaca"
+
+#: smarty.php:722
+msgid "Solomon Islands"
+msgstr ""
+
+#: smarty.php:725
+#, fuzzy
+msgid "Somalia"
+msgstr "Normal"
+
+#: smarty.php:728
+#, fuzzy
+msgid "South Africa"
+msgstr "S Latina"
+
+#: smarty.php:731
+#, fuzzy
+msgid "South Korea"
+msgstr "Tienda"
+
+#: smarty.php:734
+#: smarty.php:2012
+msgid "Spain"
+msgstr "España"
+
+#: smarty.php:737
+msgid "Sri Lanka"
+msgstr ""
+
+#: smarty.php:740
+#, fuzzy
+msgid "Sudan"
+msgstr "Domingo"
+
+#: smarty.php:743
+#, fuzzy
+msgid "Suriname"
+msgstr "Apellido"
+
+#: smarty.php:746
+msgid "Svalbard and Jan Mayen I."
+msgstr ""
+
+#: smarty.php:749
+msgid "Swaziland"
+msgstr ""
+
+#: smarty.php:752
+#, fuzzy
+msgid "Sweden"
+msgstr "Mandando"
+
+#: smarty.php:755
+#: smarty.php:2024
+msgid "Switzerland"
+msgstr ""
+
+#: smarty.php:758
+msgid "Syria"
+msgstr ""
+
+#: smarty.php:761
+msgid "Tadjikistan"
+msgstr ""
+
+#: smarty.php:764
+#, fuzzy
+msgid "Taiwan"
+msgstr "Ciudad"
+
+#: smarty.php:767
+msgid "Tanzania"
+msgstr ""
+
+#: smarty.php:770
+#, fuzzy
+msgid "Thailand"
+msgstr "Colas"
+
+#: smarty.php:773
+#, fuzzy
+msgid "Togo"
+msgstr "Lógo"
+
+#: smarty.php:776
+#, fuzzy
+msgid "Tokelau"
+msgstr "Tlf"
+
+#: smarty.php:779
+#, fuzzy
+msgid "Tonga"
+msgstr "Ciudad"
+
+#: smarty.php:782
+msgid "Trinidad and Tobago"
+msgstr ""
+
+#: smarty.php:785
+msgid "Tunisia"
+msgstr ""
+
+#: smarty.php:788
+#, fuzzy
+msgid "Turkey"
+msgstr "clave"
+
+#: smarty.php:791
+msgid "Turkmenistan"
+msgstr ""
+
+#: smarty.php:794
+msgid "Turks and Caicos Islands"
+msgstr ""
+
+#: smarty.php:797
+msgid "Tuvalu"
+msgstr ""
+
+#: smarty.php:800
+#, fuzzy
+msgid "Uganda"
+msgstr "y"
+
+#: smarty.php:803
+#, fuzzy
+msgid "Ukraine"
+msgstr "ca"
+
+#: smarty.php:806
+msgid "United Arab Emirates"
+msgstr ""
+
+#: smarty.php:809
+#: smarty.php:2006
+msgid "United Kingdom"
+msgstr ""
+
+#: smarty.php:812
+msgid "United States"
+msgstr "Estados Unidos"
+
+#: smarty.php:815
+msgid "Uruguay"
+msgstr ""
+
+#: smarty.php:818
+msgid "USA Minor Outlying Islands"
+msgstr ""
+
+#: smarty.php:821
+msgid "Uzbekistan"
+msgstr ""
+
+#: smarty.php:824
+#, fuzzy
+msgid "Vanuatu"
+msgstr "Manual de"
+
+#: smarty.php:827
+msgid "Vatican City State"
+msgstr ""
+
+#: smarty.php:830
+msgid "Venezuela"
+msgstr ""
+
+#: smarty.php:833
+msgid "Vietnam"
+msgstr ""
+
+#: smarty.php:836
+msgid "Virgin Islands (British)"
+msgstr ""
+
+#: smarty.php:839
+msgid "Virgin Islands (USA)"
+msgstr ""
+
+#: smarty.php:842
+msgid "Wallis and Futuna Islands"
+msgstr ""
+
+#: smarty.php:845
+#, fuzzy
+msgid "Western Sahara"
+msgstr "clientes en el área"
+
+#: smarty.php:848
+#, fuzzy
+msgid "Yemen"
+msgstr "Segmento"
+
+#: smarty.php:851
+msgid "Yugoslavia"
+msgstr ""
+
+#: smarty.php:854
+#, fuzzy
+msgid "Zaire"
+msgstr "área"
+
+#: smarty.php:857
+msgid "Zambia"
+msgstr ""
+
+#: smarty.php:860
+msgid "Zimbabwe"
+msgstr ""
+
+#: smarty.php:863
 msgid "Address Type"
 msgstr "Tipo de dirección"
 
-#: smarty.php:1586
+#: smarty.php:866
 msgid "Office"
 msgstr "Oficina"
 
-#: smarty.php:1589
+#: smarty.php:869
 msgid "Shop"
 msgstr "Tienda"
 
-#: smarty.php:1592
+#: smarty.php:872
 msgid "Warehouse"
 msgstr "Galería"
 
-#: smarty.php:1598
+#: smarty.php:878
 msgid "Address Function"
 msgstr "Dirección de función"
 
-#: smarty.php:1604
-#: smarty.php:1727
+#: smarty.php:884
+#: smarty.php:1007
 msgid "Billing"
 msgstr "Facturación"
 
-#: smarty.php:1619
-#: smarty.php:2249
-#: smarty.php:2708
-#: smarty.php:2891
+#: smarty.php:899
+#: smarty.php:1529
+#: smarty.php:1982
 msgid "Telephone"
 msgstr "Teléfono"
 
-#: smarty.php:1622
+#: smarty.php:902
 msgid "Internal"
 msgstr "Interior"
 
-#: smarty.php:1625
+#: smarty.php:905
 msgid "Building"
 msgstr "Edificio"
 
-#: smarty.php:1628
+#: smarty.php:908
 msgid "Street"
 msgstr "Calle"
 
-#: smarty.php:1631
+#: smarty.php:911
 msgid "City 2nd Div"
 msgstr "Ciudad 2ª Div."
 
-#: smarty.php:1634
+#: smarty.php:914
 msgid "City 1st Div"
 msgstr "Ciudad 1 ª Div"
 
-#: smarty.php:1640
-#: smarty.php:2723
-#: smarty.php:2906
+#: smarty.php:920
+#: smarty.php:1997
 msgid "Postal Code"
 msgstr "Código Postal"
 
-#: smarty.php:1643
+#: smarty.php:923
 msgid "5rd Division"
 msgstr "5ª División"
 
-#: smarty.php:1646
+#: smarty.php:926
 msgid "4rd Division"
 msgstr "4 ª División"
 
-#: smarty.php:1649
+#: smarty.php:929
 msgid "3rd Division"
 msgstr "3 ª División"
 
-#: smarty.php:1652
+#: smarty.php:932
 msgid "Subregion"
 msgstr "Subregión"
 
-#: smarty.php:1655
+#: smarty.php:935
 msgid "Region"
 msgstr "Región"
 
-#: smarty.php:1661
-#: smarty.php:1673
-#: smarty.php:1739
-#: smarty.php:1820
+#: smarty.php:941
+#: smarty.php:953
+#: smarty.php:1019
+#: smarty.php:1100
+#: smarty.php:1340
+#: smarty.php:1487
+#: smarty.php:1649
+#: smarty.php:1658
+#: smarty.php:1667
+#: smarty.php:1676
+#: smarty.php:1688
+#: smarty.php:1691
+#: smarty.php:1931
 #: smarty.php:2060
-#: smarty.php:2207
-#: smarty.php:2375
-#: smarty.php:2384
-#: smarty.php:2393
-#: smarty.php:2402
-#: smarty.php:2414
-#: smarty.php:2417
-#: smarty.php:2657
-#: smarty.php:2792
-#: smarty.php:2846
-#: smarty.php:2966
 msgid "Cancel"
 msgstr "Cancelar"
 
+#: smarty.php:944
+#: smarty.php:956
+#: smarty.php:1022
+#: smarty.php:1325
+#: smarty.php:1343
+#: smarty.php:1640
+#: smarty.php:1646
+#: smarty.php:1655
 #: smarty.php:1664
-#: smarty.php:1676
-#: smarty.php:1742
-#: smarty.php:2045
-#: smarty.php:2063
-#: smarty.php:2366
-#: smarty.php:2372
-#: smarty.php:2381
-#: smarty.php:2390
-#: smarty.php:2399
-#: smarty.php:2411
+#: smarty.php:1673
+#: smarty.php:1685
 msgid "Save"
 msgstr "Guardar"
 
-#: smarty.php:1670
+#: smarty.php:950
 msgid "Delivery Address Library"
 msgstr "Direcciones de envio"
 
-#: smarty.php:1679
+#: smarty.php:959
 #, fuzzy
 msgid "Add New Delivery Address"
 msgstr "Añadir dirección de entrega"
 
-#: smarty.php:1682
-#: smarty.php:1697
-#: smarty.php:1715
+#: smarty.php:962
+#: smarty.php:977
+#: smarty.php:995
 msgid "Contacts"
 msgstr "Contactos"
 
-#: smarty.php:1685
+#: smarty.php:965
 msgid "Main"
 msgstr "Principales"
 
-#: smarty.php:1700
-#: smarty.php:1718
+#: smarty.php:980
+#: smarty.php:998
 msgid "Telephones"
 msgstr "Teléfonos"
 
-#: smarty.php:1736
+#: smarty.php:1016
 msgid "Current Delivery Address"
 msgstr "Dirección de entrega actual"
 
-#: smarty.php:1745
+#: smarty.php:1025
 msgid "Go"
 msgstr "Ir"
 
-#: smarty.php:1748
+#: smarty.php:1028
 msgid "See also"
 msgstr "Ver también"
 
-#: smarty.php:1751
+#: smarty.php:1031
 msgid "You have successfully logged in"
 msgstr "Has entrado exitosamente, enhorabuena."
 
-#: smarty.php:1754
+#: smarty.php:1034
 msgid "Login"
 msgstr "Iniciar sesión"
 
-#: smarty.php:1760
-#: smarty.php:2687
-#: smarty.php:2873
+#: smarty.php:1040
+#: smarty.php:1961
 msgid "Password"
 msgstr "Contraseña"
 
-#: smarty.php:1763
+#: smarty.php:1043
 msgid "Remember Me"
 msgstr "Recuerdame"
 
-#: smarty.php:1766
+#: smarty.php:1046
 msgid "Log In"
 msgstr "Entrar"
 
-#: smarty.php:1769
-#: smarty.php:2066
-#: smarty.php:2666
-#: smarty.php:2672
-#: smarty.php:2855
+#: smarty.php:1049
+#: smarty.php:1346
+#: smarty.php:1940
+#: smarty.php:1946
 msgid "Close"
 msgstr "Cerrar"
 
-#: smarty.php:1772
+#: smarty.php:1052
 msgid "You have successfully logged out, see you soon"
 msgstr "Te haz salido de nuestro sito, nos vemos pronto"
 
-#: smarty.php:1775
-#: smarty.php:1832
-#: smarty.php:2798
-#: smarty.php:2972
+#: smarty.php:1055
+#: smarty.php:1112
+#: smarty.php:2066
 msgid "Fill all fields please"
 msgstr "Llena todos los campos por favor"
 
-#: smarty.php:1778
+#: smarty.php:1058
 msgid "An email has been sent to you with instructions on how to access your account"
 msgstr "Un correo electrónico se ha mandado con instrucciones de como acceder a tu cuenta"
 
-#: smarty.php:1781
-#: smarty.php:1838
-#: smarty.php:2639
-#: smarty.php:2828
+#: smarty.php:1061
+#: smarty.php:1118
+#: smarty.php:1913
 msgid "Email address invalid"
 msgstr "Correo electrónico invalido"
 
-#: smarty.php:1784
+#: smarty.php:1064
 msgid "Invalid username or password!"
 msgstr "Credenciales incorrectas"
 
-#: smarty.php:1787
+#: smarty.php:1067
 msgid "Don't know your password?"
 msgstr "Olvidaste tu contraseña?"
 
-#: smarty.php:1790
-#: smarty.php:1844
+#: smarty.php:1070
+#: smarty.php:1124
+#: smarty.php:2096
 msgid "Click Here"
 msgstr "Haga Clic Aquí"
 
-#: smarty.php:1793
-#: smarty.php:1847
+#: smarty.php:1073
+#: smarty.php:1127
+#: smarty.php:2099
 msgid "First visit?"
 msgstr "Primera vez aquí?"
 
-#: smarty.php:1796
-#: smarty.php:1802
-#: smarty.php:1850
+#: smarty.php:1076
+#: smarty.php:1082
+#: smarty.php:1130
+#: smarty.php:2102
 msgid "Register Here"
 msgstr "Registrate aquí"
 
-#: smarty.php:1799
+#: smarty.php:1079
 msgid "Use another email"
 msgstr "Usa otro correo electrónico"
 
-#: smarty.php:1805
+#: smarty.php:1085
 msgid "Forgotten password"
 msgstr "Contraseña olvidada"
 
-#: smarty.php:1811
-#: smarty.php:2423
-#, fuzzy
+#: smarty.php:1091
+#: smarty.php:1697
 msgid "Change Image"
 msgstr "Cambiar Imagen"
 
-#: smarty.php:1814
-#: smarty.php:2651
-#: smarty.php:2840
+#: smarty.php:1094
+#: smarty.php:1925
 msgid "input the letters shown on the left"
 msgstr "ingresa las letras mostradas a la izquierda"
 
-#: smarty.php:1817
+#: smarty.php:1097
 msgid "Send Email"
 msgstr "Enviar de correo electrónico"
 
-#: smarty.php:1823
-#: smarty.php:2225
+#: smarty.php:1103
+#: smarty.php:1505
 #, fuzzy
 msgid "Processing Request"
 msgstr "Procesando"
 
-#: smarty.php:1826
-#: smarty.php:2669
-#: smarty.php:2858
+#: smarty.php:1106
+#: smarty.php:1943
 msgid "Sorry, an automatic password reset could not be done, try later or call us"
 msgstr "Ohh no, no hemos podido mandarte el email con información para restablecer tu contraseña, intenta mas tarde o llamanos."
 
-#: smarty.php:1829
+#: smarty.php:1109
 msgid "Sorry, that email is not in our records"
 msgstr "Lo sentimos, el email no esta en nuesta base de datos"
 
-#: smarty.php:1835
-#: smarty.php:2807
-#: smarty.php:2981
+#: smarty.php:1115
+#: smarty.php:2075
 msgid "The Captcha field is incorrect"
 msgstr "La Captcha as incorrecta"
 
-#: smarty.php:1841
+#: smarty.php:1121
+#: smarty.php:2093
 msgid "Want to try to login again?"
 msgstr "Deseas intentar entrar de nuevo?"
 
-#: smarty.php:1859
+#: smarty.php:1139
 msgid "Pending Orders"
 msgstr "En espera de órdenes"
 
-#: smarty.php:1871
-#: smarty.php:1919
-#: smarty.php:2072
+#: smarty.php:1151
+#: smarty.php:1199
+#: smarty.php:1352
 msgid "Shipping Address"
 msgstr "Dirección de envío"
 
-#: smarty.php:1895
-#: smarty.php:1955
-#: smarty.php:2096
+#: smarty.php:1175
+#: smarty.php:1235
+#: smarty.php:1376
 msgid "VAT"
 msgstr "IVA"
 
-#: smarty.php:1904
+#: smarty.php:1184
 msgid "Cancel Date"
 msgstr "Cancelar Fecha"
 
-#: smarty.php:1907
-#: smarty.php:1976
-#: smarty.php:2111
-#: smarty.php:2447
-#: smarty.php:2516
+#: smarty.php:1187
+#: smarty.php:1256
+#: smarty.php:1391
+#: smarty.php:1721
+#: smarty.php:1790
 msgid "Items"
 msgstr "Artículos"
 
-#: smarty.php:1922
+#: smarty.php:1202
 msgid "Change Delivery Address"
 msgstr "Cambio de dirección de entrega"
 
-#: smarty.php:1925
+#: smarty.php:1205
 #, fuzzy
 msgid "Set for collection"
 msgstr "Para la recolección de"
 
-#: smarty.php:1928
+#: smarty.php:1208
 msgid "For collection"
 msgstr "Para la recolección de"
 
-#: smarty.php:1931
+#: smarty.php:1211
 msgid "Set for shipping"
 msgstr "Set para el envío"
 
-#: smarty.php:1964
+#: smarty.php:1244
 #, fuzzy
 msgid "Import from Mals-e"
 msgstr "Importar desde archivo"
 
-#: smarty.php:1967
+#: smarty.php:1247
 msgid "Send to Warehouse"
 msgstr "Enviar a Galería"
 
-#: smarty.php:1970
+#: smarty.php:1250
 msgid "Modify Order"
 msgstr "Editar Pedido"
 
-#: smarty.php:1973
+#: smarty.php:1253
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: smarty.php:1979
+#: smarty.php:1259
 msgid "Ordered Products"
 msgstr "Productos Pedidos"
 
-#: smarty.php:1982
+#: smarty.php:1262
 msgid "General"
 msgstr "General"
 
-#: smarty.php:1988
+#: smarty.php:1268
 msgid "Properties"
 msgstr "Propiedades"
 
-#: smarty.php:1991
+#: smarty.php:1271
 msgid "All"
 msgstr "Todos"
 
-#: smarty.php:1994
+#: smarty.php:1274
 msgid "1Yr"
 msgstr "1 año"
 
-#: smarty.php:1997
+#: smarty.php:1277
 msgid "1Qtr"
 msgstr "1Qtr"
 
-#: smarty.php:2000
+#: smarty.php:1280
 msgid "1M"
 msgstr "1M"
 
-#: smarty.php:2003
+#: smarty.php:1283
 msgid "1W"
 msgstr "1S"
 
-#: smarty.php:2006
+#: smarty.php:1286
 msgid "Totals"
 msgstr "Totales"
 
-#: smarty.php:2009
+#: smarty.php:1289
 msgid "M AVG"
 msgstr "Pdo M"
 
-#: smarty.php:2012
+#: smarty.php:1292
 msgid "W AVG"
 msgstr "Pdo S"
 
-#: smarty.php:2015
+#: smarty.php:1295
 msgid "M EAVG"
 msgstr "M EAVG"
 
-#: smarty.php:2018
+#: smarty.php:1298
 msgid "W EAVG"
 msgstr "W EAVG"
 
-#: smarty.php:2021
+#: smarty.php:1301
 msgid "Items Out of Stock"
 msgstr "Los artículos en stock"
 
-#: smarty.php:2024
+#: smarty.php:1304
 msgid "Rows per Page"
 msgstr "Filas por página"
 
-#: smarty.php:2027
+#: smarty.php:1307
 msgid "Filter options"
 msgstr "Opciones del filtro"
 
-#: smarty.php:2030
+#: smarty.php:1310
 msgid "Reason of cancellation"
 msgstr "La razón de la cancelación"
 
-#: smarty.php:2033
+#: smarty.php:1313
 msgid "Go Back"
 msgstr "Regresar"
 
-#: smarty.php:2036
-#: smarty.php:2633
-#: smarty.php:2822
+#: smarty.php:1316
+#: smarty.php:1907
 msgid "Continue"
 msgstr "Continuar"
 
-#: smarty.php:2039
+#: smarty.php:1319
 #, fuzzy
 msgid "Use calculated value"
 msgstr "IVA Valor"
 
-#: smarty.php:2042
+#: smarty.php:1322
 msgid "Set Shipping"
 msgstr "Ajuste de envío"
 
-#: smarty.php:2048
+#: smarty.php:1328
 msgid "Copy and paste the Emals-e email here"
 msgstr ""
 
-#: smarty.php:2051
+#: smarty.php:1331
 msgid "Import"
 msgstr "Importar"
 
-#: smarty.php:2054
+#: smarty.php:1334
 msgid "Select Discount"
 msgstr "Seleccione Descuento"
 
-#: smarty.php:2057
+#: smarty.php:1337
 msgid "Discount"
 msgstr "Descuento"
 
-#: smarty.php:2105
-#: smarty.php:2444
-#: smarty.php:2594
+#: smarty.php:1385
+#: smarty.php:1718
+#: smarty.php:1868
 msgid "Invoices"
 msgstr "Facturas"
 
-#: smarty.php:2108
-#: smarty.php:2507
-#: smarty.php:2597
+#: smarty.php:1388
+#: smarty.php:1781
+#: smarty.php:1871
 msgid "Delivery Notes"
 msgstr "Notas de entrega"
 
-#: smarty.php:2135
-#: smarty.php:2450
+#: smarty.php:1415
+#: smarty.php:1724
 msgid "Exit"
 msgstr "Salir"
 
-#: smarty.php:2195
+#: smarty.php:1475
 msgid "Current Password"
 msgstr "Contraseña actual"
 
-#: smarty.php:2198
+#: smarty.php:1478
 msgid "New Password"
 msgstr "Nueva Contraseña"
 
-#: smarty.php:2201
-#: smarty.php:2690
-#: smarty.php:2876
+#: smarty.php:1481
+#: smarty.php:1964
 msgid "Confirm pwd"
 msgstr "Confirma contraseña"
 
-#: smarty.php:2204
+#: smarty.php:1484
 msgid "Submit Changes"
 msgstr "Enviar cambios"
 
-#: smarty.php:2210
+#: smarty.php:1490
 msgid "Submitting changes"
 msgstr "Enviando cambios"
 
-#: smarty.php:2213
+#: smarty.php:1493
 msgid "Your password has been changed"
 msgstr "Tu contraseña a sido modificada"
 
-#: smarty.php:2216
+#: smarty.php:1496
 msgid "Write new password"
 msgstr "Ingresa nueva contraseña"
 
-#: smarty.php:2219
-#: smarty.php:2801
-#: smarty.php:2975
+#: smarty.php:1499
+#: smarty.php:2069
 msgid "Passwords don't match"
 msgstr "Las contraseñas no son las mismas"
 
-#: smarty.php:2222
-#: smarty.php:2804
-#: smarty.php:2978
+#: smarty.php:1502
+#: smarty.php:2072
 msgid "Password is too short"
 msgstr "La cntraseña es muy corta"
 
-#: smarty.php:2228
+#: smarty.php:1508
 msgid "Contact Details"
 msgstr "Detalles del cliente"
 
-#: smarty.php:2255
+#: smarty.php:1535
 msgid "Website"
 msgstr "Sitio Web"
 
-#: smarty.php:2270
+#: smarty.php:1550
 msgid "Let's connect together"
 msgstr "Vamos a conocernos mejor"
 
-#: smarty.php:2273
-#: smarty.php:2276
+#: smarty.php:1553
+#: smarty.php:1556
 msgid "Newsletter"
 msgstr "Boletín Electrónico"
 
-#: smarty.php:2285
+#: smarty.php:1565
 msgid "Latest Offers & Updates"
 msgstr "Últimas Ofertas y Anuncios"
 
-#: smarty.php:2294
+#: smarty.php:1574
 msgid "Post"
 msgstr "Correo Postal"
 
-#: smarty.php:2297
+#: smarty.php:1577
 msgid "Catalogues & Vouchers"
 msgstr "Catalogos y Vouchers"
 
-#: smarty.php:2306
+#: smarty.php:1586
 msgid "Send Post "
 msgstr "Mandar Correo"
 
-#: smarty.php:2309
+#: smarty.php:1589
 msgid "Add Customer To Send Post"
 msgstr "Añadir cliente a Lista de Correo"
 
-#: smarty.php:2318
+#: smarty.php:1598
 msgid "Post Type"
 msgstr "Tipo de Correo"
 
-#: smarty.php:2321
+#: smarty.php:1601
 msgid "Letter"
 msgstr "Carta"
 
-#: smarty.php:2324
+#: smarty.php:1604
 msgid "Catalogue"
 msgstr "Catalogo"
 
-#: smarty.php:2327
+#: smarty.php:1607
 msgid "Social Media"
 msgstr ""
 
-#: smarty.php:2330
+#: smarty.php:1610
 #, fuzzy
 msgid "Follower on Twitter"
 msgstr "Mostrar Historia"
 
-#: smarty.php:2339
+#: smarty.php:1619
 #, fuzzy
 msgid "Friend on Facebook"
 msgstr "Show también"
 
-#: smarty.php:2348
+#: smarty.php:1628
 msgid "Social Sites"
 msgstr "Sitos Sociales"
 
-#: smarty.php:2351
+#: smarty.php:1631
 msgid "About you"
 msgstr "Acerca de Ti"
 
-#: smarty.php:2357
-#: smarty.php:2762
-#: smarty.php:2936
-#, fuzzy
-msgid "true"
-msgstr "tienda"
-
-#: smarty.php:2360
-#: smarty.php:2765
-#: smarty.php:2939
-#, fuzzy
-msgid "false"
-msgstr "Venta"
-
-#: smarty.php:2369
+#: smarty.php:1643
 msgid "Customer Name:"
 msgstr "Nombre del cliente:"
 
-#: smarty.php:2378
+#: smarty.php:1652
 msgid "Name:"
 msgstr "Nombre:"
 
-#: smarty.php:2387
+#: smarty.php:1661
 msgid "Telephone:"
 msgstr "Teléfono:"
 
-#: smarty.php:2396
+#: smarty.php:1670
 msgid "Website:"
 msgstr "Sitio Web:"
 
-#: smarty.php:2420
+#: smarty.php:1694
 msgid "Delete Image"
 msgstr "Borrar Imagen"
 
-#: smarty.php:2426
+#: smarty.php:1700
 msgid "Upload Image"
 msgstr "Subir Imagen"
 
-#: smarty.php:2429
+#: smarty.php:1703
 msgid "Upload"
 msgstr "Subir"
 
-#: smarty.php:2432
+#: smarty.php:1706
 msgid "Delivery Note"
 msgstr "Nota de entrega"
 
-#: smarty.php:2435
+#: smarty.php:1709
 msgid "Estimated Weight"
 msgstr "Peso estimado"
 
-#: smarty.php:2438
+#: smarty.php:1712
 msgid "Creation Date"
 msgstr "Fecha de creación"
 
-#: smarty.php:2456
-#: smarty.php:2624
+#: smarty.php:1730
+#: smarty.php:1898
 msgid "Products Ordered"
 msgstr "Productos Ordenados"
 
-#: smarty.php:2459
+#: smarty.php:1733
 msgid "My Orders"
 msgstr "Mis Facturas"
 
-#: smarty.php:2510
+#: smarty.php:1784
 msgid "Payment Method"
 msgstr "Forma de pago"
 
-#: smarty.php:2531
+#: smarty.php:1805
 msgid "Amount"
 msgstr "Cantidad"
 
-#: smarty.php:2534
+#: smarty.php:1808
 msgid "Delovery Note"
 msgstr "Nota de entrega"
 
-#: smarty.php:2543
+#: smarty.php:1817
 msgid "Orders List"
 msgstr "Lista de Pedidos"
 
-#: smarty.php:2549
+#: smarty.php:1823
 msgid "Shipped to"
 msgstr "Enviados a"
 
-#: smarty.php:2552
+#: smarty.php:1826
 msgid "Total Ordered (N)"
 msgstr "Total ordenadas (N)"
 
-#: smarty.php:2555
+#: smarty.php:1829
 msgid "Out of Stock (N)"
 msgstr "Fuera de Stock (N)"
 
-#: smarty.php:2558
+#: smarty.php:1832
 msgid "Invoiced Amounts"
 msgstr "Los importes facturados"
 
-#: smarty.php:2561
+#: smarty.php:1835
 msgid "Items (N)"
 msgstr "Elementos (N)"
 
-#: smarty.php:2564
+#: smarty.php:1838
 msgid "Shipping (N)"
 msgstr "Envío (N)"
 
-#: smarty.php:2567
+#: smarty.php:1841
 msgid "Charges (N)"
 msgstr "Cargos (N)"
 
-#: smarty.php:2570
+#: smarty.php:1844
 msgid "Refunds (N)"
 msgstr "Reembolsos (N)"
 
-#: smarty.php:2573
+#: smarty.php:1847
 msgid "Adjusts (N)"
 msgstr "Ajusta (N)"
 
-#: smarty.php:2576
+#: smarty.php:1850
 msgid "Total (N)"
 msgstr "Total (N)"
 
-#: smarty.php:2579
+#: smarty.php:1853
 msgid "Refunds (Tax)"
 msgstr "Reembolsos (I)"
 
-#: smarty.php:2585
+#: smarty.php:1859
 msgid "Tax Adjusts"
 msgstr "Ajusta impuestos"
 
-#: smarty.php:2600
+#: smarty.php:1874
 msgid "This order has some dispatched post transactions"
 msgstr "Esta orden tiene algunas transacciones mensaje enviado"
 
-#: smarty.php:2603
+#: smarty.php:1877
 msgid "Show details)"
 msgstr "Mostrar los detalles)"
 
-#: smarty.php:2606
+#: smarty.php:1880
 msgid "Dispatched Post-Order Items"
 msgstr "Se distribuye después de la Orden Items"
 
-#: smarty.php:2636
-#: smarty.php:2825
+#: smarty.php:1910
 msgid "We need your email address"
 msgstr "Escribe tu correo electronico por favor"
 
-#: smarty.php:2642
-#: smarty.php:2831
+#: smarty.php:1916
 msgid "Email already in our Database"
 msgstr "El correo electrónico a sido usado previamente"
 
-#: smarty.php:2645
-#: smarty.php:2834
+#: smarty.php:1919
 msgid "is already in our records, fill the anti-spam field and we will send you an email with instructions of how to access your account"
 msgstr "se encuentra en nuestra base de datos, llena el campo anti-spam y te enviaremos un correo electrónico con instrucciones de como acceder a tu cuanta"
 
-#: smarty.php:2648
-#: smarty.php:2786
-#: smarty.php:2837
-#: smarty.php:2960
+#: smarty.php:1922
+#: smarty.php:2054
 msgid "Different Image"
 msgstr "Otra Imagen"
 
-#: smarty.php:2654
-#: smarty.php:2843
+#: smarty.php:1928
 msgid "Send Instructions"
 msgstr "Instrucciones enviadas"
 
-#: smarty.php:2660
-#: smarty.php:2849
+#: smarty.php:1934
 msgid "Processing request"
 msgstr "Procesando"
 
-#: smarty.php:2663
-#: smarty.php:2852
+#: smarty.php:1937
 msgid "An email has been sent to you with instructions how to access your account"
 msgstr "Un correo electrónico se ha mandado con instrucciones de como acceder a tu cuenta"
 
-#: smarty.php:2675
-#: smarty.php:2861
+#: smarty.php:1949
 msgid "Please fill the Captcha"
 msgstr "Por favor, ingresa la Captcha"
 
-#: smarty.php:2681
-#: smarty.php:2867
+#: smarty.php:1955
 msgid "Login info"
 msgstr "Informacion de Ingreso"
 
-#: smarty.php:2693
-#: smarty.php:2879
+#: smarty.php:1967
 msgid "Contact Info"
 msgstr "Información de contacto"
 
-#: smarty.php:2696
-#: smarty.php:2882
+#: smarty.php:1970
 msgid "Contact Name"
 msgstr "Nombre del contacto"
 
-#: smarty.php:2702
-#: smarty.php:2888
+#: smarty.php:1976
 msgid "Registration Number"
 msgstr "Número de registración"
 
-#: smarty.php:2705
+#: smarty.php:1979
 msgid "VAT Number"
 msgstr "Número fiscal"
 
-#: smarty.php:2714
-#: smarty.php:2897
+#: smarty.php:1988
 msgid "Line 1"
 msgstr "Dirección 1"
 
-#: smarty.php:2717
-#: smarty.php:2900
+#: smarty.php:1991
 msgid "Line 2"
 msgstr "Dirección 2"
 
-#: smarty.php:2720
-#: smarty.php:2903
+#: smarty.php:1994
 msgid "Town"
 msgstr "Ciudad"
 
-#: smarty.php:2729
-#: smarty.php:2912
+#: smarty.php:2003
 msgid "Select One"
 msgstr "Selecciona uno"
 
-#: smarty.php:2756
+#: smarty.php:2030
 msgid "Other Details"
 msgstr "Otros detalles"
 
-#: smarty.php:2768
-#: smarty.php:2942
+#: smarty.php:2036
 msgid "Catalogue (post)"
 msgstr "Catalogo"
 
-#: smarty.php:2777
-#: smarty.php:2951
+#: smarty.php:2045
 msgid "Offers by email & e-Newsletter"
 msgstr "Ofertas por Email"
 
-#: smarty.php:2789
-#: smarty.php:2963
+#: smarty.php:2057
 msgid "Register"
 msgstr "Registrar"
 
-#: smarty.php:2795
-#: smarty.php:2810
-#: smarty.php:2969
-#: smarty.php:2984
+#: smarty.php:2063
+#: smarty.php:2078
 msgid "Creating your account"
 msgstr "Creando tu cueanta"
 
-#: smarty.php:2813
-#: smarty.php:2987
+#: smarty.php:2081
 msgid "An error incurred during your registration please try again later"
 msgstr "Un error se a encontrado al crear tu cuenta, por favor intenta después."
 
-#: smarty.php:2990
+#: smarty.php:2084
+msgid "Reset your password"
+msgstr "Recuperacion de contraseña"
+
+#: smarty.php:2087
+msgid "Sorry"
+msgstr "Lo sentimos"
+
+#: smarty.php:2090
+msgid "We were not able to reset yout password, please try again or call us"
+msgstr "No pudimos recuperar su contraseña, por favor intente de nuevo o contactemos via telefonica"
+
+#: smarty.php:2105
 msgid "filter results"
 msgstr "filtrar resultados"
 
-#: smarty.php:2993
+#: smarty.php:2108
 msgid "Close filter"
 msgstr "Cerca del filtro"
+
+#, fuzzy
+#~ msgid "Samoa Americana"
+#~ msgstr "N Latina"
+
+#, fuzzy
+#~ msgid "Antártida"
+#~ msgstr "Automatico"
+
+#, fuzzy
+#~ msgid "Bután"
+#~ msgstr "Botones"
+
+#, fuzzy
+#~ msgid "Brasil"
+#~ msgstr "Básico"
+
+#, fuzzy
+#~ msgid "Camboya"
+#~ msgstr "Ciudad"
+
+#, fuzzy
+#~ msgid "Canadá"
+#~ msgstr "y"
+
+#, fuzzy
+#~ msgid "Cabo Verde"
+#~ msgstr "Cancelar Orden"
+
+#, fuzzy
+#~ msgid "Croacia"
+#~ msgstr "Critico"
+
+#, fuzzy
+#~ msgid "Chipre"
+#~ msgstr "Chino"
+
+#, fuzzy
+#~ msgid "Dinamarca"
+#~ msgstr "Estimado"
+
+#, fuzzy
+#~ msgid "Egipto"
+#~ msgstr "Editar"
+
+#, fuzzy
+#~ msgid "Finlandia"
+#~ msgstr "Campo"
+
+#, fuzzy
+#~ msgid "Francia"
+#~ msgstr "Forzado"
+
+#, fuzzy
+#~ msgid "Gabón"
+#~ msgstr "Agotado"
+
+#, fuzzy
+#~ msgid "Alemania"
+#~ msgstr "alias"
+
+#, fuzzy
+#~ msgid "Gran Bretaña"
+#~ msgstr "Descripción del área"
+
+#, fuzzy
+#~ msgid "Grecia"
+#~ msgstr "Crecimiento"
+
+#, fuzzy
+#~ msgid "Groenlandia"
+#~ msgstr "Crecimiento"
+
+#, fuzzy
+#~ msgid "Haití"
+#~ msgstr "Hits"
+
+#, fuzzy
+#~ msgid "Hungría"
+#~ msgstr "Domingo"
+
+#, fuzzy
+#~ msgid "Islandia"
+#~ msgstr "Individuales"
+
+#, fuzzy
+#~ msgid "Irán"
+#~ msgstr "En"
+
+#, fuzzy
+#~ msgid "Irlanda"
+#~ msgstr "Marca"
+
+#, fuzzy
+#~ msgid "Italia"
+#~ msgstr "Interior"
+
+#, fuzzy
+#~ msgid "Japón"
+#~ msgstr "campaña"
+
+#, fuzzy
+#~ msgid "Líbano"
+#~ msgstr "Razón"
+
+#, fuzzy
+#~ msgid "Lituania"
+#~ msgstr "Margen"
+
+#, fuzzy
+#~ msgid "Malasia"
+#~ msgstr "Principales"
+
+#, fuzzy
+#~ msgid "Malí"
+#~ msgstr "Principales"
+
+#, fuzzy
+#~ msgid "true"
+#~ msgstr "tienda"
+
+#, fuzzy
+#~ msgid "false"
+#~ msgstr "Venta"
 
 #~ msgid "Family can not be deleted because it has some products"
 #~ msgstr "Familia no se puede eliminar porque tiene algunos productos"
@@ -5611,12 +5252,6 @@ msgstr "Cerca del filtro"
 #, fuzzy
 #~ msgid "Mark as Send"
 #~ msgstr "Enviar mensajes de correo electrónico Número"
-
-#~ msgid "order"
-
-#~ msgid_plural "orders"
-#~ msgstr[0] "pedido"
-#~ msgstr[1] "pedidos"
 
 #~ msgid "showing all records"
 #~ msgstr "Mostrando todos los resultados"
@@ -12047,9 +11682,6 @@ msgstr "Cerca del filtro"
 
 #~ msgid "Change (User Defined)"
 #~ msgstr "Cambio (definida por el usuario)"
-
-#~ msgid "Repeat Password"
-#~ msgstr "Repita la contraseña"
 
 #~ msgid "Staff Users"
 #~ msgstr "Personal usuario"

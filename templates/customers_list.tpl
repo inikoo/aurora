@@ -41,14 +41,7 @@
 
 </div>
 
-<div id="dialog_export">
-	<div id="export_msg"></div>
-	  <table style="padding:10px;margin:20px 10px 10px 10px" >
-	 <tr><td><a href="export_data.php?subject=customers_list&subject_key={$customer_list_key}&source=db">{t}Export Data (using last map){/t}</a></td></tr>
-	 <tr><td><a href="export_data_maps.php?subject=customers_list&subject_key={$customer_list_key}&source=db">{t}Export from another map{/t}</a></td></tr>
-	 <tr><td><a href="export_wizard.php?subject=customers_list&subject_key={$customer_list_key}">{t}Export Wizard (new map){/t}</a></td></tr>
-	</table>
-	</div>
+
   
   
   
@@ -75,6 +68,12 @@
     </div>
   </div>
   
-
+<div id="dialog_export" style="padding:15px 25px 5px 20px">
+<table>
+<tr><td colspan=3><div class="buttons"><button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button></div></td></tr>
+<tr style="height:10px"><td colspan=3></td></tr>
+<tr style="display:none"><td>{t}Map{/t}:</td><td>Default</td><td><div class="buttons small"><button onClick="alert('not availeable yet! :(')">{t}Change map{/t}</button></div></td></tr>
+</table>
+</div>
 
   {include file='footer.tpl'}

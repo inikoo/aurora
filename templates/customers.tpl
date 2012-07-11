@@ -153,9 +153,11 @@
 </div>
 <div id="dialog_export" style="padding:15px 25px 5px 20px">
 <table>
-<tr><td colspan=3><div class="buttons"><button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> <button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button></div></td></tr>
+<tr><td colspan=3><div class="buttons">
+	<button id="export_xls" style="width:70px"><img src="art/icons/page_excel.png" alt=""> Excel</button> 
+	<button id="export_csv" style="width:70px"><img src="art/icons/page_white_text.png" alt=""> CSV</button></div></td></tr>
 <tr style="height:10px"><td colspan=3></td></tr>
-<tr><td>{t}Map{/t}:</td><td>Default</td><td><div class="buttons small"><button onClick="alert('not availeable yet! :(')">{t}Change map{/t}</button></div></td></tr>
+<tr style="display:none"><td>{t}Map{/t}:</td><td>Default</td><td><div class="buttons small"><button onClick="alert('not availeable yet! :(')">{t}Change map{/t}</button></div></td></tr>
 </table>
 </div>
 {include file='footer.tpl'} 

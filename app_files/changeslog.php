@@ -5768,6 +5768,8 @@ DROP TABLE `Order Post Transaction In Process Dimension`;
 ALTER TABLE `Site Dimension` ADD `Site Direct Subscribe Madmimi` VARCHAR( 256 ) NULL DEFAULT NULL;
 
 
+
+
 ALTER TABLE `Dashboard Widget Dimension` CHANGE `Dashboard Widget Key` `Dashboard Widget Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ;
 ALTER TABLE `User Dimension` CHANGE `User Theme Key` `User Theme Key` SMALLINT( 5 ) UNSIGNED NULL DEFAULT '1',CHANGE `User Theme Background Key` `User Theme Background Key` SMALLINT( 5 ) UNSIGNED NULL DEFAULT '1';
 INSERT INTO `Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`, `Widget Metadata`) VALUES (NULL, 'Top Products', 'block_3', NULL, 'dashboard_block.php?tipo=top_products', 'Top products', '');
@@ -6504,3 +6506,4 @@ CREATE TABLE `Table Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 INSERT INTO `Table Dimension` VALUES (1,'ar_contacts','customers','Customer Name,Customer Main Plain Email'),(2,'ar_orders','orders','Order Public ID,Order Customer Name,Order Date,Order Currency,Order Balance Total Amount'),(3,'ar_orders','invoices','Invoice Title,Invoice Public ID,Invoice Customer Name,Invoice Date,Invoice Currency,Invoice Total Net Amount,Invoice Total Tax Amount'),(4,'ar_orders','dn','Delivery Note ID,Delivery Note Customer Name,Delivery Note Date,Delivery Note Weight');
 
+UPDATE `costadw`.`Table Dimension` SET `Table Default Export Fields` = 'Customer Name,Customer Main Plain Email,Customer Main Plain Telephone' WHERE `Table Dimension`.`Table Key` =1;

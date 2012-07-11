@@ -130,11 +130,6 @@ Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
   YAHOO.util.Event.addListener("done", "click",create_delivery_note );
 
-
-
-
-
-
 }
 
 

@@ -323,15 +323,119 @@ var clear_interval = function(e,suffix){
   
  }
 
- var change_interval = function(e,suffix){
- 
+function get_orders_numbers(from,to){
+var ar_file='ar_orders.php'; 
+    	var request='tipo=number_orders_in_interval&store_key='+Dom.get('store_key').value+'&from='+from+'&to='+to;
 
- 
+//alert(request);
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+					//	alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+
+						Dom.get('total_orders_number').innerHTML=r.total_orders_number
+						Dom.get('total_orders_in_process_number').innerHTML=r.total_orders_in_process_number
+						Dom.get('total_orders_dispatched_number').innerHTML=r.total_orders_dispatched_number
+						Dom.get('total_orders_unknown_number').innerHTML=r.total_orders_unknown_number
+						Dom.get('total_orders_cancelled_number').innerHTML=r.total_orders_cancelled_number
+						Dom.get('total_orders_suspended_number').innerHTML=r.total_orders_suspended_number
+						
+						
+		
+
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
+
+}
+function get_invoices_numbers(from,to){
+var ar_file='ar_orders.php'; 
+    	var request='tipo=number_invoices_in_interval&store_key='+Dom.get('store_key').value+'&from='+from+'&to='+to;
+
+//alert(request);
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+					//	alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+
+						Dom.get('total_invoices_and_refunds_number').innerHTML=r.total_invoices_and_refunds
+						Dom.get('total_invoices_number').innerHTML=r.total_invoices
+						Dom.get('total_refunds_number').innerHTML=r.total_refunds
+						Dom.get('total_paid_number').innerHTML=r.total_paid
+						Dom.get('total_to_pay_number').innerHTML=r.total_to_pay
+						
+						
+						
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
+
+}
+function get_delivery_notes_numbers(from,to){
+var ar_file='ar_orders.php'; 
+    	var request='tipo=number_delivery_notes_in_interval&store_key='+Dom.get('store_key').value+'&from='+from+'&to='+to;
+
+//alert(request);
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+					//	alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+
+						Dom.get('total_orders_number').innerHTML=r.total_orders_number
+						Dom.get('total_orders_in_process_number').innerHTML=r.total_orders_in_process_number
+						Dom.get('total_orders_dispatched_number').innerHTML=r.total_orders_dispatched_number
+						Dom.get('total_orders_unknown_number').innerHTML=r.total_orders_unknown_number
+						Dom.get('total_orders_cancelled_number').innerHTML=r.total_orders_cancelled_number
+						Dom.get('total_orders_suspended_number').innerHTML=r.total_orders_suspended_number
+						
+						
+		
+
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
+
+}
+ function change_interval(e,suffix){
+  
      from=Dom.get("v_calpop1"+suffix).value;
      to=Dom.get("v_calpop2"+suffix).value;
-
-
-
 
      if(from=='' && to=='')
 	 Dom.get('clear_interval'+suffix).style.display='none';
@@ -381,6 +485,10 @@ var clear_interval = function(e,suffix){
      var request='&sf=0&from=' +from+'&to='+to;
  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
     
+get_invoices_numbers(from,to)
+get_orders_numbers(from,to)
+
+     
      
  }
  
