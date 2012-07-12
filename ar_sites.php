@@ -274,7 +274,11 @@ function list_pages() {
 		foreach ($elements as $_key=>$_value) {
 			if ($_value) {
 				if ($_key=='Other') {
-					$_key="'Not Found','Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out'";
+				
+				////'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
+
+				
+					$_key="'Not Found','Front Page Store','Search','Information','Category Catalogue','Unknown','Store Catalogue','Registration','Client Section','Check Out','Login','Welcome','Not Found','Reset','Basket'";
 					$_elements.=','.$_key;
 
 				}
@@ -384,6 +388,8 @@ function list_pages() {
 	//print $order;
 	//    elseif($order='used_in')
 	//        $order='Supplier Product XHTML Sold As';
+
+
 
 	$sql="select *,`Site Code`,`Site Key`,`Page Short Title`,`Page Preview Snapshot Image Key`,`Page Store Section`,`Page Parent Code`,`Page Parent Key`,`Page URL`,P.`Page Key`,`Page Store Title`,`Page Code`   from `Page Store Dimension` PS left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` on (`Site Key`=`Page Site Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
