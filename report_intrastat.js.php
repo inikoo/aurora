@@ -1,5 +1,5 @@
 <?php
-include_once('common.php');
+include_once 'common.php';
 
 
 ?>
@@ -35,8 +35,8 @@ function change_view() {
     if (view=='invoices') {
         Dom.setStyle(Dom.get('report_sales_profit'),'display','none')
         Dom.setStyle(Dom.get('report_sales_invoices'),'display','')
-       
-       
+
+
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_sales-view&value=invoices', {success:function(o) {}});
     } else {
        Dom.setStyle(Dom.get('report_sales_profit'),'display','')
@@ -56,9 +56,9 @@ Dom.setStyle(div_ids,'display','none');
 Dom.setStyle('div_'+o.id,'display','')
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_sales-plot&value='+o.id,{});
 
-	    
+
 	    //  }
-    
+
 }
 
 
@@ -68,12 +68,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
   var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
-	    var OrdersColumnDefs = [ 
-				    {key:"monthyear", label:"<?php echo _('Period')?>", width:60,sortable:false,className:"aleft"}
-				    ,{key:"tariff_code", label:"<?php echo _('Comodity')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"value", label:"<?php echo _('Value')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"weight", label:"<?php echo _('Net Mass')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"country_2alpha_code", label:"<?php echo _('Country')?>",width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+	    var OrdersColumnDefs = [
+				    {key:"monthyear", label:"<?php echo _('Period')?>", width:30,sortable:false,className:"aleft"}
+				    ,{key:"tariff_code", label:"<?php echo _('Comodity')?>",width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"value", label:"<?php echo _('Value')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+						,{key:"items", label:"<?php echo _('Items')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+	,{key:"bonus", label:"<?php echo _('Bonus')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				,{key:"weight", label:"<?php echo _('Net Mass')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 
+				 ,{key:"country_2alpha_code", label:"<?php echo _('Country')?>",width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"invoices", label:"<?php echo _('Invoices')?>", width:400,sortable:false,className:"aleft"}
 
 				     ];
@@ -84,8 +89,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: { 
+		resultsList: "resultset.data",
+		metaFields: {
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
 		    rowsPerPage:"resultset.records_perpage",
@@ -95,17 +100,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records"
 		},
-		
-		fields: ['monthyear','tariff_code','value','weight','country_2alpha_code','invoices'
+
+		fields: ['monthyear','tariff_code','value','weight','country_2alpha_code','invoices','bonus','items'
 						 ]};
-	    
+
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 						     this.dataSource0, {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder_page_thumbnails
 								       ,paginator : new YAHOO.widget.Paginator({
-								        
-									      rowsPerPage:<?php echo$_SESSION['state']['report_intrastat']['nr']?>,containers : 'paginator0', 
+
+									      rowsPerPage:<?php echo$_SESSION['state']['report_intrastat']['nr']?>,containers : 'paginator0',
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -113,7 +118,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:true
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
-								     
+
 								     ,sortedBy : {
 									 key: "<?php echo$_SESSION['state']['report_intrastat']['order']?>",
 									 dir: "<?php echo$_SESSION['state']['report_intrastat']['order_dir']?>"
@@ -130,16 +135,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
      this.table0.subscribe("renderEvent", myrenderEvent);
 
 
-	    
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['report_intrastat']['f_field']?>',value:'<?php echo$_SESSION['state']['report_intrastat']['f_value']?>'};
-		
+
+	    this.table0.filter={key:'<?php echo $_SESSION['state']['report_intrastat']['f_field']?>',value:'<?php echo$_SESSION['state']['report_intrastat']['f_value']?>'};
+
 
 
 
 
 
 	};
-	
+
     });
 
 function init_rep_sales_main(){
@@ -152,8 +157,3 @@ function init_rep_sales_main(){
 }
 
 YAHOO.util.Event.onDOMReady(init_rep_sales_main);
-
-
-	
-
-

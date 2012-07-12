@@ -48,6 +48,12 @@
 						<td>{t}Commodity Code{/t}:</td>
 						<td>{$part->get('Part Tariff Code')}</td>
 					</tr>
+					<tr>
+						<td>{t}Duty Rate{/t}:</td>
+						<td>{$part->get('Part Duty Rate')}</td>
+					</tr>
+					
+					
 									{foreach from=$part->get_categories() item=category name=foo } 
 
 				<tr>

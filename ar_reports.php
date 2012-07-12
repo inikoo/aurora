@@ -4602,7 +4602,7 @@ function list_intrastat() {
 		$order='`Product Tariff Code`';
 	}
 
-	$sql="select  GROUP_CONCAT(' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , sum(`Shipped Quantity`*`Product Net Weight`) as weight , `Product Tariff Code`, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir  limit $start_from,$number_results";
+	$sql="select  sum(`Shipped Quantity`*`Product Units Per Case`) as items,sum(`Order Bonus Quantity`) as bonus,GROUP_CONCAT(' <a href=\"invoice.php?id=',`Invoice Key`,'\">',`Invoice Public ID`,'</a>' ) as invoices ,sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)) as value , sum(`Shipped Quantity`*`Product Net Weight`) as weight , LEFT(`Product Tariff Code`,8) as tariff_code, date_format(`Invoice Date`,'%y%m') as monthyear ,`Destination Country 2 Alpha Code` from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  $where $wheref group by `Product Tariff Code`,`Destination Country 2 Alpha Code`  order by   $order $order_dir  limit $start_from,$number_results";
 	//print $sql;
 	$result=mysql_query($sql);
 	$data=array();
@@ -4612,8 +4612,9 @@ function list_intrastat() {
 		$invoices=$row['invoices'];
 
 		$data[]=array(
-			'tariff_code'=>$row['Product Tariff Code'],
-
+			'tariff_code'=>$row['tariff_code'],
+			'items'=>number($row['items']),
+			'bonus'=>number($row['bonus']),
 			'monthyear'=>$row['monthyear'],
 			'value'=>money($row['value']),
 			'weight'=>weight($row['weight']),

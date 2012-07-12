@@ -40,12 +40,15 @@ $js_files=array(
 );
 
 //$root_title=_('Sales Report');
-$title=_('Instrastad');
+$title=_('Instrastad Report');
 
 //include_once 'reports_list.php';
 
 if(isset($_REQUEST['m'])){
 $_SESSION['state']['report_intrastat']['m']=$_REQUEST['m'];
+}
+if(isset($_REQUEST['y'])){
+$_SESSION['state']['report_intrastat']['y']=$_REQUEST['y'];
 }
 
 $y=$_SESSION['state']['report_intrastat']['y'];
@@ -57,6 +60,35 @@ $smarty->assign('period',$period);
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+$tipo_filter=($_SESSION['state']['report_intrastat']['f_field']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['report_intrastat']['f_value']);
+$filter_menu=array(
+	'tariff_code'=>array('db_key'=>'tariff_code','menu_label'=>_('Tariff Code  <i>x</i>'),'label'=>_('Tariff Code')),
+
+);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+$quick_links=array(
+array('label'=>strftime("%b %Y", strtotime('now -4 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -4 month')).'&y='.date("Y",strtotime('now -4 month'))),
+
+array('label'=>strftime("%b %Y", strtotime('now -3 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -3 month')).'&y='.date("Y",strtotime('now -3 month'))),
+array('label'=>strftime("%b %Y", strtotime('now -2 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -2 month')).'&y='.date("Y",strtotime('now -2 month'))),
+
+array('label'=>strftime("%b %Y", strtotime('now -1 month')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now -1 month')).'&y='.date("Y",strtotime('now -1 month'))),
+
+array('label'=>strftime("%b %Y", strtotime('now')),'link'=>'report_intrastat.php?m='.date("m",strtotime('now')).'&y='.date("Y",strtotime('now')))
+
+);
+$smarty->assign('quick_links',$quick_links);
+
+
 
 /*
 
@@ -91,6 +123,7 @@ $smarty->assign('currency',$myconf['currency_symbol']);
 $smarty->assign('quick_period',$quick_period);
 
 */
+$smarty->assign('title',$title);
 $smarty->display('report_intrastat.tpl');
 
 

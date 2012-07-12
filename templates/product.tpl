@@ -210,6 +210,11 @@
 					<tr>
 							<td>{t}Commodity Code{/t}:</td>
 							<td>{$product->get('Product Tariff Code')}</td>
+						</tr>
+						<tr>
+							<td>{t}Duty Rate{/t}:</td>
+							<td>{$product->get('Product Duty Rate')}</td>
+						</tr>
 						<tr>
 							<td>{t}Categories{/t}:</td>
 							<td></td>
