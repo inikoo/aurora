@@ -6510,3 +6510,6 @@ UPDATE `costadw`.`Table Dimension` SET `Table Default Export Fields` = 'Customer
 UPDATE `costadw`.`Table Dimension` SET `Table Default Export Fields` = 'Invoice Title,Invoice Public ID,Invoice Customer Name,Invoice Date,Invoice Currency,Invoice Total Net Amount,S1,S4,Invoice Total Tax Amount' WHERE `Table Dimension`.`Table Key` =3;
 UPDATE `costadw`.`Category Dimension` SET `Category Name` = 'AWR', `Category Label` = 'AWR', `Category Function` = 'if($data["Invoice Billing Country 2 Alpha Code"]!="PT" )' WHERE `Category Dimension`.`Category Key` = 1;
 UPDATE `costadw`.`Category Dimension` SET `Category Name` = 'PT', `Category Label` = 'Portugal', `Category Function` = 'if($data["Invoice Billing Country 2 Alpha Code"]=="PT"       )' WHERE `Category Dimension`.`Category Key` = 2;
+
+ALTER TABLE `Product Dimension` ADD `Product Duty Rate` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Product Tariff Code`;
+ALTER TABLE `Part Dimension` ADD `Part Duty Rate` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Part Tariff Code Valid`;

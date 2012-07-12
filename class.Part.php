@@ -243,12 +243,23 @@ $this->update_main_state();
 
 	}
 
+
+	function update_duty_rate($value,$options='') {
+
+		$this->update_field('Part Duty Rate',$value,$options);
+		$product_ids=$this->get_product_ids();
+
+		foreach ($product_ids as $product_id) {
+			$product=new Product('pid',$product_id);
+			$product->update_field('Product Duty Rate',$value,$options);
+		}
+	}
+
+
 	function update_tariff_code($value,$options='') {
 
 		$this->update_field('Part Tariff Code',$value,$options);
-
 		$this->update_tariff_code_valid();
-
 		$product_ids=$this->get_product_ids();
 
 		foreach ($product_ids as $product_id) {

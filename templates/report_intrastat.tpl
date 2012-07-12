@@ -1,8 +1,18 @@
 {include file='header.tpl'} 
 <div id="bd">
 	<div class="branch" style="width:280px;float:left;margin:0"> 
-  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a  href="reports.php">{t}Reports{/t}</a> &rarr; {t}Sales{/t}
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a> &rarr; <a  href="reports.php">{t}Reports{/t}</a> &rarr; {t}Intrastat{/t}
 </div>
+	
+	<div class="branch" id="period_navigation" style="clear:none;width:620px;float:right;text-align:right;font-style:normal">
+
+ <span id="other"  class="state_details selected" style="margin-left:10px">Other</span>
+{foreach from=$quick_links item=link_data}
+ <a  href="{$link_data.link}" class="state_details " style="margin-left:10px">{$link_data.label}</a>
+{/foreach} 
+
+</div>
+	
 	
 	<div style="clear:both"></div>
 	<h1 style="margin-top:10px">
@@ -14,11 +24,6 @@
 		
 			<div class="table_top_bar" style="margin-bottom:15px">
 			</div>
-		
-			
-			
-			
-				
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
 			</div>
 			<div id="table0" class="data_table_container dtable btable" style="font-size:85%">
