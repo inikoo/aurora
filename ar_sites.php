@@ -483,7 +483,7 @@ function list_pages() {
 			break;
 		}
 
-
+//'Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket'
 		switch ($row['Page Store Section']) {
 		case 'Department Catalogue':
 			$type=sprintf("d(<a href='department.php?id=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);
@@ -491,8 +491,41 @@ function list_pages() {
 		case 'Family Catalogue':
 			$type=sprintf("f(<a href='family.php?id=%d'>%s</a>)",$row['Page Parent Key'],$row['Page Parent Code']);
 			break;
+		case 'Welcome':
+			$type=_('Welcome');
+			break;	
+		case 'Login':
+			$type=_('Login');
+			break;
+			case 'Information':
+			$type=_('Information');
+			break;			
+		case 'Checkout':
+			$type=_('Checkout');
+			break;
+		case 'Reset':
+			$type=_('Reset');
+			break;		
+			case 'Registration':
+			$type=_('Registration');
+			break;		
+		case 'Not Found':
+			$type=_('Not Found');
+			break;
+		case 'Client Section':
+			$type=_('Client Section');
+			break;	
+	case 'Client Section':
+			$type=_('Client Section');
+			break;			
+			case 'Front Page Store':
+			$type=_('Basket');
+			break;		
+				case 'Basket':
+			$type=_('Home');
+			break;		
 		default:
-			$type=_('Other');
+			$type=_('Other').' '.$row['Page Store Section'];
 			break;
 		}
 		$site="<a href='site.php?id=".$row['Site Key']."'>".$row['Site Code']."</a>";
