@@ -26,16 +26,27 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js',
 		'js/table_common.js',
-'reports_calendar.js.php',
-		'report_pp.js.php',
-		'js/dropdown.js'
+'reports_calendar.js.php'
+		
 		);
+		$report_name='report_pp';
 
-$report_name='report_pp';
+if(isset($_REQUEST['view']) and ($_REQUEST['view']=='pickers' or $_REQUEST['view']=='packers' ))
+$_SESSION['state'][$report_name]['view']=$_REQUEST['view'];
+$view=$_SESSION['state'][$report_name]['view'];
+
+if($view=='packers')
+$js_files[]='report_packers.js.php';
+else
+$js_files[]='report_pickers.js.php';
+
+
+$smarty->assign('block_view',$view);
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
 
 
 if(isset($_REQUEST['tipo'])){
@@ -43,6 +54,10 @@ if(isset($_REQUEST['tipo'])){
   $_SESSION['state'][$report_name]['tipo']=$tipo;
 }else
   $tipo=$_SESSION['state'][$report_name]['tipo'];
+
+
+
+$smarty->assign('ref_tipo',$tipo);
 
 
 $root_title=_('Pickers & Packers Report');
@@ -63,7 +78,7 @@ $_SESSION['state']['report_pp']['pickers']['to']=$to;
 $_SESSION['state']['report_pp']['packers']['from']=$from;
 $_SESSION['state']['report_pp']['packers']['to']=$to;
 
-$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+//$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
 
 //$interval_data=sales_in_interval($from,$to);
@@ -83,8 +98,12 @@ $smarty->assign('month_name',date('M'));
 $smarty->assign('week',date('W'));
 $smarty->assign('from',date('Y-m-d'));
 $smarty->assign('to',date('Y-m-d'));
+$smarty->assign('quick_period',$quick_period);
+if($view=='packers')
+$smarty->display("report_packers.tpl");
 
-$smarty->display('report_pp.tpl');
+else
+$smarty->display("report_pickers.tpl");
 
 
 ?>
