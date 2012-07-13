@@ -4378,22 +4378,33 @@ function number_delivery_notes_in_interval($data) {
 
 	if (!$to and !$from) {
 		$store=new Store($store_key);
-		$total_orders_number=$store->get('Total Orders');
-		$total_orders_in_process_number=$store->get('Orders In Process');
-		$total_orders_dispatched_number=$store->get('Dispatched Orders');
-		$total_orders_unknown_number=$store->get('Unknown Orders');
-		$total_orders_cancelled_number=$store->get('Cancelled Orders');
-		$total_orders_suspended_number=$store->get('Suspended Orders');
-
+		$dn_total_number=$store->get('Total Delivery Notes');
+		$dn_returned_number=$store->get('Returned Delivery Notes');
+		$dn_send_number=$store->get('Dispatched Delivery Notes');
+		$dn_ready_number=$store->get('Store Ready to Dispatch Delivery Notes');
+		$dn_packing_number=$store->get('Packing Delivery Notes');
+		$dn_picking_number=$store->get('Picking Delivery Notes');
+		$dn_ready_to_pick_number=$store->get('Ready to Pick Delivery Notes');
+		$dn_shortages_number=$store->get('Delivery Notes For Shortages');
+		$dn_replacements_number=$store->get('Delivery Notes For Replacements');
+		$dn_donations_number=$store->get('Delivery Notes For Donations');
+		$dn_samples_number=$store->get('Delivery Notes For Samples');
+		$dn_orders_number=0;
 	}else {
-		$total_orders_number=0;
-		$total_orders_in_process_number=0;
-		$total_orders_dispatched_number=0;
-		$total_orders_unknown_number=0;
-		$total_orders_cancelled_number=0;
-		$total_orders_suspended_number=0;
+		$dn_total_number=0;
+		$dn_returned_number=0;
+		$dn_send_number=0;
+		$dn_ready_number=0;
+		$dn_packing_number=0;
+		$dn_picking_number=0;
+		$dn_ready_to_pick_number=0;
+		$dn_shortages_number=0;
+		$dn_replacements_number=0;
+		$dn_donations_number=0;
+		$dn_samples_number=0;
+		$dn_orders_number=0;
 
-		$where_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
+		$where_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`','only_dates');
 		$where_interval=$where_interval['mysql'];
 		$sql=sprintf("select count(*) as `Store Total Delivery Notes`,
              sum(IF(`Delivery Note State`='Cancelled'  or `Delivery Note State`='Cancelled to Restock' ,1,0 )) as `Store Returned Delivery Notes`,
@@ -4413,24 +4424,38 @@ function number_delivery_notes_in_interval($data) {
 		$result=mysql_query($sql);
 		//  print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total_orders_number=$row['Store Total Orders'];
-			$total_orders_in_process_number=$row['Store Total Orders']- $row['Store Dispatched Orders']-$row['Store Cancelled Orders']-$row['Store Unknown Orders'];
-			$total_orders_dispatched_number=$row['Store Dispatched Orders'];
-			$total_orders_unknown_number=$row['Store Unknown Orders'];
-			$total_orders_cancelled_number=$row['Store Cancelled Orders'];
-			$total_orders_suspended_number=$row['Store Suspended Orders'];
+		
+			$dn_total_number=$row['Store Total Delivery Notes'];
+			$dn_ready_to_pick_number=$row['Store Ready to Pick Delivery Notes'];
+			$dn_picking_number=$row['Store Picking Delivery Notes'];
+			$dn_packing_number=$row['Store Packing Delivery Notes'];
+			$dn_ready_number=$row['Store Ready to Dispatch Delivery Notes'];
+			$dn_send_number=$row['Store Dispatched Delivery Notes'];
+			$dn_returned_number=$row['Store Returned Delivery Notes'];
+			$dn_replacements_number=$row['Store Delivery Notes For Replacements'];
+			$dn_shortages_number=$row['Store Delivery Notes For Shortages'];
+			$dn_samples_number=$row['Store Delivery Notes For Samples'];
+			$dn_donations_number=$row['Store Delivery Notes For Donations'];
+			$dn_orders_number=$row['Store Delivery Notes For Orders'];
+
+		
 
 		}
 	}
 
 	$response= array('state'=>200,
-		'total_orders_number'=>$total_orders_number,
-
-		'total_orders_in_process_number'=>$total_orders_in_process_number,
-		'total_orders_dispatched_number'=>$total_orders_dispatched_number,
-		'total_orders_unknown_number'=>$total_orders_unknown_number,
-		'total_orders_cancelled_number'=>$total_orders_cancelled_number,
-		'total_orders_suspended_number'=>$total_orders_suspended_number
+		'dn_total_number'=>$dn_total_number,
+		'dn_ready_to_pick_number'=>$dn_ready_to_pick_number,
+		'dn_picking_number'=>$dn_picking_number,
+		'dn_packing_number'=>$dn_packing_number,
+		'dn_ready_number'=>$dn_ready_number,
+		'dn_send_number'=>$dn_send_number,
+		'dn_returned_number'=>$dn_returned_number,
+		'dn_replacements_number'=>$dn_replacements_number,
+		'dn_shortages_number'=>$dn_shortages_number,
+		'dn_samples_number'=>$dn_samples_number,
+		'dn_donations_number'=>$dn_donations_number,
+		'dn_orders_number'=>$dn_orders_number,
 
 	);
 	echo json_encode($response);

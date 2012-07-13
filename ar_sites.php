@@ -525,10 +525,10 @@ function list_pages() {
 			$type=_('Client Section');
 			break;			
 			case 'Front Page Store':
-			$type=_('Basket');
+			$type=_('Home');
 			break;		
 				case 'Basket':
-			$type=_('Home');
+			$type=_('Basket');
 			break;		
 		default:
 			$type=_('Other').' '.$row['Page Store Section'];

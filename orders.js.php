@@ -319,8 +319,11 @@ var clear_interval = function(e,suffix){
     var datasource=tables.dataSource2;
      var request='&sf=0&from=&to=';
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-  
-  
+  from='';
+  to=''
+  get_invoices_numbers(from,to)
+get_orders_numbers(from,to)
+get_delivery_notes_numbers(from,to)
  }
 
 function get_orders_numbers(from,to){
@@ -408,15 +411,21 @@ var ar_file='ar_orders.php';
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 
-						Dom.get('total_orders_number').innerHTML=r.total_orders_number
-						Dom.get('total_orders_in_process_number').innerHTML=r.total_orders_in_process_number
-						Dom.get('total_orders_dispatched_number').innerHTML=r.total_orders_dispatched_number
-						Dom.get('total_orders_unknown_number').innerHTML=r.total_orders_unknown_number
-						Dom.get('total_orders_cancelled_number').innerHTML=r.total_orders_cancelled_number
-						Dom.get('total_orders_suspended_number').innerHTML=r.total_orders_suspended_number
-						
-						
+						Dom.get('dn_total_number').innerHTML=r.dn_total_number
+						Dom.get('dn_returned_number').innerHTML=r.dn_returned_number
+						Dom.get('dn_send_number').innerHTML=r.dn_send_number
+						Dom.get('dn_ready_number').innerHTML=r.dn_ready_number
+						Dom.get('dn_packing_number').innerHTML=r.dn_packing_number
+						Dom.get('dn_picking_number').innerHTML=r.dn_picking_number
+						Dom.get('dn_ready_to_pick_number').innerHTML=r.dn_ready_to_pick_number
+						Dom.get('dn_shortages_number').innerHTML=r.dn_shortages_number
+						Dom.get('dn_replacements_number').innerHTML=r.dn_replacements_number
+						Dom.get('dn_donations_number').innerHTML=r.dn_donations_number
+						Dom.get('dn_samples_number').innerHTML=r.dn_samples_number
+						Dom.get('dn_orders_number').innerHTML=r.dn_orders_number
+												
 		
+
 
 						}
 					    },
@@ -487,7 +496,7 @@ var ar_file='ar_orders.php';
     
 get_invoices_numbers(from,to)
 get_orders_numbers(from,to)
-
+get_delivery_notes_numbers(from,to)
      
      
  }
@@ -523,6 +532,15 @@ get_orders_numbers(from,to)
  } 
 
 function init(){
+
+if(Dom.get('from').value!='' || Dom.get('to').value!=''){
+from=Dom.get('from').value
+to=Dom.get('to').value
+get_invoices_numbers(from,to)
+get_orders_numbers(from,to)
+get_delivery_notes_numbers(from,to)
+}
+
 dialog_export = new YAHOO.widget.Dialog("dialog_export", { visible : false,close:true,underlay: "none",draggable:false});
 dialog_export.render();
    YAHOO.util.Event.addListener('export0', "click", show_export_dialog,0);

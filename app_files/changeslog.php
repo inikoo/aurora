@@ -6513,3 +6513,8 @@ UPDATE `costadw`.`Category Dimension` SET `Category Name` = 'PT', `Category Labe
 
 ALTER TABLE `Product Dimension` ADD `Product Duty Rate` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Product Tariff Code`;
 ALTER TABLE `Part Dimension` ADD `Part Duty Rate` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Part Tariff Code Valid`;
+
+
+
+
+

@@ -364,39 +364,13 @@ else
 	$smarty->assign('title', _('Orders'));
 
 
-if (!$to and !$from) {
+
 	$total_invoices_and_refunds=$store->get('Total Invoices');
 	$total_invoices=$store->get('Invoices');
 	$total_refunds=$store->get('Refunds');
 	$total_to_pay=$store->get('All To Pay Invoices');
 	$total_paid=$store->get('All Paid Invoices');
-}else {
-	$total_invoices_and_refunds=0;
-	$total_invoices=0;
-	$total_refunds=0;
-	$total_paid=0;
-	$total_to_pay=0;
 
-
-	$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Title`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Title`='Refund',1,0)) as refunds  from  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Invoice Store Key`=%d  %s %s" ,
-		$store->id,
-		($from?sprintf('and `Invoice Date`>%s',prepare_mysql($from)):''),
-
-		($to?sprintf('and `Invoice Date`<%s',prepare_mysql($to)):'')
-
-	);
-	$result=mysql_query($sql);
-
-	// print "$sql\n";
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$total_invoices_and_refunds=$row['invoices']+$row['refunds'];
-		$total_invoices=$row['invoices'];
-		$total_refunds=$row['refunds'];
-		$total_paid=$row['paid'];
-		$total_to_pay=$row['to_pay'];
-
-	}
-}
 $smarty->assign('total_invoices_and_refunds',$total_invoices_and_refunds);
 $smarty->assign('total_invoices',$total_invoices);
 $smarty->assign('total_refunds',$total_refunds);
