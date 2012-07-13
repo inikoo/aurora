@@ -998,15 +998,6 @@ $default_state=array(
 
 
 
-	'report_pp'=>array(
-
-		'warehouse_key'=>1,
-		'tipo'=>'y',
-		'y'=>date('Y'),
-		'm'=>date('m'),
-		'd'=>date('d'),
-		'w'=>date('W')
-	),
 
 	'report_sales'=>array(
 		'tipo'=>'mtd',
@@ -1249,13 +1240,13 @@ $default_state=array(
 
 	),
 	'report_pp'=>array(
-		'tipo'=>'y',
+	'view'=>'pickers',
+		'tipo'=>'mtd',
 		'y'=>date('Y'),
 		'm'=>date('m'),
 		'd'=>date('d'),
 		'w'=>date('W'),
-		'department_key'=>false,
-		'share'=>.8,
+	
 		'from'=>'',
 		'to'=>'',
 		'pickers'=>array(
