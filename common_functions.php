@@ -264,12 +264,12 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 		$d_option='datetime';
 		$date_only=false;
 	}
-//	print "$options $d_option.$start |\n";
-	
+	// print "$options $d_option.$start |\n";
+
 	$tmp=prepare_mysql_datetime($date1,$d_option.$start);
-	
-	
-	
+
+
+
 	$mysql_date1=$tmp['mysql_date'];
 	$ok1=$tmp['ok'];
 	if ($tmp['status']=='empty')
@@ -329,7 +329,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 
 function prepare_mysql_datetime($datetime,$tipo='datetime') {
 
-//print "** $tipo \n";exit;
+	//print "** $tipo \n";exit;
 	if ($datetime=='')
 		return array('mysql_date'=>'','status'=>'empty','ok'=>false);
 	$time='';
@@ -337,29 +337,29 @@ function prepare_mysql_datetime($datetime,$tipo='datetime') {
 	if (preg_match('/datetime/',$tipo)) {
 		if (preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/',$datetime))
 			$datetime=$datetime.':00';
-			
+
 		if (preg_match('/^[0123]\d[\-\/][01]\d[\-\/][12]\d{3} /',$datetime)) {
 			$_tmp=preg_split('/\s/',$datetime);
-			
+
 			$tmp=preg_split('/\-|\//',$_tmp[0]);
 			if (count($tmp)==3) {
 				$_datetime=$tmp[2].'-'.$tmp[1].'-'.$tmp[0];
 			}
-			
+
 			$datetime=$_datetime.' '.$_tmp[1];
-			
-			
-			
-			
-		}	
-			
+
+
+
+
+		}
+
 		if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
 			return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." * $datetime",'ok'=>false);
 		$ts=date('U',strtotime($datetime));
 		list($date,$time)=preg_split('/\s+/',$datetime);
-		
+
 		//exit;
-		
+
 	} else {
 
 
@@ -1507,7 +1507,7 @@ function invoices_awhere($awhere) {
 //Parts awhere
 function parts_awhere($awhere) {
 
-$sql_type='part';
+	$sql_type='part';
 
 	$where_data=array(
 		//'product_ordered1'=>'∀',
@@ -1520,9 +1520,9 @@ $sql_type='part';
 		'geo_constraints'=>'',
 		'part_valid_from'=>'',
 		'part_valid_to'=>'',
-			'part_dispatched_from'=>'',
+		'part_dispatched_from'=>'',
 		'part_dispatched_to'=>'',
-		
+
 		//'product_valid_to'=>'',
 		//'price_lower'=>'',
 		//'price_upper'=>'',
@@ -1539,7 +1539,7 @@ $sql_type='part';
 	}
 
 
-$sql_type='itf';
+	$sql_type='itf';
 
 	$where='where  `Inventory Transaction Type` in ("Sale","OIP")  ';
 	//$table='`Part Dimension` P ';
@@ -1548,18 +1548,18 @@ $sql_type='itf';
 
 
 
-if($where_data['invalid_tariff_code']=='Yes'){
-$where.=" and `Part Tariff Code Valid`='Yes'";
+	if ($where_data['invalid_tariff_code']=='Yes') {
+		$where.=" and `Part Tariff Code Valid`='Yes'";
 
-}else if($where_data['invalid_tariff_code']=='No'){
-$where.=" and `Part Tariff Code Valid`='No'";
+	}else if ($where_data['invalid_tariff_code']=='No') {
+			$where.=" and `Part Tariff Code Valid`='No'";
 
-}
+		}
 
 
 	$date_dispatched=prepare_mysql_dates(($where_data['part_dispatched_from']==''?'':$where_data['part_dispatched_from'].' 00:00:00'),($where_data['part_dispatched_to']==''?'':$where_data['part_dispatched_to'].' 23:59:59'),'ITF.`Date`','datetime');
 
-//print_r($date_dispatched);exit;
+	//print_r($date_dispatched);exit;
 	$where.=$date_dispatched['mysql'];
 
 
@@ -3968,12 +3968,12 @@ function sentence_similarity($a,$b) {
 }
 
 function get_interval_db_name($interval) {
-	
+
 	switch ($interval) {
 
 
 	case 'Total':
-case 'all':
+	case 'all':
 		$db_interval='Total';
 
 		break;
@@ -4078,7 +4078,7 @@ case 'all':
 		$db_interval='1 Hour';
 
 		break;
-	
+
 	default:
 		return;
 		break;
@@ -4089,13 +4089,17 @@ case 'all':
 
 function calculate_inteval_dates($interval) {
 
+$from_date=false;
+		$to_date=false;
 
+		$from_date_1yb=false;
+		$to_1yb=false;
 
 	switch ($interval) {
 
 
 	case 'Total':
-case 'all':
+	case 'all':
 		$db_interval='Total';
 		$from_date=false;
 		$to_date=false;
@@ -4267,7 +4271,7 @@ case 'all':
 		break;
 	}
 
-	return array($db_interval,$from_date,$from_date_1yb,$to_1yb);
+	return array($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb);
 
 }
 

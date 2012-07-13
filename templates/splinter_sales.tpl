@@ -15,7 +15,7 @@
     <script type="text/javascript" src="{$i}"></script>
     {/foreach}
     {if isset($script)}<script type="text/javascript">{$script}</script>{/if}
-        
+         <base target="_parent" />
   </head>
 
   <body class="yui-skin-sam inikoo">

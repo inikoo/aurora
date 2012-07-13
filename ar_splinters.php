@@ -172,6 +172,11 @@ function invoice_categories_sales_overview() {
 		exit;
 	}
 
+list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
+$from=($from?substr($from,0,-9):'');
+$to=($from?substr($to,0,-9):'');
+
+
 	$sql=sprintf("select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",
 		$fields);
 	$adata=array();
@@ -190,10 +195,10 @@ function invoice_categories_sales_overview() {
 		$sum_dc_sales+=$row['dc_sales'];
 		$sum_dc_sales_1yb+=$row['dc_sales_1yb'];
 
-		$invoice=number($row['invoices']);
-		$category="<a target='_parent' href='report_sales.php?invoice_category_key=".$row['Category Key']."'>".$row['Category Label'].'</a>';
+		$invoices=number($row['invoices']);
+		$category="<a  href='report_sales.php?invoice_category_key=".$row['Category Key']."'>".$row['Category Label'].'</a>';
 		//$invoices=sprintf('<a href="orders.php?view=invoices&invoice_type=invoices&splinter=1&cat_key=%d">%s</a>',$row['Category Key'], $invoice);
-		$invoices=sprintf('<a target="_parent" href="new_invoices_list.php?store=%d&period=%s&auto=1&cat_key=%d">%s</a>',$row['Category Store Key'],$period,$row['Category Key'],$invoice);
+		$invoices=sprintf('<a href="invoice_categories.php?id=%d&from=%s&to=%s">%s</a>',$row['Category Key'],$from,$to,$invoices);
 		$adata[]=array(
 
 			'store'=>$category,
@@ -267,24 +272,16 @@ function invoice_categories_sales_overview() {
 function store_sales_overview() {
 
 
-	global $myconf,$output_type,$user,$corporate_currency_symbol;
+	global $output_type,$user,$corporate_currency_symbol;
 
 	$conf=$_SESSION['state']['home']['splinters']['sales'];
 	$start_from=0;
-
-
-
-
 
 	if (isset( $_REQUEST['period'])) {
 		$period=$_REQUEST['period'];
 		$_SESSION['state']['home']['splinters']['sales']['period']=$period;
 	} else
 		$period=$conf['period'];
-
-
-
-
 
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
@@ -294,8 +291,6 @@ function store_sales_overview() {
 
 
 	$store=join(',',$user->stores);
-
-
 
 
 	$filter_msg='';
@@ -390,6 +385,14 @@ $number_results='';$order='';$order_dir='';
 		$fields=sprintf(" `Store 1 Week Acc Invoices` as invoices,`Store 1 Week Acc Invoiced Amount` as sales " );
 	}
 
+
+list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
+
+$from=($from?substr($from,0,-9):'');
+$to=($from?substr($to,0,-9):'');
+
+
+
 	$sql=sprintf("select  S.`Store Key`,`Store Name`, `Store Currency Code` currency,%s from `Store Dimension` S left join `Store Default Currency` DC on (S.`Store Key`=DC.`Store Key`) ",$fields);
 	$adata=array();
 	//print $sql;
@@ -409,7 +412,7 @@ $number_results='';$order='';$order_dir='';
 
 		$invoice=number($row['invoices']);
 		$store="<a href='report_sales.php?store_key=".$row['Store Key']."'>".$row['Store Name'].'</a>';
-		$invoices=sprintf('<a href="new_invoices_list.php?store=%d&period=%s&auto=1">%s</a>',$row['Store Key'],$period,$invoice);
+		$invoices=sprintf('<a href="orders.php?store=%d&from=%s&to=%s&view=invoices">%s</a>',$row['Store Key'],$from,$to,$invoice);
 
 		$adata[]=array(
 

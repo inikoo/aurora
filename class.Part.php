@@ -1610,7 +1610,7 @@ $this->update_main_state();
 	function update_sales_from_invoices($interval) {
 
 		$to_date='';
-		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
 
