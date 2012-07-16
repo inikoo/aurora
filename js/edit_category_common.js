@@ -59,6 +59,9 @@ var ar_file='ar_edit_categories.php';
 							cancel_new_category()
 				
 				}
+						else{
+							alert(r.msg)
+						}
 						
 					    },
 					failure:function(o) {

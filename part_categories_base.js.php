@@ -97,7 +97,12 @@ var change_view=function(e){
 	}
   }
 
-
+function post_create_actions(){
+  var table=tables.table1;
+     var datasource=tables.dataSource1;
+request='';
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
+}
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {

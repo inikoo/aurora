@@ -86,6 +86,7 @@ $css_files=array(
                'button.css',
                'table.css',
                'theme.css.php'
+                
            );
 $js_files=array(
 
@@ -279,6 +280,12 @@ $smarty->assign('filter_name100',$filter_menu100[$tipo_filter100]['label']);
 $smarty->assign('filter_menu100',$filter_menu100);
 $smarty->assign('filter100',$tipo_filter100);
 $smarty->assign('filter_value100','');
+
+
+$smarty->assign('show_purchase_history_chart',$_SESSION['state']['supplier']['purchase_history']['show_chart']);
+$smarty->assign('purchase_history_chart_output',$_SESSION['state']['supplier']['purchase_history']['chart_output']);
+$smarty->assign('purchase_history_type',$_SESSION['state']['supplier']['purchase_history']['type']);
+
 
 $smarty->display('supplier.tpl');
 

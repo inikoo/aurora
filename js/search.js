@@ -18,7 +18,6 @@ var submit_search_on_enter=function(e,tipo) {
 
 function init_search(type) {
 
-
     subject=type;
     switch (type) {
     case 'staff':

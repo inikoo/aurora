@@ -28,9 +28,12 @@ var tableid=1
 				      // 	,{key:"store",label:"", width:10,sortable:false,className:"aleft"}
 
 				      // ,{key:"family", label:Dom.get('label_Fam').value, width:28,sortable:false,className:"aleft"}
-				       ,{key:"description", label:Dom.get('label_Product').value, width:279,sortable:false,className:"aleft"}
+				       ,{key:"description", label:Dom.get('label_Product').value, width:220,sortable:false,className:"aleft"}
 				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:69,sortable:false,className:"aright"}
-					 ];
+						,{key:"stock", label:Dom.get('label_Stock').value, width:50,sortable:false,className:"aright"}
+					//	,{key:"web_state", label:'', width:30,sortable:false,className:"aright"}
+
+				];
 	  
 	 //alert("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid)
 	  top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_splinters.php?tipo=products&type="+Dom.get('top_products_type').value+"&tableid="+tableid);
@@ -53,7 +56,7 @@ var tableid=1
 		
 		fields: [
 			 'position',
-			 'store','family','code','description','net_sales'
+			 'store','family','code','description','net_sales','stock'
 			 ]};
 		    top_products_tables.table1 = new YAHOO.widget.DataTable(tableDivEL, ProductsColumnDefs,
 								   top_products_tables.dataSourcetopprod

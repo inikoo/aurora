@@ -798,7 +798,7 @@ function list_parts() {
 
 
 
-	$sql="select   `Part Unit Description`,P.`Part SKU`,`Part Total Acc Sold Amount`,`Part 1 Month Acc Sold Amount`,`Part 1 Year Acc Sold Amount`,`Part 1 Quarter Acc Sold Amount`,`Part 1 Year Acc Sold Amount` from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  `Part Current Stock`, `Part Unit Description`,P.`Part SKU`,`Part Total Acc Sold Amount`,`Part 1 Month Acc Sold Amount`,`Part 1 Year Acc Sold Amount`,`Part 1 Quarter Acc Sold Amount`,`Part 1 Year Acc Sold Amount` from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 	// print $sql;
 	$position=1;
@@ -829,7 +829,8 @@ function list_parts() {
 		$code="<a href='part.php?sku=".$data['Part SKU']."'>".sprintf("SKU%05d",$data['Part SKU']).'</a>';
 		$family='';
 		$store='';
-
+		$web_state='';
+$stock=$stock=number($data['Part Current Stock']).$web_state;
 		$adata[]=array(
 			'position'=>'<b>'.$position++.'</b>'
 			,'code'=>$code
@@ -837,6 +838,7 @@ function list_parts() {
 			,'store'=>$store
 			,'description'=>'<b>'.$code.'</b> '.$data['Part Unit Description']
 			,'net_sales'=>$sales
+			,'stock'=>$stock
 		);
 	}
 	mysql_free_result($result);
@@ -1178,7 +1180,7 @@ function list_products() {
 
 
 
-	$sql="select   `Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Product Total Acc Invoiced Amount`,`Product 1 Month Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product 1 Quarter Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product ID DC Total Acc Invoiced Amount`,`Product ID DC 1 Month Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select   `Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Product Total Acc Invoiced Amount`,`Product 1 Month Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product 1 Quarter Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product ID DC Total Acc Invoiced Amount`,`Product ID DC 1 Month Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 	//  print $sql;
 	$position=1;
@@ -1229,6 +1231,17 @@ function list_products() {
 		$family="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a>';
 		$store="<a href='store.php?id=".$data['Product Store Key']."'>".$data['Store Code'].'</a>';
 
+
+switch($data['Product Web State']){
+case('For Sale'):
+$web_state='<img src="art/icons/bullet_green.png">';
+break;
+default;
+$web_state='<img src="art/icons/bullet_red.png">';
+
+}
+
+$stock=number($data['Product Availability']).$web_state;
 		$adata[]=array(
 			'position'=>'<b>'.$position++.'</b>'
 			,'code'=>$code
@@ -1236,6 +1249,7 @@ function list_products() {
 			,'store'=>$store
 			,'description'=>'<b>'.$code.'</b> '.$data['Product Short Description']." ($store)"
 			,'net_sales'=>$sales
+			,'stock'=>$stock
 		);
 	}
 	mysql_free_result($result);
@@ -1380,9 +1394,9 @@ function list_customers() {
 
 
 
-	if ($period=='all')
-		$sql="select  `Customer Net Balance`*`Invoice Currency Exchange` as  net_balance , `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
-	else
+//	if ($period=='all')
+//		$sql="select  `Customer Net Balance`*`Invoice Currency Exchange` as  net_balance , `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
+//	else
 		$sql="select  sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)  as  net_balance , `Invoice Currency`,`Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices    from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
 
 
@@ -1392,6 +1406,7 @@ function list_customers() {
 
 	$position=1;
 	$result=mysql_query($sql);
+	//print $sql;
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
@@ -1448,6 +1463,7 @@ function list_customers() {
 		array('state'=>200,
 			'data'=>$adata,
 			'rtext'=>$rtext,
+			'rtext_rpp'=>'',
 			'sort_key'=>$_order,
 			'sort_dir'=>$_dir,
 			'tableid'=>$tableid,

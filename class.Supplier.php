@@ -245,11 +245,11 @@ class supplier extends DB_Table {
         case('Formated ID'):
         case("ID"):
             return $this->get_formated_id();
-        case('Total Parts Sold Amount'):
-            return money($this->data['Supplier Total Parts Sold Amount']);
+        case('Total Acc Parts Sold Amount'):
+            return money($this->data['Supplier Total Acc Parts Sold Amount']);
             break;
-        case('Total Parts Profit'):
-            return money($this->data['Supplier Total Parts Profit After Storing']);
+        case('Total Acc Parts Profit'):
+            return money($this->data['Supplier Total Acc Parts Profit After Storing']);
             break;
         case('Stock Value'):
 

@@ -175,6 +175,84 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['porders']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['porders']['table']['f_value']?>'};
 	
 	
+	
+	
+		    var tableid=1;
+		    var tableDivEL="table"+tableid;
+
+  var ColumnDefs = [
+				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
+				      ,{key:"locations", label:"<?php echo _('Locations')?>", width:100,sortable:false,className:"aleft"}
+				      ,{key:"quantity", label:"<?php echo _('Qty')?>", width:100,sortable:false,className:"aleft"}
+				      ,{key:"value", label:"<?php echo _('Value')?>", width:60,sortable:false,className:"aleft"}
+				      
+				      ,{key:"sold_qty", label:"<?php echo _('Sold')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"in_qty", label:"<?php echo _('In')?>", width:60,sortable:false,className:"aright"}
+				      ,{key:"lost_qty", label:"<?php echo _('Lost')?>", width:60,sortable:false,className:"aright"}
+
+				      ];
+
+		 
+		    
+		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		    this.dataSource1.connXhrMode = "queueRequests";
+		    this.dataSource1.responseSchema = {
+			resultsList: "resultset.data", 			
+			metaFields: {
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"			
+			
+			 
+			},
+			
+		
+
+	fields: [
+				 "date","locations","quantity","value","sold_qty","in_qty","lost_qty"
+
+				 ]};
+
+	    
+		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+							     this.dataSource1, {
+								 //draggableColumns:true,
+								 renderLoopSize: 50,generateRequest : myRequestBuilder
+								 ,paginator : new YAHOO.widget.Paginator({alwaysVisible:false,
+									 rowsPerPage:<?php echo$_SESSION['state']['part']['stock_history']['nr']?>,containers : 'paginator1', 
+									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									 previousPageLinkLabel : "<",
+									 nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								     })
+								 
+								 ,sortedBy : {
+								   key: "<?php echo$_SESSION['state']['part']['stock_history']['order']?>",
+								    dir: "<?php echo$_SESSION['state']['part']['stock_history']['order_dir']?>"
+								  }
+								 ,dynamicData : true
+								 
+							     }
+							     );
+
+
+		    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+		    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+		    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+
+	
+	
+	
+	
 	var tableid=3; // Change if you have more the 1 table
 		var tableDivEL="table"+tableid;
 		var SuppliersColumnDefs = [
@@ -419,8 +497,8 @@ break;
 
 
    function change_block(){
-ids=["details","products","purchase_orders"];
-block_ids=["block_details","block_products","block_purchase_orders"];
+ids=["details","products","purchase_orders","purchases"];
+block_ids=["block_details","block_products","block_purchase_orders","block_purchases"];
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
@@ -670,7 +748,7 @@ function init(){
 
 
     
-    var ids = ["details","products","purchase_orders"]; 
+ids=["details","products","purchase_orders","purchases"];
     Event.addListener(ids,"click",change_block);
 
 

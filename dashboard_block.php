@@ -54,17 +54,71 @@ $js_files=array(
 
 
 switch ($tipo) {
+case 'top_customers':
 
+	$js_files[]='js/splinter_top_customers.js';
+	$template='splinter_top_customers.tpl';
+	if (count($user->stores)==0) {
+		return;
+	}
+
+	$store_keys=join(',',$user->stores);
+	$store_title='';
+
+	$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension` where `Store Key` in (%s) ",$store_keys);
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_assoc($res)) {
+		$store_title.=sprintf(" ,<a target='_parent' style='color: inherit;' href='customers_pending_orders.php?store=%d'>%s</a>",$row['Store Key'],$row['Store Code']);
+	}
+	$store_title=preg_replace('/^\s*\,/','',$store_title);
+	$smarty->assign('store_title',$store_title);
+	$smarty->assign('store_keys',$store_keys);
+
+
+	/*
+
+	switch ($_SESSION['state']['home']['splinters']['top_customers']['period']) {
+	case 'ytd':
+		$table_title=_('Sales').": "._('Year-to-Date');
+		break;
+	default:
+		$table_title=_('Sales').' '.$_SESSION['state']['home']['splinters']['top_customers']['period'];
+		break;
+	}
+	$smarty->assign('table_title',$table_title);
+
+*/
+
+
+
+	$tipo_filter=$_SESSION['state']['home']['splinters']['top_customers']['f_field'];
+	$smarty->assign('filter_name',$tipo_filter);
+	$smarty->assign('filter_value',$_SESSION['state']['home']['splinters']['top_customers']['f_value']);
+	$filter_menu=array(
+		'name'=>array('db_key'=>'name','menu_label'=>_('Customer name like <i>x</i>'),'label'=>_('Name'))
+	);
+
+	$smarty->assign('filter_menu',$filter_menu);
+	$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+
+	$paginator_menu=array(10,25,50,100,500);
+	$smarty->assign('paginator_menu',$paginator_menu);
+
+	//print_r($_SESSION['state']['home']['splinters']['top_customers']);
+	$smarty->assign('top_customers_nr',$_SESSION['state']['home']['splinters']['top_customers']['nr']);
+	//$smarty->assign('top_customers_type',$_SESSION['state']['home']['splinters']['top_customers']['type']);
+
+	$smarty->assign('top_customers_period',$_SESSION['state']['home']['splinters']['top_customers']['period']);
+
+
+	$smarty->assign('top_customers_index',1);
+
+	break;
 case 'top_products':
-
-
-
 
 	$js_files[]='js/splinter_top_products.js';
 	$template='splinter_top_products.tpl';
-
-
-
 	if (count($user->stores)==0) {
 		return;
 	}
@@ -116,10 +170,10 @@ case 'top_products':
 	//print_r($_SESSION['state']['home']['splinters']['top_products']);
 	$smarty->assign('top_products_nr',$_SESSION['state']['home']['splinters']['top_products']['nr']);
 	$smarty->assign('top_products_type',$_SESSION['state']['home']['splinters']['top_products']['type']);
-	
-		$smarty->assign('top_products_period',$_SESSION['state']['home']['splinters']['top_products']['period']);
 
-	
+	$smarty->assign('top_products_period',$_SESSION['state']['home']['splinters']['top_products']['period']);
+
+
 	$smarty->assign('top_products_index',1);
 
 	break;
@@ -206,33 +260,33 @@ case 'average_order_value':
 	$parent='store';
 	$parent_key=1;
 
-	
-		include_once 'class.Store.php';
-		$scope= new Store($parent_key);
-		$smarty->assign('scope',$scope);
-		$corporation_data=get_corporation_data();
 
-$currency=$corporation_data['HQ Currency'];
+	include_once 'class.Store.php';
+	$scope= new Store($parent_key);
+	$smarty->assign('scope',$scope);
+	$corporation_data=get_corporation_data();
 
-
-$from=date("Y-m-d H:i:s",strtotime("now -30 days"));
-$sql=sprintf("select count(*) as orders, avg(`Order Total Net Amount`*`Order Currency Exchange`) as net from `Order Dimension` where `Order Current Dispatch State`='Dispatched' and `Order Date`>%s ",prepare_mysql($from));
-$res=mysql_query($sql);
+	$currency=$corporation_data['HQ Currency'];
 
 
-$average_order_value=_('ND');
-$samples=0;
+	$from=date("Y-m-d H:i:s",strtotime("now -30 days"));
+	$sql=sprintf("select count(*) as orders, avg(`Order Total Net Amount`*`Order Currency Exchange`) as net from `Order Dimension` where `Order Current Dispatch State`='Dispatched' and `Order Date`>%s ",prepare_mysql($from));
+	$res=mysql_query($sql);
 
-if($row=mysql_fetch_assoc($res)){
-$average_order_value=money($row['net'],$currency);
-$samples=$row['orders'];
 
-}
-$smarty->assign('average_order_value',$average_order_value);
-$smarty->assign('store_title',$scope->data['Store Code']);
-		
-		
-	
+	$average_order_value=_('ND');
+	$samples=0;
+
+	if ($row=mysql_fetch_assoc($res)) {
+		$average_order_value=money($row['net'],$currency);
+		$samples=$row['orders'];
+
+	}
+	$smarty->assign('average_order_value',$average_order_value);
+	$smarty->assign('store_title',$scope->data['Store Code']);
+
+
+
 	break;
 default:
 	exit;
