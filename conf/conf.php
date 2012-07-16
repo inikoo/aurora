@@ -96,7 +96,7 @@ $default_state=array(
 		'display'=>'sales',
 		'splinters'=>array(
 			'top_products'=>array('type'=>'products','nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc','f_field'=>'code','f_value'=>''),
-			'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc'),
+			'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc','f_field'=>'name','f_value'=>''),
 			'sales'=>array('type'=>'invoice_categories','period'=>'ytd','currency'=>'corporate'),
 			'orders_in_process'=>array(
 				'store_keys'=>'all',
@@ -993,9 +993,6 @@ $default_state=array(
 			'elements'=>''
 		)
 	),
-
-
-
 
 
 
@@ -4372,6 +4369,25 @@ $default_state=array(
 		'id'=>1,
 		'display'=>array('details'=>0,'history'=>0,'products'=>1,'po'=>0),
 		'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),
+		
+			'purchase_history'=>array(
+			'show_chart'=>1,
+			'chart_output'=>'stock',
+			'order'=>'date',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>15,
+			'type'=>'week',
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+			'from'=>'',
+			'to'=>'',
+			'elements'=>array()
+		),
+		
+		
 		'supplier_products'=>array(
 			'view'=>'general',
 			'percentage'=>0,

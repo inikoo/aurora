@@ -151,9 +151,9 @@ function add_category($raw_data) {
         $response= array('state'=>200,'action'=>'created','category_key'=>$category->id);
     } else {
         if ($category->found)
-            $response= array('state'=>400,'action'=>'found','category_key'=>$category->found_key);
+            $response= array('state'=>400,'action'=>'found','category_key'=>$category->found_key,'msg'=>_('Category name already used'));
         else
-            $response= array('state'=>400,'action'=>'error','category_key'=>0,'msg'=>$category->msg);
+            $response= array('state'=>400,'action'=>'error','category_key'=>0,'msg'=>$category->msg,'msg'=>'Error');
     }
 
 
@@ -545,6 +545,8 @@ function list_edit_customer_categories() {
 function list_edit_part_categories() {
     $conf=$_SESSION['state']['categories']['table'];
 
+$parent_key=$_REQUEST['parent_key'];
+
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -591,10 +593,10 @@ function list_edit_part_categories() {
         $tableid=0;
 
 
-    $subject=$_SESSION['state']['categories']['subject'];
-    $subject_key=$_SESSION['state']['categories']['subject_key'];
-    $parent_key=$_SESSION['state']['categories']['parent_key'];
-    $store_key=$_SESSION['state']['categories']['store_key'];
+  //  $subject=$_SESSION['state']['categories']['subject'];
+ //   $subject_key=$_SESSION['state']['categories']['subject_key'];
+  //  $parent_key=$_SESSION['state']['categories']['parent_key'];
+  //  $store_key=$_SESSION['state']['categories']['store_key'];
 
     $_SESSION['state']['categories']['table']['order']=$order;
     $_SESSION['state']['categories']['table']['order_dir']=$order_direction;
@@ -609,11 +611,11 @@ function list_edit_part_categories() {
 
 
 
-    $where=sprintf("where  `Category Subject`=%s and  `Category Parent Key`=%d ",
-                   prepare_mysql($subject),$parent_key);
-    if ($subject_key) {
-        $where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
-    }
+    $where=sprintf("where  `Category Subject`='Part' and  `Category Parent Key`=%d ",
+                   $parent_key);
+ //   if ($subject_key) {
+ //       $where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
+ //   }
 
 
 

@@ -2,12 +2,12 @@
 <div id="bd" style="padding:0" >
 
 <div style="padding:0 20px">
-{include file='hr_navigation.tpl'}
+
 <div class="branch"> 
   <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {t}Staff{/t}</span>
 </div>
  
-<div class="top_page_menu">
+<div class="top_page_menu" style="margin-top:10px">
     <div class="buttons" style="float:right">
         {if $modify}
 

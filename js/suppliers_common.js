@@ -159,7 +159,7 @@ function  change_supplier_products_view(e,data){
 	}
 
 
-    Dom.removeClass(Dom.getElementsByClassName('option','td' , this.parentNode),'selected')
+    Dom.removeClass(Dom.getElementsByClassName('option','button' , this.parentNode),'selected')
     Dom.addClass(this,"selected");	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+data.parent+'-supplier_products-view&value=' + escape(tipo) ,{});
 	

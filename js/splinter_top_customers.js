@@ -2,23 +2,39 @@
 top_customers_tables= new Object();
 
 
+function getDocHeight() {
+    var D = document;
+    return Math.max(
+        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+        Math.max(D.body.offsetHeight, D.documentElement.offsetHeight),
+        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+    );
+}
+
+
+function myrenderEvent(){
+
+parent.Dom.setStyle('block_'+Dom.get('block_key').value,'height',getDocHeight()+'px')
+
+}
+
 function top_customers_init(){
 
- ids=['top_customers_50','top_customers_10','top_customers_20'];
+ ids=['top_customers_50','top_customers_10','top_customers_20','top_customers_100'];
  YAHOO.util.Event.addListener(ids, "click",change_top_customer_number);
  
 ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q'];
  YAHOO.util.Event.addListener(ids, "click",change_top_customer_period);
 
- 
+
 		var tableid=Dom.get('top_customers_index').value;
 	    var tableDivEL="table"+tableid;
 
 
 	    var CustomersColumnDefs = [
-				      {key:"position", label:"", width:2,sortable:false,className:"aleft"}
-				      ,{key:"name", label:Dom.get('label_Customer_Name').value, width:175,sortable:false,className:"aleft"}
-				       ,{key:"last_order", label:Dom.get('label_Last_Order').value,width:70,sortable:false,className:"aright"}
+				      {key:"position", label:"", width:15,sortable:false,className:"aleft"}
+				      ,{key:"name", label:Dom.get('label_Customer_Name').value, width:200,sortable:false,className:"aleft"}
+				       ,{key:"last_order", label:Dom.get('label_Last_Order').value,width:80,sortable:false,className:"aright"}
 				       ,{key:"invoices", label:Dom.get('label_Invoices').value,sortable:false,className:"aright"}
 					      ,{key:"net_balance", label:Dom.get('label_Balance').value,sortable:false,className:"aright"}
 				      
@@ -41,13 +57,14 @@ ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q
 	 top_customers_tables.dataSourcetopcust.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+			    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -69,7 +86,6 @@ ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q
 	    //__You shouls not change anything from here
 
 	    //top_customers_tables.dataSource.doBeforeCallback = mydoBeforeCallback;
-  
 
 	    top_customers_tables.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 								   top_customers_tables.dataSourcetopcust
@@ -89,7 +105,7 @@ ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q
 									  })
 								     
 								     ,sortedBy : {
-									 key: Dom.get('top_customers_order').value,
+									 key: 'position',
 									 dir: 'desc'
 								     },
 								     dynamicData : true
@@ -104,7 +120,7 @@ ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q
 
 		     top_customers_tables.table1.table_id=tableid;
 		   top_customers_tables.table1.subscribe("renderEvent", myrenderEvent);
-		  
+		
 	
 	
 	}

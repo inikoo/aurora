@@ -134,7 +134,7 @@ if(isset($_REQUEST['customer_key'])  and is_numeric($_REQUEST['customer_key']) )
 		$adata[]=array(
 			'id'=>$public_id,
 			//'id'=>$row['Order Public ID'],
-			'state'=>$row['Order Current XHTML State'],
+			'state'=>$row['Order Current Dispatch State'],
 			'date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
 			//  'total'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
 			'total'=>money($row['Order Balance Total Amount'],'GBP')
@@ -195,6 +195,13 @@ global $user;
 			 left join `Page Store Dimension` PSD on (P.`Product Family Key`=PSD.`Page Parent Key` and `Page Store Section` ='Family Catalogue')
 			 left join `Page Dimension` PaD on (PaD.`Page Key`=PSD.`Page Key`)
          $where $order  ";
+         
+         	$sql="select O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
+         from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)
+         left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
+         left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`)
+			
+         $where $order  ";
 
 	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
 
@@ -214,11 +221,11 @@ global $user;
 		}
 		$ordered=preg_replace('/^<br\/>/','',$ordered);
 		//$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
-		if ($row['Page URL']) {
-			$code=sprintf('<a href="http://%s">%s</a>',$row['Page URL'],$row['Product Code']);
-		}else {
+	//	if ($row['Page URL']) {
+	//		$code=sprintf('<a href="http://%s">%s</a>',$row['Page URL'],$row['Product Code']);
+	//	}else {
 			$code=$row['Product Code'];
-		}
+	//	}
 		$dispatched=number($row['Shipped Quantity']);
 
 		if ($row['Quantity']>0  and $row['Operation']=='Resend') {

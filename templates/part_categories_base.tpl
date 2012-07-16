@@ -4,24 +4,22 @@
  {include file='locations_navigation.tpl'}
 
 <div class="branch"> 
-  <span >{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php">{t}Inventory{/t}</a>  &rarr; {t}Parts Categories{/t}</span>
+  <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a>  &rarr; {t}Parts Categories{/t}</span>
 </div>
 <div class="top_page_menu">
     <div class="buttons" style="float:left">
-        <button  onclick="window.location='warehouse_parts.php?warehouse_id={$warehouse->id}'" ><img src="art/icons/house.png" alt=""> {t}Warehouse{/t}</button>
+		<span class="main_title">{t}Parts Categories Home{/t}</span>
     </div>
     <div class="buttons" style="float:right">
         <button  onclick="window.location='edit_part_category.php?warehouse_id={$warehouse->id}&id=0'" ><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>
-        <button id="new_category" ><img src="art/icons/add.png" alt=""> {t}Main Category{/t}</button>
+        <button id="new_category" ><img src="art/icons/add.png" alt=""> {t}New Main Category{/t}</button>
     </div>
     <div style="clear:both"></div>
 </div>
- <div style="clear:left;">
-  <h1>{t}Parts Categories Home{/t}</h1>
-</div>
+
 </div>
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
     <li> <span class="item {if $block_view=='subcategories'}selected{/if}"  id="subcategories">  <span> {t}Categories{/t}</span></span></li>
     <li> <span style="display:none" class="item {if $block_view=='history'}selected{/if}"  id="history">  <span> {t}History{/t}</span></span></li>
 </ul>

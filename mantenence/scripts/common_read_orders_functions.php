@@ -633,9 +633,9 @@ function create_order($data) {
 
 		}
 		elseif ( $transaction['given']>0) {
-		
-			
-		
+
+
+
 			$product=new Product('id',$transaction['Product Key']);
 			$quantity=$transaction['given'];
 			$gross=0;
@@ -723,7 +723,7 @@ function create_order($data) {
 
 	}
 
-	
+
 
 	return $order;
 
@@ -1730,176 +1730,181 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 		$_name=preg_replace('/\s*$/','',$_name);
 		if (preg_match('/^(michele|michell|mich)$/i',$_name)   )
 			$_name='michelle';
-		else if ( $_name=='salvka' or    preg_match('/^slavka/i',$_name) or $_name=='slavke' or $_name=='slavla' )
-				$_name='slavka';
-			else if (preg_match('/^malcom$/i',$_name)  )
-					$_name='malcolm';
+		elseif ( $_name=='salvka' or    preg_match('/^slavka/i',$_name) or $_name=='slavke' or $_name=='slavla' )
+			$_name='slavka';
+		elseif (preg_match('/^malcom$/i',$_name)  )
+			$_name='malcolm';
 
-				else if (preg_match('/katerina/i',$_name) or $_name=='katka]' or   $_name=='katk'  or   $_name=='(katka)'   or   $_name==': katka' )
-						$_name='katka';
-					else if (preg_match('/richard w/i',$_name) or $_name=='rich')
-							$_name='richard';
-						else if (preg_match('/david\s?(hardy)?/i',$_name))
-								$_name='david';
-							else if (preg_match('/philip|phil/i',$_name))
-									$_name='philippe';
-								else if (preg_match('/amanada|amand\s*$/i',$_name))
-										$_name='amanda';
-									else if (preg_match('/janette/i',$_name) or $_name=='jqnet' or $_name==': janet' or $_name=='jw'  )
-											$_name='janet';
-										else if (preg_match('/pete/i',$_name))
-												$_name='peter';
-											else if (preg_match('/debra/i',$_name))
-													$_name='debbie';
-												else if (preg_match('/sam/i',$_name))
-														$_name='samantha';
-													else if ($_name=='philip' or $_name=='ph' or $_name=='phi' or $_name=='philip'  )
-															$_name='philippe';
-														else if (  $_name=='aqb' or $_name=='kj' or  $_name=='act' or $_name=='tr'  or    $_name=='other' or $_name=='?' or $_name=='bb') {
-																if ($return_xhtml)
-																	return array('id'=>array(0),'xhtml'=>_('Unknown'));
-																else
-																	return array(0);
+		elseif (preg_match('/katerina/i',$_name) or $_name=='katka]' or   $_name=='katk'  or   $_name=='(katka)'   or   $_name==': katka' )
+			$_name='katka';
+		elseif (preg_match('/richard w/i',$_name) or $_name=='rich')
+			$_name='richard';
+		elseif (preg_match('/david\s?(hardy)?/i',$_name))
+			$_name='david';
+		elseif (preg_match('/philip|phil/i',$_name))
+			$_name='philippe';
+		elseif (preg_match('/amanada|amand\s*$/i',$_name))
+			$_name='amanda';
+		elseif (preg_match('/janette/i',$_name) or $_name=='jqnet' or $_name==': janet' or $_name=='jw'  )
+			$_name='janet';
+		elseif (preg_match('/pete/i',$_name))
+			$_name='peter';
+		elseif (preg_match('/debra/i',$_name))
+			$_name='debbie';
+		elseif (preg_match('/sam/i',$_name))
+			$_name='samantha';
+		elseif ($_name=='philip' or $_name=='ph' or $_name=='phi' or $_name=='philip'  )
+			$_name='philippe';
+		elseif (  $_name=='aqb' or $_name=='kj' or  $_name=='act' or $_name=='tr'  or    $_name=='other' or $_name=='?' or $_name=='bb') {
+			if ($return_xhtml)
+				return array('id'=>array(0),'xhtml'=>_('Unknown'));
+			else
+				return array(0);
 
-															} else if ($_name=='thomas' or $_name=='tomas belan' or $_name=='tb' or preg_match('/^\s*tomas\s*$/i',$_name) or $_name=='tom' )
-																$_name='tomas';
-															else if ($_name=='alam' or $_name=='aw' or   $_name=='al' or   $_name=='al.'  or  $_name=='ala' )
-																	$_name='alan';
-																else if ($_name=='carol')
-																		$_name='carole';
+		} elseif ($_name=='thomas' or $_name=='tomas belan' or $_name=='tb' or preg_match('/^\s*tomas\s*$/i',$_name) or $_name=='tom' )
+			$_name='tomas';
+		elseif ($_name=='alam' or $_name=='aw' or   $_name=='al' or   $_name=='al.'  or  $_name=='ala' )
+			$_name='alan';
+		elseif ($_name=='carol')
+			$_name='carole';
 
-																	else if ($_name=='dushan' or $_name=='duscan' or $_name=='dus')
-																			$_name='dusan';
-																		else if ($_name=='eli' or $_name=='eilska' or $_name=='eilsk' or $_name=='elsika' or $_name=='elishka')
-																				$_name='eliska';
-																			else if ($_name=='jiom' or $_name=='tim'  or $_name=='jimbob'    or  $_name=='jikm')
-																					$_name='jim';
-																				else if ($_name=='beverley' or $_name=='ber'  or $_name=='bav')
-																						$_name='bev';
-																					else if (   $_name=='albett' or  $_name=='alnert'  or    $_name=='alberft' or   $_name=='alberyt' or    $_name=='alabert'  or   $_name=='albet' or $_name=='albert ' or $_name=='albet ' or$_name=='alberto'  or $_name=='alb'  or $_name=='albery' or $_name=='alberty' or $_name=='ac'  or $_name=='albeert'  )
-																							$_name='albert';
-																						else if ($_name=='ab' or $_name=='adr')
-																								$_name='adriana';
-																							else if ($_name=='jamet' or $_name=='jante' or $_name=='jant' or $_name=='jnet' or $_name=='j' or $_name=='jenet'  or $_name=='jsnet'  )
-																									$_name='janet';
-																								else if ($_name=='slvaka')
-																										$_name='slavka';
-																									else if ($_name=='ct')
-																											$_name='craig';
-																										else if ($_name=='k ' or $_name=='k' or $_name=='katerina2')
-																												$_name='katka';
-																											else if ($_name=='daniella' or $_name=='daniella' or $_name=='dan' )
-																													$_name='daniela';
-																												else if ($_name=='cc' or $_name==' cc')
-																														$_name='chris';
-																													else if ($_name=='bret')
-																															$_name='brett';
-																														else if ( $_name=='luc')
-																																$_name='lucie';
-																															else if ($_name=='mat')
-																																	$_name='matus';
-																																else if ($_name=='ob' or $_name=='o.b.')
-																																		$_name='olga';
-																																	else if ($_name=='stacy')
-																																			$_name='stacey';
-																																		else if ($_name=='kkzoe' or $_name=='kzoe' or $_name==': zoe')
-																																				$_name='zoe';
-																																			else if ($_name=='cph')
-																																					$_name='caleb';
-																																				else if ($_name=='jenka' or  $_name=='len' or  $_name=='le'  or $_name=='lo' or  $_name=='lenka ondrisova'  )
-																																						$_name='lenka';
-																																					else if ($_name=='jjanka' or $_name=='jan')
-																																							$_name='janka';
-																																						else if ($_name=='jarina')
-																																								$_name='jirina';
-																																							else if ($_name=='agh')
-																																									$_name='agmet';
+		elseif ($_name=='dushan' or $_name=='duscan' or $_name=='dus')
+			$_name='dusan';
+		elseif ($_name=='eli' or $_name=='eilska' or $_name=='eilsk' or $_name=='elsika' or $_name=='elishka')
+			$_name='eliska';
+		elseif ($_name=='jiom' or $_name=='tim'  or $_name=='jimbob'    or  $_name=='jikm')
+			$_name='jim';
+		elseif ($_name=='beverley' or $_name=='ber'  or $_name=='bav')
+			$_name='bev';
+		elseif (   $_name=='albett' or  $_name=='alnert'  or    $_name=='alberft' or   $_name=='alberyt' or    $_name=='alabert'  or   $_name=='albet' or $_name=='albert ' or $_name=='albet ' or$_name=='alberto'  or $_name=='alb'  or $_name=='albery' or $_name=='alberty' or $_name=='ac'  or $_name=='albeert'  )
+			$_name='albert';
+		elseif ($_name=='ab' or $_name=='adr')
+			$_name='adriana';
+		elseif ($_name=='jamet' or $_name=='jante' or $_name=='jant' or $_name=='jnet' or $_name=='j' or $_name=='jenet'  or $_name=='jsnet'  )
+			$_name='janet';
+		elseif ($_name=='slvaka')
+			$_name='slavka';
+		elseif ($_name=='ct')
+			$_name='craig';
+		elseif ($_name=='k ' or $_name=='k' or $_name=='katerina2')
+			$_name='katka';
+		elseif ($_name=='daniella' or $_name=='daniella' or $_name=='dan' )
+			$_name='daniela';
+		elseif ($_name=='cc' or $_name==' cc')
+			$_name='chris';
+		elseif ($_name=='bret')
+			$_name='brett';
+		elseif ( $_name=='luc')
+			$_name='lucie';
+		elseif ($_name=='mat')
+			$_name='matus';
+		elseif ($_name=='ob' or $_name=='o.b.')
+			$_name='olga';
+		elseif ($_name=='stacy')
+			$_name='stacey';
+		elseif ($_name=='kkzoe' or $_name=='kzoe' or $_name==': zoe')
+			$_name='zoe';
+		elseif ($_name=='cph')
+			$_name='caleb';
+		elseif ($_name=='jenka' or  $_name=='len' or  $_name=='le'  or $_name=='lo' or  $_name=='lenka ondrisova'  )
+			$_name='lenka';
+		elseif ($_name=='jjanka' or $_name=='jan')
+			$_name='janka';
+		elseif ($_name=='jarina')
+			$_name='jirina';
+		elseif ($_name=='agh')
+			$_name='agmet';
+		elseif ($_name=='joanne' or $_name=='joanna')
+			$_name='joana';
+		elseif ($_name=='bryant' or $_name=='brayant')
+			$_name='brian';
+		elseif ($_name=='lisa r')
+			$_name='lisa';
+		elseif ($_name=='urszula baka')
+			$_name='urszula';
+		elseif ($_name=='ula')
+			$_name='urszula';
+		elseif ($_name=='kerrry' or $_name=='kerrys' or $_name=='kerru' )
+			$_name='kerry';
+		elseif ($_name=='kez')
+			$_name='eric';
+		elseif ($_name=='steff' or $_name=='sc' or $_name=='steffanie' or $_name=='steff cox' or $_name=='stef' or $_name=='steff cox')
+			$_name='stephanie';
+		elseif ($_name=='anthony' or $_name=='antony')
+			$_name='anthony';
+		elseif (preg_match('/martina otte/i',$_name))
+			$_name='martina';
+		elseif (preg_match('/staff? daniela/i',$_name))
+			$_name='daniela';
+		elseif (preg_match('/^lucy|lucy a$/i',$_name))
+			$_name='lucy';
+		elseif (preg_match('/^david hardy$/i',$_name))
+			$_name='david';
+		elseif (preg_match('/graige/i',$_name))
+			$_name='craige';
 
-																																								else if ($_name=='urszula baka')
-																																										$_name='urszula';
-																																									else if ($_name=='ula')
-																																											$_name='urszula';
-																																										else if ($_name=='kerrry' or $_name=='kerrys' or $_name=='kerru' )
-																																												$_name='kerry';
-																																											else if ($_name=='kez')
-																																													$_name='eric';
-																																												else if ($_name=='steff' or $_name=='sc' or $_name=='steffanie')
-																																														$_name='stephanie';
-																																													else if ($_name=='anthony' or $_name=='antony')
-																																															$_name='anthony';
-																																														else if (preg_match('/martina otte/i',$_name))
-																																																$_name='martina';
-																																															else if (preg_match('/staff? daniela/i',$_name))
-																																																	$_name='daniela';
-																																																else if (preg_match('/^lucy|lucy a$/i',$_name))
-																																																		$_name='lucy';
-																																																	else if (preg_match('/^david hardy$/i',$_name))
-																																																			$_name='david';
-																																																		else if (preg_match('/graige/i',$_name))
-																																																				$_name='craige';
-
-																																																			//
-
-
-
-
-
-
-
-																																																			$sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
-																																																		// print "$sql\n";
-																																																		$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-																																																	if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-																																																		$id=$row['Staff Key'];
-																																																		$ids[$id]=$id;
-
-																																																		$xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
-
-																																																	} else {
-
-																																																	// print "$original_name\n";
-																																																	$valid_names=array('david','keleb','lucy','sharka','stephanie','urszula','darna','jarina','mini','andrea','scott','mark','janka','peter','lyndsey','rebecca','micheal','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
-																																																		,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett','jirina','alan','janet','kerry','lenka','amanda','philippe','michael','martina','dusan','raul','craige','sarka','nassim');
-
-																																																	$contact_name=$_name;
-
-																																																	if ($_name=='slavka') {
-																																																		$contact_name='Slavka Hardy';
-																																																	}
-																																																	elseif ($_name=='katka') {
-																																																		$contact_name='Katka Buchy';
-																																																	}
-
-																																																	if (in_array($_name,$valid_names)) {
-																																																		$staff_data=array(
-																																																			'Staff Alias'=>ucwords($_name)
-																																																			,'Staff Name'=>ucwords($contact_name)
-																																																			,'editor'=>$editor
-																																																			,'Staff Currently Working'=>'No'
-																																																		);
-																																																		$staff=new Staff('find',$staff_data,'create');
-																																																		// print_r($staff);
-																																																		$id=$staff->id;
-																																																		$ids[$id]=$id;
-
-																																																		$xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($staff->data['Staff Alias']));
+		//
 
 
-																																																	} else {
 
 
-																																																		$sql=sprintf("insert into todo_users (name,order_name,tipo) values ('%s','%s','')",addslashes($original_name),$order);
-																																																		// print "$sql\n";
-																																																		mysql_query($sql);
-																																																		//print "Staff name not found $oname \n";
-																																																		$id=0;
-																																																		$ids[$id]=$id;
-
-																																																		$xhtml.=sprintf(', %s',$original_name);
 
 
-																																																	}
-																																																}
+
+		$sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
+		// print "$sql\n";
+		$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+		if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$id=$row['Staff Key'];
+			$ids[$id]=$id;
+
+			$xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
+
+		} else {
+
+			// print "$original_name\n";
+			$valid_names=array('david','keleb','lucy','sharka','stephanie','urszula','darna','jarina','mini','andrea','scott','mark','janka','peter','lyndsey','rebecca','micheal','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
+				,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett','jirina','alan','janet','kerry','lenka','amanda','philippe','michael','martina','dusan','raul','craige','sarka','nassim');
+
+			$contact_name=$_name;
+
+			if ($_name=='slavka') {
+				$contact_name='Slavka Hardy';
+			}
+			elseif ($_name=='katka') {
+				$contact_name='Katka Buchy';
+			}
+
+			if (in_array($_name,$valid_names)) {
+				$staff_data=array(
+					'Staff Alias'=>ucwords($_name)
+					,'Staff Name'=>ucwords($contact_name)
+					,'editor'=>$editor
+					,'Staff Currently Working'=>'No'
+				);
+				$staff=new Staff('find',$staff_data,'create');
+				// print_r($staff);
+				$id=$staff->id;
+				$ids[$id]=$id;
+
+				$xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($staff->data['Staff Alias']));
+
+
+			} else {
+
+
+				$sql=sprintf("insert into todo_users (name,order_name,tipo) values ('%s','%s','')",addslashes($original_name),$order);
+				// print "$sql\n";
+				mysql_query($sql);
+				//print "Staff name not found $oname \n";
+				$id=0;
+				$ids[$id]=$id;
+
+				$xhtml.=sprintf(', %s',$original_name);
+
+
+			}
+		}
 	}
 	$_ids=array();
 	foreach ($ids as $values) {
@@ -1947,25 +1952,25 @@ function ci_get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=fal
 		$_name=preg_replace('/\s*$/','',$_name);
 		if (preg_match('/^(juani)$/i',$_name)   )
 			$_name='juan';
-		else if (preg_match('/^(helen)$/i',$_name)  )
-				$_name='helena';
-			else if (preg_match('/^(dani)$/i',$_name)  )
-					$_name='dany';
-				else if (preg_match('/^(alex|ale)$/i',$_name)  )
-						$_name='alejandro';
+		elseif (preg_match('/^(helen)$/i',$_name)  )
+			$_name='helena';
+		elseif (preg_match('/^(dani)$/i',$_name)  )
+			$_name='dany';
+		elseif (preg_match('/^(alex|ale)$/i',$_name)  )
+			$_name='alejandro';
 
 
 
-					$sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
-				// print "$sql\n";
-				$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-			if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$id=$row['Staff Key'];
-				$ids[$id]=$id;
+		$sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
+		// print "$sql\n";
+		$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+		if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$id=$row['Staff Key'];
+			$ids[$id]=$id;
 
-				$xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
+			$xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
 
-			} else {
+		} else {
 
 			// print "$original_name\n";
 			$valid_names=array();
@@ -3281,10 +3286,10 @@ function act_transformations($act_data) {
 		if ($act_data['a3']!='') {
 			$act_data['town']=$act_data['a3'];
 			$act_data['a3']='';
-		} else if ($act_data['a2']!='') {
-				$act_data['town']=$act_data['a2'];
-				$act_data['a2']='';
-			}
+		} elseif ($act_data['a2']!='') {
+			$act_data['town']=$act_data['a2'];
+			$act_data['a2']='';
+		}
 	}
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// fix contracts

@@ -105,10 +105,10 @@ var table_id=1
 
 
 function post_create_actions(branch){
-var table=tables.table1;
- var datasource=tables.dataSource1;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+//var table=tables.table1;
+ //var datasource=tables.dataSource1;
+ //var request='';
+ //datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
  
  var table=tables.table0;
  var datasource=tables.dataSource0;
@@ -134,14 +134,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=edit_part_category_list");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=edit_part_category_list&parent_key="+Dom.get('category_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",rtext:"resultset.rtext",
+		  	    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
@@ -207,13 +209,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource_history.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+		  	    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    rtext:"resultset.rtext",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -266,12 +269,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function change_block(){
   
+ids=["d_description","d_subcategory","d_parts"];
 
-	Dom.get('d_description').style.display='none';
-	Dom.get('d_subcategory').style.display='none';
+	Dom.setStyle(ids,'display','none')
+	Dom.setStyle('d_'+this.id,'display','')
 
-	Dom.get('d_'+this.id).style.display='';
-	
 	Dom.removeClass(['description','subcategory'],'selected');
 	Dom.addClass(this, 'selected');
 	
@@ -285,7 +287,8 @@ function cancel_add_subcategory(){
   }
 
 function init(){
-
+ init_search('parts');
+ 
     var ids = ["description","subcategory"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 

@@ -65,7 +65,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									 nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
 									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 								     })
 								 
 								 ,sortedBy : {

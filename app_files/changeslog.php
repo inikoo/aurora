@@ -6514,7 +6514,9 @@ UPDATE `costadw`.`Category Dimension` SET `Category Name` = 'PT', `Category Labe
 ALTER TABLE `Product Dimension` ADD `Product Duty Rate` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Product Tariff Code`;
 ALTER TABLE `Part Dimension` ADD `Part Duty Rate` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Part Tariff Code Valid`;
 
+ALTER TABLE `Staff Dimension` CHANGE `Staff Valid from` `Staff Valid From` DATETIME NULL DEFAULT NULL ;
 
+INSERT INTO `dw`.`Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`, `Widget Metadata`) VALUES (NULL, 'Top Customers', 'block_3', NULL, 'dashboard_block.php?tipo=top_customers', 'Top Customers', '');
 
 
 
