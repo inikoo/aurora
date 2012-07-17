@@ -1790,6 +1790,10 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='katka';
 		elseif ($_name=='daniella' or $_name=='daniella' or $_name=='dan' )
 			$_name='daniela';
+			
+			elseif ($_name=='dani' or $_name=='daniel')
+			$_name='danielle';	
+			
 		elseif ($_name=='cc' or $_name==' cc')
 			$_name='chris';
 		elseif ($_name=='bret')
@@ -1804,6 +1808,10 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='stacey';
 		elseif ($_name=='kkzoe' or $_name=='kzoe' or $_name==': zoe')
 			$_name='zoe';
+		elseif ($_name=='zoe h')
+			$_name='zhilbert';	
+	
+			
 		elseif ($_name=='cph')
 			$_name='caleb';
 		elseif ($_name=='jenka' or  $_name=='len' or  $_name=='le'  or $_name=='lo' or  $_name=='lenka ondrisova'  )
