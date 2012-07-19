@@ -13,7 +13,9 @@
 			</span>
 			</div>
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_part_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}Add Subcategory{/t}</button> 
+				<button onclick="window.location='edit_part_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> 
+				<button id="new_category"><img src="art/icons/add.png" alt=""> {t}Add Subcategory{/t}</button> 
+				<button id="new_part"><img src="art/icons/add.png" alt=""> {t}Add Part{/t}</button> 
 			</div>
 			<div style="clear:both">
 			</div>

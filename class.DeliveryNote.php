@@ -1058,6 +1058,7 @@ class DeliveryNote extends DB_Table {
 					//print_r($part);
 					//exit("\nError geting supplier products\n");
 					$supplier_product_key=0;
+					//$supplier_product_pid=0;
 				}
 
 			}
