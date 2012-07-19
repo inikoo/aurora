@@ -42,6 +42,9 @@ if (!$user->can_edit('warehouses')  ) {
 	exit;
 }
 
+$warehouse=new Warehouse($location->data['Location Warehouse Key']);
+$smarty->assign('warehouse',$warehouse);
+
 $smarty->assign('edit',$_SESSION['state']['location']['edit']);
 $smarty->assign('location_id',$location_id);
 

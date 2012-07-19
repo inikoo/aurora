@@ -157,7 +157,7 @@ var tableid=2;
 				     
 				       ];
 	    //alert("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=parts_at_location&sf=0&tableid="+tableid);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=parts_at_location&id="+Dom.get('location_key').value+"&sf=0&tableid="+tableid);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

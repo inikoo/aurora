@@ -52,7 +52,7 @@
       <tr><td>{t}Max Slots{/t}:</td><td>{$location->get('Location Max Slots')}</td></tr>
     </table>
 </div>
-<div id="plot" style="{if !$show_details}display:none;{/if}"></div>
+<div id="plot" ></div>
 </div>     
 
 <div id="block_parts" style="{if $view!='parts'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
