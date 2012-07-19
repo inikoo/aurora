@@ -35,7 +35,7 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f where `Invoice Key`=%d",$row['Invoice Currency Exchange'],$row['Invoice Key']);
-	//print "$sql\n";
+	print "$sql\n";
 	mysql_query($sql);
 
 	if ($row['Invoice Paid']=='Yes') {
@@ -55,7 +55,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 				,$row2['Order Transaction Fact Key']);
 
 			mysql_query( $sql );
-			//print "$sql\n";
+			print "$sql\n";
 		}
 
 
