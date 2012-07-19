@@ -404,6 +404,7 @@ class PartLocation extends DB_Table {
 				,prepare_mysql($date)
 				,prepare_mysql($audit_key)
 			);
+		//	print $sql;
 			mysql_query($sql);
 		}
 

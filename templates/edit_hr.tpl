@@ -1,12 +1,13 @@
 {include file='header.tpl'}
 <div id="bd" >
 
-{include file='hr_navigation.tpl'}
+<div class="branch"> 
+  <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {t}Staff{/t}</span>
+</div>
 
 
 
-
- <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
+ <div id="no_details_title"  style="clear:left;xmargin:0 20px;">
     <h1>{t}Editing Staff Details{/t}</h1>
   </div>
 

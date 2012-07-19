@@ -374,8 +374,7 @@ function pickers_report() {
 		$_SESSION['state']['report_pp']['pickers']['from']=$date_interval['from'];
 		$_SESSION['state']['report_pp']['pickers']['to']=$date_interval['to'];
 	}
-
-
+$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 
 	$start_from=0;
 
@@ -399,13 +398,14 @@ function pickers_report() {
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",$date_interval['mysql']);
+		
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$total_delivery_notes=$row['delivery_notes'];
 		$total_units=$row['units'];
 		$total_weight=$row['weight'];
 	}
-	//print $sql;
+	
 
 
 

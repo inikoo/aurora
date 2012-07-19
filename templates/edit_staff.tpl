@@ -1,7 +1,7 @@
 {include file='header.tpl'} 
 <div id="bd">
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>  &rarr; <a href="hr.php">{t}Staff{/t} </a> &rarr;<a href="staff.php?id={$staff->id}"> {$staff->get('Staff Name')} </a> &rarr; {t}Editing{/t}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>  &rarr; <a href="hr.php">{t}Staff{/t} </a> &rarr;<a href="staff.php?id={$staff->id}"> {$staff->get('Staff Name')} </a> ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu" style="margin-top:10px">
 		<div class="buttons" style="float:right">
@@ -34,7 +34,7 @@
 					<button style="margin-right:10px;visibility:hidden" id="save_edit_staff_description" class="positive">{t}Save{/t}</button> <button style="margin-right:10px;visibility:hidden" id="reset_edit_staff_description" class="negative">{t}Reset{/t}</button> 
 				</div>
 				<tr class="first">
-					<td class="label">{t}Staff Alias{/t}:</td>
+					<td class="label">{t}Staff Code (Handle){/t}:</td>
 					<td> 
 					<div>
 						<input id="Staff_Alias" changed="0" type='text' class='text' value="{$staff->get('Staff Alias')}" ovalue="{$staff->get('Staff Alias')}" />

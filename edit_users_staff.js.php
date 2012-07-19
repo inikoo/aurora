@@ -86,7 +86,7 @@ var edit_active=function (callback, newValue) {
         staff_id=record.getData('staff_id');                                                                                                                                                                  
 
     var request='ar_edit_users.php?tipo=edit_staff_user&staff_id='+escape(staff_id)+'&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)                                    
-//alert(request);                                                                                                                                                                              
+alert(request);                                                                                                                                                                              
     YAHOO.util.Connect.asyncRequest(                                                                                                                                                               
 				    'POST',                                                                                                                                                        
 				    request, {                                                                                                                                                     

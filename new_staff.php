@@ -1,27 +1,24 @@
 <?php
 /*
- File: new_contact.php 
-
- UI new contact page
-
+ 
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
  Copyright (c) 2009, Inikoo 
  
- Version 2.0
+ Version 2.1
 */
 
 include_once('common.php');
 include_once('class.Contact.php');
 
 
-if(!$user->can_view('contacts')){
+if(!$user->can_view('staff')){
   header('Location: index.php');
   exit();
 }
-if(!$user->can_edit('customers')){
-  header('Location: customers.php');
+if(!$user->can_edit('staff')){
+  header('Location: hr.php');
   exit();
 
 }
@@ -39,10 +36,6 @@ $css_files=array(
 	'css/edit_address.css',
 	'theme.css.php'
 		 );
-
-
-
-
 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -89,6 +82,13 @@ while($row=mysql_fetch_assoc($result)){
 
 $smarty->assign('staff_area',$staff_area);
 
+
+if(isset($_REQUEST['ref']) and $_REQUEST['ref']=='hr'){
+$link_back='hr.php';
+}else{
+$link_back='edit_hr.php';
+}
+$smarty->assign('link_back',$link_back);
 
 $smarty->assign('scope','staff');
 

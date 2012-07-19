@@ -9,6 +9,8 @@ $css_files=array(
                $yui_path.'button/assets/skins/sam/button.css',
                'common.css',
                'css/container.css',
+                              'css/calendar.css',
+
                'button.css',
                'table.css',
                'theme.css.php'
@@ -26,7 +28,9 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'js/common.js',
 		'js/table_common.js',
-'reports_calendar.js.php'
+'js/calendar_interval.js',
+'reports_calendar.js.php',
+
 		
 		);
 		$report_name='report_pp';

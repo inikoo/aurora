@@ -75,6 +75,11 @@
 			<tr style="display:none" id="tr_link_register_from_login2" class="link">
 				<td colspan="2">{t}Use another email{/t}, <span class="link" id="link_register_from_login2">{t}Register Here{/t}</span></td>
 			</tr>
+			{if $site->get_login_help_page_key()}
+			<tr  class="link">
+				<td colspan="2">{t}Troubles with Log in?{/t} <span class="link" onclick='window.location="page.php?id={$site->get_login_help_page_key()}"' id="link_register_from_login">{t}Read Here{/t}</span></td>
+			</tr>
+			{/if}
 		</table>
 	</div>
 	{/if} 
@@ -134,6 +139,13 @@
 			<tr id="tr_link_register_from_login" class="link">
 				<td colspan="2">{t}First visit?{/t} <span class="link" onclick='window.location="registration.php"' id="link_register_from_login">{t}Register Here{/t}</span></td>
 			</tr>
+			{if $site->get_login_help_page_key()}
+			<tr  class="link">
+				<td colspan="2">{t}Troubles with Log in?{/t} <span class="link" onclick='window.location="page.php?id={$site->get_login_help_page_key()}"' id="link_register_from_login">{t}Read Here{/t}</span></td>
+			</tr>
+			{/if}
+			
+			
 		</table>
 	</div>
 	<div style="clear:both;margin-bottom:30px">

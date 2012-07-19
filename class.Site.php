@@ -1288,6 +1288,15 @@ $page_code=$this->get_unique_family_page_code($family);
 		return $page_key;
 	}
 
+	function get_login_help_page_key() {
+		$page_key=0;
+		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Login Help' and `Page Site Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$page_key=$row['Page Key'];
+		}
+		return $page_key;
+	}
 
 	function update_up_today_requests() {
 		$this->update_requests('Today');

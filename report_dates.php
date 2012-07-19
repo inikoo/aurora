@@ -11,26 +11,41 @@ if ($tipo=='quick_this_month' ) {
 elseif ($tipo=='1w' ) {
 	$tipo='f';
 	$quick_period='1w';
-	$_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -1 week"));;
-	$_REQUEST['to']=date("Y-m-d");
+	$from=date('Y-m-d',strtotime("now -1 week"));;
+	$to=date("Y-m-d");
+	$link='&tipo=1w';
+	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
+
 }
 elseif ($tipo=='10d' ) {
 	$tipo='f';
 	$quick_period='10d';
-	$_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -10 day"));;
-	$_REQUEST['to']=date("Y-m-d");
+	$from=date('Y-m-d',strtotime("now -1o day"));;
+	$to=date("Y-m-d");
+	$link='&tipo=10d';
+	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
+
+
+
 }
 elseif ($tipo=='1m' ) {
 	$tipo='f';
 	$quick_period='1m';
-	$_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -1 month"));;
-	$_REQUEST['to']=date("Y-m-d");
+	$from=date('Y-m-d',strtotime("now -1 month"));;
+	$to=date("Y-m-d");
+	$link='&tipo=1m';
+	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
+
+
 }
 elseif ($tipo=='1q' ) {
 	$tipo='f';
 	$quick_period='1q';
-	$_REQUEST['from']= $from_date=date('Y-m-d',strtotime("now -3 month"));;
-	$_REQUEST['to']=date("Y-m-d");
+	$from=date('Y-m-d',strtotime("now -3 month"));;
+	$to=date("Y-m-d");
+	$link='&tipo=11';
+	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
+
 }
 elseif ($tipo=='1y' ) {
 	$tipo='f';
@@ -82,6 +97,65 @@ elseif ($tipo=='quick_today'  or  $tipo=='today') {
 	$to=date("Y-m-d");
 	$period=strftime("%d %b %Y");
 	$link='today';
+	
+	
+	
+	$year=date('Y',mktime(0,0,0,date('m'),1,date('Y')));
+	$month=date('m',mktime(0,0,0,date('m'),1,date('Y')));
+	$_time=mktime(0, 0, 0,$month ,1 , $year);
+	$_time_n=mktime(0, 0, 0,$month+1 ,1 , $year);
+	$_time_p=mktime(0, 0, 0,$month-1 ,1 , $year);
+
+	
+		$smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
+	$smarty->assign('next',array('url'=>'tipo=m&m='.date("m",$_time_n).'&y='.date("Y",$_time_n),'title'=>date("F",$_time_n)));
+	$smarty->assign('prev',array('url'=>'tipo=m&m='.date("m",$_time_p).'&y='.date("Y",$_time_p),'title'=>date("F",$_time_p)));
+
+	$w=array();
+	$sql=sprintf("select * from kbase.`Week Dimension` where (Month(`Last Day`)=%d or  Month(`First Day`)=%d   )  and `Year`=%d "
+		,date("m",$_time)
+		,date("m",$_time)
+		,date("Y",$_time)
+
+	);
+	//print $sql;
+	$dmy=date('dmy');
+	
+	$link="&tipo=m&y=".$year."&m=".$month;
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$this_dmy=date('m',strtotime($row['First Day']));
+		$w[]=array(
+			"number"=>$row['Week'],
+			"mon"=>date("d",strtotime($row['First Day'])),
+			"tue"=>date("d",strtotime($row['First Day']." +1 day" )),
+			"wed"=>date("d",strtotime($row['First Day']." +2 day" )),
+			"thu"=>date("d",strtotime($row['First Day']." +3 day" )),
+			"fri"=>date("d",strtotime($row['First Day']." +4 day" )),
+			"sat"=>date("d",strtotime($row['First Day']." +5 day" )),
+			"sun"=>date("d",strtotime($row['First Day']." +6 day" )),
+			"mon_selected"=>(date("dmy",strtotime($row['First Day']))==$dmy?1:0),
+			"tue_selected"=>(date("dmy",strtotime($row['First Day']." +1 day" ))==$dmy?1:0),
+			"wed_selected"=>(date("dmy",strtotime($row['First Day']." +2 day" ))==$dmy?1:0),
+			"thu_selected"=>(date("dmy",strtotime($row['First Day']." +3 day" ))==$dmy?1:0),
+			"fri_selected"=>(date("dmy",strtotime($row['First Day']." +4 day" ))==$dmy?1:0),
+			"sat_selected"=>(date("dmy",strtotime($row['First Day']." +5 day" ))==$dmy?1:0),
+			"sun_selected"=>(date("dmy",strtotime($row['First Day']." +6 day" ))==$dmy?1:0),
+			"m_mon"=>date("m",strtotime($row['First Day'])),
+			"m_tue"=>date("m",strtotime($row['First Day']." +1 day" )),
+			"m_wed"=>date("m",strtotime($row['First Day']." +2 day" )),
+			"m_thu"=>date("m",strtotime($row['First Day']." +3 day" )),
+			"m_fri"=>date("m",strtotime($row['First Day']." +4 day" )),
+			"m_sat"=>date("m",strtotime($row['First Day']." +5 day" )),
+			"m_sun"=>date("m",strtotime($row['First Day']." +6 day" )),
+			"year"=>$row['Year']
+
+		);
+	}
+	mysql_free_result($result);
+	
+	$smarty->assign('w',$w);
+	
 
 }
 elseif ($tipo=='ytd') {
@@ -98,7 +172,7 @@ elseif ($tipo=='mtd') {
 	$from=date("Y-m-01");
 	$to=date("Y-m-d");
 	$period=strftime("%B %Y");
-$link='mtd';
+	$link='mtd';
 }
 elseif ($tipo=='wtd') {
 	$tipo='f';
@@ -128,7 +202,7 @@ elseif ($tipo=='last_w') {
 		$to=date("Y-m-d");
 
 	}
-$period=_('Week starting').' '.strftime("%d %b %Y",strtotime($from));
+	$period=_('Week starting').' '.strftime("%d %b %Y",strtotime($from));
 	$link='last_w';
 }
 elseif ($tipo=='last_m') {
@@ -139,17 +213,17 @@ elseif ($tipo=='last_m') {
 	$month=date('m',mktime(0,0,0,date('m')-1,1,date('Y')));
 	$_SESSION['state'][$report_name]['y']=$year;
 	$_SESSION['state'][$report_name]['m']=$month;
-		$link='last_m';
-	
+	$link='last_m';
+
 	$_time=mktime(0, 0, 0,$month ,1 , $year);
 	$_time_n=mktime(0, 0, 0,$month+1 ,1 , $year);
 	$_time_p=mktime(0, 0, 0,$month-1 ,1 , $year);
 
-$from=date("Y-m-d", $_time);
+	$from=date("Y-m-d", $_time);
 	$to=date("Y-m-d", mktime(0, 0, 0, $month+1, 0, $year));
 	$period=strftime("%B %Y", $_time);
-	
-		$smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
+
+	$smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
 	$smarty->assign('next',array('url'=>'tipo=m&m='.date("m",$_time_n).'&y='.date("Y",$_time_n),'title'=>date("F",$_time_n)));
 	$smarty->assign('prev',array('url'=>'tipo=m&m='.date("m",$_time_p).'&y='.date("Y",$_time_p),'title'=>date("F",$_time_p)));
 
@@ -162,7 +236,7 @@ $from=date("Y-m-d", $_time);
 	);
 	//  print $sql;
 	$dmy=date('m',$_time);
-
+	$link="&tipo=m&y=".$year."&m=".$month;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$this_dmy=date('m',strtotime($row['First Day']));
@@ -194,7 +268,7 @@ $from=date("Y-m-d", $_time);
 		);
 	}
 	mysql_free_result($result);
-	$link="&tipo=m&y=".$year."&m=".$month;
+	
 	$smarty->assign('w',$w);
 
 
@@ -202,17 +276,19 @@ $from=date("Y-m-d", $_time);
 elseif ($tipo=='all_invoices' or $tipo=='all' or $tipo=='quick_all') {
 	$tipo='f';
 	$quick_period='all';
-	$sql=sprintf("select DATE(min(`Invoice Date`)) as date  from `Invoice Dimension` where `Invoice Store Key` in (%s)",$store_keys);;
-	// print $sql;
-
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_array($res)) {
-		$from=date("Y-m-d",strtotime($row['date']));
-	}
-	$to=date("Y-m-d");
-	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x'));
+	// $sql=sprintf("select DATE(min(`Invoice Date`)) as date  from `Invoice Dimension` where `Invoice Store Key` in (%s)",$store_keys);;
+	// $res=mysql_query($sql);
+	// if ($row=mysql_fetch_array($res)) {
+	//  $from=date("Y-m-d",strtotime($row['date']));
+	// }
+	// $to=date("Y-m-d");
+	// $period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x'));
+	$period=_('All');
 	//$period=_('All Invoices');
-	$link="&tipo=f&from=".$from."&to=".$to;
+	//$link="&tipo=f&from=".$from."&to=".$to;
+	$from='';
+	$to='';
+	$link='all';
 	//print $link;
 }
 elseif ($tipo=='f') {
@@ -220,7 +296,7 @@ elseif ($tipo=='f') {
 	$from=(isset($_REQUEST['from'])?$_REQUEST['from']:$_SESSION['state'][$report_name]['from']);
 	$to=(isset($_REQUEST['to'])?$_REQUEST['to']:$_SESSION['state'][$report_name]['to']);
 	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
-	
+
 	$link=$link="&tipo=f&from=".$from."&to=".$to;
 	$_SESSION['state'][$report_name]['from']=$from;
 	$_SESSION['state'][$report_name]['to']=$to;
@@ -496,7 +572,7 @@ elseif ($tipo=='d') {
 	$from=date("Y-m-d", $_time);
 	$to=date("Y-m-d", $_time);
 	$period=strftime("%a %e %b %Y", $_time);
-	$title="$period ".$root_title;
+	//$title="$period ".$root_title;
 
 	$smarty->assign('up',array('url'=>'tipo=m&m='.date("m",$_time_n).'&y='.date("Y",$_time),'title'=>strftime("%B",$_time)));
 	$smarty->assign('next',array('url'=>'tipo=d&m='.date("m",$_time_n).'&y='.date("Y",$_time_n).'&d='.date("d",$_time_n),'title'=>strftime("%e %b %y",$_time_n)));

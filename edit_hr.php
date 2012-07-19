@@ -107,5 +107,5 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('edit','staff');
 
 
-$smarty->display('edit_staff.tpl');
+$smarty->display('edit_hr.tpl');
 ?>

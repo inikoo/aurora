@@ -112,7 +112,7 @@
   
  
   <div class="buttons">
-  <button  class="positive" onclick="window.location='new_staff.php'" >{t}Manually{/t}</button>
+  <button  class="positive" onclick="window.location='new_staff.php?ref=hr'" >{t}Manually{/t}</button>
   <button  class="positive" onclick="window.location='import_csv.php?subject=staff'"  >{t}Import from file{/t}</button>
     <button class="negative"  onClick="dialog_new_staff.hide()" >{t}Cancel{/t}</button>
 

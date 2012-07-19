@@ -1117,7 +1117,7 @@ function list_staff_users() {
 
 
 	//  $where=" where `User Key` IS NOT NULL  ";
-	$where=" where  true";
+	$where=" where  `User Type`='Staff' ";
 	$_elements='';
 	foreach ($elements as $_key=>$_value) {
 		if ($_value) {
@@ -1154,15 +1154,15 @@ function list_staff_users() {
 
 
 
-		$sql="select count(*) as total from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where $wheref";
-
+		$sql="select count(*) as total from `User Dimension`  left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)  $where $wheref";
+//print $sql;
 
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`)  $where ";
+		$sql="select count(*) as total from from `User Dimension`  left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)   $where ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$total_records=$row['total'];
@@ -1220,8 +1220,8 @@ function list_staff_users() {
 		$order='`Staff Name`';
 	$sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where  $wheref and `User Type`='Staff' order by $order $order_direction limit $start_from,$number_results";
 
-	$sql="select `User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` and `Scope`='Store'  ) as Stores,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Staff Key`) $where  $wheref and (`User Type`='Staff' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
-	// print $sql;
+	$sql="select `User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` and `Scope`='Store'  ) as Stores,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name` from `User Dimension` U left join `Staff Dimension` SD  on (`User Parent Key`=`Staff Key`)  $where  $wheref and (`User Type`='Staff' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
+	
 	$adata=array();
 	$res=mysql_query($sql);
 	while ($data=mysql_fetch_array($res)) {

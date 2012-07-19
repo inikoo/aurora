@@ -362,7 +362,7 @@ function save_audit() {
     sku=Dom.get('lost_sku').value;
     var json_value = YAHOO.lang.JSON.stringify(data);
     var request='ar_edit_warehouse.php?tipo=audit_stock&values=' + my_encodeURIComponent(json_value);
-
+//alert(request)
 Dom.setStyle('Editor_audit_buttons','display','none')
 Dom.setStyle('Editor_audit_wait','display','')
 
