@@ -578,18 +578,18 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$__code=strtolower($transaction['code']);
 
 			if (   preg_match('/\-kit1$/i',$__code) or  preg_match('/\-minst$/i',$__code) or  preg_match('/\-Starter$/i',$__code)   or  preg_match('/\-Starter\d$/i',$__code)   or   preg_match('/^bonus\-/i',$__code)  or   preg_match('/\-st\d$/i',$__code)  or   preg_match('/\-pack$/i',$__code)  or    preg_match('/\-pst$/i',$__code)  or    preg_match('/\-kit2$/i',$__code)  or  preg_match('/\-kit1$/i',$__code)  or preg_match('/\-st$/i',$__code)  or     preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or       $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
-					or $__code=='DOT-St' or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
+				or $__code=='DOT-St' or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
 				or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
 			) {
 
 				continue;
 
 			}
-			
-			if(preg_match('/-\st$/i',$__code)){
+
+			if (preg_match('/-\st$/i',$__code)) {
 				continue;
 			}
-			if(preg_match('/-\minst$/i',$__code)){
+			if (preg_match('/-\minst$/i',$__code)) {
 				continue;
 			}
 
@@ -1097,7 +1097,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$supplier=new Supplier('find',$the_supplier_data,'create update');
 			}
 
-unset($part);
+			unset($part);
 			if ($product->new_code ) {
 				//creamos una parte nueva
 				$part_data=array(
@@ -1207,49 +1207,65 @@ unset($part);
 
 				$sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
 				$res_x=mysql_query($sql);
-				if ($row_x=mysql_fetch_array($res_x)) {
-					$part_sku=$row_x['Part SKU'];
-					$parts_per_product=$row_x['Parts Per Product'];
-					$part=new Part('sku',$part_sku);
-				$part->update_valid_dates($date_order);
-				$part->update_valid_dates($date2);
-				
-				$part_list=array();
-				$part_list[]=array(
+				$__num_parts = mysql_num_rows($res_x);
 
-					'Part SKU'=>$part->sku,
+				if ($__num_parts==1) {
+					if ($row_x=mysql_fetch_array($res_x)) {
+						$part_sku=$row_x['Part SKU'];
+						$parts_per_product=$row_x['Parts Per Product'];
+						$part=new Part('sku',$part_sku);
+						$part->update_valid_dates($date_order);
+						$part->update_valid_dates($date2);
 
-					'Parts Per Product'=>$parts_per_product,
-					'Product Part Type'=>'Simple'
+						$part_list=array();
+						$part_list[]=array(
 
-				);
-				//print_r($part_list);
-				$product_part_key=$product->find_product_part_list($part_list);
-				if ($product_part_key) {
-					//print "->End.(GO UK) ".date("r")."\n";
-					//print_r($product->data);
-					//print_r($part_list);
-					//exit("Error can not find product part list (get_orders_db)\n");
-                    $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
-				}else{
-					print "Warninf part per product not found (get_orders_db)\n";
+							'Part SKU'=>$part->sku,
+
+							'Parts Per Product'=>$parts_per_product,
+							'Product Part Type'=>'Simple'
+
+						);
+						//print_r($part_list);
+						$product_part_key=$product->find_product_part_list($part_list);
+						if ($product_part_key) {
+							//print "->End.(GO UK) ".date("r")."\n";
+							//print_r($product->data);
+							//print_r($part_list);
+							//exit("Error can not find product part list (get_orders_db)\n");
+							$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
+						}else {
+							print "Warninf part per product not found (get_orders_db)\n";
+						}
+
+
+
+						$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+
+
+
+					}
+					else {
+						print_r($product);
+						print "  $sql  ->End.(GO xxx UK) ".date("r")."\n";
+						exit("error: $sql");
+
+					}
+				}else {
+					while ($row_x=mysql_fetch_array($res_x)) {
+						$part_sku=$row_x['Part SKU'];
+						$parts_per_product=$row_x['Parts Per Product'];
+						$part=new Part('sku',$part_sku);
+						$part->update_valid_dates($date_order);
+						$part->update_valid_dates($date2);
+
+
+
+					}
+
 				}
 
-				
 
-				$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
-
-					
-					
-				} else {
-					print_r($product);
-					print "  $sql  ->End.(GO xxx UK) ".date("r")."\n";
-					exit("error: $sql");
-
-				}
-				
-
-				
 			}
 
 
@@ -1271,13 +1287,13 @@ unset($part);
 				'Supplier Product Valid To'=>$date2
 			);
 			// print "-----$scode <-------------\n";
-		
+
 			$supplier_product=new SupplierProduct('find',$sp_data);
 
-			if(!$supplier_product->id){
-			
-			
-			$supplier_product=new SupplierProduct('find',$sp_data,'create update');
+			if (!$supplier_product->id) {
+
+
+				$supplier_product=new SupplierProduct('find',$sp_data,'create update');
 
 
 				$spp_header=array(
@@ -1297,13 +1313,13 @@ unset($part);
 					)
 				);
 				$supplier_product->new_historic_part_list($spp_header,$spp_list);
-			
-			
+
+
 			}
 			$used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 			$used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
-			
+
 		}
 
 
