@@ -42,6 +42,9 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);
 
+$part->update_tariff_code_valid();
+continue;
+
 //$locations=$part->get_picking_location_historic('2012-03-14 00:00:00',1);
 //print_r($locations);
 //exit;

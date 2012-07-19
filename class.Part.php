@@ -227,8 +227,14 @@ $this->update_main_state();
 
 	function update_tariff_code_valid() {
 
+		$tariff_code=$this->data['Part Tariff Code'];
+		if(strlen($tariff_code)==10  ){
+			$tariff_code=substr($tariff_code,0, -2);
+		}
+		
+
 		$sql=sprintf("select count(*) as num  from kbase.`Commodity Code Dimension` where `Commodity Code`=%s ",
-			prepare_mysql($this->data['Part Tariff Code'])
+			prepare_mysql($tariff_code)
 		);
 		$res=mysql_query($sql);
 		$valid='No';
