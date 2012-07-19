@@ -3,6 +3,10 @@
 <div id="bd" >
  {include file='locations_navigation.tpl'}
 <input type="hidden" id="location_name" value="{$location->get('Location Code')}"/>
+<input type="hidden" id="location_key" value="{$location->id}"/>
+<input type="hidden" id="area_key" value="{$location->get('Location Warehouse Area Key')}"/>
+
+
 <div class="branch"> 
   <span ><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; <a href="inventory.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')} {t}Inventory{/t}</a> {/if}<a href="warehouse.php?id={$location->get('Location Warehouse Key')}">{t}Locations{/t}</a>  &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')} {t}Area{/t}</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if} &rarr; {$location->get('Location Code')}</span>
 </div>
@@ -21,8 +25,6 @@
  </div>
     <div style="clear:both"></div>
 </div>
-<input type="hidden" id="location_key" value="{$location->id}"/>
-<input type="hidden" id="area_key" value="{$location->get('Location Warehouse Area Key')}"/>
 
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Location{/t}: <span id="title_name">{$location->get('Location Code')}</span></h1>
@@ -35,7 +37,10 @@
 <div class="tabbed_container" > 
   <div id="description_block" style="{if $edit!='description'}display:none{/if}" >
     
-
+	<div class="buttons" >
+		<button  style="margin-right:10px;visibility:hidden"  id="save_edit_location_description" class="positive">{t}Save{/t}</button>
+		<button style="margin-right:10px;visibility:hidden" id="reset_edit_location_description" class="negative">{t}Reset{/t}</button>
+	</div>
 
 
       <table style="margin:0; width:100%" class="edit" border=0>
@@ -47,7 +52,7 @@
 	   		<tr><td class="label">{t}Used for{/t}:</td>
  
 	<td colspan=5>
-		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="buttons left" >
+		<div id="location_used_for"   class="buttons left" >
 		{foreach from=$used_for_list item=cat key=cat_id name=foo}
 		<button class="{if $location->get('Location Mainly Used For')==$cat.name}selected{/if}" onclick="save_location_used_for('used_for','{$cat.name}')" id="used_for_{$cat.name}">{$cat.name}</button> 
 	    {/foreach}
@@ -59,7 +64,7 @@
 	  <tr><td class="label">{t}Flag{/t}:</td>
  
 	<td colspan=5>
-		<div id="location_used_for" default_cat="{$cat2.default_id}"   class="buttons left" >
+		<div id="location_used_for"    class="buttons left" >
 		{foreach from=$flag_list item=cat key=cat_id name=foo}
 		<button class="{if $location->get('Location Flag')==$cat.name}selected{/if}" onclick="save_location_flag('flag','{$cat.name}')" id="flag_{$cat.name}">{$cat.name}</button> 
 	    {/foreach}
@@ -68,11 +73,7 @@
 	 
 	 </tr> 
 	   
-	 <tr class="title"><td colspan=5>{t}Parameters{/t}</td></tr> 
-	<div class="buttons" >
-		<button  style="margin-right:10px;visibility:hidden"  id="save_edit_location_description" class="positive">{t}Save{/t}</button>
-		<button style="margin-right:10px;visibility:hidden" id="reset_edit_location_description" class="negative">{t}Reset{/t}</button>
-	</div>
+
 	
 
 	 
@@ -91,7 +92,7 @@
 	<tr style="display:none"><td class="label">{t}Shape{/t}:</td>
 
 	<td>
-		<div id="location_shape_type" default_cat="{$cat2.default_id}"   class="buttons" style="margin:0">
+		<div id="location_shape_type"  class="buttons" style="margin:0">
 		{foreach from=$shape_type_list item=cat key=cat_id name=foo}
 		<button class="{if $location->get('Location Shape Type')==$cat.name}selected{/if}" onclick="save_location('shape','{$cat.name}')" id="shape_{$cat.name}">{$cat.name}</button> 
 	    {/foreach}

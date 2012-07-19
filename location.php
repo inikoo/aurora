@@ -13,6 +13,7 @@
 */
 include_once('common.php');
 include_once('class.Location.php');
+include_once('class.Warehouse.php');
 
 
 
@@ -25,6 +26,8 @@ $_SESSION['state']['location']['id']=$location_id;
 
 $location= new location($location_id);
 
+$warehouse=new Warehouse($location->data['Location Warehouse Key']);
+$smarty->assign('warehouse',$warehouse);
 
 
 $view_sales=$user->can_view('product sales');
