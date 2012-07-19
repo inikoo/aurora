@@ -1334,6 +1334,9 @@ $this->update_main_state();
 
 		$locations=array();
 		$was_associated=array();
+		
+		
+		
 		$sql=sprintf("select ITF.`Location Key`  from `Inventory Transaction Fact` ITF    where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s   order by `Location Key`  desc  ",
 		$this->sku,
 		prepare_mysql($date));
@@ -1351,7 +1354,7 @@ $this->update_main_state();
 			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
 
 
-			//if ($part_location->location->data['Location Mainly Used For']=='Picking') {
+			if ($part_location->location->data['Location Mainly Used For']=='Picking') {
 
 
 				if ($part_location->is_associated($date)) {
@@ -1359,7 +1362,7 @@ $this->update_main_state();
 					$was_associated[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
 
 				}
-			//}
+			}
 
 		}
 
