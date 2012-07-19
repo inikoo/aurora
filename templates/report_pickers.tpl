@@ -7,7 +7,7 @@
 	{include file='calendar_splinter.tpl'} 
 
 
-<h1 style="clear:left">{$title}</h1>
+<h1 style="clear:left">{$title}, <span class="id">{$period}</span> <img id="show_calendar_browser" style="cursor:pointer;vertical-align:text-bottom;position:relative;top:-3px;{if $tipo=='f'}display:none{/if}" src="art/icons/calendar.png" alt="calendar" /> </h1>
 
 </div>
  <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">

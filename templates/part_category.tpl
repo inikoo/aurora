@@ -4,11 +4,13 @@
 		{include file='locations_navigation.tpl'} 
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<div class="branch">
-			<span>{if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php">{t}Inventory{/t}</a> &rarr; {$category->get_smarty_tree('part_categories.php')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php">{t}Inventory{/t}</a> &rarr; <a href="part_categories.php?id=0&warehouse_id={$warehouse->id}">{t}Parts Categories{/t}</a> &rarr; {$category->get_smarty_tree('part_categories.php')}</span> 
 		</div>
-		<div class="top_page_menu">
+		<div class="top_page_menu" >
 			<div class="buttons" style="float:left">
-				{if isset($parent_category)} <button onclick="window.location='part_categories.php?warehouse_id={$warehouse->id}&id={$parent_category->id}'"><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Name')}</button> {/if} <button onclick="window.location='part_categories.php?warehouse_id={$warehouse->id}&id=0'"><img src="art/icons/house.png" alt=""> {t}Part Categories{/t}</button> 
+			<span class="main_title">
+				{t}Category{/t}: {$category->get('Category Label')}
+			</span>
 			</div>
 			<div class="buttons" style="float:right">
 				<button onclick="window.location='edit_part_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}Add Subcategory{/t}</button> 
@@ -16,15 +18,11 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="clear:left;">
-			<h1>
-				{t}Category{/t}: {$category->get('Category Label')}
-			</h1>
-		</div>
+
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
-		<li style="{if $category->get('Category Children')==0 }display:none{/if}" > <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Category Children')})</span></span></li>
-		<li style="{if $category->get('Category Number Subjects')==0 }display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t}</span></span></li>
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
+		<li style="{if $category->get('Category Children')==0 and  $category->get('Category Number Subjects')>0}display:none{/if}" > <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Category Children')})</span></span></li>
+		<li style="{if $category->get('Category Number Subjects')==0 and  $category->get('Category Children')>0 }display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t}</span></span></li>
 		<li style="{if $category->get('Category Number Subjects')==0 }display:none{/if}"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
 
 		<li  style="{if $category->get('Category Children')==0 }display:none{/if}"  > <span class="item {if $block_view=='subcategories_charts'}selected{/if}" id="subcategories_charts"> <span> {t}Charts{/t}</span></span></li>

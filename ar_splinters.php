@@ -1180,7 +1180,7 @@ function list_products() {
 
 
 
-	$sql="select   `Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Product Total Acc Invoiced Amount`,`Product 1 Month Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product 1 Quarter Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product ID DC Total Acc Invoiced Amount`,`Product ID DC 1 Month Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select   `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Product Total Acc Invoiced Amount`,`Product 1 Month Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product 1 Quarter Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product ID DC Total Acc Invoiced Amount`,`Product ID DC 1 Month Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 	//  print $sql;
 	$position=1;
@@ -1232,6 +1232,11 @@ function list_products() {
 		$store="<a href='store.php?id=".$data['Product Store Key']."'>".$data['Store Code'].'</a>';
 
 
+if($data['Product Record Type']=='Historic'){
+$stock='<img src="art/icons/delete.png" alt="'._('Discontinued').'" title="'._('Discontinued').'">';
+
+}else{
+
 switch($data['Product Web State']){
 case('For Sale'):
 $web_state='<img src="art/icons/bullet_green.png">';
@@ -1240,8 +1245,9 @@ default;
 $web_state='<img src="art/icons/bullet_red.png">';
 
 }
-
 $stock=number($data['Product Availability']).$web_state;
+
+}
 		$adata[]=array(
 			'position'=>'<b>'.$position++.'</b>'
 			,'code'=>$code

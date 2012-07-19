@@ -100,7 +100,7 @@ function create_staff($data){
 	
 $values=$data['values'];
 //print_r($values);
-
+$values['Staff Valid From']=gmdate('Y-m-d H:i:s');
     $position=new CompanyPosition('id',$values['Position Key']);
     if(!$position->id){
       print "$position_code\n";

@@ -13,25 +13,26 @@
         {/if}
     </div>
     <div class="buttons" style="float:left">
+    <span class="main_title">{t}Staff Users{/t}</span>
         </div>
     <div style="clear:both"></div>
 </div>
 
 
-<h1>{t}Staff Users{/t}</h1>
+
 </div>
 
 
 
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
     <li> <span class="item {if $block_view=='users'}selected{/if}"  id="users">  <span> {t}Users List{/t}</span></span></li>
     <li> <span class="item {if $block_view=='categories'}groups{/if}"   id="groups">  <span> {t}Groups{/t}</span></span></li>
     <li> <span class="item {if $block_view=='login_history'}selected{/if}"  id="login_history">  <span> {t}Login History{/t}</span></span></li>
    
   </ul>
-<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+<div  style="clear:both;width:100%;border-bottom:1px solid #ccc;"></div>
 
-<div style="padding:0 20px">
+<div style="padding:0 20px;clear:both">
 
  <div id="block_users" style="{if $block_view!='users'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 

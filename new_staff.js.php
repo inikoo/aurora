@@ -26,9 +26,7 @@ var contact_data={
     ,"Contact Address Country Fifth Division":""
 };  
 
-function validate_staff_alias(){
 
-}
 
 function validate_staff_alias(query){ validate_general('staff','alias',unescape(query));}
 function validate_staff_name(query){ validate_general('staff','name',unescape(query));}
@@ -60,36 +58,11 @@ function post_action(branch,response) {
 }
 
 function save_new_staff(){
- save_new_general('staff');
-/*
-    get_staff_data();
-    var json_value = YAHOO.lang.JSON.stringify(individual_location_data);
-    var request='ar_edit_warehouse.php?tipo=new_location&values=' + encodeURIComponent(json_value); 
-    //alert(request)
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-	  //alert(o.responseText);
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.action=='created'){
-		
-		
-		    window.location='location.php?r=nl&id='+r.location_key;
-		
-		    //reset_location_data();
-		    //var table=tables['table0']
-		    //var datasource=tables['dataSource0'];    
-		    //datasource.sendRequest('',table.onDataReturnInitializeTable, table);
-		    
-		    
-		}else if(r.action=='error'){
-		    alert(r.msg);
-		}
-			    
+Dom.setStyle('form_buttons','display','none')
+Dom.setStyle('waiting','display','')
 
-			
-	    }
-	});
-*/
+ save_new_general('staff');
+
 }
 
 
@@ -105,11 +78,11 @@ validate_scope_data=
 	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_staff_alias&query=', 'dbname':'Staff Alias'}
 	,'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','name':'Staff_Name','ar':false,'dbname':'Staff Name', 'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
 	//,'staff_working':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'staff_working','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
-	,'staff_supervisor':{'changed':false,'validated':false,'required':true,'dbname':'Staff Is Supervisor','group':1,'type':'item','name':'staff_supervisor','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
-,'staff_type':{'changed':false,'validated':false,'required':true,'dbname':'Staff Type','group':1,'type':'item','name':'staff_type','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
-	,'staff_position':{'changed':true,'validated':true,'required':true,'dbname':'Position Key','group':1,'type':'item','name':'staff_position','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
-,'staff_department':{'changed':true,'validated':true,'required':true,'dbname':'Staff Department Key','group':1,'type':'item','name':'staff_department','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
-,'staff_area':{'changed':true,'validated':true,'required':true,'dbname':'Staff Area Key','group':1,'type':'item','name':'staff_area','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
+	,'staff_supervisor':{'changed':false,'validated':false,'required':false,'dbname':'Staff Is Supervisor','group':1,'type':'item','name':'staff_supervisor','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
+,'staff_type':{'changed':true,'validated':true,'required':false,'dbname':'Staff Type','group':1,'type':'item','name':'staff_type','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
+	,'staff_position':{'changed':true,'validated':true,'required':false,'dbname':'Position Key','group':1,'type':'item','name':'staff_position','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
+,'staff_department':{'changed':true,'validated':true,'required':false,'dbname':'Staff Department Key','group':1,'type':'item','name':'staff_department','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
+,'staff_area':{'changed':true,'validated':true,'required':false,'dbname':'Staff Area Key','group':1,'type':'item','name':'staff_area','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'Invalid Staff Name'}]}
 	
 
 	}

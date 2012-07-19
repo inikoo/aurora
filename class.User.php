@@ -236,7 +236,7 @@ class User extends DB_Table {
 			$this->new=true;
 			$this->msg= _('User added susesfully');
 			$this->get_data('id',$user_id);
-
+			$this->update_staff_type();
 
 
 
@@ -298,7 +298,7 @@ class User extends DB_Table {
 
 		$sql=sprintf("update `User Dimension` set `User Active`=%s where `User Key`=%d  ",prepare_mysql($value),$this->id);
 		mysql_query($sql);
-		//print $sql;
+
 		if (mysql_affected_rows()>0) {
 			$this->updated=true;
 			$this->data['User Active']=$value;
@@ -320,7 +320,7 @@ class User extends DB_Table {
 			}
 
 			$this->add_history($history_data);
-
+			$this->update_staff_type();
 		} else {
 			$this->msg=_('Nothing to change');
 		}
@@ -1202,14 +1202,32 @@ class User extends DB_Table {
 		if ($this->data['User Type']!='Staff') {
 			$this->data['User Staff Type']='';
 
-		}else {
-
+		}
+		else {
 			$staff=new Staff($this->data['User Parent Key']);
+			if ($staff->data['Staff Currently Working']=='Yes') {
+				if ($this->data['User Active']=='Yes') {
+					$this->data['User Staff Type']='Active Working';
+				}else {
+					$this->data['User Staff Type']='Inactive Working';
+				}
 
+			}else {
+				if ($this->data['User Active']=='Yes') {
+					$this->data['User Staff Type']='Active Not Working';
+				}else {
+					$this->data['User Staff Type']='Inactive Not Working';
+				}
+
+			}
 
 
 		}
-
+		$sql=sprintf("update `User Dimension` set `User Staff Type`=%s where `User Key`=%d",
+			prepare_mysql($this->data['User Staff Type']),
+			$this->id
+		);
+		mysql_query($sql);
 	}
 
 
@@ -1473,7 +1491,7 @@ class User extends DB_Table {
 
 
 	function get_table_export_fields($ar,$table) {
-	
+
 		$fields='';
 		$sql=sprintf("select `Table Default Export Fields` from `Table Dimension` where `Table AR`=%s and `Table Name`=%s ",
 			prepare_mysql($ar),

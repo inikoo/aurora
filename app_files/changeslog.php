@@ -6516,7 +6516,7 @@ ALTER TABLE `Part Dimension` ADD `Part Duty Rate` VARCHAR( 256 ) NULL DEFAULT NU
 
 ALTER TABLE `Staff Dimension` CHANGE `Staff Valid from` `Staff Valid From` DATETIME NULL DEFAULT NULL ;
 
-INSERT INTO `dw`.`Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`, `Widget Metadata`) VALUES (NULL, 'Top Customers', 'block_3', NULL, 'dashboard_block.php?tipo=top_customers', 'Top Customers', '');
-
-
-
+INSERT INTO `Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`, `Widget Metadata`) VALUES (NULL, 'Top Customers', 'block_2', NULL, 'dashboard_block.php?tipo=top_customers', 'Top Customers', '');
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM('Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Inventory Transaction Fact` CHANGE `User Key` `User Key` MEDIUMINT UNSIGNED NULL DEFAULT '0';
+ALTER TABLE `Staff Dimension` DROP INDEX `Staff Alias` ,ADD UNIQUE `Staff Alias` ( `Staff Alias` );

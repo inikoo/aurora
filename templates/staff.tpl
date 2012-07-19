@@ -24,7 +24,7 @@
 </div>
 <input type='hidden' id="staff_key" value="{$staff->id}"/>
 
-  <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+  <ul class="tabs" id="chooser_ul" style="clear:both;xmargin-top:25px">
       <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
 
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History Notes{/t}</span></span></li>

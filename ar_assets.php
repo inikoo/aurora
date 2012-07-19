@@ -10023,7 +10023,7 @@ function part_transactions() {
 			'date'=>strftime("%c", strtotime($data['Date'])),
 			'note'=>$data['Note'],//.$data['Inventory Transaction Key'],
 			'location'=>$location,
-			'user'=>$data['User Alias'],
+			'user'=>$data['User Alias']
 
 
 		);

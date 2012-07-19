@@ -266,7 +266,7 @@ class Staff extends DB_Table{
 		$contact=new Contact($data['Staff Contact Key']);
 		$data['Staff Name']=$contact->display('name');
 
-
+		
 
 		$this->data=$this->base_data();
 		foreach ($data as $key=>$value) {
@@ -372,11 +372,19 @@ class Staff extends DB_Table{
 
 	}
 
+	function update_alias($value){
+		$this->update_field('Staff Alias',$value,'');
+	}
+
+
 	function update_field_switcher($field,$value,$options='') {
 		if (is_string($value))
 			$value=_trim($value);
 
 		switch ($field) {
+		case('Staff Alias'):
+		$this->update_alias($value);
+			break;
 		case('Staff Name'):
 		case('name'):
 			$this->update_name($value);
