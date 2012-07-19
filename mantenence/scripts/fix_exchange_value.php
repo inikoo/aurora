@@ -28,7 +28,7 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
 
-$sql="select  `Invoice Currency Exchange`,`Invoice Key`  from `Invoice Dimension` where `Invoice Currency Exchange`!=1;  ";
+$sql="select  `Invoice Paid`,`Invoice Currency Exchange`,`Invoice Key`  from `Invoice Dimension` where `Invoice Currency Exchange`!=1;  ";
 
 $result=mysql_query($sql);
 //print $sql;
@@ -38,8 +38,31 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	//print "$sql\n";
 	mysql_query($sql);
 
+	if ($row['Invoice Paid']=='Yes') {
 
-//exit;
+
+
+		$sql=sprintf("select `Invoice Currency Exchange Rate`,`Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  ",
+			$row['Invoice Key']);
+
+		$res2=mysql_query($sql);
+
+		while ($row2=mysql_fetch_assoc($res2)) {
+
+
+			$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%.2f where `Map To Order Transaction Fact Key`=%d "
+				,$row2['Invoice Currency Exchange Rate']*($row2['Invoice Transaction Gross Amount']-$row2['Invoice Transaction Total Discount Amount']-$row2['Invoice Transaction Net Refund Items'])
+				,$row2['Order Transaction Fact Key']);
+
+			mysql_query( $sql );
+			//print "$sql\n";
+		}
+
+
+
+	}
+
+	//exit;
 }
 
 ?>
