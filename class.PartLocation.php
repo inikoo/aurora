@@ -1290,7 +1290,11 @@ $this->location->update_parts();
 			$this->update_stock_history_interval($date,$date);
 		}else {
 			
-			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
+			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s",
+			$this->part_sku,
+			$this->location_key,
+			prepare_mysql($date)
+			);
 			mysql_query($sql);
 			//print "$sql\n";
 		}
@@ -1333,6 +1337,9 @@ $this->location->update_parts();
 			$comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
 			$location_type="Unknown";
 			$warehouse_key=1;
+			
+			
+			
 			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s)
 			ON DUPLICATE KEY UPDATE `Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Comercial`=%.2f,
 			`Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,`Value Open`=%f,`Value High`=%f,`Value Low`=%f
