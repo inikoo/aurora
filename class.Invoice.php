@@ -219,7 +219,8 @@ class Invoice extends DB_Table {
 
 
 
-			$sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
+			$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate``=%f,`Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
+				($this->data['Invoice Currency Exchange']==''?1,$this->data['Invoice Currency Exchange']),
 				prepare_mysql($this->data['Invoice Date']),
 				prepare_mysql($this->data['Invoice Currency']),
 				$this->id,
@@ -1473,7 +1474,7 @@ class Invoice extends DB_Table {
 	function pay_full_amount($data) {
 		$this->data['Invoice Paid Date']=$data['Invoice Paid Date'];
 
-		$sql=sprintf("select `Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
+		$sql=sprintf("select `Invoice Currency Exchange Rate`,`Invoice Transaction Net Refund Items`,`Order Transaction Fact Key`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
 			$this->id);
 
 		$res=mysql_query($sql);
@@ -1487,7 +1488,7 @@ class Invoice extends DB_Table {
 			mysql_query( $sql );
 
 			$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
-				,$row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items']
+				,$row['Invoice Currency Exchange Rate']*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items'])
 				,$row['Order Transaction Fact Key']);
 
 			mysql_query( $sql );
