@@ -1208,7 +1208,7 @@ $this->update_main_state();
 		}
 		$this->unknown_location_associated=false;
 		$locations=array();
-		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and `Can Pick`='Yes' order by `Location Key`  desc ",$this->sku);
+		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) order by `Can Pick` ;",$this->sku);
 		//print "$sql\n";
 		$res=mysql_query($sql);
 		$locations_data=array();
