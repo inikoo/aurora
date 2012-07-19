@@ -220,7 +220,7 @@ class Invoice extends DB_Table {
 
 
 			$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate``=%f,`Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
-				($this->data['Invoice Currency Exchange']==''?1,$this->data['Invoice Currency Exchange']),
+				($this->data['Invoice Currency Exchange']==''?1:$this->data['Invoice Currency Exchange']),
 				prepare_mysql($this->data['Invoice Date']),
 				prepare_mysql($this->data['Invoice Currency']),
 				$this->id,
