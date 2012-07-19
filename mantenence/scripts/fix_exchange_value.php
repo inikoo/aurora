@@ -29,13 +29,14 @@ require_once '../../conf/conf.php';
 
 
 $sql="select  `Invoice Currency Exchange`,`Invoice Key`  from `Invoice Dimension` where `Invoice Currency Exchange`!=1;  ";
+
 $result=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f where `Invoice Key`=%d",$row['Invoice Currency Exchange'],$row['Invoice Key']);
-	print "$sql\n";
-	//mysql_query($sql);
+	//print "$sql\n";
+	mysql_query($sql);
 
 
 //exit;
