@@ -1212,6 +1212,56 @@ $this->update_main_state();
 		if ($date) {
 			return $this->get_picking_location_historic($date,$qty);
 		}
+		
+		//FORCING PICKING FOR PICKING LOCAtION EVEN IF IS NEGATIVE
+		
+		$this->unknown_location_associated=false;
+		$locations=array();
+		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) order by `Can Pick` ;",$this->sku);
+		//print "$sql\n";
+		$res=mysql_query($sql);
+		$locations_data=array();
+		while ($row=mysql_fetch_assoc($res)) {
+			$part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+			list($stock,$value,$in_process)=$part_location->get_stock();
+			$locations_data[]=array('location_key'=>$row['Location Key'],'stock'=>$stock);
+
+		}
+
+		$number_associated_locations=count($locations_data);
+
+		if ($number_associated_locations==0) {
+			$this->unknown_location_associated=true;
+			$locations[]= array('location_key'=>1,'qty'=>$qty);
+			$qty=0;
+		}else {
+
+			foreach ($locations_data as $location_data) {
+			
+				$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
+				break;
+				
+	
+
+
+
+			}
+			//print_r($locations);
+			//print "--- $qty\n";
+
+
+
+		}
+
+		//print_r($locations);
+		return $locations;
+
+	}
+
+	function get_picking_location_key_origial($date=false,$qty=1) {
+		if ($date) {
+			return $this->get_picking_location_historic($date,$qty);
+		}
 		$this->unknown_location_associated=false;
 		$locations=array();
 		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) order by `Can Pick` ;",$this->sku);
