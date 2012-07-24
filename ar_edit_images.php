@@ -166,10 +166,10 @@ function upload_image($data) {
         $image=new Image('find',$image_data,'create');
         if (!$image->error) {
 
-            $scope=$data['scope'];
+            $_scope=$data['scope'];
 
 
-            switch ($scope) {
+            switch ($_scope) {
             case 'product':
                 include_once('class.Product.php');
                 $scope=new Product('pid',$data['scope_key']);
@@ -205,6 +205,19 @@ function upload_image($data) {
 
 
             $scope->add_image($image->id);
+            
+            if($_scope=='part'){
+            include_once('class.Product.php');
+            	$products_pids=$scope->get_all_product_ids();
+            	foreach($products_pids as $tmp){
+            		
+            		$product=new Product('pid',$tmp['Product ID']);
+            		$product->add_image($image->id);
+            		
+            	}
+            
+            }
+            
 
             if ($scope->updated) {
 
