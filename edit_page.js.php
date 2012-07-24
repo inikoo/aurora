@@ -429,19 +429,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var CustomersColumnDefs = [
 				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
-				       //  ,{key:"go", label:"", width:20,action:"none"}
 				       ,{key:"name",label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-				   				  //     ,{key:"pages",label:"<?php echo _('Pages')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   				       ,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
-
+				   		,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
 				         ,{key:"selected", label:"",width:180,sortable:false,className:"acenter"}		         
-				     //,{key:"delete", label:"",width:12,sortable:false,action:'delete',object:'page_header'}		         
 				       ];
 				       
 	 
-				       
-				       
-
 	    var request="ar_edit_sites.php?tipo=page_headers&parent=page&parent_key="+Dom.get('page_key').value+"&tableid=8";
 	    //alert(request)
 	        this.dataSource8 = new YAHOO.util.DataSource(request);
@@ -463,11 +456,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		
-		fields: [
-			 "id"
-			 ,"go","name","delete","pages","image","selected"
-
-			 ]};
+		fields: ["id","go","name","delete","pages","image","selected"]};
 
         this.table8= new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource8
@@ -504,6 +493,74 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    
 	    this.table8.filter={key:'<?php echo $_SESSION['state']['page']['edit_headers']['f_field']?>',value:'<?php echo $_SESSION['state']['page']['edit_headers']['f_value']?>'};
 
+    var tableid=9; 
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				       ,{key:"name",label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
+				   		,{key:"image",label:"<?php echo _('Preview')?>", width:300,sortable:false,className:"aright"}
+				         ,{key:"selected", label:"",width:180,sortable:false,className:"acenter"}		         
+				       ];
+				       
+	 
+	    var request="ar_edit_sites.php?tipo=page_footers&parent=page&parent_key="+Dom.get('page_key').value+"&tableid=9";
+	    //alert(request)
+	        this.dataSource9 = new YAHOO.util.DataSource(request);
+
+	    this.dataSource9.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource9.connXhrMode = "queueRequests";
+	    this.dataSource9.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		 rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+	
+		},
+		
+		
+		fields: ["id","go","name","delete","pages","image","selected"]};
+
+        this.table9= new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource9
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    :<?php echo $_SESSION['state']['page']['edit_footers']['nr']?> ,containers : 'paginator9', alpartysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info9'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    key: "<?php echo $_SESSION['state']['page']['edit_footers']['order']?>",
+							     dir: "<?php echo $_SESSION['state']['page']['edit_footers']['order_dir']?>"
+							 },
+							 dynamicData : true
+						     }
+						     );
+	    
+	    this.table9.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table9.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table9.doBeforePaginatorChange = mydoBeforePaginatorChange;
+   		this.table9.table_id=tableid;
+     	this.table9.subscribe("renderEvent", myrenderEvent);
+
+
+	    this.table9.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table9.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table9.subscribe("cellClickEvent", onCellClick);
+		    
+	    this.table9.filter={key:'<?php echo $_SESSION['state']['page']['edit_footers']['f_field']?>',value:'<?php echo $_SESSION['state']['page']['edit_footers']['f_value']?>'};
 
 
    var tableid=7; // Change if you have more the 1 table

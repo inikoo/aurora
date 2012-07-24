@@ -1355,7 +1355,7 @@ function delete_page_footer($data) {
 
 
 function list_headers_for_edition() {
-	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','department','family','product','page')) ) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','page')) ) {
 		$parent=$_REQUEST['parent'];
 
 	} else {
@@ -1589,7 +1589,7 @@ function list_headers_for_edition() {
 
 
 function list_footers_for_edition() {
-	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('site','department','family','product')) ) {
+	if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('page','site','department','family','product')) ) {
 		$parent=$_REQUEST['parent'];
 
 	} else {
@@ -1665,13 +1665,23 @@ function list_footers_for_edition() {
 
 	switch ($parent) {
 	case 'site':
-		$table='  `Page Footer Dimension`  ';
+		$table='  `Page Footer Dimension` H   ';
 		$where=sprintf(' where `Site Key`=%d',$parent_key);
 		break;
+
+	case 'page':
+		$table='  `Page Footer Dimension`   ';
+
+		$page=new Page($parent_key);
+		$where=sprintf(' where `Site Key`=%d',$page->data['Page Site Key']);
+		break;
+
 	default:
 
 		break;
 	}
+
+
 
 
 
@@ -1750,6 +1760,9 @@ function list_footers_for_edition() {
 
 		$site=new Site($parent_key);
 		$default_footer_key=$site->data['Site Default Footer Key'];
+	}else {
+		$default_footer_key=0;
+		$selected_footer_key=$page->data['Page Footer Key'];
 	}
 
 

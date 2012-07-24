@@ -2967,7 +2967,7 @@ $this->update_main_state();
 		}
 
 		$this->updated=true;
-		$this->msg=_("image added");
+		$this->msg="image added";
 	}
 
 

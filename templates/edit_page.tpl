@@ -271,7 +271,12 @@
 					<button style="{if $content_view=='overview'}display:none{/if}" id="show_page_content_overview_block"><img src="art/icons/layout.png" alt="" /> {t}Content Overview{/t}</button> 
 				</div>
 				<div class="buttons left">
-					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> <button id="show_page_product_list_block" class="{if $content_view=='product_list'}selected{/if}"><img src="art/icons/text_list_bullets.png" alt="" /> {t}Lists{/t}</button> <button id="show_page_product_buttons_block" class="{if $content_view=='product_buttons'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> 
+					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> 
+					<button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> 
+
+					<button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
+					<button id="show_page_product_list_block" class="{if $content_view=='product_list'}selected{/if}"><img src="art/icons/text_list_bullets.png" alt="" /> {t}Lists{/t}</button> 
+					<button id="show_page_product_buttons_block" class="{if $content_view=='product_buttons'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
 				</div>
 				<div style="clear:both">
 				</div>
@@ -397,6 +402,11 @@
 				
 			</div>
 			<div style="{if $content_view!='footer'}display:none{/if};margin:10px 20px" id="page_footer_block">
+							<div style="clear:both">
+				<span class="clean_table_title">{t}Footers{/t}</span> {include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
+				<div id="table9" class="data_table_container dtable btable ">
+				</div>
+			
 			</div>
 			<div style="{if $content_view!='product_list'}display:none{/if};margin:10px 20px" id="page_product_list_block">
 				<div id="product_lists" style="width:890px;margin-bottom:20px">
