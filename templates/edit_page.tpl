@@ -50,8 +50,10 @@
 			<li> <span class="item {if $block_view=='url'}selected{/if}" id="url"><span>{t}Redirections{/t}</span></span></li>
 		</ul>
 	</div>
+	
 	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;margin:0px {if $block_view=='content'}0px{else}20px{/if}">
-		<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
+	
+	<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
 		<table class="edit" style="width:880px;clear:both;margin-left:20px;margin-top:20px">
 				<tr class="title">
 					<td colspan="1">{t}Redirections{/t}</td>
@@ -87,6 +89,7 @@
 				</tr>
 			</table>
 		</div>
+		
 		<div class="edit_block" style="{if $block_view!='setup' }display:none{/if}" id="d_setup">
 			<table class="edit" border="0" id="edit_family_page" style="width:880px;clear:both;margin-left:20px;margin-top:0px" page_key="{$page->id}">
 				<tr>
@@ -249,7 +252,8 @@
 			</table>
 			
 		</div>
-		<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
+	
+	<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
 			<table class="edit" border="0" id="properties_edit_table" style="width:100%">
 				<tr>
 					<td colspan="3"> 
@@ -260,11 +264,14 @@
 				</tr>
 			</table>
 		</div>
-		<div class="edit_block" style="{if $block_view!='page_header' }display:none{/if}" id="d_page_header">
+
+	<div class="edit_block" style="{if $block_view!='page_header' }display:none{/if}" id="d_page_header">
 		</div>
-		<div class="edit_block" style="{if $block_view!='page_footer' }display:none{/if}" id="d_page_footer">
+		
+	<div class="edit_block" style="{if $block_view!='page_footer' }display:none{/if}" id="d_page_footer">
 		</div>
-		<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px" id="d_content">
+		
+	<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px" id="d_content">
 			
 			<div style="border-bottom:1px dotted #ddd;padding-bottom:5px;margin:0 20px">
 				<div class="buttons">
@@ -401,9 +408,11 @@
 				
 				
 			</div>
+			
 			<div style="{if $content_view!='footer'}display:none{/if};margin:10px 20px" id="page_footer_block">
-							<div style="clear:both">
-				<span class="clean_table_title">{t}Footers{/t}</span> {include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
+							
+				<span class="clean_table_title">{t}Footers{/t}</span> 
+				{include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
 				<div id="table9" class="data_table_container dtable btable ">
 				</div>
 			
