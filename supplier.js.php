@@ -194,7 +194,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		 
 		    
-		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&parent=supplier&parent_key="+Dom.get('supplier_key').value+"&sf=0&tableid="+tableid);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource1.connXhrMode = "queueRequests";
 		    this.dataSource1.responseSchema = {

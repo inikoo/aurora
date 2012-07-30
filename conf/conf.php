@@ -404,7 +404,7 @@ $default_state=array(
 		),
 		'invoices'=>array(
 			'order'=>'date',
-			'order_dir'=>'',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>25,
 			'invoice_type'=>'all',
@@ -1037,7 +1037,7 @@ $default_state=array(
 		'invoices'=> array(
 			'days'=>array(1,2,3,4,5,6,7),
 			'order'=>'date',
-			'order_dir'=>'asc',
+			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>200,
 			'where'=>'where true',

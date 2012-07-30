@@ -1,5 +1,6 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
+<input type="hidden" id="supplier_key" value="{$supplier->id}"/>
 	<div style="padding:0px 20px;">
 		{include file='suppliers_navigation.tpl'} 
 		<div class="branch">
@@ -121,7 +122,7 @@
 		</div>
 		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div class="data_table">
-				<span class="clean_table_title">{t}Supplier Products{/t} <img id="export_csv1" tipo="supplier_products" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+				<span class="clean_table_title">{t}Supplier Products{/t} </span> 
 				<div id="list_options0">
 					<div class="table_top_bar">
 				</div>
@@ -176,11 +177,13 @@
 			<br/><br/>
 			<strong>You need to upgrade your Flash Player</strong> 
 		</div>
+		<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> 
+
 <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "930", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_candlestick.xml.php?tipo=part_purchase_history&output={$purchase_history_chart_output}&parent=part&parent_key={$part->sku}"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_candlestick.xml.php?tipo=part_purchase_history&output={$purchase_history_chart_output}&parent=supplier&parent_key={$supplier->id}"));
 		so.addVariable("preloader_color", "#999999");
 		so.write("purchase_history_plot");
 		// ]]>

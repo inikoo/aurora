@@ -131,8 +131,7 @@
 				</table>
 			</div>
 		</div>	
-		
-		<div id="sales_plots" style="clear:both;display:none">
+		<div id="sales_plots" style="clear:both;">
 				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
 					<li> <span class="item {if $plot_tipo=='store'}selected{/if}" onclick="change_plot(this)" id="plot_store" tipo="store"> <span>{t}Parts Sales{/t}</span> </span> </li>
 					{* 
@@ -151,7 +150,7 @@
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=family_sales&family_key=1"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=part_category_sales&category_key={$category->id}"));
 		so.addVariable("preloader_color", "#999999");
 		so.write("sales_plot");
 		// ]]>
