@@ -219,7 +219,7 @@ class Invoice extends DB_Table {
 
 
 
-			$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate``=%f,`Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
+			$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f,`Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
 				($this->data['Invoice Currency Exchange']==''?1:$this->data['Invoice Currency Exchange']),
 				prepare_mysql($this->data['Invoice Date']),
 				prepare_mysql($this->data['Invoice Currency']),
@@ -234,7 +234,7 @@ class Invoice extends DB_Table {
 				$row['Order Transaction Fact Key']
 			);
 			mysql_query($sql);
-			// print $sql;
+			// print "$sql\n";
 		}
 
 		$shipping_net=0;
@@ -1478,7 +1478,7 @@ class Invoice extends DB_Table {
 			$this->id);
 
 		$res=mysql_query($sql);
-
+//print "$sql\n";
 		while ($row=mysql_fetch_assoc($res)) {
 			$sql = sprintf( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Order Transaction Fact Key`=%d "
 				,prepare_mysql($data['Payment Method'])
@@ -1486,7 +1486,7 @@ class Invoice extends DB_Table {
 				,$row['Order Transaction Fact Key']);
 
 			mysql_query( $sql );
-
+//print "$sql\n";
 			$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
 				,$row['Invoice Currency Exchange Rate']*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items'])
 				,$row['Order Transaction Fact Key']);

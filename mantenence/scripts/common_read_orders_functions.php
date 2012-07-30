@@ -966,6 +966,8 @@ function send_order($data,$data_dn_transactions) {
 					'Invoice Paid Date'=>$date_inv,
 					'Payment Method'=>$payment_method
 				));
+				
+				
 		}
 
 	}

@@ -545,6 +545,82 @@ case('sales_from_country'):
 
 
 	break;
+	
+	case('part_category_sales'):
+
+	if (!isset($_REQUEST['family_key'])) {
+		exit;
+	}
+	$tmp=preg_split('/\|/', $_REQUEST['family_key']);
+	$familys_keys=array();
+	foreach ($tmp as $family_key) {
+
+		if (is_numeric($family_key) ) {
+			$familys_keys[]=$family_key;
+		}
+	}
+	$use_corporate=0;
+	$staked=false;
+	if (isset($_REQUEST['stacked']) and $_REQUEST['stacked'])$staked=true;
+	$graphs_data=array();
+	$gid=0;
+	if ($staked) {
+		$sql=sprintf("select `Product Family Store Key`,`Product Family Name`,`Product Family Code`,`Store Currency Code` from `Product Family Dimension`  left join `Store Dimension` on (`Product Family Store Key`=`Store Key`) where `Product Family Key` in (%s)",addslashes(join(',',$familys_keys)));
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			if (!in_array($row['Product Family Store Key'], $user->stores)) {
+				continue;
+			}
+			$graphs_data[]=array(
+				'gid'=>$gid,
+				'title'=>$row['Product Family Code'],
+				'currency_code'=>$corporate_currency,
+				'color'=>$colors[$gid]
+			);
+			$gid++;
+		}
+		$data_args='tipo=stacked_family_sales&family_key='.join(',',$familys_keys);
+		$template='plot_stacked_asset_sales.xml.tpl';
+
+	} else {// no stakecked
+
+
+		$sql=sprintf("select `Product Family Name`,`Product Family Code`,`Store Currency Code` from `Product Family Dimension` left join `Store Dimension` on (`Product Family Store Key`=`Store Key`) where `Product Family Key` in (%s)",addslashes(join(',',$familys_keys)));
+		// print $sql;
+		$res=mysql_query($sql);
+		$title='';
+		$currencies=array();
+		while ($row=mysql_fetch_assoc($res)) {
+			$title.=','.$row['Product Family Code'];
+
+
+			$currency_code=$row['Store Currency Code'];
+			$currencies[$currency_code]=1;
+
+		}
+
+
+		if (count($currencies)>1)
+			$use_corporate=1;
+
+
+
+
+		$graphs_data[]=array(
+			'gid'=>0,
+			'title'=>$title.' '._('Sales'),
+			'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
+		);
+		$data_args='tipo=family_sales&family_key='.join(',',$familys_keys).'&use_corporate='.$use_corporate;
+
+		$template='plot_asset_sales.xml.tpl';
+
+	}
+
+
+	break;
+	
 
 }
 
