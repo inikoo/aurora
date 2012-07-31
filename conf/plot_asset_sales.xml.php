@@ -570,22 +570,21 @@ case('sales_from_country'):
 	} else {// no stakecked
 
 
-		$sql=sprintf("select `Category Label`,`Category Name` from `Category Dimension` where `Product Family Key` in (%s)",addslashes(join(',',$categories_keys)));
+		$sql=sprintf("select `Category Label`,`Category Name` from `Category Dimension` where `Category Key` in (%s)",addslashes(join(',',$categories_keys)));
 		// print $sql;
 		$res=mysql_query($sql);
 		$title='';
 		$currencies=array();
 		while ($row=mysql_fetch_assoc($res)) {
-			$title.=','.$row['Product Family Code'];
+			$title.=','.$row['Category Label'];
 
 
-			$currency_code=$row['Store Currency Code'];
-			$currencies[$currency_code]=1;
+			
 
 		}
 
 
-		if (count($currencies)>1)
+		
 			$use_corporate=1;
 
 
@@ -594,9 +593,9 @@ case('sales_from_country'):
 		$graphs_data[]=array(
 			'gid'=>0,
 			'title'=>$title.' '._('Sales'),
-			'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
+			'currency_code'=>$corporate_currency
 		);
-		$data_args='tipo=family_sales&category_key='.join(',',$categories_keys).'&use_corporate='.$use_corporate;
+		$data_args='tipo=category_part_sales&category_key='.join(',',$categories_keys).'&use_corporate='.$use_corporate;
 
 		$template='plot_asset_sales.xml.tpl';
 
