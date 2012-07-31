@@ -185,6 +185,17 @@ case('family_sales'):
 		));
 	family_sales($data);
 	break;
+case('category_part_sales'):
+	$data=prepare_values($_REQUEST,array(
+			'category_key'=>array('type'=>'string'),
+			'from'=>array('type'=>'date','optional'=>true),
+			'to'=>array('type'=>'date','optional'=>true),
+			'use_corporate'=>array('type'=>'number')
+		));
+		
+	category_part_sales($data);
+	break;	
+	
 case('product_id_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'product_id'=>array('type'=>'string'),
@@ -825,6 +836,86 @@ function family_sales($data) {
 
 
 }
+
+
+function category_part_sales($data) {
+	global $user;
+	$tmp=preg_split('/\,/', $data['category_key']);
+	$categories_keys=array();
+	foreach ($tmp as $category_key) {
+
+		if (is_numeric($category_key)) {
+			$categories_keys[]=$category_key;
+		}
+	}
+
+	$graph_data=array();
+
+
+
+	if (array_key_exists('to',$data)) {
+		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+	} else {
+		$dates=sprintf(" `Date`<=NOW()  ");
+	}
+	if (array_key_exists('from',$data)) {
+		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+	} else {
+		$dates.=sprintf("and  `Date`>= ( select min(`Date`)   from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`) where `Category Key` in (%s)  and `Inventory Transaction Type`='Sale'   )",join(',',$categories_keys));
+	}
+
+	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+		$dates
+
+	);
+
+	//print $sql;
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		$graph_data[$row['Date']]['vol']=0;
+
+		$graph_data[$row['Date']]['value']=0;
+		//$graph_data[$row['Date']]['date']=$row['Date'];
+
+	}
+
+
+	if (array_key_exists('to',$data)) {
+		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+	} else {
+		$dates=sprintf(" `Date`<=NOW()  ");
+	}
+	if (array_key_exists('from',$data)) {
+		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+	}
+
+	
+		$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type`='Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+$dates,
+		join(',',$categories_keys)
+);
+	
+	//print $sql;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$graph_data[$row['date']]['vol']=$row['outers'];
+		$graph_data[$row['date']]['value']=sprintf("%.2f",-1*$row['net']);
+	}
+
+
+
+	$out='';
+	//print_r($graph_data);
+	foreach ($graph_data as $key=>$value) {
+		print $key.','.join(',',$value)."\n";
+	}
+
+
+}
+
+
 function product_id_sales($data) {
 	global $user;
 	$tmp=preg_split('/\,/', $data['product_id']);
