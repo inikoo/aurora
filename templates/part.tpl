@@ -387,7 +387,7 @@
 		</div>
 		
 		
-		<div id="sales_plots" style="clear:both">
+		<div id="sales_plots" style="clear:both;display:none">
 				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
 					<li> <span class="item {if $plot_tipo=='sales'}selected{/if}" onclick="change_plot(this)" id="plot_sales" tipo="sales"> <span>{t}Part Sales{/t}</span> </span> </li>
 				</ul>
