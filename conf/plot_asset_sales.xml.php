@@ -548,15 +548,15 @@ case('sales_from_country'):
 	
 	case('part_category_sales'):
 
-	if (!isset($_REQUEST['family_key'])) {
+	if (!isset($_REQUEST['category_key'])) {
 		exit;
 	}
-	$tmp=preg_split('/\|/', $_REQUEST['family_key']);
-	$familys_keys=array();
-	foreach ($tmp as $family_key) {
+	$tmp=preg_split('/\|/', $_REQUEST['category_key']);
+	$categories_keys=array();
+	foreach ($tmp as $category_key) {
 
-		if (is_numeric($family_key) ) {
-			$familys_keys[]=$family_key;
+		if (is_numeric($category_key) ) {
+			$categories_keys[]=$category_key;
 		}
 	}
 	$use_corporate=0;
@@ -565,28 +565,12 @@ case('sales_from_country'):
 	$graphs_data=array();
 	$gid=0;
 	if ($staked) {
-		$sql=sprintf("select `Product Family Store Key`,`Product Family Name`,`Product Family Code`,`Store Currency Code` from `Product Family Dimension`  left join `Store Dimension` on (`Product Family Store Key`=`Store Key`) where `Product Family Key` in (%s)",addslashes(join(',',$familys_keys)));
-		$res=mysql_query($sql);
-
-		while ($row=mysql_fetch_assoc($res)) {
-			if (!in_array($row['Product Family Store Key'], $user->stores)) {
-				continue;
-			}
-			$graphs_data[]=array(
-				'gid'=>$gid,
-				'title'=>$row['Product Family Code'],
-				'currency_code'=>$corporate_currency,
-				'color'=>$colors[$gid]
-			);
-			$gid++;
-		}
-		$data_args='tipo=stacked_family_sales&family_key='.join(',',$familys_keys);
-		$template='plot_stacked_asset_sales.xml.tpl';
+		//Todo see family_sales
 
 	} else {// no stakecked
 
 
-		$sql=sprintf("select `Product Family Name`,`Product Family Code`,`Store Currency Code` from `Product Family Dimension` left join `Store Dimension` on (`Product Family Store Key`=`Store Key`) where `Product Family Key` in (%s)",addslashes(join(',',$familys_keys)));
+		$sql=sprintf("select `Category Label`,`Category Name` from `Category Dimension` where `Product Family Key` in (%s)",addslashes(join(',',$categories_keys)));
 		// print $sql;
 		$res=mysql_query($sql);
 		$title='';
@@ -612,7 +596,7 @@ case('sales_from_country'):
 			'title'=>$title.' '._('Sales'),
 			'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
 		);
-		$data_args='tipo=family_sales&family_key='.join(',',$familys_keys).'&use_corporate='.$use_corporate;
+		$data_args='tipo=family_sales&category_key='.join(',',$categories_keys).'&use_corporate='.$use_corporate;
 
 		$template='plot_asset_sales.xml.tpl';
 

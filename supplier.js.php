@@ -744,11 +744,7 @@ function init(){
     ids=['product_general','product_sales','product_stock','product_forecast'];
     YAHOO.util.Event.addListener(ids, "click",product_change_view)
     
-    
-
-
-    
-ids=["details","products","purchase_orders","purchases"];
+    ids=["details","products","purchase_orders","purchases"];
     Event.addListener(ids,"click",change_block);
 
 
