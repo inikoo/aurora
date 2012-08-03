@@ -460,6 +460,10 @@ $deals=array();
 			// print "$department_name\n ";
 			if ($department_name=='Ancient Wisdom Home Fragrance' )
 				$department_code='Home';
+				
+				if ($department_name=='Libros' )
+				$department_code='Libros';
+				
 			if ($department_name=='Bathroom Heaven' )
 				$department_code='Bath';
 			if ($department_name=='Departamento de Velas' )

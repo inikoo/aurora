@@ -231,7 +231,7 @@ if(preg_match('/^devoluci|^refund|VAT REFUND|abono/i',$ltipo)){
   //print "****** $ltipo *** $tmp ***\n";
   
   if($header['total_topay']==0){
-    if(preg_match('/Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes2'])){
+    if(preg_match('/Reemplazo|Repalacements|Replcement|^reemplazo por roturas|^replacement|REPLACMENT|DELIVERY COLLECTION|repplacements|repalcements/i',$header['notes2'])){
       
       $tipo=6;
     }
