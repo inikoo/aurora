@@ -1781,9 +1781,16 @@ function list_invoices_with_no_tax() {
 
 
 
-	$where.=$date_interval['mysql'];
+	//$where.=$date_interval['mysql'];
 
 
+	$where.=sprintf(" and   `Invoice Date`>=%s and   `Invoice Date`<=%s   "
+		,prepare_mysql($date_interval['from'].' 00:00:00')
+		,prepare_mysql($date_interval['to'].' 23:59:59')
+	);
+
+
+//$where.=
 
 	$where_elements_tax_category='';
 
@@ -1962,7 +1969,7 @@ function list_invoices_with_no_tax() {
 				}
 
 			$sql="select `Invoice Currency`,`Invoice Total Amount`*`Invoice Currency Exchange` as `Invoice Total Amount Corporate` ,   (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount` as `Invoice Total Amount Corporate HM Revenue and Customs` ,              `Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,`Country Name`,`Country Code`, `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`)  left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`)  left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`)   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-		// print $sql;
+		//print $sql;
 
 		$data=array();
 
@@ -2162,8 +2169,8 @@ function tax_overview_europe($country) {
 
 
 	$where=sprintf(" where   `Invoice Date`>=%s and   `Invoice Date`<=%s   "
-		,prepare_mysql($date_interval['from'])
-		,prepare_mysql($date_interval['to'])
+		,prepare_mysql($date_interval['from'].' 00:00:00')
+		,prepare_mysql($date_interval['to'].' 23:59:59')
 	);
 
 	$rtext='';
@@ -2224,7 +2231,7 @@ function tax_overview_europe($country) {
 
 
 	$sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
-
+//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$records++;
@@ -2451,10 +2458,12 @@ function list_customers_by_tax_europe($country) {
 
 
 	$where=sprintf(' where  `Invoice Store Key` in (%s) ',$stores);
-	$where.=$date_interval['mysql'];
+//	$where.=$date_interval['mysql'];
 
-
-
+	$where.=sprintf(" and   `Invoice Date`>=%s and   `Invoice Date`<=%s   "
+		,prepare_mysql($date_interval['from'].' 00:00:00')
+		,prepare_mysql($date_interval['to'].' 23:59:59')
+	);
 
 	$where_elements_tax_category='';
 
