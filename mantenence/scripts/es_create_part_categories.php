@@ -45,7 +45,7 @@ mysql_query($sql);
 $data=array('Category Warehouse Key'=>1,'Category Name'=>'Temas','Category Subject'=>'Part');
 $main_cat1=new Category('find create',$data);
 
-$data=array('Category Warehouse Key'=>1,'Category Name'=>'Joyeria','Category Subject'=>'Part' 'Category Parent Key'=>$main_cat1->id);
+$data=array('Category Warehouse Key'=>1,'Category Name'=>'Joyeria','Category Subject'=>'Part', 'Category Parent Key'=>$main_cat1->id);
 $main_cat=new Category('find create',$data);
 
 $sql=sprintf("select * from `Part Dimension`");
@@ -56,36 +56,35 @@ while ($row=mysql_fetch_assoc($res)) {
     $used_in=preg_split('/\s+/',$part->data['Part Currently Used In']);
     foreach($used_in as $code) {
         if (preg_match('/^(clm|amer|bsm|bsh|phf|pfm)\-/i',$code,$match)) {
-            $fam_code=$match[1];
-            $family=new Family('code_store',$fam_code,1);
-            if ($family->id) {
-               // print "xxx->".$family->data['Product Family Code']."\n";
-                $data=array(
-                          'Category Parent Key'=>$main_cat->id,
-                          'Category Warehouse Key'=>1,
-                          'Category Name'=>$family->data['Product Family Code'],
-                          'Category Subject'=>'Part');
-
-                $cat=new Category('find create',$data);
-                
+           
+             
               
                 
                 $_data=array(
-                           'category_key'=>$cat->id,
-                           'parent_category_key'=>$main_cat->id,
+                           'category_key'=>$main_cat->id,
+                           'parent_category_key'=>$main_cat1->id,
                            'subject'=>'Part',
                            'subject_key'=>$part->sku,
                        );
 
                 associate_subject_to_category_radio($_data);
 
-            }
+           
 
         }
     }
 
 }
 
+$sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$category=new Category($row['Category Key']);
+	$category->update_up_today();
+	$category->update_last_period();
+	$category->update_last_interval();
+	print "Category ".$category->id."\t\t\n";
+}
 
 function associate_subject_to_category_radio($data) {
 
