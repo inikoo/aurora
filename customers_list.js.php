@@ -44,7 +44,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 request="ar_contacts.php?tipo=customers&parent=list&sf=0&where=&parent_key="+Dom.get('customer_list_key').value
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	  
-//alert(request)
+//ralert(request)
 	  
 	  this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
