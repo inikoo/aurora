@@ -1114,7 +1114,7 @@ function customers_awhere($awhere) {
 
 		switch ($where_data['order_time_units_since_last_order_units']) {
 		case 'days':
-			$where.=sprintf(' and Date(`Customer Last Order Date`)>=DATE(DATE_SUB(NOW(), INTERVAL %d day)) ',$where_data['order_time_units_since_last_order_qty']);
+			$where.=sprintf(' and Date(`Customer Last Order Date`)<=DATE(DATE_SUB(NOW(), INTERVAL %d day)) ',$where_data['order_time_units_since_last_order_qty']);
 			break;
 		default:
 
