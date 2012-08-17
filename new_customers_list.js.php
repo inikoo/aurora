@@ -102,7 +102,7 @@ Dom.get('v_calpop6').value=''
 function set_values(){
 	v_calpop==Dom.getElementsByClassName('v_calpop');
 	for(x in v_calpop){
-		alert(v_calpop);
+		//alert(v_calpop);
 	}
 } 
  

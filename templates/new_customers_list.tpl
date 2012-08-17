@@ -270,7 +270,7 @@
       </div>
 
  
- {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true }
+ {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true hide_paginator=1 }
      	<div  id="table0"   style="font-size:90%" class="data_table_container dtable btable "> </div>
 
 
@@ -310,7 +310,7 @@
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Postal Code List{/t}</span>
-            {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3}
+            {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 }
             <div  id="table3"   class="data_table_container dtable btable "> </div>
         </div>
     </div>
