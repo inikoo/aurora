@@ -14,7 +14,7 @@
 	  </div>
 	</div>	
 	</div>
-	<div class="clean_table_controls"  >
-	    <div><span  style="margin:0 5px" id="paginator{$table_id}"></span></div>
+	<div class="clean_table_controls" style="margin:0 5px;{if isset($hide_paginator)}display:none{/if}" >
+	    <div><span  style="margin:0 5px;" id="paginator{$table_id}"></span></div>
 	 </div>
 </div>
