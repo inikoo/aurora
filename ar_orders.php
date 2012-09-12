@@ -2868,10 +2868,10 @@ function post_transactions_dipatched() {
 }
 function post_transactions() {
 
-	if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-		$order_id=$_REQUEST['id'];
+	if (isset( $_REQUEST['order_key']) and is_numeric( $_REQUEST['order_key']))
+		$order_id=$_REQUEST['order_key'];
 	else
-		$order_id=$_SESSION['state']['order']['id'];
+		return;
 
 
 
@@ -2885,19 +2885,81 @@ function post_transactions() {
 	$data=array();
 
 	$order=' order by O.`Product Code`';
+$order='';
+	$sql="select ``,POT.`Quantity`,`State`,`Operation`,O.`Delivery Note Quantity`,O.`Delivery Note ID`,O.`Delivery Note Key`,P.`Product ID`,O.`Product Code`,`Product XHTML Short Description` from `Order Post Transaction Dimension` POT left  join `Order Transaction Fact` O on (O.`Order Transaction Fact Key`=POT.`Order Post Transaction Fact Key`) left  join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
+	$sql="select POT.`Customer Key`,`Reason`,O.`Invoice Currency Code`,`Credit`,O.`Shipped Quantity`,POT.`Quantity`,`State`,`Operation`,O.`Delivery Note Quantity`,PO.`Delivery Note ID`,PO.`Delivery Note Key`,P.`Product ID`,O.`Product Code`,`Product XHTML Short Description` 
+	from `Order Post Transaction Dimension` POT 
+	left join `Order Transaction Fact` O on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) 
+		left join `Order Transaction Fact` PO on (PO.`Order Transaction Fact Key`=POT.`Order Post Transaction Fact Key`) 
 
-	$sql="select POT.`Quantity`,`State`,`Operation`,O.`Delivery Note Quantity`,O.`Delivery Note ID`,O.`Delivery Note Key`,P.`Product ID`,O.`Product Code`,`Product XHTML Short Description` from `Order Post Transaction Dimension` POT left  join `Order Transaction Fact` O on (O.`Order Transaction Fact Key`=POT.`Order Post Transaction Fact Key`) left  join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
-
-	//  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+	left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)  $where $order  ";
 
 
 
-	//  print $sql;
+
+  //print $sql;
 
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
+	
+
+$notes='';
+
+	switch ($row['Operation']) {
+		case 'Resend':
+					switch ($row['State']) {
+		case 'In Process':
+			$notes.=sprintf('<a href="new_post_order.php?id=%d">%s</a>',$order_id,_('Item to be resended in process'));
+			break;
+		case 'In Warehouse':
+			$notes.=sprintf('%s (<a href="dn.php?id=%d">%s</a>)',_('In warehouse'),$row['Delivery Note Key'],$row['Delivery Note ID']);
+
+		
+			break;
+		case 'Dispatched':
+			$notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('Dispatched'),$row['Delivery Note Key'],$row['Delivery Note ID']);
+			break;
+		default:
+			$notes.='';
+
+		}
+
+			break;
+		case 'Refund':
+			$notes=_('Refund');
+			break;
+		case 'Credit':
+	//'In Process','In Warehouse','Dispatched','Saved','Applied'		
+				switch ($row['State']) {
+		case 'In Process':
+			$notes.=sprintf('<a href="new_post_order.php?id=%d">%s</a>',$order_id,_('Credit in process'));
+			break;
+		case 'Saved':
+					$notes.=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Customer Key'],_('Credit in customer file'));
+
+		
+			break;
+		case 'Dispatched':
+			$notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('Dispatched'),$row['Delivery Note Key'],$row['Delivery Note ID']);
+			break;
+		default:
+			$notes.='';
+
+		}
+			
+			break;	
+			
+		default:
+			$notes='';
+
+
+
+
+		}
+
+/*
 		switch ($row['Operation']) {
 		case 'Resend':
 			$notes=_('Resend');
@@ -2923,12 +2985,16 @@ function post_transactions() {
 			$notes.='';
 
 		}
+*/
+	
+	$quantity=number($row['Quantity']);
+	
+	if($row['Operation']=='Credit'){
+	$quantity.=' ('.money($row['Credit'],$row['Invoice Currency Code']).')';
+	}
+	$reason=$row['Reason'];
 
-		if ($row['State']!='In Process') {
-			$qty=$row['Delivery Note Quantity'];
-		} else {
-			$qty=number($row['Quantity']);
-		}
+$operation=$row['Operation'];
 
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
 		$data[]=array(
@@ -2936,8 +3002,12 @@ function post_transactions() {
 			'code'=>$code
 			,'description'=>$row['Product XHTML Short Description']
 			,'dn'=>sprintf('<a href="dn.php?id=%d">%s</a>',$row['Delivery Note Key'],$row['Delivery Note ID'])
-			,'dispatched'=>$qty
+			,'dispatched'=>number($row['Shipped Quantity'])
+			,'quantity'=>$quantity
 			,'notes'=>$notes
+			,'operation'=>$operation
+			,'reason'=>$reason
+			
 		);
 	}
 

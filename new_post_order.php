@@ -64,6 +64,7 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
+	'js/search.js',
 	'js/table_common.js',
 	'edit_address.js.php',
 	'address_data.js.php?tipo=customer&id='.$customer->id,
@@ -105,19 +106,27 @@ $paginator_menu=array(10,25,50,100);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$smarty->assign('search_label',_('Products'));
-		$smarty->assign('search_scope','products');
+		//$smarty->assign('search_label',_('Products'));
+		//$smarty->assign('search_scope','products');
+
+		$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_scope','orders');
+
 
 $smarty->assign('order',$order);
 $smarty->assign('store',$store);
 $smarty->assign('store_id',$store->id);
+$smarty->assign('store_key',$store->id);
+
+
+$smarty->assign('products_display_type','list');
 
 $smarty->assign('customer',$customer);
 
 
 
 $smarty->assign('parent','orders');
-$smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
+$smarty->assign('title',_('Post Order').' '.$order->get('Order Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

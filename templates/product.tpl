@@ -17,7 +17,7 @@
 			<div class="buttons" style="float:left">
 							{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
 
-						<span style="font-size:150%;position:relative;bottom:-2.5px"><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </span> {if $product->get('Product Record Type')=='Historic'} {t}Historic Product{/t}{/if}
+						<span class="main_title"><span class="id">{$product->get('Product Code')}</span> (<i>{$product->get('Product ID')})</i>, {$product->get('Product Name')} </span> {if $product->get('Product Record Type')=='Historic'} {t}Historic Product{/t}{/if}
 
 			</div>
 			<div style="clear:both">

@@ -108,13 +108,13 @@ $smarty->assign('store_id',$store->id);
 $smarty->assign('warehouse',$warehouse);
 
 
-if ($dn->data['Delivery Note State']=='Dispatched') {
+//if ($dn->data['Delivery Note State']=='Dispatched') {
 	$js_files[]='dn.js.php';
 	$template='dn.tpl';
-}else {
-	$js_files[]='dn_in_process.js.php';
-	$template='dn_in_process.tpl';
-}
+//}else {
+//	$js_files[]='dn_in_process.js.php';
+//	$template='dn_in_process.tpl';
+//}
 
 $_SESSION['state']['dn']['store_key']=$dn->data['Delivery Note Store Key'];
 

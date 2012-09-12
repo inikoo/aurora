@@ -4506,6 +4506,32 @@ class Customer extends DB_Table {
 		}
 		return $order_key;
 	}
+	
+	
+	function get_credits(){
+		
+	$sql=sprintf("select sum(`Credit Saved`) as value from `Order Post Transaction Dimension` where `Customer Key`=%d and `State`='Saved' ",
+		$this->id
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$credits=$row['value'];
+		}
+		return $credits;
+	}
+	
+	function get_credits_formated(){
+		
+		$credits=$this->get_credits();
+		
+		$store=new Store($this->data['Customer Store Key']);
+		
+		
+
+		return money($credits,$store->data['Store Currency Code']);
+	}
+	
+	
 
 	function get_ship_to_data() {
 		$address=new address($this->data['Customer Main Delivery Address Key']);

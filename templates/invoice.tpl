@@ -1,6 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
-
+<input type="hidden" id="invoice_key" value="{$invoice->id}"/>
+{include file='orders_navigation.tpl'} 
 <div  class="branch"> 
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  
 		{if $user->get_number_stores()>1}<a href="orders_server.php?view=invoices">&#8704; {t}Invoices{/t}</a> &rarr; {/if}
@@ -8,21 +9,26 @@
 		{$invoice->get('Invoice Public ID')}</span> 
 	</div>
 
-<input type="hidden" id="invoice_key" value="{$invoice->id}"/>
-<div  class="buttons">
- <button  onclick="window.location='invoice.pdf.php?id={$invoice->id}'">PDF Invoice</button>
-</div>
 
-  <div id="yui-main">
+<div class="top_page_menu" style="border:none">
+	
+		 <div class="buttons" style="float:left">
+		  <span class="main_title">{t}Invoice{/t} <span class="id">{$invoice->get('Invoice Public ID')}</span></span>
+    </div>
+		<div class="buttons">
+		 <button  style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button>
+
+		</div>
+		<div style="clear:both">
+		</div>
+	</div>
 
 
-    <div  class="yui-b">
 
-    <div id="main_details" class="yui-b" style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+    <div id="main_details"  style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
     {if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}<img style="position:absolute;top:20px;left:220px;z-index:4" src="art/stamp.paid.en.png"/>{/if}
 
     <div style="width:340px;float:left"> 
-        <h1 style="padding:0 0 10px 0">{t}Invoice{/t} {$invoice->get('Invoice Public ID')}</h1>
         <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a></h2>
 	
 	
@@ -98,14 +104,14 @@
 
 	    
     </div>
-</div>
+
 {if isset($items_out_of_stock)}
 <div style="clear:both;margin:30px 0" >
 <h2>{t}Items Out of Stock{/t}</h2>
 <div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 </div>
 {/if}
-  </div>
+  
 </div>
 </div> 
 {include file='footer.tpl'}

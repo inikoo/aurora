@@ -17,8 +17,7 @@
 
 
 			<button style="height:24px;" onclick="window.location='dn.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
-			{if $dn->get('Delivery Note Approved Done')=='No'}
-			
+			{if $dn->get('Delivery Note Approved Done')=='No'}			
 			<button style="height:24px;"   class="{if !$dn->get('Delivery Note Assigned Packer Key')}disabled{/if}" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Packing{/t}</button> 
 			{if !$dn->get('Delivery Note Assigned Picker Key')}
 			<button style="height:24px;"   id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Start Picking{/t}</button> 
@@ -26,28 +25,40 @@
 			<button style="height:24px;"   onCLick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
 			{/if}
 			{else}
-						<button style="height:24px;"    id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
-
+			
+			{if !$dn->get_number_invoices()}
+			<button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
+			{/if}
 			
 			{/if}
 		</div>
 		<div class="buttons" style="float:left">
+		
+		<span class="main_title">{t}Delivery Note{/t} <span class="id">{$dn->get('Delivery Note ID')}</span></span>
+		
+		{*}
 			{if isset($referal) and $referal=='store_pending_orders'} <button onclick="window.location='$referal_url'"><img src="art/icons/text_list_bullets.png" alt=""> {t}Pending Orders (Store){/t}</button> {else} <button onclick="window.location='warehouse_orders.php?id={$dn->get('Delivery Note Warehouse Key')}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if}  
+		{*}
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 15px 0 10px 0">
-		<div style="border:0px solid #ddd;width:350px;float:left">
-			<h1 style="padding:0 0 0px 0">
-				{t}Delivery Note{/t} {$dn->get('Delivery Note ID')}
-			</h1>
+	<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
+		<div style="border:0px solid #ddd;width:350px;float:left;;position:relative;top:-5px">
+			<h3 style="padding:0;padding-top:0px">
+				{$dn->get('Delivery Note Title')}
+			</h3>
 			<h2 style="padding:0;padding-top:5px">
-				{$dn->get('Delivery Note Customer Name')} (<a href="customer.php?id={$dn->get(" order customer id")}">{$customer->get_formated_id()}</a>)
+				{$dn->get('Delivery Note Customer Name')} <a class="id" href="customer.php?id={$dn->get(" order customer id")}">{$customer->get_formated_id()}</a>
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444">
 				<span style="font-weight:500;color:#000">{$dn->get('Order Customer Contact Name')}</span>
 			</div>
+						<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444">
+			
+				{$dn->get('Delivery Note XHTML Ship To')}
+			</div>
+			
 			<div style="clear:both">
 			</div>
 		</div>
@@ -93,7 +104,7 @@
 <div class="data_table" style="clear:both">
 			<span id="table_title" class="clean_table_title">{t}Items{/t}</span> 
 
-			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
+			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 			<div id="table0" style="font-size:80%" class="data_table_container dtable btable ">

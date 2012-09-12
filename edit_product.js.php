@@ -593,9 +593,10 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
     Event.addListener('save_edit_product_units', "click", save_edit_product_units);
     Event.addListener('reset_edit_product_units', "click", reset_edit_product_units);
  
-    dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list",  {context:["add_part","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_part_list = new YAHOO.widget.Dialog("dialog_part_list",  {visible : false,close:true,underlay: "none",draggable:false});
     dialog_part_list.render();
-    Event.addListener("add_part", "click",dialog_part_list.show,dialog_part_list , true);
+    
+    Event.addListener("add_part", "click",show_dialog_part_list);
 
     
     var product_units_oACDS = new YAHOO.util.FunctionDataSource(validate_product_units);
@@ -654,7 +655,27 @@ YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 	
 	
     Event.addListener("edit_family", "click", dialog_family_list.show,dialog_family_list , true);
+    
+       Event.addListener("filter_name1", "click",change_part_list_filter);
+
+    
 }
+
+function change_part_list_filter(){
+
+if(this.getAttribute('state')==undefined){
+this.setAttribute('state','sku')
+change_filter('sku','SKU',1)
+}else if(this.getAttribute('state')=='sku'){
+this.setAttribute('state','used_in')
+change_filter('used_in','Used In',1)
+
+}else if(this.getAttribute('state')=='used_in'){
+this.setAttribute('state','sku')
+change_filter('sku','SKU',1)
+}
+}
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -914,14 +935,14 @@ YAHOO.util.Event.onContentReady("rppmenu1", function () {
     });
 
 
-
+/*
 YAHOO.util.Event.onContentReady("filtermenu1", function () {
 	 var oMenu1 = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
 	 oMenu1.render();
 	 oMenu1.subscribe("show", oMenu1.focus);
 	
     });
-
+*/
 function close_change_part_dialog(){
 
 Dom.get('change_part').value='';
@@ -1026,6 +1047,18 @@ Dom.setStyle(['add_part'],'display','');
 
 
 part_render_save_buttons();
+}
+
+
+function show_dialog_part_list(){
+
+
+	region1 = Dom.getRegion('add_part'); 
+    region2 = Dom.getRegion('dialog_part_list'); 
+	var pos =[region1.right-region2.width+10,region1.bottom]
+	Dom.setXY('dialog_part_list', pos);
+
+dialog_part_list.show()
 }
 
 

@@ -9,13 +9,14 @@
 		{$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
 	</div>
 	
-	<div class="top_page_menu" >
+	<div class="top_page_menu" style="border:none">
+	
 		 <div class="buttons" style="float:left">
-		  
+		  <span class="main_title">{t}Dispatched Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span>
     </div>
 		<div class="buttons">
 					{*}<a style="height:14px" href="order.pdf.php?id={$order->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> {*}
-			<button onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> 
+			<button style="{if $order->get_number_post_order_transactions()}display:none;{/if}" onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Create Post Dispatch Operations{/t}</button> 
 
 		</div>
 		<div style="clear:both">
@@ -23,17 +24,16 @@
 	</div>
 	
 
-	<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 15px 0 10px 0">
-		<div style="border:0px solid #ddd;width:400px;float:left">
-			<h1 style="padding:0 0 10px 0">
-				{t}Order{/t} {$order->get('Order Public ID')}
-			</h1>
+	<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
+		<div style="border:0px solid #ddd;width:380px;float:left">
+			
 			<h2 style="padding:0">
-				{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get("order customer key")}">{$customer->get_formated_id()}</a>)
+				{$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get("order customer key")}">{$customer->get_formated_id()}</a>
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 30px 0 0px;color:#444">
 				<span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br />
 				{$customer->get('Customer Main XHTML Address')}
+				</span>
 			</div>
 			<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444">
 				<span style="font-weight:500;color:#000">{t}Shipped to{/t}</span>:<br />
@@ -42,7 +42,7 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="border:0px solid #ddd;width:250px;float:right">
+		<div style="border:0px solid #ddd;width:265px;float:right">
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px">
 				<tr>
 					<td class="aright">{t}Total Ordered (N){/t}</td>
@@ -75,7 +75,8 @@
 					<td class="aright"><i>{t}Refunds (N){/t}</i></td>
 					<td width="100" class="aright">{$order->get('Invoiced Refund Net Amount')}</td>
 				</tr>
-				{/if} {if $order->get('Order Invoiced Total Net Adjust Amount')!=0} 
+				{/if} 
+				{if $order->get('Order Invoiced Total Net Adjust Amount')!=0} 
 				<tr class="adjust" style="color:red">
 					<td class="aright">{t}Adjusts (N){/t}</td>
 					<td width="100" class="aright">{$order->get('Invoiced Total Net Adjust Amount')}</td>
@@ -112,7 +113,7 @@
 				
 			</table>
 		</div>
-		<div style="border:0px solid red;width:230px;float:right">
+		<div style="border:0px solid red;width:265px;float:right">
 			{if isset($note)}
 			<div class="notes">
 				{$note}
@@ -136,12 +137,25 @@
 		<div style="clear:both">
 		</div>
 	</div>
+	
+	
+	{*}
 	<div id="msg_dispatched_post_transactions" style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #fd4646;padding:5px 10px;background:#ff6969;color:#fff;xtext-align:center;text-weight:800">
-		{t}This order has some dispatched post transactions{/t} <span onclick="show_dispatched_post_transactions()" style="font-size:90%;cursor:pointer">({t}Show details){/t}</span> 
+		{t}This order has some post transactions{/t} <span onclick="show_dispatched_post_transactions()" style="font-size:90%;cursor:pointer">({t}Show details){/t}</span> 
 	</div>
-	<div style="display:none;border-top:1px solid #fd7777;border-bottom:1px solid #fd7777;padding:0 0 10px 0;" id="dispatched_post_transactions">
-		<h2>
-			{t}Dispatched Post-Order Items{/t}
+{*}
+
+	<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #fd7777;border-bottom:1px solid #fd7777;padding:5px 5px 10px 5px;background-color:#F5D0DF;" id="dispatched_post_transactions">
+		
+		<div class="buttons small">
+			<button class="negative" onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> 
+
+		</div>
+		<h2 style="margin-left:5px">
+			{t}Post-Order Transactions{/t}
+			
+			
+			
 		</h2>
 		<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
 		</div>

@@ -214,12 +214,25 @@ case('part_sales'):
 		));
 	part_sales($data);
 	break;
+case('stacked_invoice_categories_sales'):
+	$data=prepare_values($_REQUEST,array(
+			'store_key'=>array('type'=>'string'),
+			'from'=>array('type'=>'date','optional'=>true),
+			'to'=>array('type'=>'date','optional'=>true),
+		));
+		
+	
+	stacked_invoice_categories_sales($data);
+	break;	
+	
 case('stacked_store_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'store_key'=>array('type'=>'string'),
 			'from'=>array('type'=>'date','optional'=>true),
 			'to'=>array('type'=>'date','optional'=>true),
 		));
+		
+	
 	stacked_store_sales($data);
 	break;
 case('part_location_stock_history'):
@@ -993,6 +1006,123 @@ function product_id_sales($data) {
 
 
 }
+
+
+
+
+function stacked_invoice_categories_sales($data) {
+
+
+
+	$graph_data=array();
+
+	global $user;
+	$tmp=preg_split('/\,/', $data['store_key']);
+	$store_keys=array();
+	foreach ($tmp as $store_key) {
+
+		if (is_numeric($store_key) and in_array($store_key, $user->stores)) {
+			$store_keys[]=$store_key;
+		}
+	}
+
+$categories_keys=array();
+
+$sql=sprintf("select C.`Category Key` from `Category Bridge` B left join `Category Dimension` C on  (`Subject`='Invoice' and B.`Category Key`=C.`Category Key`)  where `Category Store Key` in (%s) group by C.`Category Key`",addslashes(join(',',$store_keys)));
+			$res=mysql_query($sql);
+			
+			while ($row=mysql_fetch_assoc($res)) {
+			$categories_keys[]=$row['Category Key'];
+			
+			
+			}
+
+
+	$number_categories=count($categories_keys);
+
+	$number_stores=count($store_keys);
+	$tmp=array();
+	for ($i=0; $i<$number_categories; $i++) {
+		$tmp['value'.$i]=0;
+		$tmp['vol'.$i]=0;
+	}
+
+	if (array_key_exists('to',$data)) {
+		$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+	} else {
+		$dates=sprintf(" `Date`<=NOW()  ");
+	}
+	if (array_key_exists('from',$data)) {
+		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+	} else {
+		$dates.=sprintf("and  `Date`>= ( select min(DATE(`Invoice Date`))   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$store_keys));
+	}
+
+	$sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` ",
+		$dates
+
+	);
+
+	// print $sql;
+
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+
+		$graph_data[$row['Date']]=$tmp;
+		//$graph_data[$row['Date']]['date']=$row['Date'];
+
+	}
+
+
+	//$graph_data=array();
+	$i=0;
+	foreach ($categories_keys as $category_key) {
+
+		if (array_key_exists('to',$data)) {
+			$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+		} else {
+			$dates=sprintf(" `Invoice Date`<=NOW()  ");
+		}
+		if (array_key_exists('from',$data)) {
+			$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+		}
+
+		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` left join `Category Bridge` on (`Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and  %s and `Category Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
+			$dates,
+			$category_key);
+	//	print $sql;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+
+			$graph_data[$row['date']]['value'.$i]=sprintf("%.2f",$row['net']);
+			$graph_data[$row['date']]['vol'.$i]=$row['invoices'];
+		}
+		$i++;
+	}
+
+	$out='';
+	//print_r($graph_data);
+	foreach ($graph_data as $key=>$value) {
+		print $key.','.join(',',$value)."\n";
+	}
+
+	/*
+         if (is_numeric($data['store_key'])) {
+             $sql=sprintf("select `Store Key`,Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where `Invoice Store Key`=%d group by Date(`Invoice Date`) order by Date(`Invoice Date`) desc",
+                          $data['store_key']);
+             $res=mysql_query($sql);
+             while ($row=mysql_fetch_assoc($res)) {
+                 $sales_data[$row['date']]
+                 printf("%s,%d,%f\n",$row['date'],$row['invoices'],$row['net']);
+             }
+         }
+     }
+
+    */
+}
+
+
 function stacked_store_sales($data) {
 
 

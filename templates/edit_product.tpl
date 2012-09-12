@@ -406,6 +406,7 @@
   </div>
 </div>
 
+{*}
 <div id="filtermenu1" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
@@ -416,7 +417,7 @@
     </ul>
   </div>
 </div>
-
+{*}
 
 <div id="rppmenu1" class="yuimenu">
   <div class="bd">

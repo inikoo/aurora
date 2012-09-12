@@ -311,7 +311,7 @@ Dom.get('staff_list_parent_dialog').value='pack_it';
     pack_it_dialog.show();
 }
 
-function show_other_staff(e){
+function show_other_staff(o){
 /*
 var staff_alias='';
 var staff_key='';
@@ -332,9 +332,9 @@ Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
 	Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'),'selected');
 	Dom.removeClass(Dom.getElementsByClassName('assign_packer_button', 'td', 'assign_packer_buttons '),'selected');
 
-	Dom.addClass(e,'selected');
+	Dom.addClass(o,'selected');
 
-	region1 = Dom.getRegion(e); 
+	region1 = Dom.getRegion(o); 
 	region2 = Dom.getRegion('dialog_other_staff'); 
 
 	var pos =[region1.right-region2.width-20,region1.bottom]
@@ -342,6 +342,17 @@ Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
 	Dom.setXY('dialog_other_staff', pos);
 
 	dialog_other_staff.show();
+	
+	
+	if(o.getAttribute('td_id')=='other_staff_picker'){
+		Dom.get('staff_list_parent_dialog').value='assign_picker';
+	}
+	
+		if(o.getAttribute('td_id')=='other_staff_packer'){
+		Dom.get('staff_list_parent_dialog').value='assign_packer';
+	}
+	
+	
 }
 
 
@@ -355,7 +366,6 @@ function select_staff_from_list(oArgs){
 var staff_alias=tables.table2.getRecord(oArgs.target).getData('code');
 var staff_key=tables.table2.getRecord(oArgs.target).getData('key');
 //alert(staff_alias + ':' + staff_key )
-
 
 
 

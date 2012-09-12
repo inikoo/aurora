@@ -139,7 +139,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-$sql="select * from  ci_orders_data.orders  where deleted='No' and  (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
+$sql="select * from  ci_orders_data.orders  where deleted='No' and  (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'  and  filename!='/data/share/PEDIDOS 11/60027152.xls'    order by filename ";
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000479.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '%/60024961.xls'  order by filename";
@@ -895,15 +895,20 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
 				$res_x=mysql_query($sql);
 
+
+
 				$__num_parts = mysql_num_rows($res_x);
 
 				if ($__num_parts==1) {
 
 					if ($row_x=mysql_fetch_array($res_x)) {
 						$part_sku=$row_x['Part SKU'];
+						
+						
+						
 					}
 					else {
-						print_r($product);
+						//print_r($product);
 						exit("error: $sql");
 					}
 					mysql_free_result($res_x);
@@ -924,15 +929,15 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 						'Product Part Type'=>'Simple'
 
 					);
-					//print_r($part_list);
+					
 					$product_part_key=$product->find_product_part_list($part_list);
 					if ($product_part_key) {
 						$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 						$has_part=true;
 
 					}else {
-
-						print_r($product);
+//print_r($part_list);
+						//print_r($product);
 
 						exit("Error can not find product part list (get_orders_db)\n");
 					}

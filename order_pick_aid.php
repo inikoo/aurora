@@ -128,7 +128,7 @@ $smarty->assign( 'css_files', $css_files );
 $smarty->assign( 'js_files', $js_files );
 
 
-
+//print_r($dn);
 
 $tipo_filter=$_SESSION['state']['picking_aid']['items']['f_field'];
 $smarty->assign( 'filter0', $tipo_filter );
