@@ -45,8 +45,8 @@ function change_view() {
 
 function change_plot(o){
 
- var ids=['plot_all_stores','plot_per_store','plot_per_category'];
-  var div_ids=['div_plot_all_stores','div_plot_per_store','div_plot_per_category'];
+ var ids=['plot_all_stores','plot_per_store','plot_per_category','plot_growth_per_store'];
+  var div_ids=['div_plot_all_stores','div_plot_per_store','div_plot_per_category','div_plot_growth_per_store'];
 
 Dom.removeClass(ids,'selected');
 Dom.addClass(o,'selected')

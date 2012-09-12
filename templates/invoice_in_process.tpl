@@ -12,6 +12,7 @@
 	<span class="state_details" id="done" style="float:right;margin-left:40px"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Total Amount')}</span>  <button  style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span>
 
  <button  style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button>
+ 
  <button  class="negative" id="cancel">{t}Cancel{/t}</button>
 
 </div>

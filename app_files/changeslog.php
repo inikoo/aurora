@@ -6520,3 +6520,8 @@ INSERT INTO `Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Wi
 ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM('Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Inventory Transaction Fact` CHANGE `User Key` `User Key` MEDIUMINT UNSIGNED NULL DEFAULT '0';
 ALTER TABLE `Staff Dimension` DROP INDEX `Staff Alias` ,ADD UNIQUE `Staff Alias` ( `Staff Alias` );
+
+ALTER TABLE `Order Dimension` CHANGE `Order Current Dispatch State` `Order Current Dispatch State` ENUM( 'In Process by Customer', 'In Process', 'Submitted by Customer', 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Dispatched', 'Unknown', 'Packing', 'Packed', 'Cancelled', 'Suspended' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Order Post Transaction Dimension` CHANGE `State` `State` ENUM( 'In Process', 'In Warehouse', 'Dispatched', 'Saved', 'Applied' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+ALTER TABLE `Order Post Transaction Dimension` ADD `Customer Key` MEDIUMINT NULL DEFAULT NULL ,ADD `Credit Saved` FLOAT NULL DEFAULT NULL ,ADD `Credit Used` FLOAT NULL DEFAULT NULL ,ADD `Credit Paid` FLOAT NULL DEFAULT NULL ;
+ALTER TABLE `Order Post Transaction Dimension` ADD `Credit` FLOAT NULL AFTER `Customer Key` ;

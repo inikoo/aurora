@@ -8,6 +8,7 @@ print "var order_key=$order_key;";
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_cancel,dialog_edit_shipping;
+var dialog_mark_all_for_refund;
 YAHOO.namespace ("invoice"); 
 var panel2;
 
@@ -115,12 +116,21 @@ var myonCellClick = function(oArgs) {
 
     //alert(datatable)
     var recordIndex = this.getRecordIndex(record);
+	var data = record.getData();
 
+
+
+	 if(!(data['state']=='In Process'  ||  data['state']=='') ){
+
+		return;
+	}
 		
     switch (column.action) {
     case('add_object'):
     case('remove_object'):
-	var data = record.getData();
+
+	
+	
  if(data['quantity']==''){
 	        data['quantity']=0;
 	        }
@@ -153,7 +163,7 @@ var myonCellClick = function(oArgs) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   // alert(o.responseText);
+					   alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){
@@ -350,17 +360,6 @@ function close_dialog(tipo){
 };
 
 
-
-
-
-
-
-
-
-  
-
-
-
 YAHOO.util.Event.addListener(window, "load", function() {
  tables  = new function() {
 
@@ -373,20 +372,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var InvoiceColumnDefs = [
-				        {key:"order_key", label:"", width:20,sortable:false,hidden:true} 
-				     	,{key:"otf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				     	,{key:"max_resend", label:"", width:20,sortable:false,hidden:true} 
-
+				     {key:"order_key", label:"", width:20,sortable:false,hidden:true} 
+				    ,{key:"otf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				    ,{key:"max_resend", label:"", width:20,sortable:false,hidden:true} 
 					,{key:"code", label:"<?php echo _('Code')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description", label:"<?php echo _('Description')?>",width:280,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"stock",label:"<?php echo _('Able')?>", width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"ordered",label:"<?php echo _('Ordered')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"description", label:"<?php echo _('Description')?>",width:280,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"stock",label:"<?php echo _('Able')?>", width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"ordered",label:"<?php echo _('Ordered')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
 					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'new_order'}
 					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'new_order'}
-					,{key:"operation", label:"<?php echo _('Operation')?>",width:70, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'operation',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Refund')?><br>",value:'Refund'},{label:"<?php echo _('Credit')?><br>",value:'Credit'},{label:"<?php echo _('Resend')?><br>",value:'Resend'},{label:"<?php echo _('None')?><br>",value:'Cancel'}],disableBtns:true})}
+					,{key:"operation", label:"<?php echo _('Operation')?>",width:70, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'operation',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Refund')?><br>",value:'Refund'},{label:"<?php echo _('Credit')?><br>",value:'Credit'},{label:"<?php echo _('Resend')?><br>",value:'Resend'}],disableBtns:true})}
 					,{key:"reason", label:"<?php echo _('Reason')?>",width:70, sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'reason',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Damaged')?><br>",value:'Damaged'},{label:"<?php echo _('Not Received')?><br>",value:'Missing'},{label:"<?php echo _("Don't Like it")?><br>",value:'Do not Like'},{label:"<?php echo _('Other')?><br>",value:'Other'}],disableBtns:true})}
 					,{key:"to_be_returned", label:"<?php echo _('Rtn')?>",width:20, sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'to_be_returned',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Yes')?><br>",value:'Yes'},{label:"<?php echo _('No')?>",value:'No'}],disableBtns:true})}
+					,{key:"state",label:"",hidden:true,sortable:false}
+
 				     ];
 
 
@@ -406,7 +406,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records"
 		},
 		fields: [
-			 "code"
+			 "code","state"
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
@@ -442,6 +442,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", myonCellClick);
+	    
+	    
+	    this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['products']['view']?>';
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['post_transactions']['f_field']?>',value:'<?php echo$_SESSION['state']['order']['post_transactions']['f_value']?>'};
@@ -534,14 +538,15 @@ function create_refund(){
 function create_delivery_note(){
 	var ar_file='ar_edit_orders.php'; 
     	var request='tipo=send_post_order_to_warehouse&order_key='+order_key;
+    	alert(request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-					    				//	alert(o.responseText);
+					    					alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-						window.location='order.php?id='+r.order_key;
+						window.location='new_post_order.php?id='+r.order_key;
 						}
 					    },
 					failure:function(o) {
@@ -602,6 +607,7 @@ Dom.setY('edit_delivery_address_dialog',y+0);
 }
 
 function init(){
+init_search('orders_store');
 
  edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_dialog", 
 			{ 
@@ -626,9 +632,20 @@ function init(){
 
     // YAHOO.util.Event.addListener('done', "click",create_delivery_note);
 
+
+dialog_mark_all_for_refund = new YAHOO.widget.Dialog("dialog_mark_all_for_refund", {visible : false,close:true,underlay: "none",draggable:false});
+dialog_mark_all_for_refund.render();
+Event.addListener("show_mark_all_for_refund", "click",show_dialog_mark_all_for_refund);
+
   YAHOO.util.Event.addListener("cancel", "click",cancel );
    YAHOO.util.Event.addListener("send", "click",create_delivery_note );
    YAHOO.util.Event.addListener("save_refund", "click",create_refund );
+      YAHOO.util.Event.addListener("save_credit", "click",save_credit );
+      YAHOO.util.Event.addListener("cancel_saved_credit", "click",cancel_saved_credit );
+
+
+  
+
 }
 
 
@@ -638,8 +655,158 @@ function init(){
 
 YAHOO.util.Event.onDOMReady(init);
 
+function recalcuate_refund_total(){
+
+refund=0.00;
+if(Dom.get('refund_items_switch').getAttribute('valor')=='Yes')
+refund=parseFloat(Dom.get('refund_items_value').value)+refund;
+if(Dom.get('refund_shipping_switch').getAttribute('valor')=='Yes')
+refund=parseFloat(Dom.get('refund_shipping_value').value)+refund;
+if(Dom.get('refund_charges_switch').getAttribute('valor')=='Yes')
+refund=parseFloat(Dom.get('refund_charges_value').value)+refund;
+if(Dom.get('refund_net_adjusts_switch').getAttribute('valor')=='Yes')
+refund=parseFloat(Dom.get('refund_net_adjusts_value').value)+refund;
+if(Dom.get('refund_tax_switch').getAttribute('valor')=='Yes')
+refund=parseFloat(Dom.get('refund_tax_value').value)+refund;
+if(Dom.get('refund_tax_adjusts_switch').getAttribute('valor')=='Yes')
+refund=parseFloat(Dom.get('refund_tax_adjusts_value').value)+refund;
+Dom.get('refund_total').innerHTML=Dom.get('refund_currency_symbol').value+refund.toFixed(2)
+
+}
 
 
+function switch_refund_element(o){
+
+if(o.getAttribute('valor')=='Yes'){
+o.src='art/icons/cross_bw.png';
+
+o.setAttribute('valor','No')
+}else{
+o.setAttribute('valor','Yes')
+o.src='art/icons/accept.png';
+
+}
+
+recalcuate_refund_total();
+
+
+}
+
+
+function change_refund_reason(value,o){
+
+buttons=Dom.getElementsByClassName('reason_button', 'button', 'change_refund_reason_buttons')
+Dom.removeClass(buttons,'selected')
+Dom.addClass(o,'selected')
+Dom.get('refund_reason').value=value
+
+}
+
+function mark_all_for_refund_return(value){
+
+if(value=='Yes'){
+Dom.addClass('mark_all_for_refund_return_yes','selected')
+Dom.removeClass('mark_all_for_refund_return_no','selected')
+Dom.get('refund_return_items').value='Yes'
+}else{
+Dom.addClass('mark_all_for_refund_return_no','selected')
+Dom.removeClass('mark_all_for_refund_return_yes','selected')
+Dom.get('refund_return_items').value='No'
+
+}
+}
+
+
+function show_dialog_mark_all_for_refund(){
+
+	region1 = Dom.getRegion('show_mark_all_for_refund'); 
+    region2 = Dom.getRegion('dialog_mark_all_for_refund'); 
+	region3 = Dom.getRegion('order_net'); 
+
+	var pos =[region3.left-region2.width-40,region1.bottom]
+	Dom.setXY('dialog_mark_all_for_refund', pos);
+	dialog_mark_all_for_refund.show()
+
+}
+
+
+function cancel_saved_credit(){
+ar_file='ar_edit_orders.php';
+   	request=ar_file+'?tipo=cancel_saved_credit&order_key='+Dom.get('order_key').value;
+ //  alert(request)
+   YAHOO.util.Connect.asyncRequest(
+        'GET',
+    request, {
+		success: function (o) {
+		alert(o.responseText)
+var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+     				//window.location='dn.php?id='+Dom.get('dn_key').value;
+location.reload(); 
+            }
+
+        },
+failure: function (o) {
+            alert(o.statusText);
+        },
+scope:this
+    }
+    );
+
+}
+
+function save_credit(){
+ar_file='ar_edit_orders.php';
+   	request=ar_file+'?tipo=save_credit&order_key='+Dom.get('order_key').value;
+ //  alert(request)
+   YAHOO.util.Connect.asyncRequest(
+        'GET',
+    request, {
+		success: function (o) {
+	//	alert(o.responseText)
+var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+     				//window.location='dn.php?id='+Dom.get('dn_key').value;
+location.reload(); 
+            }
+
+        },
+failure: function (o) {
+            alert(o.statusText);
+        },
+scope:this
+    }
+    );
+
+}
+
+
+function create_refund(tipo){
+ar_file='ar_edit_orders.php';
+   	request=ar_file+'?tipo=mark_all_for_refund_order&order_key='+Dom.get('order_key').value;
+ //  alert(request)
+   YAHOO.util.Connect.asyncRequest(
+        'GET',
+    request, {
+		success: function (o) {
+	//	alert(o.responseText)
+var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+     				//window.location='dn.php?id='+Dom.get('dn_key').value;
+location.reload(); 
+            }
+
+        },
+failure: function (o) {
+            alert(o.statusText);
+        },
+scope:this
+    }
+    );
+
+
+
+}
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });

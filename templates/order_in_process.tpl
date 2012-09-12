@@ -24,7 +24,8 @@
 		<div class="buttons">
 					<button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
 
-			<button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import from Mals-e{/t}</button> <button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="done">{t}Send to Warehouse{/t}</button> <button {if $order->get('Order Current Dispatch State')=='In Process'}style="display:none"{/if} id="modify_order">{t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
+			<button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="import_transactions_mals_e" >{t}Import from Mals-e{/t}</button> 
+			<button {if $order->get('Order Current Dispatch State')!='In Process'}style="display:none"{/if} id="done"><img id="send_to_warehouse_img" src="art/icons/cart_go.png" alt=""> {t}Send to Warehouse{/t}</button> <button {if $order->get('Order Current Dispatch State')=='In Process'}style="display:none"{/if} id="modify_order">{t}Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 
 		</div>
 		<div style="clear:both">
@@ -51,10 +52,16 @@
 				<div style="margin-top:5px" id="delivery_address">
 					{$order->get('Order XHTML Ship Tos')} 
 				</div>
-				<span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span> <span id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</span> 
+				<div class="buttons small left">
+				<button id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</button> 
+				<button id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</button> 
+				</div>
 			</div>
 			<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span>{t}For collection{/t}</span> <span id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</span> 
+				<span>{t}For collection{/t}</span> 
+				<div class="buttons  left">
+				<button id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</button> 
+			</div>
 			</div>
 			<div style="clear:both">
 			</div>

@@ -247,7 +247,7 @@ if (isset($_REQUEST['p'])) {
 
 		$result=mysql_query($sql);
 		if (!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
-			$prev=array('id'=>0,'name'=>'');
+			$prev=array('id'=>0,'name'=>'','link'=>'');
 		mysql_free_result($result);
 
 		$smarty->assign('prev',$prev);
@@ -255,7 +255,7 @@ if (isset($_REQUEST['p'])) {
 
 		$result=mysql_query($sql);
 		if (!$next=mysql_fetch_array($result, MYSQL_ASSOC))
-			$next=array('id'=>0,'name'=>'');
+			$next=array('id'=>0,'name'=>'','link'=>'');
 		mysql_free_result($result);
 		$smarty->assign('parent_info',"p=cs&");
 

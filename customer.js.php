@@ -992,6 +992,9 @@ this.table100.prefix='';
 
 
 function take_order(){
+
+Dom.get('take_order_img').src='art/loading.gif'
+
     location.href='order.php?new=1&customer_key='+customer_key; 
 
 

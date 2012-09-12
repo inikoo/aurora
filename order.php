@@ -133,6 +133,7 @@ if (isset($_REQUEST['pick_aid'])) {
 	$template='order_pick_aid.tpl';
 } else {
 
+//$order->update_xhtml_delivery_notes();
 	switch ($order->get('Order Current Dispatch State')) {
 
 	case('In Process'):
@@ -154,6 +155,7 @@ if (isset($_REQUEST['pick_aid'])) {
 
 		$template='order_in_process.tpl';
 		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
+		$smarty->assign('default_country_2alpha','GB');
 
 
 		$products_display_type='ordered_products';
@@ -192,7 +194,7 @@ if (isset($_REQUEST['pick_aid'])) {
 	case('Ready to Pick'):
 	case('Picking & Packing'):
 	case('Packed'):
-	
+	case('Ready to Ship'):
 
 	
 		if(isset($_REQUEST['amend']) and $_REQUEST['amend']){
@@ -207,6 +209,7 @@ if (isset($_REQUEST['pick_aid'])) {
 		$js_files[]='edit_delivery_address_common.js.php';
 		$js_files[]='order_in_warehouse_amend.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
 		$js_files[]='js/common_order_not_dispatched.js';
+
 
 		$css_files[]='css/edit.css';
 		$css_files[]='css/edit_address.css';
@@ -270,6 +273,7 @@ if (isset($_REQUEST['pick_aid'])) {
 
 		$css_files[]='css/edit.css';
 		$css_files[]='css/edit_address.css';
+		$js_files[]='js/common_assign_picker_packer.js.php';
 
 
 		$template='order_in_warehouse.tpl';
@@ -307,6 +311,18 @@ if (isset($_REQUEST['pick_aid'])) {
 
 		$paginator_menu=array(10,25,50,100);
 		$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+$tipo_filter2='alias';
+$filter_menu2=array(
+                  'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+              );
+$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+$smarty->assign('filter_menu2',$filter_menu2);
+$smarty->assign('filter2',$tipo_filter2);
+$smarty->assign('filter_value2','');
 
 		$smarty->assign('search_label',_('Products'));
 		$smarty->assign('search_scope','products');
@@ -427,12 +443,14 @@ $smarty->assign('packers',$packers_data);
 		$template='order_unknown.tpl';
 
 		break;
-	case('Ready to Ship'):
-		$js_files[]='order_ready_to_ship.js.php';
-		$template='order_ready_to_ship.tpl';
-		break;
+//	case('Ready to Ship'):
+//		$js_files[]='order_ready_to_ship.js.php';
+//		$template='order_ready_to_ship.tpl';
+//		break;
 	default:
-		exit('todo '.$order->get('Order Current Dispatch State'));
+	
+	
+		exit('todo ->'.$order->get('Order Current Dispatch State').'<-');
 		break;
 	}
 }

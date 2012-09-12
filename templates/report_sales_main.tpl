@@ -78,9 +78,11 @@
 	
 	<div id="plot" class="top_bar" style="position:relative;clear:both;padding:0;margin:0">
 			<ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px ">
-				<li> <span class="item {if $plot_tipo=='plot_all_stores'}selected{/if}" onclick="change_plot(this)" id="plot_all_stores" tipo="par_all" > <span>{t}All Stores{/t}</span> </span> </li>
-				<li> <span class="item {if $plot_tipo=='plot_per_store'}selected{/if}" onclick="change_plot(this)" id="plot_per_store" tipo="per_store"> <span>{t}Invoices per Store{/t}</span> </span> </li>
-				<li> <span class="item {if $plot_tipo=='plot_per_category'}selected{/if}" id="plot_per_category" onclick="change_plot(this)" tipo="per_category"> <span>{t}Invoices per Category{/t}</span> </span> </li>
+				<li> <span class="item {if $plot_tipo=='plot_all_stores'}selected{/if}" onclick="change_plot(this)" id="plot_all_stores" tipo="par_all" > <span>{t}Sales all stores{/t}</span> </span> </li>
+				<li> <span class="item {if $plot_tipo=='plot_per_store'}selected{/if}" onclick="change_plot(this)" id="plot_per_store" tipo="per_store"> <span>{t}Sales per store{/t}</span> </span> </li>
+				<li> <span class="item {if $plot_tipo=='plot_per_category'}selected{/if}" id="plot_per_category" onclick="change_plot(this)" tipo="per_category"> <span>{t}Sales per category{/t}</span> </span> </li>
+				<li> <span class="item {if $plot_tipo=='plot_growth_per_store'}selected{/if}" id="plot_growth_per_store" onclick="change_plot(this)" tipo="per_growth_per_store"> <span>{t}Growth per store{/t}</span> </span> </li>
+
 			</ul>
 			<div id="div_plot_all_stores" style="{if $plot_tipo!='plot_all_stores'}display:none;{/if}clear:both;border:1px solid #ccc">
 				<strong>{t}You need to upgrade your Flash Player{/t}</strong>
@@ -118,6 +120,21 @@
 		so.write("div_plot_per_category");
 		// ]]>
 	</script> 
+	
+	
+	<div id="div_plot_growth_per_store" style="{if $plot_tipo!='plot_growth_per_store'}display:none;{/if}clear:both;border:1px solid #ccc">
+				<strong>{t}You need to upgrade your Flash Player{/t}</strong>
+			</div>
+<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&stacked=1&per_category=1&store_key={$am_safe_store_keys}&from={$from}&to={$to}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("div_plot_growth_per_store");
+		// ]]>
+	</script> 
+	
 			<div style="clear:both">
 			</div>
 		</div>

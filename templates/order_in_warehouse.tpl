@@ -21,9 +21,25 @@
 		</div>
 		<div class="buttons">
 					<button style="height:24px;display:none" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
+			
+			{if $order->get_number_invoices()==0}
 			<button id="modify_order">{t}Modify Order{/t}</button>
+			{/if}
+			{if $order->get('Order Current Dispatch State')=='Ready to Ship'}
+			
+						<button id="set_as_dispatched">{t}Set as Dispatched{/t}</button>
 
+			{elseif $order->get('Order Current Dispatch State')=='Packed'}
+
+			{if $order->get_number_invoices()==0}
+			<button id="create_invoice">{t}Create Invoice{/t}</button>
+			{else}
+			<button id="aprove_dispatching">{t}Aprove Dispatching{/t}</button>
+
+			{/if}
+			{else}
 			<button id="process_order">{t}Process Order{/t}</button>
+			{/if}
 			<button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 
 		</div>
@@ -51,10 +67,16 @@
 				<div style="margin-top:5px" id="delivery_address">
 					{$order->get('Order XHTML Ship Tos')} 
 				</div>
-				<span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span> <span id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</span> 
+				<div class="buttons small left">
+				<button id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</button> 
+				<button id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</button> 
+				</div>
 			</div>
 			<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span>{t}For collection{/t}</span> <span id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</span> 
+				<span>{t}For collection{/t}</span>
+				<div class="buttons small left">
+				<button id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</button> 
+				</div>
 			</div>
 			<div style="clear:both">
 			</div>
@@ -123,7 +145,10 @@
 
 				
 				</tr>
-				
+				<tr style="font-size:90%;{if $order->get('Order XHTML Invoices')==''}display:none{/if}"  >
+					<td>{t}Invoices{/t}:</td>
+					<td class="aright" >{$order->get('Order XHTML Invoices')}</td>
+				</tr>
 				<tr style="">
 					<td></td>
 					
@@ -171,8 +196,24 @@
 </div>
 {include file='order_not_dispatched_dialogs_splinter.tpl'} 
 
+
 <div id="process_order_dialog" style="width:400px;;padding:20px 20px 0 20px;">
 
+
+<table id="process_order_buttons" class="edit" style="width:100%;text-align:center" border=0>
+		<tr>
+			<td > 
+			<div class="buttons left">
+							<button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
+			<button class="positive" onclick="show_quick_invoice_dialog()">{t}Quick Invoice{/t}</button>  
+
+			<button class="positive" onclick="show_step_by_step_invoice_dialog()">{t}Invoice Order{/t}</button>  
+			</div>
+			</td>
+		</tr>
+	</table>
+
+<div id="assign_pickers_packers" style="display:none">
 	<div class="options" style="width:350px;padding:0 10px;text-align:center">
 		<table border="0" style="margin:auto" id="assign_picker_buttons">
 			{foreach from=$pickers item=picker_row name=foo} 
@@ -184,7 +225,7 @@
 			{/foreach} 
 		</table>
 	</div>
-	<table class="edit" border="1" style="margin-bottom:5px">
+	<table class="edit" border="0" style="margin-bottom:5px">
 		<input type="hidden" id="assign_picker_staff_key"> 
 		<input type="hidden" id="assign_picker_dn_key"> 
 		<tr class="first">
@@ -230,7 +271,7 @@
 			{/foreach} 
 		</table>
 	</div>
-	<table class="edit" border="1"  >
+	<table class="edit" border="0"  >
 		<input type="hidden" id="assign_packer_staff_key"> 
 		<input type="hidden" id="assign_packer_dn_key"> 
 		<tr class="first">
@@ -259,19 +300,49 @@
 		</tr>
 		<tr ><td colspan=3 id="Assign_Packer_Staff_Name_msg" class="edit_td_alert"></td></tr>
 	</table>
+	
+	
+	
+	
+</div>
 
-
-	<table class="edit" style="width:100%" border=0>
+<table id="quick_invoice_buttons" class="edit" style="width:100%;text-align:center;display:none" border=0>
 		<tr>
 			<td > 
 			<div class="buttons">
-			<button class="positive" onclick="quick_pick_dn()">{t}Invoice Order <br/>(Not all packed){/t}</button>  
-			<button class="positive" onclick="quick_invoice()">{t}Invoice Order <br/> (All packed){/t}</button>  
-				<button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
+						<button class="positive" onclick="quick_invoice()">{t}Create Invoice{/t}</button>  
+						<button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
-	</table>
+</table>
+<table id="step_by_step_invoice_buttons" class="edit" style="width:100%;text-align:center;display:none" border=0>
+		<tr id="step_by_step_invoice_buttons_tr">
+			<td > 
+			<div class="buttons">
+						<button class="positive" onclick="step_by_step_invoice()">{t}Create Invoice (Step by Step){/t}</button>  
+						<button class="negative" onclick="close_process_order_dialog()">{t}Cancel{/t}</button> 
+			</div>
+			</td>
+		</tr>
+		<tr >
+			<td style="text-align:right;"> 
+			<div style="display:none" id="step_by_step_invoice_wait"><span style="padding-right:10px"><img src="art/loading.gif" /> {t}Processing Request{/t}</span></div>
+			</td>
+		</tr>
+</table>
+
+	
+</div>
+<div id="dialog_other_staff">
+	<input type="hidden" id="staff_list_parent_dialog" value=""> 
+	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
+		<div id="the_table" class="data_table">
+			<span class="clean_table_title">{t}Staff List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
+			<div id="table2" class="data_table_container dtable btable ">
+			</div>
+		</div>
+	</div>
 </div>
 
 

@@ -11,7 +11,7 @@ print "var order_key=$order_key;";
 
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-var dialog_cancel,dialog_edit_shipping;
+var dialog_cancel,dialog_edit_shipping,dialog_other_staff;
 var process_order_dialog;
 var change_staff_discount;
 YAHOO.namespace ("invoice"); 
@@ -102,6 +102,84 @@ YAHOO.util.Event.addListener(window, "load", function() {
      	this.table0.subscribe("renderEvent", myrenderEvent);
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['order']['products']['f_field']?>',value:''};
+	    
+	    
+	    
+	    
+	    var tableid=2; 
+	    var tableDivEL="table"+tableid;
+
+	   
+	    var ColumnDefs = [
+			 {key:"key", label:"",width:100,hidden:true}
+                    ,{key:"code", label:"<?php echo _('Alias')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                   ,{key:"name", label:"<?php echo _('Name')?>",width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+						
+			];
+		this.dataSource2 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+//alert("ar_quick_tables.php?tipo=active_staff_list&active=Yes&tableid="+tableid+"&nr=20&sf=0");
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    	    this.dataSource2.table_id=tableid;
+
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "code",'name','key'
+			 ]};
+
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "code",
+									 dir: ""
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    //this.table2.subscribe("cellClickEvent", this.table2.onEventShowCellEditor);
+
+ this.table2.subscribe("rowMouseoverEvent", this.table2.onEventHighlightRow);
+       this.table2.subscribe("rowMouseoutEvent", this.table2.onEventUnhighlightRow);
+      this.table2.subscribe("rowClickEvent", select_staff_from_list);
+        this.table2.table_id=tableid;
+           this.table2.subscribe("renderEvent", myrenderEvent);
+
+
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table2.filter={key:'code',value:''};	    
+	    
+	    
+	    
     
     };
   });
@@ -128,20 +206,157 @@ Event.addListener("modify_order", "click", modify_order);
 
 Event.addListener("process_order", "click", show_process_order_dialog);
 
-process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {visible : true,close:true,underlay: "none",draggable:false});
+Event.addListener("aprove_dispatching", "click", aprove_dispatching);
+Event.addListener("set_as_dispatched", "click", set_as_dispatched);
+
+
+
+process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {visible : false,close:true,underlay: "none",draggable:false});
  process_order_dialog.render();
 
-
+dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {visible : false,close:true,underlay: "none",draggable:false});
+ dialog_other_staff.render();
 
 }
 
+
+
+function set_as_dispatched(){
+ar_file='ar_edit_orders.php';
+   	request=ar_file+'?tipo=set_as_dispatched_order&order_key='+Dom.get('order_key').value;
+   //alert(request)
+   YAHOO.util.Connect.asyncRequest(
+        'GET',
+    request, {
+		success: function (o) {
+		//alert(o.responseText)
+var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+     				//window.location='dn.php?id='+Dom.get('dn_key').value;
+location.reload(); 
+            }
+
+        },
+failure: function (o) {
+            alert(o.statusText);
+        },
+scope:this
+    }
+    );
+}
+
+
+function aprove_dispatching(){
+ar_file='ar_edit_orders.php';
+   	request=ar_file+'?tipo=aprove_dispatching_order&order_key='+Dom.get('order_key').value;
+   //alert(request)
+   YAHOO.util.Connect.asyncRequest(
+        'GET',
+    request, {
+		success: function (o) {
+		//alert(o.responseText)
+var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+     				//window.location='dn.php?id='+Dom.get('dn_key').value;
+location.reload(); 
+            }
+
+        },
+failure: function (o) {
+            alert(o.statusText);
+        },
+scope:this
+    }
+    );
+}
+
+
 function close_process_order_dialog(){
+
+Dom.setStyle('process_order_buttons','display','')
+Dom.setStyle(['assign_pickers_packers','quick_invoice_buttons','step_by_step_invoice_buttons'],'display','none')
+
+
  process_order_dialog.hide()
 }
 
 function show_process_order_dialog(){
- process_order_dialog.show()
+
+region1 = Dom.getRegion('process_order'); 
+    region2 = Dom.getRegion('process_order_dialog'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('process_order_dialog', pos);
+	process_order_dialog.show()
+	Dom.get('Assign_Picker_Staff_Name').focus();
+
+
 }
+
+function show_step_by_step_invoice_dialog(){
+
+Dom.setStyle('process_order_buttons','display','none')
+Dom.setStyle(['assign_pickers_packers','step_by_step_invoice_buttons'],'display','')
+
+}
+
+
+function show_quick_invoice_dialog(){
+
+Dom.setStyle('process_order_buttons','display','none')
+Dom.setStyle(['assign_pickers_packers','quick_invoice_buttons'],'display','')
+
+
+}
+
+
+function step_by_step_invoice(){
+
+ 	var request='ar_edit_orders.php?tipo=assign_picker_and_packer_to_order&order_key='+Dom.get('order_key').value+'&picker_key='+Dom.get('assign_picker_staff_key').value+'&packer_key='+Dom.get('assign_packer_staff_key').value
+    
+      Dom.setStyle('step_by_step_invoice_buttons_tr','display','none')
+
+   Dom.setStyle('step_by_step_invoice_wait','display','block')
+   
+   
+    
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state=='200'){     
+		    	    window.location='order_pick_aid.php?id='+r.dn_key
+			}
+
+		},failure:function(o){
+		    alert(o)
+		}
+	    
+	    });
+}
+
+
+function quick_invoice(){
+
+    	var request='ar_edit_orders.php?tipo=quick_invoice&order_key='+Dom.get('order_key').value+'&picker_key='+Dom.get('assign_picker_staff_key').value+'&packer_key='+Dom.get('assign_packer_staff_key').value
+    	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state=='200'){     
+		    	    window.location='invoice.php?id='+r.invoice_key
+			}
+
+		},failure:function(o){
+		    alert(o)
+		}
+	    
+	    });
+               
+         
+
+
+}
+
 
 function modify_order(){
 window.location='order.php?id='+Dom.get('order_key').value+'&amend=1';

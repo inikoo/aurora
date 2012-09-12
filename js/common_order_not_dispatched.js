@@ -324,7 +324,9 @@ function create_delivery_note(){
 Dom.setStyle('sending_to_warehouse_waiting','display','')
 Dom.setStyle('sending_to_warehouse_msg','display','none')
 
-dialog_sending_to_warehouse.show();
+//
+
+Dom.get('send_to_warehouse_img').src='art/loading.gif'
 
 
 	YAHOO.util.Connect.asyncRequest(
@@ -343,7 +345,10 @@ dialog_sending_to_warehouse.show();
 								window.location="customer.php?id="+Dom.get('customer_key').value;
 								}
 						}else{
+						Dom.get('send_to_warehouse_img').src='art/icons/cart_go.png'
+
 						Dom.removeClass(['cancel','done','import_transactions_mals_e'],'disabled');
+						dialog_sending_to_warehouse.show();
 						Dom.setStyle('sending_to_warehouse_waiting','display','none')
 						Dom.setStyle('sending_to_warehouse_msg','display','')
 						Dom.get('sending_to_warehouse_msg').innerHTML=r.msg;
@@ -403,9 +408,13 @@ var ar_file='ar_edit_orders.php';
 					      Dom.get('ordered_products_number').value=r.data['ordered_products_number'];
                  		if(r.discounts){
 						    Dom.get('tr_order_items_gross').style.display='';
+						    						    Dom.get('tr_order_items_discounts').style.display='';
+
+						    
 						}
 						else{
 						    Dom.get('tr_order_items_gross').style.display='none';
+						    						    Dom.get('tr_order_items_discounts').style.display='none';
 
 						}
 

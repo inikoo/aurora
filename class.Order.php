@@ -110,7 +110,7 @@ class Order extends DB_Table {
 		if (isset($data['Order Date']))
 			$this->data ['Order Date'] =$data['Order Date'];
 		else
-			$this->data ['Order Date'] = date('Y-m-d H:i:s');
+			$this->data ['Order Date'] = gmdate('Y-m-d H:i:s');
 
 		//   if(isset($data['Order Ship To Key'])){
 
@@ -242,7 +242,7 @@ class Order extends DB_Table {
 
 
 		if (!$date)
-			$date=date('Y-m-d H:i:s');
+			$date=gmdate('Y-m-d H:i:s');
 
 		if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submited')) {
 			$this->error=true;
@@ -296,7 +296,7 @@ class Order extends DB_Table {
 
 	function send_post_action_to_warehouse($date=false,$type=false,$metadata='') {
 		if (!$date)
-			$date=date('Y-m-d H:i:s');
+			$date=gmdate('Y-m-d H:i:s');
 
 		if (!$this->data['Order Current Dispatch State']=='Dispatched') {
 			$this->error=true;
@@ -321,7 +321,7 @@ class Order extends DB_Table {
 		elseif ($type=='Missing')
 			$suffix='sh';
 		else
-			$suffix='';
+			$suffix='r';
 		$data_dn=array(
 			'Delivery Note Date Created'=>$date,
 			'Delivery Note ID'=>$this->data['Order Public ID']."$suffix",
@@ -365,7 +365,7 @@ class Order extends DB_Table {
 		} else {
 
 			if (!$date)
-				$date=date('Y-m-d H:i:s');
+				$date=gmdate('Y-m-d H:i:s');
 			$this->data ['Order Cancelled Date'] = $date;
 
 			$this->data ['Order Cancel Note'] = $note;
@@ -445,7 +445,7 @@ class Order extends DB_Table {
 		else {
 
 			if (!$date)
-				$date=date('Y-m-d H:i:s');
+				$date=gmdate('Y-m-d H:i:s');
 			$this->data ['Order Suspended Date'] = $date;
 
 			$this->data ['Order Suspend Note'] = $note;
@@ -1314,6 +1314,13 @@ class Order extends DB_Table {
 		return $invoices;
 
 	}
+
+	function get_number_invoices() {
+
+		return count($this->get_invoices_ids());
+	}
+
+
 	function get_invoices_objects() {
 		$invoices=array();
 		$invoices_ids=$this->get_invoices_ids();
@@ -1440,9 +1447,20 @@ class Order extends DB_Table {
 		$prefix='';
 		$this->data ['Order XHTML Delivery Notes'] ='';
 		foreach ($this->get_delivery_notes_objects() as $delivery_note) {
-			$this->data ['Order XHTML Delivery Notes'] .= sprintf( '<a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a>, ', $delivery_note->data ['Delivery Note Key'],  $prefix,$delivery_note->data ['Delivery Note ID'], $delivery_note->data ['Delivery Note Key'] );
+			//'Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
+			if ($delivery_note->get('Delivery Note State')=='Dispatched')
+				$state='<img src="art/icons/lorry.png" style="height:14px">';
+
+			else
+				$state='<img src="art/icons/cart.png" style="width:14px">';
+
+			$this->data ['Order XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
+				$state,
+				$delivery_note->data ['Delivery Note Key'],
+				$prefix,
+				$delivery_note->data ['Delivery Note ID'], $delivery_note->data ['Delivery Note Key'] );
 		}
-		$this->data ['Order XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Order XHTML Delivery Notes']));
+		$this->data ['Order XHTML Delivery Notes'] =_trim(preg_replace('/\<br\/\>$/','',$this->data ['Order XHTML Delivery Notes']));
 
 		$sql=sprintf("update `Order Dimension` set `Order XHTML Delivery Notes`=%s where `Order Key`=%d "
 			,prepare_mysql($this->data['Order XHTML Delivery Notes'])
@@ -1976,7 +1994,7 @@ class Order extends DB_Table {
 
 
 
-				$xhtml_dispatch_state.=sprintf('<a href="dn.php?id=%d">%s</a> %s',$row['Delivery Note Key'],$row['Delivery Note ID'],$status);
+				//$xhtml_dispatch_state.=sprintf('<a href="dn.php?id=%d">%s</a> %s',$row['Delivery Note Key'],$row['Delivery Note ID'],$status);
 			}
 
 		}
@@ -1993,7 +2011,6 @@ class Order extends DB_Table {
 		//print $sql.' '.$dispatch_state;
 		//print $xhtml_dispatch_state.' xox '.$dispatch_state."\n =========\n";
 		mysql_query($sql);
-
 
 
 
@@ -3519,11 +3536,46 @@ class Order extends DB_Table {
 	}
 
 
+	function mark_all_transactions_for_refund($data){
+		
+		
+			$sql=sprintf("delete from `Order Post Transaction Dimension` where `Order Key`=%d  and `State`='In Process'",
+					$this->id
+				);
+				mysql_query($sql);
+		
+		
+		$sql=sprintf("select `Order Transaction Fact Key`, `Invoice Quantity`,`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as value  from  `Order Transaction Fact` OTF left join `Order Post Transaction Dimension` POT  on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Invoice Quantity`>0 and OTF.`Order Key`=%d ",
+			$this->id
+
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+
+$sql=sprintf("insert into `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`Customer Key`,'Credit') values (%d,%d,%f,%s,%s,%s,%d,%f)",
+				$row['Order Transaction Fact Key'],
+				$this->id,
+				$row['Invoice Quantity'],
+				prepare_mysql('Refund'),
+				prepare_mysql($data['Reason']),
+				prepare_mysql($data['To Be Returned']),
+				$this->data['Order Customer Key'],
+				$row['value']
+			);
+			mysql_query($sql);
+
+			
+		}
+	
+	}
+
+
 	function get_post_transactions_in_process_data() {
 		$data=array(
 			'Refund'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency'])),
-			'Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency'])),
-			'Resend'=>array('Distinct_Products'=>0,'Market_Value'=>0,'Formated_Market_Value'=>money(0,$this->data['Order Currency']))
+			'Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency']),'State'=>''),
+			'Resend'=>array('Distinct_Products'=>0,'Market_Value'=>0,'Formated_Market_Value'=>money(0,$this->data['Order Currency'])),
+			'Saved_Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency']),'State'=>'')
 
 		);
 		$sql=sprintf("select `Invoice Currency Code`, sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Invoice Quantity`>0 and POT.`Order Key`=%d and   `Operation`='Refund'",
@@ -3539,8 +3591,28 @@ class Order extends DB_Table {
 
 		$sql=sprintf("select `Invoice Currency Code`, sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Invoice Quantity`>0 and POT.`Order Key`=%d and   `Operation`='Credit'",
 			$this->id
-
 		);
+
+
+		$sql=sprintf("select `Invoice Currency Code`, sum(POT.`Credit`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where   POT.`Order Key`=%d and   `Operation`='Credit' and `State`='Saved'  ",
+			$this->id
+		);
+
+
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$data['Saved_Credit']['Distinct_Products']=$row['num'];
+			$data['Saved_Credit']['Amount']=$row['value'];
+			$data['Saved_Credit']['Formated_Amount']=money($row['value'],$row['Invoice Currency Code']);
+		}
+
+
+
+		$sql=sprintf("select `Invoice Currency Code`, sum(POT.`Credit`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where   POT.`Order Key`=%d and   `Operation`='Credit' and `State`='In Process'  ",
+			$this->id
+		);
+
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$data['Credit']['Distinct_Products']=$row['num'];
@@ -3551,9 +3623,6 @@ class Order extends DB_Table {
 		$sql=sprintf("select  `Product Currency`,sum(`Quantity`*`Product History Price`) as value,  count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History DImension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  where `Operation`='Resend' and POT.`Order Key`=%d ",
 			$this->id
 		);
-
-
-
 
 
 		$res=mysql_query($sql);
@@ -3573,13 +3642,32 @@ class Order extends DB_Table {
 
 	function cancel_post_transactions_in_process() {
 		$this->deleted_post_transactions=0;
-		$sql=sprintf("delete from `Order Post Transaction Dimension` where `Order Key`=%d ",
+		$sql=sprintf("delete from `Order Post Transaction Dimension` where `Order Key`=%d and `State`='In Process' ",
 			$this->id
 		);
 		mysql_query($sql);
 		$this->deleted_post_transactions=mysql_affected_rows();
 
 
+
+	}
+
+
+
+
+	function cancel_submited_credits() {
+		$sql=sprintf("delete  from `Order Post Transaction Dimension` where `Order Key`=%d and `State`='Saved' and `Operation`='Credit'",
+			$this->id
+		);
+		mysql_query($sql);
+
+	}
+
+	function submit_credits() {
+		$sql=sprintf("update `Order Post Transaction Dimension` set `Credit Saved`=`Credit` , `State`='Saved'  where `Order Key`=%d and `State`='In Process' and `Operation`='Credit'",
+			$this->id
+		);
+		mysql_query($sql);
 
 	}
 
@@ -3622,7 +3710,53 @@ class Order extends DB_Table {
 					$row['Order Post Transaction Key']
 				);
 				mysql_query($sql);
-				if (mysql_affected_rows()>0) {
+				$affected_rows=mysql_affected_rows();
+				if ($key=='Quantity' and $row['Operation']=='Credit') {
+					$sql=sprintf("select `Invoice Currency Code`, (`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity` as value,OTF.`Order Transaction Fact Key` from  `Order Transaction Fact`  OTF where OTF.`Order Transaction Fact Key`=%d",
+						$otf_key
+					);
+
+
+
+					$res2=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res2)) {
+						$sql=sprintf("update `Order Post Transaction Dimension` set `Credit`=%.2f where `Order Post Transaction Key`=%d ",
+							$row2['value']*$values[$key],
+							$row['Order Post Transaction Key']
+						);
+						mysql_query($sql);
+					}
+
+
+
+				}
+
+
+				if ($key=='Operation' ) {
+					$sql=sprintf("select `Invoice Currency Code`, (`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity` as value,OTF.`Order Transaction Fact Key` from  `Order Transaction Fact`  OTF where OTF.`Order Transaction Fact Key`=%d",
+						$otf_key
+					);
+
+
+					$qty=0;
+					if (is_numeric($row['Quantity'])) {
+						$qty=$row['Quantity'];
+					}
+
+					$res2=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res2)) {
+						$sql=sprintf("update `Order Post Transaction Dimension` set `Credit`=%.2f where `Order Post Transaction Key`=%d ",
+							$row2['value']*$qty,
+							$row['Order Post Transaction Key']
+						);
+						mysql_query($sql);
+					}
+
+
+
+				}
+
+				if ($affected_rows>0) {
 
 
 
@@ -3636,20 +3770,41 @@ class Order extends DB_Table {
 			}
 
 		} else {
-			$sql=sprintf("insert into `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`) values (%d,%d,%f,%s,%s,%s)",
+			$sql=sprintf("insert into `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`Customer Key`) values (%d,%d,%f,%s,%s,%s,%d)",
 				$otf_key,
 				$this->id,
 				$values['Quantity'],
 				prepare_mysql($values['Operation']),
 				prepare_mysql($values['Reason']),
-				prepare_mysql($values['To Be Returned'])
-
+				prepare_mysql($values['To Be Returned']),
+				$this->data['Order Customer Key']
 			);
 			mysql_query($sql);
 			if (mysql_affected_rows()>0) {
 				$this->created_post_transaction=true;
 				$this->updated=true;
 				$opt_key=mysql_insert_id();
+
+
+
+				if ($values['Operation']='Credit') {
+					$sql=sprintf("select `Invoice Currency Code`, sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as value from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Invoice Quantity`>0 and OTF.`Order Transaction Fact Key`=%d and  `Operation`='Credit' and `State`='In Process'",
+						$otf_key
+					);
+					$res2=mysql_query($sql);
+					if ($row2=mysql_fetch_assoc($res2)) {
+						$sql=sprintf("update `Order Post Transaction Dimension` set `Credit`=%.2f where `Order Post Transaction Key`=%d ",
+							$row2['value'],
+							$opt_key
+						);
+						mysql_query($sql);
+					}
+
+
+
+				}
+
+
 			}
 
 		}
@@ -3681,14 +3836,16 @@ class Order extends DB_Table {
 
 	function add_post_order_transactions($data) {
 		$otf_key=array();
-		$sql=sprintf("select `Order Post Transaction Key`,OTF.`Product Key`,`Product Gross Weight`,`Quantity`,`Product Units Per Case` from `Order Post Transaction Dimension` POT  left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension`  PH on (PH.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where POT.`Order Key`=%d  and `State`='In Process' ",
+		$sql=sprintf("select `Order Post Transaction Key`,OTF.`Product ID`,`Product Gross Weight`,`Quantity`,`Product Units Per Case` from `Order Post Transaction Dimension` POT  left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension`  PH on (PH.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where POT.`Order Key`=%d  and `State`='In Process' ",
 			$this->id);
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$order_key=$this->id;
-			$order_date=date('Y-m-d H:i:s');
+			$order_date=gmdate('Y-m-d H:i:s');
 			$order_public_id=$this->data['Order Public ID'];
+
+			$product=new Product('pid',$row['Product ID']);
 
 			$bonus_quantity=0;
 			$sql = sprintf( "insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,
@@ -3732,8 +3889,6 @@ class Order extends DB_Table {
 
 			);
 
-
-
 			if (! mysql_query( $sql ))
 				exit ( "$sql can not update xx orphan transaction\n" );
 			$otf_key=mysql_insert_id();
@@ -3765,7 +3920,9 @@ class Order extends DB_Table {
 	}
 
 
-
+function get_currency_symbol(){
+	return currency_symbol($this->data['Order Currency']);
+}
 
 }
 

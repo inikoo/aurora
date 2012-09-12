@@ -9,14 +9,16 @@
 		</div>
 		<div id="top_page_menu" class="top_page_menu">
 			<div class="buttons" style="float:left">
-				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'"  title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='{$prev.link}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if} 
+				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'"  title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if} 
 
-			<span style="font-size:150%;position:relative;bottom:-2px;left:-5px" class="id">{$id}</span>		
+			<span class="id main_title">{$id}</span>		
 				
 			</div>
 			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img src="art/icons/add.png" alt=""> {t}Order{/t}</button> <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> 
+				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button>
+				<button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button> 
+				<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> 
 				{if $new_customer}
 			     <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button>
 				
@@ -199,6 +201,25 @@
 		
 		
 			<div id="overviews" style="padding:20px;font-size:90%">
+			
+			{if $customer->get_credits()>0} 
+				<div id="customer_overview" style="float:left;margin-bottom:10px;">
+					<h2 style="font-size:100%;padding:0;font-weight:800">
+						{t}Balance{/t} 
+					</h2>
+					<table style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+						<tr>
+							<td> 
+							{t}Credits{/t}
+							</td>
+							<td>
+							 {$customer->get_credits_formated()}
+							</td>
+							</tr>
+					</table>
+				</div>
+				{/if} 
+			
 				<div id="orders_overview" style="float:left;;margin-right:40px;width:300px">
 					<h2 style="font-size:100%;padding:0;font-weight:800">
 						{t}Customer Overview{/t} 
@@ -1136,4 +1157,6 @@
 	<input type="hidden" value="{$customer->get_principal_telecom_comment('Mobile')}" id="comment_mobile" />
 	<input type="hidden" value="{$customer->get_principal_email_comment()}" id="comment_email" />
 </div>
+
+
 {include file='footer.tpl'} 
