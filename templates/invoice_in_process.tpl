@@ -9,6 +9,7 @@
 
 <input type="hidden" id="invoice_key" value="{$invoice->id}"/>
 <div  class="buttons">
+	
 	<span class="state_details" id="done" style="float:right;margin-left:40px"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Total Amount')}</span>  <button  style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span>
 
  <button  style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button>
@@ -18,10 +19,10 @@
 </div>
 <div style="clear:both"></div> 
 
-  <div style="text-align:right">
+  <div style="text-align:right">	
 
       </div>
-      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 10px 0 10px 0">
+      <div  style="border:1px solid #ccc;text-align:left;padding:10px;margin: 10px 0 10px 0">
 
        <div style="width:400px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Invoice{/t} {$invoice->get('Invoice Public ID')}</h1>

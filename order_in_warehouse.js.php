@@ -34,10 +34,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var InvoiceColumnDefs = [
 				        {key:"pid", label:"Product ID", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				     
-					,{key:"code", label:"Code",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description", label:"Description",width:370,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"code", label:"Code",width:60,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"description", label:"Description",width:330,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"stock",label:"Able", hidden:(Dom.get('dispatch_state').value=='In Process'?false:true),width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"quantity",label:"Qty", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"quantity",label:"Ordered", width:100,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"add",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false}
 					,{key:"remove",label:"",hidden:(Dom.get('dispatch_state').value=='In Process'?false:true), width:5,sortable:false}
 			     ,{key:"to_charge",label:"To Charge", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -46,8 +46,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				];
 
 		//alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	    //alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_in_warehouse&tid=0&sf=0&f_value=&order_key="+Dom.get('order_key').value);
+//alert("ar_orders.php?tipo=transactions_in_warehouse&tid=0&sf=0&f_value=&order_key="+Dom.get('order_key').value)
+
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -191,7 +192,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function init(){
 
- init_search('products_store');
+ init_search('orders_store');
 
    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
@@ -219,9 +220,21 @@ dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {visible : fa
 
 }
 
+function change_parcel_type(o){
 
+
+Dom.get('parcel_type').value=o.getAttribute('valor');
+
+Dom.removeClass(Dom.getElementsByClassName('parcel_type', 'button', 'parcel_type_options'),'selected')
+Dom.addClass(o,'selected')
+
+
+}
 
 function set_as_dispatched(){
+
+Dom.get('set_as_dispatched_img').src='art/loading.gif';
+
 ar_file='ar_edit_orders.php';
    	request=ar_file+'?tipo=set_as_dispatched_order&order_key='+Dom.get('order_key').value;
    //alert(request)
@@ -244,9 +257,9 @@ scope:this
     }
     );
 }
-
-
 function aprove_dispatching(){
+Dom.get('aprove_dispatching_img').src='art/loading.gif';
+
 ar_file='ar_edit_orders.php';
    	request=ar_file+'?tipo=aprove_dispatching_order&order_key='+Dom.get('order_key').value;
    //alert(request)
@@ -310,8 +323,9 @@ Dom.setStyle(['assign_pickers_packers','quick_invoice_buttons'],'display','')
 
 
 function step_by_step_invoice(){
-
- 	var request='ar_edit_orders.php?tipo=assign_picker_and_packer_to_order&order_key='+Dom.get('order_key').value+'&picker_key='+Dom.get('assign_picker_staff_key').value+'&packer_key='+Dom.get('assign_packer_staff_key').value
+parcels=Dom.get('number_parcels').value
+weight=Dom.get('parcels_weight').value
+ 	var request='ar_edit_orders.php?tipo=assign_picker_and_packer_to_order&parcel_type='+Dom.get('parcel_type')+'&parcels='+parcels+'&weight='+weight+'&order_key='+Dom.get('order_key').value+'&picker_key='+Dom.get('assign_picker_staff_key').value+'&packer_key='+Dom.get('assign_packer_staff_key').value
     
       Dom.setStyle('step_by_step_invoice_buttons_tr','display','none')
 
@@ -337,14 +351,24 @@ function step_by_step_invoice(){
 
 function quick_invoice(){
 
-    	var request='ar_edit_orders.php?tipo=quick_invoice&order_key='+Dom.get('order_key').value+'&picker_key='+Dom.get('assign_picker_staff_key').value+'&packer_key='+Dom.get('assign_packer_staff_key').value
-    	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
+parcels=Dom.get('number_parcels').value
+weight=Dom.get('parcels_weight').value
 
+   Dom.setStyle('quick_invoice_invoice_buttons_tr','display','none')
+
+   Dom.setStyle('quick_invoice_invoice_wait','display','block')
+
+    	var request='ar_edit_orders.php?tipo=quick_invoice&parcel_type='+Dom.get('parcel_type').value+'&parcels='+parcels+'&weight='+weight+'&order_key='+Dom.get('order_key').value+'&picker_key='+Dom.get('assign_picker_staff_key').value+'&packer_key='+Dom.get('assign_packer_staff_key').value
+  //  alert(request)
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+	//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.state=='200'){     
-		    	    window.location='invoice.php?id='+r.invoice_key
-			}
+	
+		
+		if(r.state=='200'){     
+			window.location='invoice.php?id='+r.invoice_key
+		}
 
 		},failure:function(o){
 		    alert(o)

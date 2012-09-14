@@ -102,8 +102,8 @@ $order_id=$_REQUEST['id'];
 $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 
-//$order->update_dispatch_state();exit;
-
+//$order->update_xhtml_delivery_notes();//exit;
+$order->update_no_normal_totals();
 if (!$order->id) {
 	header('Location: orders_server.php?msg=order_not_found');
 	exit;
@@ -133,7 +133,8 @@ if (isset($_REQUEST['pick_aid'])) {
 	$template='order_pick_aid.tpl';
 } else {
 
-//$order->update_xhtml_delivery_notes();
+$order->update_no_normal_totals();
+print $order->data['Order Invoiced Balance Total Amount'];
 	switch ($order->get('Order Current Dispatch State')) {
 
 	case('In Process'):
@@ -245,8 +246,8 @@ if (isset($_REQUEST['pick_aid'])) {
 		$paginator_menu=array(10,25,50,100);
 		$smarty->assign('paginator_menu0',$paginator_menu);
 
-		$smarty->assign('search_label',_('Products'));
-		$smarty->assign('search_scope','products');
+		$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_scope','orders');
 
 		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 		
@@ -324,8 +325,8 @@ $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2','');
 
-		$smarty->assign('search_label',_('Products'));
-		$smarty->assign('search_scope','products');
+		$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_scope','orders');
 
 		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 

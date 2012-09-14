@@ -467,7 +467,7 @@ $total_records=0;
      $order='`Order Date`';
 
   
-   $sql="SELECT `Order Outstanding Balance Net Amount` , `Order Outstanding Balance Tax Amount` , `Order Outstanding Balance Total Amount` , `Order Public ID` , `Order Key` FROM `Order Dimension`";
+   $sql="SELECT `Order Invoiced Outstanding Balance Net Amount` , `Order Invoiced Outstanding Balance Tax Amount` , `Order Invoiced Outstanding Balance Total Amount` , `Order Public ID` , `Order Key` FROM `Order Dimension`";
    //print $sql;
    $adata=array();
   
@@ -487,9 +487,9 @@ $total_records=0;
 
     $adata[]=array(
 		   'order'=>$order
-	,'net'=>$data['Order Outstanding Balance Net Amount']
-,'tax'=>$data['Order Outstanding Balance Tax Amount']
-,'total'=>$data['Order Outstanding Balance Total Amount']
+	,'net'=>$data['Order Invoiced Outstanding Balance Net Amount']
+,'tax'=>$data['Order Invoiced Outstanding Balance Tax Amount']
+,'total'=>$data['Order Invoiced Outstanding Balance Total Amount']
 		   );
   }
 

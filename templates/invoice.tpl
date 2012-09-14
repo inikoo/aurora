@@ -1,5 +1,5 @@
 {include file='header.tpl'}
-<div id="bd" >
+<div id="bd" style="{if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}background-image:url('art/stamp.paid.en.png');background-repeat:no-repeat;background-position:280px 50px{/if}">
 <input type="hidden" id="invoice_key" value="{$invoice->id}"/>
 {include file='orders_navigation.tpl'} 
 <div  class="branch"> 
@@ -16,6 +16,8 @@
 		  <span class="main_title">{t}Invoice{/t} <span class="id">{$invoice->get('Invoice Public ID')}</span></span>
     </div>
 		<div class="buttons">
+		
+		<span class="state_details" id="done" style="float:right;margin-left:40px;{if $invoice->get('Invoice To Pay Amount')==0}display:none{/if}"><span style="color:#000;font-size:150%">To pay: {$invoice->get('To Pay Amount')}</span>  <button  style="margin-left:5px" id="charge"><img id="charge_img" src="art/icons/coins.png" alt=""> {t}Charge{/t}</button></span>
 		 <button  style="height:24px;" onclick="window.location='invoice.pdf.php?id={$invoice->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button>
 
 		</div>
@@ -26,7 +28,6 @@
 
 
     <div id="main_details"  style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
-    {if $invoice->get('Invoice Has Been Paid In Full')=='Yes'}<img style="position:absolute;top:20px;left:220px;z-index:4" src="art/stamp.paid.en.png"/>{/if}
 
     <div style="width:340px;float:left"> 
         <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a></h2>
@@ -80,7 +81,7 @@
 
 <tr><td>{t}Order{/t}:</td><td class="aright">{$invoice->get('Invoice XHTML Orders')}</td></tr>
 <tr><td>{t}Delivery Notes{/t}:</td><td class="aright">{$invoice->get('Invoice XHTML Delivery Notes')}</td></tr>
-<tr><td>{t}Payment Method{/t}:</td><td class="aright">{$invoice->get('Payment Method')}</td></tr>
+<tr style="{if $invoice->get('Invoice Paid')=='No'}display:none{/if}"><td>{t}Payment Method{/t}:</td><td class="aright">{$invoice->get('Payment Method')}</td></tr>
 <tr><td>{t}Payment State{/t}:</td><td class="aright">{$invoice->get('Payment State')}</td></tr>
 
 </table>
@@ -111,6 +112,52 @@
 <div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 </div>
 {/if}
+  
+  
+  <div  id="dialog_pay_invoice" style="padding:20px 20px 10px 20px">
+
+<div id="type_of_payment" class="buttons left">
+<button id="pay_by_creditcard"><img src="art/icons/creditcards.png"/> {t}Credit Card{/t}</button>
+<button id="pay_by_bank_transfer"><img src="art/icons/monitor_go.png"/> {t}Bank Transfer{/t}</button>
+<button id="pay_by_paypal"><img style="width:37px;height:15px" src="art/icons/paypal.png"/> PayPal</button>
+<button id="pay_by_cash"><img src="art/icons/money.png"/> {t}Cash{/t}</button>
+<button id="pay_by_cheque"><img src="art/icons/cheque.png"/> {t}Cheque{/t}</button>
+<button id="pay_by_other">{t}Other{/t}</button>
+</div>
+<div style="clear:both;height:10px"></div>
+<input type="hidden" value="" id="payment_method">
+<input type="hidden" value="{$invoice->get('Invoice Total Amount')}" id="invoce_full_amount">
+
+<table>
+<tr>
+<td>{t}Amount Paid{/t}:</td><td style="text-align:right"><span id="amount_paid_total">{$invoice->get('Total Amount')}</span><input  type="text" style="display:none;text-align:right" id="amount_paid" value="{$invoice->get('Invoice Total Amount')}"></td>
+
+<td>
+<div class="buttons small">
+<button  id="show_other_amount_field" onClick="show_other_amount_field()">{t}Other Amount{/t}</button>
+<button  id="pay_all" style="display:none"  onClick="pay_all()">{t}Pay All{/t}</button>
+
+</div>
+</td>
+</tr>
+<tr>
+<td>{t}Reference{/t}:</td><td><input id="payment_reference"></td>
+</tr>
+<tr style="height:5px"><td colspan="2"></td></tr>
+<tr>
+<td colspan="2">
+<div class="buttons">
+<button class="positive disabled" id="save_paid" onClick="save_paid">{t}Save{/t}</button>
+<button class="negative" onClick="hide_dialog_pay_invoice()">{t}Cancel{/t}</button>
+</div>
+</td>
+</tr>
+
+</table>
+
+
+
+</div>
   
 </div>
 </div> 

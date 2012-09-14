@@ -16,7 +16,8 @@
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; <a href="warehouse_orders.php?id={$warehouse->id}">{t}Pending Orders{/t}</a> &rarr; {$delivery_note->get('Delivery Note ID')} ({t}Pick Aid{/t})</span> 
 	</div>
 	<div id="top_page_menu" class="top_page_menu">
-		<div class="buttons" style="float:left">
+		<div  style="float:left">
+		<span class="main_title">{t}Picking of Delivery Note{/t} <a class="id" href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> </span>
 		</div>
 		<div class="buttons" style="float:right">
 			<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img  style="width:40px;height:12px" src="art/pdf.gif" alt=""></a>
@@ -32,9 +33,7 @@
 	<div id="control_panel" style="clear:both;margin-top:15px">
 		<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
 			<div style="xborder:1px solid #ddd;width:350px;float:left">
-				<h1 style="padding:0 0 10px 0">
-					{t}Picking of Delivery Note{/t} <a href="dn.php?id={$delivery_note->id}">{$delivery_note->get('Delivery Note ID')}</a> 
-				</h1>
+				
 				<h2 style="padding:0">
 					{$delivery_note->get('Delivery Note Customer Name')} (<a href="customer.php?id={$customer->id}">{$customer->get_formated_id()}</a>) {$delivery_note->get('Delivery Note Country 2 Alpha Code')} 
 				</h2>

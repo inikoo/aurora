@@ -51,7 +51,7 @@
 				{if $order->get('Order Out of Stock Net Amount')!=0 } 
 				<tr>
 					<td class="aright">{t}Out of Stock (N){/t}</td>
-					<td width="100" class="aright">-{$order->get('Out of Stock Net Amount')}</td>
+					<td width="100" class="aright">{$order->get('Out of Stock Net Amount')}</td>
 				</tr>
 				{/if} 
 				<tr>

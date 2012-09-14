@@ -20,52 +20,81 @@ switch ($tipo) {
 
 
 case('mark_all_for_refund_order'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
 		));
 	mark_all_for_refund_order($data);
 	break;
 
-break;
+	break;
 case('cancel_saved_credit'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
 		));
 	cancel_saved_credit($data);
 	break;
 
-break;
+	break;
 case('save_credit'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
 		));
 	save_credit($data);
 	break;
 
-break;
+	break;
+
+case('set_as_dispatched_dn'):
+	$data=prepare_values($_REQUEST,array(
+			'dn_key'=>array('type'=>'key')
+		));
+	set_as_dispatched_dn($data);
+	break;
+
+	break;
+case('aprove_dispatching_dn'):
+
+	$data=prepare_values($_REQUEST,array(
+			'dn_key'=>array('type'=>'key')
+
+
+		));
+	aprove_dispatching_dn($data);
+	break;
+
 case('set_as_dispatched_order'):
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
 		));
 	set_as_dispatched_order($data);
 	break;
 
-break;
+	break;
 case('aprove_dispatching_order'):
 
-$data=prepare_values($_REQUEST,array(
+	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key')
-			
-
 		));
 	aprove_dispatching_order($data);
 	break;
+
+case('aprove_dispatching_invoice'):
+
+	$data=prepare_values($_REQUEST,array(
+			'invoice_key'=>array('type'=>'key')
+		));
+	aprove_dispatching_invoice($data);
+	break;
+
 
 case('assign_picker_and_packer_to_order'):
 	$data=prepare_values($_REQUEST,array(
 			'order_key'=>array('type'=>'key'),
 			'picker_key'=>array('type'=>'string'),
 			'packer_key'=>array('type'=>'string'),
+			'weight'=>array('type'=>'string'),
+			'parcels'=>array('type'=>'string'),
+			'parcel_type'=>array('type'=>'string')
 
 		));
 	assign_picker_and_packer_to_order($data);
@@ -75,6 +104,9 @@ case('quick_invoice'):
 			'order_key'=>array('type'=>'key'),
 			'picker_key'=>array('type'=>'string'),
 			'packer_key'=>array('type'=>'string'),
+			'weight'=>array('type'=>'string'),
+			'parcels'=>array('type'=>'string'),
+			'parcel_type'=>array('type'=>'string')
 
 		));
 	quick_invoice($data);
@@ -517,20 +549,20 @@ function send_to_warehouse($order_key) {
 	include_once 'class.PartLocation.php';
 	$order=new Order($order_key);
 
-	
+
 	$sql=sprintf("select count(*) as num  from `Order Transaction Fact`   where `Order Key`=%d    ",$order->id);
-    $res=mysql_query($sql);
-    if($row=mysql_fetch_assoc($res)){
-    
-    	if($row['num']==0){
-    	$response=array('state'=>400,'msg'=>_('Error, can not send an empty order to warehouse'));
-		echo json_encode($response);
-		return;
-    	
-    	}
-    
-    }
-	
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+
+		if ($row['num']==0) {
+			$response=array('state'=>400,'msg'=>_('Error, can not send an empty order to warehouse'));
+			echo json_encode($response);
+			return;
+
+		}
+
+	}
+
 
 	$order->authorize_all();
 
@@ -1045,7 +1077,7 @@ function transactions_to_process() {
 	} else if ($display=='ordered_products') {
 			$table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
 			$where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-			$sql_qty=',`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
+			$sql_qty='`No Shipped Due No Authorized`,`No Shipped Due Not Found`,`No Shipped Due Other`,`No Shipped Due Out of Stock`,`Picking Factor`,`Packing Factor`,`Order Transaction Fact Key`, `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,`Current Dispatching State`';
 		} else {
 		exit();
 	}
@@ -1152,7 +1184,7 @@ function transactions_to_process() {
 
 
 	$sql="select `Product Stage`, `Product Availability`,`Product Record Type`,P.`Product ID`,P.`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web Configuration`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-	//  print $sql;
+	
 
 	$res = mysql_query($sql);
 
@@ -1196,7 +1228,9 @@ function transactions_to_process() {
 		if ($row['Deal Info']!='') {
 			$deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
 		}
-
+		
+		
+if ($display=='ordered_products') {
 		switch ($row['Current Dispatching State']) {
 		case 'In Process by Customer':
 			$dispatching_status=_('In Process by Customer');
@@ -1211,7 +1245,7 @@ function transactions_to_process() {
 			$dispatching_status=_('Ready to Pick').' ['.$row['Picking Factor']*$row['Order Quantity'].'/'.$row['Order Quantity'].']';
 			break;
 		case 'Picking':
-			$dispatching_status=_('Picking').' ['.$row['Picking Factor']*$row['Order Quantity'].'/'.$row['Order Quantity'].']';
+			$dispatching_status=_('Picking').' ['.$row['Picking Factor']*$row['Order Quantity'].'/'.($row['Order Quantity']-$row['No Shipped Due Out of Stock']-$row['No Shipped Due No Authorized']-$row['No Shipped Due Not Found']-$row['No Shipped Due Other']).']';
 			break;
 		case 'Ready to Pack':
 			$dispatching_status=_('Ready to Pack').' ['.$row['Picking Factor']*$row['Order Quantity'].'/'.$row['Order Quantity'].'] '.' ['.$row['Packing Factor']*$row['Order Quantity'].'/'.$row['Order Quantity'].']';
@@ -1251,6 +1285,18 @@ function transactions_to_process() {
 			$dispatching_status=$row['Current Dispatching State'];
 			break;
 		}
+		
+$quantity=number($row['Order Quantity']);
+
+		
+		
+}else{
+$dispatching_status='';
+$quantity=number($row['Order Quantity']);
+}
+
+$quantity_notes='';
+
 
 
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
@@ -1269,6 +1315,7 @@ function transactions_to_process() {
 			//    'stock_value'=>money($row['Product Stock Value']),
 			'stock'=>$stock,
 			'quantity'=>$row['Order Quantity'],
+			//'quantity_formated'=>$quantity,
 			'state'=>$type,
 			'web'=>$web_state,
 			//    'image'=>$row['Product Main Image'],
@@ -1500,7 +1547,7 @@ function post_transactions_to_process() {
 			$stock=number($row['Product Availability']);
 		else
 			$stock='?';
-	
+
 
 		switch ($row['Product Web Configuration']) {
 		case('Online Force Out of Stock'):
@@ -1536,7 +1583,7 @@ function post_transactions_to_process() {
 
 
 
-$submited_post_transactions_info='';
+		$submited_post_transactions_info='';
 
 
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
@@ -2713,9 +2760,9 @@ function cancel_post_transactions_in_process($data) {
 function save_credit($data) {
 
 
-$order=new Order($data['order_key']);
-$order->submit_credits();
-if (!$order->error) {
+	$order=new Order($data['order_key']);
+	$order->submit_credits();
+	if (!$order->error) {
 		$response=array('state'=>200,'order_key'=>$order->id);
 		echo json_encode($response);
 	} else {
@@ -2729,9 +2776,9 @@ if (!$order->error) {
 function cancel_saved_credit($data) {
 
 
-$order=new Order($data['order_key']);
-$order->cancel_submited_credits();
-if (!$order->error) {
+	$order=new Order($data['order_key']);
+	$order->cancel_submited_credits();
+	if (!$order->error) {
 		$response=array('state'=>200,'order_key'=>$order->id);
 		echo json_encode($response);
 	} else {
@@ -2939,13 +2986,13 @@ function update_no_dispatched($data) {
 
 			$notes='';
 			if ($transaction_data['Out of Stock']!=0) {
-				$notes.=_('Out of Stock').' '.number($transaction_data['Out of Stock']);
+				$notes.=_('Out of Stock').': '.number($transaction_data['Out of Stock']);
 			}
 			if ($transaction_data['Not Found']!=0) {
-				$notes.='<br/>'._('Not Found').' '.number($transaction_data['Not Found']);
+				$notes.='<br/>'._('Not Found').': '.number($transaction_data['Not Found']);
 			}
 			if ($transaction_data['No Picked Other']!=0) {
-				$notes.='<br/>'._('Not picked (other)').' '.number($transaction_data['No Picked Other']);
+				$notes.='<br/>'._('Not picked (other)').': '.number($transaction_data['No Picked Other']);
 			}
 
 
@@ -3751,7 +3798,11 @@ function quick_invoice($data) {
 	$dn=new DeliveryNote(array_pop($dn_keys));
 
 	$dn->assign_picker($picker_key);
-	$dn->assign_packer($packer_key);
+	$dn->assign_packer($packer_key,true);
+
+
+	$dn->set_weight($data['weight']);
+	$dn->set_parcels($data['parcels'],$data['parcel_type']);
 
 
 
@@ -3781,7 +3832,11 @@ function quick_invoice($data) {
 		}
 	}
 	$dn->update_packing_percentage();
+
 	$dn->approve_packed();
+
+
+
 	$invoice=$dn->create_invoice();
 
 	if ($invoice->id) {
@@ -3831,6 +3886,8 @@ function assign_picker_and_packer_to_order($data) {
 
 	$dn->assign_picker($picker_key);
 	$dn->assign_packer($packer_key,$force=true);
+	$dn->set_weight($data['weight']);
+	$dn->set_parcels($data['parcels'],$data['parcel_type']);
 
 
 	if ($dn->id) {
@@ -3849,11 +3906,8 @@ function assign_picker_and_packer_to_order($data) {
 }
 
 
+function set_as_dispatched_order($data) {
 
-
-
-function set_as_dispatched_order($data){
-	
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
 
@@ -3871,18 +3925,32 @@ function set_as_dispatched_order($data){
 		echo json_encode($response);
 		return;
 	}
+	$data['dn_key']=array_pop($dn_keys);
+	set_as_dispatched_dn($data);
 
-	$dn=new DeliveryNote(array_pop($dn_keys));
-	
+}
+
+
+function set_as_dispatched_dn($data) {
+
+
+
+	$dn=new DeliveryNote($data['dn_key']);
+	if (!$dn->id) {
+		$response= array('state'=>400,'msg'=>'dn not found');
+		echo json_encode($response);
+		return;
+	}
+
 	if ($dn->data['Delivery Note Dispatch Method']=='Dispatch')
 		$dn->dispatch(array());
 	elseif ($dn->data['Delivery Note Dispatch Method']=='Collection') {
 		$dn->set_as_collected(array());
 
 	}
-	
-	
-   if (!$dn->error) {
+
+
+	if (!$dn->error) {
 		$response= array('state'=>200,'dn_key'=>$dn->id);
 		echo json_encode($response);
 		return;
@@ -3896,7 +3964,8 @@ function set_as_dispatched_order($data){
 }
 
 
-function aprove_dispatching_order($data){
+
+function aprove_dispatching_order($data) {
 	$order_key=$data['order_key'];
 
 
@@ -3916,11 +3985,47 @@ function aprove_dispatching_order($data){
 		echo json_encode($response);
 		return;
 	}
+	$data['dn_key']=array_pop($dn_keys);
+	aprove_dispatching_dn($data);
+}
 
-	$dn=new DeliveryNote(array_pop($dn_keys));
+function aprove_dispatching_invoice($data) {
+	$invoice_key=$data['invoice_key'];
+
+
+	$invoice=new Invoice($invoice_key);
+
+	$dn_keys=$invoice->get_delivery_notes_ids();
+
+	$number_dns=count($dn_keys);
+
+	if ($number_dns==0) {
+		$response= array('state'=>400,'msg'=>'no delivery notes associated with invoice');
+		echo json_encode($response);
+		return;
+
+	}elseif ($number_dns>1) {
+		$response= array('state'=>400,'msg'=>'multiple delivery notes associated with invoice');
+		echo json_encode($response);
+		return;
+	}
+	$data['dn_key']=array_pop($dn_keys);
+	aprove_dispatching_dn($data);
+}
+
+function aprove_dispatching_dn($data) {
+
+
+	$dn=new DeliveryNote($data['dn_key']);
+	if (!$dn->id) {
+		$response= array('state'=>400,'msg'=>'dn not found');
+		echo json_encode($response);
+		return;
+	}
+
 	$dn->approved_for_shipping();
 
-   if (!$dn->error) {
+	if (!$dn->error) {
 		$response= array('state'=>200,'dn_key'=>$dn->id);
 		echo json_encode($response);
 		return;
@@ -3933,12 +4038,12 @@ function aprove_dispatching_order($data){
 	}
 }
 
-function mark_all_for_refund_order($data){
+function mark_all_for_refund_order($data) {
 	$order_key=$data['order_key'];
 	$order=new Order($order_key);
-	
+
 	$order->mark_all_transactions_for_refund();
-	  if (!$order->error) {
+	if (!$order->error) {
 		$response= array('state'=>200,'order_key'=>$order->id);
 		echo json_encode($response);
 		return;
@@ -3949,7 +4054,7 @@ function mark_all_for_refund_order($data){
 		return;
 
 	}
-	
+
 
 }
 

@@ -262,7 +262,7 @@ class Order extends DB_Table {
 			'Delivery Note File As'=>$this->data['Order File As'],
 			'Delivery Note Type'=>$this->data['Order Type'],
 			'Delivery Note Dispatch Method'=>$dispatch_method,
-			'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>',
+			'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a class="id" href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>',
 			'Delivery Note Customer Key'=>$this->data['Order Customer Key'],
 			'Delivery Note Metadata'=>$this->data['Order Original Metadata']
 
@@ -376,12 +376,12 @@ class Order extends DB_Table {
 			$this->data ['Order Current XHTML State'] = _ ( 'Order Cancelled' );
 			$this->data ['Order XHTML Invoices'] = '';
 			$this->data ['Order XHTML Delivery Notes'] = '';
-			$this->data ['Order Balance Total Amount'] = 0;
-			$this->data ['Order Balance Net Amount'] = 0;
-			$this->data ['Order Balance Tax Amount'] = 0;
-			$this->data ['Order Outstanding Balance Total Amount'] = 0;
-			$this->data ['Order Outstanding Balance Net Amount'] = 0;
-			$this->data ['Order Outstanding Balance Tax Amount'] = 0;
+			$this->data ['Order Invoiced Balance Total Amount'] = 0;
+			$this->data ['Order Invoiced Balance Net Amount'] = 0;
+			$this->data ['Order Invoiced Balance Tax Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Total Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Net Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Tax Amount'] = 0;
 
 
 			//$no_shipped=0;
@@ -390,7 +390,7 @@ class Order extends DB_Table {
 			//if($no_shipped<0)$no_shipped=0;
 			// `No Shipped Due Other`=%d,
 
-			$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
+			$sql = sprintf( "update `Order Dimension` set    `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
 				//     ,$no_shipped
 				, prepare_mysql ( $this->data ['Order Cancelled Date'] )
 				, prepare_mysql ( $this->data ['Order Current Payment State'] )
@@ -456,16 +456,16 @@ class Order extends DB_Table {
 			$this->data ['Order Current XHTML State'] = _( 'Order Suspended' );
 			$this->data ['Order XHTML Invoices'] = '';
 			$this->data ['Order XHTML Delivery Notes'] = '';
-			$this->data ['Order Balance Total Amount'] = 0;
-			$this->data ['Order Balance Net Amount'] = 0;
-			$this->data ['Order Balance Tax Amount'] = 0;
-			$this->data ['Order Outstanding Balance Total Amount'] = 0;
-			$this->data ['Order Outstanding Balance Net Amount'] = 0;
-			$this->data ['Order Outstanding Balance Tax Amount'] = 0;
+			$this->data ['Order Invoiced Balance Total Amount'] = 0;
+			$this->data ['Order Invoiced Balance Net Amount'] = 0;
+			$this->data ['Order Invoiced Balance Tax Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Total Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Net Amount'] = 0;
+			$this->data ['Order Invoiced Outstanding Balance Tax Amount'] = 0;
 
 
 
-			$sql = sprintf( "update `Order Dimension` set `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Suspend Note`=%s  where `Order Key`=%d"
+			$sql = sprintf( "update `Order Dimension` set `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Suspend Note`=%s  where `Order Key`=%d"
 				, prepare_mysql ( $this->data ['Order Suspended Date'] )
 				, prepare_mysql ( $this->data ['Order Current Payment State'] )
 				, prepare_mysql ( $this->data ['Order Current Dispatch State'] )
@@ -536,8 +536,6 @@ class Order extends DB_Table {
 	function authorize_all() {
 		$sql=sprintf("update  `Order Transaction Fact` set `Current Autorized to Sell Quantity`=`Order Quantity`  where `Order Key`=%d",$this->id);
 		mysql_query($sql);
-
-		//print $sql;
 
 	}
 
@@ -1093,10 +1091,28 @@ class Order extends DB_Table {
 
 	}
 
+
+
+function formated_net(){
+return money($this->data['Order Total Net Amount']-$this->data['Order Out of Stock Net Amount']-$this->data['Order No Authorized Net Amount']-$this->data['Order Not Found Net Amount']-$this->data['Order Not Due Other Net Amount'],$this->data['Order Currency']);
+}
+function formated_tax(){
+return money($this->data['Order Total Tax Amount']-$this->data['Order Out of Stock Tax Amount']-$this->data['Order No Authorized Tax Amount']-$this->data['Order Not Found Tax Amount']-$this->data['Order Not Due Other Tax Amount'],$this->data['Order Currency']);
+
+}
+function formated_total(){
+return money($this->data['Order Total Net Amount']+$this->data['Order Total Tax Amount']-$this->data['Order Out of Stock Net Amount']-$this->data['Order No Authorized Net Amount']-$this->data['Order Not Found Net Amount']-$this->data['Order Not Due Other Net Amount']-$this->data['Order Out of Stock Tax Amount']-$this->data['Order No Authorized Tax Amount']-$this->data['Order Not Found Tax Amount']-$this->data['Order Not Due Other Tax Amount'],$this->data['Order Currency']);
+
+}
+
+
 	function get($key = '') {
 
 		if (array_key_exists( $key, $this->data ))
 			return $this->data [$key];
+
+
+
 
 		if (preg_match('/^(Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
 
@@ -1116,12 +1132,12 @@ class Order extends DB_Table {
 		case('Order Out of Stock Amount'):
 			return $this->data['Order Out of Stock Net Amount']+$this->data['Order Out of Stock Tax Amount'];
 		case('Out of Stock Amount'):
-			return money($this->data['Order Out of Stock Net Amount']+$this->data['Order Out of Stock Tax Amount'],$this->data['Order Currency']);
+			return money(-1*($this->data['Order Out of Stock Net Amount']+$this->data['Order Out of Stock Tax Amount']),$this->data['Order Currency']);
 		case('Invoiced Total Tax Amount'):
 			return money($this->data['Order Invoiced Tax Amount']+$this->data['Order Invoiced Refund Tax Amount'],$this->data['Order Currency']);
 			break;
 		case('Out of Stock Net Amount'):
-			return money($this->data['Order Out of Stock Net Amount'],$this->data['Order Currency']);
+			return money(-1*$this->data['Order Out of Stock Net Amount'],$this->data['Order Currency']);
 			break;
 
 		case('Invoiced Total Net Amount'):
@@ -1433,9 +1449,22 @@ class Order extends DB_Table {
 		$prefix='';
 		$this->data ['Order XHTML Invoices'] ='';
 		foreach ($this->get_invoices_objects() as $invoice) {
-			$this->data ['Order XHTML Invoices'] .= sprintf( '<a href="invoice.php?id=%d">%s%s</a> <a href="invoice.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a>, ',  $invoice->data ['Invoice Key'], $prefix,$invoice->data ['Invoice Public ID'],$invoice->data ['Invoice Key'] );
+		
+			if ($invoice->get('Invoice Paid')=='Yes')
+				$state='<img src="art/icons/money.png" style="height:14px">';
+			
+			else
+			
+				$state='<img src="art/icons/money_bw.png" style="width:14px">';
+		
+			$this->data ['Order XHTML Invoices'] .= sprintf( ' %s <a href="invoice.php?id=%d">%s%s</a> <a href="invoice.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
+			$state,
+			$invoice->data ['Invoice Key'], 
+			$prefix,
+			$invoice->data ['Invoice Public ID'],
+			$invoice->data ['Invoice Key'] );
 		}
-		$this->data ['Order XHTML Invoices'] =_trim(preg_replace('/\, $/','',$this->data ['Order XHTML Invoices']));
+		$this->data ['Order XHTML Invoices'] =_trim(preg_replace('/\<br\/\>$/','',$this->data ['Order XHTML Invoices']));
 		$sql=sprintf("update `Order Dimension` set `Order XHTML Invoices`=%s where `Order Key`=%d "
 			,prepare_mysql($this->data['Order XHTML Invoices'])
 			,$this->id
@@ -1448,10 +1477,17 @@ class Order extends DB_Table {
 		$this->data ['Order XHTML Delivery Notes'] ='';
 		foreach ($this->get_delivery_notes_objects() as $delivery_note) {
 			//'Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
-			if ($delivery_note->get('Delivery Note State')=='Dispatched')
+		
+		//print $delivery_note->get('Delivery Note State');
+		
+		if ($delivery_note->get('Delivery Note State')=='Dispatched')
 				$state='<img src="art/icons/lorry.png" style="height:14px">';
-
+			else if ($delivery_note->get('Delivery Note State')=='Packed Done')
+				$state='<img src="art/icons/package.png" style="height:14px">';
+				else if ($delivery_note->get('Delivery Note State')=='Approved')
+				$state='<img src="art/icons/package_green.png" style="height:14px">';
 			else
+			
 				$state='<img src="art/icons/cart.png" style="width:14px">';
 
 			$this->data ['Order XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
@@ -1652,9 +1688,9 @@ class Order extends DB_Table {
     */
 
 	function accept() {
-		$this->data['Order Balance Net Amount']=$this->data ['Order Items Net Amount'];
-		$this->data['Order Balance Tax Amount']=$this->data ['Order Items Tax Amount'];
-		$this->data['Order Balance Total Amount']=$this->data ['Order Items Total Amount'];
+		$this->data['Order Invoiced Balance Net Amount']=$this->data ['Order Items Net Amount'];
+		$this->data['Order Invoiced Balance Tax Amount']=$this->data ['Order Items Tax Amount'];
+		$this->data['Order Invoiced Balance Total Amount']=$this->data ['Order Items Total Amount'];
 
 	}
 
@@ -1663,12 +1699,12 @@ class Order extends DB_Table {
 
 
 
-		$this->data['Order Balance Net Amount']=0;
-		$this->data['Order Balance Tax Amount']=0;
-		$this->data['Order Balance Total Amount']=0;
-		$this->data['Order Outstanding Balance Net Amount']=0;
-		$this->data['Order Outstanding Balance Tax Amount']=0;
-		$this->data['Order Outstanding Balance Total Amount']=0;
+		$this->data['Order Invoiced Balance Net Amount']=0;
+		$this->data['Order Invoiced Balance Tax Amount']=0;
+		$this->data['Order Invoiced Balance Total Amount']=0;
+		$this->data['Order Invoiced Outstanding Balance Net Amount']=0;
+		$this->data['Order Invoiced Outstanding Balance Tax Amount']=0;
+		$this->data['Order Invoiced Outstanding Balance Total Amount']=0;
 		$this->data['Order Invoiced Refund Net Amount']=0;
 		$this->data['Order Invoiced Refund Tax Amount']=0;
 		$this->data['Order Invoiced Refund Notes']='';
@@ -1692,7 +1728,13 @@ class Order extends DB_Table {
 
 
                sum(if(`Order Quantity`>0, `No Shipped Due Out of Stock`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as out_of_stock_net,
-               sum(if(`Order Quantity`>0, `No Shipped Due Out of Stock`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as out_of_stock_tax
+               sum(if(`Order Quantity`>0, `No Shipped Due Out of Stock`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as out_of_stock_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due No Authorized`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_authorized_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due No Authorized`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_authorized_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due Not Found`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_found_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due Not Found`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_found_tax,
+              sum(if(`Order Quantity`>0, `No Shipped Due Other`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_due_other_net,
+               sum(if(`Order Quantity`>0, `No Shipped Due Other`*`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as not_due_other_tax
 
 
 
@@ -1701,12 +1743,12 @@ class Order extends DB_Table {
 		$result = mysql_query( $sql );
 		//print "\n$sql\n";
 		if ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-			$this->data['Order Balance Net Amount']=$row['net']+$row['ref_net'];
-			$this->data['Order Balance Tax Amount']=$row['tax']+$row['ref_tax'];
-			$this->data['Order Balance Total Amount']=$this->data['Order Balance Net Amount']+$this->data['Order Balance Tax Amount'];
-			$this->data['Order Outstanding Balance Net Amount']=$row['ob_net']+$row['ref_ob_net'];
-			$this->data['Order Outstanding Balance Tax Amount']=$row['ob_tax']+$row['ref_ob_tax'];
-			$this->data['Order Outstanding Balance Total Amount']=$this->data['Order Outstanding Balance Net Amount']+$this->data['Order Outstanding Balance Tax Amount'];
+			$this->data['Order Invoiced Balance Net Amount']=$row['net']+$row['ref_net'];
+			$this->data['Order Invoiced Balance Tax Amount']=$row['tax']+$row['ref_tax'];
+			$this->data['Order Invoiced Balance Total Amount']=$this->data['Order Invoiced Balance Net Amount']+$this->data['Order Invoiced Balance Tax Amount'];
+			$this->data['Order Invoiced Outstanding Balance Net Amount']=$row['ob_net']+$row['ref_ob_net'];
+			$this->data['Order Invoiced Outstanding Balance Tax Amount']=$row['ob_tax']+$row['ref_ob_tax'];
+			$this->data['Order Invoiced Outstanding Balance Total Amount']=$this->data['Order Invoiced Outstanding Balance Net Amount']+$this->data['Order Invoiced Outstanding Balance Tax Amount'];
 
 			$this->data['Order Tax Refund Amount']=$row['ref_tax'];
 			$this->data['Order Net Refund Amount']=$row['ref_net'];
@@ -1722,11 +1764,17 @@ class Order extends DB_Table {
 
 			$this->data['Order Out of Stock Net Amount']=$row['out_of_stock_net'];
 			$this->data['Order Out of Stock Tax Amount']=$row['out_of_stock_tax'];
+			
+			$this->data['Order No Authorized Net Amount']=$row['not_authorized_net'];
+			$this->data['Order No Authorized Tax Amount']=$row['not_authorized_tax'];
+			
+			$this->data['Order Not Found Net Amount']=$row['not_found_net'];
+			$this->data['Order Not Found Tax Amount']=$row['not_found_tax'];
+			
+			$this->data['Order Not Due Other Net Amount']=$row['not_due_other_net'];
+			$this->data['Order Not Due Other Tax Amount']=$row['not_due_other_tax'];
 
-
-
-
-			$this->data['Order Profit Amount']= $this->data['Order Balance Net Amount']-$this->data['Order Outstanding Balance Net Amount']- $row['costs'];
+			$this->data['Order Invoiced Profit Amount']= $this->data['Order Invoiced Balance Net Amount']-$this->data['Order Invoiced Outstanding Balance Net Amount']- $row['costs'];
 
 		}
 
@@ -1738,12 +1786,12 @@ class Order extends DB_Table {
 		//print "$sql\n";
 		$result = mysql_query( $sql );
 		while ($row = mysql_fetch_array( $result, MYSQL_ASSOC )) {
-			$this->data['Order Balance Net Amount']+=$row['Transaction Invoice Net Amount'];
-			$this->data['Order Balance Tax Amount']+=$row['Transaction Invoice Tax Amount'];
-			$this->data['Order Balance Total Amount']+=$row['Transaction Invoice Net Amount']+$row['Transaction Invoice Tax Amount'];
-			$this->data['Order Outstanding Balance Net Amount']+=$row['Transaction Outstandind Net Amount Balance'];
-			$this->data['Order Outstanding Balance Tax Amount']+=$row['Transaction Outstandind Tax Amount Balance'];
-			$this->data['Order Outstanding Balance Total Amount']+=$row['Transaction Outstandind Net Amount Balance']+$row['Transaction Outstandind Tax Amount Balance'];
+			$this->data['Order Invoiced Balance Net Amount']+=$row['Transaction Invoice Net Amount'];
+			$this->data['Order Invoiced Balance Tax Amount']+=$row['Transaction Invoice Tax Amount'];
+			$this->data['Order Invoiced Balance Total Amount']+=$row['Transaction Invoice Net Amount']+$row['Transaction Invoice Tax Amount'];
+			$this->data['Order Invoiced Outstanding Balance Net Amount']+=$row['Transaction Outstandind Net Amount Balance'];
+			$this->data['Order Invoiced Outstanding Balance Tax Amount']+=$row['Transaction Outstandind Tax Amount Balance'];
+			$this->data['Order Invoiced Outstanding Balance Total Amount']+=$row['Transaction Outstandind Net Amount Balance']+$row['Transaction Outstandind Tax Amount Balance'];
 
 			//  if($row['Invoice Key']){
 			//$this->data['Order Invoiced Net Amount']+=($row['Transaction Invoice Net Amount']);
@@ -1772,13 +1820,20 @@ class Order extends DB_Table {
 		$this->data['Order Invoiced Refund Notes']=preg_replace('/<br\/>/','',$this->data['Order Invoiced Refund Notes']);
 
 		$sql=sprintf("update `Order Dimension` set
-                     `Order Balance Net Amount`=%.2f,`Order Balance Tax Amount`=%.2f,`Order Balance Total Amount`=%.2f,
-                     `Order Outstanding Balance Net Amount`=%.2f,`Order Outstanding Balance Tax Amount`=%.2f,`Order Outstanding Balance Total Amount`=%.2f,
-                     `Order Tax Refund Amount`=%.2f,`Order Net Refund Amount`=%.2f,`Order Profit Amount`=%.2f,
+                     `Order Invoiced Balance Net Amount`=%.2f,`Order Invoiced Balance Tax Amount`=%.2f,`Order Invoiced Balance Total Amount`=%.2f,
+                     `Order Invoiced Outstanding Balance Net Amount`=%.2f,`Order Invoiced Outstanding Balance Tax Amount`=%.2f,`Order Invoiced Outstanding Balance Total Amount`=%.2f,
+                     `Order Tax Refund Amount`=%.2f,`Order Net Refund Amount`=%.2f,`Order Invoiced Profit Amount`=%.2f,
                      `Order Invoiced Items Amount`=%.2f,`Order Invoiced Shipping Amount`=%.2f,`Order Invoiced Charges Amount`=%.2f,
                      `Order Invoiced Net Amount`=%.2f,`Order Invoiced Tax Amount`=%.2f,
                      `Order Out of Stock Net Amount`=%.2f,
                      `Order Out of Stock Tax Amount`=%.2f,
+                     `Order No Authorized Net Amount`=%.2f,
+                     `Order No Authorized Tax Amount`=%.2f,
+                     `Order Not Found Net Amount`=%.2f,
+                     `Order Not Found Tax Amount`=%.2f,
+                     `Order Not Due Other Net Amount`=%.2f,
+                     `Order Not Due Other Tax Amount`=%.2f,
+                     
                      `Order Invoiced Refund Net Amount`=%.2f,
                      `Order Invoiced Refund Tax Amount`=%.2f,
                      `Order Invoiced Refund Notes`=%s,
@@ -1786,17 +1841,17 @@ class Order extends DB_Table {
                      `Order Invoiced Total Tax Adjust Amount`=%.2f
 
                      where `Order Key`=%d",
-			$this->data['Order Balance Net Amount'],
-			$this->data['Order Balance Tax Amount'],
-			$this->data['Order Balance Total Amount'],
+			$this->data['Order Invoiced Balance Net Amount'],
+			$this->data['Order Invoiced Balance Tax Amount'],
+			$this->data['Order Invoiced Balance Total Amount'],
 
-			$this->data['Order Outstanding Balance Net Amount'],
-			$this->data['Order Outstanding Balance Tax Amount'],
-			$this->data['Order Outstanding Balance Total Amount'],
+			$this->data['Order Invoiced Outstanding Balance Net Amount'],
+			$this->data['Order Invoiced Outstanding Balance Tax Amount'],
+			$this->data['Order Invoiced Outstanding Balance Total Amount'],
 
 			$this->data['Order Tax Refund Amount'],
 			$this->data['Order Net Refund Amount'],
-			$this->data['Order Profit Amount'],
+			$this->data['Order Invoiced Profit Amount'],
 
 			$this->data['Order Invoiced Items Amount'],
 			$this->data['Order Invoiced Shipping Amount'],
@@ -1804,8 +1859,15 @@ class Order extends DB_Table {
 
 			$this->data['Order Invoiced Net Amount'],
 			$this->data['Order Invoiced Tax Amount'],
+			
 			$this->data['Order Out of Stock Net Amount'],
 			$this->data['Order Out of Stock Tax Amount'],
+			$this->data['Order No Authorized Net Amount'],
+			$this->data['Order No Authorized Tax Amount'],
+			$this->data['Order Not Found Net Amount'],
+			$this->data['Order Not Found Tax Amount'],
+			$this->data['Order Not Due Other Net Amount'],
+			$this->data['Order Not Due Other Tax Amount'],
 
 			$this->data['Order Invoiced Refund Net Amount'],
 			$this->data['Order Invoiced Refund Tax Amount'],
@@ -2170,7 +2232,7 @@ class Order extends DB_Table {
 		$sql = sprintf( "update `Order Dimension` set
                          `Order Total Net Amount`=%.2f
                          ,`Order Total Tax Amount`=%.2f ,`Order Total Amount`=%.2f
-                         , `Order Balance Total Amount`=%.2f
+                         , `Order Invoiced Balance Total Amount`=%.2f
                          ,`Order Estimated Weight`=%f
                          ,`Order Dispatched Estimated Weight`=%f
 
@@ -3440,7 +3502,7 @@ class Order extends DB_Table {
 			$amount=' '.money($this->data['Order Total Amount'],$this->data['Order Currency']);
 		}
 		elseif ($this->data['Order Current Payment State']=='Paid' or $this->data['Order Current Payment State']=='Payment Refunded') {
-			$amount=' '.money($this->data['Order Balance Total Amount'],$this->data['Order Currency']);
+			$amount=' '.money($this->data['Order Invoiced Balance Total Amount'],$this->data['Order Currency']);
 		}
 
 		$show_description=$this->data['Order Customer Name'].' ('.strftime("%e %b %Y", strtotime($this->data['Order Date'])).') '.$this->data['Order Current XHTML State'].$amount;

@@ -119,7 +119,7 @@ return;
 
 	// alert('('+new_qty+'>'+pending+')  '+data['required']+' o:'+data['out_of_stock']+' '+data['not_found']+' '+data['no_picked_other'])
 	//  return;
-	  alert(new_qty)
+	 // alert(new_qty)
 	
 	    
 	    
@@ -148,7 +148,7 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					 alert(o.responseText);
+					 //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){
@@ -531,13 +531,13 @@ var ar_file='ar_edit_orders.php';
 var request='tipo=update_no_dispatched&dn_key='+dn_key+'&itf_key='+Dom.get('todo_itf_key').value+'&out_of_stock='+out_of_stock+'&not_found='+not_found+'&no_picked_other='+no_picked_other;
 
 
-alert(request)
+//alert(request)
 
 YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					//    alert(o.responseText);
+					   // alert(o.responseText);
 			
 					   var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
