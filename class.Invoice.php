@@ -280,7 +280,6 @@ class Invoice extends DB_Table {
 
 
 
-
 		foreach ($this->get_delivery_notes_objects() as $key=>$dn) {
 			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $this->id,$key);
 			mysql_query( $sql );
@@ -472,6 +471,8 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Outstanding Tax Balance']=$items_tax_outstanding_balance+$items_refund_tax_outstanding_balance;
 
 		$this->data['Invoice Total Amount']=$this->data['Invoice Total Net Amount']+$this->data['Invoice Total Tax Amount'];
+		$this->data['Invoice To Pay Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
+
 
 		$total_costs=0;
 		$sql=sprintf("select ifnull(sum(`Cost Supplier`/`Invoice Currency Exchange Rate`),0) as `Cost Supplier`  ,ifnull(sum(`Cost Storing`/`Invoice Currency Exchange Rate`),0) as `Cost Storing`,ifnull(sum(`Cost Handing`/`Invoice Currency Exchange Rate`),0)  as  `Cost Handing`,ifnull(sum(`Cost Shipping`/`Invoice Currency Exchange Rate`),0) as `Cost Shipping` from `Order Transaction Fact` where `Invoice Key`=%d",$this->id);
@@ -486,7 +487,8 @@ class Invoice extends DB_Table {
 
 
 
-		$sql=sprintf("update  `Invoice Dimension` set `Invoice Refund Net Amount`=%f,`Invoice Refund Tax Amount`=%f,`Invoice Total Net Adjust Amount`=%f,`Invoice Total Tax Adjust Amount`=%f,`Invoice Total Adjust Amount`=%f,`Invoice Outstanding Net Balance`=%f,`Invoice Outstanding Tax Balance`=%f,`Invoice Items Gross Amount`=%f,`Invoice Items Discount Amount`=%f ,`Invoice Items Net Amount`=%f,`Invoice Shipping Net Amount`=%f ,`Invoice Charges Net Amount`=%f ,`Invoice Total Net Amount`=%f ,`Invoice Items Tax Amount`=%f ,`Invoice Shipping Tax Amount`=%f,`Invoice Charges Tax Amount`=%f ,`Invoice Total Tax Amount`=%f,`Invoice Total Amount`=%f ,`Invoice Total Profit`=%f where `Invoice Key`=%d",
+		$sql=sprintf("update  `Invoice Dimension` set `Invoice To Pay Amount`=%f,`Invoice Refund Net Amount`=%f,`Invoice Refund Tax Amount`=%f,`Invoice Total Net Adjust Amount`=%f,`Invoice Total Tax Adjust Amount`=%f,`Invoice Total Adjust Amount`=%f,`Invoice Outstanding Net Balance`=%f,`Invoice Outstanding Tax Balance`=%f,`Invoice Items Gross Amount`=%f,`Invoice Items Discount Amount`=%f ,`Invoice Items Net Amount`=%f,`Invoice Shipping Net Amount`=%f ,`Invoice Charges Net Amount`=%f ,`Invoice Total Net Amount`=%f ,`Invoice Items Tax Amount`=%f ,`Invoice Shipping Tax Amount`=%f,`Invoice Charges Tax Amount`=%f ,`Invoice Total Tax Amount`=%f,`Invoice Total Amount`=%f ,`Invoice Total Profit`=%f where `Invoice Key`=%d",
+			$this->data['Invoice To Pay Amount'],
 			$this->data['Invoice Refund Net Amount'],
 			$this->data['Invoice Refund Tax Amount'],
 			$this->data['Invoice Total Net Adjust Amount'],
@@ -665,7 +667,9 @@ class Invoice extends DB_Table {
 		$this->data['Invoice Outstanding Tax Balance']=$items_tax_outstanding_balance+$items_refund_tax_outstanding_balance;
 
 		$this->data['Invoice Total Amount']=$this->data['Invoice Total Net Amount']+$this->data['Invoice Total Tax Amount'];
-		$sql=sprintf("update  `Invoice Dimension` set `Invoice Outstanding Net Balance`=%f,`Invoice Outstanding Tax Balance`=%f,`Invoice Items Gross Amount`=%f,`Invoice Items Discount Amount`=%f ,`Invoice Items Net Amount`=%f,`Invoice Shipping Net Amount`=%f ,`Invoice Charges Net Amount`=%f ,`Invoice Total Net Amount`=%f ,`Invoice Items Tax Amount`=%f ,`Invoice Shipping Tax Amount`=%f,`Invoice Charges Tax Amount`=%f ,`Invoice Total Tax Amount`=%f,`Invoice Total Amount`=%f where `Invoice Key`=%d",
+		$this->data['Invoice To Pay Amount']=$this->data['Invoice Total Amount']-$this->data['Invoice Paid Amount'];
+		$sql=sprintf("update  `Invoice Dimension` set `Invoice To Pay Amount`=%f,`Invoice Outstanding Net Balance`=%f,`Invoice Outstanding Tax Balance`=%f,`Invoice Items Gross Amount`=%f,`Invoice Items Discount Amount`=%f ,`Invoice Items Net Amount`=%f,`Invoice Shipping Net Amount`=%f ,`Invoice Charges Net Amount`=%f ,`Invoice Total Net Amount`=%f ,`Invoice Items Tax Amount`=%f ,`Invoice Shipping Tax Amount`=%f,`Invoice Charges Tax Amount`=%f ,`Invoice Total Tax Amount`=%f,`Invoice Total Amount`=%f where `Invoice Key`=%d",
+			$this->data['Invoice To Pay Amount'],
 			$this->data['Invoice Outstanding Net Balance'],
 			$this->data['Invoice Outstanding Tax Balance'],
 			$this->data['Invoice Items Gross Amount'],
@@ -1031,8 +1035,12 @@ class Invoice extends DB_Table {
 
 		}
 
+
+
 		$sql = sprintf( "insert into `Invoice Dimension` (
-                         `Invoice Tax Charges Code`,`Invoice Customer Contact Name`,`Invoice Currency`,`Invoice Currency Exchange`,`Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
+                         `Invoice Tax Charges Code`,`Invoice Customer Contact Name`,`Invoice Currency`,
+                         `Invoice Currency Exchange`,
+                         `Invoice For`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Main Source Type`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice XHTML Ship Tos`,`Invoice Items Gross Amount`,`Invoice Items Discount Amount`,
                          `Invoice Charges Net Amount`,`Invoice Total Tax Amount`,`Invoice Refund Net Amount`,`Invoice Refund Tax Amount`,`Invoice Total Amount`,`Invoice Metadata`,`Invoice XHTML Address`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice XHTML Store`,`Invoice Has Been Paid In Full`,`Invoice Main Payment Method`
                          ,`Invoice Charges Tax Amount`,`Invoice XHTML Processed By`,`Invoice XHTML Charged By`,`Invoice Processed By Key`,`Invoice Charged By Key`,
                          `Invoice Billing Country 2 Alpha Code`,
@@ -1047,7 +1055,7 @@ class Invoice extends DB_Table {
                          `Invoice Delivery Town`,
                          `Invoice Delivery Postal Code`,
 
-                         `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`) values
+                         `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`,`Invoice To Pay Amount`) values
                          (%s,%s,%s,
                          %f,
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
@@ -1060,7 +1068,7 @@ class Invoice extends DB_Table {
 
                          %s, %s, %s, %s,%s,
 
-                         %s,%s,%s,%s)"
+                         %s,%s,%s,%s,%f)"
 
 			, prepare_mysql ( $this->data ['Invoice Tax Charges Code'] )
 			, prepare_mysql ( $this->data ['Invoice Customer Contact Name'],false)
@@ -1119,6 +1127,7 @@ class Invoice extends DB_Table {
 			, prepare_mysql ( $this->data ['Invoice Taxable'] )
 			, prepare_mysql ( $this->data ['Invoice Tax Code'] )
 			, prepare_mysql ($this->data ['Invoice Title'])
+			, $this->data ['Invoice Total Amount']
 		);
 
 
@@ -1220,9 +1229,30 @@ class Invoice extends DB_Table {
 		$prefix='';
 		$this->data ['Invoice XHTML Delivery Notes'] ='';
 		foreach ($this->get_delivery_notes_objects() as $delivery_note) {
-			$this->data ['Invoice XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note ID'] );
+			//  $this->data ['Invoice XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note ID'] );
+			// }
+			// $this->data ['Invoice XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Delivery Notes']));
+
+
+			if ($delivery_note->get('Delivery Note State')=='Dispatched')
+				$state='<img src="art/icons/lorry.png" style="height:14px">';
+
+			else if ($delivery_note->get('Delivery Note State')=='Packed Done')
+					$state='<img src="art/icons/package.png" style="height:14px">';
+				else if ($delivery_note->get('Delivery Note State')=='Approved')
+						$state='<img src="art/icons/package_green.png" style="height:14px">';
+					else
+						$state='<img src="art/icons/cart.png" style="width:14px">';
+
+					$this->data ['Invoice XHTML Delivery Notes'] .= sprintf( '%s <a href="dn.php?id=%d">%s%s</a> <a href="dn.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
+						$state,
+						$delivery_note->data ['Delivery Note Key'],
+						$prefix,
+						$delivery_note->data ['Delivery Note ID'], $delivery_note->data ['Delivery Note Key'] );
 		}
-		$this->data ['Invoice XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Delivery Notes']));
+
+		$this->data ['Invoice XHTML Delivery Notes'] =_trim(preg_replace('/\<br\/\>$/','',$this->data ['Invoice XHTML Delivery Notes']));
+
 
 		$sql=sprintf("update `Invoice Dimension` set `Invoice XHTML Delivery Notes`=%s where `Invoice Key`=%d "
 			,prepare_mysql($this->data['Invoice XHTML Delivery Notes'])
@@ -1230,6 +1260,7 @@ class Invoice extends DB_Table {
 		);
 		mysql_query($sql);
 	}
+
 
 
 
@@ -1248,7 +1279,7 @@ class Invoice extends DB_Table {
 		case('Total Amount'):
 		case('Total Net Adjust Amount'):
 		case('Total Tax Adjust Amount'):
-
+		case('To Pay Amount'):
 			return money($this->data['Invoice '.$key],$this->data['Invoice Currency']);
 			break;
 		case('Date'):
@@ -1304,29 +1335,17 @@ class Invoice extends DB_Table {
 		case 'Yes':
 			return _('Paid in full');
 			break;
-		case 'Cash':
-			return _('Cash');
+		case 'No':
+			return _('Not Paid');
 			break;
-		case 'Paypal':
-			return _('Paypal');
+		case 'Partially':
+			return _('Partially Paid');
 			break;
-		case 'Check':
-			return _('Check');
-			break;
-		case 'Bank Transfer':
-			return _('Bank Transfer');
-			break;
-		case 'Other':
-			return _('Other');
-			break;
-		case 'Unknown':
+		default:
 			return _('Unknown');
 
 		}
 	}
-
-	/*Function: update_field_switcher
-     */
 
 
 	function display($tipo='xml') {
@@ -1478,7 +1497,7 @@ class Invoice extends DB_Table {
 			$this->id);
 
 		$res=mysql_query($sql);
-//print "$sql\n";
+		//print "$sql\n";
 		while ($row=mysql_fetch_assoc($res)) {
 			$sql = sprintf( "update  `Order Transaction Fact`  set `Payment Method`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0,`Paid Factor`=1,`Current Payment State`='Paid',`Consolidated`='Yes',`Paid Date`=%s,`Invoice Transaction Outstanding Net Balance`=0,`Invoice Transaction Outstanding Tax Balance`=0 ,`Invoice Transaction Outstanding Tax Balance`=0 where `Order Transaction Fact Key`=%d "
 				,prepare_mysql($data['Payment Method'])
@@ -1486,7 +1505,7 @@ class Invoice extends DB_Table {
 				,$row['Order Transaction Fact Key']);
 
 			mysql_query( $sql );
-//print "$sql\n";
+			//print "$sql\n";
 			$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
 				,$row['Invoice Currency Exchange Rate']*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items'])
 				,$row['Order Transaction Fact Key']);
@@ -1497,12 +1516,14 @@ class Invoice extends DB_Table {
 
 
 
-		$sql=sprintf("update `Invoice Dimension`  set `Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
-
+		$sql=sprintf("update `Invoice Dimension`  set `Invoice To Pay Amount`=0,`Invoice Paid Amount`=%f,`Invoice Paid Date`=%s ,`Invoice Paid`='Yes',`Invoice Has Been Paid In Full`='Yes' where `Invoice Key`=%d"
+			,$this->data['Invoice Total Amount']
 			,prepare_mysql($this->data['Invoice Paid Date'])
 
 			,$this->id);
 		mysql_query( $sql );
+		//print $sql;
+		$this->get_data('id',$this->id);
 
 		$this->update_main_payment_method();
 
@@ -1520,8 +1541,8 @@ class Invoice extends DB_Table {
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
-		
-		$number=(float) $row['number'];
+
+			$number=(float) $row['number'];
 			if ($number>0) {
 
 				$method=$row['Payment Method'];
@@ -1557,7 +1578,7 @@ class Invoice extends DB_Table {
 			$data['Invoice Paid Date']=date('Y-m-d H:i:s');
 		}
 
-		if ($tipo=='full' or $data['amount']==$this->data['Invoice Total Amount']) {
+		if ($tipo=='full' or $data['amount']==$this->data['Invoice To Pay Amount']) {
 			$this->pay_full_amount($data);
 		} else {
 			$this->pay_partial_amount($data);
@@ -1568,6 +1589,7 @@ class Invoice extends DB_Table {
 			$order->update_payment_state();
 			$order->update_no_normal_totals();
 			$order-> update_full_search();
+			$order->update_xhtml_invoices();
 			if ($this->data['Invoice Title']=='Refund') {
 				$customer=new Customer($this->data['Invoice Customer Key']);
 				$customer->add_history_order_refunded($this);
@@ -1575,9 +1597,12 @@ class Invoice extends DB_Table {
 			}
 
 
+
 		}
+		foreach ($this->get_delivery_notes_objects() as $key=>$dn) {
+			$dn->update_xhtml_invoices();
 
-
+		}
 	}
 
 

@@ -338,12 +338,12 @@ Dom.get('send_to_warehouse_img').src='art/loading.gif'
 						//return;
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-								
-								if(Dom.get('referral').value=='store_pending_orders'){
-								window.location="customers_pending_orders.php?store="+Dom.get('store_key').value;
-								}else{
-								window.location="customer.php?id="+Dom.get('customer_key').value;
-								}
+								window.location="order.php?id="+Dom.get('order_key').value;
+							//	if(Dom.get('referral').value=='store_pending_orders'){
+							//	window.location="customers_pending_orders.php?store="+Dom.get('store_key').value;
+							//	}else{
+							//	window.location="customer.php?id="+Dom.get('customer_key').value;
+							//	}
 						}else{
 						Dom.get('send_to_warehouse_img').src='art/icons/cart_go.png'
 

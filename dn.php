@@ -97,6 +97,9 @@ if (!($user->can_view('stores') and in_array($dn->data['Delivery Note Store Key'
 	exit;
 }
 
+//$dn->update_xhtml_invoices();
+
+
 $customer=new Customer($dn->get('Delivery Note Customer Key'));
 $store=new Store($dn->get('Delivery Note Store Key'));
 $warehouse=new Warehouse($dn->data['Delivery Note Warehouse Key']);

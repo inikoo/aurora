@@ -64,7 +64,7 @@ if(isset($_REQUEST['customer_key'])  and is_numeric($_REQUEST['customer_key']) )
 	
 	$adata=array();
 
-	$sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension` where `Order Customer Key`=$customer_key order by `Order Date` desc";
+	$sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension` where `Order Customer Key`=$customer_key order by `Order Date` desc";
 
 	$res = mysql_query($sql);
 	//print_r($sql);
@@ -136,8 +136,8 @@ if(isset($_REQUEST['customer_key'])  and is_numeric($_REQUEST['customer_key']) )
 			//'id'=>$row['Order Public ID'],
 			'state'=>$row['Order Current Dispatch State'],
 			'date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
-			//  'total'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
-			'total'=>money($row['Order Balance Total Amount'],'GBP')
+			//  'total'=>money($row['Order Invoiced Balance Total Amount'],$row['Order Currency']).$mark,
+			'total'=>money($row['Order Invoiced Balance Total Amount'],'GBP')
 
 		);
 	}

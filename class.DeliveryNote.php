@@ -286,7 +286,7 @@ class DeliveryNote extends DB_Table {
 				,prepare_mysql ($this->data ['Delivery Note Date Created'])
 				,prepare_mysql ($this->data ['Delivery Note ID'])
 
-				
+
 				,$this->data ['Delivery Note Key']
 				,prepare_mysql($this->data ['Delivery Note Country 2 Alpha Code'])
 				,$row['Order Transaction Fact Key']
@@ -434,7 +434,7 @@ class DeliveryNote extends DB_Table {
 
 
 		switch ($tipo) {
-
+			
 		default:
 			return 'todo';
 
@@ -442,6 +442,41 @@ class DeliveryNote extends DB_Table {
 
 
 	}
+	
+	function get_formated_parcels(){
+	
+	if(!is_numeric($this->data['Delivery Note Number Parcels']))
+		return;
+	
+	switch($this->data['Delivery Note Parcel Type']){
+		case('Box'):
+			$parcel_type=ngettext('box','boxes',$this->data['Delivery Note Number Parcels']);
+		break;
+		case('Pallet'):
+			$parcel_type=ngettext('pallet','pallets',$this->data['Delivery Note Number Parcels']);
+		break;
+		case('Envelope'):
+			$parcel_type=ngettext('envelope','envelopes',$this->data['Delivery Note Number Parcels']);
+		break;
+		case('Small Parcel'):
+			$parcel_type=ngettext('small parcel','small parcels',$this->data['Delivery Note Number Parcels']);
+		break;
+		case('Other'):
+			$parcel_type=ngettext('container (other)','containers (other)',$this->data['Delivery Note Number Parcels']);
+		break;
+		
+		case('None'):
+			return;
+		break;
+		
+		default:
+			$parcel_type=$this->data['Delivery Note Parcel Type'];
+	}
+	
+	
+	return number($this->data['Delivery Note Number Parcels']).' '.$parcel_type;
+	}
+	
 	function get_orders_ids() {
 		$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Delivery Note Key`=%d group by `Order Key`",$this->id);
 
@@ -484,13 +519,13 @@ class DeliveryNote extends DB_Table {
 		return $invoices;
 
 	}
-	
-	
-	function get_number_invoices(){
+
+
+	function get_number_invoices() {
 		return count($this->get_invoices_ids());
-	
+
 	}
-	
+
 	function get_invoices_objects() {
 		$invoices=array();
 		$invoices_ids=$this->get_invoices_ids();
@@ -533,18 +568,41 @@ class DeliveryNote extends DB_Table {
 		mysql_query($sql);
 	}
 	function update_xhtml_invoices() {
+	
+	
+	
 		$prefix='';
 		$this->data ['Delivery Note XHTML Invoices'] ='';
 		foreach ($this->get_invoices_objects() as $invoice) {
-			$this->data ['Delivery Note XHTML Invoices'] .= sprintf('%s <a href="invoice.php?id=%d">%s</a>,',$prefix,$invoice->data ['Invoice Key'],$invoice->data ['Invoice Public ID']);
+		
+			if ($invoice->get('Invoice Paid')=='Yes')
+				$state='<img src="art/icons/money.png" style="height:14px">';
+			
+			else
+			
+				$state='<img src="art/icons/money_bw.png" style="width:14px">';
+		
+			$this->data ['Delivery Note XHTML Invoices'] .= sprintf( ' %s <a href="invoice.php?id=%d">%s%s</a> <a href="invoice.pdf.php?id=%d" target="_blank"><img style="height:10px;position:relative;bottom:2.5px" src="art/pdf.gif" alt=""></a><br/>',
+			$state,
+			$invoice->data ['Invoice Key'], 
+			
+			$prefix,
+			$invoice->data ['Invoice Public ID'],
+			$invoice->data ['Invoice Key'] );
 		}
-		$this->data ['Delivery Note XHTML Invoices'] =_trim(preg_replace('/\,$/','',$this->data ['Delivery Note XHTML Invoices']));
-
+		$this->data ['Delivery Note XHTML Invoices'] =_trim(preg_replace('/\<br\/\>$/','',$this->data ['Delivery Note XHTML Invoices']));
 		$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note XHTML Invoices`=%s where `Delivery Note Key`=%d "
 			,prepare_mysql($this->data['Delivery Note XHTML Invoices'])
 			,$this->id
 		);
 		mysql_query($sql);
+			
+	
+	
+	
+	
+	
+	
 	}
 
 
@@ -661,9 +719,9 @@ class DeliveryNote extends DB_Table {
 		$sql=sprintf('select `Order Post Transaction Key`,OTF.`Product Key`,`Delivery Note Quantity`,OTF.`Order Transaction Fact Key` from  `Order Transaction Fact` OTF  left join `Order Post Transaction Dimension` POT on (POT.`Order Post Transaction Fact Key`=OTF.`Order Transaction Fact Key`)   where OTF.`Order Key`=%d  and `Order Transaction Type`="Resend" and `Current Dispatching State` in ("In Process")  '
 			,$order_key);
 		$res=mysql_query($sql);
-//print $sql;
+		//print $sql;
 		while ($row=mysql_fetch_assoc($res)) {
-		
+
 			$product=new Product('id',$row['Product Key']);
 			$part_list=$product->get_part_list($date);
 
@@ -730,10 +788,10 @@ class DeliveryNote extends DB_Table {
 
 					$note = $a;
 
-					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values 
+					$sql = sprintf("insert into `Inventory Transaction Fact`  (`Dispatch Country Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values
 					(%s,%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
 						prepare_mysql ($this->data['Delivery Note Country Code']),
-					//	prepare_mysql ($part_data['Product Part List Note']),
+						// prepare_mysql ($part_data['Product Part List Note']),
 						0,
 						prepare_mysql ($date),
 						prepare_mysql ($date),
@@ -989,10 +1047,10 @@ class DeliveryNote extends DB_Table {
 			$res=mysql_query($sql);
 
 			while ($row=mysql_fetch_assoc($res)) {
-			
-			
-			print_r($row);
-			
+
+
+				print_r($row);
+
 				$this->create_inventory_transaction_fact_item(
 					$row['Product Key'],
 					$row['Order Transaction Fact Key'],
@@ -1174,9 +1232,9 @@ class DeliveryNote extends DB_Table {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			
+
 			//print_r($row);
-			
+
 			$this->create_inventory_transaction_fact_item(
 				$row['Product Key'],
 				$row['Order Transaction Fact Key'],
@@ -1386,7 +1444,31 @@ class DeliveryNote extends DB_Table {
 
 	}
 
+	function set_weight($weight) {
 
+		if (is_numeric($weight) and $weight>=0) {
+			$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Weight`=%f,`Delivery Note Weight Source`='Given' where `Delivery Note Key`=%d"
+				,$weight
+
+				,$this->id
+			);
+			//print $sql;
+			
+			mysql_query($sql);
+			$this->data['Delivery Note Weight']=$weight;
+			$this->data['Delivery Note Weight Source']='Given';
+
+		} else {
+			$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Weight`=`Delivery Note Estimated Weight` , `Delivery Note Weight Source`='Estimated' where `Delivery Note Key`=%d"
+				,$this->id
+			);
+			mysql_query($sql);
+			$this->data['Delivery Note Weight']=$this->data['Delivery Note Estimated Weight'];
+			$this->data['Delivery Note Weight Source']='Estimated';
+		}
+
+
+	}
 
 	function set_parcels($parcels,$parcel_type='Box') {
 
@@ -1596,7 +1678,11 @@ class DeliveryNote extends DB_Table {
 		$this->data ['Delivery Note State']='Picker Assigned';
 		$this->data ['Delivery Note Assigned Picker Key']=$staff->id;
 		$this->data ['Delivery Note Assigned Picker Alias']=$staff->data['Staff Alias'];
-		$sql = sprintf("update `Delivery Note Dimension` set `Delivery Note State`=%s ,`Delivery Note Assigned Picker Key`=%d ,`Delivery Note Assigned Picker Alias`=%s where `Delivery Note Key`=%d"
+		$this->data ['Delivery Note XHTML Pickers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,ucfirst($staff->data['Staff Alias']));
+		$this->data ['Delivery Note Number Pickers']=1;
+		$sql = sprintf("update `Delivery Note Dimension` set `Delivery Note Number Pickers`=%d,`Delivery Note XHTML Pickers`=%s,`Delivery Note State`=%s ,`Delivery Note Assigned Picker Key`=%d ,`Delivery Note Assigned Picker Alias`=%s where `Delivery Note Key`=%d"
+			,$this->data ['Delivery Note Number Pickers']
+			,prepare_mysql ($this->data ['Delivery Note XHTML Pickers'])
 			,prepare_mysql ($this->data ['Delivery Note State'])
 			,$this->data ['Delivery Note Assigned Picker Key']
 			,prepare_mysql ($this->data ['Delivery Note Assigned Picker Alias'])
@@ -1615,7 +1701,7 @@ class DeliveryNote extends DB_Table {
 	function assign_packer($staff_key,$force=false) {
 		$this->assigned=false;
 
-
+//print $this->data ['Delivery Note State'];
 		if (preg_match('/^(Picked|Packer Assigned|Picking & Packer Assigned)$/',$this->data ['Delivery Note State'])  or $force ) {
 
 		} else if (preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
@@ -1653,7 +1739,11 @@ class DeliveryNote extends DB_Table {
 		$this->data ['Delivery Note State']='Packer Assigned';
 		$this->data ['Delivery Note Assigned Packer Key']=$staff->id;
 		$this->data ['Delivery Note Assigned Packer Alias']=$staff->data['Staff Alias'];
-		$sql = sprintf("update `Delivery Note Dimension` set `Delivery Note State`=%s ,`Delivery Note Assigned Packer Key`=%d ,`Delivery Note Assigned Packer Alias`=%s where `Delivery Note Key`=%d"
+		$this->data ['Delivery Note XHTML Packers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,ucfirst($staff->data['Staff Alias']));
+		$this->data ['Delivery Note Number Packers']=1;
+		$sql = sprintf("update `Delivery Note Dimension` set `Delivery Note Number Packers`=%d,`Delivery Note XHTML Packers`=%s,`Delivery Note State`=%s ,`Delivery Note Assigned Packer Key`=%d ,`Delivery Note Assigned Packer Alias`=%s where `Delivery Note Key`=%d"
+			,$this->data ['Delivery Note Number Packers']
+			,prepare_mysql ($this->data ['Delivery Note XHTML Packers'])
 			,prepare_mysql ($this->data ['Delivery Note State'])
 			,$this->data ['Delivery Note Assigned Packer Key']
 			,prepare_mysql ($this->data ['Delivery Note Assigned Packer Alias'])
@@ -1799,13 +1889,62 @@ class DeliveryNote extends DB_Table {
 
 
 
+function get_formated_state(){
 
+$state=$this->get_state();
+switch($state){
+case 'Dispatched':
+	return _('Dispatched');
+	break;
+case 'Packed':
+	return _('Packed');
+	break;	
+case 'Packed Done':
+	return _('Packed Done');
+	break;	
+case 'Picking & Packing':
+	return _('Picking & Packing');
+	break;		
+case 'Ready to be Picked':
+	return _('Ready to be Picked');
+	break;		
+case 'Picker Assigned':
+	return _('Picker Assigned');
+	break;	
+case 'Picking':
+	return _('Picking');
+	break;	
+case 'Picked':
+	return _('Picked');
+	break;		
+case 'Packing':
+	return _('Packing');
+	break;
+case 'Packer Assigned':
+	return _('Packer Assigned');
+	break;	
+case 'Unknown':
+	return _('Unknown');
+	break;		
+	
+	
+default:
+return $state;
+
+}
+
+
+}
 
 
 	function get_state() {
 
 		$state='Unknown';
 
+
+if($this->data['Delivery Note State']=='Dispatched'){
+	return 'Dispatched';
+}
 
 
 		if ($this->data['Delivery Note Faction Picked']==1 and $this->data['Delivery Note Faction Packed']==1) {
@@ -2020,7 +2159,7 @@ class DeliveryNote extends DB_Table {
 		$required_items=0;
 		$packed_weight=0;
 		$packed_items=0;
-//print $sql;
+		//print $sql;
 		while ($row=mysql_fetch_assoc($res)) {
 			$to_be_packed=$row['Required']+$row['Given']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
 
@@ -2030,15 +2169,15 @@ class DeliveryNote extends DB_Table {
 			$qty=$row['Packed'];
 
 
-		//	print "Packing $qty $to_be_packed\n";
+			// print "Packing $qty $to_be_packed\n";
 
 			if ($qty>$to_be_packed)
 				$qty=$to_be_packed;
 
 			$required_weight+=$to_be_packed*$row['Part Gross Weight'];
-			
-			if($to_be_packed)
-			$required_items++;
+
+			if ($to_be_packed)
+				$required_items++;
 
 			if ($to_be_packed>0) {
 				$packed_weight+=$qty*$row['Part Gross Weight'];
@@ -2062,7 +2201,7 @@ class DeliveryNote extends DB_Table {
 		}
 
 
-	//	print "packing percentage: $percentage_packed\n";
+		// print "packing percentage: $percentage_packed\n";
 
 		return $percentage_packed;
 
@@ -2161,9 +2300,11 @@ class DeliveryNote extends DB_Table {
 
 		$this->update_xhtml_state();
 		foreach ($this->get_orders_objects() as $order) {
-
 			$order->update_dispatch_state();
-
+			$order->update_xhtml_delivery_notes();
+		}
+		foreach ($this->get_invoices_objects() as $invoice) {
+			$invoice->update_xhtml_delivery_notes();
 		}
 
 
@@ -2185,7 +2326,7 @@ class DeliveryNote extends DB_Table {
 		else
 			$this->data['Delivery Note Date Dispatched Approved']=$date;
 
-		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note State`=%s,`Delivery Note Approved Done`="Yes" ,`Delivery Note Date Dispatched Approved`=%s where `Delivery Note Key`=%d'
+		$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note State`=%s,`Delivery Note Approved To Dispatch`="Yes" ,`Delivery Note Date Dispatched Approved`=%s where `Delivery Note Key`=%d'
 			,prepare_mysql($this->data['Delivery Note State'])
 			,prepare_mysql($this->data['Delivery Note Date Dispatched Approved'])
 			,$this->id
@@ -2197,11 +2338,13 @@ class DeliveryNote extends DB_Table {
 			// $order->update_shipping($this->id);
 			//  $order->update_charges($this->id);
 			$order->update_dispatch_state();
-
+			$order->update_xhtml_delivery_notes();
 
 		}
 
-
+	foreach ($this->get_invoices_objects() as $invoice) {
+			$invoice->update_xhtml_delivery_notes();
+		}
 		//$shipping_amount=$this->calculate_shipping();
 		//$charges_amount=$this->calculate_charges();
 
@@ -2401,12 +2544,15 @@ class DeliveryNote extends DB_Table {
 
 			if ($picking_factor>=1)
 				$state='Ready to Pack';
+			elseif($picking_factor==0)
+				$state='Ready to Pick';	
 			else
 				$state='Picking';
 
 			// print "$picking_factor $state xx";
 
-			$sql = sprintf("update `Order Transaction Fact` set `Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f ,`Cost Supplier`=%f,`Cost Storing`=%f where `Order Transaction Fact Key`=%d  ",
+			$sql = sprintf("update `Order Transaction Fact` set `Picked Quantity`=%f,`Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f ,`Cost Supplier`=%f,`Cost Storing`=%f where `Order Transaction Fact Key`=%d  ",
+				$qty,
 				prepare_mysql ($state),
 				prepare_mysql ($date),
 				prepare_mysql ($picker_key),
@@ -2451,7 +2597,7 @@ class DeliveryNote extends DB_Table {
 		if (array_key_exists('Picker Key',$data))
 			$picker_key=$data['Picker Key'];
 		else
-			$picker_key=false;
+			$picker_key=$this->data['Delivery Note Assigned Picker Key'];
 		$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d and `Delivery Note Key`=%d",
 			$itf_key,
 			$this->id);
@@ -2501,7 +2647,9 @@ class DeliveryNote extends DB_Table {
 
 
 
-			$sql = sprintf("update `Order Transaction Fact` set `Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
+			$sql = sprintf("update `Order Transaction Fact` set `No Shipped Due Out of Stock`=%f,`Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
+				
+				$out_of_stock,
 				prepare_mysql ($state),
 				prepare_mysql ($date),
 				prepare_mysql ($picker_key),
@@ -2511,6 +2659,8 @@ class DeliveryNote extends DB_Table {
 			);
 			mysql_query($sql);
 
+
+		
 
 
 
@@ -2629,7 +2779,7 @@ class DeliveryNote extends DB_Table {
 
 
 			$sql = sprintf("update `Order Transaction Fact` set `Estimated Dispatched Weight`=%f,`Current Dispatching State`=%s,`Delivery Note Quantity`=%f,`Packing Finished Date`=%s,`Packer Key`=%s ,`Packing Factor`=%f  where `Order Transaction Fact Key`=%d  ",
-				$weight,
+				$weight/$parts_per_product,
 				prepare_mysql($state),
 				$qty/$parts_per_product,
 				prepare_mysql ($date),
@@ -2642,7 +2792,7 @@ class DeliveryNote extends DB_Table {
 			//            print "$sql\n";
 
 			$weight=$this->get_packed_estimated_weight();
-			$sql = sprintf("update `Delivery Note Dimension` set `Delivery Note Weight`=%f,`Delivery Note Date Finish Packing`=%s where `Delivery Note Key`=%d",
+			$sql = sprintf("update `Delivery Note Dimension` set `Delivery Note Estimated Weight`=%f,`Delivery Note Date Finish Packing`=%s where `Delivery Note Key`=%d",
 				$weight,
 				prepare_mysql ($date),
 				$this->id
@@ -2707,6 +2857,11 @@ class DeliveryNote extends DB_Table {
 		//$charges_amount=$this->calculate_charges();
 		//$invoice->update_shipping($shipping_amount);
 		//$invoice->update_charges($shipping_amount);
+
+
+
+
+
 
 		return $invoice;
 	}

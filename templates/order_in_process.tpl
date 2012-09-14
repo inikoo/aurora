@@ -17,9 +17,13 @@
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
+			{*}
 			{if $referral=='store_pending_orders' or $order->get('Order Current Dispatch State')=='Ready to Pick' or $order->get('Order Current Dispatch State')=='Picking & Packing' or $order->get('Order Current Dispatch State')=='Packed' } 
 			<button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} 
 			<button onclick="window.location='orders.php?store={$store->id}&view=orders'"><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button> 
+			{*}
+			<span class="main_title">{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span>
+		
 		</div>
 		<div class="buttons">
 					<button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
@@ -35,9 +39,7 @@
 	</div>
 	<div style="border:1px solid #ccc;text-align:left;padding:10px;">
 		<div style="width:320px;float:left">
-			<h1 style="padding:0">
-				{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span>
-			</h1>
+			
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>

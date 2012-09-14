@@ -14,6 +14,7 @@ $invoice_id=$_REQUEST['id'];
 
 $_SESSION['state']['invoice']['id']=$invoice_id;
 $invoice=new Invoice($invoice_id);
+$invoice->update_xhtml_delivery_notes();
 if (!$invoice->id)
 	exit(_('Error, invoice not found'));
 
@@ -27,14 +28,14 @@ $smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 
 if ($invoice->data['Invoice Title']=='Invoice') {
-	if ($invoice->data['Invoice Paid']=='Yes') {
+//	if ($invoice->data['Invoice Paid']=='Yes') {
 		$js_file='invoice.js.php';
 		$template='invoice.tpl';
-	} else {
-		$js_file='invoice_in_process.js.php';
-		$template='invoice_in_process.tpl';
+//	} else {
+//		$js_file='invoice_in_process.js.php';
+//		$template='invoice_in_process.tpl';
 
-	}
+//	}
 	$smarty->assign('title',_('Invoice').' '.$invoice->get('Invoice Public ID') );
 
 } else {
@@ -78,6 +79,7 @@ $js_files=array(
 	$yui_path.'calendar/calendar-min.js',
 	'js/common.js',
 	'js/table_common.js',
+	'js/search.js',
 	$js_file
 );
 

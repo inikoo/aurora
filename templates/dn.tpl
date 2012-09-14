@@ -8,28 +8,37 @@
 
 	{include file='orders_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php?view=dns"> &#8704; {t}Delivery Notes{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=dns">{$store->get('Store Code')} {t}Delivery Notes{/t}</a> &rarr; {$dn->get('Delivery Note ID')} ({$dn->get_state()})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php?view=dns"> &#8704; {t}Delivery Notes{/t}</a> &rarr; {/if}<a href="orders.php?store={$store->id}&view=dns">{$store->get('Store Code')} {t}Delivery Notes{/t}</a> &rarr; {$dn->get('Delivery Note ID')} ({$dn->get_formated_state()})</span> 
 	</div>
 	<div class="top_page_menu" >
 		<div class="buttons" style="float:right">
   
 
 
-
 			<button style="height:24px;" onclick="window.location='dn.pdf.php?id={$dn->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
-			{if $dn->get('Delivery Note Approved Done')=='No'}			
-			<button style="height:24px;"   class="{if !$dn->get('Delivery Note Assigned Packer Key')}disabled{/if}" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Packing{/t}</button> 
-			{if !$dn->get('Delivery Note Assigned Picker Key')}
-			<button style="height:24px;"   id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Start Picking{/t}</button> 
-			{else}
-			<button style="height:24px;"   onCLick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
-			{/if}
+			{if $dn->get('Delivery Note Approved Done')=='No'}	
+			
+				<button style="height:24px;"   class="{if !$dn->get('Delivery Note Assigned Packer Key')}disabled{/if}" id="pack_it"><img src="art/icons/package_add.png" alt=""> {t}Packing{/t}</button> 
+				{if !$dn->get('Delivery Note Assigned Picker Key')}
+					<button style="height:24px;"   id="pick_it_"><img src="art/icons/basket_put.png" alt=""> {t}Start Picking{/t}</button> 
+				{else}
+					<button style="height:24px;"   onCLick="window.location='order_pick_aid.php?id={$dn->id}'"><img src="art/icons/basket_put.png" alt=""> {t}Picking Aid Sheet{/t}</button> 
+				{/if}
 			{else}
 			
-			{if !$dn->get_number_invoices()}
-			<button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
+				{if !$dn->get_number_invoices()}
+					<button style="height:24px;" id="create_invoice"><img src="art/icons/money.png" alt=""> {t}Create Invoice{/t}</button> 
+				{/if}
+			{if $dn->get('Delivery Note Approved To Dispatch')=='No'}		
+			<button id="aprove_dispatching"><img id="aprove_dispatching_img" src="art/icons/package_green.png" alt=""> {t}Aprove Dispatching{/t}</button>
 			{/if}
 			
+			
+						{if $dn->get('Delivery Note State')=='Approved'}		
+
+			<button id="set_as_dispatched"><img id="set_as_dispatched_img" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button>
+{/if}
+				
 			{/if}
 		</div>
 		<div class="buttons" style="float:left">
@@ -64,12 +73,33 @@
 		</div>
 		<div style="border:0px solid #ddd;width:290px;float:right">
 			<table border="0" style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px;margin-bottom:5px">
+				{if $dn->get('Delivery Note Faction Packed')==1}
 				<tr>
-					<td class="aright">{t}Estimated Weight{/t}</td>
-					<td width="100" class="aright">{$dn->get('Estimated Weight')}</td>
+					<td class="aright">{t}Parcels:{/t}</td>
+					<td width="200px" class="aright">{$dn->get_formated_parcels()}</td>
 				</tr>
-			</table>
-			<div id="dn_state" >
+				{/if}	
+				{if $dn->get('Delivery Note Weight Source')=='Estimated'}
+				<tr>
+					<td class="aright">{t}Estimated Weight:{/t}</td>
+					<td width="200px" class="aright">{$dn->get('Estimated Weight')}</td>
+				</tr>
+				{else}
+				<tr>
+					<td class="aright">{t}Weight{/t}:</td>
+					<td width="200px" class="aright">{$dn->get('Weight')}</td>
+				</tr>
+				{/if}
+				<tr>
+					<td class="aright">{t}Picked by:{/t}</td>
+					<td width="200px" class="aright">{$dn->get('Delivery Note XHTML Pickers')}</td>
+				</tr>
+		        <tr>
+					<td class="aright">{t}Packed by:{/t}</td>
+					<td width="200px" class="aright">{$dn->get('Delivery Note XHTML Packers')}</td>
+				</tr>
+		    </table>
+			<div style="display:none" id="dn_state" >
 				{$dn->get('Delivery Note XHTML State')}
 			</div>
 		</div>
@@ -88,6 +118,9 @@
 					<td>{t}Orders{/t}:</td>
 					<td class="aright">{$dn->get('Delivery Note XHTML Orders')}</td>
 				</tr>
+				
+				
+				
 				{if $dn->get('Delivery Note XHTML Invoices')!=''} 
 				<tr>
 					<td>{t}Invoices{/t}:</td>

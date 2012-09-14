@@ -1101,13 +1101,13 @@ $fields=array(
 'totalnet'=>array('title'=>_('Total Net'),'db_name'=>'Order Total Net Amount'),
 'total'=>array('title'=>_('Total'),'db_name'=>'Order Total Net Amount'),
 
-'balancenet'=>array('title'=>_('Balance Net'),'db_name'=>'Order Balance Net Amount'),
-'balancetax'=>array('title'=>_('Balance Tax'),'db_name'=>'Order Balance Tax Amount'),
-'balancetotal'=>array('title'=>_('Balance Total'),'db_name'=>'Order Balance Total Amount'),
+'balancenet'=>array('title'=>_('Balance Net'),'db_name'=>'Order Invoiced Balance Net Amount'),
+'balancetax'=>array('title'=>_('Balance Tax'),'db_name'=>'Order Invoiced Balance Tax Amount'),
+'balancetotal'=>array('title'=>_('Balance Total'),'db_name'=>'Order Invoiced Balance Total Amount'),
 
-'outstandingbalancenet'=>array('title'=>_('Outstanding Balance Net'),'db_name'=>'Order Outstanding Balance Net Amount'),
-'outstandingbalancetax'=>array('title'=>_('Outstanding Balance Tax'),'db_name'=>'Order Outstanding Balance Tax Amount'),
-'outstandingbalancetotal'=>array('title'=>_('Outstanding Balance Total'),'db_name'=>'Order Outstanding Balance Total Amount'),
+'outstandingbalancenet'=>array('title'=>_('Outstanding Balance Net'),'db_name'=>'Order Invoiced Outstanding Balance Net Amount'),
+'outstandingbalancetax'=>array('title'=>_('Outstanding Balance Tax'),'db_name'=>'Order Invoiced Outstanding Balance Tax Amount'),
+'outstandingbalancetotal'=>array('title'=>_('Outstanding Balance Total'),'db_name'=>'Order Invoiced Outstanding Balance Total Amount'),
 
 'contactname'=>array('title'=>_('Customer Contact Name'),'db_name'=>'Order Customer Contact Name'),
 'sourcetype'=>array('title'=>_('Source Type'),'db_name'=>'Order Main Source Type'),
