@@ -2875,12 +2875,12 @@ $orders_ids=preg_replace('/\,$/','',$order_ids);
 
 
 
-
+print "Create Invoice"
 		$invoice=new Invoice ('create',$data_invoice);
+print "End Create Invouce";
 
 
-
-		$invoice->update_totals();
+		//$invoice->update_totals();
 
 
 		//$shipping_amount=$this->calculate_shipping();
