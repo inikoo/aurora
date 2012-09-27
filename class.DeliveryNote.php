@@ -2876,9 +2876,10 @@ $orders_ids=preg_replace('/\,$/','',$order_ids);
 
 
 print "Create Invoice";
-exit;
+
 		$invoice=new Invoice ('create',$data_invoice);
 
+exit;
 
 
 		$invoice->update_totals();
