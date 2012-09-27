@@ -41,7 +41,7 @@ $order->update_xhtml_delivery_notes();
 
 exit;
 
-$sql="select replace(`Invoice Metadata`,'U','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=1  ";
+$sql="select replace(`Invoice Metadata`,'U','') as id from `Invoice Dimension` where  `Invoice Type`='Refund' and `Invoice Store Key`=1  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $sql=sprintf("update orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$row['id']);
@@ -52,7 +52,7 @@ mysql_query($sql);
  
  exit;
 
-$sql="select replace(`Invoice Metadata`,'D','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=3  ";
+$sql="select replace(`Invoice Metadata`,'D','') as id from `Invoice Dimension` where  `Invoice Type`='Refund' and `Invoice Store Key`=3  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $sql=sprintf("update de_orders_data.orders set last_transcribed=null where de_orders_data.orders.id =%d",$row['id']);
@@ -60,7 +60,7 @@ $sql=sprintf("update de_orders_data.orders set last_transcribed=null where de_or
 mysql_query($sql);
   print $row['id']."\r";
  }
- $sql="select replace(`Invoice Metadata`,'F','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=5  ";
+ $sql="select replace(`Invoice Metadata`,'F','') as id from `Invoice Dimension` where  `Invoice Type`='Refund' and `Invoice Store Key`=5  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $sql=sprintf("update fr_orders_data.orders set last_transcribed=null where fr_orders_data.orders.id =%d",$row['id']);
@@ -68,7 +68,7 @@ $sql=sprintf("update fr_orders_data.orders set last_transcribed=null where fr_or
 mysql_query($sql);
   print $row['id']."\r";
  }
- $sql="select replace(`Invoice Metadata`,'I','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=8  ";
+ $sql="select replace(`Invoice Metadata`,'I','') as id from `Invoice Dimension` where  `Invoice Type`='Refund' and `Invoice Store Key`=8  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $sql=sprintf("update it_orders_data.orders set last_transcribed=null where it_orders_data.orders.id =%d",$row['id']);
@@ -77,7 +77,7 @@ mysql_query($sql);
   print $row['id']."\r";
  }
  
- $sql="select replace(`Invoice Metadata`,'P','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=7  ";
+ $sql="select replace(`Invoice Metadata`,'P','') as id from `Invoice Dimension` where  `Invoice Type`='Refund' and `Invoice Store Key`=7  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $sql=sprintf("update pl_orders_data.orders set last_transcribed=null where pl_orders_data.orders.id =%d",$row['id']);
@@ -139,7 +139,7 @@ mysql_query($sql);
  
  exit;
  
-$sql="select replace(`Invoice Metadata`,'U','') as id from `Invoice Dimension` where  `Invoice Title`='Refund' and `Invoice Store Key`=1  ";
+$sql="select replace(`Invoice Metadata`,'U','') as id from `Invoice Dimension` where  `Invoice Type`='Refund' and `Invoice Store Key`=1  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $sql=sprintf("update orders_data.orders set last_transcribed=null where orders_data.orders.id =%d",$row['id']);

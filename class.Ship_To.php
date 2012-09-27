@@ -12,21 +12,10 @@
  Version 2.0
 */
 
-/* class: Ship_To
-   Class to manage the *Company Dimension* table
-*/
+
 class Ship_To extends DB_Table {
 
 
-	/*
-         Constructor: Ship_To
-
-         Initializes the class, Search/Load or Create for the data set
-
-
-
-
-       */
 	function Ship_To($arg1=false,$arg2=false) {
 
 		$this->table_name='Ship To';
@@ -78,13 +67,7 @@ class Ship_To extends DB_Table {
 
 	}
 
-	/*
-       Method: find
 
-
-       Returns:
-     Key of the Shipping Addreses found, if create is found in the options string  returns the new key
-      */
 	function find($raw_data,$options) {
 
 		$create='';
@@ -153,7 +136,7 @@ class Ship_To extends DB_Table {
 	}
 
 
-	
+
 	function get($key='') {
 
 

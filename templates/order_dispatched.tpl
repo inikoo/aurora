@@ -2,42 +2,31 @@
 <div id="bd">
 	<input type="hidden" id="order_key" value="{$order->id}" />
 	{include file='orders_navigation.tpl'} 
-<div  class="branch"> 
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  
-		{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if}
-		<a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr;
-		{$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
+	<div class="branch">
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if} <a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr; {$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
 	</div>
-	
 	<div class="top_page_menu" style="border:none">
-	
-		 <div class="buttons" style="float:left">
-		  <span class="main_title">{t}Dispatched Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span>
-    </div>
+		<div class="buttons" style="float:left">
+			<span class="main_title">{t}Dispatched Order{/t} <span class="id">{$order->get('Order Public ID')}</span></span> 
+		</div>
 		<div class="buttons">
-					{*}<a style="height:14px" href="order.pdf.php?id={$order->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> {*}
-			<button style="{if $order->get_number_post_order_transactions()}display:none;{/if}" onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Create Post Dispatch Operations{/t}</button> 
-
+			{*}<a style="height:14px" href="order.pdf.php?id={$order->id}" target="_blank"><img style="width:40px;height:12px" src="art/pdf.gif" alt=""></a> {*} <button style="{if $order->get_number_post_order_transactions()}display:none;{/if}" onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Create Post Dispatch Operations{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	
-
 	<div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
 		<div style="border:0px solid #ddd;width:380px;float:left">
-			
 			<h2 style="padding:0">
-				{$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get("order customer key")}">{$customer->get_formated_id()}</a>
+				{$order->get('Order Customer Name')} <a class="id" href="customer.php?id={$order->get(" order customer key")}">{$customer->get_formated_id()}</a> 
 			</h2>
 			<div style="float:left;line-height: 1.0em;margin:5px 30px 0 0px;color:#444">
 				<span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br />
-				{$customer->get('Customer Main XHTML Address')}
-				</span>
+				{$customer->get('Customer Main XHTML Address')} </span> 
 			</div>
 			<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444">
 				<span style="font-weight:500;color:#000">{t}Shipped to{/t}</span>:<br />
-				{$order->get('Order XHTML Ship Tos')}
+				{$order->get('Order XHTML Ship Tos')} 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -75,8 +64,7 @@
 					<td class="aright"><i>{t}Refunds (N){/t}</i></td>
 					<td width="100" class="aright">{$order->get('Invoiced Refund Net Amount')}</td>
 				</tr>
-				{/if} 
-				{if $order->get('Order Invoiced Total Net Adjust Amount')!=0} 
+				{/if} {if $order->get('Order Invoiced Total Net Adjust Amount')!=0} 
 				<tr class="adjust" style="color:red">
 					<td class="aright">{t}Adjusts (N){/t}</td>
 					<td width="100" class="aright">{$order->get('Invoiced Total Net Adjust Amount')}</td>
@@ -106,17 +94,12 @@
 					<td class="aright">{t}Total{/t}</td>
 					<td width="100" class="aright"><b>{$order->get('Invoiced Total Amount')}</b></td>
 				</tr>
-				
-				
-				
-				
-				
 			</table>
 		</div>
 		<div style="border:0px solid red;width:265px;float:right">
-			{if isset($note)}
+			{if isset($note)} 
 			<div class="notes">
-				{$note}
+				{$note} 
 			</div>
 			{/if} 
 			<table border="0" style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right">
@@ -137,36 +120,27 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	
-	
-	{*}
+	{*} 
 	<div id="msg_dispatched_post_transactions" style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #fd4646;padding:5px 10px;background:#ff6969;color:#fff;xtext-align:center;text-weight:800">
 		{t}This order has some post transactions{/t} <span onclick="show_dispatched_post_transactions()" style="font-size:90%;cursor:pointer">({t}Show details){/t}</span> 
 	</div>
-{*}
-
+	{*} 
 	<div style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #fd7777;border-bottom:1px solid #fd7777;padding:5px 5px 10px 5px;background-color:#F5D0DF;" id="dispatched_post_transactions">
-		
 		<div class="buttons small">
 			<button class="negative" onclick="window.location='new_post_order.php?id={$order->id}'"><img src="art/icons/page_white_edit.png" alt=""> {t}Post Dispatch Operations{/t}</button> 
-
 		</div>
 		<h2 style="margin-left:5px">
-			{t}Post-Order Transactions{/t}
-			
-			
-			
+			{t}Post-Order Transactions{/t} 
 		</h2>
 		<div id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%">
 		</div>
 	</div>
 	<h2>
-		{t}Ordered Items{/t}
+		{t}Ordered Items{/t} 
 	</h2>
 	<div id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%">
 	</div>
 </div>
-
 </div>
 </div>
 </div>

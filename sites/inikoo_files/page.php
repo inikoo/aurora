@@ -1,6 +1,6 @@
 <?php
 
-if(!isset($skip_common))include_once 'common.php';
+if (!isset($skip_common))include_once 'common.php';
 
 
 
@@ -54,15 +54,13 @@ $js_files=array(
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
 	$yui_path.'uploader/uploader-min.js',
-
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/common.js',
-	//      'js/table_common.js',
-
 	'js/edit_common.js',
-
-	'js/page.js'
+//	'js/page.js'
 );
+
+
 
 $template_suffix='';
 if ($page->data['Page Code']=='login') {
@@ -174,12 +172,12 @@ else if ($page->data['Page Code']=='profile') {
 
 
 
-$custom_fields=array();
-$sql=sprintf("select * from `Custom Field Dimension`  where `Custom Field Table`='Customer' and `Custom Field In Profile`='Yes'  ");
+		$custom_fields=array();
+		$sql=sprintf("select * from `Custom Field Dimension`  where `Custom Field Table`='Customer' and `Custom Field In Profile`='Yes'  ");
 
 
 
-		
+
 		$result=mysql_query($sql);
 		mysql_fetch_assoc($result);
 		while ($row=mysql_fetch_assoc($result)) {
@@ -438,12 +436,20 @@ $sql=sprintf("select * from `Custom Field Dimension`  where `Custom Field Table`
 
 	}
 else if ($page->data['Page Code']=='reset') {
-	$css_files[]='css/inikoo.css';
-}else{
-$js_files[]='js/fill_basket.js';
+		$css_files[]='css/inikoo.css';
+	}else {
+//$js_files=array();
+//	$js_files[]='js/fill_basket.js';
 
 }
 
+
+
+
+
+if(!in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))){
+	$js_files=array();
+}
 
 
 $smarty->assign('logged',$logged_in);

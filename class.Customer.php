@@ -1207,8 +1207,15 @@ class Customer extends DB_Table {
 
 
 					$address=new Address($this->data['Customer Main Address Key']);
+					
+					
+					//print_r($address);
+					//print_r($telephone);
+					
+					$address->disassociate_telecom($this->data["Customer Main $type Key"],$type);
+					
 					$address->associate_telecom($telephone->id,$type);
-
+					$address->update_principal_telecom($telephone->id,$type);
 
 
 
@@ -1223,7 +1230,6 @@ class Customer extends DB_Table {
 					}
 					// print "x4";
 					$telephone->update_parents();
-
 
 
 					$this->updated=1;
@@ -2393,7 +2399,7 @@ class Customer extends DB_Table {
 	public function update_orders_old() {
 		$sigma_factor=3.2906;//99.9% value assuming normal distribution
 
-		$sql="select sum(`Order Invoiced Profit Amount`) as profit,sum(`Order Net Refund Amount`+`Order Net Credited Amount`) as net_refunds,sum(`Order Invoiced Outstanding Balance Net Amount`) as net_outstanding, sum(`Order Invoiced Balance Net Amount`) as net_balance,sum(`Order Tax Refund Amount`+`Order Tax Credited Amount`) as tax_refunds,sum(`Order Invoiced Outstanding Balance Tax Amount`) as tax_outstanding, sum(`Order Invoiced Balance Tax Amount`) as tax_balance, min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
+		$sql="select sum(`Order Invoiced Profit Amount`) as profit,sum(`Order Net Refund Invoiced Amount`+`Order Net Credited Amount`) as net_refunds,sum(`Order Invoiced Outstanding Balance Net Amount`) as net_outstanding, sum(`Order Invoiced Balance Net Amount`) as net_balance,sum(`Order Tax Refund Invoiced Amount`+`Order Tax Credited Amount`) as tax_refunds,sum(`Order Invoiced Outstanding Balance Tax Amount`) as tax_outstanding, sum(`Order Invoiced Balance Tax Amount`) as tax_balance, min(`Order Date`) as first_order_date ,max(`Order Date`) as last_order_date,count(*)as orders, sum(if(`Order Current Payment State` like '%Cancelled',1,0)) as cancelled,  sum( if(`Order Current Payment State` like '%Paid%'    ,1,0)) as invoiced,sum( if(`Order Current Payment State` like '%Refund%'    ,1,0)) as refunded,sum(if(`Order Current Dispatch State`='Unknown',1,0)) as unknown   from `Order Dimension` where `Order Customer Key`=".$this->id;
 
 		$this->data['Customer Orders']=0;
 		$this->data['Customer Orders Cancelled']=0;
@@ -2554,7 +2560,7 @@ class Customer extends DB_Table {
 		$this->data['Customer Profit']=0;
 		$this->data['Customer With Orders']='No';
 
-		// print "$sql\n";
+	// print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -3566,33 +3572,9 @@ class Customer extends DB_Table {
 			$address=new Address($this->data['Customer Main Address Key']);
 
 
+$ship_to_key=$address->get_ship_to();
 
-
-		$line=$address->display('3lines');
-
-
-
-		$shipping_addresses['Ship To Line 1']=$line[1];
-		$shipping_addresses['Ship To Line 2']=$line[2];
-		$shipping_addresses['Ship To Line 3']=$line[3];
-		$shipping_addresses['Ship To Town']=$address->data['Address Town'];
-		$shipping_addresses['Ship To Postal Code']=$address->data['Address Postal Code'];
-		$shipping_addresses['Ship To Country Name']=$address->data['Address Country Name'];
-		$shipping_addresses['Ship To Country Key']=$address->data['Address Country Key'];
-		$shipping_addresses['Ship To Country Code']=$address->data['Address Country Code'];
-		$shipping_addresses['Ship To Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
-		$shipping_addresses['Ship To XHTML Address']=$address->display('xhtml');
-
-		$shipping_addresses['Ship To Country First Division']=$address->data['Address Country First Division'];
-		$shipping_addresses['Ship To Country Second Division']=$address->data['Address Country Second Division'];
-
-		//  print_r($shipping_addresses);
-
-		$ship_to= new Ship_To('find create',$shipping_addresses);
-
-
-
-		return $ship_to->id;
+		return $ship_to_key;
 
 
 	}
@@ -5381,6 +5363,10 @@ class Customer extends DB_Table {
 		$telecom_suppliers_number_keys=count($telecom_suppliers_keys);
 		$telecom_companies_number_keys=count($telecom_companies_keys);
 		$telecom->remove_from_parent('Customer',$this->id,$type);
+		
+	
+		
+		
 		if (($telecom_customer_number_keys+$telecom_contacts_number_keys+$telecom_suppliers_number_keys)==0) {
 
 
@@ -5392,6 +5378,8 @@ class Customer extends DB_Table {
 				$company_customers_number_keys=count($company_customers_keys);
 				$company_suppliers_number_keys=count($company_suppliers_keys);
 				if (($company_suppliers_number_keys+$company_customers_number_keys)==0) {
+
+
 					$telecom->remove_from_parent('Company',$company->id);
 				}
 			}
@@ -5409,12 +5397,13 @@ class Customer extends DB_Table {
 			if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
 				$telecom->remove_from_parent('Contact',$contact->id);
 			}
-
+	
 			$this->updated=true;
 			$this->msg=_('Telecom Removed from Customer');;
 			$this->new_value='';
 			return;
 		} else {
+		
 			$telecom->delete();
 		}
 

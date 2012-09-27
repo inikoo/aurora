@@ -210,6 +210,7 @@ Event.addListener("process_order", "click", show_process_order_dialog);
 Event.addListener("aprove_dispatching", "click", aprove_dispatching);
 Event.addListener("set_as_dispatched", "click", set_as_dispatched);
 
+Event.addListener("create_invoice", "click", create_invoice);
 
 
 process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {visible : false,close:true,underlay: "none",draggable:false});
@@ -217,6 +218,32 @@ process_order_dialog = new YAHOO.widget.Dialog("process_order_dialog", {visible 
 
 dialog_other_staff = new YAHOO.widget.Dialog("dialog_other_staff", {visible : false,close:true,underlay: "none",draggable:false});
  dialog_other_staff.render();
+
+}
+
+
+function create_invoice(){
+
+Dom.get('create_invoice_img').src='art/loading.gif'
+var order_key=Dom.get('order_key').value;
+
+
+    var request='ar_edit_orders.php?tipo=create_invoice_order&order_key='+escape(order_key);
+//  alert(request); //return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+		//		alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		        location.href='invoice.php?id='+r.invoice_key;
+		  
+		}else{
+		alert(r.msg)
+		  
+	    }
+	    }
+	});    
 
 }
 
@@ -321,7 +348,6 @@ Dom.setStyle(['assign_pickers_packers','quick_invoice_buttons'],'display','')
 
 }
 
-
 function step_by_step_invoice(){
 parcels=Dom.get('number_parcels').value
 weight=Dom.get('parcels_weight').value
@@ -362,12 +388,13 @@ weight=Dom.get('parcels_weight').value
   //  alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-	//alert(o.responseText)
+	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 	
 		
 		if(r.state=='200'){     
-			window.location='invoice.php?id='+r.invoice_key
+			location.reload(); 
+			//window.location='invoice.php?id='+r.invoice_key
 		}
 
 		},failure:function(o){

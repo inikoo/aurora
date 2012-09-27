@@ -92,8 +92,8 @@ Dom.get('forgot_password_handle').focus();
 
 function login(){
 
-    var input_login=Dom.get('login_handle').value;
-    var pwd=sha256_digest(Dom.get('login_password').value);
+    var input_login=Dom.get('email').value;
+    var pwd=sha256_digest(Dom.get('password').value);
     var input_epwd=Dom.get('ep').value;
     var store_key=Dom.get('store_key').value;
     var site_key=Dom.get('site_key').value;
@@ -103,7 +103,7 @@ function login(){
      var epwd=AESEncryptCtr(Dom.get('ep').value,pwd,256);
   
 
-//Dom.get('login_password').value='';
+//Dom.get('password').value='';
     //Dom.get('loginform').submit();
      var request='ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me;
     // alert(request);
@@ -126,8 +126,8 @@ function login(){
 			  
 		   }else if(r.result=='no_valid'){
 			  Dom.setStyle('invalid_credentials','display','');
-                Dom.addClass(['login_password','login_handle'],'error');
-                Dom.get('login_handle').focus();
+                Dom.addClass(['password','email'],'error');
+                Dom.get('email').focus();
 		      }
 			    }else{
 			window.location='index.php?le';
@@ -142,14 +142,12 @@ function login(){
 }
 
 
+
 function isValidEmail(email){
-    var RegExp = /^((([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+(\.([a-z]|[0-9]|!|#|$|%|&|'|\*|\+|\-|\/|=|\?|\^|_|`|\{|\||\}|~)+)*)@((((([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.))*([a-z]|[0-9])([a-z]|[0-9]|\-){0,61}([a-z]|[0-9])\.)[\w]{2,4}|(((([0-9]){1,3}\.){3}([0-9]){1,3}))|(\[((([0-9]){1,3}\.){3}([0-9]){1,3})\])))$/i
-	if(RegExp.test(email)){
-	    return true;
-	}else{
-	    return false;
-	}
+        return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test( email );
 }
+
+
 function my_encodeURIComponent (str) {
 str=encodeURIComponent (str);
 
@@ -165,13 +163,13 @@ return (str + '').replace(/'/g, '%27');
 function show_login_dialog(){
 
    remove_login_message_blocks()
-   Dom.get('login_handle').value='';
-   Dom.get('login_password').value='';
-Dom.removeClass(['login_handle','login_password'],'error');
+   Dom.get('email').value='';
+   Dom.get('password').value='';
+Dom.removeClass(['email','password'],'error');
 
 	Dom.setStyle('dialog_forgot_password','display','none');
 Dom.setStyle('dialog_login','display','');
-	Dom.get('login_handle').focus();
+	Dom.get('email').focus();
 cancel_forgot_password();
 
 }
@@ -182,7 +180,7 @@ remove_forgot_password_message_blocks()
 Dom.removeClass(['forgot_password_handle','captcha_code2'],'error');
 
 
-Dom.get('forgot_password_handle').value=Dom.get('login_handle').value;
+Dom.get('forgot_password_handle').value=Dom.get('email').value;
 
 Dom.get('captcha2').src ='securimage_show.php?height=40&' + Math.random();
 
@@ -199,16 +197,16 @@ Dom.setStyle('dialog_forgot_password','display','none');
 Dom.get('captcha2').src ='securimage_show.php?height=40&' + Math.random();
 Dom.get('forgot_password_handle').value='';
 Dom.get('captcha_code2').value='';
-Dom.get('login_handle').focus();
+Dom.get('email').focus();
 
 
 remove_forgot_password_message_blocks()
 
 
 
-  Dom.removeClass('login_password','error');
-  Dom.removeClass('login_handle','error');
-  Dom.get('login_password').value='';
+  Dom.removeClass('password','error');
+  Dom.removeClass('email','error');
+  Dom.get('password').value='';
 remove_login_message_blocks();
 
 
@@ -230,30 +228,30 @@ else
 	
 var error=false;
 
-if(Dom.get('login_password').value==''){
-    Dom.addClass('login_password','error');
+if(Dom.get('password').value==''){
+    Dom.addClass('password','error');
     
     Dom.setStyle('message_login_fields_missing','display','');
-    Dom.get('login_password').focus();
+    Dom.get('password').focus();
     error=true;
 }else{
-    Dom.removeClass('login_password','error');
+    Dom.removeClass('password','error');
 }
 
 
-if(Dom.get('login_password').value==''){
-Dom.addClass('login_handle','error');
+if(Dom.get('password').value==''){
+Dom.addClass('email','error');
     
     Dom.setStyle('message_login_fields_missing','display','');
-    Dom.get('login_handle').focus();
+    Dom.get('email').focus();
     error=true;
-}else if(  !isValidEmail(Dom.get('login_handle').value)){
-    Dom.addClass('login_handle','error');
+}else if(  !isValidEmail(Dom.get('email').value)){
+    Dom.addClass('email','error');
         Dom.setStyle('message_login_wrong_email','display','');
-Dom.get('login_handle').focus();
+Dom.get('email').focus();
     error=true;
 }else{
-Dom.removeClass('login_handle','error');
+Dom.removeClass('email','error');
 
 }
 
@@ -297,8 +295,8 @@ submit_forgot_password()
 
 
 function submit_login_on_enter(e){
-    Dom.removeClass('login_password','error');
-  Dom.removeClass('login_handle','error');
+    Dom.removeClass('password','error');
+  Dom.removeClass('email','error');
 remove_login_message_blocks()
 
      var key;     
@@ -348,7 +346,7 @@ Dom.removeClass(['captcha_code2'],'error');
 
 function handle_changed(e){
 
-    Dom.removeClass('login_handle','error');
+    Dom.removeClass('email','error');
 remove_login_message_blocks()
 return;
 /*
@@ -386,12 +384,12 @@ Event.addListener(['forgot_password_handle','captcha_code2'], "keydown", forgot_
 Event.addListener('cancel_forgot_password', "click", cancel_forgot_password);
 
 
-Event.addListener('login_handle', "keydown", handle_changed);
-Event.addListener(['login_password'], "keydown", submit_login_on_enter);
+Event.addListener('email', "keydown", handle_changed);
+Event.addListener(['password'], "keydown", submit_login_on_enter);
 
 
 
-Dom.get('login_handle').focus()
+Dom.get('email').focus()
 }
 Event.onDOMReady(init);
 

@@ -51,8 +51,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				];
 
 	//	alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
-	  
-	  	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
+	  request="ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value+'&order_key='+Dom.get('order_key').value+'&store_key='+Dom.get('store_key').value
+	 // alert(request)
+	  	    this.dataSource0 = new YAHOO.util.DataSource(request);
 
 	 // alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -122,7 +123,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function init(){
 
-init_search('products_store');
+init_search('orders_store');
 
    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;

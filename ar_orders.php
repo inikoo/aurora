@@ -993,7 +993,7 @@ function list_transactions_in_dn() {
 
 
 
-	$where=sprintf(' where   `Delivery Note Key`=%d',$order_id);
+	$where=sprintf(' where   `Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"',$order_id);
 
 	$total_charged=0;
 	$total_discounts=0;
@@ -1047,7 +1047,7 @@ function list_transactions_in_process_in_dn() {
 
 
 
-	$where=sprintf(' where   `Delivery Note Key`=%d',$order_id);
+	$where=sprintf(' where   `Delivery Note Key`=%d and `Inventory Transaction Type`!="Adjust"',$order_id);
 
 	$total_charged=0;
 	$total_discounts=0;
@@ -2320,11 +2320,11 @@ function list_invoices() {
 
 	}
 	elseif ($type=='invoices') {
-		$where_type=sprintf(' and `Invoice Title`="Invoice"');
+		$where_type=sprintf(' and `Invoice Type`="Invoice"');
 		$_SESSION['state']['orders']['invoices']['invoice_type']=$type;
 	}
 	elseif ($type=='refunds') {
-		$where_type=sprintf('and `Invoice Title`="Refund" ');
+		$where_type=sprintf('and `Invoice Type`="Refund" ');
 		$_SESSION['state']['orders']['invoices']['invoice_type']=$type;
 	}
 	elseif ($type=='to_pay') {
@@ -2556,7 +2556,7 @@ function list_invoices() {
 		$order='`Invoice Total Net Amount`';
 
 	//
-	$sql="select  `S4`,`S1`,`Invoice Total Tax Amount`,`Invoice Title`,`Invoice XHTML Delivery Notes`,`Invoice Shipping Net Amount`,`Invoice Total Net Amount`,`Invoice Items Net Amount`,`Invoice XHTML Orders`,`Invoice Total Amount`,I.`Invoice Key`,`Invoice Customer Name`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Date`,`Invoice Currency`,`Invoice Has Been Paid In Full` from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref  $where_type $where_interval   order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+	$sql="select  `S4`,`S1`,`Invoice Total Tax Amount`,`Invoice Type`,`Invoice XHTML Delivery Notes`,`Invoice Shipping Net Amount`,`Invoice Total Net Amount`,`Invoice Items Net Amount`,`Invoice XHTML Orders`,`Invoice Total Amount`,I.`Invoice Key`,`Invoice Customer Name`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Date`,`Invoice Currency`,`Invoice Has Been Paid In Full` from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref  $where_type $where_interval   order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 
 
 	$sql="select  * from  $table  left join `Invoice Tax Dimension` IT on (I.`Invoice Key`=IT.`Invoice Key`)  $where $wheref  $where_type $where_interval   order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
@@ -2737,7 +2737,7 @@ function transactions_dipatched() {
 
 	$order=' order by O.`Product Code`';
 
-	$sql="select O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
+	$sql="select `No Shipped Due Other`,`No Shipped Due Not Found`,`No Shipped Due No Authorized`,O.`Order Transaction Fact Key`,`Deal Info`,`Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,P.`Product ID` ,P.`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount
          from `Order Transaction Fact` O left join `Product Dimension` P on (P.`Product ID`=O.`Product ID`)
          left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`)
          left join `Order Transaction Deal Bridge` DB on (DB.`Order Transaction Fact Key`=O.`Order Transaction Fact Key`)
@@ -2757,9 +2757,19 @@ function transactions_dipatched() {
 		if ($row['Order Bonus Quantity']>0) {
 			$ordered='<br/>'._('Bonus').' +'.number($row['Order Bonus Quantity']);
 		}
+		if ($row['No Shipped Due No Authorized']>0) {
+			$ordered.='<br/> '._('No Authorized').' -'.number($row['No Shipped Due No Authorized']);
+		}
 		if ($row['No Shipped Due Out of Stock']>0) {
 			$ordered.='<br/> '._('No Stk').' -'.number($row['No Shipped Due Out of Stock']);
 		}
+		if ($row['No Shipped Due Not Found']>0) {
+			$ordered.='<br/> '._('No Found').' -'.number($row['No Shipped Due Not Found']);
+		}
+		if ($row['No Shipped Due Other']>0) {
+			$ordered.='<br/> '._('No Other').' -'.number($row['No Shipped Due Other']);
+		}
+		
 		$ordered=preg_replace('/^<br\/>/','',$ordered);
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
 
@@ -4362,7 +4372,7 @@ function number_invoices_in_interval($data) {
 		$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
 		$where_interval=$where_interval['mysql'];
 
-		$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Title`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Title`='Refund',1,0)) as refunds  from  `Invoice Dimension` I    where `Invoice Store Key`=%d  %s" ,
+		$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`='Refund',1,0)) as refunds  from  `Invoice Dimension` I    where `Invoice Store Key`=%d  %s" ,
 			$store_key,$where_interval
 
 
@@ -4780,7 +4790,7 @@ function transactions_in_warehouse() {
 		}
 
 $not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Authorized']+$row['No Shipped Due Not Found']+$row['No Shipped Due Other'];
-
+//'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended'
 		switch ($row['Current Dispatching State']) {
 		case 'In Process by Customer':
 			$dispatching_status=_('In Process by Customer');
@@ -4799,7 +4809,6 @@ $not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Aut
 			break;
 		case 'Ready to Pack':
 		$to_pick=$row['Order Quantity']-$not_to_disptach;
-		
 			$dispatching_status=_('Ready to Pack').' ['.($row['Delivery Note Quantity']).'/'.($to_pick!=$row['Picked Quantity']?'('.$row['Picked Quantity'].')'.$to_pick:$to_pick).']';
 			break;
 		case 'Ready to Ship':
@@ -4812,7 +4821,9 @@ $not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Aut
 			$dispatching_status=_('Unknown');
 			break;
 		case 'Packing':
-			$dispatching_status=_('Packing');
+				$to_pick=$row['Order Quantity']-$not_to_disptach;
+			$dispatching_status=_('Packing').' ['.($row['Delivery Note Quantity']).'/'.($to_pick!=$row['Picked Quantity']?'('.$row['Picked Quantity'].')'.$to_pick:$to_pick).']';
+
 			break;
 
 		case 'Cancelled':

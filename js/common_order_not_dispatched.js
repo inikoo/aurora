@@ -1,5 +1,7 @@
 var dialog_sending_to_warehouse;
-
+var dialog_add_credit;
+var dialog_edit_credits;
+var dialog_edit_tax_category;
 function save_use_calculated_shipping(){
 var ar_file='ar_edit_orders.php'; 
     	var request='tipo=use_calculated_shipping&order_key='+order_key;
@@ -164,33 +166,50 @@ edit_delivery_address.hide();
 
 function change_delivery_address(){
 
- var y=(Dom.getY('control_panel'))
-    var x=(Dom.getX('control_panel'))
-Dom.setX('edit_delivery_address_splinter_dialog',x);
-Dom.setY('edit_delivery_address_splinter_dialog',y+0);
+
+	region1 = Dom.getRegion('order_header'); 
+    region2 = Dom.getRegion('edit_delivery_address_splinter_dialog'); 
+	var pos =[region1.left,region1.top]
+	Dom.setXY('edit_delivery_address_splinter_dialog', pos);
+
  edit_delivery_address.show();
 }
 
 
 function post_change_main_delivery_address(){
+ }
  
+ function post_create_delivery_address_function(r){
+ 
+ hide_new_delivery_address();
+ use_this_address_in_order(r.address_key)
+ 
+ //alert(r.address_key)
+ //hide_new_delivery_address();
+  //  window.location.reload()
+}
+
+ 
+ 
+function use_this_address_in_order(address_key) {
     var ar_file='ar_edit_orders.php';
-    request='tipo=update_ship_to_key&order_key='+order_key+'&ship_to_key=0';
+    request='tipo=update_ship_to_key_from_address&order_key='+order_key+'&address_key='+address_key;
 	
 	YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					 
+					// alert(o.responseText)
 					   var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						if(r.result=='updated'){
-						edit_delivery_address.hide()
-					Dom.get('delivery_address').innerHTML=r.new_value;
+						  
+							Dom.get('delivery_address').innerHTML=r.new_value;
 						     Dom.setStyle('tr_order_shipping','display','');
 						    Dom.setStyle('shipping_address','display','');
 						    Dom.setStyle('for_collection','display','none');
 						}
+						 edit_delivery_address.hide()
 					    } else {
 						alert(r.msg);
 						//	callback();
@@ -217,6 +236,7 @@ var ar_file='ar_edit_orders.php';
 				    'POST',
 				    ar_file, {
 					success:function(o) {
+					//alert(o.responseText)
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						if(r.result=='updated'){
@@ -461,6 +481,11 @@ Dom.setStyle('change_staff_discount_buttons','display','')
 }
 }
 
+function show_dialog_edit_credits(){
+dialog_edit_credits.show();
+}
+
+
 function show_dialog_edit_items_charges(){
 dialog_edit_items_charges.show();
 Dom.get('items_charges_amount').focus();
@@ -575,7 +600,6 @@ function show_all_products(){
 }
 
 function show_edit_button(e,data){
-
 Dom.setStyle('edit_button_'+data.name,'visibility','visible')
 
 }
@@ -662,9 +686,19 @@ var myonCellClick = function(oArgs) {
     case('remove_object'):
 	var data = record.getData();
 
-	if(column.action=='add_object')
+	if(column.action=='add_object'){
+	if(record.getData("add")!='+')
+		return;
+	
 	    var new_qty=parseFloat(data['quantity'])+1;
-	else{
+				datatable.updateCell(record,'add','<img style="width:12px;position:relative;left:-2px;top:2px" src="art/loading.gif">');
+
+	}else{
+	if(record.getData("remove")!='-')
+		return;
+	
+		datatable.updateCell(record,'remove','<img style="width:12px;position:relative;left:-2px;top:2px" src="art/loading.gif">');
+
 	    qty=parseFloat(data['quantity'])
 	    if(qty==0){
 	        return;
@@ -672,6 +706,8 @@ var myonCellClick = function(oArgs) {
 	    var new_qty=qty-1;
 
         }
+
+
 
  var ar_file='ar_edit_orders.php';
 	request='tipo=edit_new_order&id='+order_key+'&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&pid='+ data['pid'];
@@ -681,6 +717,11 @@ var myonCellClick = function(oArgs) {
 				    ar_file, {
 					success:function(o) {
 					   // alert(o.responseText);
+					   
+					   		datatable.updateCell(record,'remove','-');
+					   		datatable.updateCell(record,'add','+');
+
+					   
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
@@ -818,6 +859,8 @@ function close_dialog(tipo){
 
 var CellEdit = function (callback, newValue) {
       
+      
+
     var record = this.getRecord(),
     column = this.getColumn(),
     oldValue = this.value,
@@ -868,6 +911,18 @@ var CellEdit = function (callback, newValue) {
 						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
 						    }
 						}
+						
+						
+						 if(r.quantity==0){
+				       
+				            datatable.updateCell(record,'description',r.description);
+				            
+                            if(Dom.get('products_display_type').value=='ordered_products'){
+                            
+                            datatable.deleteRow(record);
+				            }
+				        }
+						
 						callback(true,r.quantity);
 						
 
@@ -919,7 +974,10 @@ Event.addListener("tr_order_shipping", "mouseover", show_edit_button,{'name':'sh
 Event.addListener("tr_order_shipping", "mouseout", hide_edit_button,{'name':'shipping'});
 Event.addListener("tr_order_items_charges", "mouseover", show_edit_button,{'name':'items_charges'});
 Event.addListener("tr_order_items_charges", "mouseout", hide_edit_button,{'name':'items_charges'});
-
+Event.addListener("tr_order_tax", "mouseover", show_edit_button,{'name':'tax'});
+Event.addListener("tr_order_tax", "mouseout", hide_edit_button,{'name':'tax'});
+Event.addListener("tr_order_credits", "mouseover", show_edit_button,{'name':'credits'});
+Event.addListener("tr_order_credits", "mouseout", hide_edit_button,{'name':'credits'});
 
 Event.addListener("use_calculate_shipping", "click", save_use_calculated_shipping);
 Event.addListener("use_calculate_items_charges", "click", save_use_calculated_items_charges);
@@ -940,6 +998,11 @@ YAHOO.util.Event.addListener(["set_for_collection","set_for_shipping"], "click",
 dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {context:["cancel","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_cancel.render();
 YAHOO.util.Event.addListener("cancel", "click",open_cancel_dialog );
+
+
+dialog_edit_credits = new YAHOO.widget.Dialog("dialog_edit_credits", {context:["edit_button_credits","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_edit_credits.render();
+Event.addListener("edit_button_credits", "click", show_dialog_edit_credits);
 
 dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {context:["edit_button_shipping","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_edit_shipping.render();
@@ -967,6 +1030,201 @@ Event.addListener("import_transactions_mals_e", "click", show_dialog_import_tran
 
 Event.addListener("save_import_transactions_mals_e", "click", save_import_transactions_mals_e,true);
 
+dialog_add_credit = new YAHOO.widget.Dialog("dialog_add_credit", {context:["add_credit","tr","tr"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_add_credit.render();
+Event.addListener("add_credit", "click", show_dialog_add_credit);
+
+Event.addListener("save_add_credit", "click", save_add_credit);
+
+Event.addListener("save_edit_credit", "click", save_edit_credit);
+Event.addListener("remove_credit", "click", remove_credit);
+
+
+dialog_edit_tax_category = new YAHOO.widget.Dialog("dialog_edit_tax_category", {context:["edit_button_tax","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+dialog_edit_tax_category.render();
+YAHOO.util.Event.addListener("edit_button_tax", "click",show_dialog_edit_tax_category);
+
+}
+
+function show_dialog_edit_tax_category(){
+dialog_edit_tax_category.show()
+}
+function change_tax_category(o){
+tax_category_code=value=o.getAttribute('tax_category')
+
+if(tax_category_code==Dom.get('original_tax_code').value){
+	dialog_edit_tax_category.hide()
+	return
+}
+
+
+var ar_file='ar_edit_orders.php';
+	request='tipo=edit_tax_category_order&order_key='+Dom.get('order_key').value+'&tax_code='+tax_category_code;
+//alert(request)
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					//alert(o.responseText)
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						
+						 location.reload(); 
+						
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+	
+
+}
+
+
+function remove_credit(){
+var ar_file='ar_edit_orders.php';
+	request='tipo=remove_credit_from_order&order_key='+Dom.get('order_key').value+'&transaction_key='+Dom.get('credit_transaction_key').value;
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					//alert(o.responseText)
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						
+						 location.reload(); 
+						
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+	
+
+}
+
+function save_edit_credit(){
+
+credit=Dom.get('edit_credit_amount').value;
+description=Dom.get('edit_credit_description').value
+
+
+var ar_file='ar_edit_orders.php';
+	request='tipo=edit_credit_to_order&order_key='+Dom.get('order_key').value+'&transaction_key='+Dom.get('credit_transaction_key').value+'&amount='+credit+'&description='+description+'&tax_code='+Dom.get('edit_credit_tax_category').value;
+	//alert(request);return;
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					//alert(o.responseText)
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						
+						 location.reload(); 
+						
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+	
+
+}
+
+
+
+
+function close_dialog_edit_credit(){
+dialog_edit_credits.hide();
+}
+
+function change_tax_category_add_credit(o){
+
+Dom.removeClass(Dom.getElementsByClassName('item','button','add_credit_tax_categories_options'),'selected')
+Dom.addClass(o,'selected')
+Dom.get('add_credit_tax_category').value=o.getAttribute('tax_category')
+}
+
+function change_tax_category_edit_credit(o){
+
+Dom.removeClass(Dom.getElementsByClassName('item','button','edit_credit_tax_categories_options'),'selected')
+Dom.addClass(o,'selected')
+Dom.get('edit_credit_tax_category').value=o.getAttribute('tax_category')
+}
+
+function save_add_credit(){
+
+credit=Dom.get('add_credit_amount').value;
+description=Dom.get('add_credit_description').value
+
+
+var ar_file='ar_edit_orders.php';
+	request='tipo=add_credit_to_order&order_key='+Dom.get('order_key').value+'&amount='+credit+'&description='+description+'&tax_code='+Dom.get('add_credit_tax_category').value;
+	//alert(request);return;
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					//alert(o.responseText)
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						
+						 location.reload(); 
+						
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+	
+
+}
+
+function close_dialog_add_credit(){
+dialog_add_credit.hide()
+}
+
+function show_dialog_add_credit(){
+Dom.get('add_credit_amount').value='';
+Dom.get('add_credit_description').value='';
+dialog_add_credit.show()
+Dom.get('add_credit_amount').focus();
 
 }
 

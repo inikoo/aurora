@@ -5,11 +5,13 @@
 		<span>{if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer_categories.php?store={$store->id}&id=0">{t}Categories{/t}</a> &rarr; <a href="customer_categories.php?id={$category->id}">{$category->get_smarty_tree('customer_categories.php')}</a> &rarr; {t}Editing Category{/t}</span> 
 	</div>
 	<div class="top_page_menu">
-		<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:0px;float:left;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};position:relative;top:2px" /> 
+		{if isset($prev)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:0px;float:left;height:22px;cursor:pointer;{if !$parent_list}display:none{/if};position:relative;top:2px" />{/if}
 		<div class="buttons" style="float:left">
+				<span class="main_title">{t}Editing Category{/t}: <span id="title_name" class="id">{$category->get('Category Label')}</span></span>
+
 		</div>
 		<div class="buttons">
-				<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none;{/if}position:relative;top:2px" /> 
+				{if isset($next)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;{if !$parent_list}display:none;{/if}position:relative;top:2px" />{/if}
 
 					<button style="margin-left:10px" onclick="window.location='customer_categories.php?id={$category->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
 
@@ -18,9 +20,7 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<h1 style="clear:both">
-		{t}Editing Category{/t}: <span id="title_name">{$category->get('Category Label')}</span> 
-	</h1>
+	
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" {if !$category}style="display:none" {/if} id="description"> <span> {t}Description{/t}</span></span></li>
 		<li> <span class="item {if $edit=='subcategory'}selected{/if}" id="subcategory"> <span> {t}Subcategories{/t}</span></span></li>

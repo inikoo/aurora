@@ -8,8 +8,11 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
+			{*}
 				{if isset($parent_category)} <button onclick="window.location='customer_categories.php?store_id={$store->id}&id={$parent_category->id}'"><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Name')}</button> {/if} 
 				<button onclick="window.location='customer_categories.php?store={$store->id}&id=0'"><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button> 
+			{*}
+			<span class="main_title">{t}Category{/t}: {$category->get('Category Label')}</span>
 			</div>
 			<div class="buttons" style="float:right">
 				<button onclick="window.location='edit_customer_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> 
@@ -18,13 +21,9 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="clear:left;">
-			<h1>
-				{t}Category{/t}: {$category->get('Category Label')}
-			</h1>
-		</div>
+		
 	</div>
-	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Customers{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='subcategories_charts'}selected{/if}" id="subcategories_charts"> <span> {t}Charts{/t}</span></span></li>

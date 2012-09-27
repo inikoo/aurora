@@ -1472,6 +1472,12 @@ class Telecom extends DB_Table {
 			prepare_mysql($parent),
 			$parent_key
 		);
+		
+		
+		
+
+		
+		
 		mysql_query($sql);
 
 		$principal_Telecom_changed=false;

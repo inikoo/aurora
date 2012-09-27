@@ -17,6 +17,10 @@ if (!$dn->id) {
 
 $store=new Store($dn->data['Delivery Note Store Key']);
 
+putenv('LC_ALL='.$store->data['Store Locale'].'.UTF-8');
+setlocale(LC_ALL,$store->data['Store Locale'].'.UTF-8');
+bindtextdomain("inikoo", "./locales");
+textdomain("inikoo");
 
 require_once('external_libs/pdf/config/lang/eng.php');
 require_once('external_libs/pdf/tcpdf.php');
@@ -118,40 +122,39 @@ class MYPDF extends TCPDF {
         // Set font
         $this->SetFont('helvetica', 'I', 6);
         // Page number
-	$sql=sprintf("select * from `Store Dimension` where `Store Key`=%d", $this->get_footer_var());
-
-$result=mysql_query($sql);
-$row=mysql_fetch_assoc($result);
+	
+	$store=$this->get_footer_var();
+	
+	
 
 $address='';
-$store_address=explode(",",$row['Store Address']);
+$store_address=explode(",",$store->data['Store Address']);
 foreach($store_address as $ad)
 	$address.=$ad.",<br/>";
 
 
    $response= array('state'=>200);
-$tbl = <<<EOD
+$tbl ='
 <table border="0" cellpadding="2" cellspacing="2" align="left" WIDTH="100%">
 	<tr >
-		<th WIDTH="20%">Company Address</th> 
-		<th WIDTH="12%">Company Number</th>
-		<th WIDTH="12%">VAT Number</th>
-		<th WIDTH="16%">Telephone</th>
-		<th WIDTH="20%">Email</th>
-		<th WIDTH="16%">Web</th>
+		<th WIDTH="20%">'._('Company Address').'</th> 
+		<th WIDTH="12%">'._('Company Number').'</th>
+		<th WIDTH="12%">'._('VAT Number').'</th>
+		<th WIDTH="16%">'._('Telephone').'</th>
+		<th WIDTH="20%">'._('Email').'</th>
+		<th WIDTH="16%">'._('Web').'</th>
 	</tr>
 	<tr >
-		<td>{$row['Store Address']}</td>	
-		<td>{$row['Store Company Number']}</td>
-		<td>{$row['Store VAT Number']}</td>
-		<td>{$row['Store Telephone']}</td>
-		<td>{$row['Store Email']}</td>
-		<td>{$row['Store URL']}</td>
+		<td>'.$store->data['Store Address'].'</td>	
+		<td>'.$store->data['Store Company Number'].'</td>	
+		<td>'.$store->data['Store VAT Number'].'</td>	
+		<td>'.$store->data['Store Telephone'].'</td>	
+		<td>'.$store->data['Store Email'].'</td>	
+		<td>'.$store->data['Store URL'].'</td>	
 		
 	</tr>
 
-</table>
-EOD;
+</table>';
 
 
 $this->writeHTML($tbl, true, false, false, false, '');
@@ -211,14 +214,13 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor($store->data['Store Name']);
-$pdf->SetTitle($dn->data['Delivery Note Key']);
+$pdf->SetTitle($dn->data['Delivery Note ID']);
 $pdf->SetSubject(_('Delivery Note'));
 
-$header_text=$store->data['Store Name'];
 
-$pdf->SetHeaderData(false, 0, $header_text, 'Delivery Note ');
+$pdf->SetHeaderData(false, 0,  _('Delivery Note').' '.$dn->data['Delivery Note ID'],$store->data['Store Name']);
 
-$pdf->set_footer_var($store->id);
+$pdf->set_footer_var($store);
 // set header and footer fonts
 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
 $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
@@ -254,38 +256,26 @@ $pdf->setCellPaddings(1,0.5,1,0.5);
 // This method has several options, check the source code documentation for more information.
 $pdf->AddPage();
 
-if($dn->get('Delivery Note XHTML Invoices')!='')
-	$invoices="<tr><td>Invoices:</td><td >{$dn->get('Delivery Note XHTML Invoices')}</td></tr>";
-else
-	$invoices='';
 
-$html = <<<EOD
-<div style="clear:both"></div>
 
-<h3>{$dn->data['Delivery Note Customer Name']} ({$dn->data['Delivery Note Key']})</h3>
-{$dn->data['Delivery Note XHTML Ship To']}
-<div>
-<h2></h2>
-<div>
-	 <table border=0 width="300px">
+$html ='<table width="820px" style="padding:20px 0px 0px 0px">
+<tr>
+<td>
+<h3>'.$dn->data['Delivery Note Customer Name'].' ('.$dn->data['Delivery Note Customer Key'].')</h3>
+'.$dn->data['Delivery Note XHTML Ship To'].'
+
+</td>
+<td >
+	 <table>
 	   
-	<tr><td width="150px">Creation Date:</td><td width="150px">{$dn->get('Date Created')}</td></tr>
-	<tr><td width="150px">Estimated Weight</td><td width="150px" >{$dn->get('Estimated Weight')}</td></tr>
+	<tr><td style="text-align:right;padding-right:10px">'._('Date').':</td><td  width="50px" style="text-align:right;padding-right:10px;width:150px">'.$dn->get('Date').'</td></tr>
+	<tr><td style="text-align:right;padding-right:10px">'._('Weight').':</td><td  width="50px" style="text-align:right;padding-right:10px;;width:150px" >'.$dn->get('Weight').'</td></tr>
 
 	 </table>
-
-</div>
-</div>
-
-
-
-
-
-
-<div style="clear: both;"></div>
-      
-
-EOD;
+</td>
+</tr>
+</table>
+';
 
 // output the HTML content
 $pdf->writeHTML($html, true, false, true, false, '');
@@ -298,8 +288,11 @@ $pdf->ln(3);
 $columns=array(
              array('w'=>20,'txt'=>_('Part SKU'),'border'=>'TB','align'=>'L'),
              array('w'=>30,'txt'=>_('Code'),'border'=>'TB','align'=>'L'),
-             array('w'=>120,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
-             array('w'=>20,'txt'=>_('Qty'),'border'=>'TB','align'=>'R')
+             array('w'=>70,'txt'=>_('Description'),'border'=>'TB','align'=>'L'),
+             array('w'=>20,'txt'=>_('Ordered'),'border'=>'TB','align'=>'R'),
+                          array('w'=>20,'txt'=>_('Dispatched'),'border'=>'TB','align'=>'R'),
+                          array('w'=>30,'txt'=>_('Notes'),'border'=>'TB','align'=>'R')
+
          );
 
 $pdf->MultiRow($columns);
@@ -307,19 +300,31 @@ $pdf->MultiRow($columns);
 
 
 
-$sql=sprintf("select `Required`,`Product Code`,`Part Unit Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Order Transaction Fact`  on (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`)  where ITF.`Delivery Note Key`=%d", $dn->id);
-//print $sql;exit;
+$sql=sprintf("select `Inventory Transaction Quantity`,`Out of Stock`,`Not Found`,`No Picked Other`,`Inventory Transaction Type`,`Required`,`Product Code`,`Part Unit Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Order Transaction Fact`  on (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`)  where ITF.`Delivery Note Key`=%d and `Inventory Transaction Type`!='Adjust'", $dn->id);
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+$notes='';
+
+		if ($row['Out of Stock']!=0) {
+			$notes.=_('Out of Stock').' '.number($row['Out of Stock']).' ';
+		}
+		if ($row['Not Found']!=0) {
+			$notes.=_('Not Found').' '.number($row['Not Found']).' ';
+		}
+		if ($row['No Picked Other']!=0) {
+			$notes.=_('Not picked (other)').' '.number($row['No Picked Other']).' ';
+		}
 
 
     //$sku=sprintf('SKU%05d',$row['Part SKU']);
     $columns=array(
                  array('w'=>20,'txt'=>'SKU'.$row['Part SKU'],'border'=>'T','align'=>'L'),
                  array('w'=>30,'txt'=>strip_tags($row['Product Code']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>120,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>'T','align'=>'L'),
-                 array('w'=>20,'txt'=>$row['Required'],'border'=>'T','align'=>'R')
+                 array('w'=>70,'txt'=>strip_tags($row['Part Unit Description']) ,'border'=>'T','align'=>'L'),
+                 array('w'=>20,'txt'=>$row['Required'],'border'=>'T','align'=>'R'),
+                 array('w'=>20,'txt'=>number(-1*$row['Inventory Transaction Quantity']),'border'=>'T','align'=>'R'),
+                 array('w'=>30,'txt'=>$notes,'border'=>'T','align'=>'R')
 
 
              );
@@ -331,8 +336,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 }
 
-$columns=array(array('w'=>0,'txt'=>'','border'=>'T','align'=>'L'));
- $pdf->MultiRow($columns);
+//$columns=array(array('w'=>0,'txt'=>'','border'=>'T','align'=>'L'));
+ //$pdf->MultiRow($columns);
+
+/*
 $sql=sprintf("select * from `Store Dimension` where `Store Key`=%d", $store->id);
 $result=mysql_query($sql);
 $row=mysql_fetch_assoc($result);
@@ -341,26 +348,14 @@ $address='';
 $store_address=explode(",",$row['Store Address']);
 foreach($store_address as $ad)
 	$address.=$ad.",<br/>";
+*/
+  
 
-   $response= array('state'=>200);
-$tbl = <<<EOD
-<table border="0" cellpadding="2" cellspacing="2" align="left" WIDTH="100%">
-	<tr nobr="true">
-		<th colspan="5" ><font size="15">Thank you for your business</font></th>
-		<th></th>
-		<th></th
-		><th></th>
-		<th></th>
-	</tr>
-	<tr nobr="true">
-		<td colspan="5">Please notify us immediately of any discrepancies of breakages</td>
-	</tr>
+$message=sprintf("<div>%s</div>",$dn->data['Delivery Note XHTML Public Message']);
 
+$message.=sprintf("<div>%s</div>",$store->data['Store Delivery Note XHTML Message']);
 
-</table>
-EOD;
-
-$pdf->writeHTML($tbl, true, false, false, false, '');
+$pdf->writeHTML($message, true, false, false, false, '');
 // Print text using writeHTMLCell()
 //$pdf->writeHTMLCell($w=0, $h=0, $x='', $y='', $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
 
@@ -368,7 +363,7 @@ $pdf->writeHTML($tbl, true, false, false, false, '');
 
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
-$pdf->Output($dn->data['Delivery Note File As'], 'I');
+$pdf->Output($dn->data['Delivery Note ID'], 'I');
 
 
 

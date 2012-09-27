@@ -58,7 +58,7 @@ mysql_free_result($result);
   $refund_tax_p=0;
   $refund_invoices_p=0;
   
-  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Title`='Refund' %s ",$int[0]);
+  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Type`='Refund' %s ",$int[0]);
   //    print $sql;exit;
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -70,7 +70,7 @@ mysql_free_result($result);
   mysql_free_result($result);
   $refund_net_p_home=0;
   $refund_tax_p_home=0;
-  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Title`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql($home_2alpha_code),$int[0]);
+  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Type`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql($home_2alpha_code),$int[0]);
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $refund_net_p_home=($row['net']==''?0:$row['net']);
@@ -80,7 +80,7 @@ mysql_free_result($result);
 mysql_free_result($result);
  $refund_net_p_unk=0;
   $refund_tax_p_unk=0;
-  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Title`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql('XX'),$int[0]);
+  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='Yes' and `Invoice Type`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql('XX'),$int[0]);
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $refund_net_p_unk=($row['net']==''?0:$row['net']);
@@ -117,7 +117,7 @@ mysql_free_result($result);
   $refund_invoices_nohome=0;
 
 
-  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' %s ",$int[0]);
+  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Refund' %s ",$int[0]);
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $refund_net=($row['net']==''?0:$row['net']);
@@ -126,7 +126,7 @@ mysql_free_result($result);
     mysql_free_result($result);
     // get other refunds per geographical thing
     
-    $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql($home_2alpha_code),$int[0]);
+    $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql($home_2alpha_code),$int[0]);
     //  print "$sql";
      $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -135,7 +135,7 @@ mysql_free_result($result);
       $refund_invoices_home=$row['orders'];
     }
 mysql_free_result($result);
-  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql('XX'),$int[0]);
+  $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Refund' and `Invoice Billing Country 2 Alpha Code`=%s  %s ",prepare_mysql('XX'),$int[0]);
     //  print "$sql";
      $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -150,7 +150,7 @@ mysql_free_result($result);
       $countries.="'".$county_code."',";
     }
     $countries=preg_replace('/,$/',')',$countries);
- $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' %s %s  ",$countries,$int[0]);
+ $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Refund' %s %s  ",$countries,$int[0]);
 
     $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -164,7 +164,7 @@ mysql_free_result($result);
       $countries.="'".$county_id."',";
     }
     $countries=preg_replace('/,$/',')',$countries);
- $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' %s %s  ",$countries,$int[0]);
+ $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Refund' %s %s  ",$countries,$int[0]);
  // print "$sql";
     $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -177,7 +177,7 @@ mysql_free_result($result);
       $countries.="'".$county_code."',";
     }
     $countries=preg_replace('/,$/',')',$countries);
- $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' %s %s  ",$countries,$int[0]);
+ $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Refund' %s %s  ",$countries,$int[0]);
  // print "$sql";
     $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -195,7 +195,7 @@ mysql_free_result($result);
       $countries.="'".$county_code."',";
     }
     $countries=preg_replace('/,$/',')',$countries);
-    $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Refund' %s %s  ",$countries,$int[0]);
+    $sql=sprintf("select sum(`Invoice Refund Net Amount`) as net,sum(`Invoice Refund Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Refund' %s %s  ",$countries,$int[0]);
     // print "$sql";
     $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -233,7 +233,7 @@ mysql_free_result($result);
   $invoices_p_home=0;
 
   //$int=prepare_mysql_dates($from,$to,'`Invoice Date`','dates start end');
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where `Invoice For Partner`='Yes' and `Invoice Title`='Invoice' %s ",$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where `Invoice For Partner`='Yes' and `Invoice Type`='Invoice' %s ",$int[0]);
 
  $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -242,7 +242,7 @@ mysql_free_result($result);
     $invoices_p=$row['invoices'];
   }
 mysql_free_result($result);
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where `Invoice For Partner`='Yes' and `Invoice Title`='Invoice' and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where `Invoice For Partner`='Yes' and `Invoice Type`='Invoice' and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $net_p_home=$row['net']+$refund_net_p_home;
@@ -323,7 +323,7 @@ mysql_free_result($result);
  
 /*   if(is_array($valid_tax_rates)){ */
 
-/*    $sql=sprintf("select ROUND(100*ifnull(`Invoice Total Tax Amount`,0)/`Invoice Total Net Amount`,1) as vat_rate,  sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where  `Invoice Title`='Invoice' %s group by vat_rate",$int[0]); */
+/*    $sql=sprintf("select ROUND(100*ifnull(`Invoice Total Tax Amount`,0)/`Invoice Total Net Amount`,1) as vat_rate,  sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where  `Invoice Type`='Invoice' %s group by vat_rate",$int[0]); */
 /*    //  print $sql; */
 /*     $result=mysql_query($sql); */
 /*   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
@@ -446,7 +446,7 @@ mysql_free_result($result);
 
  // exit;
  //  print_r($taxable);
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension` where `Invoice Title`='Invoice' and `Invoice For Partner`='No'   %s ",$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension` where `Invoice Type`='Invoice' and `Invoice For Partner`='No'   %s ",$int[0]);
 
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -459,7 +459,7 @@ mysql_free_result($result);
 mysql_free_result($result);
 
 
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , sum(if(`Invoice Title`='Invoice',1,0)) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice'  and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , sum(if(`Invoice Type`='Invoice',1,0)) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Type`='Invoice'  and `Invoice Billing Country 2 Alpha Code`=%s %s ",prepare_mysql($home_2alpha_code),$int[0]);
   //print $sql;
 
     $result=mysql_query($sql);
@@ -471,7 +471,7 @@ mysql_free_result($result);
   }
 mysql_free_result($result);
 
-  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No'  and `Invoice Billing Country 2 Alpha Code`!=%s   and `Invoice Billing Country 2 Alpha Code`!='XX'   %s ",prepare_mysql($home_2alpha_code),$int[0]);
+  $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Type`='Invoice' and `Invoice For Partner`='No'  and `Invoice Billing Country 2 Alpha Code`!=%s   and `Invoice Billing Country 2 Alpha Code`!='XX'   %s ",prepare_mysql($home_2alpha_code),$int[0]);
 
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -482,7 +482,7 @@ mysql_free_result($result);
     $invoices_nohome=$row['invoices'];
   }
 mysql_free_result($result);
-$sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Title`='Invoice' and `Invoice For Partner`='No'  and `Invoice Billing Country 2 Alpha Code`='XX'   %s ",$int[0]);
+$sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices,avg(`Invoice Dispatching Lag`) as dispatch_days from `Invoice Dimension`   where  `Invoice Type`='Invoice' and `Invoice For Partner`='No'  and `Invoice Billing Country 2 Alpha Code`='XX'   %s ",$int[0]);
 //print $sql;
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -505,7 +505,7 @@ mysql_free_result($result);
       $countries.="'".$county_id."',";
     }
     $countries=preg_replace('/\,$/',')',$countries);
-    $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension`     where `Invoice For Partner`='No' and `Invoice Title`='Invoice'   %s %s ",$countries,$int[0]);
+    $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension`     where `Invoice For Partner`='No' and `Invoice Type`='Invoice'   %s %s ",$countries,$int[0]);
     
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -526,7 +526,7 @@ mysql_free_result($result);
     $countries.="'".$county_id."',";
   }
   $countries=preg_replace('/\,$/',')',$countries);
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Invoice'  %s %s ",$countries,$int[0]);
+ $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Invoice'  %s %s ",$countries,$int[0]);
     $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $net_region=$row['net']+$refund_net_region;
@@ -539,7 +539,7 @@ mysql_free_result($result);
     $countries.="'".$county_id."',";
   }
   $countries=preg_replace('/\,$/',')',$countries);
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from  `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s %s ",$countries,$int[0]);
+ $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from  `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Invoice' %s %s ",$countries,$int[0]);
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $net_region2=$row['net']+$refund_net_region;
@@ -552,7 +552,7 @@ $countries='and `Invoice Billing Country 2 Alpha Code` in (';
     $countries.="'".$county_id."',";
   }
   $countries=preg_replace('/\,$/',')',$countries);
- $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Invoice'     %s %s ",$countries,$int[0]);
+ $sql=sprintf("select sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax , count(*) as invoices from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Invoice'     %s %s ",$countries,$int[0]);
     $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $net_org=$row['net']+$refund_net_org;
@@ -598,7 +598,7 @@ mysql_free_result($result);
 
    // export destinations
    $num_countries=0;
-   $sql=sprintf("select count(*) as num from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s  group by `Invoice Billing Country 2 Alpha Code`   ",$int[0]);
+   $sql=sprintf("select count(*) as num from `Invoice Dimension` where  `Invoice For Partner`='No' and `Invoice Type`='Invoice' %s  group by `Invoice Billing Country 2 Alpha Code`   ",$int[0]);
 
    $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -607,7 +607,7 @@ mysql_free_result($result);
    }
 mysql_free_result($result);
    $top3=array();
-   $sql=sprintf("select `Country Name`  as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax   from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net     desc limit 3",prepare_mysql($home_2alpha_code),$int[0]);
+   $sql=sprintf("select `Country Name`  as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax   from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Type`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net     desc limit 3",prepare_mysql($home_2alpha_code),$int[0]);
 
      $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -615,7 +615,7 @@ mysql_free_result($result);
    }
    mysql_free_result($result);
    $countries=array();
-   $sql=sprintf("select `Country Key` as id,`Invoice Billing Country 2 Alpha Code` as  code2,`Country Name` as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Title`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net desc ",prepare_mysql($home_2alpha_code),$int[0]);
+   $sql=sprintf("select `Country Key` as id,`Invoice Billing Country 2 Alpha Code` as  code2,`Country Name` as name, sum(`Invoice Total Net Amount`) as net ,sum(`Invoice Total Tax Amount`) as tax,count(*) as orders from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Billing Country 2 Alpha Code`=`Country 2 Alpha Code`) where  `Invoice Billing Country 2 Alpha Code`!=%s  and `Invoice For Partner`='No' and `Invoice Type`='Invoice' %s group by `Invoice Billing Country 2 Alpha Code`  order by net desc ",prepare_mysql($home_2alpha_code),$int[0]);
    //print $sql;
      $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -852,7 +852,7 @@ $balance['credits']['tax']=0;
 /*  } */
 
 
-  $sql=sprintf("select sum(`Invoice Refund Unknown Net Amount`) as net_refund_unk,sum(`Invoice Refund Items Net Amount`) as net_refund_items,sum(`Invoice Refund Shipping Net Amount`) as net_refund_shipping, sum(`Invoice Refund Charges Net Amount`) as net_refund_charges,`Invoice Title` as tipo,count(*) as orders, sum(`Invoice Shipping Net Amount`) as shipping,sum(`Invoice Charges Net Amount`) as charges,sum(`Invoice Total Amount`) as total,sum(`Invoice Refund Net Amount`) as credit_net,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax, sum(`Invoice Refund Tax Amount`) as credit_tax,sum(`Invoice Items Net Amount`) as products from `Invoice Dimension` where true  %s group by `Invoice Title` ",$int[0]);
+  $sql=sprintf("select sum(`Invoice Refund Unknown Net Amount`) as net_refund_unk,sum(`Invoice Refund Items Net Amount`) as net_refund_items,sum(`Invoice Refund Shipping Net Amount`) as net_refund_shipping, sum(`Invoice Refund Charges Net Amount`) as net_refund_charges,`Invoice Type` as tipo,count(*) as orders, sum(`Invoice Shipping Net Amount`) as shipping,sum(`Invoice Charges Net Amount`) as charges,sum(`Invoice Total Amount`) as total,sum(`Invoice Refund Net Amount`) as credit_net,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax, sum(`Invoice Refund Tax Amount`) as credit_tax,sum(`Invoice Items Net Amount`) as products from `Invoice Dimension` where true  %s group by `Invoice Type` ",$int[0]);
   //print $sql;
   $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){

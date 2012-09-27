@@ -43,8 +43,8 @@
 			<input id="shipping_amount" style="text-align:right" value="{$order->get('Order Shipping Net Amount')}" />
 			</td>
 			<td style="padding-top:10px;width:65px"> 
-			<div class="buttons">
-				<img id="save_set_shipping_wait" style="display:none;position:relative;left:20px" src="art/loading.gif" alt="" /><button id="save_set_shipping">{t}Save{/t}</button> 
+			<div class="buttons small">
+				<img id="save_set_shipping_wait" style="display:none;position:relative;left:20px" src="art/loading.gif" alt="" /><button id="save_set_shipping" class="positive">{t}Save{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -120,9 +120,111 @@
 		</table>
 	</div>
 </div>
-<div id="edit_delivery_address_splinter_dialog" class="edit_block" style="width:870px;padding:5px 20px 20px 20px;background:#fff;" id="edit_address_dialog">
-	<div style="text-align:right;margin-bottom:15px">
+<div id="edit_delivery_address_splinter_dialog" class="edit_block" style="width:890px;padding:20px 20px 20px 20px;background:#fff;" id="edit_address_dialog">
+	<div style="display:none;text-align:right;margin-bottom:15px">
 		<span onclick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span> 
 	</div>
-	{include file='edit_delivery_address_splinter.tpl'} 
+	{include file='edit_delivery_address_splinter.tpl' parent='order' order_key={$order->id}} 
+	
+	<div class="buttons">
+		<button onclick="close_edit_delivery_address_dialog()" class="negative">{t}Close{/t}</button> 
+	</div>
+</div>
+
+
+<div id="dialog_add_credit" style="border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
+	<div id="edit_shipping_msg">
+	</div>
+	<table class="edit" style="margin:10px;width:400px" border="0">
+		<tr>
+			<td class="label" style="padding-top:10px">{t}Tax{/t}:</td>
+			<td style="padding-top:10px;"> 
+			<div class="buttons left small" id="add_credit_tax_categories_options">
+			<input id="add_credit_tax_category" value="{$order->get('Order Tax Code')}" type="hidden"/>
+	{foreach from=$tax_categories item=tax_category}
+	<button tax_category="{$tax_category.code}" onclick="change_tax_category_add_credit(this)" class="item {if $tax_category.selected}selected{/if}">{$tax_category.label}</button> 
+	{/foreach}
+			</div>
+			</td>
+			
+		</tr>
+		<tr>
+			<td class="label" style="padding-top:4px;width:80px">{t}Net Amount{/t}:</td>
+			<td style="padding-top:4px;"> 
+			<input id="add_credit_amount" style="text-align:right;width:80px" value="" />
+			</td>
+			
+		</tr>
+		<tr>
+			<td class="label" style="padding-bottom:10px">{t}Description{/t}:</td>
+			<td style="padding-bottom:10px;width:300px"> 
+			<input id="add_credit_description" style="width:95%" value="" />
+			</td>
+		</tr>
+		<tr>
+		<td colspan=2>
+		<div class="buttons">
+				<img id="save_add_credit_wait" style="display:none;position:relative;left:20px" src="art/loading.gif" alt="" />
+				<button id="save_add_credit" class="positive">{t}Save{/t}</button> 
+				<button id="close_add_credit" class="negative" onCLick="close_dialog_add_credit()">{t}Close{/t}</button>
+			</div>
+			</td>
+		</tr>
+		
+	</table>
+</div>
+<div id="dialog_edit_credits" style="border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
+	<div id="edit_shipping_msg">
+	</div>
+	<table class="edit" style="margin:10px;width:400px" border="0">
+	
+			<input id="credit_transaction_key" value="{$credit.transaction_key}" type="hidden"/>
+
+	<tr class="top title"><td>{t}Credit{/t}</td><td><div class="buttons small"><button id="remove_credit" class="negative">{t}Remove Credit{/t}</button></div></td></tr>
+		<tr>
+			<td class="label" style="padding-top:10px">{t}Tax{/t}:</td>
+			<td style="padding-top:10px;"> 
+			<div class="buttons left small" id="edit_credit_tax_categories_options">
+			<input id="edit_credit_tax_category" value="{$credit.tax_code}" type="hidden"/>
+				{foreach from=$tax_categories item=tax_category}
+					<button tax_category="{$tax_category.code}" onclick="change_tax_category_edit_credit(this)" class="item {if $tax_category.code==$credit.tax_code}selected{/if}">{$tax_category.label}</button> 
+				{/foreach}
+			</div>
+			</td>
+			
+		</tr>
+		<tr>
+			<td class="label" style="padding-top:4px;width:80px">{t}Net Amount{/t}:</td>
+			<td style="padding-top:4px;"> 
+			<input id="edit_credit_amount" style="text-align:right;width:80px" value="{$credit.net}" />
+			</td>
+			
+		</tr>
+		<tr>
+			<td class="label" style="padding-bottom:10px">{t}Description{/t}:</td>
+			<td style="padding-bottom:10px;width:300px"> 
+			<input id="edit_credit_description" style="width:95%" value="{$credit.description}" />
+			</td>
+		</tr>
+		<tr>
+		<td colspan=2>
+		<div class="buttons">
+				<img id="save_edit_credit_wait" style="display:none;position:relative;left:20px" src="art/loading.gif" alt="" />
+				<button id="save_edit_credit" class="positive">{t}Save{/t}</button> 
+				<button id="close_edit_credit" class="negative" onCLick="close_dialog_edit_credit()">{t}Close{/t}</button>
+			</div>
+			</td>
+		</tr>
+		<tr style="height:10px"><td colspan=2></td></tr>
+		<tr class="top title" ><td colspan=2>{t}Credit from previous orders{/t}</td></tr>
+	</table>
+</div>
+
+<div id="dialog_edit_tax_category" style="border:1px solid #ccc;text-align:left;padding:10px;padding-top:20px">
+<div class="buttons">
+<input type="hidden" id="original_tax_code" value="{$order->get('Order Tax Code')}">
+{foreach from=$tax_categories item=tax_category}
+	<button tax_category="{$tax_category.code}" onclick="change_tax_category(this)" class="item {if $tax_category.selected}selected{/if}">{$tax_category.label}</button> 
+	{/foreach}
+</div>
 </div>

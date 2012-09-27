@@ -1493,8 +1493,8 @@ $this->update_main_state();
 
 
 		}
-		if ($this->unknown_location_associated)
-			print "\n".$this->sku." unknown location addes\n";
+		//if ($this->unknown_location_associated)
+		//	print "\n".$this->sku." unknown location addes\n";
 
 
 		//print_r($locations);

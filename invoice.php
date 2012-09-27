@@ -27,7 +27,7 @@ $store=new Store($invoice->data['Invoice Store Key']);
 $smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 
-if ($invoice->data['Invoice Title']=='Invoice') {
+if ($invoice->data['Invoice Type']=='Invoice') {
 //	if ($invoice->data['Invoice Paid']=='Yes') {
 		$js_file='invoice.js.php';
 		$template='invoice.tpl';

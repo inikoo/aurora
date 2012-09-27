@@ -21,10 +21,10 @@
 		</div>
 		<div class="buttons" style="float:right">
 			<a style="height:14px" href="order_pick_aid.pdf.php?id={$delivery_note->id}" target="_blank"><img  style="width:40px;height:12px" src="art/pdf.gif" alt=""></a>
-			<button id="pick_all" style="height:24px;{if $delivery_note->get('Delivery Note Faction Picked')==1 or $warehouse->get('Warehouse Picking Aid Type')!='Inikoo'}display:none{/if}"><img id="set_all_as_picked" src="art/icons/accept.png" alt="" /> {t}Set all as Picked{/t}</button> 
-			<a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Faction Picked')==1}display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> 
-			<button id="start_packing" style="height:24px;{if $delivery_note->get('Delivery Note Faction Picked')==0 or $delivery_note->get('Delivery Note Assigned Packer Key') or $warehouse->get('Warehouse Picking Aid Type')!='Inikoo'}display:none{/if}"><img src="art/icons/package.png" alt="" /> {t}Assign Packer{/t}</button> 
-			<a style="height:14px;{if $delivery_note->get('Delivery Note Faction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key') or $warehouse->get('Warehouse Picking Aid Type')!='Inikoo'}display:none{/if}" href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 
+			<button id="pick_all" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Picked')==1 or $warehouse->get('Warehouse Picking Aid Type')!='Inikoo'}display:none{/if}"><img id="set_all_as_picked" src="art/icons/accept.png" alt="" /> {t}Set all as Picked{/t}</button> 
+			<a id="update_locations" style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==1}display:none{/if}" href="order_pick_aid.php?id={$delivery_note->id}&refresh=1"><img src="art/icons/arrow_refresh.png" alt="" /> {t}Update Locations{/t}</a> 
+			<button id="start_packing" style="height:24px;{if $delivery_note->get('Delivery Note Fraction Picked')==0 or $delivery_note->get('Delivery Note Assigned Packer Key') or $warehouse->get('Warehouse Picking Aid Type')!='Inikoo'}display:none{/if}"><img src="art/icons/package.png" alt="" /> {t}Assign Packer{/t}</button> 
+			<a style="height:14px;{if $delivery_note->get('Delivery Note Fraction Picked')==0 or !$delivery_note->get('Delivery Note Assigned Packer Key') or $warehouse->get('Warehouse Picking Aid Type')!='Inikoo'}display:none{/if}" href="order_pack_aid.php?id={$delivery_note->id}"><img src="art/icons/package.png" alt="" /> {t}Packing Aid{/t}</a> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -49,7 +49,7 @@
 						</tr>
 						<tr>
 							<td class="aright">{t}Transactions{/t}:</td>
-							<td class="aright"><span id="number_picked_transactions">{$number_picked_transactions}</span>/<span id="number_transactions">{$number_transactions}</span> <span style="margin-left:10px" id="percentage_picked">{$delivery_note->get('Faction Picked')}</span></td>
+							<td class="aright"><span id="number_picked_transactions">{$number_picked_transactions}</span>/<span id="number_transactions">{$number_transactions}</span> <span style="margin-left:10px" id="percentage_picked">{$delivery_note->get('Fraction Picked')}</span></td>
 						</tr>
 					</tbody>
 				</table>

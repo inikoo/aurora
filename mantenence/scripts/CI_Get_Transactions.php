@@ -64,7 +64,7 @@ $consolidated='Yes';
 
 $date_invoiced=$_order['date_invoiced'];
 
- $sql=sprintf("insert into `Invoice Dimension` (`Invoice Title`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Items Net Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Net Amount`,`Invoice Total Tax Amount`,`Invoice Total Amount`) values ('Invoice',%s,%s,%s,%d,%s,1,'AWR',%.2f,%.2f,%.2f,%.2f,%.2f,%.2f) "
+ $sql=sprintf("insert into `Invoice Dimension` (`Invoice Type`,`Invoice Date`,`Invoice Public ID`,`Invoice File As`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Store Key`,`Invoice Store Code`,`Invoice Items Net Amount`,`Invoice Shipping Net Amount`,`Invoice Charges Net Amount`,`Invoice Total Net Amount`,`Invoice Total Tax Amount`,`Invoice Total Amount`) values ('Invoice',%s,%s,%s,%d,%s,1,'AWR',%.2f,%.2f,%.2f,%.2f,%.2f,%.2f) "
 	       ,prepare_mysql($_order['date_invoiced'])
 	       ,prepare_mysql($_order['public_id'])
 	      ,prepare_mysql($_order['public_id'])

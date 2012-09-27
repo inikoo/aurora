@@ -20,6 +20,12 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('number_orders_in_process'):
+	$data=prepare_values($_REQUEST,array(
+			'customer_key'=>array('type'=>'key')
+		));
+	number_orders_in_process($data);
+	break;
 case('pending_post'):
 	pending_post();
 	break;
@@ -6071,6 +6077,46 @@ function can_merge_customer($data) {
 
 
 }
+
+function number_orders_in_process($data) {
+	$number_orders_in_process=0;
+	$orders_list='';
+	$msg='';
+	$sql=sprintf("select `Order Key`,`Order Public ID`  from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process'",
+		$data['customer_key']
+	);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		$orders_list.=sprintf(", <a class='id' href='order.php?id=%d'>%s</a>",$row['Order Key'],$row['Order Public ID']);
+		$number_orders_in_process++;
+
+		if ($number_orders_in_process==10)
+			break;
+
+	}
+$orders_list=preg_replace('/^,\s*/','',$orders_list);
+
+	if ($number_orders_in_process==0) {
+		$response=array('state'=>200,'orders_in_process'=>$number_orders_in_process,'msg'=>'');
+		echo json_encode($response);
+		exit;
+	}
+
+	if ($number_orders_in_process==1) {
+	$orders_list=_('Current order in process').": ".$orders_list;
+		$msg=_('This customer has already one order in process. Are you sure you want to create a new one?');
+	}elseif ($number_orders_in_process>1) {
+	$orders_list=_('Current orders in process').": ".$orders_list;
+		$msg=_('This customer has already several orders in process. Are you sure you want to create a new one?');
+
+	}
+	$response=array('state'=>200,'orders_in_process'=>$number_orders_in_process,'msg'=>$msg,'orders_list'=>$orders_list);
+	echo json_encode($response);
+	exit;
+
+}
+
 
 function check_tax_number($data) {
 

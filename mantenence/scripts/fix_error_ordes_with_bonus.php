@@ -26,7 +26,7 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=1";
+$sql="select * from `Delivery Note Dimension` where `Delivery Note Fraction Packed`!=1  or `Delivery Note Fraction Picked`!=1  and `Delivery Note Store Key`=1";
 $sql="select `Metadata` as `Delivery Note Metadata` from `Order Transaction Fact` where `Order Bonus Quantity`>0 and  `Order Date`>'2012-06-01 12:00:00' and `Store Key`=1 group by `Metadata`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -37,7 +37,7 @@ print "$sql\n";
 
 }
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=3";
+$sql="select * from `Delivery Note Dimension` where `Delivery Note Fraction Packed`!=1  or `Delivery Note Fraction Picked`!=1  and `Delivery Note Store Key`=3";
 
 $sql="select `Metadata` as `Delivery Note Metadata` from `Order Transaction Fact` where `Order Bonus Quantity`>0 and  `Order Date`>'2012-06-01 12:00:00' and `Store Key`=3";
 
@@ -48,7 +48,7 @@ $sql=sprintf("update de_orders_data.orders set last_transcribed=NULL where id=%d
 mysql_query($sql);
 }
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=5";
+$sql="select * from `Delivery Note Dimension` where `Delivery Note Fraction Packed`!=1  or `Delivery Note Fraction Picked`!=1  and `Delivery Note Store Key`=5";
 $sql="select `Metadata` as `Delivery Note Metadata` from `Order Transaction Fact` where `Order Bonus Quantity`>0 and  `Order Date`>'2012-06-01 12:00:00' and `Store Key`=5";
 
 $result=mysql_query($sql);
@@ -58,7 +58,7 @@ $sql=sprintf("update fr_orders_data.orders set last_transcribed=NULL where id=%d
 mysql_query($sql);
 }
 
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=7";
+$sql="select * from `Delivery Note Dimension` where `Delivery Note Fraction Packed`!=1  or `Delivery Note Fraction Picked`!=1  and `Delivery Note Store Key`=7";
 $sql="select `Metadata` as `Delivery Note Metadata` from `Order Transaction Fact` where `Order Bonus Quantity`>0 and  `Order Date`>'2012-06-01 12:00:00' and `Store Key`=7";
 
 $result=mysql_query($sql);
@@ -67,7 +67,7 @@ $id=preg_replace('/[^\d]/i','',$row['Delivery Note Metadata']);
 $sql=sprintf("update pl_orders_data.orders set last_transcribed=NULL where id=%d",$id);
 mysql_query($sql);
 }
-$sql="select * from `Delivery Note Dimension` where `Delivery Note Faction Packed`!=1  or `Delivery Note Faction Picked`!=1  and `Delivery Note Store Key`=9";
+$sql="select * from `Delivery Note Dimension` where `Delivery Note Fraction Packed`!=1  or `Delivery Note Fraction Picked`!=1  and `Delivery Note Store Key`=9";
 $sql="select `Metadata` as `Delivery Note Metadata` from `Order Transaction Fact` where `Order Bonus Quantity`>0 and  `Order Date`>'2012-06-01 12:00:00' and `Store Key`=9";
 
 $result=mysql_query($sql);

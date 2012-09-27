@@ -25,6 +25,7 @@
       <div  style="border:1px solid #ccc;text-align:left;padding:10px;margin: 10px 0 10px 0">
 
        <div style="width:400px;float:left"> 
+       
         <h1 style="padding:0 0 10px 0">{t}Invoice{/t} {$invoice->get('Invoice Public ID')}</h1>
         <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}">{$invoice->get('Invoice Customer Key')}</a></h2>
 	

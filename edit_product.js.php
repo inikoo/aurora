@@ -193,6 +193,8 @@ function reset_edit_product_units(){
     reset_edit_general('product_units')
 }
 
+
+
 function change_unit_type(o){
 //ar_edit_assets.php?tipo=edit_product_units&okey=units_per_case&key=units_per_case&newvalue=13d&pid=6539
 var value=o.options[o.selectedIndex].value;

@@ -141,18 +141,29 @@ var packer_key=Dom.get('assigned_packer').getAttribute('key');
 
 
 
-                            if(r.number_packed_transactions<r.number_picked_transactions){
-                            datatable.updateCell(record,'add','+');
-                            datatable.updateCell(record,'remove','<span style="color:#ccc">+</span>');
-                            datatable.updateCell(record,'done','');
-                            datatable.updateCell(record,'check_mark','&#8704;');
+							if(r.packed==r.picked){
+								 datatable.updateCell(record,'add','<span style="color:#ccc">+</span>');
+                            datatable.updateCell(record,'remove','<span style="color:#ccc">-</span>');
+                                                        datatable.updateCell(record,'done','&#x2713;');
+                            datatable.updateCell(record,'check_mark','<span style="color:#ccc">&#8704;</span>');
 
 							}else{
-							datatable.updateCell(record,'add','<span style="color:#ccc">+</span>');
+							datatable.updateCell(record,'add','+');
                             datatable.updateCell(record,'remove','-');
-                            datatable.updateCell(record,'done','&#x2713;');
-                            datatable.updateCell(record,'check_mark','<span style="color:#ccc">&#8704;</span>');
+                                                        datatable.updateCell(record,'done','');
+
+                                                       datatable.updateCell(record,'check_mark','&#8704;');
+
+							
 							}
+							
+							if(r.packed==0){
+                            datatable.updateCell(record,'remove','<span style="color:#ccc">-</span>');
+							
+							}
+
+
+                           
 
 
 					        Dom.get('number_packed_transactions').innerHTML=r.number_packed_transactions;
@@ -297,7 +308,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    				     	{key:"itf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true}
 
 				     ,{key:"sku", label:"<?php echo _('Part')?>",width:45,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description",label:"<?php echo _('Description')?>", width:488,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+									     ,{key:"picking_notes",label:"<?php echo _('Reference')?>", width:90,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+			,{key:"description",label:"<?php echo _('Description')?>", width:378,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				//	,{key:"packing_notes",label:"<?php echo _('Notes')?>", width:150,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 
@@ -331,7 +344,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "sku"
 			 ,"used_in"
-			 ,"description","picked"
+			 ,"description","picked","picking_notes"
 			 ,"location","packing_notes","done"
 			 ,"quantity","packed","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_packed_other","check_mark"
 
@@ -421,28 +434,25 @@ scope:this
 
 }
 
-function set_as_done(){
-ar_file='ar_edit_orders.php';
-   	request=ar_file+'?tipo=set_delivery_note_as_packed&dn_key='+Dom.get('dn_key').value;
-   //alert(request)
+function aprove_packing(){
+	Dom.get('aprove_packing_img').src='art/loading.gif';
+	ar_file='ar_edit_orders.php';
+   	request=ar_file+'?tipo=aprove_packing&dn_key='+Dom.get('dn_key').value;
    YAHOO.util.Connect.asyncRequest(
         'GET',
     request, {
 		success: function (o) {
-		//alert(o.responseText)
-var r =  YAHOO.lang.JSON.parse(o.responseText);
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
      				window.location='dn.php?id='+Dom.get('dn_key').value;
-
             }
-
         },
-failure: function (o) {
+		failure: function (o) {
             alert(o.statusText);
         },
-scope:this
+		scope:this
     }
-    );
+	);
 }
 
 
@@ -456,7 +466,7 @@ function init(){
 
 
 Event.addListener('pack_all', "click",set_pending_as_packed);
-Event.addListener('set_as_done', "click",set_as_done);
+Event.addListener('aprove_packing', "click",aprove_packing);
 
 
 }

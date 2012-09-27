@@ -1,13 +1,4 @@
-
-   
-   
-     {if isset($return_to_order)}<div style="text-align:right;cursor:pointer;" onClick="back_to_take_order({ $return_to_order})" class="quick_button">{t}Order{/t}</div>{/if}
-
-
-
-
-
-    <div style="width:540px;float:right;text-align:left">
+    <div style="width:{if $parent=='order'}800px{else}540px{/if};float:right;text-align:left">
      <div style="border-bottom:1px solid #777;padding-bottom:5px">
        <div  class="buttons">
        <button id="add_new_delivery_address" ><img src="art/icons/add.png" alt=""> {t}Add Delivery Address{/t}</button>
@@ -75,7 +66,10 @@ function_value=false
 		    <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}"/>
 		  </span>
 		      <div class="buttons small">
-		  <button id="delivery_set_main0" style="float:left" class=" hide  delivery_set_main small_button small_button_edit"  onClick="change_main_address(0,{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</button>
+		  <button id="delivery_set_main0" style="float:left;{if $parent!='customer'}display:none{/if}" class=" hide  delivery_set_main small_button small_button_edit"  onClick="change_main_address(0,{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</button>
+		  <button id="delivery_use_this0" style="float:left;{if $parent!='order'}display:none{/if}" class=" hide  delivery_use_this small_button small_button_edit"  onClick="change_main_address(0,{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Use This{/t}</button>
+
+		  
 		  <button  class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(0,'delivery_')" >{t}Remove{/t}</button>
 		  <button  class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(0,'delivery_')" >{t}Edit{/t}</button>
 	</div>
@@ -98,10 +92,13 @@ function_value=false
 		    <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}"/>
 		  </span>
 		    <div class="buttons small">
-		  <button id="delivery_set_main{$address->id}" style="float:left" class="{if $key==$customer->get('Customer Main Delivery Address Key')}hide{/if}  delivery_set_main small_button small_button_edit"  onClick="change_main_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</button>
-		  {if $key==$customer->get('Customer Main Address Key')}<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact{/t}</span>	  {else}
-		 		  {if  $customer->get_is_billing_address($key) }<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Billing{/t}</span>	  {/if}
-{/if}
+		  <button id="delivery_set_main{$address->id}" style="float:left;{if $parent!='customer'}display:none{/if}" class="{if $key==$customer->get('Customer Main Delivery Address Key')}hide{/if}  delivery_set_main small_button small_button_edit"  onClick="change_main_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</button>
+		  <button id="delivery_use_this{$address->id}" style="float:left;{if $parent!='order'}display:none{/if}" class="delivery_use_this small_button small_button_edit"  onClick="use_this_address_in_order({$address->id})" >{t}Use this{/t}</button>
+
+		  {if $key==$customer->get('Customer Main Address Key')}
+		  <img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact{/t}</span>
+		  {else if  $customer->get_is_billing_address($key) }<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Billing{/t}</span>	  		 		
+           {/if}
 		 <button {if $key==$customer->get('Customer Main Address Key') or $customer->get_is_billing_address($key) }style="display:none"{/if} class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onClick="delete_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Remove{/t}</button>
 		  <button {if $key==$customer->get('Customer Main Address Key')or $customer->get_is_billing_address($key) }style="display:none"{/if} class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="display_edit_delivery_address({$address->id},'delivery_')" >{t}Edit{/t}</button>
 
@@ -119,7 +116,7 @@ function_value=false
 
    
  
-    <div style="width:260px">
+    <div style="width:260px;{if $parent=='order'}display:none{/if}">
        <div style="border-bottom:1px solid #777;padding-bottom:5px">
          <div style="height:25px;display:table-cell; vertical-align:bottom;">
         <span >{t}Current Delivery Address{/t}:</span>

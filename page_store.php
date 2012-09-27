@@ -26,12 +26,7 @@ $site=new Site($page->data['Page Site Key']);
 
 putenv('LC_ALL='.$site->data['Site Locale'].'.UTF-8');
 setlocale(LC_ALL,$site->data['Site Locale'].'.UTF-8');
-
-
-// Specify location of translation tables
 bindtextdomain("inikoosites", "./localesites");
-
-// Choose domain
 textdomain("inikoosites");
 
 $store=new Store($page->data['Page Store Key']);
