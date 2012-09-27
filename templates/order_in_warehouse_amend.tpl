@@ -10,20 +10,26 @@
 	<input type="hidden" value="{$referral}" id="referral" />
 	<input type="hidden" value="{$products_display_type}" id="products_display_type" />
 	<div class="branch ">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  
+	<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  
 		{if $user->get_number_stores()>1}<a href="orders_server.php">&#8704; {t}Orders{/t}</a> &rarr; {/if}
 		<a href="orders.php?store={$store->id}&view=orders">{t}Orders{/t} ({$store->get('Store Code')})</a> &rarr;
 		{$order->get('Order Public ID')} ({$order->get('Current Dispatch State')})</span> 
 	</div>
 	<div class="top_page_menu" style="border:none">
 		<div class="buttons" style="float:left">
-			{if $referral=='store_pending_orders' or $order->get('Order Current Dispatch State')=='Ready to Pick' or $order->get('Order Current Dispatch State')=='Picking & Packing' or $order->get('Order Current Dispatch State')=='Packed' } 
+	{*}
+	{if $referral=='store_pending_orders' or $order->get('Order Current Dispatch State')=='Ready to Pick' or $order->get('Order Current Dispatch State')=='Picking & Packing' or $order->get('Order Current Dispatch State')=='Packed' } 
 			<button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> {/if} 
 			<button onclick="window.location='orders.php?store={$store->id}&view=orders'"><img src="art/icons/house.png" alt=""> {t}Orders{/t}</button> 
+		{*}
+				<span class="main_title">Order <class class="id">{$order->get('Order Public ID')}</span> ({$order->get('Current Dispatch State')})</span> 
+
+		
 		</div>
 		<div class="buttons">
+		{*}
 					<button style="height:24px;" onclick="window.location='order.pdf.php?id={$order->id}'"><img style="width:40px;height:12px;position:relative;bottom:3px" src="art/pdf.gif" alt=""></button> 
-
+{*}
 			 <button id="exit_modify_order">{t}Exit Modify Order{/t}</button> <button id="cancel" class="negative">{t}Cancel Order{/t}</button> 
 
 		</div>
@@ -34,9 +40,7 @@
 	</div>
 	<div style="border:1px solid #ccc;text-align:left;padding:10px;">
 		<div style="width:320px;float:left">
-			<h1 style="padding:0">
-				{t}Order{/t} <span class="id">{$order->get('Order Public ID')}</span>
-			</h1>
+			
 			<h2 style="padding:0">
 				{$order->get('Order Customer Name')} <a href="customer.php?id={$order->get('order customer key')}"><span class="id">{$customer->get_formated_id()}</span></a> 
 			</h2>
@@ -46,15 +50,21 @@
 					{$customer->get('Customer Main XHTML Address')} 
 				</div>
 			</div>
-			<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
+						<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
 				<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>: 
 				<div style="margin-top:5px" id="delivery_address">
 					{$order->get('Order XHTML Ship Tos')} 
 				</div>
-				<span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span> <span id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</span> 
+				<div class="buttons small left">
+				<button id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</button> 
+				<button id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set for collection{/t}</button> 
+				</div>
 			</div>
 			<div id="for_collection" style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-				<span>{t}For collection{/t}</span> <span id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</span> 
+				<span>{t}For collection{/t}</span>
+				<div class="buttons small left">
+				<button id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</button> 
+				</div>
 			</div>
 			<div style="clear:both">
 			</div>

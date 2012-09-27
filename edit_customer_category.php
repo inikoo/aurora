@@ -141,5 +141,8 @@ $smarty->assign('filter_menu1',$filter_menu);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+$smarty->assign('parent','customers');
+
+
 $smarty->display('edit_customer_category.tpl');
 ?>

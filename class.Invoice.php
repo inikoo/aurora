@@ -129,7 +129,7 @@ class Invoice extends DB_Table {
 		//print_r($invoice_data);
 
 		$this->data=$this->base_data();
-		$this->data ['Invoice Title']='Refund';
+		$this->data ['Invoice Type']='Refund';
 
 		if (!isset($invoice_data['Invoice Date'])   ) {
 			$this->data ['Invoice Date']=date("Y-m-d H:i:s");
@@ -161,6 +161,7 @@ class Invoice extends DB_Table {
 		$this->update_xhtml_orders();
 
 		$this->categorize();
+		$this->update_title();
 	}
 
 
@@ -201,7 +202,6 @@ class Invoice extends DB_Table {
 		foreach (preg_split('/\,/',$invoice_data['Delivery Note Keys']) as $dn_key) {
 			$delivery_notes_ids[$dn_key]=$dn_key;
 		}
-
 		$dn_keys=join(',',$delivery_notes_ids);
 
 		$tax_category=$this->data['Invoice Tax Code'];
@@ -246,7 +246,7 @@ class Invoice extends DB_Table {
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
-			$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Date`=%s,`Invoice Key`=%d,`Transaction Invoice Net Amount`=%.2f,`Transaction Invoice Tax Amount`=%.2f,`Transaction Outstandind Net Amount Balance`=%.2f,`Transaction Outstandind Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
+			$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Date`=%s,`Invoice Key`=%d,`Transaction Invoice Net Amount`=%.2f,`Transaction Invoice Tax Amount`=%.2f,`Transaction Outstanding Net Amount Balance`=%.2f,`Transaction Outstanding Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
 				prepare_mysql($this->data['Invoice Date']),
 				$this->id,
 				$row['Transaction Net Amount'],
@@ -272,13 +272,43 @@ class Invoice extends DB_Table {
 
 			//  print $sql;
 		}
+		$_orders_ids=array();
+
+		if (array_key_exists('Orders Keys',$invoice_data)) {
+
+			foreach (preg_split('/\,/',$invoice_data['Orders Keys']) as $order_key) {
+				$_orders_ids[$dn_key]=$dn_key;
+			}
+		}
+
+		if (count($_orders_ids)) {
+			$orders_keys=join(',',$_orders_ids);
+			$sql=sprintf('select *  from `Order No Product Transaction Fact` where `Order Key` in (%s) and ISNULL(`Invoice Key`) '
+				,$orders_keys);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Date`=%s,`Invoice Key`=%d,`Transaction Invoice Net Amount`=%.2f,`Transaction Invoice Tax Amount`=%.2f,`Transaction Outstanding Net Amount Balance`=%.2f,`Transaction Outstanding Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
+					prepare_mysql($this->data['Invoice Date']),
+					$this->id,
+					$row['Transaction Net Amount'],
+					$row['Transaction Tax Amount'],
+					$row['Transaction Net Amount'],
+					$row['Transaction Tax Amount'],
+					$row['Order No Product Transaction Fact Key']
+				);
+				mysql_query($sql);
 
 
+			
+			}
+
+		}
 
 		$this->update_shipping(array('Amount'=>$shipping_net,'Tax'=>$shipping_tax),true);
-		$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax),true);
+		$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax,'Transaction Description'=>_('Charges')),true);
 
-
+$this->update_refund_totals();
 
 		foreach ($this->get_delivery_notes_objects() as $key=>$dn) {
 			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $this->id,$key);
@@ -292,14 +322,15 @@ class Invoice extends DB_Table {
 			mysql_query( $sql );
 			$this->update_xhtml_orders();
 			$order->update_xhtml_invoices();
-
+			$order->update_no_normal_totals();
+			$order->set_as_invoiced();
 		}
 
 
 		$this->update_totals();
 
 		$this->categorize();
-
+		$this->update_title();
 	}
 
 	function get_tax_rate($item) {
@@ -436,8 +467,8 @@ class Invoice extends DB_Table {
 
 					$items_refund_net+=$row['Transaction Invoice Net Amount'];
 					$items_refund_tax+=$row['Transaction Invoice Tax Amount'];
-					$items_refund_net_outstanding_balance+=$row['Transaction Outstandind Net Amount Balance'];
-					$items_refund_tax_outstanding_balance+=$row['Transaction Outstandind Tax Amount Balance'];
+					$items_refund_net_outstanding_balance+=$row['Transaction Outstanding Net Amount Balance'];
+					$items_refund_tax_outstanding_balance+=$row['Transaction Outstanding Tax Amount Balance'];
 
 				} else {
 
@@ -652,8 +683,8 @@ class Invoice extends DB_Table {
 		while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) ) {
 			$items_refund_net+=$row['Transaction Invoice Net Amount'];
 			$items_refund_tax+=$row['Transaction Invoice Tax Amount'];
-			$items_refund_net_outstanding_balance+=$row['Transaction Outstandind Net Amount Balance'];
-			$items_refund_tax_outstanding_balance+=$row['Transaction Outstandind Tax Amount Balance'];
+			$items_refund_net_outstanding_balance+=$row['Transaction Outstanding Net Amount Balance'];
+			$items_refund_tax_outstanding_balance+=$row['Transaction Outstanding Tax Amount Balance'];
 
 		}
 
@@ -744,7 +775,7 @@ class Invoice extends DB_Table {
 
 		if (count($old_shipping_data)==0) {
 
-			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Tax Category Code`,`Transaction Invoice Net Amount`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)
+			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Tax Category Code`,`Transaction Invoice Net Amount`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)
                          values (%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 				$this->id,
 				prepare_mysql($this->data['Invoice Date']),
@@ -768,7 +799,7 @@ class Invoice extends DB_Table {
 		}
 		elseif (count($old_shipping_data)==1) {
 			$_tmp=array_pop($old_shipping_data);
-			$sql=sprintf("update  `Order No Product Transaction Fact` set `Transaction Invoice Net Amount`=%f,`Transaction Invoice Tax Amount`=%f,`Transaction Outstandind Net Amount Balance`=%f,`Transaction Outstandind Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
+			$sql=sprintf("update  `Order No Product Transaction Fact` set `Transaction Invoice Net Amount`=%f,`Transaction Invoice Tax Amount`=%f,`Transaction Outstanding Net Amount Balance`=%f,`Transaction Outstanding Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
 				$this->data['Invoice Shipping Net Amount'],
 				$this->data['Invoice Shipping Tax Amount'],
 				$this->data['Invoice Shipping Net Amount'],
@@ -782,7 +813,7 @@ class Invoice extends DB_Table {
 			foreach ($old_shipping_data as $shipping_data) {
 				$net=$this->data['Invoice Shipping Net Amount']*$shipping_data['factor'];
 				$tax=$this->data['Invoice Shipping Tax Amount']*$shipping_data['factor'];
-				$sql=sprintf("update  `Order No Product Transaction Fact` set `Transaction Invoice Net Amount`=%f,`Transaction Invoice Tax Amount`=%f,`Transaction Outstandind Net Amount Balance`=%f,`Transaction Outstandind Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
+				$sql=sprintf("update  `Order No Product Transaction Fact` set `Transaction Invoice Net Amount`=%f,`Transaction Invoice Tax Amount`=%f,`Transaction Outstanding Net Amount Balance`=%f,`Transaction Outstanding Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
 					$net,
 					$tax,
 					$net,
@@ -848,13 +879,16 @@ class Invoice extends DB_Table {
 
 	function update_charges($charge_data) {
 
+//print_r($charge_data);
 
+		//$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax),true);
+		//print "caca ";
 
 		$amount=$charge_data['Transaction Invoice Net Amount'];
-		if ($amount==$this->data['Invoice Charges Net Amount']) {
-			$this->msg='Nothing to change';
-			return;
-		}
+		//if ($amount==$this->data['Invoice Charges Net Amount']) {
+		// $this->msg='Nothing to change';
+		// return;
+		//}
 		$this->data['Invoice Charges Net Amount']=$amount;
 		$this->data['Invoice Charges Tax Amount']=$amount*($this->get_tax_rate('charges'));
 		$old_charges_data=array();
@@ -882,7 +916,7 @@ class Invoice extends DB_Table {
 		if (count($old_charges_data)==0) {
 
 
-			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)
+			$sql=sprintf("insert into `Order No Product Transaction Fact` (`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)
                          values (%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 				$this->id,
 				prepare_mysql($this->data['Invoice Date']),
@@ -906,7 +940,7 @@ class Invoice extends DB_Table {
 		}
 		elseif (count($old_charges_data)==1) {
 			$_tmp=array_pop($old_charges_data);
-			$sql=sprintf("update  `Order No Product Transaction Fact` set `Transaction Invoice Net Amount`=%f,`Transaction Invoice Tax Amount`=%f,`Transaction Outstandind Net Amount Balance`=%f,`Transaction Outstandind Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
+			$sql=sprintf("update  `Order No Product Transaction Fact` set `Transaction Invoice Net Amount`=%f,`Transaction Invoice Tax Amount`=%f,`Transaction Outstanding Net Amount Balance`=%f,`Transaction Outstanding Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
 				$this->data['Invoice Charges Net Amount'],
 				$this->data['Invoice Charges Tax Amount'],
 				$this->data['Invoice Charges Net Amount'],
@@ -920,7 +954,7 @@ class Invoice extends DB_Table {
 			foreach ($old_charges_data as $charges_data) {
 				$net=$this->data['Invoice Charges Net Amount']*$charges_data['factor'];
 				$tax=$this->data['Invoice Charges Tax Amount']*$charges_data['factor'];
-				$sql=sprintf("update  `Order No Product Transaction Fact` set `Transaction Invoice Net Amount`=%f,`Transaction Invoice Tax Amount`=%f,`Transaction Outstandind Net Amount Balance`=%f,`Transaction Outstandind Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
+				$sql=sprintf("update  `Order No Product Transaction Fact` set `Transaction Invoice Net Amount`=%f,`Transaction Invoice Tax Amount`=%f,`Transaction Outstanding Net Amount Balance`=%f,`Transaction Outstanding Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
 					$net,
 					$tax,
 					$net,
@@ -942,6 +976,8 @@ class Invoice extends DB_Table {
 		mysql_query($sql);
 
 		$sql = "select `Order Transaction Fact Key`,`Order Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=" . $this->data ['Invoice Key'];
+
+		//print $sql;
 		$result = mysql_query( $sql );
 
 		$total_charge = 0;
@@ -949,6 +985,7 @@ class Invoice extends DB_Table {
 
 		$items = 0;
 		while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) ) {
+			//print_r($row);
 			$items ++;
 			$charge = $row ['Order Transaction Gross Amount'];
 			$total_charge += $charge;
@@ -975,7 +1012,7 @@ class Invoice extends DB_Table {
 				$line_number
 			);
 			mysql_query( $sql );
-
+			//print "$sql\n";
 		}
 		$this->update_totals();
 	}
@@ -1055,7 +1092,7 @@ class Invoice extends DB_Table {
                          `Invoice Delivery Town`,
                          `Invoice Delivery Postal Code`,
 
-                         `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Title`,`Invoice To Pay Amount`) values
+                         `Invoice Dispatching Lag`,`Invoice Taxable`,`Invoice Tax Code`,`Invoice Type`,`Invoice To Pay Amount`) values
                          (%s,%s,%s,
                          %f,
                          %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
@@ -1126,7 +1163,7 @@ class Invoice extends DB_Table {
 			, prepare_mysql ( $this->data ['Invoice Dispatching Lag'] )
 			, prepare_mysql ( $this->data ['Invoice Taxable'] )
 			, prepare_mysql ( $this->data ['Invoice Tax Code'] )
-			, prepare_mysql ($this->data ['Invoice Title'])
+			, prepare_mysql ($this->data ['Invoice Type'])
 			, $this->data ['Invoice Total Amount']
 		);
 
@@ -1590,7 +1627,7 @@ class Invoice extends DB_Table {
 			$order->update_no_normal_totals();
 			$order-> update_full_search();
 			$order->update_xhtml_invoices();
-			if ($this->data['Invoice Title']=='Refund') {
+			if ($this->data['Invoice Type']=='Refund') {
 				$customer=new Customer($this->data['Invoice Customer Key']);
 				$customer->add_history_order_refunded($this);
 
@@ -1661,7 +1698,7 @@ class Invoice extends DB_Table {
 
 		}
 
-		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   values (%s,%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Affected Order Key`,`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   values (%s,%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 			prepare_mysql($credit_transaction_data['Affected Order Key']),
 			prepare_mysql($credit_transaction_data['Order Key']),
 			prepare_mysql($order_date),
@@ -1691,7 +1728,7 @@ class Invoice extends DB_Table {
 
 
 
-		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Affected Order Key`,`Refund Key`,`Refund Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Affected Order Key`,`Refund Key`,`Refund Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)   values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 			prepare_mysql($refund_transaction_data['Order Key']),
 			prepare_mysql($refund_transaction_data['Affected Order Key']),
 			$this->id,
@@ -1909,6 +1946,51 @@ class Invoice extends DB_Table {
 		return $file_as;
 	}
 
+	function update_title() {
+
+		$this->data['Invoice Title']=$this->get_title();
+
+		$sql=sprintf("update `Invoice Dimension` set `Invoice Title`=%s where `Invoice Key`=%d",
+			prepare_mysql($this->data['Invoice Title']),
+			$this->id
+		);
+		mysql_query($sql);
+	}
+
+	function get_title() {
+
+		$orders=$this->get_orders_objects();
+
+		$number_of_orders=count($orders);
+
+		if ($number_of_orders==0) {
+			if ($this->data['Invoice Type']=='Invoice') {
+				$title=_("Invoice");
+			}else {
+				$title=_("Refund");
+
+			}
+			return $title;
+		}
+
+
+		if ($this->data['Invoice Type']=='Invoice') {
+			$title=ngettext("Invoice for order","Invoice for orders",$number_of_orders).' ';
+		}else {
+			$title=ngettext("Refund for order","Refund for orders",$number_of_orders).' ';
+
+		}
+
+		foreach ($orders as $order) {
+			$title.=sprintf('<a class="id" href="order.php?id=%d">%s</a>, ',
+				$order->id,
+				$order->data['Order Public ID']
+			);
+		}
+
+		$title=preg_replace('/\, $/','',$title);
+		return $title;
+	}
 
 }
 

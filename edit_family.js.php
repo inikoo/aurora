@@ -33,7 +33,7 @@ var scope_key_name='id';
 var store_key=<?php echo $_REQUEST['store_key']?>;
 var dialog_family_list;
 var dialog_page_list;
-
+var dialog_edit_deal;
 function change_elements(){
 
 ids=['elements_discontinued','elements_nosale','elements_private','elements_sale','elements_historic'];
@@ -218,6 +218,25 @@ var CellEdit = function (callback, newValue) {
  };
 
 
+function fill_edit_deal_form(deal_key){
+
+	var request='ar_assets?tipo=fill_edit_deal_form&deal_key=' + deal_key
+	//		alert(request)
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    		   	    alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+			
+			
+			
+		    }
+		    
+		}
+			    
+	    });
+	}
+
 
 function deal_term_save(deal_key){
 deal_save(deal_key,'term');
@@ -234,12 +253,12 @@ function deal_save(deal_key,key){
 
 		var request='tipo=edit_deal&key=' + key + '&newvalue=' + 
 						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ '&deal_key='+deal_key
-
+//alert(request)
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						'ar_edit_assets.php', {
 						    success:function(o) {
-								alert(o.responseText);
+							//	alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
@@ -766,11 +785,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				          {key:"status",label:"", width:16,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					  ,{key:"name",label:"<?php echo _('Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"description",label:"<?php echo _('Description')?>", width:420,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"from",label:"<?php echo _('Valid From')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"to",label:"<?php echo _('Valid Until')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				          {key:"status",label:"", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					  ,{key:"name",label:"<?php echo _('Deal')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"description",label:"<?php echo _('Terms')?>", width:320,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     //  ,{key:"dates",label:"<?php echo _('Valid Dates')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //   ,{key:"to",label:"<?php echo _('Valid Until')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
 	    
@@ -793,7 +812,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 "name"
-			 ,"description","from","to","status"
+			 ,"description","dates","status"
 
 			 ]};
  this.table4 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -1345,7 +1364,8 @@ YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
     
     
        
- 
+ dialog_edit_deal = new YAHOO.widget.Dialog("dialog_edit_deal", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_edit_deal.render();
 	
 	dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["edit_family_department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dialog_family_list.render();

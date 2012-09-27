@@ -164,10 +164,7 @@
         so.addVariable("settings_file", escape("conf/world_heatmap_settings.xml"));		
 		so.addVariable("preloader_color", "#999999");
 		so.write("map_countries");
-		
-		
-		
-		// ]]>
+			// ]]>
 	</script>
 </div>
 

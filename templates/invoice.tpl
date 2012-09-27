@@ -29,8 +29,13 @@
 
     <div id="main_details"  style="position:relative;border:1px solid #ccc;text-align:left;padding:10px;margin: 5px 0 10px 0">
 
-    <div style="width:340px;float:left"> 
-        <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a></h2>
+    <div style="width:340px;float:left;;position:relative;top:-5px"> 
+    
+    <h3 style="padding:0;padding-top:0px">
+				{$invoice->get('Invoice Title')}
+			</h3>
+    
+        <h2 style="padding:0;padding-top:5px">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}" style="color:SteelBlue">{$customer_id}</a></h2>
 	
 	
 	<div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><b>{$invoice->get('Invoice Main Contact Name')}</b><br/>{$invoice->get('Invoice XHTML Address')}</div>

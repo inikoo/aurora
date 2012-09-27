@@ -280,7 +280,7 @@ $net_adjustment="<tr ><td   >Adjusts (N)</td><td width=100 >{$order->get('Invoic
 
 
 $net_refund='';
-if ($order->get('Order Net Refund Amount')!=0){
+if ($order->get('Order Net Refund Invoiced Amount')!=0){
 $net_refund="<tr><td >Net</td><td width=100 >{$order->get('Net Refund Amount')}</td></tr>";
 }
 

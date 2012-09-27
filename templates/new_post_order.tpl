@@ -145,7 +145,7 @@
 	<div style="text-align:right;margin-bottom:15px">
 		<span onclick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span> 
 	</div>
-	{include file='edit_delivery_address_splinter.tpl'} 
+	{include file='edit_delivery_address_splinter.tpl'  parent='order' order_key={$order->id}} 
 </div>
 <div id="dialog_mark_all_for_refund" style="padding:20px 20px 10px 20px ">
 	<div id="mark_all_for_refund_msg">

@@ -475,7 +475,7 @@ function adjust_invoice($invoice,$order,$continue=true) {
 
 
 	foreach ($adjust_transactions as $adjust_data) {
-		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+		$sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstanding Net Amount Balance`,`Transaction Outstanding Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%s,%s,%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
 			prepare_mysql($order->id),
 
 			prepare_mysql($order->data['Order Date']),
@@ -735,19 +735,11 @@ function send_order($data,$data_dn_transactions) {
 	global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
 	global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
 
-
 	if (!isset($dn)) {
-
 		print "Error no transactions in this invoice\n";
 		// ok lets do
-
-
-
 		return;
 	}
-
-
-
 
 	if (count($picker_data['id'])==0)$staff_key=0;
 	else {
@@ -820,11 +812,6 @@ function send_order($data,$data_dn_transactions) {
 				$_outstock_qty=0;
 
 			}
-
-
-
-
-
 		}
 
 
@@ -847,17 +834,11 @@ function send_order($data,$data_dn_transactions) {
 	}
 	$dn->start_packing($staff_key,$date_order);
 
-
-
-
 	$_packed_qty=array();
 	foreach ($data_dn_transactions as $key=>$value) {
 
 
-
 		$shipped_quantity=round($value['Shipped Quantity'],8);
-
-
 		$sql=sprintf("select `Inventory Transaction Key`,`Required`,`Map To Order Transaction Fact Metadata` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d order by `Inventory Transaction Key` ",$value['otf_key']);
 		$res=mysql_query($sql);
 

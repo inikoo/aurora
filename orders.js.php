@@ -93,8 +93,9 @@ Event.addListener(window, "load", function() {
 				       ,{key:"state", label:"<?php echo _('Status')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get('store_key').value);
-		//alert("ar_orders.php?tipo=invoices&tableid=1");
+request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get('store_key').value
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
+		//alert(request);
 	     this.dataSource1.table_id=tableid;
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";

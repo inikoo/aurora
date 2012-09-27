@@ -10,44 +10,39 @@
 	{else} 
 	<div id="dialog_login" style="min-height:400px;float:left">
 		<h2>
-			{t}Login{/t}
+			{t}Login{/t} 
 		</h2>
 		<div style="border:1px solid #ccc;padding:20px;width:400px;float:left">
-					
-
-		<form name="loginform" id="loginform" method="post"   action="login.php"   onSubmit="return false"   >
-
-			<table style="margin-bottom:10px">
-
-				<tr>
-					<td class="label">{t}Email{/t}: </td>
-					<td>
-					<input id="login_handle" type="text" name="login_handle"></td>
-				</tr>
-				<tr>
-					<td class="label">{t}Password{/t}: </td>
-					<td>
-					<input type="password" id="login_password" name="_passwd_"></td>
-				</tr>
-				<tr>
-					<td class="label">{t}Remember Me{/t}: </td>
-					<td style="text-align:left;">
-					<input style="width:20px;border:none" type="checkbox"  name="remember_me" id="remember_me" value="0" />
-					</td>
-				</tr>
-				
-			
-				
-				<tr class="button space" style="">
-					<td colspan="2"> 
-					<div class="buttons">
-						<button id="submit_login" class="positive">{t}Log In{/t}</button> <button style="display:none" class="negative" id="hide_login_dialog">{t}Close{/t}</button> 
-					</div>
-					</td>
-				</tr>
-				
-			</table>
-	</form>
+			<form name="loginform" id="loginform" method="post" action="" onsubmit="return false" target="dummy">
+				<fieldset>
+					<table style="margin-bottom:10px">
+						<tr>
+							<td class="label">{t}Email{/t}: </td>
+							<td> 
+							<input id="email" type="email" name="email"></td>
+						</tr>
+						<tr>
+							<td class="label">{t}Password{/t}: </td>
+							<td> 
+							<input type="password" id="password" name="password"></td>
+						</tr>
+						<tr>
+							<td class="label">{t}Remember Me{/t}: </td>
+							<td style="text-align:left;"> 
+							<input style="width:20px;border:none" type="checkbox" name="remember_me" id="remember_me" value="0" />
+							</td>
+						</tr>
+						<tr class="button space" style="">
+							<td colspan="2"> 
+							<div class="buttons">
+								<button id="submit_login" class="positive">{t}Log In{/t}</button> <button style="display:none" class="negative" id="hide_login_dialog">{t}Close{/t}</button> 
+							</div>
+							</td>
+						</tr>
+						<input style="display:none" type="submit" />
+					</table>
+				</fieldset>
+			</form>
 		</div>
 		<div id="message_log_out" class="ok_block" style="{if !isset($logged_out)}display:none;{/if}width:300px;float:left;margin-left:30px;margin-bottom:10px">
 			{t}You have successfully logged out, see you soon{/t} 
@@ -64,8 +59,9 @@
 		<div id="invalid_credentials" class="error_block" style="display:none;width:300px;float:left;margin-left:30px;margin-bottom:10px">
 			{t}Invalid username or password!{/t} 
 		</div>
-		<div style="clear:both"></div>
-		<table style="clear:left;float;left;margin-top:10px;" >
+		<div style="clear:both">
+		</div>
+		<table style="clear:left;float;left;margin-top:10px;">
 			<tr class="link space">
 				<td colspan="2">{t}Don't know your password?{/t} <span class="link" id="link_forgot_password_from_login">{t}Click Here{/t}</span></td>
 			</tr>
@@ -75,17 +71,17 @@
 			<tr style="display:none" id="tr_link_register_from_login2" class="link">
 				<td colspan="2">{t}Use another email{/t}, <span class="link" id="link_register_from_login2">{t}Register Here{/t}</span></td>
 			</tr>
-			{if $site->get_login_help_page_key()}
-			<tr  class="link">
+			{if $site->get_login_help_page_key()} 
+			<tr class="link">
 				<td colspan="2">{t}Troubles with Log in?{/t} <span class="link" onclick='window.location="page.php?id={$site->get_login_help_page_key()}"' id="link_register_from_login">{t}Read Here{/t}</span></td>
 			</tr>
-			{/if}
+			{/if} 
 		</table>
 	</div>
 	{/if} 
 	<div id="dialog_forgot_password" style="display:none;float:left">
 		<h2>
-			{t}Forgotten password{/t}
+			{t}Forgotten password{/t} 
 		</h2>
 		<div style="border:1px solid #ccc;padding:20px;width:400px;float:left">
 			<div class="dialog_inikoo">
@@ -93,7 +89,7 @@
 					<tbody id="forgot_password_form">
 						<tr>
 							<td class="label" style="text-align:right;width:120px">{t}Email{/t}: </td>
-							<td>
+							<td> 
 							<input id="forgot_password_handle"></td>
 						</tr>
 						<tr>
@@ -131,23 +127,23 @@
 		<div id="message_forgot_password_wrong_email" class="warning_block" style="display:none;width:300px;float:left;margin-left:30px;margin-bottom:10px">
 			{t}Email address invalid{/t}. 
 		</div>
-		<div style="clear:both"></div>
-		<table style="margin-top:15px;clear:left" >
+		<div style="clear:both">
+		</div>
+		<table style="margin-top:15px;clear:left">
 			<tr class="link space">
 				<td colspan="2">{t}Want to try to login again?{/t} <span class="link" id="show_login_dialog2">{t}Click Here{/t}</span></td>
 			</tr>
 			<tr id="tr_link_register_from_login" class="link">
 				<td colspan="2">{t}First visit?{/t} <span class="link" onclick='window.location="registration.php"' id="link_register_from_login">{t}Register Here{/t}</span></td>
 			</tr>
-			{if $site->get_login_help_page_key()}
-			<tr  class="link">
+			{if $site->get_login_help_page_key()} 
+			<tr class="link">
 				<td colspan="2">{t}Troubles with Log in?{/t} <span class="link" onclick='window.location="page.php?id={$site->get_login_help_page_key()}"' id="link_register_from_login">{t}Read Here{/t}</span></td>
 			</tr>
-			{/if}
-			
-			
+			{/if} 
 		</table>
 	</div>
 	<div style="clear:both;margin-bottom:30px">
 	</div>
 </div>
+<iframe src="dummy.html" name="dummy" style="display: none"></iframe>

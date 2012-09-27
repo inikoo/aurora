@@ -252,10 +252,10 @@ switch ($tipo) {
         $where.=' and `Invoice Paid`!="Yes"';
         break;
     case 'invoices':
-        $where.=' and `Invoice Title`="Invoice"';
+        $where.=' and `Invoice Type`="Invoice"';
         break;        
     case 'refunds':
-        $where.=' and `Invoice Title`="Refund"';
+        $where.=' and `Invoice Type`="Refund"';
         break;
     default:
         

@@ -156,5 +156,7 @@ function associate_subject_to_category_radio($data) {
 
 }
 
+$sql="UPDATE `dw`.`Warehouse Dimension` SET `Warehouse Family Category Key` = '".$main_cat->id."' WHERE `Warehouse Dimension`.`Warehouse Key` =1;"
+
 
 ?>

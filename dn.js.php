@@ -16,8 +16,6 @@ var pack_it_dialog;
 var pack_assigned_dialog;
 
 
-
-
 YAHOO.util.Event.addListener(window, "load", function() {
    tables = new function() {
 
@@ -25,7 +23,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
-		show_if_dispatched=(Dom.get('dn_state')=='Dispatched'?true:false)
+		show_if_dispatched=(Dom.get('dn_state').value=='Dispatched'?false:true)
 
 	    var OrdersColumnDefs = [
 				     {key:"part", label:"<?php echo _('Part')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -291,5 +289,27 @@ dialog_pack_it.show()
 }
 
 }
+
+function aprove_packing(){
+	Dom.get('aprove_packing_img').src='art/loading.gif';
+	ar_file='ar_edit_orders.php';
+   	request=ar_file+'?tipo=aprove_packing&dn_key='+Dom.get('dn_key').value;
+   YAHOO.util.Connect.asyncRequest(
+        'GET',
+    request, {
+		success: function (o) {
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+     				window.location='dn.php?id='+Dom.get('dn_key').value;
+            }
+        },
+		failure: function (o) {
+            alert(o.statusText);
+        },
+		scope:this
+    }
+	);
+}
+
 
 YAHOO.util.Event.onDOMReady(init);

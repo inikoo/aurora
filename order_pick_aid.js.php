@@ -50,6 +50,7 @@ var myonCellClick = function(oArgs) {
 
     Dom.get('not_found_units').value=(data['not_found']==0)?'':data['not_found']
     Dom.get('no_picked_other_units').value=(data['no_picked_other']==0)?'':data['no_picked_other']
+
     Dom.get('to_assign_todo_units').innerHTML=data['todo']-data['out_of_stock']-data['not_found']-data['no_picked_other'];
 
 
@@ -361,6 +362,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					,{key:"out_of_stock",label:"", width:1,hidden:true}
 					,{key:"not_found",label:"", width:1,hidden:true}
 					,{key:"no_picked_other",label:"", width:1,hidden:true}
+					//,{key:"no_authorized",label:"", width:1,hidden:true}
 					,{key:"packed",label:"", width:1,hidden:true}
 								//	   ,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:(Dom.get('method').value!='Inikoo'?false:true),width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
@@ -519,7 +521,7 @@ required=Dom.get('required_units').value;
 out_of_stock=(Dom.get('out_of_stock_units').value==''?0:Dom.get('out_of_stock_units').value);
 not_found=(Dom.get('not_found_units').value==''?0:Dom.get('not_found_units').value);
 no_picked_other=(Dom.get('no_picked_other_units').value==''?0:Dom.get('no_picked_other_units').value);
-
+//no_authorized=(Dom.get('no_authorized_other_units').value==''?0:Dom.get('no_authorized_other_units').value);
 //alert(todo+' '+out_of_stock+' '+not_found+' '+no_picked_other)
 if(required-picked-out_of_stock-not_found-no_picked_other<0){
 Dom.setStyle('todo_error_msg','display','block')
@@ -537,7 +539,7 @@ YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   // alert(o.responseText);
+					    alert(o.responseText);
 			
 					   var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
@@ -560,7 +562,8 @@ YAHOO.util.Connect.asyncRequest(
                             datatable.updateCell(updating_record,'notes',r.notes);
                            // datatable.updateCell(updating_record,'todo',r.todo);
                             datatable.updateCell(updating_record,'out_of_stock',r.out_of_stock);
-                        
+                      //                              datatable.updateCell(updating_record,'no_authorized',r.no_authorized);
+
                             datatable.updateCell(updating_record,'not_found',r.not_found);
                             datatable.updateCell(updating_record,'no_picked_other',no_picked_other);
 
@@ -674,6 +677,42 @@ assign_packer_dialog.show()
 Dom.get('Assign_Packer_Staff_Name').focus();
     
 }
+
+
+function fill_edit_deal_form(deal_key){
+
+    var request='ar_assets.php?tipo=get_deal_data&deal_key='+deal_key;
+   //alert(request);  
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		   
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+
+
+	region1 = Dom.getRegion(e); 
+	region2 = Dom.getRegion('dialog_locations'); 
+
+	var pos =[region1.right,region1.top]
+
+	Dom.setXY('dialog_locations', pos);
+
+	dialog_locations.show();
+
+
+}
+
+
+
+
 
 function get_locations(e, part_sku){
 //alert(sku);

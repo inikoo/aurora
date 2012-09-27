@@ -266,7 +266,7 @@ function report_data($int) {
                                           );
 
 
-        $sql=sprintf("select  count(DISTINCT `Invoice Customer Key`) as customers, `Category Label`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from  `Category Dimension` C left join `Category Bridge` CB on (C.`Category Key`=CB.`Category Key`) left join      `Invoice Dimension` I   on (CB.`Subject Key`=I.`Invoice Key`)  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where CB.`Subject`='Invoice' and  `Invoice Store Key`=%d %s group by C.`Category Key`"
+        $sql=sprintf("select  count(DISTINCT `Invoice Customer Key`) as customers, `Category Label`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from  `Category Dimension` C left join `Category Bridge` CB on (C.`Category Key`=CB.`Category Key`) left join      `Invoice Dimension` I   on (CB.`Subject Key`=I.`Invoice Key`)  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where CB.`Subject`='Invoice' and  `Invoice Store Key`=%d %s group by C.`Category Key`"
                      ,$row['Store Key'],$int[0]);
 
         // print $sql;
@@ -334,7 +334,7 @@ function report_data($int) {
 
 
 
-    $sql="select count(DISTINCT `Invoice Customer Key`) as customers, `Invoice Store Key`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` where true ".$int[0]." group by `Invoice Store Key`";
+    $sql="select count(DISTINCT `Invoice Customer Key`) as customers, `Invoice Store Key`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` where true ".$int[0]." group by `Invoice Store Key`";
 //print $sql;
     $result=mysql_query($sql);
     $sum_net_eq=0;

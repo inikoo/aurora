@@ -1158,5 +1158,29 @@
 	<input type="hidden" value="{$customer->get_principal_email_comment()}" id="comment_email" />
 </div>
 
+<div id="dialog_orders_in_process_found" style="width:350px;border:1px solid #ccc;text-align:left;padding:10px">
+
+	<table style="margin:10px" border="0">
+		
+		<tr>
+			<td style="padding-top:10px" ><p  id="orders_in_process_found_orders_list" style="font-size:110%;padding:0;;text-align:center;width:100%"></p></td>
+		</tr>
+		<tr>
+			<td style="padding-top:0px" id="orders_in_process_found_msg"></td>
+		</tr>
+		
+		<tr>
+			<td style="padding-top:10px">
+			<div class="buttons">
+						<button onClick="force_take_order()" class="positive">{t}Yes{/t}</button> 
+
+						<button onClick="close_dialog_orders_in_process_found()" class="negative">{t}Cancel{/t}</button> 
+
+			</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
 
 {include file='footer.tpl'} 

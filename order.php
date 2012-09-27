@@ -103,7 +103,9 @@ $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 
 //$order->update_xhtml_delivery_notes();//exit;
-$order->update_no_normal_totals();
+//$order->update_no_normal_totals();
+
+$order->update_discounts();
 if (!$order->id) {
 	header('Location: orders_server.php?msg=order_not_found');
 	exit;
@@ -123,7 +125,7 @@ $smarty->assign('referral',$referral);
 
 $customer=new Customer($order->get('order customer key'));
 
-
+//$order->update_no_normal_totals();
 $store=new Store($order->data['Order Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
@@ -133,8 +135,28 @@ if (isset($_REQUEST['pick_aid'])) {
 	$template='order_pick_aid.tpl';
 } else {
 
-$order->update_no_normal_totals();
-print $order->data['Order Invoiced Balance Total Amount'];
+
+	$tax_categories=array();	
+		$sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Active`='Yes'");
+		$res=mysql_query($sql);
+		while($row=mysql_fetch_assoc($res)){
+			$tax_categories[]=array('rate'=>$row['Tax Category Rate'],'label'=>$row['Tax Category Name'],'code'=>$row['Tax Category Code'],'selected'=>($order->data['Order Tax Code']==$row['Tax Category Code']?true:false));
+		}
+		$smarty->assign('tax_categories',$tax_categories);
+		
+		$credit=array('net'=>'','tax_code'=>'','description'=>'','transaction_key'=>'');
+		$sql=sprintf("select * from `Order No Product Transaction Fact` where `Transaction Type`='Credit' and `Order Key`=%d",$order->id);
+		$res=mysql_query($sql);
+		$has_credit=0;
+		if($row=mysql_fetch_assoc($res)){
+			$credit=array('transaction_key'=>$row['Order No Product Transaction Fact Key'],'net'=>$row['Transaction Net Amount'],'tax_code'=>$row['Tax Category Code'],'description'=>$row['Transaction Description']);
+		$has_credit=1;
+		}
+		$smarty->assign('credit',$credit);
+		$smarty->assign('has_credit',$has_credit);
+
+	//$order->update_no_normal_totals();
+	//print $order->data['Order Balance Net Amount'].' '.$order->data['Order Balance Tax Amount'].' '.$order->data['Order Balance Total Amount'];
 	switch ($order->get('Order Current Dispatch State')) {
 
 	case('In Process'):
@@ -173,15 +195,14 @@ print $order->data['Order Invoiced Balance Total Amount'];
 		$smarty->assign('filter0',$tipo_filter);
 		$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
 		$filter_menu=array(
-			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
-			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
-			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
-
+			'code'=>array('db_key'=>'code','menu_label'=>_('Code starting with <i>x</i>'),'label'=>_('Code')),
+			'family'=>array('db_key'=>'family','menu_label'=>_('Family starting with <i>x</i>'),'label'=>_('Family')),
+			'name'=>array('db_key'=>'name','menu_label'=>_('Name starting with <i>x</i>'),'label'=>_('Name'))
 		);
 		$smarty->assign('filter_menu0',$filter_menu);
 		$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-
-
+		
+		
 		$paginator_menu=array(10,25,50,100);
 		$smarty->assign('paginator_menu0',$paginator_menu);
 
@@ -190,184 +211,190 @@ print $order->data['Order Invoiced Balance Total Amount'];
 
 		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
 
+	
+
+		
+		
 		break;
+
+		
 
 	case('Ready to Pick'):
 	case('Picking & Packing'):
-	case('Packed'):
+	case('Packed Done'):
 	case('Ready to Ship'):
 
-	
-		if(isset($_REQUEST['amend']) and $_REQUEST['amend']){
-		
-			
-		$js_files[]='js/edit_common.js';
+
+		if (isset($_REQUEST['amend']) and $_REQUEST['amend']) {
 
 
-		$js_files[]='edit_address.js.php';
-		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
-
-		$js_files[]='edit_delivery_address_common.js.php';
-		$js_files[]='order_in_warehouse_amend.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
-		$js_files[]='js/common_order_not_dispatched.js';
+			$js_files[]='js/edit_common.js';
 
 
-		$css_files[]='css/edit.css';
-		$css_files[]='css/edit_address.css';
+			$js_files[]='edit_address.js.php';
+			$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+
+			$js_files[]='edit_delivery_address_common.js.php';
+			$js_files[]='order_in_warehouse_amend.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
+			$js_files[]='js/common_order_not_dispatched.js';
 
 
-		$template='order_in_warehouse_amend.tpl';
-		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
+			$css_files[]='css/edit.css';
+			$css_files[]='css/edit_address.css';
 
 
-		$products_display_type='ordered_products';
-
-		$_SESSION['state']['order']['products']['display']=$products_display_type;
-
-		$products_display_type=$_SESSION['state']['order']['products']['display'];
-		$smarty->assign('products_display_type',$products_display_type);
-		$smarty->assign('view',$_SESSION['state']['order']['products']['view']);
-
-		$tipo_filter=$_SESSION['state']['order']['products']['f_field'];
+			$template='order_in_warehouse_amend.tpl';
+			$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
 
 
-		$smarty->assign('filter0',$tipo_filter);
-		$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
-		$filter_menu=array(
-			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
-			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
-			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+			$products_display_type='ordered_products';
 
-		);
-		$smarty->assign('filter_menu0',$filter_menu);
-		$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+			$_SESSION['state']['order']['products']['display']=$products_display_type;
+
+			$products_display_type=$_SESSION['state']['order']['products']['display'];
+			$smarty->assign('products_display_type',$products_display_type);
+			$smarty->assign('view',$_SESSION['state']['order']['products']['view']);
+
+			$tipo_filter=$_SESSION['state']['order']['products']['f_field'];
 
 
-		$paginator_menu=array(10,25,50,100);
-		$smarty->assign('paginator_menu0',$paginator_menu);
+			$smarty->assign('filter0',$tipo_filter);
+			$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
+			$filter_menu=array(
+				'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+				'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+				'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
 
-		$smarty->assign('search_label',_('Orders'));
-		$smarty->assign('search_scope','orders');
+			);
+			$smarty->assign('filter_menu0',$filter_menu);
+			$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
-		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
-		
-			
-		
-		
+
+			$paginator_menu=array(10,25,50,100);
+			$smarty->assign('paginator_menu0',$paginator_menu);
+
+			$smarty->assign('search_label',_('Orders'));
+			$smarty->assign('search_scope','orders');
+
+			$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+
+
+
+
 		}
-		else{
-		
-		
-		
-	
-	
-		$js_files[]='js/edit_common.js';
-
-
-		$js_files[]='edit_address.js.php';
-		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
-
-		$js_files[]='edit_delivery_address_common.js.php';
-		$js_files[]='order_in_warehouse.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
-		$js_files[]='js/common_order_not_dispatched.js';
-
-
-		$css_files[]='css/edit.css';
-		$css_files[]='css/edit_address.css';
-		$js_files[]='js/common_assign_picker_packer.js.php';
-
-
-		$template='order_in_warehouse.tpl';
-
-		
-
-		$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
-
-
-		$products_display_type='ordered_products';
-		$_SESSION['state']['order']['products']['display']=$products_display_type;
-
-		$products_display_type=$_SESSION['state']['order']['products']['display'];
-
-		$smarty->assign('products_display_type',$products_display_type);
-		$smarty->assign('view',$_SESSION['state']['order']['products']['view']);
+		else {
 
 
 
 
-		$tipo_filter=$_SESSION['state']['order']['products']['f_field'];
+
+			$js_files[]='js/edit_common.js';
 
 
-		$smarty->assign('filter0',$tipo_filter);
-		$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
-		$filter_menu=array(
-			'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
-			'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
-			'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+			$js_files[]='edit_address.js.php';
+			$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
 
-		);
-		$smarty->assign('filter_menu0',$filter_menu);
-		$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+			$js_files[]='edit_delivery_address_common.js.php';
+			$js_files[]='order_in_warehouse.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
+			$js_files[]='js/common_order_not_dispatched.js';
 
 
-		$paginator_menu=array(10,25,50,100);
-		$smarty->assign('paginator_menu0',$paginator_menu);
+			$css_files[]='css/edit.css';
+			$css_files[]='css/edit_address.css';
+			$js_files[]='js/common_assign_picker_packer.js.php';
+
+
+			$template='order_in_warehouse.tpl';
 
 
 
-$tipo_filter2='alias';
-$filter_menu2=array(
-                  'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
-                  'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
-              );
-$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
-$smarty->assign('filter_menu2',$filter_menu2);
-$smarty->assign('filter2',$tipo_filter2);
-$smarty->assign('filter_value2','');
+			$_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
 
-		$smarty->assign('search_label',_('Orders'));
-		$smarty->assign('search_scope','orders');
 
-		$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+			$products_display_type='ordered_products';
+			$_SESSION['state']['order']['products']['display']=$products_display_type;
 
-}
+			$products_display_type=$_SESSION['state']['order']['products']['display'];
 
-$company_area=new CompanyArea('code','WAH');
-$pickers=$company_area->get_current_staff_with_position_code('PICK');
-$number_cols=5;
-$row=0;
-$pickers_data=array();
-$contador=0;
-foreach($pickers as $picker) {
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-        $row++;
-    $tmp=array();
-    foreach($picker as $key=>$value) {
-        $tmp[preg_replace('/\s/','',$key)]=$value;
-    }
-    $pickers_data[$row][]=$tmp;
-    $contador++;
-}
+			$smarty->assign('products_display_type',$products_display_type);
+			$smarty->assign('view',$_SESSION['state']['order']['products']['view']);
 
-$smarty->assign('pickers',$pickers_data);
 
-$packers=$company_area->get_current_staff_with_position_code('PACK');
-$number_cols=5;
-$row=0;
-$packers_data=array();
-$contador=0;
-foreach($packers as $packer) {
-    if (fmod($contador,$number_cols)==0 and $contador>0)
-        $row++;
-    $tmp=array();
-    foreach($packer as $key=>$value) {
-        $tmp[preg_replace('/\s/','',$key)]=$value;
-    }
-    $packers_data[$row][]=$tmp;
-    $contador++;
-}
 
-$smarty->assign('packers',$packers_data);
+
+			$tipo_filter=$_SESSION['state']['order']['products']['f_field'];
+
+
+			$smarty->assign('filter0',$tipo_filter);
+			$smarty->assign('filter_value0',$_SESSION['state']['order']['products']['f_value']);
+			$filter_menu=array(
+				'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code'),
+				'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code'),
+				'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+
+			);
+			$smarty->assign('filter_menu0',$filter_menu);
+			$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+
+			$paginator_menu=array(10,25,50,100);
+			$smarty->assign('paginator_menu0',$paginator_menu);
+
+
+
+			$tipo_filter2='alias';
+			$filter_menu2=array(
+				'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+				'name'=>array('db_key'=>'name','menu_label'=>_('Name'),'label'=>_('Name')),
+			);
+			$smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
+			$smarty->assign('filter_menu2',$filter_menu2);
+			$smarty->assign('filter2',$tipo_filter2);
+			$smarty->assign('filter_value2','');
+
+			$smarty->assign('search_label',_('Orders'));
+			$smarty->assign('search_scope','orders');
+
+			$general_options_list[]=array('tipo'=>'url','url'=>'customers.php?store='.$store->id,'label'=>_('Customers'));
+
+		}
+
+		$company_area=new CompanyArea('code','WAH');
+		$pickers=$company_area->get_current_staff_with_position_code('PICK');
+		$number_cols=5;
+		$row=0;
+		$pickers_data=array();
+		$contador=0;
+		foreach ($pickers as $picker) {
+			if (fmod($contador,$number_cols)==0 and $contador>0)
+				$row++;
+			$tmp=array();
+			foreach ($picker as $key=>$value) {
+				$tmp[preg_replace('/\s/','',$key)]=$value;
+			}
+			$pickers_data[$row][]=$tmp;
+			$contador++;
+		}
+
+		$smarty->assign('pickers',$pickers_data);
+
+		$packers=$company_area->get_current_staff_with_position_code('PACK');
+		$number_cols=5;
+		$row=0;
+		$packers_data=array();
+		$contador=0;
+		foreach ($packers as $packer) {
+			if (fmod($contador,$number_cols)==0 and $contador>0)
+				$row++;
+			$tmp=array();
+			foreach ($packer as $key=>$value) {
+				$tmp[preg_replace('/\s/','',$key)]=$value;
+			}
+			$packers_data[$row][]=$tmp;
+			$contador++;
+		}
+
+		$smarty->assign('packers',$packers_data);
 
 		break;
 
@@ -444,13 +471,13 @@ $smarty->assign('packers',$packers_data);
 		$template='order_unknown.tpl';
 
 		break;
-//	case('Ready to Ship'):
-//		$js_files[]='order_ready_to_ship.js.php';
-//		$template='order_ready_to_ship.tpl';
-//		break;
+		// case('Ready to Ship'):
+		//  $js_files[]='order_ready_to_ship.js.php';
+		//  $template='order_ready_to_ship.tpl';
+		//  break;
 	default:
-	
-	
+
+
 		exit('todo ->'.$order->get('Order Current Dispatch State').'<-');
 		break;
 	}

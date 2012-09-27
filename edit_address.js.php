@@ -309,7 +309,7 @@ success:function(o) {
               Dom.setStyle(address_prefix+'address_tel_label'+r.address_key,'visibility','visible');
               Dom.get(address_prefix+'address_tel'+r.address_key).innerHTML=r.updated_data.telephone;
               }
-             post_create_billing_address_function(r);     
+                 post_create_billing_address_function(r);     
               }
             
               else if(address_prefix=='xbilling_'){

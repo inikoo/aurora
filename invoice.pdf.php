@@ -1,10 +1,12 @@
 <?php
-
-
 require_once('common.php');
 require_once('class.Store.php');
 
 require_once('class.Invoice.php');
+
+
+
+
 
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
@@ -17,6 +19,12 @@ if (!$invoice->id) {
 //print_r($invoice);
 $store=new Store($invoice->data['Invoice Store Key']);
 $customer=new Customer($invoice->data['Invoice Customer Key']);
+
+
+putenv('LC_ALL='.$store->data['Store Locale'].'.UTF-8');
+setlocale(LC_ALL,$store->data['Store Locale'].'.UTF-8');
+bindtextdomain("inikoo", "./locales");
+textdomain("inikoo");
 
 
 require_once('external_libs/pdf/config/lang/eng.php');

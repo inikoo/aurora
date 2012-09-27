@@ -822,17 +822,23 @@ function edit_family($data) {
 
 
 function edit_deal() {
-	$deal=new deal($_REQUEST['deal_key']);
+
+require_once 'class.DealMetadata.php';
+
+
+//print_r($_REQUEST);
+
+	$deal_metadata=new DealMetadata($_REQUEST['deal_key']);
 	global $editor;
-	$deal->editor=$editor;
-	$deal->update(array($_REQUEST['key']=>stripslashes(urldecode($_REQUEST['newvalue']))));
+	$deal_metadata->editor=$editor;
+	$deal_metadata->update(array($_REQUEST['key']=>stripslashes(urldecode($_REQUEST['newvalue']))));
 
 
-	if ($deal->updated) {
-		$response= array('state'=>200,'newvalue'=>$deal->new_value,'key'=>$_REQUEST['key'],'description'=>$deal->get('Description'));
+	if ($deal_metadata->updated) {
+		$response= array('state'=>200,'newvalue'=>$deal_metadata->new_value,'key'=>$_REQUEST['key'],'description'=>$deal_metadata->get('Description'));
 
 	} else {
-		$response= array('state'=>400,'msg'=>$deal->msg,'key'=>$_REQUEST['key']);
+		$response= array('state'=>400,'msg'=>$deal_metadata->msg,'key'=>$_REQUEST['key']);
 	}
 	echo json_encode($response);
 }
@@ -2586,7 +2592,7 @@ function list_deals_for_edition() {
 		$order='DM.`Deal Metadata Name`';
 
 
-	$sql="select DM.`Deal Metadata Trigger`,`Deal Metadata Key`,DM.`Deal Metadata Name`,D.`Deal Name`
+	$sql="select `Deal Metadata Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Metadata Trigger`,`Deal Metadata Key`,DM.`Deal Metadata Name`,D.`Deal Name`
 	from `Deal Metadata Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
 	// print $sql;
 	$res = mysql_query($sql);
@@ -2595,18 +2601,22 @@ function list_deals_for_edition() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		// $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
-		$deal=new DealMetadata($row['Deal Metadata Key']);
+		$deal_metadata=new DealMetadata($row['Deal Metadata Key']);
 
 		// print_r($deal->terms_input_form());
 
 		//print_r($deal->allowance_input_form());
 
 		$input_allowance='';
-		foreach ($deal->allowance_input_form() as $form_data) {
+		foreach ($deal_metadata->allowance_input_form() as $form_data) {
 			$input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
-                                      <td style="width:15em"  style="text-align:left"><input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s
-                                      <span id="deal_allowance_save%d" style="visibility:hidden" class="state_details" onClick="deal_allowance_save(%d)">'._('Save').'</span>
-                                      <span id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_allowance_reset(%d)">'._('Reset').'</span></td>'
+                                      <td style="width:15em"  style="text-align:left">
+                                      <input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s
+                                      <div style="float:right" class="buttons small">
+                                      <button id="deal_allowance_save%d" style="visibility:hidden" class="state_details" onClick="deal_allowance_save(%d)">'._('Save').'</button>
+                                      <button id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_allowance_reset(%d)">'._('Reset').'</button>
+                                      </div>
+                                      </td>'
 				,$form_data['Label']
 				,$row['Deal Metadata Key']
 				,$row['Deal Metadata Key']
@@ -2624,7 +2634,7 @@ function list_deals_for_edition() {
 			);
 		}
 		$input_term='';
-		foreach ($deal->terms_input_form() as $form_data) {
+		foreach ($deal_metadata->terms_input_form() as $form_data) {
 			//print_r($form_data);
 
 
@@ -2673,20 +2683,45 @@ function list_deals_for_edition() {
 		}
 
 
+if($row['Deal Metadata Expiration Date']==''){
+$valid_to='<span style="font-style:italic">'._('Permanent').'</span> ';
+}else{
+$valid_to='<input style="width:65px" value=""/>';
+}
 
-		$edit='<table style="margin:10px"><tr style="border:none">'.$input_allowance.'</tr><tr style="border:none">'.$input_term.'</tr></table>';
+
+		$edit='<table style="margin:10px"><tr style="border:none">'.$input_allowance.'</tr><tr style="border:none">'.$input_term.'</tr>
+		<tr style="border:none">
+		<td style="text-align:right;padding-right:10px">'._('Valid to').':</td><td>'.$valid_to.'</td></tr>
+		<tr style="border:none"><td colspan=2><div class="buttons small"><button class="disabled positive">'._('Save').'</button><button class="disabled negative">'._('Reset').'</button></div></td></tr>
+		
+		</table>';
 
 
-		$name=$row['Deal Metadata Name'];
+
+
+
+		$name=sprintf('<a href="deal.php?id=%d">%s</a><br/><div style="margin-top:5px;margin-bottom:5px">%s</div><div class="buttons small left"><button onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
+		$row['Deal Key'],
+		$row['Deal Name'],
+		$row['Deal Description'],
+		$row['Deal Key'],
+		_('Edit'),
+		$valid_to
+		
+		);
+		
+	
+		
 		//if ($row['Campaign Deal Schema Key']) {
 		// $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
 		//}
 		$adata[]=array(
-			'status'=>$deal->get_xhtml_status(),
+			'status'=>$deal_metadata->get_xhtml_status(),
 			'name'=>$name,
-			'description'=>'<span id="deal_description'.$deal->id.'">'.$deal->get('Description').'</span>'.$edit,
-			'from'=>'',
-			'to'=>''
+			'description'=>'<span style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/><input  style="margin-top:5px;width:100%" value="'.$row['Deal Metadata Name'].'"><br/>'.$edit,
+			'dates'=>''
+			
 
 		);
 	}

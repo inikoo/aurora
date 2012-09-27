@@ -3736,6 +3736,13 @@ class product extends DB_Table {
 
 	}
 
+
+	function update_weight_from_parts(){
+	
+	
+	}
+
+
 	function update_net_weight($weight) {
 
 		if (!is_numeric($weight)) {
@@ -3752,7 +3759,9 @@ class product extends DB_Table {
 		$this->updated=true;
 
 	}
-
+	
+	
+	
 	function update_gross_weight($weight) {
 
 		if (!is_numeric($weight)) {

@@ -301,7 +301,7 @@
 			</table>
 		</div>
 		<div class="edit_block" style="{if $edit!='delivery'}display:none{/if};min-height:260px" id="d_delivery">
-			{include file='edit_delivery_address_splinter.tpl' return_to_order=false} 
+			{include file='edit_delivery_address_splinter.tpl' parent='customer' order_key=0} 
 		</div>
 		<div class="edit_block" style="{if $edit!='details'}display:none{/if};" id="d_details">
 			<table class="edit" border="0" style="clear:both;margin-bottom:40px;width:100%">

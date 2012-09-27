@@ -147,7 +147,7 @@ if (!$category_key) {
 	$total_to_pay=0;
 
 
-	$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Title`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Title`='Refund',1,0)) as refunds  from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d  %s %s" ,
+	$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`='Refund',1,0)) as refunds  from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d  %s %s" ,
 		$category->id,
 		($from?sprintf('and `Invoice Date`>%s',prepare_mysql($from)):''),
 

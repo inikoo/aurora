@@ -195,7 +195,7 @@
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter4"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value0}" size=10/><div id='f_container4'></div></div></div>
 	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
 	  </div>
-	  <div  id="table4"   class="data_table_container dtable btable "> </div>
+	  <div  id="table4"  style="font-size:90%" class="data_table_container dtable btable "> </div>
 	 </div>
       </div>
 	<div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
@@ -560,9 +560,6 @@
     </div>
  </div>
  
-
-
-{include file='footer.tpl'}
 <div id="dialog_new_product" style="padding:20px 20px 10px 20px ">
 	<div id="new_product_msg">
 	</div>
@@ -572,3 +569,20 @@
 		<button class="negative" id="close_dialog_new_product">{t}Cancel{/t}</button> 
 	</div>
 </div>
+
+<div id="dialog_edit_deal" style="padding:20px 20px 10px 20px ">
+
+<table>
+<tr><td>{t}Name{/t}:</td><td><input id="deal_name_input" value=""></td></tr>
+<tr><td>{t}Term{/t}:</td><td><input id="deal_term_input" value=""></td></tr>
+<tr><td>{t}Description{/t}:</td><td><textarea id="deal_description_input" value=""></textarea></td></tr>
+<tr><td></td><td><div class="buttons">
+<button class="positive">{t}Save{/t}</button>
+<button class="negative">{t}Reset{/t}</button>
+
+</div></td></tr>
+
+</table>
+</div>
+
+{include file='footer.tpl'}
