@@ -939,8 +939,9 @@ function send_order($data,$data_dn_transactions) {
 			
 			
 			$invoice->update($_invoice_data);
-			exit("cacax");
 			$invoice->update_totals();
+						exit("cacax");
+
 			adjust_invoice($invoice,$order);
 
 
