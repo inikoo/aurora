@@ -6547,4 +6547,5 @@ ALTER TABLE `User Request Dimension` ADD INDEX ( `User Key` ) ;
 ALTER TABLE `Page Store Dimension` ADD INDEX ( `Page Code` ( 5 ) ) ;
 ALTER TABLE `Store Dimension` ADD `Store Delivery Note XHTML Message` MEDIUMTEXT NULL DEFAULT NULL ,ADD `Store Invoice XHTML Message` MEDIUMTEXT NULL DEFAULT NULL ;
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML Public Message` MEDIUMTEXT NULL DEFAULT NULL ;
+ALTER TABLE `dw`.`Invoice Tax Bridge` ADD INDEX ( `Invoice Key` ) ;
 
