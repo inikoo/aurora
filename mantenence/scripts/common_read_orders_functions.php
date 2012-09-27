@@ -909,7 +909,7 @@ function send_order($data,$data_dn_transactions) {
 
 			$invoice=$dn->create_invoice($date_inv);
 			// print_r($invoice);
-			exit("----\n");
+			
 			foreach ($credits as $credit) {
 				$credit_data=array(
 					'Affected Order Key'=>$order->id,
@@ -936,6 +936,8 @@ function send_order($data,$data_dn_transactions) {
 
 			);
 
+			exit("caca");
+			
 			$invoice->update($_invoice_data);
 			$invoice->update_totals();
 			adjust_invoice($invoice,$order);
