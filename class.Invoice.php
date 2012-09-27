@@ -392,7 +392,7 @@ $this->update_refund_totals();
 
 	function update_totals() {
 
-		print "\n\nUpdating totals\n";
+		//print "\n\nUpdating totals\n";
 
 		$shipping_net=0;
 		$shipping_tax=0;
