@@ -936,12 +936,12 @@ function send_order($data,$data_dn_transactions) {
 
 			);
 
-			exit("caca");
+			
 			
 			$invoice->update($_invoice_data);
 			$invoice->update_totals();
 			adjust_invoice($invoice,$order);
-
+exit("cacax");
 
 
 
