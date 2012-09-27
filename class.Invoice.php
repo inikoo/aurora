@@ -545,7 +545,7 @@ $this->update_refund_totals();
 		mysql_query($sql);
 
 
-		//$this->update_tax();
+		$this->update_tax();
 
 		//print "\n$sql\n";
 	}
@@ -553,7 +553,7 @@ $this->update_refund_totals();
 	function update_tax() {
 		// print "===\n";
 		
-		print "\n\nUpdating tax\n";
+		//print "\n\nUpdating tax\n";
 		
 		$sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$this->id);
 		mysql_query($sql);
@@ -646,7 +646,7 @@ $this->update_refund_totals();
 			$this->add_tax_item($tax_code,$amount);
 		}
 		
-		print "\n\End updatinf  tax\n";
+		//print "\n\End updatinf  tax\n";
 
 	}
 
