@@ -909,7 +909,7 @@ function send_order($data,$data_dn_transactions) {
 
 			$invoice=$dn->create_invoice($date_inv);
 			// print_r($invoice);
-			//exit("----\n");
+			exit("----\n");
 			foreach ($credits as $credit) {
 				$credit_data=array(
 					'Affected Order Key'=>$order->id,
