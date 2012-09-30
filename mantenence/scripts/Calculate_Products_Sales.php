@@ -32,8 +32,15 @@ require_once '../../conf/conf.php';
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
  $product=new Product('pid',$row['Product ID']);
-  $product->update_parts();
-  $product->update_web_state();
+ 
+ $weight=$product->get_weight_from_parts();
+ $product->update_net_weight($weight);
+ $product->update_gross_weight($weight);
+ 
+ 
+// exit;
+ // $product->update_parts();
+ // $product->update_web_state();
   continue;
   
  $images=$product->get_images_slidesshow();

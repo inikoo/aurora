@@ -6548,4 +6548,10 @@ ALTER TABLE `Page Store Dimension` ADD INDEX ( `Page Code` ( 5 ) ) ;
 ALTER TABLE `Store Dimension` ADD `Store Delivery Note XHTML Message` MEDIUMTEXT NULL DEFAULT NULL ,ADD `Store Invoice XHTML Message` MEDIUMTEXT NULL DEFAULT NULL ;
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML Public Message` MEDIUMTEXT NULL DEFAULT NULL ;
 ALTER TABLE `dw`.`Invoice Tax Bridge` ADD INDEX ( `Invoice Key` ) ;
+ALTER TABLE `dw`.`Invoice Tax Bridge` ADD INDEX ( `Tax Code` ) ;
+ALTER TABLE `Order No Product Transaction Fact` CHANGE `Transaction Outstandind Net Amount Balance` `Transaction Outstanding Net Amount Balanc;
+
+
+
+
 

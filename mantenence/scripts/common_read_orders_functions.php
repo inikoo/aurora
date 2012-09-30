@@ -583,7 +583,7 @@ function create_order($data) {
 	$discounts_map=array();
 
 
-
+//print_r($data_dn_transactions);
 
 
 	foreach ($data_dn_transactions as $ddt_key=>$transaction) {
@@ -694,8 +694,22 @@ function create_order($data) {
 	$order->update_totals_from_order_transactions();
 
 
+//print_r($discounts_map);
+
 	foreach ($discounts_map as $otf_key=>$discount) {
+		
+		$sql=sprintf("select `Order Transaction Total Discount Amount` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$otf_key);
+		$res=mysql_query($sql);
+		if($row=mysql_fetch_assoc($res)){
+		$tmp=(float) $row['Order Transaction Total Discount Amount'];
+		$tmp2=(float) round($discount,3);
+		//print $tmp.' '.$tmp2."\n";
+		if($tmp!=$tmp2){
+	//	print "xxx\n";
 		$order->update_transaction_discount_amount($otf_key,$discount);
+	
+	}
+		}
 	}
 
 

@@ -177,7 +177,7 @@ foreach ($__cols as $cols) {
 	}
 
 
-	
+
 
 
 
@@ -188,9 +188,9 @@ foreach ($__cols as $cols) {
 	$rrp=$cols[$map['rrp']];
 
 
-//	   if(!preg_match('/ndel/i',$code)){
-//	 continue;
-//	  }
+	//    if(!preg_match('/ndel/i',$code)){
+	//  continue;
+	//   }
 
 	$code=_trim($code);
 	if ($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
@@ -228,7 +228,7 @@ foreach ($__cols as $cols) {
 			$new_family=false;
 		}
 		$deals=array();
-		
+
 
 		$units=$cols[$map['units']];
 		if ($units=='' or $units<=0)
@@ -254,22 +254,34 @@ foreach ($__cols as $cols) {
 		$w=$cols[$map['w']];
 		$price=$cols[$map['price']];
 
-		if($units and $w  and is_numeric($w) and $code!=''){
+		if ($units and $w  and is_numeric($w) and $code!='') {
 			$w=floatval(sprintf("%.04f",$w));
-		print "$code $units $w\n";
-		
-		
-			$sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f ,`Product Gross Weight`=%f  where `Product Code`=%s  ",$w*$units,$w*$units,prepare_mysql($code));
-			
+			print "$code $units $w\n";
+
+
+			$product=new Product('store_code',1,$code);
+			if ($product->id) {
+				$parts_info=$product->get_current_part_list();
+				if (count($part_info)==1) {
+					foreach ($parts_info as $part_info) {
+						$part=$part_info['part'];
+						$part->update_field_swicher('Part Gross Weight',$w*$units);
+						
+					}
+				}
+
+			}
+			// $sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f ,`Product Gross Weight`=%f  where `Product Code`=%s  ",$w*$units,$w*$units,prepare_mysql($code));
+
 			//print "$sql\n";
-			
-	mysql_query($sql);
-			
-		
-		
-		
+
+			//mysql_query($sql);
+
+
+
+
 		}
-		
+
 
 		continue;
 
@@ -278,7 +290,7 @@ foreach ($__cols as $cols) {
 
 
 		if (   preg_match('/\-pack$/i',$code)  or    preg_match('/\-pst$/i',$code)  or    preg_match('/\-kit2$/i',$code)  or  preg_match('/\-kit1$/i',$code)  or preg_match('/\-st$/i',$code)  or   preg_match('/\-minst$/i',$code)  or  preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX/i',$code) or      $code=='FishP-Mix' or  $code=='IncB-St' or $code=='IncIn-ST' or $code=='LLP-ST' or   $code=='LLP-ST' or  $code=='EO-XST' or $code=='AWRP-ST' or $code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St'
-			or $code=='DOT-St' 	or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
+			or $code=='DOT-St'  or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
 			or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
 			or ($description=='' and ( $price=='' or $price==0 ))
 
@@ -511,8 +523,8 @@ foreach ($__cols as $cols) {
 				$scode=_trim($cols[$map['supplier_product_code']]);
 				$supplier_code=$cols[$map['supplier_code']];
 				update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
-				
-				
+
+
 				$old_pids=$product->set_duplicates_as_historic($date);
 				if (count($old_pids)>0) {
 					$sql="select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`)where `Product ID` in (".join(",",$old_pids).")  ";
@@ -536,7 +548,7 @@ foreach ($__cols as $cols) {
 			}
 
 			$product->change_current_key($product->id);
-		
+
 			$product->update_rrp('Product RRP',$rrp);
 
 			$product->update_stage('Normal');
@@ -544,11 +556,11 @@ foreach ($__cols as $cols) {
 				set_part_as_available($product);
 			}
 
-//print "zzzzzz1\n";
+			//print "zzzzzz1\n";
 			if ($product->data['Product Family Key']==$fam_products_no_family_key) {
 				$product->update_family_key($family->id);
 			}
-//print "zzzzzz2\n";
+			//print "zzzzzz2\n";
 			if ($product->data['Product Sales Type']!='Private Sale') {
 				$product->update_sales_type('Public Sale');
 
@@ -557,7 +569,7 @@ foreach ($__cols as $cols) {
 			}
 
 
-//print "zzzzzz\n";
+			//print "zzzzzz\n";
 
 			$sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d and `Product ID`!=%d group by `Product ID`",
 				prepare_mysql($product->code),
@@ -571,7 +583,7 @@ foreach ($__cols as $cols) {
 				$_product=new Product('pid',$row['Product ID']);
 				$_product->set_as_historic();
 			}
-			
+
 			$product->update_web_state();
 
 		}

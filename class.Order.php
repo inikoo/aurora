@@ -3261,7 +3261,7 @@ class Order extends DB_Table {
 
 	function update_discounts() {
 
-
+//print "\nHola\n";
 		$this->allowance=array('Family Percentage Off'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
 
@@ -3484,6 +3484,11 @@ class Order extends DB_Table {
 				mysql_query($sql);
 			}
 		}
+
+
+
+
+
 
 
 
