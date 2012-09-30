@@ -653,7 +653,7 @@ $this->update_main_state();
 
 
 			if ($this->data['Part Package Volume']<1) {
-				return number($this->data['Part Gross Weight']/1000,$number_digits).'mL';
+				return number($this->data['Part Gross Weight']*1000,$number_digits).'mL';
 			}else {
 				return number($this->data['Part Package Volume'],$number_digits).'L';
 			}
@@ -668,11 +668,10 @@ $this->update_main_state();
 			}
 
 
-			$number_digits=strlen(substr(strrchr($this->data['Part Gross Weight'], "."), 1));
-
+			$number_digits=(int)strlen(substr(strrchr($this->data['Part Gross Weight'], "."), 1));
 
 			if ($this->data['Part Gross Weight']<1) {
-				return number($this->data['Part Gross Weight']/1000,$number_digits).'g';
+				return number($this->data['Part Gross Weight']*1000,$number_digits).'g';
 			}else {
 				return number($this->data['Part Gross Weight'],$number_digits).'kg';
 			}

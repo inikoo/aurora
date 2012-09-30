@@ -536,6 +536,7 @@ class product extends DB_Table {
 			return $this->data['Product Net Weight']/$this->data['Product Units Per Case'];
 			break;
 		case('Net Weight Per Unit Formated'):
+		
 			$weight_units=_('Kg');
 			return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case']).$weight_units;
 			break;
@@ -588,7 +589,18 @@ class product extends DB_Table {
 			return number($this->data['Product Total Quantity Invoiced']);
 
 		case('Formated Weight'):
-			return number($this->data['Product Net Weight'])."Kg";
+			
+			
+			$number_digits=(int)strlen(substr(strrchr($this->data['Product Net Weight'], "."), 1));
+
+			if ($this->data['Product Net Weight']<1) {
+				return number($this->data['Product Net Weight']*1000,$number_digits).'g';
+			}else {
+				return number($this->data['Product Net Weight'],$number_digits).'kg';
+			}
+
+			
+			
 			break;
 		case('Formated Dimensions'):
 			return '';
@@ -3737,8 +3749,16 @@ class product extends DB_Table {
 	}
 
 
-	function update_weight_from_parts(){
+	function get_weight_from_parts(){
 	
+	$parts_info=$this->get_current_part_list();
+	$weight=0;
+	foreach($parts_info as $part_info){
+	$part=$part_info['part'];
+	if($part->data['Part Gross Weight']!='')
+	$weight+=$part->data['Part Gross Weight']*$part_info['Parts Per Product'];
+	}
+	return $weight;
 	
 	}
 
