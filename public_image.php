@@ -4,8 +4,8 @@ $modify_since=false;
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) and $_SERVER['HTTP_IF_MODIFIED_SINCE']!='') {
 	$modify_since=$_SERVER['HTTP_IF_MODIFIED_SINCE'];
 
-	header('Last-Modified: '.gmdate('D, d M Y H:i:s', $image_time).' GMT', true, 304);
-	exit();
+	header('Last-Modified: '.gmdate('D, d M Y H:i:s', $modify_since).' GMT', true, 304);
+	exit("xx");
 
 }else {
 
@@ -15,9 +15,11 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) and $_SERVER['HTTP_IF_MODIFIED_SIN
 
 		$ar = apache_request_headers();
 		if (isset($ar['If-Modified-Since']) && // If-Modified-Since should exists
-			($ar['If-Modified-Since'] != '') ) // and grater than
-			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $image_time).' GMT', true, 304);
-		exit();
+			($ar['If-Modified-Since'] != '') ) {
+			header('Last-Modified: '.gmdate('D, d M Y H:i:s', $ar['If-Modified-Since']).' GMT', true, 304);
+		exit;
+	}
+	
 	}
 
 }
