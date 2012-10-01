@@ -2583,7 +2583,7 @@ function picking_aid_sheet() {
 	$total_discounts=0;
 	$total_picks=0;
 
-	$order='`Picking Note`';
+	$order='`Location Code`';
 	$order_dir='';
 
 	$data=array();
