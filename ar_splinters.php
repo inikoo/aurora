@@ -92,9 +92,6 @@ function invoice_categories_sales_overview() {
 	else
 		$where=sprintf(' and C.`Category Store Key` in (%s) ',$store);
 
-
-
-
 	$filtered=0;
 	$rtext='';
 	$total=0;
@@ -177,7 +174,7 @@ $from=($from?substr($from,0,-9):'');
 $to=($from?substr($to,0,-9):'');
 
 
-	$sql=sprintf("select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) ",
+	$sql=sprintf("select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by  C.`Category Key`",
 		$fields);
 	$adata=array();
 	//print $sql;
@@ -208,10 +205,10 @@ $to=($from?substr($to,0,-9):'');
 			'invoices_share'=>$row['invoices'],
 			'sales'=>money($row['sales'],$row['currency']),
 			'sales_1yb'=>money($row['sales_1yb'],$row['currency']),
-			'sales_delta'=>delta($row['sales'],$row['sales_1yb']),
+			'sales_delta'=>'<span title="'.money($row['sales_1yb'],$row['currency']).'">'.delta($row['sales'],$row['sales_1yb']).'</span>',
 			'dc_sales'=>money($row['dc_sales'],$corporate_currency_symbol),
 			'dc_sales_1yb_'=>money($row['dc_sales_1yb'],$corporate_currency_symbol),
-			'dc_sales_delta'=>delta($row['dc_sales'],$row['dc_sales_1yb']),
+			'dc_sales_delta'=>'<span title="'.money($row['dc_sales_1yb'],$corporate_currency_symbol).'">'.delta($row['dc_sales'],$row['dc_sales_1yb']).'</span>',
 			'dc_sales_share'=>$row['dc_sales']
 
 
@@ -447,11 +444,11 @@ $to=($from?substr($to,0,-9):'');
 		'store'=>_('Total'),
 		'invoices'=>number($sum_invoices),
 		'invoices_1yb'=>'',
-		'invoices_delta'=>delta($sum_invoices,$sum_invoices_1yb),
+		'invoices_delta'=>'<span title="x">'.delta($sum_invoices,$sum_invoices_1yb).'</span>',
 		'sales'=>'',
 		'sales_delta'=>'',
 		'dc_sales'=>money($sum_dc_sales,$corporate_currency_symbol),
-		'dc_sales_delta'=>delta($sum_dc_sales,$sum_dc_sales_1yb),
+		'dc_sales_delta'=>'<span title="x">'.delta($sum_dc_sales,$sum_dc_sales_1yb).'</span>',
 		'invoices_share'=>''
 	);
 
