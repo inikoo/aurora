@@ -703,7 +703,7 @@ function list_orders() {
 				'last_date'=>strftime("%e %b %y %H:%M", strtotime($data['Order Last Updated Date'])),
 				'customer'=>$customer,
 				'state'=>$data['Order Current Dispatch State'],
-				'total_amount'=>money($data['Order Invoiced Balance Total Amount'],$data['Order Currency']).$mark,
+				'total_amount'=>money($data['Order Total Amount'],$data['Order Currency']).$mark,
 
 
 			);
