@@ -340,6 +340,9 @@ if (strtotime($to)>strtotime('now')) {
 		$last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['eq_tax']=money($row['eq_tax'],$corporate_currency);
 		$last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['_eq_net']=$row['eq_net'];
 		$last_yr_interval_in_future_store_data[$row['Invoice Store Key']]['_eq_tax']=$row['eq_tax'];
+		
+		
+		
 		$last_yr_interval_in_future_store_data_profit[$row['Invoice Store Key']]['net']=money($row['net'],$store_data[$row['Invoice Store Key']]['currency_code']);
 		$last_yr_interval_in_future_store_data_profit[$row['Invoice Store Key']]['eq_net']=money($row['eq_net'],$corporate_currency);
 		$last_yr_interval_in_future_store_data_profit[$row['Invoice Store Key']]['profit']=money($row['profit'],$store_data[$row['Invoice Store Key']]['currency_code']);
@@ -380,7 +383,8 @@ foreach ($store_data as $key=>$val) {
 		if (isset($last_yr_store_data[$key]['_eq_net'])){
 			$store_data[$key]['last_yr_net']=delta($store_data[$key]['_eq_net'],$last_yr_store_data[$key]['_eq_net']);
 			//$store_data[$key]['last_yr_net_amount_eq']=money($last_yr_store_data[$key]['_eq_net'],$corporate_currency);
-			$store_data[$key]['last_yr_net_amount']=$last_yr_store_data[$key]['eq_net'];
+			$store_data[$key]['last_yr_eq_net_amount']=$last_yr_store_data[$key]['eq_net'];
+			$store_data[$key]['last_yr_net_amount']=$last_yr_store_data[$key]['net'];
 
 }
 	}
@@ -423,7 +427,8 @@ if ($mixed_currencies) {
 		'eq_net'=>'<span class="mix_currency">'.money($sum_net_eq,$corporate_currency)."</span>",
 		'eq_tax'=>'<span class="mix_currency">'.money($sum_tax_eq,$corporate_currency)."</span>",
 		'per_eq_net'=>'',
-			    'last_yr_net_amount'=>money($last_yr_sum_net_eq,$corporate_currency)
+			    'last_yr_net_amount'=>'',
+			    'last_yr_eq_net_amount'=>money($last_yr_sum_net_eq,$corporate_currency)
 
 	);
 	$store_data_profit[]=array(

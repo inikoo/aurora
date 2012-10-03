@@ -45,7 +45,9 @@
 			<td class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}">{$data.eq_net}</td>
 			<td class="currency_corporate aleft" style="{if $currencies!='corporation'}display:none;{/if}"><span {if isset($data.substore) }style="margin-left:50px" {/if}>{$data.per_eq_net}</span></td>
 			<td class="currency_stores aleft" style="{if $currencies=='corporation'}display:none{/if}"></td>
-			<td title="{$data.last_yr_net_amount}">{$data.last_yr_net}</td>
+			<td class="currency_stores"  style="{if $currencies=='corporation'}display:none{/if}" title="{$data.last_yr_net_amount}">{$data.last_yr_net}</td>
+			<td  class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}" title="{$data.last_yr_eq_net_amount}">{$data.last_yr_net}</td>
+
 		</tr>
 		{/foreach} 
 			
