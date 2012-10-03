@@ -208,7 +208,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$last_yr_int=prepare_mysql_dates(date("Y-m-d 00:00:00",strtotime($from.' -1 year')),date("Y-m-d 23:59:59",strtotime($to.' -1 year')),'`Invoice Date`','date start end');
 	//print_r($last_yr_int);
 	$sql=sprintf("select `Category Name`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$last_yr_int[0]);
-	//print "$sql";
+	//print "$sql\n\n";
 	$result2=mysql_query($sql);
 	if (mysql_num_rows($result2) >1 ) {
 		while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
@@ -252,9 +252,15 @@ $sum_inv=0;
 $sum_profit_eq=0;
 
 
+//print_r($store_data);
+
 $sql="select `Invoice Store Key`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as eq_profit,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` where true ".$int[0]." group by `Invoice Store Key`";
+//print $sql;
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+//print "xx".$row['Invoice Store Key']."\n";
+
 	$sum_net_eq+=$row['eq_net'];
 	$sum_profit_eq+=$row['eq_profit'];
 	$sum_tax_eq+=$row['eq_tax'];
@@ -282,8 +288,8 @@ $last_yr_sum_net_eq=0;
 $last_yr_sum_tax_eq=0;
 $last_yr_sum_inv=0;
 $last_yr_sum_profit_eq=0;
+$last_yr_int=prepare_mysql_dates(date("Y-m-d 00:00:00",strtotime($from.' -1 year')),date("Y-m-d 23:59:59",strtotime($to.' -1 year')),'`Invoice Date`','date start end');
 
-$last_yr_int=prepare_mysql_dates(date("Y-m-d H:i:s",strtotime($from.' -1 year')),date("Y-m-d H:i:s",strtotime($to.' -1 year')),'`Invoice Date`','date start end');
 
 //print_r($last_yr_int);
 $sql="select `Invoice Store Key`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Profit`*`Invoice Currency Exchange`) as eq_profit,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` where true ".$last_yr_int[0]." group by `Invoice Store Key`";
