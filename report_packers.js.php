@@ -30,7 +30,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       
 				       ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=packers_report&tableid=1");
+	    request="ar_reports.php?tipo=packers_report&tableid=1"
+	    //alert(request)
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {

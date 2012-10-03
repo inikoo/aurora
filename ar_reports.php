@@ -421,7 +421,7 @@ $date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 	//$sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product ID`) as units from  `Order Transaction Fact` OTF left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
 
 
-//	print $sql;
+	//print $sql;
 	$result=mysql_query($sql);
 	$data=array();
 	$hours=40;
@@ -547,6 +547,7 @@ function packers_report() {
 		$_SESSION['state']['report_pp']['packers']['to']=$date_interval['to'];
 	}
 
+$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 
 	$start_from=0;
 
