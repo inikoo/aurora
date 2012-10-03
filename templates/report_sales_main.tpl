@@ -35,7 +35,7 @@
 			<td style="{if $currencies!='corporation'}display:none{/if}">{t}Tax{/t}</td>
 			*} 
 		</tr>
-		{foreach from=$store_data item=data } 
+		{foreach from=$store_data item=data key=key} 
 		<tr {if isset($data.class)}class="{$data.class}"{/if}>
 			<td class="label aleft"><span {if isset($data.substore) }style="margin-left:50px" {/if}> {$data.store}{if isset($data.substore)}{$data.substore}{/if}</span></td>
 			<td>{$data.invoices}</td>
@@ -45,7 +45,7 @@
 			<td class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}">{$data.eq_net}</td>
 			<td class="currency_corporate aleft" style="{if $currencies!='corporation'}display:none;{/if}"><span {if isset($data.substore) }style="margin-left:50px" {/if}>{$data.per_eq_net}</span></td>
 			<td class="currency_stores aleft" style="{if $currencies=='corporation'}display:none{/if}"></td>
-			<td>{$data.last_yr_net}</td>
+			<td title="{$data.last_yr_net_amount}">{$data.last_yr_net}</td>
 		</tr>
 		{/foreach} 
 			
