@@ -132,9 +132,9 @@ $result=mysql_query($sql);
 $mixed_currencies=false;
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-	if ($row['Store Currency Code']!=$corporate_currency){
+	if ($row['Store Currency Code']!=$corporate_currency) {
 		$mixed_currencies=true;
-		}
+	}
 	$store_data[$row['Store Key']]=array(
 		'store'=>sprintf('<a href="report_sales.php?store_key=%d%s">%s</a>',$row['Store Key'],$link,$row['Store Name']),
 		'currency_code'=>$row['Store Currency Code'],
@@ -242,6 +242,8 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 	}
 }
+
+
 
 
 $sum_net_eq=0;
@@ -361,19 +363,26 @@ foreach ($store_data as $key=>$val) {
 	$store_data[$key]['per_invoices']=percentage($val['_invoices'],$sum_inv);
 
 	if ($part_of_interval_in_the_future) {
-		if (isset($last_yr_interval_in_future_store_data[$key]['invoices']))
-			$store_data[$key]['last_yr_invoices']=delta($store_data[$key]['_invoices'],$last_yr_interval_in_future_store_data[$key]['_invoices']);
-		if (isset($last_yr_interval_in_future_store_data[$key]['_eq_net']))
-			$store_data[$key]['last_yr_net']=delta($store_data[$key]['_eq_net'],$last_yr_interval_in_future_store_data[$key]['_eq_net']);
+		if (isset($last_yr_interval_in_future_store_data[$key]['invoices'])){
+		//$store_data[$key]['last_yr_invoices_numbet']=number($last_yr_interval_in_future_store_data[$key]['_invoices']);
+		$store_data[$key]['last_yr_invoices']=delta($store_data[$key]['_invoices'],$last_yr_interval_in_future_store_data[$key]['_invoices']);
+		}if (isset($last_yr_interval_in_future_store_data[$key]['_eq_net'])){
+					//	$store_data[$key]['last_yr_net_amount']=money($last_yr_interval_in_future_store_data[$key]['_eq_net'],$corporate_currency);
 
+			$store_data[$key]['last_yr_net']=delta($store_data[$key]['_eq_net'],$last_yr_interval_in_future_store_data[$key]['_eq_net']);
+		}
 	} else {
 		if (isset($last_yr_store_data[$key]['_invoices'])) {
 			$store_data[$key]['last_yr_invoices']=delta($store_data[$key]['_invoices'],$last_yr_store_data[$key]['_invoices']);
+		//	$store_data[$key]['last_yr_invoices_number']=number($last_yr_store_data[$key]['_invoices']);
 
 		}
-		if (isset($last_yr_store_data[$key]['_eq_net']))
+		if (isset($last_yr_store_data[$key]['_eq_net'])){
 			$store_data[$key]['last_yr_net']=delta($store_data[$key]['_eq_net'],$last_yr_store_data[$key]['_eq_net']);
+			//$store_data[$key]['last_yr_net_amount_eq']=money($last_yr_store_data[$key]['_eq_net'],$corporate_currency);
+			$store_data[$key]['last_yr_net_amount']=$last_yr_store_data[$key]['eq_net'];
 
+}
 	}
 
 
@@ -413,7 +422,9 @@ if ($mixed_currencies) {
 		'tax'=>'<span class="mix_currency">'.money($sum_tax_eq,$corporate_currency)."</span>",
 		'eq_net'=>'<span class="mix_currency">'.money($sum_net_eq,$corporate_currency)."</span>",
 		'eq_tax'=>'<span class="mix_currency">'.money($sum_tax_eq,$corporate_currency)."</span>",
-		'per_eq_net'=>''
+		'per_eq_net'=>'',
+			    'last_yr_net_amount'=>money($last_yr_sum_net_eq,$corporate_currency)
+
 	);
 	$store_data_profit[]=array(
 		'class'=>'total',
@@ -439,7 +450,9 @@ if ($mixed_currencies) {
 		'net'=>money($sum_net_eq,$corporate_currency),
 		'tax'=>money($sum_tax_eq,$corporate_currency),
 		'eq_net'=>money($sum_net_eq,$corporate_currency),
-		'eq_tax'=>money($sum_tax_eq,$corporate_currency)
+		'eq_tax'=>money($sum_tax_eq,$corporate_currency),
+	    'last_yr_net_amount'=>money($last_yr_sum_net_eq,$corporate_currency)
+
 	);
 	$store_data_profit[]=array(
 		'class'=>'total',
@@ -457,7 +470,7 @@ if ($mixed_currencies) {
 
 
 
-
+//print_r($last_yr_store_data);
 
 
 
