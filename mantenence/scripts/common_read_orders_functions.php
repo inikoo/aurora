@@ -1752,6 +1752,8 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false)
 			$_name='peter';
 		elseif (preg_match('/debra/i',$_name))
 			$_name='debbie';
+		elseif (preg_match('/vinnie/i',$_name))
+			$_name='vinni';	
 		elseif (preg_match('/sam/i',$_name))
 			$_name='samantha';
 		elseif ($_name=='philip' or $_name=='ph' or $_name=='phi' or $_name=='philip'  )
