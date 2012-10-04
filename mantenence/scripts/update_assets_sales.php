@@ -36,6 +36,38 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+
+
+
+$sql="select * from `Product Department Dimension` where `Product Department Key`=23 ";
+$sql="select * from `Product Department Dimension`  ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$department=new Department($row['Product Department Key']);
+
+
+	$department->update_up_today_sales();
+	$department->update_interval_sales();
+	$department->update_last_period_sales();
+
+
+	//$department->update_sales_default_currency();
+
+	$department->update_customers();
+	$department->update_product_data();
+	$department->update_families();
+
+
+	print "Department ".$department->data['Product Department Code']."\r";
+}
+
+
+
+
+
+
 $sql="select * from `Store Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -113,35 +145,6 @@ while ($row=mysql_fetch_array($result)   ) {
 	$product->update_interval_sales();
 	$product->update_last_period_sales();
 	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
-}
-
-
-
-
-
-
-$sql="select * from `Product Department Dimension` where `Product Department Key`=23 ";
-$sql="select * from `Product Department Dimension`  ";
-
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$department=new Department($row['Product Department Key']);
-
-
-	$department->update_up_today_sales();
-	$department->update_interval_sales();
-	$department->update_last_period_sales();
-
-
-	//$department->update_sales_default_currency();
-
-	$department->update_customers();
-	$department->update_product_data();
-	$department->update_families();
-
-
-	print "Department ".$department->data['Product Department Code']."\r";
 }
 
 
