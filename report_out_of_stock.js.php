@@ -28,14 +28,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 var CustomersColumnDefs = [
 				    
-				    {key:"sku", label:"<?php echo _('SKU')?>", width:60,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"used_in", label:"<?php echo _('Products')?>",width:180, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-	                ,{key:"date", label:"<?php echo _('Date')?>",width:170, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"reporter", label:"<?php echo _('Reporter')?>",width:70, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"note", label:"<?php echo _('Notes')?>",width:170, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    {key:"sku", label:"<?php echo _('SKU')?>", width:50,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"used_in", label:"<?php echo _('Products')?>",width:160, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	                ,{key:"date", label:"<?php echo _('Date')?>",width:125, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"reporter", label:"<?php echo _('Reporter')?>",width:50, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"note", label:"<?php echo _('Notes')?>",width:265, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					 ];
 	   
-	    			    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=transactions_parts_marked_as_out_of_stock");
+	   request="ar_reports.php?tipo=transactions_parts_marked_as_out_of_stock"
+	 //  alert(request)
+	    			    this.dataSource0 = new YAHOO.util.DataSource(request);
 
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -159,10 +161,14 @@ var CustomersColumnDefs1 = [
 
 
 function change_view(tipo){
-    
+  
     Dom.setStyle(['transactions','parts'],'display','none');
     Dom.setStyle(tipo,'display','');
-    	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_part_out_of_stock-view&value=' + escape(tipo) ,{success:function(o) {}});
+ Dom.removeClass(['transactions_tab','parts_tab'],'selected')
+  Dom.addClass(tipo+'_tab','selected')
+ //alert(tipo) 
+ 
+ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=report_part_out_of_stock-view&value=' + escape(tipo) ,{success:function(o) {}});
 
 //alert('ar_sessions.php?tipo=update&keys=report_part_out_of_stock-view=&value=' + escape(tipo) )
 }
@@ -177,25 +183,48 @@ function export_data(){
 
 
 function init(){
-
- 
-
-
-/*
-   YAHOO.util.Event.addListener('export', "click", export_data);
- 
+get_out_of_stock_data()
+get_out_of_stock_customer_data();
+}
 
 
 
-  var oContextMenu = new YAHOO.widget.ContextMenu("export_menu", {
-        trigger: 'export'
+function get_out_of_stock_data(){
+
+var request='ar_reports.php?tipo=out_of_stock_data&from=' + Dom.get('from').value +'&to=' + Dom.get('to').value
+	          //alert(request)	 
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	            //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+			Dom.get('number_out_of_stock_parts').innerHTML=r.number_out_of_stock_parts;
+						Dom.get('number_out_of_stock_dn').innerHTML=r.number_out_of_stock_dn;
+			}else{
+                                  
+                                  }
+   			}
     });
- 
-  
-    oContextMenu.render(document.body);
 
 
-*/
+}
+
+
+function get_out_of_stock_customer_data(){
+
+var request='ar_reports.php?tipo=out_of_stock_customer_data&from=' + Dom.get('from').value +'&to=' + Dom.get('to').value
+	          //alert(request)	 
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	            //alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+			Dom.get('number_out_of_stock_customers').innerHTML=r.number_out_of_stock_customers;
+			}else{
+                                  
+                                  }
+   			}
+    });
 
 
 }

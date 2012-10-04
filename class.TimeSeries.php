@@ -1570,9 +1570,10 @@ function get_site_users_requests_value_day($date,$last_close){
 		$new=0;
 
 
-		$sql=sprintf("select count(*) as new  from `Customer Dimension` where  `Customer Store Key`=%d and Date(`Customer First Contacted Date`)=%s",
+		$sql=sprintf("select count(*) as new  from `Customer Dimension` where  `Customer Store Key`=%d and `Customer First Contacted Date`>=%s and `Customer First Contacted Date`<=%s",
 			$this->name_key,
-			prepare_mysql($date)
+			prepare_mysql($date.' 00:00:00'),
+			prepare_mysql($date.' 23:59:59')
 		);
 
 		$res=mysql_query($sql);
@@ -1609,9 +1610,10 @@ function get_site_users_requests_value_day($date,$last_close){
 		$lost_customers=0;
 		$delta_data_date=array();
 		$delta_data=array();
-		$sql=sprintf("select `Customer First Order Date` as the_date from `Customer Dimension`  where `Customer With Orders`='Yes' and `Customer Store Key`=%d and DATE(`Customer First Order Date`)=%s",
+		$sql=sprintf("select `Customer First Order Date` as the_date from `Customer Dimension`  where `Customer With Orders`='Yes' and `Customer Store Key`=%d and `Customer First Order Date`>=%s and `Customer First Order Date`<=%s",
 			$this->name_key,
-			prepare_mysql($date)
+			prepare_mysql($date.' 00:00:00'),
+			prepare_mysql($date.' 23:59:59')
 		);
 
 		$res=mysql_query($sql);
@@ -1622,9 +1624,10 @@ function get_site_users_requests_value_day($date,$last_close){
 			$new_customers++;
 		}
 
-		$sql=sprintf("select `Customer Lost Date` the_date  from `Customer Dimension`  where`Customer Type by Activity`='Lost'  and `Customer With Orders`='Yes' and `Customer Store Key`=%d and Date(`Customer Lost Date`)=%s",
+		$sql=sprintf("select `Customer Lost Date` the_date  from `Customer Dimension`  where`Customer Type by Activity`='Lost'  and `Customer With Orders`='Yes' and `Customer Store Key`=%d and `Customer Lost Date`>=%s and `Customer Lost Date`<=%s",
 			$this->name_key,
-			prepare_mysql($date)
+			prepare_mysql($date.' 00:00:00'),
+			prepare_mysql($date.' 23:59:59')
 		);
 
 		$res=mysql_query($sql);
@@ -1759,7 +1762,7 @@ function get_site_users_requests_value_day($date,$last_close){
 			,prepare_mysql($this->start_date)
 			,prepare_mysql($this->last_date)
 		);
-		print $sql;
+		//print $sql;
 
 		$data=array();
 		$all_data=array();
@@ -1774,7 +1777,7 @@ function get_site_users_requests_value_day($date,$last_close){
 		$last_close=0;
 
 		while ($row=mysql_fetch_array($res)) {
-
+		//print $row['date']."\n";
 			if ($row['date']==$start_day) {
 				$this->first=array(
 					'date'=>$row['date'],

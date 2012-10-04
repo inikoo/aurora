@@ -51,15 +51,15 @@
 
 <div style="width:25em;float:left;margin-left:20px">
   <table    class="show_info_product">
-       <tbody id="info_all" >
-	 <tr >
-	  <td>{t}Active Customers{/t}:</td><td class="aright">{$store->get('Active Customers')}</td>
+    <tbody id="info_all" >
+	<tr>
+	  <td>{t}Active Customers{/t}:</td><td class="aright">{$store->get('Store Active Contacts With Orders')}</td>
 	</tr>
-	 	<tr >
-	  <td>{t}New Customer (1 month){/t}:</td><td class="aright">{$store->get('1 Month New Customers')}</td>
+	<tr>
+		<td>{t}New Customer (1 month){/t}:</td><td class="aright">{$store->get('1 Month New Contacts With Orders')}</td>
 	</tr>
 	<tr >
-	  <td>{t}Lost Customers (1 month){/t}:</td><td class=" aright">{$store->get('1 Month Lost Customers')}</td>
+	  <td>{t}Lost Customers (1 month){/t}:</td><td class=" aright">{$store->get('1 Month Lost Contacts With Orders')}</td>
 	</tr>
     </tbody>
       

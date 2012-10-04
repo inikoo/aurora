@@ -105,6 +105,15 @@ $smarty->assign('from',$from);
 $smarty->assign('to',$to);
 $smarty->assign('quick_period',$quick_period);
 
+
+
+
+
+
+
+
+
+
 $tipo_filter=$_SESSION['state']['report_part_out_of_stock']['transactions']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['report_part_out_of_stock']['transactions']['f_value']);
