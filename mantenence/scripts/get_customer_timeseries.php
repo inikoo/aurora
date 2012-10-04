@@ -32,15 +32,15 @@ $res=mysql_query($sql);
 
 while( $row=mysql_fetch_array($res)){
   
-    print 'contact population ('.$row['Store Key'].') '."\n";
-$tm=new TimeSeries(array('d',"contact population (".$row['Store Key'].")"));
- $tm->get_values('save');
+  
   
  print 'customer population ('.$row['Store Key'].') '."\n";
 $tm=new TimeSeries(array('d',"customer population (".$row['Store Key'].")"));
  $tm->get_values('save');
 
-
+  print 'contact population ('.$row['Store Key'].') '."\n";
+$tm=new TimeSeries(array('d',"contact population (".$row['Store Key'].")"));
+ $tm->get_values('save');
 
 //  $tm->save_values();
  // if($forecast)

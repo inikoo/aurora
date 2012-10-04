@@ -2194,6 +2194,8 @@ CHANGE `Store 10 Day Lost Customers` `Store 10 Day Lost Contacts` MEDIUMINT( 8 )
 CHANGE `Store 1 Week Lost Customers` `Store 1 Week Lost Contacts` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
 CHANGE `Store 1 Day Lost Customers` `Store 1 Day Lost Contacts` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
 CHANGE `Store YearToDay Lost Customers` `Store Year To Day Lost Contacts` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+
+
 ALTER TABLE `Store Dimension` CHANGE `Store 3 Year New Customers Contacts` `Store 3 Year New Contacts` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
 CHANGE `Store 1 Year New Customers Contacts` `Store 1 Year New Contacts` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
 CHANGE `Store 6 Month New Customers Contacts` `Store 6 Month New Contacts` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0',
@@ -6550,8 +6552,18 @@ ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML Public Message` M
 ALTER TABLE `dw`.`Invoice Tax Bridge` ADD INDEX ( `Invoice Key` ) ;
 ALTER TABLE `dw`.`Invoice Tax Bridge` ADD INDEX ( `Tax Code` ) ;
 ALTER TABLE `Order No Product Transaction Fact` CHANGE `Transaction Outstandind Net Amount Balance` `Transaction Outstanding Net Amount Balanc;
+ALTER TABLE `Inventory Transaction Fact` ADD INDEX ( `Out of Stock` ) ;
+ALTER TABLE `Order Transaction Fact` ADD INDEX ( `No Shipped Due Out of Stock` ) ;
 
-
-
+ALTER TABLE `Store Dimension` ADD `Store 1 Week Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0',
+ADD `Store 10 Day Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0',
+ADD `Store 1 Day Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0',
+ADD `Store 1 Month Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store 6 Month Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0',
+ADD `Store 1 Quarter Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0',
+ADD `Store 1 Year Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0',
+ADD `Store 3 Year Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0';
+ALTER TABLE `Store Dimension` ADD `Store Year To Day Lost Contacts With Orders` MEDIUMINT NOT NULL DEFAULT '0';
+ALTER TABLE `dw`.`Customer Dimension` ADD INDEX ( `Customer With Orders` ) ;
 
 

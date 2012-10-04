@@ -16,6 +16,24 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
+
+
+case('out_of_stock_customer_data'):
+$data=prepare_values($_REQUEST,array(
+			'from'=>array('type'=>'date'),
+			'to'=>array('type'=>'date')
+		));
+
+	out_of_stock_customer_data($data);
+break;
+case('out_of_stock_data'):
+$data=prepare_values($_REQUEST,array(
+			'from'=>array('type'=>'date'),
+			'to'=>array('type'=>'date')
+		));
+
+	out_of_stock_data($data);
+break;
 case('intrastat'):
 
 	list_intrastat();
@@ -374,7 +392,7 @@ function pickers_report() {
 		$_SESSION['state']['report_pp']['pickers']['from']=$date_interval['from'];
 		$_SESSION['state']['report_pp']['pickers']['to']=$date_interval['to'];
 	}
-$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
+	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 
 	$start_from=0;
 
@@ -398,14 +416,14 @@ $date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 
 
 	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",$date_interval['mysql']);
-		
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$total_delivery_notes=$row['delivery_notes'];
 		$total_units=$row['units'];
 		$total_weight=$row['weight'];
 	}
-	
+
 
 
 
@@ -462,8 +480,8 @@ $date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 		$rtext=$total.' '.ngettext('record returned','records returned',$total);
 	else
 		$rtext='';
-		$rtext_rpp='';
-		
+	$rtext_rpp='';
+
 	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$data,
@@ -547,7 +565,7 @@ function packers_report() {
 		$_SESSION['state']['report_pp']['packers']['to']=$date_interval['to'];
 	}
 
-$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
+	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 
 	$start_from=0;
 
@@ -570,7 +588,7 @@ $date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 
 	$sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`)  left join `Product Dimension` PD on (OTF.`Product ID`=PD.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispatched') %s   ",$date_interval['mysql']);
 	$sql=sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  %s   ",$date_interval['mysql']);
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$total_delivery_notes=$row['delivery_notes'];
@@ -620,7 +638,7 @@ $date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
 		$rtext=$total.' '.ngettext('record returned','records returned',$total);
 	else
 		$rtext='';
-		$rtext_rpp='';
+	$rtext_rpp='';
 	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$data,
@@ -1466,6 +1484,11 @@ function transactions_parts_marked_as_out_of_stock() {
 	$wheref='';
 	// $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only dates');
 	$int=prepare_mysql_dates($from,$to,'`Date Picked`','only dates');
+
+
+
+
+
 	//print"$from --> $to ";
 	// print_r($int);
 
@@ -1505,6 +1528,7 @@ function transactions_parts_marked_as_out_of_stock() {
 
 	$sql="select count(*) as total   from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where $wheref";
 	// print "$sql";
+	// exit;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1791,7 +1815,7 @@ function list_invoices_with_no_tax() {
 	);
 
 
-//$where.=
+	//$where.=
 
 	$where_elements_tax_category='';
 
@@ -2232,7 +2256,7 @@ function tax_overview_europe($country) {
 
 
 	$sql="select  `Tax Category Name`,count(distinct `Invoice Key`)as invoices,`Invoice Tax Code`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as total_hq ,sum( `Invoice Total Net Amount`*`Invoice Currency Exchange`) as net_hq,sum( `Invoice Total Tax Amount`*`Invoice Currency Exchange`) as tax_hq  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code`) $where  $where_extra group by  `Invoice Tax Code` ";
-//print $sql;
+	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$records++;
@@ -2459,7 +2483,7 @@ function list_customers_by_tax_europe($country) {
 
 
 	$where=sprintf(' where  `Invoice Store Key` in (%s) ',$stores);
-//	$where.=$date_interval['mysql'];
+	// $where.=$date_interval['mysql'];
 
 	$where.=sprintf(" and   `Invoice Date`>=%s and   `Invoice Date`<=%s   "
 		,prepare_mysql($date_interval['from'].' 00:00:00')
@@ -4680,5 +4704,71 @@ function list_intrastat() {
 
 
 }
+
+function out_of_stock_data($data) {
+
+	$from=$data['from'];
+	$to=$data['to'];
+	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Date`');
+	$number_out_of_stock_parts=0;
+	$number_out_of_stock_dn=0;
+	$number_parts=0;
+	$number_dn=0;
+	
+	
+	$sql=sprintf("select count(DISTINCT `Part SKU`) as number_out_of_stock_parts, count(DISTINCT `Delivery Note Key`) as number_out_of_stock_dn from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'  and  `Out of Stock`>0  %s ",$date_interval['mysql']);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$number_out_of_stock_parts=$row['number_out_of_stock_parts'];
+		$number_out_of_stock_dn=$row['number_out_of_stock_dn'];
+
+	}
+	
+		$sql=sprintf("select count(DISTINCT `Part SKU`) as parts, count(DISTINCT `Delivery Note Key`) as dn from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Sale'   %s ",$date_interval['mysql']);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$number_parts=$row['parts'];
+		$number_dn=$row['dn'];
+
+	}
+	$number_out_of_stock_parts=number($number_out_of_stock_parts).' ('.percentage($number_out_of_stock_parts,$number_parts).')';
+		$number_out_of_stock_dn=number($number_out_of_stock_dn).' ('.percentage($number_out_of_stock_dn,$number_dn).')';
+
+	$response=array('state'=>200,'number_out_of_stock_parts'=>$number_out_of_stock_parts,'number_out_of_stock_dn'=>$number_out_of_stock_dn);
+	echo json_encode($response);
+
+}
+
+
+function out_of_stock_customer_data($data) {
+
+	$from=$data['from'];
+	$to=$data['to'];
+	$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Actual Shipping Date`');
+	$number_out_of_stock_customers=0;
+	$number_customers=0;
+	
+	
+	$sql=sprintf("select count(DISTINCT `Customer Key`) as number_out_of_stock_customers from `Order Transaction Fact`  where `Current Dispatching State`='Dispatched'  and  `No Shipped Due Out of Stock`>0  %s ",$date_interval['mysql']);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$number_out_of_stock_customers=$row['number_out_of_stock_customers'];
+
+	}
+	
+	$sql=sprintf("select count(DISTINCT `Customer Key`) as customers from `Order Transaction Fact`  where `Current Dispatching State`='Dispatched' %s ",$date_interval['mysql']);
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$number_customers=$row['customers'];
+
+	}
+	$number_out_of_stock_customers=number($number_out_of_stock_customers).' ('.percentage($number_out_of_stock_customers,$number_customers).')';
+
+	$response=array('state'=>200,'number_out_of_stock_customers'=>$number_out_of_stock_customers);
+	echo json_encode($response);
+
+}
+
+
 
 ?>
