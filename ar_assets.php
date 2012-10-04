@@ -299,10 +299,12 @@ function list_departments() {
 	//       $conf2=$_SESSION['state']['store'];
 	global $user,$corporate_currency;
 
-	if (isset( $_REQUEST['store']) and  is_numeric( $_REQUEST['store']))
-		$store_id=$_REQUEST['store'];
-	else
-		$store_id=$_SESSION['state']['store']['id'];
+	if (isset( $_REQUEST['parent_key']) and  is_numeric( $_REQUEST['parent_key']))
+		$store_id=$_REQUEST['parent_key'];
+	else {
+		exit();
+
+	}
 
 
 	if (isset( $_REQUEST['parent']))
@@ -554,17 +556,37 @@ function list_departments() {
 			$order='`Product Department 1 Month Acc Invoiced Amount`';
 		elseif ($period=='week')
 			$order='`Product Department 1 Week Acc Invoiced Amount`';
-		// ----------------------------------------added for 3 year,yeartoday,6 month,10 day-----------------------
 		elseif ($period=='three_year')
-			$order='`Product Department 3 Year Acc Avg Week Sales Per Product`';
+			$order='`Product Department 3 Year Acc Invoiced Amount`';
 		elseif ($period=='yeartoday')
-			$order='`Product Department Year To Day Acc Avg Week Sales Per Product`';
+			$order='`Product Department Year To Day Acc Invoiced Amount`';
 		elseif ($period=='six_month')
-			$order='`Product Department 6 Month Acc Avg Week Sales Per Product`';
+			$order='`Product Department 6 Month Acc Invoiced Amount`';
 		elseif ($period=='ten_day')
-			$order='`Product Department 10 Day Acc Avg Week Sales Per Product`';
-		// --------------------------------------------------------------------------------------------------------------------
+			$order='`Product Department 10 Day Acc Invoiced Amount`';
 	}
+		elseif ($_order=='delta_sales') {
+		if ($period=='all')
+			$order='`Product Department Total Acc Invoiced Amount`';
+		elseif ($period=='year')
+			$order='`Product Department 1 Year Acc 1YB Invoiced Delta`';
+		elseif ($period=='quarter')
+			$order='`Product Department 1 Quarter Acc 1YB Invoiced Delta`';
+		elseif ($period=='month')
+			$order='`Product Department 1 Month Acc 1YB Invoiced Delta`';
+		elseif ($period=='week')
+			$order='`Product Department 1 Week Acc 1YB Invoiced Delta`';
+		elseif ($period=='three_year')
+			$order='`Product Department 3 Year Acc Invoiced Amount`';
+		elseif ($period=='yeartoday')
+			$order='`Product Department Year To Day Acc 1YB Invoiced Delta`';
+		elseif ($period=='six_month')
+			$order='`Product Department 6 Month Acc 1YB Invoiced Delta`';
+		elseif ($period=='ten_day')
+			$order='`Product Department 10 Day Acc 1YB Invoiced Delta`';
+	}
+	
+	
 	elseif ($_order=='name')
 		$order='`Product Department Name`';
 	elseif ($_order=='code')
@@ -674,12 +696,12 @@ function list_departments() {
 			}
 			$sum_total_sales=$row['sum_total_sales']*$factor;
 			$sum_total_profit=$sum_total_profit*$factor;
+			$_sum_total_sales=$row['sum_total_sales'];
 
 		}
 		mysql_free_result($result);
 	}
 
-	// -----------------------------------------------------start for 3 year----------------------------------------------------------------------
 	elseif ($period=='three_year') {
 		//$aws_p=money($data['Product Department 3 Year Acc Avg Week Sales Per Product']);
 		//$awp_p=money($data['Product Department 3 Year Acc Avg Week Profit Per Product']);
@@ -723,6 +745,7 @@ function list_departments() {
 					$factor=0;
 			}
 			$sum_total_sales=$factor*$row['sum_total_sales'];
+			$_sum_total_sales=$row['sum_total_sales'];
 
 			$sum_total_profit_plus=$row['total_profit_plus'];
 			$sum_total_profit_minus=$row['total_profit_minus'];
@@ -730,10 +753,6 @@ function list_departments() {
 		}
 		mysql_free_result($result);
 	}
-	// -----------------------------------------------------End for 3 year----------------------------------------------------
-
-
-
 	elseif ($period=='year') {
 		//$aws_p=money($data['Product Department 1 Year Acc Avg Week Sales Per Product']);
 		//$awp_p=money($data['Product Department 1 Year Acc Avg Week Profit Per Product']);
@@ -780,6 +799,7 @@ function list_departments() {
 
 
 			$sum_total_sales=$factor*$row['sum_total_sales'];
+			$_sum_total_sales=$row['sum_total_sales'];
 
 			$sum_total_profit_plus=$row['total_profit_plus'];
 			$sum_total_profit_minus=$row['total_profit_minus'];
@@ -799,9 +819,6 @@ function list_departments() {
 		}
 		mysql_free_result($result);
 	}
-
-
-	// -----------------------------------------------------start for yeartoday----------------------------------------------------------------------
 	elseif ($period=='yeartoday') {
 		//$aws_p=money($data['Product Department Year To Day Acc Avg Week Sales Per Product']);
 		//$awp_p=money($data['Product Department Year To Day Acc Avg Week Profit Per Product']);
@@ -845,6 +862,7 @@ function list_departments() {
 					$factor=0;
 			}
 			$sum_total_sales=$factor*$row['sum_total_sales'];
+			$_sum_total_sales=$row['sum_total_sales'];
 
 			$sum_total_profit_plus=$row['total_profit_plus'];
 			$sum_total_profit_minus=$row['total_profit_minus'];
@@ -852,10 +870,6 @@ function list_departments() {
 		}
 		mysql_free_result($result);
 	}
-	// -----------------------------------------------------End for yeartoday----------------------------------------------------
-
-
-	// -----------------------------------------------------start for 6 month----------------------------------------------------------------------
 	elseif ($period=='six_month') {
 		//$aws_p=money($data['Product Department 6 Month Acc Avg Week Sales Per Product']);
 		//$awp_p=money($data['Product Department 6 Month Acc Avg Week Profit Per Product']);
@@ -899,19 +913,13 @@ function list_departments() {
 					$factor=0;
 			}
 			$sum_total_sales=$factor*$row['sum_total_sales'];
-
+			$_sum_total_sales=$row['sum_total_sales'];
 			$sum_total_profit_plus=$row['total_profit_plus'];
 			$sum_total_profit_minus=$row['total_profit_minus'];
 			$sum_total_profit=$factor*($row['total_profit_plus']-$row['total_profit_minus']);
 		}
 		mysql_free_result($result);
 	}
-	// -----------------------------------------------------End for 6 month----------------------------------------------------
-
-
-
-
-
 	elseif ($period=='quarter') {
 		// $aws_p=money($row['Product Department 1 Quarter Acc Avg Week Sales Per Product']);
 		//$awp_p=money($row['Product Department 1 Quarter Acc Avg Week Profit Per Product']);
@@ -957,19 +965,14 @@ function list_departments() {
 
 
 
-			$sum_total_sales=$row['sum_total_sales'];
-
+			$sum_total_sales=$factor*$row['sum_total_sales'];
+			$_sum_total_sales=$row['sum_total_sales'];
 			$sum_total_profit_plus=$row['total_profit_plus'];
 			$sum_total_profit_minus=$row['total_profit_minus'];
 			$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
 		}
 		mysql_free_result($result);
 	}
-
-
-
-
-
 	elseif ($period=='month') {
 		//$aws_p=money($row['Product Department 1 Month Acc Avg Week Sales Per Product']);
 		//$awp_p=money($row['Product Department 1 Month Acc Avg Week Profit Per Product']);
@@ -1016,16 +1019,13 @@ function list_departments() {
 			}
 
 			$sum_total_sales=$factor*$row['sum_total_sales'];
-
+			$_sum_total_sales=$row['sum_total_sales'];
 			$sum_total_profit_plus=$row['total_profit_plus'];
 			$sum_total_profit_minus=$row['total_profit_minus'];
 			$sum_total_profit=$factor*($row['total_profit_plus']-$row['total_profit_minus']);
 		}
 		mysql_free_result($result);
 	}
-
-
-	// -----------------------------------------------------start for 10 days----------------------------------------------------------------------
 	elseif ($period=='ten_day') {
 		//$aws_p=money($data['Product Department 10 Day Acc Avg Week Sales Per Product']);
 		//$awp_p=money($data['Product Department 10 Day Acc Avg Week Profit Per Product']);
@@ -1069,18 +1069,13 @@ function list_departments() {
 					$factor=0;
 			}
 			$sum_total_sales=$factor*$row['sum_total_sales'];
-
+			$_sum_total_sales=$row['sum_total_sales'];
 			$sum_total_profit_plus=$row['total_profit_plus'];
 			$sum_total_profit_minus=$row['total_profit_minus'];
 			$sum_total_profit=$factor*($row['total_profit_plus']-$row['total_profit_minus']);
 		}
 		mysql_free_result($result);
 	}
-	// -----------------------------------------------------End for 10 days------------------------------------------------
-
-
-
-
 	elseif ($period=='week') {
 		//$aws_p=money($row['Product Department 1 Week Acc Avg Week Sales Per Product']);
 		//$awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
@@ -1128,7 +1123,7 @@ function list_departments() {
 
 
 			$sum_total_sales=$factor*$row['sum_total_sales'];
-
+			$_sum_total_sales=$row['sum_total_sales'];
 			$sum_total_profit_plus=$row['total_profit_plus'];
 			$sum_total_profit_minus=$row['total_profit_minus'];
 			$sum_total_profit=$factor*($row['total_profit_plus']-$row['total_profit_minus']);
@@ -1186,7 +1181,6 @@ function list_departments() {
 			$aws_p=money($row['Product Department 1 Week Acc Avg Week Sales Per Product']);
 			$awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
 		}
-		// -----------------------------------Added for 3 year, yeartoday, 6 Month, 10 Days-------------------
 		elseif ($period=='three_year') {
 			$aws_p=money($row['Product Department Total Acc Avg Week Sales Per Product']);
 			$awp_p=money($row['Product Department Total Acc Avg Week Profit Per Product']);
@@ -1203,7 +1197,6 @@ function list_departments() {
 			$aws_p=money($row['Product Department 1 Week Acc Avg Week Sales Per Product']);
 			$awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
 		}
-		// ------------------------------------------------------------------------------------------------------------
 
 
 		if ($percentages) {
@@ -1221,62 +1214,63 @@ function list_departments() {
 			$critical=percentage($row['Product Department Critical Availability Products'],$sum_critical);
 
 
-
+			$delta_sales='';
 
 			if ($period=='all') {
-				$tsall=percentage($row['Product Department Total Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department Total Acc Invoiced Amount'],$_sum_total_sales,2);
+
 				if ($row['Product Department Total Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department Total Acc Profit'],$sum_total_profit_plus,2);
 				else
 					$tprofit=percentage($row['Product Department Total Acc Profit'],$sum_total_profit_minus,2);
 			}
 			elseif ($period=='year') {
-				$tsall=percentage($row['Product Department 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department 1 Year Acc Invoiced Amount'],$_sum_total_sales,2);
 				if ($row['Product Department 1 Year Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department 1 Year Acc Profit'],$sum_total_profit_plus,2);
 				else
 					$tprofit=percentage($row['Product Department 1 Year Acc Profit'],$sum_total_profit_minus,2);
 			}
 			elseif ($period=='quarter') {
-				$tsall=percentage($row['Product Department 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department 1 Quarter Acc Invoiced Amount'],$_sum_total_sales,2);
 				if ($row['Product Department 1 Quarter Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
 				else
 					$tprofit=percentage($row['Product Department 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
 			}
 			elseif ($period=='month') {
-				$tsall=percentage($row['Product Department 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department 1 Month Acc Invoiced Amount'],$_sum_total_sales,2);
 				if ($row['Product Department 1 Month Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department 1 Month Acc Profit'],$sum_total_profit_plus,2);
 				else
 					$tprofit=percentage($row['Product Department 1 Month Acc Profit'],$sum_total_profit_minus,2);
 			}
 			elseif ($period=='week') {
-				$tsall=percentage($row['Product Department 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department 1 Week Acc Invoiced Amount'],$_sum_total_sales,2);
 				if ($row['Product Department 1 Week Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department 1 Week Acc Profit'],$sum_total_profit_plus,2);
 				else
 					$tprofit=percentage($row['Product Department 1 Week Acc Profit'],$sum_total_profit_minus,2);
 			}
 
-			// --------------------------------------------------Added for 3 year,yeartoday,6 month, 10 days---------------
 
 			elseif ($period=='three_year') {
-				$tsall=percentage($row['Product Department 3 Year Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department 3 Year Acc Invoiced Amount'],$_sum_total_sales,2);
 				if ($row['Product Department 3 Year Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department 3 Year Acc Profit'],$sum_total_profit_plus,2);
 				else
 					$tprofit=percentage($row['Product Department 3 Year Acc Profit'],$sum_total_profit_minus,2);
 			}
 			elseif ($period=='yeartoday') {
-				$tsall=percentage($row['Product Department Year To Day Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department Year To Day Acc Invoiced Amount'],$_sum_total_sales,2);
 				if ($row['Product Department Year To Day Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department Year To Day Acc Profit'],$sum_total_profit_plus,2);
 				else
 					$tprofit=percentage($row['Product Department Year To Day Acc Profit'],$sum_total_profit_minus,2);
 			}
 			elseif ($period=='six_month') {
-				$tsall=percentage($row['Product Department 6 Month Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department 6 Month Acc Invoiced Amount'],$_sum_total_sales,2);
+				//$tsall=$row['Product Department 6 Month Acc Invoiced Amount'].' '.$sum_total_sales;
 				if ($row['Product Department 6 Month Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department 6 Month Acc Profit'],$sum_total_profit_plus,2);
 				else
@@ -1284,17 +1278,18 @@ function list_departments() {
 			}
 
 			elseif ($period=='ten_day') {
-				$tsall=percentage($row['Product Department 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
+				$tsall=percentage($row['Product Department 10 Day Acc Invoiced Amount'],$_sum_total_sales,2);
 				if ($row['Product Department 10 Day Acc Profit']>=0)
 					$tprofit=percentage($row['Product Department 10 Day Acc Profit'],$sum_total_profit_plus,2);
 				else
 					$tprofit=percentage($row['Product Department 10 Day Acc Profit'],$sum_total_profit_minus,2);
 			}
-			// ----------------------------------------------------------------------------------------------------------------------------
 
 
 
-		} else {// totals
+		}
+		else {
+			//
 			if ($period=='all') {
 				if ($avg=='totals') {
 					$factor=1;
@@ -1326,7 +1321,7 @@ function list_departments() {
 
 				$tsall=$row['Product Department Total Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department Total Acc Profit']*$factor;
-
+				$delta_sales='';
 				//print ($row['Product Department Total Acc Days On Sale']/30/12)."\n";
 
 
@@ -1334,7 +1329,6 @@ function list_departments() {
 
 
 
-			// -------------------------------------------------- start for 3 year--------------------------------------------
 			elseif ($period=='three_year') {
 				if ($avg=='totals')
 					$factor=1;
@@ -1370,8 +1364,8 @@ function list_departments() {
 				}
 				$tsall=$row['Product Department 3 Year Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 3 Year Acc Profit']*$factor;
+				$delta_sales='';
 			}
-			// --------------------------------------------------- end for 3 year-------------------------------------------
 
 
 
@@ -1422,10 +1416,11 @@ function list_departments() {
 
 				$tsall=$row['Product Department 1 Year Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 1 Year Acc Profit']*$factor;
+				$delta_sales=delta($row['Product Department 1 Year Acc Invoiced Amount'],$row['Product Department 1 Year Acc 1YB Invoiced Amount']);
+
 			}
 
 
-			// -------------------------------------------------- start for yeartoday--------------------------------------------
 			elseif ($period=='yeartoday') {
 				if ($avg=='totals')
 					$factor=1;
@@ -1461,9 +1456,9 @@ function list_departments() {
 				}
 				$tsall=$row['Product Department Year To Day Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department Year To Day Acc Profit']*$factor;
+				$delta_sales=delta($row['Product Department Year To Day Acc Invoiced Amount'],$row['Product Department Year To Day Acc 1YB Invoiced Amount']);
 			}
-			// --------------------------------------------------- end for yeartoday-------------------------------------------
-			// -------------------------------------------------- start for 6 month--------------------------------------------
+
 			elseif ($period=='six_month') {
 				if ($avg=='totals')
 					$factor=1;
@@ -1499,8 +1494,9 @@ function list_departments() {
 				}
 				$tsall=$row['Product Department 6 Month Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 6 Month Acc Profit']*$factor;
+				$delta_sales=delta($row['Product Department 6 Month Acc Invoiced Amount'],$row['Product Department 6 Month Acc 1YB Invoiced Amount']);
+
 			}
-			// --------------------------------------------------- end for 6 month-------------------------------------------
 
 
 
@@ -1542,6 +1538,8 @@ function list_departments() {
 
 				$tsall=$row['Product Department 1 Quarter Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 1 Quarter Acc Profit']*$factor;
+				$delta_sales=delta($row['Product Department 1 Quarter Acc Invoiced Amount'],$row['Product Department 1 Quarter Acc 1YB Invoiced Amount']);
+
 			}
 
 
@@ -1586,10 +1584,11 @@ function list_departments() {
 
 				$tsall=$row['Product Department 1 Month Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 1 Month Acc Profit']*$factor;
+				$delta_sales=delta($row['Product Department 1 Month Acc Invoiced Amount'],$row['Product Department 1 Month Acc 1YB Invoiced Amount']);
+
 			}
 
 
-			// -------------------------------------------------- start for 10 days--------------------------------------------
 			elseif ($period=='ten_day') {
 				if ($avg=='totals')
 					$factor=1;
@@ -1625,8 +1624,9 @@ function list_departments() {
 				}
 				$tsall=$row['Product Department 10 Day Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 10 Day Acc Profit']*$factor;
+				$delta_sales=delta($row['Product Department 10 Day Acc Invoiced Amount'],$row['Product Department 10 Day Acc 1YB Invoiced Amount']);
+
 			}
-			// --------------------------------------------------- end for 10 days-------------------------------------------
 
 
 
@@ -1669,11 +1669,15 @@ function list_departments() {
 
 				$tsall=$row['Product Department 1 Week Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 1 Week Acc Profit']*$factor;
+				$delta_sales=delta($row['Product Department 1 Week Acc Invoiced Amount'],$row['Product Department 1 Week Acc 1YB Invoiced Amount']);
+
 			}
 
 
 
 		}
+
+
 		$sum_active+=$row['Product Department For Public Sale Products'];
 		if (!$percentages) {
 			$tsall=money($tsall,$row['Product Department Currency Code']);
@@ -1699,7 +1703,6 @@ function list_departments() {
 			'active'=>$active,
 			'todo'=>$todo,
 			'discontinued'=>$discontinued,
-
 			'outofstock'=>$outofstock,
 			'stock_error'=>$stock_error,
 			'stock_value'=>$stock_value,
@@ -1708,8 +1711,8 @@ function list_departments() {
 			'low'=>$low,
 			'critical'=>$critical,
 			'sales_type'=>$sales_type,
-
 			'sales'=>$tsall,
+			'delta_sales'=>$delta_sales,
 			'profit'=>$tprofit,
 			'aws_p'=>$aws_p,
 			'awp_p'=>$awp_p
@@ -11686,17 +11689,17 @@ function get_deal_data($data) {
 
 	$deal_key=$data['deal_key'];
 	$deal=new Deal($deal_key);
-	
+
 	$deal_data=array(
-	'name'=>$deal->data['Deal Name'],
-	'description'=>$deal->data['Deal Description'],
-	'name'=>$deal->data['Deal Name'],
+		'name'=>$deal->data['Deal Name'],
+		'description'=>$deal->data['Deal Description'],
+		'name'=>$deal->data['Deal Name'],
 	);
 
 	$response=array('resultset'=>
 		array('state'=>200,
 			'data'=>$deal_data
-			
+
 		)
 	);
 	echo json_encode($response);
