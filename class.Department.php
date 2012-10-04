@@ -906,13 +906,13 @@ class Department extends DB_Table {
                          sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Department Key`=%d and `Invoice Date`>=%s %s" ,
 				$this->id,
 				prepare_mysql($from_date_1yb),
-				prepare_mysql($to_1yb)
+				($to_1yb?sprintf('and `Invoice Date`<%s',prepare_mysql($to_1yb)):'')
 
 			);
 
 
 
-			 print "$sql\n\n";
+			// print "$sql\n\n";
 			
 			
 			
