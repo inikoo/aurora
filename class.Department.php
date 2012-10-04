@@ -912,7 +912,7 @@ class Department extends DB_Table {
 
 
 
-			// print "$sql\n\n";
+			 print "$sql\n\n";
 			
 			
 			

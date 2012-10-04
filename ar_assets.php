@@ -1495,7 +1495,7 @@ function list_departments() {
 				$tsall=$row['Product Department 6 Month Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 6 Month Acc Profit']*$factor;
 				$delta_sales=delta($row['Product Department 6 Month Acc Invoiced Amount'],$row['Product Department 6 Month Acc 1YB Invoiced Amount']);
-
+$delta_sales=money($row['Product Department 6 Month Acc 1YB Invoiced Amount']);
 			}
 
 
