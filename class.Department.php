@@ -873,8 +873,7 @@ class Department extends DB_Table {
 
 		$sql=sprintf("update `Product Department Default Currency` set
                              `Product Department DC $db_interval Acc Invoiced Discount Amount`=%.2f,
-                                                          `Product Department DC $db_interval Acc Invoiced Gross Amount`=%.2f,
-
+                             `Product Department DC $db_interval Acc Invoiced Gross Amount`=%.2f,
                              `Product Department DC $db_interval Acc Invoiced Amount`=%.2f,
                              `Product Department DC $db_interval Acc Profit`=%.2f
                              where `Product Department Key`=%d "
@@ -888,20 +887,13 @@ class Department extends DB_Table {
 
 		mysql_query($sql);
 
-		//   print $sql."\n\n";
-
-//print $this->data["Product Department $db_interval Acc Invoiced Amount"]."\n";
-
 		if ($from_date_1yb) {
 			$this->data["Product Department $db_interval Acc 1YB Invoices"]=0;
 			$this->data["Product Department $db_interval Acc 1YB Invoiced Discount Amount"]=0;
 			$this->data["Product Department $db_interval Acc 1YB Invoiced Amount"]=0;
 			$this->data["Product Department $db_interval Acc 1YB Profit"]=0;
 			$this->data["Product Department $db_interval Acc 1YB Invoiced Delta"]=0;
-			//$this->data["Product Department DC $db_interval Acc 1YB Invoiced Discount Amount"]=0;
-			//$this->data["Product Department DC $db_interval Acc 1YB Invoiced Amount"]=0;
-			//$this->data["Product Department DC $db_interval Acc 1YB Profit"]=0;
-
+			
 			$sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
                          sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Department Key`=%d and `Invoice Date`>=%s %s" ,
 				$this->id,
@@ -911,38 +903,27 @@ class Department extends DB_Table {
 			);
 
 
-
-			// print "$sql\n\n";
-			
-			
-			
-			
-			
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->data["Product Department $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
 				$this->data["Product Department $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
-								$this->data["Product Department $db_interval Acc 1YB Invoiced Delta"]=($row["net"]==0?-1000000:$this->data["Product Department $db_interval Acc Invoiced Amount"]/$row["net"]);
+				$this->data["Product Department $db_interval Acc 1YB Invoiced Delta"]=($row["net"]==0?-1000000:$this->data["Product Department $db_interval Acc Invoiced Amount"]/$row["net"]);
 
 				$this->data["Product Department $db_interval Acc 1YB Invoices"]=$row["invoices"];
 				$this->data["Product Department $db_interval Acc 1YB Profit"]=$row["net"]-$row['total_cost'];
-				// $this->data["Product Department DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
-				//$this->data["Product Department DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
-				//$this->data["Product Department DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
+
 			}
 
 			$sql=sprintf("update `Product Department Dimension` set
                          `Product Department $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
                          `Product Department $db_interval Acc 1YB Invoiced Amount`=%.2f,
                         `Product Department $db_interval Acc 1YB Invoiced Delta`=%f,
-
                          `Product Department $db_interval Acc 1YB Invoices`=%.2f,
                          `Product Department $db_interval Acc 1YB Profit`=%.2f
                          where `Product Department Key`=%d "
 				,$this->data["Product Department $db_interval Acc 1YB Invoiced Discount Amount"]
 				,$this->data["Product Department $db_interval Acc 1YB Invoiced Amount"]
-								,$this->data["Product Department $db_interval Acc 1YB Invoiced Delta"]
-
+				,$this->data["Product Department $db_interval Acc 1YB Invoiced Delta"]
 				,$this->data["Product Department $db_interval Acc 1YB Invoices"]
 				,$this->data["Product Department $db_interval Acc 1YB Profit"]
 				,$this->id
@@ -951,20 +932,7 @@ class Department extends DB_Table {
 			mysql_query($sql);
 			//print "$sql\n";
 
-			/*
-            $sql=sprintf("update `Product Department Default Currency` set
-                         `Product Department DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
-                         `Product Department DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Product Department DC $db_interval Acc 1YB Profit`=%.2f
-                         where `Product Department Key`=%d "
-                         ,$this->data["Product Department DC $db_interval Acc 1YB Invoiced Discount Amount"]
-                         ,$this->data["Product Department DC $db_interval Acc 1YB Invoiced Amount"]
-                         ,$this->data["Product Department DC $db_interval Acc 1YB Profit"]
-                         ,$this->id
-                        );
-            // print "$sql\n";
-            mysql_query($sql);
-            */
+
 		}
 
 		return array(substr($from_date, -19,-9), date("Y-m-d"));
@@ -2284,6 +2252,17 @@ class Department extends DB_Table {
 			$page_keys[]=$row['Page Key'];
 		}
 		return $page_keys;
+	}
+
+	function get_sales_delta($interval) {
+		$delta=  delta($this->data["Product Department $interval Acc Invoiced Amount"],$this->data["Product Department $interval Acc 1YB Invoiced Amount"]);
+		;
+		if ($this->data["Product Department $interval Acc 1YB Invoiced Amount"]>$this->data["Product Department $interval Acc Invoiced Amount"]) {
+			return "<span style='color:red'>$delta</span>";
+		}else {
+			return $delta;
+		}
+
 	}
 
 }

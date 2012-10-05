@@ -32,6 +32,7 @@
 		<li> <span class="item {if $block_view=='footers'}selected{/if}" id="footers"> <span> {t}Footers{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='menu'}selected{/if}" id="menu"> <span> {t}Menu{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='website_search'}selected{/if}" id="website_search"> <span> {t}Search{/t}</span></span></li>
+		
 		<li> <span class="item {if $block_view=='pages'}selected{/if}" id="pages"> <span> {t}Pages{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='email'}selected{/if}" id="email"> <span> {t}Registration{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='favicon'}selected{/if}" id="favicon"> <span> {t}Favicon{/t}</span></span></li>
@@ -616,6 +617,25 @@
 						<td id="Site_Mals_URL_Multi_msg" class="edit_td_alert"></td>
 					</tr>
 				</tbody>
+				
+					<tbody style="border-top: 25px solid white" id="common_javascript">
+					<tr class="title">
+						<td>{t}Common Javascript{/t}</td>
+						<td colspan="2"> 
+						<div class="buttons">
+							<button style="visibility:hidden" id="save_edit_site_javascript" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_javascript" class="negative">{t}Reset{/t}</button> 
+						</div>
+						</td>
+					</tr>
+				</tr>
+				<tr>
+					<td class="label">Javascript:</td>
+					<td> 
+					<textarea></textarea>
+					</td>
+				</tr>
+				</tbody>
+				
 				<tbody style="border-top: 25px solid white" id="Website_ftp">
 					<tr class="title">
 						<td>{t}Website Ftp Credentials{/t}</td>

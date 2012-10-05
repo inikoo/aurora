@@ -165,9 +165,9 @@ function invoice_categories_sales_overview() {
 		exit;
 	}
 
-list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
-$from=($from?substr($from,0,-9):'');
-$to=($from?substr($to,0,-9):'');
+	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
+	$from=($from?substr($from,0,-9):'');
+	$to=($from?substr($to,0,-9):'');
 
 
 	$sql=sprintf("select  C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency,%s from `Invoice Category Dimension` IC left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) order by  C.`Category Key`",
@@ -296,9 +296,9 @@ function store_sales_overview() {
 		$where=sprintf(' and S.`Store Key` in (%s) ',$store);
 
 
-$_order='';
-$_dir='';
-$number_results='';$order='';$order_dir='';
+	$_order='';
+	$_dir='';
+	$number_results='';$order='';$order_dir='';
 
 
 	$filtered=0;
@@ -379,10 +379,10 @@ $number_results='';$order='';$order_dir='';
 	}
 
 
-list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
+	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
 
-$from=($from?substr($from,0,-9):'');
-$to=($from?substr($to,0,-9):'');
+	$from=($from?substr($from,0,-9):'');
+	$to=($from?substr($to,0,-9):'');
 
 
 
@@ -550,53 +550,26 @@ function list_families() {
 
 	$_order=$order;
 	$_dir=$order_direction;
+	$db_interval=get_interval_db_name($period);
 
 
 	if ($order=='profits')
-		$order='`Product Family 1 Year Acc Profit`';
-
+		$order="`Product Family $db_interval Acc Profit`";
 	else {
-
-
 		if ($dc_currency) {
-			switch ($period) {
-			case('all'):
-				$order='`Product Family DC Total Acc Invoiced Amount`';
-				break;
-			case('1m'):
-				$order='`Product Family DC 1 Month Acc Invoiced Amount`';
-				break;
-			case('1y'):
-				$order='`Product Family DC 1 Year Acc Invoiced Amount`';
-				break;
-			case('1q'):
-				$order='`Product Family DC 1 Quarter Acc Invoiced Amount`';
-				break;
-			default:
-				$order='`Product Family DC 1 Year Acc Invoiced Amount`';
-
-			}
+			$order="`Product Family DC $db_interval Acc Invoiced Amount`";
 		}else {
-			switch ($period) {
-			case('all'):
-				$order='`Product Family Total Acc Invoiced Amount`';
-				break;
-			case('1m'):
-				$order='`Product Family 1 Month Acc Invoiced Amount`';
-				break;
-			case('1y'):
-				$order='`Product Family 1 Year Acc Invoiced Amount`';
-				break;
-			case('1q'):
-				$order='`Product Family 1 Quarter Acc Invoiced Amount`';
-				break;
-			default:
-				$order='`Product Family 1 Year Acc Invoiced Amount`';
-
-			}
+			$order="`Product Family $db_interval Acc Invoiced Amount`";
 		}
-
 	}
+
+	$sql_names=" `Product Family DC $db_interval Acc Invoiced Amount` , `Product Family $db_interval Acc Invoiced Amount` ";
+	if (!($db_interval=='Total' or $db_interval=='3 Year')) {
+		$sql_names.=" ,`Product Family $db_interval Acc 1YB Invoiced Amount`  ";
+	}
+
+	// $sql="select  $sql_names , `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+
 
 	$sql="select  *  from `Product Family Dimension` P  left join `Store Dimension` S on (P.`Product Family Store Key`=S.`Store Key`) left join `Product Family Default Currency` DCP on (P.`Product Family Key`=DCP.`Product Family Key`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
@@ -605,25 +578,16 @@ function list_families() {
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+		if ($db_interval=='Total' or $db_interval=='3 Year') {
+			$delta_sales='';
+		}else {
+
+			$delta_sales=delta($data["Product Family $db_interval Acc Invoiced Amount"],$data["Product Family $db_interval Acc 1YB Invoiced Amount"]);
+		}
 
 		if ($dc_currency) {
-			switch ($period) {
-			case('all'):
-				$sales=money($data['Product Family DC Total Acc Invoiced Amount'],$corporate_currency);
-				break;
-			case('1m'):
-				$sales=money($data['Product Family DC 1 Month Acc Invoiced Amount'],$corporate_currency);
-				break;
-			case('1y'):
-				$sales=money($data['Product Family DC 1 Year Acc Invoiced Amount'],$corporate_currency);
-				break;
-			case('1q'):
-				$sales=money($data['Product Family DC 1 Quarter Acc Invoiced Amount'],$corporate_currency);
-				break;
-			default:
-				$sales=money($data['Product Family DC 1 Year Acc Invoiced Amount'],$corporate_currency);
 
-			}
+			$sales=money($data["Product Family DC $db_interval Acc Invoiced Amount"],$corporate_currency);
 
 
 			if ($corporate_currency!=$data['Store Currency Code']) {
@@ -631,24 +595,8 @@ function list_families() {
 			}
 
 		}else {
+			$sales=money($data["Product Family $db_interval Acc Invoiced Amount"],$data['Store Currency Code']);
 
-			switch ($period) {
-			case('all'):
-				$sales=money($data['Product Family Total Acc Invoiced Amount'],$data['Store Currency Code']);
-				break;
-			case('1m'):
-				$sales=money($data['Product Family 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
-				break;
-			case('1y'):
-				$sales=money($data['Product Family 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
-				break;
-			case('1q'):
-				$sales=money($data['Product Family 1 Quarter Acc Invoiced Amount'],$data['Store Currency Code']);
-				break;
-			default:
-				$sales=money($data['Product Family 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
-
-			}
 		}
 
 		$family="<b><a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a></b>';
@@ -659,8 +607,9 @@ function list_families() {
 			'family_description'=>$family_description,
 			'family'=>$family,
 			'store'=>$store,
-			'description'=>$family.' '.$data['Product Family Name'].' ('.$store.')',
-			'net_sales'=>$sales
+			'description'=>'<span title="'.$data['Product Family Name'].'">'.$family.'</span> ('.$store.')',
+			'net_sales'=>$sales,
+			'net_sales_delta'=>$delta_sales
 		);
 	}
 	mysql_free_result($result);
@@ -825,7 +774,7 @@ function list_parts() {
 		$family='';
 		$store='';
 		$web_state='';
-$stock=$stock=number($data['Part Current Stock']).$web_state;
+		$stock=$stock=number($data['Part Current Stock']).$web_state;
 		$adata[]=array(
 			'position'=>'<b>'.$position++.'</b>'
 			,'code'=>$code
@@ -1127,99 +1076,41 @@ function list_products() {
 	$_order=$order;
 	$_dir=$order_direction;
 
+	$db_interval=get_interval_db_name($period);
 
 	if ($order=='profits')
-		$order='`Product 1 Year Acc Profit`';
-
+		$order="`Product $db_interval Acc Profit`";
 	else {
-
 		if ($dc_currency) {
-			switch ($period) {
-			case('all'):
-				$order='`Product ID DC Total Acc Invoiced Amount`';
-				break;
-			case('1m'):
-				$order='`Product ID DC 1 Month Acc Invoiced Amount`';
-				break;
-			case('1y'):
-				$order='`Product ID DC 1 Year Acc Invoiced Amount`';
-				break;
-			case('1q'):
-				$order='`Product ID DC 1 Quarter Acc Invoiced Amount`';
-				break;
-			default:
-				$order='`Product ID DC 1 Year Acc Invoiced Amount`';
-
-			}
+			$order="`Product ID DC $db_interval Acc Invoiced Amount`";
 		}else {
-
-			switch ($period) {
-			case('all'):
-				$order='`Product Total Acc Invoiced Amount`';
-				break;
-			case('1m'):
-				$order='`Product 1 Month Acc Invoiced Amount`';
-				break;
-			case('1y'):
-				$order='`Product 1 Year Acc Invoiced Amount`';
-				break;
-			case('1q'):
-				$order='`Product 1 Quarter Acc Invoiced Amount`';
-				break;
-			default:
-				$order='`Product 1 Year Acc Invoiced Amount`';
-
-			}
+			$order="`Product $db_interval Acc Invoiced Amount`";
 		}
 	}
 
+	$sql_names=" `Product ID DC $db_interval Acc Invoiced Amount` , `Product $db_interval Acc Invoiced Amount` ";
+	if (!($db_interval=='Total' or $db_interval=='3 Year')) {
+		$sql_names.=" ,`Product $db_interval Acc 1YB Invoiced Amount`  ";
+	}
 
-
-	$sql="select   `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Product Total Acc Invoiced Amount`,`Product 1 Month Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product 1 Quarter Acc Invoiced Amount`,`Product 1 Year Acc Invoiced Amount`,`Product ID DC Total Acc Invoiced Amount`,`Product ID DC 1 Month Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Product ID DC 1 Year Acc Invoiced Amount`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  $sql_names , `Product Record Type`,`Product Web State`,`Product Availability`,`Product Short Description`,`Store Code`,`Product Store Key`,P.`Product Family Code`,P.`Product Family Key`,P.`Product Code`,P.`Product ID`,`Store Currency Code` from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) left join `Product ID Default Currency` DCP on (P.`Product ID`=DCP.`Product ID`) $where $wheref   order by $order $order_direction limit $start_from,$number_results";
 	$adata=array();
 	//  print $sql;
 	$position=1;
 	$result=mysql_query($sql);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-		if ($dc_currency) {
-			switch ($period) {
-			case('all'):
-				$sales=money($data['Product ID DC Total Acc Invoiced Amount'],$corporate_currency);
-				break;
-			case('1m'):
-				$sales=money($data['Product ID DC 1 Month Acc Invoiced Amount'],$corporate_currency);
-				break;
-			case('1y'):
-				$sales=money($data['Product ID DC 1 Year Acc Invoiced Amount'],$corporate_currency);
-				break;
-			case('1q'):
-				$sales=money($data['Product ID DC 1 Quarter Acc Invoiced Amount'],$corporate_currency);
-				break;
-			default:
-				$sales=money($data['Product ID DC 1 Year Acc Invoiced Amount'],$corporate_currency);
 
-			}
-
+		if ($db_interval=='Total' or $db_interval=='3 Year') {
+			$sales_delta='';
 		}else {
 
-			switch ($period) {
-			case('all'):
-				$sales=money($data['Product Total Acc Invoiced Amount'],$data['Store Currency Code']);
-				break;
-			case('1m'):
-				$sales=money($data['Product 1 Month Acc Invoiced Amount'],$data['Store Currency Code']);
-				break;
-			case('1y'):
-				$sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
-				break;
-			case('1q'):
-				$sales=money($data['Product 1 Quarter Acc Invoiced Amount'],$data['Store Currency Code']);
-				break;
-			default:
-				$sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
-
-			}
+			$sales_delta=delta($data["Product $db_interval Acc Invoiced Amount"],$data["Product $db_interval Acc 1YB Invoiced Amount"]);
+		}
+		if ($dc_currency) {
+			$sales=money($data["Product ID DC $db_interval Acc Invoiced Amount"],$corporate_currency);
+		}else {
+			$sales=money($data["Product $db_interval Acc Invoiced Amount"],$data['Store Currency Code']);
 		}
 
 		$code="<a href='product.php?pid=".$data['Product ID']."'>".$data['Product Code'].'</a>';
@@ -1227,29 +1118,31 @@ function list_products() {
 		$store="<a href='store.php?id=".$data['Product Store Key']."'>".$data['Store Code'].'</a>';
 
 
-if($data['Product Record Type']=='Historic'){
-$stock='<img src="art/icons/delete.png" alt="'._('Discontinued').'" title="'._('Discontinued').'">';
+		if ($data['Product Record Type']=='Historic') {
+			$stock='<img src="art/icons/delete.png" alt="'._('Discontinued').'" title="'._('Discontinued').'">';
 
-}else{
+		}else {
 
-switch($data['Product Web State']){
-case('For Sale'):
-$web_state='<img src="art/icons/bullet_green.png">';
-break;
-default;
-$web_state='<img src="art/icons/bullet_red.png">';
+			switch ($data['Product Web State']) {
+			case('For Sale'):
+				$web_state='<img src="art/icons/bullet_green.png">';
+				break;
+			default;
+				$web_state='<img src="art/icons/bullet_red.png">';
 
-}
-$stock=number($data['Product Availability']).$web_state;
+			}
+			$stock=number($data['Product Availability']).$web_state;
 
-}
+		}
 		$adata[]=array(
 			'position'=>'<b>'.$position++.'</b>'
 			,'code'=>$code
 			,'family'=>$family
 			,'store'=>$store
-			,'description'=>'<b>'.$code.'</b> '.$data['Product Short Description']." ($store)"
+			,'description'=>'<span style="font-weight:800" title="'.$data['Product Short Description'].'">'.$code."</span>  ($store)"
 			,'net_sales'=>$sales
+			,'net_sales_delta'=>$sales_delta
+
 			,'stock'=>$stock
 		);
 	}
@@ -1395,10 +1288,10 @@ function list_customers() {
 
 
 
-//	if ($period=='all')
-//		$sql="select  `Customer Net Balance`*`Invoice Currency Exchange` as  net_balance , `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
-//	else
-		$sql="select  sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)  as  net_balance , `Invoice Currency`,`Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices    from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+	// if ($period=='all')
+	//  $sql="select  `Customer Net Balance`*`Invoice Currency Exchange` as  net_balance , `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
+	// else
+	$sql="select  sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)  as  net_balance , `Invoice Currency`,`Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices    from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
 
 
 	//print $sql;

@@ -2223,7 +2223,6 @@ function list_products() {
 			$order='`Product 1 Month Acc Invoiced Amount`';
 		elseif ($period=='week')
 			$order='`Product 1 Week Acc Invoiced Amount`';
-		// -----------------------------------------Start Product's 3Y,YTD,6M,10D---------------------------------------------
 		elseif ($period=='three_year')
 			$order='`Product 3 Year Acc Invoiced Amount`';
 		elseif ($period=='yeartoday')
@@ -2232,7 +2231,25 @@ function list_products() {
 			$order='`Product 6 Month Acc Invoiced Amount`';
 		elseif ($period=='ten_day')
 			$order='`Product 10 Day Acc Invoiced Amount`';
-		// -----------------------------------------End Product's 3Y,YTD,6M,10D---------------------------------------------
+	}elseif ($_order=='delta_sales') {
+		if ($period=='all')
+			$order='`Product Total Acc Invoiced Amount`';
+		elseif ($period=='year')
+			$order='`Product 1 Year Acc 1YB Invoiced Delta`';
+		elseif ($period=='quarter')
+			$order='`Product 1 Quarter Acc 1YB Invoiced Delta`';
+		elseif ($period=='month')
+			$order='`Product 1 Month Acc 1YB Invoiced Delta`';
+		elseif ($period=='week')
+			$order='`Product 1 Week Acc 1YB Invoiced Delta`';
+		elseif ($period=='three_year')
+			$order='`Product 3 Year Acc Invoiced Amount`';
+		elseif ($period=='yeartoday')
+			$order='`Product Year To Day Acc 1YB Invoiced Delta`';
+		elseif ($period=='six_month')
+			$order='`Product 6 Month Acc 1YB Invoiced Delta`';
+		elseif ($period=='ten_day')
+			$order='`Product 10 Day Acc 1YB Invoiced Delta`';
 	}
 	elseif ($order=='margin') {
 		if ($period=='all')
@@ -2514,6 +2531,7 @@ function list_products() {
 
 
 		if ($percentages) {
+		$delta_sales='';
 			$sold='';
 			$margin='';
 			if ($period=='all') {
@@ -2615,11 +2633,12 @@ function list_products() {
 						$factor='ND';
 				}
 				if ($factor=='ND') {
+				$delta_sales='';
 					$tsall=_('ND');
 					$tprofit=_('ND');
 					$sold=_('ND');
 				} else {
-
+$delta_sales='';
 					$tsall=($row['Product Total Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Total Acc Profit']*$factor);
 					$sold=$row['Product Total Acc Quantity Invoiced']*$factor;
@@ -2667,10 +2686,12 @@ function list_products() {
 						$factor='ND';
 				}
 				if ($factor=='ND') {
+				$delta_sales='';
 					$tsall=_('ND');
 					$tprofit=_('ND');
 					$sold=_('ND');
 				} else {
+				$delta_sales='';
 					$sold=($row['Product 3 Year Acc Quantity Invoiced']*$factor);
 					$tsall=($row['Product 3 Year Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product 3 Year Acc Profit']*$factor);
@@ -2721,6 +2742,8 @@ function list_products() {
 					$tsall=($row['Product 1 Year Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product 1 Year Acc Profit']*$factor);
 				}
+				
+				$delta_sales=delta($row['Product 1 Year Acc Invoiced Amount'],$row['Product 1 Year Acc 1YB Invoiced Amount']);
 				$margin=$row['Product 1 Year Acc Margin'];
 			}
 			elseif ($period=='yeartoday') {
@@ -2767,6 +2790,7 @@ function list_products() {
 					$tsall=($row['Product Year To Day Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Year To Day Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product Year To Day Acc Invoiced Amount'],$row['Product Year To Day Acc 1YB Invoiced Amount']);
 				$margin=$row['Product Year To Day Acc Margin'];
 			}
 			elseif ($period=='monthtoday') {
@@ -2813,6 +2837,7 @@ function list_products() {
 					$tsall=($row['Product Month To Day Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Month To Day Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product Month To Day Acc Invoiced Amount'],$row['Product Month To Day Acc 1YB Invoiced Amount']);
 				$margin=$row['Product Month To Day Acc Margin'];
 			}
 			elseif ($period=='weektoday') {
@@ -2859,6 +2884,7 @@ function list_products() {
 					$tsall=($row['Product Week To Day Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Week To Day Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product 1 Week Acc Invoiced Amount'],$row['Product 1 Week Acc 1YB Invoiced Amount']);
 				$margin=$row['Product Week To Day Acc Margin'];
 			}
 			elseif ($period=='six_month') {
@@ -2905,6 +2931,7 @@ function list_products() {
 					$tsall=($row['Product 6 Month Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product 6 Month Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product 6 Month Acc Invoiced Amount'],$row['Product 6 Month Acc 1YB Invoiced Amount']);
 				$margin=$row['Product 6 Month Acc Margin'];
 			}
 			elseif ($period=='quarter') {
@@ -2950,6 +2977,7 @@ function list_products() {
 					$tsall=($row['Product 1 Quarter Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product 1 Quarter Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product 1 Quarter Acc Invoiced Amount'],$row['Product 1 Quarter Acc 1YB Invoiced Amount']);
 				$margin=$row['Product 1 Quarter Acc Margin'];
 
 			}
@@ -2996,6 +3024,7 @@ function list_products() {
 					$tprofit=$row['Product 1 Month Acc Profit']*$factor;
 					$sold=$row['Product 1 Month Acc Quantity Invoiced']*$factor;
 				}
+				$delta_sales=delta($row['Product 1 Month Acc Invoiced Amount'],$row['Product 1 Month Acc 1YB Invoiced Amount']);
 				$margin=$row['Product 1 Month Acc Margin'];
 			}
 
@@ -3043,6 +3072,7 @@ function list_products() {
 					$tsall=($row['Product Today Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Today Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product Today Acc Invoiced Amount'],$row['Product Today Acc 1YB Invoiced Amount']);
 				$margin=$row['Product Today Acc Margin'];
 			}
 
@@ -3090,6 +3120,7 @@ function list_products() {
 					$tsall=($row['Product Yesterday Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Yesterday Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product Yesterday Acc Invoiced Amount'],$row['Product Yesterday Acc 1YB Invoiced Amount']);
 				$margin=$row['Product Yesterday Acc Margin'];
 			}
 
@@ -3137,6 +3168,7 @@ function list_products() {
 					$tsall=($row['Product Last Month Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Last Month Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product Last Month Acc Invoiced Amount'],$row['Product Last Month Acc 1YB Invoiced Amount']);
 				$margin=$row['Product Last Month Acc Margin'];
 			}
 
@@ -3185,6 +3217,7 @@ function list_products() {
 					$tsall=($row['Product Last Week Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Last Week Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product Last Week Acc Invoiced Amount'],$row['Product Last Week Acc 1YB Invoiced Amount']);
 				$margin=$row['Product Last Week Acc Margin'];
 			}
 
@@ -3233,6 +3266,7 @@ function list_products() {
 					$tsall=($row['Product 10 Day Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product 10 Day Acc Profit']*$factor);
 				}
+				$delta_sales=delta($row['Product 10 Day Acc Invoiced Amount'],$row['Product 10 Day Acc 1YB Invoiced Amount']);
 				$margin=$row['Product 10 Day Acc Margin'];
 			}
 			elseif ($period=='week') {
@@ -3279,6 +3313,7 @@ function list_products() {
 
 
 				}
+				$delta_sales=delta($row['Product 1 Week Acc Invoiced Amount'],$row['Product 1 Week Acc 1YB Invoiced Amount']);
 				$margin=$row['Product 1 Week Acc Margin'];
 
 			}
@@ -3397,6 +3432,7 @@ function list_products() {
 			'stock_value'=>money($row['Product Stock Value']),
 			'stock'=>$stock,
 			'sales'=>(is_numeric($tsall)?money($tsall,$currency):$tsall),
+			'delta_sales'=>$delta_sales,
 			'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
 			'margin'=>$margin,
 			'sold'=>(is_numeric($sold)?number($sold):$sold),
@@ -4497,6 +4533,25 @@ function list_families() {
 			$order='`Product Family 6 Month Acc Invoiced Amount`';
 		elseif ($period=='ten_day')
 			$order='`Product Family 10 Day Acc Invoiced Amount`';
+	}	elseif ($_order=='delta_sales') {
+		if ($period=='all')
+			$order='`Product Family Total Acc Invoiced Amount`';
+		elseif ($period=='year')
+			$order='`Product Family 1 Year Acc 1YB Invoiced Delta`';
+		elseif ($period=='quarter')
+			$order='`Product Family 1 Quarter Acc 1YB Invoiced Delta`';
+		elseif ($period=='month')
+			$order='`Product Family 1 Month Acc 1YB Invoiced Delta`';
+		elseif ($period=='week')
+			$order='`Product Family 1 Week Acc 1YB Invoiced Delta`';
+		elseif ($period=='three_year')
+			$order='`Product Family 3 Year Acc Invoiced Amount`';
+		elseif ($period=='yeartoday')
+			$order='`Product Family Year To Day Acc 1YB Invoiced Delta`';
+		elseif ($period=='six_month')
+			$order='`Product Family 6 Month Acc 1YB Invoiced Delta`';
+		elseif ($period=='ten_day')
+			$order='`Product Family 10 Day Acc 1YB Invoiced Delta`';
 	}
 	elseif ($order=='code')
 		$order='`Product Family Code`';
@@ -4685,6 +4740,7 @@ function list_families() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$code=sprintf('<a href="family.php?id=%d">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
 		if ($percentages) {
+		$delta_sales='';
 			if ($period=='all') {
 				$tsall=percentage($row['Product Family Total Acc Invoiced Amount'],$sum_total_sales,2);
 				if ($row['Product Family Total Acc Profit']>=0)
@@ -4727,7 +4783,7 @@ function list_families() {
 
 
 
-
+$delta_sales='';
 
 			if ($period=='all') {
 
@@ -4761,13 +4817,12 @@ function list_families() {
 
 				$tsall=money($row['Product Family Total Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family Total Acc Profit']*$factor);
-
+				$delta_sales='';
 
 
 
 			}
 
-			// ---------------------------------------Start for families 3 year-----------------------------------------
 			elseif ($period=='three_year') {
 				if ($avg=='totals')
 					$factor=1;
@@ -4803,8 +4858,8 @@ function list_families() {
 				}
 				$tsall=money($row['Product Family 3 Year Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 3 Year Acc Profit']*$factor);
+				$delta_sales='';
 			}
-			// ---------------------------------------Ends for families 3 year-------------------------------------------
 
 			elseif ($period=='year') {
 
@@ -4843,18 +4898,11 @@ function list_families() {
 				}
 
 
-
-
-
-
-
-
-
+			$delta_sales=delta($row['Product Family 1 Year Acc Invoiced Amount'],$row['Product Family 1 Year Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family 1 Year Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 1 Year Acc Profit']*$factor);
 			}
 
-			// ---------------------------------------Start for families YearToday-----------------------------------------
 			elseif ($period=='yeartoday') {
 				if ($avg=='totals')
 					$factor=1;
@@ -4887,12 +4935,12 @@ function list_families() {
 						$factor=7/$row['Product Family Year To Day Acc Days Available'];
 					else
 						$factor=0;
-				}
+				}			
+				$delta_sales=delta($row['Product Family Year To Day Acc Invoiced Amount'],$row['Product Family Year To Day Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family Year To Day Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family Year To Day Acc Profit']*$factor);
 			}
-			// ---------------------------------------Ends for families Year To Day-------------------------------------------
-			// ---------------------------------------Start for families 6 month-----------------------------------------
+
 			elseif ($period=='six_month') {
 				if ($avg=='totals')
 					$factor=1;
@@ -4926,10 +4974,11 @@ function list_families() {
 					else
 						$factor=0;
 				}
+								
+				$delta_sales=delta($row['Product Family 6 Month Acc Invoiced Amount'],$row['Product Family 6 Month Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family 6 Month Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 6 Month Acc Profit']*$factor);
 			}
-			// ---------------------------------------Ends for families 6 month-------------------------------------------
 
 			elseif ($period=='quarter') {
 				if ($avg=='totals')
@@ -4965,7 +5014,7 @@ function list_families() {
 						$factor=0;
 				}
 
-
+				$delta_sales=delta($row['Product Family 1 Quarter Acc Invoiced Amount'],$row['Product Family 1 Quarter Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family 1 Quarter Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 1 Quarter Acc Profit']*$factor);
 			}
@@ -5006,12 +5055,11 @@ function list_families() {
 						$factor=0;
 				}
 
-
+				$delta_sales=delta($row['Product Family 1 Month Acc Invoiced Amount'],$row['Product Family 1 Month Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family 1 Month Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 1 Month Acc Profit']*$factor);
 			}
 
-			// ---------------------------------------Start for families 10 days-----------------------------------------
 			elseif ($period=='ten_day') {
 				if ($avg=='totals')
 					$factor=1;
@@ -5045,10 +5093,10 @@ function list_families() {
 					else
 						$factor=0;
 				}
+				$delta_sales=delta($row['Product Family 10 Day Acc Invoiced Amount'],$row['Product Family 10 Day Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family 10 Day Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 10 Day Acc Profit']*$factor);
 			}
-			// ---------------------------------------Ends for families 10 days-------------------------------------------
 
 
 			elseif ($period=='week') {
@@ -5085,7 +5133,7 @@ function list_families() {
 						$factor=0;
 				}
 
-
+				$delta_sales=delta($row['Product Family 1 Week Acc Invoiced Amount'],$row['Product Family 1 Week Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family 1 Week Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 1 Week Acc Profit']*$factor);
 			}
@@ -5111,6 +5159,7 @@ function list_families() {
 			'store'=>$store,
 			'department'=>$department,
 			'sales'=>$tsall,
+			'delta_sales'=>$delta_sales,
 			'profit'=>$tprofit,
 			'surplus'=>number($row['Product Family Surplus Availability Products']),
 			'optimal'=>number($row['Product Family Optimal Availability Products']),

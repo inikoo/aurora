@@ -28,14 +28,15 @@
 	table.hideColumn('family');
 	table.hideColumn('dept');
 	table.hideColumn('expcode');  
-
+table.hideColumn('delta_sales');
 
 
 	if(tipo=='sales'){
 	    table.showColumn('sold');
 	    table.showColumn('sales');
 	    table.showColumn('profit');
-	    table.showColumn('margin');
+	  //  table.showColumn('margin');
+	    table.showColumn('delta_sales');
 	    Dom.get('product_period_options').style.display='';
 	    Dom.get('product_avg_options').style.display='';
 	    table.showColumn('smallname');
@@ -100,11 +101,13 @@ function  change_family_view(e,data){
 	     table.hideColumn('low');
 	     table.hideColumn('critcal');
 	     table.hideColumn('name');
+table.hideColumn('delta_sales');
 
 	    if(tipo=='sales'){
 		table.showColumn('profit');
 		table.showColumn('sales');
 		table.showColumn('name');
+table.showColumn('delta_sales');
 
 		Dom.get('family_'+'period_options').style.display='';
 		Dom.get('family_'+'avg_options').style.display='';

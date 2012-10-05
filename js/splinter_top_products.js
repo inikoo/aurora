@@ -28,8 +28,10 @@ var tableid=1
 				      // 	,{key:"store",label:"", width:10,sortable:false,className:"aleft"}
 
 				      // ,{key:"family", label:Dom.get('label_Fam').value, width:28,sortable:false,className:"aleft"}
-				       ,{key:"description", label:Dom.get('label_Product').value, width:220,sortable:false,className:"aleft"}
+				       ,{key:"description", label:Dom.get('label_Product').value, width:120,sortable:false,className:"aleft"}
 				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:69,sortable:false,className:"aright"}
+				       	,{key:"net_sales_delta", label:'1y&Delta;', width:69,sortable:false,className:"aright"}
+
 						,{key:"stock", label:Dom.get('label_Stock').value, width:50,sortable:false,className:"aright"}
 					//	,{key:"web_state", label:'', width:30,sortable:false,className:"aright"}
 
@@ -56,7 +58,7 @@ var tableid=1
 		
 		fields: [
 			 'position',
-			 'store','family','code','description','net_sales','stock'
+			 'store','family','code','description','net_sales','stock','net_sales_delta'
 			 ]};
 		    top_products_tables.table1 = new YAHOO.widget.DataTable(tableDivEL, ProductsColumnDefs,
 								   top_products_tables.dataSourcetopprod

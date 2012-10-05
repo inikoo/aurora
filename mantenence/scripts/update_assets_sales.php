@@ -37,6 +37,35 @@ global $myconf;
 
 
 
+$sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
+$sql="select `Product ID` from `Product Dimension`";
+//$sql="select `Product ID` from `Product Dimension` ";
+
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result)   ) {
+	$product=new Product('pid',$row['Product ID']);
+	$product->update_up_today_sales();
+	$product->update_interval_sales();
+	$product->update_last_period_sales();
+	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+}
+
+
+
+$sql="select * from `Product Family Dimension` where `Product Family Key`=4695";
+$sql="select * from `Product Family Dimension`";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+	$family=new Family($row['Product Family Key']);
+	$family->update_product_data();
+	$family->update_up_today_sales();
+	$family->update_interval_sales();
+	$family->update_last_period_sales();
+	print "Family ".$family->data['Product Family Code']."\r";
+
+}
+
 
 
 $sql="select * from `Product Department Dimension` where `Product Department Key`=23 ";
@@ -94,20 +123,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 }
 
 
-$sql="select * from `Product Family Dimension` where `Product Family Key`=4695";
-$sql="select * from `Product Family Dimension`";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-	$family=new Family($row['Product Family Key']);
-	$family->update_product_data();
-	$family->update_up_today_sales();
-	$family->update_interval_sales();
-	$family->update_last_period_sales();
-	print "Family ".$family->data['Product Family Code']."\r";
-
-}
-
 
 
 $sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
@@ -134,18 +149,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 }
 
-$sql="select `Product ID` from `Product Dimension` where `Product ID`=76503";
-$sql="select `Product ID` from `Product Dimension`";
-//$sql="select `Product ID` from `Product Dimension` ";
-
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result)   ) {
-	$product=new Product('pid',$row['Product ID']);
-	$product->update_up_today_sales();
-	$product->update_interval_sales();
-	$product->update_last_period_sales();
-	print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
-}
 
 
 
