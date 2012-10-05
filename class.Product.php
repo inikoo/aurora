@@ -2597,9 +2597,8 @@ class product extends DB_Table {
 
 		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
 				,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as dc_gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as dc_disc ,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) as dc_net 
-,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Cost Supplier`)*`Invoice Currency Exchange Rate`) as dc_profit
-		
-		from `Order Transaction Fact` where `Product ID`=%d %s %s ",
+				,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Cost Supplier`)*`Invoice Currency Exchange Rate`) as dc_profit
+				from `Order Transaction Fact` where `Product ID`=%d %s %s ",
 			$this->pid,
 			($from_date?sprintf('and `Invoice Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
@@ -2662,6 +2661,62 @@ class product extends DB_Table {
 		mysql_query($sql);
 //print "$sql\n\n";
 //exit;
+
+
+
+	if ($from_date_1yb) {
+			$this->data["Product $db_interval Acc 1YB Invoices"]=0;
+			$this->data["Product $db_interval Acc 1YB Invoiced Discount Amount"]=0;
+			$this->data["Product $db_interval Acc 1YB Invoiced Amount"]=0;
+			$this->data["Product $db_interval Acc 1YB Profit"]=0;
+			$this->data["Product $db_interval Acc 1YB Invoiced Delta"]=0;
+
+
+			$sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
+                         sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s %s" ,
+				$this->pid,
+				prepare_mysql($from_date_1yb),
+				($to_1yb?sprintf('and `Invoice Date`<%s',prepare_mysql($to_1yb)):'')
+
+			);
+
+
+
+			// print "$sql\n\n";
+			$result=mysql_query($sql);
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$this->data["Product $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
+				$this->data["Product $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
+				$this->data["Product $db_interval Acc 1YB Invoiced Delta"]=($row["net"]==0?-1000000:$this->data["Product $db_interval Acc Invoiced Amount"]/$row["net"]);
+				$this->data["Product $db_interval Acc 1YB Invoices"]=$row["invoices"];
+				$this->data["Product $db_interval Acc 1YB Profit"]=$row["net"]-$row['total_cost'];
+
+			}
+
+			$sql=sprintf("update `Product Dimension` set
+                         `Product $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
+                         `Product $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                        `Product $db_interval Acc 1YB Invoiced Delta`=%f,
+                         `Product $db_interval Acc 1YB Invoices`=%.2f,
+                         `Product $db_interval Acc 1YB Profit`=%.2f
+                         where `Product ID`=%d "
+				,$this->data["Product $db_interval Acc 1YB Invoiced Discount Amount"]
+				,$this->data["Product $db_interval Acc 1YB Invoiced Amount"]
+				,$this->data["Product $db_interval Acc 1YB Invoiced Delta"]
+
+				,$this->data["Product $db_interval Acc 1YB Invoices"]
+				,$this->data["Product $db_interval Acc 1YB Profit"]
+				,$this->pid
+			);
+
+			mysql_query($sql);
+			//print "$sql\n";
+
+
+		}
+
+
+
 
 	}
 

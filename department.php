@@ -417,35 +417,22 @@ $order=$_SESSION['state']['store']['departments']['order'];
 $store_period=$_SESSION['state']['store']['departments']['period'];
 $store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
 
-
+$db_interval=get_interval_db_name($store_period);
 
 if ($order=='families')
 	$order='`Product Department Families`';
 elseif ($order=='todo')
 	$order='`Product Department In Process Products`';
 elseif ($order=='profit') {
-	if ($store_period=='all')
-		$order='`Product Department Total Profit`';
-	elseif ($store_period=='year')
-		$order='`Product Department 1 Year Acc Profit`';
-	elseif ($store_period=='quarter')
-		$order='`Product Department 1 Quarter Acc Profit`';
-	elseif ($store_period=='month')
-		$order='`Product Department 1 Month Acc Profit`';
-	elseif ($store_period=='week')
-		$order='`Product Department 1 Week Acc Profit`';
+
+$order="`Product Department $db_interval Acc Profit`";
+
+
 }
 elseif ($order=='sales') {
-	if ($store_period=='all')
-		$order='`Product Department Total Invoiced Amount`';
-	elseif ($store_period=='year')
-		$order='`Product Department 1 Year Acc Invoiced Amount`';
-	elseif ($store_period=='quarter')
-		$order='`Product Department 1 Quarter Acc Invoiced Amount`';
-	elseif ($store_period=='month')
-		$order='`Product Department 1 Month Acc Invoiced Amount`';
-	elseif ($store_period=='week')
-		$order='`Product Department 1 Week Acc Invoiced Amount`';
+$order="`Product Department $db_interval Acc Invoiced Amount`";
+
+	
 
 }
 elseif ($order=='name')
@@ -480,6 +467,7 @@ $sql=sprintf("select `Product Department Key` as id , `Product Department Code` 
             );
 
 $result=mysql_query($sql);
+
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
     $prev['link']='department.php?id='.$row['id'];
     $prev['title']=$row['name'];

@@ -274,11 +274,8 @@ class Family extends DB_Table {
 			$this->msg="$sql  Error can not create the family";
 		}
 	}
-	/*
-      Method: get_data
-      Obtiene los datos de la tabla Product Family Dimension de acuerdo al Id, al codigo o al code_store.
-    */
-	// JFA
+
+
 	function get_data($tipo,$tag,$tag2=false) {
 		switch ($tipo) {
 		case('id'):
@@ -298,6 +295,8 @@ class Family extends DB_Table {
 
 	}
 
+
+
 	function update_department($key) {
 
 		if (!is_numeric($key)) {
@@ -311,11 +310,26 @@ class Family extends DB_Table {
 		//$old_family=new Department($this->data['Product Family Key']);
 		$new_department=new Department($key);
 		//print_r($new_department);
-		$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Key`=%d, `Product Family Main Department Code`='%s', `Product Family Main Department Name`='%s' where `Product Family Key`=%d", $key, $new_department->data['Product Department Code'], $new_department->data['Product Department Name'], $this->id);
+		$sql=sprintf("update `Product Family Dimension` set `Product Family Main Department Key`=%d, `Product Family Main Department Code`=%s, `Product Family Main Department Name`=%s where `Product Family Key`=%d",
+			$key,
+			prepare_mysql($new_department->data['Product Department Code']),
+			prepare_mysql($new_department->data['Product Department Name']),
+			$this->id);
 
 
 		mysql_query($sql);
-		if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+
+		$sql=sprintf("update `Product Dimension` set `Product Main Department Key`=%d, `Product Main Department Code`=%s, `Product Main Department Name`=%s where `Product Family Key`=%d",
+			$key,
+			prepare_mysql($new_department->data['Product Department Code']),
+			prepare_mysql($new_department->data['Product Department Name']),
+			$this->id
+		);
+		mysql_query($sql);
+
+
+
+
 
 		//$old_family->update_product_data();
 		$new_department->update_product_data();
@@ -521,7 +535,7 @@ class Family extends DB_Table {
 			);
 			//print $sql;
 			if (mysql_query($sql)) {
-				if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+
 				$this->msg=_('Family Sales Type updated');
 				$this->updated=true;
 
@@ -1046,32 +1060,32 @@ class Family extends DB_Table {
 
 	function update_up_today_sales() {
 
-	//	$this->update_sales_from_invoices('Today');
-	//	$this->update_sales_from_invoices('Week To Day');
-	//	$this->update_sales_from_invoices('Month To Day');
-	//	$this->update_sales_from_invoices('Year To Day');
+		 $this->update_sales_from_invoices('Today');
+		 $this->update_sales_from_invoices('Week To Day');
+		 $this->update_sales_from_invoices('Month To Day');
+		 $this->update_sales_from_invoices('Year To Day');
 
 		$this->update_sales_from_invoices('Total');
 	}
 
 	function update_last_period_sales() {
 
-	//	$this->update_sales_from_invoices('Yesterday');
-	//	$this->update_sales_from_invoices('Last Week');
-	//	$this->update_sales_from_invoices('Last Month');
+		 $this->update_sales_from_invoices('Yesterday');
+		 $this->update_sales_from_invoices('Last Week');
+		 $this->update_sales_from_invoices('Last Month');
 
 	}
 
 
 	function update_interval_sales() {
 
-	//	$this->update_sales_from_invoices('3 Year');
-	//	$this->update_sales_from_invoices('1 Year');
-	//	$this->update_sales_from_invoices('6 Month');
-	//	$this->update_sales_from_invoices('1 Quarter');
-	//	$this->update_sales_from_invoices('1 Month');
-	//	$this->update_sales_from_invoices('10 Day');
-	//	$this->update_sales_from_invoices('1 Week');
+		 $this->update_sales_from_invoices('3 Year');
+		 $this->update_sales_from_invoices('1 Year');
+		 $this->update_sales_from_invoices('6 Month');
+		 $this->update_sales_from_invoices('1 Quarter');
+		 $this->update_sales_from_invoices('1 Month');
+		 $this->update_sales_from_invoices('10 Day');
+		 $this->update_sales_from_invoices('1 Week');
 
 	}
 
@@ -1252,7 +1266,7 @@ class Family extends DB_Table {
 		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
 		$this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=0;
-				$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]=0;
+		$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]=0;
 
 		$this->data["Product Family $db_interval Acc Invoiced Amount"]=0;
 		$this->data["Product Family $db_interval Acc Invoices"]=0;
@@ -1269,8 +1283,8 @@ class Family extends DB_Table {
 
 		$sql=sprintf("select  sum(`Shipped Quantity`) as qty_delivered,sum(`Order Quantity`) as qty_ordered,sum(`Invoice Quantity`) as qty_invoiced ,count(Distinct `Customer Key`)as customers,count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net ,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d %s %s" ,
 			$this->id,
-			
-						($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
+
+			($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
 
@@ -1278,11 +1292,11 @@ class Family extends DB_Table {
 
 		$result=mysql_query($sql);
 
-//		print $sql."\n\n";
+		//  print $sql."\n\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->data["Product Family $db_interval Acc Invoiced Discount Amount"]=$row["discounts"];
 			$this->data["Product Family $db_interval Acc Invoiced Amount"]=$row["net"];
-						$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]=$row["gross"];
+			$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]=$row["gross"];
 
 			$this->data["Product Family $db_interval Acc Invoices"]=$row["invoices"];
 			$this->data["Product Family $db_interval Acc Profit"]=$row["net"]-$row['total_cost'];
@@ -1299,7 +1313,7 @@ class Family extends DB_Table {
 		}
 
 
-/*
+		/*
 $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`  OTF   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')  and  `Product Family Key`=".$this->id;
 		$result=mysql_query($sql);
 		$pending_orders=0;
@@ -1321,7 +1335,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
                        `Product Family $db_interval Acc Quantity Delivered`=%d
                      where `Product Family Key`=%d "
 			,$this->data["Product Family $db_interval Acc Invoiced Discount Amount"]
-						,$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]
+			,$this->data["Product Family $db_interval Acc Invoiced Gross Amount"]
 
 			,$this->data["Product Family $db_interval Acc Invoiced Amount"]
 			,$this->data["Product Family $db_interval Acc Invoices"]
@@ -1354,22 +1368,21 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 		mysql_query($sql);
 
-		//   print $sql."\n\n";
+		   //print "XX: $interval $from_date_1yb\n\n";
 
 		if ($from_date_1yb) {
 			$this->data["Product Family $db_interval Acc 1YB Invoices"]=0;
 			$this->data["Product Family $db_interval Acc 1YB Invoiced Discount Amount"]=0;
 			$this->data["Product Family $db_interval Acc 1YB Invoiced Amount"]=0;
 			$this->data["Product Family $db_interval Acc 1YB Profit"]=0;
-			//$this->data["Product Family DC $db_interval Acc 1YB Invoiced Discount Amount"]=0;
-			//$this->data["Product Family DC $db_interval Acc 1YB Invoiced Amount"]=0;
-			//$this->data["Product Family DC $db_interval Acc 1YB Profit"]=0;
+			$this->data["Product Family $db_interval Acc 1YB Invoiced Delta"]=0;
+
 
 			$sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
                          sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
 				$this->id,
 				prepare_mysql($from_date_1yb),
-				prepare_mysql($to_1yb)
+				($to_1yb?sprintf('and `Invoice Date`<%s',prepare_mysql($to_1yb)):'')
 
 			);
 
@@ -1380,21 +1393,24 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->data["Product Family $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
 				$this->data["Product Family $db_interval Acc 1YB Invoiced Amount"]=$row["net"];
+				$this->data["Product Family $db_interval Acc 1YB Invoiced Delta"]=($row["net"]==0?-1000000:$this->data["Product Family $db_interval Acc Invoiced Amount"]/$row["net"]);
 				$this->data["Product Family $db_interval Acc 1YB Invoices"]=$row["invoices"];
 				$this->data["Product Family $db_interval Acc 1YB Profit"]=$row["net"]-$row['total_cost'];
-				// $this->data["Product Family DC $db_interval Acc 1YB Invoiced Amount"]=$row["dc_net"];
-				//$this->data["Product Family DC $db_interval Acc 1YB Invoiced Discount Amount"]=$row["dc_discounts"];
-				//$this->data["Product Family DC $db_interval Acc 1YB Profit"]=$row["dc_profit"];
+
 			}
 
 			$sql=sprintf("update `Product Family Dimension` set
                          `Product Family $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
                          `Product Family $db_interval Acc 1YB Invoiced Amount`=%.2f,
+                                                 `Product Family $db_interval Acc 1YB Invoiced Delta`=%f,
+
                          `Product Family $db_interval Acc 1YB Invoices`=%.2f,
                          `Product Family $db_interval Acc 1YB Profit`=%.2f
                          where `Product Family Key`=%d "
 				,$this->data["Product Family $db_interval Acc 1YB Invoiced Discount Amount"]
 				,$this->data["Product Family $db_interval Acc 1YB Invoiced Amount"]
+				,$this->data["Product Family $db_interval Acc 1YB Invoiced Delta"]
+
 				,$this->data["Product Family $db_interval Acc 1YB Invoices"]
 				,$this->data["Product Family $db_interval Acc 1YB Profit"]
 				,$this->id
@@ -1403,20 +1419,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 			mysql_query($sql);
 			//print "$sql\n";
 
-			/*
-            $sql=sprintf("update `Product Family Default Currency` set
-                         `Product Family DC $db_interval Acc 1YB Invoiced Discount Amount`=%.2f,
-                         `Product Family DC $db_interval Acc 1YB Invoiced Amount`=%.2f,
-                         `Product Family DC $db_interval Acc 1YB Profit`=%.2f
-                         where `Product Family Key`=%d "
-                         ,$this->data["Product Family DC $db_interval Acc 1YB Invoiced Discount Amount"]
-                         ,$this->data["Product Family DC $db_interval Acc 1YB Invoiced Amount"]
-                         ,$this->data["Product Family DC $db_interval Acc 1YB Profit"]
-                         ,$this->id
-                        );
-            // print "$sql\n";
-            mysql_query($sql);
-            */
+
 		}
 
 		return array(substr($from_date, -19,-9), date("Y-m-d"));
@@ -1424,7 +1427,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	}
 
 
-	
+
 
 
 	function special_characteristic_if_duplicated($data) {
@@ -2484,7 +2487,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 
 
-	
+
 	function get_product_in_family_no_price_deleteme($data, $header_options=false, $options=false) {
 
 		if (isset($options['order_by']))
@@ -2672,7 +2675,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 		return $form;
 
 	}
-	
+
 
 
 

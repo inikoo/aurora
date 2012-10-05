@@ -37,45 +37,37 @@
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div style="padding:0 20px">
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			<h2 style="margin:0;padding:0">
-				{t}Department Information{/t}: 
-			</h2>
-			<div style="width:350px;float:left">
-				<table class="show_info_product">
-					<tr>
-						<td>{t}Code{/t}:</td>
-						<td class="price">{$department->get('Product Department Code')}</td>
-					</tr>
-					<tr>
-						<td>{t}Name{/t}:</td>
-						<td>{$department->get('Product Department Name')}</td>
-					</tr>
-				</table>
-				<table class="show_info_product">
-					<tr>
-						<td>{t}Public Sale Products{/t}:</td>
-						<td class="number"> 
-						<div>
-							{$department->get('For Sale Products')} 
-						</div>
-						</td>
-					</tr>
-					<tr>
-						<td>{t}Families{/t}:</td>
-						<td class="number"> 
-						<div>
-							{$department->get('Families')} 
-						</div>
-						</td>
-					</tr>
-					<tr>
-						<td>{t}Web Page{/t}:</td>
-						<td>{$department->get('Web Page Links')}</td>
-					</tr>
-				</table>
-			</div>
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 20px 0">
 			
+			
+			
+			<div style="float:left;font-size:80%;text-align:center;padding:0px">
+		<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+			{t}Products{/t} 
+			<div id="number_products" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+				{$department->get('For Sale Products')} 
+			</div>
+		</div>
+			<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+			{t}Families{/t} 
+			<div id="number_families" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+					{$department->get('Families')} 
+			</div>
+		</div>
+		
+	<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+			{t}Sales (1y){/t} 
+			<div id="number_families" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+					{$department->get('1 Year Acc Invoiced Amount')} <br/>
+					{$department->get_sales_delta('1 Year')}
+			</div>
+		</div>		
+		
+	</div>
+			
+			
+			
+		
 		
 		</div>
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
