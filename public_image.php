@@ -4,8 +4,8 @@ $modify_since=false;
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) and $_SERVER['HTTP_IF_MODIFIED_SINCE']!='') {
 	$modify_since=$_SERVER['HTTP_IF_MODIFIED_SINCE'];
 
-	header('Last-Modified: '.gmdate('D, d M Y H:i:s', $modify_since).' GMT', true, 304);
-	exit("xx");
+	header('Last-Modified: '.$modify_since, true, 304);
+	exit();
 
 }else {
 

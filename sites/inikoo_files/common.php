@@ -9,7 +9,7 @@ require_once 'common_store_functions.php';
 require_once 'common_detect_agent.php';
 
 //require_once 'ar_show_products.php';
-require_once "class.Session.php";
+//require_once "class.Session.php";
 require_once "class.Store.php";
 
 require_once "class.Auth.php";
@@ -55,9 +55,9 @@ require_once 'conf/conf.php';
 $yui_path="external_libs/yui/2.9/build/";
 
 
-$max_session_time=1000000;
-$session = new Session($max_session_time,1,100);
-
+//$max_session_time=1000000;
+//$session = new Session($max_session_time,1,100);
+ session_start();
 //print_r($_SESSION);
 
 $site=new Site($myconf['site_key']);
@@ -237,16 +237,16 @@ $current_url='';
 }
 
 $order=false;
-$order_in_process=$customer->get_order_in_process_key();
-if($order_in_process)
-$order=new Order($order_in_process);
+//$order_in_process=$customer->get_order_in_process_key();
+//if($order_in_process)
+//$order=new Order($order_in_process);
 
-$user_click_key=log_visit($session->id,(isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id,$current_url);
-
-
+$user_click_key=log_visit((isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id,$current_url);
 
 
-function log_visit($session_key,$user_log_key,$user,$site_key,$current_url) {
+
+
+function log_visit($user_log_key,$user,$site_key,$current_url) {
 
 
 
@@ -374,7 +374,7 @@ function log_visit($session_key,$user_log_key,$user,$site_key,$current_url) {
                   `Date` ,
 
                   `Previous Page` ,
-                  `Session Key` ,
+           
                   `Previous Page Key`,`User Agent Key`,`OS`,`IP`,`User Visitor Key`,`User Session Key`
                   )
                   VALUES (
@@ -382,7 +382,9 @@ function log_visit($session_key,$user_log_key,$user,$site_key,$current_url) {
 
                   %d,%s,
 
-                  %s, %d,%d,
+                  %s,
+                
+                  %d,
                   %d,%s,%s,
                   %d,%d
                   );",
@@ -394,7 +396,7 @@ function log_visit($session_key,$user_log_key,$user,$site_key,$current_url) {
 		prepare_mysql($date),
 
 		prepare_mysql($previous_url,false),
-		$session_key,
+	//	$session_key,
 		$prev_page_key,
 		get_useragent_key($_SERVER['HTTP_USER_AGENT']),
 		prepare_mysql(get_user_os($_SERVER['HTTP_USER_AGENT'])),

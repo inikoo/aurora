@@ -259,15 +259,14 @@ var $id=0;
                     `Session ID`,
                     `HTTP User Agent`,
                     `Session Data`,
-                    `Session Expire`,`Session IP`,`Session User Agent`
+                    `Session Expire`
                 )
             VALUES (
                 '".addslashes($session_id)."',
                 '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."',
                 '".addslashes($session_data)."',
-                '".addslashes(time() + $this->sessionLifetime)."',
-                 '".addslashes(ip())."',
-                  '".addslashes($_SERVER["HTTP_USER_AGENT"])."'
+                '".addslashes(time() + $this->sessionLifetime)."'
+                
             )
             ON DUPLICATE KEY UPDATE
                 `Session Data` = '".addslashes($session_data)."',

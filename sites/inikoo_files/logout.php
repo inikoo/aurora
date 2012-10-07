@@ -18,9 +18,9 @@ mysql_query("SET NAMES 'utf8'");
 require_once 'conf/timezone.php';
 date_default_timezone_set(TIMEZONE) ;
 mysql_query("SET time_zone='+0:00'");
-$max_session_time=1000000;
-$session = new Session($max_session_time,1,100);
-
+//$max_session_time=1000000;
+//$session = new Session($max_session_time,1,100);
+session_start();
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
 
