@@ -1,1 +1,3 @@
-../../class.Session.php
+<?php
+
+?>
