@@ -59,7 +59,7 @@ require_once 'conf/conf.php';
 $max_session_time=$myconf['max_session_time'];
 $max_session_time_in_milliseconds=1000*$max_session_time;
 $session = new Session($max_session_time);
-print date("%c",1349421365);
+//print date("%c",1349421365);
 
 //print_r($session);
 //print '//'.session_id( );
