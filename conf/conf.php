@@ -3453,13 +3453,32 @@ $default_state=array(
 
 			)
 		),
+'edit_products'=>array(
+			
 
+			'view'=>'view_state',
+			
+			'table_type'=>'list',
+			'show_only'=>'forsale',
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'restrictions'=>'',
+			'elements'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
+
+			
+
+		),
 		'products'=>array(
 			'table_type'=>'list',
 			'percentages'=>false,
 			'view'=>'general',
 
-			'edit_view'=>'view_state',
+			
 			'id'=>1,
 			'period'=>'year',
 			'percentage'=>0,
