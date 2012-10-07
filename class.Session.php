@@ -259,13 +259,15 @@ var $id=0;
                     `Session ID`,
                     `HTTP User Agent`,
                     `Session Data`,
-                    `Session Expire`
+                    `Session Expire`,`Session IP`,`Session User Agent`
                 )
             VALUES (
                 '".addslashes($session_id)."',
                 '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."',
                 '".addslashes($session_data)."',
-                '".addslashes(time() + $this->sessionLifetime)."'
+                '".addslashes(time() + $this->sessionLifetime)."',
+                 '".addslashes(ip())."',
+                  '".addslashes($_SERVER["HTTP_USER_AGENT"])."'
             )
             ON DUPLICATE KEY UPDATE
                 `Session Data` = '".addslashes($session_data)."',
@@ -310,13 +312,7 @@ var $id=0;
 
         // deletes the current session id from the database
       
-      $sql="
-            DELETE FROM
-                `Session Dimension`
-            WHERE
-                `Session ID` = '".mysql_real_escape_string($session_id)."'
-
-        ";
+      $sql="DELETE FROM `Session Dimension` WHERE `Session ID` = '".mysql_real_escape_string($session_id)."'";
 
       if(mysql_query($sql))
 	return true;
@@ -334,12 +330,7 @@ var $id=0;
     {
 
       $sql ="
-            DELETE FROM
-                `Session Dimension`
-            WHERE
-                `Session Expire` < '".mysql_real_escape_string(time() - $maxlifetime)."'
-
-        ";
+            DELETE FROM `Session Dimension` WHERE `Session Expire` < '".mysql_real_escape_string(time() - $maxlifetime)."'";
      
       mysql_query($sql);
 

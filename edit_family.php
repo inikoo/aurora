@@ -280,7 +280,7 @@ $smarty->assign('units_tipo',$units_tipo);
 $smarty->assign('title', _('Editing Family').': '.$family->get('Product Family Code'));
 
 
-$smarty->assign('view',$_SESSION['state']['family']['products']['edit_view']);
+$smarty->assign('view',$_SESSION['state']['family']['edit_products']['view']);
 
 
 $tipo_filter=$_SESSION['state']['family']['history']['f_field'];

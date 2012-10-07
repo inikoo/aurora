@@ -74,6 +74,7 @@ $smarty->assign('general_options_list',$general_options_list);
 //$smarty->assign('search_scope','customers');
 
 
+$smarty->assign('store_id','');
 
 
 

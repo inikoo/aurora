@@ -86,11 +86,11 @@ case('is_valid_family_code'):
 		}
 	}
 	break;
-case('get_deal_data'):
+case('deal_data'):
 	$data=prepare_values($_REQUEST,array(
 			'deal_key'=>array('type'=>'key')
 		));
-	get_deal_data($data);
+	deal_data($data);
 	break;
 
 case('is_store_code'):
@@ -11732,7 +11732,7 @@ function list_delivery_notes_per_part($data) {
 }
 
 
-function get_deal_data($data) {
+function deal_data($data) {
 
 	require_once 'class.Deal.php';
 
@@ -11742,14 +11742,14 @@ function get_deal_data($data) {
 	$deal_data=array(
 		'name'=>$deal->data['Deal Name'],
 		'description'=>$deal->data['Deal Description'],
-		'name'=>$deal->data['Deal Name'],
+		'key'=>$deal->id,
 	);
 
-	$response=array('resultset'=>
+	$response=
 		array('state'=>200,
 			'data'=>$deal_data
 
-		)
+		
 	);
 	echo json_encode($response);
 
