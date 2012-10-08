@@ -6588,4 +6588,9 @@ ALTER TABLE `Product Dimension`  ADD `Product Last Month Acc 1YB Invoiced Delta`
 ALTER TABLE `Session Dimension` ADD INDEX ( `Session Expire` ) ;
 ALTER TABLE `Session Dimension` ADD INDEX ( `HTTP User Agent` ( 8 ) ) ;
 ALTER TABLE `Session Dimension` ADD `Session IP` VARCHAR( 16 ) NOT NULL ,ADD `Session User Agent` VARCHAR( 500 ) NOT NULL ;
-ALTER TABLE `Session Dimension` CHANGE `Session IP` `Session IP` VARCHAR( 16 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Session User Agent` `Session User Agent` VARCHAR( 500 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Deal Dimension` ADD `Deal Status` ENUM( 'Suspended', 'Active', 'Finish', 'Waiting' ) NOT NULL DEFAULT 'Waiting' AFTER `Store Key` ;
+ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Deal Metadata Active` ) ;
+update  `Deal Metadata Dimension` set `Deal Metadata Active`='Yes';
+
+
+

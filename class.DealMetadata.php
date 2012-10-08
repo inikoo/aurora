@@ -569,6 +569,20 @@ class DealMetadata extends DB_Table {
 
 
 	}
+	
+	function update_status($value){
+	
+		$sql=sprintf("update `Deal Metadata Dimension` set `Deal Metadata Status`=%s where `Deal Metadata Key`=%d"
+				,prepare_mysql($value)
+				,$this->id
+			);
+			mysql_query($sql);
+			
+	$deal= New Deal($this->data['Deal Key']);
+	$deal->update_status_from_metadata();
+	
+	}
+	
 }
 
 ?>

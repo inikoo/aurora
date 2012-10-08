@@ -218,6 +218,23 @@ var CellEdit = function (callback, newValue) {
  };
 
 
+function suspend_deal_metadata(deal_metadata_key){
+	var request='ar_edit_assets.php?tipo=update_deal_metadata_status&value=Suspended&deal_metadata_key=' + deal_metadata_key
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //		   	    alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    //  alert(r.state)
+		    if(r.state==200){
+				
+				
+				
+		    		}
+		    }    
+	});
+}
+
+
 function fill_edit_deal_form(deal_key){
 
 	var request='ar_assets.php?tipo=deal_data&deal_key=' + deal_key
@@ -228,22 +245,14 @@ function fill_edit_deal_form(deal_key){
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    //  alert(r.state)
 		    if(r.state==200){
-		  
-		    
-						Dom.get('edit_deal_key').value=r.data.key
-
-			Dom.get('deal_description_input').value=r.data.description
-						Dom.get('deal_name_input').value=r.data.name
-						
-						region1 = Dom.getRegion('deal_allowance_save'+r.data.key); 
-    region2 = Dom.getRegion('dialog_edit_deal'); 
-    
-    alert(Dom.get('deal_allowance_save'+r.data.key))
-	var pos =[region1.right-region2.width,region1.bottom]
-	Dom.setXY('dialog_edit_deal', pos);
+				Dom.get('edit_deal_key').value=r.data.key;
+				Dom.get('deal_description_input').value=r.data.description;
+				Dom.get('deal_name_input').value=r.data.name;
+				region1 = Dom.getRegion('fill_edit_deal_form'+r.data.key); 
+    			region2 = Dom.getRegion('dialog_edit_deal'); 
+    			var pos =[region1.left,region1.bottom-20];
+				Dom.setXY('dialog_edit_deal', pos);
 				dialog_edit_deal.show()		
-						
-
 		    }
 		    
 		}

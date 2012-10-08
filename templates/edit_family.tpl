@@ -570,11 +570,12 @@
 	</div>
 </div>
 
-<div id="dialog_edit_deal" style="padding:20px 20px 10px 20px ">
+<div id="dialog_edit_deal" style="padding:20px 20px 0px 20px;width:350px">
 <input type="hidden" id="edit_deal_key" value=""/>
-<table>
+<table style="width:100%" border=1>
 <tr><td>{t}Name{/t}:</td><td><input id="deal_name_input" value=""></td></tr>
-<tr><td>{t}Description{/t}:</td><td><textarea id="deal_description_input" value=""></textarea></td></tr>
+<tr><td>{t}Description{/t}:</td><td><textarea style="width:100%" id="deal_description_input" value=""></textarea></td></tr>
+<tr style="height:10px"><td></td><td></td></tr>
 <tr><td></td><td><div class="buttons">
 <button class="positive">{t}Save{/t}</button>
 <button class="negative">{t}Reset{/t}</button>
