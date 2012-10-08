@@ -30,6 +30,17 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
+
+
+case('update_deal_metadata_status'):
+    $data=prepare_values($_REQUEST,array(
+         'value'=>array('type'=>'string'),
+         'deal_metadata_key'=>array('type'=>'key'),
+         ));
+
+    update_deal_metadata_status($data);
+    break; 
+
 case('location_audit'):
     $data=prepare_values($_REQUEST,array(
          'scope'=>array('type'=>'string'),
@@ -2701,10 +2712,11 @@ $valid_to='<input style="width:65px" value=""/>';
 
 
 
-		$name=sprintf('<a href="deal.php?id=%d">%s</a><br/><div style="margin-top:5px;margin-bottom:5px">%s</div><div class="buttons small left"><button onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
+		$name=sprintf('<a href="deal.php?id=%d">%s</a><br/><div style="margin-top:5px;margin-bottom:5px">%s</div><div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
 		$row['Deal Key'],
 		$row['Deal Name'],
 		$row['Deal Description'],
+		$row['Deal Key'],
 		$row['Deal Key'],
 		_('Edit'),
 		$valid_to
@@ -2712,12 +2724,34 @@ $valid_to='<input style="width:65px" value=""/>';
 		);
 		
 	
+	$status=$deal_metadata->get_xhtml_status();
+	
+	
+	switch ($deal_metadata->data['Deal Metadata Status']) {
+		case('Active'):
+			$status.= '<div style="margin-top:10px" class="buttons small left"><button onClick="suspend_deal_metadata('.$deal_metadata->id.')"  class="negative"> '._("Suspend").'</button></div>';
+			break;
+		case('Finish'):
+			$status.= _("Deal Ended");
+			break;
+		case('Waiting'):
+			$status.= '<div class="buttons small left"><button  onClick="suspend_deal_metadata('.$deal_metadata->id.')" class="negative"> '._("Suspend").'</button></div>';
+			break;
+		case('Suspended'):
+			$status.= '<div class="buttons small left"><button onClick="activate_deal_metadata('.$deal_metadata->id.')" class="positive"> '._("Activate").'</button></div>';
+			break;
+
+
+		}
+
+	
+	
 		
 		//if ($row['Campaign Deal Schema Key']) {
 		// $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
 		//}
 		$adata[]=array(
-			'status'=>$deal_metadata->get_xhtml_status(),
+			'status'=>$status,
 			'name'=>$name,
 			'description'=>'<span style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/><input  style="margin-top:5px;width:100%" value="'.$row['Deal Metadata Name'].'"><br/>'.$edit,
 			'dates'=>''
@@ -4616,5 +4650,30 @@ function location_audit($data){
     echo json_encode($response);
     
 }
+
+
+function update_deal_metadata_status($data){
+
+$deal_metadata=new DealMetadata($data['deal_metadata_key']);
+$deal_metadata=>update_status($data['value']);
+
+
+ if($deal_metadata->error){
+        $response=array(
+                        'state'=>400,
+                        'msg'=>$deal_metadata->msg
+                        );
+    }
+    else{
+        $response=array(
+                        'state'=>200,
+                        'msg'=>'ok'
+                        );
+    }
+    echo json_encode($response);
+
+
+}
+
     
 ?>
