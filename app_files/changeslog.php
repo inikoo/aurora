@@ -6553,7 +6553,7 @@ ALTER TABLE `Page Store Dimension` ADD INDEX ( `Page Code` ( 5 ) ) ;
 ALTER TABLE `Store Dimension` ADD `Store Delivery Note XHTML Message` MEDIUMTEXT NULL DEFAULT NULL ,ADD `Store Invoice XHTML Message` MEDIUMTEXT NULL DEFAULT NULL ;
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML Public Message` MEDIUMTEXT NULL DEFAULT NULL ;
 ALTER TABLE `Invoice Tax Bridge` ADD INDEX ( `Invoice Key` ) ;
-ALTER TABLE ``Invoice Tax Bridge` ADD INDEX ( `Tax Code` ) ;
+ALTER TABLE `Invoice Tax Bridge` ADD INDEX ( `Tax Code` ) ;
 ALTER TABLE `Order No Product Transaction Fact` CHANGE `Transaction Outstandind Net Amount Balance` `Transaction Outstanding Net Amount Balance` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0.00',CHANGE `Transaction Outstandind Tax Amount Balance` `Transaction Outstanding Tax Amount Balance` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0.00';
 ALTER TABLE `Inventory Transaction Fact` ADD INDEX ( `Out of Stock` ) ;
 ALTER TABLE `Order Transaction Fact` ADD INDEX ( `No Shipped Due Out of Stock` ) ;
