@@ -140,7 +140,7 @@ function get_tipo_order($ltipo,$header) {
 
 
     }
-    elseif(preg_match('/^GRATISMUSTERSENDUNG/i',$ltipo)) {
+    elseif(preg_match('/^GRATISMUSTERSENDUNG|ORDINE CAMPIONE/i',$ltipo)) {
         //$header['notes']=preg_replace('/^ECHANTILLIONi?$/i','',$header['notes']);
         //$header['notes2']=preg_replace('/^ECHANTILLIONi?$/i','',$header['notes2']);
         $tipo=4;
