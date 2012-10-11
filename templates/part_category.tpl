@@ -61,6 +61,12 @@
 					<button class="{if $category_period=='week'}selected{/if}" period="week" id="category_period_week">{t}1W{/t}</button>
 				
 				</div>
+				
+				<div class="buttons small left cluster">				<tr>
+					<button class="{if $category_period=='custom'}selected{/if}" period="custom" id="category_period_custom">{t}Custom Dates{/t}</button>
+							
+				</div>
+				
 
 			<div style="clear:both"></div>
 	
@@ -75,18 +81,20 @@
 							<td>{t}Sales{/t}:</td>
 							<td class="aright">{$category->get_period($period.db,"Acc Sold Amount")}</td>
 						</tr>
-						<tr>
+					
+						<tr style="display:none">
 							<td>{t}Profit{/t}:</td>
 							<td class="aright">{$category->get_period($period.db,'Acc Profit')}</td>
 						</tr>
-						<tr>
+						<tr style="display:none">
 							<td>{t}Margin{/t}:</td>
 							<td class="aright">{$category->get_period($period.db,'Acc Margin')}</td>
 						</tr>
-						<tr>
+						<tr style="display:none">
 							<td>{t}GMROI{/t}:</td>
 							<td class="aright">{$category->get_period($period.db,'Acc GMROI')}</td>
 						</tr>
+						
 					</tbody>
 					{/foreach}
 		
