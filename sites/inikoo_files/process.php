@@ -21,33 +21,17 @@ require_once 'conf/conf.php';
 $site_key=$myconf['site_key'];
 
 $url=$_SERVER['REQUEST_URI'];
-
-
-
-	
-//print_r($_SERVER);
-
 $url=preg_replace('/^\//', '', $url);
-
-
 $url=preg_replace('/\?.*$/', '', $url);
-
-
-	$original_url= $url;
+$original_url=$url;
 
 if ($page_key=get_page_key_from_code($site_key,$url)) {
 	include_once 'common.php';
 	include_once 'page.php';
-
-
 }else {
-
-
-
 	$sql=sprintf("select `Site URL` from `Site Dimension` where `Site Key`=%d ",
 		$site_key
 	);
-	//print "$sql\n";
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$site_url=$row['Site URL'];
@@ -55,7 +39,7 @@ if ($page_key=get_page_key_from_code($site_key,$url)) {
 		exit("error A");
 	}
 
-$original_url=$site_url.'/'.$original_url;
+	$original_url=$site_url.'/'.$original_url;
 
 	$path='';
 	$file='';
@@ -68,37 +52,24 @@ $original_url=$site_url.'/'.$original_url;
 	}else {
 		$file='index.php';
 		$path=$url;
-
 	}
 
 	$path=preg_replace('/\/$/','',$path);
-
-
-
-
 	$sql=sprintf("select  `Page Target URL` from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s and `Source File`=%s ",_prepare_mysql($site_url),_prepare_mysql($path,false),_prepare_mysql($file));
-
-
 	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
+	if($row=mysql_fetch_assoc($res)) {
 		$target=$row['Page Target URL'];
 		$new_url='ter:'.$target." $sql";
 		header("Location: http://".$target);
-	}else {
-		$new_url=$site_url."/404.php?p=$path&f=$file&url=$url&original_url=$original_url";
+	}else{
+		
+	//print "not found<br/>";
+		//$new_url=$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
+	//	print "Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url";
 		header("Location: http://".$site_url."/404.php?path=$path&f=$file&url=$url&original_url=$original_url");
 	}
-
-
-
-
-
 	exit();
 }
-
-
-
-
 
 
 function get_page_key_from_code($site_key,$code) {

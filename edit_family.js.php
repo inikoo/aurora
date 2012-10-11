@@ -217,18 +217,55 @@ var CellEdit = function (callback, newValue) {
 						);  
  };
 
+function save_edit_deal(){
+	var request='ar_edit_assets.php?tipo=update_deal&name='+encodeURIComponent(Dom.get('deal_name_input').value)+'&description='+encodeURIComponent(Dom.get('deal_description_input').value)+'&deal_key=' + Dom.get('edit_deal_key').value;
+//alert(request)
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    		//   	    alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    
+		    if(r.state==200){
+		    	  Dom.get('deal_name'+r.key).innerHTML=r.name;
+		    	  Dom.get('deal_description'+r.key).innerHTML=r.description;
+		    		dialog_edit_deal.hide()
+		    		
+		    		}
+		    }    
+	});
+}
+
+
+function activate_deal_metadata(deal_metadata_key){
+	var request='ar_edit_assets.php?tipo=update_deal_metadata_status&value=Active&deal_metadata_key=' + deal_metadata_key
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    		   	//    alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    
+		    if(r.state==200){
+		    	    Dom.get('deal_state'+r.key).innerHTML=r.status;
+		    Dom.setStyle('suspend_deal_button'+r.key,'display','')
+		    		    Dom.setStyle('activate_deal_button'+r.key,'display','none')
+		    		}
+		    }    
+	});
+}
 
 function suspend_deal_metadata(deal_metadata_key){
 	var request='ar_edit_assets.php?tipo=update_deal_metadata_status&value=Suspended&deal_metadata_key=' + deal_metadata_key
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //		   	    alert(o.responseText)
+		    	//	   	    alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    //  alert(r.state)
+		   
 		    if(r.state==200){
-				
-				
-				
+		    
+		    Dom.get('deal_state'+r.key).innerHTML=r.status;
+		    Dom.setStyle('suspend_deal_button'+r.key,'display','none')
+		    		    Dom.setStyle('activate_deal_button'+r.key,'display','')
+
+		    
 		    		}
 		    }    
 	});
@@ -267,7 +304,53 @@ deal_save(deal_key,'term');
 function deal_allowance_save(deal_key){
 deal_save(deal_key,'allowance');
 }
-function deal_save(deal_key,key){
+
+
+function save_metadata_deal(key){
+
+   
+
+		var request='tipo=update_deal_metadata&deal_metadata_key=' + key + '&name=' + 
+						encodeURIComponent(Dom.get('deal_metadata_description_input'+key).value) +
+						'&terms=' + encodeURIComponent(Dom.get('deal_term'+key).value)+
+						'&allowances='+encodeURIComponent(Dom.get('deal_allowance'+key).value)
+alert(request)
+		YAHOO.util.Connect.asyncRequest(
+						'POST',
+						'ar_edit_assets.php', {
+						    success:function(o) {
+								alert(o.responseText);
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+
+							 
+								//Dom.get('deal_description'+deal_key).innerHTML=r.description;
+								//Dom.get('deal_'+key+deal_key).setAttribute=('ovalue',r.newvalue);
+								//Dom.get('deal_'+key+deal_key).value=r.newvalue;
+
+								//Dom.get('deal_'+key+'_save'+deal_key).style.display='none';
+								//Dom.get('deal_'+key+'_reset'+deal_key).style.display='none';
+								
+							    }else{
+						
+								
+								
+							    }
+						
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						request
+						
+						);  
+
+}
+
+function xxxsave_deal(deal_key,key){
 	
         
        
@@ -319,13 +402,40 @@ function deal_term_reset(deal_key){
     Dom.get('deal_term_save'+deal_key).style.visibility='hidden';
     Dom.get('deal_term_reset'+deal_key).style.visibility='hidden';
 }
-function deal_term_changed(deal_key){
-    var data=deal_data[deal_key]['terms'];
-    old_value=Dom.get('deal_term'+deal_key).getAttribute('ovalue');
-    new_value=Dom.get('deal_term'+deal_key).value;
+
+
+function deal_metadata_description_changed(deal_metadata_key){
+old_value=Dom.get('deal_metadata_description_input'+deal_metadata_key).getAttribute('ovalue');
+    new_value=Dom.get('deal_metadata_description_input'+deal_metadata_key).value;
+    
+    
+     if(old_value!=new_value){
+	Dom.removeClass('cancel_metadata_deal'+deal_metadata_key,'disabled')
+if(new_value=='')
+		Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
+else
+	Dom.removeClass('save_metadata_deal'+deal_metadata_key,'disabled')
+
+
+
+
+}
+else{
+
+Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
+		Dom.addClass('cancel_metadata_deal'+deal_metadata_key,'disabled')
+}
+
+
+}
+
+function deal_term_changed(deal_metadata_key){
+    var data=deal_data[deal_metadata_key]['terms'];
+    old_value=Dom.get('deal_term'+deal_metadata_key).getAttribute('ovalue');
+    new_value=Dom.get('deal_term'+deal_metadata_key).value;
 
     if(old_value!=new_value){
-	Dom.get('deal_term_reset'+deal_key).style.visibility='visible';
+	Dom.removeClass('cancel_metadata_deal'+deal_metadata_key,'disabled')
 
     switch(data.type){
     case('Order Interval'):
@@ -335,20 +445,21 @@ function deal_term_changed(deal_key){
     case('Family Quantity Ordered'):
 	
 	
-	Dom.get('deal_term_save'+deal_key).style.visibility='visible';
+	Dom.removeClass('save_metadata_deal'+deal_metadata_key,'disabled')
 
 	var validator=/^\d+$/;
 	if(!validator.test(new_value)){
-	      Dom.get('deal_term_save'+deal_key).style.visibility='hidden';
+		Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
+
 	}
 	break;
 
 
     }
     }else{
-	
-	Dom.get('deal_term_save'+deal_key).style.visibility='hidden';
-	Dom.get('deal_term_reset'+deal_key).style.visibility='hidden';
+	Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
+		Dom.addClass('cancel_metadata_deal'+deal_metadata_key,'disabled')
+
 
     }
 
@@ -379,15 +490,14 @@ function old_deal_allowance_save(item,deal_key){
 			    
 	    });
 	}
-function deal_allowance_changed(deal_key){
-    var data=deal_data[deal_key]['allowances'];
-        old_value=Dom.get('deal_allowance'+deal_key).getAttribute('ovalue');
+function deal_allowance_changed(deal_metadata_key){
+    var data=deal_data[deal_metadata_key]['allowances'];
+        old_value=Dom.get('deal_allowance'+deal_metadata_key).getAttribute('ovalue');
 
-    new_value=Dom.get('deal_allowance'+deal_key).value;
+    new_value=Dom.get('deal_allowance'+deal_metadata_key).value;
      //alert(old_value+'->'+new_value)
     if(old_value!=new_value){
-	Dom.get('deal_allowance_reset'+deal_key).style.visibility='visible';
-
+	Dom.removeClass('cancel_metadata_deal'+deal_metadata_key,'disabled')
     switch(data.type){
     case('Get Same Fre'):
 	break;
@@ -397,21 +507,20 @@ function deal_allowance_changed(deal_key){
     case('Percentage Off'):
 	
 	
-	Dom.get('deal_allowance_save'+deal_key).style.visibility='visible';
+	Dom.removeClass('save_metadata_deal'+deal_metadata_key,'disabled')
 
 	var validator=/^(\d+|\.\d+|\d+.|\d+\.\d+)\s*\%?$/;
 	if(!validator.test(new_value)){
-	      Dom.get('deal_allowance_save'+deal_key).style.visibility='hidden';
+	      	Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
+
 	}
 	break;
 
 
     }
     }else{
-	
-	Dom.get('deal_allowance_save'+deal_key).style.visibility='hidden';
-	Dom.get('deal_allowance_reset'+deal_key).style.visibility='hidden';
-
+		Dom.addClass('save_metadata_deal'+deal_metadata_key,'disabled')
+		Dom.addClass('cancel_metadata_deal'+deal_metadata_key,'disabled')
     }
 
 }
@@ -503,7 +612,10 @@ var change_view=function(e){
 	}
   }
 
+function cancel_edit_deal(){
 
+dialog_edit_deal.hide();
+}
 
 function delete_family(){
 Dom.setStyle(['save_delete_family','cancel_delete_family','delete_family_warning'],'display','');

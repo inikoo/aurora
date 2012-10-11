@@ -1,3 +1,5 @@
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+
 <input type="hidden" id="store_key" value="{$store->id}"> 
 <input type="hidden" id="site_key" value="{$site->id}"> 
 <div class="dialog_inikoo">
@@ -13,18 +15,21 @@
 			{t}Login{/t} 
 		</h2>
 		<div style="border:1px solid #ccc;padding:20px;width:400px;float:left">
-			<form name="loginform" id="loginform" method="post" action="" onsubmit="return false" target="dummy">
+			{*}<form name="loginform" id="loginform" action="" method="post" target="dummy">{*}
+			<form action="" method="post" target="dummy">
 				<fieldset>
 					<table style="margin-bottom:10px">
 						<tr>
 							<td class="label">{t}Email{/t}: </td>
-							<td> 
-							<input id="email" type="email" name="email"></td>
+							<td id="email_placeholder"> 
+							<input type="email" name="email" id="email"/>
+							</td>
 						</tr>
 						<tr>
 							<td class="label">{t}Password{/t}: </td>
-							<td> 
-							<input type="password" id="password" name="password"></td>
+							<td id="password_placeholder"> 
+							<input type="password" name="password" id="password"/>
+							</td>
 						</tr>
 						<tr>
 							<td class="label">{t}Remember Me{/t}: </td>
@@ -146,4 +151,11 @@
 	<div style="clear:both;margin-bottom:30px">
 	</div>
 </div>
-<iframe src="dummy.html" name="dummy" style="display: none"></iframe>
+<iframe src="dummy.php" name="dummy" style="width:100%;display: none"></iframe>
+	<div id="dont_forget" style="display: none">
+		<form action="" method="post">
+			<input type="text" name="email" id="exmail"/>
+			<input type="password" name="password" id="xpassword"/>
+			<input type="submit" value="Login" id="dummy_submit"/>
+		</form>
+	</div>

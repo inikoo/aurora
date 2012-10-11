@@ -65,7 +65,13 @@ default:
 }
 
 
+function prepare_email($email){
 
+$email=strip_tags($email);
+$email=preg_replace('/\s/','',$email);
+
+return $email;
+}
 
 function check_email_customers($email,$store_key) {
 
@@ -93,6 +99,7 @@ function check_email_customers($email,$store_key) {
 
 
 function check_email_users($email,$site_key) {
+
 	$sql=sprintf('select `User Key`,`User Parent Key`, `User Handle` from `User Dimension`  where  `User Type`="Customer" and `User Site Key`=%d  and `User Handle`=%s',$site_key,prepare_mysql($email));
 	//print $sql;
 	$res=mysql_query($sql);
@@ -428,7 +435,7 @@ function check_email($data) {
 	$store_key=$data['store_key'];
 	$site_key=$data['site_key'];
 	$login_handle=_trim($data['login_handle']);
-
+$login_handle=prepare_email($login_handle);
 
 	if ($login_handle=='') {
 

@@ -6,7 +6,14 @@ if(preg_match('/\.(jpg|png|gif|xml|txt|ico|css|js)$/i',$not_found_current_page))
 	exit();
 }
 
+//print_r($_REQUEST);
+
+
 include_once('common.php');
 $page_key=$site->get_not_found_page_key();
+
+
+//exit("::: Not found");
+
 include_once('page.php');
 ?>

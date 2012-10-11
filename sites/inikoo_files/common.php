@@ -57,7 +57,7 @@ $yui_path="external_libs/yui/2.9/build/";
 
 //$max_session_time=1000000;
 //$session = new Session($max_session_time,1,100);
- session_start();
+session_start();
 //print_r($_SESSION);
 
 $site=new Site($myconf['site_key']);
@@ -99,91 +99,91 @@ $_SESSION['text_locale_country_code']=substr($site->data['Site Locale'],3,2);
 $_SESSION['text_locale_code']=substr($site->data['Site Locale'],0,2);
 
 
-if(!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ){
+if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 
-if (isset($_REQUEST['p'])) {
-
-
-		
-
-header('Location: reset.php?master_key='.$_REQUEST['p']);
-exit;
-}
-
-if (isset($_REQUEST['masterkey'])) {
-
-	$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['masterkey']),$secret_key,256);
-
-	$auth=new Auth(IKEY,SKEY,'use_cookies');
-
-	$auth->authenticate_from_masterkey($dencrypted_secret_data);
-
-	if ($auth->is_authenticated()) {
-		$authentication_type='masterkey';
-		$_SESSION['logged_in']=true;
-		$_SESSION['store_key']=$store_key;
-		$_SESSION['site_key']=$site->id;
-		$_SESSION['_state']='a';
-		$_SESSION['user_key']=$auth->get_user_key();
-		$_SESSION['customer_key']=$auth->get_user_parent_key();
-		$_SESSION['user_log_key']=$auth->user_log_key;
+	if (isset($_REQUEST['p'])) {
 
 
-		//$St=get_sk();
-		//AESEncryptCtr($St,$auth->password,256);
 
-		//$auth->set_cookies($handle,$_sk,'customer',$site->id);
 
-		//$nano = time_nanosleep(0, 250000);
-		//header('location: profile.php?view=change_password');
-		header('location: profile.php?view=change_password');
+		header('Location: reset.php?x=x&master_key='.$_REQUEST['p']);
 		exit;
-
-	} else {
-
-		$_SESSION['logged_in']=0;
-		$_SESSION['_state']='b';
-		unset($_SESSION['user_key']);
-		unset($_SESSION['customer_key']);
-		unset($_SESSION['user_log_key']);
-		$logged_in=false;
-		$St=get_sk();
-		
-		header('Location: reset.php?emaster_key='.$_REQUEST['masterkey']);
-exit;
-		
-		
 	}
 
+	if (isset($_REQUEST['masterkey'])) {
 
-}
-elseif (isset($_COOKIE['user_handle'])) {
+		$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['masterkey']),$secret_key,256);
 
-	//print_r($_COOKIE);
+		$auth=new Auth(IKEY,SKEY,'use_cookies');
+
+		$auth->authenticate_from_masterkey($dencrypted_secret_data);
+
+		if ($auth->is_authenticated()) {
+			$authentication_type='masterkey';
+			$_SESSION['logged_in']=true;
+			$_SESSION['store_key']=$store_key;
+			$_SESSION['site_key']=$site->id;
+			$_SESSION['_state']='a';
+			$_SESSION['user_key']=$auth->get_user_key();
+			$_SESSION['customer_key']=$auth->get_user_parent_key();
+			$_SESSION['user_log_key']=$auth->user_log_key;
 
 
-	$auth=new Auth(IKEY,SKEY);
-	$auth->set_use_cookies();
-	//$auth->use_cookies=true;
-	$auth->authenticate(false, false, 'customer', $_COOKIE['page_key']);
+			//$St=get_sk();
+			//AESEncryptCtr($St,$auth->password,256);
 
-	if ($auth->is_authenticated()) {
-		$authentication_type='cookie';
-		$_SESSION['logged_in']=true;
-		$_SESSION['store_key']=$store_key;
-		$_SESSION['site_key']=$site->id;
-		$_SESSION['user_key']=$auth->get_user_key();
-		$_SESSION['customer_key']=$auth->get_user_parent_key();
-		$_SESSION['user_log_key']=$auth->user_log_key;
-	} else {
-		unset($_SESSION['user_key']);
-		unset($_SESSION['customer_key']);
-		unset($_SESSION['user_log_key']);
-		$_SESSION['logged_in']=0;
-		$logged_in=false;
-		$St=get_sk();
+			//$auth->set_cookies($handle,$_sk,'customer',$site->id);
+
+			//$nano = time_nanosleep(0, 250000);
+			//header('location: profile.php?view=change_password');
+			header('location: profile.php?view=change_password');
+			exit;
+
+		} else {
+
+			$_SESSION['logged_in']=0;
+			$_SESSION['_state']='b';
+			unset($_SESSION['user_key']);
+			unset($_SESSION['customer_key']);
+			unset($_SESSION['user_log_key']);
+			$logged_in=false;
+			$St=get_sk();
+
+			header('Location: reset.php?emaster_key='.$_REQUEST['masterkey']);
+			exit;
+
+
+		}
+
+
 	}
-}
+	elseif (isset($_COOKIE['user_handle'])) {
+
+		//print_r($_COOKIE);
+
+
+		$auth=new Auth(IKEY,SKEY);
+		$auth->set_use_cookies();
+		//$auth->use_cookies=true;
+		$auth->authenticate(false, false, 'customer', $_COOKIE['page_key']);
+
+		if ($auth->is_authenticated()) {
+			$authentication_type='cookie';
+			$_SESSION['logged_in']=true;
+			$_SESSION['store_key']=$store_key;
+			$_SESSION['site_key']=$site->id;
+			$_SESSION['user_key']=$auth->get_user_key();
+			$_SESSION['customer_key']=$auth->get_user_parent_key();
+			$_SESSION['user_log_key']=$auth->user_log_key;
+		} else {
+			unset($_SESSION['user_key']);
+			unset($_SESSION['customer_key']);
+			unset($_SESSION['user_log_key']);
+			$_SESSION['logged_in']=0;
+			$logged_in=false;
+			$St=get_sk();
+		}
+	}
 
 }
 
@@ -230,10 +230,10 @@ if ($logged_in ) {
 }
 //print_r($_SERVER);
 
-if(isset($not_found_current_page)){
-$current_url=$not_found_current_page;
-}else{
-$current_url='';
+if (isset($not_found_current_page)) {
+	$current_url=$not_found_current_page;
+}else {
+	$current_url='';
 }
 
 $order=false;
@@ -357,11 +357,11 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
 
 
 
-//	if ($_SERVER['PHP_SELF']=='/process.php') {
-//		$current_url=get_current_url_from_process();
-//	}else {
-//		$current_url=get_current_url();
-//	}
+	// if ($_SERVER['PHP_SELF']=='/process.php') {
+	//  $current_url=get_current_url_from_process();
+	// }else {
+	//  $current_url=get_current_url();
+	// }
 
 
 	$sql1=sprintf("INSERT INTO `User Request Dimension` (
@@ -374,7 +374,7 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
                   `Date` ,
 
                   `Previous Page` ,
-           
+
                   `Previous Page Key`,`User Agent Key`,`OS`,`IP`,`User Visitor Key`,`User Session Key`
                   )
                   VALUES (
@@ -383,7 +383,7 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
                   %d,%s,
 
                   %s,
-                
+
                   %d,
                   %d,%s,%s,
                   %d,%d
@@ -396,7 +396,7 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
 		prepare_mysql($date),
 
 		prepare_mysql($previous_url,false),
-	//	$session_key,
+		// $session_key,
 		$prev_page_key,
 		get_useragent_key($_SERVER['HTTP_USER_AGENT']),
 		prepare_mysql(get_user_os($_SERVER['HTTP_USER_AGENT'])),
