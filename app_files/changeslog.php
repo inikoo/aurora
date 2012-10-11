@@ -6525,6 +6525,9 @@ ALTER TABLE `Staff Dimension` DROP INDEX `Staff Alias` ,ADD UNIQUE `Staff Alias`
 
 ALTER TABLE `Order Dimension` CHANGE `Order Current Dispatch State` `Order Current Dispatch State` ENUM( 'In Process by Customer', 'In Process', 'Submitted by Customer', 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Dispatched', 'Unknown', 'Packing', 'Packed', 'Cancelled', 'Suspended' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Order Post Transaction Dimension` CHANGE `State` `State` ENUM( 'In Process', 'In Warehouse', 'Dispatched', 'Saved', 'Applied' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+
+
+
 ALTER TABLE `Order Post Transaction Dimension` ADD `Customer Key` MEDIUMINT NULL DEFAULT NULL ,ADD `Credit Saved` FLOAT NULL DEFAULT NULL ,ADD `Credit Used` FLOAT NULL DEFAULT NULL ,ADD `Credit Paid` FLOAT NULL DEFAULT NULL ;
 ALTER TABLE `Order Post Transaction Dimension` ADD `Credit` FLOAT NULL AFTER `Customer Key` ;
 
@@ -6549,9 +6552,9 @@ ALTER TABLE `User Request Dimension` ADD INDEX ( `User Key` ) ;
 ALTER TABLE `Page Store Dimension` ADD INDEX ( `Page Code` ( 5 ) ) ;
 ALTER TABLE `Store Dimension` ADD `Store Delivery Note XHTML Message` MEDIUMTEXT NULL DEFAULT NULL ,ADD `Store Invoice XHTML Message` MEDIUMTEXT NULL DEFAULT NULL ;
 ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note XHTML Public Message` MEDIUMTEXT NULL DEFAULT NULL ;
-ALTER TABLE `dw`.`Invoice Tax Bridge` ADD INDEX ( `Invoice Key` ) ;
-ALTER TABLE `dw`.`Invoice Tax Bridge` ADD INDEX ( `Tax Code` ) ;
-ALTER TABLE `Order No Product Transaction Fact` CHANGE `Transaction Outstandind Net Amount Balance` `Transaction Outstanding Net Amount Balanc;
+ALTER TABLE `Invoice Tax Bridge` ADD INDEX ( `Invoice Key` ) ;
+ALTER TABLE ``Invoice Tax Bridge` ADD INDEX ( `Tax Code` ) ;
+ALTER TABLE `Order No Product Transaction Fact` CHANGE `Transaction Outstandind Net Amount Balance` `Transaction Outstanding Net Amount Balance` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0.00',CHANGE `Transaction Outstandind Tax Amount Balance` `Transaction Outstanding Tax Amount Balance` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0.00';
 ALTER TABLE `Inventory Transaction Fact` ADD INDEX ( `Out of Stock` ) ;
 ALTER TABLE `Order Transaction Fact` ADD INDEX ( `No Shipped Due Out of Stock` ) ;
 
@@ -6591,6 +6594,7 @@ ALTER TABLE `Session Dimension` ADD `Session IP` VARCHAR( 16 ) NOT NULL ,ADD `Se
 ALTER TABLE `Deal Dimension` ADD `Deal Status` ENUM( 'Suspended', 'Active', 'Finish', 'Waiting' ) NOT NULL DEFAULT 'Waiting' AFTER `Store Key` ;
 ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Deal Metadata Active` ) ;
 update  `Deal Metadata Dimension` set `Deal Metadata Active`='Yes';
+ALTER TABLE `Deal Dimension` ADD `Deal Number Metadata Children` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 
 
 

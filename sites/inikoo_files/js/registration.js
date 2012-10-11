@@ -161,7 +161,7 @@ data['Customer Tax Number']=Dom.get('register_tax_number').value;
 
 data['Customer Name']=Dom.get('register_company_name').value;
 data['Customer Main Contact Name']=Dom.get('register_contact_name').value;
-data['Customer Main Plain Email']=Dom.get('confirmed_register_email').innerHTML
+data['Customer Main Plain Email']=Dom.get('confirmed_register_email_value').value
 data['Customer Main Plain Telephone']=Dom.get('register_telephone').value;
 data['Customer Address Line 1']=Dom.get('register_address_line1').value;
 data['Customer Address Line 2']=Dom.get('register_address_line2').value;
@@ -356,7 +356,7 @@ function submit_check_email(){
 
 					if(r.result=='not_found'){
 						Dom.get('confirmed_register_email').innerHTML=r.login_handle;
-						
+						Dom.get('confirmed_register_email_value').value=r.login_handle;
 						Dom.get('epw2').value=r.epw2;
 						
 						Dom.setStyle('dialog_check_email','display','none')

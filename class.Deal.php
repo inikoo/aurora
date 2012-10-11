@@ -438,23 +438,59 @@ class Deal extends DB_Table {
 
 	}
 
-	functiom update_status_from_metadata() {
+	function update_status_from_metadata() {
 
 		$state='Waiting';
 
 
-		$sql=sprintf("select count(*) as num   from `Deal Metadata Dimension`where `Deal Key`=%d and `Deal Metadata Status`='Active'",$this->id) {
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				if ($row['num']>0)
-					$state='Active';
-			}
+		$sql=sprintf("select count(*) as num   from `Deal Metadata Dimension`where `Deal Key`=%d and `Deal Metadata Status`='Finish'",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['num']>0)
+				$state='Finish';
 		}
 
 
+		$sql=sprintf("select count(*) as num   from `Deal Metadata Dimension`where `Deal Key`=%d and `Deal Metadata Status`='Suspended'",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['num']>0)
+				$state='Suspended';
+		}
 
 
+		$sql=sprintf("select count(*) as num   from `Deal Metadata Dimension`where `Deal Key`=%d and `Deal Metadata Status`='Active'",$this->id);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if ($row['num']>0)
+				$state='Active';
+		}
+
+
+		$sql=sprintf("update `Deal Dimension` set `Deal Status`=%s where `Deal Key`=%d",
+			prepare_mysql($state),
+			$this->id
+		);
+		mysql_query($sql);
 	}
+
+	function update_numner_metadeals() {
+		$number=0;
+		$sql=sprintf("select count(*) as number from `Deal Metadata Dimension` where `Deal Key`=%d ",$this->id);
+		$res=mysql_query($sql);
+
+		if ($row=mysql_fetch_assoc($res)) {
+			$number=$row['number'];
+		}
+
+		$sql=sprintf("update `Deal Dimension` set `Deal Number Metadata Children`=%d where `Deal Key`=%d",
+			$number,
+			$this->id
+		);
+		mysql_query($sql);
+		$this->data['Deal Number Metadata Children']=$number;
+	}
+
 
 }
 

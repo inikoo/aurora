@@ -105,7 +105,7 @@ function login(){
 
 //Dom.get('password').value='';
     //Dom.get('loginform').submit();
-     var request='ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me;
+     var request='ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me+'&referral='+Dom.get('referral').value;
     // alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -116,11 +116,14 @@ function login(){
 		      if(r.result=='ok'){
 		      
 		      if(Dom.get('referral').value){
-		      window.location ='page.php?id='+Dom.get('referral').value;
+		      
+		     window.location ='page.php?id='+Dom.get('referral').value;
 		      }else{
 		       window.location ='profile.php';
 		      }
-		      
+		     //location.reload();
+		     //setTimeout(function(){location.reload();},2050);
+
            // window.location ='http://'+ window.location.host + window.location.pathname;
         
 			  
@@ -372,6 +375,15 @@ Dom.setStyle(['message_log_out','invalid_credentials','message_login_fields_miss
 
 function init(){
 
+/*
+$('#email_placeholder').replaceWith($('#email'));
+	$('#password_placeholder').replaceWith($('#password'));
+	$('#dont_forget').remove();
+*/
+
+	
+
+
 Event.addListener("submit_login", "click", submit_login);
 Event.addListener("link_forgot_password_from_login", "click", show_forgot_password_dialog);
 Event.addListener(['show_login_dialog3','show_login_dialog2'], "click", show_login_dialog);
@@ -392,4 +404,5 @@ Event.addListener(['password'], "keydown", submit_login_on_enter);
 Dom.get('email').focus()
 }
 Event.onDOMReady(init);
+
 

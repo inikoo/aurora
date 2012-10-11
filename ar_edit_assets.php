@@ -30,25 +30,43 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch ($tipo) {
+case('update_deal_metadata'):
+	$data=prepare_values($_REQUEST,array(
+			'name'=>array('type'=>'string'),
+			'terms'=>array('type'=>'string'),
+			'allowances'=>array('type'=>'string'),
+			'deal_metadata_key'=>array('type'=>'key'),
+		));
 
+	update_deal_metadata($data);
+	break;
+case('update_deal'):
+	$data=prepare_values($_REQUEST,array(
+			'name'=>array('type'=>'string'),
+			'description'=>array('type'=>'string'),
+			'deal_key'=>array('type'=>'key'),
+		));
+
+	update_deal($data);
+	break;
 
 case('update_deal_metadata_status'):
-    $data=prepare_values($_REQUEST,array(
-         'value'=>array('type'=>'string'),
-         'deal_metadata_key'=>array('type'=>'key'),
-         ));
+	$data=prepare_values($_REQUEST,array(
+			'value'=>array('type'=>'string'),
+			'deal_metadata_key'=>array('type'=>'key'),
+		));
 
-    update_deal_metadata_status($data);
-    break; 
+	update_deal_metadata_status($data);
+	break;
 
 case('location_audit'):
-    $data=prepare_values($_REQUEST,array(
-         'scope'=>array('type'=>'string'),
-         'scope_key'=>array('type'=>'key'),
-         ));
+	$data=prepare_values($_REQUEST,array(
+			'scope'=>array('type'=>'string'),
+			'scope_key'=>array('type'=>'key'),
+		));
 
-    location_audit($data);
-    break;    
+	location_audit($data);
+	break;
 case('new_parts_list'):
 
 	$data=prepare_values($_REQUEST,array(
@@ -674,8 +692,8 @@ function edit_product() {
 		$key=$key;
 
 
-	if ($key=='web_configuration' and  ($newvalue=='Private Sale'  or $newvalue=='Not For Sale' or $newvalue=='Public Sale') ){
-			
+	if ($key=='web_configuration' and  ($newvalue=='Private Sale'  or $newvalue=='Not For Sale' or $newvalue=='Public Sale') ) {
+
 		$key='Product Sales Type';
 	}
 
@@ -832,12 +850,30 @@ function edit_family($data) {
 }
 
 
-function edit_deal() {
+
+
+
+
+function update_deal_metadata($data){
 
 require_once 'class.DealMetadata.php';
+$deal_metadata=new DealMetadata($data['deal_metadata_key']);
+$deal_metadata->update(array(
+		'Deal Metadata Name'=>$data['name'],
+		'Terms'=>$data['terms'],
+		'Allowances'=>$data['allowances'])
+);
 
 
-//print_r($_REQUEST);
+
+}
+
+function old_edit_deal() {
+
+	require_once 'class.DealMetadata.php';
+
+
+	//print_r($_REQUEST);
 
 	$deal_metadata=new DealMetadata($_REQUEST['deal_key']);
 	global $editor;
@@ -2613,20 +2649,12 @@ function list_deals_for_edition() {
 		// $meta_data=preg_split('/,/',$row['Deal Metadata Allowance']);
 
 		$deal_metadata=new DealMetadata($row['Deal Metadata Key']);
-
-		// print_r($deal->terms_input_form());
-
-		//print_r($deal->allowance_input_form());
-
 		$input_allowance='';
 		foreach ($deal_metadata->allowance_input_form() as $form_data) {
 			$input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
                                       <td style="width:15em"  style="text-align:left">
                                       <input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s
-                                      <div style="float:right" class="buttons small">
-                                      <button id="deal_allowance_save%d" style="visibility:hidden" class="state_details" onClick="deal_allowance_save(%d)">'._('Save').'</button>
-                                      <button id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_allowance_reset(%d)">'._('Reset').'</button>
-                                      </div>
+                                 
                                       </td>'
 				,$form_data['Label']
 				,$row['Deal Metadata Key']
@@ -2636,20 +2664,13 @@ function list_deals_for_edition() {
 				,$form_data['Value']
 				,$form_data['Value']
 				,$form_data['Lock Label']
-				,$row['Deal Metadata Key']
-				,$row['Deal Metadata Key']
-				,$row['Deal Metadata Key']
-				,$row['Deal Metadata Key']
+				
 
 
 			);
 		}
 		$input_term='';
 		foreach ($deal_metadata->terms_input_form() as $form_data) {
-			//print_r($form_data);
-
-
-
 
 			if ($form_data['Value Class']=='country') {
 				$input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
@@ -2674,7 +2695,7 @@ function list_deals_for_edition() {
 			} else {
 
 				$input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
-                                    <td style="width:15em"  style="text-align:left"><input id="deal_term%d" onKeyUp="deal_term_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s <span id="deal_term_save%d" style="visibility:hidden" class="state_details" onClick="deal_term_save(%d)">'._('Save').'</span> <span id="deal_term_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_term_reset(%d)">'._('Reset').'</span></td>'
+                                    <td style="width:15em"  style="text-align:left"><input id="deal_term%d" onKeyUp="deal_term_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s </td>'
 					,$form_data['Label']
 					,$row['Deal Metadata Key']
 					,$row['Deal Metadata Key']
@@ -2683,10 +2704,7 @@ function list_deals_for_edition() {
 					,$form_data['Value']
 					,$form_data['Value']
 					,$form_data['Lock Label']
-					,$row['Deal Metadata Key']
-					,$row['Deal Metadata Key']
-					,$row['Deal Metadata Key']
-					,$row['Deal Metadata Key']
+				
 				);
 
 			}
@@ -2694,68 +2712,56 @@ function list_deals_for_edition() {
 		}
 
 
-if($row['Deal Metadata Expiration Date']==''){
-$valid_to='<span style="font-style:italic">'._('Permanent').'</span> ';
-}else{
-$valid_to='<input style="width:65px" value=""/>';
-}
+		if ($row['Deal Metadata Expiration Date']=='') {
+			$valid_to='<span style="font-style:italic">'._('Permanent').'</span> ';
+		}else {
+			$valid_to='<input style="width:65px" value=""/>';
+		}
 
 
 		$edit='<table style="margin:10px"><tr style="border:none">'.$input_allowance.'</tr><tr style="border:none">'.$input_term.'</tr>
 		<tr style="border:none">
 		<td style="text-align:right;padding-right:10px">'._('Valid to').':</td><td>'.$valid_to.'</td></tr>
-		<tr style="border:none"><td colspan=2><div class="buttons small"><button class="disabled positive">'._('Save').'</button><button class="disabled negative">'._('Reset').'</button></div></td></tr>
-		
+		<tr style="border:none"><td colspan=2><div class="buttons small"><button onClick="save_metadata_deal('.$row['Deal Metadata Key'].')" id="save_metadata_deal'.$row['Deal Metadata Key'].'" class="disabled positive">'._('Save').'</button><button onClick="cancel_metadata_deal('.$row['Deal Metadata Key'].')" id="cancel_metadata_deal'.$row['Deal Metadata Key'].'" class="disabled negative">'._('Reset').'</button></div></td></tr>
+
 		</table>';
 
 
 
 
 
-		$name=sprintf('<a href="deal.php?id=%d">%s</a><br/><div style="margin-top:5px;margin-bottom:5px">%s</div><div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
-		$row['Deal Key'],
-		$row['Deal Name'],
-		$row['Deal Description'],
-		$row['Deal Key'],
-		$row['Deal Key'],
-		_('Edit'),
-		$valid_to
-		
+		$name=sprintf('<a href="deal.php?id=%d" id="deal_name%d">%s</a><br/><div  id="deal_description%d" style="margin-top:5px;margin-bottom:5px">%s</div><div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
+			$row['Deal Key'],
+			$row['Deal Key'],
+			$row['Deal Name'],
+				$row['Deal Key'],
+			$row['Deal Description'],
+			$row['Deal Key'],
+			$row['Deal Key'],
+			_('Edit'),
+			$valid_to
+
 		);
-		
-	
-	$status=$deal_metadata->get_xhtml_status();
-	
-	
-	switch ($deal_metadata->data['Deal Metadata Status']) {
-		case('Active'):
-			$status.= '<div style="margin-top:10px" class="buttons small left"><button onClick="suspend_deal_metadata('.$deal_metadata->id.')"  class="negative"> '._("Suspend").'</button></div>';
-			break;
-		case('Finish'):
-			$status.= _("Deal Ended");
-			break;
-		case('Waiting'):
-			$status.= '<div class="buttons small left"><button  onClick="suspend_deal_metadata('.$deal_metadata->id.')" class="negative"> '._("Suspend").'</button></div>';
-			break;
-		case('Suspended'):
-			$status.= '<div class="buttons small left"><button onClick="activate_deal_metadata('.$deal_metadata->id.')" class="positive"> '._("Activate").'</button></div>';
-			break;
 
 
-		}
+		$status="<br/><span id='deal_state".$deal_metadata->id."' style='font-weight:800;padding:10px 0px'>".$deal_metadata->get_xhtml_status()."</span>";
+		$status.= '<div id="suspend_deal_button'.$deal_metadata->id.'" style="margin-top:10px;'.(($deal_metadata->data['Deal Metadata Status']=='Active' or $deal_metadata->data['Deal Metadata Status']=='Waiting')?'':'display:none' ).'" class="buttons small left"><button onClick="suspend_deal_metadata('.$deal_metadata->id.')"  class="negative"> '._("Suspend").'</button></div>';
+		$status.= '<div id="activate_deal_button'.$deal_metadata->id.'" style="margin-top:10px;'.($deal_metadata->data['Deal Metadata Status']=='Suspended'?'':'display:none' ).'"  class="buttons small left"><button onClick="activate_deal_metadata('.$deal_metadata->id.')" class="positive"> '._("Activate").'</button></div>';
 
-	
-	
-		
+
+
+
+
+
 		//if ($row['Campaign Deal Schema Key']) {
 		// $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Deal Name']);
 		//}
 		$adata[]=array(
 			'status'=>$status,
 			'name'=>$name,
-			'description'=>'<span style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/><input  style="margin-top:5px;width:100%" value="'.$row['Deal Metadata Name'].'"><br/>'.$edit,
+			'description'=>'<span style="color:#777;font-style:italic">'.$deal_metadata->get('Description').'</span>'.'</span><br/><input onKeyUp="deal_metadata_description_changed('.$deal_metadata->id.')"  id="deal_metadata_description_input'.$deal_metadata->id.'" style="margin-top:5px;width:100%" value="'.$row['Deal Metadata Name'].'"  ovalue="'.$row['Deal Metadata Name'].'"  /><br/>'.$edit,
 			'dates'=>''
-			
+
 
 		);
 	}
@@ -3818,7 +3824,7 @@ function edit_supplier_product_part($data) {
 
 function create_product($data) {
 	global $editor;
-    
+
 	if (array_key_exists('Product Name',$data['values'])
 		and  array_key_exists('Product Code',$data['values'])
 		and  array_key_exists('Product Units',$data['values'])
@@ -3871,11 +3877,11 @@ function create_product($data) {
 				'editor'=>$editor,
 				'Product Net Weight'=>$weight,
 				'Product Gross Weight'=>$weight,
-                'Product Part Metadata'=>$data['values']['Product Part Metadata']
+				'Product Part Metadata'=>$data['values']['Product Part Metadata']
 			));
 
 		if ($product->id) {
-			if($part_sku != 0){
+			if ($part_sku != 0) {
 				$part= new Part($part_sku);
 				$part_list[]=array(
 					'Part SKU'=>$part->get('Part SKU'),
@@ -3898,8 +3904,8 @@ function create_product($data) {
 
 		}
 
-		
-/*
+
+		/*
 		if (!$product->new) {
 			$part= new Part($part_sku);
 			$part_list[]=array(
@@ -4425,7 +4431,7 @@ function new_parts_list($data) {
 		$sql="select count(Distinct ITF.`Part SKU`) as total from $table  $where";
 
 
-//print $sql;
+	//print $sql;
 
 
 
@@ -4450,7 +4456,7 @@ function new_parts_list($data) {
 	mysql_free_result($res);
 
 
-//ar_edit_assets.php?tipo=new_parts_list&list_name=xxx&list_type=Static&parent_key=1&awhere={"invalid_tariff_code":"No","tariff_code":"","part_dispatched_from":"01-03-2012","part_dispatched_to":"10-03-2012","geo_constraints":"","part_valid_from":"","part_valid_to":""}
+	//ar_edit_assets.php?tipo=new_parts_list&list_name=xxx&list_type=Static&parent_key=1&awhere={"invalid_tariff_code":"No","tariff_code":"","part_dispatched_from":"01-03-2012","part_dispatched_to":"10-03-2012","geo_constraints":"","part_valid_from":"","part_valid_to":""}
 
 	$list_sql=sprintf("insert into `List Dimension` (`List Scope`,`List Parent Key`,`List Name`,`List Type`,`List Metadata`,`List Creation Date`) values ('Part',%d,%s,%s,%s,NOW())",
 		$data['parent_key'],
@@ -4497,19 +4503,19 @@ function new_parts_list($data) {
 
 }
 
-function delete_product(){
+function delete_product() {
 	$product = new Product($_REQUEST['pid']);
 
 	$product->delete();
 
-	if($product->delete){
+	if ($product->delete) {
 		$response=array(
 			'state'=>200,
 			'msg'=>$product->msg,
 			'family_key'=>$product->data['Product Family Key']
 		);
 	}
-	else{
+	else {
 		$response=array(
 			'state'=>400,
 			'msg'=>$product->msg
@@ -4519,161 +4525,188 @@ function delete_product(){
 	echo json_encode($response);
 }
 
-function location_audit($data){
+function location_audit($data) {
 
-    $error = false;
-    if (  ($_FILES["fileUpload"]["type"] == "text/plain")|| ($_FILES["fileUpload"]["type"] == "application/vnd.ms-excel")   || ($_FILES["fileUpload"]["type"] == "text/csv")  || ($_FILES["fileUpload"]["type"] == "application/csv")   || ($_FILES["fileUpload"]["type"] == "application/octet-stream")         ) {
-        if ($_FILES["fileUpload"]["error"] > 0) {
-            echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
-        } else {
-            $target_path = "app_files/uploads/";
-            
-            $target_path = $target_path . basename( $_FILES['fileUpload']['name']);
-            
-            if (move_uploaded_file($_FILES['fileUpload']['tmp_name'], $target_path)) {
-                $vv=basename( $_FILES['fileUpload']['name']);
+	$error = false;
+	if (  ($_FILES["fileUpload"]["type"] == "text/plain")|| ($_FILES["fileUpload"]["type"] == "application/vnd.ms-excel")   || ($_FILES["fileUpload"]["type"] == "text/csv")  || ($_FILES["fileUpload"]["type"] == "application/csv")   || ($_FILES["fileUpload"]["type"] == "application/octet-stream")         ) {
+		if ($_FILES["fileUpload"]["error"] > 0) {
+			echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
+		} else {
+			$target_path = "app_files/uploads/";
 
-                $report=array();
-                $handle_csv = fopen($target_path, "r");
-                while ($_cols = fgetcsv($handle_csv)) {
+			$target_path = $target_path . basename( $_FILES['fileUpload']['name']);
 
-                    if ($_cols[0]!='' and $_cols[1]!='' and $_cols[2]!='' ) {
-                        if($_cols[3]==''){
-                            $date=date('Y-m-d H:i:s');
-                        }
-                        else{
-                            $date=$_cols[3];
-                        }
-                        //print_r($_cols);
-                        $used_for='Picking';
-                        $location_data=array(
-                                             'Location Warehouse Key'=>1,
-                                             'Location Warehouse Area Key'=>1,
-                                             'Location Code'=>$_cols[0],
-                                             'Location Mainly Used For'=>$used_for
-                                             );
-                        
-                        $location=new Location('find',$location_data,'create');
-                       
-                        
-                        
-                        
-                        $product=new Product('code_store',$_cols[1],1);
-                        
-                        if ($product->id) {
-                            //print_r($product->id);exit;
-                            
-                            $parts=$product->get_part_list();
-                           
-                            
-                            $parts_data=array_pop($parts);
-                            $part_sku=$parts_data['Part SKU'];
-                            
-                             
-                            //$part_location=new PartLocation($part_sku,$location->id);
-                            
-                            
-                            
-                            $location_key=$location->id;
-                            
-                            
-                            
-                            $part_location_data=array(
-                                                      'Location Key'=>$location_key
-                                                      ,'Part SKU'=>$part_sku
-                                                      
-                                                      );
-                            
-                            if($part_sku){
+			if (move_uploaded_file($_FILES['fileUpload']['tmp_name'], $target_path)) {
+				$vv=basename( $_FILES['fileUpload']['name']);
 
-                                $part_location=new PartLocation('find',$part_location_data,'create');
-                                $note='';
-                                $qty= (float) $_cols[2];
-                                $date=$_cols[3];
-                                //print "$qty\n";
-//                                
-//                                
-                                $part_location->audit($qty,$note,$date);
-                                
-                            }else{
-                                $report['msg'][] = "Error";
-                                $report['record'][] = $_cols;
-                                $error = true;
-                                
-                            }
-                            //exit;
-                            //$part_location->editor=$editor;
-                            //$part_location->audit($qty,$note,$editor['Date']);
-                            
-                        }
-                        
-                        
-                        
-                    }
-                    else{
-                        if($_cols[0]==''){
-                            $report['msg'][] = "No Location code";
-                            $report['record'][] = $_cols;
-                            $error = true;
+				$report=array();
+				$handle_csv = fopen($target_path, "r");
+				while ($_cols = fgetcsv($handle_csv)) {
 
-                        }
-                        if($_cols[1]==''){
-                            $report['msg'][] = "No SKU";
-                            $report['record'][] = $_cols;
-                            $error = true;
-                        }
-                    }
-                    
-                    //exit;
-                }
-                    
+					if ($_cols[0]!='' and $_cols[1]!='' and $_cols[2]!='' ) {
+						if ($_cols[3]=='') {
+							$date=date('Y-m-d H:i:s');
+						}
+						else {
+							$date=$_cols[3];
+						}
+						//print_r($_cols);
+						$used_for='Picking';
+						$location_data=array(
+							'Location Warehouse Key'=>1,
+							'Location Warehouse Area Key'=>1,
+							'Location Code'=>$_cols[0],
+							'Location Mainly Used For'=>$used_for
+						);
 
-                
-                
-                
-            }
-        }
-    }
-    
-    if($error){
-        $response=array(
-                        'state'=>400,
-                        'msg'=>$report
-                        );
-    }
-    else{
-        $response=array(
-                        'state'=>200,
-                        'msg'=>'ok'
-                        );
-    }
-    echo json_encode($response);
-    
-}
+						$location=new Location('find',$location_data,'create');
 
 
-function update_deal_metadata_status($data){
-
-$deal_metadata=new DealMetadata($data['deal_metadata_key']);
-$deal_metadata=>update_status($data['value']);
 
 
- if($deal_metadata->error){
-        $response=array(
-                        'state'=>400,
-                        'msg'=>$deal_metadata->msg
-                        );
-    }
-    else{
-        $response=array(
-                        'state'=>200,
-                        'msg'=>'ok'
-                        );
-    }
-    echo json_encode($response);
+						$product=new Product('code_store',$_cols[1],1);
 
+						if ($product->id) {
+							//print_r($product->id);exit;
+
+							$parts=$product->get_part_list();
+
+
+							$parts_data=array_pop($parts);
+							$part_sku=$parts_data['Part SKU'];
+
+
+							//$part_location=new PartLocation($part_sku,$location->id);
+
+
+
+							$location_key=$location->id;
+
+
+
+							$part_location_data=array(
+								'Location Key'=>$location_key
+								,'Part SKU'=>$part_sku
+
+							);
+
+							if ($part_sku) {
+
+								$part_location=new PartLocation('find',$part_location_data,'create');
+								$note='';
+								$qty= (float) $_cols[2];
+								$date=$_cols[3];
+								//print "$qty\n";
+								//
+								//
+								$part_location->audit($qty,$note,$date);
+
+							}else {
+								$report['msg'][] = "Error";
+								$report['record'][] = $_cols;
+								$error = true;
+
+							}
+							//exit;
+							//$part_location->editor=$editor;
+							//$part_location->audit($qty,$note,$editor['Date']);
+
+						}
+
+
+
+					}
+					else {
+						if ($_cols[0]=='') {
+							$report['msg'][] = "No Location code";
+							$report['record'][] = $_cols;
+							$error = true;
+
+						}
+						if ($_cols[1]=='') {
+							$report['msg'][] = "No SKU";
+							$report['record'][] = $_cols;
+							$error = true;
+						}
+					}
+
+					//exit;
+				}
+
+
+
+
+
+			}
+		}
+	}
+
+	if ($error) {
+		$response=array(
+			'state'=>400,
+			'msg'=>$report
+		);
+	}
+	else {
+		$response=array(
+			'state'=>200,
+			'msg'=>'ok'
+		);
+	}
+	echo json_encode($response);
 
 }
 
-    
+
+function update_deal_metadata_status($data) {
+
+	$deal_metadata=new DealMetadata($data['deal_metadata_key']);
+	$deal_metadata->update_status($data['value']);
+
+
+	if ($deal_metadata->error) {
+		$response=array(
+			'state'=>400,
+			'msg'=>$deal_metadata->msg
+		);
+	}
+	else {
+		$response=array(
+			'state'=>200,
+			'msg'=>'ok',
+			'key'=>$deal_metadata->id,
+			'status'=>$deal_metadata->get_xhtml_status()
+
+		);
+	}
+	echo json_encode($response);
+}
+
+function update_deal($data) {
+
+	$deal=new Deal($data['deal_key']);
+	$deal->update(array('Deal Name'=>$data['name'],'Deal Description'=>$data['description']));
+
+
+	if ($deal->error) {
+		$response=array(
+			'state'=>400,
+			'msg'=>$deal->msg
+		);
+	}
+	else {
+		$response=array(
+			'state'=>200,
+			'msg'=>'ok',
+			'key'=>$deal->id,
+			'name'=>$deal->data['Deal Name'],
+			'description'=>$deal->data['Deal Description']
+
+		);
+	}
+	echo json_encode($response);
+}
+
+
+
 ?>

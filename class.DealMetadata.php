@@ -12,6 +12,7 @@
  Version 2.0
 */
 include_once 'class.DB_Table.php';
+include_once 'class.Deal.php';
 
 class DealMetadata extends DB_Table {
 
@@ -20,7 +21,7 @@ class DealMetadata extends DB_Table {
 
 	function DealMetadata($a1,$a2=false) {
 
-		$this->table_name='Deal';
+		$this->table_name='Deal Metadata';
 		$this->ignore_fields=array('Deal Metadata Key');
 
 		if (is_numeric($a1) and !$a2) {
@@ -431,16 +432,16 @@ class DealMetadata extends DB_Table {
 	function get_xhtml_status() {
 		switch ($this->data['Deal Metadata Status']) {
 		case('Active'):
-			return '<img src="art/icons/accept.png" /> '._("Active");
+			return _("Active");
 			break;
 		case('Finish'):
-			return '<img src="art/icons/time_delete.png" /> '._("Finish");
+			return _("Finish");
 			break;
 		case('Wating'):
-			return '<img src="art/icons/clock_go.png" /> '._("Wating");
+			return _("Wating");
 			break;
 		case('Suspended'):
-			return '<img src="art/icons/stop.png" /> '._("Suspended");
+			return _("Suspended");
 			break;
 
 
@@ -461,6 +462,7 @@ class DealMetadata extends DB_Table {
 			break;
 		default:
 			$base_data=$this->base_data();
+			
 			if (array_key_exists($field,$base_data)) {
 				$this->update_field($field,$value,$options);
 			}
@@ -577,9 +579,19 @@ class DealMetadata extends DB_Table {
 				,$this->id
 			);
 			mysql_query($sql);
-			
+			$this->data['Deal Metadata Status']=$value;
 	$deal= New Deal($this->data['Deal Key']);
 	$deal->update_status_from_metadata();
+	
+	}
+	
+	function update($data,$options=''){
+	
+	$this->update_field_switcher('Deal Metadata Name',$data['Deal Metadata Name']);
+	$this->update_allowance($data['Allowances']);
+	$this->update_term($data['Terms']);
+	
+	
 	
 	}
 	

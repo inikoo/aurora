@@ -93,6 +93,7 @@
 					<td colspan="3">{t}Login info{/t}: </td>
 				</tr>
 				<tr>
+				<input type="hidden" id="confirmed_register_email_value" value=""/>
 					<td class="label">{t}Email{/t}: </td>
 					<td id="confirmed_register_email"></td>
 					<td style="width:40px"></td>
