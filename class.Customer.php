@@ -4707,6 +4707,30 @@ $ship_to_key=$address->get_ship_to();
 		);
 		mysql_query($sql);
 	}
+	
+	
+	function add_history_login($data){
+	$history_data=array(
+//	'login','logout','fail_login','password_request','password_reset'
+			'Date'=>$data['Date'],
+		//	'Subject'=>'Customer',
+	//		'Subject Key'=>$this->id,
+			'Direct Object'=>'Site',
+			'Direct Object Key'=>$data['Site Key'],
+			'History Details'=>$data['Details'],
+			'History Abstract'=>$data['Note'],
+			'Action'=>$data['Action'],
+			'Preposition'=>'Preposition',
+			'Indirect Object'=>$data['Indirect Object'],
+			'User Key'=>$data['User Key']
+		);
+
+		$history_key=$this->add_history($history_data,$force_save=true);
+		$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','WebLog')",$this->id,$history_key);
+
+		mysql_query($sql);
+	}
+	
 	function add_history_new_order($order) {
 
 		date_default_timezone_set(TIMEZONE) ;

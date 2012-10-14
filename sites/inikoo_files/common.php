@@ -47,8 +47,10 @@ if (!$db_selected) {
 	exit;
 }
 mysql_query("SET NAMES 'utf8'");
-require_once 'conf/timezone.php';
-date_default_timezone_set(TIMEZONE) ;
+
+
+
+
 mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';
 
@@ -58,6 +60,19 @@ $yui_path="external_libs/yui/2.9/build/";
 //$max_session_time=1000000;
 //$session = new Session($max_session_time,1,100);
 session_start();
+
+if(isset($_SESSION['offset'])){
+date_default_timezone_set($_SESSION['offset']);
+
+}else{
+require_once 'conf/timezone.php';
+date_default_timezone_set(TIMEZONE) ;
+}
+
+
+
+
+
 //print_r($_SESSION);
 
 $site=new Site($myconf['site_key']);
@@ -103,9 +118,6 @@ if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 
 	if (isset($_REQUEST['p'])) {
 
-
-
-
 		header('Location: reset.php?x=x&master_key='.$_REQUEST['p']);
 		exit;
 	}
@@ -114,8 +126,8 @@ if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 
 		$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['masterkey']),$secret_key,256);
 
-		$auth=new Auth(IKEY,SKEY,'use_cookies');
-
+		$auth=new Auth(IKEY,SKEY);
+		$auth->log_page='customer';
 		$auth->authenticate_from_masterkey($dencrypted_secret_data);
 
 		if ($auth->is_authenticated()) {
@@ -128,14 +140,6 @@ if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 			$_SESSION['customer_key']=$auth->get_user_parent_key();
 			$_SESSION['user_log_key']=$auth->user_log_key;
 
-
-			//$St=get_sk();
-			//AESEncryptCtr($St,$auth->password,256);
-
-			//$auth->set_cookies($handle,$_sk,'customer',$site->id);
-
-			//$nano = time_nanosleep(0, 250000);
-			//header('location: profile.php?view=change_password');
 			header('location: profile.php?view=change_password');
 			exit;
 
@@ -149,7 +153,7 @@ if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 			$logged_in=false;
 			$St=get_sk();
 
-			header('Location: reset.php?emaster_key='.$_REQUEST['masterkey']);
+			header('Location: reset.php?error='.$auth->pass['main_reason']);
 			exit;
 
 
@@ -211,6 +215,8 @@ if ($logged_in ) {
 	} else {
 
 		$user=new User($_SESSION['user_key']);
+		
+		
 		$customer=new Customer($_SESSION['customer_key']);
 
 		//print_r($customer);
@@ -224,9 +230,6 @@ if ($logged_in ) {
 	$_SESSION['_state']='d';
 	$logged_in=false;
 	$St=get_sk();
-
-
-
 }
 //print_r($_SERVER);
 
@@ -294,7 +297,8 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
 	if (!$user_session_key) {
 
 		$sql=sprintf("insert into `User Session Dimension` (`User Session Visitor Key`,`User Session Site Key`,`User Session Last Request Date`,`User Session Start Date`) values (%d,%d,NOW(),NOW()) ",
-			$visitor_key,$site_key);
+			$visitor_key,
+			$site_key);
 		//print $sql;
 		mysql_query($sql);
 		$user_session_key=mysql_insert_id();
@@ -407,6 +411,15 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
 
 	mysql_query($sql1);
 	$user_click_key= mysql_insert_id();
+
+	if($user_log_key){
+		$sql=sprintf("update `User Log Dimension` set `Last Visit Date`=%s where `User Log Key`=%d",
+		prepare_mysql(gmdate("Y-m-d H:i:s")),
+		$user_log_key
+		);
+	mysql_query($sql);
+	print $sql;
+	}
 
 
 	if ($user_key) {

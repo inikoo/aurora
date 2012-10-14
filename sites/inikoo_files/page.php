@@ -28,10 +28,7 @@ if ($page->data['Page Site Key']!=$site->id) {
 	exit;
 }
 
-
-
 update_page_key_visit_log($page->id,$user_click_key);
-
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -57,7 +54,7 @@ $js_files=array(
 	'external_libs/ampie/ampie/swfobject.js',
 	'js/common.js',
 	'js/edit_common.js',
-//	'js/page.js'
+	// 'js/page.js'
 );
 
 
@@ -79,7 +76,7 @@ if ($page->data['Page Code']=='login') {
 		$referral='';
 	}
 	$smarty->assign('referral',$referral);
-
+	$js_files[]='js/detect_timezone.js';
 	$js_files[]='js/aes.js';
 	$js_files[]='js/sha256.js';
 	$css_files[]='css/inikoo.css';
@@ -437,9 +434,10 @@ else if ($page->data['Page Code']=='profile') {
 	}
 else if ($page->data['Page Code']=='reset') {
 		$css_files[]='css/inikoo.css';
-	}else {
-//$js_files=array();
-//	$js_files[]='js/fill_basket.js';
+	}
+else {
+	//$js_files=array();
+	// $js_files[]='js/fill_basket.js';
 
 }
 
@@ -447,7 +445,7 @@ else if ($page->data['Page Code']=='reset') {
 
 
 
-if(!in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))){
+if (!in_array($page->data['Page Store Section'],array('Registration','Client Section','Checkout','Login','Welcome','Reset','Basket'))) {
 	$js_files=array();
 }
 
@@ -466,8 +464,7 @@ if ($logged_in) {
 
 
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
-`Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Header External File Bridge` where `Page Header Key`=%d",$page->data['Page Header Key']);
 $res=mysql_query($sql);
 //print $sql;
 while ($row=mysql_fetch_assoc($res)) {
@@ -488,8 +485,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
-`Site External File Bridge` where `Site Key`=%d",$site->id);
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Site External File Bridge` where `Site Key`=%d",$site->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	if ($row['External File Type']=='CSS')
@@ -500,8 +496,7 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 
 
-$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from
-`Page Store External File Bridge` where `Page Key`=%d",$page->id);
+$sql=sprintf("select `External File Type`,`Page Store External File Key` as external_file_key from `Page Store External File Bridge` where `Page Key`=%d",$page->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	if ($row['External File Type']=='CSS')

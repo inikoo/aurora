@@ -131,6 +131,7 @@ $mode_options=array(
 
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
+$smarty->assign('store_key','');
 
 
 $q='';

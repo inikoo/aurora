@@ -372,7 +372,7 @@ $smarty->assign('paginator_menu3',$paginator_menu);
 
 
 
-$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0);
+$elements_number=array('Notes'=>0,'Orders'=>0,'Changes'=>0,'Attachments'=>0,'Emails'=>0,'WebLog'=>0);
 $sql=sprintf("select count(*) as num , `Type` from  `Customer History Bridge` where `Customer Key`=%d group by `Type`",$customer->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
@@ -382,6 +382,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['customer']['table']['elements']);
+
 
 $gold_reward=0;
 //print_r($customer->data);

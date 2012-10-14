@@ -543,17 +543,17 @@ function validate_scope_edit(branch) {
 
 
 
-Dom.setStyle('save_edit_'+branch,'visibility','visible');
-Dom.setStyle('reset_edit_'+branch,'visibility','visible');
+Dom.removeClass('save_edit_'+branch,'disabled');
+Dom.removeClass('reset_edit_'+branch,'disabled');
 
 if(changed){
 
-        Dom.setStyle('save_edit_'+branch,'visibility','visible');
-        Dom.setStyle('reset_edit_'+branch,'visibility','visible');
+        Dom.removeClass('save_edit_'+branch,'disabled');
+        Dom.removeClass('reset_edit_'+branch,'disabled');
 
 }else{
-        Dom.setStyle('save_edit_'+branch,'visibility','hidden');
-        Dom.setStyle('reset_edit_'+branch,'visibility','hidden');
+      Dom.addClass('save_edit_'+branch,'disabled');
+        Dom.addClass('reset_edit_'+branch,'disabled');
 
 }
 
@@ -561,10 +561,11 @@ if(changed){
     if (errors) {
         //alert('x')
         Dom.addClass('save_edit_'+branch,'disabled');
-    } else {
+    } 
+    //else {
 //alert('save_edit_'+branch)
-        Dom.removeClass('save_edit_'+branch,'disabled');
-    }
+      //  Dom.removeClass('save_edit_'+branch,'disabled');
+   // }
 //alert(branch)
 }
 

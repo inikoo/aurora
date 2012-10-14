@@ -4285,131 +4285,7 @@ function add_attachment_to_customer_history($data) {
 	echo json_encode($response);
 }
 
-function forgot_password($data) {
-	//print_r($data);exit;
-	global $secret_key,$public_url;
-	$key=$data['customer_key'];
-	$store_key=$data['store_key'];
-	//$url=$data['url'];
-	$login_handle=$data['email'];
 
-	$sql=sprintf("select `Site URL` from `Site Dimension` where `Site Key`=%d and `Site Store Key`=%d", $data['site_key'], $data['store_key']);
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result))
-		$url=$row['Site URL'];
-	else
-		$url='';
-
-
-	$sql=sprintf("select `User Key` from `User Dimension` where `User Handle` = '%s'", $login_handle);
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result)) {
-		$user_key=$row['User Key'];
-	}
-
-	//print $user_key;
-	if ($user_key) {
-
-
-		$user=new User($user_key);
-		$customer=new Customer($user->data['User Parent Key']);
-
-		$store=new Store($store_key);
-
-		$email_credential_key=$store->get_email_credential_key('Site Registration');
-
-		//print $email_credential_key=1;
-		//print_r($store);
-		$signature_name='';
-		$signature_company='';
-
-		$master_key=$user_key.'x'.generatePassword(6,10);
-
-
-
-
-		$sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
-			prepare_mysql($master_key),
-			$user_key,
-			prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hours"))),
-			prepare_mysql(ip())
-		);
-
-		mysql_query($sql);
-
-
-
-
-
-		$encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
-
-
-		$plain_message=$customer->get_greetings()."\n\n We received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n ".$url."?p=".$encrypted_secret_data."\n\n Once you hace returned our page you will be asked to choose a new password\n\nThank you \n\n".$signature_name."\n".$signature_company;
-
-
-		$html_message=$customer->get_greetings()."<br/>We received request to reset the password associated with this email account.<br><br>
-                      If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
-                      <b>Click the link below to reset your password</b>
-                      <br><br>
-                      <a href=\"".$url."?p=".$encrypted_secret_data."\">".$url."?p=".$encrypted_secret_data."</a>
-                      <br></br>
-                      If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to our website, you will be asked to choose a new password.
-                      <br><br>
-                      Thank you";
-
-		$files=array();
-		$to=$login_handle;
-		$email_mailing_list_key=0;//$row2['Email Campaign Mailing List Key'];
-		//$message_data=$email_campaign->get_message_data($email_mailing_list_key);
-
-		$message_data['method']='smtp';
-		$message_data['type']='html';
-		$message_data['to']=$to;
-		$message_data['subject']='Reset your password';
-		$message_data['html']=$html_message;
-		$message_data['email_credentials_key']=1;
-		$message_data['email_matter']='Password Reminder';
-		$message_data['email_matter_key']=$email_mailing_list_key;
-		$message_data['recipient_type']='User';
-		$message_data['recipient_key']=0;
-		$message_data['email_key']=0;
-		$message_data['email_matter_parent_key']=0;
-		$message_data['plain']=$plain_message;
-		if (isset($message_data['plain']) && $message_data['plain']) {
-			$message_data['plain']=$message_data['plain'];
-		} else
-			$message_data['plain']=null;
-
-		//print_r($message_data);
-		$send_email=new SendEmail();
-
-		$send_email->track=true;
-
-
-		$send_result=$send_email->send($message_data);
-		//print_r($send_result);
-
-		if ($send_result['msg']=='ok') {
-			$response=array('state'=>200,'result'=>'send');
-			echo json_encode($response);
-			exit;
-
-		} else {
-			//print_r($send_result);
-			$response=array('state'=>200,'result'=>'error '.join(' ',$send_result));
-			echo json_encode($response);
-			exit;
-		}
-
-
-	} else {
-		$response=array('state'=>200,'result'=>'handle_not_found');
-		echo json_encode($response);
-		exit;
-	}
-
-
-}
 
 
 function upload_attachment_to_customer() {
@@ -4586,5 +4462,14 @@ function delete_all_customers_in_store() {
 
 }
 
+function generate_password($length=9) {
+
+	$letters='qwrtyuiopsghjklzxvnmQWRTYUIOPSGHJKLZXVNM!=/[]{}~\<>$%^&*()_+-@#.,)(*?|!';
+	$password = '';
+	for ($i = 0; $i < $length; $i++) {
+		$password .= $letters[(mt_rand() % strlen($letters))];
+	}
+	return $password;
+}
 
 ?>

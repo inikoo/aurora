@@ -1,24 +1,21 @@
 {include file='header.tpl'} 
 <div id="bd">
-	{include file='assets_navigation.tpl'}
-	<input type="hidden" id="store_key" value="{$store->id}">
+	{include file='assets_navigation.tpl'} 
+	<input type="hidden" id="store_key" value="{$store->id}"> 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}{$store->get('Store Name')}</span> 
 	</div>
 	<div class="top_page_menu">
+		<div class="buttons" style="float:left">
+			<span class="main_title"> {t}Editing Store{/t}: <span class="id" id="title_name">{$store->get('Store Name')}</span> <span class="id" id="title_code">({$store->get('Store Code')})</span> </span> 
+		</div>
 		<div class="buttons">
 			<button style="margin-left:0px" onclick="window.location='store.php?id={$store->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
-		</div>
-		<div class="buttons" style="float:right">
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	<div style="clear:left;margin:0 0px">
-		<h1>
-			{t}Editing Store{/t}: <span class="id" id="title_name">{$store->get('Store Name')}</span> <span class="id" id="title_code">({$store->get('Store Code')})</span>
-		</h1>
-	</div>
+
 	<div id="msg_div">
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both">
@@ -104,8 +101,8 @@
 			</table>
 		</div>
 		<div class="edit_block" style="min-height:200px;{if $edit!='website'}display:none{/if}" id="d_website">
-			<div class="buttons" >
-				<button  id="new_store_page" class="positive">{t}Create Page{/t}</button> 
+			<div class="buttons">
+				<button id="new_store_page" class="positive">{t}Create Page{/t}</button> 
 			</div>
 			<input type='hidden' id="site_key" value="{$site_key}"> 
 			<div class="data_table" style="clear:both;">
@@ -272,13 +269,13 @@
 			<table class="edit">
 				<tr>
 					<td>{t}Deal Name{/t}:</td>
-					<td>
+					<td> 
 					<input id="new_deal_name" onkeyup="new_deal_changed(this)" onmouseup="new_deal_changed(this)" onchange="new_deal_changed(this)" changed="0" type='text' class='text' maxlength="16" value="" />
 					</td>
 				</tr>
 				<tr>
 					<td>{t}Deal Description{/t}:</td>
-					<td>
+					<td> 
 					<input id="new_deal_description" onkeyup="new_deal_changed(this)" onmouseup="new_deal_changed(this)" onchange="new_deal_changed(this)" changed="0" type='text' maxlength="255" class='text' value="" />
 					</td>
 				</tr>
@@ -303,13 +300,13 @@
 			<table class="edit">
 				<tr>
 					<td>{t}Template Name{/t}:</td>
-					<td>
+					<td> 
 					<input id="new_campaign_name" onkeyup="new_campaign_changed(this)" onmouseup="new_campaign_changed(this)" onchange="new_campaign_changed(this)" changed="0" type='text' class='text' maxlength="16" value="" />
 					</td>
 				</tr>
 				<tr>
 					<td>{t}Template Description{/t}:</td>
-					<td>
+					<td> 
 					<input id="new_campaign_description" onkeyup="new_campaign_changed(this)" onmouseup="new_campaign_changed(this)" onchange="new_campaign_changed(this)" changed="0" type='text' maxlength="255" class='text' value="" />
 					</td>
 				</tr>
@@ -331,13 +328,13 @@
 			<table class="edit">
 				<tr>
 					<td>{t}Charge Name{/t}:</td>
-					<td>
+					<td> 
 					<input id="new_charge_name" onkeyup="new_charge_changed(this)" onmouseup="new_charge_changed(this)" onchange="new_charge_changed(this)" changed="0" type='text' class='text' maxlength="16" value="" />
 					</td>
 				</tr>
 				<tr>
 					<td>{t}Charge Description{/t}:</td>
-					<td>
+					<td> 
 					<input id="new_charge_description" onkeyup="new_charge_changed(this)" onmouseup="new_charge_changed(this)" onchange="new_charge_changed(this)" changed="0" type='text' maxlength="255" class='text' value="" />
 					</td>
 				</tr>
@@ -357,12 +354,8 @@
 	<div class="edit_block" style="min-height:200px;margin:0;padding:0 0px;{if $edit!='shipping'}display:none{/if}" id="d_shipping">
 	</div>
 	<div class="edit_block" style="min-height:200px;{if $edit!='departments'}display:none{/if}" id="d_departments">
-<div class="general_options" style="float:right">
-<span style="margin-right:10px" onClick="window.location='import_csv.php?subject=store&subject_key={$store->id}'" class="state_details">Import Department (CSV)</span>			
-<span style="margin-right:10px" id="add_department" class="state_details">Create Department</span> 
-<span style="margin-right:10px;display:none" id="save_new_department" class="state_details">Save</span> 
-<span style="margin-right:10px;display:none" id="close_add_department" class="state_details">Close Dialog</span> 
-
+		<div class="general_options" style="float:right">
+			<span style="margin-right:10px" onclick="window.location='import_csv.php?subject=store&subject_key={$store->id}'" class="state_details">Import Department (CSV)</span> <span style="margin-right:10px" id="add_department" class="state_details">Create Department</span> <span style="margin-right:10px;display:none" id="save_new_department" class="state_details">Save</span> <span style="margin-right:10px;display:none" id="close_add_department" class="state_details">Close Dialog</span> 
 		</div>
 		<div class="new_item_dialog" id="new_department_dialog" style="display:none">
 			<div id="new_department_messages" class="messages_block">
@@ -370,13 +363,13 @@
 			<table class="edit">
 				<tr>
 					<td>{t}Code{/t}:</td>
-					<td>
+					<td> 
 					<input id="new_code" onkeyup="new_dept_changed(this)" onmouseup="new_dept_changed(this)" onchange="new_dept_changed(this)" name="code" changed="0" type='text' class='text' maxlength="16" value="" />
 					</td>
 				</tr>
 				<tr>
 					<td>{t}Full Name{/t}:</td>
-					<td>
+					<td> 
 					<input id="new_name" onkeyup="new_dept_changed(this)" onmouseup="new_dept_changed(this)" onchange="new_dept_changed(this)" name="name" changed="0" type='text' maxlength="255" class='text' value="" />
 					</td>
 				</tr>
@@ -387,7 +380,7 @@
 			<div class="clean_table_caption" style="clear:both;">
 				<div style="float:left;">
 					<div id="table_info0" class="clean_table_info">
-						<span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg" id="filter_msg0"></span>
+						<span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg" id="filter_msg0"></span> 
 					</div>
 				</div>
 				<div class="clean_table_filter" style="display:none" id="clean_table_filter0">
@@ -400,7 +393,7 @@
 				</div>
 				<div class="clean_table_controls">
 					<div>
-						<span style="margin:0 5px" id="paginator0"></span>
+						<span style="margin:0 5px" id="paginator0"></span> 
 					</div>
 				</div>
 			</div>
@@ -413,10 +406,9 @@
 			<span style="margin-right:10px;visibility:hidden" id="save_edit_communications" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;visibility:hidden" id="reset_edit_communications" class="state_details">{t}Reset{/t}</span> 
 		</div>
 		<h2>
-			Store Emails Accounts
+			{t}Store Emails Accounts{/t} 
 		</h2>
-
-	{include file='email_credential_splinter.tpl' site=$store email_credentials=$email_credentials} 
+		{include file='email_credential_splinter.tpl' site=$store email_credentials=$email_credentials} 
 	</div>
 </div>
 <div id="the_table1" class="data_table">

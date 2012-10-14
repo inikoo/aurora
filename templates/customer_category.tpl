@@ -24,13 +24,14 @@
 		
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
-		<li> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t}</span></span></li>
-		<li> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Customers{/t}</span></span></li>
+		<li  style="{if $category->get('Category Children')==0 and  $category->get('Category Number Subjects')>0}display:none{/if}" > <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t}</span></span></li>
+		<li  style="{if $category->get('Category Number Subjects')==0 and  $category->get('Category Children')>0 }display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Customers{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='subcategories_charts'}selected{/if}" id="subcategories_charts"> <span> {t}Charts{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
 	</ul>
-	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
-	</div>
+	<div style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+	
+	
 	<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div class="data_table" style="clear:both;margin-bottom:20px">
 			<span class="clean_table_title">Subcategories</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name0 filter_value=$filter_value0 } 

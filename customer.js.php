@@ -301,11 +301,12 @@ YAHOO.util.Connect.asyncRequest('POST',request ,{
 			var c1=x.insertCell(0);
 			var c2=x.insertCell(1);
 			var c3=x.insertCell(2);
+			var c4=x.insertCell(3);
 			x.setAttribute('style','padding:10px 0 ;border-top:none')
 			c1.innerHTML="";
 			c2.innerHTML="";
-			c3.setAttribute('style','padding:10px 0 ;');
-
+			c3.setAttribute('style','padding:10px;');
+c4.innerHTML="";
 
 			c3.setAttribute('colspan',3);
 			c3.innerHTML=r.details;
@@ -1648,7 +1649,7 @@ var oMenu;
 
 function change_elements(){
 
-ids=['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails'];
+ids=['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails','elements_weblog'];
 
 
 if(Dom.hasClass(this,'selected')){
@@ -1951,7 +1952,7 @@ foreach($customer->get_other_faxes_data() as $key=>$value)
 ];
 
 
-Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails'], "click",change_elements);
+Event.addListener(['elements_changes','elements_orders','elements_notes','elements_attachments','elements_emails','elements_weblog'], "click",change_elements);
 
 
   init_search('customers_store');

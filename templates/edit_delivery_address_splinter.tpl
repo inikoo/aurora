@@ -9,7 +9,17 @@
         </div>
 
       <div id="dialog_new_delivery_address" style="width:540px;margin-top:10px;padding:10px 0 0 0 ;border:1px solid #ccc;display:none">
-       <table id="new_delivery_address_table" border=0 style="width:500px;margin:0 auto">
+       <table class="edit" id="new_delivery_address_table" border=0 style="width:500px;margin:0 auto">
+       <tr style="height:1px">
+					<td style="width:110px">
+					</td>
+					<td style="width:300px">
+					</td>
+					
+					<td style="width:90px">
+					
+					</td>
+				</tr>
        {include file='edit_address_splinter.tpl' 
        close_if_reset=true 
        address_identifier='delivery_' 
@@ -22,12 +32,9 @@
        hide_description=true 
        show_form=false  
        show_components=false 
-       
-       
-       
-show_default_country=1 
-    default_country_2alpha="$default_country_2alpha"
-function_value=false
+       show_default_country=1 
+    	default_country_2alpha="$default_country_2alpha"
+		function_value=false
 
 
        

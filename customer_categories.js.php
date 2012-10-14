@@ -355,11 +355,6 @@ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
-
-
-
-
-
  }
 
 YAHOO.util.Event.onDOMReady(init);

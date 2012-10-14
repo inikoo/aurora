@@ -6595,6 +6595,28 @@ ALTER TABLE `Deal Dimension` ADD `Deal Status` ENUM( 'Suspended', 'Active', 'Fin
 ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Deal Metadata Active` ) ;
 update  `Deal Metadata Dimension` set `Deal Metadata Active`='Yes';
 ALTER TABLE `Deal Dimension` ADD `Deal Number Metadata Children` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `User Failed Log Dimension` CHANGE `Fail Main Reason` `Fail Main Reason` ENUM( 'cookie_error', 'handle', 'password', 'logging_timeout', 'ip', 'ikey' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'WebLog', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
+ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate', 'login', 'logout', 'fail_login', 'password_request', 'password_reset' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
+ALTER TABLE `History Dimension` CHANGE `Preposition` `Preposition` ENUM( 'about', '', 'to', 'on', 'because' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `History Dimension` ORDER BY `History Key` DESC;
+ALTER TABLE `MasterKey Dimension` ADD `Used` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD `Date Used` DATETIME NULL DEFAULT NULL ,ADD `Fails Already Used` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',ADD `Fails Expired` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `MasterKey Dimension` ADD INDEX ( `Key` ( 8 ) ) ;
+ALTER TABLE `MasterKey Dimension` ADD INDEX ( `Used` ) ;
+ALTER TABLE `User Failed Log Dimension` CHANGE `Fail Main Reason` `Fail Main Reason` ENUM( 'cookie_error', 'handle', 'password', 'logging_timeout', 'ip', 'ikey', 'masterkey_not_found', 'masterkey_used', 'masterkey_expired' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
-
+CREATE TABLE `MasterKey Internal Dimension` (
+  `MasterKey Internal Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Key` varchar(1024) NOT NULL,
+  `Valid Until` datetime NOT NULL,
+  `IP` varchar(64) NOT NULL,
+  PRIMARY KEY (`MasterKey Internal Key`),
+  KEY `Key` (`Key`(8))
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+ALTER TABLE `User Failed Log Dimension` CHANGE `Handle` `Handle` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ;
+ALTER TABLE `User Failed Log Dimension` CHANGE `Login Page` `Login Page` ENUM( 'staff', 'supplier', 'customer' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `User Log Dimension` ADD `Remember Cookie` ENUM( 'Yes', 'No', 'Unknown' ) NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `User Log Dimension` ADD `Last Visit Date` DATETIME NULL DEFAULT NULL AFTER `Start Date` ;
+ALTER TABLE `User Log Dimension` ADD INDEX ( `Remember Cookie` ) ;
+ALTER TABLE `User Log Dimension` ADD `Status` ENUM( 'Open', 'Close' ) NOT NULL DEFAULT 'Open' AFTER `User Log Key` ,ADD INDEX ( `Status` ) ;
 

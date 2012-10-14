@@ -100,7 +100,7 @@ $smarty->assign('filter_value2','');
 $sp=new SupplierProduct($_REQUEST['id']);
 $smarty->assign('sp',$sp);
 
-$smarty->assign('scope','staff');
+$smarty->assign('store_key',$store->id);
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

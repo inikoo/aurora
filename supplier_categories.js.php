@@ -11,6 +11,16 @@ var avg='avg_<?php echo $_SESSION['state']['supplier_categories']['avg']?>';
 
 var dialog_new_category;
 
+function post_create_actions(){
+table_id=0;
+							var table=tables['table'+table_id];
+    						var datasource=tables['dataSource'+table_id];
+    						var request='&table_id='+table_id;
+    						datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+}
+
+
 function change_category(){
     if(Dom.hasClass(this,'selected'))
     	return;
@@ -168,7 +178,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-
+ this.table0.table_id=tableid;
+     this.table0.subscribe("renderEvent", myrenderEvent);
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['supplier_categories']['view']?>';
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_categories']['subcategories']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_categories']['subcategories']['f_value']?>'};
@@ -288,6 +299,9 @@ table_paginator1=new YAHOO.widget.Paginator({
 
 
  function init(){
+ 
+    init_search('supplier_products');
+
  
 var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;

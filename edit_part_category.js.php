@@ -277,7 +277,7 @@ ids=["d_description","d_subcategory","d_parts"];
 	Dom.removeClass(['description','subcategory'],'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=categories_view&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part_categories-edit&value='+this.id ,{});
 }
 function cancel_add_category(){
    reset_new_category();

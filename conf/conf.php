@@ -2054,10 +2054,9 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'details'=>0,
-			'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1,'Attachments'=>1,'Emails'=>1)
+			'elements'=>array('Notes'=>1,'Orders'=>1,'Changes'=>1,'Attachments'=>1,'Emails'=>1,'WebLog'=>0)
 		)
 	),
-	// ------------------------------ history for staff.php starts here ---------------------------------------------------------
 	'staff_history'=>array(
 		'id'=>1,
 		'action_after_create'=>'continue',

@@ -773,10 +773,10 @@ function formater_order  (el, oRecord, oColumn, oData) {
 				       ,{key:"pid", label:"", hidden:true,action:"none",isTypeKey:true}
 				        ,{key:"go", label:"", width:40,action:"none",className:"aleft"}
 				        ,{key:"code",label:"<?php echo _('Code')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'family_page_properties'}
-					    ,{key:"smallname", label:"<?php echo _('Description')?>",width:480, sortable:true,className:"aleft",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					    ,{key:"smallname", label:"<?php echo _('Description')?>",width:480, sortable:true,className:"aleft",className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 	
-	,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web/Sale Status')?>",<?php echo($_SESSION['state']['family']['products']['edit_view']=='view_state'?'':'hidden:true,')?>width:120, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
+	,{key:"web_configuration" ,formatter: formater_web_configuration , label:"<?php echo _('Web/Sale Status')?>",width:120, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[
 				    {'value':"Online Auto",'label':"<?php echo _('Auto')?><br/>"},
 				    {'value':"Online Force For Sale",'label':"<?php echo _('Force online')?><br/>"},
 				    {'label':"<?php echo _('Force out of stock')?><br/>",'value':"Online Force Out of Stock"},
