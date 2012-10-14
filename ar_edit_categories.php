@@ -699,7 +699,7 @@ $parent_key=$_REQUEST['parent_key'];
 
         $name=$row['Category Name'];
 
-        $delete='<img src="art/icons/delete.png"/>';
+        $delete='<div class="buttons small"><button class="negative">'._('Delete').'</button></div>';
         $adata[]=array(
                      'go'=>sprintf("<a href='edit_part_category.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
                                    $row['Category Key']),

@@ -1,34 +1,31 @@
 	<script type="text/javascript" src="js/jquery.min.js"></script>
+<input type="hidden" id="block" value="{$block}"> 
 
 <input type="hidden" id="store_key" value="{$store->id}"> 
 <input type="hidden" id="site_key" value="{$site->id}"> 
 <div class="dialog_inikoo">
 	<input type="hidden" value="{$St}" id="ep" />
 	<input type="hidden" value="{$referral}" id="referral" />
-	{if $logged} 
-	<div style="border:1px solid #ccc;padding:20px;width:400px;margin-top:20px">
-		{t}You have successfully logged in{/t} 
-	</div>
-	{else} 
-	<div id="dialog_login" style="min-height:400px;float:left">
+
+	<div id="dialog_login" style="{if $block!='login'}display:none;{/if}min-height:400px;float:left">
 		<h2>
 			{t}Login{/t} 
 		</h2>
 		<div style="border:1px solid #ccc;padding:20px;width:400px;float:left">
-			{*}<form name="loginform" id="loginform" action="" method="post" target="dummy">{*}
-			<form action="" method="post" target="dummy">
+			
+			<form  method="post" target="dummy">
 				<fieldset>
 					<table style="margin-bottom:10px">
 						<tr>
 							<td class="label">{t}Email{/t}: </td>
 							<td id="email_placeholder"> 
-							<input type="email" name="email" id="email"/>
+							<input type="password" />
 							</td>
 						</tr>
 						<tr>
 							<td class="label">{t}Password{/t}: </td>
 							<td id="password_placeholder"> 
-							<input type="password" name="password" id="password"/>
+							<input type="password" />
 							</td>
 						</tr>
 						<tr>
@@ -44,7 +41,6 @@
 							</div>
 							</td>
 						</tr>
-						<input style="display:none" type="submit" />
 					</table>
 				</fieldset>
 			</form>
@@ -56,7 +52,9 @@
 			{t}Fill all fields please{/t}. 
 		</div>
 		<div id="message_forgot_password_send" class="ok_block" style="display:none;width:300px;float:left;margin-left:30px;margin-bottom:10px">
-			{t}An email has been sent to you with instructions on how to access your account{/t} 
+			<p>{t}An email has been sent to you with a link to access your account{/t}.</p>
+			<p>{t}The link will expire in 24 hours{/t}.</p>
+
 		</div>
 		<div id="message_login_wrong_email" class="warning_block" style="display:none;width:300px;float:left;margin-left:30px;margin-bottom:10px">
 			{t}Email address invalid{/t}. 
@@ -64,6 +62,13 @@
 		<div id="invalid_credentials" class="error_block" style="display:none;width:300px;float:left;margin-left:30px;margin-bottom:10px">
 			{t}Invalid username or password!{/t} 
 		</div>
+		<div id="wrong_password" class="error_block" style="display:none;width:300px;float:left;margin-left:30px;margin-bottom:10px">
+			{t}Wrong password{/t} 
+		</div>
+		<div id="wrong_email" class="error_block" style="display:none;width:300px;float:left;margin-left:30px;margin-bottom:10px">
+			{t}Email is not in our records{/t} 
+		</div>
+		
 		<div style="clear:both">
 		</div>
 		<table style="clear:left;float;left;margin-top:10px;">
@@ -83,8 +88,8 @@
 			{/if} 
 		</table>
 	</div>
-	{/if} 
-	<div id="dialog_forgot_password" style="display:none;float:left">
+
+	<div id="dialog_forgot_password" style="{if $block!='forgot_password'}display:none;{/if}float:left">
 		<h2>
 			{t}Forgotten password{/t} 
 		</h2>
@@ -132,6 +137,7 @@
 		<div id="message_forgot_password_wrong_email" class="warning_block" style="display:none;width:300px;float:left;margin-left:30px;margin-bottom:10px">
 			{t}Email address invalid{/t}. 
 		</div>
+		
 		<div style="clear:both">
 		</div>
 		<table style="margin-top:15px;clear:left">
@@ -151,11 +157,11 @@
 	<div style="clear:both;margin-bottom:30px">
 	</div>
 </div>
-<iframe src="dummy.php" name="dummy" style="width:100%;display: none"></iframe>
-	<div id="dont_forget" style="display: none">
+<iframe src="dummy.html" name="dummy" style="width:100%;display: none"></iframe>
+<div id="dont_forget" style="display: none">
 		<form action="" method="post">
-			<input type="text" name="email" id="exmail"/>
-			<input type="password" name="password" id="xpassword"/>
+			<input type="text" name="email" id="email"/>
+			<input type="password" name="password" id="password"/>
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>
 	</div>

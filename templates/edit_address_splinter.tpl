@@ -30,7 +30,7 @@
     </td>
   </tr>
     <tr id="{$address_identifier}tr_address_description" {if $hide_type and  $hide_description}style="display:none"{/if}  >
-    <td ></td><td style="text-align:left"><div  style="text-align:left;float:left;height:10px;width:210px;border-top:1px solid #ddd"></div></td>
+    <td ></td><td style="text-align:left"><div  style="text-align:left;float:left;height:10px;border-top:1px solid #ddd"></div></td>
   </tr>
 </tbody>
 
@@ -150,7 +150,7 @@
 </tbody>
 
 <tr id="{$address_identifier}tr_address_country"  class="first">
-        <td class="label"  style="width:120px">
+        <td class="label" >
 <span 
 	        id="{$address_identifier}show_country_subregions" 
 	        onclick="show_country_subregions('{$address_identifier}')" 
@@ -164,7 +164,7 @@
         </div>
         
     </td>
-    <td  style="width:70px">
+    <td >
    
         {if $default_country_2alpha}
         <span style="margin-left:0px;;float:none" id="{$address_identifier}default_country_selector" onClick="select_default_country('{$address_identifier}','{$default_country_2alpha}')"  ><img style="cursor:pointer;vertical-align:-1px;"  src="art/flags/{$default_country_2alpha|lower}.gif" alt="({$default_country_2alpha})"/></span>	
@@ -181,9 +181,9 @@
 <tr {if $hide_buttons==true}style="display:none"{/if}>
   <td colspan=2 >
   <div class="buttons" style="margin-top:10px">
-    <button address_key="" class="positive" style="visibility:hidden;margin-right:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button>
+    <button address_key="" class="positive disabled" style="margin-right:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button>
 
-  <button  class="negative" close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}visibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button>
+  <button  class="negative disabled" close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}xvisibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button>
   </div>
   </td>
   </tr>

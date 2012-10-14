@@ -31,30 +31,9 @@
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div style="padding:0 20px">
-		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0">
-			<div style="width:350px;float:left">
-				<table class="show_info_product">
-					<tr>
-						<td>{t}Name{/t}:</td>
-						<td>{$site->get('Site Name')}</td>
-					</tr>
-					<tr>
-						<td>{t}Home Page{/t}:</td>
-						<td>{$site->get('Site URL')}</td>
-					</tr>
-				</table>
-				<table class="show_info_product">
-					<tr>
-						<td>{t}Number Pages{/t}:</td>
-						<td class="number"> 
-						<div>
-							{$site->get('Number Pages')} 
-						</div>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div style="margin-left:20px;width:350px;float:left;position:relative;top:-21px">
+		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0px 40px 0px">
+			
+			<div style="width:350px;float:left;position:relative;top:-20px">
 				<table border="0" style="width:100%;margin:0px;height:20">
 					<tr>
 						<td style="width:150px"></td>
@@ -95,16 +74,34 @@
 						<td class="number aright"> {$site->get('1 Day Acc Visitors')} </td>
 						<td class="number aright">{$site->get('1 Day Acc Users')}</td>
 					</tr>
-					<tr>
-						<td>{t}Current Visitors{/t}:</td>
-						<td class="number aright"> 
-						<div>
-							{$site->get('Current Visitors')} 
-						</div>
-						</td>
-					</tr>
+					
 				</table>
 			</div>
+			
+			
+			<div style="float:left;font-size:80%;text-align:center;padding:00px 20px 20px 20px">
+		<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+			{t}Current Logged{/t} 
+			<div id="number_out_of_stock_parts" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+				
+			</div>
+		</div>
+			<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+			{t}User Sessions{/t} 
+			<div id="number_out_of_stock_dn" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+
+			</div>
+		</div>
+		
+					<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
+			{t}Pages{/t} 
+			<div id="number_out_of_stock_customers" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+			</div>
+		</div>
+		
+	</div>
+			
+			
 			<div style="width:15em;float:left;margin-left:20px">
 			</div>
 		</div>

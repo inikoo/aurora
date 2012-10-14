@@ -12,6 +12,10 @@ dialog_new_category.show();
 Dom.get('new_category_name').focus();
 }
 
+function post_create_actions(){
+
+}
+
 function save_new_category(){
 
 var name=Dom.get("new_category_name").value;

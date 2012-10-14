@@ -49,14 +49,21 @@ var Address_Meta_Keys=["type","function"];
 
 
 function cancel_edit_address(prefix) {
+
+ 
 // Dom.setStyle([address_identifier+'address_form'], 'display', 'none');
     if (Dom.get(prefix+"reset_address_button").getAttribute('close_if_reset')=='Yes') {
         Dom.get(prefix+'address_form').style.display='none';
         Dom.get(prefix+"reset_address_button").style.visibility='visible';
+         Dom.removeClass(prefix+"reset_address_button",'disabled');
+
 
     } else {
-        Dom.get(prefix+"reset_address_button").style.visibility='hidden';
-        Dom.get(prefix+"save_address_button").style.visibility='hidden';
+    
+        
+         Dom.addClass(prefix+"reset_address_button",'disabled');
+        Dom.addClass(prefix+"save_address_button",'disabled');
+        
 
     }
 
@@ -763,7 +770,7 @@ function reset_address(e,prefix) {
 
     if (Dom.get(prefix+"reset_address_button").getAttribute('close_if_reset')=='Yes') {
         Dom.get(prefix+'address_form').style.display='none';
-        Dom.get(prefix+"reset_address_button").style.visibility='visible';
+    Dom.removeClass(prefix+"reset_address_button","disabled")
 
     }
 
@@ -1075,12 +1082,13 @@ var render_after_address_item_change=function(prefix) {
     Address_Changes=Address_Items_Changes+Address_Function_Changes+Address_Type_Changes;
     if (Address_Changes==0) {
     
-      Dom.setStyle([address_prefix+'save_address_button'], 'visibility', 'hidden');
+              Dom.addClass([address_prefix+'save_address_button', address_prefix+'reset_address_button'], 'disabled');
 
 
     } else {
-        
-        Dom.setStyle([address_prefix+'save_address_button', address_prefix+'reset_address_button'], 'visibility', 'visible');
+    
+              Dom.removeClass([address_prefix+'save_address_button', address_prefix+'reset_address_button'], 'disabled');
+
     }
 
 //alert('render_end')

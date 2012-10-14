@@ -28,7 +28,7 @@ var data={'login_handle':login_handle,'store_key':store_key,'site_key':site_key,
   
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-//		alert(o.responseText)
+//	alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			Dom.removeClass('captcha_code2','error');
@@ -90,6 +90,11 @@ Dom.get('forgot_password_handle').focus();
 }
 
 
+
+
+
+
+
 function login(){
 
     var input_login=Dom.get('email').value;
@@ -99,13 +104,17 @@ function login(){
     var site_key=Dom.get('site_key').value;
 	var remember_me=Dom.get('remember_me').value;
     
- 
      var epwd=AESEncryptCtr(Dom.get('ep').value,pwd,256);
+   
+var timezone = jstz.determine();
   
-
+offset=timezone.name()
 //Dom.get('password').value='';
     //Dom.get('loginform').submit();
-     var request='ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me+'&referral='+Dom.get('referral').value;
+    
+    
+    
+     var request='ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login+'&store_key='+store_key+'&site_key='+site_key+'&remember_me='+remember_me+'&referral='+Dom.get('referral').value+'&offset='+encodeURIComponent(offset);
     // alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -117,17 +126,24 @@ function login(){
 		      
 		      if(Dom.get('referral').value){
 		      
-		     window.location ='page.php?id='+Dom.get('referral').value;
+		     //window.location ='page.php?id='+Dom.get('referral').value;
 		      }else{
-		       window.location ='profile.php';
+		      //setTimeout(function(){window.location ='profile.php';},2050);
+		      //window.location ='profile.php';
 		      }
-		     //location.reload();
-		     //setTimeout(function(){location.reload();},2050);
+		     location.reload();
+		     //setTimeout(function(){location.reload();},100);
 
            // window.location ='http://'+ window.location.host + window.location.pathname;
         
 			  
 		   }else if(r.result=='no_valid'){
+			  if(r.reason=='password')
+			  	Dom.setStyle('wrong_password','display','');
+  else if(r.reason=='handle')
+			  	Dom.setStyle('wrong_email','display','');
+
+			  else
 			  Dom.setStyle('invalid_credentials','display','');
                 Dom.addClass(['password','email'],'error');
                 Dom.get('email').focus();
@@ -222,6 +238,7 @@ remove_login_message_blocks();
 
 function submit_login(){
 
+
 remove_login_message_blocks()
 
 if(Dom.get('remember_me').checked)
@@ -258,9 +275,12 @@ Dom.removeClass('email','error');
 
 }
 
-if(!error)
-login()
+if(!error){
+login();
 
+
+
+}
 
 }
 function forgot_password(){
@@ -298,10 +318,12 @@ submit_forgot_password()
 
 
 function submit_login_on_enter(e){
+
+
     Dom.removeClass('password','error');
   Dom.removeClass('email','error');
 remove_login_message_blocks()
-
+/*
      var key;     
      if(window.event)
          Key = window.event.keyCode; //IE
@@ -309,9 +331,12 @@ remove_login_message_blocks()
          Key = e.which; //firefox     
 
      if (Key == 13){
+     
 	 submit_login();
 	 
 	 }
+*/
+
 };
 function forgot_password_on_enter(e){
 
@@ -370,21 +395,21 @@ function remove_forgot_password_message_blocks(){
 Dom.setStyle(['message_forgot_password_wrong_email','message_forgot_password_error_captcha','message_forgot_password_fields_missing','message_forgot_password_error','message_forgot_password_not_found','processing_change_password'],'display','none');
 }
 function remove_login_message_blocks(){
-Dom.setStyle(['message_log_out','invalid_credentials','message_login_fields_missing','message_login_wrong_email','message_forgot_password_send'],'display','none');
+Dom.setStyle(['message_log_out','invalid_credentials','wrong_password','wrong_email','message_login_fields_missing','message_login_wrong_email','message_forgot_password_send'],'display','none');
 }
 
 function init(){
 
-/*
+
 $('#email_placeholder').replaceWith($('#email'));
 	$('#password_placeholder').replaceWith($('#password'));
 	$('#dont_forget').remove();
-*/
+
 
 	
 
 
-Event.addListener("submit_login", "click", submit_login);
+//Event.addListener("submit_login", "click", submit_login);
 Event.addListener("link_forgot_password_from_login", "click", show_forgot_password_dialog);
 Event.addListener(['show_login_dialog3','show_login_dialog2'], "click", show_login_dialog);
 Event.addListener('submit_forgot_password', "click", forgot_password);
@@ -399,6 +424,9 @@ Event.addListener('cancel_forgot_password', "click", cancel_forgot_password);
 Event.addListener('email', "keydown", handle_changed);
 Event.addListener(['password'], "keydown", submit_login_on_enter);
 
+if(Dom.get('block').value=='forgot_password'){
+show_forgot_password_dialog();
+}
 
 
 Dom.get('email').focus()

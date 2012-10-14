@@ -1,18 +1,48 @@
 {include file='header.tpl'}
-<div id="bd" >
- {include file='suppliers_navigation.tpl'}
- <input id="category_key" type="hidden" value="{$category->id}"/>
- <div> 
- <span  class="branch"><a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a  href="supplier_categories.php?id=0">{t}Supplier Categories{/t}</a> &rarr; {$category->get_smarty_tree('supplier_categories.php')}
- </div> 
-  
-<div style="clear:left;">
-  <h1>{t}Category{/t}: {$category->get('Category Name')}</h1>
-</div>
+<div id="bd" style="padding:0px">
+	<div style="padding:0 20px">
+		{include file='suppliers_navigation.tpl'} 
+		<input type="hidden" id="category_key" value="{$category->id}" />
+		<div class="branch">
+ 			<span  class="branch">
+ 			<a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; <a  href="supplier_categories.php?id=0">{t}Supplier Categories{/t}</a> &rarr; {$category->get_smarty_tree('supplier_categories.php')}
+			</span>
+		</div>
+		<div class="top_page_menu">
+			<div class="buttons" style="float:left">
+			{*}
+				{if isset($parent_category)} <button onclick="window.location='customer_categories.php?store_id={$store->id}&id={$parent_category->id}'"><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Name')}</button> {/if} 
+				<button onclick="window.location='customer_categories.php?store={$store->id}&id=0'"><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button> 
+			{*}
+			<span class="main_title">{t}Category{/t}: {$category->get('Category Label')}</span>
+			</div>
+			<div class="buttons" style="float:right">
+				<button onclick="window.location='edit_customer_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> 
+				<button id="new_category"><img src="art/icons/add.png" alt=""> {t}Add Subcategory{/t}</button> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		
+	</div>
+	
+	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
+		<li  style="{if $category->get('Category Children')==0 and  $category->get('Category Number Subjects')>0}display:none{/if}" > <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t}</span></span></li>
+		<li  style="{if $category->get('Category Number Subjects')==0 and  $category->get('Category Children')>0 }display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Suppliers{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='subcategories_charts'}selected{/if}" id="subcategories_charts"> <span> {t}Charts{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
+	</ul>
+	<div style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
 
 
 
-<div class="data_table" style="{if $category->get('Category Children')==0}display:none;{/if}clear:both;margin-bottom:20px">
+
+
+<div  style="padding:20px">
+
+
+
+<div id="block_subcategories" class="data_table" style="{if $category->get('Category Children')==0}display:none;{/if}clear:both;margin-bottom:20px">
     <span class="clean_table_title">Subcategories</span>
        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
@@ -41,7 +71,7 @@
        <div  id="table0"   class="data_table_container dtable btable "> </div>		
 </div>
 
-<div id="children_table" class="data_table" style="{if $category->get('Category Deep')==1}display:none;{/if}clear:both;margin-top:0px">
+<div id="block_parts" class="data_table" style="{if $category->get('Category Deep')==1}display:none;{/if}clear:both;margin-top:0px">
       <span class="clean_table_title">{t}Suppliers in this category{/t}</span>
       
   
@@ -80,7 +110,7 @@
  <div  id="table1"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
  </div>
 
-
+</div>
 
 
 

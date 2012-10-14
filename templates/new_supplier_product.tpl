@@ -1,14 +1,38 @@
 {include file='header.tpl'}
-<div id="bd">
-<h1>{t}New Supplier Product{/t}</h1>
 
-<div class="search_box" ></div>
+<div id="bd" style="padding:0px">
+<input type="hidden" id="supplier_key" value="{$supplier->id}"/>
+{include file='suppliers_navigation.tpl'} 
+<div style="padding:0px 20px;">
+
+		<div class="branch">
+ 			<span  class="branch">
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; <a href="suppliers.php">{t}Suppliers{/t}</a> &rarr; {$supplier->get('Supplier Name')}</span> 
+			</span>
+		</div>
+		<div class="top_page_menu">
+			<div class="buttons" style="float:left">
+		
+			<span class="main_title">{t}New Supplier Product{/t}</span>
+			</div>
+			<div class="buttons" style="float:right">
+				<button onclick="window.location='supplier.php?id={$supplier->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Cancel{/t}</button> 
+			</div>
+			<div style="clear:both">
+			</div>
+		</div>
+		
+	
+
+
+
+
 <div id="contact_messages_div" >
       <span id="contact_messages"></span>
     </div>
-<div >
+<div style="margin-top:20px">
      <div id="results" style="margin-top:0px;float:right;width:600px;"></div>
-	 <div  style="float:left;width:600px;" >
+	 <div  style="float:left;width:800px;" >
 
 <input type="hidden" value="{$supplier_key}" id="supplier_key"/>
     <table class="edit"  border="0" style="width:100%;margin-bottom:0px" >
@@ -69,28 +93,71 @@
 	   </td>
 	   <td id="product_description_msg" class="edit_td_alert" ></td>
 	  </tr>
+<tr style="height:10px">
+<td colspan=2>
+</td>
+</tr>
 
-
-
-</table>
-
-
-<table class="options" style="float:right;padding:0;margin:0">
-	<tr>
-	<div class="buttons" >
-			<button  style="margin-right:10px;visibility:"  id="save_new_product" class="positive disabled">{t}Save{/t}</button>
-			<button style="margin-right:10px;visibility:" id="reset_new_product" class="negative">{t}Reset{/t}</button>
+<tr>
+<td colspan=2>
+<div class="buttons" >
+			<button  style="margin-right:10px;visibility:"  id="save_new_product" class="positive disabled">{t}Continue{/t}</button>
+			<button style="margin-right:10px;visibility:" id="reset_new_product" class="negative">{t}Cancel{/t}</button>
 	</div>
-	</tr>
+</td>
+</tr>
+
 </table>
+
+  <table class="edit"  border="0" style="width:100%;margin-bottom:0px" >
+	
+	<tr class="title">
+	<td colspan=3>{t}Part Info{/t}</td>
+	</tr>
+
+
+		 <tr><td style="width:200px"class="label">{t}Part Description{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="part_description" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="part_description_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="part_description_msg" class="edit_td_alert" ></td>
+	  </tr>
+
+		<tr><td style="width:200px"class="label">{t}Part Weight{/t}:</td><td style="width:370px">
+	  <div  >
+	   <input  style="width:100%" id="gross_weight" changed=0 type='text' MAXLENGTH="255"  class='text' 
+	   value="" />
+	   <div id="gross_weight_Container"  ></div>
+       </div>
+	   </td>
+	   <td id="gross_weight_msg" class="edit_td_alert" ></td>
+	  </tr>
+<tr style="height:10px">
+<td colspan=2>
+</td>
+</tr>
+
+<tr>
+<td colspan=2>
+<div class="buttons" >
+			<button  style="margin-right:10px;visibility:"  id="save_new_product" class="positive disabled">{t}Continue{/t}</button>
+			<button style="margin-right:10px;visibility:" id="reset_new_product" class="negative">{t}Cancel{/t}</button>
+	</div>
+</td>
+</tr>
+
+</table>
+
     
       </div>
       <div style="clear:both;height:40px"></div>
 	</div>
       </div>
-<div class="star_rating" id="star_rating_template" style="display:none"><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /></div>
 
-
+</div>
 
 </div>
 

@@ -114,10 +114,10 @@ function list_customer_history() {
     else
         $f_value=$conf['f_value'];
 
-    if (isset( $_REQUEST['where']))
-        $where=$_REQUEST['where'];
-    else
-        $where=$conf['where'];
+  //  if (isset( $_REQUEST['where']))
+   //     $where=$_REQUEST['where'];
+   // else
+   //     $where=$conf['where'];
 
     if (isset( $_REQUEST['from']))
         $from=$_REQUEST['from'];
@@ -146,6 +146,10 @@ function list_customer_history() {
     if (isset( $_REQUEST['elements_emails'])) {
         $elements['Emails']=$_REQUEST['elements_emails'];
     }
+    if (isset( $_REQUEST['elements_weblog'])) {
+        $elements['WebLog']=$_REQUEST['elements_weblog'];
+    }
+    
     if (isset( $_REQUEST['tableid']))
         $tableid=$_REQUEST['tableid'];
     else
@@ -163,7 +167,7 @@ function list_customer_history() {
     $_SESSION['state']['customer']['table']['order_dir']=$order_direction;
     $_SESSION['state']['customer']['table']['nr']=$number_results;
     $_SESSION['state']['customer']['table']['sf']=$start_from;
-    $_SESSION['state']['customer']['table']['where']=$where;
+   // $_SESSION['state']['customer']['table']['where']=$where;
     $_SESSION['state']['customer']['table']['f_field']=$f_field;
     $_SESSION['state']['customer']['table']['f_value']=$f_value;
     $_SESSION['state']['customer']['table']['elements']=$elements;
@@ -182,7 +186,7 @@ function list_customer_history() {
 
     //  $where.=' and `Deep`=1 ';
 
-    $where.=sprintf(' and  B.`Customer Key`=%d   ',$customer_id);
+    $where=sprintf(' where   B.`Customer Key`=%d   ',$customer_id);
 //   if(!$details)
 //    $where.=" and display!='details'";
 //  foreach($elements as $element=>$value){
@@ -227,7 +231,7 @@ function list_customer_history() {
 
     //$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
     $sql="select count(*) as total from  `Customer History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
-    // print $sql;
+     //print $sql;
     // exit;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

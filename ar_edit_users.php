@@ -44,7 +44,7 @@ case('create_customer_user'):
 			'password'=>array('type'=>'string'),
 		));
 
-	$password=($data['password']==''?generate_password(64,10):$data['password']);
+	$password=($data['password']==''?generate_password(64):$data['password']);
 	$customer=new Customer($data['customer_key']);
 	$site=new Site($data['site_key']);
 	$email=new Email($data['email_key']);
@@ -1157,38 +1157,23 @@ function list_customer_users() {
 
 
 
-function generate_password($length=9, $strength=0) {
-	$vowels = 'aeuy'.md5(mt_rand());
-	$consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
-	if ($strength & 1) {
-		$consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
-	}
-	if ($strength & 2) {
-		$vowels .= "AEUI";
-	}
-	if ($strength & 4) {
-		$consonants .= '2345678906789$%^&*(';
-	}
-	if ($strength & 8) {
-		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
-	}
+function generate_password($length=9) {
 
+	$letters='qwrtyuiopsghjklzxvnmQWRTYUIOPSGHJKLZXVNM!=/[]{}~\<>$%^&*()_+-@#.,)(*?|!';
 	$password = '';
-	$alt = time() % 2;
 	for ($i = 0; $i < $length; $i++) {
-		if ($alt == 1) {
-			$password .= $consonants[(mt_rand() % strlen($consonants))];
-			$alt = 0;
-		} else {
-			$password .= $vowels[(mt_rand() % strlen($vowels))];
-			$alt = 1;
-		}
+		$password .= $letters[(mt_rand() % strlen($letters))];
 	}
 	return $password;
 }
 
 
 function send_reset_password($data,$CKEY) {
+	global $user;
+	
+	
+	$staff_user_key=$user->id;
+	
 	// nott this functions also present in ar_register (sites)
 	$user_key=$data['values']['user_key'];
 	$site_key=$data['values']['site_key'];
@@ -1200,11 +1185,11 @@ function send_reset_password($data,$CKEY) {
 
 	$user=new User($user_key);
 	$customer=new Customer($user->data['User Parent Key']);
-$login_handle=$user->data['User Handle'];
+	$login_handle=$user->data['User Handle'];
 
 
 
-	$master_key=$user_key.generatePassword(2,10);
+	$master_key=dechex($user_key).generate_password(5);
 	$sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
 		prepare_mysql($master_key),
 		$user_key,
@@ -1213,6 +1198,26 @@ $login_handle=$user->data['User Handle'];
 	);
 	//print $sql;
 	mysql_query($sql);
+
+
+	$date=date("Y-m-d H:i:s");
+	$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%c %Z",strtotime($date.' +00:00')).'</td></tr>
+				<tr><td>'._('IP Address').':</td><td>'.ip().'</td></tr>
+				<tr><td>'._('User Agent').':</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>
+				</table>';
+
+	$history_data=array(
+		'Date'=>$date,
+		'Site Key'=>$site->id,
+		'Note'=>_('Reset password email sent to').' '.$user->data['User Handle'],
+		'Details'=>$details,
+		'Action'=>'password_request',
+		'Indirect Object'=>'',
+		'User Key'=>$staff_user_key
+	);
+
+	$customer->add_history_login($history_data);
 
 
 
@@ -1250,7 +1255,7 @@ $login_handle=$user->data['User Handle'];
 
 	//print_r($credentials);
 
-//	$login_handle='raul@inikoo.com';
+	// $login_handle='raul@inikoo.com';
 
 
 	//$message_data['method']='sendmail';
@@ -1273,10 +1278,10 @@ $login_handle=$user->data['User Handle'];
 		$message_data['plain']=null;
 
 	$message_data['email_placeholders']=array(
-			'greetings' => $greetings,
-			'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Password').'</a>',
-			'masterkey_link'=>$masterkey_link
-			);
+		'greetings' => $greetings,
+		'live_masterkey_link' => '<a href="'.$masterkey_link.'" >'._('Change Password').'</a>',
+		'masterkey_link'=>$masterkey_link
+	);
 
 	$message_data['promotion_name']='Forgot Password';
 
@@ -1325,13 +1330,13 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 		'User Alias'=>$customer->data['Customer Name'],
 		'User Parent Key'=>$customer->id
 	);
-	
+
 	$_user=new user('find',$data,'create');
 
 	$site->update_customer_data();
 
 	//print_r($_user);
-	if (!$_user->id) 	{
+	if (!$_user->id) {
 
 		return array(0,$_user->msg);
 
@@ -1385,9 +1390,9 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 		} else
 			$message_data['plain']=null;
 
-	$message_data['email_placeholders']=array('greetings' => $greetings);
+		$message_data['email_placeholders']=array('greetings' => $greetings);
 
-	$message_data['promotion_name']='Welcome Email';
+		$message_data['promotion_name']='Welcome Email';
 
 		//print_r($message_data);
 

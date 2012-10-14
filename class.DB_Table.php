@@ -343,10 +343,15 @@ abstract class DB_Table {
 		}
 
 
+		if(array_key_exists('User Key',$raw_data)){
+		$data['User Key']=$raw_data['User Key'];
+		}else{
+		$data['User Key']=$editor_data['User Key'];
+		}
 
 		if ($data['Subject']=='' or  !$data['Subject Key']) {
 			include_once 'class.User.php';
-			$user=new User($editor_data['User Key']);
+			$user=new User($data['User Key']);
 			if ($user->id) {
 
 				$data['Subject']=$user->data['User Type'];
@@ -361,9 +366,6 @@ abstract class DB_Table {
 		}
 
 
-
-
-		$data['User Key']=$editor_data['User Key'];
 
 
 

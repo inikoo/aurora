@@ -2,7 +2,7 @@
 <div id="bd">
 	{include file='contacts_navigation.tpl'} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; {$id}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer.php?id={$customer->id}">{$id}</a> ({t}Editing{/t})</span> 
 	</div>
 	<input type="hidden" value="{$customer->id}" id="customer_key" />
 	<input type="hidden" value="{$registered_email}" id="registered_email" />
@@ -15,24 +15,31 @@
 	<input type="hidden" id="other_value_{$key}" value="{$other}" />
 	{/foreach} 
 	<div class="top_page_menu">
-		{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if} {if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
+	
+		
 		<div class="buttons">
-			<button style="margin-left:10px" onclick="window.location='customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
+				 {if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
+
+		<button style="margin-left:10px" onclick="window.location='customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
+		 <button id="convert_to_person" {if $customer_type!='Company' }style="display:none" {/if}>{t}Convert to Person{/t}</button> <button id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</button>
+		<button id="delete_customer" class="negative {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}disabled{/if}" {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}style="text-decoration: line-through;"{/if}>{t}Delete Customer{/t}</button>
+		
+		</div>
+		<div class="buttons left">
+{if isset($parent_list)}<img onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='edit_customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" alt="<" style="margin-right:10px;float:left;height:22px;cursor:pointer;position:relative;top:2px" />{/if}
+		<span class="main_title">
+		<span style="color:SteelBlue">{$id}</span> <span id="title_name">{$customer->get('Customer Name')}</span> 
+	</span>
 		</div>
 		<div style="clear:both">
 		</div>
 	</div>
-	<h1 style="float:left;padding-bottom:10px">
-		<span style="color:SteelBlue">{$id}</span> <span id="title_name">{$customer->get('Customer Name')}</span> 
-	</h1>
+	
 	<div style="padding:10px;background-color:#FAF8CC;width:300px;{if $recent_merges==''}display:none{/if}">
 		{$recent_merges} 
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;">
 		<li> <span class="item {if $edit=='details'}selected{/if}" id="details"> <span> {t}Customer Details{/t}</span></span></li>
-		{if $customer_type=='Company'} 
-		<li> <span class="item {if $edit=='company'}selected{/if}" style="display:none" id="company"> <span> {t}Company Details{/t}</span></span></li>
-		{/if} 
 		<li> <span class="item {if $edit=='billing'}selected{/if}" id="billing"> <span> {t}Billing Information{/t}</span></span></li>
 		<li> <span class="item {if $edit=='delivery'}selected{/if}" id="delivery"> <span> {t}Delivery Options{/t}</span></span></li>
 		<li> <span class="item {if $edit=='categories'}selected{/if}" id="categories"> <span> {t}Categories{/t}</span></span></li>
@@ -125,14 +132,14 @@
 			</table>
 		</div>
 		<div class="edit_block" style="{if $edit!='billing'}display:none{/if};min-height:260px" id="d_billing">
-			<div class="buttons">
-				<button style="margin-right:10px;visibility:hidden" id="save_edit_billing_data" class="positive">{t}Save{/t}</button> <button style="margin-right:10px;visibility:hidden" id="reset_edit_billing_data" class="negative">{t}Reset{/t}</button> 
-			</div>
+			
 			<div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-bottom:20px;">
-				<div style="border-bottom:1px solid #777;margin-bottom:7px">
-					{t}Billing Information{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span> 
-				</div>
-				<table border="0">
+			
+				<table border="0" class="edit" style="width:100%">
+					<tr>
+					<td colspan=2>{t}Billing Information{/t}</td>
+					</tr>
+					
 					<tr>
 						<td class="label">{t}Tax Number{/t}:</td>
 						<td style="text-align:left;width:280px"> 
@@ -162,7 +169,7 @@
 						<div class="buttons">
 							<button class="positive {if $customer->get('Recargo Equivalencia')=='Yes'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','Yes')" id="Recargo Equivalencia_Yes">{t}Yes{/t}</button> <button class="negative {if $customer->get('Recargo Equivalencia')=='No'}selected{/if}" onclick="save_comunications('Recargo Equivalencia','No')" id="Recargo Equivalencia_No">{t}No{/t}</button> 
 						</div>
-						<td> 
+						</td> 
 					</tr>
 					{else} 
 					<tr style="display:none">
@@ -176,6 +183,16 @@
 						</td>
 					</tr>
 					{/if} 
+					
+					<tr>
+					<td colspan=2>
+					<div class="buttons">
+				<button  id="save_edit_billing_data" class="positive disabled">{t}Save{/t}</button> <button  id="reset_edit_billing_data" class="negative disabled">{t}Reset{/t}</button> 
+			</div>
+					</td>
+					</tr>
+					
+					
 				</table>
 			</div>
 			<div style="clear:both">
@@ -304,26 +321,25 @@
 			{include file='edit_delivery_address_splinter.tpl' parent='customer' order_key=0} 
 		</div>
 		<div class="edit_block" style="{if $edit!='details'}display:none{/if};" id="d_details">
-			<table class="edit" border="0" style="clear:both;margin-bottom:40px;width:100%">
-				<tr>
-					<td style="width:150px"></td>
-					<td style="width:300px"> 
-					<div class="buttons">
-						<button id="delete_customer" class="negative {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}disabled{/if}" {if $customer->get('Customer With Orders')=='Yes' || $customer->number_of_user_logins()>0}style="text-decoration: line-through;"{/if}>{t}Delete Customer{/t}</button> <button id="convert_to_person" {if $customer_type!='Company' }style="display:none" {/if}>{t}Convert to Person{/t}</button> <button id="convert_to_company" class="state_details" style="{if $customer_type=='Company'}display:none{/if}">{t}Convert to Company{/t}</button> 
-					</div>
-					</td>
-					<td> 
-					<div class="buttons">
-						<button style="visibility:hidden" id="save_edit_customer" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_customer" class="negative">{t}Reset{/t}</button> 
-					</div>
+			<table class="edit" border="0" style="clear:both;width:100%">
+				<tr class="title">
+					<td colspan=2>
+					{t}Contact Details{/t}
 					</td>
 				</tr>
-				<tr style="height:10px">
-					<td colspan="3"></td>
+		<tr style="height:1px">
+					<td style="width:150px">
+					</td>
+					<td style="width:300px">
+					</td>
+					
+					<td>
+					
+					</td>
 				</tr>
 				<tr {if $customer_type!='Company' }style="display:none" {/if} class="first">
-					<td class="label">{t}Company Name{/t}:</td>
-					<td style="text-align:left;"> 
+					<td style="width:150px" class="label">{t}Company Name{/t}:</td>
+					<td style="width:300px" style="text-align:left;"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Name" value="{$customer->get('Customer Name')}" ovalue="{$customer->get('Customer Name')}" valid="0"> 
 						<div id="Customer_Name_Container">
@@ -333,8 +349,8 @@
 					<td id="Customer_Name_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr class="first">
-					<td class="label">{if $customer_type=='Company'}{t}Registration Number{/t}{else}{t}Identification Number{/t}{/if}:</td>
-					<td style="text-align:left;"> 
+					<td style="width:150px" class="label">{if $customer_type=='Company'}{t}Registration Number{/t}{else}{t}Identification Number{/t}{/if}:</td>
+					<td style="width:300px" style="text-align:left;"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Customer_Registration_Number" value="{$customer->get('Customer Registration Number')}" ovalue="{$customer->get('Customer Registration Number')}" valid="0"> 
 						<div id="Customer_Registration_Number_Container">
@@ -532,48 +548,44 @@
 					</td>
 				</tr>
 
+<tr>
+<td colspan="2"> 
+					<div class="buttons" style="margin-top:10px">
+						<button  id="save_edit_customer" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_customer" class="negative disabled">{t}Reset{/t}</button> 
+					</div>
+					</td>
+</tr>
+
+
+
 
 			</table>
-			<div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:430px;margin-right:20px;min-height:300px">
-				<div style="border-bottom:1px solid #777;margin-bottom:5px">
-					{t}Contact Address{/t}: 
-				</div>
-				<table border="0" style="width:100%">
-					{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true show_components=true hide_buttons=false default_country_2alpha="$default_country_2alpha" show_form=1 show_default_country=1 address_type=false function_value='' address_function='' show_contact=false show_tel=false close_if_reset=false } 
+			
+			<table class="edit" border="0" style="clear:both;margin-top:10px;width:100%">
+			<tr class="title">
+					<td colspan=2>
+					{t}Contact Address{/t}
+					</td>
+				</tr>
+				<tr style="height:1px">
+					<td style="width:150px">
+					</td>
+					<td style="width:300px">
+					</td>
+					
+					<td>
+					
+					</td>
+				</tr>
+				
+								{include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true show_components=true hide_buttons=false default_country_2alpha="$default_country_2alpha" show_form=1 show_default_country=1 address_type=false function_value='' address_function='' show_contact=false show_tel=false close_if_reset=false } 
+
 				</table>
-				<div style="display:none" id='contact_current_address'>
-				</div>
-				<div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}'>
-				</div>
-			</div>
-			<div id="customer_delivery_address" style="display:none;float:left;xborder:1px solid #ddd;width:400px;">
-				<div style="border-bottom:1px solid #777;margin-bottom:5px">
-					{t}Delivery Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span> 
-				</div>
-				<div id="delivery_current_address_bis" style="margin-bottom:10px">
-					{if ($customer->get('Customer Delivery Address Link')=='Contact') or ( $customer->get('Customer Delivery Address Link')=='Billing' and ($customer->get('Customer Main Address Key')==$customer->get('Customer Billing Address Key')) ) } <span style="font-weight:600">{t}Same as contact address{/t}</span> {elseif $customer->get('Customer Delivery Address Link')=='Billing'} <span style="font-weight:600">{t}Same as billing address{/t}</span> {else} {$customer->delivery_address_xhtml()} {/if} 
-					<div id="billing_address_display{$customer->get('Customer Billing Address Key')}" style="display:none">
-					</div>
-				</div>
-				<span id="delivery2" class="state_details">Set up different address</span> 
-			</div>
-			<div style="clear:both">
-			</div>
+			
+		
+			
 		</div>
-		{if $customer_type=='Company'} 
-		<div class="edit_block" style="{if $edit!='company'}display:none{/if}" id="d_company">
-			{*} 
-			<div class="general_options" style="float:right">
-				<span style="margin-right:10px;display:none" id="save_new_customer" class="state_details">{t}Save{/t}</span> <span style="margin-right:10px;display:none" id="close_add_customer" class="state_details">{t}Reset{/t}</span> 
-			</div>
-			<div id="new_customer_messages" class="messages_block">
-			</div>
-			{include file='edit_company_splinter.tpl'} {*} 
-		</div>
-		{else} 
-		<div class="edit_block" style="display:none" id="d_company">
-		</div>
-		{/if} 
+		
 	</div>
 </div>
 <div id="dialog_country_list" style="position:absolute;left:-1000;top:0">
@@ -597,8 +609,8 @@
 			(<span id="other_field_label_scope_name"></span>) </td>
 		</tr>
 		<tr class="buttons" style="font-size:100%;">
-			<td style="text-align:center;width:50%"> <span class="unselectable_text button" style="visibility:hidden;">{t}Cancel{/t}</span></td>
-			<td style="text-align:center;width:50%"> <span style="display:block;margin-top:5px" onclick="save_other_field_label()" id="note_save" class="unselectable_text button">{t}Save{/t}</span></td>
+			<td style="text-align:center;width:50%"> <span class="unselectable_text button disabled" >{t}Cancel{/t}</span></td>
+			<td style="text-align:center;width:50%"> <span style="display:block;margin-top:5px" onclick="save_other_field_label()" id="note_save" class="disabled unselectable_text button">{t}Save{/t}</span></td>
 		</tr>
 	</table>
 </div>

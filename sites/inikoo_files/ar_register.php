@@ -2,6 +2,7 @@
 // V2
 //dsfsdf
 require_once 'common.php';
+require_once 'common_detect_agent.php';
 
 
 require_once 'class.Customer.php';
@@ -65,12 +66,12 @@ default:
 }
 
 
-function prepare_email($email){
+function prepare_email($email) {
 
-$email=strip_tags($email);
-$email=preg_replace('/\s/','',$email);
+	$email=strip_tags($email);
+	$email=preg_replace('/\s/','',$email);
 
-return $email;
+	return $email;
 }
 
 function check_email_customers($email,$store_key) {
@@ -117,32 +118,12 @@ function check_email_users($email,$site_key) {
 
 
 
-function generate_password($length=9, $strength=0) {
-	$vowels = 'aeuy'.md5(mt_rand());
-	$consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
-	if ($strength & 1) {
-		$consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
-	}
-	if ($strength & 2) {
-		$vowels .= "AEUI";
-	}
-	if ($strength & 4) {
-		$consonants .= '2345678906789$%^&*(';
-	}
-	if ($strength & 8) {
-		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
-	}
+function generate_password($length=9) {
 
+	$letters='qwrtyuiopsghjklzxvnmQWRTYUIOPSGHJKLZXVNM!=/[]{}~\<>$%^&*()_+-@#.,)(*?|!';
 	$password = '';
-	$alt = time() % 2;
 	for ($i = 0; $i < $length; $i++) {
-		if ($alt == 1) {
-			$password .= $consonants[(mt_rand() % strlen($consonants))];
-			$alt = 0;
-		} else {
-			$password .= $vowels[(mt_rand() % strlen($vowels))];
-			$alt = 1;
-		}
+		$password .= $letters[(mt_rand() % strlen($letters))];
 	}
 	return $password;
 }
@@ -245,8 +226,8 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 				$message_data['promotion_name']='Welcome Email';
 
-				if($site->data['Site Direct Subscribe Madmimi']){
-				$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
+				if ($site->data['Site Direct Subscribe Madmimi']) {
+					$message_data['madmimi_auto_subscribe']=$site->data['Site Direct Subscribe Madmimi'];
 				}
 
 				$send_email=new SendEmail();
@@ -300,7 +281,7 @@ function forgot_password($data,$secret_key) {
 		if ($customer_key) {
 			$customer=new Customer($customer_key);
 			if ($customer->id) {
-				list($user_key,$msg)=create_customer_user($login_handle,$customer,$site,generate_password(10,10), false,false);
+				list($user_key,$msg)=create_customer_user($login_handle,$customer,$site,generate_password(10), false,false);
 			}
 		}
 
@@ -333,26 +314,38 @@ function send_reset_password($data,$CKEY) {
 	$user=new User($user_key);
 	$customer=new Customer($user->data['User Parent Key']);
 
-
-
-
-	$master_key=$user_key.generatePassword(2,10);
+	$master_key=dechex($user_key).generate_password(5);
 	$sql=sprintf("insert into `MasterKey Dimension` (`Key`,`User Key`,`Valid Until`,`IP`) values (%s,%d,%s,%s) ",
 		prepare_mysql($master_key),
 		$user_key,
-		prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hours"))),
+		prepare_mysql(date("Y-m-d H:i:s",strtotime("now +24 hour"))),
 		prepare_mysql(ip())
 	);
-
 	mysql_query($sql);
 
+	$date=date("Y-m-d H:i:s");
+	$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%c %Z",strtotime($date.' +00:00')).'</td></tr>
+				<tr><td>'._('IP Address').':</td><td>'.ip().'</td></tr>
+				<tr><td>'._('User Agent').':</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>
+				</table>';
+
+	$history_data=array(
+		'Date'=>$date,
+		'Site Key'=>$site->id,
+		'Note'=>_('Reset password requested').', '._('email sent to').' '.$user->data['User Handle'],
+		'Details'=>$details,
+		'Action'=>'password_request',
+		'Indirect Object'=>'',
+		'User Key'=>$user->id
+	);
+
+	$customer->add_history_login($history_data);
 
 
 	$secret_key=$site->data['Site Secret Key'];
 
 	$encrypted_secret_data=base64_encode(AESEncryptCtr($master_key,$secret_key,256));
-
-
 
 
 	$masterkey_link='http://'.$site->data['Site URL']."/registration.php?p=".$encrypted_secret_data;
@@ -435,7 +428,7 @@ function check_email($data) {
 	$store_key=$data['store_key'];
 	$site_key=$data['site_key'];
 	$login_handle=_trim($data['login_handle']);
-$login_handle=prepare_email($login_handle);
+	$login_handle=prepare_email($login_handle);
 
 	if ($login_handle=='') {
 
