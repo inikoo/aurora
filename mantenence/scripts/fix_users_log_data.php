@@ -46,11 +46,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$sql=sprintf("update `User Log Dimension` set `Status`='Close' where `User Log Key`=%d ",$row['User Log Key']);
 	mysql_query($sql);
-
+	print "$sql\n";
 
 }
 
 
+exit;
 
 $sql="select * from `User Log Dimension`   ";
 
