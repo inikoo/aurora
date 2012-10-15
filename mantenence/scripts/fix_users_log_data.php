@@ -46,12 +46,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$sql=sprintf("update `User Log Dimension` set `Status`='Close' where `User Log Key`=%d ",$row['User Log Key']);
 	mysql_query($sql);
-	print "$sql\n";
+//	print "$sql\n";
 
 }
 
 
-exit;
+
 
 $sql="select * from `User Log Dimension`   ";
 
@@ -66,21 +66,23 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	}
 
 
-	if ($row['Last Visit Date']=='') {
+	
 
 
 		$sql=sprintf("select MAX(`Date`) as last_request from `User Request Dimension` where `User Log Key`=%d ",$row['User Log Key']);
 		$result1=mysql_query($sql);
 		if ($row1=mysql_fetch_array($result1, MYSQL_ASSOC)   ) {
+		
+		if($row1['last_request']!=''){
 			$sql=sprintf("update `User Log Dimension` set `Last Visit Date`=%s where `User Log Key`=%d ",prepare_mysql($row1['last_request']),$row['User Log Key']);
 			mysql_query($sql);
 			// print"$sql\n";
 
 
 		}
+}
 
 
-	}
 
 	$sql=sprintf("select `User Site Key` from  `User Dimension` where `User Key`=%d ",$row['User Key']);
 	$result1=mysql_query($sql);
