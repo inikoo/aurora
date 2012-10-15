@@ -40,9 +40,9 @@ $store=new Store($department->get('Product Department Store Key'));
 
 $can_delete = true;
 
-if($store->data['Store Orphan Families Department'] == $department->id){
-	$can_delete = false;
-}
+//if($store->data['Store Orphan Families Department'] == $department->id){
+//	$can_delete = false;
+//}
 
 
 

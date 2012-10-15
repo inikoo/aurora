@@ -47,8 +47,8 @@
        <td colspan=2>
        <div class="buttons">
 	
-<button  style="visibility:hidden"  id="save_edit_family" class="positive">{t}Save{/t}</button>
-	<button style="visibility:hidden" id="reset_edit_family" class="negative">{t}Reset{/t}</button>
+<button id="save_edit_family" class="positive disabled">{t}Save{/t}</button>
+	<button id="reset_edit_family" class="negative disabled">{t}Reset{/t}</button>
 	
       </div>
       </td>

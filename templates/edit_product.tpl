@@ -142,8 +142,8 @@
 
 
  <div class="buttons" style="float:right">
-	<button  style="visibility:hidden" class="positive" id="save_edit_product_price" class="state_details" >{t}Save{/t}</button>
-	<button style="visibility:hidden" class="negative" id="reset_edit_product_price" class="state_details" >{t}Reset{/t}</button>
+	<button class="positive disabled" id="save_edit_product_price">{t}Save{/t}</button>
+	<button class="negative disabled" id="reset_edit_product_price">{t}Reset{/t}</button>
 </div>
 
 <table class="edit" border=0 style="width:890px;clear:both">
@@ -182,8 +182,8 @@
 <div class="edit_block" {if $edit!="dimat"}style="display:none"{/if}  id="d_dimat">
 
  <div class="buttons" style="float:right">
-	<button  style="visibility:hidden" class="positive" id="save_edit_product_weight" class="state_details" >{t}Save{/t}</button>
-	<button style="visibility:hidden" class="negative" id="reset_edit_product_weight" class="state_details" >{t}Reset{/t}</button>
+	<button class="positive disabled" id="save_edit_product_weight" >{t}Save{/t}</button>
+	<button class="negative disabled" id="reset_edit_product_weight" >{t}Reset{/t}</button>
 </div>
 
 <table class="edit" >
@@ -281,8 +281,8 @@
  <td>
 
  <div class="buttons" style="float:right">
-	<button  style="visibility:hidden" class="positive" id="save_edit_product_description" class="state_details" >{t}Save{/t}</button>
-	<button style="visibility:hidden" class="negative" id="reset_edit_product_description" class="state_details" >{t}Reset{/t}</button>
+	<button  class="positive disabled" id="save_edit_product_description" >{t}Save{/t}</button>
+	<button  class="negative disabled" id="reset_edit_product_description" >{t}Reset{/t}</button>
 </div>
 
  </td>

@@ -511,12 +511,26 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 	$smarty->assign('template_string',$page->data['Page Store Source']);
 }
 else {
+	
 	$smarty->assign('type_content','file');
 
-
-	$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
-	$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
+
+	if ($page->data['Page Code']=='login') {
+	
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false)
+{
+$smarty->assign('template_string','login.chrome.tpl');
+		$js_files[]='js/login.chrome.js';
+}else{	
+		$smarty->assign('template_string','login.tpl');
+		$js_files[]='js/login.js';
+}
+	}else {
+
+		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');
+		$js_files[]='js/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.js';
+	}
 }
 //
 //$customer=new Customer(73257);

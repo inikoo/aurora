@@ -1,3 +1,4 @@
+	<script type="text/javascript" src="js/jquery.min.js"></script>
 <input type="hidden" id="block" value="{$block}"> 
 
 <input type="hidden" id="store_key" value="{$store->id}"> 
@@ -12,19 +13,19 @@
 		</h2>
 		<div style="border:1px solid #ccc;padding:20px;width:400px;float:left">
 			
-			<form name="loginform" id="loginform" action="" method="post" onsubmit="return false">
+			<form  method="post" target="dummy">
 				<fieldset>
 					<table style="margin-bottom:10px">
 						<tr>
 							<td class="label">{t}Email{/t}: </td>
 							<td id="email_placeholder"> 
-							<input type="email" name="email" id="email"/>
+							<input type="password" />
 							</td>
 						</tr>
 						<tr>
 							<td class="label">{t}Password{/t}: </td>
 							<td id="password_placeholder"> 
-							<input type="password" name="password" id="password"/>
+							<input type="password" />
 							</td>
 						</tr>
 						<tr>
@@ -159,7 +160,7 @@
 <iframe src="dummy.html" name="dummy" style="width:100%;display: none"></iframe>
 <div id="dont_forget" style="display: none">
 		<form action="" method="post">
-			<input type="email" name="email" id="email"/>
+			<input type="text" name="email" id="email"/>
 			<input type="password" name="password" id="password"/>
 			<input type="submit" value="Login" id="dummy_submit"/>
 		</form>

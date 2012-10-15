@@ -2815,7 +2815,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 	}
 	function get_main_image_key() {
 
-		return $this->data['Product Main Image Key'];
+		return $this->data['Product Family Main Image Key'];
 	}
 	function update_main_image($image_key) {
 

@@ -418,7 +418,7 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
 		$user_log_key
 		);
 	mysql_query($sql);
-	print $sql;
+	//print $sql;
 	}
 
 

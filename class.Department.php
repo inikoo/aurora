@@ -2149,7 +2149,7 @@ class Department extends DB_Table {
 	}
 	function get_main_image_key() {
 
-		return $this->data['Product Main Image Key'];
+		return $this->data['Product Department Main Image Key'];
 	}
 	function update_main_image($image_key) {
 
