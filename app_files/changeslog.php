@@ -6590,11 +6590,12 @@ ALTER TABLE `Product Dimension`  ADD `Product Last Month Acc 1YB Invoiced Delta`
 
 ALTER TABLE `Session Dimension` ADD INDEX ( `Session Expire` ) ;
 ALTER TABLE `Session Dimension` ADD INDEX ( `HTTP User Agent` ( 8 ) ) ;
-ALTER TABLE `Session Dimension` ADD `Session IP` VARCHAR( 16 ) NOT NULL ,ADD `Session User Agent` VARCHAR( 500 ) NOT NULL ;
+
 ALTER TABLE `Deal Dimension` ADD `Deal Status` ENUM( 'Suspended', 'Active', 'Finish', 'Waiting' ) NOT NULL DEFAULT 'Waiting' AFTER `Store Key` ;
 ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Deal Metadata Active` ) ;
 update  `Deal Metadata Dimension` set `Deal Metadata Active`='Yes';
 ALTER TABLE `Deal Dimension` ADD `Deal Number Metadata Children` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+
 ALTER TABLE `User Failed Log Dimension` CHANGE `Fail Main Reason` `Fail Main Reason` ENUM( 'cookie_error', 'handle', 'password', 'logging_timeout', 'ip', 'ikey' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'WebLog', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate', 'login', 'logout', 'fail_login', 'password_request', 'password_reset' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
@@ -6619,4 +6620,5 @@ ALTER TABLE `User Log Dimension` ADD `Remember Cookie` ENUM( 'Yes', 'No', 'Unkno
 ALTER TABLE `User Log Dimension` ADD `Last Visit Date` DATETIME NULL DEFAULT NULL AFTER `Start Date` ;
 ALTER TABLE `User Log Dimension` ADD INDEX ( `Remember Cookie` ) ;
 ALTER TABLE `User Log Dimension` ADD `Status` ENUM( 'Open', 'Close' ) NOT NULL DEFAULT 'Open' AFTER `User Log Key` ,ADD INDEX ( `Status` ) ;
-
+ALTER TABLE `User Request Dimension` ADD INDEX ( `User Log Key` ) ;
+ALTER TABLE `User Log Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `User Key` , ADD INDEX ( `Site Key` ) ;

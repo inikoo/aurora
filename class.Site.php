@@ -226,14 +226,14 @@ class Site extends DB_Table {
 		case('Total Users'):
 			return number($this->data['Site Total Users']);
 		default:
-		
-		
-		
-		
+
+
+
+
 			if (isset($this->data[$key]))
 				return $this->data[$key];
 		}
-		
+
 		if (preg_match('/ Acc /',$key)) {
 
 			$amount='Site '.$key;
@@ -241,10 +241,10 @@ class Site extends DB_Table {
 			return number($this->data[$amount]);
 		}
 
-		
-		
-		
-		
+
+
+
+
 		return false;
 	}
 
@@ -400,8 +400,8 @@ class Site extends DB_Table {
 			$showcases_layout=$data['Showcases Layout'];
 		else
 			$showcases_layout='';
-			
-			
+
+
 		$page_data=array(
 			'Page Site Key'=>$this->id,
 			'Page Code'=>'SD_'.$store->data['Store Code'],
@@ -540,7 +540,7 @@ class Site extends DB_Table {
 		else
 			$showcases_layout=$data['Showcases Layout'];
 */
-$page_code=$this->get_unique_department_page_code($department);
+		$page_code=$this->get_unique_department_page_code($department);
 		$page_data=array(
 			'Page Code'=>$page_code,
 			'Page Site Key'=>$this->id,
@@ -658,7 +658,7 @@ $index_page=$this->get_page_object('index');
 */
 
 
-$page_code=$this->get_unique_family_page_code($family);
+		$page_code=$this->get_unique_family_page_code($family);
 
 		$page_data=array(
 			'Page Code'=>$page_code,
@@ -1053,11 +1053,11 @@ $page_code=$this->get_unique_family_page_code($family);
 		return $email_credentials_key;
 	}
 
-	function get_credential_type(){
+	function get_credential_type() {
 		include_once 'class.EmailCredentials.php';
 		$keys=$this->get_email_credential_key();
 		$email_credential = new EmailCredentials($keys);
-		if($email_credential->id){
+		if ($email_credential->id) {
 			return $email_credential->data['Email Provider'];
 		}
 		else
@@ -1130,9 +1130,9 @@ $page_code=$this->get_unique_family_page_code($family);
 		$redirect_lines=array();
 		$host_bis=strtolower(preg_replace('/^www\./','',$host));
 		$ftp_sever=strtolower($this->data['Site FTP Server']);
-		
+
 		//print "\n$host $ftp_sever\n";
-		
+
 		if ($ftp_sever==strtolower($host) or $ftp_sever==$host_bis) {
 			$sql=sprintf("select * from `Page Redirection Dimension` where `Source Host`=%s and `Source Path`=%s",
 				prepare_mysql($host),
@@ -1156,8 +1156,8 @@ $page_code=$this->get_unique_family_page_code($family);
 
 		}
 
-//exit("--> $htaccess\n");
-//print "$htaccess";
+		//exit("--> $htaccess\n");
+		//print "$htaccess";
 		return $htaccess;
 
 	}
@@ -1188,7 +1188,7 @@ $page_code=$this->get_unique_family_page_code($family);
 				$this->msg=$ftp_connection->msg;
 				return;
 			}else {
-				
+
 				//print $path."/.htaccess";
 				$ftp_connection->upload_string($htaccess,$path."/.htaccess");
 				$ftp_connection->end();
@@ -1206,7 +1206,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Front Page Store' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
-//print $sql;
+		//print $sql;
 		if ($row=mysql_fetch_assoc($res)) {
 			$page_key=$row['Page Key'];
 		}
@@ -1231,8 +1231,8 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 		return $page_key;
 	}
-	
-		function get_reset_page_key() {
+
+	function get_reset_page_key() {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Reset' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
@@ -1241,7 +1241,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 		return $page_key;
 	}
-		function get_basket_page_key() {
+	function get_basket_page_key() {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Basket' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
@@ -1250,7 +1250,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 		return $page_key;
 	}
-		function get_checkout_page_key() {
+	function get_checkout_page_key() {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Checkout' and `Page Site Key`=%d ",$this->id);
 		$res=mysql_query($sql);
@@ -1259,7 +1259,7 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 		return $page_key;
 	}
-	
+
 	function get_profile_page_key() {
 		$page_key=0;
 		$sql=sprintf("select `Page Key` from `Page Store Dimension` where `Page Store Section`='Client Section' and `Page Site Key`=%d ",$this->id);
@@ -1314,7 +1314,7 @@ $page_code=$this->get_unique_family_page_code($family);
 
 
 	function update_interval_requests() {
-	$this->update_requests('Total');
+		$this->update_requests('Total');
 		$this->update_requests('3 Year');
 		$this->update_requests('1 Year');
 		$this->update_requests('6 Month');
@@ -1553,9 +1553,9 @@ $page_code=$this->get_unique_family_page_code($family);
 		return $images_slideshow;
 	}
 
-	function get_favicon_url(){
+	function get_favicon_url() {
 		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
-		
+
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_array($res)) {
@@ -1564,9 +1564,9 @@ $page_code=$this->get_unique_family_page_code($family);
 		return $images_slideshow;
 	}
 
-	function get_main_image_key(){
-				$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
-		
+	function get_main_image_key() {
+		$sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Site Favicon' and   `Subject Key`=%d and `Is Principal`='Yes'",$this->id);
+
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_array($res)) {
@@ -1574,5 +1574,33 @@ $page_code=$this->get_unique_family_page_code($family);
 		}
 		return $images_slideshow;
 	}
+
+	function get_current_active_logged_users($time=300) {
+		$users=0;
+		$sql=sprintf("select count(*) user from `User Log Dimension` where `Status`='Open' and `Site Key`=%d and `Last Visit Date`>%s ",
+			$this->id,
+			prepare_mysql(gmdate("Y-m-d H:i:s",strtotime("now -$time second")))
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$users=$row['user'];
+		}
+		return number($users);
+	}
+	
+	function get_open_logged_users_sessions() {
+		$sessions=0;
+		$sql=sprintf("select count(*) sessions from `User Log Dimension` where `Status`='Open' and `Site Key`=%d",
+			$this->id
+		
+		);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$sessions=$row['sessions'];
+		}
+		return number($sessions);
+	}
+	
+
 }
 ?>

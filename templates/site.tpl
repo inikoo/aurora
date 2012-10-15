@@ -82,14 +82,15 @@
 			<div style="float:left;font-size:80%;text-align:center;padding:00px 20px 20px 20px">
 		<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
 			{t}Current Logged{/t} 
-			<div id="number_out_of_stock_parts" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
-				
+			<div id="number_current_active_logged_users" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+				{$site->get_current_active_logged_users()}
 			</div>
 		</div>
 			<div style="margin-left:10px;border:1px solid #777;float:left;width:110px;padding:5px 0px">
 			{t}User Sessions{/t} 
-			<div id="number_out_of_stock_dn" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
+			<div id="number_open_logged_users_sessions" style="font-size:120%;font-weight:800;margin-top:5px;margin-bottom:5px">
 
+{$site->get_open_logged_users_sessions()}
 			</div>
 		</div>
 		

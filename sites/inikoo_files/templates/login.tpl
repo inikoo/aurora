@@ -156,11 +156,3 @@
 	<div style="clear:both;margin-bottom:30px">
 	</div>
 </div>
-<iframe src="dummy.html" name="dummy" style="width:100%;display: none"></iframe>
-<div id="dont_forget" style="display: none">
-		<form action="" method="post">
-			<input type="email" name="email" id="email"/>
-			<input type="password" name="password" id="password"/>
-			<input type="submit" value="Login" id="dummy_submit"/>
-		</form>
-	</div>

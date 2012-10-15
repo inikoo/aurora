@@ -531,14 +531,15 @@ class Auth {
 	function create_user_log() {
 		$ip=ip();
 		$date=gmdate('Y-m-d H:i:s');
-		$sql=sprintf("INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`,`Remember Cookie`) VALUES (%d, %s, %s, %s,%s, %s,%s)",
+		$sql=sprintf("INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`,`Remember Cookie`,`Site Key`) VALUES (%d, %s, %s, %s,%s, %s,%s,%d)",
 			$this->user_key,
 			prepare_mysql(session_id()),
 			prepare_mysql($ip),
 			prepare_mysql($date),
 			prepare_mysql($date),
 			'NULL',
-			prepare_mysql(($this->remember?'Yes':'No'))
+			prepare_mysql(($this->remember?'Yes':'No')),
+			$this->site_key
 			);
 
 		mysql_query($sql);
