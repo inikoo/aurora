@@ -127,6 +127,7 @@ if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 		$dencrypted_secret_data=AESDecryptCtr(base64_decode($_REQUEST['masterkey']),$secret_key,256);
 
 		$auth=new Auth(IKEY,SKEY);
+		$auth->site_key=$site->id;
 		$auth->log_page='customer';
 		$auth->authenticate_from_masterkey($dencrypted_secret_data);
 
@@ -413,7 +414,7 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
 	$user_click_key= mysql_insert_id();
 
 	if($user_log_key){
-		$sql=sprintf("update `User Log Dimension` set `Last Visit Date`=%s where `User Log Key`=%d",
+		$sql=sprintf("update `User Log Dimension` set `Last Visit Date`=%s , `Status`='Open' where `User Log Key`=%d",
 		prepare_mysql(gmdate("Y-m-d H:i:s")),
 		$user_log_key
 		);
