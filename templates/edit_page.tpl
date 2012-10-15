@@ -98,7 +98,7 @@
 						<button id="show_more_configuration">{t}Show Advanced Configuration{/t}</button> <button style="display:none" id="hide_more_configuration">{t}Hide Advanced Configuration{/t}</button> 
 					</div>
 					<div class="buttons">
-						<button style="visibility:hidden" id="save_edit_page_properties" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_page_properties" class="negative">{t}Reset{/t}</button> 
+						<button  id="save_edit_page_properties" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_properties" class="negative disabled">{t}Reset{/t}</button> 
 					</div>
 					</td>
 				</tr>
@@ -258,7 +258,7 @@
 				<tr>
 					<td colspan="3"> 
 					<div class="buttons">
-						<button style="visibility:hidden" id="save_edit_page_html_head" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_page_html_head" class="negative">{t}Reset{/t}</button> 
+						<button  id="save_edit_page_html_head" class="positive disabled">{t}Save{/t}</button> <button  id="reset_edit_page_html_head" class="negative disabled">{t}Reset{/t}</button> 
 					</div>
 					</td>
 				</tr>
@@ -303,7 +303,7 @@
 					<td>Title</td>
 						<td colspan="2"> 
 						<div class="buttons">
-							<button style="visibility:hidden" id="save_edit_page_header" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_page_header" class="negative">{t}Reset{/t}</button> 
+							<button  id="save_edit_page_header" class="positive disabled">{t}Save{/t}</button> <button  id="reset_edit_page_header" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -447,7 +447,7 @@
 						<div style="float:right" id="html_editor_msg">
 						</div>
 						<div class="buttons">
-							<button id="download_page_content">{t}Download{/t}</button> <button class="positive" style="visibility:hidden" id="save_edit_page_content">{t}Save{/t}</button> <button class="negative" style="visibility:hidden" id="reset_edit_page_content">{t}Reset{/t}</button> 
+							<button id="download_page_content">{t}Download{/t}</button> <button class="positive disabled"  id="save_edit_page_content">{t}Save{/t}</button> <button class="negative disabled"  id="reset_edit_page_content">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>

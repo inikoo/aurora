@@ -155,8 +155,8 @@
  <tr class="title"><td colspan=5>{t}Unit{/t}</td>
  <td>
  <div class="buttons" >
-	<button  style="visibility:hidden"  id="save_edit_part_unit" class="positive">{t}Save{/t}</button>
-	<button style="visibility:hidden" id="reset_edit_part_unit" class="negative">{t}Reset{/t}</button>
+	<button   id="save_edit_part_unit" class="positive disabled">{t}Save{/t}</button>
+	<button id="reset_edit_part_unit" class="negative disabled">{t}Reset{/t}</button>
 </div>
  </td>
  
@@ -234,8 +234,8 @@
  <tr class="title"><td >{t}General Description{/t} <span id="part_general_description_msg"></span></td>
  <td>
  <div class="buttons" >	
-	<button  style="margin-right:10px;visibility:hidden"  id="save_edit_part_description" class="state_details">{t}Save{/t}</button>
-	<button style="margin-right:10px;visibility:hidden" id="reset_edit_part_description" class="state_details">{t}Reset{/t}</button>
+	<button  style="margin-right:10px"  id="save_edit_part_description" class="positive disabled">{t}Save{/t}</button>
+	<button style="margin-right:10px" id="reset_edit_part_description" class="negative disabled">{t}Reset{/t}</button>
 </div>
  </td>
   </tr>
@@ -251,8 +251,8 @@
  <tr class="title"><td >{t}Health & Safety{/t} <span id="part_health_and_safety_msg"></span></td>
  <td>
  <div class="buttons" >	
-	<button  style="margin-right:10px;visibility:hidden"  id="save_edit_part_health_and_safety" class="state_details">{t}Save{/t}</button>
-	<button style="margin-right:10px;visibility:hidden" id="reset_edit_part_health_and_safety" class="state_details">{t}Reset{/t}</button>
+	<button  style="margin-right:10px;"  id="save_edit_part_health_and_safety" class="positive disabled">{t}Save{/t}</button>
+	<button style="margin-right:10px;" id="reset_edit_part_health_and_safety" class="negative disabled">{t}Reset{/t}</button>
 </div>
  </td>
   </tr>
@@ -292,8 +292,8 @@
 
 <div class="buttons">
 	
-	<button  style="margin-right:10px;visibility:hidden"  id="save_edit_part_custom_field" class="state_details">{t}Save{/t}</button>
-	<button style="margin-right:10px;visibility:hidden" id="reset_edit_part_custom_field" class="state_details">{t}Reset{/t}</button>
+	<button  style="margin-right:10px;"  id="save_edit_part_custom_field" class="positive disabled">{t}Save{/t}</button>
+	<button style="margin-right:10px;" id="reset_edit_part_custom_field" class="negative disabled">{t}Reset{/t}</button>
 	
 </div>
 	  

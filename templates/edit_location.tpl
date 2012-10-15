@@ -38,8 +38,8 @@
   <div id="description_block" style="{if $edit!='description'}display:none{/if}" >
     
 	<div class="buttons" >
-		<button  style="margin-right:10px;visibility:hidden"  id="save_edit_location_description" class="positive">{t}Save{/t}</button>
-		<button style="margin-right:10px;visibility:hidden" id="reset_edit_location_description" class="negative">{t}Reset{/t}</button>
+		<button  style="margin-right:10px"  id="save_edit_location_description" class="positive disabled">{t}Save{/t}</button>
+		<button style="margin-right:10px" id="reset_edit_location_description" class="negative disabled">{t}Reset{/t}</button>
 	</div>
 
 

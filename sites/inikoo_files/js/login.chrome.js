@@ -126,12 +126,12 @@ offset=timezone.name()
 		      
 		      if(Dom.get('referral').value){
 		      
-		     window.location ='page.php?id='+Dom.get('referral').value;
+		     //window.location ='page.php?id='+Dom.get('referral').value;
 		      }else{
 		      //setTimeout(function(){window.location ='profile.php';},2050);
-		      window.location ='profile.php';
+		      //window.location ='profile.php';
 		      }
-		     //location.reload();
+		     location.reload();
 		     //setTimeout(function(){location.reload();},100);
 
            // window.location ='http://'+ window.location.host + window.location.pathname;
@@ -401,10 +401,15 @@ Dom.setStyle(['message_log_out','invalid_credentials','wrong_password','wrong_em
 function init(){
 
 
+$('#email_placeholder').replaceWith($('#email'));
+	$('#password_placeholder').replaceWith($('#password'));
+
+
+$('#dont_forget').remove();
 	
 
 
-Event.addListener("submit_login", "click", submit_login);
+//Event.addListener("submit_login", "click", submit_login);
 Event.addListener("link_forgot_password_from_login", "click", show_forgot_password_dialog);
 Event.addListener(['show_login_dialog3','show_login_dialog2'], "click", show_login_dialog);
 Event.addListener('submit_forgot_password', "click", forgot_password);

@@ -1,9 +1,12 @@
 <?php
+if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false)
+{
+
 if(isset($_REQUEST['password'])){
 print '<!DOCTYPE html><html><body onload="parent.submit_login()">x</body></html>';
 exit;
 }
-
+}
 
 include_once('common.php');
 //print_r($_REQUEST);

@@ -61,7 +61,7 @@
 		</div>
 		<div id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}">
 			<div class="buttons">
-				<button style="visibility:hidden" onclick="save_edit_general('department')" id="save_edit_department" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" onclick="reset_edit_general('department')" id="reset_edit_department" class="negative">{t}Reset{/t}</button> 
+				<button onclick="save_edit_general('department')" id="save_edit_department" class="positive disabled">{t}Save{/t}</button> <button onclick="reset_edit_general('department')" id="reset_edit_department" class="negative disabled">{t}Reset{/t}</button> 
 			</div>
 			<table border="0" style="clear:both;width:100%" class="edit">
 				<tr>
@@ -101,7 +101,7 @@
 			<div style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none" id="new_family_dialog">
 			
 			<div class="buttons" >
-				<button style="visibility:hidden" id="save_new_family" class="positive">{t}Save New Family{/t}</button> <button style="visibility:hidden" id="cancel_new_family" class="negative">{t}Close New Family{/t}</button> 
+				<button id="save_new_family" class="positive disabled">{t}Save New Family{/t}</button> <button id="cancel_new_family" class="negative disabled">{t}Close New Family{/t}</button> 
 			</div>
 			<div id="new_family_messages" class="messages_block">
 				</div>

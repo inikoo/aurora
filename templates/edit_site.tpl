@@ -86,7 +86,7 @@
 				<tr>
 					<td colspan="3"> 
 					<div class="buttons">
-						<button style="visibility:hidden" id="save_edit_site_search" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_search" class="negative">{t}Reset{/t}</button> 
+						<button  id="save_edit_site_search" class="disabled positive">{t}Save{/t}</button> <button id="reset_edit_site_search" class="disabled negative">{t}Reset{/t}</button> 
 					</div>
 					</td>
 				</tr>
@@ -142,7 +142,7 @@
 				<tr>
 					<td colspan="3"> 
 					<div class="buttons">
-						<button style="visibility:hidden" id="save_edit_site_menu" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_menu" class="negative">{t}Reset{/t}</button> 
+						<button  id="save_edit_site_menu" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_menu" class="negative disabled">{t}Reset{/t}</button> 
 					</div>
 					</td>
 				</tr>
@@ -217,7 +217,7 @@
 						<td>{t}Website Properties{/t}</td>
 						<td colspan="2"> 
 						<div class="buttons">
-							<button style="visibility:hidden" id="save_edit_site_properties" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_properties" class="negative">{t}Reset{/t}</button> 
+							<button id="save_edit_site_properties" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_properties" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -296,7 +296,7 @@
 						<td>{t}Client Area{/t}</td>
 						<td colspan="2"> 
 						<div class="buttons">
-							<button style="visibility:hidden" id="save_edit_site_client_area" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_client_area" class="negative">{t}Reset{/t}</button> 
+							<button id="save_edit_site_client_area" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_client_area" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -569,7 +569,7 @@
 						<td>{t}Checkout{/t}</td>
 						<td colspan="2"> 
 						<div class="buttons">
-							<button style="visibility:hidden" id="save_edit_site_checkout" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_checkout" class="negative">{t}Reset{/t}</button> 
+							<button  id="save_edit_site_checkout" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_checkout" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -623,7 +623,7 @@
 						<td>{t}Common Javascript{/t}</td>
 						<td colspan="2"> 
 						<div class="buttons">
-							<button style="visibility:hidden" id="save_edit_site_javascript" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_javascript" class="negative">{t}Reset{/t}</button> 
+							<button id="save_edit_site_javascript" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_javascript" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -641,7 +641,7 @@
 						<td>{t}Website Ftp Credentials{/t}</td>
 						<td colspan="2"> 
 						<div class="buttons">
-							<button style="visibility:hidden" id="save_edit_site_ftp" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_site_ftp" class="negative">{t}Reset{/t}</button> 
+							<button id="save_edit_site_ftp" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_site_ftp" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -816,7 +816,7 @@
 				<td colspan="2">{t}Welcome Email{/t}</td>
 				<td> 
 				<div class="buttons">
-					<button style="visibility:hidden" id="save_edit_email_welcome" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_email_welcome" class="negative">{t}Reset{/t}</button> 
+					<button id="save_edit_email_welcome" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_welcome" class="negative disabled">{t}Reset{/t}</button> 
 				</div>
 				</td>
 			</tr>
@@ -855,7 +855,7 @@
 			<td colspan="2">{t}Welcome Message{/t}</td>
 			<td> 
 			<div class="buttons">
-				<button style="visibility:hidden" id="save_edit_welcome_message" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_welcome_message" class="negative">{t}Reset{/t}</button> 
+				<button id="save_edit_welcome_message" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_welcome_message" class="negative disabled">{t}Reset{/t}</button> 
 			</div>
 			</td>
 		</tr>
@@ -874,7 +874,7 @@
 			<td colspan="2">{t}Forgot Password Email{/t}</td>
 			<td> 
 			<div class="buttons">
-				<button style="visibility:hidden" id="save_edit_email_forgot" class="positive">{t}Save{/t}</button> <button style="visibility:hidden" id="reset_edit_email_forgot" class="negative">{t}Reset{/t}</button> 
+				<button id="save_edit_email_forgot" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_email_forgot" class="negative disabled">{t}Reset{/t}</button> 
 			</div>
 			</td>
 		</tr>
