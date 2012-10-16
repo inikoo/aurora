@@ -6622,3 +6622,9 @@ ALTER TABLE `User Log Dimension` ADD INDEX ( `Remember Cookie` ) ;
 ALTER TABLE `User Log Dimension` ADD `Status` ENUM( 'Open', 'Close' ) NOT NULL DEFAULT 'Open' AFTER `User Log Key` ,ADD INDEX ( `Status` ) ;
 ALTER TABLE `User Request Dimension` ADD INDEX ( `User Log Key` ) ;
 ALTER TABLE `User Log Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `User Key` , ADD INDEX ( `Site Key` ) ;
+
+
+UPDATE `Widget Dimension` SET `Widget Block` = 'block_3' WHERE `Widget Dimension`.`Widget Key` =11;
+
+
+

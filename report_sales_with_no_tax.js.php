@@ -489,7 +489,6 @@ Event.addListener(tax_categories_bis, "click",change_elements_bis,'tax_codes');
  YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
  YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
 
-
  }
 
 YAHOO.util.Event.onDOMReady(init);
