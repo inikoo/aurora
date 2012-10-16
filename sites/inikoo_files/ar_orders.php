@@ -1,7 +1,7 @@
 <?php
 include_once 'common.php';
 
-if(!isset($user)){
+if(!isset($user)  or !is_object($user)  or !$user->id ){
 	exit;
 }
 

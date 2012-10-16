@@ -4858,42 +4858,35 @@ class Address extends DB_Table {
 
 
 	function disassociate_telecom($telecom_key,$type) {
-
-
 		$principal_adddess=$this->get_principal_telecom_key($type);
-
-
-
 		$sql=sprintf("delete from `Telecom Bridge` where `Subject Type`='Address' and  `Subject Key`=%d and `Telecom Key`=%d ",
 			$this->id,
 			$telecom_key
 
 		);
 		mysql_query($sql);
-//print "$sql\n";
 
-
-$telecom_keys=$this->get_telecom_type_keys($type);
+		$telecom_keys=$this->get_telecom_type_keys($type);
 
 
 
 		if (count($telecom_keys)==0) {
 
 			$sql=sprintf("update `Address Dimension` set `Address Main %s Key`=0 , `Address Main Plain %s`='', `Address Main XHTML %s`=''  where `Address Key`=%d ",
-			addslashes($type),
-			addslashes($type),
-			addslashes($type),
-			$this->id);
+				addslashes($type),
+				addslashes($type),
+				addslashes($type),
+				$this->id);
 			mysql_query($sql);
-//			print "$sql\n";
+			//   print "$sql\n";
 
 		}else if ($principal_adddess==$telecom_key) {
-			
-			$new_principal_key=array_pop($telecom_keys);
 
-			$this->update_principal_telecom($new_principal_key,$type);
+				$new_principal_key=array_pop($telecom_keys);
 
-		}
+				$this->update_principal_telecom($new_principal_key,$type);
+
+			}
 		$this->updated_data['telecom_key']=$telecom_key;
 
 
