@@ -36,8 +36,8 @@ $umbral=$_SESSION['state']['report_data']['ES1']['umbral'];
    
 
 
-header("Content-type: application/octet-stream");
-header("Content-Disposition: attachment; filename=\"modelo_347-".$year.".csv\"");
+//header("Content-type: application/octet-stream");
+//header("Content-Disposition: attachment; filename=\"modelo_347-".$year.".csv\"");
 $out = fopen('php://output', 'w');
 
 $where=sprintf(' where `Customer Main Country Code`="ESP"   and Year(`Invoice Date`)=%d',$year );
@@ -45,7 +45,7 @@ $where=sprintf(' where `Customer Main Country Code`="ESP"   and Year(`Invoice Da
   $sql="select   `Customer Main Location`,`Customer Key`,`Customer Name`,`Customer ID`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where group by `Customer Key` order by total desc";
    $adata=array();
   
-  
+  print $sql;
   
   $result=mysql_query($sql);
   while($data=mysql_fetch_array($result, MYSQL_ASSOC)){

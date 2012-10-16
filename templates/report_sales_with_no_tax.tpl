@@ -70,7 +70,7 @@
         <div style="clear:both"></div>
      </div>
       <div style="xborder: 1px solid red;width:200px;height:37px;display:table-cell; vertical-align:bottom;">
-    <span   class="clean_table_title" >{t}Customers{/t} <img id="export_csv1"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+    <span   class="clean_table_title" >{t}Customers{/t} <a href="report_sales_with_no_tax_customers_csv.php"><img id="export_csv1"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></a></span> 
 </div>
 
 </div>
@@ -107,7 +107,7 @@
         <div style="clear:both"></div>
      </div>
       <div style="xborder: 1px solid red;width:200px;height:37px;display:table-cell; vertical-align:bottom;">
-    <span   class="clean_table_title" >{t}Invoices{/t} <img id="export_csv1"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+    <span   class="clean_table_title" >{t}Invoices{/t} <a style="display:none" href="report_sales_with_no_tax_orders_csv.php"><img id="export_csv1"   tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></a></span> 
 </div>
 
 </div>  
