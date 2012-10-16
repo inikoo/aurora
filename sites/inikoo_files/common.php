@@ -61,12 +61,12 @@ $yui_path="external_libs/yui/2.9/build/";
 //$session = new Session($max_session_time,1,100);
 session_start();
 
-if(isset($_SESSION['offset'])){
-date_default_timezone_set($_SESSION['offset']);
+if (isset($_SESSION['offset'])) {
+	date_default_timezone_set($_SESSION['offset']);
 
-}else{
-require_once 'conf/timezone.php';
-date_default_timezone_set(TIMEZONE) ;
+}else {
+	require_once 'conf/timezone.php';
+	date_default_timezone_set(TIMEZONE) ;
 }
 
 
@@ -180,6 +180,10 @@ if (!isset($_SESSION['logged_in']) or !$_SESSION['logged_in'] ) {
 			$_SESSION['user_key']=$auth->get_user_key();
 			$_SESSION['customer_key']=$auth->get_user_parent_key();
 			$_SESSION['user_log_key']=$auth->user_log_key;
+			$sql=sprintf("update `User Log Dimension` set `Remember Cookie`='Yes'  where `User Log Key`=%d",
+				$auth->user_log_key
+			);
+			mysql_query($sql);
 		} else {
 			unset($_SESSION['user_key']);
 			unset($_SESSION['customer_key']);
@@ -216,8 +220,8 @@ if ($logged_in ) {
 	} else {
 
 		$user=new User($_SESSION['user_key']);
-		
-		
+
+
 		$customer=new Customer($_SESSION['customer_key']);
 
 		//print_r($customer);
@@ -413,13 +417,13 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
 	mysql_query($sql1);
 	$user_click_key= mysql_insert_id();
 
-	if($user_log_key){
+	if ($user_log_key) {
 		$sql=sprintf("update `User Log Dimension` set `Last Visit Date`=%s , `Status`='Open' where `User Log Key`=%d",
-		prepare_mysql(gmdate("Y-m-d H:i:s")),
-		$user_log_key
+			prepare_mysql(gmdate("Y-m-d H:i:s")),
+			$user_log_key
 		);
-	mysql_query($sql);
-	//print $sql;
+		mysql_query($sql);
+		//print $sql;
 	}
 
 

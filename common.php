@@ -320,11 +320,9 @@ $export_data=array(
                  'pdf'=>array('label'=>_('Export as pdf'),'title'=>'PDF')
              );
 
-
-
-
-
-//-------------------
-
 $smarty->assign('page_name',get_page());
+
+
+$smarty->assign('analyticstracking',( file_exists('templates/analyticstracking.tpl')?true:false));
+
 ?>

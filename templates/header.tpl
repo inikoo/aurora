@@ -15,6 +15,7 @@
 	{/foreach} 
 </head>
 <body class=" yui-skin-sam inikoo">
+{if $analyticstracking}{include file='analyticstracking.tpl'}{/if}
 <div id="doc4">
 	<div id="hd">
 		<div class="top_navigation">
