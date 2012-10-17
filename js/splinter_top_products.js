@@ -1,5 +1,9 @@
 top_products_tables= new Object();
 
+var period_ids=['top_products_all','top_products_ytd','top_products_mtd','top_products_wtd','top_products_today','top_products_yesterday','top_products_last_w','top_products_last_m','top_products_3y','top_products_1y','top_products_6m','top_products_1q','top_products_1m','top_products_10d','top_products_1w'];
+var  number_records_ids=['top_products_50','top_products_10','top_products_20','top_products_100'];
+
+
 function getDocHeight() {
     var D = document;
     return Math.max(
@@ -24,7 +28,7 @@ var tableid=1
         var tableid=Dom.get('top_products_index').value;
 	    var tableDivEL="table"+tableid;
 	    var ProductsColumnDefs = [
-				       {key:"position", label:"", width:5,sortable:false,className:"aleft"}
+				       {key:"position", label:"", width:12,sortable:false,className:"aleft"}
 				      // 	,{key:"store",label:"", width:10,sortable:false,className:"aleft"}
 
 				      // ,{key:"family", label:Dom.get('label_Fam').value, width:28,sortable:false,className:"aleft"}
@@ -32,7 +36,7 @@ var tableid=1
 				       ,{key:"net_sales", label:Dom.get('label_Sales').value, width:69,sortable:false,className:"aright"}
 				       	,{key:"net_sales_delta", label:'1y&Delta;', width:69,sortable:false,className:"aright"}
 
-						,{key:"stock", label:Dom.get('label_Stock').value, width:50,sortable:false,className:"aright"}
+						,{key:"stock", label:Dom.get('label_Stock').value, width:56,sortable:false,className:"aright"}
 					//	,{key:"web_state", label:'', width:30,sortable:false,className:"aright"}
 
 				];
@@ -116,8 +120,7 @@ var table=top_products_tables.table1;
     var request='&period=' + period;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
 
-ids=['top_products_all','top_products_1y','top_products_1m','top_products_1q'];
-Dom.removeClass(ids,'selected');
+Dom.removeClass(period_ids,'selected');
 Dom.addClass(this,'selected');
 Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_'+Dom.get('top_products_type').value+'&store_keys='+Dom.get('store_keys').value+'&period='+Dom.get('top_products_period').value+'&nr='+Dom.get('top_products_nr').value); 
 //alert ('plot_data.csv.php?tipo=top_families&store_keys='+stores_keys+'&period='+period)
@@ -158,8 +161,7 @@ var nr=this.getAttribute('nr');
 var table=top_products_tables.table1;
     table.get('paginator').setRowsPerPage(nr)
 
-ids=['top_products_50','top_products_10','top_products_20'];
-Dom.removeClass(ids,'selected');
+Dom.removeClass(number_records_ids,'selected');
 Dom.addClass(this,'selected');
 
 Dom.get('top_products_nr').value=nr;
@@ -171,11 +173,9 @@ Dom.get('ampie').reloadData('plot_data.csv.php?tipo=top_'+Dom.get('top_products_
 function init(){
 
 
- ids=['top_products_50','top_products_10','top_products_20'];
- YAHOO.util.Event.addListener(ids, "click",change_product_number);
+ YAHOO.util.Event.addListener(number_records_ids, "click",change_product_number);
  
-ids=['top_products_all','top_products_1y','top_products_1m','top_products_1q'];
- YAHOO.util.Event.addListener(ids, "click",change_product_period);
+ YAHOO.util.Event.addListener(period_ids, "click",change_product_period);
  
  
  ids=['top_products_fam','top_products_products','top_parts','top_parts_categories'];

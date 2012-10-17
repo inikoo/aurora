@@ -48,13 +48,39 @@
             <span id="top_products_fam" type="families" {if $conf_data.top_products.type=='families'}class="selected"{/if} style="float:right;margin-left:5px">{t}Families{/t}</span>
            <span id="top_products_products" type="products" {if $conf_data.top_products.type=='products'}class="selected"{/if} style="float:right;margin-left:15px">{t}Products{/t}</span>
               
+                        <span id="top_products_100" nr="100" {if $conf_data.top_products.nr==50}class="selected"{/if} style="float:right;margin-left:5px">100</span>
+ 
            <span id="top_products_50" nr="50" {if $conf_data.top_products.nr==50}class="selected"{/if} style="float:right;margin-left:5px">50</span>
             <span id="top_products_20" nr="20" {if $conf_data.top_products.nr==20}class="selected"{/if} style="float:right;margin-left:5px">20</span>
             <span id="top_products_10" nr="10" {if $conf_data.top_products.nr==10}class="selected"{/if} style="float:right;margin-left:15px">10</span>
-            <span id="top_products_all" period="all" {if $conf_data.top_products.period=='all'}class="selected"{/if} style="float:right;margin-left:5px">{t}All times{/t}</span>
-            <span id="top_products_1y" period="1y" {if $conf_data.top_products.period=='1y'}class="selected"{/if} style="float:right;margin-left:5px">{t}1y{/t}</span>
-            <span id="top_products_1q" period="1q" {if $conf_data.top_products.period=='1q'}class="selected"{/if} style="float:right;margin-left:5px">{t}1q{/t}</span>
-            <span id="top_products_1m" period="1m" {if $conf_data.top_products.period=='1m'}class="selected"{/if} style="float:right;margin-left:5px">{t}1m{/t}</span>
+            
+            
+            
+               <span id="top_products_1w" period="1w" class="{if $conf_data.top_products.period=='1w'}selected{/if}"  style="float:right;margin-left:7px">{t}1w{/t}</span>
+       <span id="top_products_10d" period="10d" class="{if $conf_data.top_products.period=='10d'}selected{/if}"  style="float:right;margin-left:7px">{t}10d{/t}</span>
+
+            <span id="top_products_1m" period="1m" class="{if $conf_data.top_products.period=='1m'}selected{/if}"  style="float:right;margin-left:7px">{t}1m{/t}</span>
+                    <span id="top_products_1q" period="1q" class="{if $conf_data.top_products.period=='1q'}selected{/if}"  style="float:right;margin-left:7px">{t}1q{/t}</span>
+                      <span id="top_products_6m" period="6m" class="{if $conf_data.top_products.period=='6m'}selected{/if}"  style="float:right;margin-left:7px">{t}6m{/t}</span>
+
+               <span id="top_products_1y" period="1y" class="{if $conf_data.top_products.period=='1y'}selected{/if}"  style="float:right;margin-left:7px">{t}1y{/t}</span>
+       
+        <span id="top_products_3y" period="3y" class="{if $conf_data.top_products.period=='3y'}selected{/if}"  style="float:right;margin-left:7px">{t}3y{/t}</span>
+       <span id="top_products_last_m" period="last_m" class="{if $conf_data.top_products.period=='last_m'}selected{/if}"  style="float:right;margin-left:7px">{t}last m{/t}</span>
+       <span id="top_products_last_w" period="last_w" class="{if $conf_data.top_products.period=='last_w'}selected{/if}"  style="float:right;margin-left:7px">{t}last w{/t}</span>
+       <span id="top_products_yesterday" period="yesterday" class="{if $conf_data.top_products.period=='yesterday'}selected{/if}"  style="float:right;margin-left:7px">{t}yesterday{/t}</span>
+       <span id="top_products_today" period="today" class="{if $conf_data.top_products.period=='today'}selected{/if}"  style="float:right;margin-left:7px">{t}today{/t}</span>
+      
+       <span id="top_products_wtd" period="wtd" class="{if $conf_data.top_products.period=='wtd'}selected{/if}"  style="float:right;margin-left:7px">{t}WTD{/t}</span>
+        <span id="top_products_mtd" period="mtd" class="{if $conf_data.top_products.period=='mtd'}selected{/if}"  style="float:right;margin-left:7px">{t}MTD{/t}</span>
+        <span id="top_products_ytd" period="ytd" class="{if $conf_data.top_products.period=='ytd'}selected{/if}"  style="float:right;margin-left:7px">{t}YTD{/t}</span>
+            <span id="top_products_all" period="all" class="{if $conf_data.top_products.period=='all'}selected{/if}"  style="float:right;margin-left:7px">{t}All{/t}</span>
+            
+                 
+            
+            
+            
+            
         </div>
    <h1 id="title_products" style="{if $conf_data.top_products.type!='products'}display:none{/if}">{t}Top Products{/t}</h1>     
      <h1 id="title_families" style="{if $conf_data.top_products.type!='families'}display:none{/if}">{t}Top Families{/t}</h1>     

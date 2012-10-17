@@ -1238,23 +1238,11 @@ function top_families($data) {
 
 	$period=$data['period'];
 
-	switch ($period) {
 
-	case('1m'):
-		$field='(`Product Family DC 1 Month Acc Invoiced Amount`)';
+$db_interval=get_interval_db_name($period);
+$field='(`Product Family DC '.$db_interval.' Acc Invoiced Amount`)';
 
-		break;
-	case('1y'):
-		$field='(`Product Family DC 1 Year Acc Invoiced Amount`)';
 
-		break;
-	case('1q'):
-		$field='(`Product Family DC 1 Quarter Acc Invoiced Amount`)';
-
-		break;
-	default:
-		$field='(`Product Family DC Total Acc Invoiced Amount`)';
-	}
 
 	$total=0;
 	$sql=sprintf("select sum%s as sales from `Product Family Dimension` F left join  `Product Family Default Currency` DC on (F.`Product Family Key`=DC.`Product Family Key`) where `Product Family Store Key` in (%s)  ",
@@ -1307,23 +1295,9 @@ function top_products($data) {
 
 	$period=$data['period'];
 
-	switch ($period) {
 
-	case('1m'):
-		$field='(`Product ID DC 1 Month Acc Invoiced Amount`)';
-
-		break;
-	case('1y'):
-		$field='(`Product ID DC 1 Year Acc Invoiced Amount`)';
-
-		break;
-	case('1q'):
-		$field='(`Product ID DC 1 Quarter Acc Invoiced Amount`)';
-
-		break;
-	default:
-		$field='(`Product ID DC Total Acc Invoiced Amount`)';
-	}
+$db_interval=get_interval_db_name($period);
+$field='(`Product ID DC '.$db_interval.' Acc Invoiced Amount`)';
 
 	$total=0;
 	$sql=sprintf("select sum%s as sales from `Product Dimension` F left join  `Product ID Default Currency` DC on (F.`Product ID`=DC.`Product ID`) where `Product Store Key` in (%s)  ",
@@ -1381,23 +1355,9 @@ global $user;
 		$where=sprintf('  `Warehouse Key` in (%s) ',$warehouses);
 	}
 
-	switch ($period) {
+$db_interval=get_interval_db_name($period);
+$field='(`Part '.$db_interval.' Acc Sold Amount`)';
 
-	case('1m'):
-		$field='(`Part 1 Month Acc Sold Amount`)';
-
-		break;
-	case('1y'):
-		$field='(`Part 1 Year Acc Sold Amount`)';
-
-		break;
-	case('1q'):
-		$field='(`Part 1 Quarter Acc Sold Amount`)';
-
-		break;
-	default:
-		$field='(`Part Total Acc Sold Amount`)';
-	}
 
 	$total=0;
 	$sql=sprintf("select sum%s as sales from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`) where  $where   ",
@@ -1465,23 +1425,11 @@ global $user;
 		
 	}
 
-	switch ($period) {
 
-	case('1m'):
-		$field='(`Part Category 1 Month Acc Sold Amount`)';
+$db_interval=get_interval_db_name($period);
+$field='(`Part Category '.$db_interval.' Acc Sold Amount`)';
 
-		break;
-	case('1y'):
-		$field='(`Part Category 1 Year Acc Sold Amount`)';
 
-		break;
-	case('1q'):
-		$field='(`Part Category 1 Quarter Acc Sold Amount`)';
-
-		break;
-	default:
-		$field='(`Part Category Total Acc Sold Amount`)';
-	}
 
 	$total=0;
 	$sql=sprintf("select sum%s as sales from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`)  where  $where   ",

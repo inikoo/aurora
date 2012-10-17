@@ -109,6 +109,13 @@ function invoice_categories_sales_overview() {
                         `Invoice Category DC 1 Month Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
+		
+	case('6m'):
+		$fields=sprintf(" `Invoice Category 6 Month Acc Invoices` as invoices,`Invoice Category 6 Month Acc Invoiced Amount` as sales, `Invoice Category 6 Month Acc 1YB Invoices` as invoices_1yb,`Invoice Category 6 Month Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC 6 Month Acc Invoiced Amount` as dc_sales,`Invoice Category DC 6 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+		break;	
+		
 	case('1q'):
 		$fields=sprintf(" `Invoice Category 1 Quarter Acc Invoices` as invoices,`Invoice Category 1 Quarter Acc Invoiced Amount` as sales, `Invoice Category 1 Quarter Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Quarter Acc 1YB Invoiced Amount` as sales_1yb,
                         `Invoice Category DC 1 Quarter Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
