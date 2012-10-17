@@ -1,7 +1,7 @@
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 sales_tables= new Object();
- var period_ids=['mtd','ytd','wtd','1w','10d','1m','1q','1y','3y','last_m','last_w','yesterday','today'];
+ var period_ids=['mtd','ytd','wtd','1w','10d','1m','1q','1y','3y','last_m','last_w','yesterday','today','6m'];
 
   function set_title(period){
   Dom.get('period_title').innerHTML=Dom.get('period_title_'+period).value;
@@ -126,26 +126,10 @@ set_title(Dom.get('period').value)
  Event.addListener(ids, "click",change_type);
 
 
- Event.addListener('configuration', "click",open_configuration);
-
- Event.addListener('done', "click",close_configuration);
-
-
     
 }
 
 
-function open_configuration(){
-
- Dom.setStyle('block_options','display','')
- Dom.setStyle('title','display','none')
-
-}
-
-function close_configuration(){
- Dom.setStyle('block_options','display','none')
- Dom.setStyle('title','display','')
-}
 
 
 Event.onDOMReady(sales_init);
