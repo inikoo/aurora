@@ -1,4 +1,7 @@
 
+var period_ids=['top_customers_all','top_customers_ytd','top_customers_mtd','top_customers_wtd','top_customers_today','top_customers_yesterday','top_customers_last_w','top_customers_last_m','top_customers_3y','top_customers_1y','top_customers_6m','top_customers_1q','top_customers_1m','top_customers_10d','top_customers_1w'];
+var  number_records_ids=['top_customers_50','top_customers_10','top_customers_20','top_customers_100'];
+
 top_customers_tables= new Object();
 
 
@@ -20,11 +23,10 @@ parent.Dom.setStyle('block_'+Dom.get('block_key').value,'height',getDocHeight()+
 
 function top_customers_init(){
 
- ids=['top_customers_50','top_customers_10','top_customers_20','top_customers_100'];
- YAHOO.util.Event.addListener(ids, "click",change_top_customer_number);
+ YAHOO.util.Event.addListener(number_records_ids, "click",change_top_customer_number);
  
-ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q'];
- YAHOO.util.Event.addListener(ids, "click",change_top_customer_period);
+
+ YAHOO.util.Event.addListener(period_ids,"click",change_top_customer_period);
 
 
 		var tableid=Dom.get('top_customers_index').value;
@@ -33,11 +35,13 @@ ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q
 
 	    var CustomersColumnDefs = [
 				      {key:"position", label:"", width:15,sortable:false,className:"aleft"}
-				      ,{key:"name", label:Dom.get('label_Customer_Name').value, width:200,sortable:false,className:"aleft"}
-				       ,{key:"last_order", label:Dom.get('label_Last_Order').value,width:80,sortable:false,className:"aright"}
-				       ,{key:"invoices", label:Dom.get('label_Invoices').value,sortable:false,className:"aright"}
-					      ,{key:"net_balance", label:Dom.get('label_Balance').value,sortable:false,className:"aright"}
-				      
+				      	,{key:"name", label:Dom.get('label_Customer_Name').value, width:240,sortable:false,className:"aleft"}
+				      	,{key:"location", label:Dom.get('label_Location').value, width:160,sortable:false,className:"aleft"}
+				    	,{key:"invoices", label:Dom.get('label_Invoices').value,sortable:false,className:"aright"}
+					    ,{key:"net_balance", label:Dom.get('label_Balance').value,sortable:false,className:"aright"}
+					   // ,{key:"top_balance", label:'xxx',sortable:false,className:"aright"}
+					    ,{key:"last_order", label:Dom.get('label_Last_Order').value,width:80,sortable:false,className:"aright"}
+					    ,{key:"status", label:Dom.get('label_Status').value,width:60,sortable:false,className:"aright"}
 				      
 				      
 				     
@@ -76,7 +80,7 @@ ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q
 			 'orders',
 			 'email',
 			 'telephone',
-			 'last_order','activity',
+			 'last_order','status',
 			 'total_payments','contact_name'
 			 ,"address","town","postcode","region","country"
 			 ,"ship_address","ship_town","ship_postcode","ship_region","ship_country"
@@ -138,8 +142,8 @@ var table=top_customers_tables.table1;
     var datasource=top_customers_tables.dataSourcetopcust;
     var request='&period=' + period;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
-ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q'];
-Dom.removeClass(ids,'selected');
+
+Dom.removeClass(period_ids,'selected');
 Dom.addClass(this,'selected');
 
 }
@@ -148,8 +152,7 @@ function change_top_customer_number(){
 var nr=this.getAttribute('nr');
 var table=top_customers_tables.table1;
     table.get('paginator').setRowsPerPage(nr)
-ids=['top_customers_50','top_customers_10','top_customers_20'];
-Dom.removeClass(ids,'selected');
+Dom.removeClass(number_records_ids,'selected');
 Dom.addClass(this,'selected');
 
 

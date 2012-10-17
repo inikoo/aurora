@@ -30,6 +30,8 @@
 <input type="hidden" value="{t}Last Order{/t}" id="label_Last_Order"  />
 <input type="hidden" value="{t}Invoices{/t}" id="label_Invoices"  />
 <input type="hidden" value="{t}Balance{/t}" id="label_Balance"  />
+<input type="hidden" value="{t}Status{/t}" id="label_Status"  />
+<input type="hidden" value="{t}Location{/t}" id="label_Location"  />
 
 
 <div  id="title" class="title" style="height:22px">
@@ -74,7 +76,7 @@
 
 
     <div id="the_table" class="data_table" style="font-size:85%">
-    <div style="float:left;margin-right:10px;width:600px">
+    <div style="float:left;margin-right:10px;width:918px">
         
        
         {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name filter_value=$filter_value no_filter=1 hide_caption=1}

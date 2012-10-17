@@ -327,6 +327,11 @@ function store_sales_overview() {
                         `Store DC 1 Quarter Acc Invoiced Amount` as dc_sales,`Store DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
                         " );
 		break;
+		case('6m'):
+		$fields=sprintf(" `Store 6 Month Acc Invoices` as invoices,`Store 6 Month Acc Invoiced Amount` as sales, `Store 6 Month Acc 1YB Invoices` as invoices_1yb,`Store 6 Month Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Store DC 6 Month Acc Invoiced Amount` as dc_sales,`Store DC 6 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+		break;	
 	case('1y'):
 		$fields=sprintf(" `Store 1 Year Acc Invoices` as invoices,`Store 1 Year Acc Invoiced Amount` as sales, `Store 1 Year Acc 1YB Invoices` as invoices_1yb,`Store 1 Year Acc 1YB Invoiced Amount` as sales_1yb,
                         `Store DC 1 Year Acc Invoiced Amount` as dc_sales,`Store DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
@@ -1248,26 +1253,20 @@ function list_customers() {
 	$filtered=0;
 	$rtext='';
 	$total=$number_results;
+		
+
+list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
 
 
-	switch ($period) {
+$where=sprintf(" where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s) %s %s",
+$store,
+($from_date?'and `Invoice Date`>='.prepare_mysql($from_date):''),
+($to_date?'and `Invoice Date`<='.prepare_mysql($to_date):'')
 
-	case('1m'):
-		$where=sprintf(" where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s) and  `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month"))));
-		break;
-	case('1y'):
-		$where=sprintf(" where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s)  and `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year"))));
-
-		break;
-	case('1q'):
-		$where=sprintf("where `Customer Orders Invoiced`>=0 and `Invoice Store Key` in (%s)  and `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 months"))));
-
-		break;
-	default:
-		$where=sprintf(' where `Customer Orders Invoiced`>0 and `Customer Store Key` in (%s) ',$store);
+);
 
 
-	}
+	
 
 
 
@@ -1291,7 +1290,7 @@ function list_customers() {
 	// if ($period=='all')
 	//  $sql="select  `Customer Net Balance`*`Invoice Currency Exchange` as  net_balance , `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
 	// else
-	$sql="select  sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)  as  net_balance , `Invoice Currency`,`Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices    from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  `Customer Balance Top Percentage`,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`)  as  net_balance , `Invoice Currency`,`Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices    from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
 
 
 	//print $sql;
@@ -1304,9 +1303,10 @@ function list_customers() {
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-
-
-
+switch($data['Customer Type by Activity']){
+default:
+$activity=$data['Customer Type by Activity'];
+}
 
 		$id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
 		$name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
@@ -1324,6 +1324,8 @@ function list_customers() {
 			'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
 			// 'total_payments'=>money($data['Customer Net Payments']),
 			'net_balance'=>money($data['net_balance']),
+							'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
+
 			//'total_refunds'=>money($data['Customer Net Refunds']),
 			//'total_profit'=>money($data['Customer Profit']),
 			//'balance'=>money($data['Customer Outstanding Net Balance']),
@@ -1344,7 +1346,7 @@ function list_customers() {
 			//'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
 			//'ship_region'=>$data['Customer Main Delivery Address Country Region'],
 			//'ship_country'=>$data['Customer Main Delivery Address Country'],
-			'activity'=>$data['Customer Type by Activity']
+			'status'=>$data['Customer Type by Activity']
 
 		);
 	}
