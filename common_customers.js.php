@@ -1,19 +1,18 @@
+   var customer_block_ids=['general','contact','address','ship_to_address','balance','rank','weblog'];
 
 
  function change_view_customers(e){
     
      var tipo=this.id;
-     
+    // alert(tipo)
       var table=tables['table0'];
       old_view=table.view;
+  
+
+
+Dom.removeClass(customer_block_ids,'selected')      
+      Dom.addClass(tipo,'selected')
       
-      Dom.get('general').className='';
-      Dom.get('contact').className='';
-      Dom.get('address').className='';
-      Dom.get('balance').className='';
-      Dom.get('rank').className='';
-      
-      Dom.get(tipo).className='selected';
       table.hideColumn('location');
       table.hideColumn('last_order');
       table.hideColumn('orders');
@@ -51,7 +50,9 @@
       table.hideColumn('top_profits');
       table.hideColumn('activity');
 
-
+   table.hideColumn('logins');
+      table.hideColumn('failed_logins');
+         table.hideColumn('requests');
 
       if(tipo=='general'){
 	  table.showColumn('name');
@@ -98,6 +99,13 @@
 	  table.showColumn('top_balance');
 	  table.showColumn('top_profits');
 
+      }else if(tipo=='weblog'){
+	  table.showColumn('name');
+	 
+   table.showColumn('logins');
+      table.showColumn('failed_logins');
+         table.showColumn('requests');
+
       }
 
 
@@ -107,8 +115,7 @@
   
    function common_customer_init(){
  
-  var ids=['general','contact','address','ship_to_address','balance','rank'];
-YAHOO.util.Event.addListener(ids, "click",change_view_customers);
+YAHOO.util.Event.addListener(customer_block_ids, "click",change_view_customers);
 
 }
 

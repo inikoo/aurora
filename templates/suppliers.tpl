@@ -47,18 +47,18 @@
 					</div>
 					
 					<div class="buttons small left cluster"  id="suppliers_period_options" style="{if $suppliers_view!='sales' and  $suppliers_view!='profit'};display:none{/if}">
-						<button class="option {if $suppliers_period=='all'}selected{/if}" period="all" id="suppliers_period_all">{t}All{/t}</button>
-						<button class="option {if $suppliers_period=='three_year'}selected{/if}" period="three_year" id="suppliers_period_three_year">{t}3Y{/t}</button>
-						<button class="option {if $suppliers_period=='year'}selected{/if}" period="year" id="suppliers_period_year">{t}1Yr{/t}</button>
-						<button class="option {if $suppliers_period=='six_month'}selected{/if}" period="six_month" id="suppliers_period_six_month">{t}6M{/t}</button>
-						<button class="option {if $suppliers_period=='quarter'}selected{/if}" period="quarter" id="suppliers_period_quarter">{t}1Qtr{/t}</button>
-						<button class="option {if $suppliers_period=='month'}selected{/if}" period="month" id="suppliers_period_month">{t}1M{/t}</button>
-						<button class="option {if $suppliers_period=='ten_day'}selected{/if}" period="ten_day" id="suppliers_period_ten_day">{t}10D{/t}</button>
-						<button class="option {if $suppliers_period=='week'}selected{/if}" period="week" id="suppliers_period_week">{t}1W{/t}</button>
+						<button class="table_option {if $suppliers_period=='all'}selected{/if}" period="all" id="suppliers_period_all">{t}All{/t}</button>
+						<button class="table_option {if $suppliers_period=='three_year'}selected{/if}" period="three_year" id="suppliers_period_three_year">{t}3Y{/t}</button>
+						<button class="table_option {if $suppliers_period=='year'}selected{/if}" period="year" id="suppliers_period_year">{t}1Yr{/t}</button>
+						<button class="table_option {if $suppliers_period=='six_month'}selected{/if}" period="six_month" id="suppliers_period_six_month">{t}6M{/t}</button>
+						<button class="table_option {if $suppliers_period=='quarter'}selected{/if}" period="quarter" id="suppliers_period_quarter">{t}1Qtr{/t}</button>
+						<button class="table_option {if $suppliers_period=='month'}selected{/if}" period="month" id="suppliers_period_month">{t}1M{/t}</button>
+						<button class="table_option {if $suppliers_period=='ten_day'}selected{/if}" period="ten_day" id="suppliers_period_ten_day">{t}10D{/t}</button>
+						<button class="table_option {if $suppliers_period=='week'}selected{/if}" period="week" id="suppliers_period_week">{t}1W{/t}</button>
 						<button style="visibility:hidden"></button>
-						<button class="option {if $suppliers_period=='yeartoday'}selected{/if}" period="yeartoday" id="suppliers_period_yeartoday">{t}YTD{/t}</button>
-						<button class="option {if $suppliers_period=='monthtoday'}selected{/if}" period="monthtoday" id="suppliers_period_monthtoday">{t}MTD{/t}</button>
-						<button class="option {if $suppliers_period=='weektoday'}selected{/if}" period="weektoday" id="suppliers_period_weektoday">{t}WTD{/t}</button>
+						<button class="table_option {if $suppliers_period=='yeartoday'}selected{/if}" period="yeartoday" id="suppliers_period_yeartoday">{t}YTD{/t}</button>
+						<button class="table_option {if $suppliers_period=='monthtoday'}selected{/if}" period="monthtoday" id="suppliers_period_monthtoday">{t}MTD{/t}</button>
+						<button class="table_option {if $suppliers_period=='weektoday'}selected{/if}" period="weektoday" id="suppliers_period_weektoday">{t}WTD{/t}</button>
 		
 					</div>
 					

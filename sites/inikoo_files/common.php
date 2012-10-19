@@ -249,12 +249,12 @@ $order=false;
 //if($order_in_process)
 //$order=new Order($order_in_process);
 
-$user_click_key=log_visit((isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id,$current_url);
+$user_click_key=log_visit((isset($_SESSION['user_log_key'])?$_SESSION['user_log_key']:0),$user,$site->id,$current_url,$customer->id);
 
 
 
 
-function log_visit($user_log_key,$user,$site_key,$current_url) {
+function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
 
 
 
@@ -446,11 +446,31 @@ function log_visit($user_log_key,$user,$site_key,$current_url) {
 		$sql=sprintf("update `User Dimension` set `User Requests Count`=%d,`User Sessions Count`=%d, `User Last Request`=NOW() where `User Key`=%d  "     ,
 			$number_requests,
 			$number_sessions,
-
-
 			$user_key
 		);
 		mysql_query($sql);
+
+
+
+
+		$requests=0;
+
+		$sql=sprintf("select  sum(`User Requests Count`) as requests  from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",
+			$user_key
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$requests=$row['requests'];
+		}
+
+		$sql=sprintf("update `Customer Dimension` set  `Customer Number Web Requests`=%d where `Customer Key`=%d",
+			$requests,
+			$customer_key
+		);
+		//print "$sql\n";
+		mysql_query($sql);
+
+
 		//print $sql;
 
 	}

@@ -1207,13 +1207,13 @@ class Customer extends DB_Table {
 
 
 					$address=new Address($this->data['Customer Main Address Key']);
-					
-					
+
+
 					//print_r($address);
 					//print_r($telephone);
-					
+
 					$address->disassociate_telecom($this->data["Customer Main $type Key"],$type);
-					
+
 					$address->associate_telecom($telephone->id,$type);
 					$address->update_principal_telecom($telephone->id,$type);
 
@@ -2560,7 +2560,7 @@ class Customer extends DB_Table {
 		$this->data['Customer Profit']=0;
 		$this->data['Customer With Orders']='No';
 
-	// print "$sql\n";
+		// print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -3572,7 +3572,7 @@ class Customer extends DB_Table {
 			$address=new Address($this->data['Customer Main Address Key']);
 
 
-$ship_to_key=$address->get_ship_to();
+		$ship_to_key=$address->get_ship_to();
 
 		return $ship_to_key;
 
@@ -4480,7 +4480,7 @@ $ship_to_key=$address->get_ship_to();
 
 		$order_key=false;
 		$sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d and `Order Current Dispatch State`='In Process by Customer' ",
-		$this->id
+			$this->id
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -4488,12 +4488,12 @@ $ship_to_key=$address->get_ship_to();
 		}
 		return $order_key;
 	}
-	
-	
-	function get_credits(){
-		
-	$sql=sprintf("select sum(`Credit Saved`) as value from `Order Post Transaction Dimension` where `Customer Key`=%d and `State`='Saved' ",
-		$this->id
+
+
+	function get_credits() {
+
+		$sql=sprintf("select sum(`Credit Saved`) as value from `Order Post Transaction Dimension` where `Customer Key`=%d and `State`='Saved' ",
+			$this->id
 		);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
@@ -4501,19 +4501,19 @@ $ship_to_key=$address->get_ship_to();
 		}
 		return $credits;
 	}
-	
-	function get_credits_formated(){
-		
+
+	function get_credits_formated() {
+
 		$credits=$this->get_credits();
-		
+
 		$store=new Store($this->data['Customer Store Key']);
-		
-		
+
+
 
 		return money($credits,$store->data['Store Currency Code']);
 	}
-	
-	
+
+
 
 	function get_ship_to_data() {
 		$address=new address($this->data['Customer Main Delivery Address Key']);
@@ -4707,14 +4707,14 @@ $ship_to_key=$address->get_ship_to();
 		);
 		mysql_query($sql);
 	}
-	
-	
-	function add_history_login($data){
-	$history_data=array(
-//	'login','logout','fail_login','password_request','password_reset'
+
+
+	function add_history_login($data) {
+		$history_data=array(
+			// 'login','logout','fail_login','password_request','password_reset'
 			'Date'=>$data['Date'],
-		//	'Subject'=>'Customer',
-	//		'Subject Key'=>$this->id,
+			// 'Subject'=>'Customer',
+			//  'Subject Key'=>$this->id,
 			'Direct Object'=>'Site',
 			'Direct Object Key'=>$data['Site Key'],
 			'History Details'=>$data['Details'],
@@ -4730,7 +4730,7 @@ $ship_to_key=$address->get_ship_to();
 
 		mysql_query($sql);
 	}
-	
+
 	function add_history_new_order($order) {
 
 		date_default_timezone_set(TIMEZONE) ;
@@ -5387,10 +5387,10 @@ $ship_to_key=$address->get_ship_to();
 		$telecom_suppliers_number_keys=count($telecom_suppliers_keys);
 		$telecom_companies_number_keys=count($telecom_companies_keys);
 		$telecom->remove_from_parent('Customer',$this->id,$type);
-		
-	
-		
-		
+
+
+
+
 		if (($telecom_customer_number_keys+$telecom_contacts_number_keys+$telecom_suppliers_number_keys)==0) {
 
 
@@ -5421,13 +5421,13 @@ $ship_to_key=$address->get_ship_to();
 			if (($contact_suppliers_number_keys+$contact_customers_number_keys)==0) {
 				$telecom->remove_from_parent('Contact',$contact->id);
 			}
-	
+
 			$this->updated=true;
 			$this->msg=_('Telecom Removed from Customer');;
 			$this->new_value='';
 			return;
 		} else {
-		
+
 			$telecom->delete();
 		}
 
@@ -6375,7 +6375,32 @@ $ship_to_key=$address->get_ship_to();
 
 	}
 
+	function update_web_data() {
 
+		$failed_logins=0;
+		$logins=0;
+		$requests=0;
+
+		$sql=sprintf("select sum(`User Login Count`) as logins, sum(`User Failed Login Count`) as failed_logins, sum(`User Requests Count`) as requests  from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",
+			$this->id
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$failed_logins=$row['failed_logins'];
+			$logins=$row['logins'];
+			$requests=$row['requests'];
+		}
+
+		$sql=sprintf("update `Customer Dimension` set `Customer Number Web Logins`=%d , `Customer Number Web Failed Logins`=%d, `Customer Number Web Requests`=%d where `Customer Key`=%d",
+			$logins,
+			$failed_logins,
+			$requests,
+			$this->id
+		);
+		//print "$sql\n";
+		mysql_query($sql);
+
+	}
 
 	function get_category_data() {
 		$sql=sprintf("select * from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);

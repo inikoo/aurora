@@ -221,11 +221,61 @@
           
 			<div id="sales_option" default_cat=""   class="buttons small left" >
 			<div style="float:left;margin-right:20px">
-						  <input  style="height:18px" id="sales_lower" type="text" class="text" size="10" maxlength="10" name="after" value=""/><span id="b" style="display:none">&rarr;</span> 
+						  <input  style="height:18px" id="sales_lower" type="text" class="text" size="10" maxlength="10" name="after" value=""/><span id="b_sales" style="display:none">&rarr;</span> 
 			<input style="display:none;height:18px" id="sales_upper" type="text" class="text" size="10" maxlength="10" name="after" value=""/>
-</div>
+			</div>
 			{foreach from=$condition item=cat3 key=cat_key name=foo3}
 			<button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_sales_condition(this)" id="sales_condition_{$cat_key}" parent="sales_condition_"  cat="sales_{$cat_key}" >{$cat3.name}</button>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+	  
+	    <tr><td colspan="2"><b>{t}Web Login{/t}</b></td></tr>
+      <tr>
+        <td>{t}Logins{/t}:</td>
+		<td>
+          
+			<div id="logins_option" default_cat=""   class="buttons small left" >
+			<div style="float:left;margin-right:20px">
+						  <input  style="height:18px" id="logins_lower" type="text" class="text" size="10" maxlength="10" name="after" value=""/><span id="b_logins" style="display:none">&rarr;</span> 
+			<input style="display:none;height:18px" id="logins_upper" type="text" class="text" size="10" maxlength="10" name="after" value=""/>
+			</div>
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_logins_condition(this)" id="logins_condition_{$cat_key}" parent="logins_condition_"  cat="logins_{$cat_key}" >{$cat3.name}</button>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+	    <tr>
+        <td>{t}Failed Logins{/t}:</td>
+		<td>
+          
+			<div id="failed_logins_option" default_cat=""   class="buttons small left" >
+			<div style="float:left;margin-right:20px">
+						  <input  style="height:18px" id="failed_logins_lower" type="text" class="text" size="10" maxlength="10" name="after" value=""/><span id="b_failed_logins" style="display:none">&rarr;</span> 
+			<input style="display:none;height:18px" id="failed_logins_upper" type="text" class="text" size="10" maxlength="10" name="after" value=""/>
+			</div>
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_failed_logins_condition(this)" id="failed_logins_condition_{$cat_key}" parent="failed_logins_condition_"  cat="failed_logins_{$cat_key}" >{$cat3.name}</button>
+			{/foreach}
+			</div>  
+		</td>
+     
+      </tr>
+        <tr>
+        <td>{t}Pages Views{/t}:</td>
+		<td>
+          
+			<div id="requests_option" default_cat=""   class="buttons small left" >
+			<div style="float:left;margin-right:20px">
+						  <input  style="height:18px" id="requests_lower" type="text" class="text" size="10" maxlength="10" name="after" value=""/><span id="b_requests" style="display:none">&rarr;</span> 
+			<input style="display:none;height:18px" id="requests_upper" type="text" class="text" size="10" maxlength="10" name="after" value=""/>
+			</div>
+			{foreach from=$condition item=cat3 key=cat_key name=foo3}
+			<button  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_requests_condition(this)" id="requests_condition_{$cat_key}" parent="requests_condition_"  cat="requests_{$cat_key}" >{$cat3.name}</button>
 			{/foreach}
 			</div>  
 		</td>
@@ -264,7 +314,9 @@
 	  <button class="table_option {if $view=='contact'}selected{/if}"  id="contact"  >{t}Contact{/t}</button>
 	  <button class="table_option {if $view=='address'}selected{/if}"  id="address"  >{t}Address{/t}</button>
 	  <button class="table_option {if $view=='balance'}selected{/if}"  id="balance"  >{t}Balance{/t}</button>
-	  <button class="table_option {if $view=='rank'}selected{/if}"  id="rank"  >{t}Ranking{/t}</button>
+	  <button style="display:none" class="table_option {if $view=='rank'}selected{/if}"  id="rank"  >{t}Ranking{/t}</button>
+	  	  <button class="table_option {if $view=='weblog'}selected{/if}"  id="weblog"  >{t}WebLog{/t}</button>
+
       </div>
       <div style="clear:both"></div>
       </div>
