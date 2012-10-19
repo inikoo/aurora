@@ -230,8 +230,24 @@ function hide_order(){
 
 function hide_sales(){
 		Dom.setStyle('sales_upper','display','none')
-		Dom.setStyle('b','display','none')
+		Dom.setStyle('b_sales','display','none')
 		Dom.get('sales_upper').value=''
+}
+
+function hide_logins(){
+		Dom.setStyle('logins_upper','display','none')
+		Dom.setStyle('b_logins','display','none')
+		Dom.get('logins_upper').value=''
+}
+function hide_failed_logins(){
+		Dom.setStyle('failed_logins_upper','display','none')
+		Dom.setStyle('b_failed_logins','display','none')
+		Dom.get('failed_logins_upper').value=''
+}
+function hide_requests(){
+		Dom.setStyle('requests_upper','display','none')
+		Dom.setStyle('b_requests','display','none')
+		Dom.get('requests_upper').value=''
 }
 
 function checkbox_changed_invoice_condition(o){
@@ -345,11 +361,131 @@ function checkbox_changed_sales_condition(o){
 		}
 	}else if(cat=='sales_between'){
 		Dom.setStyle('sales_upper','display','')
-		Dom.setStyle('b','display','')
+		Dom.setStyle('b_sales','display','')
 		if(Dom.hasClass(o,'selected')){
 			return;
 		}else{
 			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+}
+
+
+function checkbox_changed_logins_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='logins_less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_logins();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='logins_equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_logins();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='logins_more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_logins();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='logins_between'){
+		Dom.setStyle('logins_upper','display','')
+		Dom.setStyle('b_logins','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+}
+function checkbox_changed_failed_logins_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='failed_logins_less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_failed_logins();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='failed_logins_equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_failed_logins();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='failed_logins_more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_failed_logins();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='failed_logins_between'){
+		Dom.setStyle('failed_logins_upper','display','')
+		Dom.setStyle('b_failed_logins','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}
+	
+}
+
+function checkbox_changed_requests_condition(o){
+	cat=Dom.get(o).getAttribute('cat');
+
+	if(cat=='requests_less'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_requests();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='requests_equal'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_requests();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='requests_more'){
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			hide_requests();
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'),'selected');
+			Dom.addClass(o,'selected');
+		}
+	}else if(cat=='requests_between'){
+		Dom.setStyle('requests_upper','display','')
+		Dom.setStyle('b_requests','display','')
+		if(Dom.hasClass(o,'selected')){
+			return;
+		}else{
+			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'),'selected');
 			Dom.addClass(o,'selected');
 		}
 	}
@@ -460,7 +596,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"top_invoices", label:"<?php echo _('Rank Invoices')?>",width:121,<?php echo($_SESSION['state']['customers']['table']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"top_balance", label:"<?php echo _('Rank Balance')?>",width:120,<?php echo($_SESSION['state']['customers']['table']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"top_profits", label:"<?php echo _('Rank Profits')?>",width:120,<?php echo($_SESSION['state']['customers']['table']['view']=='rank'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					 ];
+								,{key:"logins", label:"<?php echo _('Logins')?>",width:120,<?php echo($_SESSION['state']['customers']['table']['view']=='weblog'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"failed_logins", label:"<?php echo _('Failed Logis')?>",width:120,<?php echo($_SESSION['state']['customers']['table']['view']=='weblog'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"requests", label:"<?php echo _('Viewed Pages')?>",width:120,<?php echo($_SESSION['state']['customers']['table']['view']=='weblog'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+				];
 
 
 					    var awhere=get_awhere();
@@ -501,7 +641,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"address"
 			 ,"billing_address","delivery_address"
 			 ,"total_paymants","total_refunds","net_balance","total_profit","balance","contact_since"
-			 ,"top_orders","top_invoices","top_balance","top_profits"
+			 ,"top_orders","top_invoices","top_balance","top_profits","logins","failed_logins","requests"
 			 ]};
 
 		
@@ -1114,7 +1254,21 @@ not_customers_which=Dom.getElementsByClassName('selected', 'button', 'not_custom
     for(x in sales_option){
         sales_option_array[x]=sales_option[x].getAttribute('cat');
     }
-	
+    	logins_option=Dom.getElementsByClassName('selected', 'button', 'logins_option');
+    logins_option_array= new Array();
+    for(x in logins_option){
+        logins_option_array[x]=logins_option[x].getAttribute('cat');
+    }
+		failed_logins_option=Dom.getElementsByClassName('selected', 'button', 'failed_logins_option');
+    failed_logins_option_array= new Array();
+    for(x in failed_logins_option){
+        failed_logins_option_array[x]=failed_logins_option[x].getAttribute('cat');
+    }
+    	requests_option=Dom.getElementsByClassName('selected', 'button', 'requests_option');
+    requests_option_array= new Array();
+    for(x in requests_option){
+        requests_option_array[x]=requests_option[x].getAttribute('cat');
+    }
 
 
 order_time_units_since_last_order_qty=parseFloat(Dom.get('order_time_units_since_last_order_qty').value);
@@ -1135,7 +1289,7 @@ var store_key=Dom.get('store_id').value;
 	customers_which:customers_which_array,
 	invoice_option:invoice_condition_option_array,
 	order_option:order_condition_option_array,
-	sales_option:sales_option_array,
+	
 	//not_customers_which:not_customers_which_array,
 	geo_constraints:Dom.get('geo_constraints').value,
 
@@ -1157,6 +1311,18 @@ var store_key=Dom.get('store_id').value;
 	number_of_orders_lower:Dom.get('number_of_orders_lower').value,
 	sales_lower:Dom.get('sales_lower').value,
 	sales_upper:Dom.get('sales_upper').value,
+	sales_option:sales_option_array,
+	
+		logins_lower:Dom.get('logins_lower').value,
+	logins_upper:Dom.get('logins_upper').value,
+	logins_option:logins_option_array,
+		failed_logins_lower:Dom.get('failed_logins_lower').value,
+	failed_logins_upper:Dom.get('failed_logins_upper').value,
+	failed_logins_option:failed_logins_option_array,
+		requests_lower:Dom.get('requests_lower').value,
+	requests_upper:Dom.get('requests_upper').value,
+	requests_option:requests_option_array,
+	
 	order_time_units_since_last_order_qty:order_time_units_since_last_order_qty,
 	order_time_units_since_last_order_units:order_time_units_since_last_order_units
     }

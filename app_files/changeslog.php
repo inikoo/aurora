@@ -6625,6 +6625,8 @@ ALTER TABLE `User Log Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAU
 
 
 UPDATE `Widget Dimension` SET `Widget Block` = 'block_3' WHERE `Widget Dimension`.`Widget Key` =11;
+ALTER TABLE `Customer Dimension` ADD `Customer Number Web Logins` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',ADD `Customer Number Web Failed Logins` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',ADD `Customer Number Web Requests` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 
-
-
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Number Web Logins` ) 
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Number Web Failed Logins` ); 
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Number Web Requests` ) ;

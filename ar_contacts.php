@@ -2262,6 +2262,12 @@ function list_customers() {
 		$order='`Customer First Contacted Date`';
 	elseif ($order=='activity')
 		$order='`Customer Type by Activity`';
+		elseif ($order=='logins')
+		$order='`Customer Number Web Logins`';
+		elseif ($order=='failed_logins')
+		$order='`Customer Number Web Failed Logins`';
+		elseif ($order=='requests')
+		$order='`Customer Number Web Requests`';	
 	else
 		$order='`Customer File As`';
 	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
@@ -2350,7 +2356,11 @@ function list_customers() {
 				'billing_address'=>$billing_address,
 				'delivery_address'=>$delivery_address,
 
-				'activity'=>$activity
+				'activity'=>$activity,
+				'logins'=>number($data['Customer Number Web Logins']),
+								'failed_logins'=>number($data['Customer Number Web Failed Logins']),
+				'requests'=>number($data['Customer Number Web Requests']),
+
 
 			);
 			///if(isset($_REQUEST['textValue'])&isset($_REQUEST['typeValue']))

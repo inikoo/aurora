@@ -892,6 +892,17 @@ function customers_awhere($awhere) {
 		'sales_lower'=>'',
 		'sales_upper'=>'',
 		'sales_option'=>array(),
+		'logins_lower'=>'',
+		'logins_upper'=>'',
+		'logins_option'=>array(),
+		
+		'failed_logins_lower'=>'',
+		'failed_logins_upper'=>'',
+		'failed_logins_option'=>array(),
+		
+		'requests_lower'=>'',
+		'requests_upper'=>'',
+		'requests_option'=>array(),		
 		'store_key'=>0,
 		'order_option'=>array(),
 		'order_time_units_since_last_order_qty'=>false,
@@ -1204,14 +1215,79 @@ function customers_awhere($awhere) {
 		}
 	}
 	$sales_option_where=preg_replace('/^\s*and/','',$sales_option_where);
-
-
-
-
-
 	if ($sales_option_where!='') {
 		$where.="and ($sales_option_where)";
 	}
+
+
+
+	$logins_option_where='';
+	foreach ($where_data['logins_option'] as $logins_option) {
+		switch ($logins_option) {
+		case 'logins_less':
+			$logins_option_where.=sprintf(" and `Customer Number Web Logins`<'%s' ",$where_data['logins_lower']);
+			break;
+		case 'logins_equal':
+			$logins_option_where.=sprintf(" and `Customer Number Web Logins`='%s'  ",$where_data['logins_lower']);
+			break;
+		case 'logins_more':
+			$logins_option_where.=sprintf(" and  `Customer Number Web Logins`>'%s'  ",$where_data['logins_lower']);
+			break;
+		case 'logins_between':
+			$logins_option_where.=sprintf(" and  `Customer Number Web Logins`>'%s'  and `Customer Number Web Logins`<'%s'", $where_data['logins_lower'], $where_data['logins_upper']);
+			break;
+		}
+	}
+	$logins_option_where=preg_replace('/^\s*and/','',$logins_option_where);
+	if ($logins_option_where!='') {
+		$where.="and ($logins_option_where)";
+	}
+
+	$failed_logins_option_where='';
+	foreach ($where_data['failed_logins_option'] as $failed_logins_option) {
+		switch ($failed_logins_option) {
+		case 'failed_logins_less':
+			$failed_logins_option_where.=sprintf(" and `Customer Number Web Failed Logins`<'%s' ",$where_data['failed_logins_lower']);
+			break;
+		case 'failed_logins_equal':
+			$failed_logins_option_where.=sprintf(" and `Customer Number Web Failed Logins`='%s'  ",$where_data['failed_logins_lower']);
+			break;
+		case 'failed_logins_more':
+			$failed_logins_option_where.=sprintf(" and  `Customer Number Web Failed Logins`>'%s'  ",$where_data['failed_logins_lower']);
+			break;
+		case 'failed_logins_between':
+			$failed_logins_option_where.=sprintf(" and  `Customer Number Web Failed Logins`>'%s'  and `Customer Number Web Failed Logins`<'%s'", $where_data['failed_logins_lower'], $where_data['failed_logins_upper']);
+			break;
+		}
+	}
+	$failed_logins_option_where=preg_replace('/^\s*and/','',$failed_logins_option_where);
+	if ($failed_logins_option_where!='') {
+		$where.="and ($failed_logins_option_where)";
+	}
+	
+		$requests_option_where='';
+	foreach ($where_data['requests_option'] as $requests_option) {
+		switch ($requests_option) {
+		case 'requests_less':
+			$requests_option_where.=sprintf(" and `Customer Number Web Requests`<'%s' ",$where_data['requests_lower']);
+			break;
+		case 'requests_equal':
+			$requests_option_where.=sprintf(" and `Customer Number Web Requests`='%s'  ",$where_data['requests_lower']);
+			break;
+		case 'requests_more':
+			$requests_option_where.=sprintf(" and  `Customer Number Web Requests`>'%s'  ",$where_data['requests_lower']);
+			break;
+		case 'requests_between':
+			$requests_option_where.=sprintf(" and  `Customer Number Web Requests`>'%s'  and `Customer Number Web Requests`<'%s'", $where_data['requests_lower'], $where_data['requests_upper']);
+			break;
+		}
+	}
+	$requests_option_where=preg_replace('/^\s*and/','',$requests_option_where);
+	if ($requests_option_where!='') {
+		$where.="and ($requests_option_where)";
+	}
+	
+
 
 
 	/*
