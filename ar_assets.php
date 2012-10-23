@@ -34,8 +34,34 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('product_sales_report'):
+	product_sales_report();
+	break;
 
-
+case('family_sales_data'):
+	$data=prepare_values($_REQUEST,array(
+			'family_key'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
+	family_sales_data($data);
+	break;
+case('product_sales_data'):
+	$data=prepare_values($_REQUEST,array(
+			'product_pid'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
+	family_sales_data($data);
+	break;
+case('department_sales_data'):
+	$data=prepare_values($_REQUEST,array(
+			'deparment_key'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
+	family_sales_data($data);
+	break;
 case('customers_who_use_deal'):
 	list_customers_who_use_deal();
 	break;
@@ -565,7 +591,7 @@ function list_departments() {
 		elseif ($period=='ten_day')
 			$order='`Product Department 10 Day Acc Invoiced Amount`';
 	}
-		elseif ($_order=='delta_sales') {
+	elseif ($_order=='delta_sales') {
 		if ($period=='all')
 			$order='`Product Department Total Acc Invoiced Amount`';
 		elseif ($period=='year')
@@ -585,8 +611,8 @@ function list_departments() {
 		elseif ($period=='ten_day')
 			$order='`Product Department 10 Day Acc 1YB Invoiced Delta`';
 	}
-	
-	
+
+
 	elseif ($_order=='name')
 		$order='`Product Department Name`';
 	elseif ($_order=='code')
@@ -1495,7 +1521,7 @@ function list_departments() {
 				$tsall=$row['Product Department 6 Month Acc Invoiced Amount']*$factor;
 				$tprofit=$row['Product Department 6 Month Acc Profit']*$factor;
 				$delta_sales=delta($row['Product Department 6 Month Acc Invoiced Amount'],$row['Product Department 6 Month Acc 1YB Invoiced Amount']);
-//$delta_sales=money($row['Product Department 6 Month Acc 1YB Invoiced Amount']);
+				//$delta_sales=money($row['Product Department 6 Month Acc 1YB Invoiced Amount']);
 			}
 
 
@@ -2531,7 +2557,7 @@ function list_products() {
 
 
 		if ($percentages) {
-		$delta_sales='';
+			$delta_sales='';
 			$sold='';
 			$margin='';
 			if ($period=='all') {
@@ -2633,12 +2659,12 @@ function list_products() {
 						$factor='ND';
 				}
 				if ($factor=='ND') {
-				$delta_sales='';
+					$delta_sales='';
 					$tsall=_('ND');
 					$tprofit=_('ND');
 					$sold=_('ND');
 				} else {
-$delta_sales='';
+					$delta_sales='';
 					$tsall=($row['Product Total Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product Total Acc Profit']*$factor);
 					$sold=$row['Product Total Acc Quantity Invoiced']*$factor;
@@ -2686,12 +2712,12 @@ $delta_sales='';
 						$factor='ND';
 				}
 				if ($factor=='ND') {
-				$delta_sales='';
+					$delta_sales='';
 					$tsall=_('ND');
 					$tprofit=_('ND');
 					$sold=_('ND');
 				} else {
-				$delta_sales='';
+					$delta_sales='';
 					$sold=($row['Product 3 Year Acc Quantity Invoiced']*$factor);
 					$tsall=($row['Product 3 Year Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product 3 Year Acc Profit']*$factor);
@@ -2742,7 +2768,7 @@ $delta_sales='';
 					$tsall=($row['Product 1 Year Acc Invoiced Amount']*$factor);
 					$tprofit=($row['Product 1 Year Acc Profit']*$factor);
 				}
-				
+
 				$delta_sales=delta($row['Product 1 Year Acc Invoiced Amount'],$row['Product 1 Year Acc 1YB Invoiced Amount']);
 				$margin=$row['Product 1 Year Acc Margin'];
 			}
@@ -3500,6 +3526,495 @@ $delta_sales='';
 		$record_offset=0;
 	else
 		$record_offset=$start_from+1;
+
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from+1,
+			'records_perpage'=>$number_results,
+		)
+	);
+
+
+
+
+	echo json_encode($response);
+}
+
+function product_sales_report() {
+
+	global $user;
+	$display_total=false;
+
+
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else
+		$parent='none';
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	}else {
+		return;
+	}
+
+	if ($parent=='store') {
+		$conf=$_SESSION['state']['store']['products'];
+		$conf_table='store';
+	}
+	elseif ($parent=='department') {
+		$conf=$_SESSION['state']['department']['products'];
+		$conf_table='department';
+	}
+	elseif ($parent=='family') {
+		$conf=$_SESSION['state']['family']['products'];
+		$conf_table='family';
+	}
+	elseif ($parent=='none') {
+		$conf=$_SESSION['state']['stores']['products'];
+		$conf_table='stores';
+	}
+	else {
+
+		exit;
+	}
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr']-1;
+
+
+	} else
+		$number_results=$conf['nr'];
+
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+	if (isset( $_REQUEST['percentages'])) {
+		$percentages=$_REQUEST['percentages'];
+	} else
+		$percentages=$conf['percentages'];
+
+
+
+
+	if (isset( $_REQUEST['avg'])) {
+		$avg=$_REQUEST['avg'];
+	} else
+		$avg=$conf['avg'];
+
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		$parent='store';//$conf['parent'];
+	}
+	if (isset( $_REQUEST['mode']))
+		$mode=$_REQUEST['mode'];
+	else
+		$mode=$conf['mode'];
+
+	if (isset( $_REQUEST['elements']))
+		$elements=$_REQUEST['elements'];
+	else
+		$elements=$conf['elements'];
+
+
+	if (isset( $_REQUEST['elements_discontinued'])) {
+		$elements['Discontinued']=$_REQUEST['elements_discontinued'];
+
+	}
+	if (isset( $_REQUEST['elements_nosale'])) {
+		$elements['NoSale']=$_REQUEST['elements_nosale'];
+	}
+	if (isset( $_REQUEST['elements_sale'])) {
+		$elements['Sale']=$_REQUEST['elements_sale'];
+	}
+
+
+	if (isset( $_REQUEST['elements_private'])) {
+		$elements['Private']=$_REQUEST['elements_private'];
+	}
+	if (isset( $_REQUEST['elements_historic'])) {
+		$elements['Historic']=$_REQUEST['elements_historic'];
+	}
+
+
+
+
+
+
+
+	$_SESSION['state'][$conf_table]['products']['order']=$order;
+	$_SESSION['state'][$conf_table]['products']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['products']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['products']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['products']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['products']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
+	$_SESSION['state'][$conf_table]['products']['avg']=$avg;
+	$_SESSION['state'][$conf_table]['products']['elements']=$elements;
+	$_SESSION['state'][$conf_table]['products']['mode']=$mode;
+
+
+
+	//$_SESSION['state'][$conf_table]['period']=$period;
+
+	//$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
+	// $_SESSION['state'][$conf_table]['parent']=$parent;
+
+	$table='`Product Dimension`';
+	$where_type='';
+	$where_interval='';
+	$where='where true';
+
+
+
+	switch ($parent) {
+	case('store'):
+		$where.=sprintf(' and `Product Store Key`=%d',$parent_key);
+		break;
+	case('department'):
+		$where.=sprintf('  and `Product Main Department Key`=%d',$parent_key);
+		break;
+	case('family'):
+
+		$where.=sprintf(' and P.`Product Family Key`=%d',$parent_key);
+
+		break;
+	default:
+
+
+	}
+
+
+	$group='';
+
+	$_elements='';
+	foreach ($elements as $_key=>$_value) {
+		if ($_value)
+			$_elements.=','.prepare_mysql($_key);
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} else {
+		$where.=' and `Product Main Type` in ('.$_elements.')' ;
+	}
+
+
+
+
+	$filter_msg='';
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+	elseif ($f_field=='description' and $f_value!='')
+		$wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+
+	$sql="select count(*) as total from `Product Dimension` P   $where $wheref";
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+		$total=$row['total'];
+	}
+	if ($wheref!='') {
+		$sql="select count(*) as total_without_filters from `Product Dimension` P  $where ";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	} else {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	}
+	mysql_free_result($res);
+
+
+	$rtext=$total_records." ".ngettext('product','products',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' '._('(Showing all)');
+
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with name like ")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b>";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with name like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+	$_order=$order;
+	$_order_dir=$order_dir;
+
+	if ($order=='stock')
+		$order='`Product Availability`';
+	if ($order=='code' or $order=='codename')
+		$order='`Product Code File As`';
+	elseif ($order=='name')
+		$order='`Product Name`';
+	elseif ($order=='available_for')
+		$order='`Product Available Days Forecast`';
+	elseif ($order=='shortname')
+		$order='`Product Available Days Forecast`';
+
+	if ($order=='profit') {
+		$order='profit';
+
+	}
+	elseif ($order=='sales') {
+		$order='sales';
+
+	}elseif ($_order=='delta_sales') {
+		$order='delta_sales';
+
+	}
+	elseif ($order=='margin') {
+		$order='margin';
+
+	}
+	elseif ($order=='sold') {
+		$order='sold';
+
+	}
+	elseif ($order=='family') {
+		$order='`Product Family`Code';
+	}
+	elseif ($order=='dept') {
+		$order='`Product Main Department Code`';
+	}
+	elseif ($order=='expcode') {
+		$order='`Product Tariff Code`';
+	}
+	elseif ($order=='parts') {
+		$order='`Product XHTML Parts`';
+	}
+	elseif ($order=='supplied') {
+		$order='`Product XHTML Supplied By`';
+	}
+	elseif ($order=='gmroi') {
+		$order='`Product GMROI`';
+	}
+	elseif ($order=='state') {
+		$order='`Product Sales Type`';
+	}
+	elseif ($order=='web') {
+		$order='`Product Web Configuration`';
+	}
+	elseif ($order=='stock_state') {
+		$order='`Product Availability State`';
+	}
+	elseif ($order=='stock_forecast') {
+		$order='`Product Available Days Forecast`';
+	}
+	elseif ($order=='formated_record_type') {
+		$order='`Product Record Type`';
+	}
+	elseif ($order=='store') {
+		$order='`Store Code`';
+	}
+
+
+
+
+
+	$sum_total_sales=0;
+	$sum_total_profit=0;
+	$sum_total_stock_value=0;
+
+/*
+	if ($percentages) {
+
+		$sum_total_stock_value=0;
+		$sql="select sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$sum_total_stock_value=$row['sum_stock_value'];
+
+		}
+
+
+
+
+		$sum_total_sales=0;
+		$sum_month_sales=0;
+		$sql="select sum(if(`Product Total Acc Profit`<0,`Product Total Acc Profit`,0)) as total_profit_minus,sum(if(`Product Total Acc Profit`>=0,`Product Total Acc Profit`,0)) as total_profit_plus,sum(`Product Total Acc Invoiced Amount`) as sum_total_sales ,sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+			$sum_total_sales=$row['sum_total_sales'];
+
+			$sum_total_profit_plus=$row['total_profit_plus'];
+			$sum_total_profit_minus=$row['total_profit_minus'];
+			$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+
+		}
+
+
+	}
+*/
+
+
+	$sql="select `Product Store Key`,`Store Code`,`Product XHTML Short Description`,`Product Record Type`,`Product Main Type`,`Invoice Currency Code`,P.`Product Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from  `Product Dimension` P  left join  `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product ID` order by $order $order_direction limit $start_from,$number_results    ";
+
+
+
+	
+	$res = mysql_query($sql);
+	$adata=array();
+
+	$counter=0;
+	$total_units=0;
+
+	$sum_unitary_price=0;
+	$counter_unitary_price=0;
+	$sum_sold=0;
+	$sum_units=0;
+	$sum_sales=0;
+	$sum_profit=0;
+	$count_margin=0;
+	$sum_margin=0;
+
+	//  print "P:$period $avg $sql";
+	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+		$currency=$row['Invoice Currency Code'];
+
+		$counter++;
+
+	
+		
+			$sold=$row['qty_delivered'];
+		$tsall=$row['net'];
+		$tprofit=$row['profit'];
+
+
+	
+
+
+		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+		$store=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Store Key'],$row['Store Code']);
+
+		//'Historic','Discontinued','Private','NoSale','Sale'
+		switch ($row['Product Main Type']) {
+		case('Historic'):
+			$main_type=_('Historic');
+			break;
+		case('Private'):
+			$main_type=_('Private');
+			break;
+		case('NoSale'):
+			$main_type=_('Not for Sale');
+		case('Discontinued'):
+			$main_type=_('Discontinued');
+			break;
+		case('Sale'):
+			$main_type=_('For Sale');
+			break;
+		default:
+			$main_type=$row['Product Main Type'];
+
+		}
+
+
+		include_once 'locale.php';
+
+	
+
+		$adata[]=array(
+			'store'=>$store,
+			'code'=>$code,
+			'name'=>$row['Product XHTML Short Description'],
+			
+		
+			'sales'=>(is_numeric($tsall)?money($tsall,$currency):$tsall),
+			'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
+			'sold'=>(is_numeric($sold)?number($sold):$sold),
+			'state'=>$main_type,
+			
+
+		);
+	}
+	mysql_free_result($res);
+
+	
+
 
 
 	$response=array('resultset'=>
@@ -4533,7 +5048,7 @@ function list_families() {
 			$order='`Product Family 6 Month Acc Invoiced Amount`';
 		elseif ($period=='ten_day')
 			$order='`Product Family 10 Day Acc Invoiced Amount`';
-	}	elseif ($_order=='delta_sales') {
+	} elseif ($_order=='delta_sales') {
 		if ($period=='all')
 			$order='`Product Family Total Acc Invoiced Amount`';
 		elseif ($period=='year')
@@ -4740,7 +5255,7 @@ function list_families() {
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$code=sprintf('<a href="family.php?id=%d">%s</a>',$row['Product Family Key'],$row['Product Family Code']);
 		if ($percentages) {
-		$delta_sales='';
+			$delta_sales='';
 			if ($period=='all') {
 				$tsall=percentage($row['Product Family Total Acc Invoiced Amount'],$sum_total_sales,2);
 				if ($row['Product Family Total Acc Profit']>=0)
@@ -4783,7 +5298,7 @@ function list_families() {
 
 
 
-$delta_sales='';
+			$delta_sales='';
 
 			if ($period=='all') {
 
@@ -4898,7 +5413,7 @@ $delta_sales='';
 				}
 
 
-			$delta_sales=delta($row['Product Family 1 Year Acc Invoiced Amount'],$row['Product Family 1 Year Acc 1YB Invoiced Amount']);
+				$delta_sales=delta($row['Product Family 1 Year Acc Invoiced Amount'],$row['Product Family 1 Year Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family 1 Year Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 1 Year Acc Profit']*$factor);
 			}
@@ -4935,7 +5450,7 @@ $delta_sales='';
 						$factor=7/$row['Product Family Year To Day Acc Days Available'];
 					else
 						$factor=0;
-				}			
+				}
 				$delta_sales=delta($row['Product Family Year To Day Acc Invoiced Amount'],$row['Product Family Year To Day Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family Year To Day Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family Year To Day Acc Profit']*$factor);
@@ -4974,7 +5489,7 @@ $delta_sales='';
 					else
 						$factor=0;
 				}
-								
+
 				$delta_sales=delta($row['Product Family 6 Month Acc Invoiced Amount'],$row['Product Family 6 Month Acc 1YB Invoiced Amount']);
 				$tsall=money($row['Product Family 6 Month Acc Invoiced Amount']*$factor);
 				$tprofit=money($row['Product Family 6 Month Acc Profit']*$factor);
@@ -11747,13 +12262,56 @@ function deal_data($data) {
 
 	$response=
 		array('state'=>200,
-			'data'=>$deal_data
+		'data'=>$deal_data
 
-		
+
 	);
 	echo json_encode($response);
 
 }
 
+function family_sales_data($data) {
+
+
+
+	$customers=0;
+	$invoices=0;
+	$profit=money(0);
+	$outers=0;
+	$sales=money(0);
+
+	$from_date=$data['from'].' 00:00:00';
+	$to_date=$data['to'].' 23.59:59';
+
+
+	$sql=sprintf("select count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost from `Order Transaction Fact` where `Product Family Key`=%d %s %s",
+		$data['family_key'],
+		($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
+	);
+	//print $sql;
+	$res=mysql_query($sql);
+	if ($row=mysql_fetch_assoc($res)) {
+		$customers=number($row['customers']);
+		$invoices=number($row['invoices']);
+		$profit=money($row['net']-$row['total_cost']);
+		$outers=number($row['qty_delivered']);
+		$sales=money($row['net']);
+	}
+
+	$response=
+		array('state'=>200,
+		'customers'=>$customers,
+		'invoices'=>$invoices,
+		'profits'=>$profit,
+		'customers'=>$customers,
+		'outers'=>$outers,
+		'sales'=>$sales,
+		'formated_period'=>($from_date?strftime("%a %e %b %Y", strtotime($from_date.' UTC')):"").'-'.($to_date?strftime("%a %e %b %Y", strtotime($to_date.' UTC')):"")
+
+	);
+	echo json_encode($response);
+
+}
 
 ?>

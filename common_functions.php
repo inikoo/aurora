@@ -4289,6 +4289,7 @@ $from_date=false;
 		break;
 	case '1 Year':
 	case '1y':
+	case 'year':
 		$db_interval='1 Year';
 		$from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
 		$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));

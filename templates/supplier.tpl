@@ -55,6 +55,7 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
+		<li> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Part Sales{/t}</span></span></li>
 
 		<li> <span class="item {if $block_view=='products'}selected{/if}" id="products"> <span> {t}Supplier Products{/t}</span></span></li>
 		<li> <span class="item {if $block_view=='purchases'}selected{/if}" id="purchases"> <span> {t}Purchases{/t}</span></span></li>
@@ -118,7 +119,8 @@
 				
 			</div>
 		</div>
-		<div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+	<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0"></div>
+	<div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 		</div>
 		<div id="block_products" style="{if $block_view!='products'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div class="data_table">

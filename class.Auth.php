@@ -12,9 +12,9 @@
 */
 
 class Auth {
-	private $user_parent_key=false;
+	var $user_parent_key=false;
 
-	private $user_key=false;
+	var $user_key=false;
 	private $status=false;
 	private $use_cookies=false;
 	var $authentication_type=false;
@@ -283,7 +283,7 @@ class Auth {
 
 
 		);
-//print $sql;
+		//print $sql;
 		//  if ($same_ip) {$sql.=sprintf(" and `IP`=%s",prepare_mysql(ip()));}
 
 
@@ -495,10 +495,10 @@ class Auth {
 					break;
 				case('masterkey_used'):
 					$formated_reason=_('reset password link already used');
-					break;	
-					case('masterkey_expired'):
+					break;
+				case('masterkey_expired'):
 					$formated_reason=_('reset password link expired');
-					break;		
+					break;
 				default:
 					$formated_reason=$this->pass['main_reason'];
 				}
@@ -522,6 +522,7 @@ class Auth {
 				);
 
 				$customer->add_history_login($history_data);
+				$customer->update_web_data();
 
 			}
 
@@ -540,8 +541,8 @@ class Auth {
 			'NULL',
 			prepare_mysql(($this->remember?'Yes':'No')),
 			$this->site_key
-			);
-
+		);
+//print $sql;
 		mysql_query($sql);
 
 		$this->user_log_key=mysql_insert_id();
@@ -560,7 +561,7 @@ class Auth {
 		);
 		mysql_query($sql);
 
-
+//print $sql;
 		// if ($this->log_page=='customer' or $this->log_page=='masterkey') {
 		if ($this->log_page=='customer') {
 
@@ -579,9 +580,9 @@ class Auth {
 				$note=_('Logged in');
 			}
 
-if($this->remember){
-	$note.=', '._('remember me cookie set');
-}
+			if ($this->remember) {
+				$note.=', '._('remember me cookie set');
+			}
 
 			$history_data=array(
 				'Date'=>$date,
@@ -594,6 +595,7 @@ if($this->remember){
 			);
 
 			$customer->add_history_login($history_data);
+			$customer->update_web_data();
 
 		}
 

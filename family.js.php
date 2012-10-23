@@ -35,45 +35,7 @@ Dom.addClass(this,'selected');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-block_view&value='+this.id ,{});
 }
 
-function change_info_period(period){
-    var patt=new RegExp("^(year|month|all|week|quarter)$");
-    if (patt.test(period)==true && current_store_period!=period){
-	//alert('info_'+current_store_period)
-	//	alert('ar_sessions.php?tipo=update&keys=store-period&value=');
-	Dom.get('info_'+current_store_period).style.display='none';
-	Dom.get('info_'+period).style.display='';
-	current_store_period=period;
 
-	Dom.get('info_title').innerHTML=info_period_title[period];
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-period&value='+period);
-
-    }
-
-}
-function next_info_period(){
-    if(current_store_period=='all')
-        change_info_period('week');
-    else if(current_store_period=='week')    
-        change_info_period('month');
-    else if(current_store_period=='month')    
-        change_info_period('quarter');
-    else if(current_store_period=='quarter')    
-        change_info_period('year');        
-    else if(current_store_period=='year')    
-        change_info_period('all');
-}
-function previous_info_period(){
-    if(current_store_period=='all')
-        change_info_period('year');
-    else if(current_store_period=='week')    
-        change_info_period('all');
-    else if(current_store_period=='month')    
-        change_info_period('week');
-    else if(current_store_period=='quarter')    
-        change_info_period('month');        
-    else if(current_store_period=='year')    
-        change_info_period('quarter');
-}
 
 var myRowFormatter = function(elTr, oRecord) {
     if (oRecord.getData('code') =='total') {
@@ -123,19 +85,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				    //,{key:"dept", label:"<?php echo _('Main Department')?>",width:200,<?php echo($_SESSION['state']['family']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"expcode", label:"<?php echo _('Tariff Code')?>",width:160,<?php echo($_SESSION['state']['family']['products']['view']!='cats'?'hidden:true,':'')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-
-
-
-
-
-
-
-
-
 			       ];
 request="ar_assets.php?tipo=products&parent=family&sf=0"+'&parent_key='+Dom.get('family_key').value;
-//alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -160,14 +111,7 @@ request="ar_assets.php?tipo=products&parent=family&sf=0"+'&parent_key='+Dom.get(
 			 ,'sales','profit','margin','sold',"parts","supplied","gmroi","family","dept","expcode","state","web","smallname","delta_sales"
 			 ]};
 	    
-// 	    var myRowFormatter = function(elTr, oRecord) {
-// 		if (oRecord.getData('total')==1) {
-// 		    Dom.addClass(elTr, 'total');
-// 		}
-// 		return true;
-// 	    }; 
 
-	    
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 						     this.dataSource0, {
@@ -281,11 +225,93 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
 
 
 
+    var tableid=1;
+	    var tableDivEL="table"+tableid;
+
+	 
+
+
+	    var ColumnDefs = [ 
+				    {key:"code", label:"<?php echo _('Code')?>", width:87,sortable:true, className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"name", label:"<?php echo _('Name')?>",width:240, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   				   ,{key:"state", label:"<?php echo _('State')?>",width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				   ,{key:"sold", label:"<?php echo _('Sold')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"sales", label:"<?php echo _('Sales')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"profit", label:"<?php echo _('Profit')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   
+							       ];
+request="ar_assets.php?tipo=product_sales_report&parent=family&sf=0"+'&parent_key='+Dom.get('family_key').value+'&from='+Dom.get('in').value+'&to='+Dom.get('out').value;
+	 alert(request)
+	 this.dataSource1 = new YAHOO.util.DataSource(request);
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+ 
+	    this.dataSource1.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 'id'
+			 ,"code"
+			 ,"name","stock","stock_value","record_type"
+			 ,'sales','profit','margin','sold',"parts","supplied","gmroi","family","dept","expcode","state","web","smallname","delta_sales"
+			 ]};
+	    
+
+
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+						     this.dataSource1, {
+							 //draggableColumns:true,
+							 formatRow: myRowFormatter,
+							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
+								       ,paginator : new YAHOO.widget.Paginator({
+									       rowsPerPage:<?php echo$_SESSION['state']['family']['product_sales']['nr']+1?>,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['family']['product_sales']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['family']['product_sales']['order_dir']?>"
+								     }
+							   ,dynamicData : true  
+
+						     }
+						     );
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginator = mydoBeforePaginatorChange;
+      this.table1.request=request;
+  this.table1.table_id=tableid;
+     this.table1.subscribe("renderEvent", myrenderEvent);
+
+		this.table1.filter={key:'<?php echo$_SESSION['state']['family']['product_sales']['f_field']?>',value:'<?php echo$_SESSION['state']['family']['product_sales']['f_value']?>'};
+
+	    
+
+
+
 
 
 	};
 	get_thumbnails(0)
     });
+
+
 
 
 
@@ -358,6 +384,18 @@ function change_display_mode(parent,name,label){
 
 }
 
+function change_sales_sub_block(o){
+Dom.removeClass(['plot_family_sales','children_list'],'selected')
+Dom.addClass(o,'selected')
+
+
+Dom.setStyle(['sub_block_plot_family_sales','sub_block_children_list'],'display','none')
+Dom.setStyle('sub_block_'+o.id,'display','')
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-sales_sub_block_tipo&value='+o.id ,{});
+
+}
+
 function change_table_type(parent,tipo,label){
 
 	if(parent=='products'){
@@ -407,17 +445,17 @@ window.location='edit_family.php?id='+Dom.get('family_key').value+'&edit_tab='+e
 function change_sales_period(){
   tipo=this.id;
  
-  ids=['products_period_yesterday','products_period_last_m','products_period_last_w','products_period_all','products_period_three_year','products_period_year','products_period_six_month','products_period_quarter','products_period_month','products_period_ten_day','products_period_week','products_period_yeartoday','products_period_monthtoday','products_period_weektoday','products_period_today'];
+  ids=['custome_period','products_period_yesterday','products_period_last_m','products_period_last_w','products_period_all','products_period_three_year','products_period_year','products_period_six_month','products_period_quarter','products_period_month','products_period_ten_day','products_period_week','products_period_yeartoday','products_period_monthtoday','products_period_weektoday','products_period_today'];
 
  Dom.removeClass(ids,"selected")
  Dom.addClass(this,"selected")
    period=this.getAttribute('period');
  YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-products-period&value='+period ,{});
 
-Dom.setStyle(['info_yesterday','info_last_m','info_last_w','info_all','info_three_year','info_year','info_six_month','info_quarter','info_month','info_ten_day','info_week','info_yeartoday','info_monthtoday','info_weektoday','info_today'],'display','none')
+Dom.setStyle(['info_other','info_yesterday','info_last_m','info_last_w','info_all','info_three_year','info_year','info_six_month','info_quarter','info_month','info_ten_day','info_week','info_yeartoday','info_monthtoday','info_weektoday','info_today'],'display','none')
 
-
-Dom.setStyle(['info2_yesterday','info2_last_m','info2_last_w','info2_all','info2_three_year','info2_year','info2_six_month','info2_quarter','info2_month','info2_ten_day','info2_week','info2_yeartoday','info2_monthtoday','info2_weektoday','info2_today'],'display','none')
+Dom.get('custome_period').innerHTML='<?php echo _('Custome Dates')?>'
+Dom.setStyle(['info2_other','info2_yesterday','info2_last_m','info2_last_w','info2_all','info2_three_year','info2_year','info2_six_month','info2_quarter','info2_month','info2_ten_day','info2_week','info2_yeartoday','info2_monthtoday','info2_weektoday','info2_today'],'display','none')
 Dom.setStyle(['info_'+period,'info2_'+period],'display','')
 
 }
@@ -477,7 +515,103 @@ dialog_change_products_table_type = new YAHOO.widget.Dialog("change_products_tab
 	YAHOO.util.Event.addListener("change_products_table_type", "click", show_dialog_change_products_table_type);
 
 
+
+  dialog_calendar = new YAHOO.widget.Dialog("dialog_calendar_splinter", {visible : false,close:true,underlay: "none",draggable:false});
+    dialog_calendar.render();
+    Event.addListener("custome_period", "click", show_dialog_calendar,dialog_calendar , true);
+  
+  var inTxt = YAHOO.util.Dom.get("in"),
+        outTxt = YAHOO.util.Dom.get("out"),
+        inDate, outDate, interval;
+
+    inTxt.value = "";
+    outTxt.value = "";
+    var cal = new YAHOO.example.calendar.IntervalCalendar("cal1Container", {pages:2});
+ cal.selectEvent.subscribe(function() {
+        interval = this.getInterval();
+
+        if (interval.length == 2) {
+            inDate = interval[0];
+            day=inDate.getDate();
+            month=(inDate.getMonth() + 1);
+            day = day < 10 ? "0" + day : day;
+            month = month < 10 ? "0" + month : month;
+            inTxt.value = inDate.getFullYear() + "-" + month + "-" + day;
+
+            if (interval[0].getTime() != interval[1].getTime()) {
+                outDate = interval[1];
+                   day=outDate.getDate();
+            month=(outDate.getMonth() + 1);
+            day = day < 10 ? "0" + day : day;
+            month = month < 10 ? "0" + month : month;
+                
+                outTxt.value = outDate.getFullYear() + "-" + month + "-" + day;
+            } else {
+                outTxt.value = "";
+            }
+        }
+    }, cal, true);
+    
+    cal.render();
+
+
+YAHOO.util.Event.addListener("submit_interval", "click",submit_interval);
+
+
+
 }
+
+function submit_interval(){
+ ids=['products_period_yesterday','products_period_last_m','products_period_last_w','products_period_all','products_period_three_year','products_period_year','products_period_six_month','products_period_quarter','products_period_month','products_period_ten_day','products_period_week','products_period_yeartoday','products_period_monthtoday','products_period_weektoday','products_period_today'];
+
+ Dom.removeClass(ids,"selected")
+ Dom.addClass('custome_period',"selected")
+Dom.setStyle(['info_yesterday','info_last_m','info_last_w','info_all','info_three_year','info_year','info_six_month','info_quarter','info_month','info_ten_day','info_week','info_yeartoday','info_monthtoday','info_weektoday','info_today'],'display','none')
+
+
+Dom.setStyle(['info2_yesterday','info2_last_m','info2_last_w','info2_all','info2_three_year','info2_year','info2_six_month','info2_quarter','info2_month','info2_ten_day','info2_week','info2_yeartoday','info2_monthtoday','info2_weektoday','info2_today'],'display','none')
+Dom.setStyle(['info_other','info2_other'],'display','')
+
+Dom.setStyle(['waiting_other_invoices','waiting_other_customers','waiting_other_sales','waiting_other_profits','waiting_other_outers'],'display','')
+Dom.setStyle(['other_invoices','other_customers','other_sales','other_profits','other_outers'],'display','none')
+
+var request='ar_assets.php?tipo=family_sales_data&family_key='+Dom.get('family_key').value+'&from=' + Dom.get('in').value +'&to=' + Dom.get('out').value
+	       //   alert(request)	 
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	            success:function(o){
+	        //    alert(o.responseText);	
+			var r =  YAHOO.lang.JSON.parse(o.responseText);
+			if(r.state==200){
+			
+			
+			
+			Dom.get('custome_period').innerHTML=r.formated_period
+			dialog_calendar.hide();
+			
+			Dom.setStyle(['waiting_other_invoices','waiting_other_customers','waiting_other_sales','waiting_other_profits','waiting_other_outers'],'display','none')
+Dom.setStyle(['other_invoices','other_customers','other_sales','other_profits','other_outers'],'display','')
+
+			Dom.get('other_sales').innerHTML=r.sales;
+						Dom.get('other_profits').innerHTML=r.profits;
+						Dom.get('other_customers').innerHTML=r.customers;
+						Dom.get('other_outers').innerHTML=r.outers;
+						Dom.get('other_invoices').innerHTML=r.invoices;
+						
+			}else{
+                                  
+                                  }
+   			}
+    });
+}
+
+function show_dialog_calendar(){
+	region1 = Dom.getRegion('custome_period'); 
+    region2 = Dom.getRegion('dialog_calendar_splinter'); 
+	var pos =[region1.right-region2.width,region1.bottom]
+	Dom.setXY('dialog_calendar_splinter', pos);
+	dialog_calendar.show();
+}
+
 
 Event.onDOMReady(init);
 Event.onContentReady("rppmenu0", function () {

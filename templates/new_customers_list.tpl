@@ -314,7 +314,7 @@
 	  <button class="table_option {if $view=='contact'}selected{/if}"  id="contact"  >{t}Contact{/t}</button>
 	  <button class="table_option {if $view=='address'}selected{/if}"  id="address"  >{t}Address{/t}</button>
 	  <button class="table_option {if $view=='balance'}selected{/if}"  id="balance"  >{t}Balance{/t}</button>
-	  <button style="display:none" class="table_option {if $view=='rank'}selected{/if}"  id="rank"  >{t}Ranking{/t}</button>
+	  <button  class="table_option {if $view=='rank'}selected{/if}"  id="rank"  >{t}Ranking{/t}</button>
 	  	  <button class="table_option {if $view=='weblog'}selected{/if}"  id="weblog"  >{t}WebLog{/t}</button>
 
       </div>

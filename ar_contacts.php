@@ -2347,10 +2347,10 @@ function list_customers() {
 				'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
 
 
-				'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
-				'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
-				'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
-				'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
+				'top_orders'=>percentage($data['Customer Orders Top Percentage'],1,2),
+				'top_invoices'=>percentage($data['Customer Invoices Top Percentage'],1,2),
+				'top_balance'=>percentage($data['Customer Balance Top Percentage'],1,2),
+				'top_profits'=>percentage($data['Customer Profits Top Percentage'],1,2),
 				'contact_name'=>$data['Customer Main Contact Name'],
 				'address'=>$data['Customer Main XHTML Address'],
 				'billing_address'=>$billing_address,

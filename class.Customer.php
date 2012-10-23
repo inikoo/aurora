@@ -645,13 +645,14 @@ class Customer extends DB_Table {
 
 			$this->id=mysql_insert_id();
 
-
+if($args!='no_history'){
 			$history_data=array(
 				'History Abstract'=>_('Customer Created'),
 				'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added')),
 				'Action'=>'created'
 			);
 			$this->add_customer_history($history_data);
+			}
 			$this->new=true;
 
 
@@ -6423,5 +6424,80 @@ class Customer extends DB_Table {
 
 		return $category_data;
 	}
+
+	function update_rankings() {
+		$total_customers_with_less_invoices=0;
+		$total_customers_with_less_balance=0;
+		$total_customers_with_less_orders=0;
+		$total_customers_with_less_profit=0;
+
+		$total_customers=0;
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d",
+			$this->data['Customer Store Key']);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$total_customers=$row['customers'];
+
+		}
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d and `Customer Orders Invoiced`<%d",
+			$this->data['Customer Store Key'],
+			$this->data['Customer Orders Invoiced']
+
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$total_customers_with_less_invoices=$row['customers'];
+
+		}
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d and `Customer Orders`<%d",
+			$this->data['Customer Store Key'],
+
+			$this->data['Customer Orders']
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$total_customers_with_less_orders=$row['customers'];
+
+		}
+
+
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d and `Customer Net Balance`<%f",
+			$this->data['Customer Store Key'],
+
+			$this->data['Customer Net Balance']
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$total_customers_with_less_balance=$row['customers'];
+
+		}
+		$sql=sprintf("select count(*) as customers from `Customer Dimension` where `Customer Store Key`=%d and `Customer Profit`<%f",
+			$this->data['Customer Store Key'],
+			$this->data['Customer Profit']
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($result)) {
+			$total_customers_with_less_profit=$row['customers'];
+
+		}
+
+		$this->data['Customer Invoices Top Percentage']=($total_customers==0?0:$total_customers_with_less_invoices/$total_customers);
+		$this->data['Customer Orders Top Percentage']=($total_customers==0?0:$total_customers_with_less_orders/$total_customers);
+		$this->data['Customer Balance Top Percentage']=($total_customers==0?0:$total_customers_with_less_balance/$total_customers);
+		$this->data['Customer Profits Top Percentage']=($total_customers==0?0:$total_customers_with_less_profit/$total_customers);
+
+		$sql=sprintf("update `Customer Dimension` set `Customer Invoices Top Percentage`=%f ,`Customer Orders Top Percentage`=%f ,`Customer Balance Top Percentage`=%f ,`Customer Profits Top Percentage`=%f  where `Customer Key`=%d",
+			$this->data['Customer Invoices Top Percentage'],
+			$this->data['Customer Orders Top Percentage'],
+			$this->data['Customer Balance Top Percentage'],
+			$this->data['Customer Profits Top Percentage'],
+
+			$this->id
+		);
+		mysql_query($sql);
+		//print "$sql\n";
+
+	}
+
 }
 ?>

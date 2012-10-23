@@ -81,7 +81,6 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$smarty->assign('options_box_width','600px');
 
 $smarty->display('customers_lists.tpl');
 ?>

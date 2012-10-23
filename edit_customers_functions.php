@@ -1,5 +1,5 @@
 <?php
-function add_customer($data) {
+function add_customer($data,$args='') {
     //Timer::timing_milestone('begin');
 
 //print_r($data);
@@ -101,7 +101,7 @@ function add_customer($data) {
 
     $customer=new Customer();
     $customer->editor=$data['editor'];
-    $customer->create($data);
+    $customer->create($data,$args);
 
     //print_r ($data);
 

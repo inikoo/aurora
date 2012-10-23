@@ -343,10 +343,10 @@ abstract class DB_Table {
 		}
 
 
-		if(array_key_exists('User Key',$raw_data)){
-		$data['User Key']=$raw_data['User Key'];
-		}else{
-		$data['User Key']=$editor_data['User Key'];
+		if (array_key_exists('User Key',$raw_data)) {
+			$data['User Key']=$raw_data['User Key'];
+		}else {
+			$data['User Key']=$editor_data['User Key'];
 		}
 
 		if ($data['Subject']=='' or  !$data['Subject Key']) {
@@ -452,7 +452,7 @@ abstract class DB_Table {
 			,prepare_mysql($data['Metadata'])
 		);
 
-		//       print $sql;
+		//     print $sql;
 		// print_r($raw_data);
 		//dsdfdffd();
 		mysql_query($sql);

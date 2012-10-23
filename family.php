@@ -103,11 +103,14 @@ $css_files=array(
                $yui_path.'menu/assets/skins/sam/menu.css',
                $yui_path.'button/assets/skins/sam/button.css',
                $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+               	$yui_path.'calendar/assets/skins/sam/calendar.css',
+
                'common.css',
                'css/container.css',
                'button.css',
                'table.css',
 			   'css/edit.css',
+			   'css/calendar.css',
 			   'theme.css.php'
            );
 		   
@@ -122,13 +125,16 @@ $js_files=array(
               $yui_path.'datatable/datatable-debug.js',
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
+              $yui_path.'calendar/calendar-min.js',
+              
               'js/php.default.min.js',
               'js/common.js',
               'js/table_common.js',
               'js/edit_common.js',
               'js/csv_common.js',
               'js/dropdown.js',
-              'js/assets_common.js'
+              'js/assets_common.js',
+ 'js/calendar_interval.js',
           );
 
 
@@ -215,6 +221,21 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
+
+$tipo_filter1=$_SESSION['state']['family']['product_sales']['f_field'];
+$smarty->assign('filter_name1',$tipo_filter1);
+$smarty->assign('filter_value1',$_SESSION['state']['family']['product_sales']['f_value']);
+$filter_menu=array(
+        'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+       'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
+             );
+             
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter1]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
 
 $tipo_filter=$_SESSION['state']['family']['pages']['f_field'];
@@ -399,9 +420,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 }
 mysql_free_result($result);
 
-$plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
-$smarty->assign('plot_tipo','store');
-$smarty->assign('plot_data',$plot_data);
+
 
 include_once('conf/period_tags.php');
 unset($period_tags['hour']);
@@ -410,6 +429,18 @@ $smarty->assign('period_tags',$period_tags);
 $family_order=$_SESSION['state']['family']['products']['order'];
 $family_period=$_SESSION['state']['family']['products']['period'];
 $smarty->assign('products_period',$family_period);
+
+
+list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($family_period);
+$to_little_edian=($to_date?date("d-m-Y",strtotime($to_date)):'');
+$from_little_edian=($from_date?date("d-m-Y",strtotime($from_date)):'');
+
+$smarty->assign('to_little_edian',$to_little_edian);
+$smarty->assign('from_little_edian',$from_little_edian);
+$smarty->assign('sales_sub_block_tipo',$_SESSION['state']['family']['sales_sub_block_tipo']);
+
+
+
 
 //print $family_period;
 //print_r($period_tags);
