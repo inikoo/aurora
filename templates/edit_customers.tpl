@@ -5,7 +5,7 @@
 	<input type="hidden" id="store_key" value="{$store->id}" />
 	{if $customer_list_id} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr; <a href="customers_list.php?id={$customer_list_id}">{$customer_list_name}</a> &rarr; {t}Editing Customers{/t}</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customers_lists.php?store={$store->id}">{t}Lists{/t}</a> &rarr; <a href="customers_list.php?id={$customer_list_id}">{$customer_list_name}</a> ({t}Editing{/t})</span> 
 	</div>
 	{else} 
 	<div class="branch">
@@ -14,6 +14,9 @@
 	{/if} 
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px">
 		<div class="buttons left" style="float:left">
+		<span class="main_title">
+		{t}Editing Customers{/t} <span class="id">{if $customer_list_id}{$customer_list_name}{else}{$store->get('Store Code')}{/if}</span>
+	</span>
 		</div>
 		<div class="buttons" style="float:right">
 					<button style="margin-left:0px" onclick="window.location='{if $customer_list_id}customers_list.php?id={$customer_list_id}{else}customers.php?store={$store->id}{/if}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
@@ -23,11 +26,10 @@
 		<div style="clear:both">
 		</div>
 	</div>
-	<h1 style="float:left;padding-top:0px">
-		{t}Editing Customers{/t} <span class="id">{if $customer_list_id}{$customer_list_name}{else}{$store->get('Store Code')}{/if}</span>
-	</h1>
+	
 	<div style="clear:left;margin:0 0px">
 	</div>
+<div style="margin-top:15px">	
 	<div id="the_table" class="data_table" style="clear:both">
 		<span class="clean_table_title">Customers List</span> 
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
@@ -36,6 +38,7 @@
 		<div id="table0" class="data_table_container dtable btable ">
 		</div>
 	</div>
+</div>
 </div>
 </div>
 </div>

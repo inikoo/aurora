@@ -189,7 +189,7 @@ Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 
-	//	alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		       if(r.result=='logged_in'){
@@ -234,7 +234,7 @@ Dom.setStyle(['submit_register','cancel_register'],'visibility','hidden');
 			
 
 		},failure:function(o){
-		    alert(o)
+		    alert('failture: '+o)
 		}
 	    
 	    });

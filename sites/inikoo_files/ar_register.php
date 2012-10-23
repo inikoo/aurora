@@ -457,7 +457,7 @@ function check_email($data) {
 function register($data,$CKEY) {
 
 
-	/*
+
 	include_once 'external_libs/securimage/securimage.php';
 	$securimage = new Securimage();
 	if ($securimage->check($data['values']['captcha_code']) == false) {
@@ -466,7 +466,7 @@ function register($data,$CKEY) {
 		echo json_encode($response);
 		exit;
 	}
-*/
+
 
 	$sql=sprintf("select `Country Code` from kbase.`Country Dimension` where `Country 2 Alpha Code`=%s",
 		prepare_mysql($data['values']['Customer Address Country 2 Alpha Code']));
@@ -500,7 +500,8 @@ function register($data,$CKEY) {
 
 	}
 
-	$response=add_customer($data['values']) ;
+	$response=add_customer($data['values'],'no_history');
+$date=gmdate('Y-m-d H:i:s');
 
 	if ($response['state']==200 and $response['action']=='created' ) {
 		// $ep=rawurldecode($data['ep']);
@@ -515,6 +516,27 @@ function register($data,$CKEY) {
 		$password=AESDecryptCtr($data['values']['ep'],md5($data['values']['Customer Main Plain Email'].'x**X'),256);
 		list($user_key,$user_msg)=create_customer_user($data['values']['Customer Main Plain Email'],$customer,$site,$password,$send_email_flag=true,$CKEY);
 		if ($user_key) {
+	$details='<table>
+				<tr><td style="width:120px">'._('Time').':</td><td>'.strftime("%c %Z",strtotime($date.' +00:00')).'</td></tr>
+				<tr><td>'._('IP Address').':</td><td>'.ip().'</td></tr>
+				<tr><td>'._('User Agent').':</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>
+				</table>';
+$note=_('Register');
+		
+
+	$history_data=array(
+				'Date'=>$date,
+				'Site Key'=>$site->id,
+				'Note'=>$note,
+				'Details'=>$details,
+				'Action'=>'register',
+				'Indirect Object'=>'',
+				'User Key'=>$user_key
+			);
+
+			$customer->add_history_login($history_data);
+			$customer->update_web_data();
+
 
 			$_SESSION['logged_in']=true;
 			$_SESSION['store_key']=$data['store_key'];
@@ -524,7 +546,10 @@ function register($data,$CKEY) {
 			$_SESSION['customer_key']=$response['customer_key'];
 
 			$auth=new Auth();
-			$auth->use_key=$user_key;
+			$auth->user_key=$user_key;
+			$auth->log_page='customer';
+			$auth->user_parent_key=$customer->id;
+			$auth->site_key=$site->id;
 			$auth->create_user_log();
 			$_SESSION['user_log_key']=$auth->user_log_key;
 			// print_r($_SESSION);

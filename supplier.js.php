@@ -497,8 +497,8 @@ break;
 
 
    function change_block(){
-ids=["details","products","purchase_orders","purchases"];
-block_ids=["block_details","block_products","block_purchase_orders","block_purchases"];
+ids=["details","products","purchase_orders","purchases","sales"];
+block_ids=["block_details","block_products","block_purchase_orders","block_purchases","block_sales"];
 
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
@@ -744,7 +744,7 @@ function init(){
     ids=['product_general','product_sales','product_stock','product_forecast'];
     YAHOO.util.Event.addListener(ids, "click",product_change_view)
     
-    ids=["details","products","purchase_orders","purchases"];
+    ids=["details","products","purchase_orders","purchases","sales"];
     Event.addListener(ids,"click",change_block);
 
 

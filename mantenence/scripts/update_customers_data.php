@@ -34,12 +34,11 @@ require_once '../../conf/conf.php';
 //}
 //exit;
 
-$sql="select * from `Customer Dimension` ";
+$sql="select * from `Customer Dimension`  order by `Customer Key` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 	$customer=new Customer($row['Customer Key']);
-
 
 $customer->update_web_data();
 
@@ -47,7 +46,8 @@ $customer->update_web_data();
 
 	$customer->update_activity();
 	$customer->update_is_new();
-
+$customer->update_rankings();
+print $customer->id."\r";
 }
 
 

@@ -357,8 +357,10 @@ function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
 
 	if ($user) {
 		$user_key=$user->id;
+		$user_parent_key=$user->data['User Parent Key'];
 	} else {
 		$user_key=0;
+		$user_parent_key=0;
 	}
 
 
@@ -452,22 +454,22 @@ function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
 
 
 
-
 		$requests=0;
 
 		$sql=sprintf("select  sum(`User Requests Count`) as requests  from `User Dimension` where `User Type`='Customer' and `User Parent Key`=%d",
-			$user_key
+			$user_parent_key
 		);
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($result)) {
 			$requests=$row['requests'];
 		}
 
+//print_r($user);
 		$sql=sprintf("update `Customer Dimension` set  `Customer Number Web Requests`=%d where `Customer Key`=%d",
 			$requests,
 			$customer_key
 		);
-		//print "$sql\n";
+		
 		mysql_query($sql);
 
 

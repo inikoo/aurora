@@ -3428,11 +3428,10 @@ $default_state=array(
 
 
 		),
-
 	),
 	'family'=>array(
 		'block_view'=>'products',
-
+'sales_sub_block_tipo'=>'family_plot',
 		'editing'=>'details',
 
 		'edit_pages'=>array(
@@ -3517,6 +3516,31 @@ $default_state=array(
 
 			)
 
+		),
+		'product_sales'=>array(
+			'percentages'=>false,
+			'view'=>'general',
+
+			
+			'id'=>1,
+			'period'=>'year',
+			'percentage'=>0,
+			'mode'=>'all',
+			'avg'=>'totals',
+			'edit'=>'details',
+			'table_type'=>'list',
+			'show_only'=>'forsale',
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'where'=>'where true',
+			'f_field'=>'code',
+			'f_value'=>'',
+			'restrictions'=>'',
+			'elements'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
+
+			
 		),
 		'history'=>array(
 			'where'=>'where true',
