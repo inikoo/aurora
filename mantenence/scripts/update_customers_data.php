@@ -34,7 +34,7 @@ require_once '../../conf/conf.php';
 //}
 //exit;
 
-$sql="select * from `Customer Dimension`  order by `Customer Orders` desc ";
+$sql="select * from `Customer Dimension`  order by `Customer Net Balance` desc ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
