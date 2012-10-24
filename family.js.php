@@ -242,7 +242,7 @@ var request="ar_sites.php?tipo=pages&sf=0&parent=family&tableid=4&parent_key="+D
 				   
 							       ];
 request="ar_assets.php?tipo=product_sales_report&parent=family&sf=0"+'&parent_key='+Dom.get('family_key').value+'&from='+Dom.get('in').value+'&to='+Dom.get('out').value;
-	 alert(request)
+	// alert(request)
 	 this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
