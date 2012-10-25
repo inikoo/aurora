@@ -6638,3 +6638,14 @@ ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Orders Invoiced` ) ;
 ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Profit` ) ;
 ALTER TABLE `Site Dimension` ADD `Site Direct Subscribe Madmimi` VARCHAR( 256 ) NOT NULL ;
 ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate', 'register', 'login', 'logout', 'fail_login', 'password_request', 'password_reset' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
+ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Public` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',ADD INDEX ( `Deal Metadata Public` ) ;
+CREATE TABLE `Table User Export Fields` (
+`Table Key` SMALLINT UNSIGNED NOT NULL ,
+`User Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Fields` VARCHAR( 900 ) NOT NULL ,
+INDEX ( `Table Key` , `User Key` )
+) ENGINE = MYISAM ;
+
+ ALTER TABLE `Table User Export Fields` ADD UNIQUE (`Table Key` ,`User Key` ,`Fields` ( 900 ));
+
+

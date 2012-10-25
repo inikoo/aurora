@@ -863,6 +863,13 @@ $deal_metadata->update(array(
 		'Terms'=>$data['terms'],
 		'Allowances'=>$data['allowances'])
 );
+if (!$deal_metadata->error) {
+		$response= array('state'=>200);
+
+	} else {
+		$response= array('state'=>400,'msg'=>$deal_metadata->msg);
+	}
+	echo json_encode($response);
 
 
 
@@ -2639,7 +2646,7 @@ function list_deals_for_edition() {
 		$order='DM.`Deal Metadata Name`';
 
 
-	$sql="select `Deal Metadata Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Metadata Trigger`,`Deal Metadata Key`,DM.`Deal Metadata Name`,D.`Deal Name`
+	$sql="select `Deal Number Metadata Children`,`Deal Metadata Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Metadata Trigger`,`Deal Metadata Key`,DM.`Deal Metadata Name`,D.`Deal Name`
 	from `Deal Metadata Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
 	// print $sql;
 	$res = mysql_query($sql);
@@ -2730,18 +2737,27 @@ function list_deals_for_edition() {
 
 
 
-		$name=sprintf('<a href="deal.php?id=%d" id="deal_name%d">%s</a><br/><div  id="deal_description%d" style="margin-top:5px;margin-bottom:5px">%s</div><div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
+		$name=sprintf('<a href="deal.php?id=%d" id="deal_name%d">%s</a><br/><div  id="deal_description%d" style="margin-top:5px;margin-bottom:5px">%s</div>',
 			$row['Deal Key'],
 			$row['Deal Key'],
 			$row['Deal Name'],
 				$row['Deal Key'],
-			$row['Deal Description'],
+			$row['Deal Description']
+			
+		);
+		
+		if($row['Deal Number Metadata Children']==1){
+		
+		$name.=sprintf('<div class="buttons small left"><button id="fill_edit_deal_form%d" onClick="fill_edit_deal_form(%d)" >%s</buttons></div>',
+
 			$row['Deal Key'],
 			$row['Deal Key'],
-			_('Edit'),
-			$valid_to
+			_('Edit')
 
 		);
+		
+		}
+		
 
 
 		$status="<br/><span id='deal_state".$deal_metadata->id."' style='font-weight:800;padding:10px 0px'>".$deal_metadata->get_xhtml_status()."</span>";

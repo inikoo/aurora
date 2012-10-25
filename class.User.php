@@ -1490,17 +1490,64 @@ class User extends DB_Table {
 	}
 
 
+	function update_table_export_field($table_key,$fields){
+	
+	
+	$sql=sprintf("select `Table Key` from `Table User Export Fields`  where `Table Key`=%d and `User Key`=%d",$table_key,$this->id);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_assoc($res)){
+	
+	$sql=sprintf("update `Table User Export Fields`   set `Fields`=%s where `Table Key`=%d and `User Key`=%d",
+	prepare_mysql($fields),
+	$table_key,
+	$this->id
+	
+	
+	);
+	//print $sql;
+	mysql_query($sql);
+	}else{
+	
+	$sql=sprintf("insert into `Table User Export Fields` values (%d,%d,%s) ",
+	$table_key,
+	$this->id,
+	prepare_mysql($fields)
+	
+	);
+//	print $sql;
+	mysql_query($sql);
+	}
+	
+	}
+
+
 	function get_table_export_fields($ar,$table) {
 
 		$fields='';
-		$sql=sprintf("select `Table Default Export Fields` from `Table Dimension` where `Table AR`=%s and `Table Name`=%s ",
+		
+		
+		
+		$sql=sprintf("select `Table Key`,`Table Default Export Fields` from `Table Dimension` where `Table AR`=%s and `Table Name`=%s ",
 			prepare_mysql($ar),
 			prepare_mysql($table)
 		);
-		//print $sql;
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
+		
+		
+		
+			$sql=sprintf("select `Fields` from `Table User Export Fields` where `Table Key`=%d and `User Key`=%d",
+			$row['Table Key'],
+			$this->id
+			);
+			$res2=mysql_query($sql);
+		if ($row2=mysql_fetch_assoc($res2)) {
+			$fields=$row2['Fields'];
+		}else{
+		
 			$fields=$row['Table Default Export Fields'];
+			}
+			
 		}
 
 		return $fields;

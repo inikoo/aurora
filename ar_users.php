@@ -24,6 +24,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+
+
 case('forgot_password'):
 	forgot_password();
 	break;

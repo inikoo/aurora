@@ -2271,13 +2271,12 @@ function list_customers() {
 	else
 		$order='`Customer File As`';
 	$sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by C.`Customer Key` order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
-	//print $sql;
+	
 	$adata=array();
 
 
 
 	$result=mysql_query($sql);
-	//print $sql;exit;
 
 	if ($output_type=='ajax') {
 		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2376,7 +2375,11 @@ function list_customers() {
 		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$_data=array();
 			foreach ($fields as $field) {
+				if($field=='Customer Main Address'){
+				$_data[]=preg_replace('#<br\s*/?>#i', "\n", $data['Customer Main XHTML Address']);
+				}else{
 				$_data[]=$data[$field];
+				}
 			}
 			$adata[]=$_data;
 		}

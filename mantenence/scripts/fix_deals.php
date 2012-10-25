@@ -27,6 +27,17 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 
+$sql=sprintf("select * from `Deal Dimension` ");
+$result2a=mysql_query($sql);
+while ($row=mysql_fetch_array($result2a, MYSQL_ASSOC)   ) {
+
+$deal=new Deal($row['Deal Key']);
+$deal->update_number_metadeals();
+
+}
+exit;
+
+// Maybe the rest is ok to do
 
 $sql="delete from `Deal Dimension` where `Deal Code` like '%BOGOF%'   or `Deal Code` like '%FShip%' or  `Deal Code` like '%Vol%'";
 mysql_query($sql);

@@ -474,7 +474,7 @@ class Deal extends DB_Table {
 		mysql_query($sql);
 	}
 
-	function update_numner_metadeals() {
+	function update_number_metadeals() {
 		$number=0;
 		$sql=sprintf("select count(*) as number from `Deal Metadata Dimension` where `Deal Key`=%d ",$this->id);
 		$res=mysql_query($sql);
