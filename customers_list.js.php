@@ -137,10 +137,50 @@ case('export'):
 };
 
 
+function export_table(tipo){
+fields='';
+fields_elements=Dom.getElementsByClassName('field','input','export_field_list');
+ for(var n=0; n<fields_elements.length; n++){
+       if(fields_elements[n].checked){
+       	fields=fields+fields_elements[n].getAttribute('field')+','
+       }
+    }
+if(fields.length>0){
+fields=fields.substring(0, fields.length-1);
+}
+
+var request='tipo=update_table_fields&table_key=' + Dom.get('table_key').value + '&fields=' + 
+						encodeURIComponent(fields);
+	YAHOO.util.Connect.asyncRequest(
+						'POST',
+						'ar_edit_users.php', {
+						    success:function(o) {
+								//alert(o.responseText);
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=list&parent_key='+Dom.get('customer_list_key').value+'&output='+tipo
+
+							 
+						}
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						request
+						
+						);  
+
+
+
+}
+
  function show_export_dialog(e,table_id){
 
-     Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=list&parent_key='+Dom.get('customer_list_key').value+'&output=xls'};
-    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=list&parent_key='+Dom.get('customer_list_key').value+'&output=csv'};
+     Dom.get('export_xls').onclick=function(){export_table('xls')};
+    Dom.get('export_csv').onclick=function (){export_table('csv')};
 
 	region1 = Dom.getRegion('export_data'); 
     region2 = Dom.getRegion('dialog_export'); 

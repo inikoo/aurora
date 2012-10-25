@@ -112,6 +112,11 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
+$smarty->assign('table_key',1);
+
+$export_fields=$fields=explode(",",$user->get_table_export_fields('ar_contacts','customers'));
+$smarty->assign('export_fields',$export_fields);
+
 
 $smarty->display('customers_list.tpl');
 ?>

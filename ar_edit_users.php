@@ -35,6 +35,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('update_table_fields'):
+$data=prepare_values($_REQUEST,array(
+			'table_key'=>array('type'=>'key'),
+			'fields'=>array('type'=>'string'),
+			
+		));
+update_table_fields($data);
+break;
 case('create_customer_user'):
 
 	$data=prepare_values($_REQUEST,array(
@@ -1414,5 +1422,14 @@ function create_customer_user($handle,$customer,$site,$password, $send_email_fla
 
 
 
+
+}
+
+function update_table_fields($data){
+global $user;
+
+$user->update_table_export_field($data['table_key'],$data['fields']);
+$response=array('state'=>200);
+		echo json_encode($response);
 }
 ?>

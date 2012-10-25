@@ -927,8 +927,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    //   ,{key:"to",label:"<?php echo _('Valid Until')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
-	    
-	    this.dataSource4 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=4");
+	   request= "ar_edit_assets.php?tipo=edit_deals&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=4"
+	  // alert(request)
+	    this.dataSource4 = new YAHOO.util.DataSource(request);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";
 	    this.dataSource4.responseSchema = {
