@@ -231,6 +231,20 @@ init_search('products_store');
 YAHOO.util.Event.addListener('new_offer', "click",new_offer);
 
 
+  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+
+	var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms,{table_id:0});
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+    oAutoComp.minQueryLength = 0; 
+    
+    	var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms,{table_id:1});
+    oACDS1.queryMatchContains = true;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0; 
 
 }
 

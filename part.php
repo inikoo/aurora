@@ -223,7 +223,7 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu1',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 $tipo_filter=$_SESSION['state']['part']['transactions']['f_field'];
 $smarty->assign('filter_show1',$_SESSION['state']['part']['transactions']['f_show']);

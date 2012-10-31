@@ -2472,6 +2472,9 @@ class product extends DB_Table {
       Set the currency extra data in the $data array
     */
 	function load_currency_data() {
+	
+	
+	
 		$sql=sprintf('select * from kbase.`Currency Dimension` where `Currency Code`=%s'
 			,prepare_mysql($this->get('Product Currency'))
 		);
@@ -2481,6 +2484,66 @@ class product extends DB_Table {
 			$this->data['Currency Name']=$row['Currency Name'];
 		}
 		mysql_free_result($res);
+	}
+
+	function get_historic_price_corporate_currency($datetime=''){
+	
+	global $corporate_currency;
+	
+	$price=$this->get_historic_price($datetime);
+	
+	if($price!=0 and $this->data['Product Currency']!=$corporate_currency){
+		include_once('class.CurrencyExchange.php');
+		
+		//print "------------------>".$this->data['Product Currency'].'xx'.$corporate_currency;
+		
+		$currency_exchange = new CurrencyExchange($this->data['Product Currency'].$corporate_currency,date('Y-m-d',strtotime($datetime)));
+		$price=$price*$currency_exchange->exchange;	
+	}
+	
+return $price;
+}
+
+	function get_historic_price($datetime=''){
+		
+		
+		$price=0;
+		$sum_price=0;
+		$count_prices=0;
+		
+		$sql=sprintf("select `Product History Price` from `Product History Dimension` where `Product Key`=%d   and `Product History Valid From`<=%s  ",
+		$this->data['Product Current Key'],
+		prepare_mysql($datetime)	
+			);
+		
+		//print "$sql\n";
+		
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_array($res)) {
+			$sum_price+=$row['Product History Price'];
+			$count_prices++;
+		}
+		
+		$sql=sprintf("select `Product History Price` from `Product History Dimension` where `Product Key`!=%d and `Product ID`=%d  and `Product History Valid From` <=%s and `Product History Valid To`>=%s ",
+		$this->data['Product Current Key'],
+			$this->pid,
+				prepare_mysql($datetime),	
+				prepare_mysql($datetime)
+			);
+		// print $sql;
+		$res=mysql_query($sql);
+		$this->historic_keys=array();
+		while ($row=mysql_fetch_array($res)) {
+				$sum_price+=$row['Product History Price'];
+			$count_prices++;
+		}
+
+		if($count_prices){
+			$price=$sum_price/$count_prices;
+		}
+	
+		return $price;
+	
 	}
 
 

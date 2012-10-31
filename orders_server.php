@@ -80,7 +80,8 @@ $smarty->assign('dn_view',$_SESSION['state']['stores']['delivery_notes']['view']
 
 
 $smarty->assign('parent','orders');
-$smarty->assign('title', _('Orders'));
+$smarty->assign('title', _('Orders').' ('._('All Stores').')');
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

@@ -13,12 +13,13 @@
 <div style="clear:both;width:100%;border-bottom:1px solid #ccc;padding-bottom:3px;margin-bottom:0px">
 
   <div class="buttons" style="float:left">
-        <button  style="visibility:hidden" onclick="window.location='store.php?id={$store->id}'" ><img src="art/icons/house.png" alt=""> {t}Store{/t}</button>
    <span class="main_title">{$deal->get('Deal Name')} <span class="id">{$deal->get('Deal Code')}</span></span>
    </div>
 
 
 <div class="buttons">
+      {if $modify}  <button   onclick="window.location='edit_deal.php?id={$deal->id}'" ><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button>{/if}
+
 </div>
 
 

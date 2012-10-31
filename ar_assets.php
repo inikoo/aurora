@@ -7352,7 +7352,8 @@ function list_deals() {
 		$wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
 	elseif ($f_field=='name' and $f_value!='')
 		$wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
-
+elseif ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Deal Code` like '%".addslashes($f_value)."%'";
 
 
 
@@ -7361,15 +7362,17 @@ function list_deals() {
 
 
 	$sql="select count(*) as total from `Deal Dimension`   $where $wheref";
-	//   print $sql;
+	
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(*) as total `Deal Dimension`   $where ";
-		$res=mysql_query($sql);
+		$sql="select count(*) as total_without_filters from `Deal Dimension`   $where ";
+
+	
+	$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			$total_records=$row['total_without_filters'];
@@ -7401,6 +7404,9 @@ function list_deals() {
 		case('name'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this name ")." <b>".$f_value."*</b> ";
 			break;
+			case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this code ")." <b>*".$f_value."*</b> ";
+			break;
 		case('description'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with description like ")." <b>".$f_value."*</b> ";
 			break;
@@ -7411,6 +7417,9 @@ function list_deals() {
 		case('name'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with name like')." <b>".$f_value."*</b>";
 			break;
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with code like')." <b>*".$f_value."*</b>";
+			break;	
 		case('description'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with description like')." <b>".$f_value."*</b>";
 			break;
@@ -7434,12 +7443,12 @@ function list_deals() {
 		$order='`Deal Name`';
 
 
-	$sql="select *  from `Deal Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select *  from `Deal Dimension` $where  $wheref  order by $order $order_direction limit $start_from,$number_results    ";
 	//print $sql;
 	$res = mysql_query($sql);
 
 	$total=mysql_num_rows($res);
-
+$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
@@ -10621,11 +10630,6 @@ function part_transactions() {
 function part_stock_history() {
 	$conf=$_SESSION['state']['part']['stock_history'];
 
-
-
-
-
-
 	if (isset( $_REQUEST['part_sku']))
 		$part_sku=$_REQUEST['part_sku'];
 	else
@@ -10792,13 +10796,15 @@ function part_stock_history() {
 
 	$order='`Date`';
 
-	$sql=sprintf("select  GROUP_CONCAT(distinct '<a href=\"location.php?id=',ISF.`Location Key`,'\">',`Location Code`,'<a/>') as locations,`Date`, ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Quantity On Hand`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref   %s order by $order $order_direction  limit $start_from,$number_results "
+	$sql=sprintf("select  GROUP_CONCAT(distinct '<a href=\"location.php?id=',ISF.`Location Key`,'\">',`Location Code`,'<a/>') as locations,`Date`, ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Quantity On Hand`, ( select  sum(`Value Commercial`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value Commercial`, ( select  sum(`Value At Day Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Day Cost`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref   %s order by $order $order_direction  limit $start_from,$number_results "
+		,$part_sku
+		,$part_sku
 		,$part_sku
 		,$part_sku
 		,$group
 	);
 
-
+//print $sql;
 
 	$result=mysql_query($sql);
 	$adata=array();
@@ -10817,13 +10823,14 @@ function part_stock_history() {
 			$date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
 			break;
 		}
-
 		$adata[]=array(
 
 			'date'=>$date,
 			'locations'=>$data['locations'],
 			'quantity'=>number($data['Quantity On Hand']),
 			'value'=>money($data['Value At Cost']),
+			'end_day_value'=>money($data['Value At Day Cost']),
+			'commercial_value'=>money($data['Value Commercial']),
 			'sold_qty'=>number($data['Quantity Sold']),
 			'in_qty'=>number($data['Quantity In']),
 			'lost_qty'=>number($data['Quantity Lost'])
@@ -11939,7 +11946,7 @@ function list_customers_who_use_deal() {
 
 	if ($order=='orders')
 		$order='orders';
-	if ($order=='location')
+	elseif ($order=='location')
 		$order='`Customer Main Location`';
 	else
 		$order='`Customer Name`';

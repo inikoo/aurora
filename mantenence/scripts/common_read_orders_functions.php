@@ -3635,7 +3635,7 @@ function ci_act_transformations($act_data) {
 		or (preg_match('/Maria Josefa Aparicio Arrebol/i',$act_data['name'])  and preg_match('/Duna/i',$act_data['contact']) )
 		or (preg_match('/Marisa R/i',$act_data['name'])  and preg_match('/Ilusiones/i',$act_data['contact']) )
 		or (preg_match('/Burgui/i',$act_data['name'])  and preg_match('/Burbuja/i',$act_data['contact']) )
-		or (preg_match('/teteria|Herbolario|Perfumeria|Jauja|Herboristeria|El Rincon del Papi|Comercial Fermer.n|Ochun y Yemaya S.C.P.|Pompitas de |Artesan(í|i)a|Esoterico?|Craft Market|Artterapia|Centro De Estetica|Artesano Grabador de Vidrio|Psicolodia Logopedia Montserrat Baulenas|Centro Tiempo Crista|Mais Festa|Pompas de Jab.n|Q.guay\!/i',$act_data['contact']) )
+		or (preg_match('/teteria|Herbolario|Perfumeria|Jauja|Herboristeria|El Rincon del Papi|Commercial Fermer.n|Ochun y Yemaya S.C.P.|Pompitas de |Artesan(í|i)a|Esoterico?|Craft Market|Artterapia|Centro De Estetica|Artesano Grabador de Vidrio|Psicolodia Logopedia Montserrat Baulenas|Centro Tiempo Crista|Mais Festa|Pompas de Jab.n|Q.guay\!/i',$act_data['contact']) )
 		or (preg_match('/^Asociaci.n |^tienda |joyeria |Papeleria|^bazar|^restaurant|^el |^las |^los |^la /i',$act_data['contact']) )
 		or (preg_match('/^(rayas|papel|Artesano|Gipp|La Mar de Cosas|Jabón Jabón|Angelus|Pompas|Jaboneria|Arfin|Samadhi|Zig Zag|Style|Salem|Videotarot|El duende|Sensual|Ariestética|Burbujitas|Chucotattoo|La Misma|D.e|Dunes|Dulce Pina|Naturshop|Amanatur S L|Lady Of the Stones|Splash|Fragancias|Lima Limon)$/i',$act_data['contact']) )
 		or (preg_match('/^Mª /i',$act_data['name']) and  $act_data['contact']!='')

@@ -72,7 +72,7 @@ $js_files=array(
 
 
 $smarty->assign('parent','marketing');
-$smarty->assign('title', _('Store Offers'));
+$smarty->assign('title', _('Store Offers').' ('.$store->data['Store Code'].')');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -97,9 +97,9 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$tipo_filter=$_SESSION['state']['store']['deals']['f_field'];
+$tipo_filter=$_SESSION['state']['store_offers']['offers']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',$_SESSION['state']['store']['deals']['f_value']);
+$smarty->assign('filter_value1',$_SESSION['state']['store_offers']['offers']['f_value']);
 $filter_menu=array(
                  'name'=>array('db_key'=>'name','menu_label'=>_('Offers with name like *<i>x</i>*'),'label'=>_('Name')),
                   'code'=>array('db_key'=>'code','menu_label'=>_('Offers with code like x</i>*'),'label'=>_('Code')),

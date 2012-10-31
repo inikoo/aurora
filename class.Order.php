@@ -918,137 +918,7 @@ class Order extends DB_Table {
 
 
 
-	function get_discounts_old_to_delete($data, $customer_id, $date) {
-
-		$family = array ();
-		foreach ( $data as $item ) {
-			$nodeal [$item ['product_id']] = _ ( 'No deal Available' );
-			if (! isset ( $family [$item ['family_id']] ))
-				$family [$item ['family_id']] = 1;
-			else
-				$family [$item ['family_id']] ++;
-		}
-
-
-		foreach ( $data as $item ) {
-			$sql = sprintf( "select * from `Deal Metadata Dimension` where `Deal Metadata Allowance Type`='Percentage Off' and  `Deal Metadata Allowance Target`='Product' and `Deal Metadata Allowance Target Key`=%d and %s BETWEEN `Deal Metadata Begin Date` and  `Deal Metadata Expiration Date` ", $item ['product_id'], prepare_mysql ( $date ) );
-
-			$result = & $this->db->query ( $sql );
-			while ( $row = $result->fetchRow () ) {
-
-				$metadata = split( ',', $row ['deal allowance metadata'] );
-				if ($row ['deal allowance type'] == 'Percentage Off') {
-					print "percentage off ";
-					if (preg_match( '/Quantity Ordered$/i', $row ['deal terms type'] )) { //Depending on the quantity ordered
-						// Family trigger -------------------------------------------------
-
-
-						if ($row ['deal trigger'] == 'Family' and $row ['deal trigger key'] == $item ['family_id']) {
-							print $family [$item ['family_id']] . '  ' . $metadata [0] . " family target\n";
-							if ($family [$item ['family_id']] >= $metadata [0]) {
-								$deal [$item ['product_id']] [] = array ('description' => $row ['deal description'], 'awollance' => $row ['deal allowance type'], 'discount_amount' => $metadata [1] * $item ['amount'], 'target' => $row ['deal allowance target'], 'trigger' => $row ['deal trigger'], 'terms' => $row ['deal terms type'], 'add' => 0, 'use' => 1 );
-							} else
-								$nodeal [$item ['product_id']] .= '; ' . _ ( 'Not enought products ordered' ) . ". " . $family [$item ['family_id']] . "/" . $metadata [0];
-						} //_______________________________________________________________|
-						// Product selft trigger -------------------------------------------------
-						elseif ($row ['deal trigger'] == 'Product' and $row ['deal trigger key'] == $item ['product_id']) {
-							if ($item ['qty'] >= $metadata [0]) {
-								$deal [$item ['product_id']] [] = array ('description' => $row ['deal description'], 'awollance' => $row ['deal allowance type'], 'discount_amount' => $metadata [1] * $item ['amount'], 'target' => $row ['deal allowance target'], 'trigger' => $row ['deal trigger'], 'terms' => $row ['deal terms type'], 'add' => 0, 'use' => 1 );
-							}
-						} //________________________________________________________________|
-						// Other Product  trigger -------------------------------------------------
-						elseif ($row ['deal trigger'] == 'Product' and $row ['deal trigger key'] != $item ['product_id']) {
-
-							if (isset ( $data [$row ['deal trigger key']] ))
-								$qty = $data [$row ['deal trigger key']] ['qty'];
-							else
-								$qty = 0;
-
-							if ($qty >= $metadata [0]) {
-								$deal [$item ['product_id']] [] = array ('description' => $row ['deal description'], 'awollance' => $row ['deal allowance type'], 'discount_amount' => $metadata [1] * $item ['amount'], 'target' => $row ['deal allowance target'], 'trigger' => $row ['deal trigger'], 'terms' => $row ['deal terms type'], 'add' => 0, 'use' => 1 );
-							}
-						} //________________________________________________________________|
-
-
-					} //end Depending quantity ordered
-					if (preg_match( '/Order Interval$/i', $row ['deal terms type'] )) { //Depending on the order interval
-
-
-						//get order interval;
-						$customer = new Customer ( $customer_id );
-						if ($customer->get ( 'order within', $metadata [0] )) {
-							$deal [$item ['product_id']] [] = array ('description' => $row ['deal description'], 'discount_amount' => $metadata [1] * $item ['amount'] );
-						} else {
-							if ($customer->get ( 'customer orders' ) == 0)
-								$nodeal [$item ['product_id']] .= '; ' . _ ( "No previous orders" );
-							else
-								$nodeal [$item ['product_id']] .= '; ' . _ ( "Last order not within" ) . ' ' . $metadata [0];
-						}
-
-					} //end Depending ordwer interval;
-
-
-				} else if ($row ['deal allowance type'] == 'Get Free') {
-
-						if ($row ['deal trigger'] == 'Product' and $row ['deal trigger key'] != $item ['product_id']) {
-							$valid_orders = floor( $item ['qty'] / $metadata [0] );
-							$free_qty = $valid_orders * $metadata [1];
-							$deal [$item ['product_id']] [] = array ('target' => $row ['deal allowance target type'], 'trigger' => $row ['deal trigger'], 'terms' => $row ['deal terms type'], 'add' => $free_qty, 'discount_amount' => $free_qty * $item ['case_price'] );
-						}
-
-					} //end Get Free
-
-
-			}
-
-		}
-
-		foreach ( $nodeal as $key => $value ) {
-			if (preg_match( '/\;/', $value ))
-				$nodeal [$key] = _trim ( preg_replace( '/.*\|\;/', '', $value ) );
-			else
-				$nodeal [$key] = _trim ( preg_replace( '/\|/', '', $value ) );
-		}
-
-		foreach ( $deal as $key => $value ) {
-			if ($value ['allowance'] == 'Percentage Off') {
-				if ($data [$key] ['discount'] < $value ['discount_amount'])
-					$data [$key] ['discount'] = $value ['discount_amount'];
-
-			}
-
-		}
-		foreach ( $deal as $key => $value ) {
-			if ($value ['allowance'] == 'Get Free') {
-				if ($data [$key] ['get_free'] < $value ['add'])
-					$data [$key] ['get_free'] = $value ['add'];
-
-			}
-
-		}
-
-
-
-
-
-		if (count( $deal ) > 0)
-			exit ('Count deal is zero');
-
-		//       $sql=sprintf("select * from `Deal Metadata Dimension` where `Allowance Type`='Percentage Off' and  `Triger`='Product' and `Trigger Key`=%d ",$item['product_id']);
-		//       $result =& $this->db->query($sql);
-		//       while($row=$result->fetchRow()){
-		//  $deal=new DealMetadataMetadataMetadataMetadata($row['deal key']);
-
-
-		//  $discount_function = create_function("$data,$customer_id,$date", $row['deal metadata']);
-		//  $discount[$item['product_id']][$row['deal key']]['discount']=$discount_function($data,$customer,$date);
-		//  $discount[$item['product_id']][$row['deal key']]['deal key']=$row['deal key'];
-		//       }
-
-
-		//     }
-		return $data;
-	}
+	
 
 	function create_order_header() {
 
@@ -3259,11 +3129,234 @@ class Order extends DB_Table {
 
 	}
 
-	function update_discounts() {
+
+
+function get_allowances($deal_metadata){
+
+switch ($deal_metadata['Deal Metadata Allowance Type']) {
+				case('Percentage Off'):
+					switch ($deal_metadata['Deal Metadata Allowance Target']) {
+					case('Family'):
+						
+$family_key=$deal_metadata['Deal Metadata Allowance Target Key'];
+							$percentage=$deal_metadata['Deal Metadata Allowance'];
+							if (isset($this->allowance['Family Percentage Off'][$family_key])) {
+								if ($this->allowance['Family Percentage Off'][$family_key]['Percentage Off']<$percentage)
+									$this->allowance['Family Percentage Off'][$family_key]['Percentage Off']=$percentage;
+							} else
+								$this->allowance['Family Percentage Off'][$family_key]=array(
+									'Family Key'=>$family_key,
+									'Percentage Off'=>$percentage,
+									'Deal Metadata Key'=>$deal_metadata['Deal Metadata Key'],
+									'Deal Info'=>$deal_metadata['Deal Metadata Name'].' '.$deal_metadata['Deal Metadata Allowance Description']
+								);
+						
+
+						break;
+					}
+
+
+					break;
+				}
+
+}
+
+function update_discounts_family_tigger() {
 
 //print "\nHola\n";
 		$this->allowance=array('Family Percentage Off'=>array());
 		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
+
+
+
+		//Get allowances doe to order tiggers ()
+
+
+
+		$sql=sprintf("select `Product Family Key`,`Product Code`,`Order Transaction Fact Key`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d group by `Product Family Key`",
+			$this->id);
+		$res_lines=mysql_query($sql);
+		while ($row_lines=mysql_fetch_array($res_lines)) {
+			//     print "\n".$row_lines['Product Code']."\n";
+
+
+			//  $line_number=$row_lines['Order Transaction Fact Key'];
+			$product_key=$row_lines['Product Key'];
+			$qty=$row_lines['Order Quantity'];
+			$amount=$row_lines['Order Transaction Gross Amount'];
+
+			//  print "$line_number,$product_key,$qty,$amount\n";
+
+			//$product=new Product('key',$product_key);
+			$family_key=$row_lines['Product Family Key'];
+
+            
+
+			$deals_metadata=array();
+			$discounts=0;
+
+			$sql=sprintf("select * from `Deal Metadata Dimension` DM left join `Deal Dimension` D on  (D.`Deal Key`=DM.`Deal Key`)   where `Deal Metadata Trigger`='Family' and `Deal Metadata Trigger Key` =%d  and `Deal Metadata Status`='Active' ",
+				$family_key
+			);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				$deals_metadata[$row['Deal Metadata Key']]=$row;
+			}
+
+		
+	
+
+
+			foreach ($deals_metadata as $deal_metadata ) {
+
+				$terms_ok=false;
+				$this->deals['Family']['Deal']=true;
+					$this->deals['Family']['Deal Multiplicity']++;
+										$this->deals['Family']['Terms Multiplicity']++;
+
+
+				//'Order Total Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Total Amount','Order Number','Total Amount AND Shipping Country','Total Amount AND Order Number','Voucher'
+				
+				switch ($deal_metadata['Deal Metadata Terms Type']) {
+				
+				case('Order Interval'):
+				
+					$sql=sprintf("select count(*) as num from `Order Dimension` where `Customer Key`=%d and `Order Key`!=%d and `Order Date`>=%s",
+					$this->data['Order Customer Key'],
+					$this->id,
+					prepare_mysql(date('Y-m-d',strtotime("now -1 month")).' 00:00:00')
+					);
+					$res2=mysql_query($sql);
+					if ($_row=mysql_fetch_array($res2)) {
+						if($_row['num']>0){
+							$this->deals['Family']['Terms']=true;
+						 $this->get_allowances($deal_metadata);
+						}
+					}
+				break;
+				case('Family Quantity Ordered'):
+
+
+					
+					$qty_family=0;
+					$sql=sprintf('select sum(`Order Quantity`) as qty  from `Order Transaction Fact` OTF where `Order Key`=%d and `Product Family Key`=%d '
+						,$this->id
+						,$family_key
+					);
+
+					$res2=mysql_query($sql);
+					if ($deal_metadata2=mysql_fetch_array($res2)) {
+						$qty_family=$deal_metadata2['qty'];
+					}
+					if ($qty_family>=$deal_metadata['Deal Metadata Terms']) {
+						$terms_ok=true;;
+						$this->deals['Family']['Terms']=true;
+						$this->get_allowances($deal_metadata);
+					} 
+					
+				
+
+					break;
+				}
+
+
+				
+			}
+
+
+			//if ($row_lines['Product Code']=='ABPX-06') {
+			//    exit;
+			//  }
+			//    print_r($this->allowance['Family Percentage Off']);
+		}
+
+
+
+		// Applying allowances
+
+		$sql=sprintf('update `Order Transaction Fact`  set  `Order Transaction Total Discount Amount`=0 where `Order Key`=%d  '
+			,$this->id
+		);
+		mysql_query($sql);
+		$sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d and `Deal Metadata Key`!=0  ",$this->id);
+		mysql_query($sql);
+
+
+
+//print_r($this->allowance['Family Percentage Off']);
+
+		foreach ($this->allowance['Family Percentage Off'] as $allowance_data) {
+
+
+			//$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Transaction Total Discount Amount`=`Order Transaction Gross Amount`*%f where `Order Key`=%d and `Product Family Key`=%d '
+			// ,$allowance_data['Percentage Off']
+			//  ,$this->id
+			//  ,$allowance_data['Family Key']
+			// );
+			// mysql_query($sql);
+
+			$sql=sprintf('select OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount` from  `Order Transaction Fact` OTF  where `Order Key`=%d and `Product Family Key`=%d '
+				,$this->id
+				,$allowance_data['Family Key']
+			);
+
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_array($res)) {
+				$sql=sprintf("insert into `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Deal Metadata Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bunus Quantity`) values (%d,%d,%d,%d,%s,%f,%f,0)"
+					,$row['Order Transaction Fact Key']
+					,$this->id
+
+					,$row['Product Key']
+					,$allowance_data['Deal Metadata Key']
+
+					,prepare_mysql($allowance_data['Deal Info'])
+					,$row['Order Transaction Gross Amount']*$allowance_data['Percentage Off']
+					,$allowance_data['Percentage Off']
+				);
+				mysql_query($sql);
+			//	print "$sql\n";
+			}
+		}
+
+		$sql=sprintf("select * from `Order Transaction Deal Bridge` where `Order Key`=%d  ",$this->id);
+		$res=mysql_query($sql);
+		//print $sql;
+		while ($row=mysql_fetch_assoc($res)) {
+			if ( $row['Fraction Discount']>0  ) {
+				$sql=sprintf('update `Order Transaction Fact` OTF  set  `Order Transaction Total Discount Amount`=`Order Transaction Gross Amount`*%f where `Order Transaction Fact Key`=%d '
+					,$row['Fraction Discount']
+					,$row['Order Transaction Fact Key']
+				);
+				//print $sql;
+				mysql_query($sql);
+			}
+		}
+
+
+
+
+
+
+
+
+	}
+
+function update_discounts(){
+
+$this->update_discounts_family_tigger();
+}
+
+	function update_discounts_old() {
+
+//print "\nHola\n";
+		$this->allowance=array('Family Percentage Off'=>array());
+		$this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
+
+
+
+		//Get allowances doe to order tiggers ()
+
+
 
 		$sql=sprintf("select `Product Code`,`Order Transaction Fact Key`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d",
 			$this->id);
@@ -3353,9 +3446,6 @@ class Order extends DB_Table {
 			while ($row=mysql_fetch_assoc($res)) {
 				$deals_metadata[$row['Deal Metadata Key']]=$row;
 			}
-
-
-			// print $sql;
 
 
 

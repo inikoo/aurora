@@ -177,8 +177,16 @@ window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=list&paren
 
 }
 
- function show_export_dialog(e,table_id){
+function show_export_fields_dialog(){
+Dom.setStyle('show_fields_tr','display','none')
+Dom.setStyle('export_field_list','display','')
 
+
+}
+
+ function show_export_dialog(e,table_id){
+Dom.setStyle('show_fields_tr','display','')
+Dom.setStyle('export_field_list','display','none')
      Dom.get('export_xls').onclick=function(){export_table('xls')};
     Dom.get('export_csv').onclick=function (){export_table('csv')};
 

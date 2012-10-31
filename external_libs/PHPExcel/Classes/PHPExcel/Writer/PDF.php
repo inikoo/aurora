@@ -2,7 +2,7 @@
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2010 PHPExcel
+ * Copyright (c) 2006 - 2012 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,61 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * @category   PHPExcel
- * @package    PHPExcel_Writer
- * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.7.2, 2010-01-11
+ * @category	PHPExcel
+ * @package		PHPExcel_Writer
+ * @copyright	Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @license		http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
+ * @version		1.7.8, 2012-10-12
  */
-
-
-/** PHPExcel root directory */
-if (!defined('PHPEXCEL_ROOT')) {
-	/**
-	 * @ignore
-	 */
-	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../');
-}
-
-/** PHPExcel_IWriter */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/IWriter.php';
-
-/** PHPExcel_Writer_HTML */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/HTML.php';
-
-/** PHPExcel_Cell */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
-
-/** PHPExcel_RichText */
-require_once PHPEXCEL_ROOT . 'PHPExcel/RichText.php';
-
-/** PHPExcel_Shared_Drawing */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Drawing.php';
-
-/** PHPExcel_Shared_File */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/File.php';
-
-/** PHPExcel_HashTable */
-require_once PHPEXCEL_ROOT . 'PHPExcel/HashTable.php';
-
-/** PHPExcel_Shared_PDF */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/PDF.php';
 
 
 /**
  * PHPExcel_Writer_PDF
  *
- * @category   PHPExcel
- * @package    PHPExcel_Writer
- * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @category	PHPExcel
+ * @package		PHPExcel_Writer
+ * @copyright	Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
-class PHPExcel_Writer_PDF extends PHPExcel_Writer_HTML implements PHPExcel_Writer_IWriter {
-	/**
-	 * Temporary storage directory
-	 *
-	 * @var string
-	 */
-	private $_tempDir = '';
+class PHPExcel_Writer_PDF {
+
+    private $_renderer = NULL;
 
 	/**
 	 * Create a new PHPExcel_Writer_PDF
@@ -80,105 +43,34 @@ class PHPExcel_Writer_PDF extends PHPExcel_Writer_HTML implements PHPExcel_Write
 	 * @param 	PHPExcel	$phpExcel	PHPExcel object
 	 */
 	public function __construct(PHPExcel $phpExcel) {
-		parent::__construct($phpExcel);
-		$this->setUseInlineCss(true);
-		$this->_tempDir = PHPExcel_Shared_File::sys_get_temp_dir();
-	}
 
-	/**
-	 * Save PHPExcel to file
-	 *
-	 * @param 	string 		$pFileName
-	 * @throws 	Exception
-	 */
-	public function save($pFilename = null) {
-		// garbage collect
-		$this->_phpExcel->garbageCollect();
-
-		$saveArrayReturnType = PHPExcel_Calculation::getArrayReturnType();
-		PHPExcel_Calculation::setArrayReturnType(PHPExcel_Calculation::RETURN_ARRAY_AS_VALUE);
-
-		// Open file
-		$fileHandle = fopen($pFilename, 'w');
-		if ($fileHandle === false) {
-			throw new Exception("Could not open file $pFilename for writing.");
-		}
-		
-		// Set PDF
-		$this->_isPdf = true;
-
-		// Build CSS
-		$this->buildCSS(true);
-
-		// Generate HTML
-		$html = '';
-		//$html .= $this->generateHTMLHeader(false);
-		$html .= $this->generateSheetData();
-		//$html .= $this->generateHTMLFooter();
-
-    	// Default PDF paper size
-    	$paperSize = 'A4';
-    	$orientation = 'P';
-    	    	
-    	// Check for overrides
-		if (is_null($this->getSheetIndex())) {
-			$orientation = $this->_phpExcel->getSheet(0)->getPageSetup()->getOrientation() == 'landscape' ? 'L' : 'P';
-		} else {
-			$orientation = $this->_phpExcel->getSheet($this->getSheetIndex())->getPageSetup()->getOrientation() == 'landscape' ? 'L' : 'P';
+		$pdfLibraryName = PHPExcel_Settings::getPdfRendererName();
+		if (is_null($pdfLibraryName)) {
+			throw new Exception("PDF Rendering library has not been defined.");
 		}
 
-		// Create PDF
-		$pdf = new TCPDF($orientation, 'pt', $paperSize);
-		$pdf->setPrintHeader(false);
-		$pdf->setPrintFooter(false);
-		$pdf->AddPage();
-
-		// Set the appropriate font
-		$pdf->SetFont('freesans');
-		//$pdf->SetFont('arialunicid0-chinese-simplified');
-		//$pdf->SetFont('arialunicid0-chinese-traditional');
-		//$pdf->SetFont('arialunicid0-korean');
-		//$pdf->SetFont('arialunicid0-japanese');
-		$pdf->writeHTML($html);
-
-		// Document info
-		$pdf->SetTitle($this->_phpExcel->getProperties()->getTitle());
-		$pdf->SetAuthor($this->_phpExcel->getProperties()->getCreator());
-		$pdf->SetSubject($this->_phpExcel->getProperties()->getSubject());
-		$pdf->SetKeywords($this->_phpExcel->getProperties()->getKeywords());
-		$pdf->SetCreator($this->_phpExcel->getProperties()->getCreator());
-
-		// Write to file
-		fwrite($fileHandle, $pdf->output($pFilename, 'S'));
-
-		// Close file
-		fclose($fileHandle);
-
-		PHPExcel_Calculation::setArrayReturnType($saveArrayReturnType);
-	}
-
-	/**
-	 * Get temporary storage directory
-	 *
-	 * @return string
-	 */
-	public function getTempDir() {
-		return $this->_tempDir;
-	}
-
-	/**
-	 * Set temporary storage directory
-	 *
-	 * @param 	string	$pValue		Temporary storage directory
-	 * @throws 	Exception	Exception when directory does not exist
-	 * @return PHPExcel_Writer_PDF
-	 */
-	public function setTempDir($pValue = '') {
-		if (is_dir($pValue)) {
-			$this->_tempDir = $pValue;
-		} else {
-			throw new Exception("Directory does not exist: $pValue");
+		$pdfLibraryPath = PHPExcel_Settings::getPdfRendererPath();
+		if (is_null($pdfLibraryName)) {
+			throw new Exception("PDF Rendering library path has not been defined.");
 		}
-		return $this;
+		$includePath = str_replace('\\','/',get_include_path());
+		$rendererPath = str_replace('\\','/',$pdfLibraryPath);
+		if (strpos($rendererPath,$includePath) === false) {
+			set_include_path(get_include_path() . PATH_SEPARATOR . $pdfLibraryPath);
+		}
+
+		$rendererName = 'PHPExcel_Writer_PDF_'.$pdfLibraryName;
+		$this->_renderer = new $rendererName($phpExcel);
 	}
+
+
+    public function __call($name, $arguments)
+    {
+        if ($this->_renderer === NULL) {
+			throw new Exception("PDF Renderer has not been defined.");
+        }
+
+        return call_user_func_array(array($this->_renderer,$name),$arguments);
+    }
+
 }

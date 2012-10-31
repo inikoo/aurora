@@ -117,16 +117,17 @@ class DealMetadata extends DB_Table {
 
 	function create($data) {
 
+
+
+
 		if ($data['Deal Metadata Trigger Key']=='')
 			$data['Deal Metadata Trigger Key']=0;
-		// print "-----------\n";print_r($data);
 		if ($data['Deal Metadata Allowance']=='' and $data['Deal Metadata Allowance Lock']=='No') {
-			// print "xcaca";
 			$data['Deal Metadata Allowance']=DealMetadata::parse_allowance_metadata($data['Deal Metadata Allowance Type'],$data['Deal Metadata Allowance Description']);
-		}      if ($data['Deal Metadata Terms']=='' and $data['Deal Metadata Terms Lock']=='No')
+		}
+		if ($data['Deal Metadata Terms']=='' and $data['Deal Metadata Terms Lock']=='No')
 			$data['Deal Metadata Terms']=DealMetadata::parse_term_metadata($data['Deal Metadata Terms Type'],$data['Deal Metadata Terms Description']);
-		///   print_r($data);
-		//   exit;
+
 		$keys='(';
 		$values='values(';
 		foreach ($data as $key=>$value) {
@@ -144,7 +145,7 @@ class DealMetadata extends DB_Table {
 			$this->id = mysql_insert_id();
 			$this->get_data('id',$this->id);
 		} else {
-			print "Error can not create deal  $sql\n";
+			print "Error can not create deal metadata $sql\n";
 			exit;
 
 		}
@@ -449,8 +450,7 @@ class DealMetadata extends DB_Table {
 
 	}
 
-	/*Function: update_field_switcher
-   */
+
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
@@ -462,7 +462,7 @@ class DealMetadata extends DB_Table {
 			break;
 		default:
 			$base_data=$this->base_data();
-			
+
 			if (array_key_exists($field,$base_data)) {
 				$this->update_field($field,$value,$options);
 			}
@@ -571,30 +571,65 @@ class DealMetadata extends DB_Table {
 
 
 	}
-	
-	function update_status($value){
-	
+
+	function update_status($value) {
+
 		$sql=sprintf("update `Deal Metadata Dimension` set `Deal Metadata Status`=%s where `Deal Metadata Key`=%d"
-				,prepare_mysql($value)
-				,$this->id
-			);
-			mysql_query($sql);
-			$this->data['Deal Metadata Status']=$value;
-	$deal= New Deal($this->data['Deal Key']);
-	$deal->update_status_from_metadata();
-	
+			,prepare_mysql($value)
+			,$this->id
+		);
+		mysql_query($sql);
+		$this->data['Deal Metadata Status']=$value;
+		
+		if($this->data['Deal Metadata Status']=='Active'){
+			$this->update_field_switcher('Deal Metadata Public','Yes');
+		}
+		
+		$deal= new Deal($this->data['Deal Key']);
+		$deal->update_status_from_metadata();
+
 	}
-	
-	function update($data,$options=''){
-	
-	$this->update_field_switcher('Deal Metadata Name',$data['Deal Metadata Name']);
-	$this->update_allowance($data['Allowances']);
-	$this->update_term($data['Terms']);
-	
-	
-	
+
+	function update($data,$options='') {
+
+
+
+
+
+		if ($this->data['Deal Metadata Public']=='No') {
+
+			$this->update_field_switcher('Deal Metadata Name',$data['Deal Metadata Name']);
+			$this->update_allowance($data['Allowances']);
+			$this->update_term($data['Terms']);
+		}else {
+		
+		
+			$old_metadata=new DealMetadata($this->id);
+			$deal_metadata_data=$this->data;
+						$old_metadata->update_field_switcher('Deal Metadata Record Type','Historic');
+
+			$old_metadata->update_field_switcher('Deal Metadata Expiration Date',gmdate('Y-m-d H:i:s'));
+
+			if($this->data['Deal Metadata Status']!='Active'){
+				$deal_metadata_data['Deal Metadata Public']='No';
+			}
+						$deal_metadata_data['Deal Metadata Expiration Date']='';
+
+			$deal_metadata_data['Deal Metadata Total Acc Used Orders']=0;
+			$deal_metadata_data['Deal Metadata Total Acc Used Customers']=0;
+			unset($deal_metadata_data['Deal Metadata Key']);
+			$deal_metadata_data['Deal Metadata Begin Date']=gmdate('Y-m-d H:i:s');
+			$this->create($deal_metadata_data);
+			$this->update_allowance($data['Allowances']);
+			$this->update_term($data['Terms']);
+			
+			
+			
+		}
+
+
 	}
-	
+
 }
 
 ?>

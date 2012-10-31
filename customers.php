@@ -177,7 +177,7 @@ $js_files=array(
 
 
 $smarty->assign('parent','customers');
-$smarty->assign('title', _('Customers'));
+$smarty->assign('title', _('Customers').' ('.$store->data['Store Code'].')');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

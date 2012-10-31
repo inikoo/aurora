@@ -2561,15 +2561,15 @@ function list_deals_for_edition() {
 	$_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
 	if ($parent=='store')
-		$where=sprintf("where  DM.`Store Key`=%d and DM.`Deal Metadata Trigger`='Order'    ",$parent_key);
+		$where=sprintf("where `Deal Metadata Record Type`='Normal' and  DM.`Store Key`=%d and DM.`Deal Metadata Trigger`='Order'    ",$parent_key);
 	elseif ($parent=='department')
-		$where=sprintf("where    DM.`Deal Metadata Trigger`='Department' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
+		$where=sprintf("where   `Deal Metadata Record Type`='Normal' and DM.`Deal Metadata Trigger`='Department' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='family')
-		$where=sprintf("where    DM.`Deal Metadata Trigger`='Family' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
+		$where=sprintf("where  `Deal Metadata Record Type`='Normal' and  DM.`Deal Metadata Trigger`='Family' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
 	elseif ($parent=='product')
-		$where=sprintf("where    DM.`Deal Metadata Trigger`='Product' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
+		$where=sprintf("where  `Deal Metadata Record Type`='Normal'  and DM.`Deal Metadata Trigger`='Product' and  DM.`Deal Metadata Trigger Key`=%d   ",$parent_key);
 	else
-		$where=sprintf("where true ");;
+		$where=sprintf("where `Deal Metadata Record Type`='Normal' ");;
 
 
 
@@ -2648,7 +2648,7 @@ function list_deals_for_edition() {
 
 	$sql="select `Deal Number Metadata Children`,`Deal Metadata Expiration Date`,`Deal Description`,D.`Deal Key`,DM.`Deal Metadata Trigger`,`Deal Metadata Key`,DM.`Deal Metadata Name`,D.`Deal Name`
 	from `Deal Metadata Dimension` DM left join `Deal Dimension`D  on (DM.`Deal Key`=D.`Deal Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
-	// print $sql;
+	//print $sql;
 	$res = mysql_query($sql);
 	$total=mysql_num_rows($res);
 	$adata=array();
