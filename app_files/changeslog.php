@@ -6646,6 +6646,10 @@ CREATE TABLE `Table User Export Fields` (
 INDEX ( `Table Key` , `User Key` )
 ) ENGINE = MYISAM ;
 
- ALTER TABLE `Table User Export Fields` ADD UNIQUE (`Table Key` ,`User Key` ,`Fields` ( 900 ));
-
-
+ALTER TABLE `Deal Metadata Dimension` DROP `Deal Metadata Active`;
+ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Record Type` ENUM( 'Normal', 'Historic' ) NOT NULL DEFAULT 'Normal' AFTER `Deal Key` ,ADD INDEX ( `Deal Metadata Record Type` ) ;
+ update `Deal Metadata Dimension` set `Deal Metadata Public`='Yes';
+ ALTER TABLE `Deal Dimension` CHANGE `Deal Terms Type` `Deal Terms Type` ENUM( 'Order Total Net', 'Order Total Net Amount AND Order Number', 'Order Items Net Amount AND Shipping Country', 'Order Interval', 'Product Quantity Ordered', 'Family Quantity Ordered', 'Total Amount', 'Order Number', 'Total Amount AND Shipping Country', 'Total Amount AND Order Number', 'Voucher' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Amount` `Inventory Transaction Amount` DECIMAL( 12, 3 ) NULL DEFAULT NULL ;
+ALTER TABLE `Inventory Spanshot Fact` ADD `Value At Day Cost` DECIMAL( 9, 2 ) NULL DEFAULT NULL AFTER `Value At Cost` ;
+ALTER TABLE `Inventory Spanshot Fact` CHANGE `Value Comercial` `Value Commercial` DECIMAL( 9, 2 ) NULL DEFAULT NULL ;

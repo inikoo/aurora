@@ -2,42 +2,51 @@
 /**
  * PHPExcel
  *
- * Copyright (C) 2006 - 2010 PHPExcel
+ * Copyright (C) 2006 - 2012 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category   PHPExcel
  * @package    PHPExcel
- * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.7.2, 2010-01-11
+ * @version    1.7.8, 2012-10-12
  */
 
 /** Error reporting */
 error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+date_default_timezone_set('Europe/London');
 
-/** PHPExcel */
+if (PHP_SAPI == 'cli')
+	die('This example should only be run from a Web Browser');
+
+/** Include PHPExcel */
 require_once '../Classes/PHPExcel.php';
 
-/** PHPExcel_IOFactory */
-require_once '../Classes/PHPExcel/IOFactory.php';
 
 // Create new PHPExcel object
 $objPHPExcel = new PHPExcel();
 
-// Set properties
+
+require_once '../Classes/PHPExcel/Cell/AdvancedValueBinder.php';
+PHPExcel_Cell::setValueBinder( new PHPExcel_Cell_AdvancedValueBinder() );
+
+
+// Set document properties
 $objPHPExcel->getProperties()->setCreator("Maarten Balliauw")
 							 ->setLastModifiedBy("Maarten Balliauw")
 							 ->setTitle("Office 2007 XLSX Test Document")
@@ -46,20 +55,22 @@ $objPHPExcel->getProperties()->setCreator("Maarten Balliauw")
 							 ->setKeywords("office 2007 openxml php")
 							 ->setCategory("Test result file");
 
-
+$a= "He\nllox";
 // Add some data
 $objPHPExcel->setActiveSheetIndex(0)
-            ->setCellValue('A1', 'Hello')
+            ->setCellValue('A1',$a)
             ->setCellValue('B2', 'world!')
             ->setCellValue('C1', 'Hello')
             ->setCellValue('D2', 'world!');
+
+//$objPHPExcel->getActiveSheet()->getStyle('A1')->getAlignment()->setWrapText(true);
 
 // Miscellaneous glyphs, UTF-8
 $objPHPExcel->setActiveSheetIndex(0)
             ->setCellValue('A4', 'Miscellaneous glyphs')
             ->setCellValue('A5', 'éàèùâêîôûëïüÿäöüç');
 
-// Rename sheet
+// Rename worksheet
 $objPHPExcel->getActiveSheet()->setTitle('Simple');
 
 
@@ -73,5 +84,5 @@ header('Content-Disposition: attachment;filename="01simple.xlsx"');
 header('Cache-Control: max-age=0');
 
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-$objWriter->save('php://output'); 
+$objWriter->save('php://output');
 exit;

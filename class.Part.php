@@ -1609,9 +1609,38 @@ $this->update_main_state();
 
 	}
 
-	function get_comercial_value($date='') {
+	function get_commercial_value($datetime='') {
+	
 
-		return 0;
+	
+		$commercial_value=0;
+		$sum_commercial_value=0;
+		$count_commercial_value_samples=0;
+	
+		$product_part_lists=$this->get_product_part_list($datetime);
+		
+	//print_r($product_ids);		
+		
+		foreach($product_part_lists as $product_part_list){
+	
+			$product=New Product('pid',$product_part_list['Product ID']);
+			$price=$product->get_historic_price_corporate_currency($datetime)/$product_part_list['Parts Per Product'];
+			$_price=$product->get_historic_price($datetime)/$product_part_list['Parts Per Product'];
+		//	print "**** ".$product->data['Product Name']." $price  $_price\n";
+			
+			if($price>0){
+					$sum_commercial_value+=$price;
+		$count_commercial_value_samples++;
+			}
+		
+		}
+		
+		
+		if($count_commercial_value_samples){
+		$commercial_value=$sum_commercial_value/$count_commercial_value_samples;
+		}
+		
+		return $commercial_value;
 	}
 
 
@@ -2296,6 +2325,8 @@ $this->update_main_state();
 		mysql_query($sql);
 	}
 
+
+
 	function get_unit_cost($date=false) {
 
 
@@ -2609,16 +2640,14 @@ $this->update_main_state();
 
 		if (!$date) {
 			return $this->get_current_product_ids();
-
 		}
 
-		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and ( `Product Part Valid From`>=%s  and `Product Part Most Recent`='Yes' ) or (`Product Part Valid From`>=%s  and `Product Part Valid From`<=%s and `Product Part Most Recent`='No' ) "
+		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and ( `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes' ) or (`Product Part Valid From`<=%s  and `Product Part Valid From`>=%s and `Product Part Most Recent`='No' ) "
 			,$this->sku
 			,prepare_mysql($date)
 			,prepare_mysql($date)
 			,prepare_mysql($date)
 		);
-
 		$res=mysql_query($sql);
 		$product_ids=array();
 		while ($row=mysql_fetch_array($res)) {
@@ -2626,10 +2655,6 @@ $this->update_main_state();
 		}
 
 		return $product_ids;
-
-
-
-
 	}
 
 	function get_current_product_ids() {
@@ -2642,6 +2667,44 @@ $this->update_main_state();
 		}
 		return $product_ids;
 	}
+
+
+
+
+
+
+	function get_product_part_list($date=false) {
+
+		if (!$date) {
+			return $this->get_current_product_ids();
+		}
+
+		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and ( `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes' ) or (`Product Part Valid From`<=%s  and `Product Part Valid From`>=%s and `Product Part Most Recent`='No' ) "
+			,$this->sku
+			,prepare_mysql($date)
+			,prepare_mysql($date)
+			,prepare_mysql($date)
+		);
+		$res=mysql_query($sql);
+		$product_part_list=array();
+		while ($row=mysql_fetch_array($res)) {
+			$product_part_list[$row['Product Part Key']]= $row;
+		}
+
+		return $product_part_list;
+	}
+
+	function get_current_product_part_list() {
+		$sql=sprintf("select * from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' ",$this->data['Part SKU']);
+		// print $sql;
+		$result=mysql_query($sql);
+		$product_part_list=array();
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+			$product_part_list[$row['Product Part Key']]= $row;
+		}
+		return $product_part_list;
+	}
+
 
 
 

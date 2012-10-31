@@ -1416,7 +1416,16 @@ $default_state=array(
 			'f_value'=>'',
 			'f_show'=>false,
 			'elements'=>array()
-		)
+		),
+			'edit_deals_metadata'=>array(
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+		),
 	),
 
 
@@ -3587,6 +3596,15 @@ $default_state=array(
 			)
 
 
+		),
+				'edit_deals'=>array(
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'','f_show'=>false,
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
 		),
 
 	),

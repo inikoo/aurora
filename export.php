@@ -22,7 +22,11 @@ $data=$results['resultset']['data'];
 
 require_once 'external_libs/PHPExcel/Classes/PHPExcel.php';
 require_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
+
 $objPHPExcel = new PHPExcel();
+require_once 'external_libs/PHPExcel/Classes/PHPExcel/Cell/AdvancedValueBinder.php';
+PHPExcel_Cell::setValueBinder( new PHPExcel_Cell_AdvancedValueBinder() );
+
 
 $objPHPExcel->getProperties()->setCreator($creator)
 ->setLastModifiedBy($creator)
@@ -63,6 +67,9 @@ case('csv'):
 	->save('php://output');
 	break;
 case('xlsx'):
+
+
+
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 	header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
 	header('Cache-Control: max-age=0');

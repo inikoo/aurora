@@ -2376,7 +2376,7 @@ function list_customers() {
 			$_data=array();
 			foreach ($fields as $field) {
 				if($field=='Customer Main Address'){
-				$_data[]=preg_replace('#<br\s*/?>#i', "\n", $data['Customer Main XHTML Address']);
+				$_data[]=preg_replace('#<br\s*/?>#i', "\r\n", $data['Customer Main XHTML Address']);
 				}else{
 				$_data[]=$data[$field];
 				}

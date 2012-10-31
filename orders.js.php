@@ -672,7 +672,6 @@ Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 Dom.setStyle(['branch_type_'+this.id,'branch_type2_'+this.id],'display','')
-
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-view&value='+this.id ,{});
 	   
 	}   

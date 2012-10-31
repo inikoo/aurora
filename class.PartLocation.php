@@ -525,26 +525,37 @@ class PartLocation extends DB_Table {
 	function get_unit_value($date=false) {
 
 		if (!$date) {
-			$date=gmdate("Y-m-d H:i:s");
+			return $this-> get_current_unit_value();
 
 		}
 
 
-		$old_qty=$this->data['Quantity On Hand'];
-		$old_value=$this->data['Stock Value'];
+		list($qty,$value,$in_process)=$this->get_stock($date);
 
-		if (is_numeric($old_value) and is_numeric($old_qty) and   $old_qty!=0   ) {
-			return $old_value/$old_qty;
+			if (is_numeric($value) and is_numeric($qty) and   $qty!=0   ) {
+			return $value/$qty;
 		}else {
-
 			return $this->part->get('Unit Cost',$date);
-
-
 		}
-
-
+		
+		
 
 	}
+	
+	
+	function get_current_unit_value(){
+		$qty=$this->data['Quantity On Hand'];
+		$value=$this->data['Stock Value'];
+
+		if (is_numeric($value) and is_numeric($qty) and   $qty!=0   ) {
+			return $value/$qty;
+		}else {
+			return $this->part->get('Unit Cost',$date);
+		}
+	
+	}
+	
+	
 
 	function identify_unknown($location_key) {
 		if ($this->location_key!=1) {
@@ -1287,7 +1298,7 @@ $this->location->update_parts();
 
 		if ($this->exist_on_date($date)) {
 		//print "a\n";
-			$this->update_stock_history_interval($date,$date);
+			 $this->update_stock_history_interval($date,$date);
 		}else {
 			
 			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s",
@@ -1314,6 +1325,9 @@ $this->location->update_parts();
 	}
 
 	function update_stock_history_interval($from,$to) {
+	
+		
+	
 		$sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date`"
 			,prepare_mysql($from)
 			,prepare_mysql($to)
@@ -1330,21 +1344,25 @@ $this->location->update_parts();
 			list($open,$high,$low,$close,$value_open,$value_high,$value_low,$value_close)=$this->get_ohlc($row['Date']);
 
 
-
-//print "$stock,$value,$in_process\n";
-//exit;
 			$storing_cost=0;
-			$comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
+			$commercial_value=$stock*$this->part->get_commercial_value($row['Date'].' 23:59:59');
 			$location_type="Unknown";
 			$warehouse_key=1;
 			
+				//if values are negatives make then zero
+			if($stock<=0)
+			$value_day_cost_value=0;
+			else
+			$value_day_cost_value=$stock*$this->part->get_unit_cost($row['Date'].' 23:59:59');
+				if($value<0)$value=0;
+			if($value_open<0)$value_open=0;
+			if($value_low<0)$value_low=0;
+			if($value_close<0)$value_close=0;
+					if($commercial_value<0)$commercial_value=0;
+
+			//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
 			
-			
-			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s)
-			ON DUPLICATE KEY UPDATE `Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Comercial`=%.2f,
-			`Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,`Value Open`=%f,`Value High`=%f,`Value Low`=%f
-,`Location Type`=%s
-			",
+			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s) ON DUPLICATE KEY UPDATE `Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,`Value Open`=%f,`Value High`=%f,`Value Low`=%f,`Location Type`=%s",
 				prepare_mysql($row['Date']),
 
 				$this->part_sku,
@@ -1354,9 +1372,9 @@ $this->location->update_parts();
 
 				$stock,
 				$value,
-
+				$value_day_cost_value,
 				$sales_value,
-				$comercial_value,
+				$commercial_value,
 
 				$storing_cost,
 
@@ -1376,8 +1394,8 @@ $this->location->update_parts();
 				$value,
 
 				$sales_value,
-				$comercial_value,
-
+				$commercial_value,
+$value_day_cost_value,
 				$storing_cost,
 
 				$sold,
@@ -1394,7 +1412,10 @@ $this->location->update_parts();
 
 			);
 			mysql_query($sql);
-			//print "$sql\n";
+			
+			
+			
+		//	print "$sql\n\n";
 			//exit;
 		}
 

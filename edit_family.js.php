@@ -923,12 +923,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				          {key:"status",label:"", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					  ,{key:"name",label:"<?php echo _('Deal')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"description",label:"<?php echo _('Terms')?>", width:320,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     //  ,{key:"dates",label:"<?php echo _('Valid Dates')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //   ,{key:"to",label:"<?php echo _('Valid Until')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    //?tipo=customers&tid=0"
 	   request= "ar_edit_assets.php?tipo=edit_deals&parent=family&parent_key="+Dom.get('family_key').value+"&tableid=4"
-	  // alert(request)
 	    this.dataSource4 = new YAHOO.util.DataSource(request);
 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource4.connXhrMode = "queueRequests";
@@ -948,7 +944,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 "name"
-			 ,"description","dates","status"
+			 ,"description","status"
 
 			 ]};
  this.table4 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
@@ -956,7 +952,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['store']['deals']['nr']?>,containers : 'paginator4', alpartysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['family']['edit_deals']['nr']?>,containers : 'paginator4', alpartysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -966,8 +962,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['store']['deals']['order_dir']?>"
+							    key: "<?php echo$_SESSION['state']['family']['edit_deals']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['family']['edit_deals']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -982,7 +978,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
         this.table4.subscribe("renderEvent", myrenderEvent);
 	  
 		    
-	    this.table4.filter={key:'<?php echo $_SESSION['state']['store']['deals']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['deals']['f_value']?>'};
+	    this.table4.filter={key:'<?php echo $_SESSION['state']['family']['edit_deals']['f_field']?>',value:'<?php echo $_SESSION['state']['family']['edit_deals']['f_value']?>'};
 
 
 	     var tableid=5; // Change if you have more the 1 table

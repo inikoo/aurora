@@ -2,7 +2,7 @@
 /**
  * PHPExcel
  *
- * Copyright (c) 2006 - 2010 PHPExcel
+ * Copyright (c) 2006 - 2012 PHPExcel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,37 +20,10 @@
  *
  * @category   PHPExcel
  * @package    PHPExcel_Writer_Excel2007
- * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
  * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
- * @version    1.7.2, 2010-01-11
+ * @version    1.7.8, 2012-10-12
  */
-
-
-/** PHPExcel root directory */
-if (!defined('PHPEXCEL_ROOT')) {
-	/**
-	 * @ignore
-	 */
-	define('PHPEXCEL_ROOT', dirname(__FILE__) . '/../../../');
-}
-
-/** PHPExcel */
-require_once PHPEXCEL_ROOT . 'PHPExcel.php';
-
-/** PHPExcel_Writer_Excel2007 */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007.php';
-
-/** PHPExcel_Writer_Excel2007_WriterPart */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Writer/Excel2007/WriterPart.php';
-
-/** PHPExcel_Cell */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Cell.php';
-
-/** PHPExcel_Shared_Date */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/Date.php';
-
-/** PHPExcel_Shared_XMLWriter */
-require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/XMLWriter.php';
 
 
 /**
@@ -58,7 +31,7 @@ require_once PHPEXCEL_ROOT . 'PHPExcel/Shared/XMLWriter.php';
  *
  * @category   PHPExcel
  * @package    PHPExcel_Writer_Excel2007
- * @copyright  Copyright (c) 2006 - 2010 PHPExcel (http://www.codeplex.com/PHPExcel)
+ * @copyright  Copyright (c) 2006 - 2012 PHPExcel (http://www.codeplex.com/PHPExcel)
  */
 class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_WriterPart
 {
@@ -66,10 +39,11 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 	 * Write workbook to XML format
 	 *
 	 * @param 	PHPExcel	$pPHPExcel
+	 * @param	boolean		$recalcRequired	Indicate whether formulas should be recalculated before writing
 	 * @return 	string 		XML Output
 	 * @throws 	Exception
 	 */
-	public function writeWorkbook(PHPExcel $pPHPExcel = null)
+	public function writeWorkbook(PHPExcel $pPHPExcel = null, $recalcRequired = FALSE)
 	{
 		// Create XML writer
 		$objWriter = null;
@@ -109,7 +83,7 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 			$this->_writeDefinedNames($objWriter, $pPHPExcel);
 
 			// calcPr
-			$this->_writeCalcPr($objWriter);
+			$this->_writeCalcPr($objWriter,$recalcRequired);
 
 		$objWriter->endElement();
 
@@ -142,13 +116,13 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 	private function _writeWorkbookPr(PHPExcel_Shared_XMLWriter $objWriter = null)
 	{
 		$objWriter->startElement('workbookPr');
-		
+
 		if (PHPExcel_Shared_Date::getExcelCalendar() == PHPExcel_Shared_Date::CALENDAR_MAC_1904) {
 			$objWriter->writeAttribute('date1904', '1');
 		}
-		
+
 		$objWriter->writeAttribute('codeName', 'ThisWorkbook');
-				
+
 		$objWriter->endElement();
 	}
 
@@ -212,16 +186,18 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 	/**
 	 * Write calcPr
 	 *
-	 * @param 	PHPExcel_Shared_XMLWriter $objWriter 		XML Writer
+	 * @param 	PHPExcel_Shared_XMLWriter	$objWriter		XML Writer
+	 * @param	boolean						$recalcRequired	Indicate whether formulas should be recalculated before writing
 	 * @throws 	Exception
 	 */
-	private function _writeCalcPr(PHPExcel_Shared_XMLWriter $objWriter = null)
+	private function _writeCalcPr(PHPExcel_Shared_XMLWriter $objWriter = null, $recalcRequired = TRUE)
 	{
 		$objWriter->startElement('calcPr');
 
 		$objWriter->writeAttribute('calcId', 			'124519');
 		$objWriter->writeAttribute('calcMode', 			'auto');
-		$objWriter->writeAttribute('fullCalcOnLoad', 	'1');
+		//	fullCalcOnLoad isn't needed if we've recalculating for the save
+		$objWriter->writeAttribute('fullCalcOnLoad', 	($recalcRequired) ? '0' : '1');
 
 		$objWriter->endElement();
 	}
@@ -330,7 +306,7 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 	}
 
 	/**
-	 * Write Defined Name for autoFilter
+	 * Write Defined Name for named range
 	 *
 	 * @param 	PHPExcel_Shared_XMLWriter	$objWriter 		XML Writer
 	 * @param 	PHPExcel_NamedRange			$pNamedRange
@@ -342,20 +318,20 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 		$objWriter->startElement('definedName');
 		$objWriter->writeAttribute('name',			$pNamedRange->getName());
 		if ($pNamedRange->getLocalOnly()) {
-			$objWriter->writeAttribute('localSheetId',	$pNamedRange->getWorksheet()->getParent()->getIndex($pNamedRange->getWorksheet()));
+			$objWriter->writeAttribute('localSheetId',	$pNamedRange->getScope()->getParent()->getIndex($pNamedRange->getScope()));
 		}
 
 		// Create absolute coordinate and write as raw text
 		$range = PHPExcel_Cell::splitRange($pNamedRange->getRange());
 		for ($i = 0; $i < count($range); $i++) {
-			$range[$i][0] = '\'' . str_replace("'", "''", $pNamedRange->getWorksheet()->getTitle()) . '\'!' . PHPExcel_Cell::absoluteCoordinate($range[$i][0]);
+			$range[$i][0] = '\'' . str_replace("'", "''", $pNamedRange->getWorksheet()->getTitle()) . '\'!' . PHPExcel_Cell::absoluteReference($range[$i][0]);
 			if (isset($range[$i][1])) {
-				$range[$i][1] = PHPExcel_Cell::absoluteCoordinate($range[$i][1]);
+				$range[$i][1] = PHPExcel_Cell::absoluteReference($range[$i][1]);
 			}
 		}
 		$range = PHPExcel_Cell::buildRange($range);
 
-		$objWriter->writeRaw($range);
+		$objWriter->writeRawData($range);
 
 		$objWriter->endElement();
 	}
@@ -371,20 +347,26 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 	private function _writeDefinedNameForAutofilter(PHPExcel_Shared_XMLWriter $objWriter = null, PHPExcel_Worksheet $pSheet = null, $pSheetId = 0)
 	{
 		// definedName for autoFilter
-		if ($pSheet->getAutoFilter() != '') {
+		$autoFilterRange = $pSheet->getAutoFilter()->getRange();
+		if (!empty($autoFilterRange)) {
 			$objWriter->startElement('definedName');
 			$objWriter->writeAttribute('name',			'_xlnm._FilterDatabase');
 			$objWriter->writeAttribute('localSheetId',	$pSheetId);
 			$objWriter->writeAttribute('hidden',		'1');
 
 			// Create absolute coordinate and write as raw text
-			$range = PHPExcel_Cell::splitRange($pSheet->getAutoFilter());
+			$range = PHPExcel_Cell::splitRange($autoFilterRange);
 			$range = $range[0];
+			//	Strip any worksheet ref so we can make the cell ref absolute
+			if (strpos($range[0],'!') !== false) {
+				list($ws,$range[0]) = explode('!',$range[0]);
+			}
+
 			$range[0] = PHPExcel_Cell::absoluteCoordinate($range[0]);
 			$range[1] = PHPExcel_Cell::absoluteCoordinate($range[1]);
 			$range = implode(':', $range);
 
-			$objWriter->writeRaw('\'' . str_replace("'", "''", $pSheet->getTitle()) . '\'!' . $range);
+			$objWriter->writeRawData('\'' . str_replace("'", "''", $pSheet->getTitle()) . '\'!' . $range);
 
 			$objWriter->endElement();
 		}
@@ -427,7 +409,7 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 				$settingString .= '\'' . str_replace("'", "''", $pSheet->getTitle()) . '\'!$' . $repeat[0] . ':$' . $repeat[1];
 			}
 
-			$objWriter->writeRaw($settingString);
+			$objWriter->writeRawData($settingString);
 
 			$objWriter->endElement();
 		}
@@ -457,12 +439,12 @@ class PHPExcel_Writer_Excel2007_Workbook extends PHPExcel_Writer_Excel2007_Write
 
 			$chunks = array();
 			foreach ($printArea as $printAreaRect) {
-				$printAreaRect[0] = PHPExcel_Cell::absoluteCoordinate($printAreaRect[0]);
-				$printAreaRect[1] = PHPExcel_Cell::absoluteCoordinate($printAreaRect[1]);
+				$printAreaRect[0] = PHPExcel_Cell::absoluteReference($printAreaRect[0]);
+				$printAreaRect[1] = PHPExcel_Cell::absoluteReference($printAreaRect[1]);
 				$chunks[] = '\'' . str_replace("'", "''", $pSheet->getTitle()) . '\'!' . implode(':', $printAreaRect);
 			}
 
-			$objWriter->writeRaw(implode(',', $chunks));
+			$objWriter->writeRawData(implode(',', $chunks));
 
 			$objWriter->endElement();
 		}

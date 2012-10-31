@@ -380,7 +380,7 @@ class Deal extends DB_Table {
 			}
 			//print_r($data);
 			// exit;
-			$deal=new DealMetadataMetadataMetadata('find create',$data);
+			$deal=new DealMetadata('find create',$data);
 
 
 		} else {

@@ -15,11 +15,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;
 
   var ColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
+				      {key:"date", label:"<?php echo _('Date')?>", width:100,sortable:false,className:"aright"}
 				      ,{key:"locations", label:"<?php echo _('Locations')?>", width:100,sortable:false,className:"aleft"}
-				      ,{key:"quantity", label:"<?php echo _('Qty')?>", width:100,sortable:false,className:"aleft"}
-				      ,{key:"value", label:"<?php echo _('Value')?>", width:60,sortable:false,className:"aleft"}
-				      
+				      ,{key:"quantity", label:"<?php echo _('Qty')?>", width:80,sortable:false,className:"aright"}
+				      ,{key:"value", label:"<?php echo _('Cost Value')?>", width:80,sortable:false,className:"aright"}
+				      ,{key:"end_day_value", label:"<?php echo _('EDay Value')?>", width:80,sortable:false,className:"aright"}
+				      ,{key:"commercial_value", label:"<?php echo _('Com Value')?>", width:80,sortable:false,className:"aright"}
+
 				      ,{key:"sold_qty", label:"<?php echo _('Sold')?>", width:60,sortable:false,className:"aright"}
 				      ,{key:"in_qty", label:"<?php echo _('In')?>", width:60,sortable:false,className:"aright"}
 				      ,{key:"lost_qty", label:"<?php echo _('Lost')?>", width:60,sortable:false,className:"aright"}
@@ -49,7 +51,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 
 	fields: [
-				 "date","locations","quantity","value","sold_qty","in_qty","lost_qty"
+				 "date","locations","quantity","value","sold_qty","in_qty","lost_qty","end_day_value","commercial_value"
 
 				 ]};
 

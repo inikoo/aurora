@@ -32,6 +32,9 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
+$corporate_currency='GBP';
+
+
 $from=date("Y-m-d",strtotime('now -3000 day'));
 //$from=date("Y-m-d");
 $to=date("Y-m-d");
@@ -42,7 +45,7 @@ $res=mysql_query($sql);
 
 while ($row=mysql_fetch_array($res)) {
 	//print $row['Date']."\r";
-	$where=' `Part SKU`=1991';
+	//$where=' `Part SKU`=273';
 	$where='  true';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
 
@@ -52,10 +55,10 @@ while ($row=mysql_fetch_array($res)) {
 	while ($row2=mysql_fetch_array($res2)) {
 		//print "\t\t\t\tChecking:".$row2['Part SKU']."\r";
 		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where  `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s group by `Location Key`",
-		$row2['Part SKU'],
-		prepare_mysql($row['Date'])
+			$row2['Part SKU'],
+			prepare_mysql($row['Date'])
 		);
-		//print "$sql\n";
+	
 		$result=mysql_query($sql);
 		$_locations=array();
 		while ($row3=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -67,46 +70,18 @@ while ($row=mysql_fetch_array($res)) {
 			}
 
 			$part_location=new PartLocation($row2['Part SKU'].'_'.$row3['Location Key']);
+
+			
+
+			$part_location->update_stock_history_date($row['Date']);
 			
 			print $row['Date'].' '.$row2['Part SKU'].'_'.$row3['Location Key']."\r";
 			
-			$part_location->update_stock_history_date($row['Date']);
 		}
 
 
 
 	}
-
-}
-
-exit;
-
-//$where='and  `Part XHTML Currently Used In` like "%awred%"';
-$where='and `Part SKU`=31873';
-//$where='';
-$sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="In Use" %s   order by `Part Valid From`  ',$where);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_array($res)) {
-	$total=$row['num'];
-}
-
-
-//print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s  order by `Part Total Acc Sold Amount` desc ,`Part Valid From`   ',$where);
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s     ',$where);
-
-print $sql;
-exit;
-$res=mysql_query($sql);
-$count=0;
-while ($row=mysql_fetch_array($res)) {
-	$count++;
-
-	$part=new Part($row['Part SKU']);
-
-	//print percentage($count,$total,5)."  ".$part->data['Part SKU']."\r";
-	$part->update_stock_history();
-
 
 }
 

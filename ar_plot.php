@@ -1531,7 +1531,7 @@ function list_part_stock_history(){
  
 //print "$period_group $period_group_args x $period  $sql\n";
 
-    // $sql=sprintf("select  (`Date`) as `Date`,`Quantity On Hand`,sum(`Value At Cost`) as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF  where `Part SKU`=%d   group by %s(`Date`,%s) order by `Date` ",$sku,$period_group,$period_group_args);
+    // $sql=sprintf("select  (`Date`) as `Date`,`Quantity On Hand`,sum(`Value At Cost`) as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Commercial`) as `Value Commercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF  where `Part SKU`=%d   group by %s(`Date`,%s) order by `Date` ",$sku,$period_group,$period_group_args);
     $res=mysql_query($sql);
     $data=array();
      //print $sql;

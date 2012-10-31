@@ -40,6 +40,11 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
     exit;
 }
 
+$modify=$user->can_edit('stores');
+$smarty->assign('modify',$modify);
+
+
+
 $store=new Store($store_id);
 
 

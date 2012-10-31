@@ -183,13 +183,14 @@
 	 
 	 <div   class="data_table" sxtyle="margin:25px 10px;">
 	   <span class="clean_table_title">{t}Deals{/t}</span>
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="add_deal">Add Deal</td>
-	      <td  style="display:none" id="save_new_deal">Save New Deal</td>
-	      <td  style="display:none" id="cancel_add_deal">Cancel</td>
-	    </tr>
-	  </table>
+	   <div class="buttons small">
+	   	<button  id="add_deal" class="positive">{t}Add Deal{/t}</button>
+	      <button  style="display:none" id="save_new_deal">Save New Deal</button>
+	      <button  style="display:none" id="cancel_add_deal">Cancel</button>
+	   </div>
+	   
+	   
+	 
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter4"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value0}" size=10/><div id='f_container4'></div></div></div>
