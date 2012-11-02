@@ -80,15 +80,17 @@ $js_files=array(
               $yui_path.'datatable/datatable-debug.js',
               $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
+              	$yui_path.'calendar/calendar-min.js',
+
               'js/common.js',
               'external_libs/amstock/amstock/swfobject.js',
               'js/table_common.js',
               'js/search.js',
               'edit_stock.js.php',
-              'js/dropdown.js'
+              'part.js.php'
           );
 
-
+//$js_files=array('external_libs/amstock/amstock/swfobject.js');
 
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');
@@ -96,6 +98,11 @@ $smarty->assign('search_scope','parts');
 $smarty->assign('parts_period',$_SESSION['state']['warehouse']['parts']['period']);
 $smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
 
+
+$smarty->assign('to',$_SESSION['state']['part']['stock_history']['to']);
+$smarty->assign('from',$_SESSION['state']['part']['stock_history']['from']);
+$smarty->assign('to_transactions',$_SESSION['state']['part']['transactions']['to']);
+$smarty->assign('from_transactions',$_SESSION['state']['part']['transactions']['from']);
 
 $smarty->assign('view',$_SESSION['state']['part']['view']);
 
@@ -186,7 +193,7 @@ $smarty->assign('title',$part->get('SKU'));
 $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
-$js_files[]='part.js.php';
+//$js_files[]='part.js.php';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -197,17 +204,7 @@ $smarty->assign('stock_history_chart_output',$_SESSION['state']['part']['stock_h
 $smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
 
 
-$transactions=array(
-	'all_transactions'=>$part->data['Part Transactions'],
-	'in_transactions'=>$part->data['Part Transactions In'],
-	'out_transactions'=>$part->data['Part Transactions Out'],
-	'audit_transactions'=>$part->data['Part Transactions Audit'],
-	'oip_transactions'=>$part->data['Part Transactions OIP'],
-	'move_transactions'=>$part->data['Part Transactions Move'],
-	);
 
-
-$smarty->assign('transactions',$transactions);
 $smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['view']);
 
 

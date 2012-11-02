@@ -295,19 +295,7 @@ var clear_interval = function(e,suffix){
      Dom.get("v_calpop2dn").value='';
           Dom.get('clear_interval').style.display='none';
           Dom.get('clear_intervali').style.display='none';
-          Dom.get('clear_intervaldn').style.display='none';
-
-     
-  //   if(suffix==''){
-   //  var table=tables.table0;
-    // var datasource=tables.dataSource0;
-    //  }else if(suffix=='i'){
-   //  var table=tables.table1;
-   //  var datasource=tables.dataSource1;
-   //  }else if(suffix=='dn'){
-   //   var table=tables.table2;
-   //  var datasource=tables.dataSource2;
-   //  }
+  
     var table=tables.table0;
     var datasource=tables.dataSource0;
      var request='&sf=0&from=&to=';
@@ -346,10 +334,6 @@ var ar_file='ar_orders.php';
 						Dom.get('total_orders_unknown_number').innerHTML=r.total_orders_unknown_number
 						Dom.get('total_orders_cancelled_number').innerHTML=r.total_orders_cancelled_number
 						Dom.get('total_orders_suspended_number').innerHTML=r.total_orders_suspended_number
-						
-						
-		
-
 						}
 					    },
 					failure:function(o) {
@@ -361,9 +345,8 @@ var ar_file='ar_orders.php';
 				    request
 				    
 				    );  
-
-
 }
+
 function get_invoices_numbers(from,to){
 var ar_file='ar_orders.php'; 
     	var request='tipo=number_invoices_in_interval&store_key='+Dom.get('store_key').value+'&from='+from+'&to='+to;

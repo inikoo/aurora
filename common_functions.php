@@ -254,7 +254,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 		$end=' end';
 
 	}
-	if (preg_match('/^(dates?_only|dates? only|only dates|date|only_dates?)$/i',$options)) {
+	if (preg_match('/(dates?_only|dates? only|only dates|date|only_dates?)/i',$options)) {
 		$d_option='date';
 
 
@@ -264,7 +264,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 		$d_option='datetime';
 		$date_only=false;
 	}
-	// print "$options $d_option.$start |\n";
+
 
 	$tmp=prepare_mysql_datetime($date1,$d_option.$start);
 
@@ -276,9 +276,6 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 		$ok1=true;
 
 	$tmp=prepare_mysql_datetime($date2,$d_option.$end);
-
-
-
 	$mysql_date2=$tmp['mysql_date'];
 
 	$ok2=$tmp['ok'];
@@ -304,6 +301,7 @@ function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options='')
 		$mysql_date2=$_date2['y'].'-'.$_date2['m'].'-'.$_date2['d'];
 
 	}
+
 
 
 
