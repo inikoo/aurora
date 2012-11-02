@@ -41,8 +41,11 @@ $sql="select * from `Part Dimension`   order by `Part SKU`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);
-
+  if($part->data['Part Tariff Code']!=''){
+$part->update_tariff_code($part->data['Part Tariff Code']);
 $part->update_tariff_code_valid();
+}
+ print $row['Part SKU']."\r";
 continue;
 
 //$locations=$part->get_picking_location_historic('2012-03-14 00:00:00',1);

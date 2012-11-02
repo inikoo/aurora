@@ -9,6 +9,10 @@ var change_plot_menu;
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
+
+
+	
+
 	tables = new function() {
 		
 		    var tableid=0;
@@ -19,7 +23,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"locations", label:"<?php echo _('Locations')?>", width:100,sortable:false,className:"aleft"}
 				      ,{key:"quantity", label:"<?php echo _('Qty')?>", width:80,sortable:false,className:"aright"}
 				      ,{key:"value", label:"<?php echo _('Cost Value')?>", width:80,sortable:false,className:"aright"}
-				      ,{key:"end_day_value", label:"<?php echo _('EDay Value')?>", width:80,sortable:false,className:"aright"}
+				      ,{key:"end_day_value", label:"<?php echo _('C Value (ED)')?>", width:80,sortable:false,className:"aright"}
 				      ,{key:"commercial_value", label:"<?php echo _('Com Value')?>", width:80,sortable:false,className:"aright"}
 
 				      ,{key:"sold_qty", label:"<?php echo _('Sold')?>", width:60,sortable:false,className:"aright"}
@@ -284,15 +288,15 @@ Dom.setStyle(['info_'+period,'info2_'+period],'display','')
 
 
 function hide_stock_history_chart(){
-Dom.setStyle(['stock_history_plot','hide_stock_history_chart'],'display','none')
+Dom.setStyle(['stock_history_plot_subblock_part','hide_stock_history_chart'],'display','none')
 Dom.setStyle('show_stock_history_chart','display','')
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-show_stock_history_chart&value=0',{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-stock_history-show_chart&value=0',{});
 }
 
 function show_stock_history_chart(){
-Dom.setStyle(['hide_stock_history_chart','stock_history_plot'],'display','')
+Dom.setStyle(['hide_stock_history_chart','stock_history_plot_subblock_part'],'display','')
 Dom.setStyle(['show_stock_history_chart'],'display','none')
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-show_stock_history_chart&value=1' ,{});
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-stock_history-show_chart&value=1' ,{});
 }
 
 function show_picking_limit_quantities(e, location_key, min ,max){
@@ -400,6 +404,10 @@ Dom.setStyle('change_plot_label_value','display','')
 }
 change_plot_menu.hide()
 
+
+
+reloadSettings("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&output="+type+"&parent=part&parent_key="+Dom.get('part_sku').value);
+
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-stock_history-chart_output&value='+type ,{});
 
 }
@@ -413,6 +421,115 @@ region1 = Dom.getRegion('change_plot');
 
 change_plot_menu.show()
 }
+
+
+function get_part_transaction_numbers(from,to){
+
+
+var ar_file='ar_assets.php'; 
+    	var request='tipo=number_part_transactions_in_interval&part_sku='+Dom.get('part_sku').value+'&from='+from+'&to='+to;
+			
+			
+			Dom.setStyle(['transactions_all_transactions_wait','transactions_in_transactions_wait','transactions_out_transactions_wait','transactions_audit_transactions_wait','transactions_oip_transactions_wait','transactions_move_transactions_wait'],'display','');
+
+
+Dom.get('transactions_all_transactions').innerHTML='';
+						Dom.get('transactions_in_transactions').innerHTML='';
+						Dom.get('transactions_out_transactions').innerHTML='';
+						Dom.get('transactions_audit_transactions').innerHTML='';
+						Dom.get('transactions_oip_transactions').innerHTML='';
+						Dom.get('transactions_move_transactions').innerHTML='';
+
+
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						//alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+
+						Dom.setStyle(['transactions_all_transactions_wait','transactions_in_transactions_wait','transactions_out_transactions_wait','transactions_audit_transactions_wait','transactions_oip_transactions_wait','transactions_move_transactions_wait'],'display','none');
+
+						Dom.get('transactions_all_transactions').innerHTML=r.transactions.all_transactions
+						Dom.get('transactions_in_transactions').innerHTML=r.transactions.in_transactions
+						Dom.get('transactions_out_transactions').innerHTML=r.transactions.out_transactions
+						Dom.get('transactions_audit_transactions').innerHTML=r.transactions.audit_transactions
+						Dom.get('transactions_oip_transactions').innerHTML=r.transactions.oip_transactions
+						Dom.get('transactions_move_transactions').innerHTML=r.transactions.move_transactions
+
+						
+						
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+}
+
+
+
+function change_interval(e,suffix){
+  
+     from=Dom.get("v_calpop1"+suffix).value;
+     to=Dom.get("v_calpop2"+suffix).value;
+
+     if(from=='' && to==''){
+	 Dom.get('clear_interval'+suffix).style.display='none';
+
+     }else{
+	 Dom.get('clear_interval'+suffix).style.display='';
+
+ }
+
+
+   
+   
+       Dom.get("v_calpop2"+suffix).value=to;
+     Dom.get("v_calpop1"+suffix).value=from;
+      var request='&sf=0&from=' +from+'&to='+to;
+     if(suffix=='t'){
+    get_part_transaction_numbers(from,to)
+tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable, tables.table1);  
+     }else{
+     
+      tables.dataSource0.sendRequest(request,tables.table0.onDataReturnInitializeTable, tables.table0);  
+
+     }
+     
+ 
+   
+     
+     
+ }
+
+
+var clear_interval = function(e,suffix){
+ 
+    var request='&sf=0&from=&to=';
+   if(suffix=='t'){
+      Dom.get("v_calpop1t").value='';
+     Dom.get("v_calpop2t").value='';
+             Dom.get('clear_intervalt').style.display='none';
+ get_part_transaction_numbers('','')
+     tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable, tables.table1);       
+
+   }else{
+   
+   Dom.get("v_calpop1").value='';
+     Dom.get("v_calpop2").value='';
+           Dom.get('clear_interval').style.display='none';
+       tables.dataSource0.sendRequest(request,tables.table0.onDataReturnInitializeTable, tables.table0);       
+}
+   
+ }
+
 
 function init(){
 
@@ -428,10 +545,50 @@ image_region=Dom.getRegion('main_image')
 if(image_region.height>160){
 Dom.setStyle('main_image','height','160px')
 Dom.setStyle('main_image','width','')
-
-
 }
 
+
+cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ 
+ cal2.update=updateCal;
+ cal2.id='2';
+ cal2.render();
+ cal2.update();
+ cal2.selectEvent.subscribe(handleSelect, cal2, true); 
+ cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal1.update=updateCal;
+ cal1.id='1';
+ cal1.render();
+ cal1.update();
+ cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+
+
+cal2t = new YAHOO.widget.Calendar("cal2t","cal2tContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal2t.update=updateCal;
+ cal2t.id='2t';
+ cal2t.render();
+ cal2t.update();
+ cal2t.selectEvent.subscribe(handleSelect, cal2t, true); 
+ cal1t = new YAHOO.widget.Calendar("cal1t","cal1tContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal1t.update=updateCal;
+ cal1t.id='1t';
+ cal1t.render();
+ cal1t.update();
+ cal1t.selectEvent.subscribe(handleSelect, cal1t, true);  
+
+
+
+
+ 
+ Event.addListener("calpop1", "click", cal1.show, cal1, true);
+ Event.addListener("calpop2", "click", cal2.show, cal2, true);
+Event.addListener("calpop1t", "click", cal1t.show, cal1t, true);
+ Event.addListener("calpop2t", "click", cal2t.show, cal2t, true);
+
+ Event.addListener("submit_interval", "click", change_interval,'');
+ Event.addListener("clear_interval", "click", clear_interval,'');
+Event.addListener("submit_intervalt", "click", change_interval,'t');
+ Event.addListener("clear_intervalt", "click", clear_interval,'t');
 
 init_search('parts');
 Event.addListener(['description','sales','transactions','history','purchase_orders', 'delivery_notes'], "click",change_block);
@@ -470,6 +627,9 @@ dialog_move_qty.render();
 Event.addListener('close_qty', "click", dialog_qty.hide,dialog_qty , true);
 
 Event.addListener('close_move_qty', "click", dialog_move_qty.hide,dialog_move_qty , true);
+
+get_part_transaction_numbers(Dom.get('v_calpop1t').value,Dom.get('v_calpop2t').value)
+
 
 }
  YAHOO.util.Event.onDOMReady(init);

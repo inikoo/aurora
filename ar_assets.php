@@ -34,6 +34,15 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('number_part_transactions_in_interval'):
+$data=prepare_values($_REQUEST,array(
+			'part_sku'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
+number_part_transactions_in_interval($data);
+break;
 case('product_sales_report'):
 	product_sales_report();
 	break;
@@ -3895,7 +3904,7 @@ function product_sales_report() {
 	$sum_total_profit=0;
 	$sum_total_stock_value=0;
 
-/*
+	/*
 	if ($percentages) {
 
 		$sum_total_stock_value=0;
@@ -3934,7 +3943,7 @@ function product_sales_report() {
 
 
 
-	
+
 	$res = mysql_query($sql);
 	$adata=array();
 
@@ -3958,14 +3967,14 @@ function product_sales_report() {
 
 		$counter++;
 
-	
-		
-			$sold=$row['qty_delivered'];
+
+
+		$sold=$row['qty_delivered'];
 		$tsall=$row['net'];
 		$tprofit=$row['profit'];
 
 
-	
+
 
 
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
@@ -3995,25 +4004,25 @@ function product_sales_report() {
 
 		include_once 'locale.php';
 
-	
+
 
 		$adata[]=array(
 			'store'=>$store,
 			'code'=>$code,
 			'name'=>$row['Product XHTML Short Description'],
-			
-		
+
+
 			'sales'=>(is_numeric($tsall)?money($tsall,$currency):$tsall),
 			'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
 			'sold'=>(is_numeric($sold)?number($sold):$sold),
 			'state'=>$main_type,
-			
+
 
 		);
 	}
 	mysql_free_result($res);
 
-	
+
 
 
 
@@ -7352,7 +7361,7 @@ function list_deals() {
 		$wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
 	elseif ($f_field=='name' and $f_value!='')
 		$wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
-elseif ($f_field=='code' and $f_value!='')
+	elseif ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Deal Code` like '%".addslashes($f_value)."%'";
 
 
@@ -7362,7 +7371,7 @@ elseif ($f_field=='code' and $f_value!='')
 
 
 	$sql="select count(*) as total from `Deal Dimension`   $where $wheref";
-	
+
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -7371,8 +7380,8 @@ elseif ($f_field=='code' and $f_value!='')
 	if ($wheref!='') {
 		$sql="select count(*) as total_without_filters from `Deal Dimension`   $where ";
 
-	
-	$res=mysql_query($sql);
+
+		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			$total_records=$row['total_without_filters'];
@@ -7404,7 +7413,7 @@ elseif ($f_field=='code' and $f_value!='')
 		case('name'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this name ")." <b>".$f_value."*</b> ";
 			break;
-			case('code'):
+		case('code'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this code ")." <b>*".$f_value."*</b> ";
 			break;
 		case('description'):
@@ -7419,7 +7428,7 @@ elseif ($f_field=='code' and $f_value!='')
 			break;
 		case('code'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with code like')." <b>*".$f_value."*</b>";
-			break;	
+			break;
 		case('description'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with description like')." <b>".$f_value."*</b>";
 			break;
@@ -7448,7 +7457,7 @@ elseif ($f_field=='code' and $f_value!='')
 	$res = mysql_query($sql);
 
 	$total=mysql_num_rows($res);
-$adata=array();
+	$adata=array();
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
@@ -10373,10 +10382,7 @@ function part_transactions() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
+
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -10399,21 +10405,35 @@ function part_transactions() {
 		$tableid=0;
 
 
-	list($date_interval,$error)=prepare_mysql_dates($from,$to);
-	if ($error) {
-		list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
-	} else {
+	$date_interval=prepare_mysql_dates($from,$to,'`Date`','only_dates');
+	if ($parent=='part') {
 
+		if ($date_interval['error']) {
+			$date_interval=prepare_mysql_dates($_SESSION['state']['part']['transactions']['from'],$_SESSION['state']['part']['transactions']['to']);
+		} else {
 
-		if ($parent=='part') {
-			$_SESSION['state']['part']['transactions']['from']=$from;
-			$_SESSION['state']['part']['transactions']['to']=$to;
-
-		}elseif ($parent=='warehouse') {
-			$_SESSION['state']['warehouse']['transactions']['from']=$from;
-			$_SESSION['state']['warehouse']['transactions']['to']=$to;
+			$_SESSION['state']['part']['transactions']['from']=$date_interval['from'];
+			$_SESSION['state']['part']['transactions']['to']=$date_interval['to'];
 		}
+
+
+
+	}elseif ($parent=='warehouse') {
+
+
+
+		if ($date_interval['error']) {
+			$date_interval=prepare_mysql_dates($_SESSION['state']['warehouse']['transactions']['from'],$_SESSION['state']['warehouse']['transactions']['to']);
+		} else {
+
+			$_SESSION['state']['warehouse']['transactions']['from']=$date_interval['from'];
+			$_SESSION['state']['warehouse']['transactions']['to']=$date_interval['to'];
+		}
+
+
 	}
+
+
 
 	if ($parent=='part') {
 		$_SESSION['state']['part']['transactions']=
@@ -10423,7 +10443,7 @@ function part_transactions() {
 			'order_dir'=>$order_direction,
 			'nr'=>$number_results,
 			'sf'=>$start_from,
-			'where'=>$where,
+
 			'f_field'=>$f_field,
 			'f_value'=>$f_value,
 			'from'=>$from,
@@ -10439,7 +10459,7 @@ function part_transactions() {
 			'order_dir'=>$order_direction,
 			'nr'=>$number_results,
 			'sf'=>$start_from,
-			'where'=>$where,
+
 			'f_field'=>$f_field,
 			'f_value'=>$f_value,
 			'from'=>$from,
@@ -10453,6 +10473,12 @@ function part_transactions() {
 	$_dir=$order_direction;
 	$filter_msg='';
 
+
+
+
+
+
+
 	$wheref='';
 
 	if ($f_field=='note' and $f_value!='') {
@@ -10462,10 +10488,13 @@ function part_transactions() {
 	}
 
 	if ($parent=='part') {
-		$where=$where.sprintf(" and `Part SKU`=%d ",$parent_key);
+		$where=sprintf(" where `Part SKU`=%d %s",$parent_key,$date_interval['mysql']);
 	}elseif ($parent=='warehouse') {
-		$where=$where.sprintf(" and `Warehouse Key`=%d ",$parent_key);
+		$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
 	}
+
+
+
 
 
 	switch ($view) {
@@ -10666,10 +10695,7 @@ function part_stock_history() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
+
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -10694,14 +10720,6 @@ function part_stock_history() {
 
 
 
-	list($date_interval,$error)=prepare_mysql_dates($from,$to);
-	if ($error) {
-		list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
-	} else {
-		$_SESSION['state']['part']['stock_history']['from']=$from;
-		$_SESSION['state']['part']['stock_history']['to']=$to;
-	}
-
 
 	$_SESSION['state']['part']['stock_history']['order']=$order;
 	$_SESSION['state']['part']['stock_history']['type']=$type;
@@ -10710,13 +10728,29 @@ function part_stock_history() {
 	$_SESSION['state']['part']['stock_history']['sf']=$start_from;
 	$_SESSION['state']['part']['stock_history']['f_field']=$f_field;
 	$_SESSION['state']['part']['stock_history']['f_value']=$f_value;
-	$_SESSION['state']['part']['stock_history']['from']=$from;
-	$_SESSION['state']['part']['stock_history']['to']=$to;
+
 	$_SESSION['state']['part']['stock_history']['elements']=$elements;
 
 	$_SESSION['state']['part']['stock_history']['f_show']=$_SESSION['state']['part']['stock_history']['f_show'];
 
 
+
+
+	$date_interval=prepare_mysql_dates($from,$to,'`Date`','only_dates');
+
+
+	if ($date_interval['error']) {
+	
+		$date_interval=prepare_mysql_dates($_SESSION['state']['part']['stock_history']['from'],$_SESSION['state']['part']['stock_history']['to']);
+	} else {
+
+		$_SESSION['state']['part']['stock_history']['from']=$date_interval['from'];
+		$_SESSION['state']['part']['stock_history']['to']=$date_interval['to'];
+
+
+	}
+
+//print_r($_SESSION['state']['part']['stock_history']);
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
@@ -10741,9 +10775,11 @@ function part_stock_history() {
 
 
 
-	$where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
-	$sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref $group";
+	$where=sprintf(" where `Part SKU`=%d %s",$part_sku,$date_interval['mysql']);
 
+
+	$sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref $group";
+	//print $sql;
 	$result=mysql_query($sql);
 	$total=mysql_num_rows($result);
 
@@ -10804,7 +10840,7 @@ function part_stock_history() {
 		,$group
 	);
 
-//print $sql;
+	//print $sql;
 
 	$result=mysql_query($sql);
 	$adata=array();
@@ -10825,7 +10861,7 @@ function part_stock_history() {
 		}
 		$adata[]=array(
 
-			'date'=>$date,
+			'date'=>$date.$_SESSION['state']['part']['stock_history']['from'],
 			'locations'=>$data['locations'],
 			'quantity'=>number($data['Quantity On Hand']),
 			'value'=>money($data['Value At Cost']),
@@ -12321,4 +12357,61 @@ function family_sales_data($data) {
 
 }
 
+
+
+
+
+function number_part_transactions_in_interval($data) {
+	$part_sku=$data['part_sku'];
+
+	$from=$data['from'];
+	$to=$data['to'];
+
+	if (!$to and !$from) {
+		$part=new Part($part_sku);
+		$transactions=array(
+	'all_transactions'=>number($part->data['Part Transactions']),
+	'in_transactions'=>number($part->data['Part Transactions In']),
+	'out_transactions'=>number($part->data['Part Transactions Out']),
+	'audit_transactions'=>number($part->data['Part Transactions Audit']),
+	'oip_transactions'=>number($part->data['Part Transactions OIP']),
+	'move_transactions'=>number($part->data['Part Transactions Move']),
+	);
+
+	}
+	else {
+		$transactions=array(
+	'all_transactions'=>0,
+	'in_transactions'=>0,
+	'out_transactions'=>0,
+	'audit_transactions'=>0,
+	'oip_transactions'=>0,
+	'move_transactions'=>0
+	);
+
+		$where_interval=prepare_mysql_dates($from,$to,'`Date`','dates_only.startend');
+		$where_interval=$where_interval['mysql'];
+		$sql=sprintf("select count(*) as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d %s",
+			$part_sku,
+			$where_interval
+			);
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+		
+			$transactions=array(
+	'all_transactions'=>number($row['all_transactions']),
+	'in_transactions'=>number($row['in_transactions']),
+	'out_transactions'=>number($row['out_transactions']),
+	'audit_transactions'=>number($row['audit_transactions']),
+	'oip_transactions'=>number($row['oip_transactions']),
+	'move_transactions'=>number($row['move_transactions'])
+	);
+	}
+		
+
+
+}
+	$response= array('state'=>200,'transactions'=>$transactions);
+	echo json_encode($response);
+}
 ?>

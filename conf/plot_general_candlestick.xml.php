@@ -31,13 +31,13 @@ case('number_of_customers'):
 	break;
 case('part_stock_history'):
 	if (!isset($_REQUEST['parent_key'])  or !isset($_REQUEST['parent'])  or !isset($_REQUEST['output'])  ) {
-		exit;
+		exit("error");
 	}
-$output=$_REQUEST['output'];
+	$output=$_REQUEST['output'];
 
-if(!in_array($output,array('stock','value'))){
-return;
-}
+	if (!in_array($output,array('stock','value','commercial_value','end_day_value'))) {
+		return;
+	}
 
 	$parent=$_REQUEST['parent'];
 	$parent_key=$_REQUEST['parent_key'];
@@ -46,16 +46,16 @@ return;
 	if ($parent=='part') {
 
 
-	
+
 
 		$sql=sprintf("select ISF.`Location Key`,`Location Code` from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) where `part SKU` =%d group by `Location Key` ",$parent_key);
 		$res=mysql_query($sql);
 
 
 		while ($row=mysql_fetch_assoc($res)) {
-		
-		$location_code=($row['Location Code']?$row['Location Code']:_('Deleted').' '.$row['Location Key']);
-		
+
+			$location_code=($row['Location Code']?$row['Location Code']:_('Deleted').' '.$row['Location Key']);
+
 			$graphs_data[]=array(
 				'gid'=>$gid,
 				'label'=>($output=='value'?_('Stock Value'):_('Stock')).":",
@@ -72,7 +72,7 @@ return;
 				'gid'=>$gid,
 				'label'=>_('Stock').":",
 				'title'=>_('All locations'),
-								'short_title'=>_('All locations'),
+				'short_title'=>_('All locations'),
 
 				'csv_args'=>'tipo=part_location_stock_history&output='.$output.'&location_key=0&part_sku='.$parent_key
 
@@ -81,11 +81,11 @@ return;
 
 			array_unshift($graphs_data, $all_locations);
 		}
-		
-		
-		
-		
-		
+
+
+
+
+
 
 	}else {
 		$graphs_data[]=array(

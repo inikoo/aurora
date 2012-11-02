@@ -404,14 +404,14 @@ class PartLocation extends DB_Table {
 				,prepare_mysql($date)
 				,prepare_mysql($audit_key)
 			);
-		//	print $sql;
+			// print $sql;
 			mysql_query($sql);
 		}
 
 
 
 		$this->update_stock();
-                  
+
 		return $audit_key;
 
 
@@ -532,18 +532,18 @@ class PartLocation extends DB_Table {
 
 		list($qty,$value,$in_process)=$this->get_stock($date);
 
-			if (is_numeric($value) and is_numeric($qty) and   $qty!=0   ) {
+		if (is_numeric($value) and is_numeric($qty) and   $qty!=0   ) {
 			return $value/$qty;
 		}else {
 			return $this->part->get('Unit Cost',$date);
 		}
-		
-		
+
+
 
 	}
-	
-	
-	function get_current_unit_value(){
+
+
+	function get_current_unit_value() {
 		$qty=$this->data['Quantity On Hand'];
 		$value=$this->data['Stock Value'];
 
@@ -552,10 +552,10 @@ class PartLocation extends DB_Table {
 		}else {
 			return $this->part->get('Unit Cost',$date);
 		}
-	
+
 	}
-	
-	
+
+
 
 	function identify_unknown($location_key) {
 		if ($this->location_key!=1) {
@@ -965,7 +965,7 @@ class PartLocation extends DB_Table {
 		mysql_query($sql);
 
 
-$this->location->update_parts();
+		$this->location->update_parts();
 
 
 	}
@@ -1077,10 +1077,10 @@ $this->location->update_parts();
 			,$this->location_key
 		);
 		$res=mysql_query($sql);
-	
-		
+
+
 		//print "$sql\n";
-		
+
 		$stock=0;
 		$value=0;
 
@@ -1175,7 +1175,7 @@ $this->location->update_parts();
 			,$this->location_key
 		);
 		mysql_query($sql);
-		
+
 		$this->part->update_stock();
 	}
 
@@ -1185,7 +1185,7 @@ $this->location->update_parts();
 
 		$intervals=$this->get_history_intervals();
 
-//print_r($intervals);
+		//print_r($intervals);
 		foreach ($intervals as $interval) {
 
 
@@ -1234,8 +1234,8 @@ $this->location->update_parts();
 		return $intervals;
 
 	}
-	
-		function get_history_datetime_intervals() {
+
+	function get_history_datetime_intervals() {
 		$sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part SKU`=%d and  `Location Key`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Inventory Transaction Key` ",
 			$this->part_sku,
 			$this->location_key
@@ -1263,30 +1263,30 @@ $this->location->update_parts();
 	}
 
 
-    
+
 
 	function is_associated($date) {
-	
-//	print "is test: $date ".$this->location_key."\n";
-	
+
+		// print "is test: $date ".$this->location_key."\n";
+
 		$intervals=$this->get_history_datetime_intervals();
 		//print_r($intervals);
 		$date=strtotime($date);
 		foreach ($intervals as $interval) {
 			if (!$interval['To'])
 				$to=gmdate('U')+1000000000;
-			else{
+			else {
 				$to=strtotime($interval['To'].' +00:00');
 			}
-			    
-			    $from=strtotime($interval['From'].' +00:00');
-//	print "f: $from d: $date t: $to\n";
-		    if ($from<=$date and $to>=$date)
+
+			$from=strtotime($interval['From'].' +00:00');
+			// print "f: $from d: $date t: $to\n";
+			if ($from<=$date and $to>=$date)
 				return true;
 
 		}
-	    //print "not asscated\n ";
-	    
+		//print "not asscated\n ";
+
 		return false;
 
 
@@ -1297,14 +1297,14 @@ $this->location->update_parts();
 	function update_stock_history_date($date) {
 
 		if ($this->exist_on_date($date)) {
-		//print "a\n";
-			 $this->update_stock_history_interval($date,$date);
+			//print "a\n";
+			$this->update_stock_history_interval($date,$date);
 		}else {
-			
+
 			$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s",
-			$this->part_sku,
-			$this->location_key,
-			prepare_mysql($date)
+				$this->part_sku,
+				$this->location_key,
+				prepare_mysql($date)
 			);
 			mysql_query($sql);
 			//print "$sql\n";
@@ -1325,9 +1325,9 @@ $this->location->update_parts();
 	}
 
 	function update_stock_history_interval($from,$to) {
-	
-		
-	
+
+
+
 		$sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date`"
 			,prepare_mysql($from)
 			,prepare_mysql($to)
@@ -1345,24 +1345,62 @@ $this->location->update_parts();
 
 
 			$storing_cost=0;
-			$commercial_value=$stock*$this->part->get_commercial_value($row['Date'].' 23:59:59');
+			
 			$location_type="Unknown";
 			$warehouse_key=1;
 			
-				//if values are negatives make then zero
-			if($stock<=0)
-			$value_day_cost_value=0;
-			else
-			$value_day_cost_value=$stock*$this->part->get_unit_cost($row['Date'].' 23:59:59');
-				if($value<0)$value=0;
-			if($value_open<0)$value_open=0;
-			if($value_low<0)$value_low=0;
-			if($value_close<0)$value_close=0;
-					if($commercial_value<0)$commercial_value=0;
+			
+			if($stock>0 or $open>0 or $high>0 or $low>0){
+				$commercial_value_unit_cost=$this->part->get_commercial_value($row['Date'].' 23:59:59');
+				$value_day_cost_unit_cost=$this->part->get_unit_cost($row['Date'].' 23:59:59');
+			}
+
+			if ($stock<=0){
+				$value_day_cost=0;
+				$commercial_value=0;
+			}
+			else{
+				$value_day_cost=$stock*$value_day_cost_unit_cost;
+				$commercial_value=$stock*$commercial_value_unit_cost;
+			}
+			if ($open<=0){
+				$value_day_cost_open=0;
+				$commercial_value_open=0;
+			}
+			else{
+				$value_day_cost_open=$open*$value_day_cost_unit_cost;
+				$commercial_value_open=$open*$commercial_value_unit_cost;
+			}
+				if ($high<=0){
+				$value_day_cost_high=0;
+				$commercial_value_high=0;
+			}
+			else{
+				$value_day_cost_high=$high*$value_day_cost_unit_cost;
+				$commercial_value_high=$high*$commercial_value_unit_cost;
+			}
+			
+				if ($low<=0){
+				$value_day_cost_low=0;
+				$commercial_value_low=0;
+			}
+			else{
+				$value_day_cost_low=$low*$value_day_cost_unit_cost;
+				$commercial_value_low=$low*$commercial_value_unit_cost;
+			}
+			
+				
+			if ($value<0)$value=0;
+			if ($value_open<0)$value_open=0;
+			if ($value_low<0)$value_low=0;
+			if ($value_close<0)$value_close=0;
 
 			//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
-			
-			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s) ON DUPLICATE KEY UPDATE `Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,`Value Open`=%f,`Value High`=%f,`Value Low`=%f,`Location Type`=%s",
+
+			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s) ON DUPLICATE KEY UPDATE `Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,
+			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
+			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
+			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,`Location Type`=%s",
 				prepare_mysql($row['Date']),
 
 				$this->part_sku,
@@ -1372,7 +1410,7 @@ $this->location->update_parts();
 
 				$stock,
 				$value,
-				$value_day_cost_value,
+				$value_day_cost,
 				$sales_value,
 				$commercial_value,
 
@@ -1387,15 +1425,23 @@ $this->location->update_parts();
 				$value_open,
 				$value_high,
 				$value_low,
+
+				$value_day_cost_open,
+				$value_day_cost_high,
+				$value_day_cost_low,
+				$commercial_value_open,
+				$commercial_value_high,
+				$commercial_value_low,
+
 				prepare_mysql($location_type),
-				
+
 				$warehouse_key,
 				$stock,
 				$value,
 
 				$sales_value,
 				$commercial_value,
-$value_day_cost_value,
+				$value_day_cost,
 				$storing_cost,
 
 				$sold,
@@ -1407,15 +1453,21 @@ $value_day_cost_value,
 				$value_open,
 				$value_high,
 				$value_low,
+				$value_day_cost_open,
+				$value_day_cost_high,
+				$value_day_cost_low,
+				$commercial_value_open,
+				$commercial_value_high,
+				$commercial_value_low,
 				prepare_mysql($location_type)
-				
+
 
 			);
 			mysql_query($sql);
-			
-			
-			
-		//	print "$sql\n\n";
+
+
+
+			// print "$sql\n\n";
 			//exit;
 		}
 

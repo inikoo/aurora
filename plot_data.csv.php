@@ -72,7 +72,7 @@ case('top_products'):
 	$data=prepare_values($_REQUEST,array(
 			'store_keys'=>array('type'=>'string'),
 			'period'=>array('type'=>'string'),
-						'nr'=>array('type'=>'numeric')
+			'nr'=>array('type'=>'numeric')
 
 		));
 	top_products($data);
@@ -81,21 +81,21 @@ case('top_parts'):
 
 	$data=prepare_values($_REQUEST,array(
 			'period'=>array('type'=>'string'),
-						'nr'=>array('type'=>'numeric')
+			'nr'=>array('type'=>'numeric')
 
 		));
 	top_parts($data);
-	break;	
+	break;
 case('top_parts_categories'):
 
 	$data=prepare_values($_REQUEST,array(
 			'period'=>array('type'=>'string'),
-						'nr'=>array('type'=>'numeric')
+			'nr'=>array('type'=>'numeric')
 
 		));
 	top_parts_categories($data);
-	break;	
-	
+	break;
+
 case('number_of_contacts'):
 	$data=prepare_values($_REQUEST,array(
 			'store_key'=>array('type'=>'key'),
@@ -192,10 +192,10 @@ case('category_part_sales'):
 			'to'=>array('type'=>'date','optional'=>true),
 			'use_corporate'=>array('type'=>'number')
 		));
-		
+
 	category_part_sales($data);
-	break;	
-	
+	break;
+
 case('product_id_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'product_id'=>array('type'=>'string'),
@@ -220,19 +220,19 @@ case('stacked_invoice_categories_sales'):
 			'from'=>array('type'=>'date','optional'=>true),
 			'to'=>array('type'=>'date','optional'=>true),
 		));
-		
-	
+
+
 	stacked_invoice_categories_sales($data);
-	break;	
-	
+	break;
+
 case('stacked_store_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'store_key'=>array('type'=>'string'),
 			'from'=>array('type'=>'date','optional'=>true),
 			'to'=>array('type'=>'date','optional'=>true),
 		));
-		
-	
+
+
 	stacked_store_sales($data);
 	break;
 case('part_location_stock_history'):
@@ -243,7 +243,10 @@ case('part_location_stock_history'):
 		));
 	if ($data['output']=='value')
 		part_location_stock_value_history($data);
-
+	elseif ($data['output']=='end_day_value')
+		part_location_stock_end_day_value_history($data);
+	elseif ($data['output']=='commercial_value')
+		part_location_stock_commercial_value_history($data);
 	else
 		part_location_stock_history($data);
 	break;
@@ -305,21 +308,78 @@ case('region_sales'):
 }
 
 
-function part_location_stock_value_history($data) {
+function part_location_stock_end_day_value_history($data) {
 
 	if ($data['location_key']) {
 
-		$sql=sprintf("select `Date`,`Value Open`,`Value High`,`Value Low`,`Value At Cost` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
+		$sql=sprintf("select `Date`,`Value At Day Cost Open`,`Value At Day Cost High`,`Value At Day Cost Low`,`Value At Day Cost` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
 			$data['part_sku'],
 			$data['location_key']
 		);
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Value Open'],$row['Value High'],$row['Value Low'],$row['Value At Cost'],$row['Value At Cost']);
+			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Value At Day Cost Open'],$row['Value At Day Cost High'],$row['Value At Day Cost Low'],$row['Value At Day Cost'],$row['Value At Day Cost']);
 		}
-	} else {// stock in all locatins
-		$sql=sprintf("select `Date`,sum(`Value Open`) as open ,max(`Value High`) as high,min(`Value Low`) as low,sum(`Value At Cost`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
+	} else {// stock in all locations
+		$sql=sprintf("select `Date`,sum(`Value At Day Cost Open`) as open ,max(`Value At Day Cost High`) as high,min(`Value At Day Cost Low`) as low,sum(`Value At Day Cost`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
+			$data['part_sku']
+
+		);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+		}
+
+	}
+
+}
+
+function part_location_stock_commercial_value_history($data) {
+
+	if ($data['location_key']) {
+
+		$sql=sprintf("select `Date`,`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,`Value Commercial` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
+			$data['part_sku'],
+			$data['location_key']
+		);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Value Commercial Open'],$row['Value Commercial High'],$row['Value Commercial Low'],$row['Value Commercial'],$row['Value Commercial']);
+		}
+	} else {// stock in all locations
+		$sql=sprintf("select `Date`,sum(`Value Commercial Open`) as open ,max(`Value Commercial High`) as high,min(`Value Commercial Low`) as low,sum(`Value Commercial`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
+			$data['part_sku']
+
+		);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+		}
+
+	}
+
+}
+
+
+function part_location_stock_value_history($data) {
+
+	if ($data['location_key']) {
+
+		$sql=sprintf("select `Date`,`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,`Value At Cost At Cost` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
+			$data['part_sku'],
+			$data['location_key']
+		);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Value At Cost Open'],$row['Value At Cost High'],$row['Value At Cost Low'],$row['Value At Cost At Cost'],$row['Value At Cost At Cost']);
+		}
+	} else {// stock in all locations
+		$sql=sprintf("select `Date`,sum(`Value At Cost Open`) as open ,max(`Value At Cost High`) as high,min(`Value At Cost Low`) as low,sum(`Value At Cost At Cost`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
 			$data['part_sku']
 
 		);
@@ -346,7 +406,7 @@ function part_location_stock_history($data) {
 		while ($row=mysql_fetch_assoc($res)) {
 			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Quantity Open'],$row['Quantity High'],$row['Quantity Low'],$row['Quantity On Hand'],$row['Quantity On Hand']);
 		}
-	} else {// stock in all locatins
+	} else {// stock in all locations
 		$sql=sprintf("select `Date`,sum(`Quantity Open`) as open ,sum(`Quantity High`) as high,sum(`Quantity Low`) as low,sum(`Quantity On Hand`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
 			$data['part_sku']
 
@@ -904,12 +964,12 @@ function category_part_sales($data) {
 		$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
 	}
 
-	
-		$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type`='Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
-$dates,
+
+	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` left join `Category Bridge` on (`Subject`='Part' and `Subject Key`=`Part SKU`)  where  %s and `Inventory Transaction Type`='Sale' and `Category Key` in (%s)   group by Date(`Date`) order by `Date` desc",
+		$dates,
 		join(',',$categories_keys)
-);
-	
+	);
+
 	//print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
@@ -1026,16 +1086,16 @@ function stacked_invoice_categories_sales($data) {
 		}
 	}
 
-$categories_keys=array();
+	$categories_keys=array();
 
-$sql=sprintf("select C.`Category Key` from `Category Bridge` B left join `Category Dimension` C on  (`Subject`='Invoice' and B.`Category Key`=C.`Category Key`)  where `Category Store Key` in (%s) group by C.`Category Key`",addslashes(join(',',$store_keys)));
-			$res=mysql_query($sql);
-			
-			while ($row=mysql_fetch_assoc($res)) {
-			$categories_keys[]=$row['Category Key'];
-			
-			
-			}
+	$sql=sprintf("select C.`Category Key` from `Category Bridge` B left join `Category Dimension` C on  (`Subject`='Invoice' and B.`Category Key`=C.`Category Key`)  where `Category Store Key` in (%s) group by C.`Category Key`",addslashes(join(',',$store_keys)));
+	$res=mysql_query($sql);
+
+	while ($row=mysql_fetch_assoc($res)) {
+		$categories_keys[]=$row['Category Key'];
+
+
+	}
 
 
 	$number_categories=count($categories_keys);
@@ -1091,7 +1151,7 @@ $sql=sprintf("select C.`Category Key` from `Category Bridge` B left join `Catego
 		$sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` left join `Category Bridge` on (`Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and  %s and `Category Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
 			$dates,
 			$category_key);
-	//	print $sql;
+		// print $sql;
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 
@@ -1239,8 +1299,8 @@ function top_families($data) {
 	$period=$data['period'];
 
 
-$db_interval=get_interval_db_name($period);
-$field='(`Product Family DC '.$db_interval.' Acc Invoiced Amount`)';
+	$db_interval=get_interval_db_name($period);
+	$field='(`Product Family DC '.$db_interval.' Acc Invoiced Amount`)';
 
 
 
@@ -1249,9 +1309,9 @@ $field='(`Product Family DC '.$db_interval.' Acc Invoiced Amount`)';
 		$field,
 		join(",",$valid_store_keys)
 	);
-//	print $sql;
+	// print $sql;
 	$res=mysql_query($sql);
-	
+
 	if ($row=mysql_fetch_assoc($res)) {
 		$total=$row['sales'];
 	}
@@ -1296,8 +1356,8 @@ function top_products($data) {
 	$period=$data['period'];
 
 
-$db_interval=get_interval_db_name($period);
-$field='(`Product ID DC '.$db_interval.' Acc Invoiced Amount`)';
+	$db_interval=get_interval_db_name($period);
+	$field='(`Product ID DC '.$db_interval.' Acc Invoiced Amount`)';
 
 	$total=0;
 	$sql=sprintf("select sum%s as sales from `Product Dimension` F left join  `Product ID Default Currency` DC on (F.`Product ID`=DC.`Product ID`) where `Product Store Key` in (%s)  ",
@@ -1306,7 +1366,7 @@ $field='(`Product ID DC '.$db_interval.' Acc Invoiced Amount`)';
 	);
 	//print $sql;
 	$res=mysql_query($sql);
-	
+
 	if ($row=mysql_fetch_assoc($res)) {
 		$total=$row['sales'];
 	}
@@ -1335,28 +1395,28 @@ $field='(`Product ID DC '.$db_interval.' Acc Invoiced Amount`)';
 
 function top_parts($data) {
 
-global $user;
+	global $user;
 
 	$max_slices=$data['nr'];
 
-	
+
 
 	$period=$data['period'];
-	
-	
-		$warehouses=join(',',$user->warehouses);
+
+
+	$warehouses=join(',',$user->warehouses);
 	if ($warehouses=='')$warehouses=0;
 
 
 	if (!$warehouses)
 		$where=sprintf('  false ');
 
-	else{
+	else {
 		$where=sprintf('  `Warehouse Key` in (%s) ',$warehouses);
 	}
 
-$db_interval=get_interval_db_name($period);
-$field='(`Part '.$db_interval.' Acc Sold Amount`)';
+	$db_interval=get_interval_db_name($period);
+	$field='(`Part '.$db_interval.' Acc Sold Amount`)';
 
 
 	$total=0;
@@ -1365,7 +1425,7 @@ $field='(`Part '.$db_interval.' Acc Sold Amount`)';
 	);
 	//print $sql;
 	$res=mysql_query($sql);
-	
+
 	if ($row=mysql_fetch_assoc($res)) {
 		$total=$row['sales'];
 	}
@@ -1376,7 +1436,7 @@ $field='(`Part '.$db_interval.' Acc Sold Amount`)';
 		$max_slices
 	);
 	$res=mysql_query($sql);
-//	print $sql;
+	// print $sql;
 	while ($row=mysql_fetch_assoc($res)) {
 		$descripton=$row['Part Unit Description'];
 		$code=sprintf("SKU%05d",$row['Part SKU']);
@@ -1392,25 +1452,25 @@ $field='(`Part '.$db_interval.' Acc Sold Amount`)';
 
 function top_parts_categories($data) {
 
-global $user;
+	global $user;
 
 	$max_slices=$data['nr'];
 
-	
+
 
 	$period=$data['period'];
-	
-	
-		$warehouses=join(',',$user->warehouses);
+
+
+	$warehouses=join(',',$user->warehouses);
 	if ($warehouses=='')$warehouses=0;
 
 
 	if (!$warehouses)
 		$where=sprintf('  false ');
 
-	else{
-	
-	
+	else {
+
+
 		$sql=sprintf("select GROUP_CONCAT(`Warehouse Family Category Key`) as root_category from `Warehouse Dimension` where `Warehouse Key` in (%s)",$warehouses);
 
 		$res=mysql_query($sql);
@@ -1420,14 +1480,14 @@ global $user;
 
 
 		$where=sprintf(" `Category Subject`='Part' and  `Category Parent Key` in (%s)",$root_category);
-	
-	
-		
+
+
+
 	}
 
 
-$db_interval=get_interval_db_name($period);
-$field='(`Part Category '.$db_interval.' Acc Sold Amount`)';
+	$db_interval=get_interval_db_name($period);
+	$field='(`Part Category '.$db_interval.' Acc Sold Amount`)';
 
 
 
@@ -1437,7 +1497,7 @@ $field='(`Part Category '.$db_interval.' Acc Sold Amount`)';
 	);
 	//print $sql;
 	$res=mysql_query($sql);
-	
+
 	if ($row=mysql_fetch_assoc($res)) {
 		$total=$row['sales'];
 	}
@@ -2101,11 +2161,11 @@ function part_sales($data) {
 	}
 
 	$sql=sprintf("select Date(`Date`) as date,sum(`Inventory Transaction Amount`) as net, count(*) as outers  from `Inventory Transaction Fact` where  %s and `Inventory Transaction Type`='Sale' and `Part SKU` in (%s)   group by Date(`Date`) order by `Date` desc",
-		
+
 		$dates,
 		join(',',$parts_skus)
 	);
-//	print $sql;
+	// print $sql;
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$graph_data[$row['date']]['vol']=$row['outers'];
