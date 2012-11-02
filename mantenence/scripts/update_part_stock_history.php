@@ -32,12 +32,17 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$where=' `Part SKU`=257';
+
 
 
 $corporate_currency='GBP';
 
+$sql="select * from `Part Dimension`   order by `Part SKU`";
 
+$resultxx=mysql_query($sql);
+while($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ){
+
+$where=' `Part SKU`='.$rowxx['Part SKU'];
 $from=date("Y-m-d",strtotime('now -3000 day'));
 //$from=date("Y-m-d");
 $to=date("Y-m-d");
@@ -89,7 +94,7 @@ while ($row=mysql_fetch_array($res)) {
 }
 
 
-
+}
 
 
 
