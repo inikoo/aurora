@@ -916,11 +916,11 @@ function list_parts_lists() {
 function part_stock_history() {
 	$conf=$_SESSION['state']['part']['stock_history'];
 
-	if (isset( $_REQUEST['part_sku']))
-		$part_sku=$_REQUEST['part_sku'];
-	else
-		$part_sku=$_SESSION['state']['part']['id'];
-
+	if (isset( $_REQUEST['parent_key']))
+		$part_sku=$_REQUEST['parent_key'];
+	else{
+exit();		
+}
 
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
