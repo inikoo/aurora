@@ -3221,11 +3221,12 @@ function update_discounts_family_tigger() {
 				
 				case('Order Interval'):
 				
-					$sql=sprintf("select count(*) as num from `Order Dimension` where `Customer Key`=%d and `Order Key`!=%d and `Order Date`>=%s",
+					$sql=sprintf("select count(*) as num from `Order Dimension` where `Order Customer Key`=%d and `Order Key`!=%d and `Order Date`>=%s",
 					$this->data['Order Customer Key'],
 					$this->id,
 					prepare_mysql(date('Y-m-d',strtotime("now -1 month")).' 00:00:00')
 					);
+				
 					$res2=mysql_query($sql);
 					if ($_row=mysql_fetch_array($res2)) {
 						if($_row['num']>0){

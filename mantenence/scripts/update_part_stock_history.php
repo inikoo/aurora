@@ -37,7 +37,7 @@ date_default_timezone_set('UTC');
 
 $corporate_currency='GBP';
 
-$sql="select * from `Part Dimension`   order by `Part SKU`";
+$sql="select * from `Part Dimension`   order by `Part SKU`   desc";
 
 $resultxx=mysql_query($sql);
 while($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ){

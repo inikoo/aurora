@@ -94,7 +94,7 @@ case('part_stock_history'):
 			'title'=>_('Warehouse'),
 			'short_title'=>_('Warehouse'),
 
-			'csv_args'=>'tipo=warehouse_stock_history&warehouse='.$parent_key
+			'csv_args'=>'tipo=warehouse_parts_stock_history&output='.$output.'&warehouse_key='.$parent_key
 
 		);
 		$gid++;
@@ -102,6 +102,11 @@ case('part_stock_history'):
 	}
 
 	break;
+	
+
+
+	
+	
 }
 
 

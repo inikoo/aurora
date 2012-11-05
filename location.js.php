@@ -644,7 +644,7 @@ YAHOO.util.Event.onContentReady("location_move_to", function () {
 YAHOO.util.Event.onContentReady("manage_stock_products", function () {
 
 
-	var oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+	var oDS = new YAHOO.util.XHRDataSource("ar_parts.php");
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
  	oDS.responseSchema = {
  	    resultsList : "data",
@@ -652,7 +652,6 @@ YAHOO.util.Event.onContentReady("manage_stock_products", function () {
  	};
  	var oAC = new YAHOO.widget.AutoComplete("new_product_input", "new_product_container", oDS);
  	oAC.generateRequest = function(sQuery) {
-	    //alert("ar_assets.php"+"?tipo=part_search&except=location&except_id=<?php echo$_SESSION['state']['location']['id']?>&query=" + sQuery);
  	    return "?tipo=find_part&except=location&except_id=<?php echo$_SESSION['state']['location']['id']?>&query=" + sQuery ;
  	};
 

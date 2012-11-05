@@ -34,7 +34,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		 
 		    
-		    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+		    this.dataSource0 = new YAHOO.util.DataSource("ar_parts.php?tipo=part_stock_history&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
 		    this.dataSource0.responseSchema = {
@@ -109,8 +109,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ];
 		 
 		    
-//alert("ar_assets.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid)
-		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
+		    this.dataSource1 = new YAHOO.util.DataSource("ar_parts.php?tipo=part_transactions&parent=part&parent_key="+Dom.get('part_sku').value+"&sf=0&tableid="+tableid);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource1.connXhrMode = "queueRequests";
 		    this.dataSource1.responseSchema = {
@@ -395,13 +394,10 @@ function set_web_configuration(value){
 }
 
 function change_plot(type){
-Dom.setStyle(['change_plot_label_stock','change_plot_label_value'],'display','none')
+Dom.setStyle(['change_plot_label_stock','change_plot_label_value','change_plot_label_end_day_value','change_plot_label_commercial_value'],'display','none')
+Dom.setStyle('change_plot_label_'+type,'display','')
 
-if(type=='stock'){
-Dom.setStyle('change_plot_label_stock','display','')
-}else{
-Dom.setStyle('change_plot_label_value','display','')
-}
+
 change_plot_menu.hide()
 
 
@@ -411,8 +407,6 @@ reloadSettings("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&ou
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-stock_history-chart_output&value='+type ,{});
 
 }
-
-
 function show_dialog_change_plot(){
 region1 = Dom.getRegion('change_plot'); 
     region2 = Dom.getRegion('change_plot_menu'); 
@@ -426,7 +420,7 @@ change_plot_menu.show()
 function get_part_transaction_numbers(from,to){
 
 
-var ar_file='ar_assets.php'; 
+var ar_file='ar_parts.php'; 
     	var request='tipo=number_part_transactions_in_interval&part_sku='+Dom.get('part_sku').value+'&from='+from+'&to='+to;
 			
 			
@@ -510,7 +504,7 @@ tables.dataSource1.sendRequest(request,tables.table1.onDataReturnInitializeTable
  }
 
 
-var clear_interval = function(e,suffix){
+function clear_interval(e,suffix){
  
     var request='&sf=0&from=&to=';
    if(suffix=='t'){
@@ -536,7 +530,7 @@ function init(){
 
 change_plot_menu = new YAHOO.widget.Dialog("change_plot_menu", {visible : false,close:true,underlay: "none",draggable:false});
 change_plot_menu.render();
-	YAHOO.util.Event.addListener("change_plot", "click", show_dialog_change_plot);
+Event.addListener("change_plot", "click", show_dialog_change_plot);
 
 dialog_edit_web_state = new YAHOO.widget.Dialog("dialog_edit_web_state", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_edit_web_state.render();

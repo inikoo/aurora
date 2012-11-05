@@ -41,13 +41,26 @@ function set_all_lost() {
 }
 function save_lost_items() {
 
+
+if(Dom.get('qty_lost').value<0){
+Dom.setStyle('error_negative_number_in_lost_stock','display','');
+
+return;
+}else{
+Dom.setStyle('error_negative_number_in_lost_stock','display','none');
+
+}
+
+
+Dom.setStyle('save_lost_waiting','display','');
 Dom.setStyle('save_lost_btn','display','none');
+Dom.setStyle('cancel_lost_btn','display','none');
 
     var data=new Object();
     data['qty']=Dom.get('qty_lost').value;
     data['why']=Dom.get('lost_why').value;
     data['action']=Dom.get('lost_action').value;
-
+  data['type']=Dom.get('lost_type').value;
     data['location_key']=Dom.get('lost_location_key').value
                          data['part_sku']=Dom.get('lost_sku').value;
     location_key=Dom.get('lost_location_key').value;
@@ -58,7 +71,7 @@ Dom.setStyle('save_lost_btn','display','none');
 
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            //alert(o.responseText);
+           // alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.action=='ok') {
 
@@ -100,9 +113,14 @@ success:function(o) {
                     Dom.get("part_location_move_items_"+sku+"_"+location_key).style.display='';
                 }
 
-           //     if (Dom.get('stock').innerHTML!=undefined)
-                    Dom.get('stock').innerHTML=r.stock;
-
+                Dom.get('stock').innerHTML=r.stock;
+                Dom.get('value_at_cost').innerHTML=r.value_at_cost;
+                Dom.get('value_at_current_cost').innerHTML=r.value_at_current_cost;
+                Dom.get('commercial_value').innerHTML=r.commercial_value;
+				Dom.get('current_stock').innerHTML=r.current_stock;
+				Dom.get('current_stock_picked').innerHTML=r.current_stock_picked;
+				Dom.get('current_stock_in_process').innerHTML=r.current_stock_in_process;
+				Dom.get('current_stock_available').innerHTML=r.current_stock_available;
 
 
 
@@ -138,8 +156,18 @@ Dom.get('qty_audit').focus();
 
 }
 function lost(sku,location_key) {
+Dom.setStyle('error_negative_number_in_lost_stock','display','none');
 
+
+Dom.removeClass(['lost_type_other_out','lost_type_broken'],'selected');
+Dom.addClass('lost_type_lost','selected');
+Dom.get('lost_type').value='Lost';
+
+Dom.setStyle('save_lost_waiting','display','none');
 Dom.setStyle('save_lost_btn','display','');
+Dom.setStyle('cancel_lost_btn','display','');
+
+
 
     qty=Dom.get('part_location_quantity_'+sku+'_'+location_key).getAttribute('quantity');
     Dom.get('lost_max_value').innerHTML=qty;
@@ -159,7 +187,14 @@ Dom.setStyle('save_lost_btn','display','');
 
 function add_stock_part_location(sku,location_key) {
 
-Dom.setStyle('add_stock_btn','display','');
+
+Dom.setStyle('add_stock_waiting','display','none')
+
+Dom.setStyle('add_stock_save_btn','display','')
+Dom.setStyle('add_stock_cancel_btn','display','')
+
+
+
 
     Dom.get("add_stock_location_key").value=location_key;
     Dom.get("add_stock_sku").value=sku;
@@ -170,6 +205,20 @@ Dom.setStyle('add_stock_btn','display','');
   add_stock_dialog.show();
     Dom.setXY('Editor_add_stock', pos);
 Dom.get('qty_add_stock').focus();
+
+}
+
+function change_lost_type(type){
+
+Dom.removeClass(['lost_type_lost','lost_type_other_out','lost_type_broken'],'selected');
+Dom.addClass('lost_type_'+type,'selected');
+if(type=='lost')
+Dom.get('lost_type').value='Lost';
+else if(type=='broken')
+Dom.get('lost_type').value='Broken';
+else if(type=='other_out')
+Dom.get('lost_type').value='Other Out';
+
 
 }
 
@@ -271,7 +320,20 @@ var r =  YAHOO.lang.JSON.parse(o.responseText);
 
 function save_add_stock() {
 
-Dom.setStyle('add_stock_btn','display','none')
+
+if(Dom.get('qty_add_stock').value<0){
+Dom.setStyle('error_negative_number_in_add_stock','display','');
+
+return;
+}else{
+Dom.setStyle('error_negative_number_in_add_stock','display','none');
+
+}
+
+Dom.setStyle('add_stock_waiting','display','')
+
+Dom.setStyle('add_stock_save_btn','display','none')
+Dom.setStyle('add_stock_cancel_btn','display','none')
 
 
   var data=new Object();
@@ -285,7 +347,7 @@ Dom.setStyle('add_stock_btn','display','none')
 
    YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            //alert(o.responseText);
+         //   alert(o.responseText);
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                   Dom.get('part_location_quantity_'+r.sku+'_'+r.location_key).setAttribute('quantity',r.qty);
@@ -316,9 +378,17 @@ success:function(o) {
                 }
 
 
-              //  if (Dom.get('stock').innerHTML!=undefined)
-               //   alert(r.stock)
-                  Dom.get('stock').innerHTML=r.stock;
+                Dom.get('stock').innerHTML=r.stock;
+                Dom.get('value_at_cost').innerHTML=r.value_at_cost;
+                Dom.get('value_at_current_cost').innerHTML=r.value_at_current_cost;
+                Dom.get('commercial_value').innerHTML=r.commercial_value;
+				Dom.get('current_stock').innerHTML=r.current_stock;
+				Dom.get('current_stock_picked').innerHTML=r.current_stock_picked;
+				Dom.get('current_stock_in_process').innerHTML=r.current_stock_in_process;
+				Dom.get('current_stock_available').innerHTML=r.current_stock_available;
+
+             
+                  
 
                  close_add_stock_dialog();
 table_id=1
@@ -398,10 +468,14 @@ success:function(o) {
                     Dom.get("part_location_move_items_"+r.sku+"_"+r.location_key).style.display='';
                 }
 
-
-              //  if (Dom.get('stock').innerHTML!=undefined)
-               //   alert(r.stock)
-                  Dom.get('stock').innerHTML=r.stock;
+                Dom.get('stock').innerHTML=r.stock;
+                Dom.get('value_at_cost').innerHTML=r.value_at_cost;
+                Dom.get('value_at_current_cost').innerHTML=r.value_at_current_cost;
+                Dom.get('commercial_value').innerHTML=r.commercial_value;
+				Dom.get('current_stock').innerHTML=r.current_stock;
+				Dom.get('current_stock_picked').innerHTML=r.current_stock_picked;
+				Dom.get('current_stock_in_process').innerHTML=r.current_stock_in_process;
+				Dom.get('current_stock_available').innerHTML=r.current_stock_available;
 
                  close_audit_dialog();
 table_id=1
@@ -440,6 +514,8 @@ function close_audit_dialog() {
 }
 
 function close_add_stock_dialog() {
+Dom.setStyle('error_negative_number_in_add_stock','display','none');
+
     Dom.get('qty_add_stock').value='';
     Dom.get('note_add_stock').value='';
     add_stock_dialog.hide();
@@ -449,6 +525,8 @@ function close_lost_dialog() {
     Dom.get('qty_lost').value='';
     Dom.get('lost_why').value='';
     Dom.get('lost_action').value='';
+
+
 
     Editor_lost_items.cfg.setProperty('visible',false);
 }

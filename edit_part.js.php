@@ -855,7 +855,7 @@ function add_part(sku) {
 YAHOO.util.Event.onContentReady("add_part_input", 
 function() {
 
-	var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+	var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_parts.php");
 	new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
 	new_loc_oDS.responseSchema = {
 		resultsList: "data"
@@ -1770,7 +1770,7 @@ function show_change_part_dialog(sku, o) {
 YAHOO.util.Event.onContentReady("change_part", 
 function() {
 
-	var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+	var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_parts.php");
 	new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
 	new_loc_oDS.responseSchema = {
 		resultsList: "data"

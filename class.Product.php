@@ -2492,13 +2492,17 @@ class product extends DB_Table {
 	
 	$price=$this->get_historic_price($datetime);
 	
+	
 	if($price!=0 and $this->data['Product Currency']!=$corporate_currency){
 		include_once('class.CurrencyExchange.php');
 		
 		//print "------------------>".$this->data['Product Currency'].'xx'.$corporate_currency;
 		
 		$currency_exchange = new CurrencyExchange($this->data['Product Currency'].$corporate_currency,date('Y-m-d',strtotime($datetime)));
-		$price=$price*$currency_exchange->exchange;	
+	
+
+	
+	$price=$price*$currency_exchange->exchange;	
 	}
 	
 return $price;
@@ -2506,6 +2510,9 @@ return $price;
 
 	function get_historic_price($datetime=''){
 		
+		if(!$datetime){
+			return $this->data['Product Price'];
+		}
 		
 		$price=0;
 		$sum_price=0;
@@ -2516,7 +2523,7 @@ return $price;
 		prepare_mysql($datetime)	
 			);
 		
-		//print "$sql\n";
+	
 		
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {

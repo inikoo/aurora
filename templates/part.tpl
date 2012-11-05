@@ -79,8 +79,27 @@
 						<td class="stock aright" id="stock">{$part->get('Part Current On Hand Stock')}</td>
 					</tr>
 					<tr>
-						<td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%"><b>{$part->get('Part Current Stock')}</b><b>-[{$part->get('Part Current Stock Picked')}]</b> -({$part->get('Part Current Stock In Process')}) &rarr; {$part->get('Current Stock Available')}</td>
+						<td class="aright" colspan="2" style="padding-top:0;color:#777;font-size:90%">
+						<b id="current_stock" >{$part->get('Part Current Stock')}</b>
+						<b >-[<span id="current_stock_picked">{$part->get('Part Current Stock Picked')}</span>]</b> 
+						-(<span  id="current_stock_in_process">{$part->get('Part Current Stock In Process')}</span>) &rarr; 
+						<span  id="current_stock_available">{$part->get('Current Stock Available')}</span></td>
 					</tr>
+					
+					<tbody style="font-size:80%">
+					<tr>
+						<td>{t}Value at Cost{/t}:</td>
+						<td class="aright"  id="value_at_cost">{$part->get_current_formated_value_at_cost()}</td>
+					</tr>
+					<tr>
+						<td>{t}Value at Current Cost{/t}:</td>
+						<td class="aright"  id="value_at_current_cost">{$part->get_current_formated_value_at_current_cost()}</td>
+					</tr>
+					<tr>
+						<td>{t}Commercial Value{/t}:</td>
+						<td class="aright"  id="commercial_value">{$part->get_current_formated_commercial_value()}</td>
+					</tr>
+					</tbody>
 					<tr>
 						<td style="{if $part->get('Part XHTML Available For Forecast')==''}display:none{/if}">{t}Available for{/t}:</td>
 						<td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>
@@ -155,18 +174,18 @@
 				<span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}" id="restrictions_move_transactions" table_type="move_transactions">{t}Movements{/t} (<span id="transactions_move_transactions"></span><img id="transactions_move_transactions_wait" src="art/loading.gif" style="height:11px">)</span> 
 			</div>
 		</div>
-		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:0px">
-		</div>
+		<div class="table_top_bar">
+				</div>
 		<div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">
-			<form action="orders.php?" method="GET" style="margin-top:10px">
-				<div style="position:relative;left:18px">
+			
+				<div style="position:relative;left:18px;margin-top:10px">
 					<span id="clear_intervalt" style="font-size:80%;color:#777;cursor:pointer;{if $to_transactions=='' and $from_transactions=='' }display:none{/if}">{t}clear{/t}</span> {t}Interval{/t}: 
 					<input id="v_calpop1t" type="text" class="text" size="11" maxlength="10" name="from" value="{$from_transactions}" />
 					<img style="height:14px;bottom:1px;left:-19px;" id="calpop1t" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <span class="calpop" style="margin-left:4px">&rarr;</span> 
 					<input class="calpop" id="v_calpop2t" size="11" maxlength="10" type="text" name="to" value="{$to_transactions}" />
 					<img style="height:14px;bottom:1px;left:-37px;" id="calpop2t" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <img style="position:relative;right:26px;cursor:pointer;height:15px" align="absbottom" src="art/icons/application_go.png" id="submit_intervalt" alt="{t}Go{/t}" /> 
 				</div>
-			</form>
+			
 			<div id="cal1tContainer" style="position:absolute;display:none; z-index:2;;right:70px">
 			</div>
 			<div style="position:relative;right:-58px">
@@ -222,15 +241,14 @@ function reloadSettings(file) {
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:0px">
 			</div>
 			<div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">
-				<form action="orders.php?" method="GET" style="margin-top:10px">
-					<div style="position:relative;left:18px">
+					<div style="position:relative;left:18px;margin-top:10px">
 						<span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;{if $to=='' and $from=='' }display:none{/if}">{t}clear{/t}</span> {t}Interval{/t}: 
 						<input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}" />
 						<img style="height:14px;bottom:1px;left:-19px;" id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <span class="calpop" style="margin-left:4px">&rarr;</span> 
 						<input class="calpop" id="v_calpop2" size="11" maxlength="10" type="text" name="to" value="{$to}" />
 						<img style="height:14px;bottom:1px;left:-37px;" id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <img style="position:relative;right:26px;cursor:pointer;height:15px" align="absbottom" src="art/icons/application_go.png"  id="submit_interval" alt="{t}Go{/t}" /> 
 					</div>
-				</form>
+				
 				<div id="cal1Container" style="position:absolute;display:none; z-index:2">
 				</div>
 				<div style="position:relative;right:-80px">
@@ -273,7 +291,7 @@ function reloadSettings(file) {
 				</tr>
 				<tr>
 					<td>{t}Cost{/t}:</td>
-					<td>{$part->get('Cost')}</td>
+					<td>{$part->get_formated_unit_cost()}</td>
 				</tr>
 				{/if} {foreach from=$show_case key=name item=value} 
 				<tr>

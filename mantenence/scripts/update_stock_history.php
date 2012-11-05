@@ -39,13 +39,17 @@ $from=date("Y-m-d",strtotime('now -3000 day'));
 //$from=date("Y-m-d");
 $to=date("Y-m-d");
 
+//$from='2009-01-01';
+//$from=date("Y-m-d");
+//$to='2009-01-01';
+
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
 	prepare_mysql($from),prepare_mysql($to));
 $res=mysql_query($sql);
 
 while ($row=mysql_fetch_array($res)) {
 	//print $row['Date']."\r";
-	//$where=' `Part SKU`=273';
+	//$where=' `Part SKU`=1629';
 	$where='  true';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
 
