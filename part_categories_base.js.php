@@ -119,7 +119,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				
 				     ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=part_categories&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_parts.php?tipo=part_categories&tableid=1");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {

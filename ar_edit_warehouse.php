@@ -394,6 +394,13 @@ function audit_stock($data) {
 			'stock'=>$part_location->part->get('Part Current Stock'),
 			'location_key'=>$part_location->location_key,
 			'sku'=>$part_location->part_sku,
+						'value_at_cost'=>$part_location->part->get_current_formated_value_at_cost(),
+			'value_at_current_cost'=>$part_location->part->get_current_formated_value_at_current_cost(),
+			'commercial_value'=>$part_location->part->get_current_formated_commercial_value(),
+			'current_stock'=>$part_location->part->get('Part Current Stock'),
+			'current_stock_picked'=>$part_location->part->get('Part Current Stock Picked'),
+			'current_stock_in_process'=>$part_location->part->get('Part Current Stock In Process'),
+			'current_stock_available'=>$part_location->part->get('Current Stock Available')
 		);
 		echo json_encode($response);
 		return;
@@ -417,6 +424,8 @@ function add_stock($data) {
 	$_data=array('Quantity'=>$qty,'Origin'=>$note);
 	$part_location->add_stock($_data,$editor['Date']);
 
+	
+
 	if ($part_location->updated) {
 		$response=array(
 			'state'=>200,
@@ -428,6 +437,16 @@ function add_stock($data) {
 			'stock'=>$part_location->part->get('Part Current Stock'),
 			'location_key'=>$part_location->location_key,
 			'sku'=>$part_location->part_sku,
+			'value_at_cost'=>$part_location->part->get_current_formated_value_at_cost(),
+			'value_at_current_cost'=>$part_location->part->get_current_formated_value_at_current_cost(),
+			'commercial_value'=>$part_location->part->get_current_formated_commercial_value(),
+			'current_stock'=>$part_location->part->get('Part Current Stock'),
+			'current_stock_picked'=>$part_location->part->get('Part Current Stock Picked'),
+			'current_stock_in_process'=>$part_location->part->get('Part Current Stock In Process'),
+			'current_stock_available'=>$part_location->part->get('Current Stock Available'),
+
+			
+			
 		);
 		echo json_encode($response);
 		return;
@@ -1181,6 +1200,7 @@ function lost_stock($data) {
 		or !isset($raw_data['qty'])
 		or !isset($raw_data['why'])
 		or !isset($raw_data['action'])
+		or !isset($raw_data['type'])
 	) {
 		$response=array('state'=>400,'action'=>'error','msg'=>'wp');
 		echo json_encode($response);
@@ -1190,7 +1210,8 @@ function lost_stock($data) {
 	$traslator=array(
 		'qty'=>'Lost Quantity',
 		'why'=>'Reason',
-		'action'=>'Action'
+		'action'=>'Action',
+	'type'=>'Type',
 	);
 
 	foreach ($raw_data as $key =>$value) {
@@ -1217,10 +1238,18 @@ function lost_stock($data) {
 	}else {
 		list($stock,$value)=$part_location->part->get_current_stock();
 
-		$response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg
-			,'qty'=>$part_location->data['Quantity On Hand']
-			,'formated_qty'=>number($part_location->data['Quantity On Hand'])
-			,'stock'=>$stock
+		$response=array(
+		'state'=>200,'action'=>'ok','msg'=>$part_location->msg,
+			'qty'=>$part_location->data['Quantity On Hand'],
+			'formated_qty'=>number($part_location->data['Quantity On Hand']),
+			'stock'=>$stock,
+						'value_at_cost'=>$part_location->part->get_current_formated_value_at_cost(),
+			'value_at_current_cost'=>$part_location->part->get_current_formated_value_at_current_cost(),
+			'commercial_value'=>$part_location->part->get_current_formated_commercial_value(),
+			'current_stock'=>$part_location->part->get('Part Current Stock'),
+			'current_stock_picked'=>$part_location->part->get('Part Current Stock Picked'),
+			'current_stock_in_process'=>$part_location->part->get('Part Current Stock In Process'),
+			'current_stock_available'=>$part_location->part->get('Current Stock Available'),
 		);
 		echo json_encode($response);
 		return;

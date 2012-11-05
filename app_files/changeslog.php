@@ -6657,3 +6657,6 @@ ALTER TABLE `Inventory Spanshot Fact` CHANGE `Value Comercial` `Value Commercial
 
 ALTER TABLE `Inventory Spanshot Fact` CHANGE `Value Open` `Value At Cost Open` FLOAT NOT NULL DEFAULT '0',CHANGE `Value High` `Value At Cost High` FLOAT NOT NULL DEFAULT '0',CHANGE `Value Low` `Value At Cost Low` FLOAT NOT NULL DEFAULT '0';
 ALTER TABLE `Inventory Spanshot Fact` ADD `Value At Day Cost Open` FLOAT NOT NULL DEFAULT '0' AFTER `Value At Cost Low` ,ADD `Value At Day Cost High` FLOAT NOT NULL DEFAULT '0' AFTER `Value At Day Cost Open` ,ADD `Value At Day Cost Low` FLOAT NOT NULL DEFAULT '0' AFTER `Value At Day Cost High` ,ADD `Value Commercial Open` FLOAT NOT NULL DEFAULT '0' AFTER `Value At Day Cost Low` ,ADD `Value Commercial High` FLOAT NOT NULL DEFAULT '0' AFTER `Value Commercial Open` ,ADD `Value Commercial Low` FLOAT NOT NULL DEFAULT '0' AFTER `Value Commercial High` ;
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Type` `Inventory Transaction Type` ENUM( 'Move', 'Order In Process', 'No Dispatched', 'Sale', 'Audit', 'In', 'Adjust', 'Broken', 'Lost', 'Not Found', 'Associate', 'Disassociate', 'Move In', 'Move Out', 'Other Out' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
+ALTER TABLE `Part Location Dimension` CHANGE `Stock Value` `Stock Value` DECIMAL( 14, 3 ) NULL DEFAULT '0.000';

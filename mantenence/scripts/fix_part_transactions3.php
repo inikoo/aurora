@@ -52,19 +52,16 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$result2=mysql_query($sql);
 	if ($row1=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
+		$sql=sprintf("select count(*) as num  from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move' and `Date`=%s   ",
+			prepare_mysql($row['Date'])
+		);
 
+		$result3=mysql_query($sql);
+		if ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
+			if ($row3['num']>0)
+				continue;
+		}
 
-
-$sql=sprintf("select count(*) as num  from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move' and `Date`=%s   ",
-		prepare_mysql($row['Date'])
-	);
-	
-	$result3=mysql_query($sql);
-	if ($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ) {
-if($row3['num']>0)
-	continue;
-}
-		
 		$destination=new PartLocation($row1['Part SKU'].'_'.$row1['Location Key']);
 
 		$details=_('Inter-warehouse transfer').' <b>['.number($row1['Inventory Transaction Quantity']).']</b>,  <a href="location.php?id='.$part_location->location->id.'">'.$part_location->location->data['Location Code'].'</a> &rarr; <a href="location.php?id='.$destination->location->id.'">'.$destination->location->data['Location Code'].'</a>';

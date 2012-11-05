@@ -331,7 +331,7 @@ Dom.get('place_sku_qty').value=o.getAttribute('qty');
     Dom.setY('place_sku', y)
     
     
-var ar_file='ar_assets.php';
+var ar_file='ar_parts.php';
 	request='tipo=part_location_info&sku='+ o.getAttribute('sku');
 	//	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(

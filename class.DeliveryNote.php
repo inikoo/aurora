@@ -2436,11 +2436,13 @@ $sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="R
 
 		}
 
-
-
-
-
 	}
+
+
+
+
+
+
 	function set_as_picked($itf_key,$qty,$date=false,$picker_key=false) {
 		if (!$date)
 			$date=gmdate("Y-m-d H:i:s");
@@ -2478,9 +2480,32 @@ $sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="R
 
 
 			$sku=$row['Part SKU'];
-			$part=new Part($sku);
-			$cost_storing=0;
-			$cost_supplier=$part->get_unit_cost($date)*$qty;
+		
+		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
+			,prepare_mysql($date)
+			,$sku
+		
+		);
+		$res_old_stock=mysql_query($sql);
+		//print "$sql\n";
+		$old_qty=0;
+		$old_value=0;
+
+		if ($row_old_stock=mysql_fetch_array($res_old_stock)) {
+			$old_qty=round($row_old_stock['stock'],3);
+			$old_value=$row_old_stock['value'];
+		}
+
+			
+		$cost_storing=0;
+        $transaction_value=$this->get_value_change($sku,-1*$qty,$old_qty,$old_value,$date);
+			
+			//****
+				//transaction value
+			
+			//****
+			
+			//$cost_supplier=ge        $part->get_unit_cost($date)*$qty;
 
 			$sql=sprintf('select `Product Key` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d  '
 				,$row['Map To Order Transaction Fact Key']);
@@ -2541,7 +2566,7 @@ $sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="R
 				,prepare_mysql ($note)
 				,$qty
 				,-1*$qty
-				,-1*$cost_supplier
+				,$transaction_value
 				,prepare_mysql ($date)
 				,prepare_mysql ($date)
 				,prepare_mysql ($picker_key)
@@ -2574,7 +2599,7 @@ $sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="R
 				prepare_mysql ($date),
 				prepare_mysql ($picker_key),
 				$picking_factor,
-				$cost_supplier,
+				$transaction_value,
 				$cost_storing,
 				$otf_key
 			);
@@ -3010,6 +3035,74 @@ $orders_ids=preg_replace('/\,$/','',$order_ids);
 
 	}
 
+	function get_value_change($sku,$qty_change,$old_qty,$old_value,$date) {
+		$qty=$old_qty+$qty_change;
+		if ($qty_change>0) {
+
+			list($qty_above_zero,$qty_below_zero)=$this->qty_analysis($old_qty,$qty);
+			$value_change=0;
+			if ($qty_below_zero) {
+				$unit_cost=$old_value/$old_qty;
+				$value_change+=$qty_below_zero*$unit_cost;
+			}
+
+			if ($qty_above_zero) {
+				$part=new Part($sku);
+				$unit_cost=$part->get_unit_cost($date);
+				$value_change+=$qty_above_zero*$unit_cost;
+			}
+
+
+		}
+		elseif ($qty_change<0) {
+
+			list($qty_above_zero,$qty_below_zero)=$this->qty_analysis($old_qty,$qty);
+
+			$value_change=0;
+			if ($qty_below_zero) {
+				$part=new Part($sku);
+				$unit_cost=$part->get_unit_cost($date);
+				$value_change+=-$qty_below_zero*$unit_cost;
+
+			}
+
+			if ($qty_above_zero) {
+
+				$unit_cost=$old_value/$old_qty;
+				$value_change+=-$qty_above_zero*$unit_cost;
+
+			}
+
+
+
+		}
+		else {
+
+			$value_change=0;
+		}
+
+		return $value_change;
+	}
+	function qty_analysis($a,$b) {
+		if ($b<$a) {
+			$tmp=$a;
+			$a=$b;
+			$b=$tmp;
+		}
+
+		if ($a>=0 and $b>=0) {
+			$above=$b-$a;
+			$below=0;
+		}else if ($a<=0 and $b<=0) {
+				$above=0;
+				$below=$b-$a;
+			}else {
+			$above=$b;
+			$below=-$a;
+		}
+		return array($above,$below);
+
+	}
 
 
 

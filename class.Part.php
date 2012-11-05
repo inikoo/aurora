@@ -115,7 +115,7 @@ class part extends DB_Table {
 				'History Details'=>_('Part')." ".$this->get_sku()." (".$this->data['Part Unit Description'].")"._('Created')
 			);
 
-$this->update_main_state();
+			$this->update_main_state();
 		} else {
 			print "Error Part can not be created $sql\n";
 			$this->msg='Error Part can not be created';
@@ -228,10 +228,10 @@ $this->update_main_state();
 	function update_tariff_code_valid() {
 
 		$tariff_code=$this->data['Part Tariff Code'];
-		if(strlen($tariff_code)==10  ){
+		if (strlen($tariff_code)==10  ) {
 			$tariff_code=substr($tariff_code,0, -2);
 		}
-		
+
 
 		$sql=sprintf("select count(*) as num  from kbase.`Commodity Code Dimension` where `Commodity Code`=%s ",
 			prepare_mysql($tariff_code)
@@ -1211,9 +1211,9 @@ $this->update_main_state();
 		if ($date) {
 			return $this->get_picking_location_historic($date,$qty);
 		}
-		
+
 		//FORCING PICKING FOR PICKING LOCAtION EVEN IF IS NEGATIVE
-		
+
 		$this->unknown_location_associated=false;
 		$locations=array();
 		$sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) order by `Can Pick` ;",$this->sku);
@@ -1236,11 +1236,11 @@ $this->update_main_state();
 		}else {
 
 			foreach ($locations_data as $location_data) {
-			
+
 				$locations[]=array('location_key'=>$location_data['location_key'],'qty'=>$qty);
 				break;
-				
-	
+
+
 
 
 
@@ -1493,7 +1493,7 @@ $this->update_main_state();
 
 		}
 		//if ($this->unknown_location_associated)
-		//	print "\n".$this->sku." unknown location addes\n";
+		// print "\n".$this->sku." unknown location addes\n";
 
 
 		//print_r($locations);
@@ -1609,37 +1609,70 @@ $this->update_main_state();
 
 	}
 
-	function get_commercial_value($datetime='') {
-	
 
-	
+	function get_fomated_unit_commercial_value($datetime='') {
+
+		return money($this->get_unit_commercial_value($datetime));
+	}
+
+	function get_current_formated_commercial_value() {
+
+		return money($this->data['Part Current On Hand Stock']*$this->get_unit_commercial_value());
+	}
+
+	function get_current_formated_value_at_cost() {
+//return number($this->data['Part Current Value'],2);
+		return money( $this->data['Part Current Value']);
+	}
+
+
+
+	function get_current_formated_value_at_current_cost() {
+
+//return number($this->data['Part Current On Hand Stock']*$this->get_unit_cost(),2);
+		$a=floatval(3.000*3.575);
+		$a=round(3.575+3.575+3.575,3);
+		return money($this->data['Part Current On Hand Stock']*$this->get_unit_cost());
+	}
+
+	function get_unit_commercial_value($datetime='') {
+
+
+
 		$commercial_value=0;
 		$sum_commercial_value=0;
 		$count_commercial_value_samples=0;
-	
+
 		$product_part_lists=$this->get_product_part_list($datetime);
-		
-	//print_r($product_ids);		
-		
-		foreach($product_part_lists as $product_part_list){
-	
-			$product=New Product('pid',$product_part_list['Product ID']);
-			$price=$product->get_historic_price_corporate_currency($datetime)/$product_part_list['Parts Per Product'];
-			$_price=$product->get_historic_price($datetime)/$product_part_list['Parts Per Product'];
-		//	print "**** ".$product->data['Product Name']." $price  $_price\n";
-			
-			if($price>0){
+
+		// print_r($product_part_lists);
+
+		foreach ($product_part_lists as $product_part_list) {
+
+
+
+			$product=new Product('pid',$product_part_list['Product ID']);
+
+
+			if ($product->pid) {
+				$price=$product->get_historic_price_corporate_currency($datetime)/$product_part_list['Parts Per Product'];
+				$_price=$product->get_historic_price($datetime)/$product_part_list['Parts Per Product'];
+				// print "**** ".$product->data['Product Name']." $price  $_price\n";
+
+				if ($price>0) {
 					$sum_commercial_value+=$price;
-		$count_commercial_value_samples++;
+					$count_commercial_value_samples++;
+				}
 			}
-		
+
 		}
-		
-		
-		if($count_commercial_value_samples){
-		$commercial_value=$sum_commercial_value/$count_commercial_value_samples;
+
+
+		if ($count_commercial_value_samples) {
+			$commercial_value=$sum_commercial_value/$count_commercial_value_samples;
 		}
-		
+		// print "xx $commercial_value";
+
 		return $commercial_value;
 	}
 
@@ -2325,6 +2358,10 @@ $this->update_main_state();
 		mysql_query($sql);
 	}
 
+	function get_formated_unit_cost($date=false) {
+
+		return money($this->get_unit_cost($date));
+	}
 
 
 	function get_unit_cost($date=false) {
@@ -2676,7 +2713,16 @@ $this->update_main_state();
 	function get_product_part_list($date=false) {
 
 		if (!$date) {
-			return $this->get_current_product_ids();
+			$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Most Recent`='Yes'  "
+				,$this->sku
+
+			)
+			;  $result=mysql_query($sql);
+			$product_part_list=array();
+			while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+				$product_part_list[$row['Product Part Key']]= $row;
+			}
+			return $product_part_list;
 		}
 
 		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and ( `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes' ) or (`Product Part Valid From`<=%s  and `Product Part Valid From`>=%s and `Product Part Most Recent`='No' ) "
@@ -3038,7 +3084,7 @@ $this->update_main_state();
 
 
 		$transactions=array('all_transactions'=>0,'in_transactions'=>0,'out_transactions'=>0,'audit_transactions'=>0,'oip_transactions'=>0,'move_transactions'=>0);
-		$sql=sprintf("select count(*) as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d",
+		$sql=sprintf("select sum(if(`Inventory Transaction Type` not in ('Move In','Move Out','Associate','Disassociate'),1,0))  as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Audit',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Broken' or  `Inventory Transaction Type`='Other Out' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d",
 			$this->sku);
 
 		$res=mysql_query($sql);
@@ -3079,7 +3125,7 @@ $this->update_main_state();
 
 
 		$sql=sprintf("select C.`Category Key`,`Category Label` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Subject`='Part' and `Subject Key`=%d ",$this->sku);
-	//	print $sql;
+		// print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$part_categories[]=array('category_key'=>$row['Category Key'],'category_label'=>$row['Category Label']);

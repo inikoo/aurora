@@ -39,7 +39,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"profit_sold", label:"<?php echo _('Profit (Inc Given)')?>", width:160,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
-request="ar_assets.php?tipo=parts&parent=list&parent_key="+Dom.get('list_key').value+"&tableid=0&where=&sf=0";
+request="ar_parts.php?tipo=parts&parent=list&parent_key="+Dom.get('list_key').value+"&tableid=0&where=&sf=0";
 //alert(request)
 	this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;

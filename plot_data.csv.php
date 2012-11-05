@@ -250,6 +250,22 @@ case('part_location_stock_history'):
 	else
 		part_location_stock_history($data);
 	break;
+	
+	case('warehouse_parts_stock_history'):
+	$data=prepare_values($_REQUEST,array(
+			'warehouse_key'=>array('type'=>'key'),
+			'output'=>array('type'=>'string'),
+		));
+	if ($data['output']=='value')
+		warehouse_parts_stock_value_history($data);
+	elseif ($data['output']=='end_day_value')
+		warehouse_parts_stock_end_day_value_history($data);
+	elseif ($data['output']=='commercial_value')
+		warehouse_parts_stock_commercial_value_history($data);
+	
+	break;
+	
+	
 case('top_countries_sales'):
 	$data=prepare_values($_REQUEST,array(
 			'from'=>array('type'=>'date','optional'=>true),
@@ -329,7 +345,7 @@ function part_location_stock_end_day_value_history($data) {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
 		}
 
 	}
@@ -357,36 +373,35 @@ function part_location_stock_commercial_value_history($data) {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
 		}
 
 	}
 
 }
 
-
 function part_location_stock_value_history($data) {
 
 	if ($data['location_key']) {
 
-		$sql=sprintf("select `Date`,`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,`Value At Cost At Cost` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
+		$sql=sprintf("select `Date`,`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,`Value At Cost` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
 			$data['part_sku'],
 			$data['location_key']
 		);
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Value At Cost Open'],$row['Value At Cost High'],$row['Value At Cost Low'],$row['Value At Cost At Cost'],$row['Value At Cost At Cost']);
+			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Value At Cost Open'],$row['Value At Cost High'],$row['Value At Cost Low'],$row['Value At Cost'],$row['Value At Cost']);
 		}
 	} else {// stock in all locations
-		$sql=sprintf("select `Date`,sum(`Value At Cost Open`) as open ,max(`Value At Cost High`) as high,min(`Value At Cost Low`) as low,sum(`Value At Cost At Cost`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
+		$sql=sprintf("select `Date`,sum(`Value At Cost Open`) as open ,max(`Value At Cost High`) as high,min(`Value At Cost Low`) as low,sum(`Value At Cost`) as close from `Inventory Spanshot Fact` where `Part SKU`=%d group by `Date` order by `Date` desc",
 			$data['part_sku']
 
 		);
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
 		}
 
 	}
@@ -414,12 +429,70 @@ function part_location_stock_history($data) {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
 		}
 
 	}
 
 }
+
+
+
+
+function warehouse_parts_stock_end_day_value_history($data) {
+
+		$sql=sprintf("select `Date`,sum(`Value At Day Cost Open`) as open ,sum(`Value At Day Cost High`) as high,sum(`Value At Day Cost Low`) as low,sum(`Value At Day Cost`) as close from `Inventory Spanshot Fact` where `Warehouse Key`=%d group by `Date` order by `Date` desc",
+			$data['warehouse_key']
+
+		);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+		}
+
+
+
+}
+
+function warehouse_parts_stock_commercial_value_history($data) {
+
+
+		$sql=sprintf("select `Date`,sum(`Value Commercial Open`) as open ,sum(`Value Commercial High`) as high,sum(`Value Commercial Low`) as low,sum(`Value Commercial`) as close from `Inventory Spanshot Fact` where `Warehouse Key`=%d group by `Date` order by `Date` desc",
+			$data['warehouse_key']
+
+		);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+		}
+
+
+
+}
+
+function warehouse_parts_stock_value_history($data) {
+
+
+		$sql=sprintf("select `Date`,sum(`Value At Cost Open`) as open ,sum(`Value At Cost High`) as high,sum(`Value At Cost Low`) as low,sum(`Value At Cost`) as close from `Inventory Spanshot Fact` where `Warehouse Key`=%d group by `Date` order by `Date` desc",
+			$data['warehouse_key']
+
+		);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_assoc($res)) {
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+		}
+
+	
+
+}
+
+
+
+
+
 
 function site_requests($data) {
 

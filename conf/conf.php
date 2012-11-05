@@ -1463,6 +1463,8 @@ $default_state=array(
 
 		),
 		'stock_history'=>array(
+		'show_chart'=>0,
+			'chart_output'=>'value',
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
@@ -1488,7 +1490,7 @@ $default_state=array(
 			'from'=>'',
 			'to'=>'',
 			'elements'=>array(),
-			'view'=>''
+			'view'=>'all_transactions'
 		),
 'locations'=>array(
 			'order'=>'code',
@@ -3811,7 +3813,8 @@ $default_state=array(
 			'nr'=>15,
 			'where'=>'where true',
 			'f_field'=>'abstract',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'',
+			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
 			'elements'=>array()

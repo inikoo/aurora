@@ -994,7 +994,7 @@ function show_family_list(o){
 
 YAHOO.util.Event.onContentReady("change_part", function () {
   
-  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_parts.php");
     new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
     new_loc_oDS.responseSchema = {
 resultsList : "data"

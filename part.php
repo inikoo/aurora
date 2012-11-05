@@ -99,29 +99,21 @@ $smarty->assign('parts_period',$_SESSION['state']['warehouse']['parts']['period'
 $smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
 
 
-$smarty->assign('to',$_SESSION['state']['part']['stock_history']['to']);
-$smarty->assign('from',$_SESSION['state']['part']['stock_history']['from']);
-$smarty->assign('to_transactions',$_SESSION['state']['part']['transactions']['to']);
-$smarty->assign('from_transactions',$_SESSION['state']['part']['transactions']['from']);
 
 $smarty->assign('view',$_SESSION['state']['part']['view']);
 
-if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
-    $part_id=$_REQUEST['id'];
-    $_SESSION['state']['part']['id']=$part_id;
-    $part= new part($part_id);
-    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
-} else if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
+
+if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
     $part= new part('sku',$_REQUEST['sku']);
     $part_id=$part->id;
-    $_SESSION['state']['part']['id']=$part_id;
     $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
 } else {
-    $part_id=$_SESSION['state']['part']['id'];
-    $_SESSION['state']['part']['id']=$part_id;
-    $part= new part($part_id);
-    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+     header('Location: index.php?no_part_sku');
+    exit();
+   
+   
 }
+//print $part->get_unit_cost();
 
 $subject_id=$part->id;
 
@@ -202,6 +194,10 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('show_stock_history_chart',$_SESSION['state']['part']['stock_history']['show_chart']);
 $smarty->assign('stock_history_chart_output',$_SESSION['state']['part']['stock_history']['chart_output']);
 $smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
+$smarty->assign('to',$_SESSION['state']['part']['stock_history']['to']);
+$smarty->assign('from',$_SESSION['state']['part']['stock_history']['from']);
+$smarty->assign('to_transactions',$_SESSION['state']['part']['transactions']['to']);
+$smarty->assign('from_transactions',$_SESSION['state']['part']['transactions']['from']);
 
 
 

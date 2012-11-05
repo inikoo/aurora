@@ -152,9 +152,9 @@ function money_locale($amount,$locale='',$currency_code='') {
 		//        print("->".money_format($format,$amount)."<-");
 		$format='%i';
 
-		$money=preg_replace("/$client_currency/",$currency_code,money_format($format,$amount));
+		$money=preg_replace("/$client_currency/",$currency_code,money_format($format,round($amount,2)));
 	} else {
-		$money=money_format($format,$amount);
+		$money=money_format($format,round($amount,2));
 	}
 
 	//
