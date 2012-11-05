@@ -505,6 +505,10 @@ function list_parts() {
 
 		$order=' `Part '.$period_tag.' Acc GMROI` ';
 
+	}elseif ($order=='stock_value') {
+
+		$order=' `Part Current Value` ';
+
 	}else {
 
 		$order='`Part SKU`';
