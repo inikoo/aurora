@@ -112,7 +112,7 @@ if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
    
     $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
    
-}
+
 } else {
      header('Location: index.php?no_part_sku');
     exit();
