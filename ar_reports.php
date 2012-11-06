@@ -1367,7 +1367,7 @@ function parts_marked_as_out_of_stock() {
 
 		$adata[]=array(
 
-			'sku'=>sprintf("<a href='report_out_of_stock_part.php?id=%d'>SKU%05d</a>",$data['Part SKU'],$data['Part SKU']),
+			'sku'=>sprintf("<a href='report_out_of_stock_part.php?sku=%d'>SKU%05d</a>",$data['Part SKU'],$data['Part SKU']),
 			'used_in'=>$data['Part XHTML Currently Used In'],
 			'date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Date Picked']." +00:00")),
 			'orders'=>number($data['Orders']),
@@ -1615,7 +1615,7 @@ function transactions_parts_marked_as_out_of_stock() {
 
 		$adata[]=array(
 
-			'sku'=>sprintf("<a href='report_out_of_stock_part.php?id=%d'>SKU%05d</a>",$data['Part SKU'],$data['Part SKU']),
+			'sku'=>sprintf("<a href='report_out_of_stock_part.php?sku=%d'>SKU%05d</a>",$data['Part SKU'],$data['Part SKU']),
 			'used_in'=>$data['Part XHTML Currently Used In'],
 			'date'=>strftime("%a %e %b %y %H:%M", strtotime($data['Date Picked']." +00:00")),
 			'reporter'=>$reporter,

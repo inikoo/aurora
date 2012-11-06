@@ -13,7 +13,7 @@
     <div class="buttons" style="float:right">
        				{if isset($next) }<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
 
-        <button  onclick="window.location='part.php?id={$part->sku}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
+        <button  onclick="window.location='part.php?sku={$part->sku}'" ><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button>
      <button  onclick="window.location='associate_product.php?id={$part->sku}'" ><img src="art/icons/door_out.png" alt=""> {t}Associate Product{/t}</button>
     </div>
     <div class="buttons" style="float:left">
@@ -120,7 +120,7 @@
 	  <img id="change_part_{$part_id}" class="icon" onclick="change_part({$part_id},'{$part}')"  src="art/icons/arrow_refresh_bw.png">
 	  <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')"  src="art/icons/cross.png">
 	  <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onClick="save_part({$part_id})" src="art/icons/disk.png">
-	  <a href="part.php?id={$part_id}">{$part.code}</a>
+	  <a href="part.php?sku={$part_id}">{$part.code}</a>
 	</td>
       </tr>
       <tr id="sup_tr2_{$part_id}">

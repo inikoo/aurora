@@ -214,7 +214,7 @@ class Auth {
 		$this->authentication_type='masterkey';
 
 
-		$sql=sprintf("select `MasterKey Key`,U.`User Key`,`User Handle`,`User Parent Key` from `MasterKey Internal Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s  ",
+		$sql=sprintf("select `MasterKey Internal Key`,U.`User Key`,`User Handle`,`User Parent Key` from `MasterKey Internal Dimension` M left join `User Dimension` U on (U.`User Key`=M.`User Key`)    where `Key`=%s and  `Valid Until`>=%s  ",
 			prepare_mysql($data),
 			prepare_mysql(date('Y-m-d H:i:s'))
 

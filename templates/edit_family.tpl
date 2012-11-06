@@ -565,7 +565,7 @@
 	<div id="new_product_msg">
 	</div>
 	<div class="buttons">
-		<button class="positive" onclick="window.location='associate_product_part.php?id={$family->id}'" >{t}Manually{/t}</button> 
+		<button class="positive" onclick="window.location='associate_product_part.php?sku={$family->id}'" >{t}Manually{/t}</button> 
 		<button class="positive" onclick="window.location='import_csv.php?subject=family&subject_key={$family->id}'">{t}Import from file{/t}</button> 
 		<button class="negative" id="close_dialog_new_product">{t}Cancel{/t}</button> 
 	</div>
