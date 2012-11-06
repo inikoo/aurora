@@ -37,11 +37,11 @@ $corporate_currency='GBP';
 
 $from=date("Y-m-d",strtotime('now -3500 day'));
 //$from=date("Y-m-d");
-$to=date("Y-m-d");
+$to=date("Y-m-d",strtotime('now -1 day'));
 
-//$from='2009-01-01';
+//$from='2007-01-01';
 //$from=date("Y-m-d");
-//$to='2009-01-01';
+//$to='2007-12-31';
 
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
 	prepare_mysql($from),prepare_mysql($to));
