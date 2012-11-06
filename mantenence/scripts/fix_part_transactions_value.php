@@ -37,8 +37,8 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 
-
-$sql="select * from `Part Dimension`  order by `Part SKU` desc ";
+$where='';
+$sql="select * from `Part Dimension` $where order by `Part SKU` desc ";
 
 $resultxx=mysql_query($sql);
 while ($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ) {
@@ -116,7 +116,7 @@ while ($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ) {
 
 			}
 
-		else if (($type=='Adjust' or $type=='Sale' or $type=='In' or $type=='Broken' or $type=='Lost' or $type=='Other Out') and $qty<0  ) {
+		else if (($type=='Adjust' or $type=='Sale' or $type=='In' or $type=='Broken' or $type=='Lost' or $type=='Other Out' or   $type=='Move Out' )  and $qty<0  ) {
 
 
 
@@ -166,7 +166,7 @@ while ($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ) {
 		$value=round($value+$transaction_value,6);
 		$stock=round($stock+$qty,6);
 		if ($stock==0) {$__unit_cost="ND";}else {$__unit_cost=$value/$stock;}
-		//print "$date $type \t\t$qty\t\t $transaction_value \t\t$stock \t\t$value\t$__unit_cost\n";
+		//print "$date ".$row['Inventory Transaction Key']." $type \t\t$qty\t\t $transaction_value \t\t$stock \t\t$value\t $__unit_cost\n";
 
 
 	}
@@ -200,16 +200,17 @@ function qty_analysis($a,$b) {
 function fix_move_values($itf_key,$transaction_value) {
 
 	$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d ",$itf_key);
-
+//print "$sql\n";
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 		$part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
 		$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Move In' and  `Part SKU`=%d  and `Date`=%s   ",
-			$row['Part SKU'],prepare_mysql($row['Date'])
+			$row['Part SKU'],
+			prepare_mysql($row['Date'])
 		);
-		//print "$sql\n";
+	//	print "$sql\n";
 		$result2=mysql_query($sql);
 		if ($row1=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
 
@@ -218,7 +219,7 @@ function fix_move_values($itf_key,$transaction_value) {
 				$row1['Inventory Transaction Key']
 
 			);
-
+//print "$sql\n";
 			mysql_query($sql);
 
 
