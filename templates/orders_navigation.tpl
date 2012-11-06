@@ -1,4 +1,3 @@
-
 <span id="search_no_results" style="display:none">{t}No results found, try te a more comprensive search{/t} <a style="font-weight:800" href="search_orders.php{if $store_id}?store={$store_id}{/if}">{t}here{/t}</a>.</span>
 
 

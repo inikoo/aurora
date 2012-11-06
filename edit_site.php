@@ -137,7 +137,7 @@ $smarty->assign('site',$site);
 //print_r($site->get_images_slidesshow());
 
 $smarty->assign('parent','products');
-$smarty->assign('title', $site->data['Site Name']);
+$smarty->assign('title', _('Editing Website').': '.$site->data['Site Code']);
 
 
 

@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang_code}">
 <head>
 	<title>{$title}</title>
-	<link href="art/inikoo-icon.png" rel="shortcut icon" type="image/x-icon" />
+	<link href="art/inikoo_logo_small.png" rel="shortcut icon" type="image/x-icon" />
 	  {foreach from=$css_files item=i }
 	<link rel="stylesheet" href="{$i}" type="text/css" />
 	{/foreach}	

@@ -76,7 +76,7 @@ $js_files=array(
           );
 
 
-$js_files[]='common_plot.js.php?page='.'site';
+//$js_files[]='common_plot.js.php?page='.'site';
 
 $js_files[]='sites.js.php';
 

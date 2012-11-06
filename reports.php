@@ -49,7 +49,6 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'charts/charts-experimental-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',

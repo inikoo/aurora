@@ -181,9 +181,8 @@
 <tr {if $hide_buttons==true}style="display:none"{/if}>
   <td colspan=2 >
   <div class="buttons" style="margin-top:10px">
-    <button address_key="" class="positive disabled" style="margin-right:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button>
-
-  <button  class="negative disabled" close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}xvisibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button>
+    <button address_key="" class="positive disabled" style="margin-right:10px" id="{$address_identifier}save_address_button">{t}Save{/t}</button>
+  	<button  class="negative disabled" close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}xvisibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button>
   </div>
   </td>
   </tr>

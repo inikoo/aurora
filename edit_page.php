@@ -319,6 +319,7 @@ $smarty->assign('parent_title',$parent_title);
 
 
 $smarty->assign('parent','websites');
-$smarty->assign('title','Editing Page:'.$page->get('Page Short Title'));
+$smarty->assign('title',_('Editing Page').': '.$page->data['Page Code'].' ('.$site->data['Site Code'].')');
+
 $smarty->display('edit_page.tpl');
 ?>
