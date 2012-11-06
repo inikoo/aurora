@@ -3,6 +3,16 @@ include_once('common.php');
 ?>
     var Dom   = YAHOO.util.Dom;
 
+
+var validate_scope_data=
+{
+    'deal':{
+	'description':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Deal_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Offer Description')?>'}]}
+	,'name':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Offer Name')?>'}]}
+	,'description':{'ar':'find','ar_request':'ar_assets.php?tipo=code_in_other_deal&deal_key='+Dom.get('deal_key').value+'&store_key='+Dom.get('store_key').value+'&query=','changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Deal_Code','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Offer Code')?>'}]}
+}  
+};
+
     
 
 YAHOO.util.Event.addListener(window, "load", function() {
