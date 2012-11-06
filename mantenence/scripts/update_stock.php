@@ -31,7 +31,7 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
-$where=' where `Part SKU`=293 ';
+$where=' where `Part SKU`=24547';
 $where='';
 $sql="select count(*) as total from `Part Location Dimension`  $where ";
 $result=mysql_query($sql);
@@ -48,7 +48,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$partlocation=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
 	$partlocation->update_stock();
 	$i++;
-	print sprintf("%.2f",100*($i/$total))."\r";
+	//print sprintf("%.2f",100*($i/$total))."\r";
 }
 
 
@@ -59,7 +59,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$part=new Part('sku',$row['Part SKU']);
 	$part->update_stock();
 
-	print $row['Part SKU']."\r";
+	//print $row['Part SKU']."\r";
 
 
 }

@@ -1111,7 +1111,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 		$res=mysql_query($sql);
 
 
-		//print "$sql\n";
+		print "$sql\n";
 
 		$stock=0;
 		$value=0;
@@ -1206,6 +1206,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 			,$this->part_sku
 			,$this->location_key
 		);
+	//	print $sql;
 		mysql_query($sql);
 
 		$this->part->update_stock();
