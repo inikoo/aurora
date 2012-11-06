@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>{$title}</title>
-	<link href="art/inikoo-icon.png" rel="shortcut icon" type="image/x-icon" />
+	<link href="art/inikoo_logo_small.png" rel="shortcut icon" type="image/x-icon" />
 	<link rel="stylesheet" href="public_search.css.php?id={$site->id}" type="text/css" />
 	<link rel="stylesheet" href="public_menu.css.php?id={$site->id}" type="text/css" />
 	

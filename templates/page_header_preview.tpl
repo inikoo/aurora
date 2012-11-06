@@ -4,7 +4,7 @@
     <head>
 		    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>{$title}</title>
-            <link href="art/inikoo-icon.png" rel="shortcut icon" type="image/x-icon" />
+            <link href="art/inikoo_logo_small.png" rel="shortcut icon" type="image/x-icon" />
             {foreach from=$css_files item=i }
             <link rel="stylesheet" href="{$i}" type="text/css" />
             {/foreach}	

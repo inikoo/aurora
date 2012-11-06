@@ -355,7 +355,21 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
+$filter_menu=array(
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Invoice Number'),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Min Value ('.$corporate_currency_symbol.')'),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$corporate_currency_symbol.'n</i>','label'=>'Max Value ('.$corporate_currency_symbol.')'),
+	'country'=>array('db_key'=>'country','menu_label'=>'Orders from country code <i>xxx</i>','label'=>'Country Code')
+);
+$tipo_filter=$_SESSION['state']['customer']['orders']['f_field'];
+$filter_value=$_SESSION['state']['customer']['orders']['f_value'];
 
+$smarty->assign('filter_value2',$filter_value);
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
 
 $filter_menu=array(
 	'ip'=>array('db_key'=>'ip','menu_label'=>'IP','label'=>'IP'),
@@ -413,6 +427,8 @@ if ($msg!='') {
 	$correlation_msg='<p>'._('Potential duplicated').': '.$msg.'</p>';
 
 }
+
+
 
 
 //show case

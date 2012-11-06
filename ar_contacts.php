@@ -191,37 +191,7 @@ case('positions'):
 
 	list_company_positions();
 	break;
-case('plot_order_interval'):
 
-	$now="'2008-04-18 08:30:00'";
-
-	$sql="select count(*) as total from customer where order_interval>0    and  (order_interval*3)>DATEDIFF($now,last_order)   ";
-
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$total_sample=$row['total'];
-	}
-	$sql="select  CEIL(order_interval) as x ,count(*) as y from customer where order_interval>0 and order_interval<300    and  (order_interval*3)>DATEDIFF($now,last_order)     group by CEIL(order_interval)";
-	//   print $sql;
-	$data=array();
-
-	$result=mysql_query($sql);
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-		$data[]=array(
-			'x'=>$row['x'],
-			'y'=>$row['y']/$total_sample
-		);
-	}
-
-
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$data,
-		)
-	);
-
-	echo json_encode($response);
-	break;
 case('site_user_view_orders'):
 
 	list_customer_orders();

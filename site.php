@@ -133,7 +133,7 @@ $subject_id=$site_id;
 $smarty->assign('site',$site);
 
 $smarty->assign('parent','websites');
-$smarty->assign('title', $site->data['Site Name']);
+$smarty->assign('title', _('Website').': '.$site->data['Site Code']);
 
 
 $tipo_filter=$_SESSION['state']['site']['pages']['f_field'];

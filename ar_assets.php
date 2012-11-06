@@ -260,7 +260,14 @@ case('product'):
 case('products'):
 	list_products();
 	break;
-
+case('code_in_other_deal'):
+	$data=prepare_values($_REQUEST,array(
+			'query'=>array('type'=>'string'),
+			'store_key'=>array('type'=>'key'),
+			'deal_key'=>array('type'=>'key')
+		));
+	email_in_other_customer($data) ;
+	break;
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -10911,6 +10918,35 @@ function family_sales_data($data) {
 	);
 	echo json_encode($response);
 
+}
+
+
+function code_in_other_deal($data) {
+	$email=_trim($data['query']);
+	$sql=sprintf('select `Deal Code`,`Deal Key` from `Deal Dimension` where `Deal Code`=%s and `Deal Key`!=%d and `Store Key`=%d ',
+		prepare_mysql($email),
+		$data['customer_key'],
+		$data['store_key']
+	);
+	$result=mysql_query($sql);
+	//print $sql;
+	$num_rows = mysql_num_rows($result);
+	if ($num_rows==0) {
+		$response=array('state'=>200,'found'=>0,'msg'=>'');
+		echo json_encode($response);
+	} else {
+		$deals='';
+
+		while ($row=mysql_fetch_assoc($result)) {
+			$deals.=sprintf(', <a href="deal.php?id=%d">%s (%d)</a>',$row['Deal Key'],$row['Deal Name'],$row['Deal Key']);
+		}
+		$deals=preg_replace('/^, /','',$deals);
+
+
+
+		$response=array('state'=>200,'found'=>1,'msg'=>_('Code found in another').' '.ngettext('offer','offers',$num_rows).'. '.$deals);
+		echo json_encode($response);
+	}
 }
 
 

@@ -223,7 +223,7 @@ $subject_id=$store_id;
 $smarty->assign($page,$store);
 
 $smarty->assign('parent','products');
-$smarty->assign('title', $store->data['Store Name']);
+$smarty->assign('title', _('Store').': ('.$store->data['Store Code'].')');
 
 
 

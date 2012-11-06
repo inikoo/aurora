@@ -111,7 +111,7 @@ $subject_id=$page_key;
 $smarty->assign('site',$site);
 
 $smarty->assign('parent','websites');
-$smarty->assign('title', $page->data['Page Store Title']);
+$smarty->assign('title',_('Page').': '.$page->data['Page Code'].' ('.$site->data['Site Code'].')');
 
 
 $order=$_SESSION['state']['site']['pages']['order'];
