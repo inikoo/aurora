@@ -105,8 +105,14 @@ $smarty->assign('view',$_SESSION['state']['part']['view']);
 
 if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
     $part= new part('sku',$_REQUEST['sku']);
-    $part_id=$part->id;
+   
     $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+} elseif(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
+   $part= new part('id',$_REQUEST['id']);
+   
+    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+   
+}
 } else {
      header('Location: index.php?no_part_sku');
     exit();
