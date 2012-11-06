@@ -1376,7 +1376,7 @@ function search_parts($data) {
 		while ($row=mysql_fetch_array($res)) {
 
 			$candidates[$row['Part SKU']]=210;
-			$part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=> strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+			$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=> strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 		}
 	}
@@ -1389,7 +1389,7 @@ function search_parts($data) {
     while ($row=mysql_fetch_array($res)) {
 
         $candidates[$row['Part SKU']]=$row['score'];
-        $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part Unit Description']);
+        $part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part Unit Description']);
 
     }
     */
@@ -1410,7 +1410,7 @@ function search_parts($data) {
 		}else {
 			$candidates[$row['Part SKU']]=50;
 		}
-		$part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 	}
 
@@ -1424,7 +1424,7 @@ function search_parts($data) {
 		}else {
 			$candidates[$row['Part SKU']]=60;
 		}
-		$part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 	}
 
@@ -1465,7 +1465,7 @@ function search_parts($data) {
 		}else {
 			$candidates[$row['Part SKU']]=40;
 		}
-		$part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
+		$part_data[$row['Part SKU']]=array('link'=>'part.php?sku=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>($row['Part Status']!='In Use'?'<span class="error">'._('Not in use').'</span> ':'').strip_tags($row['Part Unit Description'].'&nbsp;&nbsp;&nbsp;&nbsp; '.$row['Part XHTML Currently Used In']));
 
 			}
 
@@ -1507,7 +1507,7 @@ function search_parts($data) {
 
 
 
-	$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'part.php?id=');
+	$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'part.php?sku=');
 	echo json_encode($response);
 
 
@@ -1572,7 +1572,7 @@ function search_full_text($data) {
 				$icon='basket.png';
 				break;
 			case('Part'):
-				$link='part.php?id=';
+				$link='part.php?sku=';
 				$icon='package_green.png';
 				break;
 			case('Customer'):
@@ -1620,7 +1620,7 @@ function search_full_text($data) {
 			$icon='basket.png';
 			break;
 		case('Part'):
-			$link='part.php?id=';
+			$link='part.php?sku=';
 			$icon='package_green.png';
 			break;
 		case('Customer'):

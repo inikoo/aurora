@@ -2291,7 +2291,7 @@ class supplierproduct extends DB_Table {
 		$result=mysql_query($sql);
 		$num_parts=0;
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$used_in_parts.=sprintf(', <a href="part.php?id=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
+			$used_in_parts.=sprintf(', <a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
 			$num_parts++;
 		}
 		$used_in_parts=preg_replace('/^, /','',$used_in_parts);

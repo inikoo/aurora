@@ -1671,7 +1671,7 @@ function dn_transactions_to_stock() {
                      'description'=>'<span style="font-size:95%">'.number($row['SPH Units Per Case']).'x '.$row['Supplier Product Name'].$cost.$row['Supplier Product Unit Type'].'</span>',
                      'used_in'=>$row['Supplier Product XHTML Sold As'],
                      'to_stock_quantity'=>$qty,
-                     'sku'=>sprintf("<a href='part.php?id=%d'>SKU%05d</a>",$row['Part SKU'],$row['Part SKU']),
+                     'sku'=>sprintf("<a href='part.php?sku=%d'>SKU%05d</a>",$row['Part SKU'],$row['Part SKU']),
                      'sku_name'=>$row['Part Unit Description'].'<br/>'.$row['Part XHTML Currently Used In'],
                      'part_quantity'=>$row['Part Quantity'],
                      'notes'=>$notes,

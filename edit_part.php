@@ -21,21 +21,14 @@ $smarty->assign('modify',$modify);
 $view_cust=$user->can_view('customers');
 $smarty->assign('view_cust',$view_cust);
 
-if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
-    $part_id=$_REQUEST['id'];
-    $_SESSION['state']['part']['id']=$part_id;
-    $part= new part($part_id);
-    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
-} else if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
+if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
     $part= new part('sku',$_REQUEST['sku']);
     $part_id=$part->id;
     $_SESSION['state']['part']['id']=$part_id;
     $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
 } else {
-    $part_id=$_SESSION['state']['part']['id'];
-    $_SESSION['state']['part']['id']=$part_id;
-    $part= new part($part_id);
-    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+    header('Location: warehouse.php?msg=part_not_given');
+    exit;
 }
 
 $part= new Part($part_id);

@@ -349,11 +349,11 @@ class PartLocation extends DB_Table {
 		}
 
 		if ($parent=='associate') {
-			$details.='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8692; <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
+			$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8692; <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
 		}else if ($parent=='disassociate') {
-				$details.='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8603; <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
+				$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8603; <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
 			}else {
-			$details.='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('set to').': <b>'.number($qty).'</b>';
+			$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('set to').': <b>'.number($qty).'</b>';
 		}
 
 		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Inventory Transaction Stock`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%f)"
@@ -373,7 +373,7 @@ class PartLocation extends DB_Table {
 		$audit_key=mysql_insert_id();
 		if ($qty_change!=0 or $value_change!=0) {
 
-			$details='Audit: <b>['.number($qty).']</b> <a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+			$details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			if ($note) {
 				$details.=', '.$note;
 
@@ -471,7 +471,7 @@ class PartLocation extends DB_Table {
 			$this->location_key=$this->data['Location Key'];
 			$this->get_data();
 			$note=_('Part added to location');
-			$details=_('Part')." ".'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('associated with location').": <a href='location.php?id=".$this->location->id."'>".$this->location->data['Location Code'].'</a>';
+			$details=_('Part')." ".'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('associated with location').": <a href='location.php?id=".$this->location->id."'>".$this->location->data['Location Code'].'</a>';
 
 
 			//$date=date("Y-m-d H:i:s");
@@ -820,7 +820,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 				$tmp='';
 			else
 				$tmp=' '.$tmp;
-			$details=number(-$qty_change).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('lost from').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+			$details=number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('lost from').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			break;
 		case('Broken'):
 			$tmp=$data['Reason'].', '.$data['Action'];
@@ -829,7 +829,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 				$tmp='';
 			else
 				$tmp=' '.$tmp;
-			$details=number(-$qty_change).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('broken').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+			$details=number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('broken').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			break;
 		case('Other Out'):
 			$tmp=$data['Reason'].', '.$data['Action'];
@@ -838,7 +838,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 				$tmp='';
 			else
 				$tmp=' '.$tmp;
-			$details=number(-$qty_change).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock out (other)').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+			$details=number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock out (other)').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			break;
 
 
@@ -849,17 +849,17 @@ $_new_value=$this->data['Stock Value']+$value_change;
 			} else {
 				$destination_link=$data['Destination'];
 			}
-			$details=number(-$qty_change).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('move out from').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('to').' '.$destination_link.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+			$details=number(-$qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('move out from').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('to').' '.$destination_link.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			break;
 		case('Move In'):
-			$details=number($qty_change).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('move in to').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+			$details=number($qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('move in to').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 
 			break;
 		case('In'):
 
 
 
-			$details=number($qty_change).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('received in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+			$details=number($qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('received in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 		}
 
 
@@ -918,7 +918,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 
 
 
-                 $details='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust due to disassociation with location').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+                 $details='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust due to disassociation with location').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 
                    $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
                                 ,$this->part_sku
@@ -1642,7 +1642,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 			$note=$row['Note'];
 
 			//print "$qty_change=$qty-$old_qty\n";
-			$details='Audit: <b>['.number($qty).']</b> <a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+			$details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			if ($note) {
 				$details.=', '.$note;
 

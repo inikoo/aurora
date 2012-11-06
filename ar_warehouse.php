@@ -1531,7 +1531,7 @@ function parts_at_location() {
 */
 		$adata[]=array(
 
-			'sku'=>sprintf('<a href="part.php?id=%d&edit_stock=1">SKU%05d</a>',$data['Part SKU'],$data['Part SKU']),
+			'sku'=>sprintf('<a href="part.php?sku=%d&edit_stock=1">SKU%05d</a>',$data['Part SKU'],$data['Part SKU']),
 			'part_sku'=>$data['Part SKU'],
 			'location_key'=>$data['Location Key'],
 			'location'=>$data['Location Code'],

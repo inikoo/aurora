@@ -178,7 +178,7 @@ $product= new product($mode,$tag);
 
 if ($user->data['User Type']=='Supplier') {
     $data=array_pop($product->get_part_list());
-    header('Location: part.php?id='.$data['Part SKU']);
+    header('Location: part.php?sku='.$data['Part SKU']);
     exit;
 }
 

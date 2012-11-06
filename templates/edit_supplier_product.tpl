@@ -103,7 +103,7 @@
 	<td  class="label" colspan=2>
 	  <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')"  src="art/icons/cross.png">
 	  <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onClick="save_part({$part_id})" src="art/icons/disk.png">
-	  <a href="part.php?id={$part_id}">{$part.code}</a>
+	  <a href="part.php?sku={$part_id}">{$part.code}</a>
 	</td>
       </tr>
       <tr id="sup_tr2_{$part_id}">

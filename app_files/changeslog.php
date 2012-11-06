@@ -6660,3 +6660,4 @@ ALTER TABLE `Inventory Spanshot Fact` ADD `Value At Day Cost Open` FLOAT NOT NUL
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Type` `Inventory Transaction Type` ENUM( 'Move', 'Order In Process', 'No Dispatched', 'Sale', 'Audit', 'In', 'Adjust', 'Broken', 'Lost', 'Not Found', 'Associate', 'Disassociate', 'Move In', 'Move Out', 'Other Out' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 
 ALTER TABLE `Part Location Dimension` CHANGE `Stock Value` `Stock Value` DECIMAL( 14, 3 ) NULL DEFAULT '0.000';
+ALTER TABLE `MasterKey Internal Dimension` ADD `User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `MasterKey Internal Key` ;
