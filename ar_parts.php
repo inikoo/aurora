@@ -272,7 +272,7 @@ function list_parts() {
 	}
 	elseif ($parent=='category') {
 
-
+include_once('class.Category.php');
 
 		$category=new Category($parent_key);
 
