@@ -368,7 +368,7 @@ weight=Dom.get('parcels_weight').value
 			}
 
 		},failure:function(o){
-		    alert(o)
+		    
 		}
 	    
 	    });
@@ -398,7 +398,7 @@ weight=Dom.get('parcels_weight').value
 		}
 
 		},failure:function(o){
-		    alert(o)
+		    
 		}
 	    
 	    });

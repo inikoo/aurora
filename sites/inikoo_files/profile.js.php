@@ -74,7 +74,7 @@ dialog_edit_note.show();
                         }
                     },
 failure: function (o) {
-                        alert(o.statusText);
+                        
                     },
 scope:this
                 }
@@ -110,7 +110,7 @@ scope:this
                     
                     },
 failure: function (o) {
-                        alert(o.statusText);
+                        
                     },
 scope:this
                 }
@@ -240,7 +240,7 @@ function save(tipo){
                       
                     },
                     failure: function (o) {
-                        alert(o.statusText);
+                        
                     },
                 scope:this
                 }
