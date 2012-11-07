@@ -717,19 +717,19 @@ class Store extends DB_Table {
 		$this->data['Store Losing Contacts With Orders']=0;
 		$this->data['Store Lost Contacts With Orders']=0;
 		$this->data['Store Contacts Who Visit Website']=0;
-		
-		
+
+
 		$site_keys=$this->get_site_keys();
-		
-		if(count($site_keys)){
-			$sql=sprintf("select  URD.`User Key` from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`)  where URD.`User Key`>0 and `User Site Key` in (%s)    group by  UD.`User Parent Key`  ",join($site_keys));
-	$result=mysql_query($sql);
-	$this->data['Store Contacts Who Visit Website']=mysql_num_rows($result);
-}
 
-//print "$sql\n";
+		if (count($site_keys)) {
+			$sql=sprintf("select count( Distinct UD.`User Parent Key` )  from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`)  where URD.`User Key`>0 and `User Site Key` in (%s)    ",join($site_keys));
+			$result=mysql_query($sql);
+			$this->data['Store Contacts Who Visit Website']=mysql_num_rows($result);
+		}
 
-	
+		//print "$sql\n";
+
+
 		//print $this->data['Store Contacts Who Visit Website'];
 
 		$sql=sprintf("select count(*) as num ,sum(IF(`Customer New`='Yes',1,0)) as new,  sum(IF(`Customer Type by Activity`='Active'   ,1,0)) as active, sum(IF(`Customer Type by Activity`='Losing',1,0)) as losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d ",$this->id);
@@ -779,7 +779,7 @@ class Store extends DB_Table {
 			$this->data['Store Active Contacts With Orders'],
 			$this->data['Store Losing Contacts With Orders'],
 			$this->data['Store Lost Contacts With Orders'],
-						$this->data['Store Contacts Who Visit Website'],
+			$this->data['Store Contacts Who Visit Website'],
 
 			$this->id
 		);
@@ -967,7 +967,7 @@ class Store extends DB_Table {
 
 
 	function update_interval_sales() {
-			$this->update_sales_from_invoices('1 Quarter');
+		$this->update_sales_from_invoices('1 Quarter');
 		$this->update_sales_from_invoices('3 Year');
 		$this->update_sales_from_invoices('1 Year');
 		$this->update_sales_from_invoices('6 Month');
@@ -1133,7 +1133,7 @@ class Store extends DB_Table {
 		);
 
 		mysql_query($sql);
-		
+
 		$sql=sprintf("update `Store Default Currency` set
                      `Store DC $db_interval Acc Invoiced Discount Amount`=%.2f,
                      `Store DC $db_interval Acc Invoiced Amount`=%.2f,
@@ -1144,7 +1144,7 @@ class Store extends DB_Table {
 			,$this->data["Store DC $db_interval Acc Profit"]
 			,$this->id
 		);
-//print "$sql\n";
+		//print "$sql\n";
 		mysql_query($sql);
 
 
@@ -1162,7 +1162,7 @@ class Store extends DB_Table {
 				prepare_mysql($from_date_1yb),
 				prepare_mysql($to_1yb)
 			);
-			
+
 			$result=mysql_query($sql);
 			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				$this->data["Store $db_interval Acc 1YB Invoiced Discount Amount"]=$row["discounts"];
@@ -1421,7 +1421,7 @@ class Store extends DB_Table {
 	}
 
 
-//$type='Newsletters'
+	//$type='Newsletters'
 	function get_email_credential_key($type='Newsletters') {
 
 		$sql=sprintf("select C.`Email Credentials Key` from `Email Credentials Dimension` C left join `Email Credentials Store Bridge` SB on (SB.`Email Credentials Key`=C.`Email Credentials Key`) left join `Email Credentials Scope Bridge`  SCB  on (SCB.`Email Credentials Key`=C.`Email Credentials Key`)    where   `Scope`=%s and `Store Key`=%d ",
@@ -1440,11 +1440,11 @@ class Store extends DB_Table {
 
 	}
 
-	function get_credential_type(){
+	function get_credential_type() {
 		include_once 'class.EmailCredentials.php';
 		$keys=$this->get_email_credential_key();
 		$email_credential = new EmailCredentials($keys);
-		if($email_credential->id){
+		if ($email_credential->id) {
 			return $email_credential->data['Email Provider'];
 		}
 		else
