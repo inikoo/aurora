@@ -568,3 +568,28 @@ YAHOO.util.Event.onContentReady("filtermenu2", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
+    
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });  
+
+ YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });  
+    
