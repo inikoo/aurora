@@ -6663,3 +6663,7 @@ ALTER TABLE `Part Location Dimension` CHANGE `Stock Value` `Stock Value` DECIMAL
 ALTER TABLE `MasterKey Internal Dimension` ADD `User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `MasterKey Internal Key` ;
 ALTER TABLE `Customer Dimension` DROP INDEX `orders` ;
 ALTER TABLE `dw`.`Customer Dimension` ADD INDEX ( `Customer Main Plain Telephone` ( 6 ) ) ;
+ALTER TABLE `dw`.`Supplier Product Dimension` ADD INDEX ( `Supplier Product Code` ( 10 ) ) ;
+ALTER TABLE `dw`.`User Dimension` ADD INDEX ( `User Parent Key` ) ;
+ALTER TABLE `User Request Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `URL` ,ADD INDEX ( `Site Key` ) ;
+ALTER TABLE `User Request Dimension` ADD `Is User` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `User Request Key` , ADD INDEX ( `Is User` ) ;

@@ -40,10 +40,29 @@ $smarty->assign('search_scope','parts');
 
 
 
-$smarty->assign('view',$_SESSION['state']['warehouse']['parts_view']);
 $smarty->assign('parts_view',$_SESSION['state']['warehouse']['parts']['view']);
 $smarty->assign('parts_period',$_SESSION['state']['warehouse']['parts']['period']);
 $smarty->assign('parts_avg',$_SESSION['state']['warehouse']['parts']['avg']);
+
+
+
+
+
+if(isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('history','parts','movements'))){
+	$block_view=$_REQUEST['block_view'];
+	$_SESSION['state']['warehouse']['parts_view']=$block_view;
+
+}else{
+$block_view=$_SESSION['state']['warehouse']['parts_view'];
+}
+
+$smarty->assign('block_view',$block_view);
+
+
+
+
+
+
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -71,9 +90,18 @@ $js_files=array(
 	'external_libs/amstock/amstock/swfobject.js',
 	'js/table_common.js',
 	'js/search.js',
-	'js/parts_common.js',
-	'warehouse_parts.js.php'
+	'js/parts_common.js'
+	
 );
+
+
+if($block_view=='parts'){
+$js_files[]='warehouse_parts_light.js.php';
+}else{
+$js_files[]='warehouse_parts.js.php';
+
+
+}
 
 
 

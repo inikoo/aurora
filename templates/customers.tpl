@@ -30,7 +30,7 @@
 			<li> <span class="item {if $block_view=='dashboard'}selected{/if}" id="dashboard"> <span> {t}Dashboard{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='contacts_with_orders'}selected{/if}" id="contacts_with_orders"> <span> {t}Contacts with Orders{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='all_contacts'}selected{/if}" id="all_contacts"> <span> {t}All Contacts{/t}</span></span></li>
-			<li> <span class="item {if $block_view=='users'}selected{/if}" id="users"> <span> {t}Users{/t}</span></span></li>
+			<li> <span style="display:none" class="item {if $block_view=='users'}selected{/if}" id="users"> <span> {t}Users{/t}</span></span></li>
 		</ul>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 		</div>

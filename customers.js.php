@@ -157,6 +157,7 @@ this.table0.table_id=tableid;
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
 
+/*
 
   var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -242,7 +243,7 @@ this.table0.table_id=tableid;
 	    //
 	
 
-
+*/
 
 	
 	};

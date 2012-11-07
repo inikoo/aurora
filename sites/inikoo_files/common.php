@@ -376,11 +376,11 @@ function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
 
 
 	$sql1=sprintf("INSERT INTO `User Request Dimension` (
-
+				   `Is User`,	
                   `User Key` ,
                   `User Log Key`,
                   `URL` ,
-
+				  `Site Key`,		
                   `Page Key` ,
                   `Date` ,
 
@@ -389,9 +389,9 @@ function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
                   `Previous Page Key`,`User Agent Key`,`OS`,`IP`,`User Visitor Key`,`User Session Key`
                   )
                   VALUES (
-                  %d,%d,%s,
+                  %s,%d,%d,%s,
 
-                  %d,%s,
+                  %d,%d,%s,
 
                   %s,
 
@@ -399,10 +399,11 @@ function log_visit($user_log_key,$user,$site_key,$current_url,$customer_key) {
                   %d,%s,%s,
                   %d,%d
                   );",
+        prepare_mysql(($user_key?'Yes':'No')),          
 		$user_key,
 		$user_log_key,
 		prepare_mysql($current_url,false),
-
+		$site_key,
 		0,
 		prepare_mysql($date),
 
@@ -523,7 +524,7 @@ function strleft1($s1, $s2) {
 
 function update_page_key_visit_log($page_key,$user_click_key) {
 	$_SESSION['page_key']=$page_key;
-	$sql=sprintf("update `User Request Dimension`  set `Page Key`=%d where `User Request Key`=%d",$page_key,$user_click_key);
+	$sql=sprintf("update `User Request Dimension`  set `Page Key`=%d  where `User Request Key`=%d",$page_key,$user_click_key);
 	mysql_query($sql);
 }
 

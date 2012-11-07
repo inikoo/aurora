@@ -38,6 +38,33 @@ setlocale(LC_MONETARY, 'en_GB.UTF-8');
 global $myconf;
 
 
+// FOr carlos delete next exit;
+
+	$sql=sprintf("select `Page Key` from `User Request Dimension` group by `Page Key`");
+		$result1=mysql_query($sql);
+		while ($row1=mysql_fetch_array($result1, MYSQL_ASSOC)   ) {
+		$page=new Page($row1['Page Key']);
+		
+		if($page->id and $page->type=='Store' ){
+			$sql=sprintf("update `User Request Dimension` set `Site Key`=%s where `Page Key`=%d ",$page->data['Page Site Key'],$row1['Page Key']);
+			mysql_query($sql);
+			// print"$sql\n";
+
+
+		}
+
+}
+
+	$sql=sprintf("update `User Request Dimension` set `Is User`='Yes' where `User Key`>0 ");
+			mysql_query($sql);
+			$sql=sprintf("update `User Request Dimension` set `Is User`='No' where `User Key`=0 ");
+			mysql_query($sql);
+			
+
+
+exit;
+//exit, maybe carlos NEEDs the bottom part!!!!!!!!!!!!!!!!
+
 $_date=gmdate("Y-d-m H:i:s",strtotime('now -32 hour'));
 $sql=sprintf("select * from `User Log Dimension` where `Site Key`>0 and   `Remember Cookie`!='Yes' and `Last Visit Date`<%s ",prepare_mysql($_date));
 
