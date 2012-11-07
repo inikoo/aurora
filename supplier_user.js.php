@@ -195,7 +195,7 @@ function forgot_password()
 			
 
 		},failure:function(o){
-		    alert(o)
+		    
 		}
 	    
 	    });

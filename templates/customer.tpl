@@ -554,8 +554,9 @@
 	</div>
 	<input type="hidden" value='customer' id='attachment_scope'> 
 	<input type="hidden" value='{$customer->id}' id='attachment_scope_key'> 
+	<form enctype="multipart/form-data" method="post" id="upload_attach_form">
 	<table>
-		<form enctype="multipart/form-data" method="post" id="upload_attach_form">
+		
 			<input type="hidden" name="attach_customer_key" value="{$customer->id}" />
 			<tr>
 				<td>{t}File{/t}:</td>
@@ -568,7 +569,7 @@
 				<td> 
 				<input style="width:100%" value='' id='attachment_caption' name="caption"> </td>
 			</tr>
-		</form>
+		
 		<tr>
 			<td colspan="2"> 
 			<div class="buttons">
@@ -577,6 +578,7 @@
 			</td>
 		</tr>
 	</table>
+	</form>
 </div>
 <div id="dialog_make_order" style="padding:20px 20px 0px 20px">
 	<div id="long_note_msg">

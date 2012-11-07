@@ -122,7 +122,7 @@ dialog_edit_note.show();
                         }
                     },
 failure: function (o) {
-                        alert(o.statusText);
+                        
                     },
 scope:this
                 }
@@ -155,7 +155,7 @@ scope:this
                     
                     },
 failure: function (o) {
-                        alert(o.statusText);
+                        
                     },
 scope:this
                 }
@@ -360,7 +360,7 @@ function save(tipo){
                       
                     },
                     failure: function (o) {
-                        alert(o.statusText);
+                        
                     },
                 scope:this
                 }
@@ -1041,7 +1041,7 @@ Dom.get('orders_in_process_found_msg').innerHTML=r.msg
 	}
 
 		},failure:function(o){
-		    alert(o)
+		    
 		}
 	    
 	    });
@@ -1791,7 +1791,7 @@ function save_tax_details_match(e,value){
 			}
 
 		},failure:function(o){
-		    alert(o)
+		   
 		}
 	    
 	    });
@@ -1808,7 +1808,7 @@ function request_catalogue(){
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 
-		alert(o.responseText)
+		
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 		     
@@ -1816,7 +1816,7 @@ function request_catalogue(){
 			}
 
 		},failure:function(o){
-		    alert(o)
+		    
 		}
 	    
 	    });
@@ -1903,7 +1903,7 @@ function show_dialog_check_tax_number(){
 			
 
 		},failure:function(o){
-		    alert(o)
+		    
 		}
 	    
 	    });
