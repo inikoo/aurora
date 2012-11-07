@@ -1504,9 +1504,10 @@ function get_site_users_requests_value_day($date,$last_close){
 	$new=0;
 
 
-		$sql=sprintf("select count(*) as request  from `User Request Dimension` URD  left join `Page Store Dimension` PSD on (PSD.`Page Key`=URD.`Page Key`) where  `Page Site Key`=%d and Date(`Date`)=%s and `User Key`!=0",
+		$sql=sprintf("select count(*) as request  from `User Request Dimension` URD where  `Site Key`=%d and `Date`>=%s and `Date`<=%s  and `Is User`='Yes'",
 			$this->name_key,
-			prepare_mysql($date)
+			prepare_mysql($date.' 00:00:00'),
+			prepare_mysql($date.' 23:59:59')
 		);
 
 		$res=mysql_query($sql);
@@ -1537,10 +1538,12 @@ function get_site_users_requests_value_day($date,$last_close){
 	$new=0;
 
 
-		$sql=sprintf("select count(*) as request  from `User Request Dimension` URD  left join `Page Store Dimension` PSD on (PSD.`Page Key`=URD.`Page Key`) where  `Page Site Key`=%d and Date(`Date`)=%s and `User Key`=0",
+	$sql=sprintf("select count(*) as request  from `User Request Dimension` URD where  `Site Key`=%d and `Date`>=%s and `Date`<=%s  and `Is User`='No'",
 			$this->name_key,
-			prepare_mysql($date)
+			prepare_mysql($date.' 00:00:00'),
+			prepare_mysql($date.' 23:59:59')
 		);
+
 
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_array($res)) {
