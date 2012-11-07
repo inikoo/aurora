@@ -6661,3 +6661,5 @@ ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Type` `In
 
 ALTER TABLE `Part Location Dimension` CHANGE `Stock Value` `Stock Value` DECIMAL( 14, 3 ) NULL DEFAULT '0.000';
 ALTER TABLE `MasterKey Internal Dimension` ADD `User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `MasterKey Internal Key` ;
+ALTER TABLE `Customer Dimension` DROP INDEX `orders` ;
+ALTER TABLE `dw`.`Customer Dimension` ADD INDEX ( `Customer Main Plain Telephone` ( 6 ) ) ;
