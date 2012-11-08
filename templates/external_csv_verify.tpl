@@ -42,7 +42,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Map List{/t}</span>
             {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5}
-            <div  id="table5"   class="data_table_container dtable btable "> </div>
+            <div  id="table5"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>

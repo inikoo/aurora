@@ -117,7 +117,7 @@ World>Reg
 <div  id="block_timeline" class="data_table" style="{if $display.orders==0}display:none;{/if}clear:both;margin:25px 0px">
     <span id="table_title" class="clean_table_title">{t}Product Code Timeline{/t}</span>
     {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3}
-    <div  id="table3"   class="data_table_container dtable btable "> </div>
+    <div  id="table3"   class="data_table_container dtable btable"> </div>
   </div>
 <div>
 
@@ -139,7 +139,7 @@ World>Reg
   <div  id="block_orders" class="data_table" style="{if $display.orders==0}display:none;{/if}clear:both;margin:25px 0px">
     <span id="table_title" class="clean_table_title">{t}Orders with this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+    <div  id="table0"   class="data_table_container dtable btable"> </div>
   </div>
   {/if}
   
@@ -147,7 +147,7 @@ World>Reg
   <div  id="block_customers" class="data_table" style="{if $display.customers==0}display:none;{/if}clear:both;margin:25px 0px">
     <span id="table_title" class="clean_table_title">{t}Customer who order this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
-  <div  id="table1"   class="data_table_container dtable btable "> </div>
+  <div  id="table1"   class="data_table_container dtable btable"> </div>
   </div>
   {/if}
 
@@ -155,7 +155,7 @@ World>Reg
   <div  id="block_history" class="data_table" style="{if $display.history==0}display:none;{/if}clear:both;margin:25px 0px">
     <span id="table_title" class="clean_table_title">{t}Product History{/t}</span>
     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
-    <div  id="table2"   class="data_table_container dtable btable "> </div>
+    <div  id="table2"   class="data_table_container dtable btable"> </div>
   </div>
 
 

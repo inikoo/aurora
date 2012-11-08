@@ -90,7 +90,7 @@
 					<tbody id="info_all" style="{if $stores_period!='all'}display:none{/if}">
 						<tr>
 							<td>{t}Customers{/t}:</td>
-							<td class="aright">{$store->get('Total Customers')}</td>
+							<td class="aright">{$store->get('Total Contacts With Orders')}</td>
 						</tr>
 						<tr>
 							<td>{t}Invoices{/t}:</td>

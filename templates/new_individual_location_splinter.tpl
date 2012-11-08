@@ -73,7 +73,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Area List{/t}</span>
             {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
-            <div  id="table2"   class="data_table_container dtable btable "> </div>
+            <div  id="table2"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>

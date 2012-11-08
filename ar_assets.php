@@ -8524,7 +8524,7 @@ function product_code_timeline() {
 			,'parts'=>$row['Product XHTML Parts']
 			,'from'=>strftime("%e %b %Y", strtotime($row['Product History Valid From']))
 			,'to'=>strftime("%e %b %Y", strtotime($row['Product History Valid To']))
-			,'sales'=>money($row['Product History Total Invoiced Amount'],$row['Product Currency'])
+			,'sales'=>money($row['Product History Total Acc Invoiced Amount'],$row['Product Currency'])
 		);
 
 	}

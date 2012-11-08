@@ -261,7 +261,7 @@
 <div class="star_rating" id="star_rating_template" style="display:none"><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /></div>
 {*}
             {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5}
-            <div  id="table5"   class="data_table_container dtable btable "> </div>
+            <div  id="table5"   class="data_table_container dtable btable"> </div>
 {/*}
       
 

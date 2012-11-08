@@ -111,21 +111,22 @@
 					</tr>
 					<tr>
 						<td class="noborder">{$data.nextbuy_when}</td>
+						</tr>
 						{/foreach} 
-					</tr>
+					
 				</table>
 				{t}Locations{/t}: 
 				<table border="0" id="part_locations" class="show_info_product" style="width:270px;margin-top:0px">
-					{foreach from=$part->get_locations(true) item=location name=foo } 
-					<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
-						<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode} </a> <img style="{if $modify_stock}cursor:pointer{/if}" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_can_pick_{$location.PartSKU}_{$location.LocationKey}" can_pick="{if $location.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}" alt="can_pick" onclick="save_can_pick({$location.PartSKU},{$location.LocationKey})" /> </td>
-						<td id="picking_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" min_value='{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{/if}' max_value='{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{/if}' style="cursor:pointer; color:#808080;{if $location.CanPick =='No'}display:none{/if}" onclick="show_picking_limit_quantities(this, {$location.LocationKey} )"> {literal}{{/literal}<span id="picking_limit_min_{$location.PartSKU}_{$location.LocationKey}">{if isset($location.MinimumQuantity)}{$location.MinimumQuantity}{else}{t}?{/t}{/if}</span>,<span id="picking_limit_max_{$location.PartSKU}_{$location.LocationKey}">{if isset($location.MaximumQuantity)}{$location.MaximumQuantity}{else}{t}?{/t}{/if}</span>{literal}}{/literal} </td>
-						<td id="store_limit_quantities_{$location.PartSKU}_{$location.LocationKey}" style="cursor:pointer; color:#808080;{if $location.CanPick =='Yes'}display:none{/if}" onclick="show_move_quantities(this, {$location.LocationKey}, {if isset($location.MovingQty)}{$location.MovingQty}{else}0{/if})">[{if isset($location.MovingQty)}{$location.MovingQty}{else}{t}?{/t}{/if}]</td>
-						<td class="quantity" id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}">{$location.FormatedQuantityOnHand}</td>
-						<td style="{if !$modify_stock}display:none{/if}" class="button"><img style="cursor:pointer" id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onclick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
-						<td style="{if !$modify_stock}display:none{/if}" class="button"> <img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_add_stock_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/lorry.png" title="{t}add stock{/t}" alt="{t}add stock{/t}" onclick="add_stock_part_location({$location.PartSKU},{$location.LocationKey})" /></td>
-						<td style="{if !$modify_stock}display:none{/if}" class="button"> <img style="{if $location.QuantityOnHand!=0}display:none;{/if}cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_delete_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/cross_bw.png" title="{t}delete{/t}" alt="{t}delete{/t}" onclick="delete_part_location({$location.PartSKU},{$location.LocationKey})" /><img style="{if $location.QuantityOnHand==0}display:none;{/if}cursor:pointer" id="part_location_lost_items_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/package_delete.png" title="{t}lost{/t}" alt="{t}lost{/t}" onclick="lost({$location.PartSKU},{$location.LocationKey})" /></td>
-						<td style="{if !$modify_stock}display:none{/if}" class="button"><img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_move_items_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/package_go.png" title="{t}move{/t}" alt="{t}move{/t}" onclick="move({$location.PartSKU},{$location.LocationKey})" /></td>
+					{foreach from=$part->get_locations(true) item=location_data name=foo } 
+					<tr id="part_location_tr_{$location_data.PartSKU}_{$location_data.LocationKey}">
+						<td><a href="location.php?id={$location_data.LocationKey}">{$location_data.LocationCode} </a> <img style="{if $modify_stock}cursor:pointer{/if}" sku_formated="{$part->get_sku()}" location="{$location_data.LocationCode}" id="part_location_can_pick_{$location_data.PartSKU}_{$location_data.LocationKey}" can_pick="{if $location_data.CanPick=='Yes'}No{else}Yes{/if}" src="{if $location_data.CanPick=='Yes'}art/icons/basket.png{else}art/icons/box.png{/if}" alt="can_pick" onclick="save_can_pick({$location_data.PartSKU},{$location_data.LocationKey})" /> </td>
+						<td id="picking_limit_quantities_{$location_data.PartSKU}_{$location_data.LocationKey}" min_value='{if isset($location_data.MinimumQuantity)}{$location_data.MinimumQuantity}{/if}' max_value='{if isset($location_data.MaximumQuantity)}{$location_data.MaximumQuantity}{/if}' style="cursor:pointer; color:#808080;{if $location_data.CanPick =='No'}display:none{/if}" onclick="show_picking_limit_quantities(this, {$location_data.LocationKey} )"> {literal}{{/literal}<span id="picking_limit_min_{$location_data.PartSKU}_{$location_data.LocationKey}">{if isset($location_data.MinimumQuantity)}{$location_data.MinimumQuantity}{else}{t}?{/t}{/if}</span>,<span id="picking_limit_max_{$location_data.PartSKU}_{$location_data.LocationKey}">{if isset($location_data.MaximumQuantity)}{$location_data.MaximumQuantity}{else}{t}?{/t}{/if}</span>{literal}}{/literal} </td>
+						<td id="store_limit_quantities_{$location_data.PartSKU}_{$location_data.LocationKey}" style="cursor:pointer; color:#808080;{if $location_data.CanPick =='Yes'}display:none{/if}" onclick="show_move_quantities(this, {$location_data.LocationKey}, {if isset($location_data.MovingQty)}{$location_data.MovingQty}{else}0{/if})">[{if isset($location_data.MovingQty)}{$location_data.MovingQty}{else}{t}?{/t}{/if}]</td>
+						<td class="quantity" id="part_location_quantity_{$location_data.PartSKU}_{$location_data.LocationKey}" quantity="{$location_data.QuantityOnHand}">{$location_data.FormatedQuantityOnHand}</td>
+						<td style="{if !$modify_stock}display:none{/if}" class="button"><img style="cursor:pointer" id="part_location_audit_{$location_data.PartSKU}_{$location_data.LocationKey}" src="art/icons/note_edit.png" title="{t}audit{/t}" alt="{t}audit{/t}" onclick="audit({$location_data.PartSKU},{$location_data.LocationKey})" /></td>
+						<td style="{if !$modify_stock}display:none{/if}" class="button"> <img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location_data.LocationCode}" id="part_location_add_stock_{$location_data.PartSKU}_{$location_data.LocationKey}" src="art/icons/lorry.png" title="{t}add stock{/t}" alt="{t}add stock{/t}" onclick="add_stock_part_location({$location_data.PartSKU},{$location_data.LocationKey})" /></td>
+						<td style="{if !$modify_stock}display:none{/if}" class="button"> <img style="{if $location_data.QuantityOnHand!=0}display:none;{/if}cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location_data.LocationCode}" id="part_location_delete_{$location_data.PartSKU}_{$location_data.LocationKey}" src="art/icons/cross_bw.png" title="{t}delete{/t}" alt="{t}delete{/t}" onclick="delete_part_location({$location_data.PartSKU},{$location_data.LocationKey})" /><img style="{if $location_data.QuantityOnHand==0}display:none;{/if}cursor:pointer" id="part_location_lost_items_{$location_data.PartSKU}_{$location_data.LocationKey}" src="art/icons/package_delete.png" title="{t}lost{/t}" alt="{t}lost{/t}" onclick="lost({$location_data.PartSKU},{$location_data.LocationKey})" /></td>
+						<td style="{if !$modify_stock}display:none{/if}" class="button"><img style="cursor:pointer" sku_formated="{$part->get_sku()}" location="{$location_data.LocationCode}" id="part_location_move_items_{$location_data.PartSKU}_{$location_data.LocationKey}" src="art/icons/package_go.png" title="{t}move{/t}" alt="{t}move{/t}" onclick="move({$location_data.PartSKU},{$location_data.LocationKey})" /></td>
 					</tr>
 					{/foreach} 
 					<tr style="{if !$modify_stock}display:none{/if}">
@@ -194,7 +195,7 @@
 			</div>
 		</div>
 		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div style="font-size:85%" id="table1" class="data_table_container dtable btable ">
+		<div style="font-size:85%" id="table1" class="data_table_container dtable btable">
 		</div>
 	</div>
 	<div id="block_history" class="block data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
@@ -257,7 +258,7 @@ function reloadSettings(file) {
 				</div>
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=1 } 
-			<div id="table0" style="font-size:85%" class="data_table_container dtable btable ">
+			<div id="table0" style="font-size:85%" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>
@@ -462,12 +463,11 @@ function reloadSettings(file) {
 				<span style="margin:0 5px" id="paginator2"></span> 
 			</div>
 		</div>
-		<div id="table2" style="font-size:85%" class="data_table_container dtable btable ">
+		<div id="table2" style="font-size:85%" class="data_table_container dtable btable">
 		</div>
 	</div>
 </div>
-</div>
-</div>
+
 <div id="rppmenu0" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -576,4 +576,5 @@ function reloadSettings(file) {
 		</tr>
 	</table>
 </div>
-{include file='stock_splinter.tpl'} {include file='footer.tpl'} 
+{include file='stock_splinter.tpl'} 
+{include file='footer.tpl'} 

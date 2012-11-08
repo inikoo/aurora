@@ -242,13 +242,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		      var tableDivEL="table"+tableid;
 		      
 		      var ColumnDefs = [
-					{key:"pid", label:"<?php echo _('Product ID (Key)')?>",width:125, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"from", label:"<?php echo _('From')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"to", label:"<?php echo _('To')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					{key:"pid", label:"<?php echo _('Product ID (Key)')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"from", label:"<?php echo _('From')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"to", label:"<?php echo _('To')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-					,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"parts", label:"<?php echo _('Parts')?>",width:65, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-,{key:"sales", label:"<?php echo _('Sales')?>",width:75, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"description", label:"<?php echo _('Description')?>",width:330, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"parts", label:"<?php echo _('Parts')?>",width:75, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"sales", label:"<?php echo _('Sales')?>",width:75, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					];
 		    
@@ -280,7 +280,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								   //draggableColumns:true,
 								   renderLoopSize: 50,generateRequest : myRequestBuilder
 								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?php echo (!$_SESSION['state']['product']['orders']['nr']?25:$_SESSION['state']['product']['code_timeline']['nr'] )?>,containers : 'paginator3', 
+									 rowsPerPage:<?php echo (!$_SESSION['state']['product']['code_timeline']['nr']?25:$_SESSION['state']['product']['code_timeline']['nr'] )?>,containers : 'paginator3', 
 									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									 previousPageLinkLabel : "<",
 									 nextPageLinkLabel : ">",

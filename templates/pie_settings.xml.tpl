@@ -9,7 +9,7 @@
   <text_size></text_size>                                     <!-- [11] (Number) text size of all texts. Every text size can be set individually in the settings below -->
   <text_color></text_color>                                   <!-- [#000000] (hex color code) main text color. Every text color can be set individually in the settings below-->
   <decimals_separator>{$locale_data.decimal_point}</decimals_separator>                   <!-- [,] (string) decimal separator. Note, that this is for displaying data only. Decimals in data xml file must be separated with a dot -->
-  <thousands_separator>{$locale_data.thousand_sep}</thousands_separator>                 <!-- [ ] (string) thousand separator. use "none" if you don't want to separate -->
+  <thousands_separator>{$locale_data.thousands_sep}</thousands_separator>                 <!-- [ ] (string) thousand separator. use "none" if you don't want to separate -->
   <digits_after_decimal>2</digits_after_decimal>               <!-- [] (Number) if your value has less digits after decimal then is set here, zeroes will be added -->
   <scientific_min></scientific_min>                           <!-- [0.000001] If absolute value of your number is equal or less then scientific_min, this number will be formatted using scientific notation, for example: 0.0000023 -> 2.3e-6 -->
   <scientific_max></scientific_max>                           <!-- [1000000000000000] If absolute value of your number is equal or bigger then scientific_max, this number will be formatted using scientific notation, for example: 15000000000000000 -> 1.5e16 -->
@@ -22,13 +22,13 @@
   <js_enabled></js_enabled>                                   <!-- [true] (true / false) In case you don't use any flash - JavaScript communication, you shuold set this setting to false - this will save some CPU and will disable the security warning message which appears when opening the chart from hard drive. -->
                                                                   
   <pie>
-    <x>{$data.x}</x>                                                   <!-- [50%](Number / Number% / !Number) -->
-    <y>{$data.y}</y>                                                   <!-- [45%](Number / Number% / !Number) -->
-    <radius>{$data.radius}</radius>                                       <!-- [25%] (Number / Number%) -->
+    <x>{if isset($data.x)}{$data.x}{/if}</x>                                                   <!-- [50%](Number / Number% / !Number) -->
+    <y>{if isset($data.y)}{$data.y}{/if}</y>                                                   <!-- [45%](Number / Number% / !Number) -->
+    <radius>{if isset($data.radius)}{$data.radius}{/if}</radius>                                       <!-- [25%] (Number / Number%) -->
     <inner_radius></inner_radius>                             <!-- [0] (Number / Number%) the radius of the hole (if you want to have donut, use > 0) -->
     <height>0</height>                                        <!-- [0] (Number) pie height (for 3D effect) -->
     <angle>0</angle>                                          <!-- [0] (0 - 90) lean angle (for 3D effect) -->
-    <start_angle>{$data.start_angle}</start_angle>                               <!-- [90] (0-360) angle of a first slice. This will work properly only if <pie><height> is set to 0. If height is > 0, then there can be two angles only: 90 and 270 -->
+    <start_angle>{if isset($data.start_angle)}{$data.start_angle}{/if}</start_angle>                               <!-- [90] (0-360) angle of a first slice. This will work properly only if <pie><height> is set to 0. If height is > 0, then there can be two angles only: 90 and 270 -->
     <outline_color></outline_color>                           <!-- [#FFFFFF] (hex color code) -->    
     <outline_alpha></outline_alpha>                           <!-- [0] (Number) -->
     <base_color></base_color>                                 <!-- [] (hex color code) color of first slice -->
@@ -55,7 +55,7 @@
   </animation>
   
   <data_labels>
-    <radius>{$data.data_labels_radius}</radius>                                         <!-- [20%] (Number / Number%) distance of the labels from the pie. Use negative value to place labels on the pie -->
+    <radius>{if isset($data.data_labels_radius)}{$data.data_labels_radius}{/if}</radius>                                         <!-- [20%] (Number / Number%) distance of the labels from the pie. Use negative value to place labels on the pie -->
     <text_color></text_color>                                 <!-- [text_color] (hex color code) -->
     <text_size></text_size>                                   <!-- [text_size] (Number) -->
     <max_width></max_width>                                   <!-- [120] (Number) -->

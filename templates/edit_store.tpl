@@ -117,7 +117,7 @@
 					</tr>
 				</table>
 				{include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6 } 
-				<div id="table6" style="font-size:90%" class="data_table_container dtable btable ">
+				<div id="table6" style="font-size:90%" class="data_table_container dtable btable">
 				</div>
 			</div>
 		</div>
@@ -286,7 +286,7 @@
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>
 			{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 } 
-			<div id="table4" class="data_table_container dtable btable ">
+			<div id="table4" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>
@@ -317,7 +317,7 @@
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>
 			{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
-			<div id="table3" class="data_table_container dtable btable ">
+			<div id="table3" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>
@@ -397,7 +397,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="table0" class="data_table_container dtable btable ">
+			<div id="table0" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>
@@ -413,7 +413,7 @@
 </div>
 <div id="the_table1" class="data_table">
 	<span class="clean_table_title">{t}History{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-	<div id="table1" class="data_table_container dtable btable ">
+	<div id="table1" class="data_table_container dtable btable">
 	</div>
 </div>
 </div>

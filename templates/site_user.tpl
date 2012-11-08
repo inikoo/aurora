@@ -86,7 +86,7 @@
 
 		<div id="block_login_history" style="{if $block_view!='login_history'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<span class="clean_table_title">{t}Login History{/t}</span> {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-			<div id="table0" class="data_table_container dtable btable ">
+			<div id="table0" class="data_table_container dtable btable">
 			</div>
 		</div>
 		<div id="block_access" style="{if $block_view!='access'}display:none;{/if}clear:both;margin:10px 0 40px 0">

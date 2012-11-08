@@ -37,7 +37,7 @@
 			<div class="table_top_bar" style="margin-bottom:15px">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-			<div id="table0" class="data_table_container dtable btable ">
+			<div id="table0" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>
@@ -47,7 +47,7 @@
 			<div class="table_top_bar" style="margin-bottom:15px">
 			</div>
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-			<div id="table1" class="data_table_container dtable btable ">
+			<div id="table1" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>
