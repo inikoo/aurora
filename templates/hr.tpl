@@ -51,7 +51,7 @@
   
   
   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+    <div  id="table0"   class="data_table_container dtable btable"> </div>
 </div>
 </div>
 <div id="block_areas" style="{if $block_view!='areas'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -62,7 +62,7 @@
   <span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="company_areas" >{t}Export (CSV){/t}</span>
   
   {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
-    <div  id="table1"   class="data_table_container dtable btable "> </div>
+    <div  id="table1"   class="data_table_container dtable btable"> </div>
  
 </div>
 <div id="block_departments" style="{if $block_view!='departments'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -74,7 +74,7 @@
   
   
   {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
-    <div  id="table2"   class="data_table_container dtable btable "> </div>
+    <div  id="table2"   class="data_table_container dtable btable"> </div>
   
 
 </div>

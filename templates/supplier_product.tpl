@@ -153,7 +153,7 @@
    
  
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1   no_filter=1   }
-<div  id="table1"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
+<div  id="table1"  style="font-size:85%"   class="data_table_container dtable btable"> </div>
 
 
 
@@ -164,7 +164,7 @@
 <div id="block_purchase_orders" style="{if $block_view!='purchase_orders'}display:none;{/if}clear:both;margin:10px 0 40px 0" >
     <span id="table_title" class="clean_table_title">{t}Purchase Orders with this Product{/t}</span>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+    <div  id="table0"   class="data_table_container dtable btable"> </div>
   </div>
 
 

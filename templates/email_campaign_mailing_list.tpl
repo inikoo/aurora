@@ -28,7 +28,7 @@
   <div class="table_top_bar" style="margin-bottom:15px" ></div> 
 
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
- <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable "> </div>
+ <div  id="table0"  style="font-size:90%"  class="data_table_container dtable btable"> </div>
  </div>
 
 </div>
@@ -111,7 +111,7 @@
  <a class="state_details" href="new_customers_list.php?store={$email_campaign->get('Email Campaign Store Key')}&gbt=ecip&gbtk={$email_campaign->id}" style="float:right;margin-left:5px">{t}Create List{/t}</a>
  </div>
   {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1}
-   <div  id="table1"   class="data_table_container dtable btable "> </div>
+   <div  id="table1"   class="data_table_container dtable btable"> </div>
  </div>
  <div id="add_email_address_from_customer_list_msg" class="error"></div>
 

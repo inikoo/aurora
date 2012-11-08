@@ -33,7 +33,7 @@
  
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0   no_filter=1   }
     <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-<div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
+<div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable"> </div>
 </div>
  
  
@@ -48,7 +48,7 @@
  
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1   }
     <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-<div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
+<div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable"> </div>
 </div>
  
  

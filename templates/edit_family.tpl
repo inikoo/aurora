@@ -196,7 +196,7 @@
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter4"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value0}" size=10/><div id='f_container4'></div></div></div>
 	    <div class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
 	  </div>
-	  <div  id="table4"  style="font-size:90%" class="data_table_container dtable btable "> </div>
+	  <div  id="table4"  style="font-size:90%" class="data_table_container dtable btable"> </div>
 	 </div>
       </div>
 	<div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
@@ -216,7 +216,7 @@
                 <div style="clear:both"></div>
             </div>
 	        {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6  }
-	        <div  id="table6"  style="font-size:85%" class="data_table_container dtable btable "> </div>
+	        <div  id="table6"  style="font-size:85%" class="data_table_container dtable btable"> </div>
 	        </div>
 	        
         </div>
@@ -454,7 +454,7 @@
 	  
    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
-	  <div  id="table0"  style="font-size:90%" class="data_table_container dtable btable "> </div>
+	  <div  id="table0"  style="font-size:90%" class="data_table_container dtable btable"> </div>
 
 
 
@@ -470,7 +470,7 @@
  <div id="the_table1" class="data_table" style=" clear:both">
   <span class="clean_table_title">{t}History{/t}</span>
    {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
-  <div  id="table1"   class="data_table_container dtable btable "> </div>
+  <div  id="table1"   class="data_table_container dtable btable"> </div>
 </div> 
   
  
@@ -556,7 +556,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Family List{/t}</span>
             {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
-            <div  id="table2"   class="data_table_container dtable btable "> </div>
+            <div  id="table2"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>

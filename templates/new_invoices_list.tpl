@@ -223,7 +223,7 @@
 
  
  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true }
-     	<div  id="table0"   style="font-size:90%" class="data_table_container dtable btable "> </div>
+     	<div  id="table0"   style="font-size:90%" class="data_table_container dtable btable"> </div>
 
 
 </div>		
@@ -249,7 +249,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}World Regions{/t}</span>
             {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
-            <div  id="table1"   class="data_table_container dtable btable "> </div>
+            <div  id="table1"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -261,7 +261,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Country List{/t}</span>
             {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
-            <div  id="table2"   class="data_table_container dtable btable "> </div>
+            <div  id="table2"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -272,7 +272,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Postal Code List{/t}</span>
             {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3}
-            <div  id="table3"   class="data_table_container dtable btable "> </div>
+            <div  id="table3"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -283,7 +283,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Cities{/t}</span>
             {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4}
-            <div  id="table4"   class="data_table_container dtable btable "> </div>
+            <div  id="table4"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div> 

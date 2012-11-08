@@ -60,7 +60,7 @@
 
    
     
-    <div  id="table1"   class="data_table_container dtable btable "> </div>
+    <div  id="table1"   class="data_table_container dtable btable"> </div>
  
 
   

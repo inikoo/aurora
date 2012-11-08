@@ -24,7 +24,7 @@
  <div class="data_table" style="clear:both;margin-top:20px">
 	<span id="table_title" class="clean_table_title">{t}Packers{/t}</span>
      {include file='table_splinter.tpl' table_id=1 filter_name='' filter_value='' no_filter=true  }
-	<div  id="table1"   class="data_table_container dtable btable "> </div>
+	<div  id="table1"   class="data_table_container dtable btable"> </div>
   </div>
 
 </div>

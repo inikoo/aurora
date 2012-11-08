@@ -20,6 +20,6 @@
 
   {include file='table_dashboard.tpl' table_id=$index filter_name=$filter_name filter_value=$filter_value no_filter=1}
 
-   <div  id="table{$index}"   class="data_table_container dtable btable "> </div>
+   <div  id="table{$index}"   class="data_table_container dtable btable"> </div>
  </div>
  </div>

@@ -55,7 +55,7 @@
 			<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 			</div>
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1} 
-			<div id="table1" class="data_table_container dtable btable ">
+			<div id="table1" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>

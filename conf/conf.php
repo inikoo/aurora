@@ -3739,7 +3739,7 @@ $default_state=array(
 			'sf'=>0,
 			'nr'=>15,
 			'where'=>'where true',
-			'f_field'=>'pid',
+			'f_field'=>'description',
 			'f_value'=>'','f_show'=>false,
 			'from'=>'',
 			'to'=>''

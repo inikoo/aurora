@@ -262,7 +262,7 @@
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Staff List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
-			<div id="table2" class="data_table_container dtable btable ">
+			<div id="table2" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>

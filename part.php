@@ -12,17 +12,17 @@
  Version 2.0
 */
 
-include_once('common.php');
+include_once 'common.php';
 //include_once('stock_functions.php');
-include_once('class.Location.php');
+include_once 'class.Location.php';
 
-include_once('class.Part.php');
+include_once 'class.Part.php';
 
 $view_parts=$user->can_view('parts');
 
 if (!$view_parts) {
-    header('Location: index.php');
-    exit();
+	header('Location: index.php');
+	exit();
 }
 
 
@@ -57,38 +57,38 @@ $smarty->assign('parts_period_title',$parts_period_title[$parts_period]);
 
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'assets/skins/sam/autocomplete.css',
-               $yui_path.'calendar/assets/skins/sam/calendar.css',
-               'common.css',
-               'css/container.css',
-               'button.css',
-               'table.css',
-               'css/part_locations.css',
-                'css/edit.css',
-               'theme.css.php'
-           );
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'assets/skins/sam/autocomplete.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	'common.css',
+	'css/container.css',
+	'button.css',
+	'table.css',
+	'css/part_locations.css',
+	'css/edit.css',
+	'theme.css.php'
+);
 
 $js_files=array(
-              $yui_path.'utilities/utilities.js',
-              $yui_path.'json/json-min.js',
-              $yui_path.'paginator/paginator-min.js',
-              $yui_path.'dragdrop/dragdrop-min.js',
-              $yui_path.'datasource/datasource-min.js',
-              $yui_path.'autocomplete/autocomplete-min.js',
-              $yui_path.'datatable/datatable-debug.js',
-              $yui_path.'container/container-min.js',
-              $yui_path.'menu/menu-min.js',
-              	$yui_path.'calendar/calendar-min.js',
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'dragdrop/dragdrop-min.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable-debug.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	$yui_path.'calendar/calendar-min.js',
 
-              'js/common.js',
-              'external_libs/amstock/amstock/swfobject.js',
-              'js/table_common.js',
-              'js/search.js',
-              'edit_stock.js.php',
-              'part.js.php'
-          );
+	'js/common.js',
+	'external_libs/amstock/amstock/swfobject.js',
+	'js/table_common.js',
+	'js/search.js',
+	'edit_stock.js.php',
+	'part.js.php'
+);
 
 //$js_files=array('external_libs/amstock/amstock/swfobject.js');
 
@@ -104,78 +104,78 @@ $smarty->assign('view',$_SESSION['state']['part']['view']);
 
 
 if (isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku'])) {
-    $part= new part('sku',$_REQUEST['sku']);
-   
-    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
-} elseif(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
-   $part= new part('id',$_REQUEST['id']);
-   
-    $_SESSION['state']['part']['sku']=$part->data['Part SKU'];
-   
+	$part= new part('sku',$_REQUEST['sku']);
+
+	$_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+} elseif (isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])) {
+	$part= new part('id',$_REQUEST['id']);
+
+	$_SESSION['state']['part']['sku']=$part->data['Part SKU'];
+
 
 } else {
-     header('Location: index.php?no_part_sku');
-    exit();
-   
-   
+	header('Location: index.php?no_part_sku');
+	exit();
+
+
 }
 //print $part->get_unit_cost();
 
 $subject_id=$part->id;
 
 if (!$part->id) {
-    header('Location: warehouse.php?msg=part_not_found');
-    exit;
+	header('Location: warehouse.php?msg=part_not_found');
+	exit;
 }
 
 
 $warehouse_keys=$part->get_warehouse_keys();
-foreach($warehouse_keys as $warehouse_key) {
-    if (in_array($warehouse_key,$user->warehouses)) {
-        $warehouse=new Warehouse($warehouse_key);
-        break;
-    }
-    header('Location: index.php?forbidden');
-    exit;
+foreach ($warehouse_keys as $warehouse_key) {
+	if (in_array($warehouse_key,$user->warehouses)) {
+		$warehouse=new Warehouse($warehouse_key);
+		break;
+	}
+	header('Location: index.php?forbidden');
+	exit;
 }
 
 
 
 //show case
-$custom_field=Array();
+$custom_field=array();
 $sql=sprintf("select * from `Custom Field Dimension` where `Custom Field In Showcase`='Yes' and `Custom Field Table`='Part'");
 $res = mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
-    $custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
+	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
 }
 
-$show_case=Array();
+$show_case=array();
 $sql=sprintf("select * from `Part Custom Field Dimension` where `Part SKU`=%d", $part->id);
 $res=mysql_query($sql);
 if ($row=mysql_fetch_array($res)) {
 
-    foreach($custom_field as $key=>$value) {
-        $show_case[$value]=$row[$key];
-    }
+	foreach ($custom_field as $key=>$value) {
+		$show_case[$value]=$row[$key];
+	}
 }
 
 
 
-$custom_field=Array();
+$custom_field=array();
 $sql=sprintf("select * from `Custom Field Dimension` where `Custom Field Table`='Part'");
 $res = mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
-    $custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
+	$custom_field[$row['Custom Field Key']]=$row['Custom Field Name'];
 }
 
-$part_custom_fields=Array();
+$part_custom_fields=array();
 $sql=sprintf("select * from `Part Custom Field Dimension` where `Part SKU`=%d", $part->id);
 $res=mysql_query($sql);
 if ($row=mysql_fetch_array($res)) {
 
-    foreach($custom_field as $key=>$value) {
-        $part_custom_fields[$value]=$row[$key];
-    }
+	foreach ($custom_field as $key=>$value) {
+		$part_custom_fields[$value]=$row[$key];
+	}
 }
 
 
@@ -216,8 +216,8 @@ $smarty->assign('filter_show0',$_SESSION['state']['part']['stock_history']['f_sh
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['part']['stock_history']['f_value']);
 $filter_menu=array(
-                 'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
-             );
+	'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
+);
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
@@ -229,9 +229,9 @@ $smarty->assign('filter_show1',$_SESSION['state']['part']['transactions']['f_sho
 $smarty->assign('filter1',$tipo_filter);
 $smarty->assign('filter_value1',$_SESSION['state']['part']['transactions']['f_value']);
 $filter_menu=array(
-                 'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
-                 'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
-             );
+	'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
+	'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
+);
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 
@@ -244,12 +244,12 @@ $tipo_filter2=$_SESSION['state']['part']['delivery_notes']['f_field'];
 $smarty->assign('filter2',$tipo_filter2);
 $smarty->assign('filter_value2',($_SESSION['state']['part']['delivery_notes']['f_value']));
 $filter_menu2=array(
-                  'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'DN Number'),
-                  'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
-                  'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
-                  'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
-                  'country'=>array('db_key'=>'country','menu_label'=>'Orders from country code <i>xxx</i>','label'=>'Country Code')
-              );
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'DN Number'),
+	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
+	'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
+	'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
+	'country'=>array('db_key'=>'country','menu_label'=>'Orders from country code <i>xxx</i>','label'=>'Country Code')
+);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $paginator_menu2=array(10,25,50,100,500);
@@ -263,48 +263,48 @@ $smarty->assign('warehouse_id',$warehouse->id);
 
 $order=$_SESSION['state']['warehouse']['parts']['order'];
 if ($order=='sku') {
-$_order='Part SKU';
-     $order='P.`Part SKU`';
-    $order_label=_('SKU');;
-   
+	$_order='Part SKU';
+	$order='P.`Part SKU`';
+	$order_label=_('SKU');;
+
 } else {
-$_order='Part SKU';
-     $order='P.`Part SKU`';
-    $order_label=_('SKU');
+	$_order='Part SKU';
+	$order='P.`Part SKU`';
+	$order_label=_('SKU');
 }
 //$_order=preg_replace('/`/','',$order);
 $sql=sprintf("select  P.`Part SKU` as id , `Part Unit Description` as name from `Part Dimension` P left join  `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`)  where  `Warehouse Key`=%d  and %s < %s  order by %s desc  limit 1",
-             $warehouse->id,
-             $order,
-             prepare_mysql($part->get($_order)),
-             $order
-            );
+	$warehouse->id,
+	$order,
+	prepare_mysql($part->get($_order)),
+	$order
+);
 
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $prev['link']='part.php?sku='.$row['id'];
-    $prev['title']=$row['name'];
-    $smarty->assign('prev',$prev);
+	$prev['link']='part.php?sku='.$row['id'];
+	$prev['title']=$row['name'];
+	$smarty->assign('prev',$prev);
 }
 mysql_free_result($result);
 
 
 $sql=sprintf(" select P.`Part SKU` as id , `Part Unit Description` as name from `Part Dimension` P  left join  `Part Warehouse Bridge` B on (B.`Part SKU`=P.`Part SKU`) where  `Warehouse Key`=%d    and  %s>%s  order by %s   ",
-  $warehouse->id,
-             $order,
-             prepare_mysql($part->get($_order)),
-             $order
-            );
+	$warehouse->id,
+	$order,
+	prepare_mysql($part->get($_order)),
+	$order
+);
 
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $next['link']='part.php?sku='.$row['id'];
-    $next['title']=$row['name'];
-    $smarty->assign('next',$next);
+	$next['link']='part.php?sku='.$row['id'];
+	$next['title']=$row['name'];
+	$smarty->assign('next',$next);
 }
 mysql_free_result($result);
 
-include_once('conf/period_tags.php');
+include_once 'conf/period_tags.php';
 
 unset($period_tags['hour']);
 $smarty->assign('period_tags',$period_tags);

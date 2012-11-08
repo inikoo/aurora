@@ -394,10 +394,13 @@
 				
 			</div>
 		</div>
-		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
-		</div>
+		
+		<div class="table_top_bar">
+				</div>
+		
+		
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table0" class="data_table_container dtable btable ">
+		<div id="table0" class="data_table_container dtable btable">
 		</div>
 	</div>
 	<div id="block_login_stat" class="data_table" style="{if $view!='login_stat'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
@@ -427,7 +430,7 @@
 		</div>
 	
 	{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
-		<div id="table3" class="data_table_container dtable btable ">
+		<div id="table3" class="data_table_container dtable btable">
 		</div>
 	</div>
 	<div id="block_products" class="data_table" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
@@ -461,12 +464,12 @@
 		so.write("plot2");
 		// ]]>
 	</script> <span class="clean_table_title" style="clear:both">{t}Product Families Ordered{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable ">
+		<div id="table1" class="data_table_container dtable btable">
 		</div>
 	</div>
 	<div id="block_orders" class="data_table" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title">{t}Orders{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-		<div id="table2" class="data_table_container dtable btable ">
+		<div id="table2" class="data_table_container dtable btable">
 		</div>
 	</div>
 </div>
@@ -1146,7 +1149,7 @@
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Country List{/t}</span> {include file='table_splinter.tpl' table_id=100 filter_name=$filter_name100 filter_value=$filter_value100} 
-			<div id="table100" class="data_table_container dtable btable ">
+			<div id="table100" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>

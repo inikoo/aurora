@@ -23,7 +23,7 @@
 		</div>
 	</div>
 	{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true } 
-	<div id="table0" class="data_table_container dtable btable ">
+	<div id="table0" class="data_table_container dtable btable">
 	</div>
 </div>
 <div id="rppmenu0" class="yuimenu">

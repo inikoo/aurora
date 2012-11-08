@@ -138,7 +138,7 @@
 
  
  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=true }
-     	<div  id="table0"   style="font-size:90%" class="data_table_container dtable btable "> </div>
+     	<div  id="table0"   style="font-size:90%" class="data_table_container dtable btable"> </div>
 
 
 </div>		
@@ -164,7 +164,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}World Regions{/t}</span>
             {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
-            <div  id="table1"   class="data_table_container dtable btable "> </div>
+            <div  id="table1"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -176,7 +176,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Country List{/t}</span>
             {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
-            <div  id="table2"   class="data_table_container dtable btable "> </div>
+            <div  id="table2"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -187,7 +187,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Postal Code List{/t}</span>
             {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3}
-            <div  id="table3"   class="data_table_container dtable btable "> </div>
+            <div  id="table3"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -198,7 +198,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Cities{/t}</span>
             {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4}
-            <div  id="table4"   class="data_table_container dtable btable "> </div>
+            <div  id="table4"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div> 
@@ -208,7 +208,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Department List{/t}</span>
             {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5}
-            <div  id="table5"   class="data_table_container dtable btable "> </div>
+            <div  id="table5"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -221,7 +221,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Family List{/t}</span>
             {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6}
-            <div  id="table6"   class="data_table_container dtable btable "> </div>
+            <div  id="table6"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -231,7 +231,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Product List{/t}</span>
             {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7}
-            <div  id="table7"   class="data_table_container dtable btable "> </div>
+            <div  id="table7"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -241,7 +241,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Category List{/t}</span>
             {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8}
-            <div  id="table8"   class="data_table_container dtable btable "> </div>
+            <div  id="table8"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>

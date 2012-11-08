@@ -52,7 +52,7 @@
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px">
 		</div>
 		{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
-		<div style="font-size:85%" id="table3" class="data_table_container dtable btable ">
+		<div style="font-size:85%" id="table3" class="data_table_container dtable btable">
 		</div>
 </div>
 
@@ -331,7 +331,7 @@
 <div id="the_table0" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
   <span class="clean_table_title">{t}History{/t}</span>
   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
-  <div  id="table0"   class="data_table_container dtable btable "> </div>
+  <div  id="table0"   class="data_table_container dtable btable"> </div>
 </div>
 
 

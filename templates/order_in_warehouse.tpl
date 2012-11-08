@@ -202,7 +202,7 @@
 		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px">
 		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
-		<div id="table0" style="font-size:80%" class="data_table_container dtable btable ">
+		<div id="table0" style="font-size:80%" class="data_table_container dtable btable">
 		</div>
 	</div>
 </div>
@@ -381,7 +381,7 @@
 					<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 						<div id="the_table" class="data_table">
 							<span class="clean_table_title">{t}Staff List{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
-							<div id="table2" class="data_table_container dtable btable ">
+							<div id="table2" class="data_table_container dtable btable">
 							</div>
 						</div>
 					</div>

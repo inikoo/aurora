@@ -329,7 +329,7 @@
  <span class="clean_table_title">{t}Customer Lists{/t}</span>
 
   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name filter_value=$filter_value no_filter=1}
-   <div  id="table0"   class="data_table_container dtable btable "> </div>
+   <div  id="table0"   class="data_table_container dtable btable"> </div>
  </div>
  <div id="add_email_address_from_customer_list_msg" class="error"></div>
 
@@ -362,7 +362,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Department List{/t}</span>
             {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5}
-            <div  id="table5"   class="data_table_container dtable btable "> </div>
+            <div  id="table5"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -371,7 +371,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Family List{/t}</span>
             {include file='table_splinter.tpl' table_id=6 filter_name=$filter_name6 filter_value=$filter_value6}
-            <div  id="table6"   class="data_table_container dtable btable "> </div>
+            <div  id="table6"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -380,7 +380,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Product List{/t}</span>
             {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7}
-            <div  id="table7"   class="data_table_container dtable btable "> </div>
+            <div  id="table7"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>
@@ -389,7 +389,7 @@
         <div id="the_table" class="data_table" >
             <span class="clean_table_title">{t}Offer List{/t}</span>
             {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8}
-            <div  id="table8"   class="data_table_container dtable btable "> </div>
+            <div  id="table8"   class="data_table_container dtable btable"> </div>
         </div>
     </div>
  </div>

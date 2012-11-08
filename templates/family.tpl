@@ -4,21 +4,18 @@
 		<input type="hidden" id="family_key" value="{$family->id}" />
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="stores.php">{t}Stores{/t}</a> &rarr; {/if}<a href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
-				{if $modify}<button onclick="edit_family()"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Family{/t}</button>{/if} 
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} {if $modify}<button onclick="edit_family()"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Family{/t}</button>{/if} 
 			</div>
 			<div class="buttons" style="float:left">
-				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
-<span class="main_title">{t}Family{/t}: {$family->get('Product Family Name')} <span class="id">({$family->get('Product Family Code')})</span></span>
+				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} <span class="main_title">{t}Family{/t}: {$family->get('Product Family Name')} <span class="id">({$family->get('Product Family Code')})</span></span> 
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
@@ -30,132 +27,94 @@
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
-	
-			
 	<div style="padding:10px 20px">
-	
 		<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:10px 0 40px 0">
 			<div style="width:900px;float:left;margin-left:20px">
-					<div class="clusters">
+				<div class="clusters">
 					<div class="buttons small left cluster">
-					<button class="{if $products_period=='all'}selected{/if}" period="all" id="products_period_all" style="padding-left:7px;padding-right:7px">{t}All{/t}</button>
-				</div>
-				<div class="buttons small left cluster">				
-					<button class="{if $products_period=='yeartoday'}selected{/if}" period="yeartoday" id="products_period_yeartoday">{t}YTD{/t}</button>
-					<button class="{if $products_period=='monthtoday'}selected{/if}" period="monthtoday" id="products_period_monthtoday">{t}MTD{/t}</button>
-					<button class="{if $products_period=='weektoday'}selected{/if}" period="weektoday" id="products_period_weektoday">{t}WTD{/t}</button>
-					<button class="{if $products_period=='today'}selected{/if}" period="today" id="products_period_today">{t}Today{/t}</button>
+						<button class="{if $products_period=='all'}selected{/if}" period="all" id="products_period_all" style="padding-left:7px;padding-right:7px">{t}All{/t}</button> 
 					</div>
-					
-						<div class="buttons small left cluster">				
-					<button class="{if $products_period=='yesterday'}selected{/if}" period="yesterday" id="products_period_yesterday">{t}Yesterday{/t}</button>
-					<button class="{if $products_period=='last_w'}selected{/if}" period="last_w" id="products_period_last_w">{t}Last Week{/t}</button>
-					<button class="{if $products_period=='last_m'}selected{/if}" period="last_m" id="products_period_last_m">{t}Last Month{/t}</button>
+					<div class="buttons small left cluster">
+						<button class="{if $products_period=='yeartoday'}selected{/if}" period="yeartoday" id="products_period_yeartoday">{t}YTD{/t}</button> <button class="{if $products_period=='monthtoday'}selected{/if}" period="monthtoday" id="products_period_monthtoday">{t}MTD{/t}</button> <button class="{if $products_period=='weektoday'}selected{/if}" period="weektoday" id="products_period_weektoday">{t}WTD{/t}</button> <button class="{if $products_period=='today'}selected{/if}" period="today" id="products_period_today">{t}Today{/t}</button> 
 					</div>
-					
-					<div class="buttons small left cluster">				
-					<button class="{if $products_period=='three_year'}selected{/if}" period="three_year" id="products_period_three_year">{t}3Y{/t}</button>
-					<button class="{if $products_period=='year'}selected{/if}" period="year" id="products_period_year">{t}1Yr{/t}</button>
-					<button class="{if $products_period=='six_month'}selected{/if}" period="six_month" id="products_period_six_month">{t}6M{/t}</button>
-					<button class="{if $products_period=='quarter'}selected{/if}" period="quarter" id="products_period_quarter">{t}1Qtr{/t}</button>
-					<button class="{if $products_period=='month'}selected{/if}" period="month" id="products_period_month">{t}1M{/t}</button>
-					<button class="{if $products_period=='ten_day'}selected{/if}" period="ten_day" id="products_period_ten_day">{t}10D{/t}</button>
-					<button class="{if $products_period=='week'}selected{/if}" period="week" id="products_period_week">{t}1W{/t}</button>
-				<div class="buttons small left cluster">	
-					<button style="margin-left:20px"period="custome" id="custome_period">{t}Custome Dates{/t}</button>
-
+					<div class="buttons small left cluster">
+						<button class="{if $products_period=='yesterday'}selected{/if}" period="yesterday" id="products_period_yesterday">{t}Yesterday{/t}</button> <button class="{if $products_period=='last_w'}selected{/if}" period="last_w" id="products_period_last_w">{t}Last Week{/t}</button> <button class="{if $products_period=='last_m'}selected{/if}" period="last_m" id="products_period_last_m">{t}Last Month{/t}</button> 
+					</div>
+					<div class="buttons small left cluster">
+						<button class="{if $products_period=='three_year'}selected{/if}" period="three_year" id="products_period_three_year">{t}3Y{/t}</button> <button class="{if $products_period=='year'}selected{/if}" period="year" id="products_period_year">{t}1Yr{/t}</button> <button class="{if $products_period=='six_month'}selected{/if}" period="six_month" id="products_period_six_month">{t}6M{/t}</button> <button class="{if $products_period=='quarter'}selected{/if}" period="quarter" id="products_period_quarter">{t}1Qtr{/t}</button> <button class="{if $products_period=='month'}selected{/if}" period="month" id="products_period_month">{t}1M{/t}</button> <button class="{if $products_period=='ten_day'}selected{/if}" period="ten_day" id="products_period_ten_day">{t}10D{/t}</button> <button class="{if $products_period=='week'}selected{/if}" period="week" id="products_period_week">{t}1W{/t}</button> 
+						<div class="buttons small left cluster">
+							<button style="margin-left:20px" period="custome" id="custome_period">{t}Custome Dates{/t}</button> 
+						</div>
+					</div>
+					<div style="clear:both">
+					</div>
 				</div>
+				<div style="margin-top:20px">
+					<table class="show_info_product" style="float:left;width:250px">
+						{foreach from=$period_tags item=period } 
+						<tbody id="info_{$period.key}" style="{if $products_period!=$period.key}display:none{/if}">
+							<tr>
+								<td>{t}Sales{/t}:</td>
+								<td class=" aright">{$family->get_period({$period.db},'Acc Invoiced Amount')}</td>
+							</tr>
+							<tr>
+								<td>{t}Profit{/t}:</td>
+								<td class=" aright">{$family->get_period({$period.db},'Acc Profit')}</td>
+							</tr>
+							<tr>
+								<td>{t}Outers{/t}:</td>
+								<td class="aright">{$family->get_period({$period.db},'Acc Quantity Delivered')}</td>
+							</tr>
+						</tbody>
+						{/foreach} 
+						<tbody id="info_other" style="display:none">
+							<tr>
+								<td>{t}Sales{/t}:</td>
+								<td class=" aright"><span id="other_sales"></span><img style="display:none" id="waiting_other_sales" src="art/loading.gif"></td>
+							</tr>
+							<tr>
+								<td>{t}Profit{/t}:</td>
+								<td class=" aright"><span id="other_profits"></span><img style="display:none" id="waiting_other_profits" src="art/loading.gif"></td>
+							</tr>
+							<tr>
+								<td>{t}Outers{/t}:</td>
+								<td class="aright"><span id="other_outers"></span><img style="display:none" id="waiting_other_outers" src="art/loading.gif"></td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="show_info_product" style="float:left;width:250px;margin-left:20px">
+						{foreach from=$period_tags item=period } 
+						<tbody id="info2_{$period.key}" style="{if $products_period!=$period.key}display:none{/if}">
+							<tr>
+								<td>{t}Invoices{/t}:</td>
+								<td class="aright">{$family->get_period({$period.db},'Acc Invoices')}</td>
+							</tr>
+							<tr>
+								<td>{t}Customers{/t}:</td>
+								<td class=" aright">{$family->get_period({$period.db},'Acc Customers')}</td>
+							</tr>
+						</tbody>
+						{/foreach} 
+						<tbody id="info2_other" style="display:none">
+							<tr>
+								<td>{t}Invoices{/t}:</td>
+								<td class="aright"><span id="other_invoices"></span><img style="display:none" id="waiting_other_invoices" src="art/loading.gif"></td>
+							</tr>
+							<tr>
+								<td>{t}Customers{/t}:</td>
+								<td class=" aright"><span id="other_customers"></span><img style="display:none" id="waiting_other_customers" src="art/loading.gif"></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
-
-			<div style="clear:both"></div>
-	
-	</div>
-					
-			<div style="margin-top:20px">
-				<table class="show_info_product" style="float:left;width:250px">
-			
-			
-			
-					<tr style="display:none">
-						<td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$products_period_title}</span></span> <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<" title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer" src="art/icons/next.png" alt=">" tite="next" /></td>
-					</tr>
-					{foreach from=$period_tags item=period }
-					<tbody id="info_{$period.key}" style="{if $products_period!=$period.key}display:none{/if}">
-					
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright">{$family->get_period({$period.db},'Acc Invoiced Amount')}</td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright">{$family->get_period({$period.db},'Acc Profit')}</td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright">{$family->get_period({$period.db},'Acc Quantity Delivered')}</td>
-						</tr>
-					</tbody>
-				{/foreach}
-				<tbody id="info_other" style="display:none">
-					
-						<tr>
-							<td>{t}Sales{/t}:</td>
-							<td class=" aright"  ><span id="other_sales"></span><img  style="display:none" id="waiting_other_sales" src="art/loading.gif"></td>
-						</tr>
-						<tr>
-							<td>{t}Profit{/t}:</td>
-							<td class=" aright" ><span id="other_profits"></span><img  style="display:none" id="waiting_other_profits" src="art/loading.gif"></td>
-						</tr>
-						<tr>
-							<td>{t}Outers{/t}:</td>
-							<td class="aright" ><span id="other_outers"></span><img  style="display:none" id="waiting_other_outers" src="art/loading.gif"></td>
-						</tr>
-					</tbody>
-				
-				
-				
-				</table>
-				<table class="show_info_product" style="float:left;width:250px;margin-left:20px">
-			
-			
-			
-					
-					{foreach from=$period_tags item=period }
-					<tbody id="info2_{$period.key}" style="{if $products_period!=$period.key}display:none{/if}">
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright">{$family->get_period({$period.db},'Acc Invoices')}</td>
-						</tr>
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class=" aright">{$family->get_period({$period.db},'Acc Customers')}</td>
-						</tr>
-						
-					</tbody>
-				{/foreach}
-				<tbody id="info2_other" style="display:none">
-						<tr>
-							<td>{t}Invoices{/t}:</td>
-							<td class="aright"><span id="other_invoices"></span><img  style="display:none" id="waiting_other_invoices" src="art/loading.gif"></td>
-						</tr>
-						<tr>
-							<td>{t}Customers{/t}:</td>
-							<td class=" aright"><span id="other_customers"></span><img   style="display:none" id="waiting_other_customers" src="art/loading.gif"></td>
-						</tr>
-						
-					</tbody>
-				</table>
-			</div>
 			</div>
 			<div id="sales_sub_blocks" style="clear:both">
 				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
 					<li> <span class="item {if $sales_sub_block_tipo=='plot_family_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_family_sales" tipo="store"> <span>{t}Family Sales{/t}</span> </span> </li>
-						<li> <span class="item {if $sales_sub_block_tipo=='children_list'}selected{/if}" onclick="change_sales_sub_block(this)" id="children_list" tipo="list" forecast="" interval=""> <span>{t}Products Sales{/t}</span> </span> </li>
+					<li> <span class="item {if $sales_sub_block_tipo=='children_list'}selected{/if}" onclick="change_sales_sub_block(this)" id="children_list" tipo="list" forecast="" interval=""> <span>{t}Products Sales{/t}</span> </span> </li>
 				</ul>
 				<div id="sub_block_plot_family_sales" style="clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_family_sales'}display:none{/if}">
-					<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> 
-
-					<script type="text/javascript">
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
@@ -164,36 +123,29 @@
 		so.write("sub_block_plot_family_sales");
 		// ]]>
 	</script> 
-					
 				</div>
-<div id="sub_block_children_list" style="clear:both;border:1px solid #ccc;height:430px;padding:20px;{if $sales_sub_block_tipo!='children_list'}display:none{/if}">
-
-<div  class="buttons left">
-<button>{t}Generate Product Sales Report{/t}</button>
-<div style="clear:both"></div>
-</div>
-
-
-<div class="data_table" style="margin-top:20px;clear:both">
-				<span id="table_title" class="clean_table_title">{t}Products Sales{/t} <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
-				<div id="table_type" class="table_type">
-					<div style="font-size:90%" id="transaction_chooser">
-						<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Historic}selected{/if} label_family_products_changes" id="elements_historic" table_type="historic">{t}Historic{/t} (<span id="elements_historic_number">{$elements_number.Historic}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_family_products_discontinued" id="elements_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_discontinued_number">{$elements_number.Discontinued}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Private}selected{/if} label_family_products_private" id="elements_private" table_type="private">{t}Private Sale{/t} (<span id="elements_private_number">{$elements_number.Private}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NoSale}selected{/if} label_family_products_nosale" id="elements_nosale" table_type="nosale">{t}Not for Sale{/t} (<span id="elements_nosale_number">{$elements_number.NoSale}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Sale}selected{/if} label_family_products_sale" id="elements_sale" table_type="sale">{t}Public Sale{/t} (<span id="elements_notes_number">{$elements_number.Sale}</span>)</span> 
+				<div id="sub_block_children_list" style="clear:both;border:1px solid #ccc;height:430px;padding:20px;{if $sales_sub_block_tipo!='children_list'}display:none{/if}">
+					<div class="buttons left">
+						<button>{t}Generate Product Sales Report{/t}</button> 
+						<div style="clear:both">
+						</div>
+					</div>
+					<div class="data_table" style="margin-top:20px;clear:both">
+						<span id="table_title" class="clean_table_title">{t}Products Sales{/t} <img id="export_csv1" class="export_data_link" label="{t}Export (CSV/XML){/t}" alt="{t}Export (CSV/XML){/t}" src="art/icons/export_csv.gif"></span> 
+						<div id="table_type" class="table_type">
+							<div style="font-size:90%" id="transaction_chooser">
+								<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Historic}selected{/if} label_family_products_changes" id="elements_historic" table_type="historic">{t}Historic{/t} (<span id="elements_historic_number">{$elements_number.Historic}</span>)</span> <span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_family_products_discontinued" id="elements_discontinued" table_type="discontinued">{t}Discontinued{/t} (<span id="elements_discontinued_number">{$elements_number.Discontinued}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Private}selected{/if} label_family_products_private" id="elements_private" table_type="private">{t}Private Sale{/t} (<span id="elements_private_number">{$elements_number.Private}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NoSale}selected{/if} label_family_products_nosale" id="elements_nosale" table_type="nosale">{t}Not for Sale{/t} (<span id="elements_nosale_number">{$elements_number.NoSale}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Sale}selected{/if} label_family_products_sale" id="elements_sale" table_type="sale">{t}Public Sale{/t} (<span id="elements_notes_number">{$elements_number.Sale}</span>)</span> 
+							</div>
+						</div>
+						<div class="table_top_bar" style="margin-bottom:15px">
+						</div>
+						{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+						<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
+						</div>
+					</div>
+					<div style="clear:both">
 					</div>
 				</div>
-				<div class="table_top_bar" style="margin-bottom:15px">
-				</div>
-				
-				{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		
-				<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
-				</div>
-			</div>
-
-
-<div style="clear:both"></div>
-</div>
-			
 			</div>
 		</div>
 		<div id="block_details" style="{if $block_view!='details'}display:none;{/if}clear:both;margin:10px 0 40px 0">
@@ -259,9 +211,8 @@
 				</div>
 				<div class="buttons small clusters">
 					<button class="selected" id="change_products_display_mode">{$display_products_mode_label}</button> <button class="selected" id="change_products_table_type">{$products_table_type_label}</button> 
-				
 				</div>
-				<div class="clusters" id="table_view_menu0"  style="{if $products_table_type=='thumbnails'}display:none{/if}"  >
+				<div class="clusters" id="table_view_menu0" style="{if $products_table_type=='thumbnails'}display:none{/if}">
 					<div class="buttons small left cluster">
 						<button class="table_option {if $product_view=='general'}selected{/if}" id="product_general">{t}Overview{/t}</button> <button class="table_option {if $product_view=='stock'}selected{/if}" id="product_stock" {if !$view_stock}style="display:none" {/if}>{t}Stock{/t}</button> <button class="table_option {if $product_view=='sales'}selected{/if}" id="product_sales" {if !$view_sales}style="display:none" {/if}>{t}Sales{/t}</button> <button class="table_option {if $product_view=='parts'}selected{/if}" id="product_parts" {if !$view_sales}style="display:none" {/if}>{t}Parts{/t}</button> <button class="table_option {if $product_view=='cats'}selected{/if}" id="product_cats" {if !$view_sales}style="display:none" {/if}>{t}Groups{/t}</button> 
 					</div>
@@ -280,19 +231,11 @@
 				<div id="table0" class="data_table_container dtable btable with_total " style="{if $products_table_type=='thumbnails'}display:none{/if};font-size:90%">
 				</div>
 			</div>
-			
-			</div>
-			<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			</div>
-			<div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:10px 0 40px 0">
-			</div>
-		
-	
-	
-	
-	
-	
-	
+		</div>
+		<div id="block_deals" style="{if $block_view!='deals'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		</div>
+		<div id="block_categories" style="{if $block_view!='categories'}display:none;{/if}clear:both;margin:10px 0 40px 0">
+		</div>
 	</div>
 </div>
 <div id="rppmenu0" class="yuimenu">
@@ -363,42 +306,30 @@
 		{/foreach} 
 	</table>
 </div>
-
-<div id="dialog_calendar_splinter"  class="xcal_menu_container" style="padding:5px 20px" >
- <div class="bd">
-<div class="custom_dates" style="width:100%;margin-top:10px;border-top:1px solid#ccc;font-size:90%">
-    <div style="margin-top:10px" id="cal1Container"></div>
-<div style="float:left;padding:10px">
-  <form action="orders.php?" method="GET" style="margin-top:10px">
-<table border=0 >
- <tr>
- <td>
-    
-      <span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;display:none">{t}clear{/t}</span>
-      <input id="in" type="text" class="text" size="11" maxlength="10" name="from" value="{if isset($from_little_edian)}{$from_little_edian}{/if}"/>
-     
-      </td>
-       <td>
-   	  <img style="cursor:pointer;height:15px;margin-top:px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  alt="{t}Go{/t}" /> 
-</td>
- <tr>
- <td>
-      
-      <input   style="left:0px;margin-top:5px" class="calpop" id="out" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{if isset($to_little_edian)}{$to_little_edian}{/if}"/>
-	  
-      
-   
-   </td>
-  <td></td>
-</tr>
-    </table>
-
- </form>
-
-
+<div id="dialog_calendar_splinter" class="xcal_menu_container" style="padding:5px 20px">
+	<div class="bd">
+		<div class="custom_dates" style="width:100%;margin-top:10px;border-top:1px solid#ccc;font-size:90%">
+			<div style="margin-top:10px" id="cal1Container">
+			</div>
+			<div style="float:left;padding:10px">
+				<form action="orders.php?" method="GET" style="margin-top:10px">
+					<table border="0">
+						<tr>
+							<td> <span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;display:none">{t}clear{/t}</span> 
+							<input id="in" type="text" class="text" size="11" maxlength="10" name="from" value="{if isset($from_little_edian)}{$from_little_edian}{/if}" />
+							</td>
+							<td> <img style="cursor:pointer;height:15px;margin-top:px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval" alt="{t}Go{/t}" /> </td>
+						</tr>
+						<tr>
+							<td> 
+							<input style="left:0px;margin-top:5px" class="calpop" id="out" size="11" maxlength="10" type="text" class="text" size="8" name="to" value="{if isset($to_little_edian)}{$to_little_edian}{/if}" />
+							</td>
+							<td></td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
-</div>
-</div>
-
-</div>
-{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="family-table-csv_export" export_options=$csv_export_options } {include file='footer.tpl'} 
+{include file='footer.tpl'} 

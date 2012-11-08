@@ -402,7 +402,7 @@
 				
 				<div style="clear:both">
 				<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
-				<div id="table8" class="data_table_container dtable btable ">
+				<div id="table8" class="data_table_container dtable btable">
 				</div>
 			</div>
 				
@@ -413,20 +413,20 @@
 							
 				<span class="clean_table_title">{t}Footers{/t}</span> 
 				{include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
-				<div id="table9" class="data_table_container dtable btable ">
+				<div id="table9" class="data_table_container dtable btable">
 				</div>
 			
 			</div>
 			<div style="{if $content_view!='product_list'}display:none{/if};margin:10px 20px" id="page_product_list_block">
 				<div id="product_lists" style="width:890px;margin-bottom:20px">
 					<span class="clean_table_title">{t}Lists{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-					<div id="table2" style="font-size:80%" class="data_table_container dtable btable ">
+					<div id="table2" style="font-size:80%" class="data_table_container dtable btable">
 					</div>
 				</div>
 				{*} 
 				<div id="product_lists" style="width:890px;margin-bottom:20px">
 					<span class="clean_table_title">{t}List Items{/t}</span> {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
-					<div id="table8" style="font-size:80%" class="data_table_container dtable btable ">
+					<div id="table8" style="font-size:80%" class="data_table_container dtable btable">
 					</div>
 				</div>
 				{*} 
@@ -582,7 +582,7 @@
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Page List{/t}</span> {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7} 
-			<div id="table7" class="data_table_container dtable btable ">
+			<div id="table7" class="data_table_container dtable btable">
 			</div>
 		</div>
 	</div>
