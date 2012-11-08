@@ -1,5 +1,8 @@
 {include file='header.tpl'} 
 <div id="bd">
+	<input type="hidden" id="deal_key" value="{$deal->id}"/>
+	<input type="hidden" id="store_key" value="{$store->id}"/>
+	
 	{include file='assets_navigation.tpl'} 
 	<div class="branch">
 		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="marketing_server.php">{t}Marketing{/t}</a> &rarr; {/if} <a href="marketing.php?store={$store->id}">{$store->get('Store Code')} {t}Marketing{/t}</a> &rarr; <a href="store_deals.php?store={$store->id}">{t}Offers{/t}</a></span> &rarr; <a href="deal.php?id={$deal->id}">{$deal->get('Deal Code')}</a> ({t}Editing{/t})</span> 
@@ -57,13 +60,13 @@
 			<td class="label">{t}Code{/t}:</td>
 			<td style="text-align:left;width:400px"> 
 			<div>
-				<input style="text-align:left;width:370px" id="deal_name" value="{$deal->get('Deal Code')}" ovalue="{$deal->get('Deal Code')}"> 
-				<div id="deal_name_Container">
+				<input style="text-align:left;width:370px" id="deal_code" value="{$deal->get('Deal Code')}" ovalue="{$deal->get('Deal Code')}"> 
+				<div id="deal_code_Container">
 				</div>
 			</div>
 			</td>
 			<td> 
-			<div style="float:left;width:180px" id="deal_name_msg" class="edit_td_alert">
+			<div style="float:left;width:180px" id="deal_code_msg" class="edit_td_alert">
 			</div>
 		</tr>
 		<tr>
@@ -82,13 +85,13 @@
 	<td class="label">{t}Description{/t}:</td>
 	<td style="text-align:left;width:400px"> 
 	<div>
-<textarea style="text-align:left;width:370px" id="deal_name" ovalue="{$deal->get('Deal Description')}">{$deal->get('Deal Description')}</textarea> 
-		<div id="deal_name_Container">
+<textarea style="text-align:left;width:370px" id="deal_description" ovalue="{$deal->get('Deal Description')}">{$deal->get('Deal Description')}</textarea> 
+		<div id="deal_description_Container">
 		</div>
 	</div>
 	</td>
 	<td> 
-	<div style="float:left;width:180px" id="deal_name_msg" class="edit_td_alert">
+	<div style="float:left;width:180px" id="deal_description_msg" class="edit_td_alert">
 	</div>
 </tr>
 <tr>

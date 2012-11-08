@@ -722,7 +722,7 @@ class Store extends DB_Table {
 		$site_keys=$this->get_site_keys();
 
 		if (count($site_keys)) {
-			$sql=sprintf("select count( Distinct UD.`User Parent Key` )  from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`)  where URD.`User Key`>0 and `User Site Key` in (%s)    ",join($site_keys));
+			$sql=sprintf("select count( Distinct UD.`User Parent Key` )  from `User Request Dimension` URD left join `User Dimension` UD on (URD.`User Key` = UD.`User Key`)  where `User Key`='Yes' and URD.`Site Key` in (%s)    ",join($site_keys));
 			$result=mysql_query($sql);
 			$this->data['Store Contacts Who Visit Website']=mysql_num_rows($result);
 		}
