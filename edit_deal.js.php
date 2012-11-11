@@ -194,13 +194,13 @@ var validate_scope_metadata={
 };
  var deal_code_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_code);
     deal_code_oACDS.queryMatchContains = true;
-    var deal_code_oAutoComp = new YAHOO.widget.AutoComplete("Deal_Code","Deal_Code_Container", deal_code_oACDS);
+    var deal_code_oAutoComp = new YAHOO.widget.AutoComplete("deal_code","deal_code_Container", deal_code_oACDS);
     deal_code_oAutoComp.minQueryLength = 0; 
     deal_code_oAutoComp.queryDelay = 0.1;
     
      var deal_name_oACDS = new YAHOO.util.FunctionDataSource(validate_deal_name);
     deal_name_oACDS.queryMatchContains = true;
-    var deal_name_oAutoComp = new YAHOO.widget.AutoComplete("Deal_Name","Deal_Name_Container", deal_name_oACDS);
+    var deal_name_oAutoComp = new YAHOO.widget.AutoComplete("deal_name","deal_name_Container", deal_name_oACDS);
     deal_name_oAutoComp.minQueryLength = 0; 
     deal_name_oAutoComp.queryDelay = 0.1;
     
@@ -211,7 +211,7 @@ var validate_scope_metadata={
     deal_description_oAutoComp.minQueryLength = 0; 
     deal_description_oAutoComp.queryDelay = 0.1;
 
-alert("x")
+
 
 
 init_search('products_store');

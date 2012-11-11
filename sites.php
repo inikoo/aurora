@@ -101,6 +101,21 @@ $smarty->assign('block_view',$_SESSION['state']['sites']['block_view']);
 
 
 
+if (isset($_REQUEST['pages_view'])) {
+    $valid_views=array('general','hits','visitors');
+    if (in_array($_REQUEST['view'], $valid_views))
+        $_SESSION['state']['sites']['pages']['view']=$_REQUEST['view'];
+
+}
+
+$smarty->assign('pages_view',$_SESSION['state']['sites']['pages']['view']);
+$smarty->assign('page_period',$_SESSION['state']['sites']['pages']['period']);
+
+
+
+
+
+
 
 
 $smarty->assign('parent','websites');
@@ -132,7 +147,34 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
+$table_type_options=array(
+	'list'=>array('mode'=>'list','label'=>_('List')),
+	'thumbnails'=>array('mode'=>'thumbnails','label'=>_('Thumbnails')),
+);
+$smarty->assign('pages_table_type',$_SESSION['state']['sites']['pages']['table_type']);
+$smarty->assign('pages_table_type_label',$table_type_options[$_SESSION['state']['sites']['pages']['table_type']]['label']);
+$smarty->assign('pages_table_type_menu',$table_type_options);
 
+$elements_number=array('FamilyCatalogue'=>0,'DepartmentCatalogue'=>0,'ProductDescription'=>0,'Other'=>0);
+
+$sql=sprintf("select count(*) as num,`Page Store Section` from  `Page Store Dimension` where `Page Site Key` in (%s) group by `Page Store Section`",
+join(',',$user->websites)
+);
+
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+$_key=preg_replace('/ /','',$row['Page Store Section']);
+
+   if(in_array($_key,array('FamilyCatalogue','DepartmentCatalogue','ProductDescription')))
+   $elements_number[$_key]=$row['num'];
+   else{
+    $elements_number['Other']+=$row['num'];
+   }
+   
+  
+}
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['sites']['pages']['elements']);
 
 $smarty->display('sites.tpl');
 

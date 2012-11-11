@@ -809,6 +809,20 @@ $default_state=array(
 			
 
 		),
+		'main_categories'=>array(
+
+			'order'=>'name',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'f_show'=>false,
+				
+			
+
+		),
 		'history'=>array(
 			'where'=>'where true',
 			'f_field'=>'abstract',
@@ -1874,7 +1888,19 @@ $default_state=array(
 			'f_field'=>'name',
 			'f_value'=>'',
 			'view'=>'general'
+		),
+		'pending_post'=>array(
+			'order'=>'id',
+			'order_dir'=>'desc',
+			'sf'=>0,
+			'nr'=>25,
+			'view'=>'general',
+			'f_field'=>'name',
+			'f_value'=>'',
+			'elements'=>array('Send'=>1,'ToSend'=>1)
+	
 		)
+
 
 
 	),
@@ -1939,24 +1965,7 @@ $default_state=array(
 			'parent'=>''
 		),
 	),
-	'company_areas'=>array(
-		'view'=>'general',
-		'parent'=>'none',
-		'details'=>0,
-		'table'=>array(
-			'order'=>'name',
-			'order_dir'=>'',
-			'sf'=>0,
-			'nr'=>25,
-			'where'=>'where true',
-			'f_field'=>'company name',
-			'f_value'=>'','f_show'=>false,
-			'mode'=>'',
-			'restrictions'=>'none',
-			'parent'=>''
-
-		)
-	),
+	
 	'company_staff'=>array(
 		'view'=>'general',
 		'parent'=>'none',
@@ -2315,7 +2324,8 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'name',
 			'f_value'=>''
-		),'positions'=>array(
+		),
+		'positions'=>array(
 			'order'=>'name',
 			'order_dir'=>'',
 			'sf'=>0,
@@ -2912,17 +2922,6 @@ $default_state=array(
 				'orders'=>true,
 				'status'=>true
 			)
-		),
-	'pending_post'=>array(
-			'order'=>'id',
-			'order_dir'=>'desc',
-			'sf'=>0,
-			'nr'=>25,
-			'view'=>'general',
-			'f_field'=>'customer name',
-			'f_value'=>'',
-			'elements'=>array('Send'=>1,'ToSend'=>1)
-	
 		)
 
 	),

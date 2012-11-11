@@ -217,29 +217,29 @@ class Category extends DB_Table {
 
 		switch ($this->data['Category Subject']) {
 		case 'Part':
-		
-		
-		if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/',$key)) {
 
-			$amount='Part Category '.$key;
 
-			return percentage($this->data[$amount],1);
-		}
+			if (preg_match('/^(Last|Yesterday|Total|1|10|6|3|Year To|Month To|Today|Week To).*(Margin|GMROI)$/',$key)) {
 
-		
+				$amount='Part Category '.$key;
+
+				return percentage($this->data[$amount],1);
+			}
+
+
 			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers|Sold|Given|Required)$/',$key)) {
 
-			$amount='Part Category '.$key;
+				$amount='Part Category '.$key;
 
-			return number($this->data[$amount]);
-		}
-		
-		if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit)$/',$key)) {
+				return number($this->data[$amount]);
+			}
 
-			$amount='Part Category '.$key;
+			if (preg_match('/^(Yesterday|Today|Last|Week|Year|Month|Total|1|6|3).*(Amount|Profit)$/',$key)) {
 
-			return money($this->data[$amount]);
-		}	
+				$amount='Part Category '.$key;
+
+				return money($this->data[$amount]);
+			}
 			return $key;
 		}
 
@@ -479,19 +479,28 @@ class Category extends DB_Table {
 
 		if (count($children_keys)>0) {
 
-
+			//print_r($this->data);
 			switch ($this->data['Category Subject']) {
+			case('Part'):
 
+				$sql=sprintf("select count(*) as num from `Part Warehouse Bridge` where `Warehouse Key`=%d",
+					$this->data['Category Warehouse Key']);
+				break;
+			case('Supplier'):
+
+				$sql=sprintf("select count(*) as num from `Supplier Product Dimension` ");
+				break;
 			default:
 				$table=$this->data['Category Subject'];
 				$store=sprintf(" where `%s Store Key`=%d",
 					addslashes($this->data['Category Subject']),
 					$this->data['Category Store Key']);
+				$sql=sprintf("select count(*) as num from `%s Dimension` %s",$table,$store);
 				break;
 			}
 
-			$sql=sprintf("select count(*) as num from `%s Dimension` %s",$table,$store);
 
+			//print "$sql\n";
 			$res=mysql_query($sql);
 			if ($row=mysql_fetch_assoc($res)) {
 				$total_subjects=$row['num'];
@@ -1165,7 +1174,7 @@ class Category extends DB_Table {
 
 
 
-function update_part_category_sales($interval) {
+	function update_part_category_sales($interval) {
 
 		$to_date='';
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
@@ -1186,13 +1195,13 @@ function update_part_category_sales($interval) {
 		$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
                      from `Inventory Transaction Fact` ITF left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d %s %s" ,
 			$this->id,
-						($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+			($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
 
 		);
 		$result=mysql_query($sql);
-	//	  print "$sql\n";
+		//   print "$sql\n";
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$this->data["Part Category $db_interval Acc Profit"]=$row['profit'];
 			$this->data["Part Category $db_interval Acc Profit After Storing"]=$this->data["Part Category $db_interval Acc Profit"]-$row['cost_storing'];
@@ -1560,7 +1569,7 @@ function update_part_category_sales($interval) {
 
 		$to_date='';
 
-			list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
 		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
@@ -1580,7 +1589,7 @@ function update_part_category_sales($interval) {
 		$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`='Refund',1,0)) as refunds  ,IFNULL(sum(`Invoice Items Discount Amount`),0) as discounts,IFNULL(sum(`Invoice Total Net Amount`),0) net  ,IFNULL(sum(`Invoice Total Profit`),0) as profit ,IFNULL(sum(`Invoice Items Discount Amount`*`Invoice Currency Exchange`),0) as dc_discounts,IFNULL(sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`),0) dc_net  ,IFNULL(sum(`Invoice Total Profit`*`Invoice Currency Exchange`),0) as dc_profit from `Category Bridge` B left join  `Invoice Dimension` I  on ( `Subject Key`=`Invoice Key`)  where `Subject`='Invoice' and `Category Key`=%d and  `Invoice Store Key`=%d %s %s" ,
 			$this->id,
 			$this->data['Category Store Key'],
-		
+
 			($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
 
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')

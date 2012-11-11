@@ -8,29 +8,33 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" >
-			
-				{if $modify} <button id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button> <button onclick="window.location='edit_customers.php?store={$store->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button> {/if} <button onclick="window.location='customers_pending_orders.php?store={$store->id}'"><img src="art/icons/basket.png" alt=""> {t}Pending Orders{/t}</button> <button onclick="window.location='customers_send_post.php?store={$store->id}'"><img src="art/icons/newspaper.png" alt=""> {t}Pending Post{/t}</button> 
+			<button style="height:25px;width:27px"onclick="window.location='customer_store_configuration.php?store={$store->id}'"><img style="position:relative;width:18px;height:18px;top:-2px" src="art/icons/cog.png" alt=""></button> 
+
+				{if $modify} <button id="new_customer"><img src="art/icons/add.png" alt=""> {t}Add Customer{/t}</button> <button onclick="window.location='edit_customers.php?store={$store->id}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Customers{/t}</button> {/if} 
+
+								<button onclick="window.location='customers_stats.php?store={$store->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='customers_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='customer_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
 
 		</div>
 		
 		<div class="buttons" style="float:left">
-								<button onclick="window.location='customer_store_configuration.php?store={$store->id}'"><img src="art/icons/cog.png" alt=""> {t}Configuration{/t}</button> <button onclick="window.location='customers_stats.php?store={$store->id}'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> <button onclick="window.location='customers_lists.php?store={$store->id}'"><img src="art/icons/table.png" alt=""> {t}Lists{/t}</button> <button onclick="window.location='customer_categories.php?id=0&store={$store->id}'"><img src="art/icons/chart_organisation.png" alt=""> {t}Categories{/t}</button> 
-
+					<span class="main_title">
+			{t}Customers{/t} <span class="id">{$store->get('Store Code')}</span>
+		</span>	
 		</div>
 		
 			<div style="clear:both">
 			</div>
 		</div>
-		<h1>
-			{t}Customers{/t} <span class="id">{$store->get('Store Code')}</span>
-		</h1>
+	
 	</div>
 	<div style="padding:0px">
-		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:5px">
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $block_view=='dashboard'}selected{/if}" id="dashboard"> <span> {t}Dashboard{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='contacts_with_orders'}selected{/if}" id="contacts_with_orders"> <span> {t}Contacts with Orders{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='all_contacts'}selected{/if}" id="all_contacts"> <span> {t}All Contacts{/t}</span></span></li>
-			<li> <span style="display:none" class="item {if $block_view=='users'}selected{/if}" id="users"> <span> {t}Users{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='pending_orders'}selected{/if}" id="pending_orders"> <span> {t}Pending Orders{/t}</span></span></li>
+			<li> <span class="item {if $block_view=='pending_post'}selected{/if}" id="pending_post"> <span> {t}Pending Post{/t}</span></span></li>
+
 		</ul>
 		<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 		</div>
@@ -118,15 +122,44 @@
 				</div>
 			</div>
 		</div>
-		<div style="padding:15px 0 30px 0;{if !($block_view=='users')  }display:none{/if}" id="user_list">
-			<div class="data_table" style="margin-top:15px">
-				<span class="clean_table_title">{t}Users{/t}</span> 
-				<div class="table_top_bar" style="margin-bottom:15px">
-				</div>
-				{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
-				<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
-				</div>
+		
+		<div  style="padding:15px 0 30px 0;{if !($block_view=='pending_orders')  }display:none{/if}" id="pending_orders_block">
+		<div  class="data_table" style="clear:both;">
+				<span class="clean_table_title">{t}Pending Orders{/t} <img id="export_csv0" tipo="customers_per_store" style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"></span> 
+		<div id="table_type" class="table_type">
+			<div style="font-size:90%" id="transaction_chooser">
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Packed}selected{/if} label_Packed" id="elements_Packed" table_type="Packed">{t}Packed{/t} (<span id="elements_Packed_number">{$elements_number.Packed}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InWarehouse}selected{/if} label_InWarehouse" id="elements_InWarehouse" table_type="InWarehouse">{t}In Warehouse{/t} (<span id="elements_InWarehouse_number">{$elements_number.InWarehouse}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.SubmittedbyCustomer}selected{/if} label_SubmittedbyCustomer" id="elements_SubmittedbyCustomer" table_type="SubmittedbyCustomer">{t}Submitted by Customer{/t} (<span id="elements_SubmittedbyCustomer_number">{$elements_number.SubmittedbyCustomer}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcess}selected{/if} label_InProcess" id="elements_InProcess" table_type="InProcess">{t}In Process{/t} (<span id="elements_InProcess_number">{$elements_number.InProcess}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.InProcessbyCustomer}selected{/if} label_InProcessbyCustomer" id="elements_InProcessbyCustomer" table_type="InProcessbyCustomer">{t}In Website{/t} (<span id="elements_InProcessbyCustomer_number">{$elements_number.InProcessbyCustomer}</span>)</span> 
 			</div>
+		</div>
+		<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999">
+		</div>
+		<table style="float:left;margin:0 0 0 0px ;padding:0;height:15px;" class="options">
+			<tr>
+			</tr>
+		</table>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+		<div id="table1" style="font-size:90%" class="data_table_container dtable btable">
+		</div>
+		</div>
+		</div>
+		<div style="padding:15px 0 30px 0;{if !($block_view=='pending_post')  }display:none{/if}" id="pending_post_block">
+		
+		      <span class="clean_table_title">{t}Pending Post{/t}  <img id="export_data"  style="position:relative;top:0px;left:5px;cursor:pointer;vertical-align:text-bottom;" label="{t}Export (CSV){/t}" alt="{t}Export (CSV){/t}" src="art/icons/export_csv.gif"> <img src="art/pdf.gif" style="position:relative;top:-3px;left:10px;height:12px;cursor:pointer;" title="{t}Label Address{/t}" onclick="window.location='customers_address_label.pdf.php?label=l7159&type=send_post&id={$store->id}'"></span> 
+    <div style="font-size:90%" id="transaction_chooser">
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $pending_post_elements.Send}selected{/if} label_page_type" id="elements_Send">{t}Send{/t} (<span id="elements_Send_number">{$pending_post_elements_number.Send}</span>)</span> 
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $pending_post_elements.ToSend}selected{/if} label_page_type" id="elements_ToSend">{t}To Send{/t} (<span id="elements_ToSend_number">{$pending_post_elements_number.ToSend}</span>)</span> 
+			</div>
+
+
+
+ 
+<div class="table_top_bar" style="margin-bottom:10px">
+				</div>
+  
+{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+ <div  id="table2"  style="font-size:90%"  class="data_table_container dtable btable"> </div>
+		
+		
 		</div>
 	</div>
 </div>

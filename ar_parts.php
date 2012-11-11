@@ -411,43 +411,8 @@ include_once('class.Category.php');
 	else
 		$filter_msg='';
 
+$period_tag=get_interval_db_name($period);
 
-	if ($period=='all') {
-		$period_tag='Total';
-	}
-	elseif ($period=='three_year') {
-		$period_tag='3 Year';
-	}
-	elseif ($period=='year') {
-		$period_tag='1 Year';
-	}
-	elseif ($period=='yeartoday') {
-		$period_tag='Year To Day';
-	}
-	elseif ($period=='six_month') {
-		$period_tag='6 Month';
-	}
-	elseif ($period=='quarter') {
-		$period_tag='1 Quarter';
-	}
-	elseif ($period=='month') {
-		$period_tag='1 Month';
-	}
-	elseif ($period=='ten_day') {
-		$period_tag='10 Day';
-	}
-	elseif ($period=='week') {
-		$period_tag='1 Week';
-	}
-	elseif ($period=='monthtoday') {
-		$period_tag='Month To Day';
-	}
-	elseif ($period=='weektoday') {
-		$period_tag='Week To Day';
-	}
-	elseif ($period=='today') {
-		$period_tag='Today';
-	}
 
 
 	$_order=$order;
@@ -1252,47 +1217,45 @@ function warehouse_part_stock_history() {
 	$wheref='';
 
 
-
+$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
 
 	switch ($type) {
 	case 'month':
-		$group=' group by DATE_FORMAT(`Date`,"%Y%m")   ';
+		$where.=' and LAST_DAY(`Date`)=`Date`   ';
 		break;
 	case 'day':
-		$group=' group by `Date`   ';
+		$where.='  ';
 		break;
 	default:
-		$group=' group by YEARWEEK(`Date`)   ';
+		$where.=' and DAYOFWEEK(`Date`)=1   ';
 		break;
 	}
 
 
 
-
-	$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
-
-
-	$sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref $group";
+	$sql=sprintf("select count(*) as total from `Inventory Warehouse Spanshot Fact` $where" );
 	//print $sql;
+	$total=0;
 	$result=mysql_query($sql);
-	$total=mysql_num_rows($result);
-
-
-
-
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	mysql_free_result($result);
 
 	if ($wheref=='') {
 		$filtered=0;
 		$total_records=$total;
 	} else {
-		$sql="select count(*) as total from `Inventory Spanshot Fact`   $where  $group";
-
-
-
-		$total_records=$result;
-		$filtered=$total_records-$total;
+		$sql="select count(*) as total from `Inventory Warehouse Spanshot Fact` $where  $wheref ";
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$total_records=$row['total'];
+			$filtered=$total_records-$total;
+		}
+		mysql_free_result($result);
 
 	}
+	
 
 
 
@@ -1326,12 +1289,10 @@ function warehouse_part_stock_history() {
 
 	$order='`Date`';
 
-	$sql=sprintf("select  count(DISTINCT `Part SKU`) as parts,`Date`, count(DISTINCT `Location Key`) as locations,`Date`, ( select  sum(`Value Commercial`) from `Inventory Spanshot Fact` OISF where `Warehouse Key`=%d and OISF.`Date`=ISF.`Date`  )as `Value Commercial`, ( select  sum(`Value At Day Cost`) from `Inventory Spanshot Fact` OISF where `Warehouse Key`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Day Cost`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Warehouse Key`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Storing Cost`) as `Storing Cost`  from `Inventory Spanshot Fact` ISF   $where $wheref   %s order by $order $order_direction  limit $start_from,$number_results "
+	$sql=sprintf("select * from `Inventory Warehouse Spanshot Fact`   $where $wheref    order by $order $order_direction  limit $start_from,$number_results "
 		
-		,$parent_key
-		,$parent_key
-		,$parent_key
-		,$group
+	
+		
 	);
 
 	//print $sql;
@@ -1356,8 +1317,8 @@ function warehouse_part_stock_history() {
 		$adata[]=array(
 
 			'date'=>$date,
-					'locations'=>number($data['locations']),
-'parts'=>number($data['parts']),
+					'locations'=>number($data['Locations']),
+'parts'=>number($data['Parts']),
 			'value'=>money($data['Value At Cost']),
 			'end_day_value'=>money($data['Value At Day Cost']),
 			'commercial_value'=>money($data['Value Commercial'])
@@ -2143,11 +2104,13 @@ function list_part_categories() {
 		}
 
 		$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+		$label=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
 
 
 		$adata[]=array(
 			'id'=>$row['Category Key'],
 			'name'=>$name,
+			'label'=>$label,
 			'subjects'=>number($row['Category Number Subjects']),
 			'sold'=>number($sold,0),
 			'sales'=>money($amount,$corporate_currency)
@@ -2176,6 +2139,9 @@ function list_part_categories() {
 	);
 	echo json_encode($response);
 }
+
+
+
 
 
 function number_warehouse_transactions_in_interval($data) {

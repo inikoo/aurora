@@ -200,3 +200,12 @@ $smarty->assign('js_files',$js_files);
 //print $template;
 $smarty->display($template);
 ?>
+
+
+
+
+
+
+
+
+

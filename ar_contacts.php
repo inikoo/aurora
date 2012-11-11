@@ -6216,7 +6216,7 @@ function pending_post() {
 	}
 
 
-	$conf=$_SESSION['state']['store']['pending_post'];
+	$conf=$_SESSION['state']['customers']['pending_post'];
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -6265,13 +6265,13 @@ function pending_post() {
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$_SESSION['state']['store']['pending_post']['elements']=$elements;
-	$_SESSION['state']['store']['pending_post']['order']=$order;
-	$_SESSION['state']['store']['pending_post']['order_dir']=$order_direction;
-	$_SESSION['state']['store']['pending_post']['nr']=$number_results;
-	$_SESSION['state']['store']['pending_post']['sf']=$start_from;
-	$_SESSION['state']['store']['pending_post']['f_field']=$f_field;
-	$_SESSION['state']['store']['pending_post']['f_value']=$f_value;
+	$_SESSION['state']['customers']['pending_post']['elements']=$elements;
+	$_SESSION['state']['customers']['pending_post']['order']=$order;
+	$_SESSION['state']['customers']['pending_post']['order_dir']=$order_direction;
+	$_SESSION['state']['customers']['pending_post']['nr']=$number_results;
+	$_SESSION['state']['customers']['pending_post']['sf']=$start_from;
+	$_SESSION['state']['customers']['pending_post']['f_field']=$f_field;
+	$_SESSION['state']['customers']['pending_post']['f_value']=$f_value;
 
 	$where=sprintf('where `Customer Store Key`=%d ',$parent_key);
 	$table='`Customer Send Post` CSP left join  `Customer Dimension` C  on (CSP.`Customer Key`=C.`Customer Key`) ';

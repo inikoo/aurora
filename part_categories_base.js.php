@@ -113,13 +113,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				
-				    {key:"name", label:"<?php echo _('Name')?>", width:360,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //	,{key:"subjects", label:"<?php echo _('Customers')?>", width:260,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    {key:"name", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"label", label:"<?php echo _('Label')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"children", label:"<?php echo _('Subcategories')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"subjects", label:"<?php echo _('Parts')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+					,{key:"percentage_assigned", label:"<?php echo _('Assigned')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				
 				     ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_parts.php?tipo=part_categories&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_categories.php?tipo=main_categories&parent=part_categories&tableid=1");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -136,14 +140,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			"name","subjects"
+			"name","label","children","subjects","percentage_assigned"
 			 ]};
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 						     this.dataSource1, {
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['part_categories']['subcategories']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage:<?php echo$_SESSION['state']['part_categories']['main_categories']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -153,8 +157,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['part_categories']['subcategories']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['part_categories']['subcategories']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['part_categories']['main_categories']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['part_categories']['main_categories']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -166,8 +170,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    
-	    this.table1.view='<?php echo$_SESSION['state']['part_categories']['view']?>';
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['part_categories']['subcategories']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['subcategories']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['part_categories']['main_categories']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['main_categories']['f_value']?>'};
 
 		
 
@@ -181,7 +184,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
-	    
 	    this.dataSource2 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=base_part_category&parent_key="+Dom.get('warehouse_id').value+"&tableid=2");
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";

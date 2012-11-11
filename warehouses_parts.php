@@ -29,10 +29,12 @@ $js_files=array(
 		'js/common.js',
 		'js/table_common.js',
 		'js/search.js',
-		'parts.js.php',
+		
 		 'js/edit_common.js',
-		 'js/dropdown.js',
-		 'js/csv_common.js'
+		 'js/csv_common.js',
+		 	'js/parts_common.js'
+
+		 'warehouses_parts.js.php',
 		);
 
 if(!$user->can_view('parts')){

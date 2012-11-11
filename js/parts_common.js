@@ -1,3 +1,21 @@
+var  parts_period_ids=[
+ 'parts_period_all',
+  'parts_period_yeartoday',
+ 'parts_period_monthtoday',
+ 'parts_period_weektoday',
+ 'parts_period_today',
+ 'parts_period_yesterday',
+ 'parts_period_last_w',
+ 'parts_period_last_m',
+ 'parts_period_three_year',
+ 'parts_period_year',
+ 'parts_period_six_month',
+ 'parts_period_quarter',
+ 'parts_period_month',
+ 'parts_period_ten_day',
+ 'parts_period_week'
+ ];
+
 function change_parts_view(e,table_id){
       //alert(this.id)
         var tipo=this.getAttribute('name');
@@ -92,14 +110,8 @@ function change_parts_view(e,table_id){
 
 function change_parts_period(e,table_id){
     tipo=this.id;
- 
-  ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month',
-  'parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week',
-    'parts_period_monthtoday','parts_period_weektoday','parts_period_today'
 
-  ];
-
- Dom.removeClass(ids,"selected")
+ Dom.removeClass(parts_period_ids,"selected")
  Dom.addClass(this,"selected")
    
     var table=tables['table'+table_id];

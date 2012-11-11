@@ -5,11 +5,13 @@
 <div class="branch"> 
   <span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {t}Customers{/t}</span>
 </div>
-<div class="top_page_menu" style="display:none">
+<div class="top_page_menu" >
 <div class="buttons" style="float:right">
+<button style="display:none" onclick="window.location='customers_server_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+
 </div>
 <div class="buttons" style="float:left">
-<button  onclick="window.location='customers_server_stats.php'" ><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button>
+<span class="main_title">{t}Customers{/t} ({t}All Stores{/t})</span>
 </div>
 <div style="clear:both"></div>
 </div>
@@ -17,7 +19,7 @@
 
 
 <div style="padding:0px">
-<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
     <li> <span class="item {if $type=='contacts_with_orders'}selected{/if}"  id="contacts_with_orders">  <span> {t}Contacts with Orders{/t}</span></span></li>
     <li> <span class="item {if $type=='all_contacts'}selected{/if}"  id="all_contacts">  <span> {t}All Contacts{/t}</span></span></li>
 

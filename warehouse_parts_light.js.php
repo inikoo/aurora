@@ -129,8 +129,8 @@ window.location = "warehouse_parts.php?warehouse_id="+Dom.get('warehouse_key').v
   Event.addListener(ids, "click",change_parts_elements,2);
 var ids=['parts_general','parts_stock','parts_sales','parts_forecast','parts_locations'];
 YAHOO.util.Event.addListener(ids, "click",change_parts_view,2);
- ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week','parts_period_monthtoday','parts_period_weektoday','parts_period_today'];
- YAHOO.util.Event.addListener(ids, "click",change_parts_period,2);
+
+ YAHOO.util.Event.addListener(parts_period_ids, "click",change_parts_period,2);
  ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_parts_avg,2);
  

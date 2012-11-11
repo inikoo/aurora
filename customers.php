@@ -191,16 +191,16 @@ $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);
 
 $filter_menu=array(
-                 'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
-                 'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
-                 'country'=>array('db_key'=>_('country'),'menu_label'=>_('Customer Country'),'label'=>_('Country')),
+                 'customer name'=>array('db_key'=>'customer name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+                 'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+                 'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
 
-                 'min'=>array('db_key'=>_('min'),'menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
-                 'max'=>array('db_key'=>_('min'),'menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
-                 'last_more'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
-                 'last_less'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
-                 'maxvalue'=>array('db_key'=>_('maxvalue'),'menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
-                 'minvalue'=>array('db_key'=>_('minvalue'),'menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
+                 'min'=>array('db_key'=>'min','menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
+                 'max'=>array('db_key'=>'min','menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
+                 'last_more'=>array('db_key'=>'last_more','menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
+                 'last_less'=>array('db_key'=>'last_more','menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
+                 'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
+                 'minvalue'=>array('db_key'=>'minvalue','menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
              );
 
 
@@ -209,102 +209,57 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
+
+
+$tipo_filter1=$_SESSION['state']['customers']['pending_orders']['f_field'];
+$smarty->assign('filter1',$tipo_filter1);
+$smarty->assign('filter_value1',($_SESSION['state']['customers']['pending_orders']['f_value']));
+$filter_menu1=array(
+	'public_id'=>array('db_key'=>'public_id','menu_label'=>_('Order Number starting with <i>x</i>'),'label'=>_('Order Number')),
+);
+$smarty->assign('filter_menu1',$filter_menu1);
+$smarty->assign('filter_name1',$filter_menu1[$tipo_filter1]['label']);
+$paginator_menu1=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu1);
+
+
+$elements_number=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
+$sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Store Key`=%d  group by `Order Current Dispatch State` ",$store_id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[preg_replace('/\s/','',$row['Order Current Dispatch State'])]=$row['num'];
+}
+
+$sql=sprintf("select count(*) as num  from  `Order Dimension` where  `Order Store Key`=%d  and `Order Current Dispatch State` in ('Ready to Pick','Picking & Packing','Ready to Ship') ",$store_id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number['InWarehouse']=$row['num'];
+}
+
+
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['customers']['pending_orders']['elements']);
+
+
+
+$elements_number=array('Send'=>0,'ToSend'=>0);
+$sql=sprintf("select count(*) as num,`Send Post Status` from  `Customer Send Post` group by `Send Post Status`");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+$_key=preg_replace('/ /','',$row['Send Post Status']);
+
+   if(in_array($_key,array('Send','ToSend')))
+	$elements_number[$_key]=$row['num'];
+}
+
+//print_r($elements_number);
+$smarty->assign('pending_post_elements_number',$elements_number);
+$smarty->assign('pending_post_elements',$_SESSION['state']['customers']['pending_post']['elements']);
+
+
 $smarty->assign('block_view',$_SESSION['state']['customers']['block_view']);
 
 
-// $smarty->assign('export_text',$export_text);
-// $smarty->assign('table_info',$total_customers.'  '.ngettext('identified customer','identified customers',$total_customers));
-
-
-
-$csv_export_options=array(
-                        'description'=>array(
-                                          'title'=>_('Description'),
-                                          'rows'=>
-                                                 array(
-                                                     array(
-                                                         'id'=>array('label'=>_('Id'),'selected'=>$_SESSION['state']['customers']['table']['csv_export']['id']),
-                                                         'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['customers']['table']['csv_export']['name']),
-                                                         'location'=>array('label'=>_('Location'),'selected'=>$_SESSION['state']['customers']['table']['csv_export']['location']),
-
-
-                                                     )
-                                                 )
-                                      ),
-                        'orders'=>array(
-                                     'title'=>_('Orders'),
-                                     'rows'=>
-                                            array(
-                                                array(
-                                                    'last_orders'=>array('label'=>_('Last Orders'),'selected'=>$_SESSION['state']['customers']['table']['csv_export']['last_orders']),
-                                                    'orders'=>array('label'=>_('Orders'),'selected'=>$_SESSION['state']['customers']['table']['csv_export']['orders']),
-                                                    'status'=>array('label'=>_('Status'),'selected'=>$_SESSION['state']['customers']['table']['csv_export']['status'])
-
-                                                )
-                                            )
-                                 )/*,
-                            'sales_all'=>array('title'=>_('Sales (All times)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['sales_all']),
-                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['profit_all']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            ),
-'sales_1y'=>array('title'=>_('Sales (1 Year)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['sales_1y']),
-                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['profit_1y']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            ),
-'sales_1q'=>array('title'=>_('Sales (1 Quarter)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['sales_1q']),
-                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['profit_1q']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            ),
-'sales_1m'=>array('title'=>_('Sales (1 Month)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['sales_1m']),
-                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['profit_1m']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            ),
-                            'sales_1w'=>array('title'=>_('Sales (1 Week)'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['sales_1w']),
-                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['profit_1w']),
-                                                        array('label'=>''),
-                                                             array('label'=>''),
-                                                   )
-                            )
-                            )*/
-                    );
-$smarty->assign('export_csv_table_cols',2);
-
-
-$smarty->assign('csv_export_options',$csv_export_options);
-//print_r($_SESSION['state']['customers']);
-$smarty->assign('options_box_width','600px');
 
 
 
@@ -328,13 +283,16 @@ $smarty->assign('elements_number_contacts_with_orders',$elements_number_contacts
 $smarty->assign('elements_contacts_with_orders',$_SESSION['state']['customers']['table']['elements']['contacts_with_orders']);
 
 
-$tipo_filter=$_SESSION['state']['customers']['users']['f_field'];
+
+$tipo_filter=$_SESSION['state']['customers']['pending_post']['f_field'];
 
 $smarty->assign('filter2',$tipo_filter);
-$smarty->assign('filter_value2',$_SESSION['state']['customers']['users']['f_value']);
+$smarty->assign('filter_value2',$_SESSION['state']['customers']['pending_post']['f_value']);
 $filter_menu=array(
-	// 'alias'=>array('db_key'=>'alias','menu_label'=>'Alias like  <i>x</i>','label'=>'Alias'),
-	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>_('Customer Name like <i>x</i>'),'label'=>_('Name')),
+	               'name'=>array('db_key'=>'name','menu_label'=>_('Customer Name'),'label'=>_('Name')),
+                 'postcode'=>array('db_key'=>'postcode','menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+                 'country'=>array('db_key'=>'country','menu_label'=>_('Customer Country'),'label'=>_('Country')),
+
 );
 $smarty->assign('filter_menu2',$filter_menu);
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
