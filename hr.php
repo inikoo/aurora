@@ -67,59 +67,58 @@ $tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['hr']['staff']['f_value']);
 $filter_menu=array(
+                 'name'=>array('db_key'=>'staff.alias','menu_label'=>_('Staff Name').' <i>*x*</i>','label'=>_('Name')),
+                 'id'=>array('db_key'=>'staff_id','menu_label'=>_('Staff ID'),'label'=>_('Staff ID')),
+                 'alias'=>array('db_key'=>'alias','menu_label'=>_('Alias'),'label'=>_('Alias')),
+             );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['hr']['areas']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['hr']['areas']['f_value']);
+$filter_menu=array(
+                'name'=>array('db_key'=>'staff.alias','menu_label'=>_('Area Name'),'label'=>_('Name')),
+                 'code'=>array('db_key'=>'alias','menu_label'=>_('Area Code'),'label'=>_('Code')),
+             );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['hr']['departments']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['hr']['departments']['f_value']);
+$filter_menu=array(
                  'name'=>array('db_key'=>'staff.alias','menu_label'=>'Staff name <i>*x*</i>','label'=>'Name'),
                  'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
                  'area_id'=>array('db_key'=>'area_id','menu_label'=>'Area Id','label'=>'Area Id'),
              );
-$smarty->assign('filter_menu0',$filter_menu);
-
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-
-
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
+$smarty->assign('paginator_menu2',$paginator_menu);
 
-
-
-/*
-$csv_export_options=array(
-                        'description'=>array(
-                                          'title'=>_('Description'),
-                                          'rows'=>
-                                                 array(
-                                                     array(
-                                                         'id'=>array('label'=>_('Id'),'selected'=>$_SESSION['state']['staff']['table']['csv_export']['id']),
-                                                         'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['staff']['table']['csv_export']['name']),
-                                                         'alias'=>array('label'=>_('Alias'),'selected'=>$_SESSION['state']['staff']['table']['csv_export']['alias']),
-                                                         'position'=>array('label'=>_('Position'),'selected'=>$_SESSION['state']['staff']['table']['csv_export']['position']),
-
-
-                                                     )
-                                                 )
-                                      ),
-
-
-                        'Other Details'=>array(
-                                            'title'=>_('Other Details'),
-                                            'rows'=>
-                                                   array(
-                                                       array(
-                                                           'valid_from'=>array('label'=>_('Valid From'),'selected'=>$_SESSION['state']['staff']['table']['csv_export']['valid_from']),
-                                                           'valid_to'=>array('label'=>_('Valid To'),'selected'=>$_SESSION['state']['staff']['table']['csv_export']['valid_to']),
-                                                           'description'=>array('label'=>_('Position Description'),'selected'=>$_SESSION['state']['staff']['table']['csv_export']['description']),
-
-
-
-                                                       )
-                                                   )
-                                        )
-                    );
+$tipo_filter=$_SESSION['state']['hr']['positions']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['hr']['positions']['f_value']);
+$filter_menu=array(
+                 'name'=>array('db_key'=>'staff.alias','menu_label'=>'Staff name <i>*x*</i>','label'=>'Name'),
+                 'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
+                 'area_id'=>array('db_key'=>'area_id','menu_label'=>'Area Id','label'=>'Area Id'),
+             );
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
 
 
 
 
-$smarty->assign('csv_export_options',$csv_export_options);
-*/
+
+
 $smarty->assign('csv_export_options','');
 $smarty->assign('export_csv_table_cols',2);
 $smarty->assign('search_label',_('Staff'));

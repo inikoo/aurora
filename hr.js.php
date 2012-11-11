@@ -10,7 +10,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
 				       {key:"id", label:"<?php echo _('Id')?>",  width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				        ,{key:"alias", label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				        ,{key:"alias", label:"<?php echo _('Alias')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"position", label:"<?php echo _('Position')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //  ,{key:"area", label:"<?php echo _('Area')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -96,18 +96,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['company_areas']['table']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['hr']['areas']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['company_areas']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['company_areas']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['hr']['areas']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['hr']['areas']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -123,7 +123,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
      this.table1.subscribe("renderEvent", myrenderEvent);
 		    
 	    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['company_areas']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['company_areas']['table']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['hr']['areas']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['areas']['f_value']?>'};
 
 
 	

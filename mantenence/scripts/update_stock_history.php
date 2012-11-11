@@ -9,6 +9,7 @@ include_once '../../class.SupplierProduct.php';
 include_once '../../class.PartLocation.php';
 include_once '../../class.User.php';
 include_once '../../class.InventoryAudit.php';
+include_once '../../class.Warehouse.php';
 
 error_reporting(E_ALL);
 error_reporting(E_ALL);
@@ -43,17 +44,19 @@ $to=date("Y-m-d",strtotime('now -1 day'));
 //$from=date("Y-m-d");
 //$to='2007-12-31';
 
+
+$warehouse=new Warehouse(1);
+
 $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date` desc",
 	prepare_mysql($from),prepare_mysql($to));
 $res=mysql_query($sql);
 
 while ($row=mysql_fetch_array($res)) {
-	//print $row['Date']."\r";
 	//$where=' `Part SKU`=1629';
+	
+	/*
 	$where='  true';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
-
-	//print $sql;
 	$res2=mysql_query($sql);
 	$count=0;
 	while ($row2=mysql_fetch_array($res2)) {
@@ -62,7 +65,7 @@ while ($row=mysql_fetch_array($res)) {
 			$row2['Part SKU'],
 			prepare_mysql($row['Date'])
 		);
-	
+
 		$result=mysql_query($sql);
 		$_locations=array();
 		while ($row3=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -75,18 +78,21 @@ while ($row=mysql_fetch_array($res)) {
 
 			$part_location=new PartLocation($row2['Part SKU'].'_'.$row3['Location Key']);
 
-			
+
 
 			$part_location->update_stock_history_date($row['Date']);
-			
+
 			print $row['Date'].' '.$row2['Part SKU'].'_'.$row3['Location Key']."\r";
-			
+
 		}
 
 
 
 	}
-
+	*/
+	
+	
+	$warehouse->update_inventory_snapshot($row['Date']);
 }
 
 

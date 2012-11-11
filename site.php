@@ -150,6 +150,8 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('table_type',$_SESSION['state']['site']['pages']['type']);
 $elements_number=array('FamilyCatalogue'=>0,'DepartmentCatalogue'=>0,'ProductDescription'=>0,'Other'=>0);
+
+
 $sql=sprintf("select count(*) as num,`Page Store Section` from  `Page Store Dimension` where `Page Site Key`=%d group by `Page Store Section`",$site->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {

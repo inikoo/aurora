@@ -87,7 +87,6 @@ $smarty->assign('filter_name0',$filter_menu2[$tipo_filter2]['label']);
 $paginator_menu0=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu0);
 
-//'In Process by Customer','In Process','Submitted by Customer','Ready to Pick','Picking & Packing','Packed','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','Suspended'
 
 $elements_number=array('InProcessbyCustomer'=>0,'InProcess'=>0,'SubmittedbyCustomer'=>0,'InWarehouse'=>0,'Packed'=>0);
 $sql=sprintf("select count(*) as num,`Order Current Dispatch State` from  `Order Dimension` where  `Order Store Key`=%d  group by `Order Current Dispatch State` ",$store_id);

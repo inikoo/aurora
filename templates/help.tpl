@@ -4,8 +4,7 @@
 <h1>{t}Help File{/t}</h1>
 <p style="width:440px">
 
-{$page}
-{$content}
+
 </p>
 </div>
 </div>

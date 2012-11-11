@@ -157,75 +157,159 @@ this.table0.table_id=tableid;
 
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
 
-/*
 
-  var tableid=2; // Change if you have more the 1 table
+
+   var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
+	    var OrdersColumnDefs = [
+				       {key:"public_id", label:"<?php echo _('Order ID')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				   
+				   {key:"date", label:"<?php echo _('Order Date')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				     {key:"status",label:"<?php echo _('Status')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       //{key:"weight", label:"<?php echo _('Weight')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       //{key:"picks", label:"<?php echo _('Picks')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      
+				      
+				      {key:"operations", label:"<?php echo _('Actions')?>", width:170,hidden:false,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      // {key:"see_link", label:"",sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 
-	 
-	   
-	    var ColumnDefs = [
-			
-			
-			     {key:"handle", label:"<?php echo _('Handle')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-               				 ,{key:"customer_name", label:"<?php echo _('Customer')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				];
 
-               ,{key:"last_request", label:"<?php echo _('Last Visit')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 ,{key:"sessions", label:"<?php echo _('Visits')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-							 ,{key:"requests", label:"<?php echo _('Views')?>",width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-			//,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				 //,{key:"telephone", label:"<?php echo _('Telephone')?>",width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-
-			     
-			     
-
-
-			
-			
-			];
-			       
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_users.php?tipo=customer_users&tableid=2&parent=store&parent_key="+Dom.get('store_id').value);
-	//	alert("ar_users.php?tipo=customer_users&tableid=0&parent=store&parent_key="+Dom.get('store_id').value)
-		//alert("ar_users.php?tipo=customer_users&tableid=0&store_key="+Dom.get('store_key').value);
-	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource2.connXhrMode = "queueRequests";
-	    this.dataSource2.responseSchema = {
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=store_pending_orders&tableid=1&parent_key="+Dom.get('store_key').value);
+		//alert("ar_edit_orders.php?tipo=ready_to_pick_orders");
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
+
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
-		
 		fields: [
-			 "id","last_request","name","sessions","requests","customer_name","customer_formated_id","handle"
+			 "id","public_id",
+			 "weight","picks",
+			 "customer",
+			 "date","picker","packer","status","operations","see_link","status"
+			
 			 ]};
 
-	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource2
-								 , {
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['customers']['users']['nr']?>,containers : 'paginator2', 
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
+						     this.dataSource1, {draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									       rowsPerPage    : <?php echo$_SESSION['state']['customers']['pending_orders']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+ 									      lastPageLinkLabel :">>"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['customers']['users']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['customers']['users']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['customers']['pending_orders']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customers']['pending_orders']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['customers']['pending_orders']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['pending_orders']['f_value']?>'};
+
+	    
+	    this.table1.table_id=tableid;
+     this.table1.subscribe("renderEvent", myrenderEvent);
+
+	
+	
+	
+	    var tableid=2; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+	
+		    var CustomersColumnDefs = [ 
+					{key:"key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				       ,{key:"id", label:"<?php echo _('Id')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:210,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       
+				      
+				       ,{key:"contact_name", label:"<?php echo _('Contact Name')?>",width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"address", label:"<?php echo _('Contact Address')?>", width:176,sortable:true,className:"aleft"}
+				      						  ,{key:"delete", label:"",sortable:false,width:16,sortable:false,action:'delete',object:'post_to_send'}
+				       ,{key:"mark_as_send", label:"",sortable:false, width:16,sortable:false,action:'edit',object:'post_to_send'}
+					];
+	
+request="ar_contacts.php?tipo=pending_post&parent=store&sf=0&tableid=2&parent_key="+Dom.get('store_key').value
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
+	  
+//alert(request)
+	  
+	  this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+            rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"		
+		},
+		
+		
+		fields: [
+			 'id','key',
+			 'name',
+			 'location',
+			 'orders',
+			 'email',
+			 'telephone',
+			 'last_order','activity',
+			 'total_payments','contact_name'
+			 ,"address"
+			 ,"billing_address","delivery_address"
+			 ,"total_paymants","total_refunds","net_balance","total_profit","balance","contact_since","delete","mark_as_send"
+			 ,"top_orders","top_invoices","top_balance","top_profits"
+			 ]};
+	    //__You shouls not change anything from here
+
+	    //this.dataSource.doBeforeCallback = mydoBeforeCallback;
+
+
+
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['customers']['pending_post']['nr']?>,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['customers']['pending_post']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customers']['pending_post']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -235,16 +319,16 @@ this.table0.table_id=tableid;
 	    
 	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table2.subscribe("cellClickEvent", this.table0.onEventShowCellEditor);
-
-
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['customers']['users']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['users']['f_value']?>'};
-	    //
+	this.table2.subscribe("cellClickEvent", onCellClick);  
+		    
+		    
+	    this.table2.view='<?php echo$_SESSION['state']['customers']['pending_post']['view']?>';
+
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['customers']['pending_post']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['pending_post']['f_value']?>'};
+
 	
-
-*/
-
+	
 	
 	};
     });
@@ -253,14 +337,14 @@ this.table0.table_id=tableid;
 function change_block_view(){
 
 
-//alert(this.id)
+
   Dom.setStyle(['table_type_contacts_with_orders','table_type_all_contacts'],'display','none');
-   // Dom.setStyle('overview_'+this.id,'display','');
+  
     Dom.setStyle('table_type_'+this.id,'display','');
 
-      Dom.setStyle(['customer_list','user_list','dashboard_block'],'display','none');
+      Dom.setStyle(['customer_list','user_list','dashboard_block','pending_orders_block','pending_post_block'],'display','none');
 
-    Dom.removeClass(['all_contacts','contacts_with_orders','users','dashboard'],'selected');
+    Dom.removeClass(['all_contacts','contacts_with_orders','users','dashboard','pending_orders','pending_post'],'selected');
  
   Dom.addClass(this.id,'selected');
 if(this.id=='dashboard'){
@@ -268,11 +352,15 @@ if(this.id=='dashboard'){
     Dom.setStyle('dashboard_block','display','');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
 
-}else if(this.id=='users'){
+}else if(this.id=='pending_orders'){
 
-    Dom.setStyle('user_list','display','');
+    Dom.setStyle('pending_orders_block','display','');
 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
 
+}else if(this.id=='pending_post'){
+
+    Dom.setStyle('pending_post_block','display','');
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-block_view&value='+this.id ,{});
 }else{
 
     Dom.setStyle('customer_list','display','');
@@ -380,7 +468,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
-var ids=['all_contacts','contacts_with_orders','users','dashboard'];
+var ids=['all_contacts','contacts_with_orders','pending_post','dashboard','pending_orders'];
 YAHOO.util.Event.addListener(ids, "click",change_block_view);
 
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);

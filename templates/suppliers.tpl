@@ -17,7 +17,7 @@
 		</div>
 	</div>
 	<div style="padding:0px">
-		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:15px">
 			<li> <span class="item {if $block_view=='suppliers'}selected{/if}" id="suppliers"> <span> {t}Suppliers{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='sproducts'}selected{/if}" id="sproducts"> <span> {t}Supplier Products{/t}</span></span></li>
 			<li> <span class="item {if $block_view=='porders'}selected{/if}" id="porders"> <span> {t}Purchase Orders{/t}</span></span></li>

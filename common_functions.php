@@ -770,11 +770,7 @@ function strleft($s1, $s2) {
 	return substr($s1, 0, strpos($s1, $s2));
 }
 
-function get_page() {
-	$url=explode("/", $_SERVER['REQUEST_URI']);
-	$url=array_reverse($url);
-	return $url[0];
-}
+
 /**
  *
  *
@@ -4074,6 +4070,7 @@ function get_interval_db_name($interval) {
 
 	case 'Week To Day':
 	case 'wtd':
+	case 'weektoday':
 		$db_interval='Week To Day';
 
 		break;
@@ -4086,6 +4083,8 @@ function get_interval_db_name($interval) {
 
 	case 'Month To Day':
 	case 'mtd':
+	case 'monthtoday':
+	
 		$db_interval='Month To Day';
 
 		break;

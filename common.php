@@ -313,14 +313,9 @@ if(!$is_root_available){
    exit;
 }
 */
-$export_data=array(
-                 'xls'=>array('label'=>_('Export as xls'),'title'=>'Excel 2005 (xls)'),
-                 'xlsx'=>array('label'=>_('Export as xlsx'),'title'=>'Excel 2007 (xlsx)'),
-                 'csv'=>array('label'=>_('Export as csv'),'title'=>_('Comma separated values (vsv)')),
-                 'pdf'=>array('label'=>_('Export as pdf'),'title'=>'PDF')
-             );
 
-$smarty->assign('page_name',get_page());
+$_tmp=explode("/", $_SERVER['PHP_SELF']);
+$smarty->assign('page_name',preg_replace('/\..*+/','',array_pop($_tmp)));
 
 
 $smarty->assign('analyticstracking',( file_exists('templates/analyticstracking.tpl')?true:false));
