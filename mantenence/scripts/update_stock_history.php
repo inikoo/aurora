@@ -36,7 +36,7 @@ date_default_timezone_set('UTC');
 $corporate_currency='GBP';
 
 
-$from=date("Y-m-d",strtotime('now -3500 day'));
+$from=date("Y-m-d",strtotime('now -6 day'));
 //$from=date("Y-m-d");
 $to=date("Y-m-d",strtotime('now -1 day'));
 
@@ -54,7 +54,7 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 	//$where=' `Part SKU`=1629';
 	
-	/*
+
 	$where='  true';
 	$sql=sprintf('select `Part SKU` from `Part Dimension` where %s     ',$where);
 	$res2=mysql_query($sql);
@@ -89,7 +89,7 @@ while ($row=mysql_fetch_array($res)) {
 
 
 	}
-	*/
+
 	
 	
 	$warehouse->update_inventory_snapshot($row['Date']);
