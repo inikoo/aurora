@@ -1314,11 +1314,23 @@ $where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql'
 			$date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
 			break;
 		}
+		
+		$date=sprintf('<a href="stock_history_parts.php?warehouse_id=%d&date=%s">%s</a>',
+		$parent_key,
+		$data['Date'],
+		$date
+		);
+		$parts=sprintf('<a href="stock_history_parts.php?warehouse_id=%d&date=%s">%s</a>',
+		$parent_key,
+		$data['Date'],
+		number($data['Parts'])
+		);
+		
 		$adata[]=array(
 
 			'date'=>$date,
 					'locations'=>number($data['Locations']),
-'parts'=>number($data['Parts']),
+'parts'=>$parts,
 			'value'=>money($data['Value At Cost']),
 			'end_day_value'=>money($data['Value At Day Cost']),
 			'commercial_value'=>money($data['Value Commercial'])

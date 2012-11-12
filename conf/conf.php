@@ -1530,54 +1530,42 @@ $default_state=array(
 
 
 	),
-	'warehouse_stock_history'=>array(
+	'stock_history'=>array(
+		
+		'block_view'=>'parts',
+	
+		'parts'=>array(
+			'order'=>'sku',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>20,
+			'view'=>'general',
+			'where'=>'where true',
+			'f_field'=>'used_in',
+			'period'=>'year',
+			'mode'=>'all',
+			'avg'=>'totals',
+			'percentage'=>false,
+			'f_value'=>'',
+			'elements'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>0,'NotKeeping'=>0),
 
 
-		'plot'=>'part_stock_history',
-		'plot_interval'=>array(
-			'y'=>array('plot_bins'=>5,'plot_forecast_bins'=>3),
-			'd'=>array('plot_bins'=>30,'plot_forecast_bins'=>5),
-			'q'=>array('plot_bins'=>12,
-				'plot_forecast_bins'=>3),
-			'm'=>array('plot_bins'=>18,
-				'plot_forecast_bins'=>3),
-			'w'=>array('plot_bins'=>26,
-				'plot_forecast_bins'=>3),
 		),
-		'plot_period'=>'m',
-		'plot_category'=>'stock',
-
-
-
-		'table'=>array(
+	
+		'transactions'=>array(
 			'order'=>'date',
 			'order_dir'=>'desc',
 			'sf'=>0,
 			'nr'=>15,
-			'type'=>'week',
 			'where'=>'where true',
-			'f_field'=>'author',
+			'f_field'=>'note',
 			'f_value'=>'',
 			'f_show'=>false,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>array()
-		),
-
-		'plot_data'=>array('part_stock_history'=>array(
-				'label'=>_('Product Sales')
-				,'page'=>'plot.php'
-			),
-
-			'part_out'=>array(
-				'label'=>_('Stock History')
-				,'parts'=>'plot.php'
-			)
-		),
-
-
-
-
+			'elements'=>array(),
+			'view'=>'all_transactions'
+		)
 
 
 	),
