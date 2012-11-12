@@ -1361,7 +1361,7 @@ class DeliveryNote extends DB_Table {
 				$order->set_order_as_dispatched($data['Delivery Note Date']);
 			}
 
-$order->update_xhtml_delivery_notes();
+			$order->update_xhtml_delivery_notes();
 		}
 	}
 
@@ -1425,7 +1425,7 @@ $order->update_xhtml_delivery_notes();
 
 		// print "Dispatching\n";
 
-		
+
 
 
 	}
@@ -2297,8 +2297,8 @@ $order->update_xhtml_delivery_notes();
 		);
 		mysql_query($sql);
 
-$sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="Packed Done"  where `Delivery Note Key`=%d and `Current Dispatching State`="Packed"'
-		
+		$sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="Packed Done"  where `Delivery Note Key`=%d and `Current Dispatching State`="Packed"'
+
 			,$this->id
 		);
 		mysql_query($sql);
@@ -2339,8 +2339,8 @@ $sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="P
 		);
 		mysql_query($sql);
 
-$sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="Ready to Ship"  where `Delivery Note Key`=%d and `Current Dispatching State`="Packed Done"'
-		
+		$sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="Ready to Ship"  where `Delivery Note Key`=%d and `Current Dispatching State`="Packed Done"'
+
 			,$this->id
 		);
 		mysql_query($sql);
@@ -2439,14 +2439,41 @@ $sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="R
 	}
 
 
+function get_transaction_value($sku,$qty,$date=false){
 
+return 0;
+
+$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
+				,prepare_mysql($date)
+				,$sku
+
+			);
+			$res_old_stock=mysql_query($sql);
+			//print "$sql\n";
+			$old_qty=0;
+			$old_value=0;
+
+			if ($row_old_stock=mysql_fetch_array($res_old_stock)) {
+				$old_qty=round($row_old_stock['stock'],3);
+				$old_value=$row_old_stock['value'];
+			}
+			$transaction_value=$this->get_value_change($sku,-1*$qty,$old_qty,$old_value,$date);
+
+return $transaction_value;
+
+}
 
 
 
 	function set_as_picked($itf_key,$qty,$date=false,$picker_key=false) {
-		if (!$date)
+	
+	$historic=true;
+	
+		if (!$date){
 			$date=gmdate("Y-m-d H:i:s");
-		$this->updated=false;
+			$false=true;	
+		}	
+		$this->historic=false;
 
 		if (!$picker_key) {
 			$picker_key=$this->data['Delivery Note Assigned Picker Key'];
@@ -2480,31 +2507,23 @@ $sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="R
 
 
 			$sku=$row['Part SKU'];
-		
-		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
-			,prepare_mysql($date)
-			,$sku
-		
-		);
-		$res_old_stock=mysql_query($sql);
-		//print "$sql\n";
-		$old_qty=0;
-		$old_value=0;
 
-		if ($row_old_stock=mysql_fetch_array($res_old_stock)) {
-			$old_qty=round($row_old_stock['stock'],3);
-			$old_value=$row_old_stock['value'];
-		}
+
 
 			
-		$cost_storing=0;
-        $transaction_value=$this->get_value_change($sku,-1*$qty,$old_qty,$old_value,$date);
 			
+			
+			$transaction_value=$this->get_transaction_value($sku,$qty,($historic?$date:false));
+			
+
+			$cost_storing=0;
+			
+
 			//****
-				//transaction value
-			
+			//transaction value
+
 			//****
-			
+
 			//$cost_supplier=ge        $part->get_unit_cost($date)*$qty;
 
 			$sql=sprintf('select `Product Key` from `Order Transaction Fact` where `Order Transaction Fact Key`=%d  '
@@ -2880,9 +2899,9 @@ $sql=sprintf('update `Order transaction Fact` set `Current Dispatching State`="R
 
 			$tax_code=$order->data['Order Tax Code'];
 			$order_ids=$order->id.',';
-		
+
 		}
-$orders_ids=preg_replace('/\,$/','',$order_ids);
+		$orders_ids=preg_replace('/\,$/','',$order_ids);
 
 		$data_invoice=array(
 			'Invoice Date'=>$date,
