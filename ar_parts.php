@@ -24,7 +24,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('parts_at_date'):
+	list_parts_at_date();
+	break;
 case('number_warehouse_element_transactions_in_interval'):
 	$data=prepare_values($_REQUEST,array(
 			'warehouse_key'=>array('type'=>'key'),
@@ -78,8 +80,8 @@ case('part_categories'):
 	list_part_categories();
 	break;
 case('warehouse_parts_stock_history'):
-warehouse_part_stock_history();
-break;
+	warehouse_part_stock_history();
+	break;
 default:
 
 	$response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -272,7 +274,7 @@ function list_parts() {
 	}
 	elseif ($parent=='category') {
 
-include_once('class.Category.php');
+		include_once 'class.Category.php';
 
 		$category=new Category($parent_key);
 
@@ -411,7 +413,7 @@ include_once('class.Category.php');
 	else
 		$filter_msg='';
 
-$period_tag=get_interval_db_name($period);
+	$period_tag=get_interval_db_name($period);
 
 
 
@@ -588,6 +590,285 @@ $period_tag=get_interval_db_name($period);
 			'outstock_days'=>$outstock_days,
 			'unknown_days'=>$unknown_days,
 			'gmroi'=>$gmroi
+		);
+	}
+	/*
+        $total_title=_('Total');
+
+        $adata[]=array(
+
+                     'sku'=>$total_title,
+                 );
+
+        $total_records=ceil($total_records/$number_results)+$total_records;
+    */
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
+
+function list_parts_at_date() {
+	global $user,$corporate_currency;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		return;
+	}
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		return;
+	}
+	if (isset( $_REQUEST['date']))
+		$date=$_REQUEST['date'];
+	else {
+		return;
+	}
+	$conf=$_SESSION['state']['stock_history']['parts'];
+
+
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (!is_numeric($start_from))
+		$start_from=0;
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+
+	} else
+		$number_results=$conf['nr'];
+
+
+
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+	$_SESSION['state']['stock_history']['parts']['order']=$order;
+	$_SESSION['state']['stock_history']['parts']['order_dir']=$order_direction;
+	$_SESSION['state']['stock_history']['parts']['nr']=$number_results;
+	$_SESSION['state']['stock_history']['parts']['sf']=$start_from;
+	$_SESSION['state']['stock_history']['parts']['f_field']=$f_field;
+	$_SESSION['state']['stock_history']['parts']['f_value']=$f_value;
+
+
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+
+
+
+	$where=sprintf("where `Warehouse key`=%d and `Date`=%s  ",$parent_key,prepare_mysql($date));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='used_in' and $f_value!='')
+		$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='description' and $f_value!='')
+		$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='supplied_by' and $f_value!='')
+		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='sku' and $f_value!='')
+		$wheref.=" and  ISF.`Part SKU` ='".addslashes($f_value)."'";
+
+	$sql="select count(Distinct P.`Part SKU`) as total from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref";
+
+
+	//print $sql;
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+
+
+		$sql="select count(Distinct P.`Part SKU`) as total from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref";
+
+
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	}
+
+	//print $sql;
+
+
+	$rtext=$total_records." ".ngettext('part','parts',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' '._('(Showing all)');
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with ")." <b>".sprintf("SKU%05d",$f_value)."*</b> ";
+			break;
+
+		case('used_in'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
+			break;
+		case('suppiled_by'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part supplied by ")." <b>".$f_value."*</b> ";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part with description like ")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+
+
+		switch ($f_field) {
+		case('sku'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with')." <b>".sprintf("SKU%05d",$f_value)."*</b>";
+			break;
+
+		case('used_in'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
+			break;
+		case('supplied_by'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts supplied by')." <b>".$f_value."*</b>";
+			break;
+		case('description'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts with description like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+
+	$_order=$order;
+	$_order_dir=$order_dir;
+
+	if ($order=='stock')
+		$order='`Part Current Stock`';
+	elseif ($order=='sku')
+		$order='ISF.`Part SKU`';
+	elseif ($order=='description')
+		$order='`Part Unit Description`';
+	elseif ($order=='locations')
+		$order='locations';
+	elseif ($order=='stock')
+		$order='stock';
+	elseif($order=='value_at_cost')
+		$order='value_at_cost';
+	elseif ($order=='value_at_end_day')
+		$order='value_at_end_day';
+	elseif ($order=='commercial_value')
+		$order='commercial_value';	
+	else {
+
+		$order='`Part SKU`';
+	}
+
+
+
+	$group='';
+
+
+	$sql="select ISF.`Part SKU`,count(DISTINCT `Location Key`) as locations,`Part Unit Description`,`Part XHTML Currently Used In`,sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value At Day Cost`) as value_at_end_day,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by $order $order_direction limit $start_from,$number_results  ";
+
+	$adata=array();
+	$result=mysql_query($sql);
+
+	//print $sql;
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+	
+
+		$locations='';
+
+		$adata[]=array(
+			'locations'=>number($data['locations']),
+			'sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
+			'description'=>$data['Part Unit Description'],
+			'description_small'=>$data['Part Unit Description'].'<br/>'.$data['Part XHTML Currently Used In'],
+			'stock'=>sprintf('<span title="%s: %s">%s</span>',_('Open Value'),number($data['stock_open']),number($data['stock'])),
+			'value_at_cost'=>money($data['value_at_cost'],$corporate_currency),
+			'value_at_end_day'=>money($data['value_at_end_day'],$corporate_currency),
+			'commercial_value'=>money($data['commercial_value'],$corporate_currency)
+
 		);
 	}
 	/*
@@ -883,9 +1164,9 @@ function part_stock_history() {
 
 	if (isset( $_REQUEST['parent_key']))
 		$part_sku=$_REQUEST['parent_key'];
-	else{
-exit();		
-}
+	else {
+		exit();
+	}
 
 	if (isset( $_REQUEST['elements']))
 		$elements=$_REQUEST['elements'];
@@ -1119,10 +1400,10 @@ function warehouse_part_stock_history() {
 
 	if (isset( $_REQUEST['parent_key']))
 		$parent_key=$_REQUEST['parent_key'];
-	else{
+	else {
 		exit("error no warehouyse key");
 	}
-		
+
 
 
 	if (isset( $_REQUEST['elements']))
@@ -1217,7 +1498,7 @@ function warehouse_part_stock_history() {
 	$wheref='';
 
 
-$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
+	$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
 
 	switch ($type) {
 	case 'month':
@@ -1255,7 +1536,7 @@ $where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql'
 		mysql_free_result($result);
 
 	}
-	
+
 
 
 
@@ -1290,9 +1571,9 @@ $where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql'
 	$order='`Date`';
 
 	$sql=sprintf("select * from `Inventory Warehouse Spanshot Fact`   $where $wheref    order by $order $order_direction  limit $start_from,$number_results "
-		
-	
-		
+
+
+
 	);
 
 	//print $sql;
@@ -1314,23 +1595,23 @@ $where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql'
 			$date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
 			break;
 		}
-		
+
 		$date=sprintf('<a href="stock_history_parts.php?warehouse_id=%d&date=%s">%s</a>',
-		$parent_key,
-		$data['Date'],
-		$date
+			$parent_key,
+			$data['Date'],
+			$date
 		);
 		$parts=sprintf('<a href="stock_history_parts.php?warehouse_id=%d&date=%s">%s</a>',
-		$parent_key,
-		$data['Date'],
-		number($data['Parts'])
+			$parent_key,
+			$data['Date'],
+			number($data['Parts'])
 		);
-		
+
 		$adata[]=array(
 
 			'date'=>$date,
-					'locations'=>number($data['Locations']),
-'parts'=>$parts,
+			'locations'=>number($data['Locations']),
+			'parts'=>$parts,
 			'value'=>money($data['Value At Cost']),
 			'end_day_value'=>money($data['Value At Day Cost']),
 			'commercial_value'=>money($data['Value Commercial'])
@@ -1608,7 +1889,7 @@ function part_transactions() {
 
 
 
-	$order=' `Date` desc , `Inventory Transaction Key` desc ';
+	$order=' `Date` desc  ';
 	$order_direction=' ';
 
 	if ($parent=='part') {
@@ -1651,13 +1932,13 @@ function part_transactions() {
 			break;
 		case 'Lost':
 			$transaction_type=_('Lost');
-			break;	
+			break;
 		case 'Broken':
 			$transaction_type=_('Broken');
 			break;
 		case 'Other Out':
 			$transaction_type=_('Out');
-			break;		
+			break;
 		default:
 			$transaction_type=$data['Inventory Transaction Type'];
 			break;
@@ -1934,107 +2215,20 @@ function list_part_categories() {
 
 	$_dir=$order_direction;
 	$_order=$order;
-
+$period_tag=get_interval_db_name($period);
 
 	if ($order=='subjects')
 		$order='`Category Number Subjects`';
 
 	elseif ($order=='sold') {
-
-
-		if ($period=='week')
-			$order='`Part Category 1 Week Acc Sold`';
-		elseif ($period=='ten_day')
-			$order='`Part Category 10 Day Acc Sold`';
-		elseif ($period=='month')
-			$order='`Part Category 1 Month Acc Sold`';
-		elseif ($period=='quarter')
-			$order='`Part Category 1 Quarter Acc Sold`';
-		elseif ($period=='six_month')
-			$order='`Part Category 6 Month Acc Sold`';
-		elseif ($period=='year')
-			$order='`Part Category 1 Year Acc Sold`';
-		elseif ($period=='three_year')
-			$order='`Part Category 3 Year Acc Sold`';
-		elseif ($period=='yesterday')
-			$order='`Part Category Yesterday Acc Sold`';
-		elseif ($period=='last_month')
-			$order='`Part Category Last Month Acc Sold`';
-		elseif ($period=='last_week')
-			$order='`Part Category Last Week Acc Sold`';
-		elseif ($period=='today')
-			$order='`Part Category Today Acc Sold`';
-		elseif ($period=='weektoday')
-			$order='`Part Category Week To Day Acc Sold`';
-		elseif ($period=='monthtoday')
-			$order='`Part Category Month To Day Acc Sold`';
-		elseif ($period=='yeartoday')
-			$order='`Part Category Year To Day Acc Sold`';
-		elseif ($period=='all')
-			$order='`Part Category Total Acc Sold`';
+$order='`Part Category '.$period_tag.' Acc Sold`';
 	}  elseif ($order=='profit') {
-		if ($period=='week')
-			$order='`Part Category 1 Week Acc Profit`';
-		elseif ($period=='ten_day')
-			$order='`Part Category 10 Day Acc Profit`';
-		elseif ($period=='month')
-			$order='`Part Category 1 Month Acc Profit`';
-		elseif ($period=='quarter')
-			$order='`Part Category 1 Quarter Acc Profit`';
-		elseif ($period=='six_month')
-			$order='`Part Category 6 Month Acc Profit`';
-		elseif ($period=='year')
-			$order='`Part Category 1 Year Acc Profit`';
-		elseif ($period=='three_year')
-			$order='`Part Category 3 Year Acc Profit`';
-		elseif ($period=='yesterday')
-			$order='`Part Category Yesterday Acc Profit`';
-		elseif ($period=='last_month')
-			$order='`Part Category Last Month Acc Profit`';
-		elseif ($period=='last_week')
-			$order='`Part Category Last Week Acc Profit`';
-		elseif ($period=='today')
-			$order='`Part Category Today Acc Profit`';
-		elseif ($period=='weektoday')
-			$order='`Part Category Week To Day Acc Profit`';
-		elseif ($period=='monthtoday')
-			$order='`Part Category Month To Day Acc Profit`';
-		elseif ($period=='yeartoday')
-			$order='`Part Category Year To Day Acc Profit`';
-		elseif ($period=='all')
-			$order='`Part Category Total Acc Profit`';
+$order='`Part Category '.$period_tag.' Acc Profit`';
 	}
 	elseif ($order=='sales') {
-		if ($period=='week')
-			$order='`Part Category 1 Week Acc Sold Amount`';
-		elseif ($period=='ten_day')
-			$order='`Part Category 10 Day Acc Sold Amount`';
-		elseif ($period=='month')
-			$order='`Part Category 1 Month Acc Sold Amount`';
-		elseif ($period=='quarter')
-			$order='`Part Category 1 Quarter Acc Sold Amount`';
-		elseif ($period=='six_month')
-			$order='`Part Category 6 Month Acc Sold Amount`';
-		elseif ($period=='year')
-			$order='`Part Category 1 Year Acc Sold Amount`';
-		elseif ($period=='three_year')
-			$order='`Part Category 3 Year Acc Sold Amount`';
-		elseif ($period=='yesterday')
-			$order='`Part Category Yesterday Acc Sold Amount`';
-		elseif ($period=='last_month')
-			$order='`Part Category Last Month Acc Sold Amount`';
-		elseif ($period=='last_week')
-			$order='`Part Category Last Week Acc Sold Amount`';
-		elseif ($period=='today')
-			$order='`Part Category Today Acc Sold Amount`';
-		elseif ($period=='weektoday')
-			$order='`Part Category Week To Day Acc Sold Amount`';
-		elseif ($period=='monthtoday')
-			$order='`Part Category Month To Day Acc Sold Amount`';
-		elseif ($period=='yeartoday')
-			$order='`Part Category Year To Day Acc Sold Amount`';
-		elseif ($period=='all')
-			$order='`Part Category Total Acc Sold Amount`';
+	$order='`Part Category '.$period_tag.' Acc Sold Amount`';
+
+
 
 	}
 	elseif ($order=='name')
@@ -2052,68 +2246,10 @@ function list_part_categories() {
 	// print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
+		$sold=$row['Part Category '.$period_tag.' Acc Sold'];
+		$amount=$row['Part Category '.$period_tag.' Acc Sold Amount'];
 
-		if ($period=='week') {
-			$sold=$row['Part Category 1 Week Acc Sold'];
-			$amount=$row['Part Category 1 Week Acc Sold Amount'];
 
-		}elseif ($period=='ten_day') {
-			$sold=$row['Part Category 10 Day Acc Sold'];
-			$amount=$row['Part Category 10 Day Acc Sold Amount'];
-
-		}elseif ($period=='month') {
-			$sold=$row['Part Category 1 Month Acc Sold'];
-			$amount=$row['Part Category 1 Month Acc Sold Amount'];
-
-		}elseif ($period=='quarter') {
-			$sold=$row['Part Category 1 Quarter Acc Sold'];
-			$amount=$row['Part Category 1 Quarter Acc Sold Amount'];
-
-		}elseif ($period=='six_month') {
-			$sold=$row['Part Category 6 Month Acc Sold'];
-			$amount=$row['Part Category 6 Month Acc Sold Amount'];
-
-		}elseif ($period=='year') {
-			$sold=$row['Part Category 1 Year Acc Sold'];
-			$amount=$row['Part Category 1 Year Acc Sold Amount'];
-
-		}elseif ($period=='three_year') {
-			$sold=$row['Part Category 3 Year Acc Sold'];
-			$amount=$row['Part Category 3 Year Acc Sold Amount'];
-
-		}elseif ($period=='yesterday') {
-			$sold=$row['Part Category Yesterday Acc Sold'];
-			$amount=$row['Part Category Yesterday Acc Sold Amount'];
-
-		}elseif ($period=='last_month') {
-			$sold=$row['Part Category Last Month Acc Sold'];
-			$amount=$row['Part Category Last Month Acc Sold Amount'];
-
-		}elseif ($period=='last_week') {
-			$sold=$row['Part Category Last Week Acc Sold'];
-			$amount=$row['Part Category Last Week Acc Sold Amount'];
-
-		}elseif ($period=='today') {
-			$sold=$row['Part Category Today Acc Sold'];
-			$amount=$row['Part Category Today Acc Sold Amount'];
-
-		}elseif ($period=='weektoday') {
-			$sold=$row['Part Category Week To Day Acc Sold'];
-			$amount=$row['Part Category Week To Day Acc Sold Amount'];
-
-		}elseif ($period=='monthtoday') {
-			$sold=$row['Part Category Month To Day Acc Sold'];
-			$amount=$row['Part Category Month To Day Acc Sold Amount'];
-
-		}elseif ($period=='yeartoday') {
-			$sold=$row['Part Category Year To Day Acc Sold'];
-			$amount=$row['Part Category Year To Day Acc Sold Amount'];
-
-		}elseif ($period=='all') {
-			$sold=$row['Part Category Total Acc Sold'];
-			$amount=$row['Part Category Total Acc Sold Amount'];
-
-		}
 
 		$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
 		$label=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);

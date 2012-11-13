@@ -14,20 +14,39 @@ include_once 'class.Warehouse.php';
 
 
 
+
 if (isset($_REQUEST['warehouse_id']) and is_numeric($_REQUEST['warehouse_id']) ) {
 	$warehouse_id=$_REQUEST['warehouse_id'];
 
 }else {
-	header('Location: index.php?error_no_warehouse_key');
+	header('Location: index.php?msg=error_no_warehouse_key');
 	exit;
 }
 
 
 $warehouse=new warehouse($warehouse_id);
+if (!$warehouse->id) {
+	header('Location: index.php?msg=error_warehouse_not_found');
+	exit;
+}
+
+
 if (!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ) {
 	header('Location: index.php');
 	exit;
 }
+
+if (isset($_REQUEST['date'])  ) {
+	$date=strtotime($_REQUEST['date']);
+
+}else {
+	header('Location: warehouse_parts.php?warehouse_id='.$warehouse->id.'&block_view=history&msg=wrong_date');
+	exit;
+}
+
+$date_mysql_format=date("Y-m-d",$date);
+
+
 $modify=$user->can_edit('warehouses');
 
 $smarty->assign('modify',$modify);
@@ -37,6 +56,8 @@ $smarty->assign('view_parts',$user->can_view('parts'));
 
 $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','parts');
+$smarty->assign('formated_date',strftime("%a %x",$date));
+$smarty->assign('date',date("Y-m-d",$date));
 
 
 
@@ -69,16 +90,16 @@ $js_files=array(
 	'js/search.js',
 	'js/parts_common.js',
 	'stock_history_parts.js.php'
-	
+
 );
 
 
-if(isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('overview','parts','movements'))){
+if (isset($_REQUEST['block_view']) and in_array($_REQUEST['block_view'],array('overview','parts','movements'))) {
 	$block_view=$_REQUEST['block_view'];
 	$_SESSION['state']['stock_history']['block_view']=$block_view;
 
-}else{
-$block_view=$_SESSION['state']['stock_history']['block_view'];
+}else {
+	$block_view=$_SESSION['state']['stock_history']['block_view'];
 }
 
 $smarty->assign('block_view',$block_view);
@@ -90,6 +111,21 @@ $smarty->assign('parent','parts');
 $smarty->assign('title', _('Inventory (Parts)'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+$prev=array(
+	'title'=>_('Historic Inventory').' '.strftime("%a %x",strtotime("$date_mysql_format -1 day")),
+	'link'=>sprintf('stock_history_parts.php?warehouse_id=%d&date=%s',$warehouse->id,date("Y-m-d",strtotime("$date_mysql_format -1 day")))
+);
+$smarty->assign('prev',$prev);
+
+if (date('U',$date)<date('U') ) {
+	$next=array(
+		'title'=>_('Historic Inventory').' '.strftime("%a %x",strtotime("$date_mysql_format +1 day")),
+		'link'=>sprintf('stock_history_parts.php?warehouse_id=%d&date=%s',$warehouse->id,date("Y-m-d",strtotime("$date_mysql_format +1 day")))
+	);
+	$smarty->assign('next',$next);
+}
+
 
 
 

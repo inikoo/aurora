@@ -1,18 +1,23 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
+	<input type="hidden" value="{$warehouse->id}" id="warehouse_id" />
+				<input type="hidden" value="{$warehouse->id}" id="warehouse_key" />
+								<input type="hidden" value="{$date}" id="date" />
+
 	<div style="padding:0 20px">
 		{include file='locations_navigation.tpl'} 
-		<input type="hidden" value="{$warehouse->id}" id="warehouse_id" />
-				<input type="hidden" value="{$warehouse->id}" id="warehouse_key" />
+	
 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}{t}Inventory{/t}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if} <a href="warehouse_parts.php?warehouse_id={$warehouse->id}&block_view=history">{t}Inventory{/t}</a> &rarr; {t}Historic Stock{/t}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if}
 				</div>
 			<div class="buttons" style="float:left">
-				<span class="main_title"> <span class="id">{$warehouse->get('Warehouse Name')}</span> {t}Inventory{/t} <span style="font-style:italic">({t}Parts{/t})</span> </span> 
+			{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if}
+				<span class="main_title">{t}Historic Inventory{/t} <span style="margin-left:10px">{$formated_date} </span>  </span> 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -33,14 +38,12 @@
 			<div class="table_top_bar">
 			</div>
 			<div class="clusters">
-				<div class="buttons small left cluster">
-					<button class="{if $parts_view=='general'}selected{/if}" id="parts_general" name="general">{t}Description{/t}</button> <button class="{if $parts_view=='stock'}selected{/if}" id="parts_stock" name="stock">{t}Stock{/t}</button> <button class="{if $parts_view=='locations'}selected{/if}" id="parts_locations" name="locations">{t}Locations{/t}</button> <button class="{if $parts_view=='sales'}selected{/if}" id="parts_sales" name="sales">{t}Sales{/t}</button> <button class="{if $parts_view=='forecast'}selected{/if}" id="parts_forecast" name="forecast">{t}Forecast{/t}</button> 
-				</div>
+				
 				<div style="clear:both">
 				</div>
 			</div>
 			{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2} 
-			<div id="table2" class="data_table_container dtable btable" style="font-size:90%">
+			<div id="table2" class="data_table_container dtable btable" style="font-size:85%">
 			</div>
 		</div>
 	</div>
@@ -60,23 +63,7 @@
 			<div class="table_top_bar">
 				</div>
 				
-				<div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">
-			
-				<div style="position:relative;left:18px;margin-top:10px">
-					<span id="clear_intervalt" style="font-size:80%;color:#777;cursor:pointer;{if $to_transactions=='' and $from_transactions=='' }display:none{/if}">{t}clear{/t}</span> {t}Interval{/t}: 
-					<input id="v_calpop1t" type="text" class="text" size="11" maxlength="10" name="from" value="{$from_transactions}" />
-					<img style="height:14px;bottom:1px;left:-19px;" id="calpop1t" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <span class="calpop" style="margin-left:4px">&rarr;</span> 
-					<input class="calpop" id="v_calpop2t" size="11" maxlength="10" type="text" name="to" value="{$to_transactions}" />
-					<img style="height:14px;bottom:1px;left:-37px;" id="calpop2t" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt="" /> <img style="position:relative;right:26px;cursor:pointer;height:15px" align="absbottom" src="art/icons/application_go.png" id="submit_intervalt" alt="{t}Go{/t}" /> 
-				</div>
-			
-			<div id="cal1tContainer" style="position:absolute;display:none; z-index:2;;right:70px">
-			</div>
-			<div style="position:relative;right:-58px">
-				<div id="cal2tContainer" style="display:none; z-index:2;position:absolute">
-				</div>
-			</div>
-		</div>
+				
 				
 			{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 			<div id="table1" class="data_table_container dtable btable" style="font-size:85%">

@@ -519,7 +519,7 @@ success:function(o) {
             }
         },
 failure:function(o) {
-            alert(o.statusText);
+           // alert(o.statusText);
             callback();
         },
 scope:this
