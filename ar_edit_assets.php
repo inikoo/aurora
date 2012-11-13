@@ -4128,7 +4128,7 @@ function part_transactions() {
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
-
+$where='where true ';
 	$wheref='';
 
 	if ($f_field=='note' and $f_value!='') {
@@ -4169,7 +4169,7 @@ function part_transactions() {
 
 
 	$sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
-	//print $sql;exit;
+
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -4236,6 +4236,8 @@ function part_transactions() {
 
 
 	$order=' `Date` desc , `Inventory Transaction Key` desc ';
+		$order=' `Date` desc  ';
+
 	$order_direction=' ';
 
 	if ($parent=='part') {
@@ -4246,7 +4248,7 @@ function part_transactions() {
 		}
 
 
-	//print $sql;exit;
+
 	$result=mysql_query($sql);
 	$adata=array();
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {

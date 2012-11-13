@@ -103,6 +103,10 @@
 		<div id="table2" class="data_table_container dtable btable">
 		</div>
 	</div>
+	
+	
+	
+	
 </div>
 {include file='new_category_splinter.tpl'}
 {include file='footer.tpl'} 

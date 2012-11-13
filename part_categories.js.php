@@ -9,12 +9,21 @@ var Event   = YAHOO.util.Event;
 var period='period_<?php echo $_SESSION['state']['part_categories']['period']?>';
 var avg='avg_<?php echo $_SESSION['state']['part_categories']['avg']?>';
 
+var  subcategories_period_ids=['subcategories_period_all',
+ 'subcategories_period_yesterday',
+ 'subcategories_period_last_w',
+ 'subcategories_period_last_m',
+
+'subcategories_period_three_year','subcategories_period_year','subcategories_period_yeartoday','subcategories_period_six_month','subcategories_period_quarter','subcategories_period_month','subcategories_period_ten_day','subcategories_period_week','subcategories_period_monthtoday','subcategories_period_weektoday','subcategories_period_today'];
+
+
+
 var dialog_new_category;
 
 
 function change_block(){
-ids=['subcategories','subjects','subcategories_charts','history','sales'];
-block_ids=['block_subcategories','block_subjects','block_subcategories_charts','block_history','block_sales'];
+ids=['subcategories','subjects','subcategories_charts','history','sales','no_assigned'];
+block_ids=['block_subcategories','block_subjects','block_subcategories_charts','block_history','block_sales','block_no_assigned'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -282,7 +291,19 @@ Dom.setStyle(['info_'+period,'info2_'+period],'display','')
 
 
 
-function change_period(e,table_id){ }
+function change_subcategories_period(e,table_id){
+
+  tipo=this.id;
+
+ Dom.removeClass(subcategories_period_ids,"selected")
+ Dom.addClass(this,"selected")
+   
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&period=' + this.getAttribute('period');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+}
 function change_avg(e,table_id){
 
     //  alert(avg);
@@ -318,7 +339,7 @@ function change_display_mode(name,label){
 
  function init(){
 
- ids=['subcategories','subjects','subcategories_charts','history','sales'];
+ ids=['subcategories','subjects','subcategories_charts','history','sales','no_assigned'];
  Event.addListener(ids, "click",change_block);
   
  init_search('parts');
@@ -336,8 +357,7 @@ function change_display_mode(name,label){
  ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_parts_avg,0);
 
- ids=['subcategories_period_all','subcategories_period_three_year','subcategories_period_year','subcategories_period_yeartoday','subcategories_period_six_month','subcategories_period_quarter','subcategories_period_month','subcategories_period_ten_day','subcategories_period_week','subcategories_period_monthtoday','subcategories_period_weektoday','subcategories_period_today'];
- YAHOO.util.Event.addListener(ids, "click",change_period,1);
+ YAHOO.util.Event.addListener(subcategories_period_ids, "click",change_subcategories_period,1);
  ids=['category_period_all','category_period_three_year','category_period_year','category_period_yeartoday','category_period_six_month','category_period_quarter','category_period_month','category_period_ten_day','category_period_week','category_period_monthtoday','category_period_weektoday','category_period_today','category_period_yesterday','category_period_last_m','category_period_last_w'];
  YAHOO.util.Event.addListener(ids, "click",change_sales_period);
 

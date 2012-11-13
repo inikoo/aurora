@@ -6668,3 +6668,4 @@ ALTER TABLE `dw`.`User Dimension` ADD INDEX ( `User Parent Key` ) ;
 ALTER TABLE `User Request Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `URL` ,ADD INDEX ( `Site Key` ) ;
 ALTER TABLE `User Request Dimension` ADD `Is User` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `User Request Key` , ADD INDEX ( `Is User` ) ;
 ALTER TABLE `Inventory Spanshot Fact` CHANGE `Warehouse Key` `Warehouse Key` SMALLINT UNSIGNED NOT NULL DEFAULT '1';
+ ALTER TABLE `Inventory Transaction Fact` ORDER BY `Date` DESC ;

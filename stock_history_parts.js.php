@@ -13,86 +13,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
- var tableid=0;
-		    var tableDivEL="table"+tableid;
-
-  var ColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>", width:100,sortable:false,className:"aright"}
-				      ,{key:"parts", label:"<?php echo _('Parts')?>", width:70,sortable:false,className:"aright"}
-				      ,{key:"locations", label:"<?php echo _('Locations')?>", width:70,sortable:false,className:"aright"}
-				    //  ,{key:"quantity", label:"<?php echo _('Qty')?>", width:80,sortable:false,className:"aright"}
-				      ,{key:"value", label:"<?php echo _('Cost Value')?>", width:80,sortable:false,className:"aright"}
-				      ,{key:"end_day_value", label:"<?php echo _('C Value (ED)')?>", width:80,sortable:false,className:"aright"}
-				      ,{key:"commercial_value", label:"<?php echo _('Com Value')?>", width:80,sortable:false,className:"aright"}
-
-				     // ,{key:"sold_qty", label:"<?php echo _('Sold')?>", width:60,sortable:false,className:"aright"}
-				     // ,{key:"in_qty", label:"<?php echo _('In')?>", width:60,sortable:false,className:"aright"}
-				     // ,{key:"lost_qty", label:"<?php echo _('Lost')?>", width:60,sortable:false,className:"aright"}
-
-				      ];
-
-		 
-		    
-		    this.dataSource0 = new YAHOO.util.DataSource("ar_parts.php?tipo=warehouse_parts_stock_history&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+"&sf=0&tableid="+tableid);
-		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		    this.dataSource0.connXhrMode = "queueRequests";
-		    this.dataSource0.responseSchema = {
-			resultsList: "resultset.data", 			
-			metaFields: {
-		       rtext:"resultset.rtext",
-		    rtext_rpp:"resultset.rtext_rpp",
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"			
-			
-			 
-			},
-			
-		
-
-	fields: [
-				 "date","locations","value","parts","end_day_value","commercial_value"
-
-				 ]};
-
-	    
-		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-							     this.dataSource0, {
-								 //draggableColumns:true,
-								 renderLoopSize: 50,generateRequest : myRequestBuilder
-								 ,paginator : new YAHOO.widget.Paginator({alwaysVisible:false,
-									 rowsPerPage:<?php echo$_SESSION['state']['warehouse']['stock_history']['nr']?>,containers : 'paginator0', 
-									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									 previousPageLinkLabel : "<",
-									 nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
-									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-								     })
-								 
-								 ,sortedBy : {
-								   key: "<?php echo$_SESSION['state']['warehouse']['stock_history']['order']?>",
-								    dir: "<?php echo$_SESSION['state']['warehouse']['stock_history']['order_dir']?>"
-								  }
-								 ,dynamicData : true
-								 
-							     }
-							     );
-
-
-		    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-		    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-		    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
-
-
-
-
-
-
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
@@ -129,7 +49,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['transactions']['nr']?>,containers : 'paginator1', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['stock_history']['transactions']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -138,8 +58,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['warehouse']['transactions']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['warehouse']['transactions']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['stock_history']['transactions']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['stock_history']['transactions']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -147,40 +67,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse']['transactions']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['transactions']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['stock_history']['transactions']['f_field']?>',value:'<?php echo$_SESSION['state']['stock_history']['transactions']['f_value']?>'};
 	    
 	
 	    var tableid=2;
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [ 
 				    {key:"sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description", label:"<?php echo _('Description')?>",width:290,<?php echo($_SESSION['state']['warehouse']['parts']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"description_small", label:"<?php echo _('Description')?>",width:200,<?php echo($_SESSION['state']['warehouse']['parts']['view']!='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"description", label:"<?php echo _('Description')?>",width:300,<?php echo($_SESSION['state']['stock_history']['parts']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	  ,{key:"locations", label:"<?php echo _('Locations')?>", width:65,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"stock", label:"<?php echo _('Stock')?>", width:65,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"value_at_cost", label:"<?php echo _('Cost Value')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				    ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,<?php echo($_SESSION['state']['warehouse']['parts']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"supplied_by", label:"<?php echo _('Supplied By')?>",width:200,<?php echo($_SESSION['state']['warehouse']['parts']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				   
-				   	,{key:"locations", label:"<?php echo _('Locations')?>", width:200,sortable:false,className:"aleft",<?php echo(($_SESSION['state']['warehouse']['parts']['view']=='locations' )  ?'':'hidden:true')?>}
-				    ,{key:"stock", label:"<?php echo _('Stock')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['warehouse']['parts']['view']=='stock' or $_SESSION['state']['warehouse']['parts']['view']=='locations' )  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    //  ,{key:"available_for", label:"<?php echo _('S Until')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['warehouse']['parts']['view']=='stock' or $_SESSION['state']['warehouse']['parts']['view']=='general')  ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"stock_value", label:"<?php echo _('Stk Value')?>", width:70,sortable:true,className:"aright",<?php echo(($_SESSION['state']['warehouse']['parts']['view']=='stock' or $_SESSION['state']['warehouse']['parts']['view']=='locations')?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"avg_stock", label:"<?php echo _('AS')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"avg_stockvalue", label:"<?php echo _('ASV')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"keep_days", label:"<?php echo _('KD')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"outstock_days", label:"<?php echo _('OofS')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"unknown_days", label:"<?php echo _('?S')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"gmroi", label:"<?php echo _('GMROI')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'   ?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    
-				    ,{key:"sold", label:"<?php echo _('Sold(Given) Qty')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    //   ,{key:"given", label:"<?php echo _('Given Qty')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sale'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}} 
-				    ,{key:"money_in", label:"<?php echo _('Sold')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    
-				    //    ,{key:"profit", label:"<?php echo _('Profit Out')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sale'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"profit_sold", label:"<?php echo _('Profit (Inc Given)')?>", width:160,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['warehouse']['parts']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ];
-request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0";
-
+				      ,{key:"value_at_end_day", label:"<?php echo _('C Value (ED)')?>", width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"commercial_value", label:"<?php echo _('Com Value')?>", width:85,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	
+	];
+request="ar_parts.php?tipo=parts_at_date&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=2&where=&sf=0&date="+Dom.get('date').value;
 	this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -199,8 +102,7 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 		
 		fields: [
 			 "sku"
-			 ,"description","locations","description_small"
-			 ,"stock","available_for","stock_value","sold","given","money_in","profit","profit_sold","used_in","supplied_by","margin",'avg_stock','avg_stockvalue','keep_days','outstock_days','unknown_days','gmroi'
+			 ,"description","locations","value_at_cost","stock","value_at_end_day","commercial_value"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -208,7 +110,7 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['warehouse']['parts']['nr']?>,containers : 'paginator2', 
+									      rowsPerPage:<?php echo$_SESSION['state']['stock_history']['parts']['nr']?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -218,8 +120,8 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo $_SESSION['state']['warehouse']['parts']['order']?>",
-									 dir: "<?php echo $_SESSION['state']['warehouse']['parts']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['stock_history']['parts']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['stock_history']['parts']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -231,8 +133,8 @@ request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehous
 
 
 	    
-	    this.table2.view='<?php echo $_SESSION['state']['warehouse']['parts']['view']?>';
-	    this.table2.filter={key:'<?php echo $_SESSION['state']['warehouse']['parts']['f_field']?>',value:'<?php echo $_SESSION['state']['warehouse']['parts']['f_value']?>'};
+	    this.table2.view='<?php echo $_SESSION['state']['stock_history']['parts']['view']?>';
+	    this.table2.filter={key:'<?php echo $_SESSION['state']['stock_history']['parts']['f_field']?>',value:'<?php echo $_SESSION['state']['stock_history']['parts']['f_value']?>'};
 		
 
 
