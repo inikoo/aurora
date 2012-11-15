@@ -922,8 +922,9 @@ class part extends DB_Table {
 
 		foreach ($products as  $product_id=>$values) {
 			$product=new Product('pid',$product_id);
-
-			$product->update_availability();
+			if ($product->id) {
+				$product->update_availability();
+			}
 		}
 
 
@@ -1621,7 +1622,7 @@ class part extends DB_Table {
 	}
 
 	function get_current_formated_value_at_cost() {
-//return number($this->data['Part Current Value'],2);
+		//return number($this->data['Part Current Value'],2);
 		return money( $this->data['Part Current Value']);
 	}
 
@@ -1629,7 +1630,7 @@ class part extends DB_Table {
 
 	function get_current_formated_value_at_current_cost() {
 
-//return number($this->data['Part Current On Hand Stock']*$this->get_unit_cost(),2);
+		//return number($this->data['Part Current On Hand Stock']*$this->get_unit_cost(),2);
 		$a=floatval(3.000*3.575);
 		$a=round(3.575+3.575+3.575,3);
 		return money($this->data['Part Current On Hand Stock']*$this->get_unit_cost());
@@ -2494,15 +2495,18 @@ class part extends DB_Table {
 	function wrap_transactions() {
 
 		$sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ",$this->sku);
-		$locations=array(1=>1);
+		$locations=array();
 		$res2=mysql_query($sql);
 		while ($row2=mysql_fetch_array($res2)) {
 			$locations[$row2['Location Key']]=$row2['Location Key'];
 
 		}
 
-		foreach ($locations as $location_key) {
+		if (count($locations)==0)return;
 
+
+		foreach ($locations as $location_key) {
+			/*
 			$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Inventory Transaction Key`   ",$this->sku,$location_key);
 			//print "$sql\n";
 			$res3=mysql_query($sql);
@@ -2535,7 +2539,7 @@ class part extends DB_Table {
 			}
 
 
-
+*/
 
 
 			$sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date`' ,$this->sku,$location_key);
@@ -2551,7 +2555,7 @@ class part extends DB_Table {
 			if ($row3=mysql_fetch_array($res3)) {
 				$first_itf_date=($row3['Date']);
 			}
-			//  print "$sql\n";
+			// print "$sql\n";
 			//print "R: $first_audit_date $first_itf_date \n ";
 			if ($first_audit_date=='none' and $first_itf_date=='none') {
 				//    print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
@@ -2575,24 +2579,50 @@ class part extends DB_Table {
 
 			}
 
+			// $first_date=date("Y-m-d H:i:s",strtotime($first_date." -1 second"));
 
-			$pl_data=array(
-				'Part SKU'=>$this->sku,
-				'Location Key'=>$location_key,
-				'Date'=>$first_date);
-			//print_r($pl_data);
-			$part_location=new PartLocation('find',$pl_data,'create');
-			// print_r($part_location);
-			if ($part_location->found) {
+			//   print $first_date;
 
-				$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') and `Part SKU`=%d and `Location Key`=%d  limit 1 "
+
+			$replace_associate=true;
+			$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Date`=%d and `Inventory Transaction Type`='Associate'   ",
+				$this->sku,
+				$location_key,
+				prepare_mysql($first_date)
+			);
+			//print "$sql\n";
+			$res3=mysql_query($sql);
+			if ($row3=mysql_fetch_array($res3)) {
+				$replace_associate=false;
+			}
+
+
+
+
+			$part_location=new PartLocation($this->sku.'_'.$location_key);
+			if ($replace_associate) {
+
+
+
+
+
+				$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') and `Part SKU`=%d and `Location Key`=%d order by `Date`  limit 1 "
 					,$this->sku
 					,$location_key
 				);
-
-
 				mysql_query($sql);
-				$location=new Location($location_key);
+
+				$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Note` like '%%Part associated with location%%'   and  `Part SKU`=%d and `Location Key`=%d  order by `Date` limit 1 "
+					,$this->sku
+					,$location_key
+				);
+				mysql_query($sql);
+				//print $sql;
+				$first_date=date("Y-m-d H:i:s",strtotime($first_date." -1 second"));
+				$part_location->associate(array('date'=>$first_date));
+				$this->update_valid_from($first_date);
+			}
+			/*$location=new Location($location_key);
 				$details=_('Part')." SKU".sprintf("%05d",$this->sku)." "._('associated with location').": ".$location->data['Location Code'];
 				$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
 					,$this->sku
@@ -2606,8 +2636,12 @@ class part extends DB_Table {
 
 				);
 				mysql_query($sql);
-				//print "$sql\n";
-			}
+				print "$sql\n";
+				*/
+
+
+
+
 
 
 
@@ -2650,15 +2684,51 @@ class part extends DB_Table {
 				}
 
 
-				$data=array('Date'=>$last_date,'Note'=>_('Discontinued'));
 
-				$part_location->disassociate($data);
-				$this->update_valid_to($last_date);
-				$this->update_stock();
+				$replace_disassociate=true;
+				$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  and `Date`=%d and `Inventory Transaction Type`='Disassociate'   ",
+					$this->sku,
+					$location_key,
+					prepare_mysql($last_date)
+				);
+				//print "$sql\n";
+				$res3=mysql_query($sql);
+				if ($row3=mysql_fetch_array($res3)) {
+					$replace_disassociate=false;
+				}
+
+
+
+				if ($replace_disassociate) {
+
+
+					$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Disassociate') and `Part SKU`=%d and `Location Key`=%d order by `Date` desc limit 1 "
+						,$this->sku
+						,$location_key
+					);
+					mysql_query($sql);
+
+					$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Note` like '%%disassociate %%'   and  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc limit 1 "
+						,$this->sku
+						,$location_key
+					);
+					mysql_query($sql);
+
+
+					$last_date=date("Y-m-d H:i:s",strtotime($last_date." -+ second"));
+					$data=array('Date'=>$last_date,'Note'=>_('Discontinued'));
+					//print_r($data);
+
+					$part_location->disassociate($data);
+					
+				}
+			$this->update_valid_to($last_date);
+				
+
 
 			}
-
-			$this->update_valid_from($first_date);
+			$this->update_stock();
+			
 
 		}
 

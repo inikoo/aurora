@@ -36,13 +36,13 @@ date_default_timezone_set('UTC');
 $corporate_currency='GBP';
 
 
-$from=date("Y-m-d",strtotime('now -6 day'));
+$from=date("Y-m-d",strtotime('now -2000 day'));
 //$from=date("Y-m-d");
 $to=date("Y-m-d",strtotime('now -1 day'));
 
-//$from='2007-01-01';
+//$from='2007-02-27';
 //$from=date("Y-m-d");
-//$to='2007-12-31';
+//$to='2012-11-09';
 
 
 $warehouse=new Warehouse(1);
@@ -52,7 +52,7 @@ $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Da
 $res=mysql_query($sql);
 
 while ($row=mysql_fetch_array($res)) {
-	//$where=' `Part SKU`=1629';
+	$where=' `Part SKU`=17847';
 	
 
 	$where='  true';
@@ -63,19 +63,14 @@ while ($row=mysql_fetch_array($res)) {
 		//print "\t\t\t\tChecking:".$row2['Part SKU']."\r";
 		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where  `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s group by `Location Key`",
 			$row2['Part SKU'],
-			prepare_mysql($row['Date'])
+			prepare_mysql($row['Date'].' 23:59:49')
 		);
 
 		$result=mysql_query($sql);
-		$_locations=array();
+		
 		while ($row3=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-			if (in_array($row3['Location Key'],$_locations)) {
-				continue;
-			}else {
-				$_locations[]=$row3['Location Key'];
-			}
-
+		
 			$part_location=new PartLocation($row2['Part SKU'].'_'.$row3['Location Key']);
 
 
