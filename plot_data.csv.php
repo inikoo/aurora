@@ -345,7 +345,7 @@ function part_location_stock_end_day_value_history($data) {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['close'],$row['open'],$row['close'],$row['close']);
 		}
 
 	}
@@ -373,7 +373,7 @@ function part_location_stock_commercial_value_history($data) {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['close'],$row['open'],$row['close'],$row['close']);
 		}
 
 	}
@@ -401,7 +401,7 @@ function part_location_stock_value_history($data) {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['close'],$row['open'],$row['close'],$row['close']);
 		}
 
 	}
@@ -429,7 +429,7 @@ function part_location_stock_history($data) {
 		$res=mysql_query($sql);
 
 		while ($row=mysql_fetch_assoc($res)) {
-			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['high'],$row['low'],$row['close'],$row['close']);
+			printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f\n",$row['Date'],$row['open'],$row['close'],$row['open'],$row['close'],$row['close']);
 		}
 
 	}

@@ -347,13 +347,16 @@ class PartLocation extends DB_Table {
 		}else {
 			$details='<b>'._('Audit').'</b>, ';
 		}
-
+		if ($this->location->id)
+			$location_link='<a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
+		else
+			$location_link='<span style="font-style:italic">'._('deleted').'</span>';
 		if ($parent=='associate') {
-			$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8692; <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
+			$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8692; '.$location_link;
 		}else if ($parent=='disassociate') {
-				$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8603; <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>';
+				$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' &#8603; '.$location_link;
 			}else {
-			$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('set to').': <b>'.number($qty).'</b>';
+			$details.='<a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' '.$location_link.' '._('set to').': <b>'.number($qty).'</b>';
 		}
 
 		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Inventory Transaction Stock`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%f)"
@@ -371,6 +374,9 @@ class PartLocation extends DB_Table {
 		//print $sql;
 		mysql_query($sql);
 		$audit_key=mysql_insert_id();
+
+
+
 		if ($qty_change!=0 or $value_change!=0) {
 
 			$details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
@@ -390,7 +396,7 @@ class PartLocation extends DB_Table {
 				,prepare_mysql($date)
 				,prepare_mysql($audit_key)
 			);
-			// print $sql;
+
 			mysql_query($sql);
 		}
 
@@ -760,7 +766,7 @@ class PartLocation extends DB_Table {
 				,$this->part_sku
 				,$this->location_key
 			);
-			
+
 			$res=mysql_query($sql);
 			$old_qty=0;
 			$old_value=0;
@@ -793,9 +799,9 @@ class PartLocation extends DB_Table {
 		// $new_value=$new_qty*$unit_value;
 
 
-$_new_value=$this->data['Stock Value']+$value_change;
+		$_new_value=$this->data['Stock Value']+$value_change;
 
-	//	print "\n** ".$this->data['Stock Value']."  -> ".$value_change." = $_new_value **\n";
+		// print "\n** ".$this->data['Stock Value']."  -> ".$value_change." = $_new_value **\n";
 
 
 		$sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%.3f, `Last Updated`=NOW()  where `Part SKU`=%d and `Location Key`=%d "
@@ -804,7 +810,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 			,$this->part_sku
 			,$this->location_key
 		);
-//print $sql;
+		//print $sql;
 		mysql_query($sql);
 		$this->get_data();
 
@@ -866,7 +872,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 		$editor=$this->get_editor_data();
 
 
-		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) 
+		$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
 		values (%d,%d,%s,%f,%.3f,%s,%s,%s)"
 			,$this->part_sku
 			,$this->location_key
@@ -879,7 +885,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 
 		);
 
-//print $sql;
+		//print $sql;
 		mysql_query($sql);
 		$transaction_id=mysql_insert_id();
 
@@ -898,11 +904,14 @@ $_new_value=$this->data['Stock Value']+$value_change;
 
 	function disassociate($data=false) {
 
+		$date=date("Y-m-d H:i:s");
 
-		$date=$this->editor['Date'];
 		if (!$this->editor['Date'])
-			$date=date("Y-m-d H:i:s");
-
+			$date=$this->editor['Date'];
+		if (is_array($data) and array_key_exists('Date', $data))
+			$date=$data['Date'];
+			
+			
 		$this->deleted=false;
 		if ( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0) {
 			$this->deleted_msg=_('There is still stock in this location');
@@ -1111,7 +1120,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 		$res=mysql_query($sql);
 
 
-	//	print "$sql\n";
+		// print "$sql\n";
 
 		$stock=0;
 		$value=0;
@@ -1206,7 +1215,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 			,$this->part_sku
 			,$this->location_key
 		);
-	//	print $sql;
+		// print $sql;
 		mysql_query($sql);
 
 		$this->part->update_stock();
@@ -1432,7 +1441,7 @@ $_new_value=$this->data['Stock Value']+$value_change;
 			//print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
 			//print $row['Date']." $stock v: $value $value_open  $value_low $value_clos \n";
 
-			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s) ON DUPLICATE KEY UPDATE 
+			$sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s) ON DUPLICATE KEY UPDATE
 			`Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,`Quantity Open`=%f,`Quantity High`=%f,`Quantity Low`=%f,
 			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
 			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
@@ -1596,16 +1605,27 @@ $_new_value=$this->data['Stock Value']+$value_change;
 
 		while ($row=mysql_fetch_array($res)) {
 			$audit_key=$row['Inventory Transaction Key'];
-
-			$include_current=false;
-
-			$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Disassociate' and  `Inventory Transaction Key`=%d  ",$row['Relations']);
-			$res2=mysql_query($sql);
-
-			if ($row2=mysql_fetch_array($res2)) {
-				$include_current=true;
-			}
 			$date=$row['Date'];
+			//$include_current=false;
+			//$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Disassociate' and  `Inventory Transaction Key`=%d  ",$row['Relations']);
+			//$res2=mysql_query($sql);
+			//if ($row2=mysql_fetch_array($res2)) {
+			// $include_current=true;
+			//}
+			$include_current=true;
+			$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Location Key`=%d and `Date`=%s  "
+				,$this->part_sku
+				,$this->location_key
+				,prepare_mysql($date)
+
+			);
+			$res2=mysql_query($sql);
+			if ($row2=mysql_fetch_array($res2)) {
+				$include_current=false;
+			}
+			//print "$sql\n";
+
+
 			$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<".($include_current?'=':'')."%s and `Part SKU`=%d and `Location Key`=%d"
 				,prepare_mysql($date)
 				,$this->part_sku
@@ -1624,46 +1644,48 @@ $_new_value=$this->data['Stock Value']+$value_change;
 			$qty=$row['Inventory Transaction Stock'];
 
 			$qty_change=$qty-$old_qty;
-			
-			
 
 
-	
+
+
+			//print "Q: $qty_change $qty $old_qty\n";
 
 			$value_change=$this->get_value_change($qty_change,$old_qty,$old_value,$date);
 
-			
-			
-			
-			
-			
-			
-			$audit_key=$row['Inventory Transaction Key'];
+			if ($qty_change!=0 or $value_change!=0) {
 
-			$note=$row['Note'];
+				$audit_key=$row['Inventory Transaction Key'];
 
-			//print "$qty_change=$qty-$old_qty\n";
-			$details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
-			if ($note) {
-				$details.=', '.$note;
+				$note=$row['Note'];
+
+				//print "$qty_change=$qty-$old_qty\n";
+				$details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+				//if ($note) {
+				// $details.=', '.$note;
+				//
+				//   }
+
+
+
+				$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`)
+			values (%d,%d,%s,%f,%.3f,%s,%s,%s,%s)"
+					,$this->part_sku
+					,$this->location_key
+					,"'Adjust'"
+					,$qty_change
+					,$value_change
+					,$row['User Key']
+					,prepare_mysql($details,false)
+					,prepare_mysql($date)
+					,prepare_mysql($audit_key)
+				);
+				//  print "$sql\n\n\n";
+				//  if($date=='2012-02-27 02:43:48')
+				//  exit;
+
+				mysql_query($sql);
 
 			}
-
-			$sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) 
-			values (%d,%d,%s,%f,%.3f,%s,%s,%s,%s)"
-				,$this->part_sku
-				,$this->location_key
-				,"'Adjust'"
-				,$qty_change
-				,$value_change
-				,$row['User Key']
-				,prepare_mysql($details,false)
-				,prepare_mysql($date)
-				,prepare_mysql($audit_key)
-			);
-			mysql_query($sql);
-			// print "$sql\n\n\n";
-
 
 
 		}
