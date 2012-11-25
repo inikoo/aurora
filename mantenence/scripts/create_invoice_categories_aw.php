@@ -37,24 +37,24 @@ mysql_query($sql);
 $sql=sprintf("delete  from `Invoice Category Dimension` ");
 mysql_query($sql);
 
-$data=array('Category Store Key'=>1,'Category Name'=>'Mr Bigs','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Customer Key"]=="9032" or $data["Invoice Customer Key"]=="10362" )');
+$data=array('Category Store Key'=>1,'Category Code'=>'Mr Bigs','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Customer Key"]=="9032" or $data["Invoice Customer Key"]=="10362" )');
 $cat=new Category('find create',$data);
-$data=array('Category Store Key'=>1,'Category Name'=>'UK','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]=="GB" )');
+$data=array('Category Store Key'=>1,'Category Code'=>'UK','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]=="GB" )');
 $cat=new Category('find create',$data);
-$data=array('Category Store Key'=>1,'Category Name'=>'Export','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]!="GB"       )');
-$cat=new Category('find create',$data);
-
-$data=array('Category Store Key'=>3,'Category Name'=>'DE','Category Subject'=>'Invoice','Category Function'=>'if(true)');
+$data=array('Category Store Key'=>1,'Category Code'=>'Export','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]!="GB"       )');
 $cat=new Category('find create',$data);
 
-$data=array('Category Store Key'=>5,'Category Name'=>'FR','Category Subject'=>'Invoice','Category Function'=>'if(true)');
-$cat=new Category('find create',$data);
-$data=array('Category Store Key'=>7,'Category Name'=>'PO','Category Subject'=>'Invoice','Category Function'=>'if(true)');
+$data=array('Category Store Key'=>3,'Category Code'=>'DE','Category Subject'=>'Invoice','Category Function'=>'if(true)');
 $cat=new Category('find create',$data);
 
-$data=array('Category Store Key'=>8,'Category Name'=>'IT','Category Subject'=>'Invoice','Category Function'=>'if(true)');
+$data=array('Category Store Key'=>5,'Category Code'=>'FR','Category Subject'=>'Invoice','Category Function'=>'if(true)');
+$cat=new Category('find create',$data);
+$data=array('Category Store Key'=>7,'Category Code'=>'PO','Category Subject'=>'Invoice','Category Function'=>'if(true)');
 $cat=new Category('find create',$data);
 
-//$data=array('Category Store Key'=>1,'Category Name'=>'Staff','Category Subject'=>'Invoice','Category Function'=>'');
+$data=array('Category Store Key'=>8,'Category Code'=>'IT','Category Subject'=>'Invoice','Category Function'=>'if(true)');
+$cat=new Category('find create',$data);
+
+//$data=array('Category Store Key'=>1,'Category Code'=>'Staff','Category Subject'=>'Invoice','Category Function'=>'');
 //$cat=new Category('find create',$data);
 ?>

@@ -1695,7 +1695,7 @@ function store_families_pie($data) {
 }
 
 function customer_referral_assigned_pie($data) {
-	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Code`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
@@ -1706,7 +1706,7 @@ function customer_referral_assigned_pie($data) {
 
 function customer_referral_pie($data) {
 
-	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Code`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
@@ -1719,7 +1719,7 @@ function customer_referral_pie($data) {
 }
 
 function customer_business_type_assigned_pie($data) {
-	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d ",$data['store_key']);
+	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Code`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d ",$data['store_key']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
@@ -1767,7 +1767,7 @@ function category_assigned_pie($data) {
 
 function customer_business_type_pie($data) {
 
-	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Name`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
+	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Code`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 

@@ -24,6 +24,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
 case('parts_at_date'):
 	list_parts_at_date();
 	break;
@@ -898,6 +899,9 @@ function list_parts_at_date() {
 	);
 	echo json_encode($response);
 }
+
+
+
 
 function part_location_info($data) {
 
@@ -2154,7 +2158,7 @@ function list_part_categories() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Category Name` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
 
 
 
@@ -2232,7 +2236,7 @@ $order='`Part Category '.$period_tag.' Acc Profit`';
 
 	}
 	elseif ($order=='name')
-		$order='`Category Name`';
+		$order='`Category Code`';
 
 
 
@@ -2251,7 +2255,7 @@ $order='`Part Category '.$period_tag.' Acc Profit`';
 
 
 
-		$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+		$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
 		$label=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
 
 

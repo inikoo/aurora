@@ -4148,10 +4148,10 @@ return $price;
 
 	function remove_category($category_key) {
 
-		$sql=sprintf("select PCB.`Category Key`,`Category Position`,`Category Name` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'  and PCB.`Category Key`=%d   " ,$this->pid,$category_key);
+		$sql=sprintf("select PCB.`Category Key`,`Category Position`,`Category Code` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'  and PCB.`Category Key`=%d   " ,$this->pid,$category_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-			$cat_removed=$row['Category Name'];
+			$cat_removed=$row['Category Code'];
 			$category_location=preg_split('/>/',preg_replace('/>$/','',preg_replace('/^\d+>/','',$row['Category Position'])));
 			foreach ($category_location as $category_location_key) {
 
@@ -4213,11 +4213,11 @@ return $price;
 
 		$num_inserted_categories=0;
 		$num_inserted_errors=0;
-		$sql=sprintf("select PCB.`Category Key`,`Category Position`,`Category Name` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'  and PCB.`Category Key`=%d   " ,$this->pid,$category_key);
+		$sql=sprintf("select PCB.`Category Key`,`Category Position`,`Category Code` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'  and PCB.`Category Key`=%d   " ,$this->pid,$category_key);
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
 			$this->update=false;
-			$this->msg=_('Product already in Category')." (".$row['Category Name'].")";
+			$this->msg=_('Product already in Category')." (".$row['Category Code'].")";
 			return;
 		}
 		mysql_free_result($res);
@@ -4232,7 +4232,7 @@ return $price;
 		//print "$sql\n";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res)) {
-			$cat_added=$row['Category Name'];
+			$cat_added=$row['Category Code'];
 			//      print preg_replace('/^\d+>/','',$row['Category Position'])."\n";
 			$category_location=preg_split('/>/',  preg_replace('/>$/','',preg_replace('/^\d+>/','',$row['Category Position']))  )   ;
 			$category_parents=preg_replace('/\d+>$/','',$row['Category Position']);

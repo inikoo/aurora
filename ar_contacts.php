@@ -4747,7 +4747,7 @@ function list_customer_categories() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Category Name` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
 
 
 
@@ -4847,7 +4847,7 @@ function list_customer_categories() {
 
 	}
 	elseif ($order=='name')
-		$order='`Category Name`';
+		$order='`Category Code`';
 	elseif ($order=='active')
 		$order='`Product Category For Public Sale Products`';
 	elseif ($order=='outofstock')
@@ -4867,7 +4867,7 @@ function list_customer_categories() {
 
 
 
-	$sql="select `Category Children`,S.`Category Key`, `Category Name`, `Category Label`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+	$sql="select `Category Children`,S.`Category Key`, `Category Code`, `Category Label`,`Category Number Subjects` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
 	// print $sql;
 	$res = mysql_query($sql);
 
@@ -4893,7 +4893,7 @@ function list_customer_categories() {
 	// print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-		//$name=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Name']);
+		//$name=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Code']);
 		//$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Code']);
 
 		/*       if ($percentages) {
@@ -5179,9 +5179,9 @@ function list_customer_categories() {
         */
 
 		if ($stores_mode=='grouped')
-			$name=sprintf('<a href="customer_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+			$name=sprintf('<a href="customer_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
 		else
-			$name=$row['Category Key'].' '.$row['Category Name']." (".$row['Category Store Key'].")";
+			$name=$row['Category Key'].' '.$row['Category Code']." (".$row['Category Store Key'].")";
 		$adata[]=array(
 			//'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
 			'id'=>$row['Category Key'],

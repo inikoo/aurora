@@ -286,6 +286,78 @@ var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_valu
 
 
 function save_category(o) {
+    
+    var current_category_key=o.getAttribute('ovalue');
+    var category_key=o.options[o.selectedIndex].value;
+    var subject='Customer';
+    var subject_key=Dom.get('customer_key').value;
+    
+    var category_object=o.options[o.selectedIndex];
+    
+    
+    if(Dom.get(category_object).getAttribute('other')==true){
+        Dom.get('other_tbody_'+parent_category_key).style.display='';
+        return;
+    }
+    
+    
+    if(category_key==''){
+        
+		var request='ar_edit_categories.php?tipo=disassociate_subject&category_key=' + current_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
+        
+    }else{
+		var request='ar_edit_categories.php?tipo=associate_subject_to_category&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
+        
+        
+    }
+    
+    
+	//alert(request);return;
+	
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+                                    success:function(o) {
+                                    //alert(o.responseText);
+                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+                                    if(r.state==200){
+                                    window.location.reload();                         
+                                    }
+                                    
+                                    
+                                    
+                                    }
+                                    });
+    
+    
+    
+}
+
+function save_category_other_value(category_key,parent_category_key){
+
+
+ 
+    var subject='Customer';
+    var subject_key=Dom.get('customer_key').value;
+    
+    var request='ar_edit_categories.php?tipo=update_other_value&category_key=' + category_key+ '&subject_key=' + subject_key +"&other_value="+Dom.get('other_textarea_'+parent_category_key).value
+  //  alert(request); return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+                                    success:function(o) {
+                                    //alert(o.responseText);
+                                    var r =  YAHOO.lang.JSON.parse(o.responseText);
+                                    if(r.state==200){
+                                    window.location.reload();
+                                    }
+                                    
+                                    
+                                    
+                                    }
+                                    });
+    
+}
+
+
+
+function save_category_old(o) {
 
 var parent_category_key=o.getAttribute('cat_key');
 var category_key=o.options[o.selectedIndex].value;
@@ -331,7 +403,7 @@ if(category_key==''){
 
 }
 
-function save_category_other_value(category_key,parent_category_key){
+function save_category_other_value_old(category_key,parent_category_key){
 
 
  

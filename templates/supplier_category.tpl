@@ -11,7 +11,7 @@
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
 			{*}
-				{if isset($parent_category)} <button onclick="window.location='customer_categories.php?store_id={$store->id}&id={$parent_category->id}'"><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Name')}</button> {/if} 
+				{if isset($parent_category)} <button onclick="window.location='customer_categories.php?store_id={$store->id}&id={$parent_category->id}'"><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Code')}</button> {/if} 
 				<button onclick="window.location='customer_categories.php?store={$store->id}&id=0'"><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button> 
 			{*}
 			<span class="main_title">{t}Category{/t}: {$category->get('Category Label')}</span>

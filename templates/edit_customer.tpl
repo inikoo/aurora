@@ -271,18 +271,18 @@
 				</tr>
 				{foreach from=$categories item=cat key=cat_key name=foo } 
 				<tr>
-					<td class="label">
+					<td class="label" title="{$cat->get('Category Code')}">
 					<div style="width:150px">
-						{t}{$cat->get('Category Name')}{/t}:
+						{$cat->get('Category Label')}:
 					</div>
 					</td>
 					<td> 
 					
-					<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="save_category(this)">
+					<select id="cat{$cat_key}" cat_key="{$cat_key}" onchange="save_category(this)" ovalue="{$categories_value[$cat_key]}">
 						{foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
 						<option value="">{t}Unknown{/t}</option>
 						{/if} 
-						<option {if $categories_value[$cat_key]==$sub_cat_key}selected='selected'{/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+						<option {if $categories_value[$cat_key]==$sub_cat_key}selected='selected'{/if} other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Code')}</option>
 						{/foreach} 
 					</select>
 					</td>
@@ -294,13 +294,13 @@
 							<button onclick="show_save_other({$cat_key})">{t}Edit{/t}</button> 
 						</div>
 						</td>
-						<td style="border:1px solid #ccc;">{$cat->get_other_value('Customer',$customer->id)} </td>
+						<td style="xborder:1px solid #ccc;">{if $cat->get_other_value('Customer',$customer->id)=='' }{t}No value set{/t}{else}{$cat->get_other_value('Customer',$customer->id)}{/if}</td>
 					</tr>
 				</tbody>
 				<tbody id="other_tbody_{$cat_key}" style="display:none">
 					<tr>
 						<td></td>
-						<td><textarea rows='2' cols="20" id="other_textarea_{$cat_key}">{$cat->get_other_value('Customer',$customer->id)}</textarea></td>
+						<td><textarea style="width:100%" rows='2' cols="20" id="other_textarea_{$cat_key}">{$cat->get_other_value('Customer',$customer->id)}</textarea></td>
 					</tr>
 					<tr>
 						<td></td>

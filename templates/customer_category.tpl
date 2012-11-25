@@ -4,11 +4,11 @@
 		{include file='contacts_navigation.tpl'} 
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer_categories.php?store={$store->id}&id=0">{t}Categories{/t}</a> &rarr; {$category->get_smarty_tree('customer_categories.php')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{$store->get('Store Code')} {t}Customers{/t}</a> &rarr; <a href="customer_categories.php?store={$store->id}&id=0">{t}Categories{/t}</a> &rarr; {$category->get('Category XHTML Branch Tree')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
-				{*} {if isset($parent_category)} <button onclick="window.location='customer_categories.php?store_id={$store->id}&id={$parent_category->id}'"><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Name')}</button> {/if} <button onclick="window.location='customer_categories.php?store={$store->id}&id=0'"><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button> {*} <span class="main_title">{t}Category{/t}: {$category->get('Category Label')}</span> 
+				{*} {if isset($parent_category)} <button onclick="window.location='customer_categories.php?store_id={$store->id}&id={$parent_category->id}'"><img src="art/icons/arrow_up.png" alt=""> {$parent_category->get('Category Code')}</button> {/if} <button onclick="window.location='customer_categories.php?store={$store->id}&id=0'"><img src="art/icons/house.png" alt=""> {t}Customers Categories{/t}</button> {*} <span class="main_title">{t}Category{/t}: {$category->get('Category Label')}</span> 
 			</div>
 			<div class="buttons" style="float:right">
 				<button onclick="window.location='edit_customer_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}Add Subcategory{/t}</button> 

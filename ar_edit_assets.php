@@ -731,7 +731,7 @@ function edit_category() {
 
 
 		$key_dic=array(
-			'name'=>'Category Name'
+			'name'=>'Category Code'
 			,'id'=>'Category Key'
 			// ,'alias'=>'Staff Alias'
 			// ,'type'=>'Staff Type'
@@ -779,7 +779,7 @@ function edit_subcategory() {
 
 
 		$key_dic=array(
-			'name'=>'Category Name'
+			'name'=>'Category Code'
 			,'id'=>'Category Key'
 			// ,'alias'=>'Staff Alias'
 			// ,'type'=>'Staff Type'
@@ -788,7 +788,7 @@ function edit_subcategory() {
 		);
 		if (array_key_exists($_REQUEST['key'],$key_dic))
 			$key=$key_dic[$_REQUEST['key']];
-		if ($key=='subcategory_name')$key='Category Name';
+		if ($key=='subcategory_name')$key='Category Code';
 		echo "key=".$key;
 		$update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
 		echo " updte data=".$update_data;
@@ -4049,10 +4049,7 @@ function part_transactions() {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
+	
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -4099,7 +4096,6 @@ function part_transactions() {
 			'order_dir'=>$order_direction,
 			'nr'=>$number_results,
 			'sf'=>$start_from,
-			'where'=>$where,
 			'f_field'=>$f_field,
 			'f_value'=>$f_value,
 			'from'=>$from,
@@ -4115,7 +4111,6 @@ function part_transactions() {
 			'order_dir'=>$order_direction,
 			'nr'=>$number_results,
 			'sf'=>$start_from,
-			'where'=>$where,
 			'f_field'=>$f_field,
 			'f_value'=>$f_value,
 			'from'=>$from,

@@ -99,12 +99,12 @@ $paid_status=array(
 $smarty->assign('paid_status',$paid_status);
 
 
-$sql=sprintf("select `Category Key`,`Category Name` from `Category dimension` where `Category Subject`='Invoice'");
+$sql=sprintf("select `Category Key`,`Category Code` from `Category dimension` where `Category Subject`='Invoice'");
 $result=mysql_query($sql);
 
 $category=array();
 while($row=mysql_fetch_array($result)){
-	$category[$row['Category Key']]=array('name'=>$row['Category Name']);
+	$category[$row['Category Key']]=array('name'=>$row['Category Code']);
 }
 
 

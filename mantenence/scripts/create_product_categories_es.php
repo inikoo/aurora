@@ -34,64 +34,64 @@ $sql=sprintf("truncate `Category Dimension`;");
 mysql_query($sql);
 
 
-$data=array('Category Name'=>'hola','Category Subject'=>'Product');
+$data=array('Category Code'=>'hola','Category Subject'=>'Product');
 
 $cat=new Category('find create',$data);
 print_r($cat);
 exit;
 $nodes=new Nodes('`Category Dimension`');
-$data=array('`Category Name`'=>'Uso');
+$data=array('`Category Code`'=>'Uso');
 $nodes->add_new(0 , $data);
 
 
 
-$data=array('`Category Name`'=>'Material');
+$data=array('`Category Code`'=>'Material');
 $nodes->add_new(0 , $data);
-$data=array('`Category Name`'=>'Tema');
+$data=array('`Category Code`'=>'Tema');
 $nodes->add_new(0 , $data);
 
-$data=array('`Category Name`'=>'Otro','`Category Default`'=>'Yes');
+$data=array('`Category Code`'=>'Otro','`Category Default`'=>'Yes');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Velas');
+$data=array('`Category Code`'=>'Velas');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Jabón');
+$data=array('`Category Code`'=>'Jabón');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Incenso');
+$data=array('`Category Code`'=>'Incenso');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Terapias Holisticas');
+$data=array('`Category Code`'=>'Terapias Holisticas');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Productos de baño');
+$data=array('`Category Code`'=>'Productos de baño');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Decoración');
+$data=array('`Category Code`'=>'Decoración');
 $nodes->add_new(1 , $data);
 
-$data=array('`Category Name`'=>'Otro','`Category Default`'=>'Yes');
+$data=array('`Category Code`'=>'Otro','`Category Default`'=>'Yes');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Madera');
+$data=array('`Category Code`'=>'Madera');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Metal');
+$data=array('`Category Code`'=>'Metal');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Vidrio');
+$data=array('`Category Code`'=>'Vidrio');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Resina');
+$data=array('`Category Code`'=>'Resina');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Ceramica');
+$data=array('`Category Code`'=>'Ceramica');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Mineral');
+$data=array('`Category Code`'=>'Mineral');
 $nodes->add_new(2 , $data);
 
-$data=array('`Category Name`'=>'Ninguna','`Category Default`'=>'Yes');
+$data=array('`Category Code`'=>'Ninguna','`Category Default`'=>'Yes');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Navidad');
+$data=array('`Category Code`'=>'Navidad');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Halloween');
+$data=array('`Category Code`'=>'Halloween');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Amor');
+$data=array('`Category Code`'=>'Amor');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Animales');
+$data=array('`Category Code`'=>'Animales');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Esoterico');
+$data=array('`Category Code`'=>'Esoterico');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Fantasia');
+$data=array('`Category Code`'=>'Fantasia');
 $nodes->add_new(3 , $data);
 ?>

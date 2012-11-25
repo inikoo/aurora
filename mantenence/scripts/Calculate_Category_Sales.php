@@ -73,9 +73,9 @@ exit;
 
 
 $nodes=new Nodes('`Category Dimension`');
-//$data=array('`Category Name`'=>'Jewellery');
+//$data=array('`Category Code`'=>'Jewellery');
 //$nodes->add_new(1 , $data);
-//$data=array('`Category Name`'=>'Shop Accesories');
+//$data=array('`Category Code`'=>'Shop Accesories');
 //$nodes->add_new(1 , $data);
 
 $sql="delete from `Category Bridge` where `Subject`='Product' ";

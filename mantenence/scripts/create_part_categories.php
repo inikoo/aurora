@@ -10,6 +10,9 @@ include_once '../../class.Part.php';
 include_once '../../class.Category.php';
 include_once '../../class.Node.php';
 
+
+
+
 error_reporting(E_ALL);
 
 date_default_timezone_set('UTC');
@@ -42,7 +45,15 @@ $sql=sprintf("delete from `Category Bridge` where `Subject`='Part';");
 mysql_query($sql);
 
 
-$data=array('Category Warehouse Key'=>1,'Category Name'=>'Family Map','Category Subject'=>'Part');
+$data=array(
+			'Category Warehouse Key'=>1,
+			'Category Code'=>'Family Map',
+			'Category Subject'=>'Part',
+			'Category Branch Type'=>'Root',
+			'Category Max Deep'=>1,
+			'Category Warehouse Key'=>1,
+			'Category Subject Multiplicity'=>'No'
+			);
 $main_cat=new Category('find create',$data);
 
 
@@ -61,25 +72,21 @@ while ($row=mysql_fetch_assoc($res)) {
 				// print "xxx->".$family->data['Product Family Code']."\n";
 				$data=array(
 					'Category Parent Key'=>$main_cat->id,
-					'Category Warehouse Key'=>1,
-					'Category Name'=>$family->data['Product Family Code'],
+					'Category Code'=>$family->data['Product Family Code'],
 					'Category Label'=>$family->data['Product Family Name'],
-					'Category Subject'=>'Part');
+					'Category Show Subject User Interface'=>'No',
+					'Category Show Public New Subject'=>'No'
+					);
+				
+				print $part->sku."\r";
+				
+				$cat=$main_cat->create_children($data);
 
-				$cat=new Category('find create',$data);
+
+				$cat->associate_subject($part->sku);
 
 
-
-				$_data=array(
-					'category_key'=>$cat->id,
-					'parent_category_key'=>$main_cat->id,
-					'subject'=>'Part',
-					'subject_key'=>$part->sku,
-				);
-
-				associate_subject_to_category_radio($_data);
-				 $cat->update_number_of_subjects();
- $cat->update_children_data();
+			
  
 			}
 
@@ -87,80 +94,9 @@ while ($row=mysql_fetch_assoc($res)) {
 	}
 
 }
-$main_cat->update_number_of_subjects();
- $main_cat->update_children_data();
-
-function associate_subject_to_category_radio($data) {
-
-
-	$found=false;
-	$sql=sprintf("select count(*) as num from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		if ($row['num']>0)
-			$found=true;
-
-	}
-
-
-	if ($found) {
-
-	}
-
-	$old_category_key=0;
-	$sql=sprintf("select C.`Category Key` from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['parent_category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($result)) {
-		$old_category_key=$row['Category Key'];
-
-	}
-
-
-	$sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['parent_category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	mysql_query($sql);
-
-	$old_category=new Category($old_category_key);
-	if ($old_category->id)
-		$old_category->update_number_of_subjects();
-	$old_category->update_subjects_data();
-
-	$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,NULL)",
-		$data['category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	mysql_query($sql);
-	//print "$sql\n";
-	if (mysql_affected_rows()>0) {
-
-
-
-		$category=new Category($data['category_key']);
-		$category->update_number_of_subjects();
-		//$category->update_subjects_data();
-
-
-
-
-
-
-	}
-
-}
-
-$sql="UPDATE `dw`.`Warehouse Dimension` SET `Warehouse Family Category Key` = '".$main_cat->id."' WHERE `Warehouse Dimension`.`Warehouse Key` =1;"
+//$main_cat->update_number_of_subjects();
+// $main_cat->update_children_data();\
+$sql="UPDATE `Warehouse Dimension` SET `Warehouse Family Category Key` = '".$main_cat->id."' WHERE `Warehouse Dimension`.`Warehouse Key` =1;"
 
 
 ?>

@@ -6,6 +6,11 @@ include_once('common.php');
 var Dom   = YAHOO.util.Dom;
 var Event   = YAHOO.util.Event;
 
+
+
+
+
+
 var period='period_<?php echo $_SESSION['state']['part_categories']['period']?>';
 var avg='avg_<?php echo $_SESSION['state']['part_categories']['avg']?>';
 
@@ -258,6 +263,8 @@ this.table1.table_id=tableid;
 
 		    
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['part_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['history']['f_value']?>'};
+
+
 
 
 

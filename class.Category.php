@@ -37,7 +37,7 @@ class Category extends DB_Table {
 	function get_data($tipo,$tag,$tag2=false) {
 		switch ($tipo) {
 		case 'name_store':
-			$sql=sprintf("select * from `Category Dimension` where `Category Name`=%s and `Category Store Key`=%d",prepare_mysql($tag),$tag2);
+			$sql=sprintf("select * from `Category Dimension` where `Category Code`=%s and `Category Store Key`=%d",prepare_mysql($tag),$tag2);
 			break;
 		default:
 			$sql=sprintf("select * from `Category Dimension` where `Category Key`=%d",$tag);
@@ -104,10 +104,10 @@ class Category extends DB_Table {
 		$fields=array();
 
 
-		$sql=sprintf("select `Category Key` from `Category Dimension` where  `Category Parent Key`=%d and `Category Store Key`=%d and `Category Name`=%s ",
+		$sql=sprintf("select `Category Key` from `Category Dimension` where  `Category Parent Key`=%d and `Category Store Key`=%d and `Category Code`=%s ",
 			$data['Category Parent Key'],
 			$data['Category Store Key'],
-			prepare_mysql($data['Category Name'])
+			prepare_mysql($data['Category Code'])
 
 		);
 		//print_r($fields);
@@ -143,26 +143,30 @@ class Category extends DB_Table {
 	function create($data) {
 
 		if ($data['Category Label']=='' ) {
-			$data['Category Label']=$data['Category Name'];
+			$data['Category Label']=$data['Category Code'];
 		}
 
 		//print_r($data);
 
-		// $data=array('`Category Name`'=>$data['Category Name']);
+		// $data=array('`Category Code`'=>$data['Category Code']);
 
 		$nodes=new Nodes('`Category Dimension`');
 		$nodes->add_new($data['Category Parent Key'] , $data);
 
 		if ($nodes->id) {
+
+
+
+
 			$this->get_data('id',$nodes->id);
 			//print_r($this->data);
 
 			if ($this->data['Category Parent Key']==0) {
-				$abstract=_('Category')." (".$this->data['Category Subject'].")  ".$this->data['Category Name']." "._('Created');
-				$details=_trim(_('New Category')." (".$this->data['Category Subject'].")  \"".$this->data['Category Name']."\"  "._('added'));
+				$abstract=_('Category')." (".$this->data['Category Subject'].")  ".$this->data['Category Code']." "._('Created');
+				$details=_trim(_('New Category')." (".$this->data['Category Subject'].")  \"".$this->data['Category Code']."\"  "._('added'));
 			} else {
-				$abstract=_('Category')." (".$this->data['Category Subject'].")  ".$this->data['Category Name']." "._('Created');
-				$details=_trim(_('New Category')." ".$this->data['Category Subject'].") \"".$this->data['Category Name']."\"  "._('added'));
+				$abstract=_('Category')." (".$this->data['Category Subject'].")  ".$this->data['Category Code']." "._('Created');
+				$details=_trim(_('New Category')." ".$this->data['Category Subject'].") \"".$this->data['Category Code']."\"  "._('added'));
 
 			}
 
@@ -190,6 +194,9 @@ class Category extends DB_Table {
 			}
 
 
+			$this->update_branch_tree();
+
+
 
 			$parent_category=new Category($data['Category Parent Key']);
 
@@ -199,6 +206,42 @@ class Category extends DB_Table {
 
 
 		}
+
+	}
+
+
+
+	function create_children($data) {
+
+		if ($this->data['Category Deep']>$this->data['Category Max Deep']) {
+
+			$this->msg='max deep';
+			$this->error=true;
+			return;
+		}
+
+
+		$branch_type=$this->data['Category Branch Type'];
+		$data['Category Subject']=$this->data['Category Subject'];
+		$data['Category Subject Key']=$this->data['Category Subject Key'];
+
+		$data['Category Warehouse Key']=$this->data['Category Warehouse Key'];
+		$data['Category Store Key']=$this->data['Category Store Key'];
+		$data['Category Store Key']=$this->data['Category Store Key'];
+		$data['Category Branch Type']='Head';
+		$data['Category Subject Multiplicity']=$this->data['Category Subject Multiplicity'];
+
+		$data['Category Root Key']=$this->data['Category Root Key'];
+		$data['Category Parent Key']=$this->id;
+
+
+		$subcategory=new Category('find create',$data);
+
+
+		return $subcategory;
+
+
+
 
 	}
 
@@ -212,6 +255,12 @@ class Category extends DB_Table {
 
 		if (isset($this->data[$key]))
 			return $this->data[$key];
+
+
+		if ($key=='Subjects Not Assigned' or $key=='Number Subjects') {
+			return number($this->data['Category '.$key]);
+		}
+
 
 
 
@@ -246,29 +295,69 @@ class Category extends DB_Table {
 		return false;
 	}
 
-	function get_smarty_tree($link=false) {
-		if (!$link)
-			return;
 
-		//print_r($this);
+
+	function update_branch_tree() {
+
+		//'Product','Supplier','Customer','Family','Invoice','Part'
+
+		switch ($this->data['Category Subject']) {
+		case('Part'):
+			$link='part_categories.php';
+			break;
+		case('Customer'):
+			$link='customer_categories.php';
+			break;
+		case('Invoice'):
+			$link='invoice_categories.php';
+			break;
+		case('Supplier'):
+			$link='supplier_categories.php';
+			break;
+		case('Product'):
+			$link='product_categories.php';
+			break;
+		case('Family'):
+			$link='family_categories.php';
+			break;
+		default:
+			$link='category.php';
+		}
+
 		$category_keys=preg_split('/\>/',preg_replace('/\>$/','',$this->data['Category Position']));
 
-		$sql=sprintf("select `Category Name`,`Category Key` from `Category Dimension` where `Category Key` in (%s)",join(',',$category_keys));
+		$sql=sprintf("select `Category Code`,`Category Key` from `Category Dimension` where `Category Key` in (%s)",join(',',$category_keys));
 		//print $sql;
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-			$category_data[$row['Category Key']]=$row['Category Name'];
+			$category_data[$row['Category Key']]=$row['Category Code'];
 		}
-		$tree='';
+		$xhtml_tree='';
+		$plain_tree='';
 		foreach ($category_keys as $key) {
 			if (array_key_exists($key, $category_data)) {
-				$tree.=sprintf(" <a href='%s?id=%d'>%s</a> &rarr;",$link,$key,$category_data[$key]);
+				$xhtml_tree.=sprintf(" <a href='%s?id=%d'>%s</a> &rarr;",$link,$key,$category_data[$key]);
+				$plain_tree.=sprintf(" %s >",$category_data[$key]);
 			}
 		}
-		$tree=preg_replace('/\s*\&rarr\;$/', '', $tree);
-		return $tree;
+		$xhtml_tree=preg_replace('/\s*\&rarr\;$/', '', $xhtml_tree);
+		$plain_tree=preg_replace('/\s*\>$/', '', $plain_tree);
+
+		$this->data['Category XHTML Branch Tree']=$xhtml_tree;
+		$this->data['Category Plain Branch Tree']=$plain_tree;
+
+		$sql=sprintf("update `Category Dimension` set `Category XHTML Branch Tree`=%s ,`Category Plain Branch Tree`=%s where `Category Key`=%d ",
+			prepare_mysql($this->data['Category XHTML Branch Tree']),
+			prepare_mysql($this->data['Category Plain Branch Tree']),
+			$this->id
+		);
+		mysql_query($sql);
+
+
 
 	}
+
+
 
 
 
@@ -301,8 +390,8 @@ class Category extends DB_Table {
 		mysql_query($sql);
 
 		$history_data=array(
-			'History Abstract'=>_('Category deleted').' ('.$this->data['Category Name'].')'
-			,'History Details'=>_trim(_('Category')." ".$this->data['Category Name'].' ('.$this->data['Category Key'].') '._('has been permanently') )
+			'History Abstract'=>_('Category deleted').' ('.$this->data['Category Code'].')'
+			,'History Details'=>_trim(_('Category')." ".$this->data['Category Code'].' ('.$this->data['Category Key'].') '._('has been permanently') )
 			,'Action'=>'deleted'
 		);
 		$this->add_history($history_data);
@@ -344,7 +433,7 @@ class Category extends DB_Table {
 
 
 	function get_children_objects() {
-		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d order by `Category Name` ",
+		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d order by `Category Code` ",
 			$this->id
 		);
 		//  print $sql;
@@ -359,7 +448,7 @@ class Category extends DB_Table {
 	}
 
 	function get_children_objects_new_subject() {
-		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show New Subject`='Yes' order by `Category Name` ",
+		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Subject User Interface`='Yes' order by `Category Code` ",
 			$this->id
 		);
 		//  print $sql;
@@ -374,7 +463,7 @@ class Category extends DB_Table {
 	}
 
 	function get_children_objects_public_edit() {
-		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public Edit`='Yes' order by `Category Name` ",
+		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public Edit`='Yes' order by `Category Code` ",
 			$this->id
 		);
 		//  print $sql;
@@ -390,7 +479,7 @@ class Category extends DB_Table {
 
 
 	function get_children_objects_public_new_subject() {
-		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public New Subject`='Yes' order by `Category Name` ",
+		$sql = sprintf("SELECT `Category Key`   FROM `Category Dimension` WHERE `Category Parent Key`=%d and `Category Show Public New Subject`='Yes' order by `Category Code` ",
 			$this->id
 		);
 		//  print $sql;
@@ -446,12 +535,33 @@ class Category extends DB_Table {
 
 		}
 
+
 		$sql=sprintf("update `Category Dimension` set `Category Children`=%d ,`Category Children Deep`=%d where `Category Key`=%d ",
 			$number_of_children,
 			$max_deep,
 			$this->id
 		);
 		mysql_query($sql);
+		//print "$sql\n";
+
+		if ($this->data['Category Branch Type']!='Root') {
+			if ($number_of_children) {
+				$sql=sprintf("update `Category Dimension` set `Category Branch Type`='Head' where `Category Key`=%d ",
+					$this->id
+				);
+				mysql_query($sql);
+			}else {
+
+				$sql=sprintf("update `Category Dimension` set `Category Branch Type`='Node' where `Category Key`=%d ",
+					$this->id
+				);
+				mysql_query($sql);
+			}
+
+
+		}
+
+
 
 	}
 	function update_number_of_subjects() {
@@ -468,64 +578,90 @@ class Category extends DB_Table {
 			$this->id
 		);
 		mysql_query($sql);
-
+		// print "$sql\n";
 		$this->update_no_assigned_subjects();
-		//        print "$sql\n";
+
 	}
 	function update_no_assigned_subjects() {
 		$children_keys=$this->get_children_keys();
 		$no_assigned_subjects=0;
 		$assigned_subjects=0;
+		$children_no_assigned_subjects=0;
+		$children_assigned_subjects=0;
+		$total_subjects=0;
 
-		if (count($children_keys)>0) {
+		switch ($this->data['Category Subject']) {
+		case('Part'):
 
-			//print_r($this->data);
-			switch ($this->data['Category Subject']) {
-			case('Part'):
+			$sql=sprintf("select count(*) as num from `Part Warehouse Bridge` where `Warehouse Key`=%d",
+				$this->data['Category Warehouse Key']);
+			break;
+		case('Supplier'):
 
-				$sql=sprintf("select count(*) as num from `Part Warehouse Bridge` where `Warehouse Key`=%d",
-					$this->data['Category Warehouse Key']);
-				break;
-			case('Supplier'):
-
-				$sql=sprintf("select count(*) as num from `Supplier Product Dimension` ");
-				break;
-			default:
-				$table=$this->data['Category Subject'];
-				$store=sprintf(" where `%s Store Key`=%d",
-					addslashes($this->data['Category Subject']),
-					$this->data['Category Store Key']);
-				$sql=sprintf("select count(*) as num from `%s Dimension` %s",$table,$store);
-				break;
-			}
-
-
-			//print "$sql\n";
-			$res=mysql_query($sql);
-			if ($row=mysql_fetch_assoc($res)) {
-				$total_subjects=$row['num'];
-
-				$sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key` in (%s)  ",
-					join(',',$children_keys)
-				);
-				$res=mysql_query($sql);
-				$assigned_subjects=0;
-				if ($row=mysql_fetch_assoc($res)) {
-					$assigned_subjects=$row['num'];
-				}
-				$no_assigned_subjects=$total_subjects-$assigned_subjects;
+			$sql=sprintf("select count(*) as num from `Supplier Product Dimension` ");
+			break;
+		default:
+			$table=$this->data['Category Subject'];
+			$store=sprintf(" where `%s Store Key`=%d",
+				addslashes($this->data['Category Subject']),
+				$this->data['Category Store Key']);
+			$sql=sprintf("select count(*) as num from `%s Dimension` %s",$table,$store);
+			break;
+		}
 
 
-			}
+		//print "$sql\n";
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			$total_subjects=$row['num'];
 
 		}
 
-		$sql=sprintf("update `Category Dimension` set `Category Children Subjects Not Assigned`=%d,`Category Children Subjects Assigned`=%d where `Category Key`=%d ",
-			$no_assigned_subjects,
-			$assigned_subjects,
+
+		$sql=sprintf("select COUNT(`Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
 			$this->id
 		);
-		// print "$sql\n";
+		$res=mysql_query($sql);
+		$assigned_subjects=0;
+		if ($row=mysql_fetch_assoc($res)) {
+			$assigned_subjects=$row['num'];
+		}
+		$no_assigned_subjects=$total_subjects-$assigned_subjects;
+
+
+		if (count($children_keys)>0) {
+
+
+			$sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key` in (%s)  ",
+				join(',',$children_keys)
+			);
+			$res=mysql_query($sql);
+			$children_assigned_subjects=0;
+			if ($row=mysql_fetch_assoc($res)) {
+				$children_assigned_subjects=$row['num'];
+			}
+			$children_no_assigned_subjects=$total_subjects-$children_assigned_subjects;
+
+
+
+
+
+		}
+
+		$sql=sprintf("update `Category Dimension` set  `Category Subjects Not Assigned`=%d,  `Category Children Subjects Not Assigned`=%d,`Category Children Subjects Assigned`=%d where `Category Key`=%d ",
+			$no_assigned_subjects,
+			$children_no_assigned_subjects,
+			$children_assigned_subjects,
+			$this->id
+		);
+		mysql_query($sql);
+		$sql=sprintf("update `Category Dimension` set  `Category Subjects Not Assigned`=%d, where `Category Root Key`=%d ",
+			$no_assigned_subjects,
+			$this->data['Category Root Key']
+		);
+
+
+
 		mysql_query($sql);
 
 	}
@@ -1175,7 +1311,7 @@ class Category extends DB_Table {
 
 
 	function update_part_category_sales($interval) {
-
+		return;
 		$to_date='';
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 		setlocale(LC_ALL, 'en_GB');
@@ -1721,18 +1857,37 @@ class Category extends DB_Table {
 
 	function get_other_value($subject,$subject_key) {
 		$other_values='';
-		$sql=sprintf("select ifnull(group_concat(Distinct `Customer Other Note`),'') as other_value from `Category Bridge` B left join  `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  where `Subject`=%s and `Subject Key`=%d and `Customer Other Note`!='' and  `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
+		$sql=sprintf("select ifnull(group_concat(Distinct `Other Note`),'') as other_value from `Category Bridge` B left join  `Category Dimension` C on (C.`Category Key`=B.`Category Key`)  where `Subject`=%s and `Subject Key`=%d and `Other Note`!='' and  `Is Category Field Other`='Yes' and `Category Parent Key`=%d",
 			prepare_mysql($subject),
 			$subject_key,
 			$this->id
 		);
+		
 		//print $sql;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($result)) {
 			$other_value=$row['other_value'];
 		}
+		
+		
+		
 		return $other_value;
 	}
+
+	function update_other_value($subject_key,$other_value){
+	
+		$sql=sprintf("update `Category Bridge` set `Other Note` =%s where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d  ",
+		prepare_mysql($other_value),
+		$this->id,
+		prepare_mysql($this->data['Category Subject']),
+		$subject_key
+		
+		);
+		//print $sql;
+		mysql_query($sql);
+	
+	}
+
 
 	function number_of_children_with_other_value($subject,$subject_key) {
 
@@ -1779,5 +1934,175 @@ class Category extends DB_Table {
 		}
 		return $children_key_is_other_value;
 	}
+
+	function get_parent_keys() {
+		$parent_keys=array();
+		$category_tree_keys=preg_split('/\>/',preg_replace('/\>$/','',$this->data['Category Position']));
+		//print_r($this->data['Category Position']);
+		array_pop($category_tree_keys);
+		return $category_tree_keys;
+	}
+
+
+
+
+	function disassociate_subject($subject_key) {
+
+		$sql=sprintf("delete from `Category Bridge` where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
+			$this->id,
+			prepare_mysql($this->data['Category Subject']),
+			$subject_key
+		);
+		mysql_query($sql);
+		$deleted= mysql_affected_rows();
+		if ($deleted) {
+			$this->update_number_of_subjects();
+			$this->update_subjects_data();
+			foreach ($this->get_parent_keys() as $parent_key) {
+
+
+
+
+				$sql=sprintf("delete from `Category Bridge` where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
+					$parent_key,
+					prepare_mysql($this->data['Category Subject']),
+					$subject_key
+				);
+				mysql_query($sql);
+
+				if (mysql_affected_rows()) {
+					$parent_category=new Category($parent_key);
+
+					$parent_category->update_number_of_subjects();
+					$parent_category->update_subjects_data();
+
+				}
+			}
+
+			// NOTE: no tested
+			if ($this->data['Category Subject Multiplicity']=='Yes') {
+				$sql=sprintf("select B.`Category Key` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where `Category Root Key`=%d and `Subject`=%s and `Subject Key`=%d and `Category Branch Type`='Head'",
+					$this->data['Category Root Key'],
+					prepare_mysql($this->data['Category Subject']),
+					$subject_key
+				);
+				$res=mysql_query($sql);
+				while($row=mysql_fetch_assoc($res)){
+					$category=new Category($row['Category Key']);	
+					foreach ($category->get_parent_keys() as $parent_key) {
+					$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d, NULL,%d)",
+						$parent_key,
+						prepare_mysql($category->data['Category Subject']),
+						$subject_key,
+						$subject_key
+					);
+					mysql_query($sql);
+					if (mysql_affected_rows()) {
+						$parent_category=new Category($parent_key);
+						$parent_category->update_number_of_subjects();
+						$parent_category->update_subjects_data();
+
+					}
+				}
+				
+				}
+
+			}
+
+
+
+
+		}
+		
+		return $deleted;
+
+	}
+
+	function associate_subject($subject_key,$force_associate=false,$other_value='') {
+
+
+		if ($this->data['Category Branch Type']=='Root') {
+			$this->msg=_("Subject can't be associated with category").' (Node is Root)';
+			return false;
+		}
+
+		if ($this->data['Category Subject Multiplicity']=='Yes' or $force_associate) {
+
+
+
+			$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,%s,%d)",
+				$this->id,
+				prepare_mysql($this->data['Category Subject']),
+				$subject_key,
+				prepare_mysql($other_value),
+				$subject_key
+			);
+			mysql_query($sql);
+
+			$inserted= mysql_affected_rows();
+			if ($inserted) {
+				$this->update_number_of_subjects();
+				$this->update_subjects_data();
+
+
+
+				foreach ($this->get_parent_keys() as $parent_key) {
+					$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d, NULL,%d)",
+						$parent_key,
+						prepare_mysql($this->data['Category Subject']),
+						$subject_key,
+						$subject_key
+					);
+					mysql_query($sql);
+					if (mysql_affected_rows()) {
+						$parent_category=new Category($parent_key);
+						$parent_category->update_number_of_subjects();
+						$parent_category->update_subjects_data();
+
+					}
+				}
+
+				return true;
+			}
+			else {
+				$this->msg=_("Subject can't be associated with category");
+				return false;
+			}
+
+		}
+		else {
+
+			$parents_where='';
+			$parent_keys=$this->get_parent_keys();
+
+
+
+			$found=false;
+			$sql=sprintf("select B.`Category Key` from `Category Bridge` B left join `Category Dimension` C    on  (C.`Category Key`=B.`Category Key`)   where  `Category Branch Type`='Head' and `Category Root Key`=%d  and B.`Category Key`!=%d and `Subject`=%s and `Subject Key`=%d",
+				$this->data['Category Root Key'],
+				$this->id,
+				prepare_mysql($this->data['Category Subject']),
+				$subject_key
+			);
+			$res=mysql_query($sql);
+
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$other_category=new Category($row['Category Key']);
+				$other_category->disassociate_subject($subject_key);
+
+
+			}
+
+			return $this->associate_subject($subject_key,true,$other_value);
+
+
+
+
+
+		}
+
+	}
+
 
 }

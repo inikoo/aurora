@@ -379,7 +379,9 @@ class PartLocation extends DB_Table {
 
 		if ($qty_change!=0 or $value_change!=0) {
 
-			$details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+
+
+			$details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust quantity').' '.$location_link.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 			if ($note) {
 				$details.=', '.$note;
 
@@ -912,6 +914,8 @@ class PartLocation extends DB_Table {
 			$date=$data['Date'];
 			
 			
+			
+	
 		$this->deleted=false;
 		if ( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0) {
 			$this->deleted_msg=_('There is still stock in this location');
@@ -1232,7 +1236,11 @@ class PartLocation extends DB_Table {
 
 
 			if ($interval['To']) {
-
+				if(!isset($interval['From'])){
+					print_r($this);
+					print_r($interval);
+		exit;
+				}
 
 				if ($date>=date('U',strtotime($interval['From']))  and  $date<=date('U',strtotime($interval['To']))  ) {
 					return true;

@@ -113,7 +113,7 @@ $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['supplier_categories']['subcategories']['f_value']);
 
 $filter_menu=array(
-	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Category Name'),'label'=>_('Name')),
+	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Category Code'),'label'=>_('Name')),
 );
 
 

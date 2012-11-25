@@ -144,7 +144,7 @@ $_SESSION['state']['report_sales_with_no_tax']['country']=$corporate_country_2al
 
  
  $tax_categories=array();
- $sql=sprintf("select count(distinct `Invoice Key`) as invoices, count(distinct `Invoice Customer Key`) as customers, `Invoice Tax Code`,`Tax Category Key`,`Tax Category Code`,`Tax Category Name` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where `Invoice Date`>=%s and  `Invoice Date`<=%s  group by `Invoice Tax Code`",
+ $sql=sprintf("select count(distinct `Invoice Key`) as invoices, count(distinct `Invoice Customer Key`) as customers, `Invoice Tax Code`,`Tax Category Key`,`Tax Category Name`,`Tax Category Code` from `Invoice Dimension` left join   `Tax Category Dimension`  on (`Tax Category Code`=`Invoice Tax Code`) where `Invoice Date`>=%s and  `Invoice Date`<=%s  group by `Invoice Tax Code`",
  prepare_mysql($from),
   prepare_mysql($to)
  );

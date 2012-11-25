@@ -8679,7 +8679,7 @@ function list_product_categories() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Category Name` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
 
 
 
@@ -8777,7 +8777,7 @@ function list_product_categories() {
 
 	}
 	elseif ($order=='name')
-		$order='`Category Name`';
+		$order='`Category Code`';
 	elseif ($order=='active')
 		$order='`Product Category For Public Sale Products`';
 	elseif ($order=='outofstock')
@@ -8822,7 +8822,7 @@ function list_product_categories() {
 
 	// print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-		//$name=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Name']);
+		//$name=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Code']);
 		//$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Code']);
 
 		if ($percentages) {
@@ -9106,9 +9106,9 @@ function list_product_categories() {
 			$profit=$tprofit;
 		}
 		if ($stores_mode=='grouped')
-			$name=sprintf('<a href="product_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+			$name=sprintf('<a href="product_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
 		else
-			$name=$row['Product Category Key'].' '.$row['Category Name']." (".$row['Product Category Store Key'].")";
+			$name=$row['Product Category Key'].' '.$row['Category Code']." (".$row['Product Category Store Key'].")";
 		$adata[]=array(
 			//'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
 			'id'=>$row['Category Key'],

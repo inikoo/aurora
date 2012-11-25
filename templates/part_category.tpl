@@ -4,14 +4,15 @@
 		{include file='locations_navigation.tpl'} 
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php">{t}Inventory{/t}</a> &rarr; <a href="part_categories.php?id=0&warehouse_id={$warehouse->id}">{t}Parts Categories{/t}</a> &rarr; {$category->get_smarty_tree('part_categories.php')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php">{t}Inventory{/t}</a> &rarr; <a href="part_categories.php?id=0&warehouse_id={$warehouse->id}">{t}Parts Categories{/t}</a> &rarr; {$category->get('Category XHTML Branch Tree')} </span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:left">
 				<span class="main_title"> {t}Category{/t}: {$category->get('Category Label')} </span> 
 			</div>
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_part_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}Add Subcategory{/t}</button> <button id="new_part"><img src="art/icons/add.png" alt=""> {t}Add Part{/t}</button> 
+				<button onclick="window.location='edit_part_category.php?id={$category->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Category{/t}</button> 
+				
 			</div>
 			<div style="clear:both">
 			</div>
@@ -23,7 +24,6 @@
 		<li style="{if $category->get('Category Children')==0 and  $category->get('Category Number Subjects')>0}display:none{/if}"> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Category Children')})</span></span></li>
 		<li style="{if $category->get('Category Number Subjects')==0 and  $category->get('Category Children')>0 }display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t}</span></span></li>
 		<li style="{if $category->get('Category Number Subjects')==0 }display:none{/if}"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
-		<li style=""> <span class="item {if $block_view=='no_assigned'}selected{/if}" id="sales"> <span> {t}Parts no assigned{/t} ({$category->get('Category Children Subjects Not Assigned')})</span></span></li>
 		<li> <span style="display:none" class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
@@ -258,22 +258,7 @@
 		<div id="table2" class="data_table_container dtable btable">
 		</div>
 	</div>
-	<div id="block_no_assigned" style="{if $block_view!='no_assigned'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<div id="children_table" class="data_table">
-			<span class="clean_table_title">{t}Parts not assigned{/t}</span> 
-			<div id="table_type" class="table_type">
-				<div style="font-size:90%" id="transaction_chooser">
-					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.NotKeeping}selected{/if} label_part_NotKeeping" id="elements_NotKeeping" table_type="NotKeeping">{t}NotKeeping{/t} (<span id="elements_orders_number">{$elements_number.NotKeeping}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Discontinued}selected{/if} label_part_Discontinued" id="elements_Discontinued" table_type="Discontinued">{t}Discontinued{/t} (<span id="elements_orders_number">{$elements_number.Discontinued}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.LastStock}selected{/if} label_part_LastStock" id="elements_LastStock" table_type="LastStock">{t}LastStock{/t} (<span id="elements_orders_number">{$elements_number.LastStock}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Keeping}selected{/if} label_part_Keeping" id="elements_Keeping" table_type="Keeping">{t}Keeping{/t} (<span id="elements_orders_number">{$elements_number.Keeping}</span>)</span> 
-				</div>
-			</div>
-			<div class="table_top_bar">
-			</div>
-		
-			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0} 
-			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
-			</div>
-		</div>
-	</div>
+	
 </div>
 {include file='new_category_splinter.tpl'} 
 <div id="rppmenu0" class="yuimenu">

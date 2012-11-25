@@ -2302,7 +2302,7 @@ class DeliveryNote extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-
+		
 
 		$this->update_xhtml_state();
 		foreach ($this->get_orders_objects() as $order) {
@@ -2441,7 +2441,7 @@ class DeliveryNote extends DB_Table {
 
 function get_transaction_value($sku,$qty,$date=false){
 
-return 0;
+
 
 $sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
 				,prepare_mysql($date)

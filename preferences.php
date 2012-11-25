@@ -67,6 +67,7 @@ $backgrounds=array();
 $sql=sprintf("select * from `Theme Background Dimension`  TB left join `Theme Background Bridge` B on (TB.`Theme Background Key`=B.`Theme Background Key`) where `Theme Key`=%d order by `Theme Background Name`",
 $user->data['User Theme Key']
 );
+$sql=sprintf("select * from `Theme Background Dimension`  TB  order by `Theme Background Name`");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
     $backgrounds[]=array('name'=>$row['Theme Background Name'],'key'=>$row['Theme Background Key']);

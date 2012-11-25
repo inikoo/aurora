@@ -399,7 +399,7 @@ sku:tr.getAttribute('key')
 ,description:tr.getAttribute('description')
 };
 
-salect_part_from_list(data)
+select_part_from_list(data)
 
 }
 function go_to_result(){
@@ -409,12 +409,12 @@ sku:this.getAttribute('key')
 ,description:this.getAttribute('description')
 };
 
-salect_part_from_list(data)
+select_part_from_list(data)
 
 }
 */
 
-function salect_part_from_list(oArgs){
+function select_part_from_list(oArgs){
 
 sku=tables.table1.getRecord(oArgs.target).getData('sku')
 
@@ -767,15 +767,7 @@ var tableid=1;
 		      
 		      this.dataSource1 = new YAHOO.util.DataSource("ar_quick_tables.php?tipo=part_list&tableid=1");
 		      
-		      
-		      
-		      
-	
-		      
-		      
-		      
-		      
-		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+			      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource1.connXhrMode = "queueRequests";
 		      	    this.dataSource1.table_id=tableid;
 
@@ -827,7 +819,7 @@ var tableid=1;
      
                    this.table1.subscribe("rowMouseoverEvent", this.table1.onEventHighlightRow);
        this.table1.subscribe("rowMouseoutEvent", this.table1.onEventUnhighlightRow);
-      this.table1.subscribe("rowClickEvent", salect_part_from_list);
+      this.table1.subscribe("rowClickEvent", select_part_from_list);
      
 
                    

@@ -42,10 +42,10 @@ $sql=sprintf("delete from `Category Bridge` where `Subject`='Part';");
 mysql_query($sql);
 
 
-$data=array('Category Warehouse Key'=>1,'Category Name'=>'Temas','Category Subject'=>'Part');
+$data=array('Category Warehouse Key'=>1,'Category Code'=>'Temas','Category Subject'=>'Part');
 $main_cat1=new Category('find create',$data);
 
-$data=array('Category Warehouse Key'=>1,'Category Name'=>'Joyeria','Category Subject'=>'Part', 'Category Parent Key'=>$main_cat1->id);
+$data=array('Category Warehouse Key'=>1,'Category Code'=>'Joyeria','Category Subject'=>'Part', 'Category Parent Key'=>$main_cat1->id);
 $main_cat=new Category('find create',$data);
 
 $sql=sprintf("select * from `Part Dimension`");

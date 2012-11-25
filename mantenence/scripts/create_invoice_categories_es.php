@@ -38,14 +38,14 @@ $sql=sprintf("delete  from `Invoice Category Dimension` ");
 mysql_query($sql);
 
 
-$data=array('Category Store Key'=>1,'Category Name'=>'ES','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]=="ES" )');
+$data=array('Category Store Key'=>1,'Category Code'=>'ES','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]=="ES" )');
 $cat=new Category('find create',$data);
-$data=array('Category Store Key'=>1,'Category Name'=>'Exporta','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]!="ES"       )');
+$data=array('Category Store Key'=>1,'Category Code'=>'Exporta','Category Subject'=>'Invoice','Category Function'=>'if($data["Invoice Billing Country 2 Alpha Code"]!="ES"       )');
 $cat=new Category('find create',$data);
 
 
 
 
-//$data=array('Category Store Key'=>1,'Category Name'=>'Staff','Category Subject'=>'Invoice','Category Function'=>'');
+//$data=array('Category Store Key'=>1,'Category Code'=>'Staff','Category Subject'=>'Invoice','Category Function'=>'');
 //$cat=new Category('find create',$data);
 ?>

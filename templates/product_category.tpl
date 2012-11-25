@@ -8,7 +8,7 @@
  </div> 
   
 <div style="clear:left;">
-  <h1>{t}Category{/t}: {$category->get('Category Name')}</h1>
+  <h1>{t}Category{/t}: {$category->get('Category Code')}</h1>
 </div>
 
 

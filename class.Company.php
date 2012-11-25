@@ -27,32 +27,7 @@ class Company extends DB_Table {
     var $candidate_companies=array();
     var $number_candidate_companies=0;
     var $last_associated_contact_key=0;
-    /*
-      Constructor: Company
-
-      Initializes the class, Search/Load or Create for the data set
-
-      Parameters:
-      arg1 -    (optional) Could be the tag for the Search Options or the Company Key for a simple object key search
-      arg2 -    (optional) Data used to search or create the object
-
-      Returns:
-      void
-
-      Example:
-      (start example)
-      // Load data from `Company Dimension` table where  `Company Key`=3
-      $key=3;
-      $company = New Company($key);
-
-      // Insert row to `Company Dimension` table
-      $data=array();
-      $company = New Company('new',$data);
-
-
-      (end example)
-
-    */
+   
     function Company($arg1=false,$arg2=false) {
 
         $this->table_name='Company';

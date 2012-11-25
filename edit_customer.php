@@ -411,8 +411,7 @@ $smarty->assign('js_files',$js_files);
 $categories=array();
 $categories_value=array();
 
-$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Name` in
-                 ('Type of Business','Referrer') and `Category Subject`='Customer' and `Category Deep`=1 and
+$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Show Subject User Interface`='YES' and `Category Subject`='Customer' and `Category Branch Type`='Root' and
                  `Category Store Key`=%d",$customer->data['Customer Store Key']);
 
 //print $sql;
@@ -450,7 +449,7 @@ foreach ($categories_value as $key=>$value) {
 		$result=mysql_query($sql);
 		$row=mysql_fetch_assoc($result);
 		$enable_other[$category->data['Category Parent Key']]=true;
-		$other_value[$category->data['Category Parent Key']]=$row['Customer Other Note'];
+		$other_value[$category->data['Category Parent Key']]=$row['Other Note'];
 
 	}else {
 		$enable_other[$category->data['Category Parent Key']]=false;
@@ -628,7 +627,7 @@ $smarty->assign('filter100',$tipo_filter100);
 $smarty->assign('filter_value100','');
 
 $smarty->display('edit_customer.tpl');
-exit();
+
 
 
 

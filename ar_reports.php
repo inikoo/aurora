@@ -4582,8 +4582,12 @@ function list_intrastat() {
 	$_order=$order;
 	$_dir=$order_direction;
 
+	
+	
 
-	$where=sprintf("where `Current Dispatching State`='Dispatched' and MONTH(`Invoice Date`)=%d  and YEAR(`Invoice Date`)=%d and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",$m,$y);
+	$where=sprintf("where `Current Dispatching State`='Dispatched' and `Invoice Date`>='%d-%02d-01 00:00:00'  and `Invoice Date`<'%d-%02d-01 00:00:00'  and `Destination Country 2 Alpha Code` in ('AT','BE','BG','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES') ",
+	$y,$m,($m==12?$y+1:$y),($m==12?1:$m+1)
+	);
 
 
 	$wheref='';

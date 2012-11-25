@@ -847,6 +847,28 @@ $default_state=array(
 			'f_value'=>'','f_show'=>false,
 
 		),
+		'edit_parts'=>array(
+
+			'order'=>'sku',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'where'=>'where true',
+			'f_field'=>'sku',
+			'f_value'=>'','f_show'=>false,
+
+		),
+		'no_assigned_parts'=>array(
+
+			'order'=>'sku',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>100,
+			'where'=>'where true',
+			'f_field'=>'sku',
+			'f_value'=>'','f_show'=>false,
+
+		),
 
 
 	),
