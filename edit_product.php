@@ -161,7 +161,7 @@ $smarty->assign('currency',$store->data['Store Currency Code']);
 
 
 
-/* $sql=sprintf("select `Category Position`,`Category Name`,CD.`Category Key`, if((select PCB.`Subject Key` from `Category Bridge` PCB where  `Category Key`=CD.`Category Key` and `Subject Key`=%d  and `Subject`='Product') is null,0,1)as selected from `Category Dimension` CD where `Category Subject`='Product'  and `Category Deep`=1 order by `Category Order`",$product->pid); */
+/* $sql=sprintf("select `Category Position`,`Category Code`,CD.`Category Key`, if((select PCB.`Subject Key` from `Category Bridge` PCB where  `Category Key`=CD.`Category Key` and `Subject Key`=%d  and `Subject`='Product') is null,0,1)as selected from `Category Dimension` CD where `Category Subject`='Product'  and `Category Deep`=1 order by `Category Order`",$product->pid); */
 
 /* $res=mysql_query($sql); */
 /* $cats=array(); */
@@ -239,8 +239,6 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu1',$paginator_menu);
 
 $smarty->assign('filter1','used_in');
 $smarty->assign('filter_value1','');
@@ -251,6 +249,8 @@ $filter_menu=array(
 		   );
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu['used_in']['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
 $smarty->display('edit_product.tpl');
 

@@ -34,80 +34,80 @@ $sql=sprintf("truncate `Category Dimension`;");
 mysql_query($sql);
 
 
-$data=array('Category Name'=>'hola','Category Subject'=>'Product');
+$data=array('Category Code'=>'hola','Category Subject'=>'Product');
 
 $cat=new Category('find create',$data);
 print_r($cat);
 exit;
 $nodes=new Nodes('`Category Dimension`');
-$data=array('`Category Name`'=>'Use');
+$data=array('`Category Code`'=>'Use');
 $nodes->add_new(0 , $data);
 
 
 
-$data=array('`Category Name`'=>'Material');
+$data=array('`Category Code`'=>'Material');
 $nodes->add_new(0 , $data);
-$data=array('`Category Name`'=>'Season');
+$data=array('`Category Code`'=>'Season');
 $nodes->add_new(0 , $data);
-$data=array('`Category Name`'=>'Theme');
+$data=array('`Category Code`'=>'Theme');
 $nodes->add_new(0 , $data);
 
 
-$data=array('`Category Name`'=>'Other','`Category Default`'=>'Yes');
+$data=array('`Category Code`'=>'Other','`Category Default`'=>'Yes');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Candle');
+$data=array('`Category Code`'=>'Candle');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Soap');
+$data=array('`Category Code`'=>'Soap');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Incense');
+$data=array('`Category Code`'=>'Incense');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Holistic Therapies');
+$data=array('`Category Code`'=>'Holistic Therapies');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Bathroom Products');
+$data=array('`Category Code`'=>'Bathroom Products');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Decoration');
+$data=array('`Category Code`'=>'Decoration');
 $nodes->add_new(1 , $data);
 
-$data=array('`Category Name`'=>'Other','`Category Default`'=>'Yes');
+$data=array('`Category Code`'=>'Other','`Category Default`'=>'Yes');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Wood');
+$data=array('`Category Code`'=>'Wood');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Metal');
+$data=array('`Category Code`'=>'Metal');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Grass');
+$data=array('`Category Code`'=>'Grass');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Resin');
+$data=array('`Category Code`'=>'Resin');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Ceramic');
+$data=array('`Category Code`'=>'Ceramic');
 $nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Mineral');
+$data=array('`Category Code`'=>'Mineral');
 $nodes->add_new(2 , $data);
 
-$data=array('`Category Name`'=>'None','`Category Default`'=>'Yes');
+$data=array('`Category Code`'=>'None','`Category Default`'=>'Yes');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Christmas');
+$data=array('`Category Code`'=>'Christmas');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Halloween');
+$data=array('`Category Code`'=>'Halloween');
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>"Mother's Day");
+$data=array('`Category Code`'=>"Mother's Day");
 $nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>"Easter");
-$nodes->add_new(3 , $data);
-
-$data=array('`Category Name`'=>"Valentine's");
+$data=array('`Category Code`'=>"Easter");
 $nodes->add_new(3 , $data);
 
+$data=array('`Category Code`'=>"Valentine's");
+$nodes->add_new(3 , $data);
 
 
 
-$data=array('`Category Name`'=>'Animals');
+
+$data=array('`Category Code`'=>'Animals');
 $nodes->add_new(4 , $data);
-$data=array('`Category Name`'=>'Esoteric');
+$data=array('`Category Code`'=>'Esoteric');
 $nodes->add_new(4 , $data);
-$data=array('`Category Name`'=>'Fantasy');
+$data=array('`Category Code`'=>'Fantasy');
 $nodes->add_new(4 , $data);
-$data=array('`Category Name`'=>'Eastern');
+$data=array('`Category Code`'=>'Eastern');
 $nodes->add_new(4 , $data);
-$data=array('`Category Name`'=>'Contemporaneous');
+$data=array('`Category Code`'=>'Contemporaneous');
 $nodes->add_new(4 , $data);
 ?>

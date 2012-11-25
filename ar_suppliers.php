@@ -2837,7 +2837,7 @@ function list_supplier_categories() {
     $filter_msg='';
     $wheref='';
     if ($f_field=='name' and $f_value!='')
-        $wheref.=" and  `Category Name` like '%".addslashes($f_value)."%'";
+        $wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
 
 
 
@@ -2960,7 +2960,7 @@ function list_supplier_categories() {
 
     }
     else
-    $order='`Category Name`';
+    $order='`Category Code`';
   
 
 
@@ -3067,9 +3067,9 @@ function list_supplier_categories() {
 
 
         if ($stores_mode=='grouped')
-            $name=sprintf('<a href="supplier_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+            $name=sprintf('<a href="supplier_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
         else
-            $name=$row['Category Key'].' '.$row['Category Name']." (".$row['Category Store Key'].")";
+            $name=$row['Category Key'].' '.$row['Category Code']." (".$row['Category Store Key'].")";
         $adata[]=array(
                      //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],

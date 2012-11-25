@@ -4071,7 +4071,7 @@ function invoice_categories() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Category Name` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
 
 
 
@@ -4236,7 +4236,7 @@ function invoice_categories() {
 
 	}
 	elseif ($order=='name')
-		$order='`Category Name`';
+		$order='`Category Code`';
 
 
 
@@ -4313,7 +4313,7 @@ function invoice_categories() {
 
 		}
 
-		$name=sprintf('<a href="invoice_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+		$name=sprintf('<a href="invoice_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
 
 
 		$adata[]=array(

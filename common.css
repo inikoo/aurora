@@ -2,6 +2,7 @@ body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans
 td {text-align:left}
 
 
+
 .hide{visibility:hidden}
 
 
@@ -15,7 +16,7 @@ h1 {font-size:140%}
 h1 a.next,h1 a.prev{position:relative;bottom:0.5em}
 h2 {font-size:125%;margin-bottom:0px}
 
-a,table,button{outline: none;}
+a,table,button,tbody{outline: none;}
 a {text-decoration:none;color:#222}
 a:hover {text-decoration:underline;color:#000} 
 

@@ -215,7 +215,7 @@
 						{foreach from=$cat->get_children_objects_new_subject() item=sub_cat key=sub_cat_key name=foo2 } {if $smarty.foreach.foo2.first} 
 						<option value="">{t}Unknown{/t}</option>
 						{/if} ` 
-						<option other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+						<option other="{if $sub_cat->get('Is Category Field Other')=='Yes'}{t}true{/t}{else}{t}false{/t}{/if}" value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Code')}</option>
 						{/foreach} 
 					</select>
 					</td>

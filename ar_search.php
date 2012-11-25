@@ -1429,11 +1429,11 @@ function search_parts($data) {
 	}
 
 
-	$sql=sprintf('select `Category Key` ,`Category Name`, `Category Label` from `Category Dimension`   where `Category Subject`="Part" and `Category Name` like "%s%%" limit 20',addslashes($q));
+	$sql=sprintf('select `Category Key` ,`Category Code`, `Category Label` from `Category Dimension`   where `Category Subject`="Part" and `Category Code` like "%s%%" limit 20',addslashes($q));
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_array($res)) {
-		if (strtolower($q)==strtolower($row['Category Name'])) {
+		if (strtolower($q)==strtolower($row['Category Code'])) {
 			$score=110;
 		}else {
 			$score=90;

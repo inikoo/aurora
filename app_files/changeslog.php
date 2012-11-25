@@ -6591,6 +6591,8 @@ ALTER TABLE `Product Dimension`  ADD `Product Last Month Acc 1YB Invoiced Delta`
 ALTER TABLE `Session Dimension` ADD INDEX ( `Session Expire` ) ;
 ALTER TABLE `Session Dimension` ADD INDEX ( `HTTP User Agent` ( 8 ) ) ;
 
+
+
 ALTER TABLE `Deal Dimension` ADD `Deal Status` ENUM( 'Suspended', 'Active', 'Finish', 'Waiting' ) NOT NULL DEFAULT 'Waiting' AFTER `Store Key` ;
 ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Deal Metadata Active` ) ;
 update  `Deal Metadata Dimension` set `Deal Metadata Active`='Yes';
@@ -6662,10 +6664,32 @@ ALTER TABLE `Inventory Transaction Fact` CHANGE `Inventory Transaction Type` `In
 ALTER TABLE `Part Location Dimension` CHANGE `Stock Value` `Stock Value` DECIMAL( 14, 3 ) NULL DEFAULT '0.000';
 ALTER TABLE `MasterKey Internal Dimension` ADD `User Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `MasterKey Internal Key` ;
 ALTER TABLE `Customer Dimension` DROP INDEX `orders` ;
-ALTER TABLE `dw`.`Customer Dimension` ADD INDEX ( `Customer Main Plain Telephone` ( 6 ) ) ;
-ALTER TABLE `dw`.`Supplier Product Dimension` ADD INDEX ( `Supplier Product Code` ( 10 ) ) ;
-ALTER TABLE `dw`.`User Dimension` ADD INDEX ( `User Parent Key` ) ;
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Main Plain Telephone` ( 6 ) ) ;
+ALTER TABLE `Supplier Product Dimension` ADD INDEX ( `Supplier Product Code` ( 10 ) ) ;
+ALTER TABLE `User Dimension` ADD INDEX ( `User Parent Key` ) ;
 ALTER TABLE `User Request Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `URL` ,ADD INDEX ( `Site Key` ) ;
 ALTER TABLE `User Request Dimension` ADD `Is User` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `User Request Key` , ADD INDEX ( `Is User` ) ;
 ALTER TABLE `Inventory Spanshot Fact` CHANGE `Warehouse Key` `Warehouse Key` SMALLINT UNSIGNED NOT NULL DEFAULT '1';
  ALTER TABLE `Inventory Transaction Fact` ORDER BY `Date` DESC ;
+ 
+INSERT INTO `Theme Background Dimension` (`Theme Background Key` ,`Theme Background Name` ,`Header CSS` ,`Background CSS` ,`Footer CSS`)VALUES ('32', 'Xmas', '', 'html{background-image:url(''art/patterns/xmas.jpg'');background-repeat:repeat-x}', ''); INSERT INTO `Theme Background Dimension` (`Theme Background Key` ,`Theme Background Name` ,`Header CSS` ,`Background CSS` ,`Footer CSS`)VALUES ('32', 'Xmas', '', 'html{background-image:url(''art/patterns/xmas.jpg'');background-repeat:repeat-x}', '');
+INSERT INTO `Theme Background Dimension` (`Theme Background Key` ,`Theme Background Name` ,`Header CSS` ,`Background CSS` ,`Footer CSS`)VALUES ('32', 'Xmas', '', 'html{background-image:url(''art/patterns/xmas.jpg'');background-repeat:repeat-x}', ''); INSERT INTO `Theme Background Dimension` (`Theme Background Key` ,`Theme Background Name` ,`Header CSS` ,`Background CSS` ,`Footer CSS`)VALUES ('33', 'Xmas II', '', 'html{background-image:url(''art/patterns/xmas2.jpg'');background-repeat:repeat}', '');
+
+ALTER TABLE `Category Dimension` ADD `Category Branch Type` ENUM( 'Root', 'Head', 'Node' ) NOT NULL DEFAULT 'Node' AFTER `Category Key` ,ADD INDEX ( `Category Branch Type` ) ;
+ALTER TABLE `Category Dimension` ADD `Category Subject Multiplicity` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Category Branch Type` ;
+ALTER TABLE `Category Dimension` ADD `Category Root Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Category Warehouse Key` ,ADD INDEX ( `Category Root Key` ) ; 
+ALTER TABLE `Category Dimension` ADD `Category Max Deep` SMALLINT UNSIGNED NOT NULL DEFAULT '1' AFTER `Category Subject Multiplicity` ;
+ALTER TABLE `Category Dimension` CHANGE `Category Root Key` `Category Root Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Category Order` `Category Order` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Category Function Order` `Category Function Order` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT '0';
+ALTER TABLE `Category Dimension` ADD `Category Plain Branch Tree` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Category Position`; 
+ALTER TABLE `Category Dimension` ADD `Category XHTML Branch Tree` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Category Position`;
+ALTER TABLE `Category Dimension` CHANGE `Category Name` `Category Code` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;  
+ALTER TABLE `Category Bridge` CHANGE `Customer Other Note` `Other Note` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Category Bridge` ADD `Category Head Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Category Bridge` ADD INDEX ( `Category Head Key` ) ;
+update `Category Dimension` set `Category Branch Type`='Head' where `Category Deep`=2;
+update `Category Dimension` set `Category Branch Type`='Root' where `Category Deep`=1;
+ALTER TABLE `Category Dimension` ADD `Category Subjects Not Assigned` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Number Subjects` ;
+// RUN  php fix_categories.php ;
+ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Destination Country 2 Alpha Code` );
+// Check and if necesary run fix_delivery_notes.php  to set packed OTFs as dispatched
+ALTER TABLE `Category Dimension` CHANGE `Category Show New Subject` `Category Show Subject User Interface` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes';

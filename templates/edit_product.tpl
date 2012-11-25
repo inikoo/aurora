@@ -430,10 +430,6 @@
   </div>
 </div>
 
-
-
-{include file='footer.tpl'}
-
 <div id="dialog_part_list">
     <div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:650px">
         <div id="the_table" class="data_table" >
@@ -443,5 +439,9 @@
         </div>
     </div>
  </div>
+
+{include file='footer.tpl'}
+
+
 
 

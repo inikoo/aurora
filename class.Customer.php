@@ -6404,22 +6404,30 @@ if($args!='no_history'){
 	}
 
 	function get_category_data() {
-		$sql=sprintf("select * from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);
-		//print $sql;
+		$sql=sprintf("select `Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` from `Category Bridge` B left join `Category Dimension` C on (C.`Category Key`=B.`Category Key`) where  `Category Branch Type`='Head'  and B.`Subject Key`=%d and B.`Subject`='Customer'", $this->id);
+		
 		$category_data=array();
 		$result=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($result)) {
 
-			$sql=sprintf("select * from `Category Dimension` where `Category Key`=%d", $row['Category Parent Key']);
+
+
+			$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key`=%d", $row['Category Root Key']);
+			
 			$res=mysql_query($sql);
-			$r=mysql_fetch_assoc($res);
-			if ($row['Is Category Field Other']=='Yes') {
-				$value=$row['Customer Other Note'];
+			if($row2=mysql_fetch_assoc($res)){
+				$root_label=$row2['Category Label'];
+				$root_code=$row2['Category Code'];
+			}
+			
+			
+			if ($row['Is Category Field Other']=='Yes' and $row['Other Note']!='') {
+				$value=$row['Other Note'];
 			}
 			else {
 				$value=$row['Category Label'];
 			}
-			$category_data[$r['Category Label']]=array('name'=>$row['Category Label'], 'value'=>$value);
+			$category_data[]=array('root_label'=>$root_label,'root_code'=>$root_code,'label'=>$row['Category Label'],'label'=>$row['Category Code'], 'value'=>$value);
 		}
 
 		return $category_data;

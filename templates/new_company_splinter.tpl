@@ -159,14 +159,14 @@ hide_buttons=1
 {foreach from=$categories item=cat key=cat_key name=foo  }
  <tr>
  
- <td class="label">{t}{$cat->get('Category Name')}{/t}:</td>
+ <td class="label">{t}{$cat->get('Category Code')}{/t}:</td>
  <td>
   <select id="cat{$cat_key}" cat_key="{$cat_key}"  onChange="update_category(this)">
     {foreach from=$cat->get_children_objects() item=sub_cat key=sub_cat_key name=foo2  }
         {if $smarty.foreach.foo2.first}
         <option  value="">{t}Unknown{/t}</option>
         {/if}
-        <option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Name')}</option>
+        <option value="{$sub_cat->get('Category Key')}">{$sub_cat->get('Category Code')}</option>
     {/foreach}
   </select>
   

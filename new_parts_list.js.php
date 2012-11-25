@@ -212,8 +212,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			      
 
 			       ];
-request="ar_assets.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+"&tableid=0";
-//alert(request)
+request="ar_parts.php?tipo=parts&parent=warehouse&parent_key="+Dom.get('warehouse_key').value+"&tableid=0";
+
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 		//alert("ar_assets.php?tipo=parts&parent=store&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;

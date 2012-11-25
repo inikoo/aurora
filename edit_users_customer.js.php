@@ -219,7 +219,7 @@ var edit_active=function (callback, newValue) {
 	     	     ,{key:"customer_id", label:"", hidden:true,action:"none"}
 
 			       ,{key:"password",label:"" ,width:16 }
-			      ,{key:"isactive",label:"<?php echo _('State')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
+			      ,{key:"isactive",label:"<?php echo _('State')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"<?php echo _('Yes')?>", value:"Yes"}, {label:"<?php echo _('No')?>", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
 			      , {key:"alias", label:"<?php echo _('Login')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"name", label:"<?php echo _('Customer Name')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}

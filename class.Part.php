@@ -2715,20 +2715,20 @@ class part extends DB_Table {
 					mysql_query($sql);
 
 
-					$last_date=date("Y-m-d H:i:s",strtotime($last_date." -+ second"));
+					$last_date=date("Y-m-d H:i:s",strtotime($last_date." +1 second"));
 					$data=array('Date'=>$last_date,'Note'=>_('Discontinued'));
 					//print_r($data);
 
 					$part_location->disassociate($data);
-					
+
 				}
-			$this->update_valid_to($last_date);
-				
+				$this->update_valid_to($last_date);
+
 
 
 			}
 			$this->update_stock();
-			
+
 
 		}
 
@@ -2748,15 +2748,26 @@ class part extends DB_Table {
 		if (!$date) {
 			return $this->get_current_product_ids();
 		}
-
-		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and ( `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes' ) or (`Product Part Valid From`<=%s  and `Product Part Valid From`>=%s and `Product Part Most Recent`='No' ) "
+		$product_ids=array();
+		
+		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
 			,$this->sku
 			,prepare_mysql($date)
+
+		);
+		$res=mysql_query($sql);
+		
+		while ($row=mysql_fetch_array($res)) {
+			$product_ids[$row['Product ID']]= $row['Product ID'];
+		}
+		
+				$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`>=%s and `Product Part Most Recent`='No'  "
+			,$this->sku
 			,prepare_mysql($date)
 			,prepare_mysql($date)
 		);
 		$res=mysql_query($sql);
-		$product_ids=array();
+		
 		while ($row=mysql_fetch_array($res)) {
 			$product_ids[$row['Product ID']]= $row['Product ID'];
 		}
@@ -2795,14 +2806,25 @@ class part extends DB_Table {
 			return $product_part_list;
 		}
 
-		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and ( `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes' ) or (`Product Part Valid From`<=%s  and `Product Part Valid From`>=%s and `Product Part Most Recent`='No' ) "
+		$product_part_list=array();
+		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
 			,$this->sku
 			,prepare_mysql($date)
+
+		);
+		$res=mysql_query($sql);
+
+		while ($row=mysql_fetch_array($res)) {
+			$product_part_list[$row['Product Part Key']]= $row;
+		}
+
+		$sql=sprintf("select * from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`<=%s and `Product Part Most Recent`='No'  "
+			,$this->sku
 			,prepare_mysql($date)
 			,prepare_mysql($date)
 		);
 		$res=mysql_query($sql);
-		$product_part_list=array();
+
 		while ($row=mysql_fetch_array($res)) {
 			$product_part_list[$row['Product Part Key']]= $row;
 		}

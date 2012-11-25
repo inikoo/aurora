@@ -29,7 +29,7 @@ var validate_scope_data={
 'category':{
 
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Name')?>'}],'name':'Category_Name'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Code')?>'}],'name':'Category_Name'
 	    ,'ar':false,'ar_request':false}
    }
   

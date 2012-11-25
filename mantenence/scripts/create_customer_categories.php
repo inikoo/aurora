@@ -33,9 +33,9 @@ global $myconf;
 $sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension`");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-    $data=array('Category Name'=>'Type of Business','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
+    $data=array('Category Code'=>'Type of Business','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
     $cat_type_business[$row['Store Key']]=new Category('find create',$data);
-    $data=array('Category Name'=>'Referrer','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
+    $data=array('Category Code'=>'Referrer','Category Subject'=>'Customer','Category Store Key'=>$row['Store Key']);
     $cat_referrer[$row['Store Key']]=new Category('find create',$data);
 
     if ($row['Store Code']=='UK') {
@@ -60,13 +60,13 @@ while ($row=mysql_fetch_assoc($res)) {
 
         );
         foreach($valid_sub_cats_referrals[$row['Store Key']] as $valid_sub_cats_referral) {
-            $data=array('Category Name'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+            $data=array('Category Code'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
             $subcat_type_referrer=new Category('find create',$data);
         }
     } else {
         $valid_sub_cats_referrals[$row['Store Key']]=array('Referral','Google','Bing','Yahoo','Other');
         foreach($valid_sub_cats_referrals[$row['Store Key']] as $valid_sub_cats_referral) {
-            $data=array('Category Name'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+            $data=array('Category Code'=>$valid_sub_cats_referral,'Category Subject'=>'Customer','Category Parent Key'=>$cat_referrer[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
             $subcat_type_referrer=new Category('find create',$data);
         }
 
@@ -89,7 +89,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
     );
     foreach($valid_sub_cats_type_bussiness[$row['Store Key']] as $valid_sub_cats_type_business) {
-        $data=array('Category Name'=>$valid_sub_cats_type_business,'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
+        $data=array('Category Code'=>$valid_sub_cats_type_business,'Category Subject'=>'Customer','Category Parent Key'=>$cat_type_business[$row['Store Key']]->id,'Category Store Key'=>$row['Store Key']);
         $subcat_type_type_business=new Category('find create',$data);
     }
 

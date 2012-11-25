@@ -595,7 +595,7 @@ if ($staked) {
 } else {// no stakecked
 
 
-	$sql=sprintf("select `Category Label`,`Category Name` from `Category Dimension` where `Category Key` in (%s)",addslashes(join(',',$categories_keys)));
+	$sql=sprintf("select `Category Label`,`Category Code` from `Category Dimension` where `Category Key` in (%s)",addslashes(join(',',$categories_keys)));
 	// print $sql;
 	$res=mysql_query($sql);
 	$title='';

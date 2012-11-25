@@ -106,13 +106,10 @@ else if ($page->data['Page Code']=='registration') {
 
 
 		$categories=array();
-		$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Deep`=1 and `Category Store Key`=%d and `Category Show New Subject`='Yes'",$store_key);
+		$sql=sprintf("select `Category Key` from `Category Dimension` where `Category Subject`='Customer' and `Category Branch Type`='Root' and `Category Store Key`=%d and `Category Show Subject User Interface`='Yes'",$store_key);
 		$res=mysql_query($sql);
 		while ($row=mysql_fetch_assoc($res)) {
 			$tmp=new Category($row['Category Key']);
-
-
-
 			$categories[$row['Category Key']]=$tmp;
 
 		}
@@ -398,7 +395,7 @@ else if ($page->data['Page Code']=='profile') {
 				$result=mysql_query($sql);
 				$row=mysql_fetch_assoc($result);
 				$enable_other[$category->data['Category Parent Key']]=true;
-				$other_value[$category->data['Category Parent Key']]=$row['Customer Other Note'];
+				$other_value[$category->data['Category Parent Key']]=$row['Other Note'];
 
 			}else {
 				$enable_other[$category->data['Category Parent Key']]=false;
@@ -511,21 +508,20 @@ if ($page->data['Page Store Content Display Type']=='Source') {
 	$smarty->assign('template_string',$page->data['Page Store Source']);
 }
 else {
-	
+
 	$smarty->assign('type_content','file');
 
 	$css_files[]='css/'.$page->data['Page Store Content Template Filename'].$template_suffix.'.css';
 
 	if ($page->data['Page Code']=='login') {
-	
-	if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false)
-{
-$smarty->assign('template_string','login.chrome.tpl');
-		$js_files[]='js/login.chrome.js';
-}else{	
-		$smarty->assign('template_string','login.tpl');
-		$js_files[]='js/login.js';
-}
+
+		if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
+			$smarty->assign('template_string','login.chrome.tpl');
+			$js_files[]='js/login.chrome.js';
+		}else {
+			$smarty->assign('template_string','login.tpl');
+			$js_files[]='js/login.js';
+		}
 	}else {
 
 		$smarty->assign('template_string',$page->data['Page Store Content Template Filename'].$template_suffix.'.tpl');

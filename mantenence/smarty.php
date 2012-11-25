@@ -4142,7 +4142,7 @@ gettext("Reset");
 gettext("Category Label");
 
 /* ../templates/edit_customer_category.tpl */
-gettext("Category Name");
+gettext("Category Code");
 
 /* ../templates/edit_customer_category.tpl */
 gettext("New Subject");
@@ -5336,7 +5336,7 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/edit_part_category.tpl */
-gettext("Category Name");
+gettext("Category Code");
 
 /* ../templates/edit_part_category.tpl */
 gettext("Subcategories");
@@ -5594,7 +5594,7 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/edit_product_category.tpl */
-gettext("Category Name");
+gettext("Category Code");
 
 /* ../templates/edit_product_category.tpl */
 gettext("Subcategories");
@@ -6512,7 +6512,7 @@ gettext("Save");
 gettext("Reset");
 
 /* ../templates/edit_supplier_category.tpl */
-gettext("Category Name");
+gettext("Category Code");
 
 /* ../templates/edit_supplier_category.tpl */
 gettext("Subcategories");
@@ -8717,7 +8717,7 @@ gettext("Rows per Page");
 gettext("Create new category");
 
 /* ../templates/new_category_splinter.tpl */
-gettext("Category Name Required");
+gettext("Category Code Required");
 
 /* ../templates/new_category_splinter.tpl */
 gettext("Name");

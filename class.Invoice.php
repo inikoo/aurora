@@ -300,7 +300,7 @@ class Invoice extends DB_Table {
 				mysql_query($sql);
 
 
-			
+
 			}
 
 		}
@@ -308,7 +308,7 @@ class Invoice extends DB_Table {
 		$this->update_shipping(array('Amount'=>$shipping_net,'Tax'=>$shipping_tax),true);
 		$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax,'Transaction Description'=>_('Charges')),true);
 
-$this->update_refund_totals();
+		$this->update_refund_totals();
 
 		foreach ($this->get_delivery_notes_objects() as $key=>$dn) {
 			$sql = sprintf( "insert into `Invoice Delivery Note Bridge` values (%d,%d)",  $this->id,$key);
@@ -552,9 +552,9 @@ $this->update_refund_totals();
 
 	function update_tax() {
 		// print "===\n";
-		
+
 		//print "\n\nUpdating tax\n";
-		
+
 		$sql=sprintf("delete from `Invoice Tax Bridge` where `Invoice Key`=%d",$this->id);
 		mysql_query($sql);
 
@@ -645,7 +645,7 @@ $this->update_refund_totals();
 
 			$this->add_tax_item($tax_code,$amount);
 		}
-		
+
 		//print "\n\End updatinf  tax\n";
 
 	}
@@ -884,7 +884,7 @@ $this->update_refund_totals();
 
 	function update_charges($charge_data) {
 
-//print_r($charge_data);
+		//print_r($charge_data);
 
 		//$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax),true);
 		//print "caca ";
@@ -1654,8 +1654,7 @@ $this->update_refund_totals();
 
 
 	function categorize($args='') {
-		$sql=sprintf("delete from `Category Bridge` where `Subject`='Invoice'  and `Subject Key`=%d",$this->id);
-		mysql_query($sql);
+
 
 		$sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",$this->data['Invoice Store Key']);
 		$res=mysql_query($sql);
@@ -1672,22 +1671,21 @@ $this->update_refund_totals();
 		$newfunc = create_function('$data',$function_code);
 
 		$category_key=$newfunc($this->data);
-
 		if ($category_key) {
-			$sql=sprintf("insert into `Category Bridge` values (%d,'Invoice',%d, NULL)",$category_key,$this->id);
-			mysql_query($sql);
+			$category=new Category($category_key);
+
+			if ($category->id) {
+				$category->associate_subject($this->id);
+
+			}
 		}
 
-
-		$category=new Category($category_key);
-		$category->update_invoice_category_up_today_sales();
-		$category->update_invoice_category_interval_sales();
-		$category->update_invoice_category_last_period_sales();
-		$category->update_number_of_subjects();
-		$category->update_no_assigned_subjects();
-
-
 	}
+
+
+
+
+
 
 
 

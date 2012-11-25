@@ -165,14 +165,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 
-	$sql=sprintf("select `Category Name`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$int[0]);
+	$sql=sprintf("select `Category Code`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$int[0]);
 	//print "$sql<br><br>";
 	$result2=mysql_query($sql);
 	if (mysql_num_rows($result2) >1 ) {
 		while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
-			$store_data[$row['Store Key'].'.'.$row2['Category Name']]=array(
+			$store_data[$row['Store Key'].'.'.$row2['Category Code']]=array(
 				'store'=>''
-				,'substore'=>sprintf("%s",$row2['Category Name'])
+				,'substore'=>sprintf("%s",$row2['Category Code'])
 				,'invoices'=>number($row2['invoices'])
 				,'_invoices'=>$row2['invoices']
 				,'net'=>money($row2['net'],$row['Store Currency Code'])
@@ -186,10 +186,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				,'last_yr_net'=>'&#8734;%'
 			);
 
-			$store_data_profit[$row['Store Key'].'.'.$row2['Category Name']]=array(
+			$store_data_profit[$row['Store Key'].'.'.$row2['Category Code']]=array(
 				'store'=>''
 				,'class'=>'geo'
-				,'substore'=>sprintf("%s",$row2['Category Name'])
+				,'substore'=>sprintf("%s",$row2['Category Code'])
 
 				,'net'=>money($row2['net'],$row['Store Currency Code'])
 				,'profit'=>money($row2['profit'],$row['Store Currency Code'])
@@ -207,14 +207,14 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 	$last_yr_int=prepare_mysql_dates(date("Y-m-d 00:00:00",strtotime($from.' -1 year')),date("Y-m-d 23:59:59",strtotime($to.' -1 year')),'`Invoice Date`','date start end');
 	//print_r($last_yr_int);
-	$sql=sprintf("select `Category Name`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$last_yr_int[0]);
+	$sql=sprintf("select `Category Code`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$last_yr_int[0]);
 	//print "$sql\n\n";
 	$result2=mysql_query($sql);
 	if (mysql_num_rows($result2) >1 ) {
 		while ($row2=mysql_fetch_array($result2, MYSQL_ASSOC)) {
-			$last_yr_store_data[$row['Store Key'].'.'.$row2['Category Name']]=array(
+			$last_yr_store_data[$row['Store Key'].'.'.$row2['Category Code']]=array(
 				'store'=>''
-				,'substore'=>sprintf("%s",$row2['Category Name'])
+				,'substore'=>sprintf("%s",$row2['Category Code'])
 				,'invoices'=>number($row2['invoices'])
 				,'_invoices'=>$row2['invoices']
 				,'net'=>money($row2['net'],$row['Store Currency Code'])
@@ -226,9 +226,9 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 				,'currency_code'=>$row['Store Currency Code']
 			);
 
-			$last_yr_store_data_profit[$row['Store Key'].'.'.$row2['Category Name']]=array(
+			$last_yr_store_data_profit[$row['Store Key'].'.'.$row2['Category Code']]=array(
 				'store'=>''
-				,'substore'=>sprintf("%s",$row2['Category Name'])
+				,'substore'=>sprintf("%s",$row2['Category Code'])
 
 				,'net'=>money($row2['net'],$row['Store Currency Code'])
 				,'profit'=>money($row2['profit'],$row['Store Currency Code'])

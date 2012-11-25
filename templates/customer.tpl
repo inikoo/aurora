@@ -265,7 +265,7 @@
 						
 						{foreach from=$categories_data item=item key=key} 
 						<tr>
-							<td>{$key}:</td>
+							<td>{$item.root_label}:</td>
 							<td>{$item.value}</td>
 						</tr>
 						{/foreach} 

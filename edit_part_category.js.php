@@ -2,125 +2,15 @@
 include_once('common.php');
 
 ?>
-var Event = YAHOO.util.Event;
-var Dom   = YAHOO.util.Dom;
-
-//var can_add_department=false;
-var description_num_changed=0;
-var description_warnings= new Object();
-var description_errors= new Object();
 
 
-var scope='category';
-var scope_edit_ar_file='ar_edit_categories.php';
-var scope_key_name='category_key';
-var scope_key='<?php $_REQUEST['key']?>';
-
-var parent='category';
-var parent_key_name='id';
-//var parent_key=<?php //echo $_REQUEST['category_key']?>;
-
-
-//var editing='<?php //echo $_SESSION['state']['product_categories']['edit']?>';  
-
-
-var validate_scope_data={
-'category':{
-
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Name')?>'}],'name':'Category_Name'
-	    ,'ar':false,'ar_request':false}
-   }
-  
-};
-
-
-var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_categories.php','key_name':'category_key','key':<?php echo $_REQUEST['key']?>}};
-				
-
-/*function validate_id(query){
- validate_general('company_staff','id',unescape(query));
-}*/
-function validate_name(query){
-//alert("********");alert(query);
- validate_general('category','name',unescape(query));
-}
-function validate_subcategory_name(query){
- validate_general('subcategory','subcategory_name',unescape(query));
-}
-function reset_new_category(){
- reset_edit_general('category');
-}
-
-function reset_edit_category(){
-    reset_edit_general('category')
-}
-function save_edit_subcategory(){
-    save_edit_general('subcategory');
-}
-function reset_edit_subcategory(){
-    reset_edit_general('subcategory')
-}
-function reset_new_subcategory(){
- reset_edit_general('subcategory');
-}
-
-/*function save_new_category(){
- save_edit_general('category');
-}
-function save_edit_category(){
-    save_edit_general('category');
-}*/
-
-
-
-
-function post_item_updated_actions(branch,r){
-
-key=r.key;
-newvalue=r.newvalue;
-
-
-if(key=='name'){
-     Dom.get('title_name').innerHTML=newvalue;}
-
-
- 
- var table=tables.table1;
- var datasource=tables.dataSource1;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-var table_id=1
-
-
-    var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-
-  
-    var request='&tableid='+table_id+'&sf=0';
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
- 
-}
-
-
-
-function post_create_actions(branch){
-//var table=tables.table1;
- //var datasource=tables.dataSource1;
- //var request='';
- //datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
- 
- var table=tables.table0;
- var datasource=tables.dataSource0;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-}
-
-
-
-
+var category_show_options=[{label:"<?php echo _('Yes')?>", value:"Yes"}, {label:"<?php echo _('No')?>", value:"No"}];
+var category_show_name={'Yes':'Yes','No':'No'};
 
 YAHOO.util.Event.addListener(window, "load", function() {
+
+
+
     tables = new function() {
   var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -128,11 +18,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				    ,{key:"go",label:'',width:20,}
 				 
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
-				
+				    ,{key:"name", label:"<?php echo _('Code')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
+								    ,{key:"label", label:"<?php echo _('Label')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
+
                                       ,{key:"delete", label:"", width:100,sortable:false,className:"aleft",action:'delete',object:'subcategory'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
+
+
 
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=edit_part_category_list&parent_key="+Dom.get('category_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -151,7 +44,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','name','delete','delete_type','go'
+			 'id','name','delete','delete_type','go','label'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -189,9 +82,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-
 		
- var tableid='_history'; // Change if you have more the 1 table
+ var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
@@ -203,13 +95,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource_history = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=customer_categories&tableid=_history");
-	   this.dataSource_history.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource_history.connXhrMode = "queueRequests";
-	    this.dataSource_history.responseSchema = {
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=part_categories&tableid=1");
+	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		  	    rowsPerPage:"resultset.records_perpage",
+		    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
@@ -226,12 +118,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,'author','date','tipo','abstract','details'
 			 ]};
 	    
-	    this.table_history = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-						     this.dataSource_history
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource1
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['categories']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['part_categories']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -241,8 +133,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['categories']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['categories']['history']['order_dir']?>"
+							    key: "<?php echo$_SESSION['state']['part_categories']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['part_categories']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -250,13 +142,311 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     
 						     );
 	    
-	    this.table_history.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table_history.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table_history.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+        this.table1.table_id=tableid;
+        this.table1.subscribe("renderEvent", myrenderEvent);
 
 		    
 		    
-	    this.table_history.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
+
+
+
+ var tableid=2;
+	    var tableDivEL="table"+tableid;
+	    var ColumnDefs = [ 
+	    		    {key:"sku", label:"",width:10, sortable:false,hidden:true}
+				  ,{key:"checkbox", label:"", width:14,sortable:false}
+				  				  ,{key:"hierarchy", label:"", width:14,sortable:false}
+
+				    ,{key:"formated_sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+		                ,{key:"move", label:"", width:60,sortable:false,className:"aleft",action:'assign',object:'category_subject'}
+
+		                ,{key:"delete", label:"", width:60,sortable:false,className:"aleft",action:'remove',object:'category_subject'}
+
+		];
+		request="ar_edit_categories.php?tipo=parts_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
+		
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
+	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 "sku","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy"
+			 ]};
+	    
+	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+						     this.dataSource2, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['part_categories']['edit_parts']['nr']?>,containers : 'paginator2', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<span id='paginator_info2'>{CurrentPageReport}</span>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo $_SESSION['state']['part_categories']['edit_parts']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['part_categories']['edit_parts']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+       this.table2.table_id=tableid;
+        this.table2.subscribe("renderEvent", myrenderEvent);
+    this.table2.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table2.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table2.subscribe("cellClickEvent", onCellClick);
+
+
+	    
+	    this.table2.filter={key:'<?php echo $_SESSION['state']['part_categories']['edit_parts']['f_field']?>',value:'<?php echo $_SESSION['state']['part_categories']['edit_parts']['f_value']?>'};
+		
+
+
+
+
+	    var tableid=3;
+	    var tableDivEL="table"+tableid;
+	    var ColumnDefs = [ 
+	    		    {key:"sku", label:"",width:10, sortable:false,hidden:true}
+				  ,{key:"checkbox", label:"", width:18,sortable:false}
+				    ,{key:"formated_sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"description", label:"<?php echo _('Description')?>",width:290, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+		                  ,{key:"move", label:"", width:120,hidden:(Dom.get('branch_type').value!='Head'?false:true),sortable:false,className:"aleft",action:'assign',object:'category_subject'}
+		                ,{key:"move_here", label:"", width:120,hidden:(Dom.get('branch_type').value=='Head'?false:true),sortable:false,className:"aleft",action:'assign_here',object:'category_subject'}
+
+
+		];
+	    this.dataSource3 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=parts_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value);
+	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource3.connXhrMode = "queueRequests";
+	    this.dataSource3.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 "sku","formated_sku","description","used_in","checkbox","move","subject_key","move_here"
+			 ]};
+	    
+	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+						     this.dataSource3, {
+							 //draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:<?php echo$_SESSION['state']['part_categories']['no_assigned_parts']['nr']?>,containers : 'paginator3', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<span id='paginator_info3'>{CurrentPageReport}</span>{NextPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo $_SESSION['state']['part_categories']['no_assigned_parts']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['part_categories']['no_assigned_parts']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+       this.table3.table_id=tableid;
+        this.table3.subscribe("renderEvent", myrenderEvent);
+    this.table3.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table3.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table3.subscribe("cellClickEvent", onCellClick);
+
+
+	    
+	    this.table3.filter={key:'<?php echo $_SESSION['state']['part_categories']['no_assigned_parts']['f_field']?>',value:'<?php echo $_SESSION['state']['part_categories']['no_assigned_parts']['f_value']?>'};
+		
+
+var tableid=4;
+		      var tableDivEL="table"+tableid;
+		      
+		      var ColumnDefs = [
+		      		{key:"formated_sku", label:"SKU",width:60, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"description", label:"<?php echo _('Description')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     	,{key:"used_in", label:"<?php echo _('Used In')?>",width:140, sortable:false,className:"aleft"}
+			     	,{key:"status", label:"",width:70, sortable:false,className:"aleft"}
+                   
+					];
+		    
+		      
+		      this.dataSource4 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=parts_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value);
+		      
+			      this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource4.connXhrMode = "queueRequests";
+		      	    this.dataSource4.table_id=tableid;
+
+		      this.dataSource4.responseSchema = {
+			  resultsList: "resultset.data", 
+			  metaFields: {
+			  rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" 
+			  },
+			  
+			  fields: [
+				  "sku","description","used_in","status","formated_sku"
+				   ]};
+		      
+		    this.table4 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource4
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator4', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								   
+								   ,sortedBy : {
+								      key: "formated_sku",
+								       dir: ""
+								   }
+								   ,dynamicData : true
+								 
+							       }
+							       );
+		      this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+		      this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+		      this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+            this.table4.table_id=tableid;
+     			this.table4.subscribe("renderEvent", myrenderEvent);
+     
+                   this.table4.subscribe("rowMouseoverEvent", this.table4.onEventHighlightRow);
+       this.table4.subscribe("rowMouseoutEvent", this.table4.onEventUnhighlightRow);
+      this.table4.subscribe("rowClickEvent", select_subject_from_list);
+     
+
+                   
+	    this.table4.filter={key:'used_in',value:''};
+
+
+
+
+var tableid=5;
+		      var tableDivEL="table"+tableid;
+		      
+		      var ColumnDefs = [
+		      		      		{key:"key", label:"",width:10, sortable:false,hidden:true}
+
+		      		,{key:"code", label:"<?php echo _('Code')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"label", label:"<?php echo _('Label')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			          
+					];
+		    
+		      request="ar_edit_categories.php?tipo=category_heads&tableid="+tableid+'&category_subject=Part&root_category_key='+Dom.get('root_category_key').value+'&category_key='+Dom.get('category_key').value;
+		     
+		      this.dataSource5 = new YAHOO.util.DataSource(request);
+		      
+			      this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource5.connXhrMode = "queueRequests";
+		      	    this.dataSource5.table_id=tableid;
+
+		      this.dataSource5.responseSchema = {
+			  resultsList: "resultset.data", 
+			  metaFields: {
+			  rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" 
+			  },
+			  
+			  fields: [
+				  "code","label","key"
+				   ]};
+		      
+		    this.table5 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource5
+								 , {
+								     renderLoopSize: 50,generateRequest : myRequestBuilder
+								      ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage:20,containers : 'paginator5', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+									      ,template : "{PreviousPageLink}<strong id='paginator_info5'>{CurrentPageReport}</strong>{NextPageLink}"
+									  })
+								   
+								   ,sortedBy : {
+								      key: "code",
+								       dir: ""
+								   }
+								   ,dynamicData : true
+								 
+							       }
+							       );
+		      this.table5.handleDataReturnPayload =myhandleDataReturnPayload;
+		      this.table5.doBeforeSortColumn = mydoBeforeSortColumn;
+		      this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
+            this.table5.table_id=tableid;
+     			this.table5.subscribe("renderEvent", myrenderEvent);
+     
+                   this.table5.subscribe("rowMouseoverEvent", this.table5.onEventHighlightRow);
+       this.table5.subscribe("rowMouseoutEvent", this.table5.onEventUnhighlightRow);
+      this.table5.subscribe("rowClickEvent", select_category_head_from_list);
+     
+
+                   
+	    this.table5.filter={key:'code',value:''};
+
 
 
 	};
@@ -264,40 +454,66 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+function check_part(sku){
+checkbox=Dom.get('pna_'+sku);
+if(checkbox.getAttribute('checked')==1){
+checkbox.src="art/icons/checkbox_unchecked.png";
+checkbox.setAttribute('checked',0)
+}else{
 
+checkbox.src="art/icons/checkbox_checked.png";
+checkbox.setAttribute('checked',1)
+
+}
+
+}
 
 
 function change_block(){
   
-ids=["d_description","d_subcategory","d_parts"];
+ids=["d_description","d_subcategory","d_parts","d_no_assigned"];
 
 	Dom.setStyle(ids,'display','none')
 	Dom.setStyle('d_'+this.id,'display','')
 
-	Dom.removeClass(['description','subcategory'],'selected');
+	Dom.removeClass(['description','subcategory','parts','no_assigned'],'selected');
 	Dom.addClass(this, 'selected');
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part_categories-edit&value='+this.id ,{});
 }
-function cancel_add_category(){
-   reset_new_category();
-  }
-function cancel_add_subcategory(){
-   reset_new_subcategory();
-  }
 
 function init(){
- init_search('parts');
- 
-    var ids = ["description","subcategory"]; 
-    YAHOO.util.Event.addListener(ids, "click", change_block);
 
-//    YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
-    YAHOO.util.Event.addListener('save_edit_category', "click", save_new_category);   
-    YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_category);
+ validate_scope_data={
+'category':{
+
+    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Code')?>'}],'name':'Category_Name'
+	    ,'ar':false,'ar_request':false}
+	
+	,'label':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Label')?>'}],'name':'Category_Label'
+	    ,'ar':false,'ar_request':false}
+	}
 
   
-   
+};
+ validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_categories.php','key_name':'category_key','key':Dom.get('category_key').value}};
+
+
+
+
+ init_search('parts');
+ 
+    var ids = ["description","subcategory","no_assigned","parts"]; 
+    YAHOO.util.Event.addListener(ids, "click", change_block);
+ 
+//    YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
+    YAHOO.util.Event.addListener('save_edit_category', "click", save_new_category);   
+    YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_category); 
+
+  
+ 
  /*   var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
     staff_id_oACDS.queryMatchContains = true;
     var staff_id_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Id","Company_Staff_Id_Container", staff_id_oACDS);
@@ -341,3 +557,17 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu.render();
 	 rppmenu.subscribe("show", rppmenu.focus);
     });
+    
+    
+ YAHOO.util.Event.onContentReady("rppmenu4", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {trigger:"rtext_rpp4" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+ YAHOO.util.Event.onContentReady("rppmenu5", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu5", {trigger:"rtext_rpp5" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+   

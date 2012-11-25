@@ -788,7 +788,7 @@ var request='ar_edit_categories.php?tipo='+operation_type+'&category_key=' + cat
 
 function save_category(o) {
     
-    var parent_category_key=o.getAttribute('cat_key');
+    var current_category_key=o.getAttribute('ovalue');
     var category_key=o.options[o.selectedIndex].value;
     var subject='Customer';
     var subject_key=Dom.get('customer_key').value;
@@ -804,16 +804,16 @@ function save_category(o) {
     
     if(category_key==''){
         
-		var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
+		var request='ar_edit_categories.php?tipo=disassociate_subject&category_key=' + current_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
         
     }else{
-		var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
+		var request='ar_edit_categories.php?tipo=associate_subject_to_category&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
         
         
     }
     
     
-	//alert(request);
+	//alert(request);return;
 	
     YAHOO.util.Connect.asyncRequest('POST',request ,{
                                     success:function(o) {
@@ -839,8 +839,8 @@ function save_category_other_value(category_key,parent_category_key){
     var subject='Customer';
     var subject_key=Dom.get('customer_key').value;
     
-    var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id=cat1&other="+Dom.get('other_textarea_'+parent_category_key).value
-    //alert(request); //return;
+    var request='ar_edit_categories.php?tipo=update_other_value&category_key=' + category_key+ '&subject_key=' + subject_key +"&other_value="+Dom.get('other_textarea_'+parent_category_key).value
+  //  alert(request); return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
                                     success:function(o) {
                                     //alert(o.responseText);
@@ -1283,7 +1283,7 @@ var tipo=Dom.get('other_field_label_scope').value+'_label'+Dom.get('other_field_
 
 
 var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_id
-
+//alert(request);return;
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		//alert(o.responseText)

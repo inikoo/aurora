@@ -1,6 +1,6 @@
 <div id="dialog_new_category" style="padding:10px">
  {t}Create new category{/t}:
-   <div id="new_category_no_name_msg" class="error" style="display:none">{t}Category Name Required{/t}</div>
+   <div id="new_category_no_name_msg" class="error" style="display:none">{t}Category Code Required{/t}</div>
   <div id="new_category_msg"></div>
  
   <input id="new_category_parent_key" value="{$category_key}" type="hidden"/>

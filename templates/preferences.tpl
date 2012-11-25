@@ -32,7 +32,7 @@
 <div class="buttons left" style="margin-top:10px">
     {foreach  from=$backgrounds item=background}
     <div style="width:90px;text-align:right;float:left;margin-right:10px;width:130px">
-        <div onClick="change_background_theme({$background.key})" class="theme_background_{$background.key}" style="border:1px solid #ccc;width:100%;height:80px;cursor:pointer">
+        <div onClick="change_background_theme({$background.key})" class="theme_background_{$background.key}" style="background-size: 100%;border:1px solid #ccc;width:100%;height:80px;cursor:pointer">
         </div>
         <span>{$background.name}</span>
         </div>

@@ -1,5 +1,9 @@
 <?php
 
+include_once '../../class.Category.php';
+
+
+
 function genRandomString() {
 	$length = 1;
 	$characters = '0123456789abcdefghijklmnopqrstuvwxyz';
@@ -1577,6 +1581,9 @@ function get_tax_code($type,$header_data) {
 		$tax_cat_data=uk_get_tax_code($header_data);
 		break;
 	}
+	
+	
+	
 	$tax_category=new TaxCategory('find',$tax_cat_data,'create');
 
 
@@ -1692,9 +1699,7 @@ function uk_get_tax_code($header_data) {
 		'Tax Category Rate'=>$tax_rate
 	);
 
-
-	//print_r($data);
-
+	
 	return $data;
 }
 

@@ -107,7 +107,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR4352R%.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR553%.xls'  order by filename";
 
 
 $contador=0;
@@ -1344,6 +1344,9 @@ $part_list=$product->get_all_part_skus();
 
 		get_data($header_data);
 		$tax_category_object=get_tax_code($store_code,$header_data);
+		
+	
+		
 		$data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
 		$data['Customer Data']['editor']=$data['editor'];
 		$data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));

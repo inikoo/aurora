@@ -40,9 +40,9 @@ $from=date("Y-m-d",strtotime('now -2000 day'));
 //$from=date("Y-m-d");
 $to=date("Y-m-d",strtotime('now -1 day'));
 
-//$from='2007-02-27';
+$from='2007-02-27';
 //$from=date("Y-m-d");
-//$to='2012-11-09';
+$to='2012-04-15';
 
 
 $warehouse=new Warehouse(1);
@@ -63,7 +63,7 @@ while ($row=mysql_fetch_array($res)) {
 		//print "\t\t\t\tChecking:".$row2['Part SKU']."\r";
 		$sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where  `Inventory Transaction Type`='Associate' and  `Part SKU`=%d and `Date`<=%s group by `Location Key`",
 			$row2['Part SKU'],
-			prepare_mysql($row['Date'].' 23:59:49')
+			prepare_mysql($row['Date'].' 23:59:59')
 		);
 
 		$result=mysql_query($sql);
