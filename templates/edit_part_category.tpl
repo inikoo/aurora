@@ -55,7 +55,7 @@
 				</tr>
 				<tr>
 					<td class="label" style="width:200px">{t}Code{/t}:</td>
-					<td style="text-align:left"> 
+					<td style="text-align:left;width:350px"> 
 					<div>
 						<input style="text-align:left;width:100%" id="Category_Name" value="{$category->get('Category Code')}" ovalue="{$category->get('Category Code')}"> 
 						<div id="Category_Name_Container">
@@ -88,7 +88,7 @@
 				
 					</td>
 				</tr>
-				
+				<tbody style="display:none">
 				<tr class="title" >
 					<td colspan="3"> 
 					{t}Show Options{/t}
@@ -121,6 +121,7 @@
 					</td>
 					<td style="width:300px"></td>
 				</tr>
+				</tbody>
 			</table>
 		
 		</div>

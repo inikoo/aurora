@@ -310,8 +310,8 @@ var tableid=4;
                    
 					];
 		    
-		      
-		      this.dataSource4 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=parts_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value);
+		      request="ar_edit_categories.php?tipo=parts_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value;
+		      this.dataSource4 = new YAHOO.util.DataSource(request);
 		      
 			      this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource4.connXhrMode = "queueRequests";
@@ -386,7 +386,6 @@ var tableid=5;
 					];
 		    
 		      request="ar_edit_categories.php?tipo=category_heads&tableid="+tableid+'&category_subject=Part&root_category_key='+Dom.get('root_category_key').value+'&category_key='+Dom.get('category_key').value;
-		     
 		      this.dataSource5 = new YAHOO.util.DataSource(request);
 		      
 			      this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
