@@ -1671,10 +1671,14 @@ class Invoice extends DB_Table {
 		$newfunc = create_function('$data',$function_code);
 
 		$category_key=$newfunc($this->data);
+		
+		//print "Cat $category_key\n";
+		
 		if ($category_key) {
 			$category=new Category($category_key);
-
+			
 			if ($category->id) {
+				//print "HOLA";
 				$category->associate_subject($this->id);
 
 			}
