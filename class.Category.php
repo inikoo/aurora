@@ -1169,7 +1169,7 @@ class Category extends DB_Table {
 	function update_up_today() {
 
 		switch ($this->data['Category Subject']) {
-		case 'Invoice':
+		case 'Invoice':break;
 			$this->update_invoice_category_up_today_sales();
 			break;
 		case('Supplier'):
@@ -1189,7 +1189,7 @@ class Category extends DB_Table {
 	function update_last_period() {
 
 		switch ($this->data['Category Subject']) {
-		case 'Invoice':
+		case 'Invoice':break;
 			$this->update_invoice_category_last_period_sales();
 			break;
 		case('Supplier'):
@@ -1209,7 +1209,7 @@ class Category extends DB_Table {
 	function update_last_interval() {
 
 		switch ($this->data['Category Subject']) {
-		case 'Invoice':
+		case 'Invoice':break;
 			$this->update_invoice_category_interval_sales();
 			break;
 		case('Supplier'):
@@ -2038,11 +2038,11 @@ class Category extends DB_Table {
 				$subject_key
 			);
 			mysql_query($sql);
-
+			//print $sql;
 			$inserted= mysql_affected_rows();
 			if ($inserted) {
-				$this->update_number_of_subjects();
-				$this->update_subjects_data();
+				//$this->update_number_of_subjects();
+				//$this->update_subjects_data();
 
 
 
@@ -2056,8 +2056,8 @@ class Category extends DB_Table {
 					mysql_query($sql);
 					if (mysql_affected_rows()) {
 						$parent_category=new Category($parent_key);
-						$parent_category->update_number_of_subjects();
-						$parent_category->update_subjects_data();
+						//$parent_category->update_number_of_subjects();
+						//$parent_category->update_subjects_data();
 
 					}
 				}
@@ -2093,7 +2093,7 @@ class Category extends DB_Table {
 
 
 			}
-
+			//print "caca";
 			return $this->associate_subject($subject_key,true,$other_value);
 
 

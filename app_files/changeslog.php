@@ -6693,3 +6693,4 @@ ALTER TABLE `Category Dimension` ADD `Category Subjects Not Assigned` MEDIUMINT 
 ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Destination Country 2 Alpha Code` );
 // Check and if necesary run fix_delivery_notes.php  to set packed OTFs as dispatched
 ALTER TABLE `Category Dimension` CHANGE `Category Show New Subject` `Category Show Subject User Interface` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes';
+// a new Category Root for invoices has to be done, and edit the current Cat Inv 
