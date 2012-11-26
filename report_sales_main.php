@@ -165,7 +165,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 
-	$sql=sprintf("select `Category Code`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s group by B.`Category Key` ",$row['Store Key'],$int[0]);
+	$sql=sprintf("select `Category Code`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) left join `Category Bridge` B  on (`Subject Key`=`Invoice Key` and `Subject`='Invoice') left join `Category Dimension` C  on (B.`Category Key`=C.`Category Key`) where `Invoice Store Key`=%d %s and `Category Branch Type`='Head'  group by B.`Category Key` ",$row['Store Key'],$int[0]);
 	//print "$sql<br><br>";
 	$result2=mysql_query($sql);
 	if (mysql_num_rows($result2) >1 ) {
