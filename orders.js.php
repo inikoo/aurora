@@ -542,11 +542,7 @@ Event.addListener('clean_table_filter_show1', "click",show_filter,1);
 Event.addListener('clean_table_filter_show2', "click",show_filter,2);
  Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
 
-
-
-
-
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
   oACDS.table_id=0;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);

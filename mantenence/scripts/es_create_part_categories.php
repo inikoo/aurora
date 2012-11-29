@@ -67,7 +67,7 @@ while ($row=mysql_fetch_assoc($res)) {
                            'subject_key'=>$part->sku,
                        );
 
-                associate_subject_to_category_radio($_data);
+                associate_subject_to_category($_data);
 
            
 
@@ -86,7 +86,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	print "Category ".$category->id."\t\t\n";
 }
 
-function associate_subject_to_category_radio($data) {
+function associate_subject_to_category($data) {
 
 
     $found=false;

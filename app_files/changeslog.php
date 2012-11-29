@@ -6694,3 +6694,8 @@ ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Destination Country 2 Alpha Co
 // Check and if necesary run fix_delivery_notes.php  to set packed OTFs as dispatched
 ALTER TABLE `Category Dimension` CHANGE `Category Show New Subject` `Category Show Subject User Interface` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Yes';
 // a new Category Root for invoices has to be done, and edit the current Cat Inv 
+// ==== new to AW
+ALTER TABLE `Category Dimension` CHANGE `Category Max Deep` `Category Max Deep` SMALLINT( 5 ) UNSIGNED NOT NULL DEFAULT '2';
+update `Category Dimension` set `Category Max Deep`=2;
+ALTER TABLE `Category Dimension` CHANGE `Category Code` `Category Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Category Dimension` ADD UNIQUE (`Category Code` ( 64 ) ,`Category Root Key`);
