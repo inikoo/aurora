@@ -35,49 +35,52 @@ date_default_timezone_set('UTC');
 
 
 $sql="select * from `Category Bridge` where `Category Key`=26  ";
-$sql="select * from `Category Bridge` ";
+$sql="select * from `Category Bridge` order by `Category Key` ";
+
+$counter=0;
 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+$counter++;
+
+//print $counter.' '.$row['Category Key']." ".$row['Subject Key']."\r";
 	$category=new Category($row['Category Key']);
+
+
+
 	if ($category->id) {
+
 		if ($category->data['Category Branch Type']=='Head') {
 
-			$sql=sprintf("update `Category Bridge` set `Category Head Key`=%d where `Subject`=%s and `Subject Key`=%d and `Category Key`=%d",
+			$sql=sprintf("update `Category Bridge` set   `Category Head Key`=%d where `Subject`=%s and `Subject Key`=%d and `Category Key`=%d",
 				$category->id,
 				prepare_mysql($category->data['Category Subject']),
 				$row['Subject Key'],$category->id
 			);
 			mysql_query($sql);
 			$subject_key=$row['Subject Key'];
-			
-			foreach ($category->get_parent_keys() as $parent_key) {
-					$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,%s,%d)",
-						$parent_key,
-						prepare_mysql($category->data['Category Subject']),
-						$subject_key,
-						prepare_mysql($row['Other Note']),
-						$category->id
-					);
-					//print "$sql\n";
-					mysql_query($sql);
-					if (mysql_affected_rows()) {
-						$parent_category=new Category($parent_key);
-						//$parent_category->update_number_of_subjects();
-						//$parent_category->update_subjects_data();
 
-					}
-					
-						$sql=sprintf("update `Category Bridge` set `Category Head Key`=%d where `Subject`=%s and `Subject Key`=%d and `Category Key`=%d",
-				$category->id,
-				prepare_mysql($category->data['Category Subject']),
-				$row['Subject Key'],
-				$parent_key
-			);
-			mysql_query($sql);
-					
-				}
-			
+			foreach ($category->get_parent_keys() as $parent_key) {
+				$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,%s,%d)",
+					$parent_key,
+					prepare_mysql($category->data['Category Subject']),
+					$subject_key,
+					prepare_mysql($row['Other Note']),
+					$category->id
+				);
+				//print "$sql\n";
+				mysql_query($sql);
+				
+				$sql=sprintf("update `Category Bridge` set `Category Head Key`=%d where `Subject`=%s and `Subject Key`=%d and `Category Key`=%d",
+					$category->id,
+					prepare_mysql($category->data['Category Subject']),
+					$row['Subject Key'],
+					$parent_key
+				);
+				mysql_query($sql);
+
+			}
+
 		}
 	}else {
 		$sql=sprintf("delete  from `Category Bridge` where `Category Key`=%d",$row['Category Key']);
@@ -89,27 +92,37 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-$sql="select * from `Category Dimension` where `Category Key`=26 ";
+$sql="select * from `Category Dimension` where `Category Key`=11567 ";
 $sql="select * from `Category Dimension` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+//print 'Cat '.$row['Category Key']."\r";
+
 	$category=new Category($row['Category Key']);
 	$category->update_branch_tree();
 	$category->update_number_of_subjects();
-	
-	foreach ($category->get_parent_keys() as $parent_key) {
-		
+
+
+	if ($category->data['Category Branch Type']=='Root') {
 		$sql=sprintf("update `Category Dimension` set `Category Root Key`=%d where `Category Key`=%d ",
-				$parent_key,
-				$category->id
-			);
-			mysql_query($sql);
-		//	print "$sql\n";
-		break;
+			$category->id,
+			$category->id
+		);
+		mysql_query($sql);
+
 	}
-	
-	
-	
+
+	foreach ($category->get_parent_keys() as $parent_key) {
+
+		$sql=sprintf("update `Category Dimension` set `Category Root Key`=%d where `Category Key`=%d ",
+			$parent_key,
+			$category->id
+		);
+		mysql_query($sql);
+		//print "$sql\n";
+
+	}
 }
 
 

@@ -454,7 +454,7 @@ var subject='Supplier';
 var subject_key=Dom.get('supplier_id').value;
 
 //if(Dom.hasClass(o,'selected'))
-//    var operation_type='disassociate_subject_to_category_radio';
+//    var operation_type='disassociate_subject_to_category';
 //else
 
 
@@ -462,7 +462,7 @@ if(category_key==''){
 var request='ar_edit_categories.php?tipo=disassociate_subject_from_all_sub_categories&category_key=' + parent_category_key+ '&subject=' + subject +'&subject_key=' + subject_key 
 
 }else{
-var request='ar_edit_categories.php?tipo=associate_subject_to_category_radio&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
+var request='ar_edit_categories.php?tipo=associate_subject_to_category&category_key=' + category_key+ '&subject=' + subject +'&subject_key=' + subject_key +"&parent_category_key="+parent_category_key+"&cat_id="+o.id
 
 
 }

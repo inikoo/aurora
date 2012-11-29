@@ -4,18 +4,22 @@
 	<input type="hidden" value="{$category_key}" id="category_key" />
 	<input type="hidden" value="{$category->get('Category Root Key')}" id="root_category_key" />
 	<input type="hidden" value="{$category->get('Category Branch Type')}" id="branch_type" />
+	<input type="hidden" value="{t}Invalid Category Code{/t}" id="msg_invalid_category_code" />
+	<input type="hidden" value="{t}Invalid Category Label{/t}" id="msg_invalid_category_label" />
+
+	
 	
 	
 	{if isset($category)} 
 	<div class="branch">
-		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {t}Parts Categories{/t} &rarr; {$category->get('Category XHTML Branch Tree')} ({t}Editing{/t})</span> 
+		<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; <a href="part_categories.php?id=0&warehouse_id={$category->get('Category Warehouse Key')}">{t}Parts Categories{/t}</a> &rarr; {$category->get('Category XHTML Branch Tree')} ({t}Editing{/t})</span> 
 	</div>
 	<div class="top_page_menu">
 		<div class="buttons" style="float:left">
 			<span class="main_title">{t}Editing Category{/t}: <span class="id" id="title_name">{$category->get('Category Code')}</span> </span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button onclick="window.location='part_categories.php?id={$category->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button id="new_subcategory"><img src="art/icons/add.png" alt=""> {t}New Subcategory{/t}</button> 
+			<button onclick="window.location='part_categories.php?id={$category->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button style="{if !$create_subcategory}display:none{/if}" id="new_subcategory"><img src="art/icons/add.png" alt=""> {t}New Subcategory{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>
@@ -37,13 +41,13 @@
 	{/if} 
 	<ul class="tabs" id="chooser_ul" style="clear:both">
 		<li> <span class="item {if $edit=='description'}selected{/if}" {if !isset($category)}style="display:none" {/if} id="description"> <span> {t}Description{/t}</span></span></li>
-		<li> <span class="item {if $edit=='subcategory'}selected{/if}" id="subcategory"> <span> {t}Subcategories{/t}</span></span></li>
-		<li> <span {if !isset($category)}style="display:none" {/if} class="item {if $edit=='parts'}selected{/if}" id="parts"> <span> {t}Parts{/t} ({$category->get('Number Subjects')})</span></span></li>
-		<li style=""> <span class="item {if $edit=='no_assigned'}selected{/if}" id="no_assigned">  <span> {t}Parts no assigned{/t} (<span class="number" style="float:none;display:inline;padding:0">{$category->get('Subjects Not Assigned')}</span>)</span></span></li>
+		<li> <span class="item {if $edit=='subcategory'}selected{/if}" style="{if !$create_subcategory}display:none{/if}"  id="subcategory"> <span> {t}Subcategories{/t}</span></span></li>
+		<li> <span {if !isset($category)}style="display:none" {/if} class="item {if $edit=='parts'}selected{/if}" id="parts"> <span> {t}Parts{/t} (<span id="number_category_subjects_assigned" class="number" style="float:none;display:inline;padding:0">{$category->get('Number Subjects')}</span>)</span></span></li>
+		<li style=""> <span class="item {if $edit=='no_assigned'}selected{/if}" id="no_assigned">  <span> {t}Parts no assigned{/t} (<span id="number_category_subjects_not_assigned" class="number" style="float:none;display:inline;padding:0">{$category->get('Subjects Not Assigned')}</span>)</span></span></li>
 	</ul>
 	<div class="tabbed_container">
-		{if isset($category)} 
-		<div class="edit_block" style="min-height:300px;{if $edit!='description'}display:none{/if}" id="d_description">
+		
+		<div class="edit_block" style="min-height:300px;{if $edit!='description' or !isset($category)  }display:none{/if}" id="d_description">
 		
 			<div style="display:none" id="new_category_messages" class="messages_block">
 			</div>
@@ -57,12 +61,12 @@
 					<td class="label" style="width:200px">{t}Code{/t}:</td>
 					<td style="text-align:left;width:350px"> 
 					<div>
-						<input style="text-align:left;width:100%" id="Category_Name" value="{$category->get('Category Code')}" ovalue="{$category->get('Category Code')}"> 
-						<div id="Category_Name_Container">
+						<input style="text-align:left;width:100%" id="Category_Code" value="{$category->get('Category Code')}" ovalue="{$category->get('Category Code')}"> 
+						<div id="Category_Code_Container">
 						</div>
 					</div>
 					</td>
-					<td id="Category_Name_msg" class="edit_td_alert"></td>
+					<td id="Category_Code_msg" class="edit_td_alert"></td>
 				</tr>
 				<tr class="first">
 					<td class="label" style="width:200px">{t}Label{/t}:</td>
@@ -125,17 +129,28 @@
 			</table>
 		
 		</div>
-		{/if} 
+		
 		<div class="edit_block" style="min-height:300px;{if $edit!='subcategory'}display:none{/if}" id="d_subcategory">
 			<span class="clean_table_title">{if isset($category)}{t}Subcategories{/t}{else}{t}Categories{/t}{/if}</span> 
 			<div class="table_top_bar" style="margin-bottom:15px">
 			</div>
 			{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 no_filter=0 } 
-			<div id="table0" class="data_table_container dtable btable">
+			<div id="table0" class="data_table_container dtable btable" style="font-size:90%">
 			</div>
 		</div>
 		<div class="edit_block" style="min-height:300px;{if $edit!='parts'}display:none{/if}" id="d_parts">
-		
+		<div class="buttons small left" style="border:1px solid white;margin-bottom:10px">
+				<button id="check_all_assigned_subjects" onClick="check_all_assigned_subject()" >{t}Check All{/t}</button> 
+				<button style="display:none" id="uncheck_all_assigned_subjects" onClick="uncheck_all_assigned_subject()">{t}Uncheck All{/t}</button> 
+
+				<span id="checked_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced parts{/t} (<span id="number_checked_assigned_subjects"></span>): </span> 
+				<button  style="display:none" id="checked_assigned_subjects_assign_to_category_button" onClick="assign_to_category_checked_assigned_subject()"  >{t}Move to other Category{/t}</button>
+				<button  style="display:none" id="checked_assigned_subjects_remove_from_category_button" onClick="remove_from_category_checked_assigned_subject()"  >{t}Remove from Category{/t}</button>
+
+				<span id="wait_checked_assigned_subjects_assign_to_category" style="display:none;float:left;margin-right:5px;margin-left:20px"><img src="art/loading.gif"/> {t}Processing Request{/t}</span> 
+				<div style="clear:both">
+				</div>
+			</div>
 		<div id="children_table" class="data_table">
 			<span class="clean_table_title">{t}Parts in this category{/t}</span> 
 		
@@ -149,8 +164,13 @@
 		
 		</div>
 		<div class="edit_block" id="d_no_assigned" style="min-height:300px;{if $edit!='no_assigned'}display:none;{/if}">
-			<div class="buttons small left" style="margin-bottom:10px">
-				<button>{t}Select All{/t}</button> <span>{t}With seleced parts{/t}: </span> 
+			<div class="buttons small left" style="border:1px solid white;margin-bottom:0px">
+				<button id="check_all_no_assigned_subjects" onClick="check_all_no_assigned_subject()" >{t}Check All{/t}</button> 
+				<button style="display:none" id="uncheck_all_no_assigned_subjects" onClick="uncheck_all_no_assigned_subject()">{t}Uncheck All{/t}</button> 
+
+				<span id="checked_no_assigned_subjects_dialog" style="display:none;float:left;margin-right:5px;margin-left:20px">{t}With seleced parts{/t} (<span id="number_checked_no_assigned_subjects"></span>): </span> 
+				<button  style="display:none" id="checked_no_assigned_subjects_assign_to_category_button" onClick="assign_to_category_checked_no_assigned_subject()"  >{if $category->get('Category Branch Type')=='Head'}{t}Assign to this Category{/t}{else}{t}Assign to Category{/t}{/if}</button>
+				<span id="wait_checked_no_assigned_subjects_assign_to_category" style="display:none;float:left;margin-right:5px;margin-left:20px"><img src="art/loading.gif"/> {t}Processing Request{/t}</span> 
 				<div style="clear:both">
 				</div>
 			</div>
@@ -192,6 +212,50 @@
 		</ul>
 	</div>
 </div>
+
+<div id="filtermenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="rppmenu2" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu2 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},2)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+<div id="filtermenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+			{foreach from=$filter_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',3)"> {$menu.menu_label}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+<div id="rppmenu3" class="yuimenu">
+	<div class="bd">
+		<ul class="first-of-type">
+			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+			{foreach from=$paginator_menu3 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},3)"> {$menu}</a></li>
+			{/foreach} 
+		</ul>
+	</div>
+</div>
+
+
 
 <div id="rppmenu4" class="yuimenu">
   <div class="bd">

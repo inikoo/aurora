@@ -855,7 +855,7 @@ $default_state=array(
 			'nr'=>25,
 			'where'=>'where true',
 			'f_field'=>'sku',
-			'f_value'=>'','f_show'=>false,
+			'f_value'=>'','f_show'=>false,'checked_all'=>false
 
 		),
 		'no_assigned_parts'=>array(
@@ -867,6 +867,7 @@ $default_state=array(
 			'where'=>'where true',
 			'f_field'=>'sku',
 			'f_value'=>'','f_show'=>false,
+			'checked_all'=>false
 
 		),
 

@@ -52,7 +52,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $invoice=new Invoice($row['Invoice Key']);
  // print $invoice->id."\n";
-   $invoice->categorize('save');
+   $invoice->categorize();
 print $invoice->id."\r";
   //$force_values=array(
    // 'Invoice Items Net Amount'=>$invoice->data['Invoice Items Net Amount']

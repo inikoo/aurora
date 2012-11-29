@@ -7,6 +7,10 @@ include_once('common.php');
 var category_show_options=[{label:"<?php echo _('Yes')?>", value:"Yes"}, {label:"<?php echo _('No')?>", value:"No"}];
 var category_show_name={'Yes':'Yes','No':'No'};
 
+
+
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
 
 
@@ -156,10 +160,43 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  var tableid=2;
 	    var tableDivEL="table"+tableid;
+	    
+	    
+	      this.checkbox_assigned = function(elLiner, oRecord, oColumn, oData) {
+	      
+	     
+	      if(oData=='wait'){
+	      
+	      elLiner.innerHTML =oData
+	      return;
+	      }
+	      
+	      
+        	if(assigned_subjects_check_start_type=='unchecked'){     
+		   		if(checked_assigned_subjects.indexOf(  oRecord.getData("sku").toString())>=0){
+		   		 	
+		   			elLiner.innerHTML =oRecord.getData("checkbox_checked")
+		   			this.updateCell(oRecord, 'checked', 1);
+				}else{
+					elLiner.innerHTML = oRecord.getData("checkbox_unchecked")
+				}
+			}
+			else{
+				if(unchecked_assigned_subjects.indexOf(  oRecord.getData("sku").toString())>=0){
+		   			elLiner.innerHTML =oRecord.getData("checkbox_unchecked")
+				}else{
+					elLiner.innerHTML = oRecord.getData("checkbox_checked")
+					this.updateCell(oRecord, 'checked', 1);
+				}
+			}
+	    };
+	    
+	    
+	    
 	    var ColumnDefs = [ 
 	    		    {key:"sku", label:"",width:10, sortable:false,hidden:true}
-				  ,{key:"checkbox", label:"", width:14,sortable:false}
-				  				  ,{key:"hierarchy", label:"", width:14,sortable:false}
+				  ,{key:"checkbox", label:"", formatter:this.checkbox_assigned,width:18,sortable:false}
+				  				  ,{key:"hierarchy", label:"",hidden:(Dom.get('branch_type').value=='Head'?true:false), width:14,sortable:false}
 
 				    ,{key:"formated_sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -188,7 +225,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "sku","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy"
+			 "sku","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -221,6 +258,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     this.table2.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table2.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table2.subscribe("cellClickEvent", onCellClick);
+        this.table2.subscribe("renderEvent", set_checked_all_numbers_assigned_subject);
 
 
 	    
@@ -232,9 +270,29 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var tableid=3;
 	    var tableDivEL="table"+tableid;
+	    
+	    
+	     this.checkbox_no_assigned = function(elLiner, oRecord, oColumn, oData) {
+        	if(no_assigned_subjects_check_start_type=='unchecked'){     
+		   		if(checked_no_assigned_subjects.indexOf(  oRecord.getData("sku").toString())>=0){
+		   			elLiner.innerHTML =oRecord.getData("checkbox_checked")
+				}else{
+					elLiner.innerHTML = oRecord.getData("checkbox_unchecked")
+				}
+			}
+			else{
+				if(unchecked_no_assigned_subjects.indexOf(  oRecord.getData("sku").toString())>=0){
+		   			elLiner.innerHTML =oRecord.getData("checkbox_unchecked")
+				}else{
+					elLiner.innerHTML = oRecord.getData("checkbox_checked")
+				}
+			}
+	    };
+	    
+	    
 	    var ColumnDefs = [ 
 	    		    {key:"sku", label:"",width:10, sortable:false,hidden:true}
-				  ,{key:"checkbox", label:"", width:18,sortable:false}
+				  ,{key:"checkbox", label:"", formatter:this.checkbox_no_assigned,width:18,sortable:false}
 				    ,{key:"formated_sku", label:"<?php echo _('SKU')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"description", label:"<?php echo _('Description')?>",width:290, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -260,7 +318,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "sku","formated_sku","description","used_in","checkbox","move","subject_key","move_here"
+			 "sku","formated_sku","description","used_in","checkbox","move","subject_key","move_here","checkbox_checked","checkbox_unchecked","checked"
 			 ]};
 	    
 	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -293,6 +351,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
     this.table3.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table3.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table3.subscribe("cellClickEvent", onCellClick);
+        this.table3.subscribe("renderEvent", set_checked_all_numbers_no_assigned_subject);
 
 
 	    
@@ -453,19 +512,7 @@ var tableid=5;
 
 
 
-function check_part(sku){
-checkbox=Dom.get('pna_'+sku);
-if(checkbox.getAttribute('checked')==1){
-checkbox.src="art/icons/checkbox_unchecked.png";
-checkbox.setAttribute('checked',0)
-}else{
 
-checkbox.src="art/icons/checkbox_checked.png";
-checkbox.setAttribute('checked',1)
-
-}
-
-}
 
 
 function change_block(){
@@ -483,22 +530,7 @@ ids=["d_description","d_subcategory","d_parts","d_no_assigned"];
 
 function init(){
 
- validate_scope_data={
-'category':{
-
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Code')?>'}],'name':'Category_Name'
-	    ,'ar':false,'ar_request':false}
-	
-	,'label':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Label')?>'}],'name':'Category_Label'
-	    ,'ar':false,'ar_request':false}
-	}
-
-  
-};
- validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_categories.php','key_name':'category_key','key':Dom.get('category_key').value}};
-
+ 
 
 
 
@@ -508,9 +540,7 @@ function init(){
     YAHOO.util.Event.addListener(ids, "click", change_block);
  
 //    YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
-    YAHOO.util.Event.addListener('save_edit_category', "click", save_new_category);   
-    YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_category); 
-
+ 
   
  
  /*   var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
@@ -518,23 +548,25 @@ function init(){
     var staff_id_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Id","Company_Staff_Id_Container", staff_id_oACDS);
     staff_id_oAutoComp.minQueryLength = 0; 
     staff_id_oAutoComp.queryDelay = 0.1; */
-    
-     var category_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
-    category_name_oACDS.queryMatchContains = true;
-    var category_name_oAutoComp = new YAHOO.widget.AutoComplete("Category_Name","Category_Name_Container", category_name_oACDS);
-    category_name_oAutoComp.minQueryLength = 0; 
-    category_name_oAutoComp.queryDelay = 0.1;
+ 
+  
 
 
 //  YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
-    YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);
-    YAHOO.util.Event.addListener('reset_edit_subcategory', "click", cancel_add_subcategory); 
+//    YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);
+//    YAHOO.util.Event.addListener('reset_edit_subcategory', "click", cancel_add_subcategory); 
 
+/*
    var subcategory_name_oACDS = new YAHOO.util.FunctionDataSource(validate_subcategory_name);
     subcategory_name_oACDS.queryMatchContains = true;
     var subcategory_name_oAutoComp = new YAHOO.widget.AutoComplete("Subcategory_Name","Subcategory_Name_Container", subcategory_name_oACDS);
     subcategory_name_oAutoComp.minQueryLength = 0; 
     subcategory_name_oAutoComp.queryDelay = 0.1; 
+
+
+*/
+
+
 
 
    
@@ -556,6 +588,37 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu.render();
 	 rppmenu.subscribe("show", rppmenu.focus);
     });
+    
+    
+ YAHOO.util.Event.onContentReady("filtermenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {trigger:"filter_name2"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu2", function () {
+	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
+	 rppmenu.render();
+	 rppmenu.subscribe("show", rppmenu.focus);
+    });
+    
+    
+YAHOO.util.Event.onContentReady("filtermenu3", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {trigger:"filter_name3"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });
+
+
+YAHOO.util.Event.onContentReady("rppmenu3", function () {
+	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu3", {trigger:"rtext_rpp3" });
+	 rppmenu.render();
+	 rppmenu.subscribe("show", rppmenu.focus);
+    });    
+    
     
     
  YAHOO.util.Event.onContentReady("rppmenu4", function () {

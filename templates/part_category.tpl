@@ -21,8 +21,8 @@
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 			<li style="{if $category->get('Category Children')==0 }display:none{/if}"> <span class="item {if $block_view=='subcategories_charts'}selected{/if}" id="subcategories_charts"> <span> {t}Overview{/t}</span></span></li>
 
-		<li style="{if $category->get('Category Children')==0 and  $category->get('Category Number Subjects')>0}display:none{/if}"> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Category Children')})</span></span></li>
-		<li style="{if $category->get('Category Number Subjects')==0 and  $category->get('Category Children')>0 }display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t}</span></span></li>
+		<li style="{if $category->get('Category Children')==0 and  $category->get('Category Number Subjects')>0}display:none{/if}"> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Number Children')})</span></span></li>
+		<li style="{if $category->get('Category Number Subjects')==0 and  $category->get('Category Children')>0 }display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t} ({$category->get('Number Subjects')})</span></span></li>
 		<li style="{if $category->get('Category Number Subjects')==0 }display:none{/if}"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span></li>
 		<li> <span style="display:none" class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
 	</ul>
@@ -113,7 +113,7 @@
 					</table>
 				</div>
 			</div>
-			<div id="sales_plots" style="clear:both;">
+			<div id="sales_plots" style="clear:both;{if $category->get_period('Total','Acc Sold Amount')==0}display:none{/if}">
 				<ul class="tabs" id="chooser_ul" style="margin-top:25px">
 					<li> <span class="item {if $plot_tipo=='store'}selected{/if}" onclick="change_plot(this)" id="plot_store" tipo="store"> <span>{t}Parts Sales{/t}</span> </span> </li>
 					{* 

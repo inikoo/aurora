@@ -1015,7 +1015,7 @@ function category_part_sales($data) {
 
 	);
 
-	//print $sql;
+	
 
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {

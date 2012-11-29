@@ -20,68 +20,38 @@ case('parts_no_assigned_to_category'):
 case('parts_assigned_to_category'):
 	list_parts_assigned_to_category();
 	break;
-	/*
-case('disassociate_subject_from_all_sub_categories'):
-    $data=prepare_values($_REQUEST,array(
 
-                             'subject'  =>array('type'=>'string'),
-                             'subject_key'  =>array('type'=>'key'),
-                             'category_key'  =>array('type'=>'key')
-                         ));
-    disassociate_subject_from_all_sub_categories($data);
-    break;
-case('disassociate_subject_to_category'):
-    $data=prepare_values($_REQUEST,array(
-                             'cat_id'  =>array('type'=>'string'),
-                             'subject'  =>array('type'=>'string'),
-                             'subject_key'  =>array('type'=>'key'),
-                             'category_key'  =>array('type'=>'key')
-                         ));
-
-
-    disassociate_subject_to_category($data);
-
-    break;
-case('disassociate_subject_to_category_radio'):
-    $data=prepare_values($_REQUEST,array(
-                             'cat_id'  =>array('type'=>'string'),
-                             'subject'  =>array('type'=>'string'),
-                             'subject_key'  =>array('type'=>'key'),
-                             'category_key'  =>array('type'=>'key'),
-                             'parent_category_key'  =>array('type'=>'key')
-                         ));
-
-
-    disassociate_subject_to_category_radio($data);
-
-    break;
- */
+case('disassociate_multiple_subject_from_category'):
+	$data=prepare_values($_REQUEST,array(
+			'subject_source_checked_type'  =>array('type'=>'string'),
+			'subject_source_checked_subjects'  =>array('type'=>'string'),
+			'category_key'  =>array('type'=>'key'),
+		));
+	disassociate_multiple_subject_from_category($data);
+	break;
 case('disassociate_subject'):
 	$data=prepare_values($_REQUEST,array(
 			'subject_key'  =>array('type'=>'key'),
 			'category_key'  =>array('type'=>'key'),
 		));
-
-
-	disassociate_subject_to_category($data);
-
+	disassociate_subject_from_category($data);
+	break;
+case('associate_multiple_subject_to_category'):
+	$data=prepare_values($_REQUEST,array(
+			'subject_source_checked_type'  =>array('type'=>'string'),
+			'subject_source_checked_subjects'  =>array('type'=>'string'),
+			'subject_source'  =>array('type'=>'numeric'),
+			'category_key'  =>array('type'=>'key'),
+		));
+	associate_multiple_subject_to_category($data);
 	break;
 case('associate_subject_to_category'):
-case('associate_subject_to_category_radio'):
 	$data=prepare_values($_REQUEST,array(
-			//'cat_id'  =>array('type'=>'string'),
-			//'subject'  =>array('type'=>'string'),
 			'subject_key'  =>array('type'=>'key'),
 			'category_key'  =>array('type'=>'key'),
-
 		));
-
-
 	associate_subject_to_category($data);
-
 	break;
-
-
 case('update_other_value'):
 	$data=prepare_values($_REQUEST,array(
 			'subject_key'  =>array('type'=>'key'),
@@ -967,7 +937,7 @@ function edit_categories($data) {
 
 function edit_category($data) {
 	$category=new Category($data['category_key']);
-	$translate_keys=array('category_key'=>'Category Key','name'=>'Category Code','label'=>'Category Label','Category Show Subject User Interface'=>'Category Show Subject User Interface'
+	$translate_keys=array('category_key'=>'Category Key','code'=>'Category Code','label'=>'Category Label','Category Show Subject User Interface'=>'Category Show Subject User Interface'
 		,'Category Show Public New Subject'=>'Category Show Public New Subject'
 		,'Category Show Public Edit'=>'Category Show Public Edit');
 	$category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
@@ -1004,93 +974,163 @@ function delete_categories($data) {
 	echo json_encode($response);
 }
 
+function disassociate_multiple_subject_from_category($data) {
+	$category=new Category($data['category_key']);
 
-function disassociate_subject_from_all_sub_categories_old($data) {
+
+
+	if ($data['subject_source_checked_type']=='unchecked') {
+		foreach (preg_split('/,/',$data['subject_source_checked_subjects']) as $subject_key) {
+			$category->disassociate_subject($subject_key);
+		}
+	}else {
+
+
+		if ($category->data['Category Subject']=='Part') {
+
+
+			$f_value=$_SESSION['state']['part_categories']['edit_parts']['f_value'];
+			$f_field=$_SESSION['state']['part_categories']['edit_parts']['f_field'];
+			$where=sprintf("where B.`Category Key`=%d  ",$category->id);
+
+			$wheref='';
+			if ($f_field=='used_in' and $f_value!='')
+				$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
+			elseif ($f_field=='description' and $f_value!='')
+				$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+			elseif ($f_field=='supplied_by' and $f_value!='')
+				$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+			elseif ($f_field=='sku' and $f_value!='')
+				$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
+			$sql="select `Part SKU` from `Part Dimension` left join `Category Bridge` B on (`Part SKU`=`Subject Key` and `Subject`='Part') $where $wheref  group by `Part SKU` ";
+
+			$res=mysql_query($sql);
+			$no_checked_subjects=preg_split('/,/',$data['subject_source_checked_subjects']);
+			while ($row=mysql_fetch_assoc($res)) {
+				if (!in_array($row['Part SKU'],$no_checked_subjects)) {
+
+					$category->disassociate_subject($row['Part SKU']);
+
+
+				}
+
+			}
+
+
+
+		}
+
+
+	}
+
+	if (isset($_REQUEST['callback_category_key']) and is_numeric($_REQUEST['callback_category_key']) and $_REQUEST['callback_category_key']!=$data['category_key']) {
+		$category=new Category($_REQUEST['callback_category_key']);
+	}else {
+		$category->get_data('id',$category->id);
+	}
+
+	$response=array(
+		'state'=>200,
+		'number_category_subjects_assigned'=>$category->get('Number Subjects'),
+		'number_category_subjects_not_assigned'=>$category->get('Subjects Not Assigned')
+	);
+	echo json_encode($response);
+
+}
+
+
+
+
+function associate_multiple_subject_to_category($data) {
+
+
 
 	$category=new Category($data['category_key']);
-	$sub_cats=$category->get_children_keys();
-	if (count($sub_cats)==0) {
-		$response=array('state'=>200,'action'=>'nochange','msg'=>_('Category has not children'));
-		echo json_encode($response);
-		return;
+	if ($data['subject_source_checked_type']=='unchecked') {
+		foreach (preg_split('/,/',$data['subject_source_checked_subjects']) as $subject_key) {
+			$category->associate_subject($subject_key);
+		}
+	}else {
+
+		if ($category->data['Category Subject']=='Part') {
+			if ($data['subject_source']) {
+
+				$f_value=$_SESSION['state']['part_categories']['edit_parts']['f_value'];
+				$f_field=$_SESSION['state']['part_categories']['edit_parts']['f_field'];
+				$where=sprintf("where B.`Category Key`=%d  ",$data['subject_source']);
+
+				$wheref='';
+				if ($f_field=='used_in' and $f_value!='')
+					$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
+				elseif ($f_field=='description' and $f_value!='')
+					$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+				elseif ($f_field=='supplied_by' and $f_value!='')
+					$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+				elseif ($f_field=='sku' and $f_value!='')
+					$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
+				$sql="select `Part SKU` from `Part Dimension` left join `Category Bridge` B on (`Part SKU`=`Subject Key` and `Subject`='Part') $where $wheref  group by `Part SKU` ";
+
+				$res=mysql_query($sql);
+				$no_checked_subjects=preg_split('/,/',$data['subject_source_checked_subjects']);
+				while ($row=mysql_fetch_assoc($res)) {
+					if (!in_array($row['Part SKU'],$no_checked_subjects)) {
+						$category->associate_subject($row['Part SKU']);
+					}
+
+				}
+
+
+
+
+			}
+			else {
+
+				$f_value=$_SESSION['state']['part_categories']['no_assigned_parts']['f_value'];
+				$f_field=$_SESSION['state']['part_categories']['no_assigned_parts']['f_field'];
+				$where=sprintf("where (select count(*) from `Category Bridge` where `Subject`='Part'and `Category Key`=%d  and `Subject Key`=`Part SKU`)=0 ",
+					$category->id
+				);
+
+				
+				$wheref='';
+				if ($f_field=='used_in' and $f_value!='')
+					$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";
+				elseif ($f_field=='description' and $f_value!='')
+					$wheref.=" and  `Part Unit Description` like '%".addslashes($f_value)."%'";
+				elseif ($f_field=='supplied_by' and $f_value!='')
+					$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
+				elseif ($f_field=='sku' and $f_value!='')
+					$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
+
+
+				$sql="select `Part SKU`  from `Part Dimension`  $where $wheref ";
+				$res=mysql_query($sql);
+				$no_checked_subjects=preg_split('/,/',$data['subject_source_checked_subjects']);
+				while ($row=mysql_fetch_assoc($res)) {
+					if (!in_array($row['Part SKU'],$no_checked_subjects)) {
+						$category->associate_subject($row['Part SKU']);
+					}
+
+				}
+
+
+			}
+		}
 	}
 
-	$sql=sprintf("delete from `Category Bridge`  where `Category Key` in (%s) and `Subject`=%s and `Subject Key`=%d",
-		join(',',$sub_cats),
-		prepare_mysql($data['subject']),
-		$data['subject_key']
+	if (isset($_REQUEST['callback_category_key']) and is_numeric($_REQUEST['callback_category_key']) and $_REQUEST['callback_category_key']!=$data['category_key']) {
+		$category=new Category($_REQUEST['callback_category_key']);
+	}else {
+		$category->get_data('id',$category->id);
+	}
+
+
+	$response=array(
+		'state'=>200,
+		'number_category_subjects_assigned'=>$category->get('Number Subjects'),
+		'number_category_subjects_not_assigned'=>$category->get('Subjects Not Assigned')
 	);
-	mysql_query($sql);
-	// print($sql);
-	//print "-->".mysql_affected_rows()."<--  "    ;
-	if (mysql_affected_rows()>0) {
-		$response=array('state'=>200,'action'=>'deleted','msg'=>_('Saved'));
-		echo json_encode($response);
-	} else {
-		$response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
-		echo json_encode($response);
-	}
-
-}
-
-function disassociate_subject_to_category_old($data) {
-	$sql=sprintf("delete from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['parent_category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	mysql_query($sql);
-	// print($sql);
-	//print "-->".mysql_affected_rows()."<--  "    ;
-	if (mysql_affected_rows()>0) {
-		$response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id']);
-		echo json_encode($response);
-	} else {
-		$response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
-		echo json_encode($response);
-	}
-
-}
-
-
-function disassociate_subject_to_category_radio_old($data) {
-	$found=false;
-	$sql=sprintf("select count(*) as num from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	$res=mysql_query($sql);
-
-	if ($row=mysql_fetch_assoc($res)) {
-		if ($row['num']>0)
-			$found=true;
-
-	}
-
-
-	if (!$found) {
-		$response=array('state'=>200,'action'=>'nochange','msg'=>_('The Subject is not associated with the category'));
-		echo json_encode($response);
-		exit;
-	}
-
-
-	$sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['parent_category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	mysql_query($sql);
-	//print($sql);
-	//print "-->".mysql_affected_rows()."<--  "    ;
-	if (mysql_affected_rows()>0) {
-		$response=array('state'=>200,'action'=>'deleted','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key']);
-		echo json_encode($response);
-	} else {
-		$response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not be disassociated with the category'));
-		echo json_encode($response);
-	}
+	echo json_encode($response);
 
 }
 
@@ -1101,14 +1141,23 @@ function associate_subject_to_category($data) {
 	if (isset($_REQUEST['other_value']))
 		$other_value=$_REQUEST['other_value'];
 
+
+
+
 	$category=new Category($data['category_key']);
 	$associated=$category->associate_subject($data['subject_key'],false,$other_value);
 
 
 
+
 	if ($associated) {
 
-		//  $category=new Category($data['category_key']);
+		if (isset($_REQUEST['callback_category_key']) and is_numeric($_REQUEST['callback_category_key']) and $_REQUEST['callback_category_key']!=$data['category_key']) {
+			$category=new Category($_REQUEST['callback_category_key']);
+		}else {
+
+			$category->get_data('id',$category->id);
+		}
 
 		$response=array(
 			'state'=>200,
@@ -1124,7 +1173,7 @@ function associate_subject_to_category($data) {
 }
 
 
-function disassociate_subject_to_category($data) {
+function disassociate_subject_from_category($data) {
 
 	$category=new Category($data['category_key']);
 	$disassociated=$category->disassociate_subject($data['subject_key']);
@@ -1160,91 +1209,7 @@ function update_other_value($data) {
 }
 
 
-function associate_subject_to_category_radio_old($data) {
 
-
-	$found=false;
-	$sql=sprintf("select count(*) as num from `Category Bridge`  where `Category Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		if ($row['num']>0)
-			$found=true;
-
-	}
-
-
-	if (isset($_REQUEST['other'])) {
-		$other=$_REQUEST['other'];
-		$found=false;
-	}
-	else
-		$other=NULL;
-
-
-
-
-
-	if ($found) {
-		$response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject already associated with the category'));
-		echo json_encode($response);
-		exit;
-	}
-
-	$old_category_key=0;
-	$sql=sprintf("select C.`Category Key` from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['parent_category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($result)) {
-		$old_category_key=$row['Category Key'];
-
-	}
-
-
-
-	$sql=sprintf("delete CB.* from `Category Bridge` as CB left join `Category Dimension` C on (C.`Category Key`=CB.`Category Key`)  where `Category Parent Key`=%d and `Subject`=%s and `Subject Key`=%d",
-		$data['parent_category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key']
-	);
-	mysql_query($sql);
-
-	$old_category=new Category($old_category_key);
-	if ($old_category->id)
-		$old_category->update_number_of_subjects();
-	$old_category->update_subjects_data();
-
-	$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,%s)",
-		$data['category_key'],
-		prepare_mysql($data['subject']),
-		$data['subject_key'],
-		prepare_mysql($other)
-
-	);
-	mysql_query($sql);
-
-	//print $sql;
-
-	if (mysql_affected_rows()>0) {
-
-		$category=new Category($data['category_key']);
-		$category->update_number_of_subjects();
-		$category->update_subjects_data();
-
-		$response=array('state'=>200,'action'=>'added','cat_id'=>$data['cat_id'],'parent_category_key'=>$data['parent_category_key'],'msg'=>_('Saved'));
-		echo json_encode($response);
-	} else {
-		$response=array('state'=>200,'action'=>'nochange','msg'=>_('Subject could not associated with the category'));
-		echo json_encode($response);
-	}
-
-}
 
 
 function list_parts_no_assigned_to_category() {
@@ -1305,6 +1270,20 @@ function list_parts_no_assigned_to_category() {
 		$f_value=$conf['f_value'];
 
 
+
+	if (isset( $_REQUEST['checked_all'])) {
+		$checked_all=$_REQUEST['checked_all'];
+
+	}else {
+		$checked_all=$conf['checked_all'];
+
+	}
+
+
+
+
+	//$check_all=true;
+
 	if (isset( $_REQUEST['tableid']))
 		$tableid=$_REQUEST['tableid'];
 	else
@@ -1317,6 +1296,7 @@ function list_parts_no_assigned_to_category() {
 	$_SESSION['state']['part_categories']['no_assigned_parts']['sf']=$start_from;
 	$_SESSION['state']['part_categories']['no_assigned_parts']['f_field']=$f_field;
 	$_SESSION['state']['part_categories']['no_assigned_parts']['f_value']=$f_value;
+	$_SESSION['state']['part_categories']['no_assigned_parts']['checked_all']=$checked_all;
 
 
 	$filter_msg='';
@@ -1328,14 +1308,11 @@ function list_parts_no_assigned_to_category() {
 	if (!is_numeric($number_results))
 		$number_results=25;
 
+
+	//NOTE if changed change associate_multiple_subject_to_category too
 	$where=sprintf("where (select count(*) from `Category Bridge` where `Subject`='Part'and `Category Key`=%d  and `Subject Key`=`Part SKU`)=0 ",
 		$parent_key
 	);
-
-
-
-
-
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -1366,7 +1343,7 @@ function list_parts_no_assigned_to_category() {
 		$total_records=$total;
 	} else {
 
-		$sql="select count(`Part SKU`) as total from `Part Dimension`  $where  ";
+		$sql="select count(`Part SKU`) as total_without_filters from `Part Dimension`  $where  ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1392,7 +1369,7 @@ function list_parts_no_assigned_to_category() {
 			break;
 
 		case('used_in'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part used in ")." <b>*".$f_value."*</b> ";
 			break;
 		case('suppiled_by'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any part supplied by ")." <b>".$f_value."*</b> ";
@@ -1411,7 +1388,7 @@ function list_parts_no_assigned_to_category() {
 			break;
 
 		case('used_in'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts used in')." <b>*".$f_value."*</b>";
 			break;
 		case('supplied_by'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('parts supplied by')." <b>".$f_value."*</b>";
@@ -1451,7 +1428,14 @@ function list_parts_no_assigned_to_category() {
 	$adata=array();
 	$result=mysql_query($sql);
 
-	//print $sql;
+	////print $sql;
+	// if($checked_all){
+	$checkbox_checked_format='<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="no_assigned_subject_%d" onClick="check_no_assigned_subject(%d)"/>';
+	// }else{
+	$checkbox_unchecked_format='<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="no_assigned_subject_%d" onClick="check_no_assigned_subject(%d)"/>';
+	// }
+
+
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 		$move_here='<div class="buttons small"><button>'._('Assign Here').'</button></div>';
@@ -1459,19 +1443,25 @@ function list_parts_no_assigned_to_category() {
 		$move='<div class="buttons small"><button>'._('Assign to Category').'</button></div>';
 
 
-		$checkbox=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="pna_%d" onClick="check_part(%d)"/>',
+		$checkbox_checked=sprintf($checkbox_checked_format,
+			$data['Part SKU'],
+			$data['Part SKU']
+		);
+		$checkbox_unchecked=sprintf($checkbox_unchecked_format,
 			$data['Part SKU'],
 			$data['Part SKU']
 		);
 
 		$adata[]=array(
-			'checkbox'=>$checkbox,
+			'checkbox'=>'',
+			'checkbox_checked'=>$checkbox_checked,
+			'checkbox_unchecked'=>$checkbox_unchecked,
+			'checked'=>0,
 			'sku'=>$data['Part SKU'],
 			'subject_key'=>$data['Part SKU'],
 
 			'formated_sku'=>sprintf('<a href="part.php?sku=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
 			'description'=>$data['Part Unit Description'],
-			'used_in'=>$data['Part XHTML Currently Used In'],
 			'status'=>($data['Part Status']=='In Use'?'':_('Discontinued')),
 			'move'=>$move,
 			'move_here'=>$move_here
@@ -1488,7 +1478,7 @@ function list_parts_no_assigned_to_category() {
 			'filter_msg'=>$filter_msg,
 			'rtext'=>$rtext,
 			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
+			'total_records'=>$total,
 			'records_offset'=>$start_from,
 			'records_perpage'=>$number_results,
 		)
@@ -1578,15 +1568,12 @@ function list_parts_assigned_to_category() {
 	if (!is_numeric($number_results))
 		$number_results=25;
 
+
+
+
 	$where=sprintf("where B.`Category Key`=%d  ",
 		$parent_key
 	);
-
-
-
-
-
-
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
@@ -1599,8 +1586,6 @@ function list_parts_assigned_to_category() {
 		$wheref.=" and  `Part XHTML Currently Supplied By` like '%".addslashes($f_value)."%'";
 	elseif ($f_field=='sku' and $f_value!='')
 		$wheref.=" and  `Part SKU` ='".addslashes($f_value)."'";
-
-
 	$sql="select count(`Part SKU`) as total from `Part Dimension` left join `Category Bridge` B on (`Part SKU`=`Subject Key` and `Subject`='Part') $where $wheref ";
 
 
@@ -1616,7 +1601,7 @@ function list_parts_assigned_to_category() {
 		$total_records=$total;
 	} else {
 
-		$sql="select count(`Part SKU`) as total from `Part Dimension` left join `Category Bridge` B on (`Part SKU`=`Subject Key` and `Subject`='Part')  $where  ";
+		$sql="select count(`Part SKU`) as total_without_filters from `Part Dimension` left join `Category Bridge` B on (`Part SKU`=`Subject Key` and `Subject`='Part')  $where  ";
 
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1709,14 +1694,21 @@ function list_parts_assigned_to_category() {
 		$delete='<div class="buttons small"><button>'._('Remove').'</button></div>';
 
 
-		$checkbox=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="pna_%d" onClick="check_part(%d)"/>',
+		$checkbox_unchecked=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$data['Part SKU'],
+			$data['Part SKU']
+		);
+		$checkbox_checked=sprintf('<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
 			$data['Part SKU'],
 			$data['Part SKU']
 		);
 
 		$hierarchy='<img style="width:14px;" src="art/icons/hierarchy_grey.png" alt="hierarchy" title="'.$data['Category Plain Branch Tree'].'" />';
 		$adata[]=array(
-			'checkbox'=>$checkbox,
+			'checkbox'=>'',
+			'checkbox_checked'=>$checkbox_checked,
+			'checkbox_unchecked'=>$checkbox_unchecked,
+
 			'sku'=>$data['Part SKU'],
 			'subject_key'=>$data['Part SKU'],
 
@@ -1740,7 +1732,8 @@ function list_parts_assigned_to_category() {
 			'filter_msg'=>$filter_msg,
 			'rtext'=>$rtext,
 			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
+			'total_records'=>$total,
+
 			'records_offset'=>$start_from,
 			'records_perpage'=>$number_results,
 		)
