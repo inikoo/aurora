@@ -1958,10 +1958,10 @@ function list_category_heads() {
 		switch ($f_field) {
 
 		case('code'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with code like ")." <b>*".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("none with code like ")." <b>*".$f_value."*</b> ";
 			break;
 		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with label like ")." <b>*".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("none with name like ")." <b>*".$f_value."*</b> ";
 			break;
 		}
 	}
@@ -1969,10 +1969,10 @@ function list_category_heads() {
 		switch ($f_field) {
 
 		case('code'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with code like')." <b>*".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'." $total "._('with code like')." <b>*".$f_value."*</b>";
 			break;
 		case('label'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with code like')." <b>*".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'." $total "._('with name like')." <b>*".$f_value."*</b>";
 			break;
 		}
 	}

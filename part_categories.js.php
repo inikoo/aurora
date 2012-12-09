@@ -113,7 +113,7 @@ var change_view=function(e){
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
 	table.view=tipo
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer_categories-view&value=' + escape(tipo) );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part_categories-view&value=' + escape(tipo) );
 	}
   }
 
@@ -142,8 +142,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				
 				     ];
-
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_categories.php?tipo=main_categories&parent=part_categories&tableid=1");
+request="ar_categories.php?tipo=main_categories&parent=part_categories&tableid=1";
+//alert(request)
+	    this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -187,7 +188,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+		this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
 
 	    
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['part_categories']['main_categories']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['main_categories']['f_value']?>'};
@@ -237,7 +239,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['customer_categories']['history']['nr']?>,containers : 'paginator2', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['part_categories']['history']['nr']?>,containers : 'paginator2', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -247,8 +249,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    key: "<?php echo$_SESSION['state']['customer_categories']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['customer_categories']['history']['order_dir']?>"
+							    key: "<?php echo$_SESSION['state']['part_categories']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['part_categories']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -260,11 +262,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		       this.table2.table_id=tableid;
-     this.table2.subscribe("renderEvent", myrenderEvent);
+		this.table2.table_id=tableid;
+     	this.table2.subscribe("renderEvent", myrenderEvent);
 
 		    
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['customer_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['customer_categories']['history']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['part_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['history']['f_value']?>'};
 
 
 
@@ -357,62 +359,106 @@ function change_history_elements(e, table_id) {
 
 
 
- function init(){
-  ids=['subcategories','history'];
-  Event.addListener(ids, "click",change_block);
+ function init() {
+     ids = ['subcategories', 'history'];
+     Event.addListener(ids, "click", change_block);
 
 
- init_search('parts');
- 
-var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
+     init_search('parts');
+
+
+     var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS1.queryMatchContains = true;
+     oACDS1.table_id = 1;
+
+     var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+     oAutoComp1.minQueryLength = 0;
+
+     var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS2.queryMatchContains = true;
+     oACDS2.table_id = 2;
+
+     var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+     oAutoComp2.minQueryLength = 0;
+
+
+     Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+     Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+     Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+     Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
 
 
 
 
- ids=['general','sales','stock'];
- YAHOO.util.Event.addListener(ids, "click",change_view)
- ids=['period_all','period_year','period_quarter','period_month','period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,0);
- ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,0);
 
- var elements = Dom.getElementsByClassName('cat_chooser','span','cat_chooser');
+     ids = ['general', 'sales', 'stock'];
+     YAHOO.util.Event.addListener(ids, "click", change_view)
+     ids = ['period_all', 'period_year', 'period_quarter', 'period_month', 'period_week'];
+     YAHOO.util.Event.addListener(ids, "click", change_period, 0);
+     ids = ['avg_totals', 'avg_month', 'avg_week', "avg_month_eff", "avg_week_eff"];
+     YAHOO.util.Event.addListener(ids, "click", change_avg, 0);
 
-     YAHOO.util.Event.addListener(elements, "click",change_category);
+     var elements = Dom.getElementsByClassName('cat_chooser', 'span', 'cat_chooser');
 
- //YAHOO.util.Event.addListener('show_details', "click",show_details,'customer_categories');
- YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'customer_categories');
+     YAHOO.util.Event.addListener(elements, "click", change_category);
+
+     //YAHOO.util.Event.addListener('show_details', "click",show_details,'part_categories');
+     YAHOO.util.Event.addListener('show_percentages', "click", show_percentages, 'part_categories');
 
 
-   ids = ['elements_Change', 'elements_Assign'];
-    Event.addListener(ids, "click", change_history_elements, 2);
-    
+     ids = ['elements_Change', 'elements_Assign'];
+     Event.addListener(ids, "click", change_history_elements, 2);
+
 
  }
 
-YAHOO.util.Event.onDOMReady(init);
+ YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-    });
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });
 
-YAHOO.util.Event.onContentReady("change_display_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("change_display_menu", { context:["change_display_mode","tr", "br"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("change_display_mode", "click", oMenu.show, null, oMenu);
-  
-    });
+
+ YAHOO.util.Event.onContentReady("rppmenu1", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+         trigger: "rtext_rpp1"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+
+ YAHOO.util.Event.onContentReady("filtermenu1", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+         trigger: "filter_name1"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+
+ });
+ YAHOO.util.Event.onContentReady("rppmenu2", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+         trigger: "rtext_rpp2"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+ });
+
+ YAHOO.util.Event.onContentReady("filtermenu2", function() {
+     var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+         trigger: "filter_name2"
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+
+ });
+
+
+
+ YAHOO.util.Event.onContentReady("change_display_menu", function() {
+     var oMenu = new YAHOO.widget.Menu("change_display_menu", {
+         context: ["change_display_mode", "tr", "br"]
+     });
+     oMenu.render();
+     oMenu.subscribe("show", oMenu.focus);
+     YAHOO.util.Event.addListener("change_display_mode", "click", oMenu.show, null, oMenu);
+
+ });

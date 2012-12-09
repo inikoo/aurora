@@ -553,33 +553,6 @@ function init(){
     var ids = ["description","subcategory","no_assigned","parts"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
  
-//    YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
- 
-  
- 
- /*   var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
-    staff_id_oACDS.queryMatchContains = true;
-    var staff_id_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Id","Company_Staff_Id_Container", staff_id_oACDS);
-    staff_id_oAutoComp.minQueryLength = 0; 
-    staff_id_oAutoComp.queryDelay = 0.1; */
- 
-  
-
-
-//  YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
-//    YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);
-//    YAHOO.util.Event.addListener('reset_edit_subcategory', "click", cancel_add_subcategory); 
-
-/*
-   var subcategory_name_oACDS = new YAHOO.util.FunctionDataSource(validate_subcategory_name);
-    subcategory_name_oACDS.queryMatchContains = true;
-    var subcategory_name_oAutoComp = new YAHOO.widget.AutoComplete("Subcategory_Name","Subcategory_Name_Container", subcategory_name_oACDS);
-    subcategory_name_oAutoComp.minQueryLength = 0; 
-    subcategory_name_oAutoComp.queryDelay = 0.1; 
-
-
-*/
-
 
 
 

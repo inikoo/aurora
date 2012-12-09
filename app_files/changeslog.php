@@ -44,7 +44,6 @@ ALTER TABLE `Order Transaction Fact` CHANGE `Current Dispatching State` `Current
 ALTER TABLE `Order Dimension` CHANGE `Order Current Dispatch State` `Order Current Dispatch State` ENUM( 'In Process by Customer', 'In Process', 'Submitted by Customer', 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Dispatched', 'Unknown', 'Packing', 'Cancelled' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Tax Category Dimension` DROP PRIMARY KEY ,ADD UNIQUE (`Tax Category Code`);
 ALTER TABLE `Tax Category Dimension` ADD `Tax Category Key` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
-ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part', 'Site', 'Page', 'Invoice', 'Category Customer', 'Category Part', 'Category Invoice', 'Category Supplier' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 // RUN fix_history_categories.php
 
 
@@ -6791,3 +6790,16 @@ CREATE TABLE `Category Deleted Dimension` (
 ALTER TABLE `Category Deleted Dimension` ADD `Category Deleted Date` DATETIME NOT NULL ;
 ALTER TABLE `Category Dimension` ADD `Category Children Other` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Is Category Field Other` ;
 ALTER TABLE `Category Dimension` ADD `Category Can Have Other` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Category Subject Multiplicity` ;
+ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part', 'Site', 'Page', 'Invoice', 'Category Customer', 'Category Part', 'Category Invoice', 'Category Supplier', 'Category Product', 'Category Family' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+CREATE TABLE `dw`.`Part Category History Bridge` (
+`Warehouse Key` SMALLINT UNSIGNED NOT NULL ,
+`Category Key` MEDIUMINT UNSIGNED NOT NULL ,
+`History Key` MEDIUMINT UNSIGNED NOT NULL ,
+UNIQUE (
+`Warehouse Key` ,
+`Category Key` ,
+`History Key`
+)
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Part Category History Bridge` ADD `Type` ENUM( 'Change', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;

@@ -87,12 +87,12 @@ function list_main_categories() {
 
 
 
-	$_SESSION['state'][$parent]['part_categories']['order']=$order;
-	$_SESSION['state'][$parent]['part_categories']['order_dir']=$order_direction;
-	$_SESSION['state'][$parent]['part_categories']['nr']=$number_results;
-	$_SESSION['state'][$parent]['part_categories']['sf']=$start_from;
-	$_SESSION['state'][$parent]['part_categories']['f_field']=$f_field;
-	$_SESSION['state'][$parent]['part_categories']['f_value']=$f_value;
+	$_SESSION['state'][$parent]['main_categories']['order']=$order;
+	$_SESSION['state'][$parent]['main_categories']['order_dir']=$order_direction;
+	$_SESSION['state'][$parent]['main_categories']['nr']=$number_results;
+	$_SESSION['state'][$parent]['main_categories']['sf']=$start_from;
+	$_SESSION['state'][$parent]['main_categories']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['main_categories']['f_value']=$f_value;
 
 
 
@@ -106,19 +106,19 @@ function list_main_categories() {
 		exit('error: unknown parent category: '.$parent);
 	}
 
-	$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=0");
 
 
 
-	//  $where=sprintf("where `Category Subject`='Product'  ");
+
 
 
 
 	$filter_msg='';
 	$wheref='';
-	if ($f_field=='name' and $f_value!='')
+	if ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
-
+elseif ($f_field=='label' and $f_value!='')
+		$wheref.=" and  `Category Label` like '%".addslashes($f_value)."%'";
 
 
 
@@ -158,17 +158,23 @@ function list_main_categories() {
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with code like ")." <b>*".$f_value."*</b> ";
 			break;
+		case('label'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with label like ")." <b>*".$f_value."*</b> ";
+			break;	
 		}
 	}
 	elseif ($filtered>0) {
 		switch ($f_field) {
 
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with code like')." <b>*".$f_value."*</b>";
 			break;
+		case('label'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with label like')." <b>*".$f_value."*</b>";
+			break;	
 		}
 	}
 	else
@@ -201,8 +207,8 @@ function list_main_categories() {
 
 
 
-		$code=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
-		$label=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
+		$code=sprintf('<a href="category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
+		$label=sprintf('<a href="category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
 
 
 		$adata[]=array(
