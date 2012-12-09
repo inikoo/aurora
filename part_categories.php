@@ -110,12 +110,14 @@ $smarty->assign('warehouse',$warehouse);
 
 
 
-$tipo_filter=$_SESSION['state']['part_categories']['subcategories']['f_field'];
+$tipo_filter=$_SESSION['state']['part_categories']['main_categories']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',$_SESSION['state']['part_categories']['subcategories']['f_value']);
+$smarty->assign('filter_value1',$_SESSION['state']['part_categories']['main_categories']['f_value']);
 
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Code')),
+	'label'=>array('db_key'=>'label','menu_label'=>_('Category Label'),'label'=>_('Label')),
+
 );
 
 
@@ -133,7 +135,6 @@ $filter_menu=array(
 	'author'=>array('db_key'=>'author','menu_label'=>_('Done by <i>x</i>*'),'label'=>_('Notes')),
 	'uptu'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
 	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)')),
-	'abstract'=>array('db_key'=>'abstract','menu_label'=>_('Records with abstract'),'label'=>_('Abstract'))
 
 );
 $smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);

@@ -116,6 +116,8 @@ $smarty->assign('filter_value0',$_SESSION['state']['part_categories']['edit_cate
 
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Code')),
+		'label'=>array('db_key'=>'label','menu_label'=>_('Category Label'),'label'=>_('Label')),
+
 );
 
 
@@ -134,7 +136,6 @@ $filter_menu=array(
 	'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
 	'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
 	'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
-	'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
 
 );
 

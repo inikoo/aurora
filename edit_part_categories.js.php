@@ -114,9 +114,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", onCellClick);
+this.table0.table_id=tableid;
+        this.table0.subscribe("renderEvent", myrenderEvent);
 
 
-
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['part_categories']['edit_categories']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['edit_categories']['f_value']?>'};
 
 		
  var tableid=1; // Change if you have more the 1 table
@@ -130,7 +132,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
 				       ];
 		request="ar_history.php?tipo=category_part_history&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=1";
-	   	    this.dataSource1 = new YAHOO.util.DataSource(request);
+	   
+	   this.dataSource1 = new YAHOO.util.DataSource(request);
 
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
@@ -186,7 +189,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['part_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['history']['f_value']?>'};
 
 
 
@@ -549,6 +552,27 @@ function init() {
     });
 
     dialog_delete_category_from_list.render();
+    
+    
+        var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS0.queryMatchContains = true;
+     oACDS0.table_id = 0;
+     var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS0);
+     oAutoComp0.minQueryLength = 0;
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+     oACDS1.queryMatchContains = true;
+     oACDS1.table_id = 1;
+     var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+     oAutoComp1.minQueryLength = 0;
+
+
+
+
+     Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+     Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+     Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+     Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    
 
 
 }
@@ -574,9 +598,9 @@ YAHOO.util.Event.onContentReady("rppmenu0", function() {
 });
 
 
-YAHOO.util.Event.onContentReady("filtermenu2", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
-        trigger: "filter_name2"
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
     });
     oMenu.render();
     oMenu.subscribe("show", oMenu.focus);
@@ -584,46 +608,11 @@ YAHOO.util.Event.onContentReady("filtermenu2", function() {
 });
 
 
-YAHOO.util.Event.onContentReady("rppmenu2", function() {
-    rppmenu = new YAHOO.widget.ContextMenu("rppmenu2", {
-        trigger: "rtext_rpp2"
+YAHOO.util.Event.onContentReady("rppmenu1", function() {
+    rppmenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+        trigger: "rtext_rpp1"
     });
     rppmenu.render();
     rppmenu.subscribe("show", rppmenu.focus);
 });
 
-
-YAHOO.util.Event.onContentReady("filtermenu3", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {
-        trigger: "filter_name3"
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-
-});
-
-
-YAHOO.util.Event.onContentReady("rppmenu3", function() {
-    rppmenu = new YAHOO.widget.ContextMenu("rppmenu3", {
-        trigger: "rtext_rpp3"
-    });
-    rppmenu.render();
-    rppmenu.subscribe("show", rppmenu.focus);
-});
-
-
-
-YAHOO.util.Event.onContentReady("rppmenu4", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("rppmenu4", {
-        trigger: "rtext_rpp4"
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-});
-YAHOO.util.Event.onContentReady("rppmenu5", function() {
-    var oMenu = new YAHOO.widget.ContextMenu("rppmenu5", {
-        trigger: "rtext_rpp5"
-    });
-    oMenu.render();
-    oMenu.subscribe("show", oMenu.focus);
-});

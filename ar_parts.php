@@ -365,9 +365,9 @@ function list_parts() {
 	} else {
 
 		if ($sql_type=='part')
-			$sql="select count(Distinct P.`Part SKU`) as total from $table  $where ";
+			$sql="select count(Distinct P.`Part SKU`) as total_without_filters from $table  $where ";
 		else
-			$sql="select count(Distinct ITF.`Part SKU`) as total from $table  $where ";
+			$sql="select count(Distinct ITF.`Part SKU`) as total_without_filters from $table  $where ";
 
 
 

@@ -114,7 +114,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"margin", label:"<?php echo _('Margin')?>", width:100,sortable:true,className:"aright",<?php echo($_SESSION['state']['part_categories']['parts']['view']=='forecast'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				     ];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_parts.php?tipo=parts&tableid=0&where=&parent=category&sf=0&parent_key="+Dom.get('category_key').value);
+				     
+				     request="ar_parts.php?tipo=parts&tableid=0&where=&parent=category&sf=0&parent_key="+Dom.get('category_key').value
+				     alert(request)
+	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -177,7 +180,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"code", label:"<?php echo _('Code')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"label", label:"<?php echo _('Label')?>", width:360,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"subjects", label:"<?php echo _('Parts')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					//,{key:"sold", label:"<?php echo _('Outers')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"sales", label:"<?php echo _('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"delta_sales", label:"<?php echo '&Delta;'._('Sales')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
@@ -233,8 +235,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    this.table1.view='<?php echo$_SESSION['state']['part_categories']['view']?>';
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['part_categories']['subcategories']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['subcategories']['f_value']?>'};
-this.table1.table_id=tableid;
-     this.table1.subscribe("renderEvent", myrenderEvent);
+		this.table1.table_id=tableid;
+     	this.table1.subscribe("renderEvent", myrenderEvent);
 		
  var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -299,8 +301,8 @@ this.table1.table_id=tableid;
 	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
-		       this.table2.table_id=tableid;
-     this.table2.subscribe("renderEvent", myrenderEvent);
+		this.table2.table_id=tableid;
+     	this.table2.subscribe("renderEvent", myrenderEvent);
 
 		    
 	    this.table2.filter={key:'<?php echo$_SESSION['state']['part_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['history']['f_value']?>'};
@@ -412,14 +414,20 @@ function update_part_category_history_elements() {
  
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
+  oACDS.table_id = 0;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
+ 
   var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS1.queryMatchContains = true;
+ oACDS1.table_id = 1;
  var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
  oAutoComp1.minQueryLength = 0; 
+ 
+ 
    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS2.queryMatchContains = true;
+  oACDS2.table_id = 2;
  var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
  oAutoComp2.minQueryLength = 0; 
  

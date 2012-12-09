@@ -1193,9 +1193,6 @@ function list_category_part_history() {
 
 	}
 
-
-
-
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -1214,10 +1211,10 @@ function list_category_part_history() {
 	else
 		$order_dir=$conf['order_dir'];
 
-	if (isset( $_REQUEST['details']))
-		$details=$_REQUEST['details'];
-	else
-		$details=$conf['details'];
+//	if (isset( $_REQUEST['details']))
+//		$details=$_REQUEST['details'];
+//	else
+//		$details=$conf['details'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -1264,7 +1261,7 @@ function list_category_part_history() {
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	$_SESSION['state']['part_categories']['history']['details']=$details;
+	//$_SESSION['state']['part_categories']['history']['details']=$details;
 	$_SESSION['state']['part_categories']['history']['elements']=$elements;
 	$_SESSION['state']['part_categories']['history']['order']=$order;
 	$_SESSION['state']['part_categories']['history']['order_dir']=$order_direction;
@@ -1314,16 +1311,16 @@ function list_category_part_history() {
 
 	if ( $f_field=='notes' and $f_value!='' )
 		$wheref.=" and   `History Abstract` like '%".addslashes($f_value)."%'   ";
-	else if ($f_field=='upto' and is_numeric($f_value) )
-			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))<=".$f_value."    ";
-		else if ($f_field=='older' and is_numeric($f_value))
-				$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))>=".$f_value."    ";
-			elseif ($f_field=='author' and $f_value!='') {
-				$wheref.=" and   `Author Name` like '".addslashes($f_value)."%'   ";
-			}
+	elseif ($f_field=='upto' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))<=".$f_value."    ";
+	elseif ($f_field=='older' and is_numeric($f_value))
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))>=".$f_value."    ";
+	elseif ($f_field=='author' and $f_value!='') {
+		$wheref.=" and   `Author Name` like '".addslashes($f_value)."%'   ";
+	}
 
 
-		$sql="select count(*) as total from  `Part Category History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
+	$sql="select count(*) as total from  `Part Category History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
 	//print $sql;
 	// exit;
 	$result=mysql_query($sql);

@@ -716,7 +716,7 @@ $default_state=array(
 
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -836,7 +836,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -924,7 +924,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -1035,7 +1035,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -2158,7 +2158,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -2189,7 +2189,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -2307,7 +2307,7 @@ $default_state=array(
 
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -2530,7 +2530,7 @@ $default_state=array(
 		
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -2640,7 +2640,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -2869,7 +2869,7 @@ $default_state=array(
 
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -3110,7 +3110,7 @@ $default_state=array(
                         ),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -3420,7 +3420,7 @@ $default_state=array(
 
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -3581,7 +3581,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4217,7 +4217,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4570,7 +4570,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4603,7 +4603,7 @@ $default_state=array(
 
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4636,7 +4636,7 @@ $default_state=array(
 
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4658,7 +4658,7 @@ $default_state=array(
 
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4691,7 +4691,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4723,7 +4723,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',
@@ -4777,7 +4777,7 @@ $default_state=array(
 		),
 		'history'=>array(
 			'where'=>'where true',
-			'f_field'=>'abstract',
+			'f_field'=>'notes',
 			'f_value'=>'','f_show'=>false,
 			'order'=>'date',
 			'order_dir'=>'desc',

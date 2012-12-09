@@ -247,7 +247,6 @@ var mygetTerms =function (query) {
 
 
 
-
     if(this.table_id==undefined)
 	var table_id=0;
     else
@@ -257,9 +256,9 @@ var mygetTerms =function (query) {
     var table=tables['table'+table_id];
     var datasource=tables['dataSource'+table_id];
 
+//alert(Dom.get('f_input'+table_id))
     table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&tableid='+table_id+'&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
- 
   datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 

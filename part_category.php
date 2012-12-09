@@ -221,6 +221,8 @@ $smarty->assign('filter_value1',$_SESSION['state']['part_categories']['subcatego
 
 $filter_menu=array(
 	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Code')),
+		'label'=>array('db_key'=>'code','menu_label'=>_('Category Label'),'label'=>_('Label')),
+
 );
 
 

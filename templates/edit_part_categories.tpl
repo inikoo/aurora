@@ -23,7 +23,7 @@
 	</ul>
 	<div class="tabbed_container">
 		<div class="edit_block" style="min-height:300px;{if $edit!='subcategory'}display:none{/if}" id="d_subcategory">
-			<span class="clean_table_title">{if isset($category)}{t}Subcategories{/t}{else}{t}Categories{/t}{/if}</span> 
+			<span class="clean_table_title">{t}Categories{/t}</span> 
 			<div id="table_type" class="table_type">
 				<div style="font-size:90%" id="part_type_chooser">
 					<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Head}selected{/if} label_part_Head" id="elements_Head" table_type="Head">{t}Head{/t} (<span id="elements_Head_number">{$elements_number.Head}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Node}selected{/if} label_part_Node" id="elements_Node" table_type="Node">{t}Node{/t} (<span id="elements_Node_number">{$elements_number.Node}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Root}selected{/if} label_part_Root" id="elements_Root" table_type="Root">{t}Root{/t} (<span id="elements_Root_number">{$elements_number.Root}</span>)</span> 
@@ -73,22 +73,22 @@
 		</ul>
 	</div>
 </div>
-<div id="filtermenu2" class="yuimenu">
+<div id="filtermenu1" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
 			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-			{foreach from=$filter_menu2 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',2)"> {$menu.menu_label}</a></li>
+			{foreach from=$filter_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
 			{/foreach} 
 		</ul>
 	</div>
 </div>
-<div id="rppmenu2" class="yuimenu">
+<div id="rppmenu1" class="yuimenu">
 	<div class="bd">
 		<ul class="first-of-type">
 			<li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-			{foreach from=$paginator_menu2 item=menu } 
-			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},2)"> {$menu}</a></li>
+			{foreach from=$paginator_menu1 item=menu } 
+			<li class="yuimenuitem"><a class="yuimenuitemlabel" onclick="change_rpp({$menu},1)"> {$menu}</a></li>
 			{/foreach} 
 		</ul>
 	</div>

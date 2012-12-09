@@ -1104,20 +1104,33 @@ function edit_category_init() {
     category_label_oAutoComp.minQueryLength = 0;
     category_label_oAutoComp.queryDelay = 0.1;
 
-
-    //Event.addListener('clean_table_filter_show0', "click",show_filter,0);
-    // Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+    Event.addListener('clean_table_filter_show5', "click", show_filter, 5);
+    Event.addListener('clean_table_filter_hide5', "click", hide_filter, 5);
+    Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
+    Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
+   
     Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
     Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
     Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
     Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
-/*
-var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
-  oACDS.table_id=0;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
- */
+    
+    Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+    Event.addListener('clean_table_filter_show2', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 0);
+
+    var oACDS5 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS5.queryMatchContains = true;
+    oACDS5.table_id = 5;
+    var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5", "f_container5", oACDS5);
+    oAutoComp5.minQueryLength = 0;
+    
+    var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS4.queryMatchContains = true;
+    oACDS4.table_id = 4;
+    var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
+    oAutoComp4.minQueryLength = 0;
+    
     var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS3.queryMatchContains = true;
     oACDS3.table_id = 3;
@@ -1129,6 +1142,20 @@ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS2.table_id = 2;
     var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
     oAutoComp2.minQueryLength = 0;
+
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+    
+        var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS0.queryMatchContains = true;
+    oACDS0.table_id = 0;
+    var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS0);
+    oAutoComp0.minQueryLength = 0;
+
+
 
 
     Event.addListener('delete_category', "click", delete_category);
