@@ -29,12 +29,16 @@ if ($avileable_stores==1) {
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
-$create=$user->can_create('stores');
-$modify=$user->can_edit('stores');
+$create=$user->can_create('store wide');
+$modify=$user->can_edit('store wide');
 if (!$modify) {
     header('Location: stores.php');
     exit;
 }
+
+
+
+
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));

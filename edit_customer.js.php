@@ -1450,32 +1450,25 @@ function cancel_delete_customer(){
 dialog_delete_customer.hide();
 }
 
-function save_delete_customer(){
+function save_delete_customer() {
 
+    var request = 'ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer_id
+    Dom.setStyle('deleting', 'display', '');
+    Dom.setStyle('delete_customer_buttons', 'display', 'none');
 
-var request='ar_edit_contacts.php?tipo=delete_customer&customer_key=' + customer_id
-	           
-	           Dom.setStyle('deleting','display','');
-	           	           Dom.setStyle('delete_customer_buttons','display','none');
-
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	            success:function(o){
-	           //alert(o.responseText);	
-			var r =  YAHOO.lang.JSON.parse(o.responseText);
-			if(r.state==200){
-        location.href='customer.php?id='+customer_id;
-                                  }else{
-                                  
-                                       Dom.setStyle('deleting','display','none');
-	           	           Dom.setStyle('delete_customer_buttons','display','');
-                                  
-                                  
-                                  Dom.get('delete_customer_msg').innerHTML=r.msg
-                                  }
-   			}
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText);	
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                location.href = 'customer.php?id=' + customer_id;
+            } else {
+                Dom.setStyle('deleting', 'display', 'none');
+                Dom.setStyle('delete_customer_buttons', 'display', '');
+                Dom.get('delete_customer_msg').innerHTML = r.msg
+            }
+        }
     });
-
-
 }
 
 function change_password(o){

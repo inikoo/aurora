@@ -1725,18 +1725,16 @@ class part extends DB_Table {
 
 	}
 
+
+
+
 	function update_sales_from_invoices($interval) {
 
-		$to_date='';
-		list($db_interval,$from_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
-
-
-
-
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb)=calculate_inteval_dates($interval);
+		//print "$db_interval,$from_date,$to_date,$from_date_1yb,$to_date_1yb  \n";
 
 		setlocale(LC_ALL, 'en_GB');
 
-		//   print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
 		$this->data["Part $db_interval Acc Required"]=0;
 		$this->data["Part $db_interval Acc Provided"]=0;
@@ -1872,24 +1870,193 @@ class part extends DB_Table {
 
 		mysql_query($sql);
 
-		// print "$sql\n";
 
 
 
 
 		if ($from_date_1yb) {
 
-			//    prepare_mysql($from_date_1yb),
-			//                  prepare_mysql($to_1yb)
+
+			$this->data["Part $db_interval Acc 1YB Required"]=0;
+			$this->data["Part $db_interval Acc 1YB Provided"]=0;
+			$this->data["Part $db_interval Acc 1YB Given"]=0;
+			$this->data["Part $db_interval Acc 1YB Sold Amount"]=0;
+			$this->data["Part $db_interval Acc 1YB Profit"]=0;
+			$this->data["Part $db_interval Acc 1YB Profit After Storing"]=0;
+			$this->data["Part $db_interval Acc 1YB Sold"]=0;
+			$this->data["Part $db_interval Acc 1YB Margin"]=0;
+
+
+			$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
+                     from `Inventory Transaction Fact` ITF  where `Part SKU`=%d %s %s" ,
+				$this->sku,
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+
+				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
+
+			);
+			$result=mysql_query($sql);
+			//   print "$sql\n";
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$this->data["Part $db_interval Acc 1YB Profit"]=$row['profit'];
+				$this->data["Part $db_interval Acc 1YB Profit After Storing"]=$this->data["Part $db_interval Acc 1YB Profit"]-$row['cost_storing'];
+
+			}
+
+
+			$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Part SKU`=%d  %s %s" ,
+				$this->id,
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
+
+			);
+			$result=mysql_query($sql);
+			//print "$sql\n";
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+				$this->data["Part $db_interval Acc 1YB Acquired"]=$row['bought'];
+
+			}
+
+
+			$sql=sprintf("select sum(`Amount In`) as sold_amount,
+                     sum(`Inventory Transaction Quantity`) as dispatched,
+                     sum(`Required`) as required,
+                     sum(`Given`) as given,
+                     sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
+                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d %s %s" ,
+				$this->id,
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
+
+			);
+			$result=mysql_query($sql);
+			//print "$sql\n";
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+				$this->data["Part $db_interval Acc 1YB Sold Amount"]=$row['sold_amount'];
+				$this->data["Part $db_interval Acc 1YB Sold"]=$row['sold'];
+				$this->data["Part $db_interval Acc 1YB Provided"]=-1.0*$row['dispatched'];
+				$this->data["Part $db_interval Acc 1YB Required"]=$row['required'];
+				$this->data["Part $db_interval Acc 1YB Given"]=$row['given'];
+
+			}
+
+			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Part SKU`=%d %s %s" ,
+				$this->id,
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
+
+			);
+			$result=mysql_query($sql);
+			//print "$sql\n";
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+				$this->data["Part $db_interval Acc 1YB Broken"]=-1.*$row['broken'];
+
+			}
+
+
+			$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Part SKU`=%d %s %s" ,
+				$this->id,
+				($from_date_1yb?sprintf('and  `Date`>=%s',prepare_mysql($from_date_1yb)):''),
+				($to_date_1yb?sprintf('and `Date`<%s',prepare_mysql($to_date_1yb)):'')
+
+			);
+			$result=mysql_query($sql);
+			//print "$sql\n";
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+				$this->data["Part $db_interval Acc 1YB Lost"]=-1.*$row['lost'];
+
+			}
 
 
 
+
+
+
+			if ($this->data["Part $db_interval Acc 1YB Sold Amount"]!=0)
+				$margin=$this->data["Part $db_interval Acc 1YB Profit After Storing"]/$this->data["Part $db_interval Acc 1YB Sold Amount"];
+			else
+				$margin=0;
+			$this->data["Part $db_interval Acc 1YB Margin"]=$margin;
+
+
+			$sql=sprintf("update `Part Dimension` set
+                     `Part $db_interval Acc 1YB Required`=%f ,
+                     `Part $db_interval Acc 1YB Provided`=%f,
+                     `Part $db_interval Acc 1YB Given`=%f ,
+                     `Part $db_interval Acc 1YB Sold Amount`=%f ,
+                     `Part $db_interval Acc 1YB Profit`=%f ,
+                     `Part $db_interval Acc 1YB Profit After Storing`=%f ,
+                     `Part $db_interval Acc 1YB Sold`=%f ,
+                     `Part $db_interval Acc 1YB Margin`=%s where
+                     `Part SKU`=%d "
+				,$this->data["Part $db_interval Acc 1YB Required"]
+				,$this->data["Part $db_interval Acc 1YB Provided"]
+				,$this->data["Part $db_interval Acc 1YB Given"]
+				,$this->data["Part $db_interval Acc 1YB Sold Amount"]
+				,$this->data["Part $db_interval Acc 1YB Profit"]
+				,$this->data["Part $db_interval Acc 1YB Profit After Storing"]
+				,$this->data["Part $db_interval Acc 1YB Sold"]
+				,$this->data["Part $db_interval Acc 1YB Margin"]
+
+				,$this->id);
+
+			mysql_query($sql);
+
+
+			$this->data["Part $db_interval Acc 1YD Required"]=($this->data["Part $db_interval Acc 1YB Required"]==0?0:($this->data["Part $db_interval Acc Required"]-$this->data["Part $db_interval Acc 1YB Required"])/$this->data["Part $db_interval Acc 1YB Required"]);
+			$this->data["Part $db_interval Acc 1YD Provided"]=($this->data["Part $db_interval Acc 1YB Provided"]==0?0:($this->data["Part $db_interval Acc Provided"]-$this->data["Part $db_interval Acc 1YB Provided"])/$this->data["Part $db_interval Acc 1YB Provided"]);
+			$this->data["Part $db_interval Acc 1YD Given"]=($this->data["Part $db_interval Acc 1YB Given"]==0?0:($this->data["Part $db_interval Acc Given"]-$this->data["Part $db_interval Acc 1YB Given"])/$this->data["Part $db_interval Acc 1YB Given"]);
+			$this->data["Part $db_interval Acc 1YD Sold Amount"]=($this->data["Part $db_interval Acc 1YB Sold Amount"]==0?0:($this->data["Part $db_interval Acc Sold Amount"]-$this->data["Part $db_interval Acc 1YB Sold Amount"])/$this->data["Part $db_interval Acc 1YB Sold Amount"]);
+			$this->data["Part $db_interval Acc 1YD Profit"]=($this->data["Part $db_interval Acc 1YB Profit"]==0?0:($this->data["Part $db_interval Acc Profit"]-$this->data["Part $db_interval Acc 1YB Profit"])/$this->data["Part $db_interval Acc 1YB Profit"]);
+			$this->data["Part $db_interval Acc 1YD Profit After Storing"]=($this->data["Part $db_interval Acc 1YB Profit After Storing"]==0?0:($this->data["Part $db_interval Acc Profit After Storing"]-$this->data["Part $db_interval Acc 1YB Profit After Storing"])/$this->data["Part $db_interval Acc 1YB Profit After Storing"]);
+			$this->data["Part $db_interval Acc 1YD Sold"]=($this->data["Part $db_interval Acc 1YB Sold"]==0?0:($this->data["Part $db_interval Acc Sold"]-$this->data["Part $db_interval Acc 1YB Sold"])/$this->data["Part $db_interval Acc 1YB Sold"]);
+			$this->data["Part $db_interval Acc 1YD Margin"]=($this->data["Part $db_interval Acc 1YB Margin"]==0?0:($this->data["Part $db_interval Acc Margin"]-$this->data["Part $db_interval Acc 1YB Margin"])/$this->data["Part $db_interval Acc 1YB Margin"]);
+
+
+			$sql=sprintf("update `Part Dimension` set
+                     `Part $db_interval Acc 1YD Required`=%f ,
+                     `Part $db_interval Acc 1YD Provided`=%f,
+                     `Part $db_interval Acc 1YD Given`=%f ,
+                     `Part $db_interval Acc 1YD Sold Amount`=%f ,
+                     `Part $db_interval Acc 1YD Profit`=%f ,
+                     `Part $db_interval Acc 1YD Profit After Storing`=%f ,
+                     `Part $db_interval Acc 1YD Sold`=%f ,
+                     `Part $db_interval Acc 1YD Margin`=%s where
+                     `Part SKU`=%d "
+				,$this->data["Part $db_interval Acc 1YD Required"]
+				,$this->data["Part $db_interval Acc 1YD Provided"]
+				,$this->data["Part $db_interval Acc 1YD Given"]
+				,$this->data["Part $db_interval Acc 1YD Sold Amount"]
+				,$this->data["Part $db_interval Acc 1YD Profit"]
+				,$this->data["Part $db_interval Acc 1YD Profit After Storing"]
+				,$this->data["Part $db_interval Acc 1YD Sold"]
+				,$this->data["Part $db_interval Acc 1YD Margin"]
+
+				,$this->id);
+
+			mysql_query($sql);
+
+
+			//print "$sql\n";
 
 
 		}
 
 
 	}
+
+
+
+
 
 	function update_sales_old() {
 		// the product wich this one is
@@ -2749,25 +2916,25 @@ class part extends DB_Table {
 			return $this->get_current_product_ids();
 		}
 		$product_ids=array();
-		
+
 		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and  `Product Part Valid From`<=%s  and `Product Part Most Recent`='Yes'  "
 			,$this->sku
 			,prepare_mysql($date)
 
 		);
 		$res=mysql_query($sql);
-		
+
 		while ($row=mysql_fetch_array($res)) {
 			$product_ids[$row['Product ID']]= $row['Product ID'];
 		}
-		
-				$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`>=%s and `Product Part Most Recent`='No'  "
+
+		$sql=sprintf("select  `Product ID` from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where  `Part SKU`=%d  and `Product Part Valid From`<=%s  and `Product Part Valid To`>=%s and `Product Part Most Recent`='No'  "
 			,$this->sku
 			,prepare_mysql($date)
 			,prepare_mysql($date)
 		);
 		$res=mysql_query($sql);
-		
+
 		while ($row=mysql_fetch_array($res)) {
 			$product_ids[$row['Product ID']]= $row['Product ID'];
 		}

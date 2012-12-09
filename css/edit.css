@@ -1,4 +1,13 @@
+.error_message{border:1px solid;padding:5px;margin-top:10px;text-align:center;
+ color: #D8000C;
+  background-color: #FFBABA;font-size:90%
+
+}
+
 table.edit{width:50%}
+
+
+
 table.edit td{ vertical-align: top;;text-align:left;padding-left:10px;padding-right:10px}
 table.edit input.number{ padding-right:4px;text-align:right; }
 table.edit input{ padding-left:4px;text-align:left; }

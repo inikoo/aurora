@@ -7,7 +7,7 @@
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_stores.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button> <button onclick="window.location='new_store.php'"><img src="art/icons/add.png" alt=""> {t}Add Store{/t}</button> 
+				<button style="{if !$user->can_edit('store wide')}display:none{/if}" onclick="window.location='edit_stores.php'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit Stores{/t}</button>  
 					<button onclick="window.location='stores_stats.php'"><img src="art/icons/chart_pie.png" alt=""> {t}Statistics{/t}</button> 
 
 	</div>

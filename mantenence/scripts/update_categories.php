@@ -43,6 +43,7 @@ $category=new Category($row['Category Key']);
 //print_r( $category->data);
  $category->update_number_of_subjects();
  $category->update_children_data();
+ $category->update_subjects_data();
   print $category->id."\r";
  }
 

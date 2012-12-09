@@ -41,6 +41,9 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 
+
+
+
 $corporation=new HQ();
 $smarty->assign('corporation',$corporation);
 

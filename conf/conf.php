@@ -659,12 +659,12 @@ $default_state=array(
 		'edit'=>'description',
 		'subcategories'=>array(
 
-			'order'=>'name',
+			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>1000,
 			'where'=>'where true',
-			'f_field'=>'name',
+			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
 
 		),
@@ -703,12 +703,12 @@ $default_state=array(
 		'edit'=>'description',
 		'subcategories'=>array(
 
-			'order'=>'name',
+			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>1000,
 			'where'=>'where true',
-			'f_field'=>'name',
+			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
 
 		),
@@ -748,12 +748,12 @@ $default_state=array(
 		'edit'=>'description',
 		'subcategories'=>array(
 
-			'order'=>'name',
+			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>1000,
 			'where'=>'where true',
-			'f_field'=>'name',
+			'f_field'=>'code',
 			'f_value'=>'','f_show'=>false,
 
 		),
@@ -778,15 +778,15 @@ $default_state=array(
 
 	'part_categories'=>array(
 		'category_key'=>0,
-		'from'=>'',
-		'to'=>'',
+	
 		'period'=>'year',
 		'percentages'=>0,
 		'mode'=>'all',
 		'avg'=>'totals',
 		'view'=>'sales',
-		'block_view'=>'subcategories',
-		'base_block_view'=>'subcategories',
+		'root_block_view'=>'subcategories',
+		'node_block_view'=>'subcategories',
+		'head_block_view'=>'subjects',
 		'from'=>'',
 		'to'=>'',
 		'exchange_type'=>'day2day',
@@ -795,28 +795,39 @@ $default_state=array(
 		'exchange_value'=>1,
 		'show_default_currency'=>false,
 		'edit'=>'description',
+		'show_history'=>false,
+			'edit_categories'=>array(
+
+			'order'=>'code',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'',
+			'f_show'=>false,
+						'elements'=>array('Root'=>1,'Node'=>0,'Head'=>0)
+
+		),	
+		
 		'subcategories'=>array(
 
-			'order'=>'name',
+			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
 			'where'=>'where true',
-			'f_field'=>'name',
+			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
-				
-			
-
 		),
 		'main_categories'=>array(
 
-			'order'=>'name',
+			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
 			'where'=>'where true',
-			'f_field'=>'name',
+			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
 				
@@ -833,18 +844,23 @@ $default_state=array(
 			'nr'=>25,
 			'from'=>'',
 			'to'=>'',
-			'elements'=>''
+			'elements'=>array('Change'=>1,'Assign'=>0)
 		),
 
 		'parts'=>array(
-
 			'order'=>'sku',
 			'order_dir'=>'',
 			'sf'=>0,
-			'nr'=>25,
+			'nr'=>20,
+			'view'=>'general',
 			'where'=>'where true',
-			'f_field'=>'sku',
-			'f_value'=>'','f_show'=>false,
+			'f_field'=>'used_in',
+			'period'=>'year',
+			'mode'=>'all',
+			'avg'=>'totals',
+			'percentage'=>false,
+			'f_value'=>'',
+			'elements'=>array('Keeping'=>1,'LastStock'=>1,'Discontinued'=>1,'NotKeeping'=>1),
 
 		),
 		'edit_parts'=>array(
@@ -894,12 +910,12 @@ $default_state=array(
 		'edit'=>'description',
 		'subcategories'=>array(
 
-			'order'=>'name',
+			'order'=>'code',
 			'order_dir'=>'',
 			'sf'=>0,
 			'nr'=>25,
 			'where'=>'where true',
-			'f_field'=>'name',
+			'f_field'=>'code',
 			'f_value'=>'',
 			'f_show'=>false,
 				

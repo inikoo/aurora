@@ -48,6 +48,7 @@ $js_files=array(
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
 	$yui_path.'calendar/calendar-min.js',
+	$yui_path.'animation/animation-min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/search.js',
@@ -68,66 +69,43 @@ if (isset($_REQUEST['id'])) {
 $_SESSION['state']['part_categories']['category_key']=$category_key;
 $_SESSION['state']['part_categories']['no_assigned_parts']['checked_all']=0;
 
-if (!$category_key) {
-	$category_key=0;
 
+
+
+$category=new Category($category_key);
+if (!$category->id) {
+	header('Location: part_categories.php?id=0&error=cat_not_found');
+	exit;
+
+}
+$category_key=$category->id;
+
+$view=$_SESSION['state']['part_categories']['edit'];
+
+
+if ($category->data['Category Max Deep']<=$category->data['Category Deep'] ) {
+	$create_subcategory=false;
+	if ( $_SESSION['state']['part_categories']['edit']=='subcategory') {
+		$view='parts';
+		$_SESSION['state']['part_categories']['edit']=$view;
+	}
+
+}else {
 	$create_subcategory=true;
 
-	$view='subcategory';
-	$_SESSION['state']['part_categories']['edit']=$view;
-
-
-	if (isset($_REQUEST['warehouse_id']) and is_numeric($_REQUEST['warehouse_id']) ) {
-		$warehouse_id=$_REQUEST['warehouse_id'];
-
-	} else {
-		$warehouse_id=$_SESSION['state']['store']['id'];
-	}
-
-
-	$smarty->assign('category_key',false);
-
-	//$general_options_list[]=array('tipo'=>'url','url'=>'part_categories.php?warehouse_id='.$warehouse_id.'&id=0','label'=>_('Exit Edit'));
-	//$general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Category'));
-
-
 
 }
-else {
-
-
-	$category=new Category($category_key);
-	if (!$category->id) {
-		header('Location: part_categories.php?id=0&error=cat_not_found');
-		exit;
-
-	}
-	$category_key=$category->id;
-
-	$view=$_SESSION['state']['part_categories']['edit'];
-	if ($category->data['Category Max Deep']<=$category->data['Category Deep'] ) {
-		$create_subcategory=false;
-		if ( $_SESSION['state']['part_categories']['edit']=='subcategory') {
-			$view='parts';
-			$_SESSION['state']['part_categories']['edit']=$view;
-		}
-
-	}else {
-		$create_subcategory=true;
-
-
-	}
 
 
 
-	$smarty->assign('category',$category);
-	$smarty->assign('category_key',$category->id);
+$smarty->assign('category',$category);
+$smarty->assign('category_key',$category->id);
 
-	// $tpl_file='part_category.tpl';
-	$warehouse_id=$category->data['Category Warehouse Key'];
+// $tpl_file='part_category.tpl';
+$warehouse_id=$category->data['Category Warehouse Key'];
 
 
-}
+
 
 $warehouse=new Warehouse($warehouse_id);
 
@@ -141,15 +119,11 @@ if (!$warehouse->id) {
 }
 
 
+
+$smarty->assign('show_history',$_SESSION['state']['part_categories']['show_history']);
+
+
 $smarty->assign('warehouse_id',$warehouse_id);
-
-//$_SESSION['state']['categories']['subject']='Part';
-
-//$_SESSION['state']['categories']['parent_key']=$category_key;
-//$_SESSION['state']['categories']['subject_key']=false;
-//$_SESSION['state']['categories']['store_key']=$store->id;
-
-
 $js_files[]='edit_part_category.js.php?key='.$category_key;
 $smarty->assign('js_files',$js_files);
 $smarty->assign('category_key',$category_key);
@@ -162,7 +136,7 @@ $smarty->assign('warehouse',$warehouse);
 $smarty->assign('subject','Part');
 
 $smarty->assign('parent','parts');
-$smarty->assign('title', _('Edit Part Categories'));
+$smarty->assign('title', _('Part Category').' '.$category->data['Category Code'].' ('._('Editing').')');
 
 
 
@@ -174,7 +148,7 @@ $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['part_categories']['subcategories']['f_value']);
 
 $filter_menu=array(
-	'name'=>array('db_key'=>_('name'),'menu_label'=>_('Category Code'),'label'=>_('Name')),
+	'code'=>array('db_key'=>'code','menu_label'=>_('Category Code'),'label'=>_('Name')),
 );
 
 
@@ -263,10 +237,16 @@ $smarty->assign('filter_name5',$filter_menu['code']['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu5',$paginator_menu);
 
+$elements_number=array('Change'=>0,'Assign'=>0);
+$sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Category Key`=%d group by  `Type`",$category->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Type']]=number($row['num']);
+}
 
 
-
-
+$smarty->assign('history_elements_number',$elements_number);
+$smarty->assign('history_elements',$_SESSION['state']['part_categories']['history']['elements']);
 
 $smarty->display('edit_part_category.tpl');
 ?>

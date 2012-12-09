@@ -41,24 +41,84 @@ global $myconf;
 
 $fmap_category=new Category('subject_code','Part','FMap');
 
+if(!$fmap_category->id){
+	exit("no Fmap cat \n");
+}
 
-$sql=sprintf("select * from `Part Dimension`");
+$sql=sprintf("select * from `Part Dimension` order by `Part SKU`");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$part=new Part($row['Part SKU']);
 	//$part->update_used_in();
+	//print "===============SKU ".$part->sku."\n";
 	$used_in=preg_split('/\s+/',$part->data['Part Currently Used In']);
+//	if(count($used_in)>1)
+	//print_r($used_in);
 	foreach ($used_in as $code) {
 		if (preg_match('/^([a-z0-9]+)\-/',$code,$match)) {
 			$fam_code=$match[1];
+			if(count($used_in)>1){
+			if ($fam_code=='cartsg')
+				$fam_code='SG';
+			if ($fam_code=='bgp')
+				$fam_code='gp';
+			}	
+				
+			//print "$code $fam_code\n";
+
+
 			$family=new Family('code_store',$fam_code,1);
 			if ($family->id) {
-			
 
+				$category=new Category('rootkey_code',$fmap_category->id,$family->data['Product Family Code']);
+				if ($category->id) {
+					$category->update(array('Category Label'=>$family->data['Product Family Name']));
+
+					$category->associate_subject($part->sku);
+				}else {
+					$data=array(
+						'Category Parent Key'=>$fmap_category->id,
+						'Category Code'=>$family->data['Product Family Code'],
+						'Category Label'=>$family->data['Product Family Name'],
+						'Category Show Subject User Interface'=>'No',
+						'Category Show Public New Subject'=>'No'
+					);
+
+
+					$category=$fmap_category->create_children($data);
+
+
+					$category->associate_subject($part->sku);
+
+				}
+
+
+
+
+				break;
+			}
+		}
+	}
+}
+
+
+/*
+			$fam_code=$match[1];
+			if($fam_code=='CartSG')
+				$fam_code='SG';
+
+			print "$code $fam_code\n";
+
+
+			$family=new Family('code_store',$fam_code,1);
+			if ($family->id) {
+
+				print $family->data['Product Family Code']."\n";
 				$category=new Category('rootkey_code',$fmap_category->id,$family->data['Product Family Code']);
 				if($category->id){
 					$category->update(array('Category Label'=>$family->data['Product Family Name']));
-					$category->associate_subject($part->sku);
+
+				$category->associate_subject($part->sku);
 				}else{
 				$data=array(
 					'Category Parent Key'=>$fmap_category->id,
@@ -67,25 +127,26 @@ while ($row=mysql_fetch_assoc($res)) {
 					'Category Show Subject User Interface'=>'No',
 					'Category Show Public New Subject'=>'No'
 					);
-				
-				
+
+
 				$category=$fmap_category->create_children($data);
 
 
 				$category->associate_subject($part->sku);
-				
+
 				}
-			
-				
+
+				break;
 
 
-			
- 
+
+
 			}
 
 		}
+
 	}
 
 }
-
+*/
 ?>

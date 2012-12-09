@@ -638,6 +638,10 @@ class supplier extends DB_Table {
 			return;
 			break;
 		}
+		
+		
+		
+		
 
 		setlocale(LC_ALL, 'en_GB');
 

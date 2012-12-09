@@ -10,7 +10,7 @@
 				<span class="main_title">{t}Parts Categories Home{/t}</span> 
 			</div>
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_part_category.php?warehouse_id={$warehouse->id}&id=0'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button> <button id="new_category"><img src="art/icons/add.png" alt=""> {t}New Main Category{/t}</button> 
+				<button onclick="window.location='edit_part_categories.php?warehouse_id={$warehouse->id}'"><img src="art/icons/table_edit.png" alt=""> {t}Edit Categories{/t}</button>  
 			</div>
 			<div style="clear:both">
 			</div>
@@ -18,7 +18,7 @@
 	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:10px">
 		<li> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Categories{/t}</span></span></li>
-		<li> <span style="display:none" class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}History{/t}</span></span></li>
+		<li> <span  class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changelog{/t}</span></span></li>
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
@@ -28,10 +28,18 @@
 		</div>
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<span class="clean_table_title">{t}History{/t}</span> {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
+		<span class="clean_table_title"> {t}Changelog{/t} </span>
+				<div id="table_type" class="table_type">
+			<div style="font-size:90%" id="part_type_chooser">
+				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Change}selected{/if} label_part_Change" id="elements_Change" table_type="Change">{t}Change{/t} (<span id="elements_Change_number">{$history_elements_number.Change}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $history_elements.Assign}selected{/if} label_part_Assign" id="elements_Assign" table_type="Assign">{t}Assig{/t} (<span id="elements_Assign_number">{$history_elements_number.Assign}</span>)</span> 
+			</div>
+		</div>
+
+		<div class="table_top_bar" style="margin-bottom:15px">
+			</div>
+		{include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2 } 
 		<div id="table2" class="data_table_container dtable btable">
 		</div>
 	</div>
 </div>
-{include file='new_category_splinter.tpl'} 
 {include file='footer.tpl'}

@@ -93,84 +93,23 @@ function invoice_categories_sales_overview() {
 	$total=0;
 
 
-	switch ($period) {
-	case('1w'):
-		$fields=sprintf(" `Invoice Category 1 Week Acc Invoices` as invoices,`Invoice Category 1 Week Acc Invoiced Amount` as sales, `Invoice Category 1 Week Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Week Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC 1 Week Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Week Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('10d'):
-		$fields=sprintf(" `Invoice Category 10 Day Acc Invoices` as invoices,`Invoice Category 10 Day Acc Invoiced Amount` as sales, `Invoice Category 10 Day Acc 1YB Invoices` as invoices_1yb,`Invoice Category 10 Day Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC 10 Day Acc Invoiced Amount` as dc_sales,`Invoice Category DC 10 Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('1m'):
-		$fields=sprintf(" `Invoice Category 1 Month Acc Invoices` as invoices,`Invoice Category 1 Month Acc Invoiced Amount` as sales, `Invoice Category 1 Month Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Month Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC 1 Month Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-		
-	case('6m'):
-		$fields=sprintf(" `Invoice Category 6 Month Acc Invoices` as invoices,`Invoice Category 6 Month Acc Invoiced Amount` as sales, `Invoice Category 6 Month Acc 1YB Invoices` as invoices_1yb,`Invoice Category 6 Month Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC 6 Month Acc Invoiced Amount` as dc_sales,`Invoice Category DC 6 Month Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;	
-		
-	case('1q'):
-		$fields=sprintf(" `Invoice Category 1 Quarter Acc Invoices` as invoices,`Invoice Category 1 Quarter Acc Invoiced Amount` as sales, `Invoice Category 1 Quarter Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Quarter Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC 1 Quarter Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Quarter Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('1y'):
-		$fields=sprintf(" `Invoice Category 1 Year Acc Invoices` as invoices,`Invoice Category 1 Year Acc Invoiced Amount` as sales, `Invoice Category 1 Year Acc 1YB Invoices` as invoices_1yb,`Invoice Category 1 Year Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC 1 Year Acc Invoiced Amount` as dc_sales,`Invoice Category DC 1 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('3y'):
-		$fields=sprintf(" `3 Year Acc Invoices` as invoices,`3 Year Acc Invoiced Amount` as sales, `3 Year Acc Invoices` as invoices_1yb,`3 Year Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC 3 Year Acc Invoiced Amount` as dc_sales,`Invoice Category DC 3 Year Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('yesterday'):
-		$fields=sprintf(" `Invoice Category Yesterday Acc Invoices` as invoices,`Invoice Category Yesterday Acc Invoiced Amount` as sales, `Invoice Category Yesterday Acc 1YB Invoices` as invoices_1yb,`Invoice Category Yesterday Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC Yesterday Acc Invoiced Amount` as dc_sales,`Invoice Category DC Yesterday Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('last_m'):
-		$fields=sprintf(" `Invoice Category Last Month Acc Invoices` as invoices,`Invoice Category Last Month Acc Invoiced Amount` as sales, `Invoice Category Last Month Acc 1YB Invoices` as invoices_1yb,`Invoice Category Last Month Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC Last Month Acc Invoiced Amount` as dc_sales,`Invoice Category DC Last Month Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('last_w'):
-		$fields=sprintf(" `Invoice Category Last Week Acc Invoices` as invoices,`Invoice Category Last Week Acc Invoiced Amount` as sales, `Invoice Category Last Week Acc 1YB Invoices` as invoices_1yb,`Invoice Category Last Week Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC Last Week Acc Invoiced Amount` as dc_sales,`Invoice Category DC Last Week Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('today'):
-		$fields=sprintf(" `Invoice Category Today Acc Invoices` as invoices,`Invoice Category Today Acc Invoiced Amount` as sales, `Invoice Category Today Acc 1YB Invoices` as invoices_1yb,`Invoice Category Today Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC Today Acc Invoiced Amount` as dc_sales,`Invoice Category DC Today Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
+$period_db=get_interval_db_name($period);
 
-	case('wtd'):
-		$fields=sprintf(" `Invoice Category Week To Day Acc Invoices` as invoices,`Invoice Category Week To Day Acc Invoiced Amount` as sales, `Invoice Category Week To Day Acc 1YB Invoices` as invoices_1yb,`Invoice Category Week To Day Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC Week To Day Acc Invoiced Amount` as dc_sales,`Invoice Category DC Week To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('mtd'):
-		$fields=sprintf(" `Invoice Category Month To Day Acc Invoices` as invoices,`Invoice Category Month To Day Acc Invoiced Amount` as sales, `Invoice Category Month To Day Acc 1YB Invoices` as invoices_1yb,`Invoice Category Month To Day Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC Month To Day Acc Invoiced Amount` as dc_sales,`Invoice Category DC Month To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
-	case('ytd'):
-		$fields=sprintf(" `Invoice Category Year To Day Acc Invoices` as invoices,`Invoice Category Year To Day Acc Invoiced Amount` as sales, `Invoice Category Year To Day Acc 1YB Invoices` as invoices_1yb,`Invoice Category Year To Day Acc 1YB Invoiced Amount` as sales_1yb,
-                        `Invoice Category DC Year To Day Acc Invoiced Amount` as dc_sales,`Invoice Category DC Year To Day Acc 1YB Invoiced Amount` as dc_sales_1yb
-                        " );
-		break;
 
-	default:
-		exit;
-	}
+if($period_db=='3 Year' or $period_db=='All'){
+
+	$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, '' as invoices_1yb, '' as sales_1yb,
+                        `Invoice Category DC $period_db Acc Invoiced Amount` as dc_sales,''as dc_sales_1yb
+                        " );
+}else{
+
+
+	$fields=sprintf(" `Invoice Category $period_db Acc Invoices` as invoices,`Invoice Category $period_db Acc Invoiced Amount` as sales, `Invoice Category $period_db Acc 1YB Invoices` as invoices_1yb,`Invoice Category $period_db Acc 1YB Invoiced Amount` as sales_1yb,
+                        `Invoice Category DC $period_db Acc Invoiced Amount` as dc_sales,`Invoice Category DC $period_db Acc 1YB Invoiced Amount` as dc_sales_1yb
+                        " );
+}
+
+
 
 	list($db_interval,$from,$to,$from_date_1yb,$to_1yb)=calculate_inteval_dates($period);
 	$from=($from?substr($from,0,-9):'');
@@ -187,6 +126,7 @@ function invoice_categories_sales_overview() {
 	$sum_invoices_1yb=0;
 	$sum_dc_sales=0;
 	$sum_dc_sales_1yb=0;
+	//print $sql;
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$total++;
 		$sum_invoices+=$row['invoices'];
@@ -755,31 +695,20 @@ function list_parts() {
 
 
 	$sql="select  `Part Current Stock`, `Part Unit Description`,P.`Part SKU`,`Part Total Acc Sold Amount`,`Part 1 Month Acc Sold Amount`,`Part 1 Year Acc Sold Amount`,`Part 1 Quarter Acc Sold Amount`,`Part 1 Year Acc Sold Amount` from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select  * from `Part Dimension` P  left join `Part Warehouse Bridge` B on (P.`Part SKU`=B.`Part SKU`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+
 	$adata=array();
 	// print $sql;
 	$position=1;
 	$result=mysql_query($sql);
+	
+	$period_db=get_interval_db_name($period);
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+					$sales=money($data["Part $period_db Acc Sold Amount"],$corporate_currency);
 
 
-		switch ($period) {
-		case('all'):
-			$sales=money($data['Part Total Acc Sold Amount'],$corporate_currency);
-			break;
-		case('1m'):
-			$sales=money($data['Part 1 Month Acc Sold Amount'],$corporate_currency);
-			break;
-		case('1y'):
-			$sales=money($data['Part 1 Year Acc Sold Amount'],$corporate_currency);
-			break;
-		case('1q'):
-			$sales=money($data['Part 1 Quarter Acc Sold Amount'],$corporate_currency);
-			break;
-		default:
-			$sales=money($data['Part 1 Year Acc Sold Amount'],$corporate_currency);
-
-		}
+			$delta_sales=delta($data["Part $period_db Acc Sold Amount"],$data["Part $period_db Acc 1YB Sold Amount"]);
 
 
 		$code="<a href='part.php?sku=".$data['Part SKU']."'>".sprintf("SKU%05d",$data['Part SKU']).'</a>';
@@ -794,6 +723,8 @@ function list_parts() {
 			,'store'=>$store
 			,'description'=>'<b>'.$code.'</b> '.$data['Part Unit Description']
 			,'net_sales'=>$sales
+						,'net_sales_delta'=>$delta_sales
+
 			,'stock'=>$stock
 		);
 	}
@@ -913,63 +844,41 @@ function list_parts_categories() {
 
 	$_order=$order;
 	$_dir=$order_direction;
-
+$period_db=get_interval_db_name($period);
 
 	if ($order=='profits')
-		$order='`Part Category 1 Year Acc Profit`';
+		$order="`Part Category $period_db Acc Profit`";
 
 	else {
 
 
 
-		switch ($period) {
-		case('all'):
-			$order='`Part Category Total Acc Sold Amount`';
-			break;
-		case('1m'):
-			$order='`Part Category 1 Month Acc Sold Amount`';
-			break;
-		case('1y'):
-			$order='`Part Category 1 Year Acc Sold Amount`';
-			break;
-		case('1q'):
-			$order='`Part Category 1 Quarter Acc Sold Amount`';
-			break;
-		default:
-			$order='`Part Category 1 Year Acc Sold Amount`';
+		$order="`Part Category $period_db Acc Sold Amount`";
+	
 
-		}
+	
 
 	}
 
 
 
 	$sql="select   `Category Label`,C.`Category Key`,`Part Category Total Acc Sold Amount`,`Part Category 1 Month Acc Sold Amount`,`Part Category 1 Year Acc Sold Amount`,`Part Category 1 Quarter Acc Sold Amount`,`Part Category 1 Year Acc Sold Amount` from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+	$sql="select * from `Category Dimension` C  left join `Part Category Dimension` PC on (C.`Category Key`=PC.`Part Category Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results";
+
 	$adata=array();
 	// print $sql;
 	$position=1;
 	$result=mysql_query($sql);
+	
+	
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
 
-		switch ($period) {
-		case('all'):
-			$sales=money($data['Part Category Total Acc Sold Amount'],$corporate_currency);
-			break;
-		case('1m'):
-			$sales=money($data['Part Category 1 Month Acc Sold Amount'],$corporate_currency);
-			break;
-		case('1y'):
-			$sales=money($data['Part Category 1 Year Acc Sold Amount'],$corporate_currency);
-			break;
-		case('1q'):
-			$sales=money($data['Part Category 1 Quarter Acc Sold Amount'],$corporate_currency);
-			break;
-		default:
-			$sales=money($data['Part Category 1 Year Acc Sold Amount'],$corporate_currency);
+	
+			$sales=money($data["Part Category $period_db Acc Sold Amount"],$corporate_currency);
 
-		}
+			$net_sales_delta=delta($data["Part $period_db Acc Sold Amount"],$data["Part $period_db Acc 1YB Sold Amount"]);
 
 
 		$code="<a href='part_categories.php?id=".$data['Category Key']."'>".sprintf("%s",$data['Category Label']).'</a>';
@@ -983,6 +892,8 @@ function list_parts_categories() {
 			,'store'=>$store
 			,'description'=>'<b>'.$code.'</b>'
 			,'net_sales'=>$sales
+						,'net_sales_delta'=>$net_sales_delta
+
 		);
 	}
 	mysql_free_result($result);

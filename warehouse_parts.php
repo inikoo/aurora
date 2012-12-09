@@ -18,8 +18,18 @@ if (isset($_REQUEST['warehouse_id']) and is_numeric($_REQUEST['warehouse_id']) )
 	$warehouse_id=$_REQUEST['warehouse_id'];
 
 }else {
-	header('Location: index.php?error_no_warehouse_key');
-	exit;
+		
+		if (count($user->warehouses)==0) {
+		header('Location: index.php?error_no_warehouse_key');
+		exit;
+	}else {
+		header('Location: warehouse_parts.php?warehouse_id='.$user->warehouses[0]);
+		exit;
+
+
+	}
+	
+	
 }
 
 

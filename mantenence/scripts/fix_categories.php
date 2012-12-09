@@ -43,7 +43,7 @@ $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 $counter++;
 
-//print $counter.' '.$row['Category Key']." ".$row['Subject Key']."\r";
+print 'Fix CB '.$counter.' '.$row['Category Key']." ".$row['Subject Key']."\r";
 	$category=new Category($row['Category Key']);
 
 
@@ -93,11 +93,11 @@ $counter++;
 
 
 $sql="select * from `Category Dimension` where `Category Key`=11567 ";
-$sql="select * from `Category Dimension` ";
+$sql="select * from `Category Dimension` order by `Category Key` ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
-//print 'Cat '.$row['Category Key']."\r";
+print 'Cat '.$row['Category Key']."\r";
 
 	$category=new Category($row['Category Key']);
 	$category->update_branch_tree();

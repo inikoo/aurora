@@ -103,13 +103,23 @@ function list_parts() {
 	else {
 		return;
 	}
-	$conf=$_SESSION['state']['warehouse']['parts'];
+	
+	
+	if($parent=='category'){
+		$conf_node='part_categories';
+	}else{
+	$conf_node='warehouse';
+	}
+		$conf=$_SESSION['state'][$conf_node]['parts'];
+
 	if (isset( $_REQUEST['view']))
 		$view=$_REQUEST['view'];
 
 	else
-		$view=$_SESSION['state']['warehouse']['parts']['view'];
-	$_SESSION['state']['warehouse']['parts']['view']=$view;
+		$view=$conf['view'];
+	
+	
+	
 	if (isset( $_REQUEST['list_key']))
 		$list_key=$_REQUEST['list_key'];
 	else
@@ -172,22 +182,19 @@ function list_parts() {
 	if (isset( $_REQUEST['avg']))
 		$avg=$_REQUEST['avg'];
 	else
-		$avg=$_SESSION['state']['warehouse']['parts']['avg'];
-	$_SESSION['state']['warehouse']['parts']['avg']=$avg;
+		$avg=$conf['avg'];
 
 
 	if (isset( $_REQUEST['period']))
 		$period=$_REQUEST['period'];
 	else
-		$period=$_SESSION['state']['warehouse']['parts']['period'];
-	$_SESSION['state']['warehouse']['parts']['period']=$period;
+		$period=$conf['period'];
 
 
 	if (isset( $_REQUEST['percentage']))
 		$percentage=$_REQUEST['percentage'];
 	else
-		$percentage=$_SESSION['state']['warehouse']['parts']['percentage'];
-	$_SESSION['state']['warehouse']['parts']['percentage']=$percentage;
+		$percentage=$conf['percentage'];
 
 
 
@@ -207,14 +214,20 @@ function list_parts() {
 		$elements['LastStock']=$_REQUEST['elements_LastStock'];
 	}
 
-	$_SESSION['state']['warehouse']['parts']['order']=$order;
-	$_SESSION['state']['warehouse']['parts']['order_dir']=$order_direction;
-	$_SESSION['state']['warehouse']['parts']['nr']=$number_results;
-	$_SESSION['state']['warehouse']['parts']['sf']=$start_from;
-	$_SESSION['state']['warehouse']['parts']['where']=$awhere;
-	$_SESSION['state']['warehouse']['parts']['f_field']=$f_field;
-	$_SESSION['state']['warehouse']['parts']['f_value']=$f_value;
-	$_SESSION['state']['warehouse']['parts']['elements']=$elements;
+	$_SESSION['state'][$conf_node]['parts']['order']=$order;
+	$_SESSION['state'][$conf_node]['parts']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_node]['parts']['nr']=$number_results;
+	$_SESSION['state'][$conf_node]['parts']['sf']=$start_from;
+	$_SESSION['state'][$conf_node]['parts']['where']=$awhere;
+	$_SESSION['state'][$conf_node]['parts']['f_field']=$f_field;
+	$_SESSION['state'][$conf_node]['parts']['f_value']=$f_value;
+	$_SESSION['state'][$conf_node]['parts']['elements']=$elements;
+	$_SESSION['state'][$conf_node]['parts']['view']=$view;
+	$_SESSION['state'][$conf_node]['parts']['percentage']=$percentage;
+	$_SESSION['state'][$conf_node]['parts']['period']=$period;
+	$_SESSION['state'][$conf_node]['parts']['avg']=$avg;
+	
+	
 
 
 	$filter_msg='';
@@ -477,6 +490,14 @@ function list_parts() {
 
 		$order=' `Part Current Value` ';
 
+	}elseif ($order=='delta_money_in') {
+
+		$order=' `Part '.$period_tag.' Acc 1YD Sold`';
+
+	}elseif ($order=='delta_sold') {
+
+		$order=' `Part '.$period_tag.' Acc 1YD Sold Amount`';
+
 	}else {
 
 		$order='`Part SKU`';
@@ -530,6 +551,11 @@ function list_parts() {
 			$sold_amount=money($data['Part '.$period_tag.' Acc Sold Amount']);
 			$abs_profit=money($data['Part '.$period_tag.' Acc Profit']);
 			$profit_sold=money($data['Part '.$period_tag.' Acc Profit']);
+			
+			$delta_sold=delta($data['Part '.$period_tag.' Acc Sold'],$data['Part '.$period_tag.' Acc 1YB Sold']);
+			$delta_sold_amount=delta($data['Part '.$period_tag.' Acc Sold Amount'],$data['Part '.$period_tag.' Acc 1YB Sold Amount']);
+			
+			
 		} else {
 			if ($avg=='week')
 				$factor=$data['Part '.$period_tag.' Acc Keeping Days']/30.4368499;
@@ -580,8 +606,10 @@ function list_parts() {
 			'available_for'=>interval($data['Part XHTML Available For Forecast']),
 			'stock_value'=>money($data['Part Current Value']),
 			'sold'=>$sold,
+			'delta_sold'=>$delta_sold,
 			'given'=>$given,
 			'money_in'=>$sold_amount,
+			'delta_money_in'=>$delta_sold_amount,
 			'profit'=>$abs_profit,
 			'profit_sold'=>$profit_sold,
 			'margin'=>$margin,
@@ -831,12 +859,12 @@ function list_parts_at_date() {
 		$order='locations';
 	elseif ($order=='stock')
 		$order='stock';
-	elseif($order=='value_at_cost')
+	elseif ($order=='value_at_cost')
 		$order='value_at_cost';
 	elseif ($order=='value_at_end_day')
 		$order='value_at_end_day';
 	elseif ($order=='commercial_value')
-		$order='commercial_value';	
+		$order='commercial_value';
 	else {
 
 		$order='`Part SKU`';
@@ -856,7 +884,7 @@ function list_parts_at_date() {
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
-	
+
 
 		$locations='';
 
@@ -2054,6 +2082,11 @@ function list_part_categories() {
 
 	$conf=$_SESSION['state']['part_categories']['subcategories'];
 	$conf2=$_SESSION['state']['part_categories'];
+	
+	
+	$parent_key=$_REQUEST['parent_key'];
+	
+	
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -2134,20 +2167,10 @@ function list_part_categories() {
 	$_SESSION['state']['part_categories']['subcategories']['f_value']=$f_value;
 
 
-	// print_r($_SESSION['tables']['families_list']);
-
-	//  print_r($_SESSION['tables']['families_list']);
-
-	if (isset( $_REQUEST['category'])) {
-		$root_category=$_REQUEST['category'];
-		$_SESSION['state']['part_categories']['category']=$avg;
-	} else
-		$root_category=$_SESSION['state']['part_categories']['category_key'];
 
 
 
-
-	$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$root_category);
+	$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$parent_key);
 	//  $where=sprintf("where `Category Subject`='Product'  ");
 
 	//  if ($stores_mode=='grouped')
@@ -2157,7 +2180,7 @@ function list_part_categories() {
 
 	$filter_msg='';
 	$wheref='';
-	if ($f_field=='name' and $f_value!='')
+	if ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
 
 
@@ -2201,16 +2224,16 @@ function list_part_categories() {
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with code like ")." <b>*".$f_value."*</b> ";
 			break;
 		}
 	}
 	elseif ($filtered>0) {
 		switch ($f_field) {
 
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with code like')." <b>*".$f_value."*</b>";
 			break;
 		}
 	}
@@ -2219,23 +2242,25 @@ function list_part_categories() {
 
 	$_dir=$order_direction;
 	$_order=$order;
-$period_tag=get_interval_db_name($period);
+	$period_tag=get_interval_db_name($period);
 
 	if ($order=='subjects')
 		$order='`Category Number Subjects`';
 
 	elseif ($order=='sold') {
-$order='`Part Category '.$period_tag.' Acc Sold`';
+		$order='`Part Category '.$period_tag.' Acc Sold`';
 	}  elseif ($order=='profit') {
-$order='`Part Category '.$period_tag.' Acc Profit`';
+		$order='`Part Category '.$period_tag.' Acc Profit`';
 	}
 	elseif ($order=='sales') {
-	$order='`Part Category '.$period_tag.' Acc Sold Amount`';
+		$order='`Part Category '.$period_tag.' Acc Sold Amount`';
+	}elseif ($order=='delta_sales') {
+		$order='`Part Category '.$period_tag.' Acc 1YD Sold Amount`';
 
 
 
 	}
-	elseif ($order=='name')
+	elseif ($order=='code')
 		$order='`Category Code`';
 
 
@@ -2255,17 +2280,18 @@ $order='`Part Category '.$period_tag.' Acc Profit`';
 
 
 
-		$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
-		$label=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
+		$code=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
+		$label=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
 
 
 		$adata[]=array(
 			'id'=>$row['Category Key'],
-			'name'=>$name,
+			'code'=>$code,
 			'label'=>$label,
 			'subjects'=>number($row['Category Number Subjects']),
 			'sold'=>number($sold,0),
-			'sales'=>money($amount,$corporate_currency)
+			'sales'=>money($amount,$corporate_currency),
+			'delta_sales'=>delta($row['Part Category '.$period_tag.' Acc Sold Amount'],$row['Part Category '.$period_tag.' Acc 1YB Sold Amount'])
 
 
 

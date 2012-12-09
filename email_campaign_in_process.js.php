@@ -1358,65 +1358,63 @@ Dom.setStyle('objectives_second_label','visibility','hidden')
 }
 
 
+function update_objects_table() {
 
-function update_objects_table(){
 
-
- table_id=9;
-                var table=tables['table'+table_id];
-                var datasource=tables['dataSource'+table_id];
-                datasource.sendRequest('',table.onDataReturnInitializeTable, table);    
+    table_id = 9;
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    datasource.sendRequest('', table.onDataReturnInitializeTable, table);
 }
 
 
-function show_cell_dialog(datatable,oArgs){
+function show_cell_dialog(datatable, oArgs) {
 
- var target = oArgs.target;
-  var  column = datatable.getColumn(target);
-  var  record = datatable.getRecord(target);
+    var target = oArgs.target;
+    var column = datatable.getColumn(target);
+    var record = datatable.getRecord(target);
 
     var recordIndex = datatable.getRecordIndex(record);
-    
-    switch ( column.object ) {
-    	case 'email_campaign_objective':
-    	  
-    	    var term_buttons=Dom.getElementsByClassName('objective_term', 'button', 'objective_terms');
-    	    Dom.removeClass(term_buttons,'selected');
-    	    Dom.setStyle(term_buttons,'display','none');
-    	    var valid_terms=record.getData('valid_terms');
-            for (x in valid_terms){
-                Dom.setStyle("objective_term_"+valid_terms[x],'display','')
-            }
-          
-    	    Dom.get('objective_term').value=record.getData('term');
-    		Dom.addClass('objective_term_'+record.getData('term'),'selected');
-    		Dom.get('objective_time_limit').value=record.getData('temporal_formated_metadata');
-    		    	
-    		     		Dom.get('objective_key').value=record.getData('id');
-   	
-    		Dom.get('objective_time_limit_in_seconds').value=record.getData('temporal_metadata');
-    		 var pos = Dom.getXY(target);
-            pos[0]=pos[0]-320+100
-            Dom.setXY('dialog_edit_objective', pos);
 
-    		dialog_edit_objective.show();
-    		
-    		break;
-    	
-    	
+    switch (column.object) {
+    case 'email_campaign_objective':
+
+        var term_buttons = Dom.getElementsByClassName('objective_term', 'button', 'objective_terms');
+        Dom.removeClass(term_buttons, 'selected');
+        Dom.setStyle(term_buttons, 'display', 'none');
+        var valid_terms = record.getData('valid_terms');
+        for (x in valid_terms) {
+            Dom.setStyle("objective_term_" + valid_terms[x], 'display', '')
+        }
+
+        Dom.get('objective_term').value = record.getData('term');
+        Dom.addClass('objective_term_' + record.getData('term'), 'selected');
+        Dom.get('objective_time_limit').value = record.getData('temporal_formated_metadata');
+
+        Dom.get('objective_key').value = record.getData('id');
+
+        Dom.get('objective_time_limit_in_seconds').value = record.getData('temporal_metadata');
+        var pos = Dom.getXY(target);
+        pos[0] = pos[0] - 320 + 100
+        Dom.setXY('dialog_edit_objective', pos);
+
+        dialog_edit_objective.show();
+
+        break;
+
+
     }
-    
-}
-
-function change_objective_term( e,term ) {
-	  var term_buttons=Dom.getElementsByClassName('objective_term', 'button', 'objective_terms');
-    	    Dom.removeClass(term_buttons,'selected');
-    		Dom.addClass('objective_term_'+term,'selected');
-
-
-    	        	    Dom.get('objective_term').value=term;
 
 }
 
+function change_objective_term(e, term) {
+    var term_buttons = Dom.getElementsByClassName('objective_term', 'button', 'objective_terms');
+    Dom.removeClass(term_buttons, 'selected');
+    Dom.addClass('objective_term_' + term, 'selected');
+
+
+    Dom.get('objective_term').value = term;
+
+}
 
 Event.onDOMReady(init);

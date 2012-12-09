@@ -21,6 +21,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('get_part_category_history_elements'):
+	$data=prepare_values($_REQUEST,array(
+			'parent'=>array('type'=>'string')
+			,'parent_key'=>array('type'=>'key')
+		));
+	get_part_category_history_elements($data);
+	break;
 case('history'):
 	list_history($_REQUEST['type']);
 	break;
@@ -38,6 +45,9 @@ case('history_details'):
 	break;
 case('customer_history'):
 	list_customer_history();
+	break;
+case('category_part_history'):
+	list_category_part_history();
 	break;
 case('staff_history'):
 	list_staff_history();
@@ -221,12 +231,7 @@ function list_customer_history() {
 				$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))>=".$f_value."    ";
 			elseif ($f_field=='author' and $f_value!='') {
 				$wheref.=" and   `Author Name` like '".addslashes($f_value)."%'   ";
-
 			}
-
-
-
-
 
 
 		//$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
@@ -366,6 +371,8 @@ function list_customer_history() {
 	);
 	echo json_encode($response);
 }
+
+
 
 function list_staff_history() {
 
@@ -723,33 +730,28 @@ function list_history($asset_type) {
 
 	}
 	elseif ($asset_type=='part_categories') {
-		$asset='Category';
+		$asset='Category Part';
 		$id_key='parent_key';
-		$asset_type='categories';
+		$asset_type='part_categories';
 		$where_tipo='category_base';
-		$asset_id=$_SESSION['state'][$asset_type][$id_key];
+		$asset_id=$_REQUEST['parent_key'];
 
-	}else{
+	}
+	elseif ($asset_type=='part_category') {
+		$asset='Category Part';
+		$id_key='parent_key';
+		$asset_type='part_categories';
+		$where_tipo='category_base';
+		$asset_id=$_REQUEST['parent_key'];
+
+	}else {
 		exit("error: asset_type unknown");
 	}
 
 
 
-
-
-
-
 	$conf=$_SESSION['state'][$asset_type]['history'];
 
-
-
-
-
-
-	//if (isset( $_REQUEST['elements']))
-	//     $elements=$_REQUEST['elements'];
-	//else
-	//   $elements=$conf['elements'];
 
 	if (isset( $_REQUEST['from']))
 		$from=$_REQUEST['from'];
@@ -776,10 +778,6 @@ function list_history($asset_type) {
 	else
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
 
 	if (isset( $_REQUEST['f_field']))
 		$f_field=$_REQUEST['f_field'];
@@ -795,7 +793,6 @@ function list_history($asset_type) {
 	else
 		$tableid=0;
 
-
 	list($date_interval,$error)=prepare_mysql_dates($from,$to);
 	if ($error) {
 		list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
@@ -804,23 +801,17 @@ function list_history($asset_type) {
 		$_SESSION['state'][$asset_type]['history']['to']=$to;
 	}
 
-	$_SESSION['state'][$asset_type]['history']=
-		array(
-		'order'=>$order,
-		'order_dir'=>$order_direction,
-		'nr'=>$number_results,
-		'sf'=>$start_from,
-		'where'=>$where,
-		'f_field'=>$f_field,
-		'f_value'=>$f_value,
-		'from'=>$from,
-		'to'=>$to,
-		//   'elements'=>$elements
-	);
+	$_SESSION['state'][$asset_type]['history']['order']=$order;
+	$_SESSION['state'][$asset_type]['history']['order_dir']=$order_direction;
+	$_SESSION['state'][$asset_type]['history']['nr']=$number_results;
+	$_SESSION['state'][$asset_type]['history']['sf']=$start_from;
+	$_SESSION['state'][$asset_type]['history']['f_field']=$f_field;
+	$_SESSION['state'][$asset_type]['history']['f_value']=$f_value;
+	$_SESSION['state'][$asset_type]['history']['from']=$from;
+	$_SESSION['state'][$asset_type]['history']['to']=$to;
 
 
 	//print_r($_SESSION['state'][$asset_type]['history']);
-
 	$_order=$order;
 	$_dir=$order_direction;
 	$filter_msg='';
@@ -828,15 +819,25 @@ function list_history($asset_type) {
 	$wheref='';
 
 
+	//'After Sale','Delivery Note','Category','Warehouse','Warehouse Area','Shelf','Location','Company Department','Company Area','Position','Store','User','Product','Address','Customer','Note','Order','Telecom','Email','Company','Contact','FAX','Telephone','Mobile','Work Telephone','Office Fax','Supplier','Family','Department','Attachment','Supplier Product','Part','Site','Page','Invoice','Category Customer','Category Part','Category Invoice','Category Supplier'
 
 
-	$where=sprintf(" where  ( (`Direct Object`='%s' and `Direct Object Key`=%d) or (`Indirect Object`='%s' and `Indirect Object Key`=%d)  )    "
-		,$asset
-		,$asset_id
-		,$asset
-		,$asset_id
-	);
+	if ($where_tipo=='all_categories_subject') {
+		$where=sprintf(" where  `Direct Object`='%s' `Indirect Object`='%s'   "
+			,$asset
 
+			,$asset
+
+		);
+	}else {
+
+		$where=sprintf(" where  ( (`Direct Object`='%s' and `Direct Object Key`=%d) or (`Indirect Object`='%s' and `Indirect Object Key`=%d)  )    "
+			,$asset
+			,$asset_id
+			,$asset
+			,$asset_id
+		);
+	}
 
 	//  $where =$where.$view.sprintf(' and asset_id=%d  %s',$asset_id,$date_interval);
 
@@ -916,7 +917,7 @@ function list_history($asset_type) {
 	$_order='date';
 
 	$sql=sprintf("select  * from `History Dimension` H left join `User Dimension` U on (U.`User Key`=H.`User Key`)   $where $wheref order by $order  limit $start_from,$number_results ");
-
+	//print $sql;
 	$result=mysql_query($sql);
 	$adata=array();
 	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1173,10 +1174,311 @@ function list_indirect_history($data) {
 
 
 
+function list_category_part_history() {
+
+	$conf=$_SESSION['state']['part_categories']['history'];
+	if (isset( $_REQUEST['parent'])) {
+		$parent=$_REQUEST['parent'];
+	} else {
+		exit("no parent");
+
+	}
+
+
+
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	} else {
+		exit("no parent key");
+
+	}
 
 
 
 
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+
+	if (isset( $_REQUEST['details']))
+		$details=$_REQUEST['details'];
+	else
+		$details=$conf['details'];
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+	//  if (isset( $_REQUEST['where']))
+	//     $where=$_REQUEST['where'];
+	// else
+	//     $where=$conf['where'];
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else
+		$from=$conf['from'];
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$conf['to'];
+	//ids=['elements_changes','elements_orders','elements_notes'];
+
+	$elements=$conf['elements'];
+	if (isset( $_REQUEST['elements_Change'])) {
+		$elements['Change']=$_REQUEST['elements_Change'];
+
+	}
+	if (isset( $_REQUEST['elements_Assign'])) {
+		$elements['Assign']=$_REQUEST['elements_Assign'];
+	}
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+
+
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	$_SESSION['state']['part_categories']['history']['details']=$details;
+	$_SESSION['state']['part_categories']['history']['elements']=$elements;
+	$_SESSION['state']['part_categories']['history']['order']=$order;
+	$_SESSION['state']['part_categories']['history']['order_dir']=$order_direction;
+	$_SESSION['state']['part_categories']['history']['nr']=$number_results;
+	$_SESSION['state']['part_categories']['history']['sf']=$start_from;
+	$_SESSION['state']['part_categories']['history']['f_field']=$f_field;
+	$_SESSION['state']['part_categories']['history']['f_value']=$f_value;
+	$_SESSION['state']['part_categories']['history']['elements']=$elements;
+
+
+	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+	if ($date_interval['error']) {
+		$date_interval=prepare_mysql_dates($_SESSION['state']['part_categories']['history']['from'],$_SESSION['state']['part_categories']['history']['to']);
+	} else {
+		$_SESSION['state']['part_categories']['history']['from']=$date_interval['from'];
+		$_SESSION['state']['part_categories']['history']['to']=$date_interval['to'];
+	}
+
+
+
+
+	if ($parent=='category') {
+
+		$where=sprintf(' where   B.`Category Key`=%d ',$parent_key);
+
+	}elseif ($parent=='warehouse') {
+		$where=sprintf(' where   B.`Warehouse Key`=%d ',$parent_key);
+	}
+
+	$where.=$date_interval['mysql'];
+	$_elements='';
+	foreach ($elements as $_key=>$_value) {
+		if ($_value)
+			$_elements.=','.prepare_mysql($_key);
+	}
+	$_elements=preg_replace('/^\,/','',$_elements);
+	if ($_elements=='') {
+		$where.=' and false' ;
+	} else {
+		$where.=' and Type in ('.$_elements.')' ;
+	}
+
+
+	$wheref='';
+
+
+
+	if ( $f_field=='notes' and $f_value!='' )
+		$wheref.=" and   `History Abstract` like '%".addslashes($f_value)."%'   ";
+	else if ($f_field=='upto' and is_numeric($f_value) )
+			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))<=".$f_value."    ";
+		else if ($f_field=='older' and is_numeric($f_value))
+				$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))>=".$f_value."    ";
+			elseif ($f_field=='author' and $f_value!='') {
+				$wheref.=" and   `Author Name` like '".addslashes($f_value)."%'   ";
+			}
+
+
+		$sql="select count(*) as total from  `Part Category History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
+	//print $sql;
+	// exit;
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$total=$row['total'];
+	}
+	if ($where=='') {
+		$filtered=0;
+		$filter_total=0;
+		$total_records=$total;
+	} else {
+
+		// $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
+		$sql="select count(*) as total from  `Part Category History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)  $where ";
+		// print $sql;
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$filtered=$row['total']-$total;
+			$total_records=$row['total'];
+		}
+
+	}
+	mysql_free_result($result);
+
+
+	$rtext=$total_records." ".ngettext('record','records',$total_records);
+
+	if ($total==0)
+		$rtext_rpp='';
+	elseif ($total_records>$number_results)
+		$rtext_rpp=sprintf('(%d%s)',$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+
+	//print "$f_value $filtered  $total_records t: $total";
+	$filter_msg='';
+	if ($filtered>0) {
+		switch ($f_field) {
+		case('notes'):
+			if ($total==0 and $filtered>0)
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record matching")." <b>$f_value</b> ";
+			elseif ($filtered>0)
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('record matching','records matching',$total)." <b>$f_value</b>";
+			break;
+		case('older'):
+			if ($total==0 and $filtered>0)
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record older than")." <b>$f_value</b> ".ngettext('day','days',$f_value);
+			elseif ($filtered>0)
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('record older than','records older than',$total)." <b>$f_value</b> ".ngettext('day','days',$f_value);
+			break;
+		case('upto'):
+			if ($total==0 and $filtered>0)
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any record in the last")." <b>$f_value</b> ".ngettext('day','days',$f_value);
+			elseif ($filtered>0)
+				$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total ".ngettext('record in the last','records inthe last',$total)." <b>$f_value</b> ".ngettext('day','days',$f_value)."<span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+			break;
+
+
+		}
+	}
+	$_order=$order;
+	$_dir=$order_direction;
+	if ($order=='date') {
+		$order="`History Date` $order_direction , `History Key` $order_direction ";
+
+
+	}
+	if ($order=='note')
+		$order="`History Abstract` $order_direction";
+	if ($order=='objeto')
+		$order="`Direct Object` $order_direction";
+	if ($order=='handle')
+		$order="`Author Name` $order_direction";
+
+	// $order="`History Date` desc,  `History Key` DESC  ";
+
+
+	//    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+	$sql="select `Type`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `Part Category History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
+
+
+	// print $sql;
+	$result=mysql_query($sql);
+	$data=array();
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($row['History Details']=='')
+			$note=$row['History Abstract'];
+		else
+			$note=$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
+
+		//$objeto=$row['Direct Object'];
+		$objeto=$row['History Details'];
+
+		if ($row['Subject']=='Customer')
+			$author=_('Customer');
+		else
+			$author=$row['Author Name'];
+
+		$data[]=array(
+			'key'=>$row['History Key'],
+			'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
+			'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
+			'objeto'=>$objeto,
+			'note'=>$note,
+			'handle'=>$author,
+			'type'=>$row['Type'],
+		);
+	}
+	mysql_free_result($result);
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$data,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			//  'records_returned'=>$start_from+$res->numRows(),
+			'records_perpage'=>$number_results,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+		)
+	);
+	echo json_encode($response);
+}
+
+function get_part_category_history_elements($data) {
+
+
+	$elements_number=array('Change'=>0,'Assign'=>0);
+	if ($data['parent']=='category')
+		$sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Category Key`=%d group by  `Type`",$data['parent_key']);
+	elseif ($data['parent']=='warehouse')
+		$sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Warehouse Key`=%d group by  `Type`",$data['parent_key']);
+
+	else
+		return;
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number[$row['Type']]=number($row['num']);
+	}
+
+	$response=array(
+		'elements_number'=>$elements_number
+
+	);
+	echo json_encode($response);
+
+
+}
 
 
 ?>
