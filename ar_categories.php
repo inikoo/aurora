@@ -2,6 +2,8 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2012 LW
 require_once 'common.php';
+require_once 'ar_common.php';
+
 require_once 'class.Category.php';
 
 if (!isset($output_type))
@@ -18,6 +20,12 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('get_branch_type_elements'):
+	$data=prepare_values($_REQUEST,array(
+			'subject'  =>array('type'=>'string'),
+		));
+	get_branch_type_elements($data);
+	break;
 case('main_categories'):
 	list_main_categories();
 	break;
@@ -32,10 +40,10 @@ function list_main_categories() {
 
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
-	else{
+	else {
 		exit("error: no parent");
 	}
-		
+
 
 	$conf=$_SESSION['state'][$parent]['main_categories'];
 
@@ -46,7 +54,7 @@ function list_main_categories() {
 
 	if (isset( $_REQUEST['nr'])) {
 		$number_results=$_REQUEST['nr'];
-	
+
 
 	} else
 		$number_results=$conf['nr'];
@@ -78,7 +86,7 @@ function list_main_categories() {
 		$tableid=0;
 
 
-	
+
 	$_SESSION['state'][$parent]['part_categories']['order']=$order;
 	$_SESSION['state'][$parent]['part_categories']['order_dir']=$order_direction;
 	$_SESSION['state'][$parent]['part_categories']['nr']=$number_results;
@@ -88,24 +96,24 @@ function list_main_categories() {
 
 
 
-$where="where  `Category Parent Key`=0";
+	$where="where  `Category Parent Key`=0";
 
-switch($parent){
-case('part_categories'):
-$where.=" and `Category Subject`='Part'";
-break;
-default:
-exit('error: unknown parent category: '.$parent);
-}
+	switch ($parent) {
+	case('part_categories'):
+		$where.=" and `Category Subject`='Part'";
+		break;
+	default:
+		exit('error: unknown parent category: '.$parent);
+	}
 
 	$where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=0");
-	
-	
-	
+
+
+
 	//  $where=sprintf("where `Category Subject`='Product'  ");
 
 
-	
+
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='name' and $f_value!='')
@@ -120,7 +128,7 @@ exit('error: unknown parent category: '.$parent);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 		$total=$row['total'];
-	
+
 	}
 	mysql_free_result($res);
 
@@ -173,13 +181,13 @@ exit('error: unknown parent category: '.$parent);
 	if ($order=='subjects')
 		$order='`Category Number Subjects`';
 
-	elseif ($order=='name')
+	elseif ($order=='code')
 		$order='`Category Code`';
 	elseif ($order=='label')
 		$order='`Category Label`';
 	elseif ($order=='children' or $order=='percentage_assigned')
 		$order='`Category Children Subjects Assigned`';
-	
+
 
 
 	$sql="select * from `Category Dimension` C $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
@@ -188,22 +196,22 @@ exit('error: unknown parent category: '.$parent);
 	$adata=array();
 
 
-	// print "$sql";
+	//print "$sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-		$name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
-		$label=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
+		$code=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
+		$label=sprintf('<a href="part_category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
 
 
 		$adata[]=array(
 			'id'=>$row['Category Key'],
-			'name'=>$name,
+			'code'=>$code,
 			'label'=>$label,
 			'subjects'=>number($row['Category Children Subjects Assigned']),
 			'children'=>number($row['Category Children']),
-			'percentage_assigned'=>percentage($row['Category Children Subjects Assigned'],$row['Category Children Subjects Not Assigned']+$row['Category Children Subjects Assigned']),
+			'percentage_assigned'=>percentage($row['Category Children Subjects Assigned'],$row['Category Children Subjects Not Assigned']+$row['Category Children Subjects Assigned'])
 
 
 		);
@@ -227,4 +235,28 @@ exit('error: unknown parent category: '.$parent);
 		)
 	);
 	echo json_encode($response);
+}
+
+
+
+function get_branch_type_elements($data) {
+
+
+	$elements_number=array('Root'=>0,'Node'=>0,'Head'=>0);
+	$sql=sprintf("select count(*) as num ,`Category Branch Type` from  `Category Dimension` where  `Category Subject`=%s group by  `Category Branch Type`   ",
+		prepare_mysql($data['subject']));
+	//print_r($sql);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		$elements_number[$row['Category Branch Type']]=number($row['num']);
+	}
+
+
+	$response=array(
+		'elements_number'=>$elements_number
+
+	);
+	echo json_encode($response);
+
+
 }

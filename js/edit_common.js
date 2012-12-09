@@ -242,7 +242,6 @@ var onCellClick = function(oArgs) {
         //alert(column.object); return;
         switch (column.action) {
 
-
         case 'delete':
             if (record.getData('delete') != '') {
 
@@ -303,6 +302,7 @@ var onCellClick = function(oArgs) {
             }
             break;
         case 'dialog':
+        case 'dialog_delete':
             show_cell_dialog(this, oArgs);
             break;
 
@@ -386,7 +386,6 @@ var highlightEditableCell = function(oArgs) {
         var target = oArgs.target;
         column = this.getColumn(target);
         record = this.getRecord(target);
-
         switch (column.action) {
         case 'delete':
         case 'pick_it':
@@ -405,7 +404,8 @@ var highlightEditableCell = function(oArgs) {
             break;
         case ('dialog'):
             this.highlightCell(target);
-
+        case ('dialog_delete'):
+            this.highlightRow(target);
             break;
         default:
 
@@ -419,9 +419,12 @@ var unhighlightEditableCell = function(oArgs) {
         column = this.getColumn(target);
 
         switch (column.action) {
+        
+        case ('dialog_delete'):
         case 'delete':
         case 'pick_it':
             this.unhighlightRow(target);
+        break;
         case ('add_object'):
         case ('remove_object'):
         case ('edit_object'):
@@ -774,6 +777,8 @@ function post_item_updated_actions(branch, r) {
     return true;
 }
 
+var save_edit_general_tokens= [];
+
 function save_edit_general(branch) {
 
 
@@ -792,6 +797,10 @@ function save_edit_general(branch) {
     scope_edit_ar_file = validate_scope_metadata[branch]['ar_file'];
     branch_key = validate_scope_metadata[branch]['key'];
     branch_key_name = validate_scope_metadata[branch]['key_name'];
+
+   // Dom.setStyle('wait_edit_' + branch, 'display', '');
+    Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait');
+
 
 
     for (items in validate_scope_data[branch]) {
@@ -827,8 +836,9 @@ function save_edit_general(branch) {
             }
 
 
+            save_edit_general_tokens.push(item_name)
+
             //  alert(item_input.value.length);
-            //alert(scope_edit_ar_file+'?'+postData);
             //return;
             YAHOO.util.Connect.asyncRequest('POST', scope_edit_ar_file, {
                 success: function(o) {
@@ -843,7 +853,13 @@ function save_edit_general(branch) {
                         Dom.get(validate_scope_data[branch][r.key].name).value = r.newvalue;
                         //  alert(validate_scope_data[branch][r.key].name+'_msg')
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img src="art/icons/accept.png"/>';
-
+                        var myAnim = new YAHOO.util.Anim(validate_scope_data[branch][r.key].name + '_msg', {
+                            opacity: {
+                                from: 1,
+                                to: 0
+                            }
+                        }, 4, YAHOO.util.Easing.easeOut);
+						myAnim.animate();
                         post_item_updated_actions(branch, r);
 
 
@@ -852,6 +868,15 @@ function save_edit_general(branch) {
                         validate_scope_data[branch][r.key].validated = false;
                         Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
                     }
+
+                    var index = save_edit_general_tokens.indexOf(r.key);
+                    save_edit_general_tokens.splice(index, 1);
+                    if (save_edit_general_tokens.length == 0) {
+                       // Dom.setStyle('wait_edit_' + branch, 'display', 'none');
+                        Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'pointer');
+
+                    }
+
                     validate_scope_edit(branch)
                 },
                 failure: function(o) {
@@ -862,6 +887,7 @@ function save_edit_general(branch) {
     }
 
 }
+
 
 
 function save_edit_general_bulk(branch) {
@@ -889,7 +915,8 @@ function save_edit_general_bulk(branch) {
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input = Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
-            Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '<img src="art/loading.gif"/>';
+            Dom.setStyle(validate_scope_data[branch][items].name + '_msg','opacity',1)
+            Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '<img style="height:14px" src="art/loading.gif"/>';
             var updated_items = 0;
 
             if (validate_scope_data[branch][items].dbname != undefined) {
@@ -932,7 +959,10 @@ function save_edit_general_bulk(branch) {
     var postData = 'tipo=' + operation + '_' + branch + '&values=' + jsonificated_values + '&' + branch_key_name + '=' + branch_key;
 
 
-    //alert(request+'?'+postData);//return;
+Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch],'cursor','wait')
+
+
+    // alert(request+'?'+postData);//return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             //alert(o.responseText)
@@ -940,6 +970,8 @@ function save_edit_general_bulk(branch) {
 
             count = ra.length;
             i = 0;
+            
+            
             for (x in ra) {
                 if (count <= i++) break;
 
@@ -951,12 +983,29 @@ function save_edit_general_bulk(branch) {
                     validate_scope_data[branch][r.key].validated = true;
                     Dom.get(validate_scope_data[branch][r.key].name).setAttribute('ovalue', r.newvalue);
                     Dom.get(validate_scope_data[branch][r.key].name).value = r.newvalue;
-                    Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img src="art/icons/accept.png"/>';
+                    Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = '<img style="height:14px"  src="art/icons/accept.png"/>';
+
+
+                    var myAnim = new YAHOO.util.Anim(validate_scope_data[branch][r.key].name + '_msg', {
+                        opacity: {
+                            from: 1,
+                            to: 0
+                        }
+                    }, 4, YAHOO.util.Easing.easeOut);
+                    myAnim.animate();
+
+
+
                     display_add_other(r);
+
+
+
+
                     post_item_updated_actions(branch, r);
 
 
                 } else {
+                    //alert(branch+' '+r.key);
                     validate_scope_data[branch][r.key].changed = true;
                     validate_scope_data[branch][r.key].validated = false;
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
@@ -966,6 +1015,8 @@ function save_edit_general_bulk(branch) {
 
 
             }
+            Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch],'cursor','pointer')
+
             validate_scope_edit(branch)
 
         },
@@ -978,6 +1029,7 @@ function save_edit_general_bulk(branch) {
 
 
 }
+
 
 function display_add_other(r) {
 

@@ -64,16 +64,33 @@ case('update_other_value'):
 	break;
 case('new_category'):
 	$data=prepare_values($_REQUEST,array(
-			'name'=>array('type'=>'string'),
-			'subject'  =>array('type'=>'string'),
-			'store_key'  =>array('type'=>'number'),
-			'warehouse_key'  =>array('type'=>'number'),
-			'parent_key'  =>array('type'=>'number')
+			'code'=>array('type'=>'string'),
+			'label'=>array('type'=>'string'),
+			'parent_key'  =>array('type'=>'key'),
+			'other'=>array('type'=>'string')
 		));
-
-
 	add_category($data);
 	break;
+case('new_main_category'):
+	$data=prepare_values($_REQUEST,array(
+			'code'=>array('type'=>'string'),
+			'label'=>array('type'=>'string'),
+			'subject'  =>array('type'=>'string'),
+			'store_key'=>array('type'=>'numeric'),
+			'warehouse_key'=>array('type'=>'numeric'),
+			'max_deep'=>array('type'=>'numeric'),
+			'allow_other'=>array('type'=>'string'),
+			'multiplicity'=>array('type'=>'string'),
+			'show_registration'=>array('type'=>'string'),
+			'show_profile'=>array('type'=>'string'),
+			'show_ui'=>array('type'=>'string'),
+
+
+		));
+	create_main_category($data);
+	break;
+
+
 case('edit_subcategory'):
 	$data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
 	edit_categories($data);
@@ -84,7 +101,11 @@ case('edit_categories'):
 	edit_categories($data);
 	break;
 case('edit_category'):
-	$data=prepare_values($_REQUEST,array('category_key'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
+	$data=prepare_values($_REQUEST,
+		array('category_key'=>array('type'=>'key'),
+			'values'=>array('type'=>'json array')
+		)
+	);
 
 	edit_category($data);
 	break;
@@ -111,30 +132,63 @@ case('delete_subcategory'):
 	delete_categories($data);
 	break;
 
-case('delete_categories'):
+case('delete_category'):
 	$data=prepare_values($_REQUEST,array(
-			'id'=>array('type'=>'key')
-			,'delete_type'=>array('type'=>'string')
+			'category_key'=>array('type'=>'key')
 		));
-	delete_categories($data);
+	delete_category($data);
 	break;
 
 }
 
 
+function create_main_category($raw_data) {
+
+	$data=array(
+		'Category Code'=>$raw_data['code'],
+		'Category Label'=>$raw_data['label'],
+		'Category Subject'=>$raw_data['subject'],
+		'Is Category Field Other'=>$raw_data['allow_other'],
+		'Category Store Key'=>$raw_data['store_key'],
+		'Category Warehouse Key'=>$raw_data['warehouse_key'],
+		'Category Max Deep'=>$raw_data['max_deep'],
+		'Category Multiplicity'=>$raw_data['multiplicity'],
+		'Category Show Public New Subject'=>$raw_data['show_registration'],
+		'Category Show Public Edit'=>$raw_data['show_profile'],
+		'Category Show Subject User Interface'=>$raw_data['show_ui'],
+		'Category Branch Type'=>'Root'
+
+	);
+	$category=new Category('find create',$data);
+
+	if ($category->new) {
+		$response= array('state'=>200,'action'=>'created','category_key'=>$category->id);
+	} else {
+		if ($category->found)
+			$response= array('state'=>400,'action'=>'found','category_key'=>$category->found_key,'msg'=>_('Category code already used'));
+		else
+			$response= array('state'=>400,'action'=>'error','category_key'=>0,'msg'=>$category->msg);
+	}
+
+
+	echo json_encode($response);
+
+}
+
 function add_category($raw_data) {
 
 
-
 	$data=array(
-		'Category Code'=>$raw_data['name'],
-		'Category Subject'=>$raw_data['subject'],
-		'Category Store Key'=>   $raw_data['store_key'],
-		'Category Warehouse Key'=>   $raw_data['warehouse_key'],
-		'Category Parent Key'=>$raw_data['parent_key'],
+		'Category Code'=>$raw_data['code'],
+		'Category Label'=>$raw_data['label'],
+		'Is Category Field Other'>$raw_data['other']
 	);
 
-	$category=new Category('find create',$data);
+	$parent_category=new Category($raw_data['parent_key']);
+	$category=$parent_category->create_children($data);
+
+
+
 
 
 
@@ -142,9 +196,9 @@ function add_category($raw_data) {
 		$response= array('state'=>200,'action'=>'created','category_key'=>$category->id);
 	} else {
 		if ($category->found)
-			$response= array('state'=>400,'action'=>'found','category_key'=>$category->found_key,'msg'=>_('Category name already used'));
+			$response= array('state'=>400,'action'=>'found','category_key'=>$category->found_key,'msg'=>_('Category code already used'));
 		else
-			$response= array('state'=>400,'action'=>'error','category_key'=>0,'msg'=>$category->msg,'msg'=>'Error');
+			$response= array('state'=>400,'action'=>'error','category_key'=>0,'msg'=>$category->msg);
 	}
 
 
@@ -534,7 +588,12 @@ function list_edit_customer_categories() {
 	echo json_encode($response);
 }
 function list_edit_part_categories() {
-	$conf=$_SESSION['state']['categories']['table'];
+
+
+	$conf=$_SESSION['state']['part_categories']['edit_categories'];
+
+
+	$parent=$_REQUEST['parent'];
 
 	$parent_key=$_REQUEST['parent_key'];
 
@@ -561,10 +620,7 @@ function list_edit_part_categories() {
 		$order_dir=$conf['order_dir'];
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
+
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -584,36 +640,62 @@ function list_edit_part_categories() {
 		$tableid=0;
 
 
-	//  $subject=$_SESSION['state']['categories']['subject'];
-	//   $subject_key=$_SESSION['state']['categories']['subject_key'];
-	//  $parent_key=$_SESSION['state']['categories']['parent_key'];
-	//  $store_key=$_SESSION['state']['categories']['store_key'];
 
-	$_SESSION['state']['categories']['table']['order']=$order;
-	$_SESSION['state']['categories']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['categories']['table']['nr']=$number_results;
-	$_SESSION['state']['categories']['table']['sf']=$start_from;
-	$_SESSION['state']['categories']['table']['where']=$where;
-	$_SESSION['state']['categories']['table']['f_field']=$f_field;
-	$_SESSION['state']['categories']['table']['f_value']=$f_value;
+	$elements=$conf['elements'];
+	if (isset( $_REQUEST['elements_Head'])) {
+		$elements['Head']=$_REQUEST['elements_Head'];
+	}
+	if (isset( $_REQUEST['elements_Node'])) {
+		$elements['Node']=$_REQUEST['elements_Node'];
+	}
 
-
+	if (isset( $_REQUEST['elements_Root'])) {
+		$elements['Root']=$_REQUEST['elements_Root'];
+	}
 
 
 
 
-	$where=sprintf("where  `Category Subject`='Part' and  `Category Parent Key`=%d ",
-		$parent_key);
-	//   if ($subject_key) {
-	//       $where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
-	//   }
+	$_SESSION['state']['part_categories']['edit_categories']['order']=$order;
+	$_SESSION['state']['part_categories']['edit_categories']['order_dir']=$order_direction;
+	$_SESSION['state']['part_categories']['edit_categories']['nr']=$number_results;
+	$_SESSION['state']['part_categories']['edit_categories']['sf']=$start_from;
+	$_SESSION['state']['part_categories']['edit_categories']['f_field']=$f_field;
+	$_SESSION['state']['part_categories']['edit_categories']['f_value']=$f_value;
+	$_SESSION['state']['part_categories']['edit_categories']['elements']=$elements;
 
 
+
+
+	if ($parent=='category') {
+
+		$where=sprintf("where  `Category Subject`='Part' and  `Category Parent Key`=%d ",
+			$parent_key);
+	}else {
+
+		$where=sprintf("where  `Category Subject`='Part' and  `Category Warehouse Key`=%d ",
+			$parent_key);
+
+		$_elements='';
+		foreach ($elements as $_key=>$_value) {
+			if ($_value)
+				$_elements.=','.prepare_mysql($_key);
+		}
+		$_elements=preg_replace('/^\,/','',$_elements);
+		if ($_elements=='') {
+			$where.=' and false' ;
+		} else {
+			$where.=' and `Category Branch Type` in ('.$_elements.')' ;
+		}
+
+
+
+	}
 
 
 	$filter_msg='';
 	$wheref='';
-	if ($f_field=='name' and $f_value!='')
+	if ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
 
 
@@ -655,8 +737,8 @@ function list_edit_part_categories() {
 	if ($total==0 and $filtered>0) {
 		switch ($f_field) {
 
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with code like ")." <b>*".$f_value."*</b> ";
 			break;
 		}
 	}
@@ -688,15 +770,25 @@ function list_edit_part_categories() {
 	$adata=array();
 	while ($row=mysql_fetch_assoc($res)) {
 
+		switch ($row['Category Branch Type']) {
+		case('Root'):
+			$branch_type='<img src="art/icons/category_root.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of subcategories').'" >['.number($row['Category Children']).']</span>';
+			break;
+		case('Node'):
+			$branch_type='<img src="art/icons/category_node.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of subcategories').'" >['.number($row['Category Children']).']</span>';
+			break;
+		default:
+			$branch_type='<img src="art/icons/category_head.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of parts associated with this category').'" >('.number($row['Category Number Subjects']).')</span>';
+		}
 
 		$delete='<div class="buttons small"><button class="negative">'._('Delete').'</button></div>';
 		$adata[]=array(
 			'go'=>sprintf("<a href='edit_part_category.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
 				$row['Category Key']),
 			'id'=>$row['Category Key'],
-			'name'=>$row['Category Code'],
+			'code'=>$row['Category Code'],
 			'label'=>$row['Category Label'],
-
+			'branch_type'=>$branch_type,
 			'delete'=>$delete,
 			'delete_type'=>'delete'
 
@@ -918,7 +1010,7 @@ function list_edit_supplier_categories() {
 function edit_categories($data) {
 	$category=new Category($data['id']);
 
-	$translate_keys=array('id'=>'Category Key','name'=>'Category Code'
+	$translate_keys=array('id'=>'Category Key','code'=>'Category Code'
 		,'label'=>'Category Label'
 		,'new_subject'=>'Category Show Subject User Interface'
 		,'public_new_subject'=>'Category Show Public New Subject'
@@ -928,50 +1020,60 @@ function edit_categories($data) {
 	//if($data['key']=='name'){$data['key']='Category Code';}
 	$category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
 	if ($category->updated) {
-		$response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value);
+		$response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value,'branch_tree'=>$category->data['Category XHTML Branch Tree']);
 	} else {
-		$response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue']);
+		$response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue'],'branch_tree'=>$category->data['Category XHTML Branch Tree']);
 	}
 	echo json_encode($response);
 }
 
 function edit_category($data) {
 	$category=new Category($data['category_key']);
-	$translate_keys=array('category_key'=>'Category Key','code'=>'Category Code','label'=>'Category Label','Category Show Subject User Interface'=>'Category Show Subject User Interface'
+	$translate_keys=array(
+		'category_key'=>'Category Key',
+		'code'=>'Category Code',
+		'label'=>'Category Label','Category Show Subject User Interface'=>'Category Show Subject User Interface'
 		,'Category Show Public New Subject'=>'Category Show Public New Subject'
 		,'Category Show Public Edit'=>'Category Show Public Edit');
-	$category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
-	if ($category->updated) {
-		$response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value);
-	} else {
-		$response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue']);
+
+	$responses=array();
+	foreach ($data['values'] as $key=>$value) {
+		$field=$translate_keys[$key];
+		$category->update_field_switcher($field,$value['value']);
+		if($key=='code')
+		$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field],'branch_tree'=>$category->data['Category XHTML Branch Tree']);
+		else
+		$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field]);
+
 	}
-	echo json_encode($response);
+
+
+
+
+	echo json_encode($responses);
 }
 
 
 
-function delete_categories($data) {
-	include_once 'class.Category.php';
+function delete_category($data) {
 	global $editor;
-	$subject=new Category($data['id']);
-	if (!$subject->id) {
+	$category=new Category($data['category_key']);
+	if (!$category->id) {
 		$response=array('state'=>400,'msg'=>'Category not found');
 		echo json_encode($response);
 		return;
 	}
-	$subject->editor=$editor;
-	$subject->delete();
-	if ($subject->deleted) {
-		$action='deleted';
-		$msg=_('Area deleted');
+	$category->editor=$editor;
+	$category->delete();
+	if ($category->deleted) {
 
+		$response=array('state'=>200,'category_key'=>$category->id);
+		echo json_encode($response);
 	} else {
-		$action='nochage';
-		$msg=_('Area could not be deleted');
+		$response=array('state'=>400,'category_key'=>$category->id,'msg'=>$category->msg);
+		echo json_encode($response);
 	}
-	$response=array('state'=>200,'action'=>$action);
-	echo json_encode($response);
+
 }
 
 function disassociate_multiple_subject_from_category($data) {
@@ -1091,7 +1193,7 @@ function associate_multiple_subject_to_category($data) {
 					$category->id
 				);
 
-				
+
 				$wheref='';
 				if ($f_field=='used_in' and $f_value!='')
 					$wheref.=" and  `Part XHTML Currently Used In` like '%".addslashes($f_value)."%'";

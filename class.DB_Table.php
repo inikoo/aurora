@@ -303,7 +303,7 @@ abstract class DB_Table {
 
 
 
-	function add_history($raw_data,$force=false) {
+	function add_history($raw_data,$force=false,$post_arg1=false) {
 
 
 		$editor_data=$this->get_editor_data();
@@ -330,13 +330,7 @@ abstract class DB_Table {
 				$raw_data['Direct Object Key']=$this->id;
 		}
 
-
-
-
-
 		$data=$this->base_history_data();
-
-
 
 		foreach ($raw_data as $key=>$value) {
 			$data[$key]=$value;
@@ -364,12 +358,6 @@ abstract class DB_Table {
 			}
 
 		}
-
-
-
-
-
-
 
 		if (!isset($data['Date']) or $data['Date']=='')
 			$data['Date']=$editor_data['Date'];
@@ -452,15 +440,21 @@ abstract class DB_Table {
 			,prepare_mysql($data['Metadata'])
 		);
 
-		//     print $sql;
+		//    print $sql;
 		// print_r($raw_data);
 		//dsdfdffd();
 		mysql_query($sql);
 
-		return mysql_insert_id();
+		$history_key=mysql_insert_id();
+		$this->post_add_history($history_key,$post_arg1);
+		return $history_key;
 
 
 
+	}
+	
+	function post_add_history($history_key,$type=false){
+		return false;
 	}
 
 	function set_editor($raw_data) {

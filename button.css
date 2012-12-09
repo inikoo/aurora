@@ -365,7 +365,7 @@ button.selected, .buttons a.selected{
 
 
 
-button.disabled{color:#ccc;cursor:not-allowed}
+button.disabled{color:#ccc}
 button.disabled:hover, .buttons a.disabled:hover{
      background-color:#f5f5f5;
     border:1px solid #dedede;

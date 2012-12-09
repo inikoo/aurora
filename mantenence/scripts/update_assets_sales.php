@@ -34,6 +34,25 @@ require_once '../../conf/conf.php';
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
+
+
+
+$sql="select `Part SKU` from `Part Dimension`  order by `Part SKU`   ";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$part=new Part('sku',$row['Part SKU']);
+
+	$part->update_up_today_sales();
+	
+	$part->update_interval_sales();
+	$part->update_last_period_sales();
+	print $part->sku."\r";
+}
+
+
+
+
+
 $sql="select `Category Key` from `Category Dimension` where `Category Subject`='Part' ";
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -146,43 +165,6 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-
-
-
-$sql="select * from `Part Dimension`  ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$part=new Part('sku',$row['Part SKU']);
-
-	$part->update_up_today_sales();
-	
-	$part->update_interval_sales();
-	$part->update_last_period_sales();
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-$sql="select * from `Part Dimension`  ";
-$result=mysql_query($sql);
-while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$part=new Part('sku',$row['Part SKU']);
-
-	$part->update_up_today_sales();
-	$part->update_interval_sales();
-	$part->update_last_period_sales();
-
-}
 
 
 

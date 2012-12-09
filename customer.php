@@ -35,7 +35,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 
 $customer=new customer($customer_id);
 if (!$customer->id) {
-	header('Location: customers.php?msg=not_found');
+	header('Location: customer_deleted.php?id='.$customer_id);
 	exit;
 }
 
@@ -49,18 +49,7 @@ if (!in_array($customer->data['Customer Store Key'],$user->stores)) {
 	exit;
 }
 
-if (!$customer->id) {
 
-
-	header('Location: customer_deleted.php?id='.$customer_id);
-	exit;
-	//$sql=sprintf("select * from `Customer Deleted Dimension` where `Customer Key`=%d",$customer_id);
-	//if()
-
-	// header('Location: customers.php?error='._('Customer not exists'));
-	//exit();
-
-}
 
 $_SESSION['state']['customer']['id']=$customer_id;
 $_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
