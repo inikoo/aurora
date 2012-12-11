@@ -116,7 +116,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 				     
 				     request="ar_parts.php?tipo=parts&tableid=0&where=&parent=category&sf=0&parent_key="+Dom.get('category_key').value
-				     alert(request)
+				     //alert(request)
 	    this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -186,7 +186,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				
 				     ];
 //alert("ar_parts.php?tipo=part_categories&sf=0&tableid=1&parent_key="+Dom.get('category_key').value)
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_parts.php?tipo=part_categories&sf=0&tableid=1&parent_key="+Dom.get('category_key').value);
+	  request="ar_parts.php?tipo=part_categories&sf=0&tableid=1&parent=category&parent_key="+Dom.get('category_key').value
+	 // alert(request)
+	  this.dataSource1 = new YAHOO.util.DataSource(request);
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -248,8 +250,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
 				       ];
-		request="ar_history.php?tipo=category_part_history&parent=category&parent_key="+Dom.get('category_key').value+"&tableid=2";
-	   	    this.dataSource2 = new YAHOO.util.DataSource(request);
+		request="ar_history.php?tipo=part_categories&parent=category&parent_key="+Dom.get('category_key').value+"&tableid=2";
+	   	  
+	   	  this.dataSource2 = new YAHOO.util.DataSource(request);
 
 	   this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -442,8 +445,7 @@ function update_part_category_history_elements() {
  Event.addListener(ids, "click",change_parts_elements,0);
  var ids=['parts_general','parts_stock','parts_sales','parts_forecast','parts_locations'];
  YAHOO.util.Event.addListener(ids, "click",change_parts_view,0);
- ids=['parts_period_all','parts_period_three_year','parts_period_year','parts_period_yeartoday','parts_period_six_month','parts_period_quarter','parts_period_month','parts_period_ten_day','parts_period_week', 'parts_period_monthtoday','parts_period_weektoday','parts_period_today'];
- YAHOO.util.Event.addListener(ids, "click",change_parts_period,0);
+ YAHOO.util.Event.addListener(parts_period_ids, "click",change_parts_period,0);
  ids=['parts_avg_totals','parts_avg_month','parts_avg_week',"parts_avg_month_eff","parts_avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_parts_avg,0);
 

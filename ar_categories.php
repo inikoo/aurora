@@ -102,6 +102,9 @@ function list_main_categories() {
 	case('part_categories'):
 		$where.=" and `Category Subject`='Part'";
 		break;
+		case('supplier_categories'):
+		$where.=" and `Category Subject`='Supplier'";
+		break;	
 	default:
 		exit('error: unknown parent category: '.$parent);
 	}
@@ -117,7 +120,7 @@ function list_main_categories() {
 	$wheref='';
 	if ($f_field=='code' and $f_value!='')
 		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
-elseif ($f_field=='label' and $f_value!='')
+	elseif ($f_field=='label' and $f_value!='')
 		$wheref.=" and  `Category Label` like '%".addslashes($f_value)."%'";
 
 
@@ -163,7 +166,7 @@ elseif ($f_field=='label' and $f_value!='')
 			break;
 		case('label'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with label like ")." <b>*".$f_value."*</b> ";
-			break;	
+			break;
 		}
 	}
 	elseif ($filtered>0) {
@@ -174,7 +177,7 @@ elseif ($f_field=='label' and $f_value!='')
 			break;
 		case('label'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with label like')." <b>*".$f_value."*</b>";
-			break;	
+			break;
 		}
 	}
 	else

@@ -46,8 +46,10 @@ case('history_details'):
 case('customer_history'):
 	list_customer_history();
 	break;
-case('category_part_history'):
-	list_category_part_history();
+case('part_categories'):
+case('supplier_categories'):
+
+	list_category_history($tipo);
 	break;
 case('staff_history'):
 	list_staff_history();
@@ -1174,9 +1176,23 @@ function list_indirect_history($data) {
 
 
 
-function list_category_part_history() {
+function list_category_history($tipo) {
 
-	$conf=$_SESSION['state']['part_categories']['history'];
+
+
+switch($tipo){
+case('part_categories'):
+$table="`Part Category History Bridge`";
+break;
+case('supplier_categories'):
+$table="`Supplier Category History Bridge`";
+break;
+default:
+exit();
+}
+
+
+	$conf=$_SESSION['state'][$tipo]['history'];
 	if (isset( $_REQUEST['parent'])) {
 		$parent=$_REQUEST['parent'];
 	} else {
@@ -1261,23 +1277,23 @@ function list_category_part_history() {
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	//$_SESSION['state']['part_categories']['history']['details']=$details;
-	$_SESSION['state']['part_categories']['history']['elements']=$elements;
-	$_SESSION['state']['part_categories']['history']['order']=$order;
-	$_SESSION['state']['part_categories']['history']['order_dir']=$order_direction;
-	$_SESSION['state']['part_categories']['history']['nr']=$number_results;
-	$_SESSION['state']['part_categories']['history']['sf']=$start_from;
-	$_SESSION['state']['part_categories']['history']['f_field']=$f_field;
-	$_SESSION['state']['part_categories']['history']['f_value']=$f_value;
-	$_SESSION['state']['part_categories']['history']['elements']=$elements;
+	//$_SESSION['state'][$tipo]['history']['details']=$details;
+	$_SESSION['state'][$tipo]['history']['elements']=$elements;
+	$_SESSION['state'][$tipo]['history']['order']=$order;
+	$_SESSION['state'][$tipo]['history']['order_dir']=$order_direction;
+	$_SESSION['state'][$tipo]['history']['nr']=$number_results;
+	$_SESSION['state'][$tipo]['history']['sf']=$start_from;
+	$_SESSION['state'][$tipo]['history']['f_field']=$f_field;
+	$_SESSION['state'][$tipo]['history']['f_value']=$f_value;
+	$_SESSION['state'][$tipo]['history']['elements']=$elements;
 
 
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['part_categories']['history']['from'],$_SESSION['state']['part_categories']['history']['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state'][$tipo]['history']['from'],$_SESSION['state'][$tipo]['history']['to']);
 	} else {
-		$_SESSION['state']['part_categories']['history']['from']=$date_interval['from'];
-		$_SESSION['state']['part_categories']['history']['to']=$date_interval['to'];
+		$_SESSION['state'][$tipo]['history']['from']=$date_interval['from'];
+		$_SESSION['state'][$tipo]['history']['to']=$date_interval['to'];
 	}
 
 
@@ -1289,6 +1305,8 @@ function list_category_part_history() {
 
 	}elseif ($parent=='warehouse') {
 		$where=sprintf(' where   B.`Warehouse Key`=%d ',$parent_key);
+	}elseif ($parent=='none') {
+		$where=sprintf(' where  true ');
 	}
 
 	$where.=$date_interval['mysql'];
@@ -1320,7 +1338,7 @@ function list_category_part_history() {
 	}
 
 
-	$sql="select count(*) as total from  `Part Category History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
+	$sql="select count(*) as total from  $table B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
 	//print $sql;
 	// exit;
 	$result=mysql_query($sql);
@@ -1334,7 +1352,7 @@ function list_category_part_history() {
 	} else {
 
 		// $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
-		$sql="select count(*) as total from  `Part Category History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)  $where ";
+		$sql="select count(*) as total from  $table B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)  $where ";
 		// print $sql;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1400,7 +1418,7 @@ function list_category_part_history() {
 
 
 	//    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-	$sql="select `Type`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `Part Category History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
+	$sql="select `Type`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date`,B.`Category Key` from  $table B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
 
 
 	// print $sql;
@@ -1410,7 +1428,7 @@ function list_category_part_history() {
 		if ($row['History Details']=='')
 			$note=$row['History Abstract'];
 		else
-			$note=$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
+			$note=$row['History Abstract'].' <img style="cursor:pointer"  d="no" id="ch'.$row['Category Key'].$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
 
 		//$objeto=$row['Direct Object'];
 		$objeto=$row['History Details'];
@@ -1451,6 +1469,8 @@ function list_category_part_history() {
 	);
 	echo json_encode($response);
 }
+
+
 
 function get_part_category_history_elements($data) {
 

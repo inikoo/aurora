@@ -1,6 +1,6 @@
 var parts_period_ids = [
     'parts_period_all',
-     'parts_period_yeartoday',
+    'parts_period_yeartoday',
     'parts_period_monthtoday',
     'parts_period_weektoday',
     'parts_period_today',
@@ -48,8 +48,8 @@ function change_parts_view(e, table_id) {
     table.hideColumn('description_small');
 
     if (tipo == 'general') {
-        // Dom.setStyle(['period_options','avg_options'],'display','none')
-        Dom.setStyle(['period_options'], 'display', 'none')
+        // Dom.setStyle(['part_period_options','avg_options'],'display','none')
+        Dom.setStyle(['part_period_options'], 'display', 'none')
 
         table.showColumn('description');
         table.showColumn('supplied_by');
@@ -58,8 +58,8 @@ function change_parts_view(e, table_id) {
     } else if (tipo == 'stock') {
         table.showColumn('description_small');
 
-        //Dom.setStyle(['period_options','avg_options'],'display','none')
-        Dom.setStyle(['period_options'], 'display', 'none')
+        //Dom.setStyle(['part_period_options','avg_options'],'display','none')
+        Dom.setStyle(['part_period_options'], 'display', 'none')
 
 
         table.showColumn('stock');
@@ -74,8 +74,8 @@ function change_parts_view(e, table_id) {
     } else if (tipo == 'sales') {
         table.showColumn('description_small');
 
-        //Dom.setStyle(['period_options','avg_options'],'display','')
-        Dom.setStyle(['period_options'], 'display', '')
+        //Dom.setStyle(['part_period_options','avg_options'],'display','')
+        Dom.setStyle(['part_period_options'], 'display', '')
 
         table.showColumn('sold');
         table.showColumn('money_in');
@@ -86,8 +86,8 @@ function change_parts_view(e, table_id) {
 
         table.showColumn('description_small');
 
-        // Dom.setStyle(['period_options','avg_options'],'display','')
-        Dom.setStyle(['period_options'], 'display', 'none')
+        // Dom.setStyle(['part_period_options','avg_options'],'display','')
+        Dom.setStyle(['part_period_options'], 'display', 'none')
         table.showColumn('locations');
         table.showColumn('stock');
         table.showColumn('stock_value');
@@ -96,16 +96,16 @@ function change_parts_view(e, table_id) {
         table.showColumn('description_small');
         table.showColumn('profit_sold');
         table.showColumn('margin');
-        // Dom.setStyle(['period_options','avg_options'],'display','')
-        Dom.setStyle(['period_options'], 'display', '')
+        // Dom.setStyle(['part_period_options','avg_options'],'display','')
+        Dom.setStyle(['part_period_options'], 'display', '')
 
 
     }
-change_parts_view_save(tipo)
+    change_parts_view_save(tipo)
 }
 
 
-function change_parts_view_save(tipo){
+function change_parts_view_save(tipo) {
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=warehouse-parts-view&value=' + escape(tipo), {});
 
 }

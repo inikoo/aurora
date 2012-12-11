@@ -122,4 +122,42 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 
 
+$sql=sprintf("select * from `History Dimension` where `Direct Object`='Category Supplier'  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$category=new Category($row['Direct Object Key']);
+
+
+	if ($category->id) {
+
+		if ($category->data['Category Subject']=='') {
+			print "Category ".$category->id." with error\n";
+		}else {
+
+			$sql=sprintf("insert into  `Supplier Category History Bridge` values (%d,%d,'Change')",$category->id,$row['History Key']);
+			mysql_query($sql);
+			print "$sql\n";
+		}
+	}
+}
+
+$sql=sprintf("select * from `History Dimension` where `Indirect Object`='Category Supplier'  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$category=new Category($row['Indirect Object Key']);
+
+
+	if ($category->id) {
+
+		if ($category->data['Category Subject']=='') {
+			print "Category ".$category->id." with error\n";
+		}else {
+
+			$sql=sprintf("insert into  `Supplier Category History Bridge` values (%d,%d,'Change')",$category->id,$row['History Key']);
+			mysql_query($sql);
+		}
+	}
+}
+
+
 ?>

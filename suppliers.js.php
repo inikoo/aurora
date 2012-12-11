@@ -56,7 +56,7 @@ Event.addListener(window, "load", function() {
 
 				       ];
 
-	      this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=suppliers");
+	      this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=suppliers&parent=none&parent_key=0");
 		  //alert("ar_suppliers.php?tipo=suppliers");
   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -215,31 +215,22 @@ ids=['suppliers','porders','sproducts','sinvoices','idn'];
     
       ids=['suppliers_general','suppliers_sales','suppliers_stock','suppliers_products','suppliers_contact','suppliers_profit'];
  YAHOO.util.Event.addListener(ids, "click",change_suppliers_view,{'table_id':0,'parent':'suppliers'})
-
- ids=['suppliers_period_all','suppliers_period_year','suppliers_period_quarter','suppliers_period_month','suppliers_period_week',
- 'suppliers_period_six_month','suppliers_period_three_year','suppliers_period_ten_day','suppliers_period_month','suppliers_period_week',
- 'suppliers_period_yeartoday','suppliers_period_monthtoday','suppliers_period_weektoday'
- 
- ];
- YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':0,'subject':'suppliers'});
+ YAHOO.util.Event.addListener(suppliers_period_ids, "click",change_period,{'table_id':0,'subject':'suppliers'});
 
 
- ids=['suppliers_avg_totals','suppliers_avg_month','suppliers_avg_week'];
- YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'suppliers'});
+// ids=['suppliers_avg_totals','suppliers_avg_month','suppliers_avg_week'];
+// YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':0,'subject':'suppliers'});
 
  
    
     ids=['supplier_products_general','supplier_products_sales','supplier_products_stock','supplier_products_profit'];
- YAHOO.util.Event.addListener(ids, "click",change_supplier_products_view,{'table_id':1,'parent':'suppliers'})
- ids=['supplier_products_period_all','supplier_products_period_year','supplier_products_period_quarter','supplier_products_period_month','supplier_products_period_week',
- 'supplier_products_period_six_month','supplier_products_period_three_year','supplier_products_period_ten_day','supplier_products_period_month','supplier_products_period_week',
- 'supplier_products_period_yeartoday','supplier_products_period_monthtoday','supplier_products_period_weektoday'
  
- ];
-
- YAHOO.util.Event.addListener(ids, "click",change_period,{'table_id':1,'subject':'supplier_products'});
- ids=['supplier_products_avg_totals','supplier_products_avg_month','supplier_products_avg_week'];
- YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':1,'subject':'suppliers'});
+ YAHOO.util.Event.addListener(ids, "click",change_supplier_products_view,{'table_id':1,'parent':'suppliers'})
+ 
+ 
+ YAHOO.util.Event.addListener(supplier_products_period_ids, "click",change_period,{'table_id':1,'subject':'supplier_products'});
+ //ids=['supplier_products_avg_totals','supplier_products_avg_month','supplier_products_avg_week'];
+ //YAHOO.util.Event.addListener(ids, "click",change_avg,{'table_id':1,'subject':'suppliers'});
 
     
     

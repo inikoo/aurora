@@ -20,6 +20,12 @@ case('parts_no_assigned_to_category'):
 case('parts_assigned_to_category'):
 	list_parts_assigned_to_category();
 	break;
+case('suppliers_no_assigned_to_category'):
+	list_suppliers_no_assigned_to_category();
+	break;
+case('suppliers_assigned_to_category'):
+	list_suppliers_assigned_to_category();
+	break;
 
 case('disassociate_multiple_subject_from_category'):
 	$data=prepare_values($_REQUEST,array(
@@ -113,16 +119,10 @@ case('edit_subcategory'):
 	edit_subcategory();
 	break;
 case('edit_product_category_list'):
-	list_edit_product_categories();
-	break;
 case('edit_customer_category_list'):
-	list_edit_customer_categories();
-	break;
 case('edit_part_category_list'):
-	list_edit_part_categories();
-	break;
 case('edit_supplier_category_list'):
-	list_edit_supplier_categories();
+	list_edit_categories($tipo);
 	break;
 case('delete_subcategory'):
 	$data=prepare_values($_REQUEST,array(
@@ -206,397 +206,42 @@ function add_category($raw_data) {
 
 
 }
-function list_edit_product_categories() {
-	$conf=$_SESSION['state']['categories']['table'];
-
-	if (isset( $_REQUEST['sf']))
-		$start_from=$_REQUEST['sf'];
-	else
-		$start_from=$conf['sf'];
-
-
-	if (isset( $_REQUEST['nr']))
-		$number_results=$_REQUEST['nr'];
-	else
-		$number_results=$conf['nr'];
 
 
 
-	if (isset( $_REQUEST['o']))
-		$order=$_REQUEST['o'];
-	else
-		$order=$conf['order'];
-	if (isset( $_REQUEST['od']))
-		$order_dir=$_REQUEST['od'];
-	else
-		$order_dir=$conf['order_dir'];
-	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+function list_edit_categories($tipo) {
 
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
-
-
-	if (isset( $_REQUEST['f_field']))
-		$f_field=$_REQUEST['f_field'];
-	else
-		$f_field=$conf['f_field'];
-
-	if (isset( $_REQUEST['f_value']))
-		$f_value=$_REQUEST['f_value'];
-	else
-		$f_value=$conf['f_value'];
-
-
-	if (isset( $_REQUEST['tableid']))
-		$tableid=$_REQUEST['tableid'];
-	else
-		$tableid=0;
-
-
-	$subject=$_SESSION['state']['categories']['subject'];
-	$subject_key=$_SESSION['state']['categories']['subject_key'];
-	$parent_key=$_SESSION['state']['categories']['parent_key'];
-	$store_key=$_SESSION['state']['categories']['store_key'];
-
-	$_SESSION['state']['categories']['table']['order']=$order;
-	$_SESSION['state']['categories']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['categories']['table']['nr']=$number_results;
-	$_SESSION['state']['categories']['table']['sf']=$start_from;
-	$_SESSION['state']['categories']['table']['where']=$where;
-	$_SESSION['state']['categories']['table']['f_field']=$f_field;
-	$_SESSION['state']['categories']['table']['f_value']=$f_value;
-
-
-
-
-
-
-	$where=sprintf("where   `Category Store Key`=%d  and `Category Subject`=%s and  `Category Parent Key`=%d ",
-		$store_key,prepare_mysql($subject),$parent_key);
-	if ($subject_key) {
-		$where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
+	switch ($tipo) {
+	case('edit_part_category_list'):
+		$conf_branch='part_categories';
+		$subcategory_link='edit_part_category.php';
+		$subject='Part';
+		break;
+	case('edit_supplier_category_list'):
+		$conf_branch='supplier_categories';
+		$subcategory_link='edit_supplier_category.php';
+		$subject='Supplier';
+		break;
+	case('edit_customer_category_list'):
+		$conf_branch='customer_categories';
+		$subcategory_link='edit_customer_category.php';
+		$subject='Customer';
+		break;
+		default:
+		exit;
 	}
 
+	$conf=$_SESSION['state'][$conf_branch]['edit_categories'];
 
-
-
-	$filter_msg='';
-	$wheref='';
-	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
-
-
-
-
-	$sql="select count(*) as total   from `Category Dimension`   $where $wheref";
-
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		$total=$row['total'];
-	}
-	mysql_free_result($res);
-
-	//exit;
-	if ($wheref=='') {
-		$filtered=0;
-		$total_records=$total;
-	} else {
-
-
-		$sql="select count(*) as total  from `Category Dimension`    $where ";
-
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total_records=$row['total'];
-			$filtered=$total_records-$total;
-		}
-		mysql_free_result($result);
-
-	}
-
-
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
-	if ($total_records>$number_results)
-		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
-		$rtext_rpp=' ('._('Showing all').')';
-
-	if ($total==0 and $filtered>0) {
-		switch ($f_field) {
-
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
-			break;
-		}
-	}
-	elseif ($filtered>0) {
-		switch ($f_field) {
-
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
-			break;
-		}
-	}
-	else
-		$filter_msg='';
-
-	$_dir=$order_direction;
-	$_order=$order;
-
-
-
-	$order='`Category Code`';
-
-
-
-
-
-	$sql="select *  from `Category Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-	//print $sql;
-	$res = mysql_query($sql);
-	$adata=array();
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$name=$row['Category Code'];
-
-		$delete='<img src="art/icons/delete.png"/>';
-		$adata[]=array(
-			'go'=>sprintf("<a href='edit_product_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
-				$row['Category Store Key'],
-				$row['Category Key']),
-			'id'=>$row['Category Key'],
-			'name'=>$name,
-
-			'delete'=>$delete,
-			'delete_type'=>'delete'
-
-		);
-	}
-	mysql_free_result($res);
-
-
-
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
-			'records_offset'=>$start_from,
-			'records_perpage'=>$number_results,
-		)
-	);
-	echo json_encode($response);
-}
-
-function list_edit_customer_categories() {
-	$conf=$_SESSION['state']['categories']['table'];
-
-	if (isset( $_REQUEST['sf']))
-		$start_from=$_REQUEST['sf'];
-	else
-		$start_from=$conf['sf'];
-
-
-	if (isset( $_REQUEST['nr']))
-		$number_results=$_REQUEST['nr'];
-	else
-		$number_results=$conf['nr'];
-
-
-
-	if (isset( $_REQUEST['o']))
-		$order=$_REQUEST['o'];
-	else
-		$order=$conf['order'];
-	if (isset( $_REQUEST['od']))
-		$order_dir=$_REQUEST['od'];
-	else
-		$order_dir=$conf['order_dir'];
-	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
-
-
-	if (isset( $_REQUEST['f_field']))
-		$f_field=$_REQUEST['f_field'];
-	else
-		$f_field=$conf['f_field'];
-
-	if (isset( $_REQUEST['f_value']))
-		$f_value=$_REQUEST['f_value'];
-	else
-		$f_value=$conf['f_value'];
-
-
-	if (isset( $_REQUEST['tableid']))
-		$tableid=$_REQUEST['tableid'];
-	else
-		$tableid=0;
-
-
-	$subject=$_SESSION['state']['categories']['subject'];
-	$subject_key=$_SESSION['state']['categories']['subject_key'];
-	$parent_key=$_SESSION['state']['categories']['parent_key'];
-	$store_key=$_SESSION['state']['categories']['store_key'];
-
-	$_SESSION['state']['categories']['table']['order']=$order;
-	$_SESSION['state']['categories']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['categories']['table']['nr']=$number_results;
-	$_SESSION['state']['categories']['table']['sf']=$start_from;
-	$_SESSION['state']['categories']['table']['where']=$where;
-	$_SESSION['state']['categories']['table']['f_field']=$f_field;
-	$_SESSION['state']['categories']['table']['f_value']=$f_value;
-
-
-
-
-
-
-	$where=sprintf("where   `Category Store Key`=%d  and `Category Subject`=%s and  `Category Parent Key`=%d ",
-		$store_key,prepare_mysql($subject),$parent_key);
-	if ($subject_key) {
-		$where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
-	}
-
-
-
-
-	$filter_msg='';
-	$wheref='';
-	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
-
-
-
-
-	$sql="select count(*) as total   from `Category Dimension`   $where $wheref";
-
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		$total=$row['total'];
-	}
-	mysql_free_result($res);
-
-	//exit;
-	if ($wheref=='') {
-		$filtered=0;
-		$total_records=$total;
-	} else {
-
-
-		$sql="select count(*) as total  from `Category Dimension`    $where ";
-
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total_records=$row['total'];
-			$filtered=$total_records-$total;
-		}
-		mysql_free_result($result);
-
-	}
-
-
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
-	if ($total_records>$number_results)
-		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
-		$rtext_rpp=' ('._('Showing all').')';
-
-	if ($total==0 and $filtered>0) {
-		switch ($f_field) {
-
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
-			break;
-		}
-	}
-	elseif ($filtered>0) {
-		switch ($f_field) {
-
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
-			break;
-		}
-	}
-	else
-		$filter_msg='';
-
-	$_dir=$order_direction;
-	$_order=$order;
-
-
-
-	$order='`Category Code`';
-
-
-
-
-
-	$sql="select *  from `Category Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-	//print $sql;
-	$res = mysql_query($sql);
-	$adata=array();
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$name=$row['Category Code'];
-		$label=$row['Category Label'];
-
-		$delete='<div class="buttons small"><button class="negative">'._('Delete').'</button></div>';
-		$adata[]=array(
-			'go'=>sprintf("<a href='edit_customer_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
-				$row['Category Store Key'],
-				$row['Category Key']),
-			'id'=>$row['Category Key'],
-			'name'=>$name,
-			'label'=>$label,
-			'new_subject'=>$row['Category Show Subject User Interface'],
-			'public_new_subject'=>$row['Category Show Public New Subject'],
-			'public_edit'=>$row['Category Show Public Edit'],
-			'delete'=>$delete,
-			'delete_type'=>'delete'
-
-		);
-	}
-	mysql_free_result($res);
-
-
-
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
-			'records_offset'=>$start_from,
-			'records_perpage'=>$number_results,
-		)
-	);
-	echo json_encode($response);
-}
-function list_edit_part_categories() {
-
-
-	$conf=$_SESSION['state']['part_categories']['edit_categories'];
-
-
+	if(isset($_REQUEST['parent']))
 	$parent=$_REQUEST['parent'];
-
+	else
+		exit;
+if(isset($_REQUEST['parent_key']))
 	$parent_key=$_REQUEST['parent_key'];
-
+	else
+		exit;
+		
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -656,26 +301,36 @@ function list_edit_part_categories() {
 
 
 
-	$_SESSION['state']['part_categories']['edit_categories']['order']=$order;
-	$_SESSION['state']['part_categories']['edit_categories']['order_dir']=$order_direction;
-	$_SESSION['state']['part_categories']['edit_categories']['nr']=$number_results;
-	$_SESSION['state']['part_categories']['edit_categories']['sf']=$start_from;
-	$_SESSION['state']['part_categories']['edit_categories']['f_field']=$f_field;
-	$_SESSION['state']['part_categories']['edit_categories']['f_value']=$f_value;
-	$_SESSION['state']['part_categories']['edit_categories']['elements']=$elements;
+	$_SESSION['state'][$conf_branch]['edit_categories']['order']=$order;
+	$_SESSION['state'][$conf_branch]['edit_categories']['order_dir']=$order_direction;
+	$_SESSION['state'][$conf_branch]['edit_categories']['nr']=$number_results;
+	$_SESSION['state'][$conf_branch]['edit_categories']['sf']=$start_from;
+	$_SESSION['state'][$conf_branch]['edit_categories']['f_field']=$f_field;
+	$_SESSION['state'][$conf_branch]['edit_categories']['f_value']=$f_value;
+	$_SESSION['state'][$conf_branch]['edit_categories']['elements']=$elements;
 
 
 
 
 	if ($parent=='category') {
 
-		$where=sprintf("where  `Category Subject`='Part' and  `Category Parent Key`=%d ",
+		$where=sprintf("where  `Category Subject`='%s' and  `Category Parent Key`=%d ",$subject,
 			$parent_key);
-	}else {
+	}else if ($parent=='warehouse') {
 
-		$where=sprintf("where  `Category Subject`='Part' and  `Category Warehouse Key`=%d ",
-			$parent_key);
+			$where=sprintf("where  `Category Subject`='%s' and  `Category Warehouse Key`=%d ",$subject,
+				$parent_key);
 
+
+		}else if ($parent=='none') {
+
+			$where=sprintf("where  `Category Subject`='%s'  ",$subject);
+		}
+
+
+
+
+	if ($parent!='category') {
 		$_elements='';
 		foreach ($elements as $_key=>$_value) {
 			if ($_value)
@@ -687,9 +342,6 @@ function list_edit_part_categories() {
 		} else {
 			$where.=' and `Category Branch Type` in ('.$_elements.')' ;
 		}
-
-
-
 	}
 
 
@@ -761,6 +413,7 @@ function list_edit_part_categories() {
 	$order='`Category Code`';
 
 
+	$go_format="<a href='$subcategory_link?id=%d'><img src='art/icons/page_go.png' alt='go'></a>";
 
 
 
@@ -783,7 +436,7 @@ function list_edit_part_categories() {
 
 		$delete='<div class="buttons small"><button class="negative">'._('Delete').'</button></div>';
 		$adata[]=array(
-			'go'=>sprintf("<a href='edit_part_category.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
+			'go'=>sprintf($go_format,
 				$row['Category Key']),
 			'id'=>$row['Category Key'],
 			'code'=>$row['Category Code'],
@@ -816,194 +469,6 @@ function list_edit_part_categories() {
 }
 
 
-function list_edit_supplier_categories() {
-	$conf=$_SESSION['state']['categories']['table'];
-
-	if (isset( $_REQUEST['sf']))
-		$start_from=$_REQUEST['sf'];
-	else
-		$start_from=$conf['sf'];
-
-
-	if (isset( $_REQUEST['nr']))
-		$number_results=$_REQUEST['nr'];
-	else
-		$number_results=$conf['nr'];
-
-
-
-	if (isset( $_REQUEST['o']))
-		$order=$_REQUEST['o'];
-	else
-		$order=$conf['order'];
-	if (isset( $_REQUEST['od']))
-		$order_dir=$_REQUEST['od'];
-	else
-		$order_dir=$conf['order_dir'];
-	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-	if (isset( $_REQUEST['where']))
-		$where=addslashes($_REQUEST['where']);
-	else
-		$where=$conf['where'];
-
-
-	if (isset( $_REQUEST['f_field']))
-		$f_field=$_REQUEST['f_field'];
-	else
-		$f_field=$conf['f_field'];
-
-	if (isset( $_REQUEST['f_value']))
-		$f_value=$_REQUEST['f_value'];
-	else
-		$f_value=$conf['f_value'];
-
-
-	if (isset( $_REQUEST['tableid']))
-		$tableid=$_REQUEST['tableid'];
-	else
-		$tableid=0;
-
-
-	$subject=$_SESSION['state']['categories']['subject'];
-	$subject_key=$_SESSION['state']['categories']['subject_key'];
-	$parent_key=$_SESSION['state']['categories']['parent_key'];
-	$store_key=$_SESSION['state']['categories']['store_key'];
-
-	$_SESSION['state']['categories']['table']['order']=$order;
-	$_SESSION['state']['categories']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['categories']['table']['nr']=$number_results;
-	$_SESSION['state']['categories']['table']['sf']=$start_from;
-	$_SESSION['state']['categories']['table']['where']=$where;
-	$_SESSION['state']['categories']['table']['f_field']=$f_field;
-	$_SESSION['state']['categories']['table']['f_value']=$f_value;
-
-
-
-
-
-
-	$where=sprintf("where   `Category Store Key`=%d  and `Category Subject`=%s and  `Category Parent Key`=%d ",
-		$store_key,prepare_mysql($subject),$parent_key);
-	if ($subject_key) {
-		$where.=sprintf("and `Category Subject Key`=%d",$subject_key); ;
-	}
-
-
-
-
-	$filter_msg='';
-	$wheref='';
-	if ($f_field=='name' and $f_value!='')
-		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
-
-
-
-
-	$sql="select count(*) as total   from `Category Dimension`   $where $wheref";
-
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		$total=$row['total'];
-	}
-	mysql_free_result($res);
-
-	//exit;
-	if ($wheref=='') {
-		$filtered=0;
-		$total_records=$total;
-	} else {
-
-
-		$sql="select count(*) as total  from `Category Dimension`    $where ";
-
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total_records=$row['total'];
-			$filtered=$total_records-$total;
-		}
-		mysql_free_result($result);
-
-	}
-
-
-	$rtext=$total_records." ".ngettext('category','categories',$total_records);
-	if ($total_records>$number_results)
-		$rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-	else
-		$rtext_rpp=' ('._('Showing all').')';
-
-	if ($total==0 and $filtered>0) {
-		switch ($f_field) {
-
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
-			break;
-		}
-	}
-	elseif ($filtered>0) {
-		switch ($f_field) {
-
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
-			break;
-		}
-	}
-	else
-		$filter_msg='';
-
-	$_dir=$order_direction;
-	$_order=$order;
-
-
-
-	$order='`Category Code`';
-
-
-
-
-
-	$sql="select *  from `Category Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-	// print $sql;
-	$res = mysql_query($sql);
-	$adata=array();
-	while ($row=mysql_fetch_assoc($res)) {
-
-		$name=$row['Category Code'];
-
-		$delete='<img src="art/icons/delete.png"/>';
-		$adata[]=array(
-			'go'=>sprintf("<a href='edit_supplier_category.php?store_id=%d&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",
-				$row['Category Store Key'],
-				$row['Category Key']),
-			'id'=>$row['Category Key'],
-			'name'=>$name,
-
-			'delete'=>$delete,
-			'delete_type'=>'delete'
-
-		);
-	}
-	mysql_free_result($res);
-
-
-
-	$response=array('resultset'=>
-		array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
-			'records_offset'=>$start_from,
-			'records_perpage'=>$number_results,
-		)
-	);
-	echo json_encode($response);
-}
 
 
 
@@ -1040,10 +505,10 @@ function edit_category($data) {
 	foreach ($data['values'] as $key=>$value) {
 		$field=$translate_keys[$key];
 		$category->update_field_switcher($field,$value['value']);
-		if($key=='code')
-		$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field],'branch_tree'=>$category->data['Category XHTML Branch Tree']);
+		if ($key=='code')
+			$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field],'branch_tree'=>$category->data['Category XHTML Branch Tree']);
 		else
-		$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field]);
+			$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field]);
 
 	}
 
@@ -1587,7 +1052,6 @@ function list_parts_no_assigned_to_category() {
 	);
 	echo json_encode($response);
 }
-
 function list_parts_assigned_to_category() {
 
 	global $user;
@@ -1843,6 +1307,8 @@ function list_parts_assigned_to_category() {
 	echo json_encode($response);
 }
 
+
+
 function list_category_heads() {
 
 
@@ -2023,6 +1489,482 @@ function list_category_heads() {
 			'rtext'=>$rtext,
 			'rtext_rpp'=>$rtext_rpp,
 			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
+
+function list_suppliers_no_assigned_to_category() {
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		return;
+	}
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		return;
+	}
+	$conf=$_SESSION['state']['supplier_categories']['no_assigned_suppliers'];
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (!is_numeric($start_from))
+		$start_from=0;
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+
+	} else
+		$number_results=$conf['nr'];
+
+
+
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+
+	if (isset( $_REQUEST['checked_all'])) {
+		$checked_all=$_REQUEST['checked_all'];
+
+	}else {
+		$checked_all=$conf['checked_all'];
+
+	}
+
+
+
+
+	//$check_all=true;
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+	$_SESSION['state']['supplier_categories']['no_assigned_suppliers']['order']=$order;
+	$_SESSION['state']['supplier_categories']['no_assigned_suppliers']['order_dir']=$order_direction;
+	$_SESSION['state']['supplier_categories']['no_assigned_suppliers']['nr']=$number_results;
+	$_SESSION['state']['supplier_categories']['no_assigned_suppliers']['sf']=$start_from;
+	$_SESSION['state']['supplier_categories']['no_assigned_suppliers']['f_field']=$f_field;
+	$_SESSION['state']['supplier_categories']['no_assigned_suppliers']['f_value']=$f_value;
+	$_SESSION['state']['supplier_categories']['no_assigned_suppliers']['checked_all']=$checked_all;
+
+
+	$filter_msg='';
+	$sql_type='supplier';
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	if (!is_numeric($start_from))
+		$start_from=0;
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+
+	//NOTE if changed change associate_multiple_subject_to_category too
+	$where=sprintf("where (select count(*) from `Category Bridge` where `Subject`='Supplier'and `Category Key`=%d  and `Subject Key`=`Supplier Key`)=0 ",
+		$parent_key
+	);
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Supplier Code` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Supplier Name` like '%".addslashes($f_value)."%'";
+
+
+	$sql="select count(`Supplier Key`) as total from `Supplier Dimension`  $where $wheref ";
+
+
+	//print $sql;
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+
+		$sql="select count(`Supplier Key`) as total_without_filters from `Supplier Dimension`  $where  ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	}
+
+	//print $sql;
+
+
+	$rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' '._('(Showing all)');
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with code like")." <b>".$f_value."*</b> ";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with name like")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+
+
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('suppliers with code like')." <b>".$f_value."*</b>";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('suppliers with name like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+
+
+
+	$_order=$order;
+	$_order_dir=$order_dir;
+
+
+	if ($order=='code')
+		$order='`Supplier Code`';
+	elseif ($order=='name')
+		$order='`Supplier Name`';
+	
+	$sql="select `Supplier Key`,`Supplier Name`,`Supplier Code` from `Supplier Dimension`  $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
+	$adata=array();
+	$result=mysql_query($sql);
+
+	//print $sql;
+	// if($checked_all){
+	$checkbox_checked_format='<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="no_assigned_subject_%d" onClick="check_no_assigned_subject(%d)"/>';
+	// }else{
+	$checkbox_unchecked_format='<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="no_assigned_subject_%d" onClick="check_no_assigned_subject(%d)"/>';
+	// }
+
+
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		$move_here='<div class="buttons small"><button>'._('Assign Here').'</button></div>';
+
+		$move='<div class="buttons small"><button>'._('Assign to Category').'</button></div>';
+
+
+		$checkbox_checked=sprintf($checkbox_checked_format,
+			$data['Supplier Key'],
+			$data['Supplier Key']
+		);
+		$checkbox_unchecked=sprintf($checkbox_unchecked_format,
+			$data['Supplier Key'],
+			$data['Supplier Key']
+		);
+
+		$adata[]=array(
+			'checkbox'=>'',
+			'checkbox_checked'=>$checkbox_checked,
+			'checkbox_unchecked'=>$checkbox_unchecked,
+			'checked'=>0,
+			'subject_key'=>$data['Supplier Key'],
+
+			'code'=>sprintf('<a href="supplier.php?sku=%d">%s</a>',$data['Supplier Key'],$data['Supplier Code']),
+			'name'=>$data['Supplier Name'],
+			'move'=>$move,
+			'move_here'=>$move_here
+		);
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
+function list_suppliers_assigned_to_category() {
+
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		return;
+	}
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		return;
+	}
+	$conf=$_SESSION['state']['supplier_categories']['edit_suppliers'];
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (!is_numeric($start_from))
+		$start_from=0;
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+
+	} else
+		$number_results=$conf['nr'];
+
+
+
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+	$_SESSION['state']['supplier_categories']['edit_suppliers']['order']=$order;
+	$_SESSION['state']['supplier_categories']['edit_suppliers']['order_dir']=$order_direction;
+	$_SESSION['state']['supplier_categories']['edit_suppliers']['nr']=$number_results;
+	$_SESSION['state']['supplier_categories']['edit_suppliers']['sf']=$start_from;
+	$_SESSION['state']['supplier_categories']['edit_suppliers']['f_field']=$f_field;
+	$_SESSION['state']['supplier_categories']['edit_suppliers']['f_value']=$f_value;
+
+
+	$filter_msg='';
+	$sql_type='supplier';
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	if (!is_numeric($start_from))
+		$start_from=0;
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+
+
+
+	$where=sprintf("where B.`Category Key`=%d  ",
+		$parent_key
+	);
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+	$wheref='';
+	if ($f_field=='code' and $f_value!='')
+		$wheref.=" and  `Supplier Code` like '%".addslashes($f_value)."%'";
+	elseif ($f_field=='name' and $f_value!='')
+		$wheref.=" and  `Supplier Name` like '%".addslashes($f_value)."%'";
+
+	$sql="select count(`Supplier Key`) as total from `Supplier Dimension` left join `Category Bridge` B on (`Supplier Key`=`Subject Key` and `Subject`='Supplier') $where $wheref ";
+
+
+	//print $sql;
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+
+		$sql="select count(`Supplier Key`) as total_without_filters from `Supplier Dimension` left join `Category Bridge` B on (`Supplier Key`=`Subject Key` and `Subject`='Supplier')  $where  ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	}
+
+	//print $sql;
+
+
+	$rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' '._('(Showing all)');
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with code like")." <b>".$f_value."*</b> ";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with name like")." <b>".$f_value."*</b> ";
+			break;
+		}
+	}
+	elseif ($filtered>0) {
+
+
+		switch ($f_field) {
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('suppliers with code like')." <b>".$f_value."*</b>";
+			break;
+		case('name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('suppliers with name like')." <b>".$f_value."*</b>";
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+
+
+	$_order=$order;
+	$_order_dir=$order_dir;
+
+
+	if ($order=='code' )
+		$order='`Supplier Code`';
+	elseif ($order=='name')
+		$order='`Supplier Name`';
+
+
+
+	$sql="select `Category Plain Branch Tree`,`Supplier Key`,`Supplier Name`,`Supplier Code` from `Supplier Dimension` left join `Category Bridge` B on (`Supplier Key`=B.`Subject Key` and `Subject`='Supplier') left join `Category Dimension` C on (C.`Category Key`=B.`Category Head Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
+	$adata=array();
+	$result=mysql_query($sql);
+
+
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+		$move='<div class="buttons small"><button>'._('Move').'</button></div>';
+		$delete='<div class="buttons small"><button>'._('Remove').'</button></div>';
+
+
+		$checkbox_unchecked=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$data['Supplier Key'],
+			$data['Supplier Key']
+		);
+		$checkbox_checked=sprintf('<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$data['Supplier Key'],
+			$data['Supplier Key']
+		);
+
+		$hierarchy='<img style="width:14px;" src="art/icons/hierarchy_grey.png" alt="hierarchy" title="'.$data['Category Plain Branch Tree'].'" />';
+		$adata[]=array(
+			'checkbox'=>'',
+			'checkbox_checked'=>$checkbox_checked,
+			'checkbox_unchecked'=>$checkbox_unchecked,
+			'subject_key'=>$data['Supplier Key'],
+			'code'=>sprintf('<a href="supplier.php?sku=%d">%s</a>',$data['Supplier Key'],$data['Supplier Code']),
+			'name'=>$data['Supplier Name'],
+			
+			'move'=>$move,
+			'delete'=>$delete,
+			'hierarchy'=>$hierarchy
+		);
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total,
+
 			'records_offset'=>$start_from,
 			'records_perpage'=>$number_results,
 		)

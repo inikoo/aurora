@@ -111,7 +111,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
 				       ];
-		request="ar_history.php?tipo=category_part_history&parent=category&parent_key="+Dom.get('category_key').value+"&tableid=1";
+		request="ar_history.php?tipo=part_cateories&parent=category&parent_key="+Dom.get('category_key').value+"&tableid=1";
 	   	    this.dataSource1 = new YAHOO.util.DataSource(request);
 
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
@@ -168,7 +168,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['part_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['history']['f_value']?>'};
 
 
 
@@ -187,7 +187,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	      
 	      
         	if(assigned_subjects_check_start_type=='unchecked'){     
-		   		if(checked_assigned_subjects.indexOf(  oRecord.getData("sku").toString())>=0){
+		   		if(checked_assigned_subjects.indexOf(  oRecord.getData("subject_key").toString())>=0){
 		   		 	
 		   			elLiner.innerHTML =oRecord.getData("checkbox_checked")
 		   			this.updateCell(oRecord, 'checked', 1);
@@ -196,7 +196,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				}
 			}
 			else{
-				if(unchecked_assigned_subjects.indexOf(  oRecord.getData("sku").toString())>=0){
+				if(unchecked_assigned_subjects.indexOf(  oRecord.getData("subject_key").toString())>=0){
 		   			elLiner.innerHTML =oRecord.getData("checkbox_unchecked")
 				}else{
 					elLiner.innerHTML = oRecord.getData("checkbox_checked")
@@ -239,7 +239,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "sku","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked"
+			 "sku","subject_key","formated_sku","description","used_in","checkbox","move","subject_key","delete","hierarchy","checkbox_checked","checkbox_unchecked","checked"
 			 ]};
 	    
 	    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -288,14 +288,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	     this.checkbox_no_assigned = function(elLiner, oRecord, oColumn, oData) {
         	if(no_assigned_subjects_check_start_type=='unchecked'){     
-		   		if(checked_no_assigned_subjects.indexOf(  oRecord.getData("sku").toString())>=0){
+		   		if(checked_no_assigned_subjects.indexOf(  oRecord.getData("subject_key").toString())>=0){
 		   			elLiner.innerHTML =oRecord.getData("checkbox_checked")
 				}else{
 					elLiner.innerHTML = oRecord.getData("checkbox_unchecked")
 				}
 			}
 			else{
-				if(unchecked_no_assigned_subjects.indexOf(  oRecord.getData("sku").toString())>=0){
+				if(unchecked_no_assigned_subjects.indexOf(  oRecord.getData("subject_key").toString())>=0){
 		   			elLiner.innerHTML =oRecord.getData("checkbox_unchecked")
 				}else{
 					elLiner.innerHTML = oRecord.getData("checkbox_checked")
@@ -315,7 +315,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 		];
-	    this.dataSource3 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=parts_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value);
+		
+		request="ar_edit_categories.php?tipo=parts_no_assigned_to_category&tableid="+tableid+"&parent=category&sf=0&parent_key="+Dom.get('category_key').value
+		
+	    this.dataSource3 = new YAHOO.util.DataSource(request);
 	    this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource3.connXhrMode = "queueRequests";
 	    this.dataSource3.responseSchema = {
@@ -332,7 +335,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "sku","formated_sku","description","used_in","checkbox","move","subject_key","move_here","checkbox_checked","checkbox_unchecked","checked"
+			 "sku","subject_key","formated_sku","description","used_in","checkbox","move","subject_key","move_here","checkbox_checked","checkbox_unchecked","checked"
 			 ]};
 	    
 	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
