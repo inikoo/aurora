@@ -717,7 +717,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 			break;
 		case('Supplier'):
 
-			$sql=sprintf("select count(*) as num from `Supplier Product Dimension` ");
+			$sql=sprintf("select count(*) as num from `Supplier Dimension` ");
 			break;
 		default:
 			$table=$this->data['Category Subject'];
@@ -2309,6 +2309,13 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 				$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d',$part->sku).'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
 				$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d',$part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
+				case('Supplier'):
+					include_once 'class.Supplier.php';
+
+					$supplier=new Supplier($subject_key);
+					$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
+					$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$part->data['Supplier Name'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					break;	
 			default:
 				$abstract='todo';
 				$details='todo';
@@ -2454,6 +2461,14 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 					$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d',$part->sku).'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
 					$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d',$part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
 					break;
+				case('Supplier'):
+					include_once 'class.Supplier.php';
+
+					$supplier=new Supplier($subject_key);
+					$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
+					$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$part->data['Supplier Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					break;	
+					
 				default:
 					$abstract='todo';
 					$details='todo';
@@ -2553,9 +2568,27 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 				$history_key,
 				prepare_mysql($type)
 			);
-			//print $sql;
 			mysql_query($sql);
 			break;
+		case('Supplier'):
+			$sql=sprintf("insert into  `Supplier Category History Bridge` values (%d,%d,%s)",
+				$this->id,
+				$history_key,
+				prepare_mysql($type)
+			);
+			mysql_query($sql);
+			break;	
+		case('Customer'):
+			$sql=sprintf("insert into  `Customer Category History Bridge` values (%d,%d,%d,%s)",
+				$this->data['Category Store Key'],
+				$this->id,
+				$history_key,
+				prepare_mysql($type)
+			);
+			mysql_query($sql);
+			break;		
+			
+			
 		}
 	}
 

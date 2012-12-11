@@ -9,10 +9,9 @@
 */
 
 include_once 'common.php';
-include_once 'class.Warehouse.php';
 
 
-if (!$user->can_view('warehouses')  ) {
+if (!$user->can_view('suppliers')  ) {
 	header('Location: index.php');
 	exit;
 }
@@ -25,7 +24,7 @@ if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
 	$category_key=$_REQUEST['id'];
 } else {
 
-	header('Location: part_categories.php?no_category_id');
+	header('Location: supplier_categories.php?no_category_id');
 	exit();
 }
 
@@ -38,7 +37,7 @@ if ($row=mysql_fetch_assoc($res)) {
 	}
 
 }else {
-	header('Location: warehouse_parts.php?error=category_not_found');
+	header('Location: suppliers.php?error=category_not_found');
 	exit();
 }
 
@@ -75,7 +74,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-	'part_category_deleted.js.php'
+	'supplier_category_deleted.js.php'
 );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -87,8 +86,8 @@ $smarty->assign('category_data',$category_data);
 
 
 
-$smarty->assign('search_label',_('Parts'));
-$smarty->assign('search_scope','parts');
+$smarty->assign('search_label',_('Suppliers'));
+$smarty->assign('search_scope','suppliers');
 
 $message='';
 
@@ -103,18 +102,18 @@ $warehouse=new Warehouse($category_data['CategoryDeletedWarehouseKey']);
 $smarty->assign('warehouse',$warehouse);
 $smarty->assign('warehouse_id',$warehouse->id);
 
-$smarty->assign('parent','parts');
+$smarty->assign('parent','suppliers');
 $smarty->assign('title',_('Deleted Category'));
 
 $elements_number=array('Change'=>0,'Assign'=>0);
-$sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Category Key`=%d group by  `Type`",$category_key);
+$sql=sprintf("select count(*) as num ,`Type` from  `Supplier Category History Bridge` where  `Category Key`=%d group by  `Type`",$category_key);
 //print_r($sql);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$elements_number[$row['Type']]=number($row['num']);
 }
 $smarty->assign('history_elements_number',$elements_number);
-$smarty->assign('history_elements',$_SESSION['state']['part_categories']['history']['elements']);
+$smarty->assign('history_elements',$_SESSION['state']['supplier_categories']['history']['elements']);
 
 
 $tipo_filter=$_SESSION['state']['store']['history']['f_field'];
@@ -134,6 +133,6 @@ $smarty->assign('filter_menu2',$filter_menu);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu);
 
-$smarty->display('part_category_deleted.tpl');
+$smarty->display('supplier_category_deleted.tpl');
 
 ?>

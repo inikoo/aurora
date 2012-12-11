@@ -16,7 +16,7 @@
 			<span class="main_title">{t}Editing Category{/t}: <span class="id" id="title_code">{$category->get('Category Code')}</span> </span> 
 		</div>
 		<div class="buttons" style="float:right">
-			<button onclick="window.location='part_categories.php?id={$category->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button style="{if !$create_subcategory}display:none{/if}" id="new_category"><img src="art/icons/add.png" alt=""> {t}New Subcategory{/t}</button> <button class="negative"  id="delete_category"><img src="art/icons/delete.png" alt=""> {t}Delete{/t}</button> 
+			<button onclick="window.location='part_category.php?id={$category->id}'"><img src="art/icons/door_out.png" alt=""> {t}Exit Edit{/t}</button> <button style="{if !$create_subcategory}display:none{/if}" id="new_category"><img src="art/icons/add.png" alt=""> {t}New Subcategory{/t}</button> <button class="negative"  id="delete_category"><img src="art/icons/delete.png" alt=""> {t}Delete{/t}</button> 
 		</div>
 		<div style="clear:both">
 		</div>

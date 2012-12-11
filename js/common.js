@@ -15,15 +15,15 @@ return (str + '').replace(/'/g, '%27');
 
 }
 
-function showdetails(o){
+function showdetails(oimg){
 
 
-
-    var history_id=o.getAttribute('hid');
-    var details=o.getAttribute('d');
-    tr=Dom.getAncestorByTagName(o,'tr');
+//alert(o)
+    var history_id=oimg.getAttribute('hid');
+    var details=oimg.getAttribute('d');
+    tr=Dom.getAncestorByTagName(oimg,'tr');
     row_index=tr.rowIndex+1;
-    var table=Dom.getAncestorByTagName(o,'table');
+    var table=Dom.getAncestorByTagName(oimg,'table');
   
     if(details=='no'){
 	row_class=tr.getAttribute('class');
@@ -36,7 +36,7 @@ function showdetails(o){
 		    if (r.state==200) {
 			var x=table.insertRow(row_index);
 			x.setAttribute('class',row_class);
-			x.setAttribute('id','chd'+history_id);
+//			x.setAttribute('id','chd'+history_id);
 
 			var c1=x.insertCell(0);
 			var c2=x.insertCell(1);
@@ -49,17 +49,18 @@ function showdetails(o){
 
 			c3.setAttribute('colspan',3);
 			c3.innerHTML=r.details;
-			Dom.get('ch'+history_id).src='art/icons/showed.png';
-			Dom.get('ch'+history_id).setAttribute('d','yes');
+			Dom.get(oimg).src='art/icons/showed.png';
+			Dom.get(oimg).setAttribute('d','yes');
 
 			
 		    }
 		       
 		}
 	    });   
-    }else{
-	Dom.get('ch'+history_id).src='art/icons/closed.png';
-	Dom.get('ch'+history_id).setAttribute('d','no');
+    }
+    else{
+	Dom.get(oimg).src='art/icons/closed.png';
+	Dom.get(oimg).setAttribute('d','no');
 	table.deleteRow(row_index);
 
     }

@@ -520,7 +520,7 @@ function change_period(e,data){
     var table=tables['table'+data.table_id];
     var datasource=tables['dataSource'+data.table_id];
     var request='&period=' + this.getAttribute('period');
-  // alert(request)
+  // alert(data.table_id)
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
 

@@ -63,7 +63,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=edit_part_category_list&parent=warehouse&parent_key="+Dom.get('warehouse_key').value);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=edit_supplier_category_list&parent=none&parent_key=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -88,7 +88,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['part_categories']['edit_categories']['nr']?>,containers : 'paginator', 
+									      rowsPerPage:<?php echo$_SESSION['state']['supplier_categories']['edit_categories']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -98,8 +98,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['part_categories']['edit_categories']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['part_categories']['edit_categories']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['supplier_categories']['edit_categories']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['supplier_categories']['edit_categories']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -118,7 +118,7 @@ this.table0.table_id=tableid;
         this.table0.subscribe("renderEvent", myrenderEvent);
 
 
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['part_categories']['edit_categories']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['edit_categories']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['supplier_categories']['edit_categories']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_categories']['edit_categories']['f_value']?>'};
 
 		
  var tableid=1; // Change if you have more the 1 table
@@ -131,7 +131,7 @@ this.table0.table_id=tableid;
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
 				       ];
-		request="ar_history.php?tipo=part_categories&parent=warehouse&parent_key="+Dom.get('warehouse_id').value+"&tableid=1";
+		request="ar_history.php?tipo=supplier_categories&parent=none&parent_key=0&tableid=1";
 	   
 	   this.dataSource1 = new YAHOO.util.DataSource(request);
 
@@ -162,7 +162,7 @@ this.table0.table_id=tableid;
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['part_categories']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['supplier_categories']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -172,8 +172,8 @@ this.table0.table_id=tableid;
 							     })
 							 
 							 ,sortedBy : {
-							    key: "<?php echo$_SESSION['state']['part_categories']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['part_categories']['history']['order_dir']?>"
+							    key: "<?php echo$_SESSION['state']['supplier_categories']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['supplier_categories']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -189,7 +189,7 @@ this.table0.table_id=tableid;
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['part_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['part_categories']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['supplier_categories']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_categories']['history']['f_value']?>'};
 
 
 
@@ -202,14 +202,14 @@ this.table0.table_id=tableid;
 function show_history(){
 Dom.setStyle(['show_history',''],'display','none')
 Dom.setStyle(['hide_history','history_table'],'display','')
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part_categories-show_history&value=1', {});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier_categories-show_history&value=1', {});
 
 }
 
 function hide_history(){
 Dom.setStyle(['show_history',''],'display','')
 Dom.setStyle(['hide_history','history_table'],'display','none')
-    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part_categories-show_history&value=0', {});
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier_categories-show_history&value=0', {});
 
 }
 
@@ -480,10 +480,10 @@ function update_branch_type_elements() {
     );
 }
 
-function update_part_category_history_elements() {
+function update_supplier_category_history_elements() {
 
     var ar_file = 'ar_history.php';
-    var request = 'tipo=get_part_category_history_elements&parent=warehouse&parent_key=' + Dom.get('warehouse_key').value;
+    var request = 'tipo=get_supplier_category_history_elements&parent=none&parent_key=0';
     YAHOO.util.Connect.asyncRequest('POST', ar_file, {
         success: function(o) {
             var r = YAHOO.lang.JSON.parse(o.responseText);
@@ -535,7 +535,7 @@ dialog_delete_category_from_list.hide()
 
 function init() {
 
-    init_search('parts');
+    init_search('suppliers');
     ids = ['elements_Node', 'elements_Root', 'elements_Head'];
     Event.addListener(ids, "click", change_category_elements, 0);
     

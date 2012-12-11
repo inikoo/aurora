@@ -66,8 +66,26 @@
 				<div class="buttons small left cluster">
 					<button class="{if $parts_view=='general'}selected{/if}" id="parts_general" name="general"> {t}Description{/t} </button> <button class="{if $parts_view=='stock'}selected{/if}" id="parts_stock" name="stock"> {t}Stock{/t} </button> <button class="{if $parts_view=='locations'}selected{/if}" id="parts_locations" name="locations"> {t}Locations{/t} </button> <button class="{if $parts_view=='sales'}selected{/if}" id="parts_sales" name="sales"> {t}Sales{/t} </button> <button class="{if $parts_view=='forecast'}selected{/if}" id="parts_forecast" name="forecast"> {t}Forecast{/t} </button> 
 				</div>
-				<div class="buttons small left cluster" id="period_options" style="{if $parts_view=='general' or $parts_view=='locations' };display:none{/if}">
-					<button class="{if $parts_period=='all'}selected{/if}" period="all" id="parts_period_all"> {t}All{/t} </button> <button class="{if $parts_period=='three_year'}selected{/if}" period="three_year" id="parts_period_three_year"> {t}3Y{/t} </button> <button class="{if $parts_period=='year'}selected{/if}" period="year" id="parts_period_year"> {t}1Yr{/t} </button> <button class="{if $parts_period=='six_month'}selected{/if}" period="six_month" id="parts_period_six_month"> {t}6M{/t} </button> <button class="{if $parts_period=='quarter'}selected{/if}" period="quarter" id="parts_period_quarter"> {t}1Qtr{/t} </button> <button class="{if $parts_period=='month'}selected{/if}" period="month" id="parts_period_month"> {t}1M{/t} </button> <button class="{if $parts_period=='ten_day'}selected{/if}" period="ten_day" id="parts_period_ten_day"> {t}10D{/t} </button> <button class="{if $parts_period=='week'}selected{/if}" period="week" id="parts_period_week"> {t}1W{/t} </button> <button class="{if $parts_period=='yeartoday'}selected{/if}" period="yeartoday" id="parts_period_yeartoday"> {t}YTD{/t} </button> <button class="{if $parts_period=='monthtoday'}selected{/if}" period="monthtoday" id="parts_period_monthtoday"> {t}MTD{/t} </button> <button class="{if $parts_period=='weektoday'}selected{/if}" period="weektoday" id="parts_period_weektoday"> {t}WTD{/t} </button> <button class="{if $parts_period=='today'}selected{/if}" period="today" id="parts_period_today"> {t}Today{/t} </button> 
+				<div class="buttons small left cluster" id="part_period_options" style="{if $parts_view=='general' or $parts_view=='locations' };display:none{/if}">
+				
+				
+					<button class="{if $parts_period=='all'}selected{/if}" period="all" id="parts_period_all">{t}All{/t}</button>
+					<button style="margin-left:4px" class="{if $parts_period=='yeartoday'}selected{/if}" period="yeartoday" id="parts_period_yeartoday">{t}YTD{/t}</button> 
+					<button class="{if $parts_period=='monthtoday'}selected{/if}" period="monthtoday" id="parts_period_monthtoday">{t}MTD{/t}</button> 
+					<button class="{if $parts_period=='weektoday'}selected{/if}" period="weektoday" id="parts_period_weektoday">{t}WTD{/t}</button> 
+					<button class="{if $parts_period=='today'}selected{/if}" period="today" id="parts_period_today">{t}Today{/t}</button> 
+					<button style="margin-left:4px" class="{if $parts_period=='yesterday'}selected{/if}" period="yesterday" id="parts_period_yesterday">{t}YD{/t}</button> 
+					<button class="{if $parts_period=='last_w'}selected{/if}" period="last_w" id="parts_period_last_w">{t}LW{/t}</button> 
+					<button class="{if $parts_period=='last_m'}selected{/if}" period="last_m" id="parts_period_last_m">{t}LM{/t}</button> 
+					<button style="margin-left:4px" class="{if $parts_period=='three_year'}selected{/if}" period="three_year" id="parts_period_three_year">{t}3Y{/t}</button> 
+					<button class="{if $parts_period=='year'}selected{/if}" period="year" id="parts_period_year">{t}1Yr{/t}</button> 
+					<button class="{if $parts_period=='six_month'}selected{/if}" period="six_month" id="parts_period_six_month">{t}6M{/t}</button> 
+					<button class="{if $parts_period=='quarter'}selected{/if}" period="quarter" id="parts_period_quarter">{t}1Qtr{/t}</button> 
+					<button class="{if $parts_period=='month'}selected{/if}" period="month" id="parts_period_month">{t}1M{/t}</button> 
+					<button class="{if $parts_period=='ten_day'}selected{/if}" period="ten_day" id="parts_period_ten_day">{t}10D{/t}</button> 
+					<button class="{if $parts_period=='week'}selected{/if}" period="week" id="parts_period_week">{t}1W{/t}</button> 
+
+				
 				</div>
 				<div class="buttons small left cluster" id="avg_options" style="{if $parts_view!='sales' };display:none{/if};display:none">
 					<button class="{if $parts_avg=='totals'}selected{/if}" avg="totals" id="avg_totals"> {t}Totals{/t} </button> <button class="{if $parts_avg=='month'}selected{/if}" avg="month" id="avg_month"> {t}M AVG{/t} </button> <button class="{if $parts_avg=='week'}selected{/if}" avg="week" id="avg_week"> {t}W AVG{/t} </button> <button class="{if $parts_avg=='month_eff'}selected{/if}" style="display:none" avg="month_eff" id="avg_month_eff"> {t}M EAVG{/t} </button> <button class="{if $parts_avg=='week_eff'}selected{/if}" style="display:none" avg="week_eff" id="avg_week_eff"> {t}W EAVG{/t} </button> 

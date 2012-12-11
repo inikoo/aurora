@@ -2144,12 +2144,13 @@ function list_part_categories() {
 		$period=$_SESSION['state']['part_categories']['period'];
 
 
-
+/*
 	if (isset( $_REQUEST['avg'])) {
 		$avg=$_REQUEST['avg'];
 		$_SESSION['state']['part_categories']['avg']=$avg;
 	} else
 		$avg=$_SESSION['state']['part_categories']['avg'];
+
 
 	if (isset( $_REQUEST['stores_mode'])) {
 		$stores_mode=$_REQUEST['stores_mode'];
@@ -2157,7 +2158,7 @@ function list_part_categories() {
 	} else
 		$stores_mode=$_SESSION['state']['part_categories']['stores_mode'];
 
-
+*/
 
 	$_SESSION['state']['part_categories']['subcategories']['order']=$order;
 	$_SESSION['state']['part_categories']['subcategories']['order_dir']=$order_direction;
@@ -2165,6 +2166,7 @@ function list_part_categories() {
 	$_SESSION['state']['part_categories']['subcategories']['sf']=$start_from;
 	$_SESSION['state']['part_categories']['subcategories']['f_field']=$f_field;
 	$_SESSION['state']['part_categories']['subcategories']['f_value']=$f_value;
+	$_SESSION['state']['part_categories']['subcategories']['period']=$period;
 
 
 
