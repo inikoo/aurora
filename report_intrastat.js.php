@@ -73,9 +73,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"tariff_code", label:"<?php echo _('Comodity')?>",width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"value", label:"<?php echo _('Value')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 						,{key:"items", label:"<?php echo _('Items')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
-	,{key:"bonus", label:"<?php echo _('Bonus')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
+			,{key:"bonus", label:"<?php echo _('Bonus')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"weight", label:"<?php echo _('Net Mass')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 
 				 ,{key:"country_2alpha_code", label:"<?php echo _('Country')?>",width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -85,7 +83,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	//alert("ar_sites.php?tipo=pages&parent=site&tableid=0&parent_key="+Dom.get('site_key').value);
 		request="ar_reports.php?tipo=intrastat&tableid=0";
-	    this.dataSource0 = new YAHOO.util.DataSource(request);
+	//alert(request)
+	this.dataSource0 = new YAHOO.util.DataSource(request);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

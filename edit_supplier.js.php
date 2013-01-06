@@ -234,8 +234,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 				  ];
-
-		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_suppliers.php?tipo=supplier_products&tableid="+tableid);
+request="ar_edit_suppliers.php?tipo=supplier_products&tableid="+tableid
+		this.dataSource0 = new YAHOO.util.DataSource(request);
 
    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
@@ -243,12 +243,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			resultsList: "resultset.data", 
 			metaFields: {
 			    rowsPerPage:"resultset.records_perpage",
-			    rtext:"resultset.rtext",
-			    sort_key:"resultset.sort_key",
-			    sort_dir:"resultset.sort_dir",
-			    tableid:"resultset.tableid",
-			    filter_msg:"resultset.filter_msg",
-			    totalRecords: "resultset.total_records"
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
 			},
 			
 			fields: [
@@ -445,6 +446,21 @@ this.table100.prefix='';
 
     };});
 
+
+function show_history() {
+    Dom.setStyle(['show_history', ''], 'display', 'none')
+    Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-show_history&value=1', {});
+
+}
+
+function hide_history() {
+    Dom.setStyle(['show_history', ''], 'display', '')
+    Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=supplier-show_history&value=0', {});
+
+}
 
 function save_category(o) {
 

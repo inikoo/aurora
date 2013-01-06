@@ -30,7 +30,7 @@
 		<tr style="height:10px">
 			<td colspan="2"></td>
 		</tr>
-		<tr style="{if $category->get('Category Can Have Other')=='No' or  $category->get('Category Children Other')=='Yes'}display:none{/if}">
+		<tr id="is_category_other_tr" style="{if $category->get('Category Can Have Other')=='No' or  $category->get('Category Children Other')=='Yes'}display:none{/if}">
 			<input id="new_category_other" value="No" type="hidden" />
 
 		<td colspan="2"> 

@@ -11,7 +11,7 @@
 
 </div>
 <div class="buttons" style="float:left">
-<span class="main_title">{t}Customers{/t} ({t}All Stores{/t})</span>
+<span class="main_title" style="bottom:-3px">{t}Customers{/t} ({t}All Stores{/t})</span>
 </div>
 <div style="clear:both"></div>
 </div>

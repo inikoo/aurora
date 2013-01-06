@@ -23,7 +23,7 @@
 				{else}
 			    	{if $dn->get('Delivery Note Approved To Dispatch')=='No'}	
 						<button id="aprove_dispatching"><img id="aprove_dispatching_img" src="art/icons/package_green.png" alt=""> {t}Aprove Dispatching{/t}</button>
-					{else}
+					{else if  $dn->get('Delivery Note State')!='Dispatched' }
 				
 							<button id="set_as_dispatched"><img id="set_as_dispatched_img" src="art/icons/lorry_go.png" alt=""> {t}Set as Dispatched{/t}</button>
 					{/if}

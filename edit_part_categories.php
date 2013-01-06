@@ -50,7 +50,7 @@ $js_files=array(
 	'js/table_common.js',
 	'js/search.js',
 	'js/edit_common.js',
-//	'js/edit_category_common.js',
+	'js/edit_categories_common.js',
 	'edit_part_categories.js.php'
 );
 $smarty->assign('css_files',$css_files);
@@ -144,7 +144,9 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 
 
 $elements_number=array('Root'=>0,'Node'=>0,'Head'=>0);
-$sql=sprintf("select count(*) as num ,`Category Branch Type` from  `Category Dimension` where  `Category Subject`='Part' group by  `Category Branch Type`   ");
+$sql=sprintf("select count(*) as num ,`Category Branch Type` from  `Category Dimension` where  `Category Store Key`=%d and `Category Subject`='Part' group by  `Category Branch Type`",
+$warehouse->id
+);
 //print_r($sql);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {

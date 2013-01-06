@@ -323,8 +323,8 @@ $filter_menu=array(
 	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
 	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
 );
-$tipo_filter=$_SESSION['state']['customer']['table']['f_field'];
-$filter_value=$_SESSION['state']['customer']['table']['f_value'];
+$tipo_filter=$_SESSION['state']['customer']['history']['f_field'];
+$filter_value=$_SESSION['state']['customer']['history']['f_value'];
 
 $smarty->assign('filter_value0',$filter_value);
 $smarty->assign('filter_menu0',$filter_menu);
@@ -381,10 +381,8 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
 	$elements_number[$row['Type']]=$row['num'];
 }
-
-
 $smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['customer']['table']['elements']);
+$smarty->assign('elements',$_SESSION['state']['customer']['history']['elements']);
 
 
 $gold_reward=0;

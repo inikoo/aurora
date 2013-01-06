@@ -98,7 +98,7 @@ $js_files=array(
               'js/edit_common.js',
                   'js/csv_common.js',
 
-              'common_customers.js.php',
+              'js/customers_common.js',
               'customers_send_post.js.php'
           );
 $smarty->assign('css_files',$css_files);

@@ -13,25 +13,25 @@
 */
 
 
-include_once('common.php');
-include_once('class.Family.php');
-include_once('class.Store.php');
-include_once('class.Department.php');
-include_once('assets_header_functions.php');
+include_once 'common.php';
+include_once 'class.Family.php';
+include_once 'class.Store.php';
+include_once 'class.Department.php';
+include_once 'assets_header_functions.php';
 
 if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
-    $family_id=$_SESSION['state']['family']['id'];
+	$family_id=$_SESSION['state']['family']['id'];
 else
-    $family_id=$_REQUEST['id'];
-    
- $family=new Family($family_id);
- if(!$family->id){
-   header('Location: stores.php');
-    exit();
- 
- }
- 
-    
+	$family_id=$_REQUEST['id'];
+
+$family=new Family($family_id);
+if (!$family->id) {
+	header('Location: stores.php');
+	exit();
+
+}
+
+
 $_SESSION['state']['family']['id']=$family_id;
 
 
@@ -55,8 +55,8 @@ $_SESSION['state']['store']['id']=$family->data['Product Family Store Key'];
 
 
 if (!( $user->can_view('stores') and in_array($family->data['Product Family Store Key'],$user->stores))) {
-    header('Location: index.php');
-    exit();
+	header('Location: index.php');
+	exit();
 }
 
 $store=new Store($family->data['Product Family Store Key']);
@@ -68,8 +68,8 @@ $create=$user->can_create('product families');
 $modify=$user->can_edit('stores');
 
 if (isset($_REQUEST['edit'])) {
-    header('Location: edit_department.php?id='.$department_id);
-    exit();
+	header('Location: edit_department.php?id='.$department_id);
+	exit();
 
 }
 
@@ -99,43 +99,43 @@ $smarty->assign('block_view',$block_view);
 
 
 $css_files=array(
-               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-               $yui_path.'menu/assets/skins/sam/menu.css',
-               $yui_path.'button/assets/skins/sam/button.css',
-               $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-               	$yui_path.'calendar/assets/skins/sam/calendar.css',
+	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+	$yui_path.'menu/assets/skins/sam/menu.css',
+	$yui_path.'button/assets/skins/sam/button.css',
+	$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+	$yui_path.'calendar/assets/skins/sam/calendar.css',
 
-               'common.css',
-               'css/container.css',
-               'button.css',
-               'table.css',
-			   'css/edit.css',
-			   'css/calendar.css',
-			   'theme.css.php'
-           );
-		   
+	'common.css',
+	'css/container.css',
+	'button.css',
+	'table.css',
+	'css/edit.css',
+	'css/calendar.css',
+	'theme.css.php'
+);
+
 
 $js_files=array(
-              $yui_path.'utilities/utilities.js',
-              $yui_path.'json/json-min.js',
-              $yui_path.'paginator/paginator-min.js',
-              $yui_path.'uploader/uploader.js',
-              $yui_path.'datasource/datasource-min.js',
-              $yui_path.'autocomplete/autocomplete-min.js',
-              $yui_path.'datatable/datatable-debug.js',
-              $yui_path.'container/container-min.js',
-              $yui_path.'menu/menu-min.js',
-              $yui_path.'calendar/calendar-min.js',
-              
-              'js/php.default.min.js',
-              'js/common.js',
-              'js/table_common.js',
-              'js/edit_common.js',
-              'js/csv_common.js',
-              'js/dropdown.js',
-              'js/assets_common.js',
- 'js/calendar_interval.js',
-          );
+	$yui_path.'utilities/utilities.js',
+	$yui_path.'json/json-min.js',
+	$yui_path.'paginator/paginator-min.js',
+	$yui_path.'uploader/uploader.js',
+	$yui_path.'datasource/datasource-min.js',
+	$yui_path.'autocomplete/autocomplete-min.js',
+	$yui_path.'datatable/datatable-debug.js',
+	$yui_path.'container/container-min.js',
+	$yui_path.'menu/menu-min.js',
+	$yui_path.'calendar/calendar-min.js',
+
+	'js/php.default.min.js',
+	'js/common.js',
+	'js/table_common.js',
+	'js/edit_common.js',
+	'js/csv_common.js',
+	'js/dropdown.js',
+	'js/assets_common.js',
+	'js/calendar_interval.js',
+);
 
 
 
@@ -154,9 +154,9 @@ $smarty->assign('js_files',$js_files);
 
 //$_SESSION['state']['assets']['page']='department';
 if (isset($_REQUEST['view'])) {
-    $valid_views=array('sales','general','stoke');
-    if (in_array($_REQUEST['view'], $valid_views))
-        $_SESSION['state']['families']['products']['view']=$_REQUEST['view'];
+	$valid_views=array('sales','general','stoke');
+	if (in_array($_REQUEST['view'], $valid_views))
+		$_SESSION['state']['families']['products']['view']=$_REQUEST['view'];
 
 }
 
@@ -175,12 +175,12 @@ $smarty->assign('department_period_title',$department_period_title[$department_p
 
 
 $info_period_menu=array(
-                      array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
-                      ,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
-                      ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
-                      ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
-                      ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
-                  );
+	array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
+	,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
+	,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
+	,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
+	,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
+);
 $smarty->assign('info_period_menu',$info_period_menu);
 
 
@@ -212,10 +212,10 @@ $tipo_filter=$_SESSION['state']['family']['products']['f_field'];
 $smarty->assign('filter_name0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['family']['products']['f_value']);
 $filter_menu=array(
-        'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
-       'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
-             );
-             
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
+);
+
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
@@ -227,10 +227,10 @@ $tipo_filter1=$_SESSION['state']['family']['product_sales']['f_field'];
 $smarty->assign('filter_name1',$tipo_filter1);
 $smarty->assign('filter_value1',$_SESSION['state']['family']['product_sales']['f_value']);
 $filter_menu=array(
-        'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
-       'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
-             );
-             
+	'code'=>array('db_key'=>'code','menu_label'=>_('Product code starting with <i>x</i>'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Product name containing <i>x</i>'),'label'=>_('Name'))
+);
+
 $smarty->assign('filter_menu1',$filter_menu);
 $smarty->assign('filter_name1',$filter_menu[$tipo_filter1]['label']);
 
@@ -242,10 +242,10 @@ $tipo_filter=$_SESSION['state']['family']['pages']['f_field'];
 $smarty->assign('filter4',$tipo_filter);
 $smarty->assign('filter_value4',$_SESSION['state']['family']['pages']['f_value']);
 $filter_menu=array(
-                 'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
-                 'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
+	'code'=>array('db_key'=>'code','menu_label'=>'Page code starting with  <i>x</i>','label'=>'Code'),
+	'title'=>array('db_key'=>'code','menu_label'=>'Page title like  <i>x</i>','label'=>'Code'),
 
-             );
+);
 $smarty->assign('filter_menu4',$filter_menu);
 $smarty->assign('filter_name4',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
@@ -255,12 +255,12 @@ $table_title=_('List');
 $smarty->assign('table_title',$table_title);
 
 $info_period_menu=array(
-                      array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
-                      ,array("period"=>'month','label'=>_('last Month'),'title'=>_('last Month'))
-                      ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
-                      ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
-                      ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
-                  );
+	array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
+	,array("period"=>'month','label'=>_('last Month'),'title'=>_('last Month'))
+	,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
+	,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
+	,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
+);
 $smarty->assign('info_period_menu',$info_period_menu);
 
 
@@ -272,7 +272,7 @@ $elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Pr
 $sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Family Key`=%d group by `Product Main Type`",$family->id);
 $res=mysql_query($sql);
 while ($row=mysql_fetch_assoc($res)) {
-    $elements_number[$row['Product Main Type']]=$row['num'];
+	$elements_number[$row['Product Main Type']]=$row['num'];
 }
 $smarty->assign('elements_number',$elements_number);
 $smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
@@ -304,47 +304,80 @@ $smarty->assign('products_table_type_menu',$table_type_options);
 
 $order=$_SESSION['state']['department']['families']['order'];
 if ($order=='code') {
-    $order='`Product Family Code`';
-    $order_label=_('Code');
+	$order='`Product Family Code`';
+	$order_label=_('Code');
 } else {
-     $order='`Product Family Code`';
-    $order_label=_('Code');
+	$order='`Product Family Code`';
+	$order_label=_('Code');
 }
 $_order=preg_replace('/`/','',$order);
 $sql=sprintf("select `Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d  and %s < %s  order by %s desc  limit 1",
-             $family->data['Product Family Main Department Key'],
-             $order,
-             prepare_mysql($family->get($_order)),
-             $order
-            );
+	$family->data['Product Family Main Department Key'],
+	$order,
+	prepare_mysql($family->get($_order)),
+	$order
+);
 
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $prev['link']='family.php?id='.$row['id'];
-    $prev['title']=$row['name'];
-    $smarty->assign('prev',$prev);
+	$prev['link']='family.php?id='.$row['id'];
+	$prev['title']=$row['name'];
+			$prev['to_end']=false;
+
+	$smarty->assign('prev',$prev);
+}else {
+	$sql=sprintf("select `Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d  and %s > %s  order by %s desc  limit 1",
+		$family->data['Product Family Main Department Key'],
+		$order,
+		prepare_mysql($family->get($_order)),
+		$order
+	);
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$prev['link']='family.php?id='.$row['id'];
+		$prev['title']=$row['name'];
+		$prev['to_end']=true;
+		$smarty->assign('prev',$prev);
+	}
+
 }
-mysql_free_result($result);
 
 
 $sql=sprintf("select`Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d   and  %s>%s  order by %s   ",
-  $family->data['Product Family Main Department Key'],
-             $order,
-             prepare_mysql($family->get($_order)),
-             $order
-            );
+	$family->data['Product Family Main Department Key'],
+	$order,
+	prepare_mysql($family->get($_order)),
+	$order
+);
 
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $next['link']='family.php?id='.$row['id'];
-    $next['title']=$row['name'];
-    $smarty->assign('next',$next);
+	$next['link']='family.php?id='.$row['id'];
+	$next['title']=$row['name'];
+	$next['to_end']=false;
+	$smarty->assign('next',$next);
+}else {
+	$sql=sprintf("select`Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d   and  %s<%s  order by %s   ",
+		$family->data['Product Family Main Department Key'],
+		$order,
+		prepare_mysql($family->get($_order)),
+		$order
+	);
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$next['link']='family.php?id='.$row['id'];
+		$next['title']=$row['name'];
+		$next['to_end']=true;
+		$smarty->assign('next',$next);
+	}
+
 }
-mysql_free_result($result);
 
 
 
-include_once('conf/period_tags.php');
+include_once 'conf/period_tags.php';
 unset($period_tags['hour']);
 $smarty->assign('period_tags',$period_tags);
 

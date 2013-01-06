@@ -235,15 +235,30 @@ class Category extends DB_Table {
 		$data['Category Root Key']=$this->data['Category Root Key'];
 		$data['Category Parent Key']=$this->id;
 
-		$data['Is Category Field Other']='No';
+
+
+
 		if (array_key_exists('Is Category Field Other',$data)) {
-			if ($data['Is Category Field Other']=='Yes' and $this->data['Category Can Have Other']=='Yes') {
+			if ($data['Is Category Field Other']=='Yes' and $this->data['Category Can Have Other']=='Yes'  and  $this->data['Category Children Other']=='No' ) {
 				$data['Is Category Field Other']='Yes';
 
+			}else {
+				$data['Is Category Field Other']='No';
 			}
+		}else {
+			$data['Is Category Field Other']='No';
 		}
+		// $data['editor']
 
 		$subcategory=new Category('find create',$data);
+
+		if ($data['Is Category Field Other']=='Yes') {
+			$this->data['Category Children Other']='Yes';
+			$sql=sprintf("update `Category Dimension` set `Category Children Other`=%s where `Category Key`=%d",
+				prepare_mysql($this->data['Category Children Other']),
+				$this->id
+			);
+		}
 
 		return $subcategory;
 
@@ -374,9 +389,11 @@ class Category extends DB_Table {
 		$this->deleted=false;
 
 		$sql_new_deleted_category=sprintf("insert into `Category Deleted Dimension` (`Category Deleted Key`, `Category Deleted Branch Type`, `Category Deleted Store Key`, `Category Deleted Warehouse Key`, `Category Deleted XHTML Branch Tree`, `Category Deleted Plain Branch Tree`,
-`Category Deleted Deep`, `Category Deleted Children`, `Category Deleted Code`, `Category Deleted Label`, `Category Deleted Subject`, `Category Deleted Subject Key`, `Category Deleted Number Subjects`,`Category Deleted Children Subjects Assigned`,`Category Deleted Date`)
-VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
+`Category Deleted Deep`, `Category Deleted Children`, `Category Deleted Code`, `Category Deleted Label`, `Category Deleted Subject`, `Category Deleted Subject Key`, `Category Deleted Number Subjects`,`Category Deleted Date`)
+VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d,%d,NOW())",
 			$this->id,
+
+
 			prepare_mysql($this->data['Category Branch Type']),
 			$this->data['Category Store Key'],
 			$this->data['Category Warehouse Key'],
@@ -388,10 +405,11 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 			prepare_mysql($this->data['Category Label']),
 			prepare_mysql($this->data['Category Subject']),
 			$this->data['Category Subject Key'],
-			$this->data['Category Number Subjects'],
-			$this->data['Category Children Subjects Assigned']
+			$this->data['Category Number Subjects']
 
 		);
+
+		$is_category_other=$this->data['Is Category Field Other'];
 
 		$parent_keys=$this->get_parent_keys();
 
@@ -433,7 +451,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 
 		//print $sql_new_deleted_category;
 		mysql_query($sql_new_deleted_category);
-
+		//print $sql_new_deleted_category;
 		$sql=sprintf('delete from `Category Dimension` where `Category Key`=%d',$this->id);
 		mysql_query($sql);
 
@@ -441,6 +459,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 			$parent_category=new Category($parent_key);
 			if ($parent_category->id) {
 				$parent_category->update_children_data();
+
+				if ($is_category_other=='Yes') {
+					$parent_category->data['Category Children Other']='No';
+					$sql=sprintf("update `Category Dimension` set `Category Children Other`=%s where `Category Key`=%d",
+						prepare_mysql($parent_category->data['Category Children Other']),
+						$parent_category->id
+					);
+				}
+
+
 			}
 		}
 
@@ -702,11 +730,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 
 	}
 	function update_no_assigned_subjects() {
-		$children_keys=$this->get_children_keys();
 		$no_assigned_subjects=0;
 		$assigned_subjects=0;
-		$children_no_assigned_subjects=0;
-		$children_assigned_subjects=0;
+
 		$total_subjects=0;
 
 		switch ($this->data['Category Subject']) {
@@ -715,6 +741,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 			$sql=sprintf("select count(*) as num from `Part Warehouse Bridge` where `Warehouse Key`=%d",
 				$this->data['Category Warehouse Key']);
 			break;
+		case('Customer'):
+
+			$sql=sprintf("select count(*) as num from `Customer Dimension` where `Customer Store Key`=%d",
+				$this->data['Category Store Key']);
+			break;
+
 		case('Supplier'):
 
 			$sql=sprintf("select count(*) as num from `Supplier Dimension` ");
@@ -737,7 +769,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 		}
 
 
-		$sql=sprintf("select COUNT(`Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
+		$sql=sprintf("select COUNT(Distinct `Subject Key`)  as num from `Category Bridge`  where `Category Key`=%d  ",
 			$this->id
 		);
 		$res=mysql_query($sql);
@@ -747,39 +779,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 		}
 		$no_assigned_subjects=$total_subjects-$assigned_subjects;
 
-
-		if (count($children_keys)>0) {
-
-
-			$sql=sprintf("select COUNT(DISTINCT `Subject Key`)  as num from `Category Bridge`  where `Category Key` in (%s)  ",
-				join(',',$children_keys)
-			);
-			$res=mysql_query($sql);
-			$children_assigned_subjects=0;
-			if ($row=mysql_fetch_assoc($res)) {
-				$children_assigned_subjects=$row['num'];
-			}
-			$children_no_assigned_subjects=$total_subjects-$children_assigned_subjects;
-
-
-
-
-
-		}
-
-		$sql=sprintf("update `Category Dimension` set  `Category Subjects Not Assigned`=%d,  `Category Children Subjects Not Assigned`=%d,`Category Children Subjects Assigned`=%d where `Category Key`=%d ",
-			$no_assigned_subjects,
-			$children_no_assigned_subjects,
-			$children_assigned_subjects,
-			$this->id
-		);
 		mysql_query($sql);
-		$sql=sprintf("update `Category Dimension` set  `Category Subjects Not Assigned`=%d, where `Category Root Key`=%d ",
+		$sql=sprintf("update `Category Dimension` set  `Category Subjects Not Assigned`=%d  where `Category Root Key`=%d ",
 			$no_assigned_subjects,
 			$this->data['Category Root Key']
 		);
 
+		$this->data['Category Subjects Not Assigned']=$no_assigned_subjects;
 
+		//print $sql;
 
 		mysql_query($sql);
 
@@ -2309,22 +2317,38 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 				$abstract=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d',$part->sku).'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
 				$details=_('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d',$part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
 				break;
-				case('Supplier'):
-					include_once 'class.Supplier.php';
+			case('Supplier'):
+				include_once 'class.Supplier.php';
 
-					$supplier=new Supplier($subject_key);
-					$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-					$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$part->data['Supplier Name'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
-					break;	
+				$supplier=new Supplier($subject_key);
+				$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
+				$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$supplier->data['Supplier Name'].') '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				break;
+			case('Customer'):
+				include_once 'class.Customer.php';
+
+				$customer=new Customer($subject_key);
+				$abstract=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
+				$details=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				break;
+			case('Product'):
+				include_once 'class.Product.php';
+
+				$product=new Product('pid',$subject_key);
+				$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('disassociated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
+				$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+				break;
+
+
 			default:
 				$abstract='todo';
 				$details='todo';
 			}
 
-			if(isset($this->deleting_category)){
+			if (isset($this->deleting_category)) {
 				$abstract.=' ('._('Category Deleted').')';
 			}
-			
+
 			$history_data=array(
 				'Direct Object'=>$this->data['Category Subject'],
 				'Direct Object Key'=>$subject_key,
@@ -2339,7 +2363,25 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 
 			$history_key=$this->add_history($history_data,$force=false,$post_arg1='Assign');
 
+				switch ($this->data['Category Subject']) {
+				case('Part'):
+					break;
+				case('Supplier'):
+					break;
+				case('Customer'):
+					$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Changes')",
+						$customer->id,
+						$history_key
+					);
+					// print $sql;
+					mysql_query($sql);
+					break;
+				case('Product'):
+					break;
+				default:
 
+				}
+				
 
 			foreach ($this->get_parent_keys() as $parent_key) {
 
@@ -2415,25 +2457,16 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 
 	function associate_subject($subject_key,$force_associate=false,$other_value='') {
 
-
-
 		if ($this->data['Category Branch Type']=='Root') {
 			$this->msg=_("Subject can't be associated with category").' (Node is Root)';
 			return false;
 		}
 
-
-
-
 		if ($this->is_subject_associated($subject_key)) {
 			return true;
 		}
 
-
-		//print "Adding $subject_key to ".$this->id."\n";
-
 		if ($this->data['Category Subject Multiplicity']=='Yes' or $force_associate) {
-
 
 			$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d,%s,%d)",
 				$this->id,
@@ -2466,9 +2499,24 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 
 					$supplier=new Supplier($subject_key);
 					$abstract=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
-					$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$part->data['Supplier Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
-					break;	
-					
+					$details=_('Supplier').': <a href="supplier.php?id='.$supplier->id.'">'.$supplier->data['Supplier Code'].'</a> ('.$supplier->data['Supplier Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					break;
+				case('Customer'):
+					include_once 'class.Customer.php';
+
+					$customer=new Customer($subject_key);
+					$abstract=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
+					$details=_('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+
+
+					break;
+				case('Product'):
+					include_once 'class.Product.php';
+
+					$product=new Product('pid',$subject_key);
+					$abstract=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']);
+					$details=_('Product').': <a href="product.php?pid='.$product->pid.'">'.$product->data['Product Code'].'</a> ('.$product->data['Product Name'].') '._('associated with category').sprintf(' <a href="part_category.php?id=%d">%s</a>',$this->id,$this->data['Category Code']).' ('.$this->data['Category Label'].')';
+					break;
 				default:
 					$abstract='todo';
 					$details='todo';
@@ -2490,6 +2538,27 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 				$history_key=$this->add_history($history_data,$force=false,$post_arg1='Assign');
 
 
+				switch ($this->data['Category Subject']) {
+				case('Part'):
+					break;
+				case('Supplier'):
+					break;
+				case('Customer'):
+					$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Changes')",
+						$customer->id,
+						$history_key
+					);
+					// print $sql;
+					mysql_query($sql);
+					break;
+				case('Product'):
+					break;
+				default:
+
+				}
+
+
+
 				foreach ($this->get_parent_keys() as $parent_key) {
 					$sql=sprintf("insert into `Category Bridge` values (%d,%s,%d, NULL,%d)",
 						$parent_key,
@@ -2498,6 +2567,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 						$this->id
 					);
 					mysql_query($sql);
+
+
+
 					if (mysql_affected_rows()) {
 						$parent_category=new Category($parent_key);
 						$parent_category->update_number_of_subjects();
@@ -2536,7 +2608,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 
 
 				$other_category=new Category($row['Category Key']);
-				//print "delete $subject_key from  ".$row['Category Key']." ";
+				$other_category->editor=$this->editor;	
 				$other_category->disassociate_subject($subject_key);
 
 
@@ -2553,6 +2625,76 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 	}
 
 
+	function get_user_view_icon() {
+
+
+		if ($this->data['Category Show Subject User Interface']=='Yes') {
+			if ($this->data['Category Show Public New Subject']=='Yes') {
+				if ($this->data['Category Show Public Edit']=='Yes') {
+					$image_tag='yyy';
+				}else {
+					$image_tag='yyn';
+				}
+			}
+			else {
+				if ($this->data['Category Show Public Edit']=='Yes') {
+					$image_tag='yny';
+				}else {
+					$image_tag='ynn';
+				}
+
+			}
+
+
+		}else {
+			if ($this->data['Category Show Public New Subject']=='Yes') {
+
+				if ($this->data['Category Show Public Edit']=='Yes') {
+					$image_tag='nyy';
+				}else {
+					$image_tag='nyn';
+				}
+
+
+
+			}else {
+
+
+				if ($this->data['Category Show Public Edit']=='Yes') {
+					$image_tag='nny';
+				}else {
+					$image_tag='nnn';
+				}
+
+
+			}
+
+		}
+
+		$public_view_icon='<img src="art/icons/category_user_view_'.$image_tag.'.png" title="'._('Category View').'" /> ';
+
+		return $public_view_icon;
+
+	}
+	function get_icon() {
+		$branch_type_icon='';
+		switch ($this->data['Category Branch Type']) {
+		case('Root'):
+			$branch_type_icon='<img src="art/icons/category_root'.($this->data['Category Can Have Other']=='Yes'?($this->data['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'.png" title="'._('Root Node').'" /> ';
+			break;
+		case('Node'):
+			$branch_type_icon='<img src="art/icons/category_node'.($this->data['Category Can Have Other']=='Yes'?($this->data['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'.png" title="'._('Node').'" />';
+			break;
+		case('Head'):
+			if ($this->data['Is Category Field Other']=='No')
+				$branch_type_icon='<img src="art/icons/category_head.png" title="'._('Head Node').'" /> ';
+			else
+				$branch_type_icon='<img src="art/icons/category_head_other.png" title="'._('Head Node').' ('._('Other').')" /> ';
+
+		}
+
+		return $branch_type_icon;
+	}
 
 	function post_add_history($history_key,$type=false) {
 
@@ -2577,7 +2719,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 				prepare_mysql($type)
 			);
 			mysql_query($sql);
-			break;	
+			break;
 		case('Customer'):
 			$sql=sprintf("insert into  `Customer Category History Bridge` values (%d,%d,%d,%s)",
 				$this->data['Category Store Key'],
@@ -2586,9 +2728,17 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s, %d, %d,%d,NOW())",
 				prepare_mysql($type)
 			);
 			mysql_query($sql);
-			break;		
-			
-			
+			break;
+		case('Product'):
+			$sql=sprintf("insert into  `Product Category History Bridge` values (%d,%d,%d,%s)",
+				$this->data['Category Store Key'],
+				$this->id,
+				$history_key,
+				prepare_mysql($type)
+			);
+			mysql_query($sql);
+			break;
+
 		}
 	}
 

@@ -71,7 +71,7 @@ $js_files=array(
               'js/search.js',
               'js/edit_common.js',
               'js/csv_common.js',
-              'common_customers.js.php',
+              'js/customers_common.js',
               'email_campaign_mailing_list.js.php'
           );
 $smarty->assign('css_files',$css_files);

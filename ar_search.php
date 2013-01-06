@@ -598,8 +598,8 @@ function search_orders($data) {
 
 	$candidates=array();
 
-	if ($data['scope']=='store') {
-		$stores=$_SESSION['state']['orders']['store'];
+	if ($data['scope']=='store' and $data['store_id']) {
+		$stores=$data['store_id'];
 
 	} else
 		$stores=join(',',$user->stores);

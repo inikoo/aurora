@@ -2561,7 +2561,7 @@ if($args!='no_history'){
 		$this->data['Customer Profit']=0;
 		$this->data['Customer With Orders']='No';
 
-		// print "$sql\n";
+		//print "$sql\n";
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 

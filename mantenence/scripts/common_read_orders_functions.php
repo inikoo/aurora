@@ -734,15 +734,16 @@ function create_order($data) {
 	//print "sending to warehouse\n";
 
 	//$order->update_stock=false;
+	
 
 	if (count($data_dn_transactions)>0) {
+
 		$dn=$order->send_to_warehouse($date_order);
+
+	
 
 
 	}
-
-
-
 	return $order;
 
 }
@@ -752,12 +753,67 @@ function send_order($data,$data_dn_transactions) {
 	global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
 	global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
 	global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
-
 	if (!isset($dn)) {
-		print "Error no transactions in this invoice\n";
-		// ok lets do
+	
+	
+		print " No transactions  ";
+		
+		
+				$invoice=$order->create_invoice($date_inv);
+			//print_r($invoice);
+			
+			foreach ($credits as $credit) {
+				$credit_data=array(
+					'Affected Order Key'=>$order->id,
+					'Order Key'=>($credit['parent_key']=='NULL'?0:$credit['parent_key']),
+					'Transaction Description'=>$credit['description'],
+					'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
+					'Transaction Invoice Net Amount'=>$credit['value'],
+					'Transaction Invoice Tax Amount'=>$credit['value']*$tax_category_object->data['Tax Category Rate'],
+					'Metadata'=>$store_code.$order_data_id
+				);
+				$invoice->add_credit_no_product_transaction($credit_data);
+			}
+			$_invoice_data=  array(
+				'Invoice Metadata'=>$store_code.$order_data_id,
+				'Invoice Shipping Net Amount'=>array(
+					'Amount'=>$shipping_net,
+					'tax_code'=>$tax_category_object->data['Tax Category Code']
+				),
+				'Invoice Charges Net Amount'=>array(
+					'Transaction Invoice Net Amount'=> $charges_net,
+					'Transaction Description'=>_('Charges')
+				)
+
+
+			);
+
+			
+			
+			$invoice->update($_invoice_data);
+			$invoice->update_totals();
+						
+
+			//adjust_invoice($invoice,$order);
+
+
+
+
+			$invoice->pay('full',array(
+					'Invoice Paid Date'=>$date_inv,
+					'Payment Method'=>$payment_method
+				));
+				
+			$order->get_data('id',$order->id);	
+				
+			$order->update_xhtml_invoices();
+			$order->update_no_normal_totals();
+		$order->set_order_as_completed($date_inv);
 		return;
 	}
+
+
+
 
 	if (count($picker_data['id'])==0)$staff_key=0;
 	else {
@@ -970,6 +1026,9 @@ function send_order($data,$data_dn_transactions) {
 					'Payment Method'=>$payment_method
 				));
 				
+			$order->update_xhtml_invoices();
+			$order->update_no_normal_totals();
+				
 				
 		}
 
@@ -1106,8 +1165,9 @@ function create_post_order($data,$data_dn_transactions) {
 		}
 
 		// exit("$store_code.$order_data_id\n");
-
-		$dn=$parent_order->send_post_action_to_warehouse($date_order,$data['Order Type'],$store_code.$order_data_id);
+		$_order_type=$data['Order Type'];
+	
+		$dn=$parent_order->send_post_action_to_warehouse($date_order,$_order_type,$store_code.$order_data_id);
 		if ($parent_order->error) {
 			print "Parent order found but still delivery note ";
 			create_post_order_with_out_order($data);
@@ -1573,6 +1633,9 @@ function create_ghost_refund($data,$header_data,$data_dn_transactions) {
 
 
 function get_tax_code($type,$header_data) {
+
+
+
 	switch ($type) {
 	case 'E':
 		$tax_cat_data=ci_get_tax_code($header_data);
@@ -1654,6 +1717,8 @@ function ci_get_tax_code($header_data) {
 }
 
 function uk_get_tax_code($header_data) {
+
+
 
 	$tax_rates=array();
 	$tax_names=array();

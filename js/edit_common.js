@@ -171,7 +171,6 @@ function option_selected(branch, items) {
 function CellEdit(callback, newValue) {
 
 
-
     var record = this.getRecord(),
         column = this.getColumn(),
         oldValue = this.value,
@@ -189,11 +188,11 @@ function CellEdit(callback, newValue) {
     else if (column.object == 'widget') ar_file = 'ar_edit_dashboard.php';
 
 
-
-
     else if (column.object == 'ind_staff' || column.object == 'ind_positions' || column.object == 'ind_department') ar_file = 'ar_edit_staff.php';
-    else if (column.object == 'subcategory') ar_file = 'ar_edit_categories.php';
+    else if (column.object == 'subcategory' || column.object == 'category_other_value') ar_file = 'ar_edit_categories.php';
     else ar_file = 'ar_edit_assets.php';
+
+
 
     var request = 'tipo=edit_' + column.object + '&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue) + myBuildUrl(datatable, record);
     // alert(ar_file+'?'+request);
@@ -216,7 +215,7 @@ function CellEdit(callback, newValue) {
                     datatable.updateCell(record, 'available_state', r.available_state);
 
                 }
-
+                post_edit_in_table(r)
                 callback(true, r.newvalue);
             } else {
                 alert(r.msg);
@@ -232,6 +231,11 @@ function CellEdit(callback, newValue) {
 
     );
 };
+
+function post_edit_in_table(r) {
+
+}
+
 var onCellClick = function(oArgs) {
         var target = oArgs.target,
             column = this.getColumn(target),
@@ -419,12 +423,12 @@ var unhighlightEditableCell = function(oArgs) {
         column = this.getColumn(target);
 
         switch (column.action) {
-        
+
         case ('dialog_delete'):
         case 'delete':
         case 'pick_it':
             this.unhighlightRow(target);
-        break;
+            break;
         case ('add_object'):
         case ('remove_object'):
         case ('edit_object'):
@@ -777,7 +781,7 @@ function post_item_updated_actions(branch, r) {
     return true;
 }
 
-var save_edit_general_tokens= [];
+var save_edit_general_tokens = [];
 
 function save_edit_general(branch) {
 
@@ -798,7 +802,7 @@ function save_edit_general(branch) {
     branch_key = validate_scope_metadata[branch]['key'];
     branch_key_name = validate_scope_metadata[branch]['key_name'];
 
-   // Dom.setStyle('wait_edit_' + branch, 'display', '');
+    // Dom.setStyle('wait_edit_' + branch, 'display', '');
     Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait');
 
 
@@ -859,7 +863,7 @@ function save_edit_general(branch) {
                                 to: 0
                             }
                         }, 4, YAHOO.util.Easing.easeOut);
-						myAnim.animate();
+                        myAnim.animate();
                         post_item_updated_actions(branch, r);
 
 
@@ -872,7 +876,7 @@ function save_edit_general(branch) {
                     var index = save_edit_general_tokens.indexOf(r.key);
                     save_edit_general_tokens.splice(index, 1);
                     if (save_edit_general_tokens.length == 0) {
-                       // Dom.setStyle('wait_edit_' + branch, 'display', 'none');
+                        // Dom.setStyle('wait_edit_' + branch, 'display', 'none');
                         Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'pointer');
 
                     }
@@ -915,7 +919,7 @@ function save_edit_general_bulk(branch) {
         if (validate_scope_data[branch][items].changed && validate_scope_data[branch][items].validated) {
             var item_input = Dom.get(validate_scope_data[branch][items].name);
             //alert(validate_scope_data[branch][items].name+'_msg')
-            Dom.setStyle(validate_scope_data[branch][items].name + '_msg','opacity',1)
+            Dom.setStyle(validate_scope_data[branch][items].name + '_msg', 'opacity', 1)
             Dom.get(validate_scope_data[branch][items].name + '_msg').innerHTML = '<img style="height:14px" src="art/loading.gif"/>';
             var updated_items = 0;
 
@@ -959,19 +963,19 @@ function save_edit_general_bulk(branch) {
     var postData = 'tipo=' + operation + '_' + branch + '&values=' + jsonificated_values + '&' + branch_key_name + '=' + branch_key;
 
 
-Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch],'cursor','wait')
+    Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'wait')
 
 
     // alert(request+'?'+postData);//return;
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-            //alert(o.responseText)
+         
             var ra = YAHOO.lang.JSON.parse(o.responseText);
 
             count = ra.length;
             i = 0;
-            
-            
+
+
             for (x in ra) {
                 if (count <= i++) break;
 
@@ -998,14 +1002,13 @@ Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch],'cursor','wait')
 
                     display_add_other(r);
 
-
-
+						
 
                     post_item_updated_actions(branch, r);
 
 
                 } else {
-                    //alert(branch+' '+r.key);
+                    alert(branch+' '+r.key);
                     validate_scope_data[branch][r.key].changed = true;
                     validate_scope_data[branch][r.key].validated = false;
                     Dom.get(validate_scope_data[branch][r.key].name + '_msg').innerHTML = r.msg;
@@ -1015,7 +1018,7 @@ Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch],'cursor','wait')
 
 
             }
-            Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch],'cursor','pointer')
+            Dom.setStyle(['save_edit_' + branch, 'reset_edit_' + branch], 'cursor', 'pointer')
 
             validate_scope_edit(branch)
 

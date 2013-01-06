@@ -6690,9 +6690,10 @@ ALTER TABLE `Category Bridge` CHANGE `Customer Other Note` `Other Note` VARCHAR(
 ALTER TABLE `Category Bridge` ADD `Category Head Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
 ALTER TABLE `Category Bridge` ADD INDEX ( `Category Head Key` ) ;
 
+
+update `Category Dimension` set `Category Branch Type`='Head' where `Category Branch Type`='Node';
 update `Category Dimension` set `Category Branch Type`='Head' where `Category Deep`=2;
 update `Category Dimension` set `Category Branch Type`='Root' where `Category Deep`=1;
-update `Category Dimension` set `Category Branch Type`='Head' where `Category Branch Type`='Node';
 ALTER TABLE `Category Dimension` ADD `Category Subjects Not Assigned` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Number Subjects` ;
 // RUN  php fix_categories.php ;
 ALTER TABLE `Order Transaction Fact` ADD INDEX ( `Destination Country 2 Alpha Code` );
@@ -6703,6 +6704,17 @@ ALTER TABLE `Category Dimension` CHANGE `Category Max Deep` `Category Max Deep` 
 update `Category Dimension` set `Category Max Deep`=2;
 ALTER TABLE `Category Dimension` CHANGE `Category Code` `Category Code` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Category Dimension` ADD UNIQUE (`Category Code` ( 64 ) ,`Category Root Key`);
+
+
+INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right Access`, `Right Access Keys`) VALUES (NULL, 'Edit', 'store wide', 'All', '');
+INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right Access`, `Right Access Keys`) VALUES (NULL, 'Create', 'store wide', 'All', '');
+INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right Access`, `Right Access Keys`) VALUES (NULL, 'Delete', 'store wide', 'All', '');
+
+NOTE CHECK the prev inserted ids E.g:
+INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');
+INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '69');
+INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '70');
+
 
 ALTER TABLE `Part Category Dimension`  ADD `Part Category Last Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Last Week Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Yesterday Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Week To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Today Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Month To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Year To Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 3 Year Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Year Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 6 Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Quarter Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Month Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 10 Day Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Week Acc 1YB Profit` DECIMAL( 12, 2)  NOT NULL DEFAULT '0';
 ALTER TABLE `Part Category Dimension`  ADD `Part Category Last Month Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Last Week Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Yesterday Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Week To Day Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Today Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Month To Day Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category Year To Day Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 3 Year Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Year Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 6 Month Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Quarter Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Month Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 10 Day Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0',  ADD `Part Category 1 Week Acc 1YB Profit After Storing` DECIMAL( 12, 2)  NOT NULL DEFAULT '0';
@@ -6756,14 +6768,6 @@ ALTER TABLE `Part Dimension`  ADD `Part Last Month Acc 1YD Margin` FLOAT NOT NUL
 
 
 
-INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right Access`, `Right Access Keys`) VALUES (NULL, 'Edit', 'store wide', 'All', '');
-INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right Access`, `Right Access Keys`) VALUES (NULL, 'Create', 'store wide', 'All', '');
-INSERT INTO `Right Dimension` (`Right Key`, `Right Type`, `Right Name`, `Right Access`, `Right Access Keys`) VALUES (NULL, 'Delete', 'store wide', 'All', '');
-
-NOTE CHECK the prev inserted ids
-INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '68');
-INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '69');
-INSERT INTO `dw`.`User Group Rights Bridge` (`Group Key`, `Right Key`) VALUES ('1', '70');
 
 CREATE TABLE `Category Deleted Dimension` (
   `Category Deleted Key` smallint(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -6791,15 +6795,38 @@ ALTER TABLE `Category Deleted Dimension` ADD `Category Deleted Date` DATETIME NO
 ALTER TABLE `Category Dimension` ADD `Category Children Other` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Is Category Field Other` ;
 ALTER TABLE `Category Dimension` ADD `Category Can Have Other` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes' AFTER `Category Subject Multiplicity` ;
 ALTER TABLE `History Dimension` CHANGE `Direct Object` `Direct Object` ENUM( 'After Sale', 'Delivery Note', 'Category', 'Warehouse', 'Warehouse Area', 'Shelf', 'Location', 'Company Department', 'Company Area', 'Position', 'Store', 'User', 'Product', 'Address', 'Customer', 'Note', 'Order', 'Telecom', 'Email', 'Company', 'Contact', 'FAX', 'Telephone', 'Mobile', 'Work Telephone', 'Office Fax', 'Supplier', 'Family', 'Department', 'Attachment', 'Supplier Product', 'Part', 'Site', 'Page', 'Invoice', 'Category Customer', 'Category Part', 'Category Invoice', 'Category Supplier', 'Category Product', 'Category Family' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
-CREATE TABLE `dw`.`Part Category History Bridge` (
-`Warehouse Key` SMALLINT UNSIGNED NOT NULL ,
-`Category Key` MEDIUMINT UNSIGNED NOT NULL ,
-`History Key` MEDIUMINT UNSIGNED NOT NULL ,
-UNIQUE (
-`Warehouse Key` ,
-`Category Key` ,
-`History Key`
-)
-) ENGINE = MYISAM ;
-
+CREATE TABLE `Part Category History Bridge` (`Warehouse Key` SMALLINT UNSIGNED NOT NULL ,`Category Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Warehouse Key` ,`Category Key` ,`History Key`)) ENGINE = MYISAM ;
 ALTER TABLE `Part Category History Bridge` ADD `Type` ENUM( 'Change', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;
+CREATE TABLE `Supplier Category History Bridge` (`Category Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Category Key` ,`History Key`)) ENGINE = MYISAM ;
+ALTER TABLE `Supplier Category History Bridge` ADD `Type` ENUM( 'Change', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;
+CREATE TABLE `Customer Category History Bridge` (`Store Key` SMALLINT UNSIGNED NOT NULL ,`Category Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Store Key` ,`Category Key` ,`History Key`)) ENGINE = MYISAM ;
+ALTER TABLE `Customer Category History Bridge` ADD `Type` ENUM( 'Change', 'Assign' ) NOT NULL ,ADD INDEX ( `Type` ) ;
+ALTER TABLE `Category Dimension` DROP `Category Children Subjects Assigned` ,DROP `Category Children Subjects Not Assigned` ;
+ALTER TABLE `Category Deleted Dimension` CHANGE `Category Deleted Children Subjects Assigned` `Category Deleted Subjects Assigned` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Category Deleted Dimension` DROP `Category Deleted Subjects Assigned` ;
+ALTER TABLE `Supplier Dimension` CHANGE `Supplier Main Web Site` `Supplier Website` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+CREATE TABLE `Supplier History Bridge` (`Supplier Key` MEDIUMINT UNSIGNED NOT NULL ,`History Key` MEDIUMINT UNSIGNED NOT NULL ,UNIQUE (`Supplier Key` ,`History Key`)) ENGINE = MYISAM ;
+ALTER TABLE `Supplier History Bridge` ADD `Type` ENUM( 'Notes','Orders','Changes','Attachments','WebLog','Emails' ) NOT NULL ,ADD INDEX ( `Type` ) ;
+ALTER TABLE `Supplier History Bridge` ADD `Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `History Key` ,ADD INDEX ( `Deletable` ) ;
+ALTER TABLE `Supplier History Bridge` ADD `Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Deletable` ,ADD INDEX ( `Strikethrough` ) ;
+
+// run fix_history_categories.php
+
+// run fix_history_suppliers.php
+
+ALTER TABLE `Order Dimension` CHANGE `Order Current Dispatch State` `Order Current Dispatch State` ENUM( 'In Process by Customer', 'In Process', 'Submitted by Customer', 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Dispatched', 'Packing', 'Packed', 'Packed Done', 'Cancelled', 'Suspended' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+update  `Order Dimension` set `Order Current Payment State`='No Applicable' where `Order Current Payment State`='Cancelled';
+update  `Order Dimension` set `Order Current Payment State`='No Applicable' where `Order Current Dispatch State`='Cancelled';
+ALTER TABLE `Order Dimension` CHANGE `Order Current Payment State` `Order Current Payment State` ENUM( 'Waiting Payment', 'Paid', 'Partially Paid', 'Unknown', 'No Applicable' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Waiting Payment';
+ALTER TABLE `Order Dimension` CHANGE `Order Type` `Order Type` ENUM( 'Order', 'Sample', 'Donation', 'Other' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
+ALTER TABLE `Order Dimension` CHANGE `Order Main Source Type` `Order Main Source Type` ENUM( 'Internet', 'Call', 'Store', 'Other', 'Email', 'Fax' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
+
+update `Delivery Note Dimension`  set `Delivery Note Type`='Shortages'    where `Delivery Note Type`='';
+// run php fix_delivery_notes.php 
+// run fix_wrong_dn_state_get_orders_db.php
+// Note double check before  execute statement below thet orders are not been read
+delete  from `Invoice Dimension` where `Invoice Metadata` IS NULL ;
+
+ALTER TABLE `Order No Product Transaction Fact`  ADD `Payment Method` ENUM('Credit Card','Cash','Paypal','Check','Bank Transfer','Other','Unknown','NA') NOT NULL DEFAULT 'NA' AFTER `State`,  ADD `Paid Factor` FLOAT NOT NULL DEFAULT '0' AFTER `Payment Method`,  ADD `Current Payment State` ENUM('Waiting Payment','Paid','Unknown','Payment Refunded','Cancelled','No Applicable') NOT NULL DEFAULT 'Unknown' AFTER `Paid Factor`,  ADD `Consolidated` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Current Payment State`;
+ALTER TABLE `Order No Product Transaction Fact` ADD `Paid Date` DATETIME NULL DEFAULT NULL AFTER `Invoice Date` ;
+// run fix_no_product_transaction_fact_paid_info.php

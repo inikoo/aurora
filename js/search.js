@@ -271,13 +271,12 @@ function search(query,subject,search_scope) {
     if (search_scope!='' && Dom.get(search_scope+'_id')!=undefined) {
         request=request+'&'+search_scope+'_id='+Dom.get(search_scope+'_id').value;
     }
-
 //alert('ar_search.php?'+request);return;
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-            //alert(o.responseText)
+           // alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 //   alert(subject+'_search_results')

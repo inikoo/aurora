@@ -1,43 +1,33 @@
 {include file='header.tpl'} 
-
-
 <div id="bd" style="padding:0">
 	<input type="hidden" id="site_key" value="{$site->id}" />
 	<input type="hidden" id="site_id" value="{$site->id}" />
 	<input type="hidden" id="store_key" value="{$store->id}" />
 	<input type="hidden" id="page_key" value="{$page->id}" />
-	
-			<input type="hidden" id="redirect_review" value="{$redirect_review}" />
-
-		<input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
-
+	<input type="hidden" id="redirect_review" value="{$redirect_review}" />
+	<input type="hidden" id="take_snapshot" value="{$take_snapshot}" />
 	<input type="hidden" id="content_height" value="{$page->get('Page Content Height')}" />
 	<div style="padding:0 20px">
 		{include file='assets_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a>  &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_websites()>1}<a href="sites.php">{t}Websites{/t}</a> &rarr;{/if} <img style="vertical-align:0px;margin-right:1px" src="art/icons/hierarchy.gif" alt="" /> <a href="site.php?id={$site->id}">{$site->get('Site URL')}</a> (<a href="store.php?id={$store->id}">{$store->get('Store Code')}</a>) &rarr; <img style="vertical-align:-1px;" src="art/icons/layout_bw.png" alt="" /> {$page->get('Page Code')}</span> 
 		</div>
 		<div class="top_page_menu">
 			<div class="buttons">
-				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} 
-				<button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> 
-				<button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> 
-				<button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> {if isset($referral_data)} 
-				<button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} 
-				<button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> 
-				<button id="show_dialog_template_list" ><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button>
+				{if isset($next)}<img class="next" onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{$next.title}" onclick="window.location='{$next.link}'" src="art/next_button.png" alt="{t}Next{/t}" />{/if} <button style="margin-left:0px" onclick="window.location='page.php?id={$page->id}'"><img src="art/icons/door_out.png" alt="" /> {t}Exit Edit{/t}</button> <button class="negative" id="delete_page"><img src="art/icons/cross.png" alt="" /> {t}Delete{/t}</button> <button id="show_upload_page_content"> <img src="art/icons/page_save.png" alt="" /> {t}Import{/t}</button> {if isset($referral_data)} <button onclick="{$referral_data.url}'"><img src="art/icons/door_out.png" alt="" /> {$referral_data.label}</button> {/if} <button onclick="window.location='page_preview.php?id={$page->id}&logged=1&update_heights=1'"><img src="art/icons/layout.png" alt=""> {t}View Page{/t}</button> <button style="display:none" id="show_dialog_template_list"><img src="art/icons/layout.png" alt=""> {t}Create{/t}</button> 
 			</div>
 			<div class="buttons left">
 				{if isset($prev)}<img class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{$prev.title}" onclick="window.location='{$prev.link}'" src="art/previous_button.png" alt="{t}Previous{/t}" />{/if} 
+			
+			<span class="main_title">
+				<span class="id" id="title_code">{$page->get('Page Code')}</span> <span style="font-size:80%;color:#777" id="title_url">{$page->get('Page URL')}</span> 
+			</span>
+			
 			</div>
 			<div style="clear:both">
 			</div>
 		</div>
-		<div style="clear:left;margin:0 0px">
-			<h1>
-				<span class="id" id="title_code">{$page->get('Page Code')}</span> <span style="font-size:90%;color:#777" id="title_url">{$page->get('Page URL')}</span> 
-			</h1>
-		</div>
+		
 		<ul class="tabs" id="chooser_ul">
 			<li> <span class="item {if $block_view=='setup'}selected{/if}" id="setup"><span> {t}Page Properties{/t}</span></span></li>
 			<li style="display:none"><span class="item {if $block_view=='properties'}selected{/if}" id="properties"> <span>{t}HTML Setup{/t}</span></span></li>
@@ -50,16 +40,14 @@
 			<li> <span class="item {if $block_view=='url'}selected{/if}" id="url"><span>{t}Redirections{/t}</span></span></li>
 		</ul>
 	</div>
-	
 	<div id="tabbed_container" class="tabbed_container" style="padding:10px 0px;margin:0px {if $block_view=='content'}0px{else}20px{/if}">
-	
-	<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
-		<table class="edit" style="width:880px;clear:both;margin-left:20px;margin-top:20px">
+		<div class="edit_block" style="{if $block_view!='url' }display:none{/if}" id="d_url">
+			<table class="edit" style="width:880px;clear:both;margin-left:20px;margin-top:20px">
 				<tr class="title">
 					<td colspan="1">{t}Redirections{/t}</td>
-					<td colspan="2">
+					<td colspan="2"> 
 					<div class="buttons ">
-						<button id="show_dialog_add_redirection" >Add Redirection</button> 
+						<button id="show_dialog_add_redirection">Add Redirection</button> 
 					</div>
 					</td>
 				</tr>
@@ -69,18 +57,13 @@
 				<tr>
 					<td style="width:120px" class="label">{t}301 Rederections{/t}:</td>
 					<td style="width:700px"> 
-					
 					<table>
 						{foreach from=$page->get_all_redirects_data(true) item=redirect} 
 						<tr style="height:20px">
 							<td style="padding:0">{$redirect.Source}</td>
 							<td style="padding:0;padding-left:10px"> <img onclick="delete_redirect({$redirect.PageRedirectionKey})" style="cursor:pointer" src="art/icons/cross.png" alt="{t}Remove{/t}" title="{t}Remove{/t}" /> </td>
 							<td style="padding:0;padding-left:10px;"><a href="htaccess.php?page_key={$page->id}&redirection_key={$redirect.PageRedirectionKey}"> <img src="art/icons/page_white_h.png" alt="{t}.htaccess file{/t}" title="{t}.htacces file{/t}" /></a> </td>
-
-							<td style="padding:0;padding-left:10px;"> 
-							<img style="{if $redirect.CanUpload=='Yes'}display:none{/if}" src="art/icons/error.png" alt="{t}Can't update .htaccess{/t}" title="{t}Can't update .htacces{/t}" />
-							<img style="{if $redirect.CanUpload=='No'}display:none{/if};cursor:pointer" src="art/icons/ftp_up.png" alt="{t}Upload .htaccess{/t}" title="{t}Upload .htacces{/t}" />
-							</td>
+							<td style="padding:0;padding-left:10px;"> <img style="{if $redirect.CanUpload=='Yes'}display:none{/if}" src="art/icons/error.png" alt="{t}Can't update .htaccess{/t}" title="{t}Can't update .htacces{/t}" /> <img style="{if $redirect.CanUpload=='No'}display:none{/if};cursor:pointer" src="art/icons/ftp_up.png" alt="{t}Upload .htaccess{/t}" title="{t}Upload .htacces{/t}" /> </td>
 						</tr>
 						{/foreach} 
 					</table>
@@ -89,24 +72,73 @@
 				</tr>
 			</table>
 		</div>
-		
 		<div class="edit_block" style="{if $block_view!='setup' }display:none{/if}" id="d_setup">
 			<table class="edit" border="0" id="edit_family_page" style="width:880px;clear:both;margin-left:20px;margin-top:0px" page_key="{$page->id}">
-				<tr>
+				
+				<tr style="display:none">
 					<td colspan="3"> 
-					<div class="buttons left small">
+					
+					<div class="buttons small">
 						<button id="show_more_configuration">{t}Show Advanced Configuration{/t}</button> <button style="display:none" id="hide_more_configuration">{t}Hide Advanced Configuration{/t}</button> 
 					</div>
-					<div class="buttons">
-						<button  id="save_edit_page_properties" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_properties" class="negative disabled">{t}Reset{/t}</button> 
-					</div>
+					
 					</td>
 				</tr>
+					<tr class="title">
+					<td colspan="3"> 
+					
+						{t}Page Configuration{/t}
+					
+					</td>
+				</tr>
+				
 				<tr class="top">
 					<td></td>
 				</tr>
-				<tbody id="advanced_configuration" style="display:none">
-					<tr>
+				
+				<tr>
+					<td style="width:120px" class="label">{t}Page Code{/t}:</td>
+					<td style="width:400px"> 
+					<div>
+						<input style="width:100%" id="page_properties_page_code" value="{$page->get('Page Code')}" ovalue="{$page->get('Page Code')}" />
+						<div id="page_properties_page_code_Container">
+						</div>
+					</div>
+					</td>
+					<td> 
+					<div style="font-size:80%;color:red" id="page_properties_page_code_msg">
+					</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="width:120px" class="label">{t}Link Label{/t}:</td>
+					<td style="width:400px"> 
+					<div>
+						<input style="width:100%" id="page_properties_link_title" value="{$page->get('Page Short Title')}" ovalue="{$page->get('Page Short Title')}" />
+						<div id="page_properties_link_title_Container">
+						</div>
+					</div>
+					</td>
+					<td> 
+					<div id="page_properties_link_title_msg">
+					</div>
+					</td>
+				</tr>
+				<tr style="height:87px">
+					<td class="label" style="width:120px">{t}Description{/t}:</td>
+					<td style="width:400px"> 
+					<div >
+<textarea id="page_html_head_resume" style="width:404px;height:80px" value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
+						
+						<div id="page_html_head_resume_Container">
+						</div>
+					</div>
+					</td>
+					<td><span id="page_html_head_resume_msg"></span>
+					</td>
+				</tr>
+				<tbody id="advanced_configuration" >
+					<tr style="display:none">
 						<td style="width:120px" class="label">{t}Creation Method{/t}:</td>
 						<td style="width:400px"> 
 						<table>
@@ -118,7 +150,7 @@
 						</table>
 						</td>
 					</tr>
-					<tr>
+					<tr style="display:none">
 						<td style="width:120px" class="label">{t}Page Type{/t}:</td>
 						<td style="width:400px"> 
 						<table border="0">
@@ -200,90 +232,53 @@
 						<td class="label" style="width:120px">{t}Page Keywords{/t}:</td>
 						<td style="width:400px"> 
 						<div>
-<textarea id="page_html_head_keywords" style="width:100%;height:80px" maxlength="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}">{$page->get('Page Keywords')}</textarea> 
-							<div id="page_html_head_keywords_msg">
-							</div>
+<textarea id="page_html_head_keywords" style="width:404px;height:80px" maxlength="24" value="{$page->get('Page Keywords')}" ovalue="{$page->get('Page Keywords')}">{$page->get('Page Keywords')}</textarea> 
+							
 							<div id="page_html_head_keywords_Container">
 							</div>
 						</div>
 						</td>
+						<td>
+						<div id="page_html_head_keywords_msg">
+							</div>
+						</td>
 					</tr>
 				</tbody>
+				<tr style="height:10px"><td colspan="3"></td></tr>
 				<tr>
-					<td style="width:120px" class="label">{t}Page Code{/t}:</td>
-					<td style="width:400px"> 
-					<div>
-						<input style="width:100%" id="page_properties_page_code" value="{$page->get('Page Code')}" ovalue="{$page->get('Page Code')}" />
-						<div id="page_properties_page_code_Container">
-						</div>
+					<td colspan="2"> 
+					
+					<div class="buttons">
+						<button id="save_edit_page_properties" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_properties" class="negative disabled">{t}Reset{/t}</button> 
 					</div>
 					</td>
-					<td> 
-					<div style="font-size:80%;color:red" id="page_properties_page_code_msg">
-					</div>
-					</td>
+					<td></td>
 				</tr>
-				<tr>
-					<td style="width:120px" class="label">{t}Link Label{/t}:</td>
-					<td style="width:400px"> 
-					<div>
-						<input style="width:100%" id="page_properties_link_title" value="{$page->get('Page Short Title')}" ovalue="{$page->get('Page Short Title')}" />
-						<div id="page_properties_link_title_Container">
-						</div>
-					</div>
-					</td>
-					<td> 
-					<div id="page_properties_link_title_msg">
-					</div>
-					</td>
-				</tr>
-				<tr style="height:87px">
-					<td class="label" style="width:120px">{t}Description{/t}:</td>
-					<td style="width:400px"> 
-					<div>
-<textarea id="page_html_head_resume" style="width:100%;height:80px"  value="{$page->get('Page Store Resume')}" ovalue="{$page->get('Page Store Resume')}">{$page->get('Page Store Resume')}</textarea> 
-						<div id="page_html_head_resume_msg">
-						</div>
-						<div id="page_html_head_resume_Container">
-						</div>
-					</div>
-					</td>
-				</tr>
+				
 			</table>
-			
 		</div>
-	
-	<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
+		<div class="edit_block" style="{if $block_view!='properties' }display:none{/if}" id="d_properties">
 			<table class="edit" border="0" id="properties_edit_table" style="width:100%">
 				<tr>
 					<td colspan="3"> 
 					<div class="buttons">
-						<button  id="save_edit_page_html_head" class="positive disabled">{t}Save{/t}</button> <button  id="reset_edit_page_html_head" class="negative disabled">{t}Reset{/t}</button> 
+						<button id="save_edit_page_html_head" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_html_head" class="negative disabled">{t}Reset{/t}</button> 
 					</div>
 					</td>
 				</tr>
 			</table>
 		</div>
-
-	<div class="edit_block" style="{if $block_view!='page_header' }display:none{/if}" id="d_page_header">
+		<div class="edit_block" style="{if $block_view!='page_header' }display:none{/if}" id="d_page_header">
 		</div>
-		
-	<div class="edit_block" style="{if $block_view!='page_footer' }display:none{/if}" id="d_page_footer">
+		<div class="edit_block" style="{if $block_view!='page_footer' }display:none{/if}" id="d_page_footer">
 		</div>
-		
-	<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px" id="d_content">
-			
+		<div class="edit_block" style="{if $block_view!='content'}display:none;{/if}padding:0px 0px;margin:0px" id="d_content">
 			<div style="border-bottom:1px dotted #ddd;padding-bottom:5px;margin:0 20px">
 				<div class="buttons">
 					<button style="{if $content_view=='overview'}display:none{/if}" id="show_page_content_overview_block"><img src="art/icons/layout.png" alt="" /> {t}Content Overview{/t}</button> 
 				</div>
 				<div class="buttons left">
-					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> 
-					<button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> 
-
-					<button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> 
-					<button id="show_page_product_list_block" class="{if $content_view=='product_list'}selected{/if}"><img src="art/icons/text_list_bullets.png" alt="" /> {t}Lists{/t}</button> 
-					<button id="show_page_product_buttons_block" class="{if $content_view=='product_buttons'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
+					<button id="show_page_header_block" class="{if $content_view=='header'}selected{/if}"><img src="art/icons/layout_header.png" alt="" /> {t}Header{/t}</button> <button id="show_page_footer_block" class="{if $content_view=='footer'}selected{/if}"><img src="art/icons/layout_footer.png" alt="" /> {t}Footer{/t}</button> <button id="show_page_content_block" class="{if $content_view=='content'}selected{/if}"><img src="art/icons/layout_content2.png" alt="" /> {t}Content{/t}</button> <button id="show_page_product_list_block" class="{if $content_view=='product_list'}selected{/if}"><img src="art/icons/text_list_bullets.png" alt="" /> {t}Lists{/t}</button> <button id="show_page_product_buttons_block" class="{if $content_view=='product_buttons'}selected{/if}"><img src="art/icons/bricks.png" alt="" /> {t}Products{/t}</button> 
 				</div>
 				<div style="clear:both">
 				</div>
@@ -292,18 +287,12 @@
 				<img id="page_preview_snapshot_image" style="width:470px" src="image.php?id={$page->get('Page Preview Snapshot Image Key')}" alt="{t}No Snapshot Available{/t}" /> 
 			</div>
 			<div style="{if $content_view!='header'}display:none{/if};margin:10px 20px" id="page_header_block">
-			
-			
-			
-			
-			
-			
 				<table class="edit" border="0" id="header_edit_table" style="width:100%">
 					<tr class="title">
-					<td>Title</td>
+						<td>Title</td>
 						<td colspan="2"> 
 						<div class="buttons">
-							<button  id="save_edit_page_header" class="positive disabled">{t}Save{/t}</button> <button  id="reset_edit_page_header" class="negative disabled">{t}Reset{/t}</button> 
+							<button id="save_edit_page_header" class="positive disabled">{t}Save{/t}</button> <button id="reset_edit_page_header" class="negative disabled">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -325,12 +314,11 @@
 					<tr style="height:20px">
 						<td colspan="3"></td>
 					</tr>
-					
 					<tr class="title">
-					<td colspan="2">{t}Parent Pages{/t}</td>
-						<td>
+						<td colspan="2">{t}Parent Pages{/t}</td>
+						<td> 
 						<div class="buttons">
-							<button id="add_other_found_in_page" >Add page</button> 
+							<button id="add_other_found_in_page">Add page</button> 
 						</div>
 						</td>
 					</tr>
@@ -340,7 +328,6 @@
 					<tr>
 						<td style="width:120px" class="label">{t}Found in{/t}:</td>
 						<td style="width:500px"> 
-						
 						<table>
 							{foreach from=$page->get_found_in() item=found_in_page} 
 							<tr style="Height:20px">
@@ -355,12 +342,10 @@
 					<tr style="height:10px">
 						<td colspan="3"></td>
 					</tr>
-					
-					
 					<tr class="title">
-					<td colspan="2">{t}Related Pages{/t}</td>
-						<td>
-						<div  class="buttons">
+						<td colspan="2">{t}Related Pages{/t}</td>
+						<td> 
+						<div class="buttons">
 							<button id="add_other_see_also_page" {if $page->get('Page Store See Also Type')=='Auto'}style="display:none"{/if} >{t}Add page{/t}</button> <button id="add_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto'}style="display:none"{/if} >{t}Add Page{/t}</button> <button id="remove_auto_see_also_page" {if $page->get('Page Store See Also Type')!='Auto' or $page->get('Number See Also Links')==0}style="display:none"{/if} >{t}Remove Page{/t}</button> 
 						</div>
 						</td>
@@ -375,16 +360,13 @@
 							<button class="{if $page->get('Page Store See Also Type')=='Auto'}selected{/if}" onclick="save_see_also_type('Auto')" id="see_also_type_Auto">{t}Auto{/t}</button> <button class="{if $page->get('Page Store See Also Type')=='Manual'}selected{/if}" onclick="save_see_also_type('Manual')" id="see_also_type_Manual">{t}Manual{/t}</button> 
 						</div>
 						</td>
-						</tr>
-						
-						<tr style="height:10px">
+					</tr>
+					<tr style="height:10px">
 						<td colspan="3"></td>
 					</tr>
-						
-						<tr>
+					<tr>
 						<td></td>
-						<td>
-						
+						<td> 
 						<table>
 							{foreach from=$page->get_see_also($site->get('Site URL')) item=see_also_page} 
 							<tr style="Height:20px">
@@ -398,24 +380,16 @@
 						<td> </td>
 					</tr>
 				</table>
-				
-				
 				<div style="clear:both">
-				<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
-				<div id="table8" class="data_table_container dtable btable">
+					<span class="clean_table_title">{t}Headers{/t}</span> {include file='table_splinter.tpl' table_id=8 filter_name=$filter_name8 filter_value=$filter_value8 } 
+					<div id="table8" class="data_table_container dtable btable">
+					</div>
 				</div>
 			</div>
-				
-				
-			</div>
-			
 			<div style="{if $content_view!='footer'}display:none{/if};margin:10px 20px" id="page_footer_block">
-							
-				<span class="clean_table_title">{t}Footers{/t}</span> 
-				{include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
+				<span class="clean_table_title">{t}Footers{/t}</span> {include file='table_splinter.tpl' table_id=9 filter_name=$filter_name9 filter_value=$filter_value9 } 
 				<div id="table9" class="data_table_container dtable btable">
 				</div>
-			
 			</div>
 			<div style="{if $content_view!='product_list'}display:none{/if};margin:10px 20px" id="page_product_list_block">
 				<div id="product_lists" style="width:890px;margin-bottom:20px">
@@ -447,7 +421,7 @@
 						<div style="float:right" id="html_editor_msg">
 						</div>
 						<div class="buttons">
-							<button id="download_page_content">{t}Download{/t}</button> <button class="positive disabled"  id="save_edit_page_content">{t}Save{/t}</button> <button class="negative disabled"  id="reset_edit_page_content">{t}Reset{/t}</button> 
+							<button id="download_page_content">{t}Download{/t}</button> <button class="positive disabled" id="save_edit_page_content">{t}Save{/t}</button> <button class="negative disabled" id="reset_edit_page_content">{t}Reset{/t}</button> 
 						</div>
 						</td>
 					</tr>
@@ -460,7 +434,6 @@
 					</tr>
 				</table>
 			</div>
-			
 		</div>
 		<div class="edit_block" style="{if $block_view!='style' }display:none{/if}" id="d_style">
 		</div>
@@ -470,19 +443,27 @@
 		</div>
 	</div>
 	
-	<div id="display_history_div" style="clear:both;margin-top:20;padding:10px 20px" class="buttons left small">
-		<button id="display_history">{t}Display Change Log{/t}</button>
-	
+	<div style="clear:both;padding:20px">
+		<div class="buttons small" style="margin-top:0">
+		<button id="show_history" style="{if $show_history}display:none{/if};margin-right:0px" onclick="show_history()">{t}Show changelog{/t}</button> <button id="hide_history" style="{if !$show_history}display:none{/if};margin-right:0px" onclick="hide_history()">{t}Hide changelog{/t}</button> 
 	</div>
-	<div id="the_table1" class="data_table" style="margin:10px 20px 40px 20px; clear:both;padding-top:0px;display:none;">
-		<span class="clean_table_title">{t}Change log{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
-		<div id="table1" class="data_table_container dtable btable" style="font-size:90%">
+	<div id="history_table" class="data_table" style="clear:both;{if !$show_history}display:none{/if}">
+		<span class="clean_table_title">{t}Changelog{/t}</span> 
+		
+		<div class="table_top_bar" style="margin-bottom:15px">
+		</div>
+		{include file='table_splinter.tpl' table_id='1' filter_name=$filter_name1 filter_value=$filter_value1 } 
+		<div id="table1" class="data_table_container dtable btable" style="font-size:85%">
 		</div>
 	</div>
+	
+	</div>
+	
+	
+	
 	<div style="clear:both;height:20px">
 	</div>
 </div>
-
 <div id="dialog_upload_page_content" style="padding:30px 10px 10px 10px;width:320px;">
 	<table style="margin:0 auto">
 		<form enctype="multipart/form-data" method="post" id="upload_page_content_form">
@@ -506,7 +487,7 @@
 	</table>
 </div>
 <div id="dialog_add_redirection" style="padding:30px 20px 10px 10px;width:350px;position:absolute;top:-2000px;">
-	<table style="margin:0 auto;width:100%"  border=0 >
+	<table style="margin:0 auto;width:100%" border="0">
 		<tr>
 			<td>{t}File{/t}:</td>
 			<td> 
@@ -514,7 +495,7 @@
 			</td>
 		</tr>
 		<tr style="height:10px">
-			<td colspan="2" > </td>
+			<td colspan="2"> </td>
 		</tr>
 		<tr>
 			<td colspan="2"> 
@@ -569,7 +550,7 @@
 		<button id="save_delete_page" class="positive">{t}Yes, delete it!{/t}</button> <button id="cancel_delete_page" class="negative">{t}No i dont want to delete it{/t}</button> 
 	</div>
 </div>
-<div id="dialog_family_list" style="position:absolute;top:-2000px;"  >
+<div id="dialog_family_list" style="position:absolute;top:-2000px;">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Family List{/t}</span> {include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4} 
@@ -578,7 +559,7 @@
 		</div>
 	</div>
 </div>
-<div id="dialog_page_list"  style="position:absolute;top:-2000px;" >
+<div id="dialog_page_list" style="position:absolute;top:-2000px;">
 	<div class="splinter_cell" style="padding:10px 15px 10px 0;border:none;width:500px">
 		<div id="the_table" class="data_table">
 			<span class="clean_table_title">{t}Page List{/t}</span> {include file='table_splinter.tpl' table_id=7 filter_name=$filter_name7 filter_value=$filter_value7} 
@@ -587,20 +568,24 @@
 		</div>
 	</div>
 </div>
-
-<div id="dialog_template_list"  style="position:absolute;top:-2000px;" >
+<div id="dialog_template_list" style="position:absolute;top:-2000px;">
 	<table border="0" style="margin-top:20px; width:100%">
-	<tr><td class="buttons"><button onClick="add_template('Template', '')">Add Custom Template</button></td></tr>
-	<tr><td class="buttons"><button onClick="set_template('Source', '')">PPP</button></td></tr>
-	<tr><td class="buttons"><button onClick="set_template('Template', 'template_list_left')">Template 1</button></td></tr>
-	<tr><td class="buttons"><button onClick="set_template('Template', 'template_single_button')">Template 2</button></td></tr>
+		<tr>
+			<td class="buttons"><button onclick="add_template('Template', '')">Add Custom Template</button></td>
+		</tr>
+		<tr>
+			<td class="buttons"><button onclick="set_template('Source', '')">PPP</button></td>
+		</tr>
+		<tr>
+			<td class="buttons"><button onclick="set_template('Template', 'template_list_left')">Template 1</button></td>
+		</tr>
+		<tr>
+			<td class="buttons"><button onclick="set_template('Template', 'template_single_button')">Template 2</button></td>
+		</tr>
 	</table>
 </div>
-
 <iframe id="page_preview_iframe" src="page_preview.php?id={$page->id}&logged=1&take_snapshot={$take_snapshot}&update_heights=1" frameborder="1" style="position:absolute;top:-10000px;left:-200px;width:1x;height:1px" onload="redirect_to_preview()"> 
 <p>
 	{t}Your browser does not support iframes{/t}. 
 </p>
-
-</iframe>
-{include file='footer.tpl'} 
+</iframe> {include file='footer.tpl'} 

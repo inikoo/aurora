@@ -6,6 +6,10 @@ print "var store_key=".$_REQUEST['store_key'].";"
 ?>
    var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
+     
+        var customer_views_ids = ['general', 'contact', 'address', 'ship_to_address', 'balance', 'rank', 'weblog'];
+
+     
 var dialog_export;
 var category_labels={'total':'<?php echo _('Number')?>','growth':'<?php echo _('Growth')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
@@ -388,50 +392,7 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=custome
       
 
 
-function change_elements(e,type){
 
-
-ids=['elements_'+type+'_lost','elements_'+type+'_losing','elements_'+type+'_active'];
-
-
-if(Dom.hasClass(this,'selected')){
-
-var number_selected_elements=0;
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-number_selected_elements++;
-}
-}
-
-if(number_selected_elements>1){
-Dom.removeClass(this,'selected')
-
-}
-
-}else{
-Dom.addClass(this,'selected')
-
-}
-
-table_id=0;
- var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-
-var request='';
-for(i in ids){
-if(Dom.hasClass(ids[i],'selected')){
-request=request+'&'+ids[i]+'=1'
-}else{
-request=request+'&'+ids[i]+'=0'
-
-}
-}
-  
- 
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-
-
-}
 
  
  function show_export_dialog(e,table_id){
@@ -451,6 +412,7 @@ request=request+'&'+ids[i]+'=0'
 Event.addListener(['elements_all_contacts_lost','elements_all_contacts_losing','elements_all_contacts_active'], "click",change_elements,'all_contacts');
 Event.addListener(['elements_contacts_with_orders_lost','elements_contacts_with_orders_losing','elements_contacts_with_orders_active'], "click",change_elements,'contacts_with_orders');
 
+ YAHOO.util.Event.addListener(customer_views_ids, "click",change_view_customers,0);
 
 
   

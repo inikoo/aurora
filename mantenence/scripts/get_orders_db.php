@@ -1,6 +1,7 @@
 <?php
-error_reporting(E_ALL);
-
+//error_reporting(E_ALL);
+error_reporting(0);
+ini_set( 'display_errors', 0 );
 include_once '../../app_files/db/dns.php';
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
@@ -111,9 +112,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$order_data_id=$row2['id'];
 	delete_old_data();
 }
+error_reporting(0);
+ini_set( 'display_errors', 0 );
 
+$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and ( filename like '%/c/%.xls' or filename like '%/b/%.xls')   order by name  ";
+$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name  ";
 
-$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and ( filename like '%/e/%.xls' or filename like '%/d/%.xls')   order by name  ";
 //and ( filename like '%/b/%.xls' or filename like '%/a/%.xls' or  filename like '%/c/%.xls') order by name  ";
 //and ( filename like '%/b/%.xls' or filename like '%/a/%.xls' or  filename like '%/c/%.xls' )
 
@@ -122,7 +126,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename  like '%/137073.xls' order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/155885%.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/38672.xls'   order by filename";
 //120239
 //120217
 //$sql="select * from  orders_data.orders where filename like '%/15165%.xls'   order by filename";
@@ -192,6 +196,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		mysql_free_result($result_test);
 
 		$header=mb_unserialize($row['header']);
+		
 		$products=mb_unserialize($row['products']);
 		$filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
 		$map_act=$_map_act;
@@ -265,6 +270,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			'User Key'=>0,
 		);
 
+		
 
 		$data['editor']=$editor;
 		if ($tipo_order==9) {
@@ -299,6 +305,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$discounts_with_order_as_term[]=$_deal->id;
 			}
 		}
+		
+		
+		
+	
+		
 
 		$header_data['Order Main Source Type']='Unknown';
 		$header_data['Delivery Note Dispatch Method']='Unknown';
@@ -1598,7 +1609,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		$data['Order Customer Key']=$customer->id;
 		$customer_key=$customer->id;
-
 		switch ($tipo_order) {
 		case 1://Delivery Note
 			print "DN";
@@ -1606,16 +1616,15 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-
 			$order=create_order($data);
 
-			if (strtotime('today -3 month')>strtotime($date_order)) {
-				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +3 month")));
+			if (strtotime('today -6 month')>strtotime($date_order)) {
+				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 			}
 			if (strtotime('today -6 month')>strtotime($date_order)) {
 
 
-				$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+			//	$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 
 				// print $order->msg;//216249
 			}

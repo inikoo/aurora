@@ -103,7 +103,7 @@ $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
 
 //$order->update_xhtml_delivery_notes();//exit;
-//$order->update_no_normal_totals();
+$order->update_no_normal_totals();
 
 //$order->update_discounts();
 
@@ -129,6 +129,8 @@ $smarty->assign('referral',$referral);
 $customer=new Customer($order->get('order customer key'));
 
 //$order->update_no_normal_totals();
+$order->update_totals_from_order_transactions();
+
 $store=new Store($order->data['Order Store Key']);
 $smarty->assign('store',$store);
 $smarty->assign('store_key',$store->id);
@@ -428,7 +430,9 @@ if (isset($_REQUEST['pick_aid'])) {
 		$template='order_cancelled.tpl';
 		break;
 	case('Suspended'):
-
+$smarty->assign('search_label',_('Orders'));
+		$smarty->assign('search_scope','orders');
+		$smarty->assign('store_id',$store->id);
 
 		$js_files[]='order_suspended.js.php';
 		$template='order_suspended.tpl';

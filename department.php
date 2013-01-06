@@ -19,8 +19,8 @@ include_once 'assets_header_functions.php';
 
 
 
-if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) ){
-		header('Location: index.php?error_no_department_key');
+if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) ) {
+	header('Location: index.php?error_no_department_key');
 	exit();
 }else {
 	$department_id=$_REQUEST['id'];
@@ -169,7 +169,7 @@ $smarty->assign('department_period',$_SESSION['state']['store']['departments']['
 
 
 
-include_once('conf/period_tags.php');
+include_once 'conf/period_tags.php';
 unset($period_tags['hour']);
 $smarty->assign('period_tags',$period_tags);
 
@@ -324,14 +324,14 @@ elseif ($order=='todo')
 	$order='`Product Department In Process Products`';
 elseif ($order=='profit') {
 
-$order="`Product Department $db_interval Acc Profit`";
+	$order="`Product Department $db_interval Acc Profit`";
 
 
 }
 elseif ($order=='sales') {
-$order="`Product Department $db_interval Acc Invoiced Amount`";
+	$order="`Product Department $db_interval Acc Invoiced Amount`";
 
-	
+
 
 }
 elseif ($order=='name')
@@ -352,45 +352,79 @@ elseif ($order=='low')
 	$order='`Product Department Low Availability Products`';
 elseif ($order=='critical')
 	$order='`Product Department Critical Availability Products`';
-else{
-$order='`Product Department Code`';
+else {
+	$order='`Product Department Code`';
 }
 
 
 $_order=preg_replace('/`/','',$order);
 $sql=sprintf("select `Product Department Key` as id , `Product Department Code` as name from `Product Department Dimension`  where  `Product Department Store Key`=%d  and %s < %s  order by %s desc  limit 1",
-             $department->data['Product Department Store Key'],
-             $order,
-             prepare_mysql($department->get($_order)),
-             $order
-            );
+	$department->data['Product Department Store Key'],
+	$order,
+	prepare_mysql($department->get($_order)),
+	$order
+);
 
 $result=mysql_query($sql);
 
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $prev['link']='department.php?id='.$row['id'];
-    $prev['title']=$row['name'];
-    $smarty->assign('prev',$prev);
+	$prev['link']='department.php?id='.$row['id'];
+	$prev['title']=$row['name'];
+	$prev['to_end']=false;
+	$smarty->assign('prev',$prev);
+}else
+{
+	$sql=sprintf("select `Product Department Key` as id , `Product Department Code` as name from `Product Department Dimension`  where  `Product Department Store Key`=%d  and %s > %s  order by %s desc  limit 1",
+		$department->data['Product Department Store Key'],
+		$order,
+		prepare_mysql($department->get($_order)),
+		$order
+	);
+
+	$result=mysql_query($sql);
+
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$prev['link']='department.php?id='.$row['id'];
+		$prev['title']=$row['name'];
+		$prev['to_end']=true;
+		$smarty->assign('prev',$prev);
+	}
 }
-mysql_free_result($result);
 
 
 $sql=sprintf(" select `Product Department Key` as id , `Product Department Code` as name from `Product Department Dimension`  where  `Product Department Store Key`=%d   and  %s>%s  order by %s   ",
-  $department->data['Product Department Store Key'],
-             $order,
-             prepare_mysql($department->get($_order)),
-             $order
-            );
+	$department->data['Product Department Store Key'],
+	$order,
+	prepare_mysql($department->get($_order)),
+	$order
+);
 
 $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-    $next['link']='department.php?id='.$row['id'];
-    $next['title']=$row['name'];
-    $smarty->assign('next',$next);
+	$next['link']='department.php?id='.$row['id'];
+	$next['title']=$row['name'];
+	$next['to_end']=false;
+	$smarty->assign('next',$next);
+}else {
+	$sql=sprintf(" select `Product Department Key` as id , `Product Department Code` as name from `Product Department Dimension`  where  `Product Department Store Key`=%d   and  %s<%s  order by %s   ",
+		$department->data['Product Department Store Key'],
+		$order,
+		prepare_mysql($department->get($_order)),
+		$order
+	);
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$next['link']='department.php?id='.$row['id'];
+		$next['title']=$row['name'];
+		$next['to_end']=true;
+		$smarty->assign('next',$next);
+	}
+
 }
 
 
-mysql_free_result($result);
+
 
 $plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
 $smarty->assign('plot_tipo','store');

@@ -35,8 +35,8 @@ $js_files=array(
 	//  'report_sales.js.php',
 	'report_sales_main.js.php',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php',
-	'js/dropdown.js'
+	'reports_calendar.js.php'
+
 
 );
 

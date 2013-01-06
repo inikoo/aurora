@@ -1,89 +1,6 @@
 <?php
 include_once 'common.php';
 include_once 'class.Store.php';
-if (!$user->can_view('orders'))
-	exit();
-
-if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
-	$store_id=$_REQUEST['store'];
-
-} else {
-	$store_id=$_SESSION['state']['orders']['store'];
-
-}
-
-if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
-	header('Location: index.php');
-	exit;
-}
-
-$store=new Store($store_id);
-$smarty->assign('store',$store);
-$smarty->assign('store_id',$store->id);
-
-$_SESSION['state']['orders']['store']=$store_id;
-
-
-$q='';
-
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'warehouse_orders.php','label'=>_('Warehouse Operations'));
-
-$general_options_list[]=array('tipo'=>'url','url'=>'orders_lists.php?store='.$store->id,'label'=>_('Lists'));
-
-
-//$smarty->assign('general_options_list',$general_options_list);
-$smarty->assign('search_label',_('Orders'));
-$smarty->assign('search_scope','orders');
-
-
-$sql="select count(*) as numberof from `Order Dimension`";
-$result=mysql_query($sql);
-if ($row=mysql_fetch_array($result, MYSQL_ASSOC))
-	$orders=$row['numberof'];
-else
-	exit('Internal Error');
-mysql_free_result($result);
-
-if (isset($_REQUEST['view']) and preg_match('/^orders|invoices|dn$/',$_REQUEST['view'])) {
-	$_SESSION['state']['orders']['view']=$_REQUEST['view'];
-}
-if (isset($_REQUEST['invoice_type']) and preg_match('/^all|invoices|refunds|to_pay|paid$/',$_REQUEST['invoice_type'])) {
-	$_SESSION['state']['orders']['invoices']['invoice_type']=$_REQUEST['invoice_type'];
-}
-
-if (isset($_REQUEST['dispatch']) and preg_match('/^all_orders|in_process|dispatched|unknown|cancelled|suspended$/',$_REQUEST['dispatch'])) {
-	$_SESSION['state']['orders']['table']['dispatch']=$_REQUEST['dispatch'];
-}
-
-$block_view=$_SESSION['state']['orders']['view'];
-
-$smarty->assign('block_view',$block_view);
-$smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
-$smarty->assign('invoice_type',$_SESSION['state']['orders']['invoices']['invoice_type']);
-$smarty->assign('dn_state_type',$_SESSION['state']['orders']['dn']['dn_state_type']);
-
-$smarty->assign('dn_view',$_SESSION['state']['stores']['delivery_notes']['view']);
-
-if (isset($_REQUEST['from'])) {
-	$from=$_REQUEST['from'];
-}else {
-	$from='';
-}
-
-if (isset($_REQUEST['to'])) {
-	$to=$_REQUEST['to'];
-	$_SESSION['state']['orders']['to']=$to;
-}else {
-	$to='';
-}
-$_SESSION['state']['orders']['to']=$to;
-$_SESSION['state']['orders']['from']=$from;
-
-$smarty->assign('from',$from);
-$smarty->assign('to',$to);
-
-$smarty->assign('box_layout','yui-t0');
 
 
 $css_files=array(
@@ -95,6 +12,7 @@ $css_files=array(
 	'css/container.css',
 	'button.css',
 	'table.css',
+	'css/edit.css',
 	'theme.css.php'
 );
 
@@ -116,8 +34,116 @@ $js_files=array(
 	'js/search.js',
 	'js/edit_common.js',
 	'js/csv_common.js',
-	'orders.js.php'
+	'orders.js.php',
+	'js/calendar_interval.js',
+	'reports_calendar.js.php'
 );
+
+if (!$user->can_view('orders')) {
+	$smarty->assign('parent','orders');
+	$smarty->assign('title', _('Orders'));
+	$smarty->assign('scope', 'orders');
+
+	$smarty->assign('css_files',$css_files);
+	$smarty->assign('js_files',$js_files);
+	$smarty->display('forbidden.tpl');
+	exit;
+}
+
+
+if (isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ) {
+	$store_id=$_REQUEST['store'];
+
+} else {
+	header('Location: orders_server.php?msg=no_store');
+	exit;
+
+}
+
+$store=new Store($store_id);
+if (!$store->id) {
+	header('Location: orders_server.php?msg=wrong_store');
+	exit;
+}
+
+
+if (!($user->can_view('stores') and in_array($store->id,$user->stores)   ) ) {
+	$smarty->assign('parent','orders');
+	$smarty->assign('title', _('Orders').' ('.$store->data['Store Name'].')');
+	$smarty->assign('scope', 'store');
+	$smarty->assign('store', $store);
+	$smarty->assign('css_files',$css_files);
+	$smarty->assign('js_files',$js_files);
+	$smarty->display('forbidden.tpl');
+	exit;
+}
+
+
+$smarty->assign('store',$store);
+$smarty->assign('store_id',$store->id);
+
+
+
+$q='';
+
+
+$smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders');
+
+
+
+
+if (isset($_REQUEST['view']) and preg_match('/^orders|invoices|dn$/',$_REQUEST['view'])) {
+	$_SESSION['state']['orders']['view']=$_REQUEST['view'];
+}
+
+$block_view=$_SESSION['state']['orders']['view'];
+
+$smarty->assign('block_view',$block_view);
+
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from='';
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+	$_SESSION['state']['orders']['to']=$to;
+}else {
+	$to='';
+}
+
+
+
+
+//$period='xxx';
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+	$_SESSION['state']['orders']['period']=$tipo;
+}else {
+	$tipo=$_SESSION['state']['orders']['period'];
+}
+
+$smarty->assign('period_type',$tipo);
+
+
+$report_name='orders';
+
+
+include_once 'report_dates.php';
+
+$_SESSION['state']['orders']['to']=$to;
+$_SESSION['state']['orders']['from']=$from;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+
+//print_r($_SESSION['state']['orders']);
+$smarty->assign('period',$period);
+
+
+
 
 
 
@@ -128,9 +154,9 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$tipo_filter0=($q==''?$_SESSION['state']['orders']['table']['f_field']:'public_id');
+$tipo_filter0=($q==''?$_SESSION['state']['orders']['orders']['f_field']:'public_id');
 $smarty->assign('filter0',$tipo_filter0);
-$smarty->assign('filter_value0',($q==''?$_SESSION['state']['orders']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['orders']['orders']['f_value']:addslashes($q)));
 $filter_menu0=array(
 	'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
 	'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
@@ -185,17 +211,35 @@ else
 
 
 
-	$total_invoices_and_refunds=$store->get('Total Invoices');
-	$total_invoices=$store->get('Invoices');
-	$total_refunds=$store->get('Refunds');
-	$total_to_pay=$store->get('All To Pay Invoices');
-	$total_paid=$store->get('All Paid Invoices');
+$total_invoices_and_refunds=$store->get('Total Invoices');
+$total_invoices=$store->get('Invoices');
+$total_refunds=$store->get('Refunds');
+$total_to_pay=$store->get('All To Pay Invoices');
+$total_paid=$store->get('All Paid Invoices');
 
 $smarty->assign('total_invoices_and_refunds',$total_invoices_and_refunds);
 $smarty->assign('total_invoices',$total_invoices);
 $smarty->assign('total_refunds',$total_refunds);
 $smarty->assign('total_paid',$total_paid);
 $smarty->assign('total_to_pay',$total_to_pay);
+$smarty->assign('quick_period',$quick_period);
+
+
+$smarty->assign('elements_order_dispatch',$_SESSION['state']['orders']['orders']['elements']['dispatch']);
+$smarty->assign('elements_order_type',$_SESSION['state']['orders']['orders']['elements']['type']);
+$smarty->assign('elements_order_source',$_SESSION['state']['orders']['orders']['elements']['source']);
+$smarty->assign('elements_order_payement',$_SESSION['state']['orders']['orders']['elements']['payment']);
+
+$smarty->assign('elements_invoice_type',$_SESSION['state']['orders']['invoices']['elements']['type']);
+$smarty->assign('elements_invoice_payment',$_SESSION['state']['orders']['invoices']['elements']['payment']);
+
+$smarty->assign('elements_dn_type',$_SESSION['state']['orders']['dn']['elements']['type']);
+$smarty->assign('elements_dn_dispatch',$_SESSION['state']['orders']['dn']['elements']['dispatch']);
+
+
+$smarty->assign('elements_order_elements_type',$_SESSION['state']['orders']['orders']['elements_type']);
+$smarty->assign('elements_dn_elements_type',$_SESSION['state']['orders']['dn']['elements_type']);
+$smarty->assign('elements_invoice_elements_type',$_SESSION['state']['orders']['invoices']['elements_type']);
 
 
 

@@ -111,7 +111,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"note", formatter:this.prepare_note,label:"<?php echo _('Notes')?>",className:"aleft",width:520}
 				       ];
-		request="ar_history.php?tipo=part_cateories&parent=category&parent_key="+Dom.get('category_key').value+"&tableid=1";
+		request="ar_history.php?tipo=part_categories&parent=category&parent_key="+Dom.get('category_key').value+"&tableid=1";
 	   	    this.dataSource1 = new YAHOO.util.DataSource(request);
 
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;

@@ -1303,9 +1303,21 @@ function cancel_add_redirection(){
 
 }
 
-function display_history(){
-Dom.setStyle('the_table1','display','')
-Dom.setStyle('display_history_div','display','none')
+
+
+
+function show_history() {
+    Dom.setStyle(['show_history', ''], 'display', 'none')
+    Dom.setStyle(['hide_history', 'history_table'], 'display', '')
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=page-show_history&value=1', {});
+
+}
+
+function hide_history() {
+    Dom.setStyle(['show_history', ''], 'display', '')
+    Dom.setStyle(['hide_history', 'history_table'], 'display', 'none')
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=page-show_history&value=0', {});
+
 }
 
 
@@ -1343,7 +1355,6 @@ function init(){
   Event.addListener('show_more_configuration', "click", show_more_configuration);
   Event.addListener('hide_more_configuration', "click", hide_more_configuration);
 
-  Event.addListener('display_history', "click", display_history);
 
  
 

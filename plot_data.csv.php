@@ -1694,116 +1694,68 @@ function store_families_pie($data) {
 
 }
 
-function customer_referral_assigned_pie($data) {
-	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Code`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
-		printf("%s;%d;true;B0DE09;customer_categories.php?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
-	}
-}
-
-
-function customer_referral_pie($data) {
-
-	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Code`='Referrer' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-
-		$sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d order by `Category Number Subjects` desc",$row['Category Key']);
-		$res2=mysql_query($sql);
-		while ($row2=mysql_fetch_assoc($res2)) {
-			printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
-		}
-	}
-}
-
-function customer_business_type_assigned_pie($data) {
-	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Code`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d ",$data['store_key']);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
-		printf("%s;%d;true;B0DE09;customer_categories.php?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
-	}
-}
-
 
 function category_assigned_pie($data) {
-	$sql=sprintf("select `Category Subject`,`Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where  `Category Key`=%d ",$data['category_key']);
+	$sql=sprintf("select `Category Subject`,`Category Key`,`Category Number Subjects`,`Category Subjects Not Assigned` from `Category Dimension` where  `Category Key`=%d ",$data['category_key']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
 		switch ($row['Category Subject']) {
 		case 'Customer':
-			$link='customer_categories.php';
+			$link='customer_category.php';
 			break;
 		case 'Product':
-			$link='product_categories.php';
+			$link='product_category.php';
 			break;
 		case 'Supplier':
-			$link='supplier_categories.php';
+			$link='supplier_category.php';
 			break;
 		case 'Family':
-			$link='family_categories.php';
+			$link='family_category.php';
 			break;
 		case 'Invoice':
-			$link='invoice_categories.php';
+			$link='invoice_category.php';
 			break;
 		case 'Part':
-			$link='part_categories.php';
+			$link='part_category.php';
 			break;
 		default:
 			$link='';
 			break;
 		}
 
-		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Children Subjects Not Assigned'],'');
-		printf("%s;%d;true;B0DE09;$link?id=%d;%s\n",_('Assigned'),$row['Category Children Subjects Assigned'],$row['Category Key'],'');
+		printf("%s;%d;;ff0000;;%s;40\n",_('No assigned'),$row['Category Subjects Not Assigned'],'');
+		printf("%s;%d;true;B0DE09;$link?id=%d;%s\n",_('Assigned'),$row['Category Number Subjects'],$row['Category Key'],'');
 	}
 }
 
 
-
-
-function customer_business_type_pie($data) {
-
-	$sql=sprintf("select `Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Subject`='Customer' and `Category Code`='Type of Business' and `Category Deep`=1 and `Category Store Key`=%d",$data['store_key']);
-	$res=mysql_query($sql);
-	if ($row=mysql_fetch_assoc($res)) {
-
-		$sql=sprintf("select `Category Key`,`Category Number Subjects`,`Category Label` from `Category Dimension` where `Category Subject`='Customer' and `Category Parent Key`=%d order by `Category Number Subjects` desc ",$row['Category Key']);
-		$res2=mysql_query($sql);
-		while ($row2=mysql_fetch_assoc($res2)) {
-			printf("%s;%d;;;customer_categories.php?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
-		}
-	}
-}
 
 
 function category_subjects_pie($data) {
 $max_number_slices=10;
-	$sql=sprintf("select `Category Children`,`Category Subject`,`Category Key`,`Category Children Subjects Assigned`,`Category Children Subjects Not Assigned` from `Category Dimension` where `Category Key`=%d",$data['category_key']);
+	$sql=sprintf("select `Category Children`,`Category Subject`,`Category Key`,`Category Number Subjects`,`Category Subjects Not Assigned` from `Category Dimension` where `Category Key`=%d",$data['category_key']);
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_assoc($res)) {
 
 		switch ($row['Category Subject']) {
 		case 'Customer':
-			$link='customer_categories.php';
+			$link='customer_category.php';
 			break;
 		case 'Product':
-			$link='product_categories.php';
+			$link='product_category.php';
 			break;
 		case 'Supplier':
-			$link='supplier_categories.php';
+			$link='supplier_category.php';
 			break;
 		case 'Family':
-			$link='family_categories.php';
+			$link='family_category.php';
 			break;
 		case 'Invoice':
-			$link='invoice_categories.php';
+			$link='invoice_category.php';
 			break;
 		case 'Part':
-			$link='part_categories.php';
+			$link='part_category.php';
 			break;
 		default:
 			$link='';
@@ -1822,7 +1774,7 @@ $max_number_slices=10;
 			printf("%s;%d;;;$link?id=%d;%s\n",$row2['Category Label'],$row2['Category Number Subjects'],$row2['Category Key'],'');
 		}
 		if($row['Category Children']>$max_number_slices){
-				printf("%s;%d;;;$link?id=%d;%s\n",_('Other Categories'),$row['Category Children Subjects Assigned']-$slices_number_subjects,0,'');
+				printf("%s;%d;;;$link?id=%d;%s\n",_('Other Categories'),$row['Category Number Subjects']-$slices_number_subjects,0,'');
 		}
 		
 		

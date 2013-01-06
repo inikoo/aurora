@@ -314,12 +314,8 @@ class DeliveryNote extends DB_Table {
 
 
 
+		$this->update_item_totals();
 
-		$sql = sprintf("update   `Delivery Note Dimension` set `Delivery Note Distinct Items`=%d,`Delivery Note Estimated Weight`=%f where `Delivery Note Key`=%d"
-			,$distinct_items
-			,$total_estimated_weight
-			,$this->id);
-		mysql_query($sql);
 
 
 
@@ -338,6 +334,33 @@ class DeliveryNote extends DB_Table {
 
 
 		$this->update_xhtml_orders();
+	}
+
+
+	function update_item_totals() {
+
+
+		$estimated_weight=0;
+		$distinct_items=0;
+		$sql=sprintf('select sum((`Order Bonus Quantity`+`Order Quantity`)*`Product Gross Weight`) as estimated_weight,count(*) as num from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Delivery Note Key`=%d  ',$this->id);
+		//    print "$sql\n";
+		//  exit;
+		$res=mysql_query($sql);
+		while ($row=mysql_fetch_assoc($res)) {
+			$estimated_weight=$row['estimated_weight'];
+			$distinct_items=$row['num'];
+
+		}
+
+
+		$this->data['Delivery Note Distinct Items']=$distinct_items;
+		$this->data['Delivery Note Estimated Weights']=$estimated_weight;
+
+		$sql = sprintf("update   `Delivery Note Dimension` set `Delivery Note Distinct Items`=%d,`Delivery Note Estimated Weight`=%f where `Delivery Note Key`=%d"
+			,$distinct_items
+			,$estimated_weight
+			,$this->id);
+		mysql_query($sql);
 	}
 
 
@@ -1042,19 +1065,22 @@ class DeliveryNote extends DB_Table {
 		}else {
 
 
-			$sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Transaction Fact Key`=%d '
+			$sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Order Bonus Quantity`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Transaction Fact Key`=%d '
 				,$otf_key);
 			$res=mysql_query($sql);
 
 			while ($row=mysql_fetch_assoc($res)) {
 
 
-				print_r($row);
+
+//print_r($row);
+
+//print "  xx ".$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity']." xxx";
 
 				$this->create_inventory_transaction_fact_item(
 					$row['Product Key'],
 					$row['Order Transaction Fact Key'],
-					$row['Current Autorized to Sell Quantity'],
+				$row['Current Autorized to Sell Quantity']+$row['Order Bonus Quantity'],
 					$row['Supplier Metadata']
 				);
 
@@ -1068,6 +1094,8 @@ class DeliveryNote extends DB_Table {
 
 	function create_inventory_transaction_fact_item($product_key,$map_to_otf_key,$to_sell_quantity,$supplier_metadata_array) {
 
+
+//print "xxx $product_key,$map_to_otf_key,  -> $to_sell_quantity,$supplier_metadata_array xxx";
 
 		$date=$this->data['Delivery Note Date Created'];
 		$skus_data=array();
@@ -1093,7 +1121,6 @@ class DeliveryNote extends DB_Table {
 
 			$part = new Part ('sku',$part_data['Part SKU']);
 			$quantity_to_be_taken=$part_data['Parts Per Product'] * $to_sell_quantity;
-
 
 			$locations=$part->get_picking_location_key($date,$quantity_to_be_taken);
 
@@ -1150,7 +1177,7 @@ class DeliveryNote extends DB_Table {
 
 			foreach ($locations as $location_data) {
 
-
+			
 				$location_key=$location_data['location_key'];
 				$quantity_taken_from_location=$location_data['qty'];
 
@@ -2302,7 +2329,7 @@ class DeliveryNote extends DB_Table {
 			,$this->id
 		);
 		mysql_query($sql);
-		
+
 
 		$this->update_xhtml_state();
 		foreach ($this->get_orders_objects() as $order) {
@@ -2439,40 +2466,40 @@ class DeliveryNote extends DB_Table {
 	}
 
 
-function get_transaction_value($sku,$qty,$date=false){
+	function get_transaction_value($sku,$qty,$date=false) {
 
 
 
-$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
-				,prepare_mysql($date)
-				,$sku
+		$sql=sprintf("select sum(ifnull(`Inventory Transaction Quantity`,0)) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d "
+			,prepare_mysql($date)
+			,$sku
 
-			);
-			$res_old_stock=mysql_query($sql);
-			//print "$sql\n";
-			$old_qty=0;
-			$old_value=0;
+		);
+		$res_old_stock=mysql_query($sql);
+		//print "$sql\n";
+		$old_qty=0;
+		$old_value=0;
 
-			if ($row_old_stock=mysql_fetch_array($res_old_stock)) {
-				$old_qty=round($row_old_stock['stock'],3);
-				$old_value=$row_old_stock['value'];
-			}
-			$transaction_value=$this->get_value_change($sku,-1*$qty,$old_qty,$old_value,$date);
+		if ($row_old_stock=mysql_fetch_array($res_old_stock)) {
+			$old_qty=round($row_old_stock['stock'],3);
+			$old_value=$row_old_stock['value'];
+		}
+		$transaction_value=$this->get_value_change($sku,-1*$qty,$old_qty,$old_value,$date);
 
-return $transaction_value;
+		return $transaction_value;
 
-}
+	}
 
 
 
 	function set_as_picked($itf_key,$qty,$date=false,$picker_key=false) {
-	
-	$historic=true;
-	
-		if (!$date){
+
+		$historic=true;
+
+		if (!$date) {
 			$date=gmdate("Y-m-d H:i:s");
-			$false=true;	
-		}	
+			$false=true;
+		}
 		$this->historic=false;
 
 		if (!$picker_key) {
@@ -2510,14 +2537,14 @@ return $transaction_value;
 
 
 
-			
-			
-			
+
+
+
 			$transaction_value=$this->get_transaction_value($sku,$qty,($historic?$date:false));
-			
+
 
 			$cost_storing=0;
-			
+
 
 			//****
 			//transaction value
@@ -2927,14 +2954,6 @@ return $transaction_value;
 
 
 		$invoice->update_totals();
-
-
-		//$shipping_amount=$this->calculate_shipping();
-		//print $shipping_amount;
-		//$charges_amount=$this->calculate_charges();
-		//$invoice->update_shipping($shipping_amount);
-		//$invoice->update_charges($shipping_amount);
-
 
 
 

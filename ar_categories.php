@@ -23,6 +23,8 @@ switch ($tipo) {
 case('get_branch_type_elements'):
 	$data=prepare_values($_REQUEST,array(
 			'subject'  =>array('type'=>'string'),
+			'warehouse_key'  =>array('type'=>'key','optional'=>true),
+			'store_key'  =>array('type'=>'key','optional'=>true),
 		));
 	get_branch_type_elements($data);
 	break;
@@ -42,6 +44,13 @@ function list_main_categories() {
 		$parent=$_REQUEST['parent'];
 	else {
 		exit("error: no parent");
+	}
+
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit("error: no parent key");
 	}
 
 
@@ -99,12 +108,15 @@ function list_main_categories() {
 	$where="where  `Category Parent Key`=0";
 
 	switch ($parent) {
-	case('part_categories'):
-		$where.=" and `Category Subject`='Part'";
+		case('customer_categories'):
+		$where.=sprintf(" and `Category Subject`='Customer' and `Category Store Key`=%d  ",$parent_key);
 		break;
-		case('supplier_categories'):
+	case('part_categories'):
+		$where.=sprintf(" and `Category Subject`='Part' and `Category Warehouse Key`=%d  ",$parent_key);
+		break;
+	case('supplier_categories'):
 		$where.=" and `Category Subject`='Supplier'";
-		break;	
+		break;
 	default:
 		exit('error: unknown parent category: '.$parent);
 	}
@@ -213,14 +225,82 @@ function list_main_categories() {
 		$code=sprintf('<a href="category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Code']);
 		$label=sprintf('<a href="category.php?id=%d">%s</a>',$row['Category Key'],$row['Category Label']);
 
+		switch ($row['Category Branch Type']) {
+		case('Root'):
+			$branch_type='<img src="art/icons/category_root'.($row['Category Can Have Other']=='Yes'?($row['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'.png" title="'.$row['Category Plain Branch Tree'].'" />';
+			break;
+		case('Node'):
+			$branch_type='<img src="art/icons/category_node'.($row['Category Can Have Other']=='Yes'?($row['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'" />';
+			break;
+		case('Head'):
+			if ($row['Is Category Field Other']=='No')
+				$branch_type='<img src="art/icons/category_head.png" title="'.$row['Category Plain Branch Tree'].'" />';
+			else
+				$branch_type='<img src="art/icons/category_head_other.png" title="'.$row['Category Plain Branch Tree'].'" />';
 
+		}
+		
+		
+		
+			if ($row['Category Show Subject User Interface']=='Yes') {
+			if ($row['Category Show Public New Subject']=='Yes') {
+				if ($row['Category Show Public Edit']=='Yes') {
+					$image_tag='yyy';
+				}else {
+					$image_tag='yyn';
+				}
+			}
+			else {
+				if ($row['Category Show Public Edit']=='Yes') {
+					$image_tag='yny';
+				}else {
+					$image_tag='ynn';
+				}
+
+			}
+
+
+		}else {
+			if ($row['Category Show Public New Subject']=='Yes') {
+
+				if ($row['Category Show Public Edit']=='Yes') {
+					$image_tag='nyy';
+				}else {
+					$image_tag='nyn';
+				}
+
+
+
+			}else {
+
+
+				if ($row['Category Show Public Edit']=='Yes') {
+					$image_tag='nny';
+				}else {
+					$image_tag='nnn';
+				}
+
+
+			}
+
+		}
+
+		$public_view_icon='<img src="art/icons/category_user_view_'.$image_tag.'.png" title="'._('Category View').'" /> ';
+		
+		if($row['Category Subject']=='Customer'){
+		$branch_type.=' '.$public_view_icon;
+		}
+		
+		
 		$adata[]=array(
 			'id'=>$row['Category Key'],
 			'code'=>$code,
 			'label'=>$label,
-			'subjects'=>number($row['Category Children Subjects Assigned']),
+			'branch_type'=>$branch_type,
+			'public_view'=>$public_view_icon,
+			'subjects'=>number($row['Category Number Subjects']),
 			'children'=>number($row['Category Children']),
-			'percentage_assigned'=>percentage($row['Category Children Subjects Assigned'],$row['Category Children Subjects Not Assigned']+$row['Category Children Subjects Assigned'])
+			'percentage_assigned'=>percentage($row['Category Number Subjects'],$row['Category Subjects Not Assigned']+$row['Category Number Subjects'])
 
 
 		);
@@ -250,10 +330,21 @@ function list_main_categories() {
 
 function get_branch_type_elements($data) {
 
+$other_where='';
+
+
+if(isset($data['warehouse_key'])){
+	$other_where.=sprintf(" and `Category Warehouse Key`=%d",$data['warehouse_key']);
+}
+if(isset($data['store_key'])){
+	$other_where.=sprintf(" and `Category Store Key`=%d",$data['store_key']);
+}
 
 	$elements_number=array('Root'=>0,'Node'=>0,'Head'=>0);
-	$sql=sprintf("select count(*) as num ,`Category Branch Type` from  `Category Dimension` where  `Category Subject`=%s group by  `Category Branch Type`   ",
-		prepare_mysql($data['subject']));
+	$sql=sprintf("select count(*) as num ,`Category Branch Type` from  `Category Dimension` where  `Category Subject`=%s %s group by  `Category Branch Type`   ",
+		prepare_mysql($data['subject']),
+		$other_where
+		);
 	//print_r($sql);
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {

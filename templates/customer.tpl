@@ -1,28 +1,17 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 	<div style="padding:0px 20px;">
-	<input type="hidden" id="customer_key" value="{$customer->id}">
-
-		{include file='contacts_navigation.tpl'} 
+		<input type="hidden" id="customer_key" value="{$customer->id}"> {include file='contacts_navigation.tpl'} 
 		<div class="branch">
-			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home"/></a>&rarr;  {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
+			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
 		</div>
 		<div id="top_page_menu" class="top_page_menu">
 			<div class="buttons" style="float:left">
-				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'"  title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if} 
-
-			<span class="id main_title">{$id}</span>		
-				
+				{if isset($parent_list)}<img style="vertical-align:xbottom;xfloat:none" class="previous" onmouseover="this.src='art/previous_button.gif'" onmouseout="this.src='art/previous_button.png'" title="{t}Previous Customer{/t} {$prev.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" onclick="window.location='customer.php?{$parent_info}id={$prev.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/previous_button.png" />{/if} <span class="id main_title">{$id}</span> 
 			</div>
 			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button>
-				<button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button> 
-				<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> 
-				{if $new_customer}
-			     <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button>
-				
-			{/if}
+				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button> <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -30,51 +19,38 @@
 		<input type="hidden" id="modify" value="{$modify}" />
 		<input type="hidden" id="other_email_count" value="{$other_email_count}" />
 		<div style="width:520px;float:left;padding-top:0px">
-					
-
-			
-			
-			<span id="warning_message" class="edit_td_alert"> {foreach from=$all_warning item=item key=key} {foreach from=$item item=msg key=msg_key}  {$msg}<br />
+			<span id="warning_message" class="edit_td_alert"> {foreach from=$all_warning item=item key=key} {foreach from=$item item=msg key=msg_key} {$msg}<br />
 			{/foreach} {/foreach} </span> 
 			<table id="customer_data" border="0" style="width:100%;border-collapse: collapse;">
-			<tr>
-			<td colspan=2>
-			
-			<div style="border:0px solid red;float:left;margin-right:20px">
-					{if $customer->get_image_src()}
-		<img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px" > 
-		{else}
-		<img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> 
-		{/if}
+				<tr>
+					<td colspan="2"> 
+					<div style="border:0px solid red;float:left;margin-right:20px">
+						{if $customer->get_image_src()} <img id="avatar" src="{$customer->get_image_src()}" style="cursor:pointer;border:1px solid #eee;height:45px;max-width:100px"> {else} <img id="avatar" src="art/avatar.jpg" style="cursor:pointer;"> {/if} 
 					</div>
-			
-			<h1 style="padding-bottom:0px;width:300px">
-				<span id="customer_name_heading" style="padding:2px 7px;padding-left:0;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"><span id="customer_name">{$customer->get('Customer Name')}</span> <img onmouseover="Dom.addClass('customer_name_heading','edit_over')" onmouseout="Dom.removeClass('customer_name_heading','edit_over')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> 
-			</h1>
-			<table class="customer_show_data">
-			{if $customer->get('Customer Main Contact Key')} 
+					<h1 style="padding-bottom:0px;width:300px">
+						<span id="customer_name_heading" style="padding:2px 7px;padding-left:0;border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_name_edit','visibility','hidden')"><span id="customer_name">{$customer->get('Customer Name')}</span> <img onmouseover="Dom.addClass('customer_name_heading','edit_over')" onmouseout="Dom.removeClass('customer_name_heading','edit_over')" id="quick_edit_name_edit" style="cursor:pointer;visibility:hidden;padding-bottom:3px" src="art/icons/edit.gif"></span> 
+					</h1>
+					<table class="customer_show_data">
+						{if $customer->get('Customer Main Contact Key')} 
 						<tr id="main_contact_name_tr" onmouseover="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_main_contact_name_edit','visibility','hidden')">
 							<td id="main_contact_name" colspan="2" class="aright">{$customer->get('Customer Main Contact Name')}</td>
 							<td><img alt="{t}Name{/t}" title="{t}Name{/t}" src="art/icons/user_suit.png" /></td>
 							<td><img onmouseover="Dom.addClass('main_contact_name_tr','edit_over')" onmouseout="Dom.removeClass('main_contact_name_tr','edit_over')" id="quick_edit_main_contact_name_edit" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} 
-			
-			</table>
-			
-			</td>
-			<td>
-			
-			</td>
-			</tr>
-			
-			<tr>
+					</table>
+					</td>
+					<td> </td>
+				</tr>
+				<tr>
 					{if $customer->get('Customer Main Address Key')} 
 					<td id="main_address_td" style="border:1px dotted #fff" onmouseover="Dom.setStyle('quick_edit_main_address','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_main_address','visibility','hidden')"> <img onmouseover="Dom.addClass('main_address_td','edit_over')" onmouseout="Dom.removeClass('main_address_td','edit_over')" id="quick_edit_main_address" style="float:right;cursor:pointer;visibility:hidden" src="art/icons/edit.gif"> 
 					<div id="main_address">
 						{$customer->get('Customer Main XHTML Address')} 
 					</div>
-					<div style="margin-top:3px" class="buttons small left"><button onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')"><img style="height:12px" src="art/icons/printer.png" alt=""> {t}Label{/t}</button></div>
+					<div style="margin-top:3px" class="buttons small left">
+						<button onclick="window.open('customers_address_label.pdf.php?type=customer&id={$customer->id}&label=99012')"><img style="height:12px" src="art/icons/printer.png" alt=""> {t}Label{/t}</button>
+					</div>
 					</td>
 					{/if} 
 					<td valign="top"> 
@@ -82,33 +58,25 @@
 						{if $customer->get('Customer Registration Number')} 
 						<tr id="registration_number_tr" onmouseover="Dom.setStyle('quick_edit_registration_number','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_registration_number','visibility','hidden')">
 							<td id="registration_number" colspan="2" class="aright">{$customer->get('Customer Registration Number')}</td>
-							<td><img  alt="{t}Registration Number{/t}" title="{t}Registration Number{/t}" src="art/icons/certificate.png" /></td>
+							<td><img alt="{t}Registration Number{/t}" title="{t}Registration Number{/t}" src="art/icons/certificate.png" /></td>
 							<td><img onmouseover="Dom.addClass('registration_number_tr','edit_over')" onmouseout="Dom.removeClass('registration_number_tr','edit_over')" id="quick_edit_registration_number" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
-						{/if}
-						{if $customer->get('Customer Tax Number')} 
+						{/if} {if $customer->get('Customer Tax Number')} 
 						<tr id="tax_tr" onmouseover="Dom.setStyle('quick_edit_tax','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_tax','visibility','hidden')">
 							<td id="tax" colspan="2" class="aright">{$customer->get('Customer Tax Number')}</td>
-							<td>
-							
-							<img  id="check_tax_number"  onClick="check_tax_number" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" src="{if $customer->get('Customer Tax Number Valid')=='No'}art/icons/taxation_error.png{elseif $customer->get('Customer Tax Number Valid')=='Yes' and $customer->get('Customer Tax Number Details Match')=='No' }art/icons/taxation_yellow.png{elseif $customer->get('Customer Tax Number Valid')=='Yes'}art/icons/taxation_green.png{else}art/icons/taxation.png{/if}" />
-							
-							</td>
+							<td> <img id="check_tax_number" onclick="check_tax_number" alt="{t}Tax Number{/t}" title="{t}Tax Number{/t}" style="width:16px;cursor:pointer" src="{if $customer->get('Customer Tax Number Valid')=='No'}art/icons/taxation_error.png{elseif $customer->get('Customer Tax Number Valid')=='Yes' and $customer->get('Customer Tax Number Details Match')=='No' }art/icons/taxation_yellow.png{elseif $customer->get('Customer Tax Number Valid')=='Yes'}art/icons/taxation_green.png{else}art/icons/taxation.png{/if}" /> </td>
 							<td><img onmouseover="Dom.addClass('tax_tr','edit_over')" onmouseout="Dom.removeClass('tax_tr','edit_over')" id="quick_edit_tax" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
-						{/if} 
-						
-						{if $customer->get('Customer Main Email Key')!=''} 
+						{/if} {if $customer->get('Customer Main Email Key')!=''} 
 						<tr id="main_email_tr" onmouseover="Dom.setStyle('quick_edit_email','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_email','visibility','hidden')">
-							<td id="main_email" colspan="2" class="aright">{if $customer->get_main_email_user_key()}<a href="site_user.php?id={$customer->get_main_email_user_key()}" ><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if} {$customer->get('Customer Main XHTML email')}</td>
+							<td id="main_email" colspan="2" class="aright">{if $customer->get_main_email_user_key()}<a href="site_user.php?id={$customer->get_main_email_user_key()}"><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if} {$customer->get('Customer Main XHTML email')}</td>
 							<td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png" /></td>
 							<td id="email_label{$customer->get('Customer Main Email Key')}" style="color:#777;font-size:80%">{$customer->get_principal_email_comment()} <img onmouseover="Dom.addClass('main_email_tr','edit_over')" onmouseout="Dom.removeClass('main_email_tr','edit_over')" id="quick_edit_email" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/if} {foreach from=$customer->get_other_emails_data() item=other_email key=key} 
 						<tr id="other_email_tr" onmouseover="Dom.setStyle('quick_edit_other_email{$key}','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_other_email{$key}','visibility','hidden')">
-							<td id="email{$key}" colspan="2" class="aright">{if $other_email.user_key}<a href="site_user.php?id={$other_email.user_key}" ><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if}  {$other_email.xhtml}</td>
+							<td id="email{$key}" colspan="2" class="aright">{if $other_email.user_key}<a href="site_user.php?id={$other_email.user_key}"><img src="art/icons/world.png" style="width:12px" title="{t}Register User{/t}" alt="{t}Register User{/t}"></a>{/if} {$other_email.xhtml}</td>
 							<td><img alt="{t}Email{/t}" title="{t}Email{/t}" src="art/icons/email.png" /></td>
-							
 							<td id="email_label{$key}" style="color:#777;font-size:80%">{$other_email.label} <img onmouseover="Dom.addClass('other_email_tr','edit_over')" onmouseout="Dom.removeClass('other_email_tr','edit_over')" id="quick_edit_other_email{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
 						{/foreach} {if $customer->get('Customer Main Telephone Key')} 
@@ -147,18 +115,13 @@
 							<td><img alt="{t}Fax{/t}" title="{t}Fax{/t}" src="art/icons/printer.png" /></td>
 							<td id="fax_label{$key}" style="color:#777;font-size:80%">{$other_tel.label} <img onmouseover="Dom.addClass('other_fax_tr','edit_over')" onmouseout="Dom.removeClass('other_fax_tr','edit_over')" id="quick_edit_other_fax{$key}" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
-						{/foreach} 
-
-						{if $customer->get('Customer Website')} 
+						{/foreach} {if $customer->get('Customer Website')} 
 						<tr id="website_tr" onmouseover="Dom.setStyle('quick_edit_website','visibility','visible')" onmouseout="Dom.setStyle('quick_edit_website','visibility','hidden')">
 							<td id="website" colspan="2" class="aright">{$customer->get('Customer Website')}</td>
 							<td><img alt="{t}Fax{/t}" title="{t}Website{/t}" src="art/icons/world.png" /></td>
 							<td id="website_label{$customer->get('Customer Main FAX Key')}" style="color:#777;font-size:80%"><img onmouseover="Dom.addClass('website_tr','edit_over')" onmouseout="Dom.removeClass('website_tr','edit_over')" id="quick_edit_website" style="cursor:pointer;visibility:hidden" src="art/icons/edit.gif"></td>
 						</tr>
-						{/if}
-
-
-						{foreach from=$show_case key=name item=value} {if $value!=''} 
+						{/if} {foreach from=$show_case key=name item=value} {if $value!=''} 
 						<tr>
 							<td colspan="2" class="aright">{$value}</td>
 							<td 
@@ -187,69 +150,54 @@
 					</tr>
 				</tbody>
 			</table>
-			
 		</div>
-		
 		<div style="margin-top:3px;width:370px;float:left">
-		
-		<div id="sticky_note_div" class="sticky_note" >
-			<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
-			<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">{$customer->get('Sticky Note')}</div>
-		</div>
-		<div style="clear:both">
-		</div>
-		
-		
+			<div id="sticky_note_div" class="sticky_note">
+				<img id="sticky_note_bis" style="float:right;cursor:pointer" src="art/icons/edit.gif"> 
+				<div id="sticky_note_content" style="padding:10px 15px 10px 15px;">
+					{$customer->get('Sticky Note')}
+				</div>
+			</div>
+			<div style="clear:both">
+			</div>
 			<div id="overviews" style="padding:20px;font-size:90%">
-			
-			{if $customer->get_credits()>0} 
+				{if $customer->get_credits()>0} 
 				<div id="customer_overview" style="float:left;margin-bottom:10px;">
 					<h2 style="font-size:100%;padding:0;font-weight:800">
 						{t}Balance{/t} 
 					</h2>
 					<table style="padding:0 5px;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
 						<tr>
-							<td> 
-							{t}Credits{/t}
-							</td>
-							<td>
-							 {$customer->get_credits_formated()}
-							</td>
-							</tr>
+							<td> {t}Credits{/t} </td>
+							<td> {$customer->get_credits_formated()} </td>
+						</tr>
 					</table>
 				</div>
 				{/if} 
-			
 				<div id="orders_overview" style="float:left;;margin-right:40px;width:300px">
 					<h2 style="font-size:100%;padding:0;font-weight:800">
 						{t}Customer Overview{/t} 
 					</h2>
-					<table border=0 style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
-						
-						 {if $customer->get('Customer Type by Activity')=='Losing'} 
-						
-						<tr><td colspan="2">{t}Losing Customer{/t}</td></tr>
+					<table border="0" style="padding:0;margin:0;border-top:1px solid #ccc;;border-bottom:1px solid #ddd;min-width:350px">
+						{if $customer->get('Customer Type by Activity')=='Losing'} 
+						<tr>
+							<td colspan="2">{t}Losing Customer{/t}</td>
+						</tr>
 						{elseif $customer->get('Customer Type by Activity')=='Lost'} 
-							<tr><td >{t}Lost Customer{/t}</td><td>{$customer->get('Lost Date')}</td></tr>
-								 
-								 
-								  
-								  						
-
-								  {/if}
-						
-						
-						
-					
-						
-						<tr>	<td >{t}Contact Since{/t}:</td><td>{$customer->get('First Contacted Date')}</td></tr>
-						
-						{if $correlation_msg}
+						<tr>
+							<td>{t}Lost Customer{/t}</td>
+							<td>{$customer->get('Lost Date')}</td>
+						</tr>
+						{/if} 
+						<tr>
+							<td>{t}Contact Since{/t}:</td>
+							<td>{$customer->get('First Contacted Date')}</td>
+						</tr>
+						{if $correlation_msg} 
 						<tr>
 							<td>{$correlation_msg}</td>
 						</tr>
-						{/if}
-						{if $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'} 
+						{/if} {if $customer->get('Customer Send Newsletter')=='No' or $customer->get('Customer Send Email Marketing')=='No' or $customer->get('Customer Send Postal Marketing')=='No'} 
 						<tr>
 							<td> 
 							<div>
@@ -260,16 +208,12 @@
 							</div>
 							</td>
 						</tr>
-						{/if}
-						
-						
-						{foreach from=$categories_data item=item key=key} 
+						{/if} {foreach from=$categories_data item=item key=key} 
 						<tr>
 							<td>{$item.root_label}:</td>
 							<td>{$item.value}</td>
 						</tr>
 						{/foreach} 
-						
 					</table>
 				</div>
 				{if $customer->get('Customer Orders')>0} 
@@ -286,15 +230,10 @@
 				</div>
 				{/if} 
 			</div>
-		
-		
 		</div>
-		
-		
-		
 	</div>
-	<div style="clear:both"></div>
-	
+	<div style="clear:both">
+	</div>
 	<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
 		<li> <span class="item {if $view=='details'}selected{/if}" id="details"> <span> {t}Details{/t}</span></span></li>
 		<li> <span class="item {if $view=='history'}selected{/if}" id="history"> <span> {t}History, Notes{/t}</span></span></li>
@@ -312,11 +251,6 @@
 			<div style="clear:both">
 			</div>
 		</div>
-		
-		
-		
-		
-		
 		<h2 style="clear:both">
 			{t}Custom Fields{/t} 
 		</h2>
@@ -378,9 +312,6 @@
 		</div>
 		<div style="clear:both">
 		</div>
-		
-		
-		
 		<div style="clear:both">
 		</div>
 	</div>
@@ -388,24 +319,17 @@
 		<span class="clean_table_title">{t}History/Notes{/t}</span> 
 		<div id="table_type" class="table_type">
 			<div style="font-size:90%" id="transaction_chooser">
-				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> 
-				
-				<span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
-				
+				<span style="float:right;margin-left:20px;" class=" table_type transaction_type state_details {if $elements.Changes}selected{/if} label_customer_history_changes" id="elements_changes" table_type="changes">{t}Changes History{/t} (<span id="elements_changes_number">{$elements_number.Changes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Orders}selected{/if} label_customer_history_orders" id="elements_orders" table_type="orders">{t}Order History{/t} (<span id="elements_orders_number">{$elements_number.Orders}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Notes}selected{/if} label_customer_history_notes" id="elements_notes" table_type="notes">{t}Staff Notes{/t} (<span id="elements_notes_number">{$elements_number.Notes}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Attachments}selected{/if} label_customer_history_attachments" id="elements_attachments" table_type="attachments">{t}Attachments{/t} (<span id="elements_notes_number">{$elements_number.Attachments}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.Emails}selected{/if} label_customer_history_emails" id="elements_emails" table_type="emails">{t}Emails{/t} (<span id="elements_emails_number">{$elements_number.Emails}</span>)</span> <span style="float:right;margin-left:20px" class=" table_type transaction_type state_details {if $elements.WebLog}selected{/if} label_customer_history_weblog" id="elements_weblog" table_type="weblog">{t}WebLog{/t} (<span id="elements_weblog_number">{$elements_number.WebLog}</span>)</span> 
 			</div>
 		</div>
-		
 		<div class="table_top_bar">
-				</div>
-		
-		
+		</div>
 		{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0 } 
 		<div id="table0" class="data_table_container dtable btable">
 		</div>
 	</div>
 	<div id="block_login_stat" class="data_table" style="{if $view!='login_stat'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-	
-	<h2 style="clear:both">
+		<h2 style="clear:both">
 			{t}Login Details{/t} 
 		</h2>
 		<div style="float:left;width:450px">
@@ -428,8 +352,7 @@
 				</tr>
 			</table>
 		</div>
-	
-	{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
+		{include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3 } 
 		<div id="table3" class="data_table_container dtable btable">
 		</div>
 	</div>
@@ -558,8 +481,7 @@
 	<input type="hidden" value='customer' id='attachment_scope'> 
 	<input type="hidden" value='{$customer->id}' id='attachment_scope_key'> 
 	<form enctype="multipart/form-data" method="post" id="upload_attach_form">
-	<table>
-		
+		<table>
 			<input type="hidden" name="attach_customer_key" value="{$customer->id}" />
 			<tr>
 				<td>{t}File{/t}:</td>
@@ -572,15 +494,14 @@
 				<td> 
 				<input style="width:100%" value='' id='attachment_caption' name="caption"> </td>
 			</tr>
-		
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<button class="positive" onclick="save('attach')">{t}Upload{/t}</button> <button onclick="close_dialog('attach')" class="negative">{t}Cancel{/t}</button><br />
-			</div>
-			</td>
-		</tr>
-	</table>
+			<tr>
+				<td colspan="2"> 
+				<div class="buttons">
+					<button class="positive" onclick="save('attach')">{t}Upload{/t}</button> <button onclick="close_dialog('attach')" class="negative">{t}Cancel{/t}</button><br />
+				</div>
+				</td>
+			</tr>
+		</table>
 	</form>
 </div>
 <div id="dialog_make_order" style="padding:20px 20px 0px 20px">
@@ -592,7 +513,6 @@
 			<td colspan="2">{t}Payment Method{/t}:</td>
 		</tr>
 		<tr>
-		
 			<td colspan="2"> 
 			<select id="make_order_payment_method">
 				{if $hq_country=='ESP'} 
@@ -627,9 +547,6 @@
 				</select>
 				</td>
 			</tr>
-			 
-			
-			
 		</tbody>
 		<tr>
 			<td colspan="2">Gold Reward:</td>
@@ -705,49 +622,34 @@
 		</ul>
 	</div>
 </div>
-
 <div id="dialog_check_tax_number" style="padding:10px 20px 10px 10px">
 	<table style="width:100%;margin:5px auto;padding:0px 10px" class="edit">
 		<tr class="title">
-			<td colspan=2>{t}Tax Number:{/t}
-			{$customer->get('Customer Tax Number')}
-			</td>
+			<td colspan="2">{t}Tax Number:{/t} {$customer->get('Customer Tax Number')} </td>
 		</tr>
-			<tr id="check_tax_number_result_tr" style="display:none">
-			<td colspan=2 id="check_tax_number_result"> 
-				
-			</td>
+		<tr id="check_tax_number_result_tr" style="display:none">
+			<td colspan="2" id="check_tax_number_result"> </td>
 		</tr>
-		
 		<tr id="check_tax_number_name_tr" style="display:none">
 			<td>{t}Name:{/t}</td>
-			<td id="check_tax_number_name"> 
-				
-			</td>
+			<td id="check_tax_number_name"> </td>
 		</tr>
 		<tr id="check_tax_number_address_tr" style="display:none">
 			<td>{t}Address:{/t}</td>
-			<td id="check_tax_number_address"> 
-				
-			</td>
+			<td id="check_tax_number_address"> </td>
 		</tr>
-		
 		<tr id="check_tax_number_wait">
-			<td colspan="2"> 
-			<img src="art/loading.gif" alt=""> {t}Processing Request{/t}
-			</td>
+			<td colspan="2"> <img src="art/loading.gif" alt=""> {t}Processing Request{/t} </td>
 		</tr>
-		
 		<tr id="check_tax_number_buttons" style="display:none">
 			<td colspan="2"> 
 			<div class="buttons" style="margin-top:10px">
-				<button  id="save_tax_details_match">{t}Details Match{/t}</button> <button  id="save_tax_details_not_match">{t}Details not match{/t}</button> <button  id="close_check_tax_number">{t}Close{/t}</button>
+				<button id="save_tax_details_match">{t}Details Match{/t}</button> <button id="save_tax_details_not_match">{t}Details not match{/t}</button> <button id="close_check_tax_number">{t}Close{/t}</button> 
 			</div>
 			</td>
 		</tr>
 	</table>
 </div>
-
 <div id="dialog_quick_edit_Customer_Tax_Number" style="padding:10px">
 	<table style="margin:10px">
 		<tr>
@@ -769,7 +671,6 @@
 		</tr>
 	</table>
 </div>
-
 <div id="dialog_quick_edit_Customer_Registration_Number" style="padding:10px">
 	<input type="hidden" value="" id="Customer_Fiscal_Name"> 
 	<table style="margin:10px">
@@ -792,8 +693,6 @@
 		</tr>
 	</table>
 </div>
-
-
 <div id="dialog_quick_edit_Customer_Main_Contact_Name" style="padding:10px">
 	<table style="margin:10px">
 		<tr>
@@ -838,7 +737,6 @@
 </div>
 <div id="dialog_quick_edit_Customer_Main_Email" style="padding:10px">
 	<table style="margin:10px">
-		 
 		<tr style="{if !$customer->get_principal_email_comment()}display:none{/if}">
 			<td>{t}Comment:{/t}</td>
 			<td> 
@@ -849,7 +747,6 @@
 			</div>
 			</td>
 		</tr>
-		
 		<tr>
 			<td>{t}Contact Email:{/t}</td>
 			<td> 
@@ -860,16 +757,13 @@
 			</div>
 			</td>
 		</tr>
-		<tr >
+		<tr>
 			<td colspan="2" style="text-align:right"> 
-			
 			<div class="buttons" style="margin-top:10px" id="Customer_Main_Email_buttons">
-				 <span style="display:none" id="Customer_Main_Email_wait"><span id="Customer_Main_Email_msg"></span>{t}Processing request{/t}</span> <button class="positive" id="save_quick_edit_email">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button> 
+				<span style="display:none" id="Customer_Main_Email_wait"><span id="Customer_Main_Email_msg"></span>{t}Processing request{/t}</span> <button class="positive" id="save_quick_edit_email">{t}Save{/t}</button> <button class="negative" id="close_quick_edit_email">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
-	
-		
 	</table>
 </div>
 {foreach from=$customer->get_other_emails_data() item=other_email key=key} 
@@ -1008,10 +902,8 @@
 		</tr>
 	</table>
 </div>
-
 <div id="dialog_quick_edit_Customer_Website" style="padding:10px">
 	<table style="margin:10px">
-
 		<tr>
 			<td>{t}Website:{/t}</td>
 			<td> 
@@ -1031,8 +923,6 @@
 		</tr>
 	</table>
 </div>
-
-
 {foreach from=$customer->get_other_mobiles_data() item=other_mobile key=key} 
 <div id="dialog_quick_edit_Customer_Mobile{$key}" style="padding:10px">
 	<table style="margin:10px">
@@ -1166,29 +1056,25 @@
 	<input type="hidden" value="{$customer->get_principal_email_comment()}" id="comment_email" />
 </div>
 
-<div id="dialog_orders_in_process_found" style="width:350px;border:1px solid #ccc;text-align:left;padding:10px">
 
+<div id="dialog_orders_in_process_found" style="width:350px;border:1px solid #ccc;text-align:left;padding:10px">
 	<table style="margin:10px" border="0">
-		
 		<tr>
-			<td style="padding-top:10px" ><p  id="orders_in_process_found_orders_list" style="font-size:110%;padding:0;;text-align:center;width:100%"></p></td>
+			<td style="padding-top:10px">
+			<p id="orders_in_process_found_orders_list" style="font-size:110%;padding:0;;text-align:center;width:100%">
+			</p>
+			</td>
 		</tr>
 		<tr>
 			<td style="padding-top:0px" id="orders_in_process_found_msg"></td>
 		</tr>
-		
 		<tr>
-			<td style="padding-top:10px">
+			<td style="padding-top:10px"> 
 			<div class="buttons">
-						<button onClick="force_take_order()" class="positive">{t}Yes{/t}</button> 
-
-						<button onClick="close_dialog_orders_in_process_found()" class="negative">{t}Cancel{/t}</button> 
-
+				<button onclick="force_take_order()" class="positive">{t}Yes{/t}</button> <button onclick="close_dialog_orders_in_process_found()" class="negative">{t}Cancel{/t}</button> 
 			</div>
 			</td>
 		</tr>
 	</table>
 </div>
-
-
 {include file='footer.tpl'} 

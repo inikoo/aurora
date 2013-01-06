@@ -317,6 +317,7 @@ $smarty->assign('parent_title',$parent_title);
 
 
 
+$smarty->assign('show_history',$_SESSION['state']['page']['show_history']);
 
 $smarty->assign('parent','websites');
 $smarty->assign('title',_('Editing Page').': '.$page->data['Page Code'].' ('.$site->data['Site Code'].')');
