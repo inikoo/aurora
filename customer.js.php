@@ -57,123 +57,117 @@ while($row=mysql_fetch_array($res))
 
 ?>
 var onCellClick = function(oArgs) {
-    var target = oArgs.target,
-                 column = this.getColumn(target),
-                          record = this.getRecord(target);
+        var target = oArgs.target,
+            column = this.getColumn(target),
+            record = this.getRecord(target);
 
-    var recordIndex = this.getRecordIndex(record);
-    ar_file='ar_edit_contacts.php';
+        var recordIndex = this.getRecordIndex(record);
+        ar_file = 'ar_edit_contacts.php';
 
-    switch (column.action) {
-    case('edit'):
-           Dom.get('edit_note_history_key').value=record.getData('key');
+        switch (column.action) {
+        case ('edit'):
+            Dom.get('edit_note_history_key').value = record.getData('key');
 
-        Dom.get('edit_note_input').value=record.getData('note');
-                
-         Dom.get('record_index').value=recordIndex;
+            Dom.get('edit_note_input').value = record.getData('note');
 
-     
-  var y=(Dom.getY(target))-0
-    var x=(Dom.getX(target))-200
- Dom.setX('dialog_edit_note', x)
-    Dom.setY('dialog_edit_note', y)
-dialog_edit_note.show();
-    break;
-    case 'delete':
-        if (record.getData('delete')!='') {
+            Dom.get('record_index').value = recordIndex;
 
-            if(record.getData('can_delete')){
-			//window.confirm('Are you ?');
-            var delete_type=record.getData('delete_type');
-            
-			
-			
-			if (window.confirm('Are you sure, you want to '+delete_type+' this row?')) {
-			
-                YAHOO.util.Connect.asyncRequest(
-				
-                    'GET',
-					
-                ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
-				
-                success: function (o) {
-				
-                   //  alert(o.responseText);
-				   
-                        var r = YAHOO.lang.JSON.parse(o.responseText);
-						
-                        if (r.state == 200 && r.action=='deleted') {
 
-                            this.deleteRow(target);
+            var y = (Dom.getY(target)) - 0
+            var x = (Dom.getX(target)) - 200
+            Dom.setX('dialog_edit_note', x)
+            Dom.setY('dialog_edit_note', y)
+            dialog_edit_note.show();
+            break;
+        case 'delete':
+            if (record.getData('delete') != '') {
 
-                        } else if (r.state == 200 && r.action=='discontinued') {
+                if (record.getData('can_delete')) {
+                    //window.confirm('Are you ?');
+                    var delete_type = record.getData('delete_type');
+
+
+
+                    if (window.confirm('Are you sure, you want to ' + delete_type + ' this row?')) {
+
+                        YAHOO.util.Connect.asyncRequest(
+
+                        'GET',
+
+                        ar_file + '?tipo=delete_' + column.object + myBuildUrl(this, record), {
+
+                            success: function(o) {
+
+                                //  alert(o.responseText);
+                                var r = YAHOO.lang.JSON.parse(o.responseText);
+
+                                if (r.state == 200 && r.action == 'deleted') {
+
+                                    this.deleteRow(target);
+
+                                } else if (r.state == 200 && r.action == 'discontinued') {
+
+                                    var data = record.getData();
+
+                                    data['delete'] = r.delete_;
+
+
+                                    data['delete_type'] = r.delete_type;
+                                    this.updateRow(recordIndex, data);
+
+
+                                } else {
+                                    alert(r.msg);
+                                }
+                            },
+                            failure: function(o) {
+
+                            },
+                            scope: this
+                        });
+                    }
+                } else {
+
+
+                    if (record.getData('strikethrough') == 'Yes') var action = 'unstrikethrough_';
+                    else var action = 'strikethrough_';
+
+
+
+                    YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=' + action + column.object + myBuildUrl(this, record), {
+                        success: function(o) {
+                            //   a(o.responseText);
+                            var r = YAHOO.lang.JSON.parse(o.responseText);
 
                             var data = record.getData();
-							
-                            data['delete']=r.delete_;
-							
-							
-                            data['delete_type']=r.delete_type;
-                            this.updateRow(recordIndex,data);
+                            data['strikethrough'] = r.strikethrough;
+                            data['delete'] = r.delete_;
+
+                            //data['delete_type']=r.delete_type;
+                            this.updateRow(recordIndex, data);
 
 
-                        } else {
-                            alert(r.msg);
-                        }
-                    },
-failure: function (o) {
-                        
-                    },
-scope:this
+                        },
+                        failure: function(o) {
+
+                        },
+                        scope: this
+                    });
+
                 }
-                );
-            }
-            }else{
 
-			
-            if(record.getData('strikethrough')=='Yes')
-            var action='unstrikethrough_';
-            else
-             var action='strikethrough_';
 
-        
-        
-            YAHOO.util.Connect.asyncRequest(
-                    'GET',
-                ar_file+'?tipo='+action+column.object + myBuildUrl(this,record), {
-                success: function (o) {
-                  //   a(o.responseText);
-                        var r = YAHOO.lang.JSON.parse(o.responseText);
-                        
-                          var data = record.getData();
-                            data['strikethrough']=r.strikethrough;
-                    data['delete']=r.delete_;
-                    
-                    //data['delete_type']=r.delete_type;
-                            this.updateRow(recordIndex,data);
-                        
-                    
-                    },
-failure: function (o) {
-                        
-                    },
-scope:this
-                }
-                );
-            
+
             }
-            
-            
-            
+            break;
+
+        default:
+
+            this.onEventShowCellEditor(oArgs);
+            break;
         }
-        break;
+    };
 
-    default:
-
-        this.onEventShowCellEditor(oArgs);
-        break;
-    }
-};
 
 var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";
 var validate_scope_data=
@@ -621,8 +615,9 @@ Event.addListener(window, "load", function() {
                       ,{key:"edit", label:"",width:12,sortable:false,action:'edit',object:'customer_history'}
 
 					   ];
-		
-		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&customer_key="+customer_key+"&sf=0&tid="+tableid);
+		request="ar_history.php?tipo=customer_history&parent=customer&parent_key="+customer_key+"&sf=0&tid="+tableid
+		//alert(request)
+		    this.dataSource0  = new YAHOO.util.DataSource(request);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -644,7 +639,7 @@ Event.addListener(window, "load", function() {
 								 formatRow: myRowFormatter,
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['history']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -657,8 +652,8 @@ Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['customer']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['customer']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['customer']['history']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customer']['history']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -668,7 +663,7 @@ Event.addListener(window, "load", function() {
 	    	this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	        this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	        this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-		    this.table0.filter={key:'<?php echo$_SESSION['state']['customer']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['table']['f_value']?>'};
+		    this.table0.filter={key:'<?php echo$_SESSION['state']['customer']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['history']['f_value']?>'};
 
 	        this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	        this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
@@ -683,7 +678,7 @@ Event.addListener(window, "load", function() {
 	    //	    var Dom   = YAHOO.util.Dom;
 	    //alert(Dom.get('f_input'));
 
-	    Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	    //Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 
 
 
@@ -2084,9 +2079,8 @@ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2
 
 
 if(Dom.get('modify').value == 1){ 
-//IE bug
 
-//Start Quick Edit
+
 dialog_quick_edit_Customer_Name = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Name", {context:["customer_name","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Name.render();
 
@@ -2103,8 +2097,10 @@ dialog_quick_edit_Customer_Main_Email = new YAHOO.widget.Dialog("dialog_quick_ed
 dialog_quick_edit_Customer_Main_Email.render();
 dialog_quick_edit_Customer_Main_Address = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Address", {context:["main_address","tl","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Main_Address.render();
+
 dialog_quick_edit_Customer_Main_Telephone = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Telephone", {context:["quick_edit_main_telephone","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Main_Telephone.render();
+
 dialog_quick_edit_Customer_Main_Mobile = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_Mobile", {context:["quick_edit_main_mobile","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_quick_edit_Customer_Main_Mobile.render();
 dialog_quick_edit_Customer_Main_FAX = new YAHOO.widget.Dialog("dialog_quick_edit_Customer_Main_FAX", {context:["quick_edit_main_fax","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
@@ -2147,7 +2143,6 @@ Event.addListener('quick_edit_name_edit', "click", show_edit_name);
 
 Event.addListener('quick_edit_tax', "click", show_edit_tax);
 Event.addListener('quick_edit_registration_number', "click", show_edit_registration_number);
-
 
 Event.addListener('quick_edit_email', "click", dialog_quick_edit_Customer_Main_Email_);
 Event.addListener('quick_edit_main_address', "click", dialog_quick_edit_Customer_Main_Address_);
@@ -2483,7 +2478,7 @@ for(i=0; i<other_email_count; i++)
 function hide_all_dialogs(){
 	for(x in list_of_dialogs)
 		eval(list_of_dialogs[x]).hide();
-		//alert(list_of_dialogs[x])
+		
 }
 
 function show_edit_main_contact_name(){
@@ -2573,11 +2568,7 @@ foreach($customer->get_other_faxes_data() as $key=>$value){
 function validate_customer_name(query){
  validate_general('customer_quick','name',unescape(query));
 }
-/*
-function validate_customer_website(query){
- validate_general('customer_quick','web',unescape(query));
-}
-*/
+
 function validate_customer_website(query){
 //alert('q: ' + query)
 if(query==''){
@@ -2622,7 +2613,7 @@ function validate_email_comment(query){
 }
 
 function validate_customer_email(query){
-//alert('q: ' + query)
+
 if(query==''){
     validate_scope_data.customer_quick.email.validated=true;
     

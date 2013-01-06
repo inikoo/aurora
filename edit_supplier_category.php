@@ -10,6 +10,25 @@ if (!$user->can_view('suppliers')  ) {
 	exit;
 }
 
+if (isset($_REQUEST['id'])) {
+	$category_key=$_REQUEST['id'];
+
+
+} else {
+	header('Location: supplier_categories.php?e=no_cate_key');
+}
+
+
+$category=new Category($category_key);
+if (!$category->id) {
+	header('Location: supplier_categories.php?id=0&error=cat_not_found');
+	exit;
+}
+if ($category->data['Category Subject']!='Supplier') {
+	header('Location: index.php?error_no_wrong_category_id');
+	exit;
+}
+
 
 $modify=$user->can_edit('suppliers');
 if (!$modify) {
@@ -21,13 +40,6 @@ if (!$modify) {
 $smarty->assign('search_label',_('Suppliers'));
 $smarty->assign('search_scope','suppliers');
 
-if (isset($_REQUEST['id'])) {
-	$category_key=$_REQUEST['id'];
-
-
-} else {
-	header('Location: supplier_categories.php?e=no_cate_key');
-}
 
 
 $css_files=array(
@@ -74,12 +86,10 @@ $_SESSION['state']['supplier_categories']['no_assigned_suppliers']['checked_all'
 
 
 
-$category=new Category($category_key);
-if (!$category->id) {
-	header('Location: supplier_categories.php?id=0&error=cat_not_found');
-	exit;
 
-}
+
+
+
 $category_key=$category->id;
 
 $view=$_SESSION['state']['supplier_categories']['edit'];
@@ -102,6 +112,49 @@ if ($category->data['Category Max Deep']<=$category->data['Category Deep'] ) {
 
 $smarty->assign('category',$category);
 $smarty->assign('category_key',$category->id);
+
+
+$order=$_SESSION['state']['supplier_categories']['subcategories']['order'];
+if ($order=='code') {
+	$order='`Category Code`';
+	$order_label=_('Code');
+} else {
+	$order='`Category Label`';
+	$order_label=_('Label');
+}
+$_order=preg_replace('/`/','',$order);
+$sql=sprintf("select `Category Key` as id , `Category Code` as name from `Category Dimension`  where  `Category Parent Key`=%d and `Category Root Key`=%d  and %s < %s  order by %s desc  limit 1",
+	$category->data['Category Parent Key'],
+		$category->data['Category Root Key'],
+	$order,
+	prepare_mysql($category->get($_order)),
+	$order
+);
+//print $sql;
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	$prev['link']='edit_supplier_category.php?id='.$row['id'];
+	$prev['title']=$row['name'];
+	$smarty->assign('prev',$prev);
+}
+mysql_free_result($result);
+
+
+$sql=sprintf(" select`Category Key` as id , `Category Code` as name from `Category Dimension`  where  `Category Parent Key`=%d  and `Category Root Key`=%d    and  %s>%s  order by %s   ",
+	$category->data['Category Parent Key'],
+		$category->data['Category Root Key'],
+	$order,
+	prepare_mysql($category->get($_order)),
+	$order
+);
+
+$result=mysql_query($sql);
+if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	$next['link']='edit_supplier_category.php?id='.$row['id'];
+	$next['title']=$row['name'];
+	$smarty->assign('next',$next);
+}
+mysql_free_result($result);
 
 
 $smarty->assign('show_history',$_SESSION['state']['supplier_categories']['show_history']);

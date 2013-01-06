@@ -120,7 +120,7 @@ function assign_to_category_checked_no_assigned_subject_from_list(category_key) 
 
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
-        //alert(o.responseText)
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -264,7 +264,7 @@ function assign_to_category_checked_assigned_subject_from_list(category_key) {
                 var table = tables.table2;
                 var datasource = tables.dataSource2;
                 datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-                                var table = tables.table1;
+                var table = tables.table1;
                 var datasource = tables.dataSource1;
                 datasource.sendRequest('', table.onDataReturnInitializeTable, table);
                 update_category_history_elements()
@@ -314,6 +314,7 @@ function select_category_head_from_list(oArgs) {
 
     YAHOO.util.Connect.asyncRequest('GET', request, {
         success: function(o) {
+            //alert(o.responseText)
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
                 Dom.setStyle('wait_checked_no_assigned_subjects_assign_to_category', 'display', 'none')
@@ -494,10 +495,10 @@ function onCellClick(oArgs) {
                     var table = tables.table2;
                     var datasource = tables.dataSource2;
                     datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-                var table = tables.table1;
-                var datasource = tables.dataSource1;
-                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-                update_category_history_elements()
+                    var table = tables.table1;
+                    var datasource = tables.dataSource1;
+                    datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+                    update_category_history_elements()
                     Dom.get('number_category_subjects_not_assigned').innerHTML = r.number_category_subjects_not_assigned
                     Dom.get('number_category_subjects_assigned').innerHTML = r.number_category_subjects_assigned
 
@@ -544,10 +545,10 @@ function onCellClick(oArgs) {
                     var table = tables.table2;
                     var datasource = tables.dataSource2;
                     datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-                var table = tables.table1;
-                var datasource = tables.dataSource1;
-                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
-                update_category_history_elements()
+                    var table = tables.table1;
+                    var datasource = tables.dataSource1;
+                    datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+                    update_category_history_elements()
                     uncheck_all_no_assigned_subject()
 
 
@@ -625,11 +626,10 @@ function onCellClick(oArgs) {
 
     case 'edit':
 
-        if (column.object == 'post_to_send') ar_file = 'ar_edit_contacts.php';
 
 
 
-        //alert(ar_file+'?tipo=edit_'+column.object + myBuildUrl(this,record))
+        // alert(ar_file + '?tipo=edit_' + column.object + myBuildUrl(this, record))
         YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=edit_' + column.object + myBuildUrl(this, record), {
             success: function(o) {
                 //alert(o.responseText);
@@ -682,7 +682,7 @@ function dialog_new_category_show() {
     Dom.get('new_category_code').value = '';
     Dom.get('new_category_label').value = '';
     Dom.setStyle(['new_category_no_label_msg', 'new_category_no_code_msg', 'new_category_msg'], 'display', 'none')
-
+    set_new_category_as_normal()
     dialog_new_category.show();
     Dom.get('new_category_code').focus();
 }
@@ -728,6 +728,9 @@ function save_new_category() {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
+                if (r.is_category_other == 'Yes') {
+                    Dom.setStyle('is_category_other_tr', 'display', 'none')
+                }
                 post_create_actions()
                 cancel_new_category()
 
@@ -753,14 +756,14 @@ function set_new_category_as_other() {
     Dom.setStyle(['set_new_category_as_other', 'new_category_label_tr'], 'display', 'none')
     Dom.setStyle(['set_new_category_as_normal', 'new_category_other_title'], 'display', '')
     Dom.get('new_category_other').value = 'Yes';
-    Don.get('new_category_label').value = 'Other';
+    Dom.get('new_category_label').value = 'Other';
 }
 
 function set_new_category_as_normal() {
     Dom.setStyle(['set_new_category_as_other', 'new_category_label_tr'], 'display', '')
     Dom.setStyle(['set_new_category_as_normal', 'new_category_other_title'], 'display', 'none')
     Dom.get('new_category_other').value = 'No';
-    Don.get('new_category_label').value = '';
+    Dom.get('new_category_label').value = '';
 
 }
 
@@ -801,6 +804,12 @@ function save_delete_category_from_list() {
                 datasource.sendRequest('', table.onDataReturnInitializeTable, table);
                 update_category_history_elements()
                 dialog_delete_category_from_list.hide()
+
+                if (r.was_category_other == 'Yes') {
+                    Dom.setStyle('is_category_other_tr', 'display', '')
+
+                }
+
 
             } else {
                 Dom.setStyle('deleting_from_list', 'display', 'none');
@@ -856,13 +865,23 @@ function reset_new_subcategory() {
 
 function save_display_category(key, value, id) {
 
-    var request = 'ar_edit_categories.php?tipo=edit_category&okey=' + key + '&key=' + key + '&newvalue=' + value + '&category_key=' + id
+    var request = 'ar_edit_categories.php?tipo=edit_categories&okey=' + key + '&key=' + key + '&newvalue=' + value + '&id=' + id
+    //   alert(request)
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
+
+
                 Dom.removeClass([r.key + ' Yes', r.key + ' No'], 'selected');
                 Dom.addClass(r.key + ' ' + r.newvalue, 'selected');
+                var table = tables.table1;
+                var datasource = tables.dataSource1;
+                datasource.sendRequest('', table.onDataReturnInitializeTable, table);
+                update_category_history_elements()
+
+                Dom.get('user_view_icon').innerHTML = r.user_view_icon
+
             } else {
                 alert(r.msg)
 
@@ -879,6 +898,7 @@ function post_item_updated_actions(branch, r) {
 
     if (key == 'code') {
         Dom.get('title_code').innerHTML = newvalue;
+
         Dom.get('branch_tree').innerHTML = r.branch_tree;
     }
 
@@ -897,6 +917,8 @@ function post_item_updated_actions(branch, r) {
 
     var request = '&tableid=' + table_id + '&sf=0';
     datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+
+    update_category_history_elements()
 
 }
 
@@ -934,10 +956,9 @@ function save_delete_category() {
     var request = 'ar_edit_categories.php?tipo=delete_category&category_key=' + Dom.get('category_key').value
     Dom.setStyle('deleting', 'display', '');
     Dom.setStyle('delete_category_buttons', 'display', 'none');
-
     YAHOO.util.Connect.asyncRequest('POST', request, {
         success: function(o) {
-alert(o.responseText)
+            
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -995,12 +1016,7 @@ function show_history() {
 
     YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=part_categories-show_history&value=1', {});
 
-
-
 }
-
-
-
 
 function hide_history() {
     Dom.setStyle(['show_history', ''], 'display', '')
@@ -1108,12 +1124,12 @@ function edit_category_init() {
     Event.addListener('clean_table_filter_hide5', "click", hide_filter, 5);
     Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
     Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
-   
+
     Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
     Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
     Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
     Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
-    
+
     Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
     Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
     Event.addListener('clean_table_filter_show2', "click", show_filter, 0);
@@ -1124,13 +1140,13 @@ function edit_category_init() {
     oACDS5.table_id = 5;
     var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5", "f_container5", oACDS5);
     oAutoComp5.minQueryLength = 0;
-    
+
     var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS4.queryMatchContains = true;
     oACDS4.table_id = 4;
     var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
     oAutoComp4.minQueryLength = 0;
-    
+
     var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS3.queryMatchContains = true;
     oACDS3.table_id = 3;
@@ -1148,8 +1164,8 @@ function edit_category_init() {
     oACDS1.table_id = 1;
     var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
     oAutoComp1.minQueryLength = 0;
-    
-        var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
+
+    var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS0.queryMatchContains = true;
     oACDS0.table_id = 0;
     var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS0);

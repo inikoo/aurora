@@ -17,6 +17,19 @@ case('category_heads'):
 case('parts_no_assigned_to_category'):
 	list_parts_no_assigned_to_category();
 	break;
+case('customers_assigned_to_category'):
+	list_customers_assigned_to_category();
+	break;
+case('customers_no_assigned_to_category'):
+	list_customers_no_assigned_to_category();
+	break;
+case('products_assigned_to_category'):
+	list_products_assigned_to_category();
+	break;
+
+case('products_no_assigned_to_category'):
+	list_products_no_assigned_to_category();
+	break;
 case('parts_assigned_to_category'):
 	list_parts_assigned_to_category();
 	break;
@@ -58,6 +71,18 @@ case('associate_subject_to_category'):
 		));
 	associate_subject_to_category($data);
 	break;
+
+case('edit_category_other_value'):
+	$data=prepare_values($_REQUEST,array(
+			'subject_key'  =>array('type'=>'key'),
+			'category_key'  =>array('type'=>'key'),
+			'newvalue'  =>array('type'=>'string'),
+		));
+
+	$data['other_value']=$data['newvalue'];
+	update_other_value($data);
+	break;
+
 case('update_other_value'):
 	$data=prepare_values($_REQUEST,array(
 			'subject_key'  =>array('type'=>'key'),
@@ -143,12 +168,12 @@ case('delete_category'):
 
 
 function create_main_category($raw_data) {
-
+	global $editor;
 	$data=array(
 		'Category Code'=>$raw_data['code'],
 		'Category Label'=>$raw_data['label'],
 		'Category Subject'=>$raw_data['subject'],
-		'Is Category Field Other'=>$raw_data['allow_other'],
+		'Category Can Have Other'=>$raw_data['allow_other'],
 		'Category Store Key'=>$raw_data['store_key'],
 		'Category Warehouse Key'=>$raw_data['warehouse_key'],
 		'Category Max Deep'=>$raw_data['max_deep'],
@@ -156,7 +181,8 @@ function create_main_category($raw_data) {
 		'Category Show Public New Subject'=>$raw_data['show_registration'],
 		'Category Show Public Edit'=>$raw_data['show_profile'],
 		'Category Show Subject User Interface'=>$raw_data['show_ui'],
-		'Category Branch Type'=>'Root'
+		'Category Branch Type'=>'Root',
+		'editor'=>$editor
 
 	);
 	$category=new Category('find create',$data);
@@ -177,14 +203,16 @@ function create_main_category($raw_data) {
 
 function add_category($raw_data) {
 
-
+	global $editor;
 	$data=array(
 		'Category Code'=>$raw_data['code'],
 		'Category Label'=>$raw_data['label'],
-		'Is Category Field Other'>$raw_data['other']
+		'Is Category Field Other'=>$raw_data['other'],
+		'editor'=>$editor
 	);
 
 	$parent_category=new Category($raw_data['parent_key']);
+	$parent_category->editor=$editor;
 	$category=$parent_category->create_children($data);
 
 
@@ -193,7 +221,7 @@ function add_category($raw_data) {
 
 
 	if ($category->new) {
-		$response= array('state'=>200,'action'=>'created','category_key'=>$category->id);
+		$response= array('state'=>200,'action'=>'created','category_key'=>$category->id,'is_category_other'=>$category->data['Is Category Field Other']);
 	} else {
 		if ($category->found)
 			$response= array('state'=>400,'action'=>'found','category_key'=>$category->found_key,'msg'=>_('Category code already used'));
@@ -227,21 +255,21 @@ function list_edit_categories($tipo) {
 		$subcategory_link='edit_customer_category.php';
 		$subject='Customer';
 		break;
-		default:
+	default:
 		exit;
 	}
 
 	$conf=$_SESSION['state'][$conf_branch]['edit_categories'];
 
-	if(isset($_REQUEST['parent']))
-	$parent=$_REQUEST['parent'];
+	if (isset($_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
 	else
 		exit;
-if(isset($_REQUEST['parent_key']))
-	$parent_key=$_REQUEST['parent_key'];
+	if (isset($_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
 	else
 		exit;
-		
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -321,6 +349,12 @@ if(isset($_REQUEST['parent_key']))
 			$where=sprintf("where  `Category Subject`='%s' and  `Category Warehouse Key`=%d ",$subject,
 				$parent_key);
 
+		}else if ($parent=='store') {
+
+			$where=sprintf("where  `Category Subject`='%s' and  `Category Store Key`=%d ",$subject,
+				$parent_key);
+
+
 
 		}else if ($parent=='none') {
 
@@ -348,7 +382,9 @@ if(isset($_REQUEST['parent_key']))
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Category Code` like '".addslashes($f_value)."%'";
+	if ($f_field=='label' and $f_value!='')
+		$wheref.=" and  `Category Label` like '%".addslashes($f_value)."%'";
 
 
 
@@ -390,15 +426,21 @@ if(isset($_REQUEST['parent_key']))
 		switch ($f_field) {
 
 		case('code'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with code like ")." <b>*".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("There isn't any category with code like ")." <b>".$f_value."*</b> ";
+			break;
+		case('label'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("There isn't any category with label like ")." <b>*".$f_value."*</b> ";
 			break;
 		}
 	}
 	elseif ($filtered>0) {
 		switch ($f_field) {
 
-		case('name'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
+		case('code'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total "._('categories with code like')." <b>".$f_value."*</b>";
+			break;
+		case('label'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total "._('categories with label like')." <b>*".$f_value."*</b>";
 			break;
 		}
 	}
@@ -425,13 +467,17 @@ if(isset($_REQUEST['parent_key']))
 
 		switch ($row['Category Branch Type']) {
 		case('Root'):
-			$branch_type='<img src="art/icons/category_root.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of subcategories').'" >['.number($row['Category Children']).']</span>';
+			$branch_type='<img src="art/icons/category_root'.($row['Category Can Have Other']=='Yes'?($row['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of subcategories').'" >['.number($row['Category Children']).']</span>';
 			break;
 		case('Node'):
-			$branch_type='<img src="art/icons/category_node.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of subcategories').'" >['.number($row['Category Children']).']</span>';
+			$branch_type='<img src="art/icons/category_node'.($row['Category Can Have Other']=='Yes'?($row['Category Children Other']=='Yes'?'_with_other':'_can_other'):'').'" /> <span title="'._('Number of subcategories').'" >['.number($row['Category Children']).']</span>';
 			break;
-		default:
-			$branch_type='<img src="art/icons/category_head.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of parts associated with this category').'" >('.number($row['Category Number Subjects']).')</span>';
+		case('Head'):
+			if ($row['Is Category Field Other']=='No')
+				$branch_type='<img src="art/icons/category_head.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of parts associated with this category').'" >('.number($row['Category Number Subjects']).')</span>';
+			else
+				$branch_type='<img src="art/icons/category_head_other.png" title="'.$row['Category Plain Branch Tree'].'" /> <span title="'._('Number of parts associated with this category').'" >('.number($row['Category Number Subjects']).')</span>';
+
 		}
 
 		$delete='<div class="buttons small"><button class="negative">'._('Delete').'</button></div>';
@@ -473,27 +519,33 @@ if(isset($_REQUEST['parent_key']))
 
 
 function edit_categories($data) {
+	global $editor;
 	$category=new Category($data['id']);
-
+	$category->editor=$editor;
 	$translate_keys=array('id'=>'Category Key','code'=>'Category Code'
 		,'label'=>'Category Label'
 		,'new_subject'=>'Category Show Subject User Interface'
 		,'public_new_subject'=>'Category Show Public New Subject'
 		,'public_edit'=>'Category Show Public Edit'
+		,'Category Show Public New Subject'=>'Category Show Public New Subject'
+		,'Category Show Subject User Interface'=>'Category Show Subject User Interface'
+		,'Category Show Public Edit'=>'Category Show Public Edit'
 	);
 
 	//if($data['key']=='name'){$data['key']='Category Code';}
 	$category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
 	if ($category->updated) {
-		$response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value,'branch_tree'=>$category->data['Category XHTML Branch Tree']);
+		$response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value,'branch_tree'=>$category->data['Category XHTML Branch Tree'],'user_view_icon'=>$category->get_user_view_icon());
 	} else {
-		$response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue'],'branch_tree'=>$category->data['Category XHTML Branch Tree']);
+		$response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue'],'branch_tree'=>$category->data['Category XHTML Branch Tree'],'user_view_icon'=>$category->get_user_view_icon());
 	}
 	echo json_encode($response);
 }
 
 function edit_category($data) {
+	global $editor;
 	$category=new Category($data['category_key']);
+	$category->editor=$editor;
 	$translate_keys=array(
 		'category_key'=>'Category Key',
 		'code'=>'Category Code',
@@ -505,10 +557,7 @@ function edit_category($data) {
 	foreach ($data['values'] as $key=>$value) {
 		$field=$translate_keys[$key];
 		$category->update_field_switcher($field,$value['value']);
-		if ($key=='code')
-			$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field],'branch_tree'=>$category->data['Category XHTML Branch Tree']);
-		else
-			$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field]);
+		$responses[]=array('state'=>200,'action'=>($category->new_value?'updated':'no_change'),'key'=>$key,'newvalue'=>$category->data[$field],'branch_tree'=>$category->data['Category XHTML Branch Tree'],'user_view_icon'=>$category->get_user_view_icon());
 
 	}
 
@@ -529,10 +578,11 @@ function delete_category($data) {
 		return;
 	}
 	$category->editor=$editor;
+	$was_category_other=$category->data['Is Category Field Other'];
 	$category->delete();
 	if ($category->deleted) {
 
-		$response=array('state'=>200,'category_key'=>$category->id);
+		$response=array('state'=>200,'category_key'=>$category->id,'was_category_other'=>$was_category_other);
 		echo json_encode($response);
 	} else {
 		$response=array('state'=>400,'category_key'=>$category->id,'msg'=>$category->msg);
@@ -542,8 +592,9 @@ function delete_category($data) {
 }
 
 function disassociate_multiple_subject_from_category($data) {
+	global $editor;
 	$category=new Category($data['category_key']);
-
+	$category->editor=$editor;
 
 
 	if ($data['subject_source_checked_type']=='unchecked') {
@@ -609,10 +660,11 @@ function disassociate_multiple_subject_from_category($data) {
 
 
 function associate_multiple_subject_to_category($data) {
-
+	global $editor;
 
 
 	$category=new Category($data['category_key']);
+	$category->editor=$editor;
 	if ($data['subject_source_checked_type']=='unchecked') {
 		foreach (preg_split('/,/',$data['subject_source_checked_subjects']) as $subject_key) {
 			$category->associate_subject($subject_key);
@@ -703,7 +755,7 @@ function associate_multiple_subject_to_category($data) {
 
 
 function associate_subject_to_category($data) {
-
+	global $editor;
 	$other_value='';
 	if (isset($_REQUEST['other_value']))
 		$other_value=$_REQUEST['other_value'];
@@ -712,6 +764,7 @@ function associate_subject_to_category($data) {
 
 
 	$category=new Category($data['category_key']);
+	$category->editor=$editor;
 	$associated=$category->associate_subject($data['subject_key'],false,$other_value);
 
 
@@ -741,8 +794,9 @@ function associate_subject_to_category($data) {
 
 
 function disassociate_subject_from_category($data) {
-
+	global $editor;
 	$category=new Category($data['category_key']);
+	$category->editor=$editor;
 	$disassociated=$category->disassociate_subject($data['subject_key']);
 
 
@@ -765,11 +819,13 @@ function disassociate_subject_from_category($data) {
 }
 
 function update_other_value($data) {
+	global $editor;
 	$category=new Category($data['category_key']);
+	$category->editor=$editor;
 	$category->update_other_value($data['subject_key'],$data['other_value']);
 
 	$response=array(
-		'state'=>200);
+		'state'=>200,'newvalue'=>$data['other_value']);
 
 	echo json_encode($response);
 
@@ -1379,7 +1435,7 @@ function list_category_heads() {
 	$filter_msg='';
 	$wheref='';
 	if ($f_field=='code' and $f_value!='')
-		$wheref.=" and  `Category Code` like '%".addslashes($f_value)."%'";
+		$wheref.=" and  `Category Code` like '".addslashes($f_value)."%'";
 	if ($f_field=='label' and $f_value!='')
 		$wheref.=" and  `Category Label` like '%".addslashes($f_value)."%'";
 
@@ -1424,7 +1480,7 @@ function list_category_heads() {
 		switch ($f_field) {
 
 		case('code'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("none with code like ")." <b>*".$f_value."*</b> ";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("none with code like ")." <b>".$f_value."*</b> ";
 			break;
 		case('name'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("none with name like ")." <b>*".$f_value."*</b> ";
@@ -1435,7 +1491,7 @@ function list_category_heads() {
 		switch ($f_field) {
 
 		case('code'):
-			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'." $total "._('with code like')." <b>*".$f_value."*</b>";
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'." $total "._('with code like')." <b>".$f_value."*</b>";
 			break;
 		case('label'):
 			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'." $total "._('with name like')." <b>*".$f_value."*</b>";
@@ -1680,7 +1736,7 @@ function list_suppliers_no_assigned_to_category() {
 		$order='`Supplier Code`';
 	elseif ($order=='name')
 		$order='`Supplier Name`';
-	
+
 	$sql="select `Supplier Key`,`Supplier Name`,`Supplier Code` from `Supplier Dimension`  $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
@@ -1946,7 +2002,758 @@ function list_suppliers_assigned_to_category() {
 			'subject_key'=>$data['Supplier Key'],
 			'code'=>sprintf('<a href="supplier.php?sku=%d">%s</a>',$data['Supplier Key'],$data['Supplier Code']),
 			'name'=>$data['Supplier Name'],
-			
+
+			'move'=>$move,
+			'delete'=>$delete,
+			'hierarchy'=>$hierarchy
+		);
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total,
+
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
+
+
+
+function list_customers_no_assigned_to_category() {
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		return;
+	}
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		return;
+	}
+	$conf=$_SESSION['state']['customer_categories']['no_assigned_customers'];
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (!is_numeric($start_from))
+		$start_from=0;
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+
+	} else
+		$number_results=$conf['nr'];
+
+
+
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+
+	if (isset( $_REQUEST['checked_all'])) {
+		$checked_all=$_REQUEST['checked_all'];
+
+	}else {
+		$checked_all=$conf['checked_all'];
+
+	}
+
+
+
+
+	//$check_all=true;
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+	$_SESSION['state']['customer_categories']['no_assigned_customers']['order']=$order;
+	$_SESSION['state']['customer_categories']['no_assigned_customers']['order_dir']=$order_direction;
+	$_SESSION['state']['customer_categories']['no_assigned_customers']['nr']=$number_results;
+	$_SESSION['state']['customer_categories']['no_assigned_customers']['sf']=$start_from;
+	$_SESSION['state']['customer_categories']['no_assigned_customers']['f_field']=$f_field;
+	$_SESSION['state']['customer_categories']['no_assigned_customers']['f_value']=$f_value;
+	$_SESSION['state']['customer_categories']['no_assigned_customers']['checked_all']=$checked_all;
+
+
+	$filter_msg='';
+	$sql_type='customer';
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	if (!is_numeric($start_from))
+		$start_from=0;
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+
+	//NOTE if changed change associate_multiple_subject_to_category too
+	$where=sprintf("where (select count(*) from `Category Bridge` where `Subject`='Customer'and `Category Key`=%d  and `Subject Key`=`Customer Key`)=0 ",
+		$parent_key
+	);
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+	$wheref='';
+
+
+	if (($f_field=='customer name'     )  and $f_value!='') {
+		$wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+	}
+	elseif (($f_field=='postcode'     )  and $f_value!='') {
+		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+	}
+	elseif ($f_field=='id'  )
+		$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+	elseif ($f_field=='last_more' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+	elseif ($f_field=='last_less' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+	elseif ($f_field=='max' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Orders`<=".$f_value."    ";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Orders`>=".$f_value."    ";
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+	elseif ($f_field=='country' and  $f_value!='') {
+		if ($f_value=='UNK') {
+			$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+			$find_data=' '._('a unknown country');
+		} else {
+
+			$f_value=Address::parse_country($f_value);
+			if ($f_value!='UNK') {
+				$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+				$country=new Country('code',$f_value);
+				$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+			}
+
+		}
+	}
+	$sql="select count(`Customer Key`) as total from `Customer Dimension`  $where $wheref ";
+
+
+
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+
+		$sql="select count(`Customer Key`) as total_without_filters from `Customer Dimension`  $where  ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	}
+
+	//print $sql;
+
+
+	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' '._('(Showing all)');
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('customer name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
+			break;
+		case('postcode'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
+			break;
+		case('id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
+			break;
+
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('customer name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+			break;
+		case('id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b>";
+			break;
+		case('postcode'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
+			break;
+		case('last_less'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value);
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency);
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency);
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+
+	$_order=$order;
+	$_order_dir=$order_dir;
+
+	if ($order=='name')
+		$order='`Customer File As`';
+	elseif ($order=='id')
+		$order='`Customer Key`';
+	elseif ($order=='location')
+		$order='`Customer Main Location`';
+	elseif ($order=='orders')
+		$order='`Customer Orders`';
+	elseif ($order=='email')
+		$order='`Customer Main Plain Email`';
+	elseif ($order=='telephone')
+		$order='`Customer Main Plain Telephone`';
+	elseif ($order=='last_order')
+		$order='`Customer Last Order Date`';
+	elseif ($order=='contact_name')
+		$order='`Customer Main Contact Name`';
+	elseif ($order=='address')
+		$order='`Customer Main Location`';
+	elseif ($order=='town')
+		$order='`Customer Main Town`';
+	elseif ($order=='postcode')
+		$order='`Customer Main Postal Code`';
+	elseif ($order=='region')
+		$order='`Customer Main Country First Division`';
+	elseif ($order=='country')
+		$order='`Customer Main Country`';
+	//  elseif($order=='ship_address')
+	//  $order='`customer main ship to header`';
+	elseif ($order=='ship_town')
+		$order='`Customer Main Delivery Address Town`';
+	elseif ($order=='ship_postcode')
+		$order='`Customer Main Delivery Address Postal Code`';
+	elseif ($order=='ship_region')
+		$order='`Customer Main Delivery Address Country Region`';
+	elseif ($order=='ship_country')
+		$order='`Customer Main Delivery Address Country`';
+	elseif ($order=='net_balance')
+		$order='`Customer Net Balance`';
+	elseif ($order=='balance')
+		$order='`Customer Outstanding Net Balance`';
+	elseif ($order=='total_profit')
+		$order='`Customer Profit`';
+	elseif ($order=='total_payments')
+		$order='`Customer Net Payments`';
+	elseif ($order=='top_profits')
+		$order='`Customer Profits Top Percentage`';
+	elseif ($order=='top_balance')
+		$order='`Customer Balance Top Percentage`';
+	elseif ($order=='top_orders')
+		$order='``Customer Orders Top Percentage`';
+	elseif ($order=='top_invoices')
+		$order='``Customer Invoices Top Percentage`';
+	elseif ($order=='total_refunds')
+		$order='`Customer Total Refunds`';
+	elseif ($order=='contact_since')
+		$order='`Customer First Contacted Date`';
+	elseif ($order=='activity')
+		$order='`Customer Type by Activity`';
+	elseif ($order=='logins')
+		$order='`Customer Number Web Logins`';
+	elseif ($order=='failed_logins')
+		$order='`Customer Number Web Failed Logins`';
+	elseif ($order=='requests')
+		$order='`Customer Number Web Requests`';
+	else
+		$order='`Customer File As`';
+
+
+	$sql="select `Customer Orders`,`Customer Main Location`,`Customer Type by Activity`,`Customer Key`,`Customer Name` from `Customer Dimension`  $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
+	$adata=array();
+	$result=mysql_query($sql);
+
+	//print $sql;
+	// if($checked_all){
+	$checkbox_checked_format='<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="no_assigned_subject_%d" onClick="check_no_assigned_subject(%d)"/>';
+	// }else{
+	$checkbox_unchecked_format='<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="no_assigned_subject_%d" onClick="check_no_assigned_subject(%d)"/>';
+	// }
+
+
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+		switch ($data['Customer Type by Activity']) {
+		case 'Inactive':
+			$activity=_('Lost');
+			break;
+		case 'Active':
+			$activity=_('Active');
+			break;
+		case 'Prospect':
+			$activity=_('Prospect');
+			break;
+		default:
+			$activity=$data['Customer Type by Activity'];
+			break;
+		}
+
+		$move_here='<div class="buttons small"><button>'._('Assign Here').'</button></div>';
+
+		$move='<div class="buttons small"><button>'._('Assign to Category').'</button></div>';
+
+
+		$checkbox_checked=sprintf($checkbox_checked_format,
+			$data['Customer Key'],
+			$data['Customer Key']
+		);
+		$checkbox_unchecked=sprintf($checkbox_unchecked_format,
+			$data['Customer Key'],
+			$data['Customer Key']
+		);
+
+		$adata[]=array(
+			'checkbox'=>'',
+			'checkbox_checked'=>$checkbox_checked,
+			'checkbox_unchecked'=>$checkbox_unchecked,
+			'checked'=>0,
+			'subject_key'=>$data['Customer Key'],
+			'id'=>sprintf('<a href="customer.php?id=%d">%05d</a>',$data['Customer Key'],$data['Customer Key']),
+
+			'name'=>sprintf('<a href="customer.php?id=%d">%s</a>',$data['Customer Key'],$data['Customer Name']),
+			'location'=>$data['Customer Main Location'],
+			'orders'=>number($data['Customer Orders']),
+			'activity'=>$activity,
+			'move'=>$move,
+			'move_here'=>$move_here
+		);
+	}
+
+	$response=array('resultset'=>
+		array(
+			'state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+		)
+	);
+	echo json_encode($response);
+}
+function list_customers_assigned_to_category() {
+
+	global $user;
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		return;
+	}
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		return;
+	}
+	$conf=$_SESSION['state']['customer_categories']['edit_customers'];
+
+
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (!is_numeric($start_from))
+		$start_from=0;
+
+	if (isset( $_REQUEST['nr'])) {
+		$number_results=$_REQUEST['nr'];
+
+	} else
+		$number_results=$conf['nr'];
+
+
+
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+
+
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+
+	$_SESSION['state']['customer_categories']['edit_customers']['order']=$order;
+	$_SESSION['state']['customer_categories']['edit_customers']['order_dir']=$order_direction;
+	$_SESSION['state']['customer_categories']['edit_customers']['nr']=$number_results;
+	$_SESSION['state']['customer_categories']['edit_customers']['sf']=$start_from;
+	$_SESSION['state']['customer_categories']['edit_customers']['f_field']=$f_field;
+	$_SESSION['state']['customer_categories']['edit_customers']['f_value']=$f_value;
+
+
+	$filter_msg='';
+	$sql_type='customer';
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+	if (!is_numeric($start_from))
+		$start_from=0;
+	if (!is_numeric($number_results))
+		$number_results=25;
+
+
+
+
+	$where=sprintf("where B.`Category Key`=%d  ",
+		$parent_key
+	);
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+	$wheref='';
+	if (($f_field=='customer name'     )  and $f_value!='') {
+		$wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+	}
+	elseif (($f_field=='postcode'     )  and $f_value!='') {
+		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+	}
+	elseif ($f_field=='id'  )
+		$wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+	elseif ($f_field=='last_more' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+	elseif ($f_field=='last_less' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+	elseif ($f_field=='max' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Orders`<=".$f_value."    ";
+	elseif ($f_field=='min' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Orders`>=".$f_value."    ";
+	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+	elseif ($f_field=='minvalue' and is_numeric($f_value) )
+		$wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+	elseif ($f_field=='country' and  $f_value!='') {
+		if ($f_value=='UNK') {
+			$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+			$find_data=' '._('a unknown country');
+		} else {
+
+			$f_value=Address::parse_country($f_value);
+			if ($f_value!='UNK') {
+				$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+				$country=new Country('code',$f_value);
+				$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+			}
+
+		}
+	}
+	$sql="select count(`Customer Key`) as total from `Customer Dimension` left join `Category Bridge` B on (`Customer Key`=`Subject Key` and `Subject`='Customer') $where $wheref ";
+
+
+	//print $sql;
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+		$total=$row['total'];
+	}
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+
+		$sql="select count(`Customer Key`) as total_without_filters from `Customer Dimension` left join `Category Bridge` B on (`Customer Key`=`Subject Key` and `Subject`='Customer')  $where  ";
+
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+			$total_records=$row['total_without_filters'];
+			$filtered=$row['total_without_filters']-$total;
+		}
+
+	}
+
+	//print $sql;
+
+
+	$rtext=$total_records." ".ngettext('customer','customers',$total_records);
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' '._('(Showing all)');
+	if ($total==0 and $filtered>0) {
+		switch ($f_field) {
+		case('customer name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
+			break;
+		case('postcode'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
+			break;
+		case('id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
+			break;
+
+
+		}
+	}
+	elseif ($filtered>0) {
+		switch ($f_field) {
+		case('customer name'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b>";
+			break;
+		case('id'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b>";
+			break;
+		case('postcode'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
+			break;
+		case('country'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
+			break;
+		case('last_more'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
+			break;
+		case('last_less'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value);
+			break;
+		case('maxvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency);
+			break;
+		case('minvalue'):
+			$filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency);
+			break;
+		}
+	}
+	else
+		$filter_msg='';
+
+
+
+	$_order=$order;
+	$_order_dir=$order_dir;
+
+
+	if ($order=='name')
+		$order='`Customer File As`';
+	elseif ($order=='id')
+		$order='`Customer Key`';
+	elseif ($order=='location')
+		$order='`Customer Main Location`';
+	elseif ($order=='orders')
+		$order='`Customer Orders`';
+	elseif ($order=='email')
+		$order='`Customer Main Plain Email`';
+	elseif ($order=='telephone')
+		$order='`Customer Main Plain Telephone`';
+	elseif ($order=='last_order')
+		$order='`Customer Last Order Date`';
+	elseif ($order=='contact_name')
+		$order='`Customer Main Contact Name`';
+	elseif ($order=='address')
+		$order='`Customer Main Location`';
+	elseif ($order=='town')
+		$order='`Customer Main Town`';
+	elseif ($order=='postcode')
+		$order='`Customer Main Postal Code`';
+	elseif ($order=='region')
+		$order='`Customer Main Country First Division`';
+	elseif ($order=='country')
+		$order='`Customer Main Country`';
+	//  elseif($order=='ship_address')
+	//  $order='`customer main ship to header`';
+	elseif ($order=='ship_town')
+		$order='`Customer Main Delivery Address Town`';
+	elseif ($order=='ship_postcode')
+		$order='`Customer Main Delivery Address Postal Code`';
+	elseif ($order=='ship_region')
+		$order='`Customer Main Delivery Address Country Region`';
+	elseif ($order=='ship_country')
+		$order='`Customer Main Delivery Address Country`';
+	elseif ($order=='net_balance')
+		$order='`Customer Net Balance`';
+	elseif ($order=='balance')
+		$order='`Customer Outstanding Net Balance`';
+	elseif ($order=='total_profit')
+		$order='`Customer Profit`';
+	elseif ($order=='total_payments')
+		$order='`Customer Net Payments`';
+	elseif ($order=='top_profits')
+		$order='`Customer Profits Top Percentage`';
+	elseif ($order=='top_balance')
+		$order='`Customer Balance Top Percentage`';
+	elseif ($order=='top_orders')
+		$order='``Customer Orders Top Percentage`';
+	elseif ($order=='top_invoices')
+		$order='``Customer Invoices Top Percentage`';
+	elseif ($order=='total_refunds')
+		$order='`Customer Total Refunds`';
+	elseif ($order=='contact_since')
+		$order='`Customer First Contacted Date`';
+	elseif ($order=='activity')
+		$order='`Customer Type by Activity`';
+	elseif ($order=='logins')
+		$order='`Customer Number Web Logins`';
+	elseif ($order=='failed_logins')
+		$order='`Customer Number Web Failed Logins`';
+	elseif ($order=='requests')
+		$order='`Customer Number Web Requests`';
+	else
+		$order='`Customer File As`';
+
+	$sql="select B.`Category Key`,`Other Note`,`Category Plain Branch Tree`,`Customer Key`,`Customer Name` from `Customer Dimension` left join `Category Bridge` B on (`Customer Key`=B.`Subject Key` and `Subject`='Customer') left join `Category Dimension` C on (C.`Category Key`=B.`Category Head Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
+	$adata=array();
+	$result=mysql_query($sql);
+	//print $sql;
+
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+		$move='<div class="buttons small"><button>'._('Move').'</button></div>';
+		$delete='<div class="buttons small"><button>'._('Remove').'</button></div>';
+
+
+		$checkbox_unchecked=sprintf('<img src="art/icons/checkbox_unchecked.png" style="width:14px;cursor:pointer" checked=0  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$data['Customer Key'],
+			$data['Customer Key']
+		);
+		$checkbox_checked=sprintf('<img src="art/icons/checkbox_checked.png" style="width:14px;cursor:pointer" checked=1  id="assigned_subject_%d" onClick="check_assigned_subject(%d)"/>',
+			$data['Customer Key'],
+			$data['Customer Key']
+		);
+
+		$hierarchy='<img style="width:14px;" src="art/icons/hierarchy_grey.png" alt="hierarchy" title="'.$data['Category Plain Branch Tree'].'" />';
+		$adata[]=array(
+			'checkbox'=>'',
+			'checkbox_checked'=>$checkbox_checked,
+			'checkbox_unchecked'=>$checkbox_unchecked,
+			'other_value'=>$data['Other Note'],
+			'subject_key'=>$data['Customer Key'],
+			'category_key'=>$data['Category Key'],
+			'id'=>sprintf('<a href="customer.php?id=%d">%05d</a>',$data['Customer Key'],$data['Customer Key']),
+
+			'name'=>sprintf('<a href="customer.php?id=%d">%s</a>',$data['Customer Key'],$data['Customer Name']),
+
 			'move'=>$move,
 			'delete'=>$delete,
 			'hierarchy'=>$hierarchy

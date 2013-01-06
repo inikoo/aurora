@@ -74,7 +74,7 @@ $js_files=array(
               'js/common.js',
               'js/table_common.js',
               'js/search.js',
-              'common_customers.js.php',
+              'js/customers_common.js',
               'new_invoices_list.js.php',
               'js/edit_common.js',
           );

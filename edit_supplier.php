@@ -206,6 +206,7 @@ while ($row=mysql_fetch_assoc($res)) {
 
 }
 
+$smarty->assign('show_history',$_SESSION['state']['supplier']['show_history']);
 
 $smarty->assign('categories',$categories);
 $smarty->assign('categories_value',$categories_value);

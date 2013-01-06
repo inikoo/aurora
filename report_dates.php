@@ -20,7 +20,7 @@ elseif ($tipo=='1w' ) {
 elseif ($tipo=='10d' ) {
 	$tipo='f';
 	$quick_period='10d';
-	$from=date('Y-m-d',strtotime("now -1o day"));;
+	$from=date('Y-m-d',strtotime("now -10 day"));;
 	$to=date("Y-m-d");
 	$link='&tipo=10d';
 	$period=sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x',strtotime($to)));
@@ -97,17 +97,17 @@ elseif ($tipo=='quick_today'  or  $tipo=='today') {
 	$to=date("Y-m-d");
 	$period=strftime("%d %b %Y");
 	$link='today';
-	
-	
-	
+
+
+
 	$year=date('Y',mktime(0,0,0,date('m'),1,date('Y')));
 	$month=date('m',mktime(0,0,0,date('m'),1,date('Y')));
 	$_time=mktime(0, 0, 0,$month ,1 , $year);
 	$_time_n=mktime(0, 0, 0,$month+1 ,1 , $year);
 	$_time_p=mktime(0, 0, 0,$month-1 ,1 , $year);
 
-	
-		$smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
+
+	$smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
 	$smarty->assign('next',array('url'=>'tipo=m&m='.date("m",$_time_n).'&y='.date("Y",$_time_n),'title'=>date("F",$_time_n)));
 	$smarty->assign('prev',array('url'=>'tipo=m&m='.date("m",$_time_p).'&y='.date("Y",$_time_p),'title'=>date("F",$_time_p)));
 
@@ -120,7 +120,7 @@ elseif ($tipo=='quick_today'  or  $tipo=='today') {
 	);
 	//print $sql;
 	$dmy=date('dmy');
-	
+
 	$link="&tipo=m&y=".$year."&m=".$month;
 	$result=mysql_query($sql);
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -153,9 +153,9 @@ elseif ($tipo=='quick_today'  or  $tipo=='today') {
 		);
 	}
 	mysql_free_result($result);
-	
+
 	$smarty->assign('w',$w);
-	
+
 
 }
 elseif ($tipo=='ytd') {
@@ -268,7 +268,7 @@ elseif ($tipo=='last_m') {
 		);
 	}
 	mysql_free_result($result);
-	
+
 	$smarty->assign('w',$w);
 
 

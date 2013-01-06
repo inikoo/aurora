@@ -5,14 +5,9 @@ include_once('common.php');
 if(!$user->can_view('orders'))
   exit();
 ?>
-
+var  link='orders.php';
 var Dom   = YAHOO.util.Dom;
 var Event =YAHOO.util.Event;
-
-var view='<?php echo$_SESSION['state']['orders']['view']?>'
-var dispatch='<?php echo$_SESSION['state']['orders']['table']['dispatch']?>'
-var paid='<?php echo$_SESSION['state']['orders']['table']['paid']?>'
-var order_type='<?php echo$_SESSION['state']['orders']['table']['order_type']?>'
 
 Event.addListener(window, "load", function() {
     tables = new function() {
@@ -26,7 +21,7 @@ Event.addListener(window, "load", function() {
 				       {key:"total_amount", label:"<?php echo _('Total Balance')?>", width:110,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					 ];
 		//alert("ar_orders.php?tipo=orders&where=");
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders&where=");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=orders&where=&parent=store&parent_key="+Dom.get('store_key').value);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -56,7 +51,7 @@ Event.addListener(window, "load", function() {
 						     this.dataSource0, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?php echo$_SESSION['state']['orders']['table']['nr']?>,containers : 'paginator0', 
+									       rowsPerPage    : <?php echo$_SESSION['state']['orders']['orders']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -66,8 +61,8 @@ Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['orders']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['orders']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['orders']['orders']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['orders']['orders']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -76,7 +71,7 @@ Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['orders']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['orders']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['orders']['orders']['f_field']?>',value:'<?php echo$_SESSION['state']['orders']['orders']['f_value']?>'};
 
 	    
 
@@ -162,8 +157,9 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
 
 
 					 ];
-
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_orders.php?tipo=dn&tableid=2");
+		request="ar_orders.php?tipo=dn&tableid=2&where=&parent=store&parent_key="+Dom.get('store_key').value
+		//alert(request)
+	    this.dataSource2 = new YAHOO.util.DataSource(request);
 	    this.dataSource2.table_id=tableid;
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
@@ -218,493 +214,468 @@ request="ar_orders.php?tipo=invoices&tableid=1&parent=store&parent_key="+Dom.get
     });
 
 
-function change_dn_view(o){
 
-if(o.getAttribute('state')=='dn_state'){
+function show_export_dialog(e, table_id) {
 
-dn_state='dn_type';
-Dom.get("dn_view_state_chooser").style.display='none';
-Dom.get("dn_view_type_chooser").style.display='';
-}else{
-dn_state='dn_state';
-Dom.get("dn_view_state_chooser").style.display='';
-Dom.get("dn_view_type_chooser").style.display='none';
+    if (table_id == 0) {
+        Dom.get('export_xls').onclick = function() {
+            window.location = 'export.php?ar_file=ar_orders&tipo=orders&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
+        };
+        Dom.get('export_csv').onclick = function() {
+            window.location = 'export.php?ar_file=ar_orders&tipo=orders&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
+        };
+
+    } else if (table_id == 1) {
+        Dom.get('export_xls').onclick = function() {
+            window.location = 'export.php?ar_file=ar_orders&tipo=invoices&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
+        };
+        Dom.get('export_csv').onclick = function() {
+            window.location = 'export.php?ar_file=ar_orders&tipo=invoices&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
+        };
+
+    } else {
+        Dom.get('export_xls').onclick = function() {
+            window.location = 'export.php?ar_file=ar_orders&tipo=dn&parent=store&parent_key=' + Dom.get('store_key').value + '&output=xls'
+        };
+        Dom.get('export_csv').onclick = function() {
+            window.location = 'export.php?ar_file=ar_orders&tipo=dn&parent=store&parent_key=' + Dom.get('store_key').value + '&output=csv'
+        };
+
+    }
+
+    region1 = Dom.getRegion('export' + table_id);
+    region2 = Dom.getRegion('dialog_export');
+    var pos = [region1.right - 20, region1.bottom]
+    Dom.setXY('dialog_export', pos);
+    dialog_export.show()
 }
 
 
 
 
-o.setAttribute('state',dn_state);
 
- 
-     var table=tables.table2;
-     var datasource=tables.dataSource2;
-     Dom.removeClass(Dom.getElementsByClassName('dn_view','span' , 'dn_table_type'),'selected');;
-     Dom.addClass('restrictions_dn_all','selected');     
-     var request='&dn_state_type=all';
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+function change_order_elements(e, elements_type) {
+    table_id = 0;
 
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-delivery_notes-view&value=' + escape(dn_state) ,{success:function(o) {}});
+    if (elements_type == 'dispatch') ids = ['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'];
+    else if (elements_type == 'source') ids = ['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax']
+    else if (elements_type == 'payment') ids = ['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA']
+    else if (elements_type == 'type') ids = ['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order']
+
+    if (Dom.hasClass(this, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+
+    }
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function change_invoice_elements(e, elements_type) {
+    table_id = 1;
+
+    if (elements_type == 'payment') ids = ['elements_invoice_payment_Partiall', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No']
+    else if (elements_type == 'type') ids = ['elements_invoice_type_Invoice', 'elements_invoice_type_Refund']
+
+    if (Dom.hasClass(this, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+
+    }
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+function change_dn_elements(e, elements_type) {
+    table_id = 2;
+
+
+
+    if (elements_type == 'dispatch') ids = ['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'];
+       else if (elements_type == 'type') ids = ['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages']
+
+    if (Dom.hasClass(this, 'selected')) {
+
+        var number_selected_elements = 0;
+        for (i in ids) {
+            if (Dom.hasClass(ids[i], 'selected')) {
+                number_selected_elements++;
+            }
+        }
+
+        if (number_selected_elements > 1) {
+            Dom.removeClass(this, 'selected')
+
+        }
+
+    } else {
+        Dom.addClass(this, 'selected')
+
+    }
+
+    var table = tables['table' + table_id];
+    var datasource = tables['dataSource' + table_id];
+    var request = '';
+    for (i in ids) {
+        if (Dom.hasClass(ids[i], 'selected')) {
+            request = request + '&' + ids[i] + '=1'
+        } else {
+            request = request + '&' + ids[i] + '=0'
+
+        }
+    }
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+
+
+function get_numbers(tipo, from, to) {
+    var ar_file = 'ar_orders.php';
+    var request = 'tipo=number_' + tipo + 's_in_interval&store_key=' + Dom.get('store_key').value + '&from=' + from + '&to=' + to;
+    YAHOO.util.Connect.asyncRequest('POST', ar_file, {
+        success: function(o) {
+
+            if (tipo == 'delivery_note') tipo = 'dn';
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                for (i in r.elements_numbers) {
+                    for (j in r.elements_numbers[i]) {
+                        //alert('elements_'+tipo+'_' + i + '_' + j + '_number '+'  '+Dom.get('elements_'+tipo+'_' + i + '_' + j + '_number')+'  '+r.elements_numbers[i][j])
+                        Dom.get('elements_' + tipo + '_' + i + '_' + j + '_number').innerHTML = r.elements_numbers[i][j]
+                    }
+                }
+            }
+        },
+        failure: function(o) {
+           // alert(o.statusText);
+        },
+        scope: this
+    }, request
+
+    );
+}
+
+
+
+
+
+
+
+function show_dialog_change_orders_element_chooser() {
+    region1 = Dom.getRegion('order_element_chooser_menu_button');
+    region2 = Dom.getRegion('dialog_change_orders_element_chooser');
+    var pos = [region1.right - region2.width, region1.bottom + 3]
+    Dom.setXY('dialog_change_orders_element_chooser', pos);
+    dialog_change_orders_element_chooser.show()
+}
+
+function show_dialog_change_dns_element_chooser() {
+    region1 = Dom.getRegion('dn_element_chooser_menu_button');
+    region2 = Dom.getRegion('dialog_change_dns_element_chooser');
+    var pos = [region1.right - region2.width, region1.bottom + 3]
+    Dom.setXY('dialog_change_dns_element_chooser', pos);
+    dialog_change_dns_element_chooser.show()
+}
+
+
+function change_orders_element_chooser(elements_type) {
+
+    Dom.setStyle(['order_dispatch_chooser', 'order_type_chooser', 'order_source_chooser', 'order_payment_chooser'], 'display', 'none')
+    Dom.setStyle('order_' + elements_type + '_chooser', 'display', '')
+
+    Dom.removeClass(['orders_element_chooser_dispatch', 'orders_element_chooser_type', 'orders_element_chooser_source', 'orders_element_payment_dispatch', ], 'selected')
+    Dom.addClass('orders_element_chooser_' + elements_type, 'selected')
+    dialog_change_orders_element_chooser.hide()
+
+    var table = tables.table0;
+    var datasource = tables.dataSource0;
+    var request = '&elements_type=' + elements_type;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+function show_dialog_change_invoices_element_chooser() {
+    region1 = Dom.getRegion('invoice_element_chooser_menu_button');
+    region2 = Dom.getRegion('dialog_change_invoices_element_chooser');
+    var pos = [region1.right - region2.width, region1.bottom + 3]
+    Dom.setXY('dialog_change_invoices_element_chooser', pos);
+    dialog_change_invoices_element_chooser.show()
+}
+
+function change_dns_element_chooser(elements_type) {
+
+    Dom.setStyle(['dn_dispatch_chooser', 'dn_type_chooser'], 'display', 'none')
+    Dom.setStyle('dn_' + elements_type + '_chooser', 'display', '')
+
+    Dom.removeClass(['dns_element_chooser_dispatch', 'dns_element_chooser_type' ], 'selected')
+    Dom.addClass('dns_element_chooser_' + elements_type, 'selected')
+    dialog_change_dns_element_chooser.hide()
+
+    var table = tables.table2;
+    var datasource = tables.dataSource2;
+    var request = '&elements_type=' + elements_type;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+function change_invoices_element_chooser(elements_type) {
+
+    Dom.setStyle(['invoice_type_chooser','invoice_payment_chooser'], 'display', 'none')
+    Dom.setStyle('invoice_' + elements_type + '_chooser', 'display', '')
+
+    Dom.removeClass(['invoices_element_chooser_type', 'invoices_element_payment_dispatch', ], 'selected')
+    Dom.addClass('invoices_element_chooser_' + elements_type, 'selected')
+    dialog_change_invoices_element_chooser.hide()
+
+    var table = tables.table1;
+    var datasource = tables.dataSource1;
+    var request = '&elements_type=' + elements_type;
+    datasource.sendRequest(request, table.onDataReturnInitializeTable, table);
+}
+
+
+
+function change_block_view(e) {
+
+    ids = ['orders', 'invoices', 'dn'];
+    block_ids = ['block_orders', 'block_invoices', 'block_dn'];
+
+    if (this.id == 'invoices') {
+        Dom.get('category_button').onclick = function() {
+            window.location = 'invoice_categories.php?id=0&store=' + Dom.get('store_key').value
+        };
+        Dom.get('list_button').onclick = function() {
+            window.location = 'invoices_lists.php?store=' + Dom.get('store_key').value
+        };
+    } else if (this.id == 'orders') {
+        Dom.get('category_button').onclick = function() {
+            window.location = 'orders_categories.php?id=0&store=' + Dom.get('store_key').value
+        };
+        Dom.get('list_button').onclick = function() {
+            window.location = 'invoices_lists.php?store=' + Dom.get('store_key').value
+        };
+    } else if (this.id == 'dn') {
+        Dom.get('category_button').onclick = function() {
+            window.location = 'dn_categories.php?id=0&store=' + Dom.get('store_key').value
+        };
+        Dom.get('list_button').onclick = function() {
+            window.location = 'dn_lists.php?store=' + Dom.get('store_key').value
+        };
+    }
+
+    Dom.setStyle(block_ids, 'display', 'none');
+    Dom.setStyle('block_' + this.id, 'display', '');
+    Dom.removeClass(ids, 'selected');
+    Dom.addClass(this, 'selected');
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_sessions.php?tipo=update&keys=orders-view&value=' + this.id, {});
 
 }
 
 
-function show_export_dialog(e,table_id){
- 
-if(table_id==0){
-    Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=orders&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
-    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=orders&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
 
-}else if(table_id==1){
-    Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=invoices&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
-    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=invoices&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
-
-}else{
-    Dom.get('export_xls').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=dn&parent=store&parent_key='+Dom.get('store_key').value+'&output=xls'};
-    Dom.get('export_csv').onclick=function (){window.location='export.php?ar_file=ar_orders&tipo=dn&parent=store&parent_key='+Dom.get('store_key').value+'&output=csv'};
-
-}
-
-	region1 = Dom.getRegion('export'+table_id); 
-    region2 = Dom.getRegion('dialog_export'); 
-	var pos =[region1.right-20,region1.bottom]
-	Dom.setXY('dialog_export', pos);
-	dialog_export.show()
-}
+function init() {
 
 
- function change_invoice_type(e){
-     var table=tables.table1;
-     var datasource=tables.dataSource1;
-     Dom.removeClass(Dom.getElementsByClassName('invoice_type','span' , 'invoice_chooser'),'selected');;
-     Dom.addClass(this,'selected');     
-     var request='&invoice_type='+this.getAttribute('table_type');
-	 
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- }
- 
- 
- 
-var clear_interval = function(e,suffix){
-
-     Dom.get("v_calpop1").value='';
-     Dom.get("v_calpop2").value='';
-     Dom.get("v_calpop1i").value='';
-     Dom.get("v_calpop2i").value='';
-     Dom.get("v_calpop1dn").value='';
-     Dom.get("v_calpop2dn").value='';
-          Dom.get('clear_interval').style.display='none';
-          Dom.get('clear_intervali').style.display='none';
-  
-    var table=tables.table0;
-    var datasource=tables.dataSource0;
-     var request='&sf=0&from=&to=';
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-  var table=tables.table1;
-    var datasource=tables.dataSource1;
-     var request='&sf=0&from=&to=';
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-     var table=tables.table2;
-    var datasource=tables.dataSource2;
-     var request='&sf=0&from=&to=';
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-  from='';
-  to=''
-  get_invoices_numbers(from,to)
-get_orders_numbers(from,to)
-get_delivery_notes_numbers(from,to)
- }
-
-function get_orders_numbers(from,to){
-var ar_file='ar_orders.php'; 
-    	var request='tipo=number_orders_in_interval&store_key='+Dom.get('store_key').value+'&from='+from+'&to='+to;
-
-//alert(request);
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-					//	alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-
-						Dom.get('total_orders_number').innerHTML=r.total_orders_number
-						Dom.get('total_orders_in_process_number').innerHTML=r.total_orders_in_process_number
-						Dom.get('total_orders_dispatched_number').innerHTML=r.total_orders_dispatched_number
-						Dom.get('total_orders_unknown_number').innerHTML=r.total_orders_unknown_number
-						Dom.get('total_orders_cancelled_number').innerHTML=r.total_orders_cancelled_number
-						Dom.get('total_orders_suspended_number').innerHTML=r.total_orders_suspended_number
-						}
-					    },
-					failure:function(o) {
-					    alert(o.statusText);
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    );  
-}
-
-function get_invoices_numbers(from,to){
-var ar_file='ar_orders.php'; 
-    	var request='tipo=number_invoices_in_interval&store_key='+Dom.get('store_key').value+'&from='+from+'&to='+to;
-
-//alert(request);
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-					//	alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-
-						Dom.get('total_invoices_and_refunds_number').innerHTML=r.total_invoices_and_refunds
-						Dom.get('total_invoices_number').innerHTML=r.total_invoices
-						Dom.get('total_refunds_number').innerHTML=r.total_refunds
-						Dom.get('total_paid_number').innerHTML=r.total_paid
-						Dom.get('total_to_pay_number').innerHTML=r.total_to_pay
-						
-						
-						
-						}
-					    },
-					failure:function(o) {
-					    alert(o.statusText);
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    );  
 
 
-}
-function get_delivery_notes_numbers(from,to){
-var ar_file='ar_orders.php'; 
-    	var request='tipo=number_delivery_notes_in_interval&store_key='+Dom.get('store_key').value+'&from='+from+'&to='+to;
-
-//alert(request);
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-					//	alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-
-						Dom.get('dn_total_number').innerHTML=r.dn_total_number
-						Dom.get('dn_returned_number').innerHTML=r.dn_returned_number
-						Dom.get('dn_send_number').innerHTML=r.dn_send_number
-						Dom.get('dn_ready_number').innerHTML=r.dn_ready_number
-						Dom.get('dn_packing_number').innerHTML=r.dn_packing_number
-						Dom.get('dn_picking_number').innerHTML=r.dn_picking_number
-						Dom.get('dn_ready_to_pick_number').innerHTML=r.dn_ready_to_pick_number
-						Dom.get('dn_shortages_number').innerHTML=r.dn_shortages_number
-						Dom.get('dn_replacements_number').innerHTML=r.dn_replacements_number
-						Dom.get('dn_donations_number').innerHTML=r.dn_donations_number
-						Dom.get('dn_samples_number').innerHTML=r.dn_samples_number
-						Dom.get('dn_orders_number').innerHTML=r.dn_orders_number
-												
-		
+    //if(Dom.get('from').value!='' || Dom.get('to').value!=''){
+    from = Dom.get('from').value
+    to = Dom.get('to').value
+    get_numbers('order', from, to)
+    get_numbers('invoice', from, to)
+    get_numbers('delivery_note', from, to)
+    //}
+    dialog_export = new YAHOO.widget.Dialog("dialog_export", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export.render();
+    YAHOO.util.Event.addListener('export0', "click", show_export_dialog, 0);
+    YAHOO.util.Event.addListener('export1', "click", show_export_dialog, 1);
+    YAHOO.util.Event.addListener('export2', "click", show_export_dialog, 2);
 
 
-						}
-					    },
-					failure:function(o) {
-					    alert(o.statusText);
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    );  
+    init_search('orders_store');
+    var ids = ['orders', 'invoices', 'dn'];
+    Event.addListener(ids, "click", change_block_view);
+
+    Event.addListener(['elements_order_dispatch_Cancelled', 'elements_order_dispatch_Suspended', 'elements_order_dispatch_Dispatched', 'elements_order_dispatch_Warehouse', 'elements_order_dispatch_InProcess', 'elements_order_dispatch_InProcessCustomer'], "click", change_order_elements, 'dispatch');
+    Event.addListener(['elements_order_source_Other', 'elements_order_source_Internet', 'elements_order_source_Call', 'elements_order_source_Store', 'elements_order_source_Email', 'elements_order_source_Fax'], "click", change_order_elements, 'source');
+    Event.addListener(['elements_order_payment_PartiallyPaid', 'elements_order_payment_WaitingPayment', 'elements_order_payment_Unknown', 'elements_order_payment_Paid', 'elements_order_payment_NA'], "click", change_order_elements, 'payment');
+    Event.addListener(['elements_order_type_Other', 'elements_order_type_Donation', 'elements_order_type_Sample', 'elements_order_type_Order'], "click", change_order_elements, 'type');
+
+    Event.addListener(['elements_invoice_type_Invoice', 'elements_invoice_type_Refund'], "click", change_invoice_elements, 'type');
+    Event.addListener(['elements_invoice_payment_Partially', 'elements_invoice_payment_Yes', 'elements_invoice_payment_No'], "click", change_invoice_elements, 'payment');
 
 
-}
- function change_interval(e,suffix){
-  
-     from=Dom.get("v_calpop1"+suffix).value;
-     to=Dom.get("v_calpop2"+suffix).value;
-
-     if(from=='' && to=='')
-	 Dom.get('clear_interval'+suffix).style.display='none';
-     else
-	 Dom.get('clear_interval'+suffix).style.display='';
- 
+    Event.addListener(['elements_dn_dispatch_Ready', 'elements_dn_dispatch_Picking', 'elements_dn_dispatch_Packing', 'elements_dn_dispatch_Done', 'elements_dn_dispatch_Send', 'elements_dn_dispatch_Returned'], "click", change_dn_elements, 'dispatch');
+    Event.addListener(['elements_dn_type_Replacements', 'elements_dn_type_Donation', 'elements_dn_type_Sample', 'elements_dn_type_Order', 'elements_dn_type_Shortages'], "click", change_dn_elements, 'type');
 
 
- if(suffix==''){
- var table=tables.table0;
-     var datasource=tables.dataSource0;
-     Dom.get("v_calpop2i").value=to;
-     Dom.get("v_calpop1i").value=from;
-     Dom.get("v_calpop2dn").value=to;
-     Dom.get("v_calpop1dn").value=from;
-     
-     }
-     else if(suffix=='i'){
-     var table=tables.table1;
-     var datasource=tables.dataSource1;
-       Dom.get("v_calpop2").value=to;
-     Dom.get("v_calpop1").value=from;
-     Dom.get("v_calpop2dn").value=to;
-     Dom.get("v_calpop1dn").value=from;
-     
-     }else if(suffix=='dn'){
-    
-       Dom.get("v_calpop2i").value=to;
-     Dom.get("v_calpop1i").value=from;
-     Dom.get("v_calpop2").value=to;
-     Dom.get("v_calpop1").value=from;
-     
-     }
-            var table=tables.table0;
-     var datasource=tables.dataSource0;
-     var request='&sf=0&from=' +from+'&to='+to;
-//alert(request);
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
-       var table=tables.table1;
-     var datasource=tables.dataSource1;
-     var request='&sf=0&from=' +from+'&to='+to;
-    
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
- 
-        var table=tables.table2;
-     var datasource=tables.dataSource2;
-     var request='&sf=0&from=' +from+'&to='+to;
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
-    
-get_invoices_numbers(from,to)
-get_orders_numbers(from,to)
-get_delivery_notes_numbers(from,to)
-     
-     
- }
- 
- var change_order_dispatch_type=function(e){
-   
-     var table=tables.table0;
-     var datasource=tables.dataSource0;
-     Dom.removeClass(Dom.getElementsByClassName('dispatch','span' , 'dispatch_chooser'),'selected');;
-     Dom.addClass(this,'selected');     
-     var request='&dispatch='+this.getAttribute('table_type');
-	// alert(request);
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- }
- var change_invoice_type=function(e){
-     var table=tables.table1;
-     var datasource=tables.dataSource1;
-     Dom.removeClass(Dom.getElementsByClassName('invoice_type','span' , 'invoice_chooser'),'selected');;
-     Dom.addClass(this,'selected');     
-     var request='&invoice_type='+this.getAttribute('table_type');
-//	 alert(request);
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- }
- var change_dn_type=function(e){
-     var new_dispatch=this.id;
-     var table=tables.table2;
-     var datasource=tables.dataSource2;
-     Dom.removeClass(Dom.getElementsByClassName('dn_view','span' , 'dn_table_type'),'selected');;
-     Dom.addClass(this,'selected');     
-     var request='&dn_state_type='+this.getAttribute('table_type');
-	 //alert(request);
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
- } 
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+    Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+    Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
 
-function init(){
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
 
-if(Dom.get('from').value!='' || Dom.get('to').value!=''){
-from=Dom.get('from').value
-to=Dom.get('to').value
-get_invoices_numbers(from,to)
-get_orders_numbers(from,to)
-get_delivery_notes_numbers(from,to)
-}
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
 
-dialog_export = new YAHOO.widget.Dialog("dialog_export", { visible : false,close:true,underlay: "none",draggable:false});
-dialog_export.render();
-   YAHOO.util.Event.addListener('export0', "click", show_export_dialog,0);
-   YAHOO.util.Event.addListener('export1', "click", show_export_dialog,1);
-   YAHOO.util.Event.addListener('export2', "click", show_export_dialog,2);
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
 
 
-init_search('orders_store');
 
- 
-Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
-Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+    dialog_change_orders_element_chooser = new YAHOO.widget.Dialog("dialog_change_orders_element_chooser", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_orders_element_chooser.render();
+    Event.addListener("order_element_chooser_menu_button", "click", show_dialog_change_orders_element_chooser);
 
-var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
-  oACDS.table_id=0;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
- 
- var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
-  oACDS1.table_id=1;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
-
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
-  oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
+    dialog_change_invoices_element_chooser = new YAHOO.widget.Dialog("dialog_change_invoices_element_chooser", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_invoices_element_chooser.render();
+    Event.addListener("invoice_element_chooser_menu_button", "click", show_dialog_change_invoices_element_chooser);
 
 
- cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
- 
- cal2.update=updateCal;
- cal2.id='2';
- cal2.render();
- cal2.update();
- cal2.selectEvent.subscribe(handleSelect, cal2, true); 
- cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1.update=updateCal;
- cal1.id='1';
- cal1.render();
- cal1.update();
- cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-cal2i = new YAHOO.widget.Calendar("cal2i","cal2iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal2i.update=updateCal;
- cal2i.id='2i';
- cal2i.render();
- cal2i.update();
- cal2i.selectEvent.subscribe(handleSelect, cal2i, true); 
- cal1i = new YAHOO.widget.Calendar("cal1i","cal1iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1i.update=updateCal;
- cal1i.id='1i';
- cal1i.render();
- cal1i.update();
- cal1i.selectEvent.subscribe(handleSelect, cal1i, true);  
 
-cal2dn = new YAHOO.widget.Calendar("cal2dn","cal2dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal2dn.update=updateCal;
- cal2dn.id='2dn';
- cal2dn.render();
- cal2dn.update();
- cal2dn.selectEvent.subscribe(handleSelect, cal2dn, true); 
- cal1dn = new YAHOO.widget.Calendar("cal1dn","cal1dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
- cal1dn.update=updateCal;
- cal1dn.id='1dn';
- cal1dn.render();
- cal1dn.update();
- cal1dn.selectEvent.subscribe(handleSelect, cal1dn, true);  
-
- 
-
- 
- Event.addListener("calpop1", "click", cal1.show, cal1, true);
- Event.addListener("calpop2", "click", cal2.show, cal2, true);
- Event.addListener("calpop1i", "click", cal1i.show, cal1i, true);
- Event.addListener("calpop2i", "click", cal2i.show, cal2i, true);
- Event.addListener("calpop1dn", "click", cal1dn.show, cal1dn, true);
- Event.addListener("calpop2dn", "click", cal2dn.show, cal2dn, true);
- 
-
- 
-
- Event.addListener("submit_interval", "click", change_interval,'');
- Event.addListener("clear_interval", "click", clear_interval,'');
- Event.addListener("submit_intervali", "click", change_interval,'i');
- Event.addListener("clear_intervali", "click", clear_interval,'i');
-Event.addListener("submit_intervaldn", "click", change_interval,'dn');
- Event.addListener("clear_intervaldn", "click", clear_interval,'dn'); 
-
-var ids =Array("restrictions_orders_cancelled","restrictions_orders_suspended","restrictions_orders_unknown","restrictions_orders_dispatched","restrictions_orders_in_process","restrictions_all_orders") ;
-Event.addListener(ids, "click", change_order_dispatch_type);
-var ids =Array("restrictions_paid","restrictions_to_pay","restrictions_refunds","restrictions_invoices","restrictions_all_invoices") ;
-Event.addListener(ids, "click", change_invoice_type);
-var ids =Array("restrictions_dn_all","restrictions_dn_returned","restrictions_dn_send","restrictions_dn_ready","restrictions_dn_packing","restrictions_dn_picking","restrictions_dn_ready_to_pick","restrictions_dn_shortages","restrictions_dn_replacements","restrictions_dn_donations","restrictions_dn_samples","restrictions_dn_orders") ;
-Event.addListener(ids, "click", change_dn_type);
+    dialog_change_dns_element_chooser = new YAHOO.widget.Dialog("dialog_change_dns_element_chooser", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_change_dns_element_chooser.render();
+    Event.addListener("dn_element_chooser_menu_button", "click", show_dialog_change_dns_element_chooser);
 
 
- var change_block_view = function (e){
-	   
-	   ids=['orders','invoices','dn'];
-block_ids=['block_orders','block_invoices','block_dn'];
-branch_type_ids=['branch_type_orders','branch_type_invoices','branch_type_dn','branch_type2_orders','branch_type2_invoices','branch_type2_dn'];
-Dom.setStyle(branch_type_ids,'display','none');
-
-if(this.id=='invoices'){
-    Dom.get('category_button').onclick=function (){window.location='invoice_categories.php?id=0&store='+Dom.get('store_key').value};
-    Dom.get('list_button').onclick=function (){window.location='invoices_lists.php?store='+Dom.get('store_key').value};
-}else if(this.id=='orders'){
-    Dom.get('category_button').onclick=function (){window.location='orders_categories.php?id=0&store='+Dom.get('store_key').value};
-    Dom.get('list_button').onclick=function (){window.location='invoices_lists.php?store='+Dom.get('store_key').value};
-}else if(this.id=='dn'){
-    Dom.get('category_button').onclick=function (){window.location='dn_categories.php?id=0&store='+Dom.get('store_key').value};
-    Dom.get('list_button').onclick=function (){window.location='dn_lists.php?store='+Dom.get('store_key').value};
-}
-
-Dom.setStyle(block_ids,'display','none');
-Dom.setStyle('block_'+this.id,'display','');
-Dom.removeClass(ids,'selected');
-Dom.addClass(this,'selected');
-Dom.setStyle(['branch_type_'+this.id,'branch_type2_'+this.id],'display','')
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-view&value='+this.id ,{});
-	   
-	}   
-
-
-	var ids=['orders','invoices','dn'];
-	Event.addListener(ids, "click", change_block_view);
 }
 
 Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
 
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu1", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {
+        trigger: "rtext_rpp1"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
 
-YAHOO.util.Event.onContentReady("filtermenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {  trigger: "filter_name2"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
-YAHOO.util.Event.onContentReady("rppmenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {
+        trigger: "rtext_rpp2"
     });
-
-
-
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});

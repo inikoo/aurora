@@ -1,181 +1,182 @@
 <?php
 include_once('common.php');
 ?>
-    var Event   = YAHOO.util.Event;
+    var Event = YAHOO.util.Event;
 
-    var Dom   = YAHOO.util.Dom;
-var dialog_country_list;
-var dialog_wregion_list;
-var dialog_postal_code_list;
-var dialog_city_list;
-var dialog_department_list;
-var dialog_family_list;
-var dialog_product_list;
-var dialog_category_list;
+   var Dom = YAHOO.util.Dom;
 
-var searched=false;
-function save_search_list(){
+   var customer_views_ids = ['general', 'contact', 'address', 'ship_to_address', 'balance', 'rank', 'weblog'];
 
+   var dialog_country_list;
+   var dialog_wregion_list;
+   var dialog_postal_code_list;
+   var dialog_city_list;
+   var dialog_department_list;
+   var dialog_family_list;
+   var dialog_product_list;
+   var dialog_category_list;
 
-	
-	var store_id=Dom.get('store_id').value;
-	var list_name = Dom.get('list_name').value;
-	
-	if(list_name==''){
-	Dom.get('save_list_msg').innerHTML=Dom.get('error_no_name').innerHTML;
-	return;
-	}
-	
-	
-	if(Dom.get('dynamic').checked == true)
-	{
-		var list_type = 'Dynamic';
-	}else{
-	var list_type = 'Static';	
-	}
-	
-	var awhere=get_awhere();
-	
-	var request="ar_edit_contacts.php?tipo=new_list&list_name="+list_name+'&list_type='+list_type+'&store_id='+store_id+'&awhere='+awhere;
-	
-	Dom.setStyle(['save_buttons','save_dialog'],'display','none')
-	Dom.setStyle('saving_the_list','display','')
-		YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		 //  alert(o.responseText);
+   var searched = false;
 
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if (r.state==200) {
-			location.href='customers_list.php?id='+r.customer_list_key;
-
-		    }else
-			Dom.get('save_list_msg').innerHTML=r.msg;
-		}
-	    });  
-	
-	
-	
-	
-
-}
+   function save_search_list() {
 
 
 
-var data_returned=function(){
-	 if(searched){
-	     Dom.get('searching').style.display='none';
-	     Dom.get('the_table').style.display='';
-	     Dom.get('save_list').style.display='';
-	     Dom.get('modify_search').style.display='';
-	     Dom.get('submit_search').style.display='none';
+       var store_id = Dom.get('store_id').value;
+       var list_name = Dom.get('list_name').value;
+
+       if (list_name == '') {
+           Dom.get('save_list_msg').innerHTML = Dom.get('error_no_name').innerHTML;
+           return;
+       }
 
 
-	 }	 
-    }
-    
+       if (Dom.get('dynamic').checked == true) {
+           var list_type = 'Dynamic';
+       } else {
+           var list_type = 'Static';
+       }
 
-function show_dont_wish_to_receive(){
-Dom.setStyle('show_dont_wish_to_receive','display','none')
-Dom.setStyle('tr_dont_wish_to_receive','display','')
-}
+       var awhere = get_awhere();
 
-function show_dont_have(){
-Dom.setStyle('show_dont_have','display','none')
-Dom.setStyle('tr_dont_have','display','')
-}    
- 
-function show_lost_customer(){
-Dom.setStyle('lost_customer_title','display','')
-Dom.setStyle('lost_customer','display','')
-}   
- 
-function hide_lost_customer(){
-Dom.setStyle('lost_customer_title','display','none')
-Dom.setStyle('lost_customer','display','none')
-Dom.get('v_calpop5').value=''
-Dom.get('v_calpop6').value=''
+       var request = "ar_edit_contacts.php?tipo=new_list&list_name=" + list_name + '&list_type=' + list_type + '&store_id=' + store_id + '&awhere=' + awhere;
 
+       Dom.setStyle(['save_buttons', 'save_dialog'], 'display', 'none')
+       Dom.setStyle('saving_the_list', 'display', '')
+       YAHOO.util.Connect.asyncRequest('POST', request, {
+           success: function(o) {
+               //  alert(o.responseText);
+               var r = YAHOO.lang.JSON.parse(o.responseText);
+               if (r.state == 200) {
+                   location.href = 'customers_list.php?id=' + r.customer_list_key;
 
-}   
- 
-
-function set_values(){
-	v_calpop==Dom.getElementsByClassName('v_calpop');
-	for(x in v_calpop){
-		//alert(v_calpop);
-	}
-} 
- 
-function checkbox_changed_allow(o){
-
-	cat=Dom.get(o).getAttribute('cat');
-
-	if(cat=='all'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'allow_options'),'selected');
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'dont_allow_options'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else{
-		Dom.removeClass('allow_all','selected');
-		cat=Dom.get(o).getAttribute('cat');
-		this_parent=Dom.get(o).getAttribute('parent');
-		if(this_parent=='allow_'){
-			other_parent='dont_allow_';
-		}else{
-			other_parent='allow_';
-		}    
-		if(Dom.hasClass(o,'selected')){
-			Dom.removeClass(o,'selected');
-		}else{
-			Dom.addClass(o,'selected');
-			Dom.removeClass(other_parent+cat,'selected');
-		}
-	}
-}
- 
-function checkbox_changed_have(o){
-
-cat=Dom.get(o).getAttribute('cat');
-this_parent=Dom.get(o).getAttribute('parent');
-if(this_parent=='have_'){
-    other_parent='dont_have_';
-}else{
-    other_parent='have_';
-}    
-if(    Dom.hasClass(o,'selected')){
-    Dom.removeClass(o,'selected');
-}else{
-    Dom.addClass(o,'selected');
-    Dom.removeClass(other_parent+cat,'selected');
-}
+               } else Dom.get('save_list_msg').innerHTML = r.msg;
+           }
+       });
 
 
 
-}
 
- function checkbox_changed_customers_which(o){
-	cat=Dom.get(o).getAttribute('cat');
 
-	if(Dom.hasClass(o,'selected')){
-			Dom.removeClass(o,'selected');
-			if(cat=='lost'){
+   }
 
-hide_lost_customer();
-}
-			
-		}else{
-			Dom.addClass(o,'selected');
-			
-			if(cat=='lost'){
 
-show_lost_customer();
-}
-			
-//			Dom.removeClass(other_parent+cat,'selected');
-		}
+
+   var data_returned = function() {
+           if (searched) {
+               Dom.get('searching').style.display = 'none';
+               Dom.get('the_table').style.display = '';
+               Dom.get('save_list').style.display = '';
+               Dom.get('modify_search').style.display = '';
+               Dom.get('submit_search').style.display = 'none';
+
+
+           }
+       }
+
+
+   function show_dont_wish_to_receive() {
+       Dom.setStyle('show_dont_wish_to_receive', 'display', 'none')
+       Dom.setStyle('tr_dont_wish_to_receive', 'display', '')
+   }
+
+   function show_dont_have() {
+       Dom.setStyle('show_dont_have', 'display', 'none')
+       Dom.setStyle('tr_dont_have', 'display', '')
+   }
+
+   function show_lost_customer() {
+       Dom.setStyle('lost_customer_title', 'display', '')
+       Dom.setStyle('lost_customer', 'display', '')
+   }
+
+   function hide_lost_customer() {
+       Dom.setStyle('lost_customer_title', 'display', 'none')
+       Dom.setStyle('lost_customer', 'display', 'none')
+       Dom.get('v_calpop5').value = ''
+       Dom.get('v_calpop6').value = ''
+
+
+   }
+
+
+   function set_values() {
+       v_calpop == Dom.getElementsByClassName('v_calpop');
+       for (x in v_calpop) {
+           //alert(v_calpop);
+       }
+   }
+
+   function checkbox_changed_allow(o) {
+
+       cat = Dom.get(o).getAttribute('cat');
+
+       if (cat == 'all') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'allow_options'), 'selected');
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'span', 'dont_allow_options'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else {
+           Dom.removeClass('allow_all', 'selected');
+           cat = Dom.get(o).getAttribute('cat');
+           this_parent = Dom.get(o).getAttribute('parent');
+           if (this_parent == 'allow_') {
+               other_parent = 'dont_allow_';
+           } else {
+               other_parent = 'allow_';
+           }
+           if (Dom.hasClass(o, 'selected')) {
+               Dom.removeClass(o, 'selected');
+           } else {
+               Dom.addClass(o, 'selected');
+               Dom.removeClass(other_parent + cat, 'selected');
+           }
+       }
+   }
+
+   function checkbox_changed_have(o) {
+
+       cat = Dom.get(o).getAttribute('cat');
+       this_parent = Dom.get(o).getAttribute('parent');
+       if (this_parent == 'have_') {
+           other_parent = 'dont_have_';
+       } else {
+           other_parent = 'have_';
+       }
+       if (Dom.hasClass(o, 'selected')) {
+           Dom.removeClass(o, 'selected');
+       } else {
+           Dom.addClass(o, 'selected');
+           Dom.removeClass(other_parent + cat, 'selected');
+       }
+
+
+
+   }
+
+   function checkbox_changed_customers_which(o) {
+       cat = Dom.get(o).getAttribute('cat');
+
+       if (Dom.hasClass(o, 'selected')) {
+           Dom.removeClass(o, 'selected');
+           if (cat == 'lost') {
+
+               hide_lost_customer();
+           }
+
+       } else {
+           Dom.addClass(o, 'selected');
+
+           if (cat == 'lost') {
+
+               show_lost_customer();
+           }
+
+           //			Dom.removeClass(other_parent+cat,'selected');
+       }
 
 
 
@@ -214,353 +215,376 @@ show_lost_customer();
 
 
 
-}
- 
-function hide_invoice(){
-		Dom.setStyle('number_of_invoices_upper','display','none')
-		Dom.setStyle('a','display','none')
-		Dom.get('number_of_invoices_upper').value=''
-}
+   }
 
-function hide_order(){
-		Dom.setStyle('number_of_orders_upper','display','none')
-		Dom.setStyle('c','display','none')
-		Dom.get('number_of_orders_upper').value=''
-}
+   function hide_invoice() {
+       Dom.setStyle('number_of_invoices_upper', 'display', 'none')
+       Dom.setStyle('a', 'display', 'none')
+       Dom.get('number_of_invoices_upper').value = ''
+   }
 
-function hide_sales(){
-		Dom.setStyle('sales_upper','display','none')
-		Dom.setStyle('b_sales','display','none')
-		Dom.get('sales_upper').value=''
-}
+   function hide_order() {
+       Dom.setStyle('number_of_orders_upper', 'display', 'none')
+       Dom.setStyle('c', 'display', 'none')
+       Dom.get('number_of_orders_upper').value = ''
+   }
 
-function hide_logins(){
-		Dom.setStyle('logins_upper','display','none')
-		Dom.setStyle('b_logins','display','none')
-		Dom.get('logins_upper').value=''
-}
-function hide_failed_logins(){
-		Dom.setStyle('failed_logins_upper','display','none')
-		Dom.setStyle('b_failed_logins','display','none')
-		Dom.get('failed_logins_upper').value=''
-}
-function hide_requests(){
-		Dom.setStyle('requests_upper','display','none')
-		Dom.setStyle('b_requests','display','none')
-		Dom.get('requests_upper').value=''
-}
+   function hide_sales() {
+       Dom.setStyle('sales_upper', 'display', 'none')
+       Dom.setStyle('b_sales', 'display', 'none')
+       Dom.get('sales_upper').value = ''
+   }
 
-function checkbox_changed_invoice_condition(o){
-	cat=Dom.get(o).getAttribute('cat');
+   function hide_logins() {
+       Dom.setStyle('logins_upper', 'display', 'none')
+       Dom.setStyle('b_logins', 'display', 'none')
+       Dom.get('logins_upper').value = ''
+   }
 
-	if(cat=='less'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_invoice();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='equal'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_invoice();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='more'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_invoice();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='between'){
-		Dom.setStyle('number_of_invoices_upper','display','')
-		Dom.setStyle('a','display','')
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}
-	
-}
+   function hide_failed_logins() {
+       Dom.setStyle('failed_logins_upper', 'display', 'none')
+       Dom.setStyle('b_failed_logins', 'display', 'none')
+       Dom.get('failed_logins_upper').value = ''
+   }
 
-function checkbox_changed_order_condition(o){
-	cat=Dom.get(o).getAttribute('cat');
+   function hide_requests() {
+       Dom.setStyle('requests_upper', 'display', 'none')
+       Dom.setStyle('b_requests', 'display', 'none')
+       Dom.get('requests_upper').value = ''
+   }
 
-	if(cat=='less'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_order();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='equal'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-		
-			hide_order();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='more'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_order();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='between'){
-		Dom.setStyle('number_of_orders_upper','display','')
-		Dom.setStyle('c','display','')
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}
-	
-}
+   function checkbox_changed_invoice_condition(o) {
+       cat = Dom.get(o).getAttribute('cat');
 
+       if (cat == 'less') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_invoice();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'equal') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_invoice();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'more') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_invoice();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'between') {
+           Dom.setStyle('number_of_invoices_upper', 'display', '')
+           Dom.setStyle('a', 'display', '')
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'invoice_condition_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       }
 
-function checkbox_changed_sales_condition(o){
-	cat=Dom.get(o).getAttribute('cat');
+   }
 
-	if(cat=='sales_less'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_sales();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='sales_equal'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_sales();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='sales_more'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_sales();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='sales_between'){
-		Dom.setStyle('sales_upper','display','')
-		Dom.setStyle('b_sales','display','')
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}
-	
-}
+   function checkbox_changed_order_condition(o) {
+       cat = Dom.get(o).getAttribute('cat');
+
+       if (cat == 'less') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_order();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'equal') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+
+               hide_order();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'more') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_order();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'between') {
+           Dom.setStyle('number_of_orders_upper', 'display', '')
+           Dom.setStyle('c', 'display', '')
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'order_condition_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       }
+
+   }
 
 
-function checkbox_changed_logins_condition(o){
-	cat=Dom.get(o).getAttribute('cat');
+   function checkbox_changed_sales_condition(o) {
+       cat = Dom.get(o).getAttribute('cat');
 
-	if(cat=='logins_less'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_logins();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='logins_equal'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_logins();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='logins_more'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_logins();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='logins_between'){
-		Dom.setStyle('logins_upper','display','')
-		Dom.setStyle('b_logins','display','')
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}
-	
-}
-function checkbox_changed_failed_logins_condition(o){
-	cat=Dom.get(o).getAttribute('cat');
+       if (cat == 'sales_less') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_sales();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'sales_equal') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_sales();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'sales_more') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_sales();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'sales_between') {
+           Dom.setStyle('sales_upper', 'display', '')
+           Dom.setStyle('b_sales', 'display', '')
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'sales_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       }
 
-	if(cat=='failed_logins_less'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_failed_logins();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='failed_logins_equal'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_failed_logins();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='failed_logins_more'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_failed_logins();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='failed_logins_between'){
-		Dom.setStyle('failed_logins_upper','display','')
-		Dom.setStyle('b_failed_logins','display','')
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}
-	
-}
-
-function checkbox_changed_requests_condition(o){
-	cat=Dom.get(o).getAttribute('cat');
-
-	if(cat=='requests_less'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_requests();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='requests_equal'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_requests();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='requests_more'){
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			hide_requests();
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}else if(cat=='requests_between'){
-		Dom.setStyle('requests_upper','display','')
-		Dom.setStyle('b_requests','display','')
-		if(Dom.hasClass(o,'selected')){
-			return;
-		}else{
-			Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'),'selected');
-			Dom.addClass(o,'selected');
-		}
-	}
-	
-}
+   }
 
 
-function select_country(oArgs){
-    var geo_constraints=Dom.get('geo_constraints').value;
-    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-    Dom.get('geo_constraints').value=geo_constraints;
-    dialog_country_list.hide();
-    hide_filter(true,2)
-}
+   function checkbox_changed_logins_condition(o) {
+       cat = Dom.get(o).getAttribute('cat');
 
-function select_postal_code(oArgs){
-    var geo_constraints=Dom.get('geo_constraints').value;
-    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+'pc('+tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
-    Dom.get('geo_constraints').value=geo_constraints;
-    dialog_postal_code_list.hide();
-    hide_filter(true,3)
-}
+       if (cat == 'logins_less') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_logins();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'logins_equal') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_logins();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'logins_more') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_logins();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'logins_between') {
+           Dom.setStyle('logins_upper', 'display', '')
+           Dom.setStyle('b_logins', 'display', '')
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'logins_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       }
 
-function select_wregion(oArgs){
-    var geo_constraints=Dom.get('geo_constraints').value;
-    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+'wr('+tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '')+')';
-    Dom.get('geo_constraints').value=geo_constraints;
-    dialog_wregion_list.hide();
-    hide_filter(true,1)
-}
+   }
 
-function select_city(oArgs){
-    var geo_constraints=Dom.get('geo_constraints').value;
-    if(geo_constraints!=''){geo_constraints=geo_constraints+','}
-    geo_constraints=geo_constraints+'t('+tables.table4.getRecord(oArgs.target).getData('city').replace(/<.*?>/g, '')+')';
-    Dom.get('geo_constraints').value=geo_constraints;
-    dialog_city_list.hide();
-    hide_filter(true,4)
-}
-function select_department(oArgs){
-    var product_ordered_or=Dom.get('product_ordered_or').value;
-    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+'d('+tables.table5.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
-    Dom.get('product_ordered_or').value=product_ordered_or;
-    dialog_department_list.hide();
-    hide_filter(true,5)
-}
+   function checkbox_changed_failed_logins_condition(o) {
+       cat = Dom.get(o).getAttribute('cat');
 
-function select_family(oArgs){
-    var product_ordered_or=Dom.get('product_ordered_or').value;
-    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+'f('+tables.table6.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '')+')';
-    Dom.get('product_ordered_or').value=product_ordered_or;
-    dialog_family_list.hide();
-    hide_filter(true,6)
-}
-function select_product(oArgs){
-    var product_ordered_or=Dom.get('product_ordered_or').value;
-    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+tables.table7.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
-    Dom.get('product_ordered_or').value=product_ordered_or;
-    dialog_product_list.hide();
-    hide_filter(true,7)
-}
-function select_category(oArgs){
-    var product_ordered_or=Dom.get('product_ordered_or').value;
-    if(product_ordered_or!=''){product_ordered_or=product_ordered_or+','}
-    product_ordered_or=product_ordered_or+'cat('+tables.table8.getRecord(oArgs.target).getData('category_code').replace(/<.*?>/g, '')+')';
-    Dom.get('product_ordered_or').value=product_ordered_or;
-    dialog_category_list.hide();
-    hide_filter(true,8)
-}
+       if (cat == 'failed_logins_less') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_failed_logins();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'failed_logins_equal') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_failed_logins();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'failed_logins_more') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_failed_logins();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'failed_logins_between') {
+           Dom.setStyle('failed_logins_upper', 'display', '')
+           Dom.setStyle('b_failed_logins', 'display', '')
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'failed_logins_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       }
+
+   }
+
+   function checkbox_changed_requests_condition(o) {
+       cat = Dom.get(o).getAttribute('cat');
+
+       if (cat == 'requests_less') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_requests();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'requests_equal') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_requests();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'requests_more') {
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               hide_requests();
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       } else if (cat == 'requests_between') {
+           Dom.setStyle('requests_upper', 'display', '')
+           Dom.setStyle('b_requests', 'display', '')
+           if (Dom.hasClass(o, 'selected')) {
+               return;
+           } else {
+               Dom.removeClass(Dom.getElementsByClassName('catbox', 'button', 'requests_option'), 'selected');
+               Dom.addClass(o, 'selected');
+           }
+       }
+
+   }
+
+
+   function select_country(oArgs) {
+       var geo_constraints = Dom.get('geo_constraints').value;
+       if (geo_constraints != '') {
+           geo_constraints = geo_constraints + ','
+       }
+       geo_constraints = geo_constraints + tables.table2.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+       Dom.get('geo_constraints').value = geo_constraints;
+       dialog_country_list.hide();
+       hide_filter(true, 2)
+   }
+
+   function select_postal_code(oArgs) {
+       var geo_constraints = Dom.get('geo_constraints').value;
+       if (geo_constraints != '') {
+           geo_constraints = geo_constraints + ','
+       }
+       geo_constraints = geo_constraints + 'pc(' + tables.table3.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '') + ')';
+       Dom.get('geo_constraints').value = geo_constraints;
+       dialog_postal_code_list.hide();
+       hide_filter(true, 3)
+   }
+
+   function select_wregion(oArgs) {
+       var geo_constraints = Dom.get('geo_constraints').value;
+       if (geo_constraints != '') {
+           geo_constraints = geo_constraints + ','
+       }
+       geo_constraints = geo_constraints + 'wr(' + tables.table1.getRecord(oArgs.target).getData('wregion_code').replace(/<.*?>/g, '') + ')';
+       Dom.get('geo_constraints').value = geo_constraints;
+       dialog_wregion_list.hide();
+       hide_filter(true, 1)
+   }
+
+   function select_city(oArgs) {
+       var geo_constraints = Dom.get('geo_constraints').value;
+       if (geo_constraints != '') {
+           geo_constraints = geo_constraints + ','
+       }
+       geo_constraints = geo_constraints + 't(' + tables.table4.getRecord(oArgs.target).getData('city').replace(/<.*?>/g, '') + ')';
+       Dom.get('geo_constraints').value = geo_constraints;
+       dialog_city_list.hide();
+       hide_filter(true, 4)
+   }
+
+   function select_department(oArgs) {
+       var product_ordered_or = Dom.get('product_ordered_or').value;
+       if (product_ordered_or != '') {
+           product_ordered_or = product_ordered_or + ','
+       }
+       product_ordered_or = product_ordered_or + 'd(' + tables.table5.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '') + ')';
+       Dom.get('product_ordered_or').value = product_ordered_or;
+       dialog_department_list.hide();
+       hide_filter(true, 5)
+   }
+
+   function select_family(oArgs) {
+       var product_ordered_or = Dom.get('product_ordered_or').value;
+       if (product_ordered_or != '') {
+           product_ordered_or = product_ordered_or + ','
+       }
+       product_ordered_or = product_ordered_or + 'f(' + tables.table6.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '') + ')';
+       Dom.get('product_ordered_or').value = product_ordered_or;
+       dialog_family_list.hide();
+       hide_filter(true, 6)
+   }
+
+   function select_product(oArgs) {
+       var product_ordered_or = Dom.get('product_ordered_or').value;
+       if (product_ordered_or != '') {
+           product_ordered_or = product_ordered_or + ','
+       }
+       product_ordered_or = product_ordered_or + tables.table7.getRecord(oArgs.target).getData('code').replace(/<.*?>/g, '');
+       Dom.get('product_ordered_or').value = product_ordered_or;
+       dialog_product_list.hide();
+       hide_filter(true, 7)
+   }
+
+   function select_category(oArgs) {
+       var product_ordered_or = Dom.get('product_ordered_or').value;
+       if (product_ordered_or != '') {
+           product_ordered_or = product_ordered_or + ','
+       }
+       product_ordered_or = product_ordered_or + 'cat(' + tables.table8.getRecord(oArgs.target).getData('category_code').replace(/<.*?>/g, '') + ')';
+       Dom.get('product_ordered_or').value = product_ordered_or;
+       dialog_category_list.hide();
+       hide_filter(true, 8)
+   }
+
     
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -1371,241 +1395,324 @@ var submit_search_on_enter=function(e,tipo){
 
 
 
-function init(){
+function init() {
 
 
-  init_search('customers_store');
-var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS1.queryMatchContains = true;
- oACDS1.table_id=1;
- var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
- oAutoComp1.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
- 
- var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS2.queryMatchContains = true;
- oACDS2.table_id=2;
- var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS2);
- oAutoComp2.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
- 
- var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS3.queryMatchContains = true;
- oACDS3.table_id=3;
- var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3","f_container3", oACDS3);
- oAutoComp3.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show3', "click",show_filter,3);
- YAHOO.util.Event.addListener('clean_table_filter_hide3', "click",hide_filter,3);
- 
- var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS4.queryMatchContains = true;
- oACDS4.table_id=4;
- var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4","f_container4", oACDS4);
- oAutoComp4.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show4', "click",show_filter,4);
- YAHOO.util.Event.addListener('clean_table_filter_hide4', "click",hide_filter,4);
- 
+    init_search('customers_store');
+    var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS1.queryMatchContains = true;
+    oACDS1.table_id = 1;
+    var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1", "f_container1", oACDS1);
+    oAutoComp1.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show1', "click", show_filter, 1);
+    YAHOO.util.Event.addListener('clean_table_filter_hide1', "click", hide_filter, 1);
+
+    var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS2.queryMatchContains = true;
+    oACDS2.table_id = 2;
+    var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2", "f_container2", oACDS2);
+    oAutoComp2.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show2', "click", show_filter, 2);
+    YAHOO.util.Event.addListener('clean_table_filter_hide2', "click", hide_filter, 2);
+
+    var oACDS3 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS3.queryMatchContains = true;
+    oACDS3.table_id = 3;
+    var oAutoComp3 = new YAHOO.widget.AutoComplete("f_input3", "f_container3", oACDS3);
+    oAutoComp3.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show3', "click", show_filter, 3);
+    YAHOO.util.Event.addListener('clean_table_filter_hide3', "click", hide_filter, 3);
+
+    var oACDS4 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS4.queryMatchContains = true;
+    oACDS4.table_id = 4;
+    var oAutoComp4 = new YAHOO.widget.AutoComplete("f_input4", "f_container4", oACDS4);
+    oAutoComp4.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show4', "click", show_filter, 4);
+    YAHOO.util.Event.addListener('clean_table_filter_hide4', "click", hide_filter, 4);
 
 
 
-var oACDS5 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS5.queryMatchContains = true;
- oACDS5.table_id=5;
- var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5","f_container5", oACDS5);
- oAutoComp5.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show5', "click",show_filter,5);
- YAHOO.util.Event.addListener('clean_table_filter_hide5', "click",hide_filter,5);
- 
- var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS6.queryMatchContains = true;
- oACDS6.table_id=6;
- var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6","f_container6", oACDS6);
- oAutoComp6.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show6', "click",show_filter,6);
- YAHOO.util.Event.addListener('clean_table_filter_hide6', "click",hide_filter,6);
- 
- var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS7.queryMatchContains = true;
- oACDS7.table_id=7;
- var oAutoComp7 = new YAHOO.widget.AutoComplete("f_input7","f_container7", oACDS7);
- oAutoComp7.minQueryLength = 0; 
-YAHOO.util.Event.addListener('clean_table_filter_show7', "click",show_filter,7);
- YAHOO.util.Event.addListener('clean_table_filter_hide7', "click",hide_filter,7);
- 
- 
-    dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", {context:["country","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+
+    var oACDS5 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS5.queryMatchContains = true;
+    oACDS5.table_id = 5;
+    var oAutoComp5 = new YAHOO.widget.AutoComplete("f_input5", "f_container5", oACDS5);
+    oAutoComp5.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show5', "click", show_filter, 5);
+    YAHOO.util.Event.addListener('clean_table_filter_hide5', "click", hide_filter, 5);
+
+    var oACDS6 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS6.queryMatchContains = true;
+    oACDS6.table_id = 6;
+    var oAutoComp6 = new YAHOO.widget.AutoComplete("f_input6", "f_container6", oACDS6);
+    oAutoComp6.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show6', "click", show_filter, 6);
+    YAHOO.util.Event.addListener('clean_table_filter_hide6', "click", hide_filter, 6);
+
+    var oACDS7 = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS7.queryMatchContains = true;
+    oACDS7.table_id = 7;
+    var oAutoComp7 = new YAHOO.widget.AutoComplete("f_input7", "f_container7", oACDS7);
+    oAutoComp7.minQueryLength = 0;
+    YAHOO.util.Event.addListener('clean_table_filter_show7', "click", show_filter, 7);
+    YAHOO.util.Event.addListener('clean_table_filter_hide7', "click", hide_filter, 7);
+
+
+    dialog_country_list = new YAHOO.widget.Dialog("dialog_country_list", {
+        context: ["country", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_country_list.render();
-    Event.addListener("country", "click", dialog_country_list.show,dialog_country_list , true);
+    Event.addListener("country", "click", dialog_country_list.show, dialog_country_list, true);
 
-    dialog_wregion_list = new YAHOO.widget.Dialog("dialog_wregion_list", {context:["wregion","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_wregion_list = new YAHOO.widget.Dialog("dialog_wregion_list", {
+        context: ["wregion", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_wregion_list.render();
-    Event.addListener("wregion", "click", dialog_wregion_list.show,dialog_wregion_list , true);
+    Event.addListener("wregion", "click", dialog_wregion_list.show, dialog_wregion_list, true);
 
-    dialog_city_list = new YAHOO.widget.Dialog("dialog_city_list", {context:["city","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_city_list = new YAHOO.widget.Dialog("dialog_city_list", {
+        context: ["city", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_city_list.render();
-    Event.addListener("city", "click", dialog_city_list.show,dialog_city_list , true);
+    Event.addListener("city", "click", dialog_city_list.show, dialog_city_list, true);
 
 
-    dialog_postal_code_list = new YAHOO.widget.Dialog("dialog_postal_code_list", {context:["postal_code","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_postal_code_list = new YAHOO.widget.Dialog("dialog_postal_code_list", {
+        context: ["postal_code", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_postal_code_list.render();
-    Event.addListener("postal_code", "click", dialog_postal_code_list.show,dialog_postal_code_list , true);
+    Event.addListener("postal_code", "click", dialog_postal_code_list.show, dialog_postal_code_list, true);
 
-    dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {context:["department","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_department_list = new YAHOO.widget.Dialog("dialog_department_list", {
+        context: ["department", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_department_list.render();
-    Event.addListener("department", "click", dialog_department_list.show,dialog_department_list , true);
+    Event.addListener("department", "click", dialog_department_list.show, dialog_department_list, true);
 
-    dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {context:["family","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_family_list = new YAHOO.widget.Dialog("dialog_family_list", {
+        context: ["family", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_family_list.render();
-    Event.addListener("family", "click", dialog_family_list.show,dialog_family_list , true);
+    Event.addListener("family", "click", dialog_family_list.show, dialog_family_list, true);
 
-    dialog_product_list = new YAHOO.widget.Dialog("dialog_product_list", {context:["product","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_product_list = new YAHOO.widget.Dialog("dialog_product_list", {
+        context: ["product", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_product_list.render();
-    Event.addListener("product", "click", dialog_product_list.show,dialog_product_list , true);
+    Event.addListener("product", "click", dialog_product_list.show, dialog_product_list, true);
 
-    dialog_category_list = new YAHOO.widget.Dialog("dialog_category_list", {context:["category","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    dialog_category_list = new YAHOO.widget.Dialog("dialog_category_list", {
+        context: ["category", "tr", "tl"],
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
     dialog_category_list.render();
-    Event.addListener("category", "click", dialog_category_list.show,dialog_category_list , true);
+    Event.addListener("category", "click", dialog_category_list.show, dialog_category_list, true);
 
-YAHOO.util.Event.addListener(['submit_search','modify_search'], "click",submit_search);
-YAHOO.util.Event.addListener(['product_ordered1'], "keydown",submit_search_on_enter);
-YAHOO.util.Event.addListener(['save_list'], "click",save_search_list);
+    YAHOO.util.Event.addListener(['submit_search', 'modify_search'], "click", submit_search);
+    YAHOO.util.Event.addListener(['product_ordered1'], "keydown", submit_search_on_enter);
+    YAHOO.util.Event.addListener(['save_list'], "click", save_search_list);
 
-YAHOO.util.Event.addListener(['show_dont_wish_to_receive'], "click",show_dont_wish_to_receive);
-YAHOO.util.Event.addListener(['show_dont_have'], "click",show_dont_have);
-
-
-//var ids=['general','contact'];
-//YAHOO.util.Event.addListener(ids, "click",change_view);
-
-cal1 = new YAHOO.widget.Calendar("product_ordered_or_from","product_ordered_or_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
- cal1.update=updateCal;
- cal1.id='1';
- cal1.render();
- cal1.update();
- cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-
- cal2 = new YAHOO.widget.Calendar("product_ordered_or_to","product_ordered_or_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
- cal2.update=updateCal;
- cal2.id='2';
- cal2.render();
- cal2.update();
- cal2.selectEvent.subscribe(handleSelect, cal2, true); 
-
-cal3 = new YAHOO.widget.Calendar("customer_first_contacted_from","customer_first_contacted_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
- cal3.update=updateCal;
- cal3.id='3';
- cal3.render();
- cal3.update();
-cal3.selectEvent.subscribe(handleSelect, cal3, true); 
-
-cal4 = new YAHOO.widget.Calendar("customer_first_contacted_to","customer_first_contacted_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
- cal4.update=updateCal;
- cal4.id='4';
- cal4.render();
- cal4.update();
-cal4.selectEvent.subscribe(handleSelect, cal4, true); 
-
-cal5 = new YAHOO.widget.Calendar("lost_customer_from","lost_customer_from_Container", { title:"<?php echo _('From Date')?>:", close:true } );
- cal5.update=updateCal;
- cal5.id='5';
- cal5.render();
- cal5.update();
-cal5.selectEvent.subscribe(handleSelect, cal5, true); 
-
-cal6 = new YAHOO.widget.Calendar("lost_customer_to","lost_customer_to_Container", { title:"<?php echo _('To Date')?>:", close:true } );
- cal6.update=updateCal;
- cal6.id='6';
- cal6.render();
- cal6.update();
-cal6.selectEvent.subscribe(handleSelect, cal6, true); 
+    YAHOO.util.Event.addListener(['show_dont_wish_to_receive'], "click", show_dont_wish_to_receive);
+    YAHOO.util.Event.addListener(['show_dont_have'], "click", show_dont_have);
 
 
-//cal2.cfg.setProperty("iframe", true);
-//cal2.cfg.setProperty("zIndex", 10);
+    //var ids=['general','contact'];
+    //YAHOO.util.Event.addListener(ids, "click",change_view);
+    cal1 = new YAHOO.widget.Calendar("product_ordered_or_from", "product_ordered_or_from_Container", {
+        title: "<?php echo _('From Date')?>:",
+        close: true
+    });
+    cal1.update = updateCal;
+    cal1.id = '1';
+    cal1.render();
+    cal1.update();
+    cal1.selectEvent.subscribe(handleSelect, cal1, true);
+
+    cal2 = new YAHOO.widget.Calendar("product_ordered_or_to", "product_ordered_or_to_Container", {
+        title: "<?php echo _('To Date')?>:",
+        close: true
+    });
+    cal2.update = updateCal;
+    cal2.id = '2';
+    cal2.render();
+    cal2.update();
+    cal2.selectEvent.subscribe(handleSelect, cal2, true);
+
+    cal3 = new YAHOO.widget.Calendar("customer_first_contacted_from", "customer_first_contacted_from_Container", {
+        title: "<?php echo _('From Date')?>:",
+        close: true
+    });
+    cal3.update = updateCal;
+    cal3.id = '3';
+    cal3.render();
+    cal3.update();
+    cal3.selectEvent.subscribe(handleSelect, cal3, true);
+
+    cal4 = new YAHOO.widget.Calendar("customer_first_contacted_to", "customer_first_contacted_to_Container", {
+        title: "<?php echo _('To Date')?>:",
+        close: true
+    });
+    cal4.update = updateCal;
+    cal4.id = '4';
+    cal4.render();
+    cal4.update();
+    cal4.selectEvent.subscribe(handleSelect, cal4, true);
+
+    cal5 = new YAHOO.widget.Calendar("lost_customer_from", "lost_customer_from_Container", {
+        title: "<?php echo _('From Date')?>:",
+        close: true
+    });
+    cal5.update = updateCal;
+    cal5.id = '5';
+    cal5.render();
+    cal5.update();
+    cal5.selectEvent.subscribe(handleSelect, cal5, true);
+
+    cal6 = new YAHOO.widget.Calendar("lost_customer_to", "lost_customer_to_Container", {
+        title: "<?php echo _('To Date')?>:",
+        close: true
+    });
+    cal6.update = updateCal;
+    cal6.id = '6';
+    cal6.render();
+    cal6.update();
+    cal6.selectEvent.subscribe(handleSelect, cal6, true);
 
 
-
-YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1, true);
-YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
-YAHOO.util.Event.addListener("customer_first_contacted_from", "click", cal3.show, cal3, true);
-YAHOO.util.Event.addListener("customer_first_contacted_to", "click", cal4.show, cal4, true);
-YAHOO.util.Event.addListener("lost_customer_from", "click", cal5.show, cal5, true);
-YAHOO.util.Event.addListener("lost_customer_to", "click", cal6.show, cal6, true);
+    //cal2.cfg.setProperty("iframe", true);
+    //cal2.cfg.setProperty("zIndex", 10);
 
 
-YAHOO.util.Event.addListener("order_time_units_since_last_order_qty", "keyup", validate_order_time_units_since_last_order);
+    YAHOO.util.Event.addListener("product_ordered_or_from", "click", cal1.show, cal1, true);
+    YAHOO.util.Event.addListener("product_ordered_or_to", "click", cal2.show, cal2, true);
+    YAHOO.util.Event.addListener("customer_first_contacted_from", "click", cal3.show, cal3, true);
+    YAHOO.util.Event.addListener("customer_first_contacted_to", "click", cal4.show, cal4, true);
+    YAHOO.util.Event.addListener("lost_customer_from", "click", cal5.show, cal5, true);
+    YAHOO.util.Event.addListener("lost_customer_to", "click", cal6.show, cal6, true);
 
 
-if(Dom.get('auto').value=='1'){
-	Dom.setStyle('save_dialog','visibility','visible');
-	Dom.setStyle('save_list','display','');
-	Dom.setStyle('modify_search','display','');
-	Dom.setStyle('submit_search','display','none');
-}
+    YAHOO.util.Event.addListener("order_time_units_since_last_order_qty", "keyup", validate_order_time_units_since_last_order);
 
-set_values();
+
+    if (Dom.get('auto').value == '1') {
+        Dom.setStyle('save_dialog', 'visibility', 'visible');
+        Dom.setStyle('save_list', 'display', '');
+        Dom.setStyle('modify_search', 'display', '');
+        Dom.setStyle('submit_search', 'display', 'none');
+    }
+
+    set_values();
+    
+        YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
+
 
 }
 
 YAHOO.util.Event.onDOMReady(init);
 
-function validate_order_time_units_since_last_order(){
-var qty=parseFloat(this.value)
-unit=Dom.get('order_time_units_since_last_order_unit').value;
-if(qty>0){
-    
-    Dom.addClass('order_time_units_since_last_order_'+unit,'selected')
-}else{
-Dom.removeClass('order_time_units_since_last_order_'+unit,'selected')
-}
+function validate_order_time_units_since_last_order() {
+    var qty = parseFloat(this.value)
+    unit = Dom.get('order_time_units_since_last_order_unit').value;
+    if (qty > 0) {
+
+        Dom.addClass('order_time_units_since_last_order_' + unit, 'selected')
+    } else {
+        Dom.removeClass('order_time_units_since_last_order_' + unit, 'selected')
+    }
 
 }
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
+    rppmenu.render();
+    rppmenu.subscribe("show", rppmenu.focus);
+});
 
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu1 = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
-	 oMenu1.render();
-	 oMenu1.subscribe("show", oMenu1.focus);
-	
+YAHOO.util.Event.onContentReady("filtermenu1", function() {
+    var oMenu1 = new YAHOO.widget.ContextMenu("filtermenu1", {
+        trigger: "filter_name1"
     });
-    YAHOO.util.Event.onContentReady("filtermenu2", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {  trigger: "filter_name2"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-     
-    });
-    YAHOO.util.Event.onContentReady("filtermenu3", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {  trigger: "filter_name3"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-    });
-    YAHOO.util.Event.onContentReady("filtermenu4", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu4", {  trigger: "filter_name4"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-    });
-    
+    oMenu1.render();
+    oMenu1.subscribe("show", oMenu1.focus);
 
-YAHOO.util.Event.onContentReady("filtermenu6", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu6", {  trigger: "filter_name6"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu2", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {
+        trigger: "filter_name2"
     });
-YAHOO.util.Event.onContentReady("filtermenu7", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu7", {  trigger: "filter_name7"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 // oMenu.show()
-    });    
-YAHOO.util.Event.onContentReady("filtermenu5", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu5", {  trigger: "filter_name5"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
+YAHOO.util.Event.onContentReady("filtermenu3", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu3", {
+        trigger: "filter_name3"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu4", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu4", {
+        trigger: "filter_name4"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+
+
+YAHOO.util.Event.onContentReady("filtermenu6", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu6", {
+        trigger: "filter_name6"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
+YAHOO.util.Event.onContentReady("filtermenu7", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu7", {
+        trigger: "filter_name7"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+    // oMenu.show()
+});
+YAHOO.util.Event.onContentReady("filtermenu5", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu5", {
+        trigger: "filter_name5"
+    });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});

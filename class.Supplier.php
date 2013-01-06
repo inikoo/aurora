@@ -231,8 +231,9 @@ class supplier extends DB_Table {
 
 		}
 
-
-
+		
+		if (array_key_exists('Supplier '.$key,$this->data))
+			return $this->data['Supplier '.$key];
 
 		print "Error $key not found in get from supplier\n";
 		return false;
@@ -2021,10 +2022,143 @@ class supplier extends DB_Table {
 	function get_main_address_key() {
 		return $this->data['Supplier Main Address Key'];
 	}
+	
+	function get_image_src() {
+		return '';
+	}
+	
+		function get_main_email_user_key() {
+		$user_key=0;
+		$sql=sprintf("select `User Key` from  `User Dimension` where `User Handle`=%s and `User Type`='Supplier' and `User Parent Key`=%d "
+
+			,prepare_mysql($this->data['Supplier Main Plain Email'])
+			,$this->id
+		);
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$user_key=$row['User Key'];
+		}
+		return $user_key;
+	}
+	
+
+
+
+	function get_principal_email_comment() {
+		$comment='';
+		if ($this->data['Supplier Main Email Key']) {
+
+			$sql=sprintf("select `Email Description` from `Email Bridge` B where `Email Key`=%d  and `Subject Type`='Supplier' and `Subject Key`=%d ",
+				$this->data['Supplier Main Email Key'],
+				$this->id
+			);
+			$result=mysql_query($sql);
+
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$comment=$row['Email Description'];
+			}
+		}
+
+		return $comment;
+	}
+	
+		function get_principal_telecom_comment($type) {
+		
+		
+		
+		$comment='';
+		if ($this->data['Supplier Main '.$type.' Key']) {
+
+			$sql=sprintf("select `Telecom Description` from `Telecom Bridge` B where `Telecom Key`=%d  and `Subject Type`='Supplier' and `Subject Key`=%d ",
+				$this->data['Supplier Main '.$type.' Key'],
+				$this->id
+			);
+			$result=mysql_query($sql);
+			//print $sql;
+			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+				$comment=$row['Telecom Description'];
+			}
+		}
+
+		return $comment;
+	}
+	
+	function get_other_emails_data() {
+
+
+
+		$sql=sprintf("select B.`Email Key`,`Email`,`Email Description`,`User Key` from
+        `Email Bridge` B  left join `Email Dimension` E on (E.`Email Key`=B.`Email Key`)
+        left join `User Dimension` U on (`User Handle`=E.`Email` and `User Type`='Supplier' and `User Parent Key`=%d )
+        where  `Subject Type`='Supplier' and `Subject Key`=%d "
+			,$this->id
+			,$this->id
+		);
+
+		$email_keys=array();
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			if ($row['Email Key']!=$this->data['Supplier Main Email Key'])
+				$email_keys[$row['Email Key']]= array(
+					'email'=>$row['Email'],
+					'key'=>$row['Email Key'],
+					'xhtml'=>'<a href="mailto:'.$row['Email'].'">'.$row['Email'].'</a>',
+					'label'=>$row['Email Description'],
+					'user_key'=>$row['User Key']
+				);
+		}
+		return $email_keys;
+
+	}
+	
+		function get_other_faxes_data() {
+		return $this->get_other_telecoms_data('FAX');
+	}
+
+	function get_other_mobiles_data() {
+		return $this->get_other_telecoms_data('Mobile');
+	}
+	function get_other_telephones_data() {
+		return $this->get_other_telecoms_data('Telephone');
+	}
+
+	function get_other_telecoms_data($type='Telephone') {
+
+		$sql=sprintf("select B.`Telecom Key`,`Telecom Description` from `Telecom Bridge` B left join `Telecom Dimension` T on (T.`Telecom Key`=B.`Telecom Key`) where `Telecom Type`=%s  and `Subject Type`='Supplier' and `Subject Key`=%d ",
+			prepare_mysql($type),
+			$this->id
+		);
+		//print $sql;
+		$telecom_keys=array();
+		$result=mysql_query($sql);
+		while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+			if ($row['Telecom Key']!=$this->data["Supplier Main $type Key"]) {
+
+				$telecom=new Telecom($row['Telecom Key']);
+
+				$telecom_keys[$row['Telecom Key']]= array(
+					'number'=>$telecom->display('plain'),
+					'xhtml'=>$telecom->display('xhtml'),
+					'label'=>$row['Telecom Description']
+				);
+
+			}
+		}
+		return $telecom_keys;
+
+	}
+
+	function get_main_address_fuzzy_type(){
+		$fuzzy_type='All';
+		$address=new Address($this->data['Supplier Main Address Key']);
+		if($address->id){
+			$fuzzy_type=$address->data['Address Fuzzy Type'];
+		}
+	
+		return $fuzzy_type;
+	}
+
 }
-
-
-
 
 
 ?>

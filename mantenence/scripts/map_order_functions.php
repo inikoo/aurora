@@ -7059,6 +7059,13 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
       //     print "$key  \n";
       //  print_r($raw_header_data);
 
+
+	if(!isset($raw_header_data[$map_data['row']][$map_data['col']]))	{
+		return 0;
+	}
+		
+		
+
       $_data=$raw_header_data[$map_data['row']][$map_data['col']];
       //      print "**** $key ".$map_data['row']." ".$map_data['col']." $_data \n";
       

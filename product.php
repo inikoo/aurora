@@ -416,9 +416,25 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$prev['link']='product.php?pid='.$row['id'];
 	$prev['title']=$row['name'];
+	$prev['to_end']=false;
 	$smarty->assign('prev',$prev);
+}else {
+	$sql=sprintf("select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d  and %s > %s  order by %s desc  limit 1",
+		$product->data['Product Family Key'],
+		$order,
+		prepare_mysql($product->get($_order)),
+		$order
+	);
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$prev['link']='product.php?pid='.$row['id'];
+		$prev['title']=$row['name'];
+		$prev['to_end']=true;
+		$smarty->assign('prev',$prev);
+	}
+
 }
-mysql_free_result($result);
 
 
 $sql=sprintf(" select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d    and  %s>%s  order by %s   ",
@@ -432,9 +448,25 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$next['link']='product.php?pid='.$row['id'];
 	$next['title']=$row['name'];
+	$next['to_end']=false;
 	$smarty->assign('next',$next);
+}else {
+	$sql=sprintf(" select `Product ID` as id , `Product Code` as name from `Product Dimension`  where  `Product Family Key`=%d    and  %s<%s  order by %s   ",
+		$product->data['Product Family Key'],
+		$order,
+		prepare_mysql($product->get($_order)),
+		$order
+	);
+
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$next['link']='product.php?pid='.$row['id'];
+		$next['title']=$row['name'];
+		$next['to_end']=true;
+		$smarty->assign('next',$next);
+	}
+
 }
-mysql_free_result($result);
 
 
 

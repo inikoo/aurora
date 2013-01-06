@@ -223,17 +223,31 @@ function list_orders() {
 	if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
 		$conf=$_SESSION['state']['report']['sales'];
 	else
-		$conf=$_SESSION['state']['orders']['table'];
+		$conf=$_SESSION['state']['orders']['orders'];
 
 	if (isset( $_REQUEST['list_key']))
 		$list_key=$_REQUEST['list_key'];
 	else
 		$list_key=false;
 
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit('no parent_key');
+	}
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		exit('no parent');
+	}
+
+
 	if (isset( $_REQUEST['where']))
 		$awhere=$_REQUEST['where'];
 	else
-		$awhere=$conf['where'];
+		$awhere='';
 
 
 
@@ -262,23 +276,23 @@ function list_orders() {
 		$f_value=$_REQUEST['f_value'];
 	else
 		$f_value=$conf['f_value'];
-	if (isset( $_REQUEST['where']))
-		$where=$_REQUEST['where'];
-	else
-		$where=$conf['where'];
 
-	if (isset( $_REQUEST['from']))
+
+	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
-	else {
+		$_SESSION['state']['orders']['from']=$from;
+
+	}else {
 		if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
 			$from=$conf['from'];
 		else
 			$from=$_SESSION['state']['orders']['from'];
 	}
 
-	if (isset( $_REQUEST['to']))
+	if (isset( $_REQUEST['to'])) {
 		$to=$_REQUEST['to'];
-	else {
+		$_SESSION['state']['orders']['to']=$to;
+	}else {
 		if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
 			$to=$conf['to'];
 		else
@@ -299,29 +313,100 @@ function list_orders() {
 	else
 		$tableid=0;
 
-	if (isset( $_REQUEST['dispatch']))
-		$dispatch=$_REQUEST['dispatch'];
+	if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
 	else {
-		$dispatch=$conf['dispatch'];
-	}
-	if (isset( $_REQUEST['order_type']))
-		$order_type=$_REQUEST['order_type'];
-	else {
-		$order_type=$conf['order_type'];
-	}
-	if (isset( $_REQUEST['paid']))
-		$paid=$_REQUEST['paid'];
-	else {
-		$paid=$conf['paid'];
+		$elements_type=$conf['elements_type'];
 	}
 
+	$elements=$conf['elements'];
+	if (isset( $_REQUEST['elements_order_dispatch_InProcessCustomer'])) {
+		$elements['dispatch']['InProcessCustomer']=$_REQUEST['elements_order_dispatch_InProcessCustomer'];
+	}
+	if (isset( $_REQUEST['elements_order_dispatch_InProcess'])) {
+		$elements['dispatch']['InProcess']=$_REQUEST['elements_order_dispatch_InProcess'];
+	}
+
+	if (isset( $_REQUEST['elements_order_dispatch_Warehouse'])) {
+		$elements['dispatch']['Warehouse']=$_REQUEST['elements_order_dispatch_Warehouse'];
+	}
+	if (isset( $_REQUEST['elements_order_dispatch_Dispatched'])) {
+		$elements['dispatch']['Dispatched']=$_REQUEST['elements_order_dispatch_Dispatched'];
+	}
+	if (isset( $_REQUEST['elements_order_dispatch_Cancelled'])) {
+		$elements['dispatch']['Cancelled']=$_REQUEST['elements_order_dispatch_Cancelled'];
+	}
+	if (isset( $_REQUEST['elements_order_dispatch_Suspended'])) {
+		$elements['dispatch']['Suspended']=$_REQUEST['elements_order_dispatch_Suspended'];
+	}
+
+
+
+
+	if (isset( $_REQUEST['elements_order_source_Other'])) {
+		$elements['source']['Other']=$_REQUEST['elements_order_source_Other'];
+	}
+	if (isset( $_REQUEST['elements_order_source_Internet'])) {
+		$elements['source']['Internet']=$_REQUEST['elements_order_source_Internet'];
+	}
+	if (isset( $_REQUEST['elements_order_source_Call'])) {
+		$elements['source']['Call']=$_REQUEST['elements_order_source_Call'];
+	}
+	if (isset( $_REQUEST['elements_order_source_Store'])) {
+		$elements['source']['Store']=$_REQUEST['elements_order_source_Store'];
+	}
+	if (isset( $_REQUEST['elements_order_source_Email'])) {
+		$elements['source']['Email']=$_REQUEST['elements_order_source_Email'];
+	}
+	if (isset( $_REQUEST['elements_order_source_Fax'])) {
+		$elements['source']['Fax']=$_REQUEST['elements_order_source_Fax'];
+	}
+
+	// //  'type'=>array('Order'=>1,'Sample'=>1,'Donation'=>1,'Other'=>1),
+
+	if (isset( $_REQUEST['elements_order_type_Other'])) {
+		$elements['type']['Other']=$_REQUEST['elements_order_type_Other'];
+	}
+	if (isset( $_REQUEST['elements_order_type_Sample'])) {
+		$elements['type']['Sample']=$_REQUEST['elements_order_type_Sample'];
+	}
+	if (isset( $_REQUEST['elements_order_type_Donation'])) {
+		$elements['type']['Donation']=$_REQUEST['elements_order_type_Donation'];
+	}
+	if (isset( $_REQUEST['elements_order_type_Order'])) {
+		$elements['type']['Order']=$_REQUEST['elements_order_type_Order'];
+	}
+
+	//  'payment'=>array('Paid'=>1,'PartiallyPaid'=>1,'Unknown'=>1,'WaitingPayment'=>1,'NA'=>1),
+
+	//&elements_order_payment_PartiallyPaid=0&elements_order_payment_WaitingPayment=1&elements_order_payment_Unknown=0&elements_order_payment_Paid=0&elements_order_payment_NA=1
+
+	if (isset( $_REQUEST['elements_order_payment_Paid'])) {
+		$elements['payment']['Paid']=$_REQUEST['elements_order_payment_Paid'];
+	}
+	if (isset( $_REQUEST['elements_order_payment_PartiallyPaid'])) {
+		$elements['payment']['PartiallyPaid']=$_REQUEST['elements_order_payment_PartiallyPaid'];
+	}
+	if (isset( $_REQUEST['elements_order_payment_Unknown'])) {
+		$elements['payment']['Unknown']=$_REQUEST['elements_order_payment_Unknown'];
+	}
+	if (isset( $_REQUEST['elements_order_payment_WaitingPayment'])) {
+		$elements['payment']['WaitingPayment']=$_REQUEST['elements_order_payment_WaitingPayment'];
+	}
+	if (isset( $_REQUEST['elements_order_payment_NA'])) {
+		$elements['payment']['NA']=$_REQUEST['elements_order_payment_NA'];
+	}
+
+
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
 
 
 	if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales') {
 
 		$_SESSION['state']['report']['sales']['order']=$order;
-		$_SESSION['state']['report']['sales']['order_dir']=$order_direction;
+		$_SESSION['state']['report']['sales']['order_dir']=$order_dir;
 		$_SESSION['state']['report']['sales']['nr']=$number_results;
 		$_SESSION['state']['report']['sales']['sf']=$start_from;
 		$_SESSION['state']['report']['sales']['where']=$where;
@@ -329,79 +414,153 @@ function list_orders() {
 		$_SESSION['state']['report']['sales']['f_value']=$f_value;
 		$_SESSION['state']['report']['sales']['to']=$to;
 		$_SESSION['state']['report']['sales']['from']=$from;
-		$date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
+		$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Date`');
 
 	} else {
-		if (isset( $_REQUEST['store_key'])    ) {
-			$store=$_REQUEST['store_key'];
-			$_SESSION['state']['orders']['store']=$store;
-		} else
-			$store=$_SESSION['state']['orders']['store'];
 
 
-		$_SESSION['state']['orders']['table']['order']=$order;
-		$_SESSION['state']['orders']['table']['order_dir']=$order_direction;
-		$_SESSION['state']['orders']['table']['nr']=$number_results;
-		$_SESSION['state']['orders']['table']['sf']=$start_from;
-		$_SESSION['state']['orders']['table']['where']=$where;
-		$_SESSION['state']['orders']['table']['f_field']=$f_field;
-		$_SESSION['state']['orders']['table']['f_value']=$f_value;
-		$_SESSION['state']['orders']['table']['dispatch']=$dispatch;
-		$_SESSION['state']['orders']['table']['paid']=$paid;
-		$_SESSION['state']['orders']['table']['order_type']=$order_type;
+
+		$_SESSION['state']['orders']['orders']['order']=$order;
+		$_SESSION['state']['orders']['orders']['order_dir']=$order_dir;
+		$_SESSION['state']['orders']['orders']['nr']=$number_results;
+		$_SESSION['state']['orders']['orders']['sf']=$start_from;
+		$_SESSION['state']['orders']['orders']['f_field']=$f_field;
+		$_SESSION['state']['orders']['orders']['f_value']=$f_value;
+		$_SESSION['state']['orders']['orders']['elements_type']=$elements_type;
+		$_SESSION['state']['orders']['orders']['elements']=$elements;
 
 
 
 		$_SESSION['state']['orders']['view']=$view;
-		$date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
-		if ($date_interval['error']) {
-			$date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
-		} else {
-			$_SESSION['state']['orders']['from']=$date_interval['from'];
-			$_SESSION['state']['orders']['to']=$date_interval['to'];
-		}
+		//$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Date`');
+
+		//if ($date_interval['error']) {
+		// $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'].' 00:00:00',$_SESSION['state']['orders']['to'].' 23:59:59','`Order Date`');
+		//} else {
+		// $_SESSION['state']['orders']['from']=$date_interval['from'];
+		// $_SESSION['state']['orders']['to']=$date_interval['to'];
+
+
+
+		//}
 	}
 
 
 
 
 
-	$where='where true '.$date_interval['mysql'];
+
+	$where='where true ';
 	$table='`Order Dimension` O ';
 	$where_type='';
-	$where_interval='';
-	if ($from & $to) {
-		$where_interval=prepare_mysql_dates($from,$to,'`Order Last Updated Date`','only_dates');
-		$where_interval=$where_interval['mysql'];
-	}
 
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
 
+	$where_interval=prepare_mysql_dates($from,$to,'`Order Last Updated Date`');
+	$where_interval=$where_interval['mysql'];
 
-	$dipatch_types=preg_split('/,/',$dispatch);
-	if (!array_key_exists('all_orders',$dipatch_types)) {
-		$valid_dispatch_types=array(
-			'in_process'=>",'Submited','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'",
-			'cancelled'=>",'Cancelled'",
-			'dispatched'=>",'Dispatched'",
-			'suspended'=>",'Suspended'",
-			'unknown'=>"'Unknown'"
-		);
-		$_where='';
-		foreach ($dipatch_types as $dipatch_type) {
-			if (array_key_exists($dipatch_type,$valid_dispatch_types))
-				$_where.=$valid_dispatch_types[$dipatch_type];
+	switch ($elements_type) {
+	case('dispatch'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($elements['dispatch'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+				if ($_key=='InProcessCustomer') {
+					$_elements.=",'In Process Customer'";
+
+				}elseif ($_key=='InProcess') {
+					$_elements.=",'In Process'";
+				}elseif ($_key=='Warehouse') {
+					$_elements.=",'Ready to Pick','Picking & Packing','Ready to Ship'";
+				}elseif ($_key=='Dispatched') {
+					$_elements.=",'Dispatched'";
+				}elseif ($_key=='Cancelled') {
+					$_elements.=",'Cancelled'";
+				}elseif ($_key=='Suspended') {
+					$_elements.=",'Suspended'";
+				}
+			}
 		}
 
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
 
-		$_where=preg_replace('/^,/','',$_where);
-		if ($_where!='') {
-			$where_type=' and `Order Current Dispatch State` in ('.$_where.')';
-		} else {
-			$_SESSION['state']['orders']['table']['dispatch']='all_orders';
+		}else {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Order Current Dispatch State` in ('.$_elements.')' ;
 		}
+		break;
+	case('source'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($elements['source'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
+
+		}else {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Order Main Source Type` in ('.$_elements.')' ;
+		}
+		break;
+	case('type'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($elements['type'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
+
+		}else {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Order Type` in ('.$_elements.')' ;
+		}
+		break;
+	case('payment'):
+		$_elements='';
+		$num_elements_checked=0;
+
+		//'Waiting Payment','Paid','Partially Paid','Unknown','No Applicable'
+
+		foreach ($elements['payment'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+				if ($_key=='WaitingPayment')$_key='Waiting Payment';
+				if ($_key=='PartiallyPaid')$_key='Partially Paid';
+				if ($_key=='NA')$_key='No Applicable';
+
+
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
+
+		}else {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Order Current Payment State` in ('.$_elements.')' ;
+		}
+		break;
 	}
-
-
 
 
 
@@ -411,7 +570,7 @@ function list_orders() {
 		$tmp=preg_replace('/\'/',"\'",$tmp);
 
 		$raw_data=json_decode($tmp, true);
-		$raw_data['store_key']=$store;
+		$raw_data['store_key']=$parent_key;
 		//print_r( $raw_data);exit;
 		list($where,$table)=orders_awhere($raw_data);
 
@@ -443,7 +602,7 @@ function list_orders() {
 
 				$raw_data=json_decode($tmp, true);
 
-				$raw_data['store_key']=$store;
+				$raw_data['store_key']=$parent_key;
 				list($where,$table)=orders_awhere($raw_data);
 
 
@@ -467,9 +626,9 @@ function list_orders() {
 
 	$where_stores=sprintf(' and  false');
 
-	if (is_numeric($store) and in_array($store,$user->stores)) {
-		$where_stores=sprintf(' and  `Order Store Key`=%d ',$store);
-		$store=new Store($store);
+	if (is_numeric($parent_key) and in_array($parent_key,$user->stores)) {
+		$where_stores=sprintf(' and  `Order Store Key`=%d ',$parent_key);
+		$store=new Store($parent_key);
 		$currency=$store->data['Store Currency Code'];
 	} else {
 
@@ -493,7 +652,7 @@ function list_orders() {
 	elseif (($f_field=='postcode')  and $f_value!='') {
 		$wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
 	}
-	elseif ($f_field=='public_id')
+	elseif ($f_field=='public_id'  and $f_value!='')
 		$wheref.=" and  `Order Public ID`  like '".addslashes($f_value)."%'";
 
 	elseif ($f_field=='maxvalue' and is_numeric($f_value) )
@@ -516,16 +675,16 @@ function list_orders() {
 
 
 
-	$sql="select count(Distinct O.`Order Key`) as total from $table   $where $wheref $where_type $where_interval";
+	$sql="select count(Distinct O.`Order Key`) as total from $table   $where $wheref ";
 
-	// print $sql;exit;
+	
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		$total=$row['total'];
 	}
 	if ($wheref!='') {
-		$sql="select count(Distinct O.`Order Key`) as total_without_filters from $table  $where  $where_type $where_interval";
+		$sql="select count(Distinct O.`Order Key`) as total_without_filters from $table  $where  ";
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -541,7 +700,7 @@ function list_orders() {
 	mysql_free_result($res);
 
 
-	$rtext=$total_records." ".ngettext('order','orders',$total_records);
+	$rtext=number($total_records)." ".ngettext('order','orders',$total_records);
 	if ($total_records>$number_results)
 		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
 	else
@@ -624,9 +783,9 @@ function list_orders() {
 
 	//$sql="select   * from  $table   $where $wheref  $where_type $where_interval  order by $order $order_direction limit $start_from,$number_results";
 	//    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  $where_type group by O.`Order Key` order by $order $order_direction limit $start_from,$number_results";
-	$sql="select `Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension` O  $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
+	$sql="select `Order Balance Total Amount`,`Order Current Payment State`,`Order Current Dispatch State`,`Order Out of Stock Net Amount`,`Order Invoiced Total Net Adjust Amount`,`Order Invoiced Total Tax Adjust Amount`,FORMAT(`Order Invoiced Total Net Adjust Amount`+`Order Invoiced Total Tax Adjust Amount`,2) as `Order Adjust Amount`,`Order Out of Stock Net Amount`,`Order Out of Stock Tax Amount`,FORMAT(`Order Out of Stock Net Amount`+`Order Out of Stock Tax Amount`,2) as `Order Out of Stock Amount`,`Order Invoiced Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension` O  $where $wheref  order by $order $order_direction ".($output_type=='ajax'?"limit $start_from,$number_results":'');
 	//print $where;exit;
-	//  print $sql;
+//	 print $sql;
 	$adata=array();
 
 
@@ -709,7 +868,8 @@ function list_orders() {
 			);
 
 		}
-	}else {
+	}
+	else {
 		$fields=explode(",",$user->get_table_export_fields('ar_orders','orders'));
 		while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 			$_data=array();
@@ -717,6 +877,7 @@ function list_orders() {
 				$_data[]=$data[$field];
 			}
 			$adata[]=$_data;
+			//exit;
 		}
 	}
 
@@ -1711,6 +1872,22 @@ function list_orders_with_deal($can_see_customers=false) {
 
 function list_delivery_notes() {
 	global $myconf,$output_type,$user;
+
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit('no parent_key');
+	}
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		exit('no parent');
+	}
+
+
+
 	if (isset( $_REQUEST['list_key']))
 		$list_key=$_REQUEST['list_key'];
 	else
@@ -1753,23 +1930,27 @@ function list_delivery_notes() {
 		$state=$conf['dn_state_type'];
 
 
-	if (isset( $_REQUEST['from']))
+	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
-	else {
+		$_SESSION['state']['orders']['from']=$from;
+
+	}else {
 		if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
 			$from=$conf['from'];
 		else
 			$from=$_SESSION['state']['orders']['from'];
 	}
 
-	if (isset( $_REQUEST['to']))
+	if (isset( $_REQUEST['to'])) {
 		$to=$_REQUEST['to'];
-	else {
+		$_SESSION['state']['orders']['to']=$to;
+	}else {
 		if (isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
 			$to=$conf['to'];
 		else
 			$to=$_SESSION['state']['orders']['to'];
 	}
+
 
 	if (isset( $_REQUEST['view']))
 		$view=$_REQUEST['view'];
@@ -1784,6 +1965,53 @@ function list_delivery_notes() {
 		$tableid=$_REQUEST['tableid'];
 	else
 		$tableid=0;
+
+	if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
+	else {
+		$elements_type=$conf['elements_type'];
+	}
+
+
+
+	$elements=$conf['elements'];
+	if (isset( $_REQUEST['elements_dn_dispatch_Ready'])) {
+		$elements['dispatch']['Ready']=$_REQUEST['elements_dn_dispatch_Ready'];
+	}
+	if (isset( $_REQUEST['elements_dn_dispatch_Picking'])) {
+		$elements['dispatch']['Picking']=$_REQUEST['elements_dn_dispatch_Picking'];
+	}
+
+	if (isset( $_REQUEST['elements_dn_dispatch_Packing'])) {
+		$elements['dispatch']['Packing']=$_REQUEST['elements_dn_dispatch_Packing'];
+	}
+	if (isset( $_REQUEST['elements_dn_dispatch_Done'])) {
+		$elements['dispatch']['Done']=$_REQUEST['elements_dn_dispatch_Done'];
+	}
+	if (isset( $_REQUEST['elements_dn_dispatch_Send'])) {
+		$elements['dispatch']['Send']=$_REQUEST['elements_dn_dispatch_Send'];
+	}
+	if (isset( $_REQUEST['elements_dn_dispatch_Returned'])) {
+		$elements['dispatch']['Returned']=$_REQUEST['elements_dn_dispatch_Returned'];
+	}
+
+
+
+	if (isset( $_REQUEST['elements_dn_type_Replacements'])) {
+		$elements['type']['Replacements']=$_REQUEST['elements_dn_type_Replacements'];
+	}
+	if (isset( $_REQUEST['elements_dn_type_Sample'])) {
+		$elements['type']['Sample']=$_REQUEST['elements_dn_type_Sample'];
+	}
+	if (isset( $_REQUEST['elements_dn_type_Donation'])) {
+		$elements['type']['Donation']=$_REQUEST['elements_dn_type_Donation'];
+	}
+	if (isset( $_REQUEST['elements_dn_type_Order'])) {
+		$elements['type']['Order']=$_REQUEST['elements_dn_type_Order'];
+	}
+	if (isset( $_REQUEST['elements_dn_type_Shortages'])) {
+		$elements['type']['Shortages']=$_REQUEST['elements_dn_type_Shortages'];
+	}
 
 
 
@@ -1802,14 +2030,9 @@ function list_delivery_notes() {
 		$_SESSION['state']['report']['sales']['f_value']=$f_value;
 		$_SESSION['state']['report']['sales']['to']=$to;
 		$_SESSION['state']['report']['sales']['from']=$from;
-		$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+		$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','date_index');
 
 	} else {
-		if (isset( $_REQUEST['store_key'])    ) {
-			$store=$_REQUEST['store_key'];
-			$_SESSION['state']['orders']['store']=$store;
-		} else
-			$store=$_SESSION['state']['orders']['store'];
 
 
 		// $_SESSION['state']['orders']['dn']=array('dn_state_type'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
@@ -1822,26 +2045,105 @@ function list_delivery_notes() {
 		$_SESSION['state']['orders']['dn']['where']=$awhere;
 		$_SESSION['state']['orders']['dn']['f_field']=$f_field;
 		$_SESSION['state']['orders']['dn']['f_value']=$f_value;
+		$_SESSION['state']['orders']['dn']['elements_type']=$elements_type;
+		$_SESSION['state']['orders']['dn']['elements']=$elements;
 
 
 		$_SESSION['state']['orders']['view']=$view;
-		$date_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`','only_dates');
-		if ($date_interval['error']) {
-			$date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
-		} else {
-			$_SESSION['state']['orders']['from']=$date_interval['from'];
-			$_SESSION['state']['orders']['to']=$date_interval['to'];
-		}
+		//$date_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Delivery Note Date`');
+
+		//if ($date_interval['error']) {
+		// $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'].' 00:00:00',$_SESSION['state']['orders']['to'].' 23:59:59');
+		//} else {
+		// $_SESSION['state']['orders']['from']=$date_interval['from'];
+		// $_SESSION['state']['orders']['to']=$date_interval['to'];
+		//}
 	}
 
 	$where='where true';
 	$table='`Delivery Note Dimension` D ';
 	$where_type='';
-	$where_interval='';
-
-	$where_interval=$date_interval['mysql'];
 
 
+
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`');
+	$where_interval=$where_interval['mysql'];
+
+
+
+	
+
+
+
+	switch ($elements_type) {
+	case('dispatch'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($elements['dispatch'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+				if ($_key=='Ready') {
+					$_elements.=",'Ready to be Picked'";
+
+				}elseif ($_key=='Picking') {
+					$_elements.=",'Picking','Picking & Packing','Picked','Picker Assigned','Picker & Packer Assigned'";
+				}elseif ($_key=='Packing') {
+					$_elements.=",'Packing','Packed','Packer Assigned','Packed Done'";
+				}elseif ($_key=='Done') {
+					$_elements.=",'Approved'";
+				}elseif ($_key=='Send') {
+					$_elements.=",'Dispatched'";
+				}elseif ($_key=='Returned') {
+					$_elements.=",'Cancelled','Cancelled to Restock'";
+				}
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==6) {
+
+		}else {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Delivery Note State` in ('.$_elements.')' ;
+		}
+		break;
+
+	case('type'):
+
+
+
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($elements['type'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+
+				if ($_key=='Replacements') {
+					$_elements.=", 'Replacement','Replacement & Shortages'  ";
+
+				}else {
+
+					$_elements.=", '$_key'";
+				}
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==5) {
+
+		}else {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Delivery Note Type` in ('.$_elements.')' ;
+		}
+		break;
+
+	}
 
 
 
@@ -1857,7 +2159,7 @@ function list_delivery_notes() {
 		$where_type='';
 		$where_interval='';
 	}
-
+	//print $where_interval;exit;
 	if ($list_key) {
 		$sql=sprintf("select * from `List Dimension` where `List Key`=%d",$_REQUEST['list_key']);
 
@@ -1892,63 +2194,49 @@ function list_delivery_notes() {
 	} else
 		$where_type='';
 
-	if (is_numeric($store) and in_array($store,$user->stores)) {
-		$where_stores=sprintf(' and `Delivery Note Store Key`=%d ',$store);
-		$store=new Store($store);
+	$currency='';
+	if ($parent=='store') {
+
+		if ( !in_array($parent_key,$user->stores)) {
+			exit('forbidden');
+		}
+		$store=new Store($parent_key);
 		$currency=$store->data['Store Currency Code'];
-	} else {
+		$where_stores=sprintf(' and `Delivery Note Store Key` =%d  ',$parent_key);
 
-		$currency='';
+
+	}
+	elseif ($parent=='none') {
+
+		if (count($user->stores)==0)exit('forbidden');
+
+
+		$where_stores=sprintf(' and `Delivery Note Store Key` in (%s)  ',join(',',$user->stores));
+
+
 	}
 
-	if (isset( $_REQUEST['all_stores']) and  $_REQUEST['all_stores']  ) {
-		$where_stores=sprintf('and `Order Store Key` in (%s)  ',join(',',$user->stores));
-	}
+
+
+
+
+
+
+
+
+
 
 	$where.=$where_stores;
 
 	$where.=$where_interval;
+	//print $where;
 
 
-	switch ($state) {
-	case 'shortages':
-		$where_type.=' and `Delivery Note Type` in ("Shortages","Replacement & Shortages")';
-		break;
-	case 'replacements':
-		$where_type.=' and `Delivery Note Type` in ("Replacement","Replacement & Shortages")';
-		break;
-	case 'donations':
-		$where_type.=' and `Delivery Note Type`="Donation"';
-		break;
-	case 'samples':
-		$where_type.=' and `Delivery Note Type`="Sample"';
-		break;
-	case 'orders':
-		$where_type.=' and `Delivery Note Type`="Order"';
-		break;
-	case 'returned':
-		$where_type.=' and `Delivery Note State`="Cancelled to Restock"';
-		break;
-	case 'send':
-		$where_type.=' and `Delivery Note State`="Dispatched"';
-		break;
-	case 'ready':
-		$where_type.=' and `Delivery Note State` in ("Packed","Approved")';
-		break;
-	case 'packing':
-		$where_type.=" and `Delivery Note State` in ('Picking & Packing','Packer Assigned','Picked','Packing')";
-		break;
-	case 'picking':
-		$where_type.=' and `Delivery Note State` in ("Picking & Packing","Picking")';
-		break;
 
-	case 'ready_to_pick':
-		$where_type.=' and `Delivery Note State` in ("Ready to be Picked","Picker Assigned")';
-		break;
-	default:
 
-		break;
-	}
+
+
+
 
 	$where.=$where_type;
 
@@ -2188,10 +2476,6 @@ function list_invoices() {
 	else
 		$order=$conf['order'];
 
-	if (isset( $_REQUEST['invoice_type']))
-		$type=$_REQUEST['invoice_type'];
-	else
-		$type=$_SESSION['state']['orders']['invoices']['invoice_type'];
 
 
 	if (isset( $_REQUEST['od']))
@@ -2219,15 +2503,46 @@ function list_invoices() {
 	else
 		$tableid=1;
 
-	if (isset( $_REQUEST['from']))
+	if (isset( $_REQUEST['from'])) {
 		$from=$_REQUEST['from'];
-	else
+		$_SESSION['state']['orders']['from']=$from;
+	}else
 		$from=$_SESSION['state']['orders']['from'];
 
-	if (isset( $_REQUEST['to']))
+	if (isset( $_REQUEST['to'])) {
 		$to=$_REQUEST['to'];
-	else
+		$_SESSION['state']['orders']['to']=$to;
+	}else
 		$to=$_SESSION['state']['orders']['to'];
+
+
+
+	if (isset( $_REQUEST['elements_type']))
+		$elements_type=$_REQUEST['elements_type'];
+	else {
+		$elements_type=$conf['elements_type'];
+	}
+
+	$elements=$conf['elements'];
+
+	if (isset( $_REQUEST['elements_invoice_type_Invoice'])) {
+		$elements['type']['Invoice']=$_REQUEST['elements_invoice_type_Invoice'];
+	}
+	if (isset( $_REQUEST['elements_invoice_type_Refund'])) {
+		$elements['type']['Refund']=$_REQUEST['elements_invoice_type_Refund'];
+	}
+
+
+	if (isset( $_REQUEST['elements_invoice_payment_Yes'])) {
+		$elements['payment']['Yes']=$_REQUEST['elements_invoice_payment_Yes'];
+	}
+	if (isset( $_REQUEST['elements_invoice_payment_Partially'])) {
+		$elements['payment']['Partially']=$_REQUEST['elements_invoice_payment_Partially'];
+	}
+	if (isset( $_REQUEST['elements_invoice_payment_No'])) {
+		$elements['payment']['No']=$_REQUEST['elements_invoice_payment_No'];
+	}
+
 
 
 
@@ -2242,6 +2557,8 @@ function list_invoices() {
 	$_SESSION['state']['orders']['invoices']['where']=$awhere;
 	$_SESSION['state']['orders']['invoices']['f_field']=$f_field;
 	$_SESSION['state']['orders']['invoices']['f_value']=$f_value;
+	$_SESSION['state']['orders']['invoices']['elements']=$elements;
+	$_SESSION['state']['orders']['invoices']['elements_type']=$elements_type;
 
 	$where='where true';
 	$table='`Invoice Dimension` I ';
@@ -2314,42 +2631,56 @@ function list_invoices() {
 	}
 
 
-	if ($type=='all') {
-		$where_type='';
-		$_SESSION['state']['orders']['invoices']['invoice_type']=$type;
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
 
+	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	switch ($elements_type) {
+
+	case('type'):
+		$_elements='';
+		$num_elements_checked=0;
+		foreach ($elements['type'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+
+				$_elements.=", '$_key'";
+			}
+		}
+
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==2) {
+
+		}else {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Invoice Type` in ('.$_elements.')' ;
+		}
+		break;
+	case('payment'):
+		$_elements='';
+		$num_elements_checked=0;
+
+		foreach ($elements['payment'] as $_key=>$_value) {
+			if ($_value) {
+				$num_elements_checked++;
+
+				$_elements.=", '$_key'";
+			}
+		}
+		if ($_elements=='') {
+			$where.=' and false' ;
+		}elseif ($num_elements_checked==3) {
+
+		}else {
+			$_elements=preg_replace('/^,/','',$_elements);
+			$where.=' and `Invoice Paid` in ('.$_elements.')' ;
+		}
+		break;
 	}
-	elseif ($type=='invoices') {
-		$where_type=sprintf(' and `Invoice Type`="Invoice"');
-		$_SESSION['state']['orders']['invoices']['invoice_type']=$type;
-	}
-	elseif ($type=='refunds') {
-		$where_type=sprintf('and `Invoice Type`="Refund" ');
-		$_SESSION['state']['orders']['invoices']['invoice_type']=$type;
-	}
-	elseif ($type=='to_pay') {
-		$where_type=sprintf('  and `Invoice Paid`!="Yes"');
-		$_SESSION['state']['orders']['invoices']['invoice_type']=$type;
-	}
-	elseif ($type=='paid') {
-		$where_type=sprintf(' and `Invoice Paid`="Yes" ');
-		$_SESSION['state']['orders']['invoices']['invoice_type']=$type;
-	}
 
-	else {
-		$where_type='';
-	}
-
-
-
-
-
-	$where_interval='';
-
-	if ($from or $to) {
-		$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
-		$where_interval=$where_interval['mysql'];
-	}
 
 
 
@@ -2381,8 +2712,6 @@ function list_invoices() {
 
 
 
-	//print $where; exit;
-	//  print $f_field;
 
 
 	if (($f_field=='customer_name'     )  and $f_value!='') {
@@ -2769,7 +3098,7 @@ function transactions_dipatched() {
 		if ($row['No Shipped Due Other']>0) {
 			$ordered.='<br/> '._('No Other').' -'.number($row['No Shipped Due Other']);
 		}
-		
+
 		$ordered=preg_replace('/^<br\/>/','',$ordered);
 		$code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
 
@@ -4349,54 +4678,40 @@ function invoice_categories() {
 }
 
 function number_invoices_in_interval($data) {
+
+
 	$store_key=$data['store_key'];
 
 	$from=$data['from'];
 	$to=$data['to'];
 
-	if (!$to and !$from) {
-		$store=new Store($store_key);
-		$total_invoices_and_refunds=$store->get('Total Invoices');
-		$total_invoices=$store->get('Invoices');
-		$total_refunds=$store->get('Refunds');
-		$total_to_pay=$store->get('All To Pay Invoices');
-		$total_paid=$store->get('All Paid Invoices');
-	}else {
-		$total_invoices_and_refunds=0;
-		$total_invoices=0;
-		$total_refunds=0;
-		$total_paid=0;
-		$total_to_pay=0;
+	$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$elements_numbers=array(
+		'payment'=>array('Yes'=>0, 'No'=>0, 'Partially'=>0),
+		'type'=>array('Invoice'=>0,'Refund'=>0)
+	);
 
 
-		$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
-		$where_interval=$where_interval['mysql'];
 
-		$sql=sprintf("select sum(if(`Invoice Paid`='Yes',1,0)) as paid  ,sum(if(`Invoice Paid`='No',1,0)) as to_pay  , sum(if(`Invoice Type`='Invoice',1,0)) as invoices  ,sum(if(`Invoice Type`='Refund',1,0)) as refunds  from  `Invoice Dimension` I    where `Invoice Store Key`=%d  %s" ,
-			$store_key,$where_interval
+	$sql=sprintf("select count(*) as number,`Invoice Type` as element from `Invoice Dimension`  where `Invoice Store Key`=%d %s group by `Invoice Type` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
 
-
-		);
-		$result=mysql_query($sql);
-		//  print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total_invoices_and_refunds=$row['invoices']+$row['refunds'];
-			$total_invoices=$row['invoices'];
-			$total_refunds=$row['refunds'];
-			$total_paid=$row['paid'];
-			$total_to_pay=$row['to_pay'];
-
-		}
+		$elements_numbers['type'][$row['element']]=number($row['number']);
 	}
 
-	$response= array('state'=>200,
-		'total_invoices_and_refunds'=>$total_invoices_and_refunds,
-		'total_invoices'=>$total_invoices,
-		'total_refunds'=>$total_refunds,
-		'total_paid'=>$total_paid,
-		'total_to_pay'=>$total_to_pay
+	$sql=sprintf("select count(*) as number,`Invoice Paid` as element from `Invoice Dimension`  where `Invoice Store Key`=%d %s group by `Invoice Paid` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
 
-	);
+		$elements_numbers['payment'][$row['element']]=number($row['number']);
+	}
+
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 
 }
@@ -4407,52 +4722,73 @@ function number_orders_in_interval($data) {
 	$from=$data['from'];
 	$to=$data['to'];
 
-	if (!$to and !$from) {
-		$store=new Store($store_key);
-		$total_orders_number=$store->get('Total Orders');
-		$total_orders_in_process_number=$store->get('Orders In Process');
-		$total_orders_dispatched_number=$store->get('Dispatched Orders');
-		$total_orders_unknown_number=$store->get('Unknown Orders');
-		$total_orders_cancelled_number=$store->get('Cancelled Orders');
-		$total_orders_suspended_number=$store->get('Suspended Orders');
+	$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Order Date`');
+	$where_interval=$where_interval['mysql'];
 
-	}else {
-		$total_orders_number=0;
-		$total_orders_in_process_number=0;
-		$total_orders_dispatched_number=0;
-		$total_orders_unknown_number=0;
-		$total_orders_cancelled_number=0;
-		$total_orders_suspended_number=0;
+	$elements_numbers=array(
+		'dispatch'=>array('InProcessCustomer'=>0,'InProcess'=>0,'Warehouse'=>0,'Dispatched'=>0,'Cancelled'=>0,'Suspended'=>0),
+		'source'=>array('Internet'=>0,'Call'=>0,'Store'=>0,'Other'=>0,'Email'=>0,'Fax'=>0),
+		'payment'=>array('Paid'=>0,'PartiallyPaid'=>0,'Unknown'=>0,'WaitingPayment'=>0,'NA'=>0),
+		'type'=>array('Order'=>0,'Sample'=>0,'Donation'=>0,'Other'=>0)
+	);
 
-		$where_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
-		$where_interval=$where_interval['mysql'];
-		$sql=sprintf("select count(*) as `Store Total Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) as `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Suspended',1,0 )) as `Store Suspended Orders`,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) as `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) as `Store Unknown Orders` from `Order Dimension`   where `Order Store Key`=%d %s",
-			$store_key,$where_interval);
+	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
 
-
-		$result=mysql_query($sql);
-		//  print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$total_orders_number=$row['Store Total Orders'];
-			$total_orders_in_process_number=$row['Store Total Orders']- $row['Store Dispatched Orders']-$row['Store Cancelled Orders']-$row['Store Unknown Orders'];
-			$total_orders_dispatched_number=$row['Store Dispatched Orders'];
-			$total_orders_unknown_number=$row['Store Unknown Orders'];
-			$total_orders_cancelled_number=$row['Store Cancelled Orders'];
-			$total_orders_suspended_number=$row['Store Suspended Orders'];
-
-		}
+		$elements_numbers['source'][$row['element']]=number($row['number']);
 	}
 
-	$response= array('state'=>200,
-		'total_orders_number'=>$total_orders_number,
+	$sql=sprintf("select count(*) as number,`Order Main Source Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Main Source Type` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
 
-		'total_orders_in_process_number'=>$total_orders_in_process_number,
-		'total_orders_dispatched_number'=>$total_orders_dispatched_number,
-		'total_orders_unknown_number'=>$total_orders_unknown_number,
-		'total_orders_cancelled_number'=>$total_orders_cancelled_number,
-		'total_orders_suspended_number'=>$total_orders_suspended_number
+		$elements_numbers['source'][$row['element']]=number($row['number']);
+	}
 
-	);
+	$sql=sprintf("select count(*) as number,`Order Type` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Type` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		$elements_numbers['type'][$row['element']]=number($row['number']);
+	}
+
+
+	$sql=sprintf("select count(*) as number,`Order Current Dispatch State` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Current Dispatch State` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		if ($row['element']=='In Process' or $row['element']=='Submitted by Customer' ) {
+			$_element='InProcess';
+		}elseif ($row['element']=='Ready to Pick'  or $row['element']=='Picking & Packing'  or $row['element']=='Ready to Ship'   or $row['element']=='Packing' or $row['element']=='Packed'  or $row['element']=='Packed Done') {
+			$_element='Warehouse';
+		}else {
+			$_element=$row['element'];
+		}
+		$elements_numbers['dispatch'][$_element]+=$row['number'];
+	}
+
+	$sql=sprintf("select count(*) as number,`Order Current Payment State` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Current Payment State` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+		if ($row['element']=='Waiting Payment' ) {
+			$_element='WaitingPayment';
+		}elseif ($row['element']=='Partially Paid' ) {
+			$_element='PartiallyPaid';
+		}elseif ($row['element']=='No Applicable' ) {
+			$_element='NA';
+		}else {
+			$_element=$row['element'];
+		}
+		$elements_numbers['payment'][$_element]=number($row['number']);
+	}
+
+	//print_r($elements_numbers);
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 
 }
@@ -4463,91 +4799,77 @@ function number_delivery_notes_in_interval($data) {
 	$from=$data['from'];
 	$to=$data['to'];
 
-	if (!$to and !$from) {
-		$store=new Store($store_key);
-		$dn_total_number=$store->get('Total Delivery Notes');
-		$dn_returned_number=$store->get('Returned Delivery Notes');
-		$dn_send_number=$store->get('Dispatched Delivery Notes');
-		$dn_ready_number=$store->get('Store Ready to Dispatch Delivery Notes');
-		$dn_packing_number=$store->get('Packing Delivery Notes');
-		$dn_picking_number=$store->get('Picking Delivery Notes');
-		$dn_ready_to_pick_number=$store->get('Ready to Pick Delivery Notes');
-		$dn_shortages_number=$store->get('Delivery Notes For Shortages');
-		$dn_replacements_number=$store->get('Delivery Notes For Replacements');
-		$dn_donations_number=$store->get('Delivery Notes For Donations');
-		$dn_samples_number=$store->get('Delivery Notes For Samples');
-		$dn_orders_number=0;
-	}else {
-		$dn_total_number=0;
-		$dn_returned_number=0;
-		$dn_send_number=0;
-		$dn_ready_number=0;
-		$dn_packing_number=0;
-		$dn_picking_number=0;
-		$dn_ready_to_pick_number=0;
-		$dn_shortages_number=0;
-		$dn_replacements_number=0;
-		$dn_donations_number=0;
-		$dn_samples_number=0;
-		$dn_orders_number=0;
+	$where_interval=prepare_mysql_dates($from.' 00:00:00',$to.' 23:59:59','`Delivery Note Date`');
+	$where_interval=$where_interval['mysql'];
 
-		$where_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`','only_dates');
-		$where_interval=$where_interval['mysql'];
-		$sql=sprintf("select count(*) as `Store Total Delivery Notes`,
-             sum(IF(`Delivery Note State`='Cancelled'  or `Delivery Note State`='Cancelled to Restock' ,1,0 )) as `Store Returned Delivery Notes`,
-             sum(IF(`Delivery Note State`='Ready to be Picked' ,1,0 )) as `Store Ready to Pick Delivery Notes`,
-             sum(IF(`Delivery Note State`='Picking & Packing' or `Delivery Note State`='Picking' or `Delivery Note State`='Picker Assigned' or `Delivery Note State`='' ,1,0 )) as `Store Picking Delivery Notes`,
-             sum(IF(`Delivery Note State`='Packing' or `Delivery Note State`='Packer Assigned' or `Delivery Note State`='Picked' ,1,0 )) as `Store Packing Delivery Notes`,
-             sum(IF(`Delivery Note State`='Approved' or `Delivery Note State`='Packed' ,1,0 )) as `Store Ready to Dispatch Delivery Notes`,
-             sum(IF(`Delivery Note State`='Dispatched' ,1,0 )) as `Store Dispatched Delivery Notes`,
-             sum(IF(`Delivery Note Type`='Replacement & Shortages' or `Delivery Note Type`='Replacement' ,1,0 )) as `Store Delivery Notes For Replacements`,
-             sum(IF(`Delivery Note Type`='Replacement & Shortages' or `Delivery Note Type`='Shortages' ,1,0 )) as `Store Delivery Notes For Shortages`,
-             sum(IF(`Delivery Note Type`='Sample' ,1,0 )) as `Store Delivery Notes For Samples`,
-             sum(IF(`Delivery Note Type`='Donation' ,1,0 )) as `Store Delivery Notes For Donations`,
-             sum(IF(`Delivery Note Type`='Order' ,1,0 )) as `Store Delivery Notes For Orders`
-             from `Delivery Note Dimension`   where `Delivery Note Store Key`=%d %s",
-			$store_key,$where_interval);
 
-		$result=mysql_query($sql);
-		//  print "$sql\n";
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$dn_total_number=$row['Store Total Delivery Notes'];
-			$dn_ready_to_pick_number=$row['Store Ready to Pick Delivery Notes'];
-			$dn_picking_number=$row['Store Picking Delivery Notes'];
-			$dn_packing_number=$row['Store Packing Delivery Notes'];
-			$dn_ready_number=$row['Store Ready to Dispatch Delivery Notes'];
-			$dn_send_number=$row['Store Dispatched Delivery Notes'];
-			$dn_returned_number=$row['Store Returned Delivery Notes'];
-			$dn_replacements_number=$row['Store Delivery Notes For Replacements'];
-			$dn_shortages_number=$row['Store Delivery Notes For Shortages'];
-			$dn_samples_number=$row['Store Delivery Notes For Samples'];
-			$dn_donations_number=$row['Store Delivery Notes For Donations'];
-			$dn_orders_number=$row['Store Delivery Notes For Orders'];
+	$elements_numbers=array(
+		'dispatch'=>array('Ready'=>0,'Picking'=>0,'Packing'=>0,'Done'=>0,'Send'=>0,'Returned'=>0),
+		'type'=>array('Order'=>0,'Sample'=>0,'Donation'=>0,'Replacements'=>0,'Shortages'=>0)
+	);
 
 
 
+
+
+	$sql=sprintf("select count(*) as number,`Delivery Note Type` as element from `Delivery Note Dimension`  where `Delivery Note Store Key`=%d %s group by `Delivery Note Type` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		if ($row['element']=='Replacement & Shortages' ) {
+			$_element='Replacements';
+		}if ($row['element']=='Replacement' ) {
+			$_element='Replacements';
+		}else {
+			$_element=$row['element'];
 		}
+		$elements_numbers['type'][$_element]+=$row['number'];
 	}
 
-	$response= array('state'=>200,
-		'dn_total_number'=>$dn_total_number,
-		'dn_ready_to_pick_number'=>$dn_ready_to_pick_number,
-		'dn_picking_number'=>$dn_picking_number,
-		'dn_packing_number'=>$dn_packing_number,
-		'dn_ready_number'=>$dn_ready_number,
-		'dn_send_number'=>$dn_send_number,
-		'dn_returned_number'=>$dn_returned_number,
-		'dn_replacements_number'=>$dn_replacements_number,
-		'dn_shortages_number'=>$dn_shortages_number,
-		'dn_samples_number'=>$dn_samples_number,
-		'dn_donations_number'=>$dn_donations_number,
-		'dn_orders_number'=>$dn_orders_number,
+	foreach ($elements_numbers['type'] as $key=>$value) {
+		$elements_numbers['type'][$key]=number($value);
+	}
 
-	);
+
+
+	$sql=sprintf("select count(*) as number,`Delivery Note State` as element from `Delivery Note Dimension`  where `Delivery Note Store Key`=%d %s group by `Delivery Note State` ",
+		$store_key,$where_interval);
+	$res=mysql_query($sql);
+	while ($row=mysql_fetch_assoc($res)) {
+
+		if ($row['element']=='Ready to be Picked' ) {
+			$_element='Ready';
+		}elseif ($row['element']=='Picking'  or $row['element']=='Picking & Packing' or $row['element']=='Picked'  or $row['element']=='Picker Assigned' or $row['element']=='Picker & Packer Assigned' ) {
+			$_element='Picking';
+		}elseif ($row['element']=='Packing'  or $row['element']=='Packed' or $row['element']=='Packer Assigned' or $row['element']=='Packed Done' ) {
+			$_element='Packing';
+		}elseif ($row['element']=='Approved' ) {
+			$_element='Done';
+		}elseif ($row['element']=='Dispatched'  ) {
+			$_element='Send';
+		}elseif ($row['element']=='Cancelled'  or $row['element']=='Cancelled to Restock' ) {
+			$_element='Returned';
+		}else {
+			continue;
+		}
+
+		$elements_numbers['dispatch'][$_element]+=$row['number'];
+	}
+
+	foreach ($elements_numbers['dispatch'] as $key=>$value) {
+		$elements_numbers['dispatch'][$key]=number($value);
+	}
+
+
+
+	//print_r($elements_numbers);
+	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);
 
 }
+
+
 
 
 function transactions_in_warehouse() {
@@ -4789,8 +5111,8 @@ function transactions_in_warehouse() {
 			$deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
 		}
 
-$not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Authorized']+$row['No Shipped Due Not Found']+$row['No Shipped Due Other'];
-//'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended'
+		$not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Authorized']+$row['No Shipped Due Not Found']+$row['No Shipped Due Other'];
+		//'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended'
 		switch ($row['Current Dispatching State']) {
 		case 'In Process by Customer':
 			$dispatching_status=_('In Process by Customer');
@@ -4808,7 +5130,7 @@ $not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Aut
 			$dispatching_status=_('Picking').' ['.$row['Picked Quantity'].'/'.($row['Order Quantity']-$not_to_disptach).']';
 			break;
 		case 'Ready to Pack':
-		$to_pick=$row['Order Quantity']-$not_to_disptach;
+			$to_pick=$row['Order Quantity']-$not_to_disptach;
 			$dispatching_status=_('Ready to Pack').' ['.($row['Delivery Note Quantity']).'/'.($to_pick!=$row['Picked Quantity']?'('.$row['Picked Quantity'].')'.$to_pick:$to_pick).']';
 			break;
 		case 'Ready to Ship':
@@ -4821,7 +5143,7 @@ $not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Aut
 			$dispatching_status=_('Unknown');
 			break;
 		case 'Packing':
-				$to_pick=$row['Order Quantity']-$not_to_disptach;
+			$to_pick=$row['Order Quantity']-$not_to_disptach;
 			$dispatching_status=_('Packing').' ['.($row['Delivery Note Quantity']).'/'.($to_pick!=$row['Picked Quantity']?'('.$row['Picked Quantity'].')'.$to_pick:$to_pick).']';
 
 			break;
@@ -4855,7 +5177,7 @@ $not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Aut
 			$quantity.='<br/><span>('._('Out of Stock').') '.(-1*$row['No Shipped Due Out of Stock']).'</span>';
 			$no_charge_quantity+=$row['No Shipped Due Out of Stock'];
 		}
-		
+
 		if ($row['No Shipped Due No Authorized']!=0) {
 			$quantity.='<br/><span>('._('No Authorized ').') '.(-1*$row['No Shipped Due No Authorized ']).'</span>';
 			$no_charge_quantity+=$row['No Shipped Due No Authorized'];
@@ -4868,15 +5190,15 @@ $not_to_disptach=$row['No Shipped Due Out of Stock']+$row['No Shipped Due No Aut
 			$quantity.='<br/><span>('._('Not Due Other').') '.(-1*$row['No Shipped Due Other']).'</span>';
 			$no_charge_quantity+=$row['No Shipped Due Other'];
 		}
-		
 
-if($row['Order Quantity']==0){
-$charge_quantity_amount=0;
-}else{
-$to_charge=$row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'];
-		$no_charge_quantity_amount=$to_charge*$no_charge_quantity/$row['Order Quantity'];
-$charge_quantity_amount=$to_charge-$no_charge_quantity_amount;
-}
+
+		if ($row['Order Quantity']==0) {
+			$charge_quantity_amount=0;
+		}else {
+			$to_charge=$row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'];
+			$no_charge_quantity_amount=$to_charge*$no_charge_quantity/$row['Order Quantity'];
+			$charge_quantity_amount=$to_charge-$no_charge_quantity_amount;
+		}
 
 
 		$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);

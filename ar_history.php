@@ -21,12 +21,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-case('get_part_category_history_elements'):
+case('get_category_history_elements'):
 	$data=prepare_values($_REQUEST,array(
 			'parent'=>array('type'=>'string')
 			,'parent_key'=>array('type'=>'key')
+			,'subject'=>array('type'=>'enum','valid values regex'=>'/Part|Customer|Product|Supplier/'
+			)
 		));
-	get_part_category_history_elements($data);
+	get_category_history_elements($data);
 	break;
 case('history'):
 	list_history($_REQUEST['type']);
@@ -44,10 +46,12 @@ case('history_details'):
 	break;
 	break;
 case('customer_history'):
-	list_customer_history();
+case('supplier_history'):
+	list_subject_history();
 	break;
 case('part_categories'):
 case('supplier_categories'):
+case('customer_categories'):
 
 	list_category_history($tipo);
 	break;
@@ -79,17 +83,25 @@ function history_details() {
 }
 
 
-function list_customer_history() {
+function list_subject_history() {
 
-	$conf=$_SESSION['state']['customer']['table'];
 
-	if (isset( $_REQUEST['customer_key'])) {
-		$customer_id=$_REQUEST['customer_key'];
-		$_SESSION['state']['customer']['id']=$customer_id;
+if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier'))) {
+		$parent=$_REQUEST['parent'];
 	} else
-		$customer_id=$_SESSION['state']['customer']['id'];
+		return;
 
-	if (!$customer_id)return;
+	if (isset( $_REQUEST['parent_key'])) {
+		$parent_key=$_REQUEST['parent_key'];
+	} else
+		return;
+		
+		
+
+
+	$conf=$_SESSION['state'][$parent]['history'];
+
+
 
 
 	if (isset( $_REQUEST['sf']))
@@ -171,26 +183,24 @@ function list_customer_history() {
 
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-	$_SESSION['state']['customer']['id']=$customer_id;
 
-	$_SESSION['state']['customer']['table']['details']=$details;
-	$_SESSION['state']['customer']['table']['elements']=$elements;
-	$_SESSION['state']['customer']['table']['order']=$order;
-	$_SESSION['state']['customer']['table']['order_dir']=$order_direction;
-	$_SESSION['state']['customer']['table']['nr']=$number_results;
-	$_SESSION['state']['customer']['table']['sf']=$start_from;
-	// $_SESSION['state']['customer']['table']['where']=$where;
-	$_SESSION['state']['customer']['table']['f_field']=$f_field;
-	$_SESSION['state']['customer']['table']['f_value']=$f_value;
-	$_SESSION['state']['customer']['table']['elements']=$elements;
+	$_SESSION['state'][$parent]['history']['details']=$details;
+	$_SESSION['state'][$parent]['history']['elements']=$elements;
+	$_SESSION['state'][$parent]['history']['order']=$order;
+	$_SESSION['state'][$parent]['history']['order_dir']=$order_direction;
+	$_SESSION['state'][$parent]['history']['nr']=$number_results;
+	$_SESSION['state'][$parent]['history']['sf']=$start_from;
+	$_SESSION['state'][$parent]['history']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['history']['f_value']=$f_value;
+	$_SESSION['state'][$parent]['history']['elements']=$elements;
 
 
 	$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
 	if ($date_interval['error']) {
-		$date_interval=prepare_mysql_dates($_SESSION['state']['customer']['table']['from'],$_SESSION['state']['customer']['table']['to']);
+		$date_interval=prepare_mysql_dates($_SESSION['state'][$parent]['history']['from'],$_SESSION['state'][$parent]['history']['to']);
 	} else {
-		$_SESSION['state']['customer']['table']['from']=$date_interval['from'];
-		$_SESSION['state']['customer']['table']['to']=$date_interval['to'];
+		$_SESSION['state'][$parent]['history']['from']=$date_interval['from'];
+		$_SESSION['state'][$parent]['history']['to']=$date_interval['to'];
 	}
 
 
@@ -198,14 +208,14 @@ function list_customer_history() {
 
 	//  $where.=' and `Deep`=1 ';
 
-	$where=sprintf(' where   B.`Customer Key`=%d   ',$customer_id);
-	//   if(!$details)
-	//    $where.=" and display!='details'";
-	//  foreach($elements as $element=>$value){
-	//    if(!$value ){
-	//      $where.=sprintf(" and objeto!=%s ",prepare_mysql($element));
-	//    }
-	//  }
+	if ($parent=='customer'){
+		$where=sprintf(' where   B.`Customer Key`=%d   ',$parent_key);
+		$subject='Customer';
+	}elseif($parent=='supplier'){
+		$where=sprintf(' where   B.`Supplier Key`=%d   ',$parent_key);
+		$subject='Supplier';
+	}
+
 
 	$where.=$date_interval['mysql'];
 	$_elements='';
@@ -227,17 +237,17 @@ function list_customer_history() {
 
 	if ( $f_field=='notes' and $f_value!='' )
 		$wheref.=" and   `History Abstract` like '%".addslashes($f_value)."%'   ";
-	else if ($f_field=='upto' and is_numeric($f_value) )
-			$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))<=".$f_value."    ";
-		else if ($f_field=='older' and is_numeric($f_value))
-				$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))>=".$f_value."    ";
-			elseif ($f_field=='author' and $f_value!='') {
-				$wheref.=" and   `Author Name` like '".addslashes($f_value)."%'   ";
-			}
+	elseif ($f_field=='upto' and is_numeric($f_value) )
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))<=".$f_value."    ";
+	elseif ($f_field=='older' and is_numeric($f_value))
+		$wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`History Date`))>=".$f_value."    ";
+	elseif ($f_field=='author' and $f_value!='') {
+		$wheref.=" and   `Author Name` like '".addslashes($f_value)."%'   ";
+	}
 
 
-		//$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
-		$sql="select count(*) as total from  `Customer History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
+
+	$sql="select count(*) as total from  `$subject History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)    $where $wheref  ";
 	//print $sql;
 	// exit;
 	$result=mysql_query($sql);
@@ -251,7 +261,7 @@ function list_customer_history() {
 	} else {
 
 		// $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
-		$sql="select count(*) as total from   `Customer History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)  $where ";
+		$sql="select count(*) as total from   `$subject History Bridge` B  left join  `History Dimension` H   on (B.`History Key`=H.`History Key`)  $where ";
 		// print $sql;
 		$result=mysql_query($sql);
 		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -317,10 +327,10 @@ function list_customer_history() {
 
 
 	//    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-	$sql="select `Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `Customer History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)  left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
+	$sql="select `Type`,`Strikethrough`,`Deletable`,`Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from  `$subject History Bridge` B left join `History Dimension` H  on (B.`History Key`=H.`History Key`)   $where $wheref  order by $order limit $start_from,$number_results ";
 
 
-	// print $sql;
+	 
 	$result=mysql_query($sql);
 	$data=array();
 	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -1180,16 +1190,19 @@ function list_category_history($tipo) {
 
 
 
-switch($tipo){
-case('part_categories'):
-$table="`Part Category History Bridge`";
-break;
-case('supplier_categories'):
-$table="`Supplier Category History Bridge`";
-break;
-default:
-exit();
-}
+	switch ($tipo) {
+	case('part_categories'):
+		$table="`Part Category History Bridge`";
+		break;
+	case('supplier_categories'):
+		$table="`Supplier Category History Bridge`";
+		break;
+	case('customer_categories'):
+		$table="`Customer Category History Bridge`";
+		break;
+	default:
+		exit();
+	}
 
 
 	$conf=$_SESSION['state'][$tipo]['history'];
@@ -1227,10 +1240,10 @@ exit();
 	else
 		$order_dir=$conf['order_dir'];
 
-//	if (isset( $_REQUEST['details']))
-//		$details=$_REQUEST['details'];
-//	else
-//		$details=$conf['details'];
+	// if (isset( $_REQUEST['details']))
+	//  $details=$_REQUEST['details'];
+	// else
+	//  $details=$conf['details'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -1307,6 +1320,8 @@ exit();
 		$where=sprintf(' where   B.`Warehouse Key`=%d ',$parent_key);
 	}elseif ($parent=='none') {
 		$where=sprintf(' where  true ');
+	}elseif ($parent=='store') {
+		$where=sprintf(' where   B.`Store Key`=%d ',$parent_key);
 	}
 
 	$where.=$date_interval['mysql'];
@@ -1472,17 +1487,28 @@ exit();
 
 
 
-function get_part_category_history_elements($data) {
-
+function get_category_history_elements($data) {
 
 	$elements_number=array('Change'=>0,'Assign'=>0);
-	if ($data['parent']=='category')
-		$sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Category Key`=%d group by  `Type`",$data['parent_key']);
-	elseif ($data['parent']=='warehouse')
-		$sql=sprintf("select count(*) as num ,`Type` from  `Part Category History Bridge` where  `Warehouse Key`=%d group by  `Type`",$data['parent_key']);
 
+	if ($data['parent']=='category')
+		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge` where  `Category Key`=%d group by  `Type`",
+			$data['subject'],
+			$data['parent_key']);
+	elseif ($data['parent']=='warehouse')
+		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge` where  `Warehouse Key`=%d group by  `Type`",
+			$data['subject'],
+			$data['parent_key']);
+	elseif ($data['parent']=='store')
+		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge` where  `Store Key`=%d group by  `Type`",
+			$data['subject'],
+			$data['parent_key']);
+	elseif ($data['parent']=='none')
+		$sql=sprintf("select count(*) as num ,`Type` from  `%s Category History Bridge`  group by  `Type`",
+			$data['subject']);
 	else
 		return;
+
 	$res=mysql_query($sql);
 	while ($row=mysql_fetch_assoc($res)) {
 		$elements_number[$row['Type']]=number($row['num']);

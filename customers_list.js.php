@@ -4,7 +4,10 @@ $static_list_id=$_REQUEST['id'];
 ?>
   var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
-var view='<?php echo$_SESSION['state']['hr']['view']?>'
+     
+        var customer_views_ids = ['general', 'contact', 'address', 'ship_to_address', 'balance', 'rank', 'weblog'];
+     
+
 var dialog_export;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -127,113 +130,115 @@ request="ar_contacts.php?tipo=customers&parent=list&sf=0&where=&parent_key="+Dom
 	
 	};
     });
-
-function close_dialog(tipo){
-    switch(tipo){
-case('export'):
- dialog_export.hide();
- break;
+function close_dialog(tipo) {
+    switch (tipo) {
+    case ('export'):
+        dialog_export.hide();
+        break;
     }
 };
 
 
-function export_table(tipo){
-fields='';
-fields_elements=Dom.getElementsByClassName('field','input','export_field_list');
- for(var n=0; n<fields_elements.length; n++){
-       if(fields_elements[n].checked){
-       	fields=fields+fields_elements[n].getAttribute('field')+','
-       }
+function export_table(tipo) {
+    fields = '';
+    fields_elements = Dom.getElementsByClassName('field', 'input', 'export_field_list');
+    for (var n = 0; n < fields_elements.length; n++) {
+        if (fields_elements[n].checked) {
+            fields = fields + fields_elements[n].getAttribute('field') + ','
+        }
     }
-if(fields.length>0){
-fields=fields.substring(0, fields.length-1);
-}
+    if (fields.length > 0) {
+        fields = fields.substring(0, fields.length - 1);
+    }
 
-var request='tipo=update_table_fields&table_key=' + Dom.get('table_key').value + '&fields=' + 
-						encodeURIComponent(fields);
-	YAHOO.util.Connect.asyncRequest(
-						'POST',
-						'ar_edit_users.php', {
-						    success:function(o) {
-								//alert(o.responseText);
-							var r = YAHOO.lang.JSON.parse(o.responseText);
-							if (r.state == 200) {
-window.location='export.php?ar_file=ar_contacts&tipo=customers&parent=list&parent_key='+Dom.get('customer_list_key').value+'&output='+tipo
+    var request = 'tipo=update_table_fields&table_key=' + Dom.get('table_key').value + '&fields=' + encodeURIComponent(fields);
+    YAHOO.util.Connect.asyncRequest('POST', 'ar_edit_users.php', {
+        success: function(o) {
+            //alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+                window.location = 'export.php?ar_file=ar_contacts&tipo=customers&parent=list&parent_key=' + Dom.get('customer_list_key').value + '&output=' + tipo
 
-							 
-						}
-						    },
-							failure:function(o) {
-							alert(o.statusText);
-							callback();
-						    },
-							scope:this
-							},
-						request
-						
-						);  
+
+            }
+        },
+        failure: function(o) {
+            alert(o.statusText);
+            callback();
+        },
+        scope: this
+    }, request
+
+    );
 
 
 
 }
 
-function show_export_fields_dialog(){
-Dom.setStyle('show_fields_tr','display','none')
-Dom.setStyle('export_field_list','display','')
+function show_export_fields_dialog() {
+    Dom.setStyle('show_fields_tr', 'display', 'none')
+    Dom.setStyle('export_field_list', 'display', '')
 
 
 }
 
- function show_export_dialog(e,table_id){
-Dom.setStyle('show_fields_tr','display','')
-Dom.setStyle('export_field_list','display','none')
-     Dom.get('export_xls').onclick=function(){export_table('xls')};
-    Dom.get('export_csv').onclick=function (){export_table('csv')};
+function show_export_dialog(e, table_id) {
+    Dom.setStyle('show_fields_tr', 'display', '')
+    Dom.setStyle('export_field_list', 'display', 'none')
+    Dom.get('export_xls').onclick = function() {
+        export_table('xls')
+    };
+    Dom.get('export_csv').onclick = function() {
+        export_table('csv')
+    };
 
-	region1 = Dom.getRegion('export_data'); 
-    region2 = Dom.getRegion('dialog_export'); 
-	var pos =[region1.right-20,region1.bottom]
-	Dom.setXY('dialog_export', pos);
-	dialog_export.show()
+    region1 = Dom.getRegion('export_data');
+    region2 = Dom.getRegion('dialog_export');
+    var pos = [region1.right - 20, region1.bottom]
+    Dom.setXY('dialog_export', pos);
+    dialog_export.show()
 }
 
- function init(){
- 
-  init_search('customers_store');
+function init() {
 
-// YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'customers');
-// YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'customers'});
-// csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
-// csvMenu.render();
-// csvMenu.subscribe("show", csvMenu.focus);
-// YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+    init_search('customers_store');
+    YAHOO.util.Event.addListener(customer_views_ids, "click", change_view_customers, 0);
 
-dialog_export = new YAHOO.widget.Dialog("dialog_export", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_export.render();
-Event.addListener("export_data", "click", show_export_dialog, 0);
- 
- 
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
- oAutoComp.minQueryLength = 0; 
+    dialog_export = new YAHOO.widget.Dialog("dialog_export", {
+        visible: false,
+        close: true,
+        underlay: "none",
+        draggable: false
+    });
+    dialog_export.render();
+    Event.addListener("export_data", "click", show_export_dialog, 0);
 
- }
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    oACDS.table_id = 0;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
+
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
+}
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
+});
+
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
-
-
-
+    rppmenu.render();
+    rppmenu.subscribe("show", rppmenu.focus);
+});

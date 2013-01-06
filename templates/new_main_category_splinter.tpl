@@ -58,12 +58,12 @@
 			</tr>
 		</tbody>
 		<tbody id="custom_category_form" style="display:none">
-			<tr>
+			<tr style="{if $subject!='Customer'}display:none{/if}">
 				<td>{t}Allow Other{/t}:</td>
 				<td> 
-				<input id="new_category_allow_other" type="hidden" value="No" />
+				<input id="new_category_allow_other" type="hidden" value="{if $subject=='Customer'}Yes{else}No{/if}" ovalue="{if $subject=='Customer'}Yes{else}No{/if}"/>
 				<div class="buttons left small">
-					<button id="set_allow_other_Yes" onclick="set_allow_other('Yes')"> {t}Yes{/t}</button><button id="set_allow_other_No" onclick="set_allow_other('No')" class="selected">{t}No{/t}</button> 
+					<button id="set_allow_other_Yes" onclick="set_allow_other('Yes')"  class="{if $subject=='Customer'}selected{/if}"> {t}Yes{/t}</button><button id="set_allow_other_No" onclick="set_allow_other('No')" class="{if $subject!='Customer'}selected{/if}">{t}No{/t}</button> 
 				</div>
 				</td>
 			</tr>

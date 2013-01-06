@@ -1,6 +1,8 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 	<div style="padding:0px 20px">
+		<input type="hidden" value="{$warehouse->id}" id="warehouse_key"/>
+
 		{include file='locations_navigation.tpl'} 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t}</a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t}</a> &rarr; {t}Parts Categories{/t}</span> 
@@ -23,7 +25,10 @@
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
 	<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<span class="clean_table_title">{t}Main Categories{/t}</span> {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
+		<span class="clean_table_title">{t}Main Categories{/t}</span>
+		<div class="table_top_bar" style="margin-bottom:15px">
+		</div>
+		{include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 } 
 		<div id="table1" class="data_table_container dtable btable">
 		</div>
 	</div>

@@ -30,12 +30,23 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('UTC');
-$sql="select `Order Key` from `Order Dimension`   ";
+
+$sql="select `Invoice Key` from `Invoice Dimension`  where `Invoice Key`=579145 ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+$invoice=new Invoice($row['Invoice Key']);
+
+$invoice->update_charges_in_transactions();
+ }
+
+
+$sql="select `Order Key` from `Order Dimension`  where `Order Key`=653489 ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 $order=new Order($row['Order Key']);
 $order->update_xhtml_invoices();
 $order->update_xhtml_delivery_notes();
+$order->update_no_normal_totals();
  }
 
 

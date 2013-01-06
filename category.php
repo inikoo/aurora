@@ -42,6 +42,8 @@ if (!$category->id) {
 }
 
 
+
+
 switch ($subject) {
 case('Part'):
 	header('Location: part_category.php?id='.$category_key);

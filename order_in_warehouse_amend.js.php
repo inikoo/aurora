@@ -52,7 +52,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	//	alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value);
 	  request="ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value+'&order_key='+Dom.get('order_key').value+'&store_key='+Dom.get('store_key').value
-	 // alert(request)
+	// alert(request)
 	  	    this.dataSource0 = new YAHOO.util.DataSource(request);
 
 	 // alert("ar_edit_orders.php?tipo=transactions_to_process&tid=0&sf=0&f_value=&display="+Dom.get('products_display_type').value)
@@ -116,26 +116,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+function init() {
 
+    init_search('orders_store');
 
-
-
-
-function init(){
-
-init_search('orders_store');
-
-   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
-    oAutoComp.minQueryLength = 0; 
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0", "f_container0", oACDS);
+    oAutoComp.minQueryLength = 0;
 
-Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+    Event.addListener('clean_table_filter_show0', "click", show_filter, 0);
+    Event.addListener('clean_table_filter_hide0', "click", hide_filter, 0);
 
 
 
-Event.addListener("exit_modify_order", "click", exit_modify_order);
+    Event.addListener("exit_modify_order", "click", exit_modify_order);
 
 
 
@@ -150,25 +145,29 @@ YAHOO.util.Event.onDOMReady(init);
 
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
+YAHOO.util.Event.onContentReady("rppmenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {
+        trigger: "rtext_rpp0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+});
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
+YAHOO.util.Event.onContentReady("filtermenu0", function() {
+    var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {
+        trigger: "filter_name0"
     });
+    oMenu.render();
+    oMenu.subscribe("show", oMenu.focus);
+
+});
 
 
 
-function checkout_wrong(){
-	var path=Dom.get('path').value;
-	var items=Dom.get('ordered_products_number').value;
-	//alert(items);
-	var request=path+'inikoo_files/checkout.php';
-	window.location =request;
+function checkout_wrong() {
+    var path = Dom.get('path').value;
+    var items = Dom.get('ordered_products_number').value;
+    //alert(items);
+    var request = path + 'inikoo_files/checkout.php';
+    window.location = request;
 }

@@ -854,13 +854,7 @@ function edit_new_order() {
 
 	if (is_numeric($quantity) and $quantity>=0) {
 
-
-
-
-
-
 		$order=new Order($order_key);
-
 
 		if (in_array($order->data['Order Current Dispatch State'],array('Ready to Pick','Picking & Packing','Packed')) ) {
 			$dispatching_state='Ready to Pick';
@@ -871,10 +865,9 @@ function edit_new_order() {
 
 		$payment_state='Waiting Payment';
 
-
 		$product=new Product('pid',$product_pid);
 		$data=array(
-			'date'=>date('Y-m-d H:i:s'),
+			'date'=>gmdate('Y-m-d H:i:s'),
 			'Product Key'=>$product->data['Product Current Key'],
 			'Metadata'=>'',
 			'qty'=>$quantity,
@@ -924,7 +917,6 @@ function edit_new_order() {
 				);
 			};
 		}
-
 
 		$updated_data=array(
 			'order_items_gross'=>$order->get('Items Gross Amount'),
