@@ -672,7 +672,7 @@ var myonCellClick = function(oArgs) {
             //alert(request)
             YAHOO.util.Connect.asyncRequest('POST', ar_file, {
                 success: function(o) {
-                    alert(o.responseText);
+                    //alert(o.responseText);
                     datatable.updateCell(record, 'remove', '-');
                     datatable.updateCell(record, 'add', '+');
 
