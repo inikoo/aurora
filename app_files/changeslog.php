@@ -6810,9 +6810,9 @@ ALTER TABLE `Supplier History Bridge` ADD `Type` ENUM( 'Notes','Orders','Changes
 ALTER TABLE `Supplier History Bridge` ADD `Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `History Key` ,ADD INDEX ( `Deletable` ) ;
 ALTER TABLE `Supplier History Bridge` ADD `Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Deletable` ,ADD INDEX ( `Strikethrough` ) ;
 
-// run fix_history_categories.php
+// php fix_history_categories.php
 
-// run fix_history_suppliers.php
+// php fix_history_suppliers.php
 
 ALTER TABLE `Order Dimension` CHANGE `Order Current Dispatch State` `Order Current Dispatch State` ENUM( 'In Process by Customer', 'In Process', 'Submitted by Customer', 'Ready to Pick', 'Picking & Packing', 'Ready to Ship', 'Dispatched', 'Packing', 'Packed', 'Packed Done', 'Cancelled', 'Suspended' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
 update  `Order Dimension` set `Order Current Payment State`='No Applicable' where `Order Current Payment State`='Cancelled';

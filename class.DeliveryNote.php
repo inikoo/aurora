@@ -1389,7 +1389,12 @@ class DeliveryNote extends DB_Table {
 			}
 
 			$order->update_xhtml_delivery_notes();
+			
 		}
+		
+		$store=new store($this->data['Delivery Note Store Key']);
+			$store->update_orders();
+		
 	}
 
 	function dispatch($data) {

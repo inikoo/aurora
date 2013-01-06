@@ -1,7 +1,4 @@
 <?php
-//include("../../external_libs/adminpro/adminpro_config.php");
-error_reporting(E_ALL);
-
 include_once '../../app_files/db/dns.php';
 include_once '../../class.Department.php';
 include_once '../../class.Family.php';
@@ -9,17 +6,17 @@ include_once '../../class.Product.php';
 include_once '../../class.Supplier.php';
 include_once '../../class.Order.php';
 include_once '../../class.Invoice.php';
+include_once '../../class.DeliveryNote.php';
+include_once '../../class.Email.php';
 include_once '../../class.PartLocation.php';
 include_once '../../class.Deal.php';
 
-include_once '../../class.DeliveryNote.php';
-include_once '../../class.Email.php';
 include_once '../../class.CurrencyExchange.php';
 include_once 'common_read_orders_functions.php';
 
+$encrypt_email=false;
 
-$encrypt=false;
-$store_code='D';
+$store_code='F';
 $__currency_code='EUR';
 
 $calculate_no_normal_every =500;
@@ -31,13 +28,12 @@ $to_update=array(
 	'departments'=>array(),
 	'stores'=>array(),
 	'parts'=>array()
-
 );
+
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
 	print "Error can not connect with database server\n";
-	print "->End.(GO DE) ".date("r")."\n";
 	exit;
 }
 
@@ -45,7 +41,6 @@ if (!$con) {
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
 	print "Error can not access the database\n";
-	print "->End.(GO DE) ".date("r")."\n";
 	exit;
 }
 date_default_timezone_set('UTC');
@@ -59,8 +54,6 @@ include_once '../../set_locales.php';
 
 require_once '../../conf/conf.php';
 require '../../locale.php';
-print "->Start.(GO DE) ".date("r")."\n";
-
 $_SESSION['locale_info'] = localeconv();
 
 
@@ -70,41 +63,41 @@ $_SESSION['lang']=1;
 $shipping_transactions=array();
 
 
+include_once 'fr_local_map.php';
+include_once 'fr_map_order_functions.php';
+$myconf['country_code']='FRA';
+$myconf['country_2acode']='FR';
 
-include_once 'de_local_map.php';
-include_once 'de_map_order_functions.php';
-$myconf['country_code']='DEU';
-$myconf['country_2acode']='DE';
+$myconf['home_id']='165';
+$myconf['country_id']='165';
 
-$myconf['home_id']='177';
-$myconf['country_id']='177';
 $software='Get_Orders_DB.php';
-$version='V 1.0';//75693
+$version='V 1.0';
+
+print "->Start.(GO FR) ".date("r")."\n";
+
+
 
 $Data_Audit_ETL_Software="$software $version";
-srand(12111);
+srand(12341);
 
-
-
-$store=new Store("code","DE");
+$store=new Store("code","FR");
 $store_key=$store->id;
 
-
-
-$dept_no_dept=new Department('code','ND_DE',$store_key);
+$dept_no_dept=new Department('code','ND_FR',$store_key);
 $dept_no_dept_key=$dept_no_dept->id;
-$dept_promo=new Department('code','Promo_DE',$store_key);
+$dept_promo=new Department('code','Promo_FR',$store_key);
 $dept_promo_key=$dept_promo->id;
 
 
-$fam_no_fam=new Family('code','PND_DE',$store_key);
+$fam_no_fam=new Family('code','PND_FR',$store_key);
 $fam_no_fam_key=$fam_no_fam->id;
-$fam_promo=new Family('code','Promo_DE',$store_key);
+$fam_promo=new Family('code','Promo_FR',$store_key);
 $fam_promo_key=$fam_promo->id;
 
 
 
-$sql="select * from  de_orders_data.orders  where   deleted='Yes'    ";
+$sql="select * from  fr_orders_data.orders  where   deleted='Yes'    ";
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$order_data_id=$row2['id'];
@@ -112,35 +105,80 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 }
 
 
+$orders_data_id='';
+$sql="select `Invoice Metadata` from `Invoice Dimension` where `Invoice Paid`='Parcially'  and `Invoice Store Key`=5";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/F/','',$row['Invoice Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
 
-$sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
+
+$orders_data_id='';
+$sql="select * from `Delivery Note Dimension` where `Delivery Note State`=''  and `Delivery Note Store Key`=5";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/F/','',$row['Delivery Note Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+
+$sql="select * from `Order Dimension` where  `Order Cancel Note` LIKE 'Order automatically cancelled'  and `Order Store Key`=5";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/F/','',$row['Order Original Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+
+$sql="select * from `Order Dimension` where  `Order Suspend Note` LIKE 'Order automatically suspended'  and `Order Store Key`=5";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/F/','',$row['Order Original Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+$sql="select * from `Order Dimension` where  `Order Current Dispatch State`='In Process' and `Order Store Key`=5";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/F/','',$row['Order Original Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+
+$orders_data_id=preg_replace('/^,/','',$orders_data_id);
 
 
 
+$sql="select * from  fr_orders_data.orders  where   deleted='No'   and  id in (".$orders_data_id.")   order by filename  ";
 
-//$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/%DE2647.xls' ) order by filename";
 
 
 $contador=0;
 
 $res=mysql_query($sql);
 
+
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
-	//if(preg_match('/DE0412/',$row2['filename']))
+
+	//if(preg_match('/FR0197/',$row2['filename']))
 	//exit;
-	$discounts_with_order_as_term=array();
-	$customer_key_from_order_data=$row2['customer_id'];
-	$customer_key_from_excel_order=0 ;
-	$sql="select * from de_orders_data.data where id=".$row2['id'];
-	// print "$sql\n";
+
+	$sql="select * from fr_orders_data.data where id=".$row2['id'];
+	//print "$sql\n";
 
 	$result=mysql_query($sql);
 	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
+		$discounts_with_order_as_term=array();
 
 		//           echo "                                                          Memory: ".memory_get_usage(true) . "\n";
-
+		$customer_key_from_order_data=$row2['customer_id'];
 		$order_data_id=$row2['id'];
 		$filename=$row2['filename'];
 		$contador++;
@@ -149,8 +187,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		// check if it is already readed
 		$update=false;
 		$old_order_key=0;
-
-
 		$sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
 		$result_test=mysql_query($sql);
 		if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
@@ -186,21 +222,18 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-
-
-
-
-
 		$header=mb_unserialize($row['header']);
 		$products=mb_unserialize($row['products']);
-		//print_r($products);
+
+
+
 
 		$filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
 		$map_act=$_map_act;
 		$map=$_map;
 		$y_map=$_y_map;
 
-		// tomando en coeuntas diferencias en la posicion de los elementos
+
 
 
 		$prod_map=$y_map;
@@ -212,43 +245,44 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
-		//print_r($header_data);
-		//continue;
 
-		if (preg_match('/^DE\d{4}sh$/i',$filename_number)) {
+
+
+		//print_r($header_data);
+
+		if (preg_match('/^FR\d{4,5}sh$/i',$filename_number)) {
 			$tipo_order=7;
 			$parent_order_id=preg_replace('/sh/i','',$filename_number);
 		}
-		if (preg_match('/^DE\d{4}sht$/i',$filename_number)) {
+		if (preg_match('/^FR\d{4,5}sht$/i',$filename_number)) {
 			$tipo_order=7;
 			$parent_order_id=preg_replace('/sht/i','',$filename_number);
 		}
 
-		if (preg_match('/^DE\d{4}rpl$/i',$filename_number)) {
+		if (preg_match('/^FR\d{4,5}rpl$/i',$filename_number)) {
 			$tipo_order=6;
 			$parent_order_id=preg_replace('/rpl/i','',$filename_number);
 
 		}
-		if (preg_match('/^DE\d{4,5}r$|^DE\d{4,5}ref$|^DE\d{4,5}\s?refund$|^DE\d{4,5}rr$|^DE\d{4,5}ra$|^DE\d{4,5}r2$|^DE\d{4,5}\-2ref$|^DE\d{5}rfn$/i',$filename_number)) {
+		if (preg_match('/^FR\d{4,5}r$|^FR\d{4,5}ref$|^FR\d{4,5}\s?refund$|^FR\d{4,5}rr$|^FR\d{4,5}ra$|^FR\d{4,5}r2$|^FR\d{4,5}\-2ref$|^FR\d{4,5}rfn$/i',$filename_number)) {
 			$tipo_order=9;
 			$parent_order_id=preg_replace('/r$|ref$|refund$|rr$|ra$|r2$|\-2ref$|rfn$/i','',$filename_number);
 
 
 		}
 
+		if (!$tipo_order) {
+			$sql="update fr_orders_data.orders set last_transcribed=NULL where id=".$order_data_id;
+			mysql_query($sql);
+			continue;
+		}
 
 		//if($tipo_order==2 or $tipo_order==1){
 		//  print "\n";
 		//  continue;
 		// }
 
-		if ($header_data['date_order']=='1899-12-30')
-			$header_data['date_order']='';
 		list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
-		//print_r($header_data);
-		//exit;
-
-		//print "$date_index,$date_order,$date_inv $tipo_order\n";
 
 
 		$editor=array(
@@ -262,10 +296,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 		$data['editor']=$editor;
-
-
-
-
 
 		if ($tipo_order==9) {
 			if ( $date_inv=='NULL' or  strtotime($date_order)>strtotime($date_inv)) {
@@ -360,20 +390,20 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
+
 		$transactions=read_products($products,$prod_map);
 		unset($products);
 		//   echo "Memory: ".memory_get_usage(true) . "x\n";
 		//     echo "Memory: ".memory_get_usage() . "x\n";
 		$_customer_data=setup_contact($act_data,$header_data,$date_index2);
 		list($_customer_data['type'],$_customer_data['company_name'],$_customer_data['contact_name'])=parse_company_person($_customer_data['company_name'],$_customer_data['contact_name']);
+
+
 		$customer_data=array();
 
 		if (isset($header_data['tax_number']) and $header_data['tax_number']!='') {
 			$customer_data['Customer Tax Number']=$header_data['tax_number'];
 		}
-
-
-
 
 
 		//    print_r($_customer_data);
@@ -393,11 +423,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$key=preg_replace('/^fax$/','Customer Main Plain FAX',$_key);
 			if ($_key=='mobile')
 				$key=preg_replace('/^mobile$/','Customer Main Plain Mobile',$_key);
-			// if($_key=='tax_number')
-			// $key=preg_replace('/^tax_number$/','Customer Tax Number',$_key);
+
 			$customer_data[$key]=$value;
 
 		}
+		$customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email'],$encrypt_email);
+
 		$customer_data['Customer Store Key']=$store_key;
 		if ($customer_data['Customer Type']=='Company')
 			$customer_data['Customer Name']=$customer_data['Customer Company Name'];
@@ -415,13 +446,15 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			unset($customer_data['address_data']);
 		}
 		$customer_data['Customer Delivery Address Link']='Contact';
-
+		$customer_data['Customer First Contacted Date']=$date_order;
 
 		$shipping_addresses=array();
 		if (isset($_customer_data['address_data']) and $_customer_data['has_shipping']) {
+
 			if (!is_same_address($_customer_data)) {
 				$customer_data['Customer Delivery Address Link']='None';
 			}
+
 
 			$shipping_addresses['Address Line 1']=$_customer_data['shipping_data']['address1'];
 			$shipping_addresses['Address Line 2']=$_customer_data['shipping_data']['address2'];
@@ -462,7 +495,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			continue;
 		}
 
-		$customer_data['Customer First Contacted Date']=$date_order;
+
 		$extra_shipping=0;
 
 		$data=array();
@@ -476,7 +509,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-		$tmp_filename=preg_replace('/\/mnt\/z\/Orders-germany\//',"\\\\\\networkspace1\\openshare\\Orders\\",$row2['filename']);
+		$tmp_filename=preg_replace('/\/mnt\/z\/Orders-france\//',"\\\\\\networkspace1\\openshare\\Orders\\",$row2['filename']);
 		$tmp_filename=preg_replace('/\//',"\\",$tmp_filename);
 
 		$data['Order Original Data Filename']=$tmp_filename;
@@ -497,11 +530,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$total_credit_value=0;
 		$estimated_w=0;
 		//echo "Memory: ".memory_get_usage(true) . "\n";
-		//  print_r($transactions);
-		//  exit;
-
 		foreach ($transactions as $transaction) {
-
 			$transaction['code']=_trim($transaction['code']);
 
 			if (preg_match('/credit|refund/i',$transaction['code'])) {
@@ -552,6 +581,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				continue;
 			}
 
+
+			if (preg_match('/Sub Total/',$transaction['bonus'])  )
+				continue;
 			if (preg_match('/Freight|^frc-|Postage/i',$transaction['code'])) {
 
 				$extra_shipping+=$transaction['price'];
@@ -565,15 +597,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			$__code=strtolower($transaction['code']);
 
-			if (  preg_match('/\-xst$/i',$__code)  or    preg_match('/\-pack$/i',$__code)  or    preg_match('/\-pst$/i',$__code)  or    preg_match('/\-kit2$/i',$__code)  or  preg_match('/\-kit1$/i',$__code)  or preg_match('/\-st$/i',$__code)  or  preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or         $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
+			if (   preg_match('/\-pack$/i',$__code)  or    preg_match('/\-pst$/i',$__code)  or    preg_match('/\-kit2$/i',$__code)  or  preg_match('/\-kit1$/i',$__code)  or preg_match('/\-st$/i',$__code)  or preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or    $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st'
 				or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
 				or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
 			) {
 				continue;
 
 			}
-
-
 
 			if (preg_match('/-\st$/i',$__code)) {
 				continue;
@@ -816,14 +846,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$transaction['supplier_product_code']=preg_replace('/\s*\"$/','',$transaction['supplier_product_code']);
 
 
-			if (preg_match('/\d+ or more|\d|0.10000007|0\.300000152587891|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
+			if (preg_match('/\d+ or more|\d|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
 				$transaction['supplier_product_code']='';
 			if (preg_match('/^(\?|new|0.25|0.5|0.8|8.0600048828125|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$transaction['supplier_product_code']))
 				$transaction['supplier_product_code']='';
 			if ($transaction['supplier_product_code']=='same')
 				$transaction['supplier_product_code']=$transaction['code'];
 
-
+			if (preg_match('/Ashoke/i',$transaction['supplier_code'])) {
+				$transaction['supplier_code']='Asoke';
+			}
 
 
 			if ($transaction['supplier_product_code']=='')
@@ -834,10 +866,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			if (preg_match('/^(StoneM|Smen)$/i',$transaction['supplier_code'])) {
 				$transaction['supplier_code']='StoneM';
-			}
-
-			if (preg_match('/Ashoke/i',$transaction['supplier_code'])) {
-				$transaction['supplier_code']='Asoke';
 			}
 
 			if (preg_match('/Ackerman|Ackerrman|Akerman/i',$transaction['supplier_code'])) {
@@ -854,6 +882,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$transaction['supplier_product_code']=$transaction['code'];
 			if ($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code'])
 				or $transaction['supplier_code']=='?' or   preg_match('/\"[0-9]{3}/',$transaction['supplier_code']) or preg_match('/disc 20\+/i',$transaction['supplier_code'])
+
 			)
 				$transaction['supplier_code']='UNK';
 			$unit_type='Piece';
@@ -864,7 +893,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-			// print_r($transaction);
+			//print_r($transaction);
 
 			if (is_numeric($transaction['w'])) {
 
@@ -892,10 +921,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-			if ($transaction['units']=='' or $transaction['units']<=0) {
-				print "Warning, no units data\n";
+			if ($transaction['units']=='' or $transaction['units']<=0)
 				$transaction['units']=1;
-			}
 			$transaction['original_price']=$transaction['price'];
 			if (!is_numeric($transaction['price']) or $transaction['price']<=0) {
 				//       print "Price Zero ".$transaction['code']."\n";
@@ -920,7 +947,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 			}
 
+
+
+
 			$fam_key=$fam_no_fam_key;
+
+
+
 			$dept_key=$dept_no_dept_key;
 			if (preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($transaction['code']))) {
 				$fam_key=$fam_promo_key;
@@ -939,10 +972,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$dept_key=$__row['Product Family Main Department Key'];
 			}
 
+
+			//     print_r($transaction);
 			$code=_trim($transaction['code']);
 
-
-			//      print_r($transaction);
 
 			//creamos una supplier parrt nueva
 			$scode=$sup_prod_code;
@@ -958,26 +991,28 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			if ($scode=='' or $scode=='0')
 				$scode='?'.$code;
 
+			// $scode= preg_replace('/\?/i','_unk',$scode);
 
 
 			$product_data=array(
 				'Product Store Key'=>$store_key,
 				'Product Main Department Key'=>$dept_key,
-				'product sales type'=>'Not for Sale',
-				'product locale'=>'de_DE',
-				'Product Currency'=>'EUR',
-				'product type'=>'Normal',
-				'product record type'=>'Normal',
+				'Product Sales Type'=>'Not for Sale',
+				'Product Type'=>'Normal',
+				'Product Record Type'=>'Normal',
 				'Product Web Configuration'=>'Offline',
+
 				'Product Family Key'=>$fam_key,
-				'product code'=>$code,
-				'product name'=>$description,
-				'product unit type'=>$unit_type,
-				'product units per case'=>$transaction['units'],
-				'product net weight'=>$w,
-				'product gross weight'=>$w,
+				'Product Locale'=>'fr_FR',
+				'Product Currency'=>$__currency_code,
+				'Product code'=>$code,
+				'Product name'=>$description,
+				'Product unit type'=>$unit_type,
+				'Product units per case'=>$transaction['units'],
+				'Product net weight'=>$w,
+				'Product gross weight'=>$w,
 				'part gross weight'=>$w,
-				'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units']),
+				'Product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units']),
 				'product price'=>sprintf("%.2f",$transaction['price']),
 				'supplier code'=>_trim($transaction['supplier_code']),
 				'supplier name'=>_trim($transaction['supplier_code']),
@@ -985,20 +1020,23 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				'supplier product code'=>$sup_prod_code,
 				'supplier product name'=>$description,
 				'auto_add'=>true,
+
 				'product valid from'=>$date_order,
 				'product valid to'=>$date2,
 				'editor'=>array('Date'=>$date_order)
 			);
 
+			//      print_r( $product_data);
 
-			// print "$code\n";
 			$product=new Product('find',$product_data,'create');
 			if (!$product->id) {
 				print_r($product_data);
 				print "Error inserting a product\n";
-				print "->End.(GO DE) ".date("r")."\n";
 				exit;
 			}
+
+
+
 
 			if (!$product->found_in_code or !$product->found_in_store) {
 				$sql=sprintf("update `Product Dimension` set `Product Record Type`='Normal',`Product Availability Type`='Discontinued' , `Product Sales Type`='Not for Sale' where `Product ID`=%d ",$product->pid);
@@ -1036,16 +1074,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 				$supplier=new Supplier('find',$the_supplier_data,'create update');
 			}
+	$parts_per_product=1;
 
 			$part_list=array();
-
-
-			$parts_per_product=1;
-			
-			$part_list=$product->get_all_part_skus();
+$part_list=$product->get_all_part_skus();
 		$number_parts=count($part_list);
 			
 			if ($number_parts==0 ) {
+
+		
+				
 
 				$uk_product=new Product('code_store',$code,1);
 				$parts=$uk_product->get('Parts SKU');
@@ -1115,10 +1153,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$product->new_historic_part_list($product_part_header,$part_list);
 				$used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
-
-
-				// $scode= preg_replace('/\?/i','_unk',$scode);
-
 				$sp_data=array(
 					'Supplier Key'=>$supplier->id,
 					'Supplier Product Status'=>'Not In Use',
@@ -1149,8 +1183,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				);
 				$supplier_product->new_historic_part_list($spp_header,$spp_list);
 
-			}
-			else {
+
+			} else {
 
 
 				$sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
@@ -1158,18 +1192,17 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				if ($row_x=mysql_fetch_array($res_x)) {
 					$part_sku=$row_x['Part SKU'];
 					$parts_per_product=$row_x['Parts Per Product'];
+					
 				} else {
 					print_r($product);
-					print "->End.(GO DE) ".date("r")."\n";
 					exit("error: $sql");
-
 				}
 				mysql_free_result($res_x);
 
 				$part=new Part('sku',$part_sku);
 				$part->update_valid_dates($date_order);
 				$part->update_valid_dates($date2);
-			
+				
 				$part_list=array();
 				$part_list[]=array(
 
@@ -1179,13 +1212,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 					'Product Part Type'=>'Simple'
 
 				);
-				//print_r($part_list);
+				
 				$product_part_key=$product->find_product_part_list($part_list);
 				if (!$product_part_key) {
-					print "Error can not find product part list (get_orders_db)\n";
-					print "->End.(GO DE) ".date("r")."\n";
-					exit();
-
+					print_r($product);
+					print_r($part_list);
+					exit("Error can not find product part list (get_orders_db)\n");
 				}
 
 				$product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
@@ -1199,7 +1231,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-			// $scode= preg_replace('/\?/i','_unk',$scode);
+
 
 			$sp_data=array(
 				'Supplier Key'=>$supplier->id,
@@ -1216,14 +1248,14 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
+
 			$used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 			$used_parts_sku[$part->sku]['supplier_product_pid']=$supplier_product->pid;
-
 			create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
-			//print "xcaca\n";
+
 		}
 
-		//print_r($data_dn_transactions);
+
 
 		$data['Order For']='Customer';
 
@@ -1259,14 +1291,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$shipping_addresses=array();
 		}
 
-		// print_r($_customer_data);
 
 		if (array_empty($shipping_addresses)) {
 			$data['Delivery Note Dispatch Method']='Collected';
 			$_customer_data['has_shipping']=false;
 			$shipping_addresses=array();
 		}
-
 
 
 
@@ -1277,13 +1307,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-
 		//  print_r($data);
 		$data['staff sale']=$header_data['staff sale'];
 		$data['staff sale key']=$header_data['staff sale key'];
-
-
-		$customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email'],$encrypt);
 
 
 		$data['products']=$products_data;
@@ -1313,9 +1339,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		chdir('mantenence/scripts/');
 
 		if ($exchange==0) {
-			print "error exhange is zero for $exchange_date  ($date_order - $date_inv)  \n";
-			print "->End.(GO DE) ".date("r")."\n";
-			exit();
+
+			exit("error exhange is zero for $exchange_date\n");
 		}
 		list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 
@@ -1352,7 +1377,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			}
 		}
 
-
+		/*
+        $data['Order Currency']=$currency;
+        $data['Order Currency Exchange']=$exchange;
+        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num'],$editor);
+        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
+        $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
+        $data['Order Sale Reps IDs']=$sales_rep_data['id'];
+        $data['Order Currency']=$currency;
+        $data['Order Currency Exchange']=$exchange;
+        */
 
 
 
@@ -1360,10 +1394,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 		get_data($header_data);
 		$tax_category_object=get_tax_code($store_code,$header_data);
+		
+	
+		
 		$data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
 		$data['Customer Data']['editor']=$data['editor'];
 		$data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
-		//print_r($data['Customer Data']);
 
 
 		$customer_done=false;
@@ -1382,6 +1418,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$customer = new Customer($customer_key_from_order_data);
 			$customer_done=true;
 		}
+
 
 
 
@@ -1421,10 +1458,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			continue;
 		}
 
-
-		$sql=sprintf("update de_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
-		//print $sql;
+		$sql=sprintf("update fr_orders_data.orders set customer_id=%d where id=%d",$customer->id,$order_data_id);
 		mysql_query($sql);
+
 
 		if ($customer_data['Customer Delivery Address Link']=='None') {
 			$shipping_addresses['Address Input Format']='3 Line';
@@ -1456,15 +1492,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			$data['Order Ship To Key']=$ship_to->id;
 
 		} else {
-			print "no ship tp in de_get_otders shit\n";
-			print "->End.(GO DE) ".date("r")."\n";
-			exit();
+
+			exit("no ship tp in de_get_otders shit\n");
 		}
 
 		$data['Order Customer Key']=$customer->id;
 		$customer_key=$customer->id;
-
-
 
 
 		switch ($tipo_order) {
@@ -1475,9 +1508,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			if (strtotime('today -6 month')>strtotime($date_order)) {
 				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 			}
-		//	if (strtotime('today -6 month')>strtotime($date_order)) {
-		//		$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+			//if (strtotime('today -6 month')>strtotime($date_order)) {
+			//	$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 			//}
+
 			break;
 		case 2://Invoice
 		case 8: //follow
@@ -1487,7 +1521,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			create_order($data);
 
 			send_order($data,$data_dn_transactions);
-
 			break;
 		case 3://Cancel
 			print "Cancel";
@@ -1514,6 +1547,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			print "RPL/MISS ";
 			create_post_order($data,$data_dn_transactions);
 			send_order($data,$data_dn_transactions);
+
 			break;
 		case(9)://Refund
 			print "Refund ";
@@ -1521,8 +1555,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			create_refund($data,$header_data, $data_dn_transactions);
 			break;
 		default:
-
 			print "Unknown ".$header_data['ltipo'];
+
 			break;
 		}
 
@@ -1538,8 +1572,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 		$store->update_interval_sales();
 
 		print "\n";
-		$sql="update de_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+		$sql="update fr_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
 		mysql_query($sql);
+
 
 
 
@@ -1561,16 +1596,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 		}
-
-
-
 	}
 	mysql_free_result($result);
 }
 mysql_free_result($res);
 update_data($to_update);
+print "->End.(GO FR) ".date("r")."\n";
 
-print "->End.(GO DE) ".date("r")."\n";
 //  print_r($data);
 //print "\n$tipo_order\n";
 
@@ -1721,6 +1753,9 @@ function update_data($to_update) {
 
 	);
 }
+
+
+
 function is_same_address($data) {
 	$address1=$data['address_data'];
 	$address2=$data['shipping_data'];
