@@ -121,6 +121,7 @@ $sql="select `Invoice Metadata` from `Invoice Dimension` where `Invoice Paid`='P
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$xxx=preg_replace('/U/','',$row['Invoice Metadata']);
+	if($xxx!='')
 	$orders_data_id.=','.$xxx;
 	
 }
@@ -131,6 +132,7 @@ $sql="select * from `Delivery Note Dimension` where `Delivery Note State`=''  an
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$xxx=preg_replace('/U/','',$row['Delivery Note Metadata']);
+	if($xxx!='')
 	$orders_data_id.=','.$xxx;
 	
 }
@@ -139,6 +141,15 @@ $sql="select * from `Order Dimension` where  `Order Cancel Note` LIKE 'Order aut
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$xxx=preg_replace('/U/','',$row['Order Original Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+$sql="select * from `Order Dimension` where   `Order Suspend Note` LIKE 'Order automatically suspended'  and `Order Store Key`=1";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/U/','',$row['Order Original Metadata']);
+	if($xxx!='')
 	$orders_data_id.=','.$xxx;
 	
 }
@@ -148,6 +159,7 @@ $sql="select * from `Order Dimension` where  `Order Current Dispatch State`='In 
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$xxx=preg_replace('/U/','',$row['Order Original Metadata']);
+	if($xxx!='')
 	$orders_data_id.=','.$xxx;
 	
 }
@@ -1664,13 +1676,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 				print " suspended ";
 			}
-			if (strtotime('today -6 month')>strtotime($date_order)) {
+			//if (strtotime('today -6 month')>strtotime($date_order)) {
 
 
 				//$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 
 				// print $order->msg;//216249
-			}
+			//}
 
 
 

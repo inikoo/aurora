@@ -1445,12 +1445,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			print "DN";
 			$data['Order Type']='Order';
 			create_order($data);
-			if (strtotime('today -1 month')>strtotime($date_order)) {
-				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +1 month")));
-			}
 			if (strtotime('today -6 month')>strtotime($date_order)) {
-				$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 			}
+			//if (strtotime('today -6 month')>strtotime($date_order)) {
+		//		$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+		//	}
 
 			break;
 		case 2://Invoice

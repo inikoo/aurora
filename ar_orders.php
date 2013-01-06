@@ -4771,6 +4771,10 @@ function number_orders_in_interval($data) {
 		$elements_numbers['dispatch'][$_element]+=$row['number'];
 	}
 
+	foreach( $elements_numbers['dispatch'] as $key=>$value){
+		$elements_numbers['dispatch'][$key]=number($value);
+	}
+
 	$sql=sprintf("select count(*) as number,`Order Current Payment State` as element from `Order Dimension`  where `Order Store Key`=%d %s group by `Order Current Payment State` ",
 		$store_key,$where_interval);
 	$res=mysql_query($sql);
@@ -4786,7 +4790,7 @@ function number_orders_in_interval($data) {
 		}
 		$elements_numbers['payment'][$_element]=number($row['number']);
 	}
-
+	
 	//print_r($elements_numbers);
 	$response= array('state'=>200,'elements_numbers'=>$elements_numbers);
 	echo json_encode($response);

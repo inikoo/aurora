@@ -295,7 +295,8 @@ class Order extends DB_Table {
 		$customer->update_orders();
 		$customer->update_no_normal_data();
 
-
+		$store=new Store($this->data['Order Store Key']);
+		$store->update_orders();
 
 		$this->update_full_search();
 		if (!$this->ghost_order) {
@@ -485,6 +486,9 @@ class Order extends DB_Table {
 			$customer=new Customer($this->data['Order Customer Key']);
 			$customer->editor=$this->editor;
 			$customer->add_history_order_cancelled($this);
+			$store=new Store($this->data['Order Store Key']);
+			$store->update_orders();
+			
 			$this->update_deals_usage();
 			$this->cancelled=true;
 
@@ -618,6 +622,8 @@ class Order extends DB_Table {
 			$customer=new Customer($this->data['Order Customer Key']);
 			$customer->editor=$this->editor;
 			$customer->add_history_order_suspended($this);
+			$store=new Store($this->data['Order Store Key']);
+			$store->update_orders();
 			$this->suspended=true;
 
 		}

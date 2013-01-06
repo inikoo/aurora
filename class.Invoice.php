@@ -196,88 +196,88 @@ class Invoice extends DB_Table {
 			$this->data ['Invoice Currency Exchange']=$exchange;
 		}
 
-
 		$this->create_header ();
 		$delivery_notes_ids=array();
 		foreach (preg_split('/\,/',$invoice_data['Delivery Note Keys']) as $dn_key) {
 			$delivery_notes_ids[$dn_key]=$dn_key;
 		}
 		$dn_keys=join(',',$delivery_notes_ids);
+ 	$shipping_net=0;
+			$shipping_tax=0;
+			$charges_net=0;
+			$charges_tax=0;
+		if ($dn_keys!='') {
 
-		$tax_category=$this->data['Invoice Tax Code'];
-		$sql=sprintf('select `Product Key`,`Current Autorized to Sell Quantity`,`Transaction Tax Rate`,`Order Quantity`,`Delivery Note Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key`,`Product Key`,`Delivery Note Quantity` from `Order Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`)  '
-			,$dn_keys);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
-			if ($row['Current Autorized to Sell Quantity']==0) {
-				continue;
+			$tax_category=$this->data['Invoice Tax Code'];
+			$sql=sprintf('select `Product Key`,`Current Autorized to Sell Quantity`,`Transaction Tax Rate`,`Order Quantity`,`Delivery Note Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key`,`Product Key`,`Delivery Note Quantity` from `Order Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`)  '
+				,$dn_keys);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+				if ($row['Current Autorized to Sell Quantity']==0) {
+					continue;
+				}
+				$factor_actually_packed=$row['Delivery Note Quantity']/$row['Current Autorized to Sell Quantity'];
+
+
+
+
+
+
+				$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f,`Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
+					($this->data['Invoice Currency Exchange']==''?1:$this->data['Invoice Currency Exchange']),
+					prepare_mysql($this->data['Invoice Date']),
+					prepare_mysql($this->data['Invoice Currency']),
+					$this->id,
+					prepare_mysql($this->data['Invoice Public ID']),
+					$row['Delivery Note Quantity'],
+
+					$row['Order Transaction Gross Amount']*$factor_actually_packed,
+					$row['Order Transaction Total Discount Amount']*$factor_actually_packed,
+					round(($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])*$factor_actually_packed*$row['Transaction Tax Rate'],3),
+
+					$row['Order Transaction Fact Key']
+				);
+				mysql_query($sql);
+				// print "$sql\n";
 			}
-			$factor_actually_packed=$row['Delivery Note Quantity']/$row['Current Autorized to Sell Quantity'];
+
+		
+		
+			$sql=sprintf('select *  from `Order No Product Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`) '
+				,$dn_keys);
+			$res=mysql_query($sql);
+			while ($row=mysql_fetch_assoc($res)) {
+
+				$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Date`=%s,`Invoice Key`=%d,`Transaction Invoice Net Amount`=%.2f,`Transaction Invoice Tax Amount`=%.2f,`Transaction Outstanding Net Amount Balance`=%.2f,`Transaction Outstanding Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
+					prepare_mysql($this->data['Invoice Date']),
+					$this->id,
+					$row['Transaction Net Amount'],
+					$row['Transaction Tax Amount'],
+					$row['Transaction Net Amount'],
+					$row['Transaction Tax Amount'],
+					$row['Order No Product Transaction Fact Key']
+				);
+				mysql_query($sql);
 
 
+				if ($row['Transaction Type']=='Shipping') {
 
+					$shipping_net+=$row['Transaction Net Amount'];
+					$shipping_tax+=$row['Transaction Tax Amount'];
+				}
 
+				if ($row['Transaction Type']=='Charges') {
 
+					$charges_net+=$row['Transaction Net Amount'];
+					$charges_tax+=$row['Transaction Tax Amount'];
+				}
 
-			$sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Exchange Rate`=%f,`Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
-				($this->data['Invoice Currency Exchange']==''?1:$this->data['Invoice Currency Exchange']),
-				prepare_mysql($this->data['Invoice Date']),
-				prepare_mysql($this->data['Invoice Currency']),
-				$this->id,
-				prepare_mysql($this->data['Invoice Public ID']),
-				$row['Delivery Note Quantity'],
+				//  print $sql;
+			}
 
-				$row['Order Transaction Gross Amount']*$factor_actually_packed,
-				$row['Order Transaction Total Discount Amount']*$factor_actually_packed,
-				round(($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])*$factor_actually_packed*$row['Transaction Tax Rate'],3),
-
-				$row['Order Transaction Fact Key']
-			);
-			mysql_query($sql);
-			// print "$sql\n";
 		}
 
-		$shipping_net=0;
-		$shipping_tax=0;
-		$charges_net=0;
-		$charges_tax=0;
-		
-		
-		$sql=sprintf('select *  from `Order No Product Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`) '
-			,$dn_keys);
-		$res=mysql_query($sql);
-		while ($row=mysql_fetch_assoc($res)) {
 
-			$sql=sprintf("update `Order No Product Transaction Fact` set `Invoice Date`=%s,`Invoice Key`=%d,`Transaction Invoice Net Amount`=%.2f,`Transaction Invoice Tax Amount`=%.2f,`Transaction Outstanding Net Amount Balance`=%.2f,`Transaction Outstanding Tax Amount Balance`=%.2f where `Order No Product Transaction Fact Key`=%d",
-				prepare_mysql($this->data['Invoice Date']),
-				$this->id,
-				$row['Transaction Net Amount'],
-				$row['Transaction Tax Amount'],
-				$row['Transaction Net Amount'],
-				$row['Transaction Tax Amount'],
-				$row['Order No Product Transaction Fact Key']
-			);
-			mysql_query($sql);
-
-
-			if ($row['Transaction Type']=='Shipping') {
-
-				$shipping_net+=$row['Transaction Net Amount'];
-				$shipping_tax+=$row['Transaction Tax Amount'];
-			}
-
-			if ($row['Transaction Type']=='Charges') {
-
-				$charges_net+=$row['Transaction Net Amount'];
-				$charges_tax+=$row['Transaction Tax Amount'];
-			}
-
-			//  print $sql;
-		}
-		
-		
-		
-		
 		$_orders_ids=array();
 
 		if (array_key_exists('Orders Keys',$invoice_data)) {
@@ -303,7 +303,7 @@ class Invoice extends DB_Table {
 					$row['Transaction Tax Amount'],
 					$row['Order No Product Transaction Fact Key']
 				);
-				
+
 				//print $sql;
 				mysql_query($sql);
 
@@ -313,6 +313,8 @@ class Invoice extends DB_Table {
 
 		}
 
+
+	
 		$this->update_shipping(array('Amount'=>$shipping_net,'Tax'=>$shipping_tax),true);
 		$this->update_charges(array('Transaction Invoice Net Amount'=>$charges_net,'Invoice Charges Tax Amount'=>$charges_tax,'Transaction Description'=>_('Charges')),true);
 
@@ -993,8 +995,8 @@ class Invoice extends DB_Table {
 
 
 
-	function update_charges_in_transactions(){
-			$sql = "select `Order Transaction Fact Key`,`Order Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=" . $this->id;
+	function update_charges_in_transactions() {
+		$sql = "select `Order Transaction Fact Key`,`Order Transaction Gross Amount` from `Order Transaction Fact` where `Invoice Key`=" . $this->id;
 
 		//print $sql;
 		$result = mysql_query( $sql );
@@ -1034,7 +1036,7 @@ class Invoice extends DB_Table {
 			//print "$sql\n";
 		}
 		$this->update_totals();
-	
+
 	}
 
 	/*
@@ -1492,31 +1494,31 @@ class Invoice extends DB_Table {
 
 
 	function get_orders_ids() {
-	$orders=array();
+		$orders=array();
 		$sql=sprintf("select `Order Key` from `Order Transaction Fact` where `Invoice Key`=%d  or  `Refund Key`=%d  group by `Order Key`",$this->id,$this->id);
 
 		$res = mysql_query( $sql );
-		
+
 		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
 			if ($row['Order Key']) {
 				$orders[$row['Order Key']]=$row['Order Key'];
 			}
 
 		}
-		
+
 		$sql=sprintf("select `Order Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  or  `Refund Key`=%d  group by `Order Key`",$this->id,$this->id);
 
 
 		$res = mysql_query( $sql );
-		
+
 		while ($row = mysql_fetch_array( $res, MYSQL_ASSOC )) {
 			if ($row['Order Key']) {
 				$orders[$row['Order Key']]=$row['Order Key'];
 			}
 
 		}
-		
-		
+
+
 		return $orders;
 
 	}
@@ -1576,11 +1578,11 @@ class Invoice extends DB_Table {
 				,$row['Order Transaction Fact Key']);
 
 			mysql_query( $sql );
-			
-			
-			
-			
-			
+
+
+
+
+
 			//print "$sql\n";
 			$sql=sprintf( "update  `Inventory Transaction Fact`  set `Amount In`=%f where `Map To Order Transaction Fact Key`=%d "
 				,$row['Invoice Currency Exchange Rate']*($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount']-$row['Invoice Transaction Net Refund Items'])
@@ -1590,7 +1592,7 @@ class Invoice extends DB_Table {
 			//print "$sql\n";
 		}
 
-	$sql=sprintf("select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
+		$sql=sprintf("select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Invoice Key`=%d  and `Consolidated`='No' ",
 			$this->id);
 
 		$res=mysql_query($sql);
@@ -1603,7 +1605,7 @@ class Invoice extends DB_Table {
 
 			mysql_query( $sql );
 			//print "\n$sql\n";
-			
+
 		}
 
 
@@ -1721,12 +1723,12 @@ class Invoice extends DB_Table {
 		$newfunc = create_function('$data',$function_code);
 
 		$category_key=$newfunc($this->data);
-		
+
 		//print "Cat $category_key\n";
-		
+
 		if ($category_key) {
 			$category=new Category($category_key);
-			
+
 			if ($category->id) {
 				//print "HOLA";
 				$category->associate_subject($this->id);

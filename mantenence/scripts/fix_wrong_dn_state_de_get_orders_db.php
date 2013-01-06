@@ -113,8 +113,59 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-$sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 
+$orders_data_id='';
+$sql="select `Invoice Metadata` from `Invoice Dimension` where `Invoice Paid`='Parcially'  and `Invoice Store Key`=3";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/D/','',$row['Invoice Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+
+
+$orders_data_id='';
+$sql="select * from `Delivery Note Dimension` where `Delivery Note State`=''  and `Delivery Note Store Key`=3";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/D/','',$row['Delivery Note Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+
+$sql="select * from `Order Dimension` where  `Order Cancel Note` LIKE 'Order automatically cancelled'  and `Order Store Key`=3";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/D/','',$row['Order Original Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+$sql="select * from `Order Dimension` where  `Order Suspend Note` LIKE 'Order automatically suspended'  and `Order Store Key`=3";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/D/','',$row['Order Original Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+
+$sql="select * from `Order Dimension` where  `Order Current Dispatch State`='In Process' and `Order Store Key`=3";
+$result=mysql_query($sql);
+while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$xxx=preg_replace('/D/','',$row['Order Original Metadata']);
+	if($xxx!='')
+	$orders_data_id.=','.$xxx;
+	
+}
+
+$orders_data_id=preg_replace('/^,/','',$orders_data_id);
+
+
+
+$sql="select * from  de_orders_data.orders  where   deleted='No'   and  id in (".$orders_data_id.")   order by filename  ";
 
 
 
@@ -1475,9 +1526,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			if (strtotime('today -6 month')>strtotime($date_order)) {
 				$order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
 			}
-		//	if (strtotime('today -6 month')>strtotime($date_order)) {
+			//if (strtotime('today -6 month')>strtotime($date_order)) {
 		//		$order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
-			//}
+		//	}
 			break;
 		case 2://Invoice
 		case 8: //follow

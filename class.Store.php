@@ -869,8 +869,9 @@ class Store extends DB_Table {
 			$this->data['Store Unknown Orders']=$row['Store Unknown Orders'];
 			$this->data['Store Suspended Orders']=$row['Store Suspended Orders'];
 
-			$this->data['Store Orders In Process']=  $this->data['Store Total Orders']- $this->data['Store Dispatched Orders']-$this->data['Store Cancelled Orders']-$this->data['Store Unknown Orders'];
-		}
+			$this->data['Store Orders In Process']=  $this->data['Store Total Orders']- $this->data['Store Dispatched Orders']-$this->data['Store Cancelled Orders']-$this->data['Store Unknown Orders']-$this->data['Store Suspended Orders'];
+	
+	}
 
 		$sql="select count(*) as `Store Total Invoices`,sum(IF(`Invoice Type`='Invoice',1,0 )) as `Store Invoices`,sum(IF(`Invoice Type`='Refund',1,0 )) as `Store Refunds` ,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`='Invoice',1,0 )) as `Store Paid Invoices`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`='Invoice',1,0 )) as `Store Partially Paid Invoices`,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`='Refund',1,0 )) as `Store Paid Refunds`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`='Refund',1,0 )) as `Store Partially Paid Refunds` from `Invoice Dimension`   where `Invoice Store Key`=".$this->id;
 		$result=mysql_query($sql);
@@ -948,6 +949,8 @@ class Store extends DB_Table {
 		);
 		//print $sql;
 		mysql_query($sql);
+
+	//print "\nxx".$this->id."xx --> ".$this->data['Store Orders In Process']." \n ";
 
 	}
 
