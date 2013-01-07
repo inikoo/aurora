@@ -149,8 +149,8 @@ $sql="select * from `Order Dimension` where   `Order Suspend Note` LIKE 'Order a
 $result=mysql_query($sql);
 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$xxx=preg_replace('/U/','',$row['Order Original Metadata']);
-	if($xxx!='')
-	$orders_data_id.=','.$xxx;
+//	if($xxx!='')
+//	$orders_data_id.=','.$xxx;
 	
 }
 

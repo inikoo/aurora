@@ -833,7 +833,7 @@ class DeliveryNote extends DB_Table {
 						$map_to_otf_key,
 						prepare_mysql($part_index.';'.$part_data['Parts Per Product'].';'.$location_index)
 					);
-					print $sql;
+					//print $sql;
 					mysql_query($sql);
 					$location_index++;
 					$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
