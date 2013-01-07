@@ -4237,7 +4237,7 @@ if(!$dn_key)$dn_key='';
 		$data=array(
 			'Refund'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency'])),
 			'Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency']),'State'=>''),
-			'Resend'=>array('Distinct_Products'=>0,'Market_Value'=>0,'Formated_Market_Value'=>money(0,$this->data['Order Currency'])),
+			'Resend'=>array('Distinct_Products'=>0,'Market_Value'=>0,'Formated_Market_Value'=>money(0,$this->data['Order Currency']),'state'=>''),
 			'Saved_Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency']),'State'=>'')
 
 		);
@@ -4283,14 +4283,15 @@ if(!$dn_key)$dn_key='';
 			$data['Credit']['Formated_Amount']=money($row['value'],$row['Invoice Currency Code']);
 		}
 
-		$sql=sprintf("select  `Product Currency`,sum(`Quantity`*`Product History Price`) as value,  count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History DImension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  where `Operation`='Resend' and POT.`Order Key`=%d ",
+		$sql=sprintf("select  `State`,`Product Currency`,sum(`Quantity`*`Product History Price`) as value,  count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History DImension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  where `Operation`='Resend' and POT.`Order Key`=%d ",
 			$this->id
 		);
-
 
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_assoc($res)) {
 			$data['Resend']['Distinct_Products']=$row['num'];
+			$data['Resend']['State']=$row['State'];
+
 			$data['Resend']['Market_Value']=$row['value'];
 			$data['Resend']['Formated_Market_Value']=money($row['value'],$row['Product Currency']);
 

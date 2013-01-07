@@ -131,6 +131,8 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $order_post_transactions_in_process=$order->get_post_transactions_in_process_data();
+//print_r($order_post_transactions_in_process);
+//exit;
 $smarty->assign('order_post_transactions_in_process',$order_post_transactions_in_process);
 
 $template='new_post_order.tpl';

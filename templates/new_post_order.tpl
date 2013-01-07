@@ -70,9 +70,11 @@
 				</tr>
 				<tr id="resend" style="{if $order_post_transactions_in_process.Resend.Distinct_Products==0}display:none;{/if};border-bottom:1px solid #ccc;margin-bottom:10px">
 					<td> 
-					<div class="buttons small">
-						<button id="send">{t}Send to Warehouse{/t}</button> 
+					<div class="buttons small" >
+						<button style="{if $order_post_transactions_in_process.Resend.State!='In Process'}display:none{/if}" id="send">{t}Send to Warehouse{/t}</button> 
+						
 					</div>
+					
 					</td>
 					<td class="aright">{t}Replacements Value{/t}:</td>
 					<td id="Resend_Formated_Market_Value" class="aright">{$order_post_transactions_in_process.Resend.Formated_Market_Value}</td>

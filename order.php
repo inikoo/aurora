@@ -364,7 +364,7 @@ if (isset($_REQUEST['pick_aid'])) {
 
 		}
 
-		$company_area=new CompanyArea('code','WAH');
+				$company_area=new CompanyArea('code','WAH');
 		$pickers=$company_area->get_current_staff_with_position_code('PICK');
 		$number_cols=5;
 		$row=0;
@@ -408,19 +408,50 @@ if (isset($_REQUEST['pick_aid'])) {
 
 
 
-		if ($modify) {
-			$general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?id='.$order->id,'label'=>_('Post Dispatch Operations'));
-			//   $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=sht&id='.$order->id,'label'=>_('Make Shortage'));
-			//     $general_options_list[]=array('tipo'=>'url','url'=>'new_refund.php?id='.$order->id,'label'=>_('Refund'));
-
-
-		}
-		$smarty->assign('modify',$modify);
-
 		$smarty->assign('search_label',_('Orders'));
 		$smarty->assign('search_scope','orders');
 		$js_files[]='order_dispatched.js.php';
 		$template='order_dispatched.tpl';
+
+
+		$company_area=new CompanyArea('code','WAH');
+		$pickers=$company_area->get_current_staff_with_position_code('PICK');
+		$number_cols=5;
+		$row=0;
+		$pickers_data=array();
+		$contador=0;
+		foreach ($pickers as $picker) {
+			if (fmod($contador,$number_cols)==0 and $contador>0)
+				$row++;
+			$tmp=array();
+			foreach ($picker as $key=>$value) {
+				$tmp[preg_replace('/\s/','',$key)]=$value;
+			}
+			$pickers_data[$row][]=$tmp;
+			$contador++;
+		}
+
+		$smarty->assign('pickers',$pickers_data);
+
+		$packers=$company_area->get_current_staff_with_position_code('PACK');
+		$number_cols=5;
+		$row=0;
+		$packers_data=array();
+		$contador=0;
+		foreach ($packers as $packer) {
+			if (fmod($contador,$number_cols)==0 and $contador>0)
+				$row++;
+			$tmp=array();
+			foreach ($packer as $key=>$value) {
+				$tmp[preg_replace('/\s/','',$key)]=$value;
+			}
+			$packers_data[$row][]=$tmp;
+			$contador++;
+		}
+
+		$smarty->assign('packers',$packers_data);
+
+
 		break;
 	case('Cancelled'):
 		$smarty->assign('search_label',_('Orders'));
