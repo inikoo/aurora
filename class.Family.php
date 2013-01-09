@@ -1060,32 +1060,32 @@ class Family extends DB_Table {
 
 	function update_up_today_sales() {
 
-		 $this->update_sales_from_invoices('Today');
-		 $this->update_sales_from_invoices('Week To Day');
-		 $this->update_sales_from_invoices('Month To Day');
-		 $this->update_sales_from_invoices('Year To Day');
+		$this->update_sales_from_invoices('Today');
+		$this->update_sales_from_invoices('Week To Day');
+		$this->update_sales_from_invoices('Month To Day');
+		$this->update_sales_from_invoices('Year To Day');
 
 		$this->update_sales_from_invoices('Total');
 	}
 
 	function update_last_period_sales() {
 
-		 $this->update_sales_from_invoices('Yesterday');
-		 $this->update_sales_from_invoices('Last Week');
-		 $this->update_sales_from_invoices('Last Month');
+		$this->update_sales_from_invoices('Yesterday');
+		$this->update_sales_from_invoices('Last Week');
+		$this->update_sales_from_invoices('Last Month');
 
 	}
 
 
 	function update_interval_sales() {
 
-		 $this->update_sales_from_invoices('3 Year');
-		 $this->update_sales_from_invoices('1 Year');
-		 $this->update_sales_from_invoices('6 Month');
-		 $this->update_sales_from_invoices('1 Quarter');
-		 $this->update_sales_from_invoices('1 Month');
-		 $this->update_sales_from_invoices('10 Day');
-		 $this->update_sales_from_invoices('1 Week');
+		$this->update_sales_from_invoices('3 Year');
+		$this->update_sales_from_invoices('1 Year');
+		$this->update_sales_from_invoices('6 Month');
+		$this->update_sales_from_invoices('1 Quarter');
+		$this->update_sales_from_invoices('1 Month');
+		$this->update_sales_from_invoices('10 Day');
+		$this->update_sales_from_invoices('1 Week');
 
 	}
 
@@ -1096,170 +1096,8 @@ class Family extends DB_Table {
 
 		$to_date='';
 
-		switch ($interval) {
+		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
-
-		case 'Total':
-
-			$db_interval='Total';
-			$from_date=date('Y-m-d H:i:s',strtotime($this->data['Product Family Valid From']));
-			$to_date=gmdate('Y-m-d H:i:s');
-
-			$from_date_1yb=false;
-			$to_1yb=false;
-			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-			break;
-
-
-
-		case 'Last Month':
-		case 'last_m':
-			$db_interval='Last Month';
-			$from_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m')-1,1,date('Y')));
-			$to_date=date('Y-m-d 00:00:00',mktime(0,0,0,date('m'),1,date('Y')));
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-			break;
-
-		case 'Last Week':
-		case 'last_w':
-			$db_interval='Last Week';
-
-
-			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date=date('Y-m-d 00:00:00',strtotime($row['First Day'].' -1 week'));
-				$to_date=date('Y-m-d 00:00:00',strtotime($row['First Day']));
-
-			} else {
-				return;
-			}
-
-
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("$to_date -1 year"));
-			break;
-
-		case 'Yesterday':
-		case 'yesterday':
-			$db_interval='Yesterday';
-			$from_date=date('Y-m-d 00:00:00',strtotime('today -1 day'));
-			$to_date=date('Y-m-d 00:00:00',strtotime('today'));
-
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("today -1 year"));
-			break;
-
-		case 'Week To Day':
-		case 'wtd':
-			$db_interval='Week To Day';
-
-			$from_date=false;
-			$from_date_1yb=false;
-
-			$sql=sprintf("select `First Day`  from kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y'),date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date=$row['First Day'].' 00:00:00';
-				$lapsed_seconds=strtotime('now')-strtotime($from_date);
-
-			} else {
-				return;
-			}
-
-			$sql=sprintf("select `First Day`  from  kbase.`Week Dimension` where `Year`=%d and `Week`=%d",date('Y')-1,date('W'));
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$from_date_1yb=$row['First Day'].' 00:00:00';
-			}
-
-
-			$to_1yb=date('Y-m-d H:i:s',strtotime($from_date_1yb." +$lapsed_seconds seconds"));
-
-
-
-			break;
-		case 'Today':
-		case 'today':
-			$db_interval='Today';
-			$from_date=date('Y-m-d 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-
-
-		case 'Month To Day':
-		case 'mtd':
-			$db_interval='Month To Day';
-			$from_date=date('Y-m-01 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case 'Year To Day':
-		case 'ytd':
-			$db_interval='Year To Day';
-			$from_date=date('Y-01-01 00:00:00');
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			//print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
-			break;
-		case '3 Year':
-		case '3y':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -3 year"));
-			$from_date_1yb=false;
-			$to_1yb=false;
-			break;
-		case '1 Year':
-		case '1y':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '6 Month':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -6 months"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Quarter':
-		case '1q':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -3 months"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Month':
-		case '1m':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 month"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '10 Day':
-		case '10d':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -10 days"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-		case '1 Week':
-		case '1w':
-			$db_interval=$interval;
-			$from_date=date('Y-m-d H:i:s',strtotime("now -1 week"));
-			$from_date_1yb=date('Y-m-d H:i:s',strtotime("$from_date -1 year"));
-			$to_1yb=date('Y-m-d H:i:s',strtotime("now -1 year"));
-			break;
-
-		default:
-			return;
-			break;
-		}
 
 		setlocale(LC_ALL, 'en_GB');
 
@@ -1281,7 +1119,7 @@ class Family extends DB_Table {
 
 		$this->data["Product Family DC $db_interval Acc Profit"]=0;
 
-		$sql=sprintf("select  sum(`Shipped Quantity`) as qty_delivered,sum(`Order Quantity`) as qty_ordered,sum(`Invoice Quantity`) as qty_invoiced ,count(Distinct `Customer Key`)as customers,count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net ,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d %s %s" ,
+		$sql=sprintf("select  sum(`Shipped Quantity`) as qty_delivered,sum(`Order Quantity`) as qty_ordered,sum(`Invoice Quantity`) as qty_invoiced ,count(Distinct `Customer Key`)as customers,count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net ,sum(`Invoice Transaction Gross Amount`) as gross  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net,sum((`Invoice Transaction Gross Amount`)*`Invoice Currency Exchange Rate`) dc_gross  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where  `Current Dispatching State`='Dispatched' and `Product Family Key`=%d %s %s" ,
 			$this->id,
 
 			($from_date?sprintf('and `Invoice Date`>%s',prepare_mysql($from_date)):''),
@@ -1368,7 +1206,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 		mysql_query($sql);
 
-		   //print "XX: $interval $from_date_1yb\n\n";
+		//print "XX: $interval $from_date_1yb\n\n";
 
 		if ($from_date_1yb) {
 			$this->data["Product Family $db_interval Acc 1YB Invoices"]=0;
@@ -1379,7 +1217,7 @@ $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transac
 
 
 			$sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
-                         sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
+                         sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Current Dispatching State`='Dispatched' and `Product Family Key`=%d and `Invoice Date`>=%s %s" ,
 				$this->id,
 				prepare_mysql($from_date_1yb),
 				($to_1yb?sprintf('and `Invoice Date`<%s',prepare_mysql($to_1yb)):'')

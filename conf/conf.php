@@ -3501,9 +3501,9 @@ $default_state=array(
 	),
 	'family'=>array(
 		'block_view'=>'products',
-		'sales_sub_block_tipo'=>'family_plot',
+		'sales_sub_block_tipo'=>'plot_family_sales',
 		'editing'=>'details',
-
+		'period'=>'all',
 		'edit_pages'=>array(
 			'f_field'=>'code',
 			'f_value'=>'',
@@ -3548,7 +3548,7 @@ $default_state=array(
 
 
 			'id'=>1,
-			'period'=>'year',
+			'period'=>'all',
 			'percentage'=>0,
 			'mode'=>'all',
 			'avg'=>'totals',
@@ -3564,29 +3564,22 @@ $default_state=array(
 			'f_value'=>'',
 			'restrictions'=>'',
 			'elements'=>array('Historic'=>0,'Discontinued'=>0,'Private'=>0,'NoSale'=>0,'Sale'=>1),
-
-			'csv_export'=>array(
-				'code'=>true,
-				'name'=>true,
-				'web'=>true,
-				'status'=>true,
-				'products'=>false,
-
-				'sales_all'=>false,
-				'sales_1y'=>false,
-				'sales_1q'=>false,
-				'sales_1m'=>false,
-				'sales_1w'=>false,
-				'profit_all'=>false,
-				'profit_1y'=>false,
-				'profit_1q'=>false,
-				'profit_1m'=>false,
-				'profit_1w'=>false
-
-
-			)
+			'history_type'=>'week'	
+		
 
 		),
+		
+		'sales_history'=>array(
+			'type'=>'week',
+			'order'=>'date',
+			'order_dir'=>'',
+			'sf'=>0,
+			'nr'=>25,
+			'f_field'=>'code',
+			'f_value'=>'','f_show'=>false,
+			
+		),
+		
 		'product_sales'=>array(
 			'percentages'=>false,
 			'view'=>'general',

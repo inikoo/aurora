@@ -113,11 +113,6 @@ if (isset($_REQUEST['to'])) {
 }else {
 	$to='';
 }
-
-
-
-
-//$period='xxx';
 if (isset($_REQUEST['tipo'])) {
 	$tipo=$_REQUEST['tipo'];
 	$_SESSION['state']['orders']['period']=$tipo;
@@ -141,6 +136,7 @@ $smarty->assign('to',$to);
 
 //print_r($_SESSION['state']['orders']);
 $smarty->assign('period',$period);
+$smarty->assign('tipo',$tipo);
 
 
 

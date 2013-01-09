@@ -28,7 +28,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		 
 		    
-		    
 		    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=stock_history&tableid="+tableid);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
@@ -66,7 +65,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									 nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
 									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info2'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 								     })
 								 
 								 ,sortedBy : {

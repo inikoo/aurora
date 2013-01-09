@@ -34,6 +34,9 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('assets_sales_history'):
+	list_assets_sales_history();
+	break;
 
 
 case('product_sales_report'):
@@ -2299,6 +2302,7 @@ function list_products() {
 	}
 
 
+	$db_interval=get_interval_db_name($period);
 
 
 
@@ -2317,157 +2321,25 @@ function list_products() {
 			$sum_total_stock_value=$row['sum_stock_value'];
 		}
 
-		if ($period=='all') {
 
 
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product Total Acc Profit`<0,`Product Total Acc Profit`,0)) as total_profit_minus,sum(if(`Product Total Acc Profit`>=0,`Product Total Acc Profit`,0)) as total_profit_plus,sum(`Product Total Acc Invoiced Amount`) as sum_total_sales ,sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
 
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$sum_total_sales=0;
+		$sum_month_sales=0;
+		$sql="select sum(if(`Product $db_interval Acc Profit`<0,`Product $db_interval Acc Profit`,0)) as total_profit_minus,sum(if(`Product $db_interval Acc Profit`>=0,`Product $db_interval Acc Profit`,0)) as total_profit_plus,sum(`Product $db_interval Acc Invoiced Amount`) as sum_total_sales ,sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
 
-				$sum_total_sales=$row['sum_total_sales'];
+		$result=mysql_query($sql);
+		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-				$sum_total_profit_plus=$row['total_profit_plus'];
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
+			$sum_total_sales=$row['sum_total_sales'];
 
-			}
-		}
-		// ---------------------------------Start for Product's 3 year------------------------------------------
-		elseif ($period=='three_year') {
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product 3 Year Acc Profit`<0,`Product 3 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product 3 Year Acc Profit`>=0,`Product 3 Year Acc Profit`,0)) as total_profit_plus,sum(`Product 3 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
+			$sum_total_profit_plus=$row['total_profit_plus'];
+			$sum_total_profit_minus=$row['total_profit_minus'];
+			$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
 
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$sum_total_sales=$row['sum_total_sales'];
-
-				$sum_total_profit_plus=$row['total_profit_plus'];
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-			}
-		}
-		// ---------------------------------End for Product's 3 year------------------------------------------
-		elseif ($period=='year') {
-
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product 1 Year Acc Profit`<0,`Product 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Year Acc Profit`>=0,`Product 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
-
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$sum_total_sales=$row['sum_total_sales'];
-
-				$sum_total_profit_plus=$row['total_profit_plus'];
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-			}
-		}
-		// ---------------------------------Start for Product's yeartoday------------------------------------------
-		elseif ($period=='yeartoday') {
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product Year To Day Acc Profit`<0,`Product Year To Day Acc Profit`,0)) as total_profit_minus,sum(if(`Product Year To Day Acc Profit`>=0,`Product Year To Day Acc Profit`,0)) as total_profit_plus,sum(`Product Year To Day Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
-
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$sum_total_sales=$row['sum_total_sales'];
-
-				$sum_total_profit_plus=$row['total_profit_plus'];
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-			}
-		}
-		// ---------------------------------End for Product's yeartoday------------------------------------------
-		// ---------------------------------Start for Product's 6 month------------------------------------------
-		elseif ($period=='six_month') {
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product 6 Month Acc Profit`<0,`Product 6 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product 6 Month Acc Profit`>=0,`Product 6 Month Acc Profit`,0)) as total_profit_plus,sum(`Product 6 Month Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
-
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$sum_total_sales=$row['sum_total_sales'];
-
-				$sum_total_profit_plus=$row['total_profit_plus'];
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-			}
-		}
-		// ---------------------------------End for Product's 6 month------------------------------------------
-		elseif ($period=='quarter') {
-
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product 1 Quarter Acc Profit`<0,`Product 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Quarter Acc Profit`>=0,`Product 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`   $where $wheref   ";
-
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$sum_total_sales=$row['sum_total_sales'];
-
-				$sum_total_profit_plus=$row['total_profit_plus'];
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-			}
 		}
 
 
-		elseif ($period=='month') {
-
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product 1 Month Acc Profit`<0,`Product 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Month Acc Profit`>=0,`Product 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`  $where $wheref    ";
-
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$sum_total_sales=$row['sum_total_sales'];
-
-				$sum_total_profit_plus=$row['total_profit_plus'];
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-			}
-		}
-
-		// ---------------------------------Start for Product's 10 day------------------------------------------
-		elseif ($period=='ten_day') {
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product 10 Day Acc Profit`<0,`Product 10 Day Acc Profit`,0)) as total_profit_minus,sum(if(`Product 10 Day Acc Profit`>=0,`Product 10 Day Acc Profit`,0)) as total_profit_plus,sum(`Product 10 Day Acc Invoiced Amount`) as sum_total_sales  from `Product Dimension` $where $wheref   ";
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-				$sum_total_sales=$row['sum_total_sales'];
-				$sum_total_profit_plus=$row['total_profit_plus'];
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-			}
-		}
-		// ---------------------------------End for Product's 10 day------------------------------------------
-		elseif ($period=='week') {
-			$sum_families=0;
-			$sum_total_sales=0;
-			$sum_month_sales=0;
-			$sql="select sum(if(`Product 1 Week Acc Profit`<0,`Product 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product 1 Week Acc Profit`>=0,`Product 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Dimension`  $where $wheref    ";
-
-			$result=mysql_query($sql);
-			if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-				$sum_total_sales=$row['sum_total_sales'];
-
-				$sum_total_profit_plus=$row['total_profit_plus'];
-
-				$sum_total_profit_minus=$row['total_profit_minus'];
-				$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-			}
-		}
 
 	}
 
@@ -2496,6 +2368,8 @@ function list_products() {
 	$count_margin=0;
 	$sum_margin=0;
 
+
+
 	//  print "P:$period $avg $sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2513,794 +2387,67 @@ function list_products() {
 
 
 
-
 		if ($percentages) {
 			$delta_sales='';
 			$sold='';
 			$margin='';
-			if ($period=='all') {
-				$tsall=percentage($row['Product Total Acc Invoiced Amount'],$sum_total_sales,2);
 
-				if ($row['Product Total Acc Profit']>=0)
-					$tprofit=percentage($row['Product Total Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product Total Acc Profit'],$sum_total_profit_minus,2);
-			}
-			elseif ($period=='year') {
-				$tsall=percentage($row['Product 1 Year Acc Invoiced Amount'],$sum_total_sales,2);
-				if ($row['Product 1 Year Acc Profit']>=0)
-					$tprofit=percentage($row['Product 1 Year Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product 1 Year Acc Profit'],$sum_total_profit_minus,2);
-			}
-			elseif ($period=='quarter') {
-				$tsall=percentage($row['Product 1 Quarter Acc Invoiced Amount'],$sum_total_sales,2);
-				if ($row['Product 1 Quarter Acc Profit']>=0)
-					$tprofit=percentage($row['Product 1 Quarter Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product 1 Quarter Acc Profit'],$sum_total_profit_minus,2);
-			}
-			elseif ($period=='month') {
-				$tsall=percentage($row['Product 1 Month Acc Invoiced Amount'],$sum_total_sales,2);
-				if ($row['Product 1 Month Acc Profit']>=0)
-					$tprofit=percentage($row['Product 1 Month Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product 1 Month Acc Profit'],$sum_total_profit_minus,2);
-			}
-			elseif ($period=='week') {
-				$tsall=percentage($row['Product 1 Week Acc Invoiced Amount'],$sum_total_sales,2);
-				if ($row['Product 1 Week Acc Profit']>=0)
-					$tprofit=percentage($row['Product 1 Week Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product 1 Week Acc Profit'],$sum_total_profit_minus,2);
-			}
-			elseif ($period=='three_year') {
-				$tsall=percentage($row['Product 3 Year Acc Invoiced Amount'],$sum_total_sales,2);
-				if ($row['Product 3 Year Acc Profit']>=0)
-					$tprofit=percentage($row['Product 3 Year Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product 3 Year Acc Profit'],$sum_total_profit_minus,2);
-			}
-			elseif ($period=='yeartoday') {
-				$tsall=percentage($row['Product Year To Day Acc Invoiced Amount'],$sum_total_sales,2);
-				if ($row['Product Year To Day Acc Profit']>=0)
-					$tprofit=percentage($row['Product Year To Day Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product Year To Day Acc Profit'],$sum_total_profit_minus,2);
-			}
-			elseif ($period=='six_month') {
-				$tsall=percentage($row['Product 6 Month Acc Invoiced Amount'],$sum_total_sales,2);
-				if ($row['Product 6 Month Acc Profit']>=0)
-					$tprofit=percentage($row['Product 6 Month Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product 6 Month Acc Profit'],$sum_total_profit_minus,2);
-			}
-			elseif ($period=='ten_day') {
-				$tsall=percentage($row['Product 10 Day Acc Invoiced Amount'],$sum_total_sales,2);
-				if ($row['Product 10 Day Acc Profit']>=0)
-					$tprofit=percentage($row['Product 10 Day Acc Profit'],$sum_total_profit_plus,2);
-				else
-					$tprofit=percentage($row['Product 10 Day Acc Profit'],$sum_total_profit_minus,2);
-			}
-
+			$tsall=percentage($row["Product $db_interval Acc Invoiced Amount"],$sum_total_sales,2);
+			if ($row["Product $db_interval Acc Profit"]>=0)
+				$tprofit=percentage($row["Product $db_interval Acc Profit"],$sum_total_profit_plus,2);
+			else
+				$tprofit=percentage($row["Product $db_interval Acc Profit"],$sum_total_profit_minus,2);
 		}
 		else {
 
 
-			if ($period=='all') {
-
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product Total Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Total Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product Total Acc Days On Sale']>0)
-						$factor=7/$row['Product Total Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product Total Acc Days Available']>0)
-						$factor=30.4368499/$row['Product Total Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product Total Acc Days Available']>0)
-						$factor=7/$row['Product Total Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$delta_sales='';
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$delta_sales='';
-					$tsall=($row['Product Total Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product Total Acc Profit']*$factor);
-					$sold=$row['Product Total Acc Quantity Invoiced']*$factor;
-				}
-
-
-				$margin=$row['Product Total Margin'];
-
-
-
+			if ($avg=='totals')
+				$factor=1;
+			elseif ($avg=='month') {
+				if ($row["Product $db_interval Acc Days On Sale"]>0)
+					$factor=30.4368499/$row["Product $db_interval Acc Days On Sale"];
+				else
+					$factor='ND';
 			}
-			elseif ($period=='three_year') {
-
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product 3 Year Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 3 Year Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product 3 Year Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 3 Year Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product 3 Year Acc Days On Sale']>0)
-						$factor=7/$row['Product 3 Year Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product 3 Year Acc Days Available']>0)
-						$factor=30.4368499/$row['Product 3 Year Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product 3 Year Acc Days Available']>0)
-						$factor=7/$row['Product 3 Year Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$delta_sales='';
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$delta_sales='';
-					$sold=($row['Product 3 Year Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product 3 Year Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product 3 Year Acc Profit']*$factor);
-				}
-				$margin=$row['Product 3 Year Acc Margin'];
+			elseif ($avg=='week') {
+				if ($row["Product $db_interval Acc Days On Sale"]>0)
+					$factor=7/$row["Product To$db_intervaltal Acc Days On Sale"];
+				else
+					$factor='ND';
 			}
-			elseif ($period=='year') {
-
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product 1 Year Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 1 Year Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product 1 Year Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 1 Year Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product 1 Year Acc Days On Sale']>0)
-						$factor=7/$row['Product 1 Year Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product 1 Year Acc Days Available']>0)
-						$factor=30.4368499/$row['Product 1 Year Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product 1 Year Acc Days Available']>0)
-						$factor=7/$row['Product 1 Year Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product 1 Year Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product 1 Year Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product 1 Year Acc Profit']*$factor);
-				}
-
-				$delta_sales=delta($row['Product 1 Year Acc Invoiced Amount'],$row['Product 1 Year Acc 1YB Invoiced Amount']);
-				$margin=$row['Product 1 Year Acc Margin'];
+			elseif ($avg=='month_eff') {
+				if ($row["Product $db_interval Acc Days Available"]>0)
+					$factor=30.4368499/$row["Product $db_interval Acc Days Available"];
+				else
+					$factor='ND';
 			}
-			elseif ($period=='yeartoday') {
+			elseif ($avg=='week_eff') {
+				if ($row["Product $db_interval Acc Days Available"]>0)
+					$factor=7/$row["Product $db_interval Acc Days Available"];
+				else
+					$factor='ND';
+			}
+			if ($factor=='ND') {
+				$delta_sales='';
+				$tsall=_('ND');
+				$tprofit=_('ND');
+				$sold=_('ND');
+			} else {
+				$delta_sales='';
+				$tsall=($row["Product $db_interval Acc Invoiced Amount"]*$factor);
+				$tprofit=($row["Product $db_interval Acc Profit"]*$factor);
+				$sold=$row["Product $db_interval Acc Quantity Invoiced"]*$factor;
+			}
 
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product Year To Day Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Year To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product Year To Day Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Year To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product Year To Day Acc Days On Sale']>0)
-						$factor=7/$row['Product Year To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product Year To Day Acc Days Available']>0)
-						$factor=30.4368499/$row['Product Year To Day Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product Year To Day Acc Days Available']>0)
-						$factor=7/$row['Product Year To Day Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product Year To Day Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product Year To Day Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product Year To Day Acc Profit']*$factor);
-				}
+			if (!($db_interval=='Total' or $db_interval=='3 Year'))
 				$delta_sales=delta($row['Product Year To Day Acc Invoiced Amount'],$row['Product Year To Day Acc 1YB Invoiced Amount']);
-				$margin=$row['Product Year To Day Acc Margin'];
-			}
-			elseif ($period=='monthtoday') {
+
+			$margin=$row["Product $db_interval Acc Margin"];
 
 
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product Month To Day Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Month To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product Month To Day Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Month To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product Month To Day Acc Days On Sale']>0)
-						$factor=7/$row['Product Month To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product Month To Day Acc Days Available']>0)
-						$factor=30.4368499/$row['Product Month To Day Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product Month To Day Acc Days Available']>0)
-						$factor=7/$row['Product Month To Day Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product Month To Day Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product Month To Day Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product Month To Day Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product Month To Day Acc Invoiced Amount'],$row['Product Month To Day Acc 1YB Invoiced Amount']);
-				$margin=$row['Product Month To Day Acc Margin'];
-			}
-			elseif ($period=='weektoday') {
 
 
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product Week To Day Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Week To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product Week To Day Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Week To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product Week To Day Acc Days On Sale']>0)
-						$factor=7/$row['Product Week To Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product Week To Day Acc Days Available']>0)
-						$factor=30.4368499/$row['Product Week To Day Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product Week To Day Acc Days Available']>0)
-						$factor=7/$row['Product Week To Day Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product Week To Day Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product Week To Day Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product Week To Day Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product 1 Week Acc Invoiced Amount'],$row['Product 1 Week Acc 1YB Invoiced Amount']);
-				$margin=$row['Product Week To Day Acc Margin'];
-			}
-			elseif ($period=='six_month') {
 
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product 6 Month Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 6 Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product 6 Month Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 6 Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product 6 Month Acc Days On Sale']>0)
-						$factor=7/$row['Product 6 Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product 6 Month Acc Days Available']>0)
-						$factor=30.4368499/$row['Product 6 Month Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product 6 Month Acc Days Available']>0)
-						$factor=7/$row['Product 6 Month Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product 6 Month Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product 6 Month Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product 6 Month Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product 6 Month Acc Invoiced Amount'],$row['Product 6 Month Acc 1YB Invoiced Amount']);
-				$margin=$row['Product 6 Month Acc Margin'];
-			}
-			elseif ($period=='quarter') {
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product 1 Quarter Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 1 Quarter Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product 1 Quarter Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 1 Quarter Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product 1 Quarter Acc Days On Sale']>0)
-						$factor=7/$row['Product 1 Quarter Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product 1 Quarter Acc Days Available']>0)
-						$factor=30.4368499/$row['Product 1 Quarter Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product 1 Quarter Acc Days Available']>0)
-						$factor=7/$row['Product 1 Quarter Acc Days Available'];
-					else
-						$factor='ND';
-				}
-
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product 1 Quarter Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product 1 Quarter Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product 1 Quarter Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product 1 Quarter Acc Invoiced Amount'],$row['Product 1 Quarter Acc 1YB Invoiced Amount']);
-				$margin=$row['Product 1 Quarter Acc Margin'];
-
-			}
-			elseif ($period=='month') {
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product 1 Month Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 1 Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product 1 Month Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 1 Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product 1 Month Acc Days On Sale']>0)
-						$factor=7/$row['Product 1 Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product 1 Month Acc Days Available']>0)
-						$factor=30.4368499/$row['Product 1 Month Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product 1 Month Acc Days Available']>0)
-						$factor=7/$row['Product 1 Month Acc Days Available'];
-					else
-						$factor='ND';
-				}
-
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$tsall=$row['Product 1 Month Acc Invoiced Amount']*$factor;
-					$tprofit=$row['Product 1 Month Acc Profit']*$factor;
-					$sold=$row['Product 1 Month Acc Quantity Invoiced']*$factor;
-				}
-				$delta_sales=delta($row['Product 1 Month Acc Invoiced Amount'],$row['Product 1 Month Acc 1YB Invoiced Amount']);
-				$margin=$row['Product 1 Month Acc Margin'];
-			}
-
-			elseif ($period=='today') {
-
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product Today Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Today Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product Today Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Today Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product Today Acc Days On Sale']>0)
-						$factor=7/$row['Product Today Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product Today Acc Days Available']>0)
-						$factor=30.4368499/$row['Product Today Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product Today Acc Days Available']>0)
-						$factor=7/$row['Product Today Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product Today Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product Today Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product Today Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product Today Acc Invoiced Amount'],$row['Product Today Acc 1YB Invoiced Amount']);
-				$margin=$row['Product Today Acc Margin'];
-			}
-
-			elseif ($period=='yesterday') {
-
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product Yesterday Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Yesterday Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product Yesterday Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Yesterday Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product Yesterday Acc Days On Sale']>0)
-						$factor=7/$row['Product Yesterday Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product Yesterday Acc Days Available']>0)
-						$factor=30.4368499/$row['Product Yesterday Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product Yesterday Acc Days Available']>0)
-						$factor=7/$row['Product Yesterday Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product Yesterday Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product Yesterday Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product Yesterday Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product Yesterday Acc Invoiced Amount'],$row['Product Yesterday Acc 1YB Invoiced Amount']);
-				$margin=$row['Product Yesterday Acc Margin'];
-			}
-
-			elseif ($period=='last_month') {
-
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product Last Month Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Last Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product Last Month Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Last Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product Last Month Acc Days On Sale']>0)
-						$factor=7/$row['Product Last Month Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product Last Month Acc Days Available']>0)
-						$factor=30.4368499/$row['Product Last Month Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product Last Month Acc Days Available']>0)
-						$factor=7/$row['Product Last Month Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product Last Month Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product Last Month Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product Last Month Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product Last Month Acc Invoiced Amount'],$row['Product Last Month Acc 1YB Invoiced Amount']);
-				$margin=$row['Product Last Month Acc Margin'];
-			}
-
-
-			elseif ($period=='last_week') {
-
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product Last Week Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Last Week Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product Last Week Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product Last Week Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product Last Week Acc Days On Sale']>0)
-						$factor=7/$row['Product Last Week Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product Last Week Acc Days Available']>0)
-						$factor=30.4368499/$row['Product Last Week Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product Last Week Acc Days Available']>0)
-						$factor=7/$row['Product Last Week Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product Last Week Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product Last Week Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product Last Week Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product Last Week Acc Invoiced Amount'],$row['Product Last Week Acc 1YB Invoiced Amount']);
-				$margin=$row['Product Last Week Acc Margin'];
-			}
-
-
-			elseif ($period=='ten_day') {
-
-
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product 10 Day Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 10 Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product 10 Day Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 10 Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product 10 Day Acc Days On Sale']>0)
-						$factor=7/$row['Product 10 Day Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product 10 Day Acc Days Available']>0)
-						$factor=30.4368499/$row['Product 10 Day Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product 10 Day Acc Days Available']>0)
-						$factor=7/$row['Product 10 Day Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$sold=($row['Product 10 Day Acc Quantity Invoiced']*$factor);
-					$tsall=($row['Product 10 Day Acc Invoiced Amount']*$factor);
-					$tprofit=($row['Product 10 Day Acc Profit']*$factor);
-				}
-				$delta_sales=delta($row['Product 10 Day Acc Invoiced Amount'],$row['Product 10 Day Acc 1YB Invoiced Amount']);
-				$margin=$row['Product 10 Day Acc Margin'];
-			}
-			elseif ($period=='week') {
-				if ($avg=='totals')
-					$factor=1;
-				elseif ($avg=='month') {
-					if ($row['Product 1 Week Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 1 Week Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month') {
-					if ($row['Product 1 Week Acc Days On Sale']>0)
-						$factor=30.4368499/$row['Product 1 Week Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week') {
-					if ($row['Product 1 Week Acc Days On Sale']>0)
-						$factor=7/$row['Product 1 Week Acc Days On Sale'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='month_eff') {
-					if ($row['Product 1 Week Acc Days Available']>0)
-						$factor=30.4368499/$row['Product 1 Week Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				elseif ($avg=='week_eff') {
-					if ($row['Product 1 Week Acc Days Available']>0)
-						$factor=7/$row['Product 1 Week Acc Days Available'];
-					else
-						$factor='ND';
-				}
-				if ($factor=='ND') {
-					$tsall=_('ND');
-					$tprofit=_('ND');
-					$sold=_('ND');
-				} else {
-					$tsall=$row['Product 1 Week Acc Invoiced Amount']*$factor;
-					$sold=$row['Product 1 Week Acc Quantity Invoiced']*$factor;
-					$tprofit=$row['Product 1 Week Acc Profit']*$factor;
-
-
-				}
-				$delta_sales=delta($row['Product 1 Week Acc Invoiced Amount'],$row['Product 1 Week Acc 1YB Invoiced Amount']);
-				$margin=$row['Product 1 Week Acc Margin'];
-
-			}
 		}
 
 		if (is_numeric($row['Product Availability']))
@@ -3526,19 +2673,19 @@ function product_sales_report() {
 	}
 
 	if ($parent=='store') {
-		$conf=$_SESSION['state']['store']['products'];
+		$conf=$_SESSION['state']['store']['product_sales'];
 		$conf_table='store';
 	}
 	elseif ($parent=='department') {
-		$conf=$_SESSION['state']['department']['products'];
+		$conf=$_SESSION['state']['department']['product_sales'];
 		$conf_table='department';
 	}
 	elseif ($parent=='family') {
-		$conf=$_SESSION['state']['family']['products'];
+		$conf=$_SESSION['state']['family']['product_sales'];
 		$conf_table='family';
 	}
 	elseif ($parent=='none') {
-		$conf=$_SESSION['state']['stores']['products'];
+		$conf=$_SESSION['state']['stores']['product_sales'];
 		$conf_table='stores';
 	}
 	else {
@@ -3554,7 +2701,7 @@ function product_sales_report() {
 		$start_from=$conf['sf'];
 
 	if (isset( $_REQUEST['nr'])) {
-		$number_results=$_REQUEST['nr']-1;
+		$number_results=$_REQUEST['nr'];
 
 
 	} else
@@ -3570,8 +2717,26 @@ function product_sales_report() {
 		$order_dir=$_REQUEST['od'];
 	else
 		$order_dir=$conf['order_dir'];
+
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
+
+
+	if (isset( $_REQUEST['from'])) {
+		$from=$_REQUEST['from'];
+
+	}else {
+		$from=$_SESSION['state'][$parent]['from'];
+
+	}
+
+	if (isset( $_REQUEST['to'])) {
+		$to=$_REQUEST['to'];
+
+	}else {
+		$from=$_SESSION['state'][$parent]['to'];
+
+	}
 
 
 
@@ -3623,41 +2788,44 @@ function product_sales_report() {
 		$elements=$conf['elements'];
 
 
-	if (isset( $_REQUEST['elements_discontinued'])) {
-		$elements['Discontinued']=$_REQUEST['elements_discontinued'];
+
+	if (isset( $_REQUEST['elements_product_sales_discontinued'])) {
+		$elements['Discontinued']=$_REQUEST['elements_product_sales_discontinued'];
 
 	}
-	if (isset( $_REQUEST['elements_nosale'])) {
-		$elements['NoSale']=$_REQUEST['elements_nosale'];
+	if (isset( $_REQUEST['elements_product_sales_nosale'])) {
+		$elements['NoSale']=$_REQUEST['elements_product_sales_nosale'];
 	}
-	if (isset( $_REQUEST['elements_sale'])) {
-		$elements['Sale']=$_REQUEST['elements_sale'];
-	}
-
-
-	if (isset( $_REQUEST['elements_private'])) {
-		$elements['Private']=$_REQUEST['elements_private'];
-	}
-	if (isset( $_REQUEST['elements_historic'])) {
-		$elements['Historic']=$_REQUEST['elements_historic'];
+	if (isset( $_REQUEST['elements_product_sales_sale'])) {
+		$elements['Sale']=$_REQUEST['elements_product_sales_sale'];
 	}
 
 
+	if (isset( $_REQUEST['elements_product_sales_private'])) {
+		$elements['Private']=$_REQUEST['elements_product_sales_private'];
+	}
+	if (isset( $_REQUEST['elements_product_sales_historic'])) {
+		$elements['Historic']=$_REQUEST['elements_product_sales_historic'];
+	}
 
 
 
 
 
-	$_SESSION['state'][$conf_table]['products']['order']=$order;
-	$_SESSION['state'][$conf_table]['products']['order_dir']=$order_dir;
-	$_SESSION['state'][$conf_table]['products']['nr']=$number_results;
-	$_SESSION['state'][$conf_table]['products']['sf']=$start_from;
-	$_SESSION['state'][$conf_table]['products']['f_field']=$f_field;
-	$_SESSION['state'][$conf_table]['products']['f_value']=$f_value;
-	$_SESSION['state'][$conf_table]['products']['percentages']=$percentages;
-	$_SESSION['state'][$conf_table]['products']['avg']=$avg;
-	$_SESSION['state'][$conf_table]['products']['elements']=$elements;
-	$_SESSION['state'][$conf_table]['products']['mode']=$mode;
+
+
+	$_SESSION['state'][$conf_table]['product_sales']['order']=$order;
+	$_SESSION['state'][$conf_table]['product_sales']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['product_sales']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['product_sales']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['product_sales']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['product_sales']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['product_sales']['percentages']=$percentages;
+	$_SESSION['state'][$conf_table]['product_sales']['avg']=$avg;
+	$_SESSION['state'][$conf_table]['product_sales']['elements']=$elements;
+	$_SESSION['state'][$conf_table]['product_sales']['mode']=$mode;
+	$_SESSION['state'][$conf_table]['product_sales']['to']=$to;
+	$_SESSION['state'][$conf_table]['product_sales']['from']=$from;
 
 
 
@@ -3693,6 +2861,7 @@ function product_sales_report() {
 
 	$group='';
 
+
 	$_elements='';
 	foreach ($elements as $_key=>$_value) {
 		if ($_value)
@@ -3700,13 +2869,18 @@ function product_sales_report() {
 	}
 	$_elements=preg_replace('/^\,/','',$_elements);
 	if ($_elements=='') {
-		$where.=' and false' ;
+		$where_type.=' and false' ;
 	} else {
-		$where.=' and `Product Main Type` in ('.$_elements.')' ;
+		$where_type.=' and `Product Main Type` in ('.$_elements.')' ;
 	}
 
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
 
-
+	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+	$where.=$where_interval;
+	$where.=$where_type;
 
 	$filter_msg='';
 
@@ -3722,7 +2896,12 @@ function product_sales_report() {
 	elseif ($f_field=='description' and $f_value!='')
 		$wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
+
+
 	$sql="select count(*) as total from `Product Dimension` P   $where $wheref";
+	$sql="select count(distinct OTF.`Product ID`)  as total from  `Product Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where $wheref      ";
+
+
 	//print $sql;
 	$res=mysql_query($sql);
 	if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -3731,6 +2910,8 @@ function product_sales_report() {
 	}
 	if ($wheref!='') {
 		$sql="select count(*) as total_without_filters from `Product Dimension` P  $where ";
+		$sql="select OTF.`Product ID`  as total_without_filters from  `Product Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where       ";
+
 		$res=mysql_query($sql);
 		if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -3778,23 +2959,28 @@ function product_sales_report() {
 	$_order=$order;
 	$_order_dir=$order_dir;
 
-	if ($order=='stock')
-		$order='`Product Availability`';
-	if ($order=='code' or $order=='codename')
+
+	if ($order=='code')
 		$order='`Product Code File As`';
 	elseif ($order=='name')
 		$order='`Product Name`';
-	elseif ($order=='available_for')
-		$order='`Product Available Days Forecast`';
-	elseif ($order=='shortname')
-		$order='`Product Available Days Forecast`';
-
-	if ($order=='profit') {
+	elseif ($order=='state') {
+		$order='`Product Sales Type`';
+	}
+	elseif ($order=='family') {
+		$order='`Product Family`Code';
+	}
+	elseif ($order=='dept') {
+		$order='`Product Main Department Code`';
+	}
+	elseif ($order=='store') {
+		$order='`Store Code`';
+	}elseif ($order=='profit') {
 		$order='profit';
 
 	}
 	elseif ($order=='sales') {
-		$order='sales';
+		$order='net';
 
 	}elseif ($_order=='delta_sales') {
 		$order='delta_sales';
@@ -3805,123 +2991,29 @@ function product_sales_report() {
 
 	}
 	elseif ($order=='sold') {
-		$order='sold';
+		$order='qty_delivered';
 
+	}else {
+		$tipo_order='asset';
+		$order='';
+		$$order_direction='';
 	}
-	elseif ($order=='family') {
-		$order='`Product Family`Code';
-	}
-	elseif ($order=='dept') {
-		$order='`Product Main Department Code`';
-	}
-	elseif ($order=='expcode') {
-		$order='`Product Tariff Code`';
-	}
-	elseif ($order=='parts') {
-		$order='`Product XHTML Parts`';
-	}
-	elseif ($order=='supplied') {
-		$order='`Product XHTML Supplied By`';
-	}
-	elseif ($order=='gmroi') {
-		$order='`Product GMROI`';
-	}
-	elseif ($order=='state') {
-		$order='`Product Sales Type`';
-	}
-	elseif ($order=='web') {
-		$order='`Product Web Configuration`';
-	}
-	elseif ($order=='stock_state') {
-		$order='`Product Availability State`';
-	}
-	elseif ($order=='stock_forecast') {
-		$order='`Product Available Days Forecast`';
-	}
-	elseif ($order=='formated_record_type') {
-		$order='`Product Record Type`';
-	}
-	elseif ($order=='store') {
-		$order='`Store Code`';
-	}
+	if ($order!='')$order=" order by $order $order_direction";
 
 
 
 
 
-	$sum_total_sales=0;
-	$sum_total_profit=0;
-	$sum_total_stock_value=0;
 
-	/*
-	if ($percentages) {
+	$sql="select `Product Store Key`,`Store Code`,`Product XHTML Short Description`,`Product Record Type`,`Product Main Type`,`Invoice Currency Code`,P.`Product Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from  `Product Dimension` P  left join  `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product ID` $order limit $start_from,$number_results    ";
 
-		$sum_total_stock_value=0;
-		$sql="select sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
-
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$sum_total_stock_value=$row['sum_stock_value'];
-
-		}
-
-
-
-
-		$sum_total_sales=0;
-		$sum_month_sales=0;
-		$sql="select sum(if(`Product Total Acc Profit`<0,`Product Total Acc Profit`,0)) as total_profit_minus,sum(if(`Product Total Acc Profit`>=0,`Product Total Acc Profit`,0)) as total_profit_plus,sum(`Product Total Acc Invoiced Amount`) as sum_total_sales ,sum(`Product Stock Value`) as sum_stock_value  from `Product Dimension` $where $wheref     ";
-
-		$result=mysql_query($sql);
-		if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-			$sum_total_sales=$row['sum_total_sales'];
-
-			$sum_total_profit_plus=$row['total_profit_plus'];
-			$sum_total_profit_minus=$row['total_profit_minus'];
-			$sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-
-		}
-
-
-	}
-*/
-
-
-	$sql="select `Product Store Key`,`Store Code`,`Product XHTML Short Description`,`Product Record Type`,`Product Main Type`,`Invoice Currency Code`,P.`Product Name`,OTF.`Product ID`,OTF.`Product Code`,count(distinct `Customer Key`) as customers, count(distinct `Invoice Key`) as invoices,sum(`Shipped Quantity`) as qty_delivered,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit from  `Product Dimension` P  left join  `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`) $where $wheref group by OTF.`Product ID` order by $order $order_direction limit $start_from,$number_results    ";
-
-
-
-
-	$res = mysql_query($sql);
+	//print $sql;
 	$adata=array();
 
-	$counter=0;
-	$total_units=0;
+	$res = mysql_query($sql);
 
-	$sum_unitary_price=0;
-	$counter_unitary_price=0;
-	$sum_sold=0;
-	$sum_units=0;
-	$sum_sales=0;
-	$sum_profit=0;
-	$count_margin=0;
-	$sum_margin=0;
 
-	//  print "P:$period $avg $sql";
 	while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-		$currency=$row['Invoice Currency Code'];
-
-		$counter++;
-
-
-
-		$sold=$row['qty_delivered'];
-		$tsall=$row['net'];
-		$tprofit=$row['profit'];
-
 
 
 
@@ -3950,6 +3042,14 @@ function product_sales_report() {
 
 		}
 
+		$currency=$row['Invoice Currency Code'];
+
+		$sold=$row['qty_delivered'];
+		$tsall=$row['net'];
+		$tprofit=$row['profit'];
+
+
+
 
 		include_once 'locale.php';
 
@@ -3959,17 +3059,18 @@ function product_sales_report() {
 			'store'=>$store,
 			'code'=>$code,
 			'name'=>$row['Product XHTML Short Description'],
-
-
 			'sales'=>(is_numeric($tsall)?money($tsall,$currency):$tsall),
-			'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
+			//'profit'=>(is_numeric($tprofit)?money($tprofit,$currency):$tprofit),
 			'sold'=>(is_numeric($sold)?number($sold):$sold),
-			'state'=>$main_type,
-
-
+			'state'=>$main_type
 		);
+
+
+
 	}
 	mysql_free_result($res);
+
+
 
 
 
@@ -10949,5 +10050,302 @@ function code_in_other_deal($data) {
 	}
 }
 
+function list_assets_sales_history() {
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		exit();
+	}
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit();
+	}
+
+	$conf=$_SESSION['state'][$parent]['sales_history'];
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else {
+		$from=$_SESSION['state'][$parent]['from'];
+	}
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$_SESSION['state'][$parent]['to'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	if (isset( $_REQUEST['type']))
+		$type=$_REQUEST['type'];
+	else
+		$type=$conf['type'];
+
+
+
+	list($date_interval,$error)=prepare_mysql_dates($from,$to);
+	if ($error) {
+		list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+	} else {
+		$_SESSION['state'][$parent]['from']=$from;
+		$_SESSION['state'][$parent]['to']=$to;
+	}
+
+	$_SESSION['state'][$parent]['sales_history']['type']=$type;
+
+	$_SESSION['state'][$parent]['sales_history']['order']=$order;
+	$_SESSION['state'][$parent]['sales_history']['order_dir']=$order_direction;
+	$_SESSION['state'][$parent]['sales_history']['nr']=$number_results;
+	$_SESSION['state'][$parent]['sales_history']['sf']=$start_from;
+	$_SESSION['state'][$parent]['sales_history']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['sales_history']['f_value']=$f_value;
+
+	$_SESSION['state'][$parent]['from']=$from;
+	$_SESSION['state'][$parent]['to']=$to;
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+	if (!$to)$to=date("Y-m-d");
+
+
+	switch ($parent) {
+	case('family'):
+		$where=sprintf(" where  `Product Family Key`=%d  ",$parent_key);
+
+		if (!$from) {
+			$sql=sprintf("select Date(`Product Family Valid From`) as date ,`Product Family Currency Code` from `Product Family Dimension`where  `Product Family Key`=%d  ",$parent_key);
+			$res=mysql_query($sql);
+			if ($row=mysql_fetch_assoc($res))
+				$from=$row['date'];
+			$currency=$row['Product Family Currency Code'];
+		}
+		//print "$sql z $from z";
+
+		break;
+	case('department'):
+		$where=sprintf(" where  `Product Department Key`=%d  ",$parent_key);
+		break;
+	case('store'):
+		$where=sprintf(" where  `Store Key`=%d  ",$parent_key);
+		break;
+	case('product'):
+		$where=sprintf(" where  `Product ID`=%d  ",$parent_key);
+		break;
+
+	}
+
+
+
+
+	switch ($type) {
+	case 'year':
+		$group='  group by Year(`Date`) ';
+		$groupi=' group by Year(`Invoice Date`) ';
+		$anchori='Year(`Invoice Date`) as date';
+		break;
+
+	case 'month':
+		$group=' group by DATE_FORMAT(`Date`,"%m%Y") ';
+		$groupi=' group by DATE_FORMAT(`Invoice Date`,"%m%Y") ';
+		$anchori='DATE_FORMAT(`Invoice Date`,"%m%Y") as date';
+			break;
+	case 'day':
+		$group=' group by (`Date`) ';
+		$groupi=' group by `Invoice Date` ';
+		$anchori='Date(`Invoice Date`) as date';
+		break;
+	default:
+		$group=' group by YEARWEEK(`Date`) ';
+		$groupi=' group by YEARWEEK(`Invoice Date`) ';
+		$anchori='YEARWEEK(`Invoice Date`) as date';
+		break;
+	}
+
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+	$where_interval=$where_interval['mysql'];
+	//$where.=$where_interval;
+	$wheref='';
+
+	// if ($f_field=='note' and $f_value!='')
+	//  $wheref.=" and  `Product Note` like '%".addslashes($f_value)."%'";
+	// elseif ($f_field=='author' and $f_value!='')
+	//  $wheref.=" and  `User Alias` like '".addslashes($f_value)."%'";
+
+	$sql="select count(*) as total from  kbase.`Date Dimension`  where true $where_interval $wheref $group";
+	//print $sql;
+	$res = mysql_query($sql);
+	$total= mysql_num_rows($res);
+
+
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from   kbase.`Date Dimension`   $where_interval $group";
+		$result=mysql_query($sql);
+		$total_records= mysql_num_rows($result);
+		$filtered=$total_records-$total;
+		mysql_free_result($result);
+
+
+	}
+//print $total_records;
+	switch ($type) {
+	case 'year':
+		$rtext=number($total_records)." xx ".ngettext('year','years',$total_records);
+		break;
+
+	case 'month':
+		$rtext=number($total_records)." ".ngettext('month','months',$total_records);
+		break;
+	case 'day':
+		$rtext=number($total_records)." ".ngettext('day','days',$total_records);
+
+		break;
+	default:
+		$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
+
+		break;
+	}
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	$sql="select  DATE_FORMAT(`Date`,'%m%Y') as month , Year(`Date`) as year, YEARWEEK(`Date`) as week,  `Date` from kbase.`Date Dimension`where true  $where_interval $group order by `Date` desc  limit $start_from,$number_results ";
+//print $sql;
+	$result=mysql_query($sql);
+	$ddata=array();
+
+	$from_date='';
+	$to_date='';
+//print $sql;
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($to_date=='')$to_date=$data['Date'];
+		$from_date=$data['Date'];
+		//print $data['Date']."\n";
+
+		switch ($type) {
+		case 'year':
+			$rtext=number($total_records)." ".ngettext('year','year',$total_records);
+			$date=strftime("%Y", strtotime($data['Date']));
+			$anchor=$data['year'];
+
+			break;
+
+		case 'month':
+			$rtext=number($total_records)." ".ngettext('month','months',$total_records);
+			$date=strftime("%B %Y", strtotime($data['Date']));
+					//	$date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+
+			$anchor=$data['month'];
+
+			break;
+		case 'day':
+			$rtext=number($total_records)." ".ngettext('day','days',$total_records);
+			$date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+			$anchor=$data['Date'];
+
+			break;
+		default:
+			$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
+			$date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
+			$anchor=$data['week'];
+			break;
+		}
+
+		$ddata[$anchor]=array(
+			'date'=>$date,
+			'customers'=>0,
+			'invoices'=>0,
+			'sales'=>money(0,$currency),
+		);
+
+	}
+
+
+	$from=$from_date.' 00:00:00';
+	$to=$to_date.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$sql="select $anchori,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit, count(Distinct `Invoice Key`) as invoices,count(Distinct `Customer Key`) as customers from `Order Transaction Fact` $where $where_interval $groupi";
+	//print $sql;
+	$result=mysql_query($sql);
+
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$ddata[$data['date']]['invoices']=number($data['invoices']);
+		$ddata[$data['date']]['customers']=number($data['customers']);
+		$ddata[$data['date']]['sales']=money($data['net']);
+
+
+	}
+
+
+	$adata=array();
+	foreach ($ddata as $key=>$value) {
+		$adata[]=$value;
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results
+		)
+	);
+	echo json_encode($response);
+
+}
 
 ?>
