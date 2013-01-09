@@ -37,7 +37,11 @@ function hide_calendar_div() {
 }
 
 
-function init() {
+function show_other_dates(){
+dialog_calendar.show()
+}
+
+function init_calendar() {
     YAHOO.util.Event.addListener(["mtd", "ytd", "wtd", "today", "yesterday", "last_w", "last_m", "1w", "10d", "1m", "1q", "1y", "3y", "all"], "click", quick_link);
 
     dialog_calendar = new YAHOO.widget.Dialog("dialog_calendar_splinter", {
@@ -48,9 +52,7 @@ function init() {
         draggable: false
     });
     dialog_calendar.render();
-    Event.addListener("other", "click", dialog_calendar.show, dialog_calendar, true);
-
-
+    Event.addListener("other", "click", show_other_dates);
 
     calendar_browser = new YAHOO.widget.Dialog("calendar_browser", {
         context: ["show_calendar_browser", "tl", "bl"],
@@ -107,4 +109,4 @@ function init() {
 
 }
 
-YAHOO.util.Event.onDOMReady(init);
+YAHOO.util.Event.onDOMReady(init_calendar);

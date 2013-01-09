@@ -259,7 +259,7 @@ var mygetTerms =function (query) {
 //alert(Dom.get('f_input'+table_id))
     table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&tableid='+table_id+'&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
-  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 
 var change_filter=function (key,label,tableid){
@@ -278,10 +278,13 @@ var change_filter=function (key,label,tableid){
 }
 
 var change_rpp=function (rpp,tableid){
+
+
+
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
-  
     table.get('paginator').setRowsPerPage(rpp)
+
 
 }
 

@@ -134,13 +134,13 @@ $js_files=array(
 	'js/csv_common.js',
 	'js/dropdown.js',
 	'js/assets_common.js',
+	'js/search.js',
+	'family.js.php',
 	'js/calendar_interval.js',
+	'reports_calendar.js.php'
 );
 
 
-
-$js_files[]='js/search.js';
-$js_files[]='family.js.php';
 
 
 
@@ -222,6 +222,9 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
+
 
 $tipo_filter1=$_SESSION['state']['family']['product_sales']['f_field'];
 $smarty->assign('filter_name1',$tipo_filter1);
@@ -268,14 +271,6 @@ $smarty->assign('info_period_menu',$info_period_menu);
 $smarty->assign('title',_('Family').': '.$family->get('Product Family Name'));
 
 
-$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
-$sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Family Key`=%d group by `Product Main Type`",$family->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Main Type']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
-$smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
 
 $mode_options=array(
 	array('mode'=>'percentage','label'=>_('Percentages')),
@@ -322,9 +317,9 @@ $result=mysql_query($sql);
 if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$prev['link']='family.php?id='.$row['id'];
 	$prev['title']=$row['name'];
-			$prev['to_end']=false;
+	$prev['to_end']=false;
 
-	$smarty->assign('prev',$prev);
+	$smarty->assign('family_prev',$prev);
 }else {
 	$sql=sprintf("select `Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d  and %s > %s  order by %s desc  limit 1",
 		$family->data['Product Family Main Department Key'],
@@ -338,7 +333,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$prev['link']='family.php?id='.$row['id'];
 		$prev['title']=$row['name'];
 		$prev['to_end']=true;
-		$smarty->assign('prev',$prev);
+		$smarty->assign('family_prev',$prev);
 	}
 
 }
@@ -356,7 +351,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$next['link']='family.php?id='.$row['id'];
 	$next['title']=$row['name'];
 	$next['to_end']=false;
-	$smarty->assign('next',$next);
+	$smarty->assign('family_next',$next);
 }else {
 	$sql=sprintf("select`Product Family Key` as id , `Product Family Code` as name from `Product Family Dimension`  where  `Product Family Main Department Key`=%d   and  %s<%s  order by %s   ",
 		$family->data['Product Family Main Department Key'],
@@ -370,7 +365,7 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 		$next['link']='family.php?id='.$row['id'];
 		$next['title']=$row['name'];
 		$next['to_end']=true;
-		$smarty->assign('next',$next);
+		$smarty->assign('family_next',$next);
 	}
 
 }
@@ -382,23 +377,116 @@ unset($period_tags['hour']);
 $smarty->assign('period_tags',$period_tags);
 
 $family_order=$_SESSION['state']['family']['products']['order'];
-$family_period=$_SESSION['state']['family']['products']['period'];
-$smarty->assign('products_period',$family_period);
+//$family_period=$_SESSION['state']['family']['products']['period'];
+//$smarty->assign('products_period',$family_period);
 
 
-list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($family_period);
-$to_little_edian=($to_date?date("d-m-Y",strtotime($to_date)):'');
-$from_little_edian=($from_date?date("d-m-Y",strtotime($from_date)):'');
+//list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($family_period);
+//$to_little_edian=($to_date?date("d-m-Y",strtotime($to_date)):'');
+//$from_little_edian=($from_date?date("d-m-Y",strtotime($from_date)):'');
 
-$smarty->assign('to_little_edian',$to_little_edian);
-$smarty->assign('from_little_edian',$from_little_edian);
+//$smarty->assign('to_little_edian',$to_little_edian);
+//$smarty->assign('from_little_edian',$from_little_edian);
 $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['family']['sales_sub_block_tipo']);
 
 
 
 
-//print $family_period;
-//print_r($period_tags);
+
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from='';
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to='';
+}
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+	$_SESSION['state']['family']['period']=$tipo;
+}else {
+	$tipo=$_SESSION['state']['family']['period'];
+}
+
+$smarty->assign('period_type',$tipo);
+$report_name='families';
+//print $tipo;
+
+include_once 'report_dates.php';
+
+$_SESSION['state']['family']['to']=$to;
+$_SESSION['state']['family']['from']=$from;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+
+//print_r($_SESSION['state']['orders']);
+$smarty->assign('period',$period);
+$smarty->assign('period_tag',$period);
+
+$smarty->assign('quick_period',$quick_period);
+$smarty->assign('tipo',$tipo);
+$smarty->assign('report_url','family.php');
+
+if ($from)$from=$from.' 00:00:00';
+if ($to)$to=$to.' 23:59:59';
+$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+$where_interval=$where_interval['mysql'];
+
+$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
+$sql=sprintf("select count(distinct OTF.`Product ID`)  as num  ,`Product Main Type`   from  `Product Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`)  where OTF.`Product Family Key`=%d  $where_interval   group by `Product Main Type`   ",$family->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Product Main Type']]=$row['num'];
+}
+$smarty->assign('product_sales_elements_number',$elements_number);
+$smarty->assign('product_sales_elements',$_SESSION['state']['family']['product_sales']['elements']);
+
+
+
+$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
+$sql=sprintf("select count(distinct `Product ID`)  as num  ,`Product Main Type`   from  `Product Dimension` P    where `Product Family Key`=%d   group by `Product Main Type`   ",$family->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Product Main Type']]=$row['num'];
+}
+$smarty->assign('elements_number',$elements_number);
+$smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
+
+
+$sales=0;
+$outers=0;
+$profits=0;
+$customers=0;
+$invoices=0;
+
+$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product Family Key`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$family->id);
+
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$customers=$row['customers'];
+		$invoices=$row['invoices'];
+		$outers=$row['outers'];
+		$sales=$row['net'];
+		$profits=$row['profit'];
+
+}
+$smarty->assign('sales',money($sales,$store->data['Store Currency Code']));
+$smarty->assign('outers',number($outers));
+$smarty->assign('profits',money($profits,$store->data['Store Currency Code']));
+$smarty->assign('customers',number($customers));
+$smarty->assign('invoices',number($invoices));
+
+
+$smarty->assign('product_sales_history_type',$_SESSION['state']['family']['sales_history']['type']);
+
+$smarty->assign('filter_name2','');
+$smarty->assign('filter_value2','');
+
+
 $smarty->display('family.tpl');
 
 

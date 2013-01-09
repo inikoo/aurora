@@ -2668,7 +2668,7 @@ return $price;
 		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
 				,sum(`Invoice Transaction Gross Amount`*`Invoice Currency Exchange Rate`) as dc_gross ,sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`)as dc_disc ,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) as dc_net 
 				,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Cost Supplier`)*`Invoice Currency Exchange Rate`) as dc_profit
-				from `Order Transaction Fact` where `Product ID`=%d %s %s ",
+				from `Order Transaction Fact` where    `Current Dispatching State`='Dispatched' and  `Product ID`=%d %s %s ",
 			$this->pid,
 			($from_date?sprintf('and `Invoice Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')
@@ -2743,7 +2743,7 @@ return $price;
 
 
 			$sql=sprintf("select count(distinct `Invoice Key`) as invoices,IFNULL(sum(`Invoice Transaction Total Discount Amount`),0) as discounts,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net  ,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`) as total_cost ,
-                         sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where `Product ID`=%d and `Invoice Date`>=%s %s" ,
+                         sum(`Invoice Transaction Total Discount Amount`*`Invoice Currency Exchange Rate`) as dc_discounts,sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`) dc_net  ,sum((`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`)*`Invoice Currency Exchange Rate`) as dc_total_cost from `Order Transaction Fact` where  `Current Dispatching State`='Dispatched' and `Product ID`=%d and `Invoice Date`>=%s %s" ,
 				$this->pid,
 				prepare_mysql($from_date_1yb),
 				($to_1yb?sprintf('and `Invoice Date`<%s',prepare_mysql($to_1yb)):'')
@@ -2798,7 +2798,7 @@ return $price;
 		list($db_interval,$from_date,$to_date,$from_date_1yb,$to_1yb)=calculate_inteval_dates($interval);
 
 
-		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced ,	sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc 		from `Order Transaction Fact` where `Product Key`=%d %s %s ",
+		$sql=sprintf("select count(Distinct `Customer Key`) as customers,count(Distinct `Invoice Key`) as invoices,sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced ,	sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc 		from `Order Transaction Fact` where  `Current Dispatching State`='Dispatched' and `Product Key`=%d %s %s ",
 			$this->id,
 			($from_date?sprintf('and `Invoice Date`>=%s',prepare_mysql($from_date)):''),
 			($to_date?sprintf('and `Invoice Date`<%s',prepare_mysql($to_date)):'')

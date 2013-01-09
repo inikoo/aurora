@@ -1,6 +1,6 @@
- <div  class="clean_table_caption"  style="clear:both;{if (isset($hide_caption) && $hide_caption)}display:none{/if}">
+<div  class="clean_table_caption"  style="clear:both;{if (isset($hide_caption) && $hide_caption)}display:none{/if}">
 	<div style="float:left;">
-	  <div id="table_info{$table_id}" class="clean_table_info"><span id="rtext{$table_id}"></span> <span class="rtext_rpp" id="rtext_rpp{$table_id}"></span> <span class="filter_msg"  id="filter_msg{$table_id}"></span></div>
+		<div id="table_info{$table_id}" class="clean_table_info"><span id="rtext{$table_id}"></span> <span class="rtext_rpp" id="rtext_rpp{$table_id}"></span> <span class="filter_msg"  id="filter_msg{$table_id}"></span></div>
 	</div>
 	<div style="{if (isset($no_filter) && $no_filter)}display:none{/if}">
 	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show{$table_id}" {if (isset($filter_show) && $filter_show) or $filter_value!=''}style="display:none"{/if}>{t}filter results{/t}</div>

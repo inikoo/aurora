@@ -6830,3 +6830,10 @@ delete  from `Invoice Dimension` where `Invoice Metadata` IS NULL ;
 ALTER TABLE `Order No Product Transaction Fact`  ADD `Payment Method` ENUM('Credit Card','Cash','Paypal','Check','Bank Transfer','Other','Unknown','NA') NOT NULL DEFAULT 'NA' AFTER `State`,  ADD `Paid Factor` FLOAT NOT NULL DEFAULT '0' AFTER `Payment Method`,  ADD `Current Payment State` ENUM('Waiting Payment','Paid','Unknown','Payment Refunded','Cancelled','No Applicable') NOT NULL DEFAULT 'Unknown' AFTER `Paid Factor`,  ADD `Consolidated` ENUM('Yes','No') NOT NULL DEFAULT 'No' AFTER `Current Payment State`;
 ALTER TABLE `Order No Product Transaction Fact` ADD `Paid Date` DATETIME NULL DEFAULT NULL AFTER `Invoice Date` ;
 // run fix_no_product_transaction_fact_paid_info.php
+
+ALTER TABLE `Product Dimension` CHANGE `Product Total Margin` `Product Total Acc Margin` FLOAT NULL DEFAULT NULL ;
+ALTER TABLE `Store Dimension` ADD `Store State` ENUM( 'Normal', 'Closed' ) NOT NULL DEFAULT 'Normal' AFTER `Store Telecom Format` ,ADD INDEX ( `Store State` ) ;
+
+//** only for AW
+update `Store Dimension` set `Store Valid From`=NULL  where `Store Code` in ('UK','FR');
+run php fix_assets_valid_dates.php 
