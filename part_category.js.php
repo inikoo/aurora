@@ -3,6 +3,8 @@
 //Copyright (c) 2011 LW
 include_once('common.php');
 ?>
+var link='part_category.php';
+
 var Dom   = YAHOO.util.Dom;
 var Event   = YAHOO.util.Event;
 
@@ -406,9 +408,43 @@ function update_part_category_history_elements() {
     );
 }
 
+function get_part_category_sales_data(from,to){
+   var request = 'ar_parts.php?tipo=get_part_category_sales_data&category_key=' + Dom.get('category_key').value + '&from=' + from+ '&to=' + to
+      alert(request);
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+
+        success: function(o) {
+            //	alert(o.responseText)
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
+              Dom.get('sold').innerHTML=r.sold;
+              Dom.get('sales_amount').innerHTML=r.sales;
+              Dom.get('profits').innerHTML=r.profits;
+              Dom.get('margin').innerHTML=r.margin;
+              Dom.get('gmroi').innerHTML=r.gmroi;
+	if(r.no_supplied==0){
+	Dom.setStyle('no_supplied_tbody','display','none')
+	}else{
+		Dom.setStyle('no_supplied_tbody','display','')
+
+	}
+
+              Dom.get('required').innerHTML=r.required;
+              Dom.get('out_of_stock').innerHTML=r.out_of_stock;
+              Dom.get('not_found').innerHTML=r.not_found;
+
+
+          
+            }
+        }
+    });
+}
 
 
  function init(){
+
+get_part_category_sales_data(Dom.get('from').value,Dom.get('to').value)
+
 
  ids=['subcategories','subjects','overview','history','sales','no_assigned'];
  Event.addListener(ids, "click",change_block);

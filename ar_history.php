@@ -46,6 +46,8 @@ case('history_details'):
 	break;
 	break;
 case('customer_history'):
+case('store_history'):
+
 case('supplier_history'):
 	list_subject_history();
 	break;
@@ -86,7 +88,7 @@ function history_details() {
 function list_subject_history() {
 
 
-if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier'))) {
+if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer','supplier','store','department','family','product','part'))) {
 		$parent=$_REQUEST['parent'];
 	} else
 		return;
@@ -122,10 +124,6 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 	else
 		$order_dir=$conf['order_dir'];
 
-	if (isset( $_REQUEST['details']))
-		$details=$_REQUEST['details'];
-	else
-		$details=$conf['details'];
 
 
 	if (isset( $_REQUEST['f_field']))
@@ -184,7 +182,6 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-	$_SESSION['state'][$parent]['history']['details']=$details;
 	$_SESSION['state'][$parent]['history']['elements']=$elements;
 	$_SESSION['state'][$parent]['history']['order']=$order;
 	$_SESSION['state'][$parent]['history']['order_dir']=$order_direction;
@@ -211,7 +208,24 @@ if (isset( $_REQUEST['parent']) and in_array($_REQUEST['parent'],array('customer
 	if ($parent=='customer'){
 		$where=sprintf(' where   B.`Customer Key`=%d   ',$parent_key);
 		$subject='Customer';
-	}elseif($parent=='supplier'){
+	}elseif ($parent=='store'){
+		$where=sprintf(' where   B.`Store Key`=%d   ',$parent_key);
+		$subject='Store';
+	}elseif ($parent=='department'){
+		$where=sprintf(' where   B.`Department Key`=%d   ',$parent_key);
+		$subject='Product Department';
+	}elseif ($parent=='family'){
+		$where=sprintf(' where   B.`Family Key`=%d   ',$parent_key);
+		$subject='Product Family';
+	}elseif ($parent=='product'){
+		$where=sprintf(' where   B.`Product ID`=%d   ',$parent_key);
+		$subject='Product';
+	}elseif ($parent=='part'){
+		$where=sprintf(' where   B.`Part SKU`=%d   ',$parent_key);
+		$subject='Part';
+	}
+	
+	elseif($parent=='supplier'){
 		$where=sprintf(' where   B.`Supplier Key`=%d   ',$parent_key);
 		$subject='Supplier';
 	}

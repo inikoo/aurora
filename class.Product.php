@@ -388,6 +388,9 @@ class product extends DB_Table {
 		}
 
 		switch ($key) {
+		case("Sticky Note"):
+			return nl2br($this->data['Product Sticky Note']);
+			break;
 		case('Product Currency'):
 			$store=new Store($this->data['Product Store Key']);
 			return $store->data['Store Currency Code'];
@@ -3439,7 +3442,31 @@ return $price;
 
 	}
 
+function update_field_switcher($field,$value,$options='') {
 
+
+		switch ($field) {
+			case('Store Sticky Note'):
+			$this->update_field_switcher('Sticky Note',$value);
+			break;	
+		case('Sticky Note'):
+			$this->update_field('Product '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
+			break;
+	
+		default:
+			$base_data=$this->base_data();
+			if (array_key_exists($field,$base_data)) {
+				if ($value!=$this->data[$field]) {
+					$this->update_field($field,$value,$options);
+				}
+			}
+
+		}
+
+
+	}
+	
 	 function update_field($field,$value,$options='') {
 
 		$this->updated=false;
@@ -3508,7 +3535,8 @@ return $price;
 
 
 				$history_key=$this->add_history($history_data);
-
+	$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$this->pid,$history_key);
+					mysql_query($sql);
 
 			}
 

@@ -20,37 +20,15 @@ include_once 'class.Department.php';
 include_once 'assets_header_functions.php';
 
 if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
-	$family_id=$_SESSION['state']['family']['id'];
+	header('Location: index.php?error_no_family_key');
 else
 	$family_id=$_REQUEST['id'];
 
 $family=new Family($family_id);
 if (!$family->id) {
-	header('Location: stores.php');
+	header('Location: stores.php?e=family_not_found');
 	exit();
-
 }
-
-
-$_SESSION['state']['family']['id']=$family_id;
-
-
-
-
-
-//$tmp_page_data=$family->get_page_data();
-//$page_data=array();
-//foreach($tmp_page_data as $key=>$value) {
-//    $page_data[preg_replace('/\s/','',$key)]=$value;
-//}
-//$smarty->assign('page_data',$page_data);
-
-
-
-//print_r($page_data);
-
-$_SESSION['state']['department']['id']=$family->data['Product Family Main Department Key'];
-$_SESSION['state']['store']['id']=$family->data['Product Family Store Key'];
 
 
 
@@ -66,14 +44,6 @@ $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product families');
 $modify=$user->can_edit('stores');
-
-if (isset($_REQUEST['edit'])) {
-	header('Location: edit_department.php?id='.$department_id);
-	exit();
-
-}
-
-
 
 
 $smarty->assign('view_parts',$user->can_view('parts'));
@@ -137,22 +107,15 @@ $js_files=array(
 	'js/search.js',
 	'family.js.php',
 	'js/calendar_interval.js',
-	'reports_calendar.js.php'
+	'reports_calendar.js.php',
+		'js/notes.js'
+
 );
-
-
-
-
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-
-
-
-
-//$_SESSION['state']['assets']['page']='department';
 if (isset($_REQUEST['view'])) {
 	$valid_views=array('sales','general','stoke');
 	if (in_array($_REQUEST['view'], $valid_views))
@@ -170,18 +133,6 @@ $smarty->assign('department_period_title',$department_period_title[$department_p
 
 
 
-
-
-
-
-$info_period_menu=array(
-	array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
-	,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
-	,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
-	,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
-	,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
-);
-$smarty->assign('info_period_menu',$info_period_menu);
 
 
 
@@ -387,12 +338,9 @@ $family_order=$_SESSION['state']['family']['products']['order'];
 
 //$smarty->assign('to_little_edian',$to_little_edian);
 //$smarty->assign('from_little_edian',$from_little_edian);
+
+
 $smarty->assign('sales_sub_block_tipo',$_SESSION['state']['family']['sales_sub_block_tipo']);
-
-
-
-
-
 if (isset($_REQUEST['from'])) {
 	$from=$_REQUEST['from'];
 }else {
@@ -436,24 +384,8 @@ if ($to)$to=$to.' 23:59:59';
 $where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
 $where_interval=$where_interval['mysql'];
 
-$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
-$sql=sprintf("select count(distinct OTF.`Product ID`)  as num  ,`Product Main Type`   from  `Product Dimension` P  left join `Order Transaction Fact`  OTF  on (OTF.`Product ID`=P.`Product ID`)  where OTF.`Product Family Key`=%d  $where_interval   group by `Product Main Type`   ",$family->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Main Type']]=$row['num'];
-}
-$smarty->assign('product_sales_elements_number',$elements_number);
-$smarty->assign('product_sales_elements',$_SESSION['state']['family']['product_sales']['elements']);
 
-
-
-$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
-$sql=sprintf("select count(distinct `Product ID`)  as num  ,`Product Main Type`   from  `Product Dimension` P    where `Product Family Key`=%d   group by `Product Main Type`   ",$family->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Main Type']]=$row['num'];
-}
-$smarty->assign('elements_number',$elements_number);
+//$smarty->assign('product_sales_elements',$_SESSION['state']['family']['product_sales']['elements']);
 $smarty->assign('elements',$_SESSION['state']['family']['products']['elements']);
 
 
@@ -485,6 +417,32 @@ $smarty->assign('product_sales_history_type',$_SESSION['state']['family']['sales
 
 $smarty->assign('filter_name2','');
 $smarty->assign('filter_value2','');
+$smarty->assign('sticky_note',$family->data['Product Family Sticky Note']);
+
+
+$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
+$sql=sprintf("select count(*) as num , `Type` from  `Product Family History Bridge` where `Family Key`=%d group by `Type`",$family->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Type']]=$row['num'];
+}
+$smarty->assign('elements_family_history_number',$elements_number);
+$smarty->assign('elements_family_history',$_SESSION['state']['family']['history']['elements']);
+
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
+	//   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+);
+$tipo_filter=$_SESSION['state']['family']['history']['f_field'];
+$filter_value=$_SESSION['state']['family']['history']['f_value'];
+
+$smarty->assign('filter_value5',$filter_value);
+$smarty->assign('filter_menu5',$filter_menu);
+$smarty->assign('filter_name5',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu5',$paginator_menu);
 
 
 $smarty->display('family.tpl');

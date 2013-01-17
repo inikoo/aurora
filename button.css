@@ -270,6 +270,12 @@ font-size:80%;
 
 }
 
+.buttons.small img{
+height:14px;
+width:14px
+
+}
+
 div.clusters{margin:3px 0 5px 0}
 div.cluster{float:left;margin-right:20px}
 .buttons.cluster a, .buttons.cluster button{

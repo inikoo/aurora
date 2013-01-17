@@ -28,6 +28,7 @@
 			</div>
 		</div>
 	</div>
+	{*}
 	<div id="calendar_browser" style="padding:10px 20px 20px 15px">
 		<div class="xcal_menu" id="calendar_div">
 			{if isset($up)}<a class="prev" href="{$report_url}?{$up.url}"><img src="art/icons/arrow_up.png" alt="&uarr;" title="{$up.title}" /></a>{/if} {if isset($tipo_title)}<span>{$tipo_title}</span>{/if} <span id="period">{$period}</span> {if isset($prev)}<a class="prev" href="{$report_url}?{$prev.url}"><img src="art/icons/previous.png" alt="<" title="{$prev.title}" /></a>{/if} {if isset($next)}<a class="next" href="{$report_url}?{$next.url}"><img src="art/icons/next.png" alt=">" title="{$next.title}" /></a>{/if} {if $tipo=='y'} 
@@ -81,3 +82,4 @@
 			{/if} 
 		</div>
 	</div>
+{*}

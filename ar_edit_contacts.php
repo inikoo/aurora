@@ -48,33 +48,7 @@ case('delete_all_customers_in_store'):
 
 	delete_all_customers_in_store($data);
 	break;
-case('upload_attachment_to_customer'):
-	upload_attachment_to_customer();
-	break;
 
-case('strikethrough_customer_history'):
-	$data=prepare_values($_REQUEST,array(
-			'key'=>array('type'=>'key'),
-		));
-	strikethrough_customer_history($data);
-	break;
-case('unstrikethrough_customer_history'):
-	$data=prepare_values($_REQUEST,array(
-			'key'=>array('type'=>'key'),
-		));
-	unstrikethrough_customer_history($data);
-	break;
-
-case('add_attachment'):
-	$data=prepare_values($_REQUEST,array(
-			'files_data'=>array('type'=>'json array'),
-			'scope_key'=>array('type'=>'key'),
-			'scope'=>array('type'=>'string'),
-			'caption'=>array('type'=>'string')
-
-		));
-	add_attachment($data);
-	break;
 case('new_list'):
 	if (!$user->can_view('customers'))
 		exit();
@@ -171,32 +145,6 @@ case('convert_customer_to_person'):
 	convert_customer_to_person($data);
 	break;
 
-case('delete_customer_history'):
-	$data=prepare_values($_REQUEST,array(
-			'key'=>array('type'=>'key'),
-		));
-	delete_customer_history($data);
-	break;
-case('customer_add_note'):
-	$data=prepare_values($_REQUEST,array(
-			'customer_key'=>array('type'=>'key'),
-			'note'=>array('type'=>'string'),
-			'details'=>array('type'=>'string'),
-			'note_type'=>array('type'=>'string'),
-		));
-	customer_add_note($data);
-	break;
-
-case('customer_edit_note'):
-	$data=prepare_values($_REQUEST,array(
-			'customer_key'=>array('type'=>'key'),
-			'note_key'=>array('type'=>'key'),
-			'note'=>array('type'=>'string'),
-			'date'=>array('type'=>'string'),
-			'record_index'=>array('type'=>'string')
-		));
-	customer_edit_note($data);
-	break;
 
 case('set_main_address'):
 
@@ -2149,40 +2097,6 @@ function delete_email() {
 	echo json_encode($response);
 }
 
-function delete_customer_history($data) {
-
-	$history_key=$data['key'];
-	$sql=sprintf("delete from `Customer History Bridge` where `History Key`=%d and `Deletable`='Yes'",$history_key);
-	mysql_query($sql);
-	if (mysql_affected_rows()) {
-		$sql=sprintf("delete from `History Dimension` where `History Key`=%d",$history_key);
-		mysql_query($sql);
-		$action='deleted';
-		$msg=_('History record Deleted');
-	} else {
-		$action='no_change';
-		$msg='Record can not be deleted';
-	}
-	$response=array('state'=>200,'action'=>$action,'msg'=>$msg);
-	echo json_encode($response);
-}
-
-
-function strikethrough_customer_history($data) {
-	$history_key=$data['key'];
-	$sql=sprintf("update `Customer History Bridge` set  `Strikethrough`='Yes'   where `History Key`=%d ",$history_key);
-	mysql_query($sql);
-	//  print $sql;
-	$response=array('state'=>200,'strikethrough'=>'Yes','delete'=>'<img alt="'._('unstrikethrough').'" src="art/icons/text_unstrikethrough.png" />');
-	echo json_encode($response);
-}
-function unstrikethrough_customer_history($data) {
-	$history_key=$data['key'];
-	$sql=sprintf("update `Customer History Bridge` set  `Strikethrough`='No'  where `History Key`=%d ",$history_key);
-	mysql_query($sql);
-	$response=array('state'=>200,'strikethrough'=>'No','delete'=>'<img alt="'._('strikethrough').'" src="art/icons/text_strikethrough.png" />');
-	echo json_encode($response);
-}
 
 
 
@@ -2756,60 +2670,6 @@ function new_contact($data) {
 }
 
 
-
-function customer_add_note($data) {
-	global $editor;
-
-
-	$customer=new customer($data['customer_key']);
-
-	$customer->editor=$editor;
-
-	if ( $data['note_type']=='deletable')
-		$data['note_type']='Yes';
-	else
-		$data['note_type']='No';
-
-	//print_r($data['note_type']);
-
-	$customer->add_note($data['note'],$data['details'],false,$data['note_type']);
-
-
-
-
-	if ($customer->updated) {
-		$response= array('state'=>200,'newvalue'=>$customer->new_value,'key'=>'note');
-
-	} else {
-		$response= array('state'=>400,'msg'=>$customer->msg,'key'=>'note');
-	}
-	echo json_encode($response);
-
-}
-
-function customer_edit_note($data) {
-	global $editor;
-
-	//print_r($data);
-	$customer=new customer($data['customer_key']);
-
-	$customer->editor=$editor;
-
-
-	$customer->edit_note($data['note_key'],$data['note'],'',$data['date']);
-
-
-
-
-	if ($customer->updated) {
-		$response= array('state'=>200,'newvalue'=>$customer->new_value,'key'=>'note','record_index'=>(float)$data['record_index']);
-
-	} else {
-		$response= array('state'=>400,'msg'=>$customer->msg,'key'=>'note');
-	}
-	echo json_encode($response);
-
-}
 
 function edit_customer($data) {
 
@@ -4243,97 +4103,6 @@ function create_email_field($data) {
 }
 
 
-function add_attachment($data) {
-
-	if ($data['scope']=='customer') {
-		return add_attachment_to_customer_history($data);
-	}
-
-}
-
-function add_attachment_to_customer_history($data) {
-	global $editor;
-	$customer=new Customer($data['scope_key']);
-	$customer->editor=$editor;
-	$msg=
-		$updated=false;
-	foreach ($data['files_data'] as $file_data) {
-		$_data=array(
-			'Filename'=>$file_data['filename_with_path'],
-			'Attachment Caption'=>$data['caption'],
-			'Attachment MIME Type'=>$file_data['type'],
-			'Attachment File Original Name'=>$file_data['original_filename']
-		);
-		$customer->add_attachment($_data);
-		if ($customer->updated) {
-			$updated=$customer->updated;
-		} else {
-			$msg=$customer->msg;
-		}
-
-
-
-	}
-
-	if ($updated) {
-		$response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
-
-	} else {
-		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
-	}
-
-	echo json_encode($response);
-}
-
-
-
-
-function upload_attachment_to_customer() {
-	global $editor;
-	if (isset($_FILES['attach']['tmp_name'])) {
-
-
-		//print_r($_FILES['attach']);
-		//print_r($_REQUEST);
-		// return;
-		$file_data=$_FILES['attach'];
-		$caption=$_REQUEST['caption'];
-		$customer_key=$_REQUEST['attach_customer_key'];
-
-		$customer=new Customer($customer_key);
-		$customer->editor=$editor;
-
-		$updated=false;
-
-		$_data=array(
-			'Filename'=>$file_data['tmp_name'],
-			'Attachment Caption'=>$caption,
-			'Attachment MIME Type'=>$file_data['type'],
-			'Attachment File Original Name'=>$file_data['name']
-		);
-		$customer->add_attachment($_data);
-		if ($customer->updated) {
-			$updated=$customer->updated;
-		} else {
-			$msg=$customer->msg;
-		}
-
-
-
-
-	}
-
-
-	if ($updated) {
-		$response= array('state'=>200,'newvalue'=>1,'key'=>'attach');
-
-	} else {
-		$response= array('state'=>400,'msg'=>_('Files could not be attached')."<br/>".$msg,'key'=>'attach');
-	}
-
-	echo json_encode($response);
-
-}
 
 
 function delete_all_customers_in_list($data) {

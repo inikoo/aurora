@@ -450,6 +450,13 @@ class Family extends DB_Table {
 	function update_field_switcher($field,$value,$options='') {
 
 		switch ($field) {
+			case('Store Sticky Note'):
+			$this->update_field_switcher('Sticky Note',$value);
+			break;	
+		case('Sticky Note'):
+			$this->update_field('Product Family '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
+			break;
 		case('special_char'):
 		case('Product Family Special Characteristic'):
 			$this->update_field('Product Family Special Characteristic',$value);
@@ -834,6 +841,9 @@ class Family extends DB_Table {
 
 
 		switch ($key) {
+		case("Sticky Note"):
+			return nl2br($this->data['Product Family Sticky Note']);
+			break;
 		case('Similar Families'):
 			return "<span style='color:#666;font-style:italic;'>"._('No similar families')."</span>";
 			break;

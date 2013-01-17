@@ -20,20 +20,17 @@ include_once 'assets_header_functions.php';
 
 
 if (!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) ) {
-	header('Location: index.php?error_no_department_key');
+	header('Location: index.php?e=no_department_key');
 	exit();
 }else {
 	$department_id=$_REQUEST['id'];
 
 }
 $department=new Department($department_id);
-
-$_SESSION['state']['department']['id']=$department->id;
-
-
-
-
-
+if (!$department->id) {
+	header('Location: stores.php?e=department_not_found');
+	exit();
+}
 
 
 if (!( $user->can_view('stores') and in_array($department->data['Product Department Store Key'],$user->stores))) {
@@ -49,16 +46,7 @@ $create=$user->can_create('product families');
 $modify=$user->can_edit('stores');
 
 
-
-if (isset($_REQUEST['edit'])) {
-	header('Location: edit_department.php?id='.$department_id);
-	exit();
-
-}
-
-
 $smarty->assign('view_parts',$user->can_view('parts'));
-
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
@@ -79,15 +67,6 @@ $smarty->assign('search_scope','products');
 $block_view=$_SESSION['state']['department']['block_view'];
 $smarty->assign('block_view',$block_view);
 
-
-$general_options_list=array();
-
-
-if ($modify)
-	$general_options_list[]=array('tipo'=>'url','url'=>'department.php?edit=1','label'=>_('Edit Department'));
-
-
-//$smarty->assign('general_options_list',$general_options_list);
 
 $css_files=array(
 	$yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -111,26 +90,25 @@ $js_files=array(
 	$yui_path.'datatable/datatable-debug.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
+	$yui_path.'calendar/calendar-min.js',
+
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
 	'js/edit_common.js',
 	'js/csv_common.js',
-	'js/dropdown.js',
-	'js/assets_common.js'
+	
+	'js/assets_common.js',
+	'js/search.js',
+	'department.js.php',
+	'js/calendar_interval.js',
+	'reports_calendar.js.php',
+		'js/notes.js'
 
 );
 
-
-
-$js_files[]='js/search.js';
-$js_files[]='department.js.php';
-
-
-
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
 
 if (isset($_REQUEST['view'])) {
 	$valid_views=array('sales','general','stoke');
@@ -138,15 +116,6 @@ if (isset($_REQUEST['view'])) {
 		$_SESSION['state']['department']['view']=$_REQUEST['view'];
 
 }
-
-
-
-
-
-
-
-
-
 
 $smarty->assign('parent','products');
 
@@ -167,11 +136,6 @@ $smarty->assign('family_period',$_SESSION['state']['department']['families']['pe
 
 $smarty->assign('department_period',$_SESSION['state']['store']['departments']['period']);
 
-
-
-include_once 'conf/period_tags.php';
-unset($period_tags['hour']);
-$smarty->assign('period_tags',$period_tags);
 
 
 
@@ -207,24 +171,7 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 
-
 $smarty->assign('paginator_menu1',$paginator_menu);
-
-
-
-
-
-$info_period_menu=array(
-	array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
-	,array("period"=>'month','label'=>_('last Month'),'title'=>_('last Month'))
-	,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
-	,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
-	,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
-);
-$smarty->assign('info_period_menu',$info_period_menu);
-
-
-
 
 
 
@@ -232,26 +179,6 @@ $smarty->assign('info_period_menu',$info_period_menu);
 
 $smarty->assign('title',$department->get('Product Department Name'));
 
-
-
-
-$elements_number=array('InProcess'=>0,'Discontinued'=>0,'Normal'=>0,'Discontinuing'=>0,'NoSale'=>0);
-$sql=sprintf("select count(*) as num ,`Product Family Record Type` from  `Product Family Dimension` where `Product Family Main Department Key`=%d group by  `Product Family Record Type`   ",$department->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Family Record Type']]=$row['num'];
-}
-$smarty->assign('elements_family_number',$elements_number);
-$smarty->assign('elements_family',$_SESSION['state']['department']['families']['elements']);
-
-$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
-$sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Main Department Key`=%d group by `Product Main Type`",$department->id);
-$res=mysql_query($sql);
-while ($row=mysql_fetch_assoc($res)) {
-	$elements_number[$row['Product Main Type']]=$row['num'];
-}
-$smarty->assign('elements_product_number',$elements_number);
-$smarty->assign('elements_product',$_SESSION['state']['department']['products']['elements']);
 
 
 
@@ -325,8 +252,6 @@ elseif ($order=='todo')
 elseif ($order=='profit') {
 
 	$order="`Product Department $db_interval Acc Profit`";
-
-
 }
 elseif ($order=='sales') {
 	$order="`Product Department $db_interval Acc Invoiced Amount`";
@@ -423,13 +348,156 @@ if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 }
 
-
-
-
 $plot_data=array('pie'=>array('forecast'=>3,'interval'=>''));
 $smarty->assign('plot_tipo','store');
 $smarty->assign('plot_data',$plot_data);
 
+$smarty->assign('sales_sub_block_tipo',$_SESSION['state']['department']['sales_sub_block_tipo']);
+
+
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from='';
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to='';
+}
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+	$_SESSION['state']['department']['period']=$tipo;
+}else {
+	$tipo=$_SESSION['state']['department']['period'];
+}
+
+$smarty->assign('period_type',$tipo);
+$report_name='departments';
+//print $tipo;
+
+include_once 'report_dates.php';
+
+$_SESSION['state']['department']['to']=$to;
+$_SESSION['state']['department']['from']=$from;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+
+//print_r($_SESSION['state']['orders']);
+$smarty->assign('period',$period);
+$smarty->assign('period_tag',$period);
+
+$smarty->assign('quick_period',$quick_period);
+$smarty->assign('tipo',$tipo);
+$smarty->assign('report_url','department.php');
+
+if ($from)$from=$from.' 00:00:00';
+if ($to)$to=$to.' 23:59:59';
+$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+$where_interval=$where_interval['mysql'];
+
+
+//$smarty->assign('family_sales_elements',$_SESSION['state']['department']['family_sales']['elements']);
+//$smarty->assign('product_sales_elements',$_SESSION['state']['department']['product_sales']['elements']);
+$smarty->assign('family_elements',$_SESSION['state']['department']['families']['elements']);
+$smarty->assign('product_elements',$_SESSION['state']['department']['products']['elements']);
+
+
+
+
+
+$elements_number=array('Historic'=>0,'Discontinued'=>0,'NoSale'=>0,'Sale'=>0,'Private'=>0);
+$sql=sprintf("select count(*) as num,`Product Main Type` from  `Product Dimension` where `Product Main Department Key`=%d group by `Product Main Type`",$department->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Product Main Type']]=$row['num'];
+}
+$smarty->assign('elements_product_number',$elements_number);
+$smarty->assign('elements_product',$_SESSION['state']['department']['products']['elements']);
+
+
+
+
+$sales=0;
+$outers=0;
+$profits=0;
+$customers=0;
+$invoices=0;
+
+$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product Department Key`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$department->id);
+
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$customers=$row['customers'];
+		$invoices=$row['invoices'];
+		$outers=$row['outers'];
+		$sales=$row['net'];
+		$profits=$row['profit'];
+
+}
+$smarty->assign('sales',money($sales,$store->data['Store Currency Code']));
+$smarty->assign('outers',number($outers));
+$smarty->assign('profits',money($profits,$store->data['Store Currency Code']));
+$smarty->assign('customers',number($customers));
+$smarty->assign('invoices',number($invoices));
+
+
+$smarty->assign('family_sales_history_type',$_SESSION['state']['department']['sales_history']['type']);
+
+$smarty->assign('filter_name2','');
+$smarty->assign('filter_value2','');
+
+
+$tipo_filter=$_SESSION['state']['department']['family_sales']['f_field'];
+$smarty->assign('filter3',$tipo_filter);
+$smarty->assign('filter_value3',$_SESSION['state']['department']['family_sales']['f_value']);
+$filter_menu=array(
+	'code'=>array('db_key'=>'code','menu_label'=>_('Family code starting with <i>x</i>'),'label'=>_('Code')),
+	'name'=>array('db_key'=>'name','menu_label'=>_('Family name containing <i>x</i>'),'label'=>_('Name'))
+);
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+
+$smarty->assign('filter_name5','');
+$smarty->assign('filter_value5','');
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu5',$paginator_menu);
+
+$smarty->assign('filter_name6','');
+$smarty->assign('filter_value6','');
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu6',$paginator_menu);
+
+$smarty->assign('sticky_note',$department->data['Product Department Sticky Note']);
+
+
+$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
+$sql=sprintf("select count(*) as num , `Type` from  `Department History Bridge` where `Department Key`=%d group by `Type`",$department->id);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Type']]=$row['num'];
+}
+$smarty->assign('elements_department_history_number',$elements_number);
+$smarty->assign('elements_department_history',$_SESSION['state']['department']['history']['elements']);
+
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
+	//   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+);
+$tipo_filter=$_SESSION['state']['department']['history']['f_field'];
+$filter_value=$_SESSION['state']['department']['history']['f_value'];
+
+$smarty->assign('filter_value7',$filter_value);
+$smarty->assign('filter_menu7',$filter_menu);
+$smarty->assign('filter_name7',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu7',$paginator_menu);
 
 $smarty->display('department.tpl');
 
