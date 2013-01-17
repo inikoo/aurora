@@ -192,6 +192,13 @@ class part extends DB_Table {
 
 
 		switch ($field) {
+		case('Store Sticky Note'):
+			$this->update_field_switcher('Sticky Note',$value);
+			break;	
+		case('Sticky Note'):
+			$this->update_field('Part '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
+			break;
 		case('Part Status'):
 			$this->update_status($value,$options);
 			break;
@@ -630,7 +637,9 @@ class part extends DB_Table {
 
 
 		switch ($key) {
-
+case("Sticky Note"):
+			return nl2br($this->data['Part Sticky Note']);
+			break;
 		case('Current Stock Available'):
 
 			return number($this->data['Part Current On Hand Stock']-$this->data['Part Current Stock In Process']);

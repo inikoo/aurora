@@ -84,10 +84,15 @@ $js_files=array(
 
 	'js/common.js',
 	'external_libs/amstock/amstock/swfobject.js',
+	'js/edit_common.js',
+
 	'js/table_common.js',
 	'js/search.js',
 	'edit_stock.js.php',
-	'part.js.php'
+	'part.js.php',
+	'js/calendar_interval.js',
+	'reports_calendar.js.php',
+	'js/notes.js'
 );
 
 //$js_files=array('external_libs/amstock/amstock/swfobject.js');
@@ -311,6 +316,85 @@ $smarty->assign('period_tags',$period_tags);
 
 
 $smarty->assign('plot_tipo','sales');
+
+$smarty->assign('sales_sub_block_tipo',$_SESSION['state']['part']['sales_sub_block_tipo']);
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from='';
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to='';
+}
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+	$_SESSION['state']['part']['period']=$tipo;
+}else {
+	$tipo=$_SESSION['state']['part']['period'];
+}
+
+$smarty->assign('period_type',$tipo);
+$report_name='part';
+//print $tipo;
+
+include_once 'report_dates.php';
+
+$_SESSION['state']['part']['to']=$to;
+$_SESSION['state']['part']['from']=$from;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+
+//print_r($_SESSION['state']['orders']);
+$smarty->assign('period',$period);
+$smarty->assign('period_tag',$period);
+
+$smarty->assign('quick_period',$quick_period);
+$smarty->assign('tipo',$tipo);
+$smarty->assign('report_url','family.php');
+
+if ($from)$from=$from.' 00:00:00';
+if ($to)$to=$to.' 23:59:59';
+$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+$where_interval=$where_interval['mysql'];
+
+
+
+
+
+
+$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
+$sql=sprintf("select count(*) as num , `Type` from  `Part History Bridge` where `Part SKU`=%d group by `Type`",$part->sku);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Type']]=$row['num'];
+}
+$smarty->assign('elements_part_history_number',$elements_number);
+$smarty->assign('elements_part_history',$_SESSION['state']['part']['history']['elements']);
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
+	//   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+);
+$tipo_filter=$_SESSION['state']['part']['history']['f_field'];
+$filter_value=$_SESSION['state']['part']['history']['f_value'];
+
+$smarty->assign('filter_value3',$filter_value);
+$smarty->assign('filter_menu3',$filter_menu);
+$smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu3',$paginator_menu);
+$smarty->assign('sticky_note',$part->data['Part Sticky Note']);
+
+$smarty->assign('part_sales_history_type',$_SESSION['state']['part']['sales_history']['type']);
+$smarty->assign('filter_name4','');
+$smarty->assign('filter_value4','');
+
+
 
 $smarty->display('part.tpl');
 ?>

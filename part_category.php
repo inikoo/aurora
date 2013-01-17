@@ -79,7 +79,9 @@ $js_files=array(
 	'external_libs/ammap/ammap/swfobject.js',
 	'js/parts_common.js',
 	'js/edit_category_common.js',
-	'part_category.js.php'
+	'part_category.js.php',
+	'js/calendar_interval.js',
+	'reports_calendar.js.php',
 
 );
 
@@ -142,13 +144,13 @@ $show_subjects_data=true;
 if ($category->data['Category Branch Type']!='Head') {
 	$show_subjects=false;
 	$show_subjects_data=false;
+	
 }
 
 if ($category->data['Category Max Deep']<=$category->data['Category Deep']) {
 	$show_subcategories=false;
 
 }
-
 
 if (!$show_subcategories and $block_view=='subcategories') {
 	$block_view='overview';
@@ -343,6 +345,54 @@ while ($row=mysql_fetch_assoc($res)) {
 }
 $smarty->assign('history_elements_number',$elements_number);
 $smarty->assign('history_elements',$_SESSION['state']['part_categories']['history']['elements']);
+
+
+
+$smarty->assign('sales_sub_block_tipo',$_SESSION['state']['part_categories']['sales_sub_block_tipo']);
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from='';
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to='';
+}
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+	$_SESSION['state']['part']['period']=$tipo;
+}else {
+	$tipo=$_SESSION['state']['part_categories']['period'];
+}
+
+$smarty->assign('period_type',$tipo);
+$report_name='part';
+//print $tipo;
+
+include_once 'report_dates.php';
+
+$_SESSION['state']['part']['to']=$to;
+$_SESSION['state']['part']['from']=$from;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+
+//print_r($_SESSION['state']['orders']);
+$smarty->assign('period',$period);
+$smarty->assign('period_tag',$period);
+
+$smarty->assign('quick_period',$quick_period);
+$smarty->assign('tipo',$tipo);
+$smarty->assign('report_url','part_category.php');
+
+if ($from)$from=$from.' 00:00:00';
+if ($to)$to=$to.' 23:59:59';
+$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+$where_interval=$where_interval['mysql'];
+
+
 
 $smarty->display('part_category.tpl');
 ?>

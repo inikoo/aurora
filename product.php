@@ -40,14 +40,20 @@ $js_files=array(
 	$yui_path.'datatable/datatable-debug.js',
 	$yui_path.'container/container-min.js',
 	$yui_path.'menu/menu-min.js',
+		$yui_path.'calendar/calendar-min.js',
+
 	'js/php.default.min.js',
 	'js/common.js',
 	'js/table_common.js',
+	'js/edit_common.js',
 
 	'js/dropdown.js',
 	'js/jquery.js',
 	'js/jquery-1.6.1.min.js',
 	'js/jquery.prettyPhoto.js',
+	'js/calendar_interval.js',
+	'reports_calendar.js.php',
+		'js/notes.js'
 
 );
 
@@ -378,20 +384,11 @@ $smarty->assign('filter_name3',$filter_menu[$tipo_filter]['label']);
 
 
 
-$tipo_filter=$_SESSION['state']['product']['history']['f_field'];
-$smarty->assign('filter2',$tipo_filter);
-$smarty->assign('filter_value2',$_SESSION['state']['product']['history']['f_value']);
-$filter_menu=array(
-	'abstract'=>array('db_key'=>'abstract','menu_label'=>_('Abstract'),'label'=>_('Abstract')),
-);
-$smarty->assign('filter_menu2',$filter_menu);
-$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
 
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('paginator_menu1',$paginator_menu);
-$smarty->assign('paginator_menu2',$paginator_menu);
 
 $number_parts=$product->get_number_of_parts();
 $smarty->assign('number_parts',$number_parts);
@@ -483,6 +480,107 @@ $family_period=$_SESSION['state']['family']['products']['period'];
 $smarty->assign('products_period',$family_period);
 
 
+$smarty->assign('sticky_note',$product->data['Product Sticky Note']);
+
+
+$smarty->assign('sales_sub_block_tipo',$_SESSION['state']['product']['sales_sub_block_tipo']);
+if (isset($_REQUEST['from'])) {
+	$from=$_REQUEST['from'];
+}else {
+	$from='';
+}
+
+if (isset($_REQUEST['to'])) {
+	$to=$_REQUEST['to'];
+}else {
+	$to='';
+}
+if (isset($_REQUEST['tipo'])) {
+	$tipo=$_REQUEST['tipo'];
+	$_SESSION['state']['product']['period']=$tipo;
+}else {
+	$tipo=$_SESSION['state']['product']['period'];
+}
+
+$smarty->assign('period_type',$tipo);
+$report_name='families';
+//print $tipo;
+
+include_once 'report_dates.php';
+
+$_SESSION['state']['product']['to']=$to;
+$_SESSION['state']['product']['from']=$from;
+
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
+
+//print_r($_SESSION['state']['orders']);
+$smarty->assign('period',$period);
+$smarty->assign('period_tag',$period);
+
+$smarty->assign('quick_period',$quick_period);
+$smarty->assign('tipo',$tipo);
+$smarty->assign('report_url','family.php');
+
+if ($from)$from=$from.' 00:00:00';
+if ($to)$to=$to.' 23:59:59';
+$where_interval=prepare_mysql_dates($from,$to,'`Invoice Date`');
+$where_interval=$where_interval['mysql'];
+
+
+$sales=0;
+$outers=0;
+$profits=0;
+$customers=0;
+$invoices=0;
+
+$sql=sprintf("select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) net,sum(`Cost Supplier`+`Cost Storing`+`Cost Handing`+`Cost Shipping`-`Invoice Transaction Gross Amount`+`Invoice Transaction Total Discount Amount`) as profit,sum(`Shipped Quantity`) outers,count(DISTINCT `Customer Key`) as customers,count(DISTINCT `Invoice Key`) as invoices from `Order Transaction Fact`  OTF    where OTF.`Product ID`=%d and `Current Dispatching State`='Dispatched' $where_interval   ",$product->pid);
+
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$customers=$row['customers'];
+		$invoices=$row['invoices'];
+		$outers=$row['outers'];
+		$sales=$row['net'];
+		$profits=$row['profit'];
+
+}
+$smarty->assign('sales',money($sales,$store->data['Store Currency Code']));
+$smarty->assign('outers',number($outers));
+$smarty->assign('profits',money($profits,$store->data['Store Currency Code']));
+$smarty->assign('customers',number($customers));
+$smarty->assign('invoices',number($invoices));
+
+$smarty->assign('product_sales_history_type',$_SESSION['state']['product']['sales_history']['type']);
+$smarty->assign('filter_name4','');
+$smarty->assign('filter_value4','');
+
+
+
+
+$elements_number=array('Notes'=>0,'Changes'=>0,'Attachments'=>0);
+$sql=sprintf("select count(*) as num , `Type` from  `Product History Bridge` where `Product ID`=%d group by `Type`",$product->pid);
+$res=mysql_query($sql);
+while ($row=mysql_fetch_assoc($res)) {
+	$elements_number[$row['Type']]=$row['num'];
+}
+$smarty->assign('elements_product_history_number',$elements_number);
+$smarty->assign('elements_product_history',$_SESSION['state']['product']['history']['elements']);
+
+$filter_menu=array(
+	'notes'=>array('db_key'=>'notes','menu_label'=>_('Records with  notes *<i>x</i>*'),'label'=>_('Notes')),
+	//   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Done by')),
+	'upto'=>array('db_key'=>'upto','menu_label'=>_('Records up to <i>n</i> days'),'label'=>_('Up to (days)')),
+	'older'=>array('db_key'=>'older','menu_label'=>_('Records older than  <i>n</i> days'),'label'=>_('Older than (days)'))
+);
+$tipo_filter=$_SESSION['state']['product']['history']['f_field'];
+$filter_value=$_SESSION['state']['product']['history']['f_value'];
+
+$smarty->assign('filter_value2',$filter_value);
+$smarty->assign('filter_menu2',$filter_menu);
+$smarty->assign('filter_name2',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu2',$paginator_menu);
 
 $smarty->display('product.tpl');
 ?>

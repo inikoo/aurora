@@ -246,6 +246,9 @@ class Store extends DB_Table {
 
 
 		switch ($key) {
+		case("Sticky Note"):
+			return nl2br($this->data['Store Sticky Note']);
+			break;
 		case('Contacts'):
 		case('Active Contacts'):
 		case('New Contacts'):
@@ -329,11 +332,6 @@ class Store extends DB_Table {
 
 	}
 
-	/*
-      Function: delete
-      Elimina registros de la tabla Store Dimension en base al valor del campo store key, siempre y cuando no haya productos
-    */
-	// JFA
 
 	function delete() {
 		$this->deleted=false;
@@ -533,6 +531,13 @@ class Store extends DB_Table {
 
 
 		switch ($field) {
+			case('Store Sticky Note'):
+			$this->update_field_switcher('Sticky Note',$value);
+			break;	
+		case('Sticky Note'):
+			$this->update_field('Store '.$field,$value,'no_null');
+			$this->new_value=html_entity_decode($this->new_value);
+			break;
 		case('code'):
 			$this->update_code($value);
 			break;

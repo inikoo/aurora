@@ -6836,4 +6836,87 @@ ALTER TABLE `Store Dimension` ADD `Store State` ENUM( 'Normal', 'Closed' ) NOT N
 
 //** only for AW
 update `Store Dimension` set `Store Valid From`=NULL  where `Store Code` in ('UK','FR');
+update `Product Department Dimension` set `Product Department Valid From`=NULL  where  `Product Department Valid From`<'2003-01-01' ;
 run php fix_assets_valid_dates.php 
+
+CREATE TABLE `Store History Bridge` (
+`Store Key` MEDIUMINT UNSIGNED NOT NULL ,
+`History Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Type` ENUM( 'Notes', 'Changes', 'Attachments' ) NOT NULL ,
+PRIMARY KEY ( `Store Key` , `History Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Store History Bridge` ADD INDEX ( `Store Key` ) ;
+ALTER TABLE `Store History Bridge` ADD INDEX ( `Deletable` ) ;
+ALTER TABLE `Store History Bridge` ADD INDEX ( `History Key` ); 
+ALTER TABLE `Store History Bridge` ADD INDEX ( `Type` ) ;
+
+CREATE TABLE `Product Department History Bridge` (
+`Department Key` MEDIUMINT UNSIGNED NOT NULL ,
+`History Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Type` ENUM( 'Notes', 'Changes', 'Attachments' ) NOT NULL ,
+PRIMARY KEY ( `Department Key` , `History Key` )
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Department History Bridge` ADD INDEX ( `Department Key` ) ;
+ALTER TABLE `Department History Bridge` ADD INDEX ( `Deletable` ) ;
+ALTER TABLE `Department History Bridge` ADD INDEX ( `History Key` ); 
+ALTER TABLE `Department History Bridge` ADD INDEX ( `Type` ) ;
+
+CREATE TABLE `Product Family History Bridge` (
+`Family Key` MEDIUMINT UNSIGNED NOT NULL ,
+`History Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Type` ENUM( 'Notes', 'Changes', 'Attachments' ) NOT NULL ,
+PRIMARY KEY ( `Family Key` , `History Key` )
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Product Family History Bridge` ADD INDEX ( `Family Key` ) ;
+ALTER TABLE `Product Family History Bridge` ADD INDEX ( `Deletable` ) ;
+ALTER TABLE `Product Family History Bridge` ADD INDEX ( `History Key` ); 
+ALTER TABLE `Product Family History Bridge` ADD INDEX ( `Type` ) ;
+
+
+CREATE TABLE `Product History Bridge` (
+`Product ID` MEDIUMINT UNSIGNED NOT NULL ,
+`History Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Type` ENUM( 'Notes', 'Changes', 'Attachments' ) NOT NULL ,
+PRIMARY KEY ( `Product ID` , `History Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Product History Bridge` ADD INDEX ( `Product ID` ) ;
+ALTER TABLE `Product History Bridge` ADD INDEX ( `Deletable` ) ;
+ALTER TABLE `Product History Bridge` ADD INDEX ( `History Key` ); 
+ALTER TABLE `Product History Bridge` ADD INDEX ( `Type` ) ;
+
+CREATE TABLE `Part History Bridge` (
+`Part SKU` MEDIUMINT UNSIGNED NOT NULL ,
+`History Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Deletable` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Strikethrough` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Type` ENUM( 'Notes', 'Changes', 'Attachments' ) NOT NULL ,
+PRIMARY KEY ( `Part SKU` , `History Key` )
+) ENGINE = MYISAM ;
+
+ALTER TABLE `Part History Bridge` ADD INDEX ( `Part SKU` ) ;
+ALTER TABLE `Part History Bridge` ADD INDEX ( `Deletable` ) ;
+ALTER TABLE `Part History Bridge` ADD INDEX ( `History Key` ); 
+ALTER TABLE `Part History Bridge` ADD INDEX ( `Type` ) ;
+
+
+ALTER TABLE `Product History Bridge` ADD INDEX ( `Product ID` ) ;
+ALTER TABLE `Product History Bridge` ADD INDEX ( `Deletable` ) ;
+ALTER TABLE `Product History Bridge` ADD INDEX ( `History Key` ); 
+ALTER TABLE `Product History Bridge` ADD INDEX ( `Type` ) ;
+
+ALTER TABLE `Store Dimension` ADD `Store Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `Store Locale` ;
+ALTER TABLE `Product Family Dimension` ADD `Product Family Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Product Family Valid To` ;
+ALTER TABLE `Product Department Dimension` ADD `Product Department Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Product Department Valid To` ;
+ALTER TABLE `Product Dimension` ADD `Product Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Product Valid To` ;
+ALTER TABLE `Part Dimension` ADD `Part Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Part Valid To` ;
+ALTER TABLE `Supplier Dimension` ADD `Supplier Sticky Note` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `Supplier Valid To` ;

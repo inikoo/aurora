@@ -14,6 +14,9 @@ require_once 'common.php';
 require_once 'class.Site.php';
 require_once 'ar_common.php';
 
+
+
+
 if (!isset($_REQUEST['tipo'])) {
 	$response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
 	echo json_encode($response);
@@ -111,6 +114,10 @@ function is_page_store_code($data) {
 }
 
 function list_pages() {
+
+
+
+
 
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -583,6 +590,9 @@ function list_pages() {
 }
 
 function list_sites() {
+
+
+
 	global $user;
 	if (isset( $_REQUEST['parent']))
 		$parent=$_REQUEST['parent'];
@@ -665,14 +675,14 @@ function list_sites() {
 	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-	$_SESSION['state'][$conf_table]['pages']['order']=$order;
-	$_SESSION['state'][$conf_table]['pages']['order_dir']=$order_dir;
-	$_SESSION['state'][$conf_table]['pages']['nr']=$number_results;
-	$_SESSION['state'][$conf_table]['pages']['sf']=$start_from;
-	$_SESSION['state'][$conf_table]['pages']['f_field']=$f_field;
-	$_SESSION['state'][$conf_table]['pages']['f_value']=$f_value;
-	$_SESSION['state'][$conf_table]['pages']['percentages']=$percentages;
-	$_SESSION['state'][$conf_table]['pages']['period']=$period;
+	$_SESSION['state'][$conf_table]['sites']['order']=$order;
+	$_SESSION['state'][$conf_table]['sites']['order_dir']=$order_dir;
+	$_SESSION['state'][$conf_table]['sites']['nr']=$number_results;
+	$_SESSION['state'][$conf_table]['sites']['sf']=$start_from;
+	$_SESSION['state'][$conf_table]['sites']['f_field']=$f_field;
+	$_SESSION['state'][$conf_table]['sites']['f_value']=$f_value;
+	$_SESSION['state'][$conf_table]['sites']['percentages']=$percentages;
+	$_SESSION['state'][$conf_table]['sites']['period']=$period;
 
 	$_order=$order;
 	$_dir=$order_direction;
@@ -1135,6 +1145,8 @@ function list_sites() {
 
 
 function list_page_stats() {
+
+
 
 	global $user;
 	if (isset( $_REQUEST['parent']))

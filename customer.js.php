@@ -6,10 +6,9 @@ include_once('class.Customer.php');
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-var dialog_note;
-var dialog_sticky_note;
+
+
 var dialog_export;
-var dialog_attach;
 var dialog_make_order;
 var dialog_quick_edit_Customer_Main_Contact_Name;
 var dialog_quick_edit_Customer_Tax_Number;
@@ -56,117 +55,7 @@ while($row=mysql_fetch_array($res))
 
 
 ?>
-var onCellClick = function(oArgs) {
-        var target = oArgs.target,
-            column = this.getColumn(target),
-            record = this.getRecord(target);
 
-        var recordIndex = this.getRecordIndex(record);
-        ar_file = 'ar_edit_contacts.php';
-
-        switch (column.action) {
-        case ('edit'):
-            Dom.get('edit_note_history_key').value = record.getData('key');
-
-            Dom.get('edit_note_input').value = record.getData('note');
-
-            Dom.get('record_index').value = recordIndex;
-
-
-            var y = (Dom.getY(target)) - 0
-            var x = (Dom.getX(target)) - 200
-            Dom.setX('dialog_edit_note', x)
-            Dom.setY('dialog_edit_note', y)
-            dialog_edit_note.show();
-            break;
-        case 'delete':
-            if (record.getData('delete') != '') {
-
-                if (record.getData('can_delete')) {
-                    //window.confirm('Are you ?');
-                    var delete_type = record.getData('delete_type');
-
-
-
-                    if (window.confirm('Are you sure, you want to ' + delete_type + ' this row?')) {
-
-                        YAHOO.util.Connect.asyncRequest(
-
-                        'GET',
-
-                        ar_file + '?tipo=delete_' + column.object + myBuildUrl(this, record), {
-
-                            success: function(o) {
-
-                                //  alert(o.responseText);
-                                var r = YAHOO.lang.JSON.parse(o.responseText);
-
-                                if (r.state == 200 && r.action == 'deleted') {
-
-                                    this.deleteRow(target);
-
-                                } else if (r.state == 200 && r.action == 'discontinued') {
-
-                                    var data = record.getData();
-
-                                    data['delete'] = r.delete_;
-
-
-                                    data['delete_type'] = r.delete_type;
-                                    this.updateRow(recordIndex, data);
-
-
-                                } else {
-                                    alert(r.msg);
-                                }
-                            },
-                            failure: function(o) {
-
-                            },
-                            scope: this
-                        });
-                    }
-                } else {
-
-
-                    if (record.getData('strikethrough') == 'Yes') var action = 'unstrikethrough_';
-                    else var action = 'strikethrough_';
-
-
-
-                    YAHOO.util.Connect.asyncRequest('GET', ar_file + '?tipo=' + action + column.object + myBuildUrl(this, record), {
-                        success: function(o) {
-                            //   a(o.responseText);
-                            var r = YAHOO.lang.JSON.parse(o.responseText);
-
-                            var data = record.getData();
-                            data['strikethrough'] = r.strikethrough;
-                            data['delete'] = r.delete_;
-
-                            //data['delete_type']=r.delete_type;
-                            this.updateRow(recordIndex, data);
-
-
-                        },
-                        failure: function(o) {
-
-                        },
-                        scope: this
-                    });
-
-                }
-
-
-
-            }
-            break;
-
-        default:
-
-            this.onEventShowCellEditor(oArgs);
-            break;
-        }
-    };
 
 
 var regex_valid_tel="^(\\+\\d{1,3} )?(\\(0\\)\\s*)?(?:[0-9] ?){3,13}[0-9]\\s*(\\s*(ext|x|e)\\s*\\d+)?$";
@@ -322,264 +211,14 @@ c4.innerHTML="";
 	
 }
 
-function save(tipo){
-   
-    switch(tipo){
-    case('edit_note'):
-    
-        YAHOO.util.Connect.asyncRequest(
-                    'GET',
-                ar_file+'?tipo=customer_edit_note&customer_key='+customer_key+'&note_key='+Dom.get('edit_note_history_key').value+'&note='+my_encodeURIComponent(Dom.get('edit_note_input').value)+'&date='+Dom.get('edit_note_date').getAttribute('value')+'&record_index='+Dom.get('record_index').value, {
-                success: function (o) {
-               // alert(o.responseText)
-                        var r = YAHOO.lang.JSON.parse(o.responseText);
-                          
-                          if(r.state==200){
-                          	var table=tables['table0'];
-                       
-                          	   record = table.getRecord(r.record_index);
-                          	 
-                          	  var data = record.getData();
-                          data['note']=r.newvalue;
-                          table.updateRow(r.record_index,data);
-                          
-                                                    close_dialog('edit_note');;
-
-                          }else{
-                          Dom.get('edit_note_msg').innerHTML=r.msg;
-                          
-                          }
-                          
-                     
-                      
-                    },
-                    failure: function (o) {
-                        
-                    },
-                scope:this
-                }
-                );
-    
-    
-    break;
-    case('note'):
-    
-    if(Dom.hasClass('note_save','disabled'))
-    return;
-    
-    
-    
-        var value=my_encodeURIComponent(Dom.get(tipo+"_input").value);
-        var note_type=my_encodeURIComponent(Dom.get("note_type").getAttribute('value'));
-
-	var request="ar_edit_contacts.php?tipo=customer_add_note&customer_key="+customer_key+"&note="+value+"&details=&note_type="+note_type;
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-	//	alert(o.responseText);
-
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if (r.state==200) {
-			close_dialog(tipo)
-			var table=tables['table0'];
-			var datasource=tables['dataSource0'];
-			var request='';
-			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-
-		    }else
-			Dom.get(tipo+'_msg').innerHTML=r.msg;
-		}
-	    });        
-	
-
-	break;
-	 case('sticky_note'):
-	  
-
-  //  var value=my_encodeURIComponent(Dom.get(tipo+"_input").value);
 
 
- var data_to_update=new Object;
- data_to_update[tipo]={'okey':tipo,'value':Dom.get(tipo+"_input").value}
-
- jsonificated_values=my_encodeURIComponent(YAHOO.lang.JSON.stringify(data_to_update));
-
-
-var request='ar_edit_contacts.php?tipo=edit_customer&values='+ jsonificated_values+"&customer_key="+customer_key
-
-
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-	//	alert(o.responseText)
-		    var ra =  YAHOO.lang.JSON.parse(o.responseText);
-		      for (x in ra){
-               r=ra[x]
-		    
-		    if (r.state==200) {
-		    
-		    Dom.get('sticky_note_content').innerHTML=r.newvalue;
-			
-			close_dialog(r.key);
-
-            if(r.newvalue==''){
-                Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
-
-
-            }else{
-                           
-
-             Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','');
-              
-            }
-
-            var table=tables['table0'];
-			var datasource=tables['dataSource0'];
-			var request='';
-			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-			
-		    }else
-			Dom.get(tipo+'_msg').innerHTML=r.msg;
-		}
-		}
-	    });        
-	
-
-	
-
-	break;	
-	
-   case('attach'):
-   
-    YAHOO.util.Connect.setForm('upload_attach_form', true,true);
-    var request='ar_edit_contacts.php?tipo=upload_attachment_to_customer';
-   var uploadHandler = {
-      upload: function(o) {
-	   //alert(o.responseText)
-	    var r =  YAHOO.lang.JSON.parse(o.responseText);
-	   
-	    if(r.state==200){
-	      table_id=0
-            var table=tables['table'+table_id];
-                var datasource=tables['dataSource'+table_id];
-        datasource.sendRequest('',table.onDataReturnInitializeTable, table);  
-               close_dialog('attach');
-                
-	    }else
-		alert(r.msg);
-	    
-	    
-
-	}
-    };
-
-    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
-    
-    break;
-    }
-    
-    
-    
-    
-};
-
-function change(e,o,tipo){
-    switch(tipo){
-    case('note'):
-	if(o.value!=''){
-	    enable_save(tipo);
-/*
-	    if(window.event)
-		key = window.event.keyCode; //IE
-	    else
-		key = e.which; //firefox     
-	    
-	    if (key == 13)
-		save(tipo);
-*/
-
-	}else
-	    disable_save(tipo);
-	break;
- 
-    }
-};
-
-
-function enable_save(tipo){
-    switch(tipo){
-    case('note'):
-    Dom.removeClass(tipo+'_save','disabled')
-	break;
-	
-    }
-};
-
-function disable_save(tipo){
-    switch(tipo){
-    case('note'):
-    Dom.addClass(tipo+'_save','disabled')
-	break;
-	
-    }
-};
-
-
-function close_dialog(tipo){
-    switch(tipo){
-  //   case('long_note'):
-// 	//Dom.get(tipo+"_input").value='';
-// 	dialog_note.hide();
-
-// 	break;
-
-
-  case('attach'):
-
-	Dom.get('upload_attach_file').value='';
-		Dom.get('attachment_caption').value='';
-
-	dialog_attach.hide();
-
-	break;
-      case('edit_note'):
-
-	Dom.get("edit_note_input").value='';
-	
-	dialog_edit_note.hide();
-break;
-    case('note'):
-
-	Dom.get(tipo+"_input").value='';
-	Dom.addClass(tipo+'_save','disabled');
-	
-	dialog_note.hide();
-break;
- case('sticky_note'):
-	dialog_sticky_note.hide();
-	 Dom.get('sticky_note_input').value=Dom.get('sticky_note_content').innerHTML;
-	break;
-
-  
-    
- case('export'):
- dialog_export.hide();
- break;
- case('make_order'):
-
-     //	Dom.get(tipo+"_input").value='';
-	//Dom.get(tipo+'_save').style.visibility='hidden';
-	dialog_make_order.hide();
-
-	break;
-    }
-
-
-};
 
  
 Event.addListener(window, "load", function() {
 	    tables = new function() {
 		    
-		    var tableid=0; // Change if you have more the 1 table
+		    var tableid=0; 
 		    var tableDivEL="table"+tableid;  
 		    
 		    
@@ -1748,14 +1387,7 @@ function validate_customer_mobile_other_comment(query,id){
 }
 
 
-function show_sticky_note(){
-	region1 = Dom.getRegion('top_page_menu'); 
-    region2 = Dom.getRegion('dialog_sticky_note'); 
-	var pos =[region1.right-region2.width-20,region1.bottom]
-	Dom.setXY('dialog_sticky_note', pos);
-	dialog_sticky_note.show()
-	Dom.get('sticky_note_input').focus();
-}
+
 
 function save_tax_details_match(e,value){
 
@@ -1910,12 +1542,7 @@ function close_dialog_check_tax_number(){
 	dialog_check_tax_number.hide()
 }
 
-function show_dialog_note(){
-dialog_note.show();
 
-
-Dom.get('note_input').focus();
-}
 
 
 
@@ -1975,30 +1602,6 @@ Event.addListener(['orders','history','products','details', 'login_stat'], "clic
 
 
 
-	//Details textarea editor ---------------------------------------------------------------------
-	var texteditorConfig = {
-	    height: '270px',
-	    width: '750px',
-	    dompath: true,
-	    focusAtStart: true
-	};     
-
- 	editor = new YAHOO.widget.Editor('long_note_input', texteditorConfig);
-
-	editor._defaultToolbar.buttonType = 'basic';
- 	editor.render();
-
-	//	editor.on('editorKeyUp',change_textarea,'details' );
-	//-------------------------------------------------------------
-
-
-dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_note.render();
-
-dialog_edit_note = new YAHOO.widget.Dialog("dialog_edit_note", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_edit_note.render();
-
-
 
 dialog_check_tax_number = new YAHOO.widget.Dialog("dialog_check_tax_number", {visible : false,close:true,underlay: "none",draggable:false});
 dialog_check_tax_number.render();
@@ -2014,23 +1617,11 @@ dialog_orders_in_process_found.render();
 
 
 
-dialog_sticky_note = new YAHOO.widget.Dialog("dialog_sticky_note", {visible : false,close:true,underlay: "none",draggable:false});
-dialog_sticky_note.render();
-
-
-
-dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_attach.render();
-
 dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","br"]  ,visible : false,close:true,underlay: "none",draggable:false});
 dialog_make_order.render();
 
 
 dialog_export = new YAHOO.widget.Dialog("dialog_export", {context:["export_data","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
-Event.addListener(["sticky_note","sticky_note_bis"], "click", show_sticky_note);
-
-Event.addListener("note", "click", show_dialog_note);
-Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
 Event.addListener("export_data", "click", dialog_export.show,dialog_export , true);
 
 Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_order , true);
@@ -2039,24 +1630,8 @@ Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_orde
 Event.addListener("take_order", "click", take_order , true);
 dialog_export.render();
 
-if(Dom.get('sticky_note_content').innerHTML==''){
-	Dom.setStyle(['sticky_note_div','sticky_note_bis_tr'],'display','none');
-}else{
-	Dom.setStyle('sticky_note_div','display','');
-}
-			
-
 	
 	
-			
-/*
-dialog_long_note = new YAHOO.widget.Dialog("dialog_long_note", {context:["customer_data","tl","tl"] ,visible : false,close:true,underlay: "none",draggable:false});
-dialog_long_note.render();
-Event.addListener("long_note", "click", dialog_long_note.show,dialog_long_note , true);
-
-//Event.addListener("note", "click", dialog_note.hide,dialog_note , true);
-
-*/
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
@@ -2475,6 +2050,8 @@ for(i=0; i<other_email_count; i++)
 
 
 }
+YAHOO.util.Event.onDOMReady(init);
+
 function hide_all_dialogs(){
 	for(x in list_of_dialogs)
 		eval(list_of_dialogs[x]).hide();
@@ -2689,7 +2266,6 @@ function validate_customer_fax(query){
     }
 }
 
-YAHOO.util.Event.onDOMReady(init);
 
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });

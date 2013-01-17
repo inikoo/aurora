@@ -1,7 +1,14 @@
 {include file='header.tpl'} 
 <div id="bd" style="padding:0px">
 	<div style="padding:0px 20px;">
-		<input type="hidden" id="customer_key" value="{$customer->id}"> {include file='contacts_navigation.tpl'} 
+		<input type="hidden" id="customer_key" value="{$customer->id}">
+				<input type="hidden" id="subject" value="customer">
+		<input type="hidden" id="subject_key" value="{$customer->id}">
+
+				<input type="hidden" id="history_table_id" value="0">
+
+		
+		{include file='contacts_navigation.tpl'} 
 		<div class="branch">
 			<span><a href="index.php"><img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /></a>&rarr; {if $user->get_number_stores()>1}<a href="customers_server.php">{t}Customers{/t}</a> &rarr; {/if}<a href="customers.php?store={$store->id}">{t}Customers{/t} ({$store->get('Store Code')})</a> &rarr; {$id}</span> 
 		</div>
@@ -11,7 +18,9 @@
 			</div>
 			{if isset($parent_list)}<img onmouseover="this.src='art/next_button.gif'" onmouseout="this.src='art/next_button.png'" title="{t}Next Customer{/t} {$next.name}" onclick="window.location='customer.php?{$parent_info}id={$next.id}{if $parent_list}&p={$parent_list}{/if}'" src="art/next_button.png" alt=">" style="float:right;height:22px;cursor:pointer;position:relative;top:2px" />{/if} 
 			<div class="buttons" style="float:right">
-				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> <button id="sticky_note"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button> <button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
+				<button onclick="window.location='edit_customer.php?id={$customer->id}{if isset($parent_list)}&p={$parent_list}{/if}'"><img src="art/icons/vcard_edit.png" alt=""> {t}Edit{/t}</button> 
+				<button id="sticky_note_button"><img src="art/icons/note.png" alt=""> {t}Note{/t}</button> <button id="note"><img src="art/icons/add.png" alt=""> {t}History Note{/t}</button> <button id="attach"><img src="art/icons/add.png" alt=""> {t}Attachment{/t}</button> <button {if $user->id!=1}style="display:none"{/if} id="take_order" ><img id="take_order_img" src="art/icons/add.png" alt=""> {t}Order{/t}</button>
+				<button id="make_order"><img src="art/icons/database_go.png" alt=""> {t}QO Data{/t}</button> <button onclick="request_catalogue()"><img src="art/icons/email_go.png" alt=""> {t}Catalogue{/t}</button> {if $new_customer} <button onclick="window.location='new_customer.php'"><img src="art/icons/add.png" alt=""> {t}Add Other Customer{/t}</button> {/if} 
 			</div>
 			<div style="clear:both">
 			</div>
@@ -396,54 +405,9 @@
 		</div>
 	</div>
 </div>
-<div id="dialog_note" style="padding:20px 20px 10px 20px">
-	<div id="note_msg">
-	</div>
-	<table>
-		<tr>
-			<td> 
-			<div class="buttons" id="note_type" prefix="note_type_" value="deletable">
-				<button id="note_type_permanent" onclick="radio_changed(this)" name="permanent">{t}Permanent{/t}</button> <button class="selected" id="note_type_deletable" onclick="radio_changed(this)" name="deletable">{t}Deletable{/t}</button> 
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td> <textarea style="width:200px;height:100px" id="note_input" onkeyup="change(event,this,'note')"></textarea> </td>
-		</tr>
-		<tr>
-			<td> 
-			<div class="buttons">
-				<button onclick="save('note')" id="note_save" class="positive disabled">{t}Save{/t}</button> <button onclick="close_dialog('note')" class="negative">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_edit_note" style="position:absolute;top-100px;left:-500px">
-	<div id="edit_note_msg">
-	</div>
-	<input type="hidden" value="" id="edit_note_history_key"> 
-	<input type="hidden" value="" id="record_index"> 
-	<table style="padding:10px;margin:10px">
-		<tr>
-			<td colspan="2"> 
-			<div id="edit_note_date" class="buttons left" prefix="note_date_" value="keep_date">
-				<button class="selected" id="note_date_keep_date" onclick="radio_changed(this)" name="keep_date">{t}Keep Date{/t}</button> <button id="note_date_update_date" onclick="radio_changed(this)" name="update_date">{t}Update Date{/t}</button> 
-			</div>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> <textarea style="width:200px;height:100px" id="edit_note_input" onkeyup="change(event,this,'edit_note')"></textarea> </td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-			<div class="buttons">
-				<button class="positive" onclick="save('edit_note')" id="edit_note_save">{t}Save{/t}</button> <button class="negative" onclick="close_dialog('edit_note')">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
+
+
+
 <div id="dialog_export">
 	<div id="export_msg">
 	</div>
@@ -459,51 +423,7 @@
 		</tr>
 	</table>
 </div>
-<div id="dialog_sticky_note" style="padding:20px 20px 0px 20px;width:340px">
-	<div id="sticky_note_msg">
-	</div>
-	<table>
-		<tr>
-			<td> <textarea style="width:330px;height:125px" id="sticky_note_input" onkeyup="change(event,this,'sticky_note')">{$customer->get('Customer Sticky Note')}</textarea> </td>
-		</tr>
-		<tr>
-			<td> 
-			<div class="buttons">
-				<button class="positive" onclick="save('sticky_note')">{t}Save{/t}</button> <button class="negative" onclick="close_dialog('sticky_note')">{t}Cancel{/t}</button> 
-			</div>
-			</td>
-		</tr>
-	</table>
-</div>
-<div id="dialog_attach" style="padding:20px 20px 0px 20px">
-	<div id="attach_msg">
-	</div>
-	<input type="hidden" value='customer' id='attachment_scope'> 
-	<input type="hidden" value='{$customer->id}' id='attachment_scope_key'> 
-	<form enctype="multipart/form-data" method="post" id="upload_attach_form">
-		<table>
-			<input type="hidden" name="attach_customer_key" value="{$customer->id}" />
-			<tr>
-				<td>{t}File{/t}:</td>
-				<td> 
-				<input id="upload_attach_file" style="border:1px solid #ddd;" type="file" name="attach" />
-				</td>
-			</tr>
-			<tr>
-				<td>{t}Caption{/t}</td>
-				<td> 
-				<input style="width:100%" value='' id='attachment_caption' name="caption"> </td>
-			</tr>
-			<tr>
-				<td colspan="2"> 
-				<div class="buttons">
-					<button class="positive" onclick="save('attach')">{t}Upload{/t}</button> <button onclick="close_dialog('attach')" class="negative">{t}Cancel{/t}</button><br />
-				</div>
-				</td>
-			</tr>
-		</table>
-	</form>
-</div>
+
 <div id="dialog_make_order" style="padding:20px 20px 0px 20px">
 	<div id="long_note_msg">
 	</div>
@@ -1077,4 +997,5 @@
 		</tr>
 	</table>
 </div>
+{include file='notes_splinter.tpl'} 
 {include file='footer.tpl'} 

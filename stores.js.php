@@ -328,7 +328,7 @@ this.table1.table_id=tableid;
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['families']['table']['nr']+1?>,containers : 'paginator2', 
+									      rowsPerPage:<?php echo $_SESSION['state']['stores']['families']['nr']+1?>,containers : 'paginator2', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -338,8 +338,8 @@ this.table1.table_id=tableid;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['families']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['families']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['stores']['families']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['stores']['families']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -353,7 +353,7 @@ this.table1.table_id=tableid;
 
 	    
 	    this.table2.view='<?php echo$_SESSION['state']['stores']['families']['view']?>';
-	    this.table2.filter={key:'<?php echo$_SESSION['state']['families']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['families']['table']['f_value']?>'};
+	    this.table2.filter={key:'<?php echo$_SESSION['state']['stores']['families']['f_field']?>',value:'<?php echo$_SESSION['state']['stores']['families']['f_value']?>'};
 		
 
 

@@ -24,7 +24,25 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-
+case('part_sales_history'):
+	list_part_sales_history();
+	break;
+case('get_part_sales_data'):
+	$data=prepare_values($_REQUEST,array(
+			'part_sku'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
+	get_part_sales_data($data);
+	break;
+case('get_part_category_sales_data'):
+	$data=prepare_values($_REQUEST,array(
+			'category_key'=>array('type'=>'key'),
+			'from'=>array('type'=>'string'),
+			'to'=>array('type'=>'string')
+		));
+	get_part_category_sales_data($data);
+	break;	
 case('parts_at_date'):
 	list_parts_at_date();
 	break;
@@ -103,23 +121,23 @@ function list_parts() {
 	else {
 		return;
 	}
-	
-	
-	if($parent=='category'){
+
+
+	if ($parent=='category') {
 		$conf_node='part_categories';
-	}else{
-	$conf_node='warehouse';
+	}else {
+		$conf_node='warehouse';
 	}
-		$conf=$_SESSION['state'][$conf_node]['parts'];
+	$conf=$_SESSION['state'][$conf_node]['parts'];
 
 	if (isset( $_REQUEST['view']))
 		$view=$_REQUEST['view'];
 
 	else
 		$view=$conf['view'];
-	
-	
-	
+
+
+
 	if (isset( $_REQUEST['list_key']))
 		$list_key=$_REQUEST['list_key'];
 	else
@@ -226,8 +244,8 @@ function list_parts() {
 	$_SESSION['state'][$conf_node]['parts']['percentage']=$percentage;
 	$_SESSION['state'][$conf_node]['parts']['period']=$period;
 	$_SESSION['state'][$conf_node]['parts']['avg']=$avg;
-	
-	
+
+
 
 
 	$filter_msg='';
@@ -551,11 +569,11 @@ function list_parts() {
 			$sold_amount=money($data['Part '.$period_tag.' Acc Sold Amount']);
 			$abs_profit=money($data['Part '.$period_tag.' Acc Profit']);
 			$profit_sold=money($data['Part '.$period_tag.' Acc Profit']);
-			
+
 			$delta_sold=delta($data['Part '.$period_tag.' Acc Sold'],$data['Part '.$period_tag.' Acc 1YB Sold']);
 			$delta_sold_amount=delta($data['Part '.$period_tag.' Acc Sold Amount'],$data['Part '.$period_tag.' Acc 1YB Sold Amount']);
-			
-			
+
+
 		} else {
 			if ($avg=='week')
 				$factor=$data['Part '.$period_tag.' Acc Keeping Days']/30.4368499;
@@ -876,7 +894,7 @@ function list_parts_at_date() {
 
 
 	$sql="select ISF.`Part SKU`,count(DISTINCT `Location Key`) as locations,`Part Unit Description`,`Part XHTML Currently Used In`,sum(`Quantity On Hand`) as stock,sum(`Quantity Open`) as stock_open,sum(`Value At Cost`) as value_at_cost,sum(`Value At Day Cost`) as value_at_end_day,sum(`Value Commercial`) as commercial_value from `Inventory Spanshot Fact` ISF left join `Part Dimension` P on  (P.`Part SKU`=ISF.`Part SKU`)  $where $wheref group by ISF.`Part SKU`   order by $order $order_direction limit $start_from,$number_results  ";
-//print $sql;
+	//print $sql;
 	$adata=array();
 	$result=mysql_query($sql);
 
@@ -1532,17 +1550,6 @@ function warehouse_part_stock_history() {
 
 	$where=sprintf(" where `Warehouse Key`=%d %s",$parent_key,$date_interval['mysql']);
 
-	switch ($type) {
-	case 'month':
-		$where.=' and LAST_DAY(`Date`)=`Date`   ';
-		break;
-	case 'day':
-		$where.='  ';
-		break;
-	default:
-		$where.=' and DAYOFWEEK(`Date`)=1   ';
-		break;
-	}
 
 
 
@@ -2082,11 +2089,11 @@ function list_part_categories() {
 
 	$conf=$_SESSION['state']['part_categories']['subcategories'];
 	$conf2=$_SESSION['state']['part_categories'];
-	
-	
+
+
 	$parent_key=$_REQUEST['parent_key'];
-	
-	
+
+
 	if (isset( $_REQUEST['sf']))
 		$start_from=$_REQUEST['sf'];
 	else
@@ -2144,7 +2151,7 @@ function list_part_categories() {
 		$period=$_SESSION['state']['part_categories']['period'];
 
 
-/*
+	/*
 	if (isset( $_REQUEST['avg'])) {
 		$avg=$_REQUEST['avg'];
 		$_SESSION['state']['part_categories']['avg']=$avg;
@@ -2436,4 +2443,649 @@ function number_warehouse_element_transactions_in_interval($data) {
 
 	$response= array('state'=>200,'element'=>$data['element'],'number'=>$number_of_transactions);
 	echo json_encode($response);
+}
+
+function get_part_sales_data($data) {
+	global $corporate_currency;
+
+	$sku=$data['part_sku'];
+	$from_date=$data['from'];
+	$to_date=$data['to'];
+
+	if ($from_date)$from_date=$from_date.' 00:00:00';
+	if ($to_date)$to_date=$to_date.' 23:59:59';
+	$where_interval=prepare_mysql_dates($from_date,$to_date,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$sales=0;
+	$profits=0;
+	$profits_after_storing=0;
+	$margin=0;
+	$gmroi=0;
+	$no_supplied=0;
+	$given=0;
+	$broken=0;
+	$required=0;
+	$sold=0;
+	$lost=0;
+	$adquired=0;
+	$dispatched=0;
+
+	$not_found=0;
+	$out_of_stock=0;
+	$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
+                     from `Inventory Transaction Fact` ITF  where `Part SKU`=%d %s %s" ,
+		$sku,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//   print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$profits=$row['profit'];
+		$profits_after_storing=$row['profit']-$row['cost_storing'];
+
+	}
+
+
+	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='In'  and `Part SKU`=%d  %s %s" ,
+		$sku,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+		$adquired=$row['bought'];
+
+	}
+
+
+	$sql=sprintf("select sum(`Amount In`) as sold_amount,
+                     sum(`Inventory Transaction Quantity`) as dispatched,
+                     sum(`Required`) as required,
+                     sum(`Given`) as given,
+                     sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
+                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Sale' and `Part SKU`=%d %s %s" ,
+		$sku,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$sales=$row['sold_amount'];
+		$sold=$row['sold'];
+		$dispatched=-1.0*$row['dispatched'];
+		$required=$row['required'];
+		$given=$row['given'];
+
+	}
+
+	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Broken' and `Part SKU`=%d %s %s" ,
+		$sku,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$broken=-1.*$row['broken'];
+
+	}
+
+	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as not_found
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Not Found' and `Part SKU`=%d %s %s" ,
+		$sku,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+	);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$not_found=-1.*$row['not_found'];
+
+	}
+
+	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as out_of_stock
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Out of Stock' and `Part SKU`=%d %s %s" ,
+		$sku,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+	);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$out_of_stock=-1.*$row['out_of_stock'];
+
+	}
+
+
+
+	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
+                     from `Inventory Transaction Fact` ITF  where `Inventory Transaction Type`='Lost' and `Part SKU`=%d %s %s" ,
+		$sku,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$lost=-1.*$row['lost'];
+
+	}
+
+
+	if ($sales!=0)
+		$margin=$profits_after_storing/$sales;
+	else
+		$margin=0;
+
+
+	$no_supplied=$not_found+$out_of_stock;
+	$response= array('state'=>200,
+
+		'sales'=>money($sales,$corporate_currency),
+		'profits'=>money($profits,$corporate_currency),
+		'profits_after_storing'=>money($profits_after_storing,$corporate_currency),
+		'margin'=>number($margin),
+		'gmroi'=>number($gmroi),
+		'no_supplied'=>number($no_supplied),
+		'not_found'=>number($not_found),
+		'out_of_stock'=>number($out_of_stock),
+
+		'given'=>number($given),
+		'broken'=>number($broken),
+		'required'=>number($required),
+		'sold'=>number($sold),
+		'lost'=>number($lost),
+		'adquired'=>number($adquired),
+		'dispatched'=>number($dispatched)
+	);
+
+	echo json_encode($response);
+
+
+
+
+}
+
+
+function get_part_category_sales_data($data) {
+	global $corporate_currency;
+
+	$category_key=$data['category_key'];
+	$from_date=$data['from'];
+	$to_date=$data['to'];
+
+	if ($from_date)$from_date=$from_date.' 00:00:00';
+	if ($to_date)$to_date=$to_date.' 23:59:59';
+	$where_interval=prepare_mysql_dates($from_date,$to_date,'`Invoice Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$sales=0;
+	$profits=0;
+	$profits_after_storing=0;
+	$margin=0;
+	$gmroi=0;
+	$no_supplied=0;
+	$given=0;
+	$broken=0;
+	$required=0;
+	$sold=0;
+	$lost=0;
+	$adquired=0;
+	$dispatched=0;
+
+	$not_found=0;
+	$out_of_stock=0;
+	
+	
+	$sql=sprintf("select sum(`Amount In`+`Inventory Transaction Amount`) as profit,sum(`Inventory Transaction Storing Charge Amount`) as cost_storing
+                     from `Inventory Transaction Fact` ITF   left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Category Key`=%d %s %s" ,
+		$category_key,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//   print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$profits=$row['profit'];
+		$profits_after_storing=$row['profit']-$row['cost_storing'];
+
+	}
+
+
+	$sql=sprintf("select sum(`Inventory Transaction Amount`) as cost, sum(`Inventory Transaction Quantity`) as bought
+                     from `Inventory Transaction Fact` ITF   left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')  where `Inventory Transaction Type`='In'  and `Category Key`=%d  %s %s" ,
+		$category_key,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+		$adquired=$row['bought'];
+
+	}
+
+
+	$sql=sprintf("select sum(`Amount In`) as sold_amount,
+                     sum(`Inventory Transaction Quantity`) as dispatched,
+                     sum(`Required`) as required,
+                     sum(`Given`) as given,
+                     sum(`Required`-`Inventory Transaction Quantity`) as no_dispatched,
+                     sum(`Given`-`Inventory Transaction Quantity`) as sold
+                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type`='Sale' and `Category Key`=%d %s %s" ,
+		$category_key,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$sales=$row['sold_amount'];
+		$sold=$row['sold'];
+		$dispatched=-1.0*$row['dispatched'];
+		$required=$row['required'];
+		$given=$row['given'];
+
+	}
+
+	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as broken
+                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type`='Broken' and `Category Key`=%d %s %s" ,
+		$category_key,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$broken=-1.*$row['broken'];
+
+	}
+
+	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as not_found
+	                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type`='Not Found' and `Category Key`=%d %s %s" ,
+
+		$category_key,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+	);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$not_found=-1.*$row['not_found'];
+
+	}
+
+	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as out_of_stock
+	                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type`='Out of Stock' and `Category Key`=%d %s %s" ,
+		$category_key,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+	);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$out_of_stock=-1.*$row['out_of_stock'];
+
+	}
+
+
+
+	$sql=sprintf("select sum(`Inventory Transaction Quantity`) as lost
+	                     from `Inventory Transaction Fact` ITF  left join `Category Bridge` on (`Part SKU`=`Subject Key` and `Subject`='Part')   where `Inventory Transaction Type`='Lost' and `Category Key`=%d %s %s" ,
+
+		$category_key,
+		($from_date?sprintf('and  `Date`>=%s',prepare_mysql($from_date)):''),
+		($to_date?sprintf('and `Date`<%s',prepare_mysql($to_date)):'')
+
+	);
+	$result=mysql_query($sql);
+	//print "$sql\n";
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+		$lost=-1.*$row['lost'];
+
+	}
+
+if ($sales!=0)
+		$margin=$profits_after_storing/$sales;
+	else
+		$margin=0;
+
+	$no_supplied=$not_found+$out_of_stock;
+	$response= array('state'=>200,
+
+		'sales'=>money($sales,$corporate_currency),
+		'profits'=>money($profits,$corporate_currency),
+		'profits_after_storing'=>money($profits_after_storing,$corporate_currency),
+		'margin'=>number($margin),
+		'gmroi'=>number($gmroi),
+		'no_supplied'=>number($no_supplied),
+		'not_found'=>number($not_found),
+		'out_of_stock'=>number($out_of_stock),
+
+		'given'=>number($given),
+		'broken'=>number($broken),
+		'required'=>number($required),
+		'sold'=>number($sold),
+		'lost'=>number($lost),
+		'adquired'=>number($adquired),
+		'dispatched'=>number($dispatched)
+	);
+
+	echo json_encode($response);
+
+
+
+
+}
+function list_part_sales_history() {
+
+	if (isset( $_REQUEST['parent']))
+		$parent=$_REQUEST['parent'];
+	else {
+		exit();
+	}
+
+	if (isset( $_REQUEST['parent_key']))
+		$parent_key=$_REQUEST['parent_key'];
+	else {
+		exit();
+	}
+
+	$conf=$_SESSION['state'][$parent]['sales_history'];
+
+	if (isset( $_REQUEST['from']))
+		$from=$_REQUEST['from'];
+	else {
+		$from=$_SESSION['state'][$parent]['from'];
+	}
+	if (isset( $_REQUEST['to']))
+		$to=$_REQUEST['to'];
+	else
+		$to=$_SESSION['state'][$parent]['to'];
+	if (isset( $_REQUEST['sf']))
+		$start_from=$_REQUEST['sf'];
+	else
+		$start_from=$conf['sf'];
+	if (isset( $_REQUEST['nr']))
+		$number_results=$_REQUEST['nr'];
+	else
+		$number_results=$conf['nr'];
+	if (isset( $_REQUEST['o']))
+		$order=$_REQUEST['o'];
+	else
+		$order=$conf['order'];
+	if (isset( $_REQUEST['od']))
+		$order_dir=$_REQUEST['od'];
+	else
+		$order_dir=$conf['order_dir'];
+	$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+	if (isset( $_REQUEST['f_field']))
+		$f_field=$_REQUEST['f_field'];
+	else
+		$f_field=$conf['f_field'];
+
+	if (isset( $_REQUEST['f_value']))
+		$f_value=$_REQUEST['f_value'];
+	else
+		$f_value=$conf['f_value'];
+	if (isset( $_REQUEST['tableid']))
+		$tableid=$_REQUEST['tableid'];
+	else
+		$tableid=0;
+
+	if (isset( $_REQUEST['type']))
+		$type=$_REQUEST['type'];
+	else
+		$type=$conf['type'];
+
+
+
+	$_SESSION['state'][$parent]['sales_history']['type']=$type;
+
+	$_SESSION['state'][$parent]['sales_history']['order']=$order;
+	$_SESSION['state'][$parent]['sales_history']['order_dir']=$order_direction;
+	$_SESSION['state'][$parent]['sales_history']['nr']=$number_results;
+	$_SESSION['state'][$parent]['sales_history']['sf']=$start_from;
+	$_SESSION['state'][$parent]['sales_history']['f_field']=$f_field;
+	$_SESSION['state'][$parent]['sales_history']['f_value']=$f_value;
+
+	$_SESSION['state'][$parent]['from']=$from;
+	$_SESSION['state'][$parent]['to']=$to;
+
+	$_order=$order;
+	$_dir=$order_direction;
+	$filter_msg='';
+
+
+	if (!$to)$to=date("Y-m-d");
+	global $corporate_currency;
+	$currency=$corporate_currency;
+	switch ($parent) {
+
+	case('part'):
+
+		$sql=sprintf("select Date(`Part Valid From`) as date  from `Part Dimension` where  `Part SKU`=%d  ",$parent_key);
+		//print $sql;
+		$res=mysql_query($sql);
+		if ($row=mysql_fetch_assoc($res)) {
+			if (!$from) {
+				$from=$row['date'];
+			}
+
+		}
+
+
+		$where=sprintf(" where   `Part SKU`=%d  ",$parent_key);
+		break;
+	default:
+		exit();
+	}
+
+
+
+
+	switch ($type) {
+	case 'year':
+		$group='  group by Year(`Date`) ';
+		$groupi=' group by Year(`Date`) ';
+		$anchori='Year(`Date`) as date';
+		break;
+
+	case 'month':
+		$group=' group by DATE_FORMAT(`Date`,"%m%Y") ';
+		$groupi=' group by DATE_FORMAT(`Date`,"%m%Y") ';
+		$anchori='DATE_FORMAT(`Date`,"%m%Y") as date';
+		break;
+	case 'day':
+		$group=' group by (`Date`) ';
+		$groupi=' group by `Date` ';
+		$anchori='Date(`Date`) as date';
+		break;
+	default:
+		$group=' group by YEARWEEK(`Date`) ';
+		$groupi=' group by YEARWEEK(`Date`) ';
+		$anchori='YEARWEEK(`Date`) as date';
+		break;
+	}
+
+
+	if ($from)$from=$from.' 00:00:00';
+	if ($to)$to=$to.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+	$where_interval=$where_interval['mysql'];
+	//$where.=$where_interval;
+	$wheref='';
+
+	// if ($f_field=='note' and $f_value!='')
+	//  $wheref.=" and  `Product Note` like '%".addslashes($f_value)."%'";
+	// elseif ($f_field=='author' and $f_value!='')
+	//  $wheref.=" and  `User Alias` like '".addslashes($f_value)."%'";
+
+	$sql="select count(*) as total from  kbase.`Date Dimension`  where true $where_interval $wheref $group";
+	//print $sql;
+	$res = mysql_query($sql);
+	$total= mysql_num_rows($res);
+
+
+	mysql_free_result($res);
+	if ($wheref=='') {
+		$filtered=0;
+		$total_records=$total;
+	} else {
+		$sql="select count(*) as total from   kbase.`Date Dimension`   $where_interval $group";
+		$result=mysql_query($sql);
+		$total_records= mysql_num_rows($result);
+		$filtered=$total_records-$total;
+		mysql_free_result($result);
+
+
+	}
+	//print $total_records;
+	switch ($type) {
+	case 'year':
+		$rtext=number($total_records)."  ".ngettext('year','years',$total_records);
+		break;
+
+	case 'month':
+		$rtext=number($total_records)." ".ngettext('month','months',$total_records);
+		break;
+	case 'day':
+		$rtext=number($total_records)." ".ngettext('day','days',$total_records);
+
+		break;
+	default:
+		$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
+
+		break;
+	}
+
+
+	if ($total_records>$number_results)
+		$rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+	else
+		$rtext_rpp=' ('._('Showing all').')';
+
+	$sql="select  DATE_FORMAT(`Date`,'%m%Y') as month , Year(`Date`) as year, YEARWEEK(`Date`) as week,  `Date` from kbase.`Date Dimension`where true  $where_interval $group order by `Date` desc  limit $start_from,$number_results ";
+	//print $sql;
+	$result=mysql_query($sql);
+	$ddata=array();
+
+	$from_date='';
+	$to_date='';
+	//print $sql;
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		if ($to_date=='')$to_date=$data['Date'];
+		$from_date=$data['Date'];
+		//print $data['Date']."\n";
+
+		switch ($type) {
+		case 'year':
+			$rtext=number($total_records)." ".ngettext('year','year',$total_records);
+			$date=strftime("%Y", strtotime($data['Date']));
+			$anchor=$data['year'];
+
+			break;
+
+		case 'month':
+			$rtext=number($total_records)." ".ngettext('month','months',$total_records);
+			$date=strftime("%B %Y", strtotime($data['Date']));
+			// $date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+
+			$anchor=$data['month'];
+
+			break;
+		case 'day':
+			$rtext=number($total_records)." ".ngettext('day','days',$total_records);
+			$date=strftime("%a %d/%m/%Y", strtotime($data['Date']));
+			$anchor=$data['Date'];
+
+			break;
+		default:
+			$rtext=number($total_records)." ".ngettext('week','weeks',$total_records);
+			$date=_('Week').' '.strftime("%V %Y", strtotime($data['Date']));
+			$anchor=$data['week'];
+			break;
+		}
+
+		$ddata[$anchor]=array(
+			'date'=>$date,
+			//'customers'=>0,
+			'qty'=>0,
+			'sales'=>money(0,$currency),
+			'out_of_stock'=>0
+		);
+
+	}
+
+
+	$from=$from_date.' 00:00:00';
+	$to=$to_date.' 23:59:59';
+
+	$where_interval=prepare_mysql_dates($from,$to,'`Date`');
+	$where_interval=$where_interval['mysql'];
+
+	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty , sum(`Inventory Transaction Amount`) as sales from `Inventory Transaction Fact` $where $where_interval and  `Inventory Transaction Type`='Sale'  $groupi";
+	$result=mysql_query($sql);
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$ddata[$data['date']]['qty']=number(-1*$data['qty']);
+		$ddata[$data['date']]['sales']=money(-1*$data['sales']);
+	}
+	$sql="select $anchori,sum(`Inventory Transaction Quantity`) as qty  from `Inventory Transaction Fact` $where $where_interval and  `Inventory Transaction Type`='Out of Stock'  $groupi";
+	$result=mysql_query($sql);
+	while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+		$ddata[$data['date']]['out_of_stock']=number(-1*$data['qty']);
+	}
+
+	$adata=array();
+	foreach ($ddata as $key=>$value) {
+		$adata[]=$value;
+	}
+
+	$response=array('resultset'=>
+		array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results
+		)
+	);
+	echo json_encode($response);
+
 }

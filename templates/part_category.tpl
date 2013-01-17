@@ -4,6 +4,11 @@
 		{include file='locations_navigation.tpl'} 
 		<input type="hidden" id="category_key" value="{$category->id}" />
 		<input type="hidden" id="state_type" value="{$state_type}" />
+		<input type="hidden" id="link_extra_argument" value="&id={$category->id}" />
+	<input type="hidden" id="from" value="{$from}" />
+	<input type="hidden" id="to" value="{$to}" />
+		
+		
 		<div class="branch">
 			<span> <a href="index.php"> <img style="vertical-align:0px;margin-right:1px" src="art/icons/home.gif" alt="home" /> </a> &rarr; {if $user->get_number_warehouses()>1}<a href="warehouses.php">{t}Warehouses{/t} </a> &rarr; {/if}<a href="warehouse_parts.php?warehouse_id={$warehouse->id}">{t}Inventory{/t} </a> &rarr; <a href="part_categories.php?&warehouse_id={$warehouse->id}"> {t}Parts Categories{/t} </a> &rarr; {$category->get('Category XHTML Branch Tree')} </span> 
 		</div>
@@ -22,12 +27,121 @@
 		<li> <span class="item {if $block_view=='overview'}selected{/if}" id="overview"> <span> {t}Overview{/t}</span></span> </li>
 		<li style="{if !$show_subcategories}display:none{/if}"> <span class="item {if $block_view=='subcategories'}selected{/if}" id="subcategories"> <span> {t}Subcategories{/t} ({$category->get('Number Children')})</span></span> </li>
 		<li style="{if !$show_subjects}display:none{/if}"> <span class="item {if $block_view=='subjects'}selected{/if}" id="subjects"> <span> {t}Parts{/t} ({$category->get('Number Subjects')})</span></span> </li>
-		<li style="{if !$show_subjects_data}display:none{/if};display:none"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span> </li>
-		<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changelog{/t}</span></span> </li>
+		<li style="{if !$show_subjects_data}display:none{/if};"> <span class="item {if $block_view=='sales'}selected{/if}" id="sales"> <span> {t}Sales{/t}</span></span> </li>
+			<li> <span class="item {if $block_view=='history'}selected{/if}" id="history"> <span> {t}Changelog{/t}</span></span> </li>
+
 	</ul>
 	<div style="clear:both;width:100%;border-bottom:1px solid #ccc">
 	</div>
-	<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px;display:none;">
+	<div id="block_sales" style="{if $block_view!='sales'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px;">
+					{include file='calendar_splinter.tpl'} 
+
+			<div style="margin-top:20px;width:900px;{if !$show_subjects_data}display:none{/if}">
+			<span><img src="art/icons/clock_16.png" style="height:12px;position:relative;bottom:2px"> {$period}</span> 
+			<div style="margin-top:0px">
+				<div style="width:200px;float:left;margin-left:0px;">
+					<table style="clear:both" class="show_info_product">
+						<tbody>
+							<tr>
+								<td>{t}Sales{/t}:</td>
+								<td class="aright" id="sales_amount"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}Profit{/t}:</td>
+								<td class="aright" id="profits"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}Margin{/t}:</td>
+								<td class="aright" id="margin"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}GMROI{/t}:</td>
+								<td class="aright" id="gmroi"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div style="float:left;margin-left:20px">
+					<table style="width:200px;clear:both" class="show_info_product">
+						<tbody id="no_supplied_tbody" style="display:none">
+							<tr>
+								<td>{t}Required{/t}:</td>
+								<td class="aright" id="required"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}Out of Stock{/t}:</td>
+								<td class="aright error" id="out_of_stock"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr>
+								<td>{t}Not Found{/t}:</td>
+								<td class="aright error" id="not_found"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+						</tbody>
+						<tbody>
+							<tr>
+								<td>{t}Sold{/t}:</td>
+								<td class="aright" id="sold"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr id="given_tr" style="display:none">
+								<td>{t}Given for free{/t}:</td>
+								<td class="aright"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr id="broken_tr" style="display:none">
+								<td>{t}Broken{/t}:</td>
+								<td class="aright" id="broken"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+							<tr id="lost_tr" style="display:none">
+								<td>{t}Lost{/t}:</td>
+								<td class="aright" id="lost"><img style="height:14px" src="art/loading.gif" /></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div style="clear:both;">
+			</div>
+		</div>
+				
+				
+				<div id="sales_sub_blocks" style="clear:both;">
+			<ul class="tabs" id="chooser_ul" style="margin-top:10px">
+				<li> <span class="item {if $sales_sub_block_tipo=='plot_parts_sales'}selected{/if}" onclick="change_sales_sub_block(this)" id="plot_parts_sales" > <span>{t}Sales Chart{/t}</span> </span> </li>
+				<li style="display:none"> <span class="item {if $sales_sub_block_tipo=='parts_sales_timeseries'}selected{/if}" onclick="change_sales_sub_block(this)" id="part_sales_timeseries" tipo="store"> <span>{t}Part Sales History{/t}</span> </span> </li>
+			</ul>
+			<div id="sub_block_plot_parts_sales" style="min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='plot_parts_sales'}display:none{/if}">
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> <script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=part_category_sales&category_key={$category->id}"));
+		
+		so.addVariable("preloader_color", "#999999");
+		so.write("sub_block_plot_parts_sales");
+		// ]]>
+	</script> 
+				<div style="clear:both">
+				</div>
+			</div>
+			<div id="sub_block_parts_sales_timeseries" style="padding:20px;min-height:400px;clear:both;border:1px solid #ccc;{if $sales_sub_block_tipo!='parts_sales_timeseries'}display:none{/if}">
+				<span class="clean_table_title">{t}Part Sales History{/t}</span> 
+				<div>
+					<span tipo='year' id="part_sales_history_type_year" style="float:right" class="table_type state_details {if $part_sales_history_type=='year'}selected{/if}">{t}Yearly{/t}</span> <span tipo='month' id="part_sales_history_type_month" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='month'}selected{/if}">{t}Monthly{/t}</span> <span tipo='week' id="part_sales_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='week'}selected{/if}">{t}Weekly{/t}</span> <span tipo='day' id="part_sales_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $part_sales_history_type=='day'}selected{/if}">{t}Daily{/t}</span> 
+				</div>
+				<div  class="table_top_bar"  style="margin-bottom:10px">
+				</div>
+				{include file='table_splinter.tpl' table_id=4 filter_name=$filter_name4 filter_value=$filter_value4 no_filter=1 } 
+				<div id="table4" style="font-size:85%" class="data_table_container dtable btable">
+				</div>
+			</div>
+
+			<div style="clear:both;">
+			</div>
+		</div>
+			
+				
+				
+				
+			
 	</div>
 	<div id="block_subcategories" style="{if $block_view!='subcategories'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<div class="data_table" style="clear:both;margin-bottom:20px">
@@ -81,153 +195,7 @@
 		</div>
 	</div>
 	<div id="block_overview" style="{if $block_view!='overview'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-		<div id="sales_info" style="{if !$show_subjects_data}display:none{/if}">
-			<div style="margin-top:20px;width:900px">
-				<div class="clusters">
-					<div class="buttons small left cluster">
-						<button class="{if $category_period=='all'}selected{/if}" period="all" id="category_period_all" style="padding-left:7px;padding-right:7px"> {t}All{/t} </button> 
-					</div>
-					<div class="buttons small left cluster">
-						<button class="{if $category_period=='yeartoday'}selected{/if}" period="yeartoday" id="category_period_yeartoday"> {t}YTD{/t} </button> <button class="{if $category_period=='monthtoday'}selected{/if}" period="monthtoday" id="category_period_monthtoday"> {t}MTD{/t} </button> <button class="{if $category_period=='weektoday'}selected{/if}" period="weektoday" id="category_period_weektoday"> {t}WTD{/t} </button> <button class="{if $category_period=='today'}selected{/if}" period="today" id="category_period_today"> {t}Today{/t} </button> 
-					</div>
-					<div class="buttons small left cluster">
-						<button class="{if $category_period=='yesterday'}selected{/if}" period="yesterday" id="category_period_yesterday"> {t}Yesterday{/t} </button> <button class="{if $category_period=='last_w'}selected{/if}" period="last_w" id="category_period_last_w"> {t}Last Week{/t} </button> <button class="{if $category_period=='last_m'}selected{/if}" period="last_m" id="category_period_last_m"> {t}Last Month{/t} </button> 
-					</div>
-					<div class="buttons small left cluster">
-						<button class="{if $category_period=='three_year'}selected{/if}" period="three_year" id="category_period_three_year"> {t}3Y{/t} </button> <button class="{if $category_period=='year'}selected{/if}" period="year" id="category_period_year"> {t}1Yr{/t} </button> <button class="{if $category_period=='six_month'}selected{/if}" period="six_month" id="category_period_six_month"> {t}6M{/t} </button> <button class="{if $category_period=='quarter'}selected{/if}" period="quarter" id="category_period_quarter"> {t}1Qtr{/t} </button> <button class="{if $category_period=='month'}selected{/if}" period="month" id="category_period_month"> {t}1M{/t} </button> <button class="{if $category_period=='ten_day'}selected{/if}" period="ten_day" id="category_period_ten_day"> {t}10D{/t} </button> <button class="{if $category_period=='week'}selected{/if}" period="week" id="category_period_week"> {t}1W{/t} </button> 
-					</div>
-					<div class="buttons small left cluster">
-						<button class="{if $category_period=='custom'}selected{/if}" period="custom" id="category_period_custom"> {t}Custom Dates{/t} </button> 
-					</div>
-					<div style="clear:both">
-					</div>
-				</div>
-				<div style="margin-top:20px">
-					<div style="width:200px;float:left;margin-left:0px;">
-						<table style="clear:both" class="show_info_product">
-							{foreach from=$period_tags item=period } 
-							<tbody id="info_{$period.key}" style="{if $category_period!=$period.key}display:none{/if}">
-								<tr>
-									<td> {t}Sales{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,"Acc Sold Amount")} </td>
-								</tr>
-								<tr style="display:none">
-									<td> {t}Profit{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Profit')} </td>
-								</tr>
-								<tr style="display:none">
-									<td> {t}Margin{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Margin')} </td>
-								</tr>
-								<tr style="display:none">
-									<td> {t}GMROI{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc GMROI')} </td>
-								</tr>
-							</tbody>
-							{/foreach} 
-						</table>
-					</div>
-					<div style="float:left;margin-left:20px">
-						<table style="width:200px;clear:both" class="show_info_product">
-							{foreach from=$period_tags item=period } 
-							<tbody id="info2_{$period.key}" style="{if $category_period!=$period.key}display:none{/if}">
-								{if $category->get_period($period.db,'Acc No Supplied')!=0} 
-								<tr>
-									<td> {t}Required{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Required')} </td>
-								</tr>
-								<tr style="display:none">
-									<td> {t}No Supplied{/t}: </td>
-									<td class="aright error"> {$category->get_period($period.db,'Acc No Supplied')} </td>
-								</tr>
-								{/if} 
-								<tr>
-									<td> {t}Sold{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Sold')} </td>
-								</tr>
-								{if $category->get_period($period.db,'Acc Given')!=0} 
-								<tr>
-									<td> {t}Given for free{/t}: </td>
-									<td class="aright"> {$category->get_period($period.db,'Acc Given')} </td>
-								</tr>
-								{/if} {if $category->get_period($period.db,'Acc Given')!=0} 
-								<tr>
-									<td> {t}Broken{/t}: </td>
-									<td class="aright"> {$category->get('Total Acc Broken')} </td>
-								</tr>
-								{/if} {if $category->get_period($period.db,'Acc Given')!=0} 
-								<tr>
-									<td> {t}Lost{/t}: </td>
-									<td class="aright"> { $category->get_period($period.db,'Acc Lost')} </td>
-								</tr>
-								{/if} 
-							</tbody>
-							{/foreach} 
-						</table>
-					</div>
-				</div>
-				<div id="sales_plots" style="clear:both;{if $category->get_period('Total','Acc Sold Amount')==0}display:none{/if}">
-					<ul class="tabs" id="chooser_ul" style="margin-top:25px">
-						<li> <span class="item {if $plot_tipo=='store'}selected{/if}" onclick="change_plot(this)" id="plot_store" tipo="store"> <span> {t}Parts Sales{/t} </span> </span> </li>
-						{* 
-						<li> <span class="item {if $plot_tipo=='top_departments'}selected{/if}" id="plot_top_departments" onclick="change_plot(this)" tipo="top_departments"> <span> {t}Top Products{/t} </span> </span> </li>
-						<li> <span class="item {if $plot_tipo=='pie'}selected{/if}" onclick="change_plot(this)" id="plot_pie" tipo="pie" forecast="{$plot_data.pie.forecast}" interval="{$plot_data.pie.interval}"> <span> {t}Products{/t} </span> </span> </li>
-						*} 
-					</ul>
-<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script> 
-					<div id="sales_plot" style="clear:both;border:1px solid #ccc">
-						<div id="single_data_set">
-							<strong> You need to upgrade your Flash Player </strong> 
-						</div>
-					</div>
-<script type="text/javascript">
-		// <![CDATA[
-		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
-		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=part_category_sales&category_key={$category->id}"));
-		so.addVariable("preloader_color", "#999999");
-		so.write("sales_plot");
-		// ]]>
-	</script> 
-					<div style="clear:both">
-					</div>
-				</div>
-			</div>
-		</div>
-		{if $category->get('Category Deep')==1} 
-		<div style="float:left" id="plot_referral_1" style="border:1px solid #ccc">
-			<strong> You need to upgrade your Flash Player </strong> 
-		</div>
-<script type="text/javascript">
-		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "350", "300", "1", "#FFFFFF");
-		so.addVariable("path", "external_libs/ampie/ampie/");
-		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
-		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category&category_key={$category->id}")); 
-		so.addVariable("loading_settings", "LOADING SETTINGS"); 
-			
-		// you can set custom "loading settings" text here
-		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
-
-		so.write("plot_referral_1");
-		// ]]>
-	</script> 
-		<div style="float:left" id="plot_referral_2">
-			<strong> You need to upgrade your Flash Player </strong> 
-		</div>
-<script type="text/javascript">
-		// <![CDATA[		
-		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "550", "550", "8", "#FFFFFF");
-		so.addVariable("path", "external_libs/ampie/ampie/");
-		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
-		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=category_subjects&category_key={$category->id}")); 
-		so.addVariable("loading_settings", "LOADING SETTINGS");
-		so.addVariable("loading_settings", "LOADING SETTINGS");  // you can set custom "loading settings" text here
-		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
-
-		so.write("plot_referral_2");
-		// ]]>
-	</script> {/if} 
+		
 	</div>
 	<div id="block_history" style="{if $block_view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 		<span class="clean_table_title"> {t}Changelog{/t} </span> 

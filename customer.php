@@ -118,7 +118,8 @@ $js_files=array(
 	'edit_contact_from_parent.js.php',
 	'edit_contact_telecom.js.php',
 	'edit_contact_name.js.php',
-	'edit_contact_email.js.php'
+	'edit_contact_email.js.php',
+	'js/notes.js',
 );
 
 
@@ -483,6 +484,9 @@ $categories_data=$customer->get_category_data();
 $number_categories_data=count($categories_data);
 $smarty->assign('categories_data',$categories_data);
 $smarty->assign('number_categories_data',$number_categories_data);
+
+;
+$smarty->assign('sticky_note',$customer->data['Customer Sticky Note']);
 
 $smarty->display('customer.tpl');
 

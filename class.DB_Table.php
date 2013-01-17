@@ -262,8 +262,9 @@ abstract class DB_Table {
 					$history_data['direct_object']='Department';
 
 				$history_key=$this->add_history($history_data);
-				if ($this->table_name=='Customer') {
-					$sql=sprintf("insert into `Customer History Bridge` values (%d,%d,'No','No','Changes')",$this->id,$history_key);
+				if (
+				in_array($this->table_name,array('Customer','Store','Product Department','Product Family','Product','Part','Supplier','Supplier Product'))) {
+					$sql=sprintf("insert into `%s History Bridge` values (%d,%d,'No','No','Changes')",$this->table_name,$this->id,$history_key);
 					mysql_query($sql);
 
 				}
@@ -474,6 +475,168 @@ abstract class DB_Table {
 	}
 
 
+
+	function add_note($note,$details='',$date=false,$deleteable='No',$customer_history_type='Notes',$author=false,$subject=false,$subject_key=false) {
+
+
+		list($ok,$note,$details)=$this->prepare_note($note,$details);
+		if (!$ok) {
+			return;
+		}
+		$history_data=array(
+			'History Abstract'=>$note,
+			'History Details'=>$details,
+			'Action'=>'created',
+			'Direct Object'=>'Note',
+			'Prepostion'=>'on',
+			'Indirect Object'=>$this->table_name,
+			'Indirect Object Key'=>($this->table_name=='Product'?$this->pid:$this->id)
+		);
+
+		if ($author) {
+			$history_data['Author Name']=$author;
+		}
+		if ($subject) {
+			$history_data['Subject']=$subject;
+			$history_data['Subject Key']=$subject_key;
+		}
+
+		if ($date!='')
+			$history_data['Date']=$date;
+		$history_key=$this->add_subject_history($history_data,$force_save=true,$deleteable,$customer_history_type);
+		$this->updated=true;
+		$this->new_value=$history_key;
+	}
+	
+	
+	function add_subject_history($history_data,$force_save=true,$deleteable='No',$type='Changes') {
+		$history_key=$this->add_history($history_data,$force_save=true);
+		$sql=sprintf("insert into `%s History Bridge` values (%d,%d,%s,'No',%s)",
+			$this->table_name,
+			($this->table_name=='Product'?$this->pid:$this->id),
+			$history_key,
+			prepare_mysql($deleteable),
+			prepare_mysql($type)
+		);
+	// print $sql;
+		mysql_query($sql);
+		return $history_key;
+	}
+	
+	
+	function add_attachment($raw_data) {
+		$data=array(
+			'file'=>$raw_data['Filename'],
+			'Attachment Caption'=>$raw_data['Attachment Caption'],
+			'Attachment MIME Type'=>$raw_data['Attachment MIME Type'],
+			'Attachment File Original Name'=>$raw_data['Attachment File Original Name']
+		);
+
+		$attach=new Attachment('find',$data,'create');
+		if ($attach->new) {
+			$history_data=array(
+				'History Abstract'=>$attach->get_abstract(),
+				'History Details'=>$attach->get_details(),
+				'Action'=>'associated',
+				'Direct Object'=>'Attachment',
+				'Prepostion'=>'',
+				'Indirect Object'=>$this->table_name,
+				'Indirect Object Key'=>($this->table_name=='Product'?$this->pid:$this->id)
+			);
+			$history_key=$this->add_subject_history($history_data,true,'No','Attachments');
+
+			$sql=sprintf("insert into `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`) values (%d,'%s History Attachment',%d)",
+				$attach->id,
+				$this->table_name,
+				$history_key
+			);
+			mysql_query($sql);
+			//   print $sql;
+
+			$this->updated=true;
+			$this->new_value='';
+		} else {
+			$this->error;
+			$this->msg=$attach->msg;
+		}
+
+	}
+
+
+	function prepare_note($note,$details) {
+		$note=_trim($note);
+		if ($note=='') {
+			$this->msg=_('Empty note');
+			return array(0,0,0);
+		}
+
+
+		if ($details=='') {
+
+
+			$details='';
+			if (strlen($note)>1000) {
+				$words=preg_split('/\s/',$note);
+				$len=0;
+				$note='';
+				$details='';
+				foreach ($words as $word) {
+					$len+=strlen($word);
+					if ($note=='')
+						$note=$word;
+					else {
+						if ($len<1000)
+							$note.=' '.$word;
+						else
+							$details.=' '.$word;
+
+					}
+				}
+
+
+
+			}
+
+		}
+		return array(1,$note,$details);
+
+	}
+
+
+	function edit_note($note_key,$note,$details='',$change_date) {
+
+		list($ok,$note,$details)=$this->prepare_note($note,$details);
+		if (!$ok) {
+			return;
+		}
+		$sql=sprintf("update `History Dimension` set `History Abstract`=%s ,`History Details`=%s where `History Key`=%d and `Indirect Object`=%s and `Indirect Object Key`=%s ",
+			prepare_mysql($note),
+			prepare_mysql($details),
+
+			$note_key,
+									prepare_mysql($this->table_name),
+
+			($this->table_name=='Product'?$this->pid:$this->id));
+			
+			
+		mysql_query($sql);
+		if (mysql_affected_rows()) {
+			if ($change_date=='update_date') {
+				$sql=sprintf("update `History Dimension` set `History Date`=%s where `History Key`=%d  ",
+					prepare_mysql(date("Y-m-d H:i:s")),
+					$note_key
+				);
+				mysql_query($sql);
+			}
+
+			$this->updated=true;
+			$this->new_value=$note;
+		}
+
+	}
+
+
 }
+
 
 ?>

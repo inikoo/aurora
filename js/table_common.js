@@ -195,6 +195,7 @@ get_thumbnails(oSelf.table_id,request)
 var myRequestBuilder = function(oState, oSelf) {
     // Get states or use defaults
 
+
     oState = oState || {pagination:null, sortedBy:null};
 
     var sort = (oState.sortedBy) ? oState.sortedBy.key : "myDefaultColumnKey";
@@ -210,7 +211,7 @@ var dir=oState.sortedBy.dir;
     "&od=" + dir +
     "&sf=" + startIndex +
     "&nr=" + results;
-//alert(oState.sortedBy.dir)
+
 get_thumbnails(oSelf.table_id,request)
 
     return request;
@@ -339,7 +340,6 @@ Dom.setStyle('paginator'+this.table_id,'display','none')
 
 
 function get_thumbnails(table_id,extra_arguments) {
-
 
 
 if(extra_arguments==undefined)

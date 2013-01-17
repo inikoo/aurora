@@ -1173,44 +1173,24 @@ function show_add_product_dialog(){
 
 
 
-function select_department(oArgs){
+function select_department(oArgs) {
 
+    department_key = tables.table2.getRecord(oArgs.target).getData('key');
+    dialog_family_list.hide();
+    var request = 'ar_edit_assets.php?tipo=edit_family_department&key=' + 'department_key' + '&newvalue=' + department_key + '&id=' + family_id
+    YAHOO.util.Connect.asyncRequest('POST', request, {
+        success: function(o) {
+            //alert(o.responseText);
+            var r = YAHOO.lang.JSON.parse(o.responseText);
+            if (r.state == 200) {
 
-department_key=tables.table2.getRecord(oArgs.target).getData('key');
-
- dialog_family_list.hide();
-
-
-        var request = 'ar_edit_assets.php?tipo=edit_family_department&key=' + 'department_key' + '&newvalue=' + department_key+ '&id=' + family_id
-         //alert(request);
-
-        YAHOO.util.Connect.asyncRequest('POST', request, {
-                success: function(o) {
-                        //alert(o.responseText);
-                        var r = YAHOO.lang.JSON.parse(o.responseText);
-                        if (r.state == 200) {
-
-                                Dom.get('current_department_code').innerHTML=r.newdata['code'];
-
-
-
-
-                        } else {
-
-
-                                }
-                                
-
-
-                }
-                
-
-
-        });
-
-
-
+                Dom.get('current_department_code').innerHTML = r.newdata['code'];
+            } else {
+            }
+        }
+    });
 }
+
 
 
 function show_new_family_page_dialog(){

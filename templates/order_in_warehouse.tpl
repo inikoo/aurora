@@ -226,7 +226,7 @@
 </div>
 </div>
 {include file='order_not_dispatched_dialogs_splinter.tpl'} 
-<div id="process_order_dialog" style="width:400px;;padding:20px 20px 0 20px;">
+<div id="process_order_dialog" style="width:400px;padding:20px 20px 0 20px;">
 	<table id="process_order_buttons" class="edit" style="width:100%;text-align:center" border="0">
 		<tr>
 			<td> 
