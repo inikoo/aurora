@@ -6516,12 +6516,17 @@ UPDATE `costadw`.`Table Dimension` SET `Table Default Export Fields` = 'Invoice 
 UPDATE `costadw`.`Category Dimension` SET `Category Name` = 'AWR', `Category Label` = 'AWR', `Category Function` = 'if($data["Invoice Billing Country 2 Alpha Code"]!="PT" )' WHERE `Category Dimension`.`Category Key` = 1;
 UPDATE `costadw`.`Category Dimension` SET `Category Name` = 'PT', `Category Label` = 'Portugal', `Category Function` = 'if($data["Invoice Billing Country 2 Alpha Code"]=="PT"       )' WHERE `Category Dimension`.`Category Key` = 2;
 
+
+
+
 ALTER TABLE `Product Dimension` ADD `Product Duty Rate` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Product Tariff Code`;
 ALTER TABLE `Part Dimension` ADD `Part Duty Rate` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Part Tariff Code Valid`;
+
 
 ALTER TABLE `Staff Dimension` CHANGE `Staff Valid from` `Staff Valid From` DATETIME NULL DEFAULT NULL ;
 
 INSERT INTO `Widget Dimension` (`Widget Key`, `Widget Name`, `Widget Block`, `Widget Dimension`, `Widget URL`, `Widget Description`, `Widget Metadata`) VALUES (NULL, 'Top Customers', 'block_2', NULL, 'dashboard_block.php?tipo=top_customers', 'Top Customers', '');
+
 ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM('Front Page Store','Search','Product Description','Information','Category Catalogue','Family Catalogue','Department Catalogue','Unknown','Store Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
 ALTER TABLE `Inventory Transaction Fact` CHANGE `User Key` `User Key` MEDIUMINT UNSIGNED NULL DEFAULT '0';
 ALTER TABLE `Staff Dimension` DROP INDEX `Staff Alias` ,ADD UNIQUE `Staff Alias` ( `Staff Alias` );
@@ -6599,8 +6604,9 @@ ALTER TABLE `Session Dimension` ADD INDEX ( `HTTP User Agent` ( 8 ) ) ;
 ALTER TABLE `Deal Dimension` ADD `Deal Status` ENUM( 'Suspended', 'Active', 'Finish', 'Waiting' ) NOT NULL DEFAULT 'Waiting' AFTER `Store Key` ;
 ALTER TABLE `Deal Metadata Dimension` ADD `Deal Metadata Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No', ADD INDEX ( `Deal Metadata Active` ) ;
 update  `Deal Metadata Dimension` set `Deal Metadata Active`='Yes';
-ALTER TABLE `Deal Dimension` ADD `Deal Number Metadata Children` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `Deal Dimension` ADD `Deal Number Metadata Children` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';DW
 
+// Desde aqio empezamos CostaDW
 ALTER TABLE `User Failed Log Dimension` CHANGE `Fail Main Reason` `Fail Main Reason` ENUM( 'cookie_error', 'handle', 'password', 'logging_timeout', 'ip', 'ikey' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Customer History Bridge` CHANGE `Type` `Type` ENUM( 'Notes', 'Orders', 'Changes', 'Attachments', 'WebLog', 'Emails' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notes';
 ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate', 'login', 'logout', 'fail_login', 'password_request', 'password_reset' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
@@ -6627,7 +6633,7 @@ ALTER TABLE `User Log Dimension` ADD INDEX ( `Remember Cookie` ) ;
 ALTER TABLE `User Log Dimension` ADD `Status` ENUM( 'Open', 'Close' ) NOT NULL DEFAULT 'Open' AFTER `User Log Key` ,ADD INDEX ( `Status` ) ;
 ALTER TABLE `User Request Dimension` ADD INDEX ( `User Log Key` ) ;
 ALTER TABLE `User Log Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `User Key` , ADD INDEX ( `Site Key` ) ;
-
+ // run php fix_users_log_data.php 
 
 UPDATE `Widget Dimension` SET `Widget Block` = 'block_3' WHERE `Widget Dimension`.`Widget Key` =11;
 ALTER TABLE `Customer Dimension` ADD `Customer Number Web Logins` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',ADD `Customer Number Web Failed Logins` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',ADD `Customer Number Web Requests` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
